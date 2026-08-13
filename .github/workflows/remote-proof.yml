@@ -48,8 +48,6 @@ jobs:
               "SIM100_UNIVERSE_v1.1",
           )
 
-          # Approved NON-HOLDOUT proof target.
-          # This is outside the SIM100 holdout period.
           RACE_ID = "NONHOLDOUT_20260602_SHIZUOKA_02R"
 
           URLS = {
@@ -63,11 +61,11 @@ jobs:
               ),
               "quinella": (
                   "https://keirin.kdreams.jp/gamboo/keirin-kaisai/"
-                  "race-card/odds/3820260531/38202605310300/02/2shafuku/"
+                  "race-card/odds/3820260531/38202605310300/02/2shahuku/"
               ),
               "trio": (
                   "https://keirin.kdreams.jp/gamboo/keirin-kaisai/"
-                  "race-card/odds/3820260531/38202605310300/02/3renfuku/"
+                  "race-card/odds/3820260531/38202605310300/02/3renhuku/"
               ),
           }
 
@@ -78,16 +76,16 @@ jobs:
               "trio": ("3連複",),
           }
 
-          RESULT_TOKENS = (
-              "払戻",
-              "払戻金",
-              "確定着順",
-              "result",
-              "payout",
-          )
+          EXPECTED_SLUGS = {
+              "pre": "/3rentan/",
+              "exacta": "/2shatan/",
+              "quinella": "/2shahuku/",
+              "trio": "/3renhuku/",
+          }
 
           OUT = Path("REMOTE_PROOF_ARTIFACT")
           RAW = OUT / "raw" / "sha256"
+
           OUT.mkdir(parents=True, exist_ok=True)
           RAW.mkdir(parents=True, exist_ok=True)
 
@@ -108,23 +106,27 @@ jobs:
                   str(k).lower(): str(v)
                   for k, v in headers.items()
               }
+
               blob = json.dumps(
                   obj,
                   sort_keys=True,
                   ensure_ascii=False,
                   separators=(",", ":"),
               ).encode("utf-8")
+
               return sha256_bytes(blob)
 
           guard_non_holdout(RACE_ID)
-          for u in URLS.values():
-              guard_non_holdout(u)
+
+          for url in URLS.values():
+              guard_non_holdout(url)
 
           session = requests.Session()
+
           session.headers.update(
               {
                   "User-Agent":
-                      "Mozilla/5.0 MultiverseResearch-RemoteProof/1.0",
+                      "Mozilla/5.0 MultiverseResearch-RemoteProof/1.1",
                   "Accept":
                       "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
                   "Accept-Language":
@@ -134,6 +136,8 @@ jobs:
 
           provenance = []
           summary = {}
+          seen_payload_sha256 = {}
+
           overall_status = "PASS"
           failure_reason = None
 
@@ -155,14 +159,20 @@ jobs:
                       allow_redirects=True,
                   )
 
-                  # Canonical payload identity:
-                  # requests.Response.content = decompressed entity body.
-                  payload = bytes(response.content)
-
                   if response.status_code != 200:
                       raise RuntimeError(
                           f"{view}: HTTP {response.status_code}"
                       )
+
+                  final_path = urlparse(response.url).path
+
+                  if EXPECTED_SLUGS[view] not in final_path:
+                      raise RuntimeError(
+                          f"FAIL-CLOSED: unexpected final URL for {view}: "
+                          f"{response.url}"
+                      )
+
+                  payload = bytes(response.content)
 
                   if not payload:
                       raise RuntimeError(
@@ -186,11 +196,21 @@ jobs:
                       )
 
                   digest = sha256_bytes(payload)
+
+                  if digest in seen_payload_sha256:
+                      raise RuntimeError(
+                          f"FAIL-CLOSED: duplicate payload SHA-256: "
+                          f"{view} == {seen_payload_sha256[digest]}"
+                      )
+
+                  seen_payload_sha256[digest] = view
+
                   blob_path = (
                       RAW
                       / digest[:2]
                       / f"{digest}.bin"
                   )
+
                   blob_path.parent.mkdir(
                       parents=True,
                       exist_ok=True,
@@ -235,6 +255,7 @@ jobs:
                       "market_view": view,
                       "source_url": url,
                       "final_url": response.url,
+                      "expected_slug": EXPECTED_SLUGS[view],
                       "retrieved_at_utc":
                           time.strftime(
                               "%Y-%m-%dT%H:%M:%SZ",
@@ -265,7 +286,7 @@ jobs:
                       "transport":
                           f"requests/{requests.__version__}",
                       "parser_version":
-                          "remote-proof-selfcontained-v1",
+                          "remote-proof-selfcontained-v1.1",
                       "discrepancy_flag": False,
                   }
 
@@ -274,6 +295,10 @@ jobs:
                   summary[view] = {
                       "http_status":
                           response.status_code,
+                      "final_url":
+                          response.url,
+                      "expected_slug":
+                          EXPECTED_SLUGS[view],
                       "byte_length":
                           len(payload),
                       "sha256":
@@ -284,11 +309,20 @@ jobs:
                           "PASS",
                       "expected_marker_validation":
                           "PASS",
+                      "final_url_validation":
+                          "PASS",
+                      "sha256_uniqueness":
+                          "PASS",
                   }
 
               if len(provenance) != 4:
                   raise RuntimeError(
                       "expected exactly 4 payloads"
+                  )
+
+              if len(seen_payload_sha256) != 4:
+                  raise RuntimeError(
+                      "FAIL-CLOSED: expected 4 unique payload SHA-256 values"
                   )
 
           except Exception as exc:
@@ -315,6 +349,8 @@ jobs:
           report = {
               "proof_type":
                   "NON_HOLDOUT_REMOTE_TRANSPORT_E2E",
+              "proof_version":
+                  "1.1",
               "status":
                   overall_status,
               "sim100_touched":
@@ -327,6 +363,8 @@ jobs:
                   RACE_ID,
               "payload_count":
                   len(provenance),
+              "unique_payload_sha256_count":
+                  len(seen_payload_sha256),
               "required_payload_count":
                   4,
               "summary":
@@ -338,6 +376,7 @@ jobs:
           }
 
           report_path = OUT / "REMOTE_PROOF_REPORT.json"
+
           report_path.write_text(
               json.dumps(
                   report,
@@ -363,6 +402,7 @@ jobs:
               )
 
           manifest = OUT / "ARTIFACT_MANIFEST.sha256"
+
           manifest.write_text(
               "\n".join(manifest_entries) + "\n",
               encoding="utf-8",
@@ -397,7 +437,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: multiverse-nonholdout-remote-proof
+          name: multiverse-nonholdout-remote-proof-v1-1
           path: |
             REMOTE_PROOF_ARTIFACT/
             REMOTE_PROOF_ARTIFACT.tar.gz
