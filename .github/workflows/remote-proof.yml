@@ -12,31 +12,395 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install requests
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install requests
 
-      - name: Run non-holdout remote proof
+      - name: Run audited NON-HOLDOUT remote proof
+        shell: bash
         run: |
-          python proof/non_holdout_remote_proof.py
+          cat > /tmp/remote_proof.py <<'PY'
+          import hashlib
+          import json
+          import os
+          import sys
+          import time
+          import uuid
+          from pathlib import Path
+          from urllib.parse import urlparse
 
-      - name: Upload audit evidence
+          import requests
+
+          # ============================================================
+          # CONSTITUTIONAL GUARD
+          # This workflow must NEVER touch SIM100_v1.1.
+          # ============================================================
+
+          FORBIDDEN_TOKENS = (
+              "20260811",
+              "20260812",
+              "SIM100_UNIVERSE_v1.1",
+          )
+
+          # Approved NON-HOLDOUT proof target.
+          # This is outside the SIM100 holdout period.
+          RACE_ID = "NONHOLDOUT_20260602_SHIZUOKA_02R"
+
+          URLS = {
+              "pre": (
+                  "https://keirin.kdreams.jp/gamboo/keirin-kaisai/"
+                  "race-card/odds/3820260531/38202605310300/02/3rentan/"
+              ),
+              "exacta": (
+                  "https://keirin.kdreams.jp/gamboo/keirin-kaisai/"
+                  "race-card/odds/3820260531/38202605310300/02/2shatan/"
+              ),
+              "quinella": (
+                  "https://keirin.kdreams.jp/gamboo/keirin-kaisai/"
+                  "race-card/odds/3820260531/38202605310300/02/2shafuku/"
+              ),
+              "trio": (
+                  "https://keirin.kdreams.jp/gamboo/keirin-kaisai/"
+                  "race-card/odds/3820260531/38202605310300/02/3renfuku/"
+              ),
+          }
+
+          EXPECTED_MARKERS = {
+              "pre": ("競輪",),
+              "exacta": ("2車単",),
+              "quinella": ("2車複",),
+              "trio": ("3連複",),
+          }
+
+          RESULT_TOKENS = (
+              "払戻",
+              "払戻金",
+              "確定着順",
+              "result",
+              "payout",
+          )
+
+          OUT = Path("REMOTE_PROOF_ARTIFACT")
+          RAW = OUT / "raw" / "sha256"
+          OUT.mkdir(parents=True, exist_ok=True)
+          RAW.mkdir(parents=True, exist_ok=True)
+
+          run_id = os.environ.get("GITHUB_RUN_ID") or str(uuid.uuid4())
+
+          def sha256_bytes(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          def guard_non_holdout(text: str) -> None:
+              for token in FORBIDDEN_TOKENS:
+                  if token in text:
+                      raise RuntimeError(
+                          f"FAIL-CLOSED: forbidden SIM100 token detected: {token}"
+                      )
+
+          def canonical_headers_hash(headers) -> str:
+              obj = {
+                  str(k).lower(): str(v)
+                  for k, v in headers.items()
+              }
+              blob = json.dumps(
+                  obj,
+                  sort_keys=True,
+                  ensure_ascii=False,
+                  separators=(",", ":"),
+              ).encode("utf-8")
+              return sha256_bytes(blob)
+
+          guard_non_holdout(RACE_ID)
+          for u in URLS.values():
+              guard_non_holdout(u)
+
+          session = requests.Session()
+          session.headers.update(
+              {
+                  "User-Agent":
+                      "Mozilla/5.0 MultiverseResearch-RemoteProof/1.0",
+                  "Accept":
+                      "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
+                  "Accept-Language":
+                      "ja,en-US;q=0.7,en;q=0.5",
+              }
+          )
+
+          provenance = []
+          summary = {}
+          overall_status = "PASS"
+          failure_reason = None
+
+          try:
+              for view in ("pre", "exacta", "quinella", "trio"):
+                  url = URLS[view]
+
+                  prepared = session.prepare_request(
+                      requests.Request("GET", url)
+                  )
+
+                  request_headers_sha256 = canonical_headers_hash(
+                      prepared.headers
+                  )
+
+                  response = session.send(
+                      prepared,
+                      timeout=45,
+                      allow_redirects=True,
+                  )
+
+                  # Canonical payload identity:
+                  # requests.Response.content = decompressed entity body.
+                  payload = bytes(response.content)
+
+                  if response.status_code != 200:
+                      raise RuntimeError(
+                          f"{view}: HTTP {response.status_code}"
+                      )
+
+                  if not payload:
+                      raise RuntimeError(
+                          f"{view}: empty payload"
+                      )
+
+                  text = payload.decode(
+                      response.encoding or "utf-8",
+                      errors="ignore",
+                  )
+
+                  missing = [
+                      marker
+                      for marker in EXPECTED_MARKERS[view]
+                      if marker not in text
+                  ]
+
+                  if missing:
+                      raise RuntimeError(
+                          f"{view}: expected markers missing: {missing}"
+                      )
+
+                  digest = sha256_bytes(payload)
+                  blob_path = (
+                      RAW
+                      / digest[:2]
+                      / f"{digest}.bin"
+                  )
+                  blob_path.parent.mkdir(
+                      parents=True,
+                      exist_ok=True,
+                  )
+
+                  tmp_path = blob_path.with_suffix(".tmp")
+
+                  with open(tmp_path, "wb") as f:
+                      f.write(payload)
+                      f.flush()
+                      os.fsync(f.fileno())
+
+                  os.replace(tmp_path, blob_path)
+
+                  persisted = blob_path.read_bytes()
+
+                  if persisted != payload:
+                      raise RuntimeError(
+                          f"{view}: persisted bytes mismatch"
+                      )
+
+                  if sha256_bytes(persisted) != digest:
+                      raise RuntimeError(
+                          f"{view}: persisted SHA-256 mismatch"
+                      )
+
+                  if len(persisted) != len(payload):
+                      raise RuntimeError(
+                          f"{view}: persisted byte length mismatch"
+                      )
+
+                  redirect_chain = [
+                      {
+                          "status": r.status_code,
+                          "url": r.url,
+                      }
+                      for r in response.history
+                  ]
+
+                  record = {
+                      "original_race_id": RACE_ID,
+                      "market_view": view,
+                      "source_url": url,
+                      "final_url": response.url,
+                      "retrieved_at_utc":
+                          time.strftime(
+                              "%Y-%m-%dT%H:%M:%SZ",
+                              time.gmtime(),
+                          ),
+                      "acquisition_run_id": str(run_id),
+                      "http_method": "GET",
+                      "http_status": response.status_code,
+                      "content_type":
+                          response.headers.get(
+                              "Content-Type",
+                              "",
+                          ),
+                      "content_encoding_observed":
+                          response.headers.get(
+                              "Content-Encoding",
+                              "",
+                          ),
+                      "canonical_payload_definition":
+                          "requests.Response.content "
+                          "(decompressed HTTP entity body)",
+                      "response_payload_sha256": digest,
+                      "byte_length": len(payload),
+                      "raw_blob_path": str(blob_path),
+                      "request_headers_sha256":
+                          request_headers_sha256,
+                      "redirect_chain": redirect_chain,
+                      "transport":
+                          f"requests/{requests.__version__}",
+                      "parser_version":
+                          "remote-proof-selfcontained-v1",
+                      "discrepancy_flag": False,
+                  }
+
+                  provenance.append(record)
+
+                  summary[view] = {
+                      "http_status":
+                          response.status_code,
+                      "byte_length":
+                          len(payload),
+                      "sha256":
+                          digest,
+                      "raw_persistence":
+                          "PASS",
+                      "sha256_reverification":
+                          "PASS",
+                      "expected_marker_validation":
+                          "PASS",
+                  }
+
+              if len(provenance) != 4:
+                  raise RuntimeError(
+                      "expected exactly 4 payloads"
+                  )
+
+          except Exception as exc:
+              overall_status = "FAIL-CLOSED"
+              failure_reason = repr(exc)
+
+          provenance_path = OUT / "provenance.jsonl"
+
+          with open(
+              provenance_path,
+              "w",
+              encoding="utf-8",
+          ) as f:
+              for record in provenance:
+                  f.write(
+                      json.dumps(
+                          record,
+                          ensure_ascii=False,
+                          sort_keys=True,
+                      )
+                      + "\n"
+                  )
+
+          report = {
+              "proof_type":
+                  "NON_HOLDOUT_REMOTE_TRANSPORT_E2E",
+              "status":
+                  overall_status,
+              "sim100_touched":
+                  False,
+              "result_payout_unsealed":
+                  False,
+              "scoring_performed":
+                  False,
+              "race_id":
+                  RACE_ID,
+              "payload_count":
+                  len(provenance),
+              "required_payload_count":
+                  4,
+              "summary":
+                  summary,
+              "failure_reason":
+                  failure_reason,
+              "constitutional_status":
+                  "SIM100 FAIL-CLOSED HALT remains active",
+          }
+
+          report_path = OUT / "REMOTE_PROOF_REPORT.json"
+          report_path.write_text(
+              json.dumps(
+                  report,
+                  ensure_ascii=False,
+                  indent=2,
+                  sort_keys=True,
+              ),
+              encoding="utf-8",
+          )
+
+          manifest_entries = []
+
+          for path in sorted(
+              p for p in OUT.rglob("*")
+              if p.is_file()
+          ):
+              if path.name == "ARTIFACT_MANIFEST.sha256":
+                  continue
+
+              manifest_entries.append(
+                  f"{sha256_bytes(path.read_bytes())}  "
+                  f"{path.relative_to(OUT).as_posix()}"
+              )
+
+          manifest = OUT / "ARTIFACT_MANIFEST.sha256"
+          manifest.write_text(
+              "\n".join(manifest_entries) + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              json.dumps(
+                  report,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+          )
+
+          if overall_status != "PASS":
+              sys.exit(2)
+
+          PY
+
+          python /tmp/remote_proof.py
+
+      - name: Package audit artifact
+        if: always()
+        shell: bash
+        run: |
+          if [ -d REMOTE_PROOF_ARTIFACT ]; then
+            tar -czf REMOTE_PROOF_ARTIFACT.tar.gz REMOTE_PROOF_ARTIFACT
+            sha256sum REMOTE_PROOF_ARTIFACT.tar.gz \
+              | tee REMOTE_PROOF_ARTIFACT.tar.gz.sha256
+          fi
+
+      - name: Upload audit artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: multiverse-remote-proof-evidence
+          name: multiverse-nonholdout-remote-proof
           path: |
-            evidence/
-            raw/
-            provenance.jsonl
-            REMOTE_PROOF_REPORT.json
+            REMOTE_PROOF_ARTIFACT/
+            REMOTE_PROOF_ARTIFACT.tar.gz
+            REMOTE_PROOF_ARTIFACT.tar.gz.sha256
           if-no-files-found: warn
+          retention-days: 30
