@@ -1,0 +1,86 @@
+name: Multiverse SIM100 Final Scoring
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  sim100-scoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas beautifulsoup4 lxml
+
+      - name: Download approved RESULT-PAYOUT capture artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: multiverse-sim100-result-capture
+          path: INPUT_RESULT
+          github-token: ${{ github.token }}
+          run-id: 31764726116
+
+      - name: Locate capture artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$(find INPUT_RESULT -type f -name SIM100_RESULT_CAPTURE_REPORT.json -printf '%h\n' | head -n 1)"
+          if [ -z "${ROOT}" ]; then
+            echo "FAIL-CLOSED: RESULT capture artifact root not found."
+            find INPUT_RESULT -maxdepth 5 -type f -print | sort
+            exit 1
+          fi
+          echo "RESULT_CAPTURE_DIR=${ROOT}" >> "$GITHUB_ENV"
+          echo "Capture artifact root: ${ROOT}"
+
+      - name: Verify frozen Prediction Lock before scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "${RESULT_CAPTURE_DIR}/SIM100_PREDICTION_LOCK.csv"
+          echo "bbabe47f75ee809cda2a2e9124be364b2213bbf343a4508c1be85039ecb85ca0  ${RESULT_CAPTURE_DIR}/SIM100_PREDICTION_LOCK.csv" | sha256sum -c -
+          test -f "${RESULT_CAPTURE_DIR}/races.csv"
+          echo "95754e7ac17cb91b12f619504d1be5e8a4ddc4f0e3734fa59671aea2e17eb043  ${RESULT_CAPTURE_DIR}/races.csv" | sha256sum -c -
+
+      - name: Structure RESULT-PAYOUT and score frozen Prediction Lock
+        shell: bash
+        run: |
+          set -o pipefail
+          python .github/workflows/sim100_score.py 2>&1 | tee sim100_scoring.log
+
+      - name: Package scoring audit artifact
+        if: always()
+        shell: bash
+        run: |
+          set -e
+          if [ -d SIM100_SCORING_ARTIFACT ]; then
+            cp sim100_scoring.log SIM100_SCORING_ARTIFACT/sim100_scoring.log || true
+            tar -czf SIM100_SCORING_ARTIFACT.tar.gz SIM100_SCORING_ARTIFACT
+            sha256sum SIM100_SCORING_ARTIFACT.tar.gz | tee SIM100_SCORING_ARTIFACT.tar.gz.sha256
+          fi
+
+      - name: Upload scoring audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multiverse-sim100-final-scoring
+          path: |
+            SIM100_SCORING_ARTIFACT/
+            SIM100_SCORING_ARTIFACT.tar.gz
+            SIM100_SCORING_ARTIFACT.tar.gz.sha256
+          if-no-files-found: warn
+          retention-days: 30
