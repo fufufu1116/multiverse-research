@@ -1,0 +1,28 @@
+{
+  "name": "NEXTGEN Multiverse Data Constitution",
+  "version": "1.0",
+  "sim100_policy": "diagnostic_only_never_train_validate_holdout",
+  "rules": {
+    "chronological_split_only": true,
+    "random_split_prohibited": true,
+    "available_at_required": true,
+    "available_at_rule": "available_at <= prediction_timestamp",
+    "availability_violation": "FAIL_CLOSED",
+    "post_features_prohibited": true,
+    "raw_provenance_required": true,
+    "content_addressed_storage": true,
+    "missing_value_flags_required": true,
+    "severe_missingness_action": "NO_BET",
+    "feature_freeze_before_validation": true,
+    "holdout_single_use": true,
+    "holdout_feedback_prohibited": true,
+    "hash_triplet_required": [
+      "dataset_sha256",
+      "code_commit_sha",
+      "config_sha256"
+    ],
+    "no_bet_is_valid_output": true
+  },
+  "minimum_initial_train_races": 3000,
+  "preferred_initial_train_races": 5000
+}

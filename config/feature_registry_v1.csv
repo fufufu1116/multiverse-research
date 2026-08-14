@@ -1,0 +1,38 @@
+feature_name,group,dtype,source_family,available_at_required,pre_only,missing_flag,notes
+race_id,identity,string,universe,1,1,0,immutable race key
+prediction_timestamp,identity,datetime,runtime,1,1,0,cutoff for all features
+car_no,rider,int,race_card,1,1,0,car number
+rider_id,rider,string,race_card/profile,1,1,0,stable rider id when obtainable
+class_grade,rider,string,race_card/profile,1,1,1,S/A etc.
+score_4m,ability,float,race_card/profile,1,1,1,recent competition score
+win_rate,ability,float,race_card/profile,1,1,1,PRE published rate
+top2_rate,ability,float,race_card/profile,1,1,1,PRE published rate
+top3_rate,ability,float,race_card/profile,1,1,1,PRE published rate
+S,style,float,race_card,1,1,1,start count/stat
+B,style,float,race_card,1,1,1,back count/stat
+nige,style,float,race_card,1,1,1,escape count/stat
+makuri,style,float,race_card,1,1,1,makuri count/stat
+sashi,style,float,race_card,1,1,1,sashi count/stat
+mark,style,float,race_card,1,1,1,mark count/stat
+line_id,line,int,race_card/line,1,1,1,line group
+line_position,line,int,race_card/line,1,1,1,0=head
+line_size,line,int,race_card/line,1,1,1,members in line
+line_score_sum,line,float,derived_pre,1,1,1,sum of PRE scores in line
+self_power_count,line,int,derived_pre,1,1,1,number of self-powered riders
+bank_length_m,bank,int,venue_master,1,1,1,333/400/500 etc.
+home_straight_m,bank,float,venue_master,1,1,1,homestretch length
+bank_cant_deg,bank,float,venue_master,1,1,1,maximum cant
+weather,environment,string,race_card/weather,1,1,1,weather observed before prediction
+temperature_c,environment,float,race_card/weather,1,1,1,temperature before prediction
+wind_speed_mps,environment,float,race_card/weather,1,1,1,wind speed before prediction
+wind_direction,environment,string,race_card/weather,1,1,1,wind direction before prediction
+recent5_rank_mean,timeseries,float,historical_pre,1,1,1,uses only races completed before prediction
+recent5_score_slope,timeseries,float,historical_pre,1,1,1,time trend only from prior races
+days_since_last_race,timeseries,int,historical_pre,1,1,1,prior race only
+bank_type_delta,timeseries,float,historical_pre,1,1,1,prior-only bank-type performance delta
+odds_snapshot_tminus3,market,float,odds_snapshot,1,1,1,only when timestamp-proven
+odds_snapshot_tminus1,market,float,odds_snapshot,1,1,1,only when timestamp-proven
+odds_move_t3_to_t1,market,float,derived_market,1,1,1,requires both snapshots
+market_popularity_rank,market,int,odds_snapshot,1,1,1,same cutoff rule
+missingness_score,quality,float,derived_pre,1,1,0,fraction of missing eligible PRE features
+data_quality_no_bet,quality,bool,derived_pre,1,1,0,forced NO_BET on severe missingness
