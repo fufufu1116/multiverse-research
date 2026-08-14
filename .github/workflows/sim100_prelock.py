@@ -213,42 +213,77 @@ class PreOnlyETL:
             "request_headers_sha256":rhash,
             "redirect_chain":[{"status":r.status_code,"url":r.url} for r in resp.history],
             "transport":f"requests/{requests.__version__}",
-            "parser_version":"sim100-preonly-v1",
+            "parser_version":"sim100-preonly-v2",
             "discrepancy_flag":False,
         })
         return payload
 
     def entrants(self,rid,payload):
         soup=BeautifulSoup(payload,"lxml")
-        candidates=[]
+        candidate=None
         for t in soup.find_all("table"):
             s=txt(t)
-            if sum(k in s for k in ("競走得点","勝率","2連","3連","逃","捲","差"))>=5:
-                candidates.append(t)
-        if not candidates:
+            if (
+                "直近4ヶ月" in s
+                and "競走得点" in s
+                and ("2連 対率" in s or "2連対率" in s)
+                and ("3連 対率" in s or "3連対率" in s)
+            ):
+                candidate=t
+                break
+        if candidate is None:
             raise RuntimeError(f"{rid}: entrant table not found")
+
         rows=[]
-        for tr in max(candidates,key=lambda x:len(txt(x))).find_all("tr"):
+        for tr in candidate.find_all("tr"):
             cs=[txt(c) for c in tr.find_all(["td","th"])]
-            prof=re.search(r"([^/|]+?)\s*/\s*(\d{2})\s*/\s*(\d{2,3})"," | ".join(cs))
-            if not prof: continue
-            car=next((int(c) for c in cs[:7] if re.fullmatch(r"[1-9]",c)),None)
-            if car is None: continue
-            safe=[c for c in cs if c not in {"◎","○","▲","△","×","注"}]
-            nums=[float(x) for x in re.findall(
-                r"(?<!\d)(\d+(?:\.\d+)?)(?!\d)"," ".join(safe).replace(",","")
-            )]
-            ix=[i for i,v in enumerate(nums) if 70<=v<=130]
-            if not ix or len(nums[ix[0]+1:])<13: continue
-            score=nums[ix[0]]
-            q=nums[ix[0]+1:]
-            S,B,nige,makuri,sashi,mark,w,se,th,out,wr,t2,t3=q[:13]
+            profile_idx=next(
+                (
+                    i for i,c in enumerate(cs)
+                    if re.search(r"/\d{1,2}/\d{2,3}$", c.replace(" ",""))
+                ),
+                None
+            )
+            if profile_idx is None:
+                continue
+
+            before=cs[max(0,profile_idx-3):profile_idx]
+            car_candidates=[
+                int(x)
+                for c in before
+                for x in re.findall(r"(?<!\d)([1-9])(?!\d)",c)
+            ]
+            if not car_candidates:
+                continue
+            car=car_candidates[-1]
+
+            after=cs[profile_idx+1:]
+            if len(after)<17:
+                continue
+
+            def num(s):
+                s=s.replace(",","").replace("%","")
+                if not re.fullmatch(r"-?\d+(?:\.\d+)?",s):
+                    return None
+                return float(s)
+
+            vals=[num(x) for x in after[3:17]]
+            if any(v is None for v in vals):
+                continue
+
+            score=vals[0]
+            S,B,nige,makuri,sashi,mark,w,se,th,out,wr,t2,t3=vals[1:]
             rows.append(dict(
                 race_id=rid,car_no=car,score=score,S=S,B=B,nige=nige,
                 makuri=makuri,sashi=sashi,mark=mark,
                 win_rate=wr,top2_rate=t2,top3_rate=t3
             ))
-        d=pd.DataFrame(rows).drop_duplicates("car_no").sort_values("car_no")
+
+        d=(
+            pd.DataFrame(rows)
+            .drop_duplicates("car_no")
+            .sort_values("car_no")
+        )
         if not 5<=len(d)<=9:
             raise RuntimeError(f"{rid}: entrant count {len(d)}")
         return d,soup
@@ -295,39 +330,129 @@ class PreOnlyETL:
 
     def odds(self,rid,payload,expected_type):
         soup=BeautifulSoup(payload,"lxml")
-        mapping={
-            "2車複":("quinella",2,True),"２車複":("quinella",2,True),
-            "2車単":("exacta",2,False),"２車単":("exacta",2,False),
-            "3連複":("trio",3,True),"３連複":("trio",3,True)
-        }
         rows=[]
-        for t in soup.find_all("table"):
-            spec=next((v for k,v in mapping.items() if k in txt(t)),None)
-            if not spec or spec[0]!=expected_type:
-                continue
-            typ,n,un=spec
-            for tr in t.find_all("tr"):
-                cs=[txt(x) for x in tr.find_all(["td","th"])]
-                s=" ".join(cs)
-                cars=[int(x) for x in re.findall(r"(?<!\d)([1-9])(?!\d)",s)]
-                ovs=[
-                    float(c.replace(",","")) for c in cs
-                    if re.fullmatch(r"\d+(?:\.\d+)?",c.replace(",",""))
-                    and float(c.replace(",",""))>=1
-                ]
-                if len(cars)>=n and ovs:
-                    a=cars[:n]
-                    a=sorted(a) if un else a
-                    rows.append(dict(
-                        race_id=rid,ticket_type=typ,
-                        combination="-".join(map(str,a)),
-                        market_odds=ovs[-1],
-                        price_timestamp=None,
-                        price_type="B_CLOSING_PRICE"
-                    ))
-        d=pd.DataFrame(rows).drop_duplicates(
-            ["race_id","ticket_type","combination"],keep="last"
-        )
+
+        entrants,_ = self.entrants(rid,payload)
+        active=set(entrants.car_no.astype(int))
+
+        if expected_type in ("exacta","quinella"):
+            found={}
+            for t in soup.find_all("table",class_="odds_table"):
+                trs=t.find_all("tr")
+                if len(trs)<3:
+                    continue
+
+                header_cells=trs[0].find_all(["td","th"])
+                cols=[]
+                for cell in header_cells:
+                    v=txt(cell)
+                    if re.fullmatch(r"[1-9]",v):
+                        cols.append(int(v))
+                if not cols:
+                    continue
+
+                for tr in trs[2:]:
+                    cells=tr.find_all(["td","th"])
+                    values=[txt(c).replace(",","") for c in cells]
+                    if not values or not re.fullmatch(r"[1-9]",values[0]):
+                        continue
+                    rcar=int(values[0])
+
+                    for ccar,ov in zip(cols,values[1:1+len(cols)]):
+                        if rcar not in active or ccar not in active:
+                            continue
+                        if not re.fullmatch(r"\d+(?:\.\d+)?",ov):
+                            continue
+                        combo=(rcar,ccar)
+                        if len(set(combo))<2:
+                            continue
+                        if expected_type=="quinella":
+                            combo=tuple(sorted(combo))
+                        found[combo]=float(ov)
+
+            expected=(
+                len(active)*(len(active)-1)
+                if expected_type=="exacta"
+                else len(active)*(len(active)-1)//2
+            )
+            if len(found)!=expected:
+                raise RuntimeError(
+                    f"{rid}/{expected_type}: odds coverage {len(found)}/{expected}"
+                )
+
+            for combo,odd in sorted(found.items()):
+                rows.append(dict(
+                    race_id=rid,ticket_type=expected_type,
+                    combination="-".join(map(str,combo)),
+                    market_odds=odd,
+                    price_timestamp=None,
+                    price_type="B_CLOSING_PRICE"
+                ))
+
+        elif expected_type=="trio":
+            found={}
+            for t in soup.find_all("table",class_="odds_table"):
+                trs=t.find_all("tr")
+                if len(trs)<2:
+                    continue
+
+                first=txt(trs[0])
+                if not re.fullmatch(r"[1-9]",first):
+                    continue
+                a=int(first)
+                current_b=None
+
+                for tr in trs[2:]:
+                    values=[
+                        txt(c).replace(",","")
+                        for c in tr.find_all(["td","th"])
+                    ]
+
+                    if (
+                        len(values)>=3
+                        and re.fullmatch(r"[1-9]",values[0])
+                        and re.fullmatch(r"[1-9]",values[1])
+                    ):
+                        current_b=int(values[0])
+                        c=int(values[1])
+                        ov=values[2]
+                    elif (
+                        len(values)>=2
+                        and current_b is not None
+                        and re.fullmatch(r"[1-9]",values[0])
+                    ):
+                        c=int(values[0])
+                        ov=values[1]
+                    else:
+                        continue
+
+                    if not re.fullmatch(r"\d+(?:\.\d+)?",ov):
+                        continue
+
+                    combo=tuple(sorted((a,current_b,c)))
+                    if len(set(combo))<3 or not set(combo)<=active:
+                        continue
+                    found[combo]=float(ov)
+
+            n=len(active)
+            expected=n*(n-1)*(n-2)//6
+            if len(found)!=expected:
+                raise RuntimeError(
+                    f"{rid}/trio: odds coverage {len(found)}/{expected}"
+                )
+
+            for combo,odd in sorted(found.items()):
+                rows.append(dict(
+                    race_id=rid,ticket_type="trio",
+                    combination="-".join(map(str,combo)),
+                    market_odds=odd,
+                    price_timestamp=None,
+                    price_type="B_CLOSING_PRICE"
+                ))
+        else:
+            raise RuntimeError(f"{rid}: unsupported odds type {expected_type}")
+
+        d=pd.DataFrame(rows)
         if d.empty:
             raise RuntimeError(f"{rid}/{expected_type}: odds unavailable")
         return d
