@@ -1,0 +1,536 @@
+name: Multiverse SIM100 PRE-Only Prediction Lock
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sim100-prelock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pandas numpy beautifulsoup4 lxml
+
+      - name: Run SIM100 PRE-only acquisition and Prediction Lock
+        id: prelock
+        continue-on-error: true
+        shell: bash
+        run: |
+          cat > /tmp/sim100_prelock.py <<'PY'
+          from __future__ import annotations
+          import base64, csv, hashlib, io, json, os, re, sys, time, uuid
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          import numpy as np
+          import pandas as pd
+          import requests
+          from bs4 import BeautifulSoup
+
+          EXPECTED_UNIVERSE_SHA256 = "95754e7ac17cb91b12f619504d1be5e8a4ddc4f0e3734fa59671aea2e17eb043"
+          MARGIN = 0.35
+
+          ROOT = Path("SIM100_PRELOCK_ARTIFACT")
+          RAW = ROOT / "00_raw" / "sha256"
+          PRE_DIR = ROOT / "10_pre"
+          LOCK_DIR = ROOT / "30_prediction_lock"
+          AUDIT_DIR = ROOT / "audit"
+          for d in (RAW, PRE_DIR, LOCK_DIR, AUDIT_DIR):
+              d.mkdir(parents=True, exist_ok=True)
+
+          # Exact frozen Universe bytes, embedded safely as one-line Base64.
+          RACES_CSV_B64 = "cmFjZV9pZCx1cmwKMjAyNjA4MTJfMTJfYW9tb3JpXzAxUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDEvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzAyUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDIvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzAzUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDMvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzA0UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDQvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzA1UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDUvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzA2UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDYvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzA3UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDcvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzA4UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDgvM3JlbnRhbi8KMjAyNjA4MTJfMTJfYW9tb3JpXzA5UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzEyMjAyNjA4MTIvMTIyMDI2MDgxMjAxMDAvMDkvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzAxUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDEvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzAyUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDIvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzAzUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDMvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzA0UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDQvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzA1UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDUvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzA2UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDYvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzA3UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDcvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzA4UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDgvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzA5UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMDkvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzEwUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMTAvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzExUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMTEvM3JlbnRhbi8KMjAyNjA4MTJfMjFfeWFoaWtvXzEyUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIxMjAyNjA4MTEvMjEyMDI2MDgxMTAyMDAvMTIvM3JlbnRhbi8KMjAyNjA4MTJfNDNfZ2lmdV8wMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80MzIwMjYwODEyLzQzMjAyNjA4MTIwMTAwLzAxLzNyZW50YW4vCjIwMjYwODEyXzQzX2dpZnVfMDJSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvNDMyMDI2MDgxMi80MzIwMjYwODEyMDEwMC8wMi8zcmVudGFuLwoyMDI2MDgxMl80M19naWZ1XzAzUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzQzMjAyNjA4MTIvNDMyMDI2MDgxMjAxMDAvMDMvM3JlbnRhbi8KMjAyNjA4MTJfNDNfZ2lmdV8wNFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80MzIwMjYwODEyLzQzMjAyNjA4MTIwMTAwLzA0LzNyZW50YW4vCjIwMjYwODEyXzQzX2dpZnVfMDVSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvNDMyMDI2MDgxMi80MzIwMjYwODEyMDEwMC8wNS8zcmVudGFuLwoyMDI2MDgxMl80M19naWZ1XzA2UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzQzMjAyNjA4MTIvNDMyMDI2MDgxMjAxMDAvMDYvM3JlbnRhbi8KMjAyNjA4MTJfNDNfZ2lmdV8wN1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80MzIwMjYwODEyLzQzMjAyNjA4MTIwMTAwLzA3LzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzAxLzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wMlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzAyLzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wM1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzAzLzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wNFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzA0LzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wNVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzA1LzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wNlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzA2LzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wN1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzA3LzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wOFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzA4LzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8wOVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzA5LzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8xMFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzEwLzNyZW50YW4vCjIwMjYwODEyXzQ2X3RveWFtYV8xMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy80NjIwMjYwODEwLzQ2MjAyNjA4MTAwMzAwLzExLzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzAxLzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wMlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzAyLzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wM1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzAzLzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wNFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzA0LzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wNVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzA1LzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wNlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzA2LzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wN1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzA3LzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wOFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzA4LzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8wOVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzA5LzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8xMFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzEwLzNyZW50YW4vCjIwMjYwODEyXzc1X21hdHN1eWFtYV8xMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy83NTIwMjYwODExLzc1MjAyNjA4MTEwMjAwLzExLzNyZW50YW4vCjIwMjYwODEyXzg0X3Rha2VvXzAxUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzg0MjAyNjA4MTIvODQyMDI2MDgxMjAxMDAvMDEvM3JlbnRhbi8KMjAyNjA4MTJfODRfdGFrZW9fMDJSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvODQyMDI2MDgxMi84NDIwMjYwODEyMDEwMC8wMi8zcmVudGFuLwoyMDI2MDgxMl84NF90YWtlb18wM1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy84NDIwMjYwODEyLzg0MjAyNjA4MTIwMTAwLzAzLzNyZW50YW4vCjIwMjYwODEyXzg0X3Rha2VvXzA0UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzg0MjAyNjA4MTIvODQyMDI2MDgxMjAxMDAvMDQvM3JlbnRhbi8KMjAyNjA4MTJfODRfdGFrZW9fMDVSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvODQyMDI2MDgxMi84NDIwMjYwODEyMDEwMC8wNS8zcmVudGFuLwoyMDI2MDgxMl84NF90YWtlb18wNlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy84NDIwMjYwODEyLzg0MjAyNjA4MTIwMTAwLzA2LzNyZW50YW4vCjIwMjYwODEyXzg0X3Rha2VvXzA3UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzg0MjAyNjA4MTIvODQyMDI2MDgxMjAxMDAvMDcvM3JlbnRhbi8KMjAyNjA4MTJfODRfdGFrZW9fMDhSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvODQyMDI2MDgxMi84NDIwMjYwODEyMDEwMC8wOC8zcmVudGFuLwoyMDI2MDgxMl84NF90YWtlb18wOVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy84NDIwMjYwODEyLzg0MjAyNjA4MTIwMTAwLzA5LzNyZW50YW4vCjIwMjYwODEyXzg3X2t1bWFtb3RvXzAxUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzg3MjAyNjA4MTEvODcyMDI2MDgxMTAyMDAvMDEvM3JlbnRhbi8KMjAyNjA4MTJfODdfa3VtYW1vdG9fMDJSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvODcyMDI2MDgxMS84NzIwMjYwODExMDIwMC8wMi8zcmVudGFuLwoyMDI2MDgxMl84N19rdW1hbW90b18wM1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy84NzIwMjYwODExLzg3MjAyNjA4MTEwMjAwLzAzLzNyZW50YW4vCjIwMjYwODEyXzg3X2t1bWFtb3RvXzA0UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzg3MjAyNjA4MTEvODcyMDI2MDgxMTAyMDAvMDQvM3JlbnRhbi8KMjAyNjA4MTJfODdfa3VtYW1vdG9fMDVSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvODcyMDI2MDgxMS84NzIwMjYwODExMDIwMC8wNS8zcmVudGFuLwoyMDI2MDgxMl84N19rdW1hbW90b18wNlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy84NzIwMjYwODExLzg3MjAyNjA4MTEwMjAwLzA2LzNyZW50YW4vCjIwMjYwODEyXzg3X2t1bWFtb3RvXzA3UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzg3MjAyNjA4MTEvODcyMDI2MDgxMTAyMDAvMDcvM3JlbnRhbi8KMjAyNjA4MTJfODdfa3VtYW1vdG9fMDhSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvODcyMDI2MDgxMS84NzIwMjYwODExMDIwMC8wOC8zcmVudGFuLwoyMDI2MDgxMl84N19rdW1hbW90b18wOVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy84NzIwMjYwODExLzg3MjAyNjA4MTEwMjAwLzA5LzNyZW50YW4vCjIwMjYwODEyXzg3X2t1bWFtb3RvXzEwUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzg3MjAyNjA4MTEvODcyMDI2MDgxMTAyMDAvMTAvM3JlbnRhbi8KMjAyNjA4MTJfODdfa3VtYW1vdG9fMTFSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvODcyMDI2MDgxMS84NzIwMjYwODExMDIwMC8xMS8zcmVudGFuLwoyMDI2MDgxMl84N19rdW1hbW90b18xMlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy84NzIwMjYwODExLzg3MjAyNjA4MTEwMjAwLzEyLzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzAxLzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wMlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzAyLzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wM1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzAzLzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wNFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzA0LzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wNVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzA1LzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wNlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzA2LzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wN1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzA3LzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wOFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzA4LzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18wOVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzA5LzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18xMFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzEwLzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18xMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzExLzNyZW50YW4vCjIwMjYwODExXzIxX3lhaGlrb18xMlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMTIwMjYwODExLzIxMjAyNjA4MTEwMTAwLzEyLzNyZW50YW4vCjIwMjYwODExXzIyX21hZWJhc2hpXzAxUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIyMjAyNjA4MDkvMjIyMDI2MDgwOTAzMDAvMDEvM3JlbnRhbi8KMjAyNjA4MTFfMjJfbWFlYmFzaGlfMDJSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvMjIyMDI2MDgwOS8yMjIwMjYwODA5MDMwMC8wMi8zcmVudGFuLwoyMDI2MDgxMV8yMl9tYWViYXNoaV8wM1IsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMjIwMjYwODA5LzIyMjAyNjA4MDkwMzAwLzAzLzNyZW50YW4vCjIwMjYwODExXzIyX21hZWJhc2hpXzA0UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIyMjAyNjA4MDkvMjIyMDI2MDgwOTAzMDAvMDQvM3JlbnRhbi8KMjAyNjA4MTFfMjJfbWFlYmFzaGlfMDVSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvMjIyMDI2MDgwOS8yMjIwMjYwODA5MDMwMC8wNS8zcmVudGFuLwoyMDI2MDgxMV8yMl9tYWViYXNoaV8wNlIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMjIwMjYwODA5LzIyMjAyNjA4MDkwMzAwLzA2LzNyZW50YW4vCjIwMjYwODExXzIyX21hZWJhc2hpXzA3UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIyMjAyNjA4MDkvMjIyMDI2MDgwOTAzMDAvMDcvM3JlbnRhbi8KMjAyNjA4MTFfMjJfbWFlYmFzaGlfMDhSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvMjIyMDI2MDgwOS8yMjIwMjYwODA5MDMwMC8wOC8zcmVudGFuLwoyMDI2MDgxMV8yMl9tYWViYXNoaV8wOVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8yMjIwMjYwODA5LzIyMjAyNjA4MDkwMzAwLzA5LzNyZW50YW4vCjIwMjYwODExXzIyX21hZWJhc2hpXzEwUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzIyMjAyNjA4MDkvMjIyMDI2MDgwOTAzMDAvMTAvM3JlbnRhbi8KMjAyNjA4MTFfMjJfbWFlYmFzaGlfMTFSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvMjIyMDI2MDgwOS8yMjIwMjYwODA5MDMwMC8xMS8zcmVudGFuLwoyMDI2MDgxMV8zNF9rYXdhc2FraV8wMVIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8zNDIwMjYwODA5LzM0MjAyNjA4MDkwMzAwLzAxLzNyZW50YW4vCjIwMjYwODExXzM0X2thd2FzYWtpXzAyUixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzM0MjAyNjA4MDkvMzQyMDI2MDgwOTAzMDAvMDIvM3JlbnRhbi8KMjAyNjA4MTFfMzRfa2F3YXNha2lfMDNSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvMzQyMDI2MDgwOS8zNDIwMjYwODA5MDMwMC8wMy8zcmVudGFuLwoyMDI2MDgxMV8zNF9rYXdhc2FraV8wNFIsaHR0cHM6Ly9rZWlyaW4ua2RyZWFtcy5qcC9nYW1ib28va2VpcmluLWthaXNhaS9yYWNlLWNhcmQvb2Rkcy8zNDIwMjYwODA5LzM0MjAyNjA4MDkwMzAwLzA0LzNyZW50YW4vCjIwMjYwODExXzM0X2thd2FzYWtpXzA1UixodHRwczovL2tlaXJpbi5rZHJlYW1zLmpwL2dhbWJvby9rZWlyaW4ta2Fpc2FpL3JhY2UtY2FyZC9vZGRzLzM0MjAyNjA4MDkvMzQyMDI2MDgwOTAzMDAvMDUvM3JlbnRhbi8KMjAyNjA4MTFfMzRfa2F3YXNha2lfMDZSLGh0dHBzOi8va2VpcmluLmtkcmVhbXMuanAvZ2FtYm9vL2tlaXJpbi1rYWlzYWkvcmFjZS1jYXJkL29kZHMvMzQyMDI2MDgwOS8zNDIwMjYwODA5MDMwMC8wNi8zcmVudGFuLwo="
+          RACES_CSV_BYTES = base64.b64decode(RACES_CSV_B64)
+          RACES_CSV = RACES_CSV_BYTES.decode("utf-8")
+
+          POST = ("result","finish","rank","着順","払戻","payout","配当","失格","落車","棄権","確定着順","払戻金")
+          PRE_COLS = [
+              "race_id","car_no","score","S","B","nige","makuri","sashi","mark",
+              "win_rate","top2_rate","top3_rate","line_id","line_position","line_size",
+              "num_lines","leading_competition","initiative_clarity","makuri_threat",
+              "second_pressure","collapse_proxy"
+          ]
+          PRE_ALLOWED = set(PRE_COLS)
+
+          VIEW_SLUG = {
+              "pre": "3rentan",
+              "exacta": "2shatan",
+              "quinella": "2shahuku",
+              "trio": "3renhuku",
+          }
+          VIEW_MARKER = {
+              "pre": "競走得点",
+              "exacta": "2車単",
+              "quinella": "2車複",
+              "trio": "3連複",
+          }
+
+          run_id = os.environ.get("GITHUB_RUN_ID") or str(uuid.uuid4())
+
+          def hbytes(b: bytes) -> str:
+              return hashlib.sha256(b).hexdigest()
+
+          def hfile(p: Path) -> str:
+              return hbytes(p.read_bytes())
+
+          def atomic_write(path: Path, b: bytes):
+              path.parent.mkdir(parents=True, exist_ok=True)
+              tmp = path.with_suffix(path.suffix + ".tmp")
+              with open(tmp, "wb") as f:
+                  f.write(b); f.flush(); os.fsync(f.fileno())
+              os.replace(tmp, path)
+
+          def immutable_csv(df: pd.DataFrame, path: Path):
+              if path.exists():
+                  raise RuntimeError(f"immutable output already exists: {path}")
+              tmp = Path(str(path)+".tmp")
+              df.to_csv(tmp,index=False,lineterminator="\n")
+              os.replace(tmp,path)
+              Path(str(path)+".sha256").write_text(hfile(path)+"  "+path.name+"\n",encoding="utf-8")
+
+          def txt(n):
+              return re.sub(r"\s+"," ",n.get_text(" ",strip=True)).strip() if n else ""
+
+          def assert_pre(df: pd.DataFrame):
+              bad=set(df.columns)-PRE_ALLOWED
+              if bad:
+                  raise RuntimeError(f"PRE unauthorized fields: {sorted(bad)}")
+              for c in df.columns:
+                  if any(x.lower() in c.lower() for x in POST):
+                      raise RuntimeError(f"POST leakage in PRE column: {c}")
+              if df.duplicated(["race_id","car_no"]).any():
+                  raise RuntimeError("duplicate race/car")
+              if df["race_id"].nunique() > 100:
+                  raise RuntimeError("race count exceeds frozen universe")
+
+          def z(s):
+              x=pd.to_numeric(s).astype(float)
+              sd=x.std(ddof=0)
+              return (x-x.mean())/(sd if sd else 1.0)
+
+          def softmax(x):
+              x=x-x.max()
+              e=np.exp(x)
+              return e/e.sum()
+
+          class HybridV2:
+              # Frozen coefficient formula.
+              def probabilities(self,r):
+                  assert_pre(r)
+                  s=(
+                      .46*z(r.score)+.10*z(r.win_rate)+.10*z(r.top2_rate)+.06*z(r.top3_rate)
+                      +.05*z(r.makuri)+.04*z(r.sashi)+.03*z(r.nige)+.02*z(r.mark)
+                      +.10*z(r.line_size)-.035*r.line_position+.045*(r.line_position==1)
+                      +.055*z(r.makuri_threat)+.045*z(r.second_pressure)
+                      +.035*r.initiative_clarity-.045*r.collapse_proxy-.020*r.leading_competition
+                  )
+                  o=r[["race_id","car_no"]].copy()
+                  o["p_win"]=softmax(s.to_numpy(float))
+                  o["w"]=np.exp(s-s.max())
+                  return o
+
+              def events(self,r,od):
+                  from itertools import permutations
+                  p=self.probabilities(r)
+                  cars=p.car_no.astype(int).tolist()
+                  w=p.w.to_numpy(float)
+                  J={}
+                  for a,b,c in permutations(range(len(cars)),3):
+                      J[(cars[a],cars[b],cars[c])] = (
+                          w[a]/w.sum()
+                          * w[b]/(w.sum()-w[a])
+                          * w[c]/(w.sum()-w[a]-w[b])
+                      )
+                  rows=[]
+                  for x in od.itertuples(index=False):
+                      combo=tuple(map(int,str(x.combination).split("-")))
+                      q=0.0
+                      if x.ticket_type=="exacta" and len(combo)==2:
+                          q=sum(v for k,v in J.items() if k[:2]==combo)
+                      elif x.ticket_type=="quinella" and len(combo)==2:
+                          q=sum(v for k,v in J.items() if set(k[:2])==set(combo))
+                      elif x.ticket_type=="trio" and len(combo)==3:
+                          q=sum(v for k,v in J.items() if set(k)==set(combo))
+                      if q>0:
+                          fair=1/q
+                          req=fair*(1+MARGIN)
+                          market=float(x.market_odds)
+                          rows.append(dict(
+                              race_id=x.race_id,ticket_type=x.ticket_type,
+                              combination=x.combination,probability=q,
+                              fair_odds=fair,required_odds=req,market_odds=market,
+                              ev=q*market-1,value_score=market/req,
+                              gate_result="BET" if market>=req else "NO_BET",
+                              virtual_stake=100 if market>=req else 0,
+                              price_type=x.price_type,
+                              price_timestamp=getattr(x,"price_timestamp",None)
+                          ))
+                  return pd.DataFrame(rows)
+
+          class PreOnlyETL:
+              def __init__(self):
+                  self.s=requests.Session()
+                  self.s.headers.update({
+                      "User-Agent":"Mozilla/5.0 MultiverseResearch-SIM100/1.0",
+                      "Accept":"text/html,application/xhtml+xml,*/*;q=0.8",
+                      "Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+                  })
+                  self.provenance=[]
+
+              def fetch_view(self,rid,base_url,view):
+                  slug=VIEW_SLUG[view]
+                  url=re.sub(r"/3rentan/$", f"/{slug}/", base_url)
+                  if url==base_url and view!="pre":
+                      raise RuntimeError(f"{rid}/{view}: URL routing failed")
+                  prep=self.s.prepare_request(requests.Request("GET",url))
+                  rhash=hbytes(json.dumps(
+                      {str(k).lower():str(v) for k,v in prep.headers.items()},
+                      sort_keys=True,separators=(",",":")
+                  ).encode())
+                  last=None
+                  for attempt in range(3):
+                      try:
+                          resp=self.s.send(prep,timeout=45,allow_redirects=True)
+                          last=resp
+                          if resp.status_code==200:
+                              break
+                      except Exception:
+                          if attempt==2: raise
+                      time.sleep(1.5*(attempt+1))
+                  resp=last
+                  if resp is None or resp.status_code!=200:
+                      raise RuntimeError(f"{rid}/{view}: HTTP {getattr(resp,'status_code',None)}")
+                  if f"/{slug}/" not in urlparse(resp.url).path:
+                      raise RuntimeError(f"{rid}/{view}: unexpected final URL {resp.url}")
+                  payload=bytes(resp.content)
+                  if not payload:
+                      raise RuntimeError(f"{rid}/{view}: empty payload")
+                  text=payload.decode(resp.encoding or "utf-8",errors="ignore")
+                  if VIEW_MARKER[view] not in text:
+                      raise RuntimeError(f"{rid}/{view}: expected marker missing")
+                  digest=hbytes(payload)
+                  blob=RAW/digest[:2]/f"{digest}.bin"
+                  if not blob.exists():
+                      atomic_write(blob,payload)
+                  if blob.read_bytes()!=payload or hfile(blob)!=digest:
+                      raise RuntimeError(f"{rid}/{view}: raw persistence mismatch")
+                  self.provenance.append({
+                      "original_race_id":rid,
+                      "market_view":view,
+                      "source_url":url,
+                      "final_url":resp.url,
+                      "retrieved_at_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),
+                      "acquisition_run_id":str(run_id),
+                      "http_method":"GET",
+                      "http_status":resp.status_code,
+                      "content_type":resp.headers.get("Content-Type",""),
+                      "content_encoding_observed":resp.headers.get("Content-Encoding",""),
+                      "canonical_payload_definition":"requests.Response.content (decompressed HTTP entity body)",
+                      "response_payload_sha256":digest,
+                      "byte_length":len(payload),
+                      "raw_blob_path":str(blob),
+                      "request_headers_sha256":rhash,
+                      "redirect_chain":[{"status":r.status_code,"url":r.url} for r in resp.history],
+                      "transport":f"requests/{requests.__version__}",
+                      "parser_version":"sim100-preonly-v1",
+                      "discrepancy_flag":False,
+                  })
+                  return payload
+
+              def entrants(self,rid,payload):
+                  soup=BeautifulSoup(payload,"lxml")
+                  candidates=[]
+                  for t in soup.find_all("table"):
+                      s=txt(t)
+                      if sum(k in s for k in ("競走得点","勝率","2連","3連","逃","捲","差"))>=5:
+                          candidates.append(t)
+                  if not candidates:
+                      raise RuntimeError(f"{rid}: entrant table not found")
+                  rows=[]
+                  for tr in max(candidates,key=lambda x:len(txt(x))).find_all("tr"):
+                      cs=[txt(c) for c in tr.find_all(["td","th"])]
+                      prof=re.search(r"([^/|]+?)\s*/\s*(\d{2})\s*/\s*(\d{2,3})"," | ".join(cs))
+                      if not prof: continue
+                      car=next((int(c) for c in cs[:7] if re.fullmatch(r"[1-9]",c)),None)
+                      if car is None: continue
+                      safe=[c for c in cs if c not in {"◎","○","▲","△","×","注"}]
+                      nums=[float(x) for x in re.findall(
+                          r"(?<!\d)(\d+(?:\.\d+)?)(?!\d)"," ".join(safe).replace(",","")
+                      )]
+                      ix=[i for i,v in enumerate(nums) if 70<=v<=130]
+                      if not ix or len(nums[ix[0]+1:])<13: continue
+                      score=nums[ix[0]]
+                      q=nums[ix[0]+1:]
+                      S,B,nige,makuri,sashi,mark,w,se,th,out,wr,t2,t3=q[:13]
+                      rows.append(dict(
+                          race_id=rid,car_no=car,score=score,S=S,B=B,nige=nige,
+                          makuri=makuri,sashi=sashi,mark=mark,
+                          win_rate=wr,top2_rate=t2,top3_rate=t3
+                      ))
+                  d=pd.DataFrame(rows).drop_duplicates("car_no").sort_values("car_no")
+                  if not 5<=len(d)<=9:
+                      raise RuntimeError(f"{rid}: entrant count {len(d)}")
+                  return d,soup
+
+              def scenario(self,d,soup):
+                  # Frozen parser/feature construction preserved from prior runner.
+                  valid=set(d.car_no.astype(int))
+                  body=soup.get_text(" ",strip=True)
+                  cand=[]
+                  for p in re.findall(r"(?<!\d)([1-9](?:\s*(?:-|－|→)\s*[1-9])+)(?!\d)",body):
+                      a=[int(x) for x in re.findall(r"[1-9]",p)]
+                      if len(a)>=2 and set(a)<=valid and a not in cand:
+                          cand.append(a)
+                  used=set(); lines=[]
+                  for a in sorted(cand,key=len,reverse=True):
+                      if not used.intersection(a):
+                          lines.append(a); used.update(a)
+                  for c in sorted(valid-used):
+                      lines.append([c])
+                  info={}
+                  for lid,a in enumerate(lines):
+                      for pos,c in enumerate(a):
+                          info[c]=(lid,pos,len(a))
+                  d=d.copy()
+                  d["line_id"]=d.car_no.map(lambda c:info[c][0])
+                  d["line_position"]=d.car_no.map(lambda c:info[c][1])
+                  d["line_size"]=d.car_no.map(lambda c:info[c][2])
+                  d["num_lines"]=len(lines)
+                  heads=pd.DataFrame([d[d.car_no==a[0]].iloc[0] for a in lines])
+                  active=int(((heads.B>=5)|(heads.nige>=3)).sum())
+                  comp=max(0,active-1)
+                  bs=sorted(heads.B.astype(float),reverse=True)
+                  clarity=(bs[0]-bs[1])/bs[0] if len(bs)>1 and bs[0]>0 else 1.0
+                  d["leading_competition"]=comp
+                  d["initiative_clarity"]=np.clip(clarity,0,1)
+                  d["makuri_threat"]=d.makuri+.5*d.B
+                  d["second_pressure"]=0.0
+                  m=d.line_position==1
+                  d.loc[m,"second_pressure"]=d.loc[m,"sashi"]+.5*d.loc[m,"mark"]
+                  d["collapse_proxy"]=comp*(1-np.clip(clarity,0,1))
+                  out=d[PRE_COLS].copy()
+                  assert_pre(out)
+                  return out
+
+              def odds(self,rid,payload,expected_type):
+                  soup=BeautifulSoup(payload,"lxml")
+                  mapping={
+                      "2車複":("quinella",2,True),"２車複":("quinella",2,True),
+                      "2車単":("exacta",2,False),"２車単":("exacta",2,False),
+                      "3連複":("trio",3,True),"３連複":("trio",3,True)
+                  }
+                  rows=[]
+                  for t in soup.find_all("table"):
+                      spec=next((v for k,v in mapping.items() if k in txt(t)),None)
+                      if not spec or spec[0]!=expected_type:
+                          continue
+                      typ,n,un=spec
+                      for tr in t.find_all("tr"):
+                          cs=[txt(x) for x in tr.find_all(["td","th"])]
+                          s=" ".join(cs)
+                          cars=[int(x) for x in re.findall(r"(?<!\d)([1-9])(?!\d)",s)]
+                          ovs=[
+                              float(c.replace(",","")) for c in cs
+                              if re.fullmatch(r"\d+(?:\.\d+)?",c.replace(",",""))
+                              and float(c.replace(",",""))>=1
+                          ]
+                          if len(cars)>=n and ovs:
+                              a=cars[:n]
+                              a=sorted(a) if un else a
+                              rows.append(dict(
+                                  race_id=rid,ticket_type=typ,
+                                  combination="-".join(map(str,a)),
+                                  market_odds=ovs[-1],
+                                  price_timestamp=None,
+                                  price_type="B_CLOSING_PRICE"
+                              ))
+                  d=pd.DataFrame(rows).drop_duplicates(
+                      ["race_id","ticket_type","combination"],keep="last"
+                  )
+                  if d.empty:
+                      raise RuntimeError(f"{rid}/{expected_type}: odds unavailable")
+                  return d
+
+          # -------- Exact Universe verification --------
+          universe_bytes=RACES_CSV_BYTES
+          observed_universe_sha=hbytes(universe_bytes)
+          if observed_universe_sha != EXPECTED_UNIVERSE_SHA256:
+              raise RuntimeError(
+                  f"UNIVERSE SHA MISMATCH {observed_universe_sha} != {EXPECTED_UNIVERSE_SHA256}"
+              )
+          races=list(csv.DictReader(io.StringIO(RACES_CSV)))
+          if len(races)!=100 or len({r["race_id"] for r in races})!=100:
+              raise RuntimeError("Universe must contain exactly 100 unique races")
+          atomic_write(ROOT/"races.csv", universe_bytes)
+
+          etl=PreOnlyETL()
+          pre_frames=[]
+          odds_frames=[]
+          failures=[]
+          acquisition_status=[]
+
+          for i,r in enumerate(races,1):
+              rid=r["race_id"]; base=r["url"]
+              print(f"[SIM100 PRE {i:03d}/100] {rid}",flush=True)
+              try:
+                  payloads={}
+                  hashes={}
+                  for view in ("pre","exacta","quinella","trio"):
+                      payloads[view]=etl.fetch_view(rid,base,view)
+                      hashes[view]=hbytes(payloads[view])
+                      time.sleep(0.20)
+                  if len(set(hashes.values())) != 4:
+                      raise RuntimeError(f"{rid}: duplicate market-view payload hash")
+                  entrants,soup=etl.entrants(rid,payloads["pre"])
+                  pre_frames.append(etl.scenario(entrants,soup))
+                  odds_frames.extend([
+                      etl.odds(rid,payloads["exacta"],"exacta"),
+                      etl.odds(rid,payloads["quinella"],"quinella"),
+                      etl.odds(rid,payloads["trio"],"trio"),
+                  ])
+                  acquisition_status.append({
+                      "race_id":rid,"status":"PASS",
+                      "pre_sha256":hashes["pre"],"exacta_sha256":hashes["exacta"],
+                      "quinella_sha256":hashes["quinella"],"trio_sha256":hashes["trio"]
+                  })
+              except Exception as e:
+                  failures.append({"race_id":rid,"error":repr(e)})
+                  acquisition_status.append({"race_id":rid,"status":"MISSING_OR_FAILED","error":repr(e)})
+
+          (AUDIT_DIR/"provenance.jsonl").write_text(
+              "".join(json.dumps(x,ensure_ascii=False,sort_keys=True)+"\n" for x in etl.provenance),
+              encoding="utf-8"
+          )
+          (AUDIT_DIR/"acquisition_status.json").write_text(
+              json.dumps(acquisition_status,ensure_ascii=False,indent=2),encoding="utf-8"
+          )
+          (AUDIT_DIR/"failures.json").write_text(
+              json.dumps(failures,ensure_ascii=False,indent=2),encoding="utf-8"
+          )
+
+          # Strictly no substitution. If any race failed, preserve evidence and stop before Prediction Lock.
+          if failures:
+              report={
+                  "status":"FAIL-CLOSED",
+                  "phase":"PRE_INGEST",
+                  "universe_sha256":observed_universe_sha,
+                  "universe_count":100,
+                  "successful_races":100-len(failures),
+                  "failed_races":len(failures),
+                  "replacement_races":0,
+                  "result_access":False,
+                  "payout_access":False,
+                  "prediction_lock_created":False,
+              }
+              (ROOT/"SIM100_PRELOCK_REPORT.json").write_text(
+                  json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"
+              )
+              print(json.dumps(report,ensure_ascii=False,indent=2))
+              raise SystemExit(2)
+
+          pre=pd.concat(pre_frames,ignore_index=True)
+          odds=pd.concat(odds_frames,ignore_index=True)
+          assert_pre(pre)
+          if pre["race_id"].nunique()!=100 or odds["race_id"].nunique()!=100:
+              raise RuntimeError("100-race PRE/ODDS coverage not achieved")
+
+          immutable_csv(pre,PRE_DIR/"PRE_TABLE.csv")
+          immutable_csv(odds,PRE_DIR/"ODDS_TABLE.csv")
+
+          # Prediction Lock; RESULT/PAYOUT do not exist anywhere in this runner.
+          engine=HybridV2()
+          frames=[]
+          for i,(rid,rdf) in enumerate(pre.groupby("race_id",sort=False),1):
+              print(f"[PRED LOCK {i:03d}/100] {rid}",flush=True)
+              ev=engine.events(rdf,odds[odds.race_id==rid])
+              if ev.empty:
+                  raise RuntimeError(f"{rid}: no modelled odds")
+              frames.append(ev)
+          pred=pd.concat(frames,ignore_index=True)
+          if pred["race_id"].nunique()!=100:
+              raise RuntimeError("Prediction lock must cover exactly 100 races")
+
+          lock_path=LOCK_DIR/"SIM100_PREDICTION_LOCK.csv"
+          immutable_csv(pred,lock_path)
+          lock_sha=hfile(lock_path)
+          lock_meta={
+              "status":"PREDICTION_LOCKED",
+              "sha256":lock_sha,
+              "race_count":100,
+              "universe_sha256":observed_universe_sha,
+              "margin":MARGIN,
+              "result_access":False,
+              "payout_access":False,
+              "scoring_performed":False,
+              "price_quality":"B_CLOSING_PRICE",
+          }
+          (LOCK_DIR/"SIM100_PREDICTION_LOCK.json").write_text(
+              json.dumps(lock_meta,ensure_ascii=False,indent=2),encoding="utf-8"
+          )
+
+          report={
+              "status":"PASS",
+              "phase":"PREDICTION_LOCK_COMPLETE",
+              "universe_sha256":observed_universe_sha,
+              "universe_count":100,
+              "successful_races":100,
+              "failed_races":0,
+              "replacement_races":0,
+              "pre_table_sha256":hfile(PRE_DIR/"PRE_TABLE.csv"),
+              "odds_table_sha256":hfile(PRE_DIR/"ODDS_TABLE.csv"),
+              "prediction_lock_sha256":lock_sha,
+              "result_access":False,
+              "payout_access":False,
+              "scoring_performed":False,
+          }
+          (ROOT/"SIM100_PRELOCK_REPORT.json").write_text(
+              json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"
+          )
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+
+          # Manifest, excluding itself.
+          manifest=[]
+          for p in sorted(x for x in ROOT.rglob("*") if x.is_file() and x.name!="ARTIFACT_MANIFEST.sha256"):
+              manifest.append(f"{hfile(p)}  {p.relative_to(ROOT).as_posix()}")
+          (ROOT/"ARTIFACT_MANIFEST.sha256").write_text("\n".join(manifest)+"\n",encoding="utf-8")
+          PY
+
+          python /tmp/sim100_prelock.py
+
+      - name: Package audit artifact
+        if: always()
+        shell: bash
+        run: |
+          if [ -d SIM100_PRELOCK_ARTIFACT ]; then
+            tar -czf SIM100_PRELOCK_ARTIFACT.tar.gz SIM100_PRELOCK_ARTIFACT
+            sha256sum SIM100_PRELOCK_ARTIFACT.tar.gz | tee SIM100_PRELOCK_ARTIFACT.tar.gz.sha256
+          fi
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multiverse-sim100-prelock
+          path: |
+            SIM100_PRELOCK_ARTIFACT/
+            SIM100_PRELOCK_ARTIFACT.tar.gz
+            SIM100_PRELOCK_ARTIFACT.tar.gz.sha256
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Enforce fail-closed
+        if: steps.prelock.outcome != 'success'
+        run: |
+          echo "SIM100 PRE-only pipeline did not fully PASS. RESULT/PAYOUT remain sealed."
+          exit 2
