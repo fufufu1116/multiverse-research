@@ -1,0 +1,85 @@
+name: Multiverse SIM100 RESULT-PAYOUT Raw Capture
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  result-capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Download approved Run #4 Prediction Lock artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: multiverse-sim100-prelock
+          path: INPUT_PRELOCK
+          github-token: ${{ github.token }}
+          run-id: 31761482651
+
+      - name: Locate and verify approved Prediction Lock
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          LOCK_FILE="$(find INPUT_PRELOCK -type f -path '*/30_prediction_lock/SIM100_PREDICTION_LOCK.csv' -print -quit)"
+
+          if [ -z "${LOCK_FILE}" ]; then
+            echo "FAIL-CLOSED: approved Prediction Lock file not found in downloaded artifact."
+            echo "Downloaded artifact tree:"
+            find INPUT_PRELOCK -maxdepth 4 -type f -print | sort
+            exit 1
+          fi
+
+          echo "Located approved Prediction Lock: ${LOCK_FILE}"
+          echo "bbabe47f75ee809cda2a2e9124be364b2213bbf343a4508c1be85039ecb85ca0  ${LOCK_FILE}" | sha256sum -c -
+
+          PRELOCK_ROOT="$(dirname "$(dirname "${LOCK_FILE}")")"
+          echo "PRELOCK_ARTIFACT_DIR=${PRELOCK_ROOT}" >> "$GITHUB_ENV"
+          echo "Approved Prediction Lock root: ${PRELOCK_ROOT}"
+
+      - name: Capture RESULT-PAYOUT raw payloads only
+        shell: bash
+        run: |
+          set -o pipefail
+          python .github/workflows/sim100_result_capture.py 2>&1 | tee result_capture.log
+
+      - name: Package audit artifact
+        if: always()
+        shell: bash
+        run: |
+          set -e
+          if [ -d SIM100_RESULT_CAPTURE_ARTIFACT ]; then
+            cp result_capture.log SIM100_RESULT_CAPTURE_ARTIFACT/result_capture.log || true
+            tar -czf SIM100_RESULT_CAPTURE_ARTIFACT.tar.gz SIM100_RESULT_CAPTURE_ARTIFACT
+            sha256sum SIM100_RESULT_CAPTURE_ARTIFACT.tar.gz | tee SIM100_RESULT_CAPTURE_ARTIFACT.tar.gz.sha256
+          fi
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multiverse-sim100-result-capture
+          path: |
+            SIM100_RESULT_CAPTURE_ARTIFACT/
+            SIM100_RESULT_CAPTURE_ARTIFACT.tar.gz
+            SIM100_RESULT_CAPTURE_ARTIFACT.tar.gz.sha256
+          if-no-files-found: warn
+          retention-days: 30
