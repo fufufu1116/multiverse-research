@@ -1,0 +1,59 @@
+name: NEXTGEN Non-Holdout PRE Staging E2E
+
+on:
+  workflow_dispatch:
+    inputs:
+      prediction_timestamp:
+        description: "ISO-8601 cutoff, e.g. 2026-08-01T00:00:00+09:00"
+        required: true
+      limit:
+        description: "Non-holdout probe race count"
+        required: true
+        default: "5"
+
+permissions:
+  contents: read
+
+jobs:
+  nextgen-pre-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml
+      - name: Constitution hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum config/data_constitution_v1.json config/feature_registry_v1.csv config/split_config_v1.json
+      - name: Run PRE staging collector
+        shell: bash
+        run: |
+          set -o pipefail
+          python nextgen/pre_collector.py \
+            --universe nextgen_nonholdout_probe.csv \
+            --prediction-timestamp "${{ inputs.prediction_timestamp }}" \
+            --limit "${{ inputs.limit }}" \
+            2>&1 | tee nextgen_pre.log
+      - name: Package audit artifact
+        if: always()
+        shell: bash
+        run: |
+          if [ -d NEXTGEN_PRE_ARTIFACT ]; then
+            cp nextgen_pre.log NEXTGEN_PRE_ARTIFACT/ || true
+            find NEXTGEN_PRE_ARTIFACT -type f -print0 | sort -z | xargs -0 sha256sum > NEXTGEN_PRE_ARTIFACT_MANIFEST.sha256
+          fi
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextgen-pre-staging-e2e
+          path: |
+            NEXTGEN_PRE_ARTIFACT/
+            NEXTGEN_PRE_ARTIFACT_MANIFEST.sha256
+          if-no-files-found: warn
+          retention-days: 30
