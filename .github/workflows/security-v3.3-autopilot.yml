@@ -2,6 +2,9 @@ name: Multiverse Security v3.3 Autopilot
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - automation/security-v3.3-autopilot
 
 permissions:
   contents: read
