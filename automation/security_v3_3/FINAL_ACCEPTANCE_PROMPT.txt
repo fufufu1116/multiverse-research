@@ -38,3 +38,13 @@ Output ONLY strict JSON:
 The build script MUST create the complete generated candidate under exactly ./candidate. A successful exit without ./candidate is a hard failure.
 MANDATORY RECEIPT FINALIZATION: BUILD_RECEIPT.json MUST be written only AFTER compileall, pytest -q, and pytest --collect-only -q have actually completed. Its compileall_exit_code, pytest_exit_code, collect_exit_code, and collected_test_count MUST come directly from those actual subprocess results. Never hardcode, prefill, guess, or preserve stale values. The receipt must exactly match the final observed results.
 MANDATORY HOLDOUT AUTHORITY TEST SEMANTICS: once an authority-absent commit attempt causes durable FAIL_CLOSED, that SAME persisted authority/state must remain FAIL_CLOSED and must NOT be recoverable by later setting authority_present=True. Test the successful commit-once path using a fresh independent authority/store that has never entered FAIL_CLOSED. Do not weaken durable FAIL_CLOSED semantics to make a test pass.
+
+MANDATORY HOLDOUT RECEIPT SCHEMA:
+BUILD_RECEIPT.json MUST contain ECON_HOLDOUT1000 as a JSON OBJECT, never a string:
+"ECON_HOLDOUT1000": {
+  "state": "SEALED",
+  "Price_accessed": false,
+  "PAYOUT_accessed": false,
+  "scored": false
+}
+These four fields are mandatory and exact. This records non-access only; do NOT open, read, inspect, infer, score, copy, or embed any real HOLDOUT/PRICE/PAYOUT data.
