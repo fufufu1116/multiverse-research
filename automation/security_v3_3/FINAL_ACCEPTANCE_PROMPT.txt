@@ -55,3 +55,54 @@ FAIL_CLOSED
 Do NOT return FAIL_CLOSED_SHA_MISMATCH or any other variant.
 The persisted state must remain FAIL_CLOSED across restart and must not become recoverable by later inputs.
 Do not weaken the underlying rejection semantics; only conform the externally observed status to the exact acceptance contract.
+
+MANDATORY COVERAGE ANTI-TOY CONTRACT:
+
+A test name or comment containing a mandatory property name is NOT evidence.
+
+For every mandatory security property, the test MUST exercise implementation code created under candidate/security_v3_3/.
+Tests must NOT implement the security behavior locally just to make assertions pass.
+
+PROHIBITED AS ACCEPTANCE EVIDENCE:
+- direct toy AESGCM/HMAC demonstrations that do not mutate/check candidate persisted state
+- trivial hashlib length checks
+- "candidate_id is not None" style assertions
+- plain threshold comparisons pretending to prove kill-switch persistence
+- literal dict checks pretending to prove refund/provenance behavior
+- invented ROI, race counts, profit, payout, or economic metrics
+- hardcoded PYTEST_RESULT text
+- hardcoded PASS/PASSED preflight status
+- hardcoded manifest hashes
+- hardcoded subprocess exit codes or collected test counts
+- candidate-controlled record_pass()/verified_properties declarations as proof
+
+MANDATORY TEST STRUCTURE:
+Each required test must import and invoke code from candidate/security_v3_3/.
+The test suite must use exact test names:
+
+test_wrong_key_decrypt_no_burn
+test_signature_auth_binding
+test_file_backed_independent_restart_persistence
+test_ledger_hash_linkage_anchor_immutable
+test_update_delete_denial
+test_fold_version_binding
+test_phase_preregistration_candidate_identity
+test_family_manifest_commit_once
+test_market_evidence_completeness
+test_deadheat_malformed_payout_handling
+test_source_schema_parser_fingerprint_quarantine
+test_persistent_discrepancy_kill_switch
+test_withdrawal_cancel_refund_provenance
+
+For persistence properties, close the first implementation instance and create a fresh independent instance/process against the same backing store before asserting persisted state.
+
+For mutation/rejection properties, capture persisted state before the invalid operation, perform the invalid operation, reopen state, and prove unauthorized mutation did not occur.
+
+MARKET EVIDENCE TEST:
+Use synthetic structural evidence only. Do NOT fabricate ROI > 1, net profit, real race counts, or other economic outcomes.
+
+All evidence files must be produced from actual runtime/subprocess results only.
+
+Real ECON_HOLDOUT1000, PRICE, PAYOUT remain SEALED and untouched.
+Maximum status remains:
+LOCAL_TESTED — pending independent re-audit
