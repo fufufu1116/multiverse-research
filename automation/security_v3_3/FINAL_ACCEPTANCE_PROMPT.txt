@@ -48,3 +48,10 @@ BUILD_RECEIPT.json MUST contain ECON_HOLDOUT1000 as a JSON OBJECT, never a strin
   "scored": false
 }
 These four fields are mandatory and exact. This records non-access only; do NOT open, read, inspect, infer, score, copy, or embed any real HOLDOUT/PRICE/PAYOUT data.
+
+MANDATORY HOLDOUT SHA-MISMATCH RETURN SEMANTICS:
+For the authoritative HOLDOUT membership commitment, once a different SHA is presented after the first successful commit, the operation MUST durably reject it and the externally observable return/status MUST be exactly:
+FAIL_CLOSED
+Do NOT return FAIL_CLOSED_SHA_MISMATCH or any other variant.
+The persisted state must remain FAIL_CLOSED across restart and must not become recoverable by later inputs.
+Do not weaken the underlying rejection semantics; only conform the externally observed status to the exact acceptance contract.
