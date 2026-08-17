@@ -1,0 +1,46 @@
+{
+  "manifest_version": "SECURITY_V3_3_ORACLE_ZERO_AUDIT_v2",
+  "lineage_id": "SECURITY_V3_3_ORACLE_v2_CANDIDATE",
+  "parent_lineage": "SECURITY_V3_3_ORACLE_v1_ZERO_AUDIT_CANDIDATE",
+  "status": "ZERO_AUDIT_CANDIDATE",
+  "freeze": false,
+  "security_audit_passed": false,
+  "synthetic_only": true,
+  "sealed_properties": [
+    "ECON_HOLDOUT1000",
+    "PRICE",
+    "PAYOUT"
+  ],
+  "protected_components": {
+    "oracle_candidate_v2/ORACLE_SPEC.json": "6bc1053fbf6a05425cb934c514ad91c930d81cb95921150997112f37fa816ab2",
+    "oracle_candidate_v2/test_security_oracle.py": "6e9391a55094cd61448cccb41b0d6cdd51439db35b24d2ced32281111cfd437e",
+    "oracle_candidate_v2/immutable_validator.py": "f151ba03e8f9482e72459171ec5cff04c628408b0e66a0f82134c7b21915b593",
+    "automation/security_v3_3_v2/patch_guard.py": "82545734b6f0a4c1b0aaa4f9f59808d81961f80163c7bc23524f2e459bd03e9e",
+    "automation/security_v3_3_v2/orchestrator_v2.py": "3a60124a2e08ae1a617e98b409c5ec833899c48ff81a5ebd6865c0d7d433825b",
+    ".github/workflows/security-v3.3-oracle-v2.yml": "4c6b8a75e0f1b01047a72cbed87155d6bde9d88a631feca294b3189e22a56165"
+  },
+  "mandatory_node_ids": [
+    "oracle_candidate_v2/test_security_oracle.py::test_wrong_key_decrypt_no_burn",
+    "oracle_candidate_v2/test_security_oracle.py::test_signature_auth_binding",
+    "oracle_candidate_v2/test_security_oracle.py::test_file_backed_independent_restart_persistence",
+    "oracle_candidate_v2/test_security_oracle.py::test_ledger_hash_linkage_anchor_immutable",
+    "oracle_candidate_v2/test_security_oracle.py::test_update_delete_denial",
+    "oracle_candidate_v2/test_security_oracle.py::test_fold_version_binding",
+    "oracle_candidate_v2/test_security_oracle.py::test_phase_preregistration_candidate_identity",
+    "oracle_candidate_v2/test_security_oracle.py::test_family_manifest_commit_once",
+    "oracle_candidate_v2/test_security_oracle.py::test_market_evidence_completeness",
+    "oracle_candidate_v2/test_security_oracle.py::test_deadheat_malformed_payout_handling",
+    "oracle_candidate_v2/test_security_oracle.py::test_source_schema_parser_fingerprint_quarantine",
+    "oracle_candidate_v2/test_security_oracle.py::test_persistent_discrepancy_kill_switch",
+    "oracle_candidate_v2/test_security_oracle.py::test_withdrawal_cancel_refund_provenance",
+    "oracle_candidate_v2/test_security_oracle.py::test_key_provider_failure_no_burn",
+    "oracle_candidate_v2/test_security_oracle.py::test_authenticated_malformed_request_non_bricking",
+    "oracle_candidate_v2/test_security_oracle.py::test_holdout_open_exactly_once_concurrent_restart",
+    "oracle_candidate_v2/test_security_oracle.py::test_ledger_tail_truncation_detected",
+    "oracle_candidate_v2/test_security_oracle.py::test_authoritative_holdout_membership_and_overlap",
+    "oracle_candidate_v2/test_security_oracle.py::test_fold_strict_chronology_min_sizes",
+    "oracle_candidate_v2/test_security_oracle.py::test_governance_relabel_protection_restart",
+    "oracle_candidate_v2/test_security_oracle.py::test_family_floors_and_masking_prevention",
+    "oracle_candidate_v2/test_security_oracle.py::test_payout_quinella_trio_unordered_semantics"
+  ]
+}

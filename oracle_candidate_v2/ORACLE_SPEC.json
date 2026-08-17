@@ -1,0 +1,20 @@
+{
+  "lineage_id": "SECURITY_V3_3_ORACLE_v2_CANDIDATE",
+  "status": "ZERO_AUDIT_CANDIDATE",
+  "synthetic_only": true,
+  "freeze": false,
+  "security_audit_passed": false,
+  "sealed_properties": [
+    "ECON_HOLDOUT1000",
+    "PRICE",
+    "PAYOUT"
+  ],
+  "candidate_api": "candidate.security_v3_3.api",
+  "policy": "Oracle v1 remains archived. v2 Candidate requires independent audit before Freeze.",
+  "parent_lineage": "SECURITY_V3_3_ORACLE_v1_ZERO_AUDIT_CANDIDATE",
+  "runtime_isolation": {
+    "ci_test_user": "mv_candidate",
+    "per_test_manifest_verification": true,
+    "candidate_poisoning_rejected": true
+  }
+}
