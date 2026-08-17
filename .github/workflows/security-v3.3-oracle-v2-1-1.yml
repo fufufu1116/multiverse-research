@@ -88,6 +88,11 @@ jobs:
       - name: End manifest verification
         if: always()
         run: python oracle_candidate_v2_1_1/immutable_validator.py --verify-manifest WORKFLOW_END
+      - name: Reopen evidence for artifact uploader
+        if: always()
+        run: |
+          sudo chmod -R a+rX autopilot_v2_1_1_output/evidence_hardening || true
+
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
