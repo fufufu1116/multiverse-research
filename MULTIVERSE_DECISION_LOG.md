@@ -10,3 +10,6 @@ Next design: repository is readable/traversable by mv_candidate, protected Oracl
 
 ## 2026-08-17 — Oracle v2.1.1 Evidence Hardening
 v2.1 Run #2 remains 23/23 PASS with independent CONDITIONAL APPROVE. v2.1.1 adds timestamped two-process concurrency trace and independent restart state dumps only. Freeze remains false until independent audit of the actual v2.1.1 artifact returns APPROVE.
+
+## 2026-08-17 — Oracle v2.1.1 independent APPROVE and Freeze
+Run #3 passed all workflow steps and Evidence Hardening. Independent audit returned APPROVE. Commit c9342e792f172b18a4ecaad18b96a13647da4c4e and Artifact 9282790006 (SHA-256 d489b1f2b9267ac994e2ce51886acd710feb793d51c5a5a37a8598d2a31a3d13) are the approved evidence basis. Oracle v2.1.1 is now frozen. ECON_HOLDOUT1000 / PRICE / PAYOUT remain SEALED.

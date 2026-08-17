@@ -2,9 +2,9 @@
   "manifest_version": "SECURITY_V3_3_ORACLE_ZERO_AUDIT_v2_1_1",
   "lineage_id": "SECURITY_V3_3_ORACLE_v2_1_1_EVIDENCE_HARDENING",
   "parent_lineage": "SECURITY_V3_3_ORACLE_v2_1_CANDIDATE",
-  "status": "ZERO_AUDIT_CANDIDATE",
-  "freeze": false,
-  "security_audit_passed": false,
+  "status": "FROZEN_APPROVED",
+  "freeze": true,
+  "security_audit_passed": true,
   "synthetic_only": true,
   "sealed_properties": [
     "ECON_HOLDOUT1000",
@@ -48,5 +48,17 @@
     "oracle_candidate_v2_1_1/test_security_oracle.py::test_family_floors_and_masking_prevention",
     "oracle_candidate_v2_1_1/test_security_oracle.py::test_payout_quinella_trio_unordered_semantics",
     "oracle_candidate_v2_1_1/test_security_oracle.py::test_runtime_isolation_blocks_oracle_mutation_and_sudo"
-  ]
+  ],
+  "independent_audit": {
+    "verdict": "APPROVE",
+    "approved_commit": "c9342e792f172b18a4ecaad18b96a13647da4c4e",
+    "run_id": 32013910940,
+    "artifact_id": 9282790006,
+    "artifact_sha256": "d489b1f2b9267ac994e2ce51886acd710feb793d51c5a5a37a8598d2a31a3d13",
+    "conditions_cleared": [
+      "independent_two_process_concurrency_evidence",
+      "restart_nonce_open_count_audit_persistence"
+    ],
+    "new_p0_defects": "none_found"
+  }
 }
