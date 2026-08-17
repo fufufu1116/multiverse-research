@@ -28,7 +28,9 @@ jobs:
           GEMINI_MODEL: gemini-3.6-flash
           AUTOPILOT_OUTPUT_DIR: autopilot_v2_output
           MAX_REPAIRS: "8"
-        run: python automation/security_v3_3_v2/orchestrator.py
+        run: |
+          mkdir -p autopilot_v2_output
+          python -m automation.security_v3_3_v2.orchestrator
       - name: End-of-run protected manifest verification
         if: always()
         run: python oracle_candidate/immutable_validator.py --verify-manifest WORKFLOW_END
