@@ -25,7 +25,7 @@ def verify_candidate_surface(stage: str):
 
 def verify_manifest(stage: str):
     m = load_manifest()
-    committed = subprocess.run(["git", "show", "HEAD:ZERO_AUDIT_ORACLE_MANIFEST.json"], cwd=ROOT, capture_output=True)
+    committed = subprocess.run(["git", "show", "HEAD:ZERO_AUDIT_ORACLE_V2_MANIFEST.json"], cwd=ROOT, capture_output=True)
     if committed.returncode != 0 or hashlib.sha256(committed.stdout).hexdigest() != h(MANIFEST):
         raise SystemExit(f"FAIL_CLOSED: {stage}: manifest differs from committed root anchor")
     for rel, expected in m["protected_components"].items():
