@@ -31,6 +31,31 @@ def verify(stage):
     (OUT/f"manifest_{stage}.txt").write_text(cp.stdout+"\n"+cp.stderr,encoding="utf-8")
     if cp.returncode: raise RuntimeError(f"manifest {stage} failed")
 
+def compile_candidate(label: str):
+    d = OUT / label
+    d.mkdir(parents=True, exist_ok=True)
+
+    cp = subprocess.run(
+        [sys.executable, "-m", "compileall", "-q", "candidate/security_v3_3"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
+
+    (d / "compile.stdout.txt").write_text(
+        cp.stdout, encoding="utf-8"
+    )
+    (d / "compile.stderr.txt").write_text(
+        cp.stderr, encoding="utf-8"
+    )
+
+    return cp.returncode, {
+        "status": "PASS" if cp.returncode == 0 else "COMPILE_FAIL",
+        "stdout": cp.stdout[-4000:],
+        "stderr": cp.stderr[-4000:],
+    }
+
+
 def run_tests(label: str):
     d=OUT/label; d.mkdir(parents=True,exist_ok=True); report=d/"validator_report.json"
     cp=subprocess.run([sys.executable,"oracle_candidate/immutable_validator.py","--evidence-dir",str(d.relative_to(ROOT)),"--report",str(report.relative_to(ROOT))],cwd=ROOT,text=True,capture_output=True)
@@ -135,6 +160,18 @@ def main():
                 (ad/"patch_result.json").write_text(json.dumps(pr,indent=2)+"\n",encoding="utf-8")
             except Exception as e:
                 failure={"status":"PATCH_REJECTED","failed_tests":[],"patch_error":str(e)}; (ad/"patch_rejected.txt").write_text(str(e),encoding="utf-8"); continue
+            compile_code, compile_report = compile_candidate(
+                f"attempt_{attempt:02d}/compile"
+            )
+
+            if compile_code != 0:
+                failure = {
+                    "status": "COMPILE_FAIL",
+                    "failed_tests": [],
+                    "compile_error": compile_report,
+                }
+                continue
+
             code, report=run_tests(f"attempt_{attempt:02d}/tests")
             if code==0:
                 verify("END"); receipt("ZERO_AUDIT_LOCAL_TESTED",f"passed after {attempt} repair attempts; pending independent Oracle audit"); return 0
