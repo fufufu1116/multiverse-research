@@ -1,0 +1,29 @@
+{
+  "lineage_id": "SECURITY_V3_3_ORACLE_v2_1_CANDIDATE",
+  "status": "ZERO_AUDIT_CANDIDATE",
+  "synthetic_only": true,
+  "freeze": false,
+  "security_audit_passed": false,
+  "sealed_properties": [
+    "ECON_HOLDOUT1000",
+    "PRICE",
+    "PAYOUT"
+  ],
+  "candidate_api": "candidate.security_v3_3.api",
+  "policy": "Oracle v1 remains archived. v2 Candidate requires independent audit before Freeze.",
+  "parent_lineage": "SECURITY_V3_3_ORACLE_v2_CANDIDATE",
+  "runtime_isolation": {
+    "required": true,
+    "test_user_env": "MV33_TEST_USER",
+    "require_marker_env": "MV33_REQUIRE_ISOLATION=1",
+    "protected_components_root_owned_read_only": true,
+    "candidate_runs_as_unprivileged_user": true,
+    "sudo_from_candidate_must_fail": true,
+    "per_test_manifest_pre_post_verification": true
+  },
+  "concurrency_proof": {
+    "required": true,
+    "kind": "two independent spawned processes synchronized by multiprocessing Barrier",
+    "expected": "exactly one OPEN, one audit event, nonce advance once, restart persistence"
+  }
+}

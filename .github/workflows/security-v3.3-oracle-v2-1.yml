@@ -1,0 +1,84 @@
+name: Multiverse Security v3.3 Oracle v2.1 Zero Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - automation/security-v3.3-oracle-v2.1
+
+permissions:
+  contents: read
+
+jobs:
+  zero-audit-v2-1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pytest cryptography google-genai
+
+      - name: Syntax preflight
+        run: python -m compileall -q oracle_candidate_v2_1 automation/security_v3_3_v2 candidate/security_v3_3
+
+      - name: Create isolated test user
+        run: |
+          sudo useradd --system --create-home --shell /usr/sbin/nologin mv_candidate
+          if sudo -n -u mv_candidate sudo -n true 2>/dev/null; then
+            echo "FAIL_CLOSED: mv_candidate unexpectedly has sudo"
+            exit 1
+          fi
+
+      - name: Protect Oracle surface
+        run: |
+          while IFS= read -r rel; do
+            sudo chown root:root "$rel"
+            sudo chmod a-w "$rel"
+          done < <(python - <<'PY'
+          import json
+          from pathlib import Path
+          m = json.loads(Path("ZERO_AUDIT_ORACLE_V2_1_MANIFEST.json").read_text())
+          for rel in m["protected_components"]:
+              print(rel)
+          PY
+          )
+
+          sudo chown -R root:root oracle_candidate_v2_1
+          sudo find oracle_candidate_v2_1 -type d -exec chmod 555 {} +
+          sudo find oracle_candidate_v2_1 -type f -exec chmod 444 {} +
+
+          sudo chown root:root ZERO_AUDIT_ORACLE_V2_1_MANIFEST.json
+          sudo chmod 444 ZERO_AUDIT_ORACLE_V2_1_MANIFEST.json
+
+          find candidate/security_v3_3 -type d -exec chmod 755 {} +
+          find candidate/security_v3_3 -type f -exec chmod 644 {} +
+
+      - name: Run Oracle v2.1 repair loop
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-3.6-flash
+          AUTOPILOT_OUTPUT_DIR: autopilot_v2_output
+          MAX_REPAIRS: "8"
+          MV33_TEST_USER: mv_candidate
+          MV33_REQUIRE_ISOLATION: "1"
+        run: |
+          mkdir -p autopilot_v2_output
+          python -m automation.security_v3_3_v2.orchestrator_v2_1
+
+      - name: End manifest verification
+        if: always()
+        run: python oracle_candidate_v2_1/immutable_validator.py --verify-manifest WORKFLOW_END
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multiverse-security-v3.3-oracle-v2.1-zero-audit
+          path: autopilot_v2_output
+          if-no-files-found: warn
