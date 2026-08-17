@@ -42,12 +42,57 @@ def compact_failure(report):
     bad=[{"node_id":r.get("node_id"),"reason":r.get("reason")} for r in report.get("results",[]) if not r.get("passed")]
     return {"status":report.get("status"),"failed_tests":bad[:13]}
 
+def candidate_inventory():
+    base = ROOT / "candidate/security_v3_3"
+    files = []
+    if not base.exists():
+        return files
+    for p in sorted(base.rglob("*")):
+        if p.is_symlink():
+            raise RuntimeError("candidate symlink detected")
+        if p.is_file():
+            files.append(p.relative_to(ROOT).as_posix())
+    return files
+
+def normalize_patch_operations(payload: str) -> str:
+    obj = json.loads(payload)
+    changes = obj.get("changes")
+    if not isinstance(changes, list):
+        return payload
+
+    for c in changes:
+        if not isinstance(c, dict):
+            continue
+        rel = c.get("path")
+        if not isinstance(rel, str):
+            continue
+
+        pp = Path(rel)
+        if pp.is_absolute() or ".." in pp.parts or not rel.startswith("candidate/security_v3_3/"):
+            continue
+
+        target = ROOT / pp
+        if target.is_file():
+            c["operation"] = "replace"
+        elif not target.exists():
+            c["operation"] = "create"
+
+    return json.dumps(obj, ensure_ascii=False)
+
 def call_gemini(client, attempt, failure):
     tests=(ROOT/"oracle_candidate/test_security_oracle.py").read_text(encoding="utf-8")
     spec=(ROOT/"oracle_candidate/ORACLE_SPEC.json").read_text(encoding="utf-8")
+    inventory = candidate_inventory()
     prompt=("Implement only candidate/security_v3_3/ so the immutable synthetic security oracle passes. "
             "Do not modify tests/oracle/validator/workflow/evidence. Do not invent ROI, profit, races, PRICE or PAYOUT data. "
-            "Use only synthetic state. Return only the requested structured patch.\n\nORACLE SPEC:\n"+spec+"\n\nIMMUTABLE TEST SOURCE:\n"+tests+"\n\nCURRENT FAILURE:\n"+json.dumps(failure,ensure_ascii=False)+"\nCURRENT CANDIDATE SHA256:\n"+candidate_sha()+f"\nATTEMPT:{attempt}")
+            "Use only synthetic state. Return only the requested structured patch. "
+            "For a path listed in CURRENT CANDIDATE FILES use operation=replace. "
+            "For a new path not listed there use operation=create. "
+            "Do not guess file existence.\n\nORACLE SPEC:\n"+spec+
+            "\n\nIMMUTABLE TEST SOURCE:\n"+tests+
+            "\n\nCURRENT CANDIDATE FILES:\n"+json.dumps(inventory,ensure_ascii=False)+
+            "\n\nCURRENT FAILURE:\n"+json.dumps(failure,ensure_ascii=False)+
+            "\nCURRENT CANDIDATE SHA256:\n"+candidate_sha()+f"\nATTEMPT:{attempt}")
     last=None
     for n in range(5):
         try:
@@ -56,7 +101,14 @@ def call_gemini(client, attempt, failure):
         except Exception as e:
             last=e; code=getattr(e,"status_code",None) or getattr(e,"code",None)
             text=str(e)
-            transient = code in {429,500,502,503,504} or any(x in text for x in ["429","500","502","503","504","UNAVAILABLE","RESOURCE_EXHAUSTED"])
+            low = text.lower()
+            quota_exhausted = (
+                "resource_exhausted" in low and
+                any(x in low for x in ["quota", "per day", "daily", "requests/day", "limit"])
+            )
+            if quota_exhausted:
+                raise
+            transient = code in {429,500,502,503,504} or any(x in text for x in ["429","500","502","503","504","UNAVAILABLE"])
             if not transient or n==4: raise
             time.sleep(min(2**n,16)+random.random())
     raise last
@@ -75,8 +127,12 @@ def main():
             try: raw=call_gemini(client,attempt,failure)
             except Exception as e:
                 (ad/"gemini_api_error.txt").write_text(type(e).__name__+": "+str(e),encoding="utf-8"); receipt("FAIL_CLOSED","Gemini API failure"); return 2
-            (ad/"gemini_patch.json").write_text(raw,encoding="utf-8")
-            try: pr=apply_patch(raw); (ad/"patch_result.json").write_text(json.dumps(pr,indent=2)+"\n",encoding="utf-8")
+            (ad/"gemini_patch.raw.json").write_text(raw,encoding="utf-8")
+            try:
+                normalized = normalize_patch_operations(raw)
+                (ad/"gemini_patch.json").write_text(normalized,encoding="utf-8")
+                pr=apply_patch(normalized)
+                (ad/"patch_result.json").write_text(json.dumps(pr,indent=2)+"\n",encoding="utf-8")
             except Exception as e:
                 failure={"status":"PATCH_REJECTED","failed_tests":[],"patch_error":str(e)}; (ad/"patch_rejected.txt").write_text(str(e),encoding="utf-8"); continue
             code, report=run_tests(f"attempt_{attempt:02d}/tests")
