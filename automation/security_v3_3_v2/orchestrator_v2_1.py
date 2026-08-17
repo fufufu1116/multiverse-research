@@ -67,6 +67,33 @@ def compact_failure(report):
     bad=[{"node_id":r.get("node_id"),"reason":r.get("reason")} for r in report.get("results",[]) if not r.get("passed")]
     return {"status":report.get("status"),"failed_tests":bad[:13]}
 
+def detect_infrastructure_failure(label: str, report: dict):
+    results = report.get("results", [])
+    if not results:
+        return "validator produced no test results"
+    failed = [r for r in results if not r.get("passed")]
+    if len(failed) != len(results):
+        return None
+    d = OUT / label
+    chunks = []
+    for p in sorted(d.glob("test_*.stderr.txt")):
+        try:
+            chunks.append(p.read_text(encoding="utf-8", errors="replace"))
+        except Exception:
+            pass
+    text = "\n".join(chunks).lower()
+    markers = [
+        "permissionerror", "permission denied", "could not create cache path",
+        "no such file or directory: 'sudo'", "isolated test user missing",
+        "mv33_require_isolation=1 but mv33_test_user missing",
+    ]
+    if any(m in text for m in markers):
+        return "common runner/isolation infrastructure error"
+    exits = {r.get("pytest_exit") for r in failed}
+    if len(exits) == 1 and exits <= {2,3,4,5,126,127}:
+        return f"all tests failed before normal assertion execution (pytest_exit={next(iter(exits))})"
+    return None
+
 def candidate_inventory():
     base = ROOT / "candidate/security_v3_3"
     files = []
@@ -145,6 +172,12 @@ def main():
         code, report=run_tests("baseline")
         if code==0:
             verify("END"); receipt("ZERO_AUDIT_LOCAL_TESTED","baseline passed; pending independent Oracle audit"); return 0
+        infra = detect_infrastructure_failure("baseline", report)
+        if infra:
+            verify("END")
+            receipt("FAIL_CLOSED", "INFRASTRUCTURE_FAILURE: " + infra)
+            print("INFRASTRUCTURE_FAILURE:", infra, file=sys.stderr)
+            return 2
         client=genai.Client()
         failure=compact_failure(report)
         for attempt in range(1,MAX_REPAIRS+1):

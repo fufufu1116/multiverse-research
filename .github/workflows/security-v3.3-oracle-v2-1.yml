@@ -37,6 +37,11 @@ jobs:
 
       - name: Protect Oracle surface
         run: |
+          sudo chmod o+x /home/runner /home/runner/work || true
+          sudo chmod o+x "$(dirname "$GITHUB_WORKSPACE")" || true
+          sudo find "$GITHUB_WORKSPACE" -type d -exec chmod a+rx {} +
+          sudo find "$GITHUB_WORKSPACE" -type f -exec chmod a+r {} +
+
           while IFS= read -r rel; do
             sudo chown root:root "$rel"
             sudo chmod a-w "$rel"
@@ -58,6 +63,25 @@ jobs:
 
           find candidate/security_v3_3 -type d -exec chmod 755 {} +
           find candidate/security_v3_3 -type f -exec chmod 644 {} +
+
+          sudo -n -u mv_candidate -H env \
+            PYTHONNOUSERSITE=1 \
+            PYTHONDONTWRITEBYTECODE=1 \
+            PYTHONPATH="$GITHUB_WORKSPACE" \
+            python - <<'PY'
+          from pathlib import Path
+          root = Path.cwd()
+          for p in [
+              root / "candidate/security_v3_3",
+              root / "oracle_candidate_v2_1/test_security_oracle.py",
+              root / "ZERO_AUDIT_ORACLE_V2_1_MANIFEST.json",
+          ]:
+              if not p.exists():
+                  raise SystemExit(f"ISOLATION_READ_PREFLIGHT_FAIL: {p}")
+              if p.is_file():
+                  p.read_bytes()
+          print("ISOLATION_READ_PREFLIGHT_PASS")
+          PY
 
       - name: Run Oracle v2.1 repair loop
         env:
