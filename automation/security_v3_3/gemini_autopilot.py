@@ -3,7 +3,7 @@ import json, os, re, shutil, subprocess, sys, tempfile
 
 HERE = Path(__file__).resolve().parent
 PROMPT = (HERE / "FINAL_ACCEPTANCE_PROMPT.txt").read_text(encoding="utf-8")
-MAX_ATTEMPTS = 2
+MAX_ATTEMPTS = 3
 
 def sanitize(text):
     return re.sub(r'(?i)(api[_-]?key|token|secret)\s*[:=]\s*\S+', r'\1=[REDACTED]', text)[-24000:]
@@ -43,7 +43,62 @@ def main():
             work = Path(td)
             script = work / "build_candidate.py"
             script.write_text(script_text, encoding="utf-8")
-            bp = subprocess.run([sys.executable, str(script)], cwd=work, text=True, capture_output=True, timeout=600)
+
+            # Preserve exactly what Gemini generated before execution.
+            evidence_script = outroot / f"attempt_{attempt}_build_candidate.py"
+            evidence_script.write_text(script_text, encoding="utf-8")
+
+            # Syntax-only preflight: do not execute malformed generated Python.
+            cp = subprocess.run(
+                [sys.executable, "-m", "py_compile", str(script)],
+                cwd=work,
+                text=True,
+                capture_output=True,
+                timeout=120,
+            )
+            (outroot / f"attempt_{attempt}_py_compile.txt").write_text(
+                cp.stdout + "\n" + cp.stderr,
+                encoding="utf-8",
+            )
+
+            if cp.returncode != 0:
+                failure = sanitize(
+                    "PY_COMPILE_FAILED\n"
+                    + cp.stdout
+                    + "\n"
+                    + cp.stderr
+                    + "\nRepair syntax/indentation only. "
+                      "Do not weaken tests, receipt checks, or fail-closed semantics."
+                )
+                (outroot / "FAILURE_CONTEXT.json").write_text(
+                    json.dumps(
+                        {
+                            "attempt": attempt,
+                            "stage": "py_compile",
+                            "sanitized_failure": failure,
+                            "ECON_HOLDOUT1000": {
+                                "state": "SEALED",
+                                "Price_accessed": False,
+                                "PAYOUT_accessed": False,
+                                "scored": False,
+                            },
+                            "Freeze": False,
+                            "SECURITY_AUDIT_PASSED": False,
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    ) + "\n",
+                    encoding="utf-8",
+                )
+                continue
+
+            bp = subprocess.run(
+                [sys.executable, str(script)],
+                cwd=work,
+                text=True,
+                capture_output=True,
+                timeout=600,
+            )
             candidate = work / "candidate"
             if bp.returncode == 0 and candidate.is_dir():
                 vp = subprocess.run([sys.executable, str(HERE / "acceptance_validator.py"), str(candidate)],
@@ -66,7 +121,7 @@ def main():
             else:
                 failure = sanitize(bp.stdout + "\n" + bp.stderr + ("\nHARD_FAILURE: required ./candidate directory was not created" if bp.returncode == 0 and not candidate.is_dir() else ""))
             (outroot / "FAILURE_CONTEXT.json").write_text(json.dumps({"attempt":attempt,"sanitized_failure":failure}, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
-    print("FAIL_CLOSED: no candidate passed after 2 attempts", file=sys.stderr)
+    print(f"FAIL_CLOSED: no candidate passed after {MAX_ATTEMPTS} attempts", file=sys.stderr)
     return 1
 
 if __name__ == "__main__":
