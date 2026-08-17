@@ -65,6 +65,12 @@ jobs:
         run: |
           mkdir -p autopilot_v2_1_1_output
           python -m automation.security_v3_3_v2.orchestrator_v2_1_1
+      - name: Prepare isolated evidence output
+        run: |
+          sudo mkdir -p autopilot_v2_1_1_output/evidence_hardening
+          sudo chown mv_candidate:mv_candidate autopilot_v2_1_1_output/evidence_hardening
+          sudo chmod 700 autopilot_v2_1_1_output/evidence_hardening
+
       - name: Run timestamped concurrency and restart evidence proof
         env:
           MV33_REPO_ROOT: ${{ github.workspace }}
