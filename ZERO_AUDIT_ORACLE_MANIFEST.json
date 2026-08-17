@@ -1,0 +1,36 @@
+{
+  "manifest_version": "SECURITY_V3_3_ORACLE_ZERO_AUDIT_v1",
+  "lineage_id": "SECURITY_V3_3_ORACLE_v1_ZERO_AUDIT_CANDIDATE",
+  "status": "ZERO_AUDIT_CANDIDATE",
+  "freeze": false,
+  "security_audit_passed": false,
+  "synthetic_only": true,
+  "sealed_properties": [
+    "ECON_HOLDOUT1000",
+    "PRICE",
+    "PAYOUT"
+  ],
+  "protected_components": {
+    "oracle_candidate/ORACLE_SPEC.json": "0717ac6bd006155b2e1e7bb94eed02ec0858e72b0e9242993703c173b6b8e73b",
+    "oracle_candidate/test_security_oracle.py": "63838e6a7003fcae6f1c34f532f0fe514f8d560c25e93492f66b5021749c5544",
+    "oracle_candidate/immutable_validator.py": "ee4f5621d480f45a00ac1b792acf6ca8e17a610d5c40748b528b53bf70450031",
+    "automation/security_v3_3_v2/patch_guard.py": "82545734b6f0a4c1b0aaa4f9f59808d81961f80163c7bc23524f2e459bd03e9e",
+    "automation/security_v3_3_v2/orchestrator.py": "0708e6081d86287e8260bbb682cea6cfa85046e25eecfa50f6d1a876f082dfa0",
+    ".github/workflows/security-v3.3-autopilot-v2.yml": "ae55699329cb62630454863e5fc3792f15da3f5eee1ee9b4e4e81256bd8696f2"
+  },
+  "mandatory_node_ids": [
+    "oracle_candidate/test_security_oracle.py::test_wrong_key_decrypt_no_burn",
+    "oracle_candidate/test_security_oracle.py::test_signature_auth_binding",
+    "oracle_candidate/test_security_oracle.py::test_file_backed_independent_restart_persistence",
+    "oracle_candidate/test_security_oracle.py::test_ledger_hash_linkage_anchor_immutable",
+    "oracle_candidate/test_security_oracle.py::test_update_delete_denial",
+    "oracle_candidate/test_security_oracle.py::test_fold_version_binding",
+    "oracle_candidate/test_security_oracle.py::test_phase_preregistration_candidate_identity",
+    "oracle_candidate/test_security_oracle.py::test_family_manifest_commit_once",
+    "oracle_candidate/test_security_oracle.py::test_market_evidence_completeness",
+    "oracle_candidate/test_security_oracle.py::test_deadheat_malformed_payout_handling",
+    "oracle_candidate/test_security_oracle.py::test_source_schema_parser_fingerprint_quarantine",
+    "oracle_candidate/test_security_oracle.py::test_persistent_discrepancy_kill_switch",
+    "oracle_candidate/test_security_oracle.py::test_withdrawal_cancel_refund_provenance"
+  ]
+}
