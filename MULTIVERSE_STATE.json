@@ -2,8 +2,8 @@
   "schema_version": "MULTIVERSE_STATE_v1",
   "project": "Multiverse Hybrid v2",
   "authoritative_repo": "fufufu1116/multiverse-research",
-  "active_branch": "automation/security-v3.3-oracle-v2.1",
-  "current_phase": "Security Oracle v2.1 run2 + continuity hardening",
+  "active_branch": "automation/security-v3.3-oracle-v2.1.1",
+  "current_phase": "Security Oracle v2.1.1 Evidence Hardening",
   "freeze": false,
   "security_audit_passed": false,
   "holdout": {
@@ -19,7 +19,7 @@
     "artifact_sha256": "5e7b4ddb69c1cca285e63475dfae076b64643a2afbc132b18f04084a1a357576",
     "cause": "isolated test user could not read/traverse runner workspace"
   },
-  "next_action": "Run Oracle v2.1 again with isolation read preflight; inspect 23 mandatory tests and artifact.",
+  "next_action": "Run v2.1.1 evidence hardening and independently audit actual artifact.",
   "recovery_order": [
     "MULTIVERSE_STATE.json",
     "MULTIVERSE_RECOVERY.md",
@@ -27,4 +27,4 @@
     "MULTIVERSE_DECISION_LOG.md",
     "latest manifests"
   ]
-}\n
+}

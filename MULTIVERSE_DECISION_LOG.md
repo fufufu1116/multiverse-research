@@ -7,3 +7,6 @@ ChatGPT conversation state and the iPhone are non-authoritative. GitHub STATE / 
 FAIL_CLOSED after about 22 minutes. Root cause was runtime-isolation infrastructure: mv_candidate could not traverse/read the GitHub runner workspace. End manifest verification passed and evidence was uploaded. Real HOLDOUT/PRICE/PAYOUT remained sealed. v2.1 is NOT FROZEN.
 
 Next design: repository is readable/traversable by mv_candidate, protected Oracle files remain non-writable, and obvious infrastructure-wide failures stop before Gemini repair loops.
+
+## 2026-08-17 — Oracle v2.1.1 Evidence Hardening
+v2.1 Run #2 remains 23/23 PASS with independent CONDITIONAL APPROVE. v2.1.1 adds timestamped two-process concurrency trace and independent restart state dumps only. Freeze remains false until independent audit of the actual v2.1.1 artifact returns APPROVE.
