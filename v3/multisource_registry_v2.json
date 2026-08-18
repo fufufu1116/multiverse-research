@@ -1,0 +1,114 @@
+{
+  "record": "MULTIVERSE_V3_MULTISOURCE_REGISTRY_v2",
+  "date_jst": "2026-08-18",
+  "status": "ACTIVE_GOVERNANCE_REGISTRY",
+  "principle": "More sources improve auditability only when their role is explicit. No new source may silently change the frozen v3 model, features, thresholds, portfolio rules, sample size, or outcome access policy.",
+  "current_v3_allowed_roles": [
+    "fresh-universe discovery",
+    "race/event identity cross-check",
+    "PRE semantic cross-check",
+    "provenance and source disagreement logging"
+  ],
+  "current_v3_prohibited_uses": [
+    "adding new predictive features",
+    "using external expert predictions",
+    "using RESULT/PAYOUT before authorized unlock",
+    "post-outcome source selection",
+    "replacing unavailable frozen races"
+  ],
+  "sources": [
+    {
+      "source_id": "KEIRIN_JP_OFFICIAL",
+      "tier": 0,
+      "type": "official governing/race schedule source",
+      "domains": ["keirin.jp", "www.keirin.jp"],
+      "current_v3_role": ["authoritative schedule cross-check", "grade/date/venue validation", "event-slot discovery corroboration"],
+      "automation_status": "APPROVED_LOW_RATE_PRE_ONLY_AFTER_PARSER_AUDIT",
+      "result_payout_current_phase": "PROHIBITED",
+      "notes": "Use as primary corroborating source beside Kdreams. Prefer schedule pages and pre-race information only."
+    },
+    {
+      "source_id": "KDREAMS",
+      "tier": 0,
+      "type": "primary race/event source",
+      "domains": ["keirin.kdreams.jp"],
+      "current_v3_role": ["event-slot discovery", "assen metadata", "race-id identity binding", "PRE racecard acquisition under frozen parser"],
+      "automation_status": "APPROVED_LOW_RATE_PRE_ONLY_UNDER_EXISTING_FAIL_CLOSED_GUARDS",
+      "result_payout_current_phase": "PROHIBITED",
+      "notes": "Existing audited main transport/source family."
+    },
+    {
+      "source_id": "WINTICKET",
+      "tier": 1,
+      "type": "commercial secondary cross-check",
+      "domains": ["winticket.jp", "www.winticket.jp"],
+      "current_v3_role": ["manual or auditor-side schedule/race-count cross-check", "disagreement evidence only"],
+      "automation_status": "DO_NOT_AUTOMATE_UNTIL_TERMS_PERMISSION_REVIEW_PASSES",
+      "reason": "Current terms prohibit program/other analysis and unauthorized access-like conduct; do not build an automated collector without explicit clearance.",
+      "storage_status": "NO_BULK_RAW_ARCHIVE",
+      "model_input": false
+    },
+    {
+      "source_id": "ODDSPARK",
+      "tier": 1,
+      "type": "commercial secondary cross-check",
+      "domains": ["oddspark.com", "www.oddspark.com"],
+      "current_v3_role": ["manual semantic cross-check only"],
+      "automation_status": "DO_NOT_AUTOMATE",
+      "reason": "Site policy broadly prohibits unauthorized reproduction/quotation/transfer/distribution/modification; avoid automated archival collection.",
+      "storage_status": "NO_RAW_ARCHIVE",
+      "model_input": false
+    },
+    {
+      "source_id": "CHARILOTO",
+      "tier": 2,
+      "type": "commercial secondary source",
+      "domains": ["chariloto.com", "www.chariloto.com"],
+      "current_v3_role": ["manual fallback cross-check if publicly accessible"],
+      "automation_status": "DO_NOT_AUTOMATE_CURRENTLY",
+      "reason": "Main flow is login-gated and not needed while Tier-0 sources are available.",
+      "model_input": false
+    },
+    {
+      "source_id": "NETKEIRIN",
+      "tier": 2,
+      "type": "secondary information source",
+      "domains": ["netkeirin.com"],
+      "current_v3_role": ["future manual research only pending source/terms verification"],
+      "automation_status": "PENDING_TERMS_AND_LIVE_SOURCE_VERIFICATION",
+      "model_input": false
+    },
+    {
+      "source_id": "JMA_AMEDAS",
+      "tier": 0,
+      "type": "official non-keirin weather source",
+      "domains": ["jma.go.jp", "www.jma.go.jp"],
+      "current_v3_role": ["warehouse-only PRE environmental capture candidate", "future-lineage research"],
+      "automation_status": "ELIGIBLE_FOR_SEPARATE_PRE_ONLY_COLLECTOR_AFTER_TIME_LOCATION_MAPPING_AUDIT",
+      "current_v3_model_input": false,
+      "reason": "Weather/wind are not added to the already frozen v3 predictive feature set. Store separately for future preregistered lineage only."
+    }
+  ],
+  "source_disagreement_policy": {
+    "tier0_vs_tier0": "QUARANTINE_AND_FAIL_CLOSED_UNTIL_RESOLVED",
+    "tier0_vs_lower_tier": "TIER0_GOVERNS_CURRENT_V3_IDENTITY; LOG_DISAGREEMENT",
+    "lower_tier_only": "CANNOT_CREATE_OR_REPLACE_A_FROZEN_RACE",
+    "outcome_based_source_choice": "PROHIBITED"
+  },
+  "provenance_required_per_observation": [
+    "source_id",
+    "exact_url",
+    "retrieved_at_utc",
+    "payload_or_snapshot_sha256_if_storage_allowed",
+    "parser_version",
+    "field_semantics",
+    "PRE_or_POST_classification"
+  ],
+  "governance": {
+    "v3_scientific_trial_added": 0,
+    "fresh_RESULT_accessed": false,
+    "fresh_PAYOUT_accessed": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "frozen_v3_feature_spec_changed": false
+  }
+}
