@@ -1,0 +1,27 @@
+{
+  "error_message": "REJECT_RACE_DATE binding internal=[] external=2026-07-24",
+  "error_type": "FailClosed",
+  "generated_utc": "2026-08-18T23:45:26.265336+00:00",
+  "holdout_accessed": false,
+  "parser_git_blob": "fa6dea35c5933181f9b04610ecb698e4889b0aca",
+  "record": "TAMANO_PARSER_V2_LIVE_CORE_PROBE_v1",
+  "result_payout_price_accessed": false,
+  "scientific_trial_consumed": false,
+  "shadow_screen_consumed": false,
+  "source_validation_only": true,
+  "status": "FAIL_CLOSED",
+  "synthetic": {
+    "network_used": false,
+    "status": "PASS"
+  },
+  "traceback_tail": [
+    "Traceback (most recent call last):",
+    "  File \"<stdin>\", line 31, in <module>",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/tamano_racecard_row_parser_v2.py\", line 146, in parse_tamano_pdf",
+    "    race_date=_bind_race_date(clip_text,race_date)",
+    "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/tamano_racecard_row_parser_v2.py\", line 74, in _bind_race_date",
+    "    raise FailClosed(f\"REJECT_RACE_DATE binding internal={sorted(map(str,dates))} external={expected}\")",
+    "parser.FailClosed: REJECT_RACE_DATE binding internal=[] external=2026-07-24"
+  ]
+}
