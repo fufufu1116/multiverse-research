@@ -1,0 +1,21 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "GENESIS_ENTRY_PREFLIGHT_SPEC_v1",
+  "status": "READY_FOR_PROVIDER_SPECIFIC_USE_ONLY_AFTER_SOURCE_ADMISSION_APPROVE",
+  "genesis_prev_entry_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "requirements": [
+    "provider-specific Source Admission artifact PASS + independent APPROVE",
+    "collector code SHA frozen",
+    "adapter code SHA frozen",
+    "live clock receipt PASS (<100ms, <=10s, ACTIVE_SLEW_NO_STEP)",
+    "first snapshot contains no RESULT/PAYOUT semantics",
+    "first snapshot race_id has zero HOLDOUT membership collision",
+    "first manifest entry index=1",
+    "prev_entry_hash equals 64 zeroes",
+    "entry_hash recomputes exactly",
+    "full manifest verification PASS after append",
+    "provider rate-limit vs <=10s clock-receipt timing preflight PASS"
+  ],
+  "on_any_failure": "HALT_FAIL_CLOSED_NO_UNIVERSE_START",
+  "trial_effect": 0
+}
