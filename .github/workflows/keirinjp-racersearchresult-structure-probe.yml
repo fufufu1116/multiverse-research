@@ -1,0 +1,90 @@
+name: keirinjp-racersearchresult-structure-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-racersearchresult-structure-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe identity element structure only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          payload={
+            'dppg':'1','srmd':'01','gGaiteiCD':'','tikuCD':'','nen':'','bKeirinCD':'','kSyuruiCD':'','girlsKBN':'',
+            'nameSeiKana':'','nameMeiKana':'','nameSei':'','nameMei':'','snum':'','hukenCD':'63','sotugyouki':'127',
+            'kuniCD':'','seibetuCD':'','kyuhanCD':'','tikuCDSensyu':'','age':'','bHomebankCD':'','homekyogiCD':'',
+            'kyakusituCD':'','ckbn':'','stgt':'1'
+          }
+          r=requests.get('https://keirin.jp/pc/racersearchresult',params=payload,headers={'User-Agent':'MultiverseHybridV3-IdentityLocator/1.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser')
+          hits=[]
+          for tag in soup.find_all(True):
+              attrs={k:(' '.join(v) if isinstance(v,list) else str(v)) for k,v in tag.attrs.items()}
+              attr_text=' '.join(f'{k}={v}' for k,v in attrs.items())
+              text=' '.join(tag.get_text(' ',strip=True).split())
+              combined=attr_text+' '+text
+              if any(x in combined for x in ('015918','土井','慎二','racerprofile')):
+                  # Only keep direct-ish/identity routing metadata, not whole subtree text.
+                  direct=' '.join(s.strip() for s in tag.find_all(string=True,recursive=False) if s.strip())
+                  hits.append({
+                    'tag':tag.name,
+                    'attrs':attrs,
+                    'direct_text':direct[:250],
+                    'text_prefix':text[:250],
+                  })
+          # all input/button/form controls that carry 5/6 digit identity-like values
+          identity_controls=[]
+          for tag in soup.find_all(['input','button','form','a']):
+              attrs={k:(' '.join(v) if isinstance(v,list) else str(v)) for k,v in tag.attrs.items()}
+              if any(re.search(r'(?<!\d)\d{5,6}(?!\d)',v or '') for v in attrs.values()):
+                  identity_controls.append({'tag':tag.name,'attrs':attrs,'text':' '.join(tag.get_text(' ',strip=True).split())[:150]})
+          raw=r.content.decode('utf-8','replace')
+          snippets=[]
+          for needle in ('015918','racerprofile'):
+              pos=0
+              while True:
+                  i=raw.find(needle,pos)
+                  if i<0: break
+                  s=raw[max(0,i-180):min(len(raw),i+260)]
+                  # whitespace compact; only local control context
+                  snippets.append({'needle':needle,'context':' '.join(s.split())})
+                  pos=i+len(needle)
+          out={
+            'record':'KEIRINJP_RACERSEARCHRESULT_STRUCTURE_PROBE_v1',
+            'generated_utc':datetime.now(timezone.utc).isoformat(),
+            'identity_only_probe':True,'predictive_features_collected':False,'raw_html_persisted':False,
+            'holdout_accessed':False,'result_payout_price_accessed':False,
+            'content_sha256':hashlib.sha256(r.content).hexdigest(),
+            'matching_elements':hits[:80],
+            'identity_controls':identity_controls[:80],
+            'local_identity_routing_contexts':snippets[:20],
+            'status':'PASS_PROBE'
+          }
+          p=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACERSEARCHRESULT_STRUCTURE_PROBE_v1.json')
+          p.parent.mkdir(parents=True,exist_ok=True); p.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(p.read_text(encoding='utf-8'))
+          PY
+      - name: Persist probe
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACERSEARCHRESULT_STRUCTURE_PROBE_v1.json
+          git commit -m 'Record KEIRIN.JP racersearchresult structure probe'
+          git push
