@@ -1,0 +1,20 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "SHADOW250_LANE_P_METRIC_FREEZE_v1",
+  "date_jst": "2026-08-18",
+  "status": "FROZEN_CANDIDATE_PENDING_INDEPENDENT_APPROVAL_NO_SCORING",
+  "models": ["Candidate_A+M3+C1","B1a_RECONSTITUTED+M3+C1","Candidate_A+M4+C1"],
+  "target_races": 250,
+  "minimum_scorable_races": 225,
+  "metrics": ["multiclass_logloss","multiclass_brier","top1_accuracy"],
+  "uniform_baseline": {"p":"1/n_active","logloss":"log(n_active)","brier":"1-1/n_active","top1":"1/n_active"},
+  "skill": {"logloss":"1-modelLL/uniformLL","brier":"1-modelBrier/uniformBrier","top1_excess":"top1_accuracy-mean(1/n_active)"},
+  "folds": "5 blocked chronological folds by complete race_date",
+  "STRONG_SIGNAL": {"all_three_models":true,"logloss_skill_min":0.05,"brier_skill_min":0.05,"top1_min":0.30,"top1_excess_min":0.15,"positive_LL_folds_min":4,"positive_Brier_folds_min":4,"scorable_min":225},
+  "PROMISING_SIGNAL": {"all_three_models":true,"logloss_skill_gt":0,"brier_skill_gt":0,"top1_min":0.25,"top1_excess_min":0.10,"positive_LL_folds_min":3,"positive_Brier_folds_min":3,"scorable_min":225,"and_not_strong":true},
+  "NO_SIGNAL": "scorable>=225 and PROMISING not met",
+  "DATA_INSUFFICIENT": "scorable<225",
+  "dead_heat": "split target mass equally among tied first-place riders; Top1 hit if deterministic top prediction is among tied winners",
+  "retuning_after_outcomes": "PROHIBITED",
+  "claim_limit": "screening only; not final efficacy/economic proof"
+}
