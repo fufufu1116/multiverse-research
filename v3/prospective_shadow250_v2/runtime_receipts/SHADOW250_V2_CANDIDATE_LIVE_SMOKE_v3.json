@@ -1,0 +1,64 @@
+{
+  "error_message": "REJECT_FIELD_SIZE values=[]",
+  "error_type": "FailClosed",
+  "expected_keirinjp_locator_v2_git_blob": "41517a604bb0c23200cb4d0878d8459f9379d63f",
+  "expected_tamano_parser_v3_git_blob": "66639087a020f900aafe9f55760eae590f36e755",
+  "g2": {
+    "final_identity_checks": [
+      "registration_number",
+      "normalized_name",
+      "prefecture",
+      "term"
+    ],
+    "locator_elapsed_seconds": 11.831,
+    "name_match_count": 1,
+    "predictive_features_emitted": false,
+    "profile_raw_sha256": "c2ba95693bdeb0f93765a4f6aa135f0d03be27a15d31e1ea9eb2739046d5f477",
+    "query_basis": [
+      "prefecture",
+      "term",
+      "active_only"
+    ],
+    "raw_html_persisted": false,
+    "search_landing_sha256": "288cf6778b16ced91b59ecfe796baa1a08d86edfa7e3d2af0893e64e529ab020",
+    "search_result_count": 6,
+    "search_result_identity_fields_used": [
+      "name",
+      "snum"
+    ],
+    "search_result_sha256": "e44554a3d640754968591130f3d88792038feafcc2d2a364b4851987efe14acc",
+    "snum": "015918",
+    "status": "PASS_VERIFIED_IDENTITY_LOCATOR_ONLY"
+  },
+  "generated_utc": "2026-08-18T23:50:18.739343+00:00",
+  "global_scoring_used": false,
+  "holdout_accessed": false,
+  "keirinjp_locator_v2_git_blob": "41517a604bb0c23200cb4d0878d8459f9379d63f",
+  "record": "SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v3",
+  "result_payout_price_accessed": false,
+  "scientific_trial_consumed": false,
+  "shadow_screen_consumed": false,
+  "status": "FAIL_CLOSED",
+  "synthetic_g1": {
+    "network_used": false,
+    "status": "PASS"
+  },
+  "synthetic_g2_utf8_fixture": {
+    "network_used": false,
+    "status": "PASS"
+  },
+  "tamano_parser_v3_git_blob": "66639087a020f900aafe9f55760eae590f36e755",
+  "traceback_tail": [
+    "Traceback (most recent call last):",
+    "  File \"<stdin>\", line 51, in <module>",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/tamano_racecard_row_parser_v3.py\", line 130, in parse_tamano_pdf",
+    "    size=_field_size(block); program=_program_label(block)",
+    "         ^^^^^^^^^^^^^^^^^^",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/tamano_racecard_row_parser_v3.py\", line 85, in _field_size",
+    "    if vals!=[7]: raise FailClosed(f\"REJECT_FIELD_SIZE values={vals}\")",
+    "                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "parser3.FailClosed: REJECT_FIELD_SIZE values=[]"
+  ],
+  "wagering_used": false,
+  "workflow_head_sha": "814ea2d09dd59644a95f2aba950ebb48020594ef"
+}
