@@ -1,0 +1,47 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "GEMINI_CONDITIONAL_APPROVE_RECEIPT_v1",
+  "date_jst": "2026-08-19",
+  "source": "user-supplied Gemini audit response in ChatGPT conversation",
+  "audit_target": "INDEPENDENT_GEMINI_AUDIT_PACKAGE_FIRST_PRE_G1_G2_CLASS_v2",
+  "verdict": "CONDITIONAL APPROVE",
+  "freeze_authorized": false,
+  "race_selection_authorized": false,
+  "new_shadow_universe_required_before_any_race": true,
+  "issues": [
+    {
+      "id": "ISSUE-G1-DATE-BINDING",
+      "severity": "P1_MATERIAL",
+      "required_fix": "Bind external race_date to an internal current-PRE PDF date; mismatch must fail closed."
+    },
+    {
+      "id": "ISSUE-G1-WITHDRAWN-HARDCODE",
+      "severity": "P1_MATERIAL",
+      "required_fix": "Remove unconditional withdrawn=False semantics; establish active-entry state from current PRE evidence and fail closed on inconsistency."
+    },
+    {
+      "id": "ISSUE-CLASS-PROGRAM-GATE-MISSING",
+      "severity": "P0_BLOCKER",
+      "required_fix": "Require race-level program/class compatibility; impossible cross-program mixtures quarantine as PRE_INELIGIBLE_SOURCE_GAP."
+    },
+    {
+      "id": "ISSUE-G2-SNUM-PROVENANCE-UNBOUND",
+      "severity": "P1_MATERIAL",
+      "required_fix": "Freeze a deterministic PRE-safe candidate-snum discovery process with complete provenance and identity-only role."
+    },
+    {
+      "id": "ISSUE-GOV-ADAPTER-HASH-REBINDING",
+      "severity": "P1_MATERIAL",
+      "required_fix": "Do not mutate the old Shadow250 universe. Rebind corrected executable hashes only in a new Shadow universe before any selected race."
+    }
+  ],
+  "explicit_state": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "shadow250_v1_selected_races": 0,
+    "prospective_shadow250_screen_count": 0,
+    "prospective_v3_scientific_trial": 0,
+    "global_scoring": "UNAUTHORIZED",
+    "wagering": "UNAUTHORIZED"
+  },
+  "governance_effect": "RECORD_ONLY_DOES_NOT_CHANGE_SCIENTIFIC_STATE"
+}
