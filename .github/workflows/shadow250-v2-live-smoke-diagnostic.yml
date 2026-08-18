@@ -1,0 +1,137 @@
+name: shadow250-v2-live-smoke-diagnostic
+
+on:
+  push:
+    paths:
+      - '.github/workflows/shadow250-v2-live-smoke-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime dependencies
+        run: pip install --disable-pip-version-check requests beautifulsoup4 PyMuPDF pandas
+      - name: Run fail-closed live diagnostic and always write receipt
+        id: diag
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib, importlib.util, json, os, pathlib, requests, subprocess, tempfile, time, traceback
+          from bs4 import BeautifulSoup
+          from datetime import datetime, timezone
+          from urllib.parse import urljoin, urlparse, unquote
+
+          repo=pathlib.Path('.')
+          receipt=repo/'v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_LIVE_SMOKE_DIAGNOSTIC_v1.json'
+          receipt.parent.mkdir(parents=True, exist_ok=True)
+          parser_path=repo/'v3/prospective_shadow250_v2/tamano_racecard_row_parser_v2.py'
+          locator_path=repo/'v3/prospective_shadow250_v2/keirinjp_identity_locator_v1.py'
+
+          def git_blob(path):
+              return subprocess.check_output(['git','hash-object',str(path)], text=True).strip()
+          def load(name,path):
+              spec=importlib.util.spec_from_file_location(name,path)
+              m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
+
+          out={
+            'record':'SHADOW250_V2_LIVE_SMOKE_DIAGNOSTIC_v1',
+            'generated_utc':datetime.now(timezone.utc).isoformat(),
+            'workflow_head_sha':os.environ.get('GITHUB_SHA'),
+            'tamano_parser_git_blob':git_blob(parser_path),
+            'keirinjp_locator_git_blob':git_blob(locator_path),
+            'scientific_trial_consumed':False,
+            'shadow_screen_consumed':False,
+            'holdout_accessed':False,
+            'result_payout_price_accessed':False,
+            'global_scoring_used':False,
+            'wagering_used':False,
+          }
+          failed=False
+          try:
+              parser=load('tamano_v2', parser_path)
+              locator=load('locator_v1', locator_path)
+              out['synthetic']={
+                'g1':parser.synthetic_program_tests(),
+                'g2':locator.synthetic_tests(),
+              }
+
+              # G2 official identity-only E2E
+              t0=time.monotonic()
+              resolved=locator.resolve_snum('土井慎二','岡山',127)
+              if resolved['snum']!='015918':
+                  raise RuntimeError(f"G2 unexpected verified snum={resolved['snum']}")
+              out['g2']={
+                'status':'PASS',
+                'verified_snum':resolved['snum'],
+                'candidate_count':len(resolved['candidate_snums']),
+                'query_basis':resolved.get('query_basis'),
+                'predictive_features_emitted':resolved['predictive_features_emitted'],
+                'raw_html_persisted':resolved['raw_html_persisted'],
+                'elapsed_seconds':round(time.monotonic()-t0,3),
+                'search_landing_sha256':resolved['search_landing_sha256'],
+                'search_result_sha256':resolved['search_result_sha256'],
+              }
+
+              # G1 official historical source-validation PDF only
+              discovery_url='https://www.tamano-keirin.jp/racepdf/'
+              event_day='2026-07-24'
+              s=requests.Session(); h={'User-Agent':'Multiverse-Private-Research/1.0'}
+              r=s.get(discovery_url,headers=h,timeout=20,allow_redirects=False)
+              if r.status_code in (403,429): raise RuntimeError(f'G1 HALT discovery provider {r.status_code}')
+              if r.status_code!=200: raise RuntimeError(f'G1 discovery HTTP {r.status_code}')
+              soup=BeautifulSoup(r.content,'html.parser')
+              hrefs=[]
+              for a in soup.find_all('a',href=True):
+                  u=urljoin(discovery_url,a['href']); p=urlparse(u)
+                  if p.scheme=='https' and p.netloc=='www.tamano-keirin.jp' and p.path.startswith('/wp-content/uploads/') and p.path.lower().endswith('.pdf') and not p.query:
+                      hrefs.append(u)
+              ymd=event_day.replace('-','')
+              cand=[]
+              for u in sorted(set(hrefs)):
+                  base=unquote(urlparse(u).path.rsplit('/',1)[-1])
+                  if base.startswith(ymd): cand.append(u)
+              if len(cand)!=1: raise RuntimeError(f'G1 event PDF cardinality={len(cand)}')
+              time.sleep(10)
+              p=s.get(cand[0],headers=h,timeout=20,allow_redirects=False)
+              if p.status_code in (403,429): raise RuntimeError(f'G1 HALT pdf provider {p.status_code}')
+              if p.status_code!=200 or not p.content.startswith(b'%PDF-'): raise RuntimeError(f'G1 pdf HTTP/magic {p.status_code}')
+              raw_sha=hashlib.sha256(p.content).hexdigest()
+              with tempfile.NamedTemporaryFile(suffix='.pdf') as f:
+                  f.write(p.content); f.flush(); df=parser.parse_tamano_pdf(f.name,event_day)
+              if len(df)!=84 or df['race_id'].nunique()!=12: raise RuntimeError('G1 coverage mismatch')
+              out['g1']={
+                'status':'PASS','event_day':event_day,'pdf_url':cand[0],
+                'pdf_raw_sha256':raw_sha,'rows':len(df),'races':int(df['race_id'].nunique()),
+                'program_counts':df.groupby('race_program')['race_id'].nunique().to_dict(),
+                'date_binding':'PASS','raw_pdf_persisted':False,
+              }
+              out['status']='PASS'
+          except Exception as e:
+              failed=True
+              out['status']='FAIL_CLOSED'
+              out['error_type']=type(e).__name__
+              out['error_message']=str(e)
+              out['traceback_tail']=traceback.format_exc().splitlines()[-8:]
+          receipt.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(receipt.read_text(encoding='utf-8'))
+          if failed:
+              raise SystemExit(1)
+          PY
+      - name: Persist diagnostic receipt even on failure
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          test -f v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_LIVE_SMOKE_DIAGNOSTIC_v1.json
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_LIVE_SMOKE_DIAGNOSTIC_v1.json
+          git commit -m 'Record Shadow250-v2 live smoke diagnostic'
+          git push
