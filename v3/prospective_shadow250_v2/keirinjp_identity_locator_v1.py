@@ -25,7 +25,8 @@ PROFILE_PATH="/pc/racerprofile"
 MIN_SPACING_SECONDS=5.0
 TIMEOUT_SECONDS=15
 MAX_RESPONSE_BYTES=2_000_000
-MAX_CANDIDATES=20
+MAX_CANDIDATES=10
+MAX_LOCATOR_ELAPSED_SECONDS=60.0
 SNUM_RE=re.compile(r"^\d{5,6}$")
 
 class FailClosed(RuntimeError): pass
@@ -154,10 +155,25 @@ def _select_pref_value(select,pref):
         raise FailClosed(f"REJECT prefecture option cardinality={len(vals)} pref={pref}")
     return vals[0]
 
+def _active_only_control(form):
+    hits=[]
+    for inp in form.find_all("input",attrs={"name":True}):
+        if (inp.get("type") or "").lower()!="checkbox":
+            continue
+        tr=inp.find_parent("tr")
+        scope=tr if tr is not None else inp.parent
+        if scope is not None and "現役選手のみ" in norm(scope.get_text(" ",strip=True)):
+            hits.append(inp)
+    by_name={h.get("name"):h for h in hits if h.get("name")}
+    if len(by_name)!=1:
+        raise FailClosed(f"REJECT active-only control cardinality={len(by_name)}")
+    return next(iter(by_name.values()))
+
 def build_search_request(html_bytes,pref,term,base_url=SEARCH_URL):
     form=_candidate_forms(html_bytes)
     pref_ctrl=_control_after_label(form,"府県")
     term_ctrl=_control_after_label(form,"卒業期")
+    active_ctrl=_active_only_control(form)
     if pref_ctrl.name!="select" or term_ctrl.name!="input":
         raise FailClosed("REJECT unexpected control types")
 
@@ -168,6 +184,7 @@ def build_search_request(html_bytes,pref,term,base_url=SEARCH_URL):
             payload[inp["name"]]=inp.get("value","")
     payload[pref_ctrl["name"]]=_select_pref_value(pref_ctrl,pref)
     payload[term_ctrl["name"]]=str(int(term))
+    payload[active_ctrl["name"]]=active_ctrl.get("value","1")
 
     submits=[]
     for inp in form.find_all(["input","button"],attrs={"name":True}):
@@ -276,13 +293,14 @@ def resolve_snum(expected_name,expected_pref,expected_term):
 
     matches=[]
     identity_receipts=[]
+    started=time.monotonic()
     for snum in candidates:
+        if time.monotonic()-started > MAX_LOCATOR_ELAPSED_SECONDS:
+            raise FailClosed("QUARANTINE_FAIL_CLOSED locator elapsed budget exceeded")
         time.sleep(MIN_SPACING_SECONDS)
-        try:
-            ident,raw_hash=_fetch_identity(s,lim,snum)
-        except FailClosed as e:
-            identity_receipts.append({"snum":snum,"status":"NONMATCH_OR_QUARANTINE","reason":str(e)})
-            continue
+        # Any transport/HTTP/parse ambiguity is fatal for the whole resolution.
+        # A candidate is NONMATCH only after a successfully fetched identity disagrees.
+        ident,raw_hash=_fetch_identity(s,lim,snum)
         ok=verify_identity(ident,expected_name,expected_pref,expected_term)
         identity_receipts.append({
             "snum":snum,"status":"MATCH" if ok else "NONMATCH",
@@ -294,6 +312,9 @@ def resolve_snum(expected_name,expected_pref,expected_term):
         if ok:
             matches.append(snum)
 
+    elapsed=time.monotonic()-started
+    if elapsed > MAX_LOCATOR_ELAPSED_SECONDS:
+        raise FailClosed("QUARANTINE_FAIL_CLOSED locator elapsed budget exceeded")
     if len(matches)!=1:
         raise FailClosed(f"QUARANTINE_FAIL_CLOSED verified match cardinality={len(matches)}")
 
@@ -301,7 +322,7 @@ def resolve_snum(expected_name,expected_pref,expected_term):
         "status":"PASS_VERIFIED_IDENTITY_LOCATOR_ONLY",
         "snum":matches[0],
         "rider_key":rider_key(expected_name,expected_pref,expected_term),
-        "query_basis":["prefecture","term"],
+        "query_basis":["prefecture","term","active_only"],
         "final_identity_checks":["registration_number","normalized_name","prefecture","term"],
         "candidate_snums":candidates,
         "search_landing_sha256":hashlib.sha256(landing.content).hexdigest(),
@@ -314,6 +335,8 @@ def resolve_snum(expected_name,expected_pref,expected_term):
         "identity_receipts":identity_receipts,
         "predictive_features_emitted":False,
         "raw_html_persisted":False,
+        "locator_elapsed_seconds":round(elapsed,3),
+        "locator_elapsed_budget_seconds":MAX_LOCATOR_ELAPSED_SECONDS,
         "capture_timestamp_utc":datetime.now(timezone.utc).isoformat(),
     }
 
@@ -326,12 +349,13 @@ def synthetic_tests():
       <tr><td>登録番号</td><td><input name="reg"></td><td>府県</td><td><select name="pref"><option value="">-</option><option value="33">岡山県</option></select></td></tr>
       <tr><td>卒業期</td><td><input name="term"></td><td>級班</td><td><select name="cls"></select></td></tr>
       <tr><td>脚質</td><td><select name="style"></select></td></tr>
+      <tr><td colspan="4"><input type="checkbox" name="active" value="1"> 現役選手のみ</td></tr>
     </table><input type="hidden" name="stgt" value="1"><input type="submit" name="go" value="検索">
     </form></body></html>
     """.encode("utf-8")
     method,action,payload=build_search_request(html,"岡山",127)
     assert method=="get" and action=="https://keirin.jp/pc/search"
-    assert payload["pref"]=="33" and payload["term"]=="127" and payload["stgt"]=="1" and payload["go"]=="検索"
+    assert payload["pref"]=="33" and payload["term"]=="127" and payload["active"]=="1" and payload["stgt"]=="1" and payload["go"]=="検索"
 
     result='<a href="/pc/racerprofile?snum=015918">x</a><a href="/pc/racerprofile?snum=015917">y</a>'.encode('utf-8')
     assert extract_candidate_snums(result)==["015917","015918"]
