@@ -1,0 +1,56 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "state": "NEW_HISTORICAL5000_PRE_SCORING_GATE_STATE_v2",
+  "date_jst": "2026-08-18",
+  "authority": "GitHub canonical state; chat/device-local artifacts are secondary evidence only",
+  "strategy": {
+    "verdict": "APPROVE",
+    "strategy_zip_sha256": "e597a43d668ce6a388e0d041e6085bbe0d961b54daba0a105a4852064d47dca3",
+    "scope": "PRE_SCORING_CONSTRUCTION_AND_AUDIT_ONLY"
+  },
+  "canonical_records": {
+    "temporal_cutoff": "v3/historical5000/temporal_cutoff_receipt_v1.json",
+    "feature_temporal_allowlist": "v3/historical5000/feature_temporal_allowlist_draft_v2.json",
+    "source_admission": "v3/historical5000/source_admission_status_v2.json",
+    "historical_price_feasibility": "v3/historical5000/historical_price_feasibility_status_v2.json",
+    "dev_temporal_semantic_preflight": "v3/historical5000/dev_temporal_semantic_preflight_v1.json"
+  },
+  "gates": {
+    "TEMPORAL_CUTOFF": "PREPARED_FOR_INDEPENDENT_AUDIT_NOT_YET_FROZEN",
+    "FEATURE_TEMPORAL_ALLOWLIST": "DRAFT_DYNAMIC_FIELDS_BLOCKED_PENDING_ASOF_PROOF",
+    "SOURCE_ADMISSION": "NO_BULK_CANDIDATE_SOURCE_ADMITTED_YET",
+    "HISTORICAL_PRICE_FEASIBILITY": "SEMANTICALLY_PROMISING_NOT_ADMITTED_NOT_EXECUTABLE_PROVEN",
+    "HOLDOUT_COLLISION_GATE": "NOT_RUN_NO_CANDIDATE_POOL_YET",
+    "HISTORICAL5000_UNIVERSE_FREEZE": "NOT_AUTHORIZED_YET",
+    "OUTCOME_VAULT": "NOT_CREATED_FOR_CANDIDATE_POOL",
+    "HIST_Q2500_SCORING": "PROHIBITED"
+  },
+  "temporal_candidate_window": {
+    "latest_dev_date": "2026-04-10",
+    "earliest_eligible_candidate_date": "2026-04-11"
+  },
+  "price_semantic_update": {
+    "historical_final_odds_persistence": "SUPPORTED_ON_ALREADY_EXPOSED_DEV_SEMANTIC_CHECK",
+    "pre_cutoff_executability": "NOT_PROVEN",
+    "bulk_terms_permission": "NOT_ADMITTED",
+    "candidate_use": "BLOCKED"
+  },
+  "replit": {
+    "app": "Multiverse Acceptance Automaton",
+    "repl_id": "6c961711-5399-4daa-b7fe-1a24397299aa",
+    "historical5000_gate_update": "REQUESTED",
+    "completion_verified": false,
+    "bulk_candidate_collection_authorized": false
+  },
+  "trial_accounting": {
+    "historical_trial_consumed": 0,
+    "prospective_v3_trial": 0
+  },
+  "seals": {
+    "candidate_RESULT": "UNOPENED",
+    "candidate_PAYOUT": "UNOPENED",
+    "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+  },
+  "next_action": "Obtain explicit official/licensed historical as-of PRE and four-market Price access/permission evidence; do not construct the candidate5000 race pool before Source Admission PASS.",
+  "fail_closed": true
+}
