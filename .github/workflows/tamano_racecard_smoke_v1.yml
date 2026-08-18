@@ -1,0 +1,98 @@
+name: Tamano Racecard Smoke v1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tamano_racecard_smoke_v1.yml'
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install restricted adapter dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 pymupdf
+
+      - name: Synthetic hard-limit gate
+        run: python v3/prospective/tamano_racecard_hardlimit_adapter_v1.py --synthetic
+
+      - name: Single authorized completed non-candidate live smoke
+        run: |
+          python v3/prospective/tamano_racecard_hardlimit_adapter_v1.py \
+            --smoke \
+            --event-day '2026-07-28' \
+            --discovery-url 'https://www.tamano-keirin.jp/racepdf/7-27%EF%BD%9E7-29-%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6-%E7%AC%AC4%E5%9B%9E%E5%89%8D%E7%AF%80-%E7%8E%89%E9%87%8E%E5%B8%82%E5%96%B6%E7%8E%89%E9%87%8E%E7%AB%B6%E8%BC%AAf%E2%85%B0%E3%83%8A%E3%82%A4/' \
+            --pdf-url 'https://www.tamano-keirin.jp/wp-content/uploads/2026/07/20260728%E3%80%80%E7%8E%89%E9%87%8E.pdf' \
+            > tamano_racecard_smoke_receipt_v1.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('tamano_racecard_smoke_receipt_v1.json').read_text())
+          if d.get('status')!='PASS':
+              raise SystemExit('FAIL_CLOSED smoke status')
+          if d.get('raw_html_persisted') is not False or d.get('raw_pdf_persisted') is not False:
+              raise SystemExit('FAIL_CLOSED raw persistence')
+          if d.get('shadow250_collected') != 0 or d.get('scientific_trial_consumed') is not False:
+              raise SystemExit('FAIL_CLOSED scientific contamination')
+          pages=d.get('region_anchor_receipt',[])
+          if len(pages)!=2 or any(any(x for x in p.get('post_hits',{}).values()) for p in pages):
+              raise SystemExit('FAIL_CLOSED region/sentinel receipt')
+          print(json.dumps({'status':'PASS','pdf_sha256':d['pdf_raw_sha256'],'raw_persisted':False},ensure_ascii=False))
+          PY
+
+      - name: Upload normalized smoke receipt only
+        uses: actions/upload-artifact@v4
+        with:
+          name: tamano-racecard-smoke-v1
+          path: tamano_racecard_smoke_receipt_v1.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Commit PASS receipt to provenance ledger
+        run: |
+          mkdir -p v3/prospective/runtime_receipts
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          src=Path('tamano_racecard_smoke_receipt_v1.json')
+          d=json.loads(src.read_text())
+          adapter=Path('v3/prospective/tamano_racecard_hardlimit_adapter_v1.py')
+          out={
+            'record':'TAMANO_RACECARD_RUNTIME_SMOKE_PASS_v1',
+            'status':'PASS',
+            'workflow_commit_sha':os.environ['GITHUB_SHA'],
+            'adapter_sha256':hashlib.sha256(adapter.read_bytes()).hexdigest(),
+            'discovery_url':d['discovery_url'],
+            'pdf_url':d['pdf_url'],
+            'event_day':d['event_day'],
+            'capture_timestamp_utc':d['capture_timestamp_utc'],
+            'discovery_content_hash':d['discovery_content_hash'],
+            'pdf_raw_sha256':d['pdf_raw_sha256'],
+            'pdf_byte_size':d['pdf_byte_size'],
+            'region_anchor_receipt':d['region_anchor_receipt'],
+            'raw_html_persisted':False,
+            'raw_pdf_persisted':False,
+            'shadow250_collected':0,
+            'scientific_trial_consumed':False
+          }
+          Path('v3/prospective/runtime_receipts/tamano_racecard_smoke_pass_v1.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective/runtime_receipts/tamano_racecard_smoke_pass_v1.json
+          git commit -m 'Record Tamano racecard runtime smoke PASS'
+          git push
