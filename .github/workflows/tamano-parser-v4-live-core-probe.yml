@@ -1,0 +1,69 @@
+name: tamano-parser-v4-live-core-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tamano-parser-v4-live-core-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4 PyMuPDF pandas
+      - name: Run parser v4 official historical-source probe
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib,importlib.util,json,pathlib,requests,subprocess,tempfile,time,traceback
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          from urllib.parse import urljoin,urlparse,unquote
+          pp=pathlib.Path('v3/prospective_shadow250_v2/tamano_racecard_row_parser_v4.py')
+          outp=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/TAMANO_PARSER_V4_LIVE_CORE_PROBE_v1.json'); outp.parent.mkdir(parents=True,exist_ok=True)
+          out={'record':'TAMANO_PARSER_V4_LIVE_CORE_PROBE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),
+               'parser_git_blob':subprocess.check_output(['git','hash-object',str(pp)],text=True).strip(),
+               'expected_parser_git_blob':'397ed3c8839b1ad4ffa4835924dd759397e2124c','source_validation_only':True,
+               'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False}
+          try:
+              if out['parser_git_blob']!=out['expected_parser_git_blob']: raise RuntimeError('blob mismatch')
+              spec=importlib.util.spec_from_file_location('parser',pp); parser=importlib.util.module_from_spec(spec); spec.loader.exec_module(parser)
+              out['synthetic']=parser.synthetic_tests()
+              discovery='https://www.tamano-keirin.jp/racepdf/'; day='2026-07-24'; h={'User-Agent':'Multiverse-Private-Research/1.0'}; s=requests.Session()
+              r=s.get(discovery,headers=h,timeout=20,allow_redirects=False)
+              if r.status_code in (403,429): raise RuntimeError(f'HALT discovery {r.status_code}')
+              if r.status_code!=200: raise RuntimeError(f'discovery {r.status_code}')
+              soup=BeautifulSoup(r.content,'html.parser'); urls=[]
+              for a in soup.find_all('a',href=True):
+                  u=urljoin(discovery,a['href']); p=urlparse(u)
+                  if p.scheme=='https' and p.netloc=='www.tamano-keirin.jp' and p.path.startswith('/wp-content/uploads/') and p.path.lower().endswith('.pdf') and not p.query and unquote(p.path.rsplit('/',1)[-1]).startswith(day.replace('-','')): urls.append(u)
+              urls=sorted(set(urls));
+              if len(urls)!=1: raise RuntimeError(f'PDF cardinality={len(urls)}')
+              time.sleep(10); p=s.get(urls[0],headers=h,timeout=20,allow_redirects=False)
+              if p.status_code!=200 or not p.content.startswith(b'%PDF-'): raise RuntimeError(f'PDF {p.status_code}')
+              sha=hashlib.sha256(p.content).hexdigest()
+              with tempfile.NamedTemporaryFile(suffix='.pdf') as f:
+                  f.write(p.content);f.flush();df=parser.parse_tamano_pdf(f.name,day,urls[0],sha)
+              out['result']={'rows':len(df),'races':int(df.race_id.nunique()),'program_counts':df.groupby('race_program').race_id.nunique().to_dict(),
+                             'pdf_raw_sha256':sha,'pdf_url':urls[0],'transport_date_binding':'PASS','field_size_marker_gate':'PASS'}
+              out['status']='PASS'
+          except Exception as e:
+              out['status']='FAIL_CLOSED';out['error_type']=type(e).__name__;out['error_message']=str(e);out['traceback_tail']=traceback.format_exc().splitlines()[-12:]
+          outp.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(outp.read_text())
+          PY
+      - name: Persist probe
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/TAMANO_PARSER_V4_LIVE_CORE_PROBE_v1.json
+          git commit -m 'Record Tamano parser v4 live core probe'
+          git push
