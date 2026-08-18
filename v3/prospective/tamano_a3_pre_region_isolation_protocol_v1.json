@@ -1,0 +1,41 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "TAMANO_A3_PRE_REGION_ISOLATION_PROTOCOL_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_PENDING_INDEPENDENT_AUDIT_NO_PROSPECTIVE_USE",
+  "scope": "Tamano A3 two-page racecard template only",
+  "coordinate_system": "PyMuPDF top-left points",
+  "template_gate": {
+    "pages": 2,
+    "page_width_pt": 1190.55,
+    "page_height_pt": 841.88,
+    "dimension_tolerance_pt": 1.0,
+    "on_mismatch": "REJECT_TEMPLATE_MISMATCH_FAIL_CLOSED"
+  },
+  "allowed_regions": [
+    {
+      "page": 1,
+      "rect": [610.0, 0.0, 1190.55, 841.88],
+      "meaning": "current-day PRE racecard right-hand region only"
+    },
+    {
+      "page": 2,
+      "rect": [0.0, 0.0, 1190.55, 720.0],
+      "meaning": "current-day PRE racecard tables; bottom promotional/footer region excluded"
+    }
+  ],
+  "explicitly_blinded": [
+    "page-1 left prior-day result area",
+    "prior-day payout area",
+    "bottom promotional/footer area on page 2"
+  ],
+  "post_contamination_sentinel_tokens": [
+    "成績表","払戻","発売金額","２車単","2車単","３連単","3連単","ワイド","着順","風速","合計"
+  ],
+  "rule": "Any sentinel hit in clipped extraction => HALT_FAIL_CLOSED. No full-document extraction is permitted.",
+  "actual_offline_validation": {
+    "2026-07-28": "PASS_REGION_ISOLATION",
+    "2026-07-29": "PASS_REGION_ISOLATION",
+    "2026-07-27速報版2": "REJECT_TEMPLATE_MISMATCH_FAIL_CLOSED"
+  }
+}
