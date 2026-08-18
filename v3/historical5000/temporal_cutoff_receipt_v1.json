@@ -1,0 +1,23 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "NEW_HISTORICAL5000_TEMPORAL_CUTOFF_RECEIPT_v1",
+  "date_jst": "2026-08-18",
+  "status": "PREPARED_FOR_INDEPENDENT_AUDIT_NOT_YET_FROZEN",
+  "rule": "Historical candidate races must occur strictly after the final race date used by the frozen deployment backbone fit/model-selection evidence.",
+  "parent_dev_universe": {
+    "name": "DEV2000_UNIVERSE_v1.csv",
+    "sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2a728e34e91a48338446f3b1",
+    "race_count": 2000,
+    "unique_race_id": 2000,
+    "final_dev_index": 2000,
+    "final_race_id": "3820260410010006",
+    "final_race_date": "2026-04-10"
+  },
+  "historical5000_eligible_date_start": "2026-04-11",
+  "candidate_before_2026_04_11": "INELIGIBLE_FAIL_CLOSED",
+  "evidence_note": "Drive-recovered canonical DEV2000 Universe verifies the final rows are dated 2026-04-10. The v3 deployment fit/model-selection design uses the full exposed DEV2000 backbone. This receipt does not access candidate outcomes or HOLDOUT Price/RESULT/PAYOUT.",
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED"
+}
