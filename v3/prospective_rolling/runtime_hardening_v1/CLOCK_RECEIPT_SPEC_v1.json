@@ -1,0 +1,26 @@
+{
+  "record": "CLOCK_RECEIPT_SPEC_v1",
+  "thresholds": {
+    "max_abs_offset_ms": 100.0,
+    "max_receipt_age_seconds": 60,
+    "min_reference_sources": 1
+  },
+  "required_fields": [
+    "checked_at",
+    "host_time_utc",
+    "reference_time_utc",
+    "offset_ms",
+    "synchronized",
+    "reference_source",
+    "reference_source_count"
+  ],
+  "fail_closed": [
+    "synchronized != true",
+    "abs(offset_ms) >= 100",
+    "receipt older than 60 seconds relative to snapshot_at",
+    "timezone-naive checked_at/snapshot_at",
+    "reference_source_count < 1",
+    "missing field"
+  ],
+  "note": "This verifier does not itself contact NTP. Live deployment must generate the receipt on the collector host from an audited NTP/time-synchronization mechanism."
+}
