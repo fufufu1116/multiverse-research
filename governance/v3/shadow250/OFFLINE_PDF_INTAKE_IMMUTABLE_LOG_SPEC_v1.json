@@ -1,0 +1,11 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "OFFLINE_PDF_INTAKE_IMMUTABLE_LOG_SPEC_v1",
+  "status": "PENDING_INDEPENDENT_AUDIT",
+  "format": "append-only JSONL SHA-256 hash-chain",
+  "genesis_prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "append_rule": "flush + fsync + full chain verify after every append",
+  "pre_parse_invariant": "parser may execute only after manifest/raw-PDF hashes are present in a verified immutable log entry",
+  "on_failure": "HALT_FAIL_CLOSED_NO_PARSE",
+  "network": "OFF"
+}
