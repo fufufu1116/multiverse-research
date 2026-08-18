@@ -1,0 +1,17 @@
+{
+  "record": "ECON_HOLDOUT1000_MEMBERSHIP_ONLY_TEMPORAL_GUARD_v1",
+  "source_universe": "DEV2000_UNIVERSE_v1.csv",
+  "source_universe_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+  "holdout_definition": "dev_index 1001..2000 membership only",
+  "race_count": 1000,
+  "unique_race_ids": 1000,
+  "min_race_date": "2026-03-27",
+  "max_race_date": "2026-04-10",
+  "ordered_race_id_sha256": "814e72d228ebaf40b4fa1aae636c55c69add71d941f27f6900a0e21d91f2e2c8",
+  "sorted_race_id_set_sha256": "54c33d907e2e610599bbdf03b81b6557072ab2eb2a71fce9e1ca1c44295cce54",
+  "price_accessed_for_guard": false,
+  "payout_accessed_for_guard": false,
+  "result_accessed_for_guard": false,
+  "scoring_performed_for_guard": false,
+  "rule": "A prospective candidate is temporally disjoint from ECON_HOLDOUT1000 only if its race_id-derived actual race date equals its public discovery date and is strictly later than max_race_date. This guard does not expose HOLDOUT Price/PAYOUT/RESULT."
+}
