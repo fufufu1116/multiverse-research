@@ -1,0 +1,48 @@
+{
+  "record": "SHADOW250_V2_SOURCE_SET_FREEZE_CANDIDATE_v1",
+  "status": "CANDIDATE_NOT_ACTIVE_PENDING_INDEPENDENT_REAUDIT",
+  "approved_core": {
+    "schema": "MULTIVERSE_SHADOW250_V2_SOURCE_SET_v1",
+    "change_reason": "Independent Gemini audit required NEW_SHADOW_UNIVERSE_REQUIRED_BEFORE_ANY_RACE before first selected race.",
+    "provider_change_midrun": "PROHIBITED",
+    "racecard_source": {
+      "name": "TAMANO_OFFICIAL_RACECARD_PDF",
+      "host": "www.tamano-keirin.jp",
+      "discovery_prefix": "/racepdf/",
+      "pdf_prefix": "/wp-content/uploads/",
+      "role": "FROZEN_5_FIELD_RACECARD_SOURCE_CANDIDATE",
+      "predictive_fields": ["score", "quinella_rate", "S", "B", "class"],
+      "transport_adapter_parent_git_blob": "aec0cace2adc0b132269a1fb77000022993e6623",
+      "pre_region_protocol_parent_git_blob": "bb9ddba1063a648998105fa545bb128d2b510743",
+      "row_parser_v2_git_blob": "fa6dea35c5933181f9b04610ecb698e4889b0aca",
+      "date_binding": "REQUIRED_FROM_PRE_ONLY_CLIPS",
+      "race_program_class_gate": "REQUIRED",
+      "active_entry_gate": "REQUIRED_FAIL_CLOSED"
+    },
+    "identity_locator_source": {
+      "name": "KEIRINJP_PLAYER_SEARCH",
+      "host": "keirin.jp",
+      "path": "/pc/search",
+      "role": "IDENTITY_LOCATOR_ONLY_ZERO_PREDICTIVE_FIELDS",
+      "query_basis": ["prefecture", "term"],
+      "locator_git_blob": "1110879a81ce21cdcc403c1b01e36deb4abeb893",
+      "candidate_snum": "UNTRUSTED_ROUTING_METADATA_ONLY",
+      "raw_html_persisted": false,
+      "provider_fallback": "PROHIBITED"
+    },
+    "supplement_source": {
+      "name": "KEIRINJP_RACERPROFILE",
+      "host": "keirin.jp",
+      "path": "/pc/racerprofile",
+      "role": "FROZEN_3_FIELD_SUPPLEMENT_SOURCE_CANDIDATE",
+      "predictive_fields": ["style", "win_rate", "trio_rate"],
+      "duplicate_consistency": ["class", "score", "quinella_rate"],
+      "full_adapter_parent_git_blob": "a73a28e9568c326b8cd10b4cfa70bcb573f0f852",
+      "final_identity_authority": true,
+      "final_identity_checks": ["registration_number", "normalized_name", "prefecture", "term"]
+    },
+    "no_other_sources": true
+  },
+  "approved_core_sha256": "810c7e84241ca82abdd91fa85f5ece717556a20bb488c4593f0bacb05949f3ac",
+  "scientific_effect": "NONE_UNTIL_INDEPENDENT_APPROVAL_AND_ACTIVATION"
+}
