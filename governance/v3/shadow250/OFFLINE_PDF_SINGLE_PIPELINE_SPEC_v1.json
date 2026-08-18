@@ -1,0 +1,16 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "OFFLINE_PDF_SINGLE_PIPELINE_SPEC_v1",
+  "status": "PENDING_INDEPENDENT_AUDIT",
+  "pipeline": [
+    "LOCAL_OR_USER_SUPPLIED_PDF",
+    "INTAKE_RAW_HASH_AND_MAGIC",
+    "UNIVERSE_INTERSECTION_GATE",
+    "IMMUTABLE_INTAKE_LOG_APPEND_AND_VERIFY",
+    "EXACT_RAW_SHA_RECHECK",
+    "FEATURE_STRIPPING_POSITIVE_SCHEMA",
+    "SEMANTIC_AUDIT_OUTPUT"
+  ],
+  "direct_parser_bypass": "PROHIBITED",
+  "network": "OFF"
+}
