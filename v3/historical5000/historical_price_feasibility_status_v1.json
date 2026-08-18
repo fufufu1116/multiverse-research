@@ -1,0 +1,36 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "HISTORICAL_PRICE_FEASIBILITY_STATUS_v1",
+  "date_jst": "2026-08-18",
+  "status": "NOT_PROVEN_BLOCKED",
+  "required_markets": [
+    "2shatan",
+    "2shahuku",
+    "3rentan",
+    "3renhuku"
+  ],
+  "required_semantics": "preregistered pre-result executable/closing-price definition with race-level provenance",
+  "accepted_price_proof": [
+    "PRE_RACE_SNAPSHOT with retrieval timestamp before frozen cutoff/start",
+    "VERSIONED_AS_OF_SOURCE with independently audited provider semantics and as-of before cutoff/start"
+  ],
+  "prohibited": [
+    "PAYOUT-derived reconstruction",
+    "RESULT-derived reconstruction",
+    "current post-race page treated as historical closing odds without temporal semantics",
+    "silent imputation of missing odds",
+    "using a different market or price time because the required price is missing"
+  ],
+  "current_findings": {
+    "public_official_odds_interfaces_exist": true,
+    "complete_versioned_historical_four_market_asof_path_verified": false,
+    "bulk_permitted_machine_readable_path_verified": false,
+    "5000_race_coverage_verified": false
+  },
+  "decision": "DO_NOT_BUILD_OR_SCORE_HISTORICAL5000_UNTIL_PRICE_PATH_IS_ADMITTED_AND_AUDITED",
+  "alternative_if_closing_price_unavailable": "Any alternate Price definition must be specified PRE-OUTCOME, independently audited, and frozen before candidate outcomes are accessed. It may not be selected after seeing economic results.",
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED"
+}
