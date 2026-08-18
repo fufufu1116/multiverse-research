@@ -1,0 +1,54 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "SHADOW250_ELIGIBLE_UNIVERSE_CHARTER_DRAFT_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_PENDING_INDEPENDENT_AUDIT_NO_COLLECTION",
+  "scientific_role": "SOURCE-CONSTRAINED PROSPECTIVE SCREENING ONLY; NOT FINAL V3 PROOF",
+  "activation_gates": [
+    "freeze exact admitted source set before activation",
+    "every source/adapter independent APPROVE and runtime-smoke PASS",
+    "selection-rule SHA frozen",
+    "permanent exclusion registry active",
+    "HOLDOUT membership-only collision gate active"
+  ],
+  "source_set_rule": "No provider may be added or removed during this Shadow250 universe. A source-set change requires a new Shadow universe.",
+  "eligibility_pre_outcome": {
+    "scheduled_after_activation": true,
+    "racecard_source_available_through_frozen admitted path": true,
+    "template_region_anchor_pass": true,
+    "complete 5+3 PRE for every active entrant": true,
+    "supplement duplicate consistency pass": true,
+    "capture_skew_seconds_max": 120,
+    "all captures before Prediction Lock": true,
+    "holdout_intersection": 0,
+    "previously_used_or_exposed": false,
+    "unsupported_day_template": "PRE-INELIGIBLE SOURCE GAP; no OCR/inference",
+    "result_payout_used_for_eligibility": "PROHIBITED"
+  },
+  "ordering": [
+    "scheduled_start ascending",
+    "venue_code ascending",
+    "race_no ascending"
+  ],
+  "membership": "first 250 races satisfying all frozen PRE-only eligibility gates",
+  "post_outcome_replacement": "PROHIBITED",
+  "after_prediction_lock": "race can never be replaced; later cancellation follows frozen cancellation/scoring rule",
+  "venue_scope": {
+    "single_venue_allowed": true,
+    "claim_limit": "If source set has one venue, evidence is explicitly venue/source-constrained; no national/general-population inference.",
+    "provider_addition_midrun": "PROHIBITED"
+  },
+  "permanent_exclusion": "Every selected Shadow250 race is permanently disqualified from final Prospective v3.",
+  "global_scoring_gate": [
+    "exact 250 membership frozen",
+    "permanent exclusion registry frozen",
+    "scoring commitment frozen"
+  ],
+  "counters": {
+    "prospective_shadow250_screen_count_before_scoring": 0,
+    "first_outcome_bearing_global_scoring": 1,
+    "historical_relaxed_screen_count": 0,
+    "historical_scientific_trial": 0,
+    "prospective_v3_scientific_trial": 0
+  }
+}
