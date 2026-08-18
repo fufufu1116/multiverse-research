@@ -1,0 +1,65 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "HISTORICAL5000_SOURCE_ADMISSION_STATUS_v1",
+  "date_jst": "2026-08-18",
+  "status": "NO_BULK_CANDIDATE_SOURCE_ADMITTED_YET",
+  "scope": "historical post-training PRE plus four-market pre-result Price",
+  "sources": {
+    "KEIRIN.JP": {
+      "role": "official public race information source",
+      "bulk_dynamic_PRE_Price_admission": "NOT_ADMITTED",
+      "reason": "Official public interfaces exist, but this project has not established a primary-source versioned/as-of historical PRE contract or a permitted machine-readable bulk path covering all required dynamic features and four-market Price. Current historical pages alone are insufficient temporal proof.",
+      "allowed_now": "low-rate/manual or tightly bounded semantic diagnostics on already-exposed DEV only, subject to Terms",
+      "raw_public_redistribution": false
+    },
+    "Kdreams": {
+      "bulk_dynamic_PRE_Price_admission": "BLOCKED_PENDING_EXPLICIT_PERMISSION_OR_TERMS_CLEARANCE",
+      "new_raw_archival": false,
+      "new_bulk_scraping": false
+    },
+    "WINTICKET": {
+      "bulk_dynamic_PRE_Price_admission": "PROHIBITED_BY_CURRENT_TERMS_POLICY",
+      "automation": false
+    },
+    "OddsPark": {
+      "bulk_dynamic_PRE_Price_admission": "NOT_ADMITTED",
+      "automation": false,
+      "role_now": "manual semantic cross-check only"
+    },
+    "netkeirin": {
+      "bulk_dynamic_PRE_Price_admission": "BLOCKED_PENDING_PERMISSION",
+      "automation": false
+    },
+    "Chariloto": {
+      "bulk_dynamic_PRE_Price_admission": "NOT_ADMITTED",
+      "role_now": "manual fallback only"
+    },
+    "JKA_OR_OFFICIAL_LICENSED_FEED": {
+      "bulk_dynamic_PRE_Price_admission": "PENDING_OFFICIAL_ACCESS_OR_PERMISSION_EVIDENCE",
+      "priority": "PRIMARY_BREAKTHROUGH_ROUTE",
+      "note": "Official-system capability or past big-data research does not itself prove a public API or permission. Admission requires explicit source/contract evidence."
+    },
+    "全国競輪施行者協議会": {
+      "bulk_dynamic_PRE_Price_admission": "PENDING_OFFICIAL_ACCESS_OR_PERMISSION_EVIDENCE",
+      "priority": "SECONDARY_OFFICIAL_INQUIRY_ROUTE"
+    }
+  },
+  "automation_admission_gate": [
+    "live terms verified",
+    "automation not prohibited",
+    "storage/copyright compatibility",
+    "rate and concurrency limits fixed",
+    "no authentication bypass",
+    "no WAF/CAPTCHA circumvention",
+    "PRE/POST firewall",
+    "publication/redistribution policy",
+    "parser and temporal-semantic audit",
+    "provenance and hashing",
+    "independent audit APPROVE"
+  ],
+  "candidate_bulk_collection_authorized": false,
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED"
+}
