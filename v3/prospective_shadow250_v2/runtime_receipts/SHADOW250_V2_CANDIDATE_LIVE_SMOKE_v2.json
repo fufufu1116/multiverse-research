@@ -1,0 +1,29 @@
+{
+  "error_message": "REJECT search button label",
+  "error_type": "FailClosed",
+  "expected_keirinjp_locator_v2_git_blob": "41517a604bb0c23200cb4d0878d8459f9379d63f",
+  "expected_tamano_parser_git_blob": "fa6dea35c5933181f9b04610ecb698e4889b0aca",
+  "generated_utc": "2026-08-18T23:42:19.259150+00:00",
+  "global_scoring_used": false,
+  "holdout_accessed": false,
+  "keirinjp_locator_v2_git_blob": "41517a604bb0c23200cb4d0878d8459f9379d63f",
+  "record": "SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v2",
+  "result_payout_price_accessed": false,
+  "scientific_trial_consumed": false,
+  "shadow_screen_consumed": false,
+  "status": "FAIL_CLOSED",
+  "tamano_parser_git_blob": "fa6dea35c5933181f9b04610ecb698e4889b0aca",
+  "traceback_tail": [
+    "Traceback (most recent call last):",
+    "  File \"<stdin>\", line 35, in <module>",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/keirinjp_identity_locator_v2.py\", line 287, in synthetic_tests",
+    "    action,payload=_verify_search_landing(landing.encode(),\"岡山\",127)",
+    "                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/keirinjp_identity_locator_v2.py\", line 127, in _verify_search_landing",
+    "    if norm(button.get_text(\" \",strip=True))!=\"検索\": raise FailClosed(\"REJECT search button label\")",
+    "                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "locator_v2.FailClosed: REJECT search button label"
+  ],
+  "wagering_used": false,
+  "workflow_head_sha": "4de8f6c67a62f3893d4dcac36ab3c43dc027efe0"
+}
