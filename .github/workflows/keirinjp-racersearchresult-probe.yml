@@ -1,0 +1,71 @@
+name: keirinjp-racersearchresult-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-racersearchresult-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe exact official identity-search submit request
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          from urllib.parse import urljoin,urlparse,parse_qs
+          base='https://keirin.jp'
+          url=base+'/pc/racersearchresult'
+          payload={
+            'dppg':'1','srmd':'01','gGaiteiCD':'','tikuCD':'','nen':'','bKeirinCD':'','kSyuruiCD':'','girlsKBN':'',
+            'nameSeiKana':'','nameMeiKana':'','nameSei':'','nameMei':'','snum':'',
+            'hukenCD':'63','sotugyouki':'127','kuniCD':'','seibetuCD':'','kyuhanCD':'','tikuCDSensyu':'','age':'',
+            'bHomebankCD':'','homekyogiCD':'','kyakusituCD':'','ckbn':'','stgt':'1'
+          }
+          r=requests.get(url,params=payload,headers={'User-Agent':'MultiverseHybridV3-IdentityLocator/1.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser')
+          candidates=[]
+          for a in soup.find_all('a',href=True):
+              u=urlparse(urljoin(url,a['href'])); q=parse_qs(u.query,keep_blank_values=True)
+              if u.scheme=='https' and u.netloc=='keirin.jp' and u.path=='/pc/racerprofile' and set(q)=={'snum'} and len(q['snum'])==1 and re.fullmatch(r'\d{5,6}',q['snum'][0]):
+                  candidates.append({'snum':q['snum'][0],'label':' '.join(a.get_text(' ',strip=True).split())[:100]})
+          # also detect exact identity tokens without persisting raw HTML
+          text=r.content.decode('utf-8','replace')
+          out={
+            'record':'KEIRINJP_RACERSEARCHRESULT_PROBE_v1',
+            'generated_utc':datetime.now(timezone.utc).isoformat(),
+            'identity_only_probe':True,'predictive_features_collected':False,'raw_html_persisted':False,
+            'holdout_accessed':False,'result_payout_price_accessed':False,
+            'request':{'path':'/pc/racersearchresult','method':'GET','payload':payload},
+            'response':{
+              'status':r.status_code,'content_sha256':hashlib.sha256(r.content).hexdigest(),'content_bytes':len(r.content),
+              'candidate_count':len({x['snum'] for x in candidates}),'candidates':candidates,
+              'contains_015918':text.count('015918')>0,'contains_doi':('土井' in text and '慎二' in text),
+              'racerprofile_count':text.count('/pc/racerprofile'),
+            },
+            'status':'PASS_PROBE'
+          }
+          p=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACERSEARCHRESULT_PROBE_v1.json')
+          p.parent.mkdir(parents=True,exist_ok=True); p.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(p.read_text(encoding='utf-8'))
+          PY
+      - name: Persist probe
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACERSEARCHRESULT_PROBE_v1.json
+          git commit -m 'Record KEIRIN.JP racersearchresult probe'
+          git push
