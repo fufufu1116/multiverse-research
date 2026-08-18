@@ -1,0 +1,67 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "TAMANO_REAL_PDF_SEMANTIC_AUDIT_v1",
+  "date_jst": "2026-08-18",
+  "status": "FAIL_CLOSED_SOURCE_INCOMPLETE_FOR_FROZEN_V3_LANE_P",
+  "source_file": {
+    "file_name": "20260729-玉野.pdf",
+    "acquisition_mode": "OFFLINE_ALREADY_HELD_OR_USER_SUPPLIED",
+    "byte_size": 1123492,
+    "raw_pdf_sha256": "5adf687d7893341c4a6ae0b32c4a47b57f0f99b70c731fead4d214153e654ea6",
+    "manifest_sha256": "6b6be739be3925a42da243ec1613ef73079b32af7c7d15e280542e7411cd849c",
+    "immutable_log_entry_hash": "3faf83fbccb35152106210fdd9581ee86ad7087ff4ae5ca0d691fabe3c6d4c22",
+    "network_used": false
+  },
+  "eligibility": {
+    "completed_non_candidate_attestation": true,
+    "shadow250_intersection": 0,
+    "final_prospective_v3_intersection": 0,
+    "holdout_intersection": 0,
+    "holdout_check_basis": "ECON_HOLDOUT1000 membership-only file; Tamano PDF race date 2026-07-29 is outside the sealed holdout membership window and no holdout outcome/price/payout was accessed."
+  },
+  "document_semantics": {
+    "venue": "玉野",
+    "race_date": "2026-07-29",
+    "document_label": "玉野競輪 出走表 3日目",
+    "pages": 2,
+    "important_layout_finding": "Page 1 physically contains prior-day 成績表/払戻 content on the left and current-day 出走表 PRE content on the right. Therefore raw-file-wide text parsing is unsafe; source-specific PRE-region isolation would be mandatory.",
+    "page_2": "Current-day races 5-12 are presented as 出走表 tables."
+  },
+  "frozen_v3_feature_coverage": {
+    "score": {"status": "PASS", "pdf_label": "得点", "note": "Direct numeric field."},
+    "win_rate": {"status": "MISSING", "pdf_label": null, "note": "No distinct 勝率 column observed."},
+    "quinella_rate": {"status": "PASS", "pdf_label": "連対率", "note": "Displayed as a single decimal rate under 得点/連対率; semantically corresponds to two-place/quinella-rate style field."},
+    "trio_rate": {"status": "MISSING", "pdf_label": null, "note": "No distinct 3連対率 column observed."},
+    "B": {"status": "PASS", "pdf_label": "BK", "note": "Back-stretch lead count; direct racecard field."},
+    "S": {"status": "PASS", "pdf_label": "ST", "note": "Start-position count; direct racecard field."},
+    "style": {"status": "MISSING", "pdf_label": null, "note": "No frozen 逃/追/両 脚質 category column observed. 決り手 counts (逃/捲/差/ク) are not accepted as a substitute."},
+    "class": {"status": "PASS", "pdf_label": "班別", "note": "Direct A1/A2/S1/S2 class category."}
+  },
+  "coverage_summary": {
+    "required_predictive_features": 8,
+    "directly_usable_or_semantically_mapped": 5,
+    "missing": 3,
+    "missing_features": ["win_rate", "trio_rate", "style"],
+    "coverage_fraction": 0.625
+  },
+  "positive_schema_result": {
+    "can_emit_complete_frozen_v3_row": false,
+    "reason": "Frozen Positive Schema requires all predictive features. Missing win_rate/trio_rate/style => QUARANTINE_FAIL_CLOSED."
+  },
+  "source_adjudication": {
+    "tamano_official_pdf_as_standalone_lane_p_source": "REJECT_INCOMPLETE",
+    "tamano_official_pdf_as_partial_secondary_source": "POTENTIALLY_USEFUL_FOR_5_FIELDS_ONLY_PENDING_SOURCE_ADMISSION",
+    "real_pdf_semantic_pass": "NOT_ACHIEVED",
+    "scientific_trial_consumed": false,
+    "shadow250_screen_count_changed": false
+  },
+  "additional_risk": {
+    "mixed_pre_and_prior_result_same_pdf": true,
+    "required_if_source_revisited": "Freeze exact current-day 出走表 page/region anchors before extraction; never perform whole-document text extraction into PRE normalization."
+  },
+  "next_source_requirement": {
+    "must_directly_supply": ["score", "win_rate", "quinella_rate", "trio_rate", "B", "S", "style", "class"],
+    "preferred_source_class": "official or clearly admitted source that exposes explicit 脚質 / 勝率 / 2連対率 / 3連対率 along with score/S/B/class",
+    "do_not_do": "Do not derive style from 決り手 counts and do not synthesize missing rates."
+  }
+}
