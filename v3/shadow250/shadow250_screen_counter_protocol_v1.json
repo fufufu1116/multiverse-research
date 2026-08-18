@@ -1,0 +1,15 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "SHADOW250_SCREEN_COUNTER_PROTOCOL_v1",
+  "date_jst": "2026-08-18",
+  "status": "READY_NO_SCORING",
+  "counter_name": "prospective_shadow250_screen_count",
+  "initial": 0,
+  "allowed_transition": "0->1 exactly once",
+  "transition_timing": "atomically immediately before first outcome-bearing Shadow250 scoring after all locks",
+  "second_scoring_attempt": "HALT_FAIL_CLOSED",
+  "historical_relaxed_screen_count": 0,
+  "historical_scientific_trial": 0,
+  "prospective_v3_scientific_trial": 0,
+  "pre_score_commitment_required": true
+}
