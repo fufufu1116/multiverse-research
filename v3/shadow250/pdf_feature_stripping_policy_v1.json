@@ -1,0 +1,13 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "PDF_FEATURE_STRIPPING_POLICY_v1",
+  "date_jst": "2026-08-18",
+  "status": "FROZEN_CANDIDATE_PENDING_INDEPENDENT_AUDIT",
+  "allowed_output_fields": ["race_id","race_date","venue","car_no","rider_id","class","style","score","S","B","win_rate","quinella_rate","trio_rate","withdrawn"],
+  "allowed_model_features": ["score","win_rate","quinella_rate","trio_rate","B","S","style","class"],
+  "structural_only": ["race_id","race_date","venue","car_no","rider_id","withdrawn"],
+  "positive_schema_rule": "ANY extra output field => FAIL_CLOSED",
+  "missing_feature_rule": "ANY missing frozen predictive field => QUARANTINE_FAIL_CLOSED",
+  "raw_content_rule": "Normalized PRE must not retain PDF text, images, page crops, editorial text, recommendations, prediction marks, odds, result or payout content",
+  "network": "OFF"
+}
