@@ -1,0 +1,36 @@
+{
+  "error_message": "QUARANTINE_FAIL_CLOSED no candidate snum",
+  "error_type": "FailClosed",
+  "generated_utc": "2026-08-18T23:31:59.922565+00:00",
+  "global_scoring_used": false,
+  "holdout_accessed": false,
+  "keirinjp_locator_git_blob": "f40d444508dbb1afacaf42d44e0b94ece33e8a47",
+  "record": "SHADOW250_V2_LIVE_SMOKE_DIAGNOSTIC_v1",
+  "result_payout_price_accessed": false,
+  "scientific_trial_consumed": false,
+  "shadow_screen_consumed": false,
+  "status": "FAIL_CLOSED",
+  "synthetic": {
+    "g1": {
+      "network_used": false,
+      "status": "PASS"
+    },
+    "g2": {
+      "network_used": false,
+      "status": "PASS"
+    }
+  },
+  "tamano_parser_git_blob": "fa6dea35c5933181f9b04610ecb698e4889b0aca",
+  "traceback_tail": [
+    "Traceback (most recent call last):",
+    "  File \"<stdin>\", line 42, in <module>",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/keirinjp_identity_locator_v1.py\", line 292, in resolve_snum",
+    "    candidates=extract_candidate_snums(result.content)",
+    "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/keirinjp_identity_locator_v1.py\", line 229, in extract_candidate_snums",
+    "    raise FailClosed(\"QUARANTINE_FAIL_CLOSED no candidate snum\")",
+    "locator_v1.FailClosed: QUARANTINE_FAIL_CLOSED no candidate snum"
+  ],
+  "wagering_used": false,
+  "workflow_head_sha": "48f9bb7350918e4a1d18a923fd39baf83078592e"
+}
