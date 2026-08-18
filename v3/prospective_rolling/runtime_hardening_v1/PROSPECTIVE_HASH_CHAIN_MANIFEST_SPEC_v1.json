@@ -1,0 +1,24 @@
+{
+  "record": "PROSPECTIVE_HASH_CHAIN_MANIFEST_SPEC_v1",
+  "format": "JSONL append-only chain",
+  "genesis_prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "entry_fields": [
+    "index",
+    "race_id",
+    "snapshot_sha256",
+    "clock_receipt_sha256",
+    "source_admission_sha256",
+    "collector_code_sha256",
+    "prev_entry_hash",
+    "entry_hash"
+  ],
+  "entry_hash_definition": "SHA256(canonical JSON of all entry fields except entry_hash)",
+  "rules": [
+    "index starts at 1 and increments by exactly 1",
+    "prev_entry_hash must equal prior entry_hash",
+    "race_id must be unique",
+    "snapshot hash must be 64 lowercase hex chars",
+    "manifest is append-only; no rewrite/insert/delete",
+    "full-chain verification required before Universe Freeze and before any scoring unlock"
+  ]
+}
