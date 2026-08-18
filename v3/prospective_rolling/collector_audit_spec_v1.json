@@ -1,0 +1,30 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "PROSPECTIVE_PRE_PRICE_SNAPSHOT_COLLECTOR_AUDIT_SPEC_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_IMPLEMENTED_FAIL_CLOSED_NETWORK_DISABLED_PENDING_SOURCE_ADMISSION",
+  "network_default": "DISABLED",
+  "required_pre_fields": ["race_id","race_date","scheduled_start","venue","car_no","rider_id","withdrawn","score","win_rate","quinella_rate","trio_rate","B","S","style","class"],
+  "required_price_markets": ["2shatan","2shahuku","3rentan","3renhuku"],
+  "forbidden_payload_classes": ["RESULT","PAYOUT","finish_order","winning_ticket","dividend"],
+  "timestamp_rule": "timezone-aware snapshot_at must be strictly earlier than frozen cutoff_at",
+  "append_only": true,
+  "overwrite": false,
+  "canonical_sha256": true,
+  "source_adapter_requires_prior_source_admission": true,
+  "holdout_guard": "membership-only race_id collision check",
+  "required_tests": [
+    "reject source admission unless PASS plus independent APPROVE",
+    "reject naive or missing timestamp",
+    "reject snapshot_at >= cutoff_at",
+    "reject forbidden RESULT/PAYOUT semantic keys",
+    "reject missing required PRE field",
+    "reject missing any required market",
+    "reject duplicate overwrite",
+    "stable deterministic serialization hash",
+    "record collector version and code SHA",
+    "network adapter cannot run before separate source-specific audit"
+  ],
+  "real_collection_authorized": false,
+  "trial_effect": 0
+}
