@@ -1,0 +1,19 @@
+{
+  "activation_remains_valid": true,
+  "gaps": [
+    {
+      "detail": "Transport/template guard is runtime-proven, but normalized seven-row five-field extraction is not yet frozen/audited.",
+      "id": "G1_TAMANO_ROW_PARSER",
+      "required": "Freeze and independently audit deterministic row parser."
+    },
+    {
+      "detail": "Tamano racecard gives name/prefecture/term but not KEIRIN.JP registration number snum required by the admitted profile adapter.",
+      "id": "G2_KEIRIN_SNUM_RESOLUTION",
+      "required": "Freeze a PRE-safe identity resolver and verify resolved identity on official racerprofile before fusion."
+    }
+  ],
+  "record": "FIRST_PRE_IMPLEMENTATION_GAP_DISCOVERY_v1",
+  "rule": "No race is selected or appended to the exclusion registry until both gaps are resolved and all existing frozen gates pass.",
+  "selected_races": 0,
+  "status": "FAIL_CLOSED_BEFORE_FIRST_SELECTED_RACE"
+}
