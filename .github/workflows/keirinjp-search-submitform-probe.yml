@@ -1,0 +1,74 @@
+name: keirinjp-search-submitform-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-search-submitform-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe exact hidden submit form only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          out={
+            'record':'KEIRINJP_SEARCH_SUBMITFORM_PROBE_v1',
+            'generated_utc':datetime.now(timezone.utc).isoformat(),
+            'identity_only_probe':True,
+            'predictive_features_collected':False,
+            'raw_html_persisted':False,
+            'holdout_accessed':False,
+            'result_payout_price_accessed':False,
+          }
+          r=requests.get('https://keirin.jp/pc/search',headers={'User-Agent':'MultiverseHybridV3-IdentityLocator/1.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser')
+          f=soup.find('form',attrs={'name':'PJ0501_02SubmitForm'})
+          if f is None: raise RuntimeError('PJ0501_02SubmitForm not found')
+          controls=[]
+          for x in f.find_all(['input','select','textarea','button']):
+              controls.append({
+                'tag':x.name,'type':x.get('type'),'name':x.get('name'),'id':x.get('id'),
+                'value':x.get('value'),'checked':x.has_attr('checked'),
+              })
+          func=[]
+          for s in soup.find_all('script'):
+              body=s.string or s.get_text('\n',strip=False) or ''
+              m=re.search(r'function\s+sensyuSearchExec\s*\(\)\s*\{(.*?)\n\}',body,re.S)
+              if m:
+                  for ln in m.group(0).splitlines():
+                      ln=ln.strip()
+                      if ln: func.append(ln[:700])
+          out['submit_form']={
+            'name':f.get('name'),'id':f.get('id'),'action':f.get('action'),'method':f.get('method'),
+            'onsubmit':f.get('onsubmit'),'controls':controls,
+          }
+          out['sensyuSearchExec_lines']=func[:120]
+          out['landing_sha256']=hashlib.sha256(r.content).hexdigest()
+          out['status']='PASS_PROBE'
+          p=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_SEARCH_SUBMITFORM_PROBE_v1.json')
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(p.read_text(encoding='utf-8'))
+          PY
+      - name: Persist probe
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_SEARCH_SUBMITFORM_PROBE_v1.json
+          git commit -m 'Record KEIRIN.JP search submit-form probe'
+          git push
