@@ -1,0 +1,53 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "OFFICIAL_DATA_ACCESS_INQUIRY_PLAN_v1",
+  "date_jst": "2026-08-18",
+  "status": "PREPARED_NOT_SENT",
+  "purpose": "Obtain an explicit official/licensed path for post-training Historical5000 PRE and four-market Price with defensible historical as-of semantics.",
+  "candidate_time_scope": {
+    "earliest_eligible_date": "2026-04-11",
+    "target_races": 5000,
+    "outcomes_requested_before_locks": false
+  },
+  "required_PRE": {
+    "structural": ["race_id","race_date","scheduled_start","venue","car_no","rider/event membership","withdrawn/substitution"],
+    "frozen_model_features": ["score","win_rate","quinella_rate","trio_rate","B","S","style","class"],
+    "temporal_requirement": "Values must represent the state available before the frozen race cutoff/start, via snapshot or versioned as-of semantics."
+  },
+  "required_Price": {
+    "markets": ["2shatan","2shahuku","3rentan","3renhuku"],
+    "need": "timestamped final/closing or otherwise explicitly defined pre-result price with documented timing semantics",
+    "prohibited": ["RESULT-derived reconstruction","PAYOUT-derived reconstruction"]
+  },
+  "permission_questions": [
+    "Is there an official CSV/API/file/data service for research or licensed use?",
+    "Can historical racecards/statistics be obtained as-of the original pre-race time rather than as present-day rewritten pages?",
+    "Can the four required markets' historical final/closing odds or timestamped odds history be provided?",
+    "Is automated acquisition allowed for approximately 5000 races, and if so what rate/concurrency limits apply?",
+    "May the data be stored privately for reproducibility with hashes/provenance, without public redistribution?",
+    "What attribution, retention, security, or deletion conditions apply?",
+    "Which office/provider should handle a noncommercial research request if the contacted office is not responsible?"
+  ],
+  "priority_routes": [
+    {
+      "target": "JKA",
+      "route": "Request routing to the appropriate information-system/data/research contact through an official channel.",
+      "caution": "Known procurement addresses demonstrate relevant organizational functions but are not assumed to be research-data support contacts."
+    },
+    {
+      "target": "全国競輪施行者協議会",
+      "route": "Official inquiry/contact channel; ask for the appropriate data-provision or research contact.",
+      "caution": "Research/information-provision mission does not itself grant data access."
+    },
+    {
+      "target": "Kdreams",
+      "route": "Only seek explicit permission/terms clearance if an official/licensed route cannot satisfy the frozen fields and Price.",
+      "caution": "No bulk automation/raw archival until explicit clearance."
+    }
+  ],
+  "message_draft_jp": "個人の非商用研究として、競輪の発走前情報のみを用いた予測モデルの再現性・経済性を検証しています。2026年4月11日以降の終了済みレースについて、当時の発走前状態を再現できる出走表・競走得点等の統計・欠場補充情報と、2車単/2車複/3連単/3連複の発走前最終オッズまたは時刻付きオッズ履歴を、公式または許諾済みの方法で取得できるか確認したく存じます。結果や払戻から逆算したデータは使用しません。約5000レースの非商用研究を想定しており、公開再配布はせず、利用条件・保存条件・レート制限等を遵守します。CSV/API/データファイル等の提供方法、過去時点(as-of)の再現可否、自動取得の可否と制限、私的保存・ハッシュ化の可否、適切な担当窓口をご教示ください。",
+  "send_authorization": "NOT_GRANTED_IN_THIS_RECORD",
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false
+}
