@@ -24,9 +24,12 @@
       "host": "keirin.jp",
       "path": "/pc/search",
       "role": "IDENTITY_LOCATOR_ONLY_ZERO_PREDICTIVE_FIELDS",
-      "query_basis": ["prefecture", "term"],
-      "locator_git_blob": "1110879a81ce21cdcc403c1b01e36deb4abeb893",
+      "query_basis": ["prefecture", "term", "active_only"],
+      "locator_git_blob": "f40d444508dbb1afacaf42d44e0b94ece33e8a47",
       "candidate_snum": "UNTRUSTED_ROUTING_METADATA_ONLY",
+      "max_candidates": 10,
+      "max_locator_elapsed_seconds": 60.0,
+      "candidate_fetch_failure": "HALT_ENTIRE_RESOLUTION",
       "raw_html_persisted": false,
       "provider_fallback": "PROHIBITED"
     },
@@ -43,6 +46,6 @@
     },
     "no_other_sources": true
   },
-  "approved_core_sha256": "810c7e84241ca82abdd91fa85f5ece717556a20bb488c4593f0bacb05949f3ac",
+  "approved_core_sha256": "a24dd6d4874e389cf43832a4ea98e61005595aed4924ee764318a641219431df",
   "scientific_effect": "NONE_UNTIL_INDEPENDENT_APPROVAL_AND_ACTIVATION"
 }
