@@ -1,0 +1,21 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "KEIRINJP_RACERPROFILE_PRIMARY_ROBOTS_EVIDENCE_v1",
+  "date_jst": "2026-08-18",
+  "status": "PRIMARY_SOURCE_VERIFIED",
+  "source": "https://keirin.jp/robots.txt",
+  "relevant_rules": [
+    "User-agent: *",
+    "Disallow:/",
+    "Allow:/pc/racerprofile"
+  ],
+  "target_path": "/pc/racerprofile?snum=<registration_number>",
+  "rfc9309_interpretation": {
+    "rule": "most specific matching path applies",
+    "target": "Allow:/pc/racerprofile is more specific than Disallow:/",
+    "robots_path_adjudication": "ALLOW_FOR_GENERIC_CRAWLER"
+  },
+  "important_limit": "Robots Exclusion Protocol is not itself legal/contractual access authorization.",
+  "raw_source_byte_hash": "NOT_AVAILABLE_FROM_WEB_TOOL",
+  "canonical_relevant_rules_sha256": "abc616952d96ac7b8da7db78835c8bc3d9c74e79a1fc06694cb9aa1fa43b7f5f"
+}
