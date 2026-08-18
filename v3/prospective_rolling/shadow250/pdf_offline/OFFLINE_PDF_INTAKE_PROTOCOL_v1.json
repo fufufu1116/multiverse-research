@@ -1,0 +1,18 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "OFFLINE_PDF_INTAKE_PROTOCOL_v1",
+  "date_jst": "2026-08-18",
+  "status": "READY_NO_REAL_PDF",
+  "network_acquisition_by_multiverse": false,
+  "required_preparse_order": [
+    "validate PDF byte signature",
+    "compute exact raw-byte SHA-256",
+    "record byte size",
+    "write intake manifest",
+    "verify completed non-candidate status",
+    "verify zero intersection with Shadow250, final Prospective v3, and ECON_HOLDOUT1000",
+    "only then permit offline semantic parser"
+  ],
+  "inspection_mode": "OFFLINE_NONCANDIDATE_SEMANTIC_ONLY",
+  "on_any_failure": "HALT_FAIL_CLOSED_NO_PARSE"
+}
