@@ -1,0 +1,21 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "KEIRINJP_RACERPROFILE_SOURCE_FINAL_ACCEPTANCE_v1",
+  "date_jst": "2026-08-18",
+  "independent_audit_verdict": "APPROVE",
+  "status": "SOURCE_ADMITTED_SUPPLEMENT_ONLY",
+  "authorized_scope": {
+    "host": "keirin.jp",
+    "path": "/pc/racerprofile",
+    "method": "GET",
+    "query_key": "snum",
+    "role": "Shadow250 Lane-P missing-3 SUPPLEMENT only",
+    "fields": ["style", "win_rate", "trio_rate"],
+    "duplicate_consistency": ["class", "score", "quinella_rate"]
+  },
+  "governance_network_authorization": "ON_RESTRICTED_APPROVED",
+  "runtime_live_smoke": "NOT_YET_PASS_ENVIRONMENT_DNS",
+  "shadow250_collected": 0,
+  "scoring": "UNAUTHORIZED",
+  "ECON_HOLDOUT1000": "SEALED"
+}
