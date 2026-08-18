@@ -1,0 +1,95 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "FEATURE_TEMPORAL_ALLOWLIST_DRAFT_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_PENDING_DEV_SEMANTIC_DIAGNOSTIC_AND_INDEPENDENT_AUDIT",
+  "source_schema_basis": "Frozen DEV2000 prediction pipeline",
+  "required_structural_fields": [
+    "race_id",
+    "car_no",
+    "rider_id",
+    "withdrawn"
+  ],
+  "required_prediction_features": [
+    "score",
+    "win_rate",
+    "quinella_rate",
+    "trio_rate",
+    "B",
+    "S",
+    "style",
+    "class"
+  ],
+  "proof_classes": [
+    "PRE_RACE_SNAPSHOT",
+    "VERSIONED_AS_OF_SOURCE",
+    "PROVABLY_INVARIANT_FIELD"
+  ],
+  "field_rules": {
+    "race_id": {
+      "provisional_class": "EVENT_IDENTITY",
+      "allowed_proof": ["PROVABLY_INVARIANT_FIELD", "PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "PENDING_SEMANTIC_AUDIT"
+    },
+    "rider_id": {
+      "provisional_class": "IDENTITY_VALUE_BUT_EVENT_MEMBERSHIP_DYNAMIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "note": "Rider identity itself may be invariant, but inclusion in the specific race must be proven pre-race.",
+      "status": "PENDING_SEMANTIC_AUDIT"
+    },
+    "car_no": {
+      "provisional_class": "EVENT_DYNAMIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "withdrawn": {
+      "provisional_class": "EVENT_DYNAMIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "score": {
+      "provisional_class": "TIME_DYNAMIC_STATISTIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "win_rate": {
+      "provisional_class": "TIME_DYNAMIC_STATISTIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "quinella_rate": {
+      "provisional_class": "TIME_DYNAMIC_STATISTIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "trio_rate": {
+      "provisional_class": "TIME_DYNAMIC_STATISTIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "B": {
+      "provisional_class": "TIME_DYNAMIC_STATISTIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "S": {
+      "provisional_class": "TIME_DYNAMIC_STATISTIC",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "style": {
+      "provisional_class": "POTENTIALLY_REVISING_CLASSIFICATION",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    },
+    "class": {
+      "provisional_class": "EVENT_TIME_CLASSIFICATION",
+      "allowed_proof": ["PRE_RACE_SNAPSHOT", "VERSIONED_AS_OF_SOURCE"],
+      "status": "BLOCK_UNTIL_PROVEN"
+    }
+  },
+  "fail_closed_rule": "No required field may enter NEW_HISTORICAL5000 unless its proof requirement passes for that source and frozen missingness semantics permit it.",
+  "diagnostic_data": "already-exposed DEV races only",
+  "candidate_outcome_use": false,
+  "trial_effect": 0
+}
