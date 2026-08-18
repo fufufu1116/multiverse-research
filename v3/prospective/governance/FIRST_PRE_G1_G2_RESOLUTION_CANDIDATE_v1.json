@@ -1,0 +1,40 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "FIRST_PRE_G1_G2_RESOLUTION_CANDIDATE_v1",
+  "status": "PENDING_INDEPENDENT_GEMINI_AUDIT_NO_SHADOW_RACE_SELECTED",
+  "activation_timestamp_jst": "2026-08-19T00:03:49+09:00",
+  "shadow250_selected": 0,
+  "G1": {
+    "status": "IMPLEMENTED_REALFILE_PASS",
+    "method": "Tamano A3 fixed geometry + private-use car-number glyph anchors E524..E52A = car 1..7",
+    "outputs": "84 normalized entrant rows / 12 races",
+    "real_tests": [
+      {"file":"20260728 玉野.pdf","raw_pdf_sha256":"1c5ec1a04f5fe6b77398ed975a49d1633a4d2c59b4c83624a24b871d7b757a5e","rows":84,"races":12,"cars_per_race":[7,7,7,7,7,7,7,7,7,7,7,7],"missing_required":0,"status":"PASS"},
+      {"file":"20260729-玉野.pdf","raw_pdf_sha256":"5adf687d7893341c4a6ae0b32c4a47b57f0f99b70c731fead4d214153e654ea6","rows":84,"races":12,"cars_per_race":[7,7,7,7,7,7,7,7,7,7,7,7],"missing_required":0,"status":"PASS"}
+    ],
+    "no_ocr": true,
+    "no_full_document_extraction": true
+  },
+  "G2": {
+    "status": "IMPLEMENTED_GUARD_PLUS_OPERATING_MODEL_PENDING_AUDIT",
+    "official_range_source": "JKA 010 選手登録年月日一覧 PDF",
+    "official_range_source_url": "https://www.keirin-autorace.or.jp/documents/www/disclosure/shiryou/010_senshu.pdf",
+    "term_intervals_frozen": "57..130 with documented non-contiguous late-registration intervals",
+    "locator_semantics": "candidate snum is UNTRUSTED LOCATOR ONLY; no hint value enters model/features",
+    "hint_must_pass": "candidate snum belongs to official JKA registration interval(s) for Tamano term",
+    "final_authority": "already-approved frozen KEIRIN.JP /pc/racerprofile adapter",
+    "final_match_required": ["registration_number","normalized_name","prefecture","term"],
+    "wrong_hint": "QUARANTINE_FAIL_CLOSED",
+    "cache": "rider_key->snum may be cached only after official profile identity verification; registration number is locator identity, not predictive feature",
+    "source_set_question": "Independent auditor must decide whether an untrusted locator hint discovered outside the feature pipeline constitutes source-set drift. If YES, create a new Shadow universe before any race; selected_count is still 0. If NO, existing source set remains unchanged because all accepted identity and predictive facts come only from the frozen official racerprofile adapter.",
+    "seven_rider_range_test": [
+      {"car_no":1,"name":"土井慎二","prefecture":"岡山","term":127,"candidate_snum":"015918","term_range_pass":true,"official_identity_verifier_synthetic_pass":true},
+      {"car_no":2,"name":"三木健治","prefecture":"沖縄","term":73,"candidate_snum":"012838","term_range_pass":true,"official_identity_verifier_synthetic_pass":true},
+      {"car_no":3,"name":"鈴木愼二","prefecture":"神奈川","term":74,"candidate_snum":"012882","term_range_pass":true,"official_identity_verifier_synthetic_pass":true},
+      {"car_no":4,"name":"大崎智久","prefecture":"青森","term":89,"candidate_snum":"013983","term_range_pass":true,"official_identity_verifier_synthetic_pass":true},
+      {"car_no":5,"name":"田中会心","prefecture":"熊本","term":123,"candidate_snum":"015748","term_range_pass":true,"official_identity_verifier_synthetic_pass":true},
+      {"car_no":6,"name":"黒瀬浩一","prefecture":"静岡","term":57,"candidate_snum":"011372","term_range_pass":true,"official_identity_verifier_synthetic_pass":true},
+      {"car_no":7,"name":"山田武","prefecture":"群馬","term":87,"candidate_snum":"013838","term_range_pass":true,"official_identity_verifier_synthetic_pass":true}
+    ]
+  }
+}
