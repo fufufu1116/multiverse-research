@@ -1,0 +1,28 @@
+{
+  "record": "HISTORICAL_RELAXED_PRE_SCORE_COMMITMENT_SPEC_v1",
+  "status": "READY_NO_SCORING",
+  "atomic_rule": "Commitment artifact and screen_count transition receipt must exist before any outcome-bearing scorer reads RESULT.",
+  "required_commit_fields": [
+    "candidate_universe_sha256",
+    "eligible_subset_sha256",
+    "pre_proxy_sha256",
+    "price_proxy_sha256",
+    "prediction_lock_sha256",
+    "proxy_price_lock_sha256",
+    "decision_lock_sha256",
+    "fold_assignment_sha256",
+    "scorer_code_sha256",
+    "model_ids_and_frozen_parameter_refs",
+    "haircuts",
+    "odds_floor_formula",
+    "uncertainty_threshold",
+    "exclusion_rate_threshold",
+    "classification_rules",
+    "historical_relaxed_screen_count_before",
+    "commitment_created_at_utc"
+  ],
+  "commitment_hash": "SHA256(canonical JSON)",
+  "screen_count_rule": "R4001-R5000 may transition exactly once from 0 to 1 immediately before first scoring; second scoring attempt HALT.",
+  "result_unlock_scope": "Only exact frozen eligible screening set after all locks and independent approval.",
+  "ECON_HOLDOUT1000": "SEALED"
+}
