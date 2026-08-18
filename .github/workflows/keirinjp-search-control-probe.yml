@@ -1,0 +1,92 @@
+name: keirinjp-search-control-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-search-control-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe form controls and search JavaScript only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          from urllib.parse import urljoin
+          out={
+            'record':'KEIRINJP_SEARCH_CONTROL_PROBE_v1',
+            'generated_utc':datetime.now(timezone.utc).isoformat(),
+            'identity_only_probe':True,
+            'predictive_features_collected':False,
+            'raw_html_persisted':False,
+            'holdout_accessed':False,
+            'result_payout_price_accessed':False,
+          }
+          url='https://keirin.jp/pc/search'
+          r=requests.get(url,headers={'User-Agent':'MultiverseHybridV3-IdentityLocator/1.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser')
+          forms=[]
+          for f in soup.find_all('form'):
+              txt=''.join(f.get_text(' ',strip=True).split())
+              if not all(x in txt for x in ('名字','名前','登録番号','府県','卒業期','級班','脚質')):
+                  continue
+              controls=[]
+              for x in f.find_all(['input','button','select','textarea']):
+                  d={
+                    'tag':x.name,
+                    'type':x.get('type'),
+                    'name':x.get('name'),
+                    'id':x.get('id'),
+                    'value':x.get('value'),
+                    'onclick':x.get('onclick'),
+                    'onchange':x.get('onchange'),
+                  }
+                  label=''.join(x.get_text(' ',strip=True).split())
+                  if label: d['label']=label[:100]
+                  controls.append(d)
+              forms.append({
+                'action':f.get('action'),'method':f.get('method'),'id':f.get('id'),'name':f.get('name'),
+                'onsubmit':f.get('onsubmit'),'controls':controls,
+              })
+          scripts=[]
+          needles=['UNQ_orexpandText_22','UNQ_select_21','UNQ_checkbox_34','stgt','racer','search']
+          for s in soup.find_all('script'):
+              body=s.string or s.get_text('\n',strip=False) or ''
+              low=body.lower()
+              if not any(n.lower() in low for n in needles): continue
+              lines=[]
+              for ln in body.splitlines():
+                  if any(n.lower() in ln.lower() for n in needles):
+                      lines.append(ln.strip()[:500])
+              if lines:
+                  scripts.append({'src':s.get('src'),'matching_lines':lines[:80]})
+          out['status']='PASS_PROBE'
+          out['landing_sha256']=hashlib.sha256(r.content).hexdigest()
+          out['candidate_forms']=forms
+          out['script_semantic_matches']=scripts[:30]
+          path=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_SEARCH_CONTROL_PROBE_v1.json')
+          path.parent.mkdir(parents=True,exist_ok=True)
+          path.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(path.read_text(encoding='utf-8'))
+          PY
+      - name: Persist probe
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_SEARCH_CONTROL_PROBE_v1.json
+          git commit -m 'Record KEIRIN.JP search control probe'
+          git push
