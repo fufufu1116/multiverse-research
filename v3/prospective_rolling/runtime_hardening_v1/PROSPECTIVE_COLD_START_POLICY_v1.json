@@ -1,0 +1,32 @@
+{
+  "record": "PROSPECTIVE_COLD_START_POLICY_v1",
+  "status": "DRAFT_PENDING_INDEPENDENT_AUDIT",
+  "principle": "No new learned parameter, imputation, or category encoding may be invented during prospective collection.",
+  "rules": {
+    "unseen_rider_id": {
+      "decision": "ALLOW_IF_ALL_FROZEN_PRE_FEATURES_PRESENT",
+      "reason": "rider_id is structural identity/binding, not a frozen numeric prediction feature.",
+      "forbidden": "no rider-specific parameter fitting or backfill from future outcomes"
+    },
+    "unseen_venue": {
+      "decision": "ALLOW_IF_VENUE_NOT_USED_AS_FROZEN_MODEL_FEATURE_AND_ALL_REQUIRED_PRE_FIELDS_PRESENT",
+      "reason": "venue is structural/provenance in the frozen collector contract, not a frozen prediction feature.",
+      "forbidden": "no venue-specific correction learned during collection"
+    },
+    "style": {
+      "allowed_domain": ["逃", "追", "両"],
+      "unknown": "QUARANTINE_FAIL_CLOSED"
+    },
+    "class": {
+      "allowed_domain": ["SS", "S1", "S2", "A1", "A2", "A3", "L1"],
+      "unknown": "QUARANTINE_FAIL_CLOSED"
+    },
+    "missing_numeric_prediction_feature": {
+      "decision": "QUARANTINE_FAIL_CLOSED",
+      "features": ["score", "win_rate", "quinella_rate", "trio_rate", "B", "S"]
+    },
+    "new_or_unknown_category_other_than_structural_identity": {
+      "decision": "QUARANTINE_FAIL_CLOSED_UNTIL_PREOUTCOME_AMENDMENT_AND_AUDIT"
+    }
+  }
+}
