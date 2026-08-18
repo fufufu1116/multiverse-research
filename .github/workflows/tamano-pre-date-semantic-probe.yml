@@ -1,0 +1,69 @@
+name: tamano-pre-date-semantic-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tamano-pre-date-semantic-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4 PyMuPDF
+      - name: Probe date-like tokens inside frozen PRE clips only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests,tempfile,time,unicodedata
+          import fitz
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          from urllib.parse import urljoin,urlparse,unquote
+          W,H=1190.55,841.88
+          clips={0:fitz.Rect(610,0,W,H),1:fitz.Rect(0,0,W,720)}
+          discovery='https://www.tamano-keirin.jp/racepdf/'; day='2026-07-24'; h={'User-Agent':'Multiverse-Private-Research/1.0'}
+          s=requests.Session(); r=s.get(discovery,headers=h,timeout=20,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'discovery {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser'); urls=[]
+          for a in soup.find_all('a',href=True):
+              u=urljoin(discovery,a['href']); p=urlparse(u)
+              if p.scheme=='https' and p.netloc=='www.tamano-keirin.jp' and p.path.startswith('/wp-content/uploads/') and p.path.lower().endswith('.pdf') and not p.query and unquote(p.path.rsplit('/',1)[-1]).startswith(day.replace('-','')):
+                  urls.append(u)
+          urls=sorted(set(urls))
+          if len(urls)!=1: raise RuntimeError(f'pdf cardinality={len(urls)}')
+          time.sleep(10); p=s.get(urls[0],headers=h,timeout=20,allow_redirects=False)
+          if p.status_code!=200 or not p.content.startswith(b'%PDF-'): raise RuntimeError(f'pdf {p.status_code}')
+          doc=fitz.open(stream=p.content,filetype='pdf')
+          pages=[]
+          for pi,clip in clips.items():
+              words=doc[pi].get_text('words',clip=clip)
+              hits=[]
+              for w in words:
+                  t=unicodedata.normalize('NFKC',w[4])
+                  if (any(k in t for k in ['年','月','日','令和','2026','07','24']) or re.search(r'\d{1,4}[./-]\d{1,2}',t)):
+                      hits.append({'text':t,'x0':round(w[0],2),'y0':round(w[1],2),'x1':round(w[2],2),'y1':round(w[3],2)})
+              # Header-only first 220pt, still within frozen PRE clip; record compact tokens only.
+              header=[{'text':unicodedata.normalize('NFKC',w[4]),'x0':round(w[0],2),'y0':round(w[1],2)} for w in words if w[1] <= 220]
+              pages.append({'page':pi+1,'date_like_tokens':hits[:120],'header_tokens':header[:180]})
+          out={'record':'TAMANO_PRE_DATE_SEMANTIC_PROBE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),
+               'event_day':day,'pdf_url':urls[0],'pdf_raw_sha256':hashlib.sha256(p.content).hexdigest(),
+               'pre_clips_only':True,'full_document_extraction':False,'result_payout_price_accessed':False,'holdout_accessed':False,
+               'pages':pages,'status':'PASS_PROBE'}
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/TAMANO_PRE_DATE_SEMANTIC_PROBE_v1.json'); q.parent.mkdir(parents=True,exist_ok=True)
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8'); print(q.read_text())
+          PY
+      - name: Persist probe
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/TAMANO_PRE_DATE_SEMANTIC_PROBE_v1.json
+          git commit -m 'Record Tamano PRE-only date semantic probe'
+          git push
