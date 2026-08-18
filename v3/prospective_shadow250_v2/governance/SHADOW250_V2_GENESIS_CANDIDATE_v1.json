@@ -1,0 +1,56 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "SHADOW250_V2_GENESIS_CANDIDATE_v1",
+  "status": "NOT_ACTIVE_PENDING_INDEPENDENT_GEMINI_REAUDIT",
+  "date_jst": "2026-08-19",
+  "reason": "Gemini CONDITIONAL APPROVE found P0/P1 issues and explicitly required NEW_SHADOW_UNIVERSE_REQUIRED_BEFORE_ANY_RACE.",
+  "predecessor": {
+    "universe": "Shadow250-v1",
+    "activation_timestamp_jst": "2026-08-19T00:03:49+09:00",
+    "selected_races": 0,
+    "prospective_screen_count": 0,
+    "prospective_v3_scientific_trial": 0,
+    "mutation": "PROHIBITED"
+  },
+  "candidate_bindings": {
+    "source_set_record": "SHADOW250_V2_SOURCE_SET_FREEZE_CANDIDATE_v1.json",
+    "source_set_core_sha256": "810c7e84241ca82abdd91fa85f5ece717556a20bb488c4593f0bacb05949f3ac",
+    "selection_rule_record": "SHADOW250_V2_SELECTION_RULE_FREEZE_CANDIDATE_v1.json",
+    "selection_rule_core_sha256": "659a06b520d3d528cd3992aec13d3d9b3a51475bc6b16e03aeee0377dea34d4e",
+    "tamano_parser_v2_git_blob": "fa6dea35c5933181f9b04610ecb698e4889b0aca",
+    "keirinjp_identity_locator_v1_git_blob": "1110879a81ce21cdcc403c1b01e36deb4abeb893",
+    "prediction_lock_sha256": "2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada",
+    "prediction_model_change": "PROHIBITED"
+  },
+  "issue_resolution_candidate": {
+    "ISSUE-G1-DATE-BINDING": "Candidate v2 binds external ISO race_date to unique Reiwa date found only inside frozen PRE clips; mismatch fails closed.",
+    "ISSUE-G1-WITHDRAWN-HARDCODE": "Candidate v2 requires field-size=7, seven current car anchors, seven complete current rows, and no explicit withdrawal/exclusion/cancellation token in the current-entry identity/core strip before emitting withdrawn=false; any inconsistency is PRE_INELIGIBLE_SOURCE_GAP.",
+    "ISSUE-CLASS-PROGRAM-GATE-MISSING": "Candidate v2 requires same-PDF program metadata plus class-set compatibility: S subset SS/S1/S2; A12 subset A1/A2; A3 exactly A3; L1 exactly L1; cross-program mixtures fail closed.",
+    "ISSUE-G2-SNUM-PROVENANCE-UNBOUND": "Candidate locator uses only official KEIRIN.JP /pc/search with prefecture+term query, extracts only official racerprofile snum links, and requires a unique four-field identity match before snum can route the frozen supplement fetch. No predictive field is emitted by locator.",
+    "ISSUE-GOV-ADAPTER-HASH-REBINDING": "Resolved structurally by separate Shadow250-v2 candidate; predecessor remains immutable at selected=0. No v2 activation occurs before independent approval."
+  },
+  "runtime_validation": {
+    "synthetic_tests": "PASS_IN_CHAT_RUNTIME_NOT_YET_A_FREEZE_RECEIPT",
+    "live_smoke_workflow": ".github/workflows/shadow250-v2-candidate-smoke.yml",
+    "expected_receipt": "v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v1.json",
+    "receipt_present_at_genesis_creation": false,
+    "therefore_live_smoke_status": "UNPROVEN_PENDING_RECEIPT"
+  },
+  "activation": {
+    "authorized": false,
+    "timestamp_jst": null,
+    "selected_races": 0,
+    "prospective_screen_count": 0,
+    "prospective_v3_scientific_trial": 0
+  },
+  "sealed": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_result_access": false,
+    "holdout_payout_access": false,
+    "holdout_price_access": false,
+    "holdout_scored": false
+  },
+  "unauthorized": ["global_scoring", "Lane_E", "final_v3_proof", "wagering"],
+  "next_gate": "INDEPENDENT_GEMINI_REAUDIT_SHADOW250_V2_CANDIDATE",
+  "governance_effect": "CANDIDATE_ONLY_NO_SCIENTIFIC_STATE_CHANGE"
+}
