@@ -1,0 +1,40 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "HISTORICAL_PRICE_FEASIBILITY_STATUS_v2",
+  "date_jst": "2026-08-18",
+  "status": "SEMANTICALLY_PROMISING_NOT_ADMITTED_NOT_EXECUTABLE_PROVEN",
+  "required_markets": ["2shatan","2shahuku","3rentan","3renhuku"],
+  "dev_only_manual_semantic_evidence": {
+    "source": "Kdreams historical odds page on an already-exposed DEV race",
+    "race_id": "4420260228030012",
+    "scheduled_start": "16:20",
+    "betting_cutoff": "16:15",
+    "display": "確定オッズ",
+    "display_timestamp": "2026-03-02 16:21",
+    "markets_observed": ["3rentan","2shatan","3renhuku","2shahuku","2wakutan","2wakufuku","wide"],
+    "interpretation": "A persistent final-odds representation exists. The displayed timestamp is after scheduled start, so this observation alone does not prove that the final values were observable/executable before betting cutoff or race start."
+  },
+  "provider_help_semantics": {
+    "source": "Kdreams help",
+    "finding": "Past-race navigation identifies the odds view as each race's exact/final odds (確定オッズ).",
+    "limitation": "This still does not prove pre-cutoff executability or authorize bulk acquisition/storage."
+  },
+  "price_gate_decision": {
+    "historical_final_price_existence": "SUPPORTED_SEMANTICALLY",
+    "pre_result_semantics": "PLAUSIBLE_BUT_NOT_SUFFICIENTLY_PROVEN_FOR_FROZEN_GATE",
+    "pre_cutoff_executability": "NOT_PROVEN",
+    "bulk_legal_terms_path": "NOT_ADMITTED",
+    "5000_coverage": "NOT_PROVEN"
+  },
+  "required_to_pass": [
+    "explicit provider/official semantics defining the frozen closing-price timestamp and whether it is available before the required decision point, OR an independently approved price definition consistent with frozen science",
+    "permitted/licensed machine-readable acquisition path for all four markets",
+    "race-level provenance and completeness proof for exact 5000",
+    "no payout/result-derived reconstruction"
+  ],
+  "candidate_bulk_collection_authorized": false,
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED"
+}
