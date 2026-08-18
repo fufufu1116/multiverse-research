@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse, hashlib, json, sys, time
-from urllib.parse import urljoin, urlparse
+from urllib.parse import unquote, urljoin, urlparse
 
 import fitz
 import requests
@@ -43,6 +43,20 @@ def validate_pdf_url(url, discovered_exact_hrefs):
     if url not in set(discovered_exact_hrefs):
         raise FailClosed("REJECT guessed/non-session PDF")
     return url
+
+def select_pdf_for_event_day(discovered_exact_hrefs, event_day):
+    yyyymmdd = str(event_day).replace("-", "")
+    if len(yyyymmdd) != 8 or not yyyymmdd.isdigit():
+        raise FailClosed("REJECT invalid event day")
+    candidates = []
+    for href in discovered_exact_hrefs:
+        validate_pdf_url(href, discovered_exact_hrefs)
+        basename = unquote(urlparse(href).path.rsplit("/", 1)[-1])
+        if basename.startswith(yyyymmdd) and basename.lower().endswith(".pdf"):
+            candidates.append(href)
+    if len(candidates) != 1:
+        raise FailClosed(f"REJECT event-day PDF cardinality={len(candidates)}")
+    return candidates[0]
 
 class RuntimeLimiter:
     def __init__(self):
@@ -126,7 +140,7 @@ def _get(session, limiter, event_day, kind, url):
     return r
 
 
-def smoke(discovery_url, expected_pdf_url, event_day):
+def smoke(discovery_url, event_day):
     validate_discovery_url(discovery_url)
     limiter = RuntimeLimiter()
     s = requests.Session()
@@ -134,9 +148,9 @@ def smoke(discovery_url, expected_pdf_url, event_day):
     if "text/html" not in discovery.headers.get("content-type", "").lower():
         raise FailClosed("REJECT discovery content-type")
     hrefs = discover_pdf_hrefs(discovery.content, discovery_url)
-    validate_pdf_url(expected_pdf_url, hrefs)
+    selected_pdf_url = select_pdf_for_event_day(hrefs, event_day)
     time.sleep(MIN_SPACING_SECONDS)
-    pdf = _get(s, limiter, event_day, "pdf", expected_pdf_url)
+    pdf = _get(s, limiter, event_day, "pdf", selected_pdf_url)
     ctype = pdf.headers.get("content-type", "").lower()
     if "application/pdf" not in ctype and not pdf.content.startswith(b"%PDF-"):
         raise FailClosed("REJECT PDF content-type/magic")
@@ -145,7 +159,7 @@ def smoke(discovery_url, expected_pdf_url, event_day):
         "record":"TAMANO_RACECARD_RUNTIME_SMOKE_PASS_v1",
         "status":"PASS",
         "discovery_url":discovery_url,
-        "pdf_url":expected_pdf_url,
+        "pdf_url":selected_pdf_url,
         "event_day":event_day,
         "capture_timestamp_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "discovery_content_hash":sha256_bytes(discovery.content),
@@ -169,6 +183,11 @@ def synthetic():
     assert validate_pdf_url(pdf, [pdf])
     try: validate_pdf_url(pdf, []); raise AssertionError("guessed PDF not rejected")
     except FailClosed: pass
+    p1 = "https://www.tamano-keirin.jp/wp-content/uploads/2026/07/20260729-%E7%8E%89%E9%87%8E.pdf"
+    p2 = "https://www.tamano-keirin.jp/wp-content/uploads/2026/07/20260728%E3%80%80%E7%8E%89%E9%87%8E.pdf"
+    assert select_pdf_for_event_day([p1,p2], "2026-07-29") == p1
+    try: select_pdf_for_event_day([p1,"https://www.tamano-keirin.jp/wp-content/uploads/2026/07/20260729-other.pdf"], "2026-07-29"); raise AssertionError("ambiguous day not rejected")
+    except FailClosed: pass
     lim = RuntimeLimiter(); lim.before("2026-08-19","discovery",100)
     try: lim.before("2026-08-19","discovery",105); raise AssertionError("spacing not rejected")
     except FailClosed: pass
@@ -188,15 +207,14 @@ def main():
     ap.add_argument("--synthetic", action="store_true")
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--discovery-url")
-    ap.add_argument("--pdf-url")
     ap.add_argument("--event-day")
     args = ap.parse_args()
     if args.synthetic:
         print(json.dumps(synthetic(), ensure_ascii=False)); return 0
     if args.smoke:
-        if not all([args.discovery_url,args.pdf_url,args.event_day]):
-            raise SystemExit("FAIL_CLOSED smoke requires discovery-url/pdf-url/event-day")
-        print(json.dumps(smoke(args.discovery_url,args.pdf_url,args.event_day), ensure_ascii=False)); return 0
+        if not all([args.discovery_url,args.event_day]):
+            raise SystemExit("FAIL_CLOSED smoke requires discovery-url/event-day")
+        print(json.dumps(smoke(args.discovery_url,args.event_day), ensure_ascii=False)); return 0
     raise SystemExit("FAIL_CLOSED no mode")
 
 if __name__ == "__main__":
