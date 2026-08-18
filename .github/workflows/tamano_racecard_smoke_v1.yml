@@ -1,4 +1,4 @@
-# trigger: diagnostic restricted smoke after source APPROVE
+# trigger: second and final 2026-07-29 discovery smoke using exact discovered href
 name: Tamano Racecard Smoke v1
 
 on:
@@ -41,7 +41,6 @@ jobs:
             --smoke \
             --event-day '2026-07-29' \
             --discovery-url 'https://www.tamano-keirin.jp/racepdf/7-27%EF%BD%9E7-29-%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6-%E7%AC%AC4%E5%9B%9E%E5%89%8D%E7%AF%80-%E7%8E%89%E9%87%8E%E5%B8%82%E5%96%B6%E7%8E%89%E9%87%8E%E7%AB%B6%E8%BC%AAf%E2%85%B0%E3%83%8A%E3%82%A4/' \
-            --pdf-url 'https://www.tamano-keirin.jp/wp-content/uploads/2026/07/20260729-%E7%8E%89%E9%87%8E.pdf' \
             > tamano_live_stdout.json 2> tamano_live_stderr.txt
           echo $? > tamano_live_exit_code.txt
           exit 0
@@ -76,6 +75,7 @@ jobs:
                 'status':'PASS',
                 'capture_timestamp_utc':d['capture_timestamp_utc'],
                 'discovery_content_hash':d['discovery_content_hash'],
+                'pdf_url':d['pdf_url'],
                 'pdf_raw_sha256':d['pdf_raw_sha256'],
                 'pdf_byte_size':d['pdf_byte_size'],
                 'region_anchor_receipt':pages,
@@ -104,5 +104,5 @@ jobs:
           d=json.loads(Path('v3/prospective/runtime_receipts/tamano_racecard_smoke_diagnostic_v1.json').read_text())
           if d.get('status')!='PASS':
               raise SystemExit('FAIL_CLOSED Tamano live smoke: '+str(d.get('error')))
-          print(json.dumps({'status':'PASS','pdf_sha256':d['pdf_raw_sha256']},ensure_ascii=False))
+          print(json.dumps({'status':'PASS','pdf_url':d['pdf_url'],'pdf_sha256':d['pdf_raw_sha256']},ensure_ascii=False))
           PY
