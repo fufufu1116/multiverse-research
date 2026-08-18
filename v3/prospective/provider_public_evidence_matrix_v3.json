@@ -1,0 +1,25 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "PROVIDER_PUBLIC_EVIDENCE_MATRIX_v3",
+  "date_jst": "2026-08-18",
+  "policy": "NO_EXTERNAL_CONTACT + PUBLIC_EVIDENCE_ONLY",
+  "providers": {
+    "KEIRIN.JP": "BLOCKED_AMBIGUOUS",
+    "Rakuten_Kdreams": "BLOCKED_AMBIGUOUS",
+    "WINTICKET": "REJECT_NETWORK_ADAPTER_CURRENT_TERMS",
+    "OddsPark": "BLOCKED_OR_REJECT_UNDER_NO_EXTERNAL_CONTACT",
+    "Chariloto": "BLOCKED_AMBIGUOUS",
+    "JKA_OPEN_DATA_FEED": "NOT_FOUND_IN_PUBLIC_DISCLOSURE",
+    "Team_Nave": {
+      "status": "LEGITIMATE_API_VENDOR_LEAD_NOT_SOURCE_ADMITTED",
+      "public_evidence": "consumer-facing API products exist for CTC keirin betting and OddsPark betting; public specs and paid usage exist",
+      "gap": "no public Keirin PRE full-feature + four-market real-time Price API matching Multiverse requirements found in current audit; OddsPark API is documented by vendor as nonfunctional since an August 2024 upstream specification change",
+      "network_adapter": "OFF"
+    }
+  },
+  "current_decision": "NO_PROVIDER_NETWORK_ADMITTED",
+  "candidate_collection": 0,
+  "network": "OFF",
+  "trial_effect": 0,
+  "note": "Public availability or paid API existence alone does not prove that the exact PRE+Price data contract required by Multiverse is available. Ambiguity remains Fail-Closed."
+}
