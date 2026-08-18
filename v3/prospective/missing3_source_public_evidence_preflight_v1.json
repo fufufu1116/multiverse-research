@@ -1,0 +1,32 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "MISSING3_SOURCE_PUBLIC_EVIDENCE_PREFLIGHT_v1",
+  "date_jst": "2026-08-18",
+  "status": "PUBLIC_EVIDENCE_SEARCH_ONLY_NO_SOURCE_ADMITTED",
+  "target_missing_fields": ["style","win_rate","trio_rate"],
+  "findings": [
+    {
+      "source": "KEIRIN.JP rider profile",
+      "source_class": "official primary website",
+      "semantic_fit": "STRONG",
+      "evidence": "Profile pages explicitly expose 脚質 and 直近4ヶ月成績 including 勝率, 2連対率, 3連対率 and 競走得点.",
+      "network_admission": "BLOCKED_PENDING_PRIMARY_ROBOTS_AND_SOURCE_GOVERNANCE",
+      "important_temporal_rule": "For prospective use only as an as-of PRE snapshot; present-day profile replay into historical races remains prohibited."
+    },
+    {
+      "source": "AOKEI Stadium racecard detail",
+      "source_class": "commercial public race-information site",
+      "semantic_fit": "COMPLETE_8_OF_8_IN_PUBLIC_PAGE",
+      "evidence": "Public racecard detail pages display class/style/score/S/B/win/2-place/3-place rates.",
+      "network_admission": "BLOCKED_AMBIGUOUS",
+      "reason": "Public evidence reviewed does not establish automated research extraction/storage rights; member terms primarily govern betting service."
+    },
+    {
+      "source": "netkeirin",
+      "source_class": "commercial race-information site",
+      "semantic_fit": "COMPLETE_8_OF_8",
+      "network_admission": "BLOCKED_UNDER_EXISTING_SOURCE_POLICY"
+    }
+  ],
+  "priority_next": "Audit KEIRIN.JP rider-profile-only source path as the narrowest official supplement candidate; architecture approval does not imply network approval."
+}
