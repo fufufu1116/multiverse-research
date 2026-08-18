@@ -1,0 +1,40 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "state": "PROSPECTIVE_RUNTIME_HARDENING_STATE_v1",
+  "date_jst": "2026-08-18",
+  "artifact": {
+    "name": "MULTIVERSE_V3_PROSPECTIVE_RUNTIME_HARDENING_v1.zip",
+    "sha256": "4703a8ec698690b3040c2cf470f42e8df0060c168f2d55e93aab7bf78af145bc"
+  },
+  "gates": {
+    "prospective_architecture": "APPROVED_CORE_ONLY",
+    "ntp_runtime_lock": "IMPLEMENTED_PENDING_INDEPENDENT_AUDIT",
+    "hash_chain_manifest": "IMPLEMENTED_PENDING_INDEPENDENT_AUDIT",
+    "source_adapter_audit_scope": "IMPLEMENTED_NO_SOURCE_ADMITTED",
+    "cold_start_policy": "IMPLEMENTED_PENDING_INDEPENDENT_AUDIT",
+    "provider_network": "DISABLED",
+    "candidate_collection": "PROHIBITED",
+    "scoring": "PROHIBITED"
+  },
+  "synthetic_tests": {
+    "clock_25ms": "PASS",
+    "clock_exactly_100ms_rejected": "PASS",
+    "clock_stale_120s_rejected": "PASS",
+    "two_entry_hash_chain_verify": "PASS",
+    "hash_chain_tamper_rejected": "PASS"
+  },
+  "replit": {
+    "app": "Multiverse Acceptance Automaton",
+    "update_status": "UPDATING_NOT_YET_VERIFIED",
+    "network_enablement": false
+  },
+  "trial_accounting": {
+    "historical_trial": 0,
+    "prospective_v3_trial": 0
+  },
+  "seals": {
+    "candidate_RESULT": "UNOPENED",
+    "candidate_PAYOUT": "UNOPENED",
+    "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+  }
+}
