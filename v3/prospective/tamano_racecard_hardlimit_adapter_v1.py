@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse, hashlib, json, sys, time
+from pathlib import Path
 from urllib.parse import unquote, urljoin, urlparse
 
 import fitz
@@ -97,7 +98,7 @@ def sha256_bytes(data):
 def validate_pdf_bytes(pdf_bytes):
     if len(pdf_bytes) > MAX_PDF_BYTES:
         raise FailClosed("REJECT PDF too large")
-    raw_sha = sha256_bytes(pdf_bytes)
+    raw_sha = sha256_bytes(pdf_bytes)  # mandatory before parse
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     if len(doc) != 2:
         raise FailClosed("REJECT_TEMPLATE_MISMATCH pages")
@@ -118,6 +119,7 @@ def validate_pdf_bytes(pdf_bytes):
 
 
 def discover_pdf_hrefs(html_bytes, discovery_url):
+    # HTML is transient only and never persisted.
     soup = BeautifulSoup(html_bytes, "html.parser")
     found = []
     for a in soup.find_all("a", href=True):
@@ -208,13 +210,19 @@ def main():
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--discovery-url")
     ap.add_argument("--event-day")
+    ap.add_argument("--output")
     args = ap.parse_args()
     if args.synthetic:
         print(json.dumps(synthetic(), ensure_ascii=False)); return 0
     if args.smoke:
         if not all([args.discovery_url,args.event_day]):
             raise SystemExit("FAIL_CLOSED smoke requires discovery-url/event-day")
-        print(json.dumps(smoke(args.discovery_url,args.event_day), ensure_ascii=False)); return 0
+        payload = json.dumps(smoke(args.discovery_url,args.event_day), ensure_ascii=False)
+        if args.output:
+            Path(args.output).write_text(payload + "\n", encoding="utf-8")
+        else:
+            print(payload)
+        return 0
     raise SystemExit("FAIL_CLOSED no mode")
 
 if __name__ == "__main__":
