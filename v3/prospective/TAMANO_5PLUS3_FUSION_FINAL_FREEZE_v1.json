@@ -1,0 +1,62 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "TAMANO_5PLUS3_FUSION_FINAL_FREEZE_v1",
+  "date_jst": "2026-08-18",
+  "audit_verdict": "APPROVE",
+  "status": "FROZEN_APPROVED_DO_NOT_EDIT",
+  "architecture": {
+    "racecard_source_fields": ["score","quinella_rate","S","B","class"],
+    "supplement_source_fields": ["style","win_rate","trio_rate"],
+    "derivation": "PROHIBITED",
+    "synthesis": "PROHIBITED",
+    "field_ownership": "FROZEN",
+    "silent_overwrite": "PROHIBITED"
+  },
+  "tamano": {
+    "role": "SECONDARY_RACECARD_SOURCE_CANDIDATE_5_FIELDS",
+    "standalone_lane_p": "REJECT_INCOMPLETE",
+    "region_isolation": "FROZEN_APPROVED",
+    "anchor_invariant": "FROZEN_APPROVED",
+    "actual_offline_tests": {"2026-07-28":"PASS","2026-07-29":"PASS","2026-07-27速報版2":"REJECT_TEMPLATE_MISMATCH_FAIL_CLOSED"},
+    "prospective_source_admission": "NOT_YET_APPROVED"
+  },
+  "identity_join": {
+    "name": "NFKC -> NFC -> remove all Unicode whitespace; no old/new-kanji aliasing",
+    "prefecture": "frozen 47-prefecture canonical map",
+    "term": "integer canonicalization",
+    "age": "EXCLUDED",
+    "key": "SHA256(normalized_name|canonical_prefecture|canonical_term)",
+    "race_binding": ["same race_id","same car_no","same PRE window"],
+    "ambiguous_join": "QUARANTINE_FAIL_CLOSED"
+  },
+  "duplicate_consistency": {
+    "mandatory": true,
+    "class": "exact canonical match",
+    "score": "exact at 0.01 resolution",
+    "quinella_rate": "exact at 0.001 fraction resolution",
+    "mismatch": "QUARANTINE_FAIL_CLOSED"
+  },
+  "pre_synchrony": {
+    "max_capture_skew_seconds": 120,
+    "both_pre_lock": true,
+    "supplement_update_boundary_crossing": "QUARANTINE_FAIL_CLOSED",
+    "historical_current_profile_replay": "PROHIBITED"
+  },
+  "supplement_candidate": {
+    "source": "KEIRIN.JP racerprofile",
+    "semantic_fit": "MISSING3_COMPLETE",
+    "semantic_fields": ["style","win_rate","trio_rate"],
+    "duplicate_fields_available_for_consistency": ["class","score","quinella_rate"],
+    "source_admission": "BLOCKED_PENDING_PRIMARY_ROBOTS_AND_TERMS_AUDIT",
+    "network": "OFF"
+  },
+  "scientific_state": {
+    "shadow250_collected": 0,
+    "prospective_shadow250_screen_count": 0,
+    "historical_relaxed_screen_count": 0,
+    "historical_scientific_trial": 0,
+    "prospective_v3_scientific_trial": 0,
+    "scoring": "UNAUTHORIZED",
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
