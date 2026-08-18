@@ -1,0 +1,14 @@
+{
+  "status": "PASS_SYNTHETIC_CORE_HARDENING_TESTS",
+  "tests": {
+    "clock_25ms": "PASS",
+    "clock_exactly_100ms_rejected": "PASS_REJECTED:ValueError:clock drift is not <100ms",
+    "clock_stale_120s_rejected": "PASS_REJECTED:ValueError:clock receipt is stale or from the future",
+    "hash_chain_2_entry_verify": "PASS:head=b0e51051a07ddff4638af8d9ce4c17ad6b06ded9843b5f11998ad59cfcf5da9f",
+    "hash_chain_tamper_rejected": "PASS_REJECTED:ValueError:entry hash mismatch"
+  },
+  "network_used": false,
+  "real_race_data_used": false,
+  "result_payout_used": false,
+  "holdout_price_result_payout_used": false
+}
