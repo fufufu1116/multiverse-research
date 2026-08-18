@@ -1,0 +1,61 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "PUBLIC_EVIDENCE_TEMPORAL_AUDIT_v1",
+  "date_jst": "2026-08-18",
+  "status": "PASS_DIAGNOSTIC_FAIL_CLOSED_FOR_BULK_HISTORICAL_PRE",
+  "policy": "NO_EXTERNAL_CONTACT_PUBLIC_EVIDENCE_ONLY",
+  "findings": {
+    "keirin_jp_site_policy": {
+      "official_site": true,
+      "private_use_and_quotation_exceptions_acknowledged": true,
+      "general_copy_reuse_restricted": true,
+      "explicit_bulk_automation_permission_found": false,
+      "decision": "NO_BULK_AUTOMATION_ADMISSION_FROM_PUBLIC_POLICY_ALONE"
+    },
+    "official_schedule": {
+      "monthly_historical_schedule_available": true,
+      "role": "low-rate semantic/membership diagnostics only until automation/storage semantics are independently admitted",
+      "candidate_bulk_collection_authorized": false
+    },
+    "rider_profile_time_variation": {
+      "example_rider_registration": "014718",
+      "historical_search_snapshot": {
+        "official_page_content_update": "2026-04-11 02:35",
+        "score": 106.03,
+        "win_rate_pct": 29.6,
+        "quinella_rate_pct": 40.7,
+        "trio_rate_pct": 55.5
+      },
+      "current_official_page": {
+        "profile_update": "2026-08-03 02:35",
+        "recent_results_update": "2026-08-05 02:37",
+        "score": 109.15,
+        "win_rate_pct": 25.9,
+        "quinella_rate_pct": 37.0,
+        "trio_rate_pct": 51.8
+      },
+      "interpretation": "Current official profile values demonstrably differ from earlier official-page snapshot values. Present-day profile replay is invalid for historical PRE without a timestamped pre-race snapshot or independently auditable versioned-as-of source."
+    },
+    "public_search_snapshot_route": {
+      "observation": "Search indexing can preserve some older official-page content with historical update timestamps.",
+      "scientific_status": "AUXILIARY_ONLY_NOT_PRIMARY_ASOF_FEED",
+      "reasons": [
+        "coverage for all required riders/races/fields is unproven",
+        "exact crawl-time provenance is not consistently available at race-level precision",
+        "car_no/race membership/withdrawal and four-market Price coverage are not established",
+        "reproducible 5000-race completeness is unproven"
+      ]
+    }
+  },
+  "source_admission_implication": {
+    "public_static_metadata_low_rate": "SEMANTIC_DIAGNOSTIC_ONLY",
+    "bulk_dynamic_PRE": "BLOCKED",
+    "bulk_four_market_Price": "BLOCKED",
+    "NEW_HISTORICAL5000_candidate_bulk_collection": "NOT_AUTHORIZED"
+  },
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "HIST_Q2500_scoring": "PROHIBITED",
+  "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+}
