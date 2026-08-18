@@ -1,0 +1,48 @@
+{
+  "record": "SHADOW250_V2_SELECTION_RULE_FREEZE_CANDIDATE_v1",
+  "status": "CANDIDATE_NOT_ACTIVE_PENDING_INDEPENDENT_REAUDIT",
+  "approved_core": {
+    "schema": "MULTIVERSE_SHADOW250_V2_SELECTION_RULE_v1",
+    "role": "SOURCE_CONSTRAINED_PROSPECTIVE_SCREENING_ONLY",
+    "target_count": 250,
+    "membership": "first 250 races satisfying all frozen PRE-only eligibility gates after v2 activation",
+    "activation_constraint": "scheduled race must be strictly after Shadow250-v2 activation timestamp",
+    "ordering": ["scheduled_start_ascending", "venue_code_ascending", "race_no_ascending"],
+    "pre_only_eligibility": [
+      "racecard source available through frozen Shadow250-v2 source path",
+      "supported Tamano two-page template PASS",
+      "Region Isolation PASS",
+      "Anchor Invariant PASS",
+      "POST sentinel zero",
+      "internal PRE date equals bound race_date",
+      "current field-size and active-entry gate PASS",
+      "race-program metadata and class-set compatibility PASS",
+      "complete frozen 5+3 PRE for every active entrant",
+      "KEIRIN identity locator PASS with unique four-field official racerprofile verification",
+      "KEIRIN supplement capture PASS",
+      "duplicate class/score/quinella_rate consistency PASS",
+      "source capture skew <=120 seconds",
+      "all source captures before Prediction Lock",
+      "HOLDOUT collision gate PASS",
+      "race not previously selected/exposed by any predecessor Shadow universe"
+    ],
+    "admissible_class_programs": {
+      "S": "nonempty subset of {SS,S1,S2}",
+      "A12": "nonempty subset of {A1,A2}",
+      "A3": "exactly {A3}",
+      "L1": "exactly {L1}"
+    },
+    "cross_program_mixture": "QUARANTINE_PRE_INELIGIBLE_SOURCE_GAP",
+    "unsupported_template": "PRE_INELIGIBLE_SOURCE_GAP",
+    "inference_for_missing_source_fields": "PROHIBITED",
+    "ocr": "PROHIBITED",
+    "result_or_payout_for_eligibility": "PROHIBITED",
+    "post_outcome_replacement": "PROHIBITED",
+    "after_prediction_lock": "selected race can never be replaced",
+    "all_selected_races": "PERMANENTLY_DISQUALIFIED_FROM_FINAL_PROSPECTIVE_V3",
+    "scoring_gate": "global outcome-bearing scoring forbidden until exact 250 membership + exclusion registry + scoring commitment are frozen",
+    "claim_scope": "venue/source-constrained; no national/general-population claim"
+  },
+  "approved_core_sha256": "659a06b520d3d528cd3992aec13d3d9b3a51475bc6b16e03aeee0377dea34d4e",
+  "scientific_effect": "NONE_UNTIL_INDEPENDENT_APPROVAL_AND_ACTIVATION"
+}
