@@ -1,0 +1,45 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "DEV_ONLY_TEMPORAL_SEMANTIC_PREFLIGHT_v1",
+  "date_jst": "2026-08-18",
+  "status": "PASS_DIAGNOSTIC_BLOCKS_UNPROVEN_HISTORICAL_DYNAMIC_FIELDS",
+  "scope": "already-exposed development data and source semantics only; no candidate outcomes",
+  "frozen_model_required_fields": {
+    "structural": ["race_id", "car_no", "rider_id", "withdrawn"],
+    "prediction": ["score", "win_rate", "quinella_rate", "trio_rate", "B", "S", "style", "class"]
+  },
+  "legacy_parser_finding": {
+    "source_family": "historical race-detail PRE table parser",
+    "parsed_fields": ["car_no", "rider", "class", "style", "score", "S", "B", "win_rate", "quinella_rate", "trio_rate", "withdrawn"],
+    "legacy_governance_labels": [
+      "STAGED_UNPROVEN_HISTORICAL_PRE",
+      "availability_proof=NOT_YET_PROVEN_FOR_HISTORICAL_REPLAY",
+      "training_eligibility=false"
+    ],
+    "interpretation": "Historical page parsing proves parseability, not that the values equal the pre-race state at the original race time."
+  },
+  "official_profile_semantic_finding": {
+    "source": "KEIRIN.JP official rider profile",
+    "observed_semantics": "score/win-rate/2-place-rate/3-place-rate and related statistics are displayed as rolling recent-four-month results with a current update timestamp",
+    "interpretation": "Current profile values are time-varying and cannot be back-applied to an April race without a pre-race snapshot or a versioned as-of source."
+  },
+  "field_decision": {
+    "score": "BLOCK_CURRENT_VALUE_REPLAY",
+    "win_rate": "BLOCK_CURRENT_VALUE_REPLAY",
+    "quinella_rate": "BLOCK_CURRENT_VALUE_REPLAY",
+    "trio_rate": "BLOCK_CURRENT_VALUE_REPLAY",
+    "B": "BLOCK_UNTIL_TEMPORAL_SEMANTICS_PROVEN",
+    "S": "BLOCK_UNTIL_TEMPORAL_SEMANTICS_PROVEN",
+    "style": "BLOCK_UNTIL_EVENT_TIME_SEMANTICS_PROVEN",
+    "class": "BLOCK_UNTIL_EVENT_TIME_SEMANTICS_PROVEN",
+    "car_no": "BLOCK_UNTIL_PRE_RACE_ASSIGNMENT_PROVEN",
+    "withdrawn": "BLOCK_UNTIL_PRE_RACE_STATE_PROVEN",
+    "rider_id": "IDENTITY_MAY_BE_INVARIANT_BUT_RACE_MEMBERSHIP_REQUIRES_PRE_RACE_PROOF",
+    "race_id": "EVENT_IDENTITY_REQUIRES_CANONICAL_BINDING_AUDIT"
+  },
+  "source_admission_implication": "A provider that supplies only present-day historical pages without versioned/as-of semantics cannot satisfy the frozen backbone's full Historical5000 PRE requirements.",
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED"
+}
