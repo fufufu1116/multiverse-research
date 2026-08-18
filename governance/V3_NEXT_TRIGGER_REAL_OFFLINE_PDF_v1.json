@@ -1,0 +1,30 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "NEXT_TRIGGER_REAL_OFFLINE_PDF_v1",
+  "status": "WAITING_FOR_ELIGIBLE_REAL_OFFLINE_PDF",
+  "trigger_condition": "One completed, non-candidate keirin professional-paper/racecard PDF becomes locally available or is user-supplied.",
+  "automatic_execution_order": [
+    "confirm local/user-supplied acquisition mode",
+    "validate %PDF- magic bytes",
+    "compute exact raw-byte SHA-256",
+    "record exact byte size",
+    "verify completed non-candidate status",
+    "verify Shadow250 intersection = 0",
+    "verify Final Prospective v3 intersection = 0",
+    "verify ECON_HOLDOUT1000 intersection = 0",
+    "write immutable intake manifest",
+    "append + fsync immutable SHA-256 hash-chain",
+    "full-chain verify",
+    "recheck raw PDF SHA immediately before parser authorization",
+    "run frozen Positive Schema Feature Stripping",
+    "perform semantic audit of Frozen v3 fields",
+    "emit REAL_PDF_SEMANTIC_PASS or FAIL_CLOSED"
+  ],
+  "forbidden_before_trigger": [
+    "network fetching by Multiverse",
+    "provider automation",
+    "Shadow250 PRE collection",
+    "outcome scoring",
+    "source admission inference"
+  ]
+}
