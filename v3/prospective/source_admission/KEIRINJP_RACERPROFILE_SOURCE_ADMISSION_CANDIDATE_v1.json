@@ -1,0 +1,75 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "KEIRINJP_RACERPROFILE_SOURCE_ADMISSION_CANDIDATE_v1",
+  "date_jst": "2026-08-18",
+  "status": "CANDIDATE_PENDING_INDEPENDENT_AUDIT_NETWORK_OFF",
+  "role": "SUPPLEMENT_SOURCE_ONLY_FOR_FROZEN_5PLUS3_FUSION",
+  "axis_review": {
+    "1_programmatic_path": {
+      "status": "PASS_ROBOTS_PATH_ALLOW",
+      "evidence": "Primary robots.txt explicitly Allow:/pc/racerprofile for User-agent:*",
+      "caveat": "robots is not legal authorization"
+    },
+    "2_private_research_storage": {
+      "status": "CONDITIONAL_PUBLIC_EVIDENCE",
+      "evidence": "Official policy recognizes private-use reproduction exception and prohibits unconsented commercial use beyond private scope.",
+      "restriction": "No raw expressive content persistence or redistribution; normalized factual values only.",
+      "open_question": "Whether this exact automated private-research mode is sufficiently compatible with policy must be independently adjudicated."
+    },
+    "3_frozen_feature_coverage": {
+      "status": "PASS_SUPPLEMENT_3_OF_3",
+      "fields": ["style","win_rate","trio_rate"],
+      "duplicate_consistency_fields": ["class","score","quinella_rate"]
+    },
+    "4_price_coverage": {
+      "status": "NOT_APPLICABLE",
+      "reason": "Lane-P supplement source; no Price collection from racerprofile."
+    },
+    "5_pre_temporal_semantics": {
+      "status": "PASS_ARCHITECTURE_PENDING_LIVE_PROOF",
+      "requirements": [
+        "capture before race lock",
+        "record profile and recent-4-month official update timestamps",
+        "max racecard/profile capture skew <=120 sec",
+        "reject any official update boundary crossed between source captures",
+        "mandatory duplicate consistency PASS"
+      ]
+    },
+    "6_rate_load_compatibility": {
+      "status": "CONSERVATIVE_CANDIDATE",
+      "single_worker": true,
+      "minimum_request_spacing_seconds": 5,
+      "max_profile_requests_per_7_rider_race": 7,
+      "expected_minimum_bundle_elapsed_seconds": "~30-35 seconds plus racecard processing",
+      "fits_120s_skew_for_single_race_bundle": true,
+      "403_429": "IMMEDIATE_HALT",
+      "retry_bypass": "PROHIBITED",
+      "published_provider_rate_limit": "NOT_FOUND"
+    }
+  },
+  "exact_network_allowlist": {
+    "host": "keirin.jp",
+    "path_prefix": "/pc/racerprofile",
+    "method": "GET only",
+    "query_keys": ["snum"],
+    "other_paths": "BLOCKED"
+  },
+  "storage_allowlist": [
+    "registration_number","normalized_name","prefecture","term","class","style",
+    "profile_updated_at","recent4m_updated_at","win_rate","quinella_rate","trio_rate","score",
+    "source_url","capture_timestamp_utc","content_hash"
+  ],
+  "storage_forbidden": [
+    "raw_html","page_image","profile_photo","free_text","layout","recent_result_rows",
+    "race_result","payout","editorial_text"
+  ],
+  "network_enabled": false,
+  "shadow250_collection_authorized": false,
+  "required_before_network": [
+    "independent Source Admission APPROVE",
+    "network-disabled adapter SHA freeze",
+    "live clock gate proof",
+    "genesis/append-only provenance verification",
+    "exact target path allowlist enforcement"
+  ]
+}
