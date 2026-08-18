@@ -1,0 +1,51 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "HISTORICAL5000_SOURCE_ADMISSION_STATUS_v2",
+  "date_jst": "2026-08-18",
+  "status": "NO_BULK_CANDIDATE_SOURCE_ADMITTED_YET",
+  "scope": "post-training Historical5000 PRE plus four-market Price",
+  "new_findings": {
+    "JKA": {
+      "primary_source_verified": true,
+      "facts": [
+        "JKA officially develops and operates the keirin information system.",
+        "Official system duties include race-information/odds provision and result-information storage/management.",
+        "JKA has commissioned research on a keirin/autorace big-data analysis platform and portal.",
+        "Publicly available procurement pages expose information-system contact routes, but they do not establish a public research API or data-use permission."
+      ],
+      "admission": "PENDING_EXPLICIT_DATA_ACCESS_OR_PERMISSION"
+    },
+    "ZENRIN": {
+      "primary_source_verified": true,
+      "facts": [
+        "Official activities include research and information provision concerning keirin operations.",
+        "An official inquiry form is publicly available."
+      ],
+      "admission": "PENDING_EXPLICIT_DATA_ACCESS_OR_PERMISSION"
+    },
+    "KEIRIN_JP": {
+      "admission": "NOT_ADMITTED_FOR_BULK_DYNAMIC_PRE_PRICE",
+      "reason": "Official race/search interfaces exist, but no public versioned/as-of historical PRE contract or admitted bulk machine-readable path covering the frozen feature set and four-market Price has been verified."
+    },
+    "KDREAMS": {
+      "semantic_finding": "Historical pages preserve exact/final odds views for ended DEV races.",
+      "admission": "BLOCKED_PENDING_EXPLICIT_PERMISSION_OR_TERMS_CLEARANCE",
+      "automation": false,
+      "raw_archival": false
+    },
+    "WINTICKET": {"admission": "PROHIBITED_BY_TERMS_POLICY_FOR_AUTOMATION"},
+    "ODDSPARK": {"admission": "NOT_ADMITTED_MANUAL_SEMANTIC_ONLY"},
+    "NETKEIRIN": {"admission": "BLOCKED_PENDING_PERMISSION"},
+    "CHARILOTO": {"admission": "NOT_ADMITTED_MANUAL_FALLBACK_ONLY"}
+  },
+  "official_inquiry_priority": [
+    "JKA appropriate data/information-system contact or routed inquiry",
+    "全国競輪施行者協議会 official contact form",
+    "Kdreams explicit research/bulk permission only if needed"
+  ],
+  "candidate_bulk_collection_authorized": false,
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+}
