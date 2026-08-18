@@ -1,0 +1,92 @@
+name: shadow250-v2-candidate-smoke-v3
+
+on:
+  push:
+    paths:
+      - '.github/workflows/shadow250-v2-candidate-smoke-v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  smoke-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4 PyMuPDF pandas
+      - name: Run combined live smoke
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib,importlib.util,json,os,pathlib,requests,subprocess,tempfile,time,traceback
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          from urllib.parse import urljoin,urlparse,unquote
+          repo=pathlib.Path('.')
+          pp=repo/'v3/prospective_shadow250_v2/tamano_racecard_row_parser_v3.py'
+          lp=repo/'v3/prospective_shadow250_v2/keirinjp_identity_locator_v2.py'
+          outp=repo/'v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v3.json'; outp.parent.mkdir(parents=True,exist_ok=True)
+          def blob(p): return subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+          def load(n,p):
+              s=importlib.util.spec_from_file_location(n,p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
+          out={'record':'SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v3','generated_utc':datetime.now(timezone.utc).isoformat(),'workflow_head_sha':os.environ.get('GITHUB_SHA'),
+               'tamano_parser_v3_git_blob':blob(pp),'keirinjp_locator_v2_git_blob':blob(lp),
+               'expected_tamano_parser_v3_git_blob':'66639087a020f900aafe9f55760eae590f36e755','expected_keirinjp_locator_v2_git_blob':'41517a604bb0c23200cb4d0878d8459f9379d63f',
+               'scientific_trial_consumed':False,'shadow_screen_consumed':False,'holdout_accessed':False,'result_payout_price_accessed':False,'global_scoring_used':False,'wagering_used':False}
+          try:
+              if out['tamano_parser_v3_git_blob']!=out['expected_tamano_parser_v3_git_blob']: raise RuntimeError('parser blob mismatch')
+              if out['keirinjp_locator_v2_git_blob']!=out['expected_keirinjp_locator_v2_git_blob']: raise RuntimeError('locator blob mismatch')
+              parser=load('parser3',pp); loc=load('locator2',lp)
+              out['synthetic_g1']=parser.synthetic_tests()
+              # UTF-8-declared semantic fixture: operational code unchanged; fixes only prior fixture encoding ambiguity.
+              keys=loc.SEARCH_RESULT_QUERY_KEYS
+              landing='''<html><head><meta charset="utf-8"></head><body><form name="PJ0501_02InputForm" id="PJ0501_02InputForm"><table><tr><td>府県</td><td><select name="UNQ_select_21"><option value="">指定しない</option><option value="63">岡山県</option></select></td></tr><tr><td>卒業期</td><td><input type="tel" name="UNQ_orexpandText_22"></td></tr><tr><td><input type="checkbox" name="UNQ_checkbox_34"></td><td>現役選手のみ</td></tr></table><button type="button" name="btnSearchSensyu" onclick="sensyuSearchExec()">検索</button></form><form name="PJ0501_02SubmitForm" id="PJ0501_02SubmitForm" action="/pc/racersearchresult" method="get">'''
+              landing+=''.join(f'<input type="hidden" name="{k}" value="{loc.FIXED_QUERY_VALUES.get(k,"")}">' for k in keys)
+              landing+='''</form><script>function sensyuSearchExec() { document.PJ0501_02SubmitForm.hukenCD.value = document.getElementById("UNQ_select_21").value; document.PJ0501_02SubmitForm.sotugyouki.value = document.getElementById("UNQ_orexpandText_22").value; var check = document.getElementById("UNQ_checkbox_34").checked; document.PJ0501_02SubmitForm.stgt.value = "1"; document.PJ0501_02SubmitForm.stgt.value = "2"; }</script></body></html>'''
+              action,payload=loc._verify_search_landing(landing.encode('utf-8'),'岡山',127)
+              if action!='https://keirin.jp/pc/racersearchresult' or payload['hukenCD']!='63' or payload['sotugyouki']!='127' or payload['stgt']!='1': raise RuntimeError('G2 UTF8 synthetic semantic fixture mismatch')
+              out['synthetic_g2_utf8_fixture']={'status':'PASS','network_used':False}
+
+              # G2 live core.
+              g2=loc.resolve_snum('土井慎二','岡山',127)
+              if g2['snum']!='015918': raise RuntimeError(f"G2 unexpected snum={g2['snum']}")
+              out['g2']={k:g2[k] for k in ['status','snum','query_basis','search_result_identity_fields_used','final_identity_checks','search_result_count','name_match_count','locator_elapsed_seconds','predictive_features_emitted','raw_html_persisted','search_landing_sha256','search_result_sha256','profile_raw_sha256']}
+
+              # G1 official discovery + exact PDF + transport binding + parser v3.
+              discovery='https://www.tamano-keirin.jp/racepdf/'; day='2026-07-24'; h={'User-Agent':'Multiverse-Private-Research/1.0'}; s=requests.Session()
+              r=s.get(discovery,headers=h,timeout=20,allow_redirects=False)
+              if r.status_code in (403,429): raise RuntimeError(f'G1 HALT discovery {r.status_code}')
+              if r.status_code!=200: raise RuntimeError(f'G1 discovery {r.status_code}')
+              soup=BeautifulSoup(r.content,'html.parser'); urls=[]
+              for a in soup.find_all('a',href=True):
+                  u=urljoin(discovery,a['href']); p=urlparse(u)
+                  if p.scheme=='https' and p.netloc=='www.tamano-keirin.jp' and p.path.startswith('/wp-content/uploads/') and p.path.lower().endswith('.pdf') and not p.query and unquote(p.path.rsplit('/',1)[-1]).startswith(day.replace('-','')): urls.append(u)
+              urls=sorted(set(urls))
+              if len(urls)!=1: raise RuntimeError(f'G1 PDF cardinality={len(urls)}')
+              time.sleep(10); p=s.get(urls[0],headers=h,timeout=20,allow_redirects=False)
+              if p.status_code in (403,429): raise RuntimeError(f'G1 HALT pdf {p.status_code}')
+              if p.status_code!=200 or not p.content.startswith(b'%PDF-'): raise RuntimeError(f'G1 pdf HTTP/magic {p.status_code}')
+              sha=hashlib.sha256(p.content).hexdigest()
+              with tempfile.NamedTemporaryFile(suffix='.pdf') as f:
+                  f.write(p.content); f.flush(); df=parser.parse_tamano_pdf(f.name,day,urls[0],sha)
+              if len(df)!=84 or df.race_id.nunique()!=12: raise RuntimeError('G1 coverage mismatch')
+              out['g1']={'status':'PASS','event_day':day,'pdf_url':urls[0],'pdf_raw_sha256':sha,'rows':len(df),'races':int(df.race_id.nunique()),
+                         'program_counts':df.groupby('race_program').race_id.nunique().to_dict(),'date_binding':'OFFICIAL_DISCOVERY_EXACT_HREF_DATE_PREFIX+RAW_SHA256','raw_pdf_persisted':False}
+              out['status']='PASS'
+          except Exception as e:
+              out['status']='FAIL_CLOSED'; out['error_type']=type(e).__name__; out['error_message']=str(e); out['traceback_tail']=traceback.format_exc().splitlines()[-12:]
+          outp.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8'); print(outp.read_text())
+          PY
+      - name: Persist receipt
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v3.json
+          git commit -m 'Record Shadow250-v2 candidate live smoke v3'
+          git push
