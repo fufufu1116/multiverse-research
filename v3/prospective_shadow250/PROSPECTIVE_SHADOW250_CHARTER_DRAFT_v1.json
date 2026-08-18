@@ -1,0 +1,35 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "PROSPECTIVE_SHADOW250_CHARTER_DRAFT_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_DO_NOT_COLLECT_DO_NOT_SCORE",
+  "purpose": "Bounded prospective screening to avoid research deadlock while preserving strict final Prospective v3 proof.",
+  "scientific_role": "SCREENING_ONLY_NOT_FINAL_PROOF",
+  "target_races": 250,
+  "selection": "first 250 deterministic eligible future races after activation",
+  "no_posthoc_replacement": true,
+  "shadow_final_disjointness": "ALL_SHADOW250_RACES_PERMANENTLY_EXCLUDED_FROM_FINAL_PROSPECTIVE_V3",
+  "source_candidate": "KEIRINJP_DERIVED_FACT_SOURCE_CANDIDATE_v1",
+  "network_enabled": false,
+  "lanes": {
+    "LANE_P_PREDICTIVE": {
+      "required": true,
+      "price_required": false,
+      "purpose": "prospective predictive signal and temporal pipeline integrity"
+    },
+    "LANE_E_ECONOMIC": {
+      "required": false,
+      "activation": "only after four-market mapping and T-10 price semantics independently pass before Universe start",
+      "price_label": "SHADOW_PRICE_PROXY_T10_NOT_CLOSING",
+      "decision_price": "max(1.00, 0.90*proxy_odds)",
+      "stress_haircuts": [1.00, 0.95, 0.90, 0.85]
+    }
+  },
+  "folds": "5 blocked chronological folds by complete race_date",
+  "prospective_shadow250_screen_count": 0,
+  "historical_relaxed_screen_count": 0,
+  "historical_scientific_trial": 0,
+  "prospective_v3_scientific_trial": 0,
+  "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK",
+  "NO_EXTERNAL_CONTACT": true
+}
