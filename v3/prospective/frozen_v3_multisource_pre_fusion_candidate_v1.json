@@ -1,0 +1,48 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "FROZEN_V3_MULTISOURCE_PRE_FUSION_CANDIDATE_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_ARCHITECTURE_ONLY_NETWORK_OFF",
+  "purpose": "Allow a compliant 5-field official racecard source to be paired with an independently admitted source for the 3 missing frozen features without synthesis.",
+  "primary_secondary_roles": {
+    "RACECARD_SOURCE": {
+      "example_candidate": "Tamano official PDF",
+      "fields": ["score","quinella_rate","S","B","class"],
+      "must_be_region_isolated": true
+    },
+    "SUPPLEMENT_SOURCE": {
+      "required_fields": ["style","win_rate","trio_rate"],
+      "must_expose_each_explicitly": true,
+      "derivation_or_synthesis": "PROHIBITED"
+    }
+  },
+  "join_key": {
+    "canonical_rider_id": "normalized rider name + prefecture + term",
+    "age": "EXCLUDED",
+    "race_binding": "same race_id / same entrant car_no / same pre-race snapshot window",
+    "on_ambiguous_join": "QUARANTINE_FAIL_CLOSED"
+  },
+  "field_precedence": {
+    "score": "RACECARD_SOURCE",
+    "quinella_rate": "RACECARD_SOURCE",
+    "S": "RACECARD_SOURCE",
+    "B": "RACECARD_SOURCE",
+    "class": "RACECARD_SOURCE",
+    "style": "SUPPLEMENT_SOURCE",
+    "win_rate": "SUPPLEMENT_SOURCE",
+    "trio_rate": "SUPPLEMENT_SOURCE"
+  },
+  "duplicate_fields_if_supplement_also_exposes_them": {
+    "score": "audit-only consistency signal; do not silently overwrite",
+    "quinella_rate": "audit-only consistency signal; do not silently overwrite",
+    "class": "must match exact class if available; mismatch => quarantine"
+  },
+  "temporal_requirements": {
+    "both_sources_must_be_observed_pre_race": true,
+    "supplement_profile_must_be_current_as_of_snapshot": true,
+    "historical_current-profile_replay": "PROHIBITED",
+    "post-result refresh_before_lock": "PROHIBITED for the target race"
+  },
+  "positive_schema_output": ["race_id","race_date","venue","car_no","rider_id","class","style","score","S","B","win_rate","quinella_rate","trio_rate","withdrawn"],
+  "source_admission": "Each source must independently pass governance before candidate collection."
+}
