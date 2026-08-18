@@ -1,0 +1,29 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "PUBLIC_EVIDENCE_PROVIDER_ADMISSION_PREFLIGHT_v1",
+  "date_jst": "2026-08-18",
+  "policy": "NO_EXTERNAL_CONTACT + PUBLIC_EVIDENCE_ONLY",
+  "providers": {
+    "KEIRIN.JP": {
+      "official": true,
+      "public_terms_finding": "Official site policy was verified. It restricts reproduction/reuse outside legally permitted private-use/quotation contexts; this audit did not establish explicit public permission for research bulk automation.",
+      "automation_admission": "BLOCKED_AMBIGUOUS",
+      "storage_provenance_admission": "BLOCKED_PENDING_EXPLICIT_PUBLIC_BASIS",
+      "network_adapter": "OFF"
+    },
+    "RAKUTEN_KDREAMS": {
+      "official_service": true,
+      "public_capabilities": ["racecard", "odds", "odds refresh", "betting interface"],
+      "public_terms_finding": "Public service terms/guides were verified, but this audit did not establish explicit public permission for research automation or bulk machine-readable acquisition/storage.",
+      "automation_admission": "BLOCKED_AMBIGUOUS",
+      "storage_provenance_admission": "BLOCKED",
+      "network_adapter": "OFF"
+    }
+  },
+  "decision": "NO_PROVIDER_NETWORK_ADMITTED",
+  "trial_effect": 0,
+  "candidate_collection": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+}
