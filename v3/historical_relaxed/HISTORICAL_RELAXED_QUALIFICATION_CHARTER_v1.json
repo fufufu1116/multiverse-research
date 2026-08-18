@@ -1,0 +1,56 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "HISTORICAL_RELAXED_QUALIFICATION_DRAFT_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_PENDING_INDEPENDENT_AUDIT_DO_NOT_SCORE",
+  "purpose": "Avoid research deadlock by adding one non-final historical screening layer while preserving strict prospective final proof.",
+  "scientific_role": {
+    "historical_relaxed": "SCREENING_ONLY_NOT_FINAL_PROOF",
+    "prospective": "FINAL_EXECUTABLE_ECONOMIC_PROOF_REMAINS_STRICT"
+  },
+  "preferred_candidate": {
+    "lineage": "NEXTGEN_5000 R4001-R5000",
+    "count": 1000,
+    "parent_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "batch_universe_sha256": "964e812d9818cad4b154cec3a883d0a58f5e5dbd4c33e7b8af20245fb1215baf",
+    "blind_claim": "NOT_ALLOWED"
+  },
+  "pre_policy": {
+    "accepted_label": "EVENT_PAGE_PRE_PROXY",
+    "exact_original_retrieval_timestamp_required": false,
+    "current_profile_backfill": "PROHIBITED",
+    "result_or_payout_derived_features": "PROHIBITED"
+  },
+  "price_policy": {
+    "accepted_label": "HISTORICAL_FINAL_PRICE_PROXY",
+    "exact_executable_closing_required": false,
+    "exact_closing_timestamp_required": false,
+    "must_be_non_result_derived": true,
+    "must_be_non_payout_derived": true,
+    "ticket_mapping_semantics_must_be_validated": true,
+    "required_markets": ["2shatan", "2shahuku", "3rentan", "3renhuku"],
+    "max_credible_price_error_for_roi_screen": 0.20,
+    "reject_1_5x_to_1_7x_price_uncertainty_for_roi": true
+  },
+  "price_robustness": {
+    "haircuts": [1.0, 0.95, 0.90, 0.85],
+    "direction": "DOWNWARD_ONLY_CONSERVATIVE",
+    "decision_price": "0.90 * proxy_odds"
+  },
+  "screen_rule": {
+    "single_use": true,
+    "no_retune_on_same_set": true,
+    "model_refit": false,
+    "STRONG_SIGNAL": ["gross ROI > 1.00 at 0.85 haircut", "positive net in >=3/5 chronological folds", "median fold net > 0", "leave-top3-net >= 0"],
+    "PROMISING_SIGNAL": ["gross ROI > 1.00 at 0.90 haircut", "median fold net > 0", "STRONG_SIGNAL not met"],
+    "NO_SIGNAL": ["gross ROI <= 1.00 at 0.90 haircut OR median fold net <= 0"]
+  },
+  "trial_accounting": {
+    "historical_relaxed_screen_count_before_scoring": 0,
+    "historical_relaxed_screen_count_after_first_scoring": 1,
+    "historical_trial_consumed": 0,
+    "prospective_v3_trial": 0
+  },
+  "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK",
+  "initial_recovery": "EXISTING_ARTIFACTS_ONLY_NO_NEW_WEB"
+}
