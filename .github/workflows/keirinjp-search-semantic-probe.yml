@@ -1,0 +1,130 @@
+name: keirinjp-search-semantic-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-search-semantic-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe identity-search semantics only
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib, importlib.util, json, os, pathlib, re, subprocess, time, traceback
+          import requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime, timezone
+          from urllib.parse import urljoin, urlparse
+
+          repo=pathlib.Path('.')
+          locator_path=repo/'v3/prospective_shadow250_v2/keirinjp_identity_locator_v1.py'
+          receipt=repo/'v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_SEARCH_SEMANTIC_PROBE_v1.json'
+          receipt.parent.mkdir(parents=True,exist_ok=True)
+          def load(name,path):
+              spec=importlib.util.spec_from_file_location(name,path); m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
+          loc=load('loc',locator_path)
+          out={
+            'record':'KEIRINJP_SEARCH_SEMANTIC_PROBE_v1',
+            'generated_utc':datetime.now(timezone.utc).isoformat(),
+            'workflow_head_sha':os.environ.get('GITHUB_SHA'),
+            'locator_git_blob':subprocess.check_output(['git','hash-object',str(locator_path)],text=True).strip(),
+            'identity_only_probe':True,
+            'predictive_features_collected':False,
+            'raw_html_persisted':False,
+            'holdout_accessed':False,
+            'result_payout_price_accessed':False,
+          }
+          try:
+              s=requests.Session(); lim=loc.RuntimeLimiter()
+              landing=loc._get(s,lim,loc.SEARCH_URL)
+              form=loc._candidate_forms(landing.content)
+              pref_ctrl=loc._control_after_label(form,'府県')
+              term_ctrl=loc._control_after_label(form,'卒業期')
+              active_ctrl=loc._active_only_control(form)
+              method,action,payload=loc.build_search_request(landing.content,'岡山',127,loc.SEARCH_URL)
+              out['form']={
+                'method':method,'action':action,
+                'pref_control':{'tag':pref_ctrl.name,'name':pref_ctrl.get('name'),'okayama_value':loc._select_pref_value(pref_ctrl,'岡山')},
+                'term_control':{'tag':term_ctrl.name,'name':term_ctrl.get('name')},
+                'active_control':{'tag':active_ctrl.name,'name':active_ctrl.get('name'),'value':active_ctrl.get('value','1')},
+                'payload_keys':sorted(payload.keys()),
+                'payload_nonhidden_identity_values':{
+                  pref_ctrl.get('name'):payload.get(pref_ctrl.get('name')),
+                  term_ctrl.get('name'):payload.get(term_ctrl.get('name')),
+                  active_ctrl.get('name'):payload.get(active_ctrl.get('name')),
+                },
+              }
+              time.sleep(loc.MIN_SPACING_SECONDS)
+              result=loc._submit(s,lim,method,action,payload)
+              html=result.content
+              text=html.decode('utf-8','replace')
+              soup=BeautifulSoup(html,'html.parser')
+              anchors=[]
+              for a in soup.find_all('a',href=True):
+                  href=a.get('href',''); label=loc.norm(a.get_text(' ',strip=True))
+                  if ('racer' in href.lower() or 'snum' in href.lower() or '015918' in href or '土井' in label or '慎二' in label):
+                      anchors.append({'href':href[:300],'label':label[:120]})
+              forms=[]
+              for f in soup.find_all('form'):
+                  controls=[]
+                  for x in f.find_all(['input','button','select'],attrs={'name':True}):
+                      d={'tag':x.name,'name':x.get('name'),'type':x.get('type')}
+                      val=x.get('value')
+                      if val and (re.fullmatch(r'\d{5,6}',val) or '015918' in val): d['identity_value']=val
+                      controls.append(d)
+                  if any('identity_value' in c for c in controls) or '015918' in str(f):
+                      forms.append({'action':f.get('action'),'method':f.get('method'),'controls':controls[:80]})
+              patterns={
+                'expected_snum_015918_count':text.count('015918'),
+                'racerprofile_count':text.lower().count('racerprofile'),
+                'snum_token_count':text.lower().count('snum'),
+                'expected_name_full_count':text.count('土井') + text.count('慎二'),
+                'pc_racerprofile_path_count':text.count('/pc/racerprofile'),
+                'javascript_count':text.lower().count('javascript'),
+              }
+              digit_candidates=sorted(set(re.findall(r'(?<!\d)\d{5,6}(?!\d)',text)))
+              out['result']={
+                'http_status':result.status_code,
+                'content_sha256':hashlib.sha256(html).hexdigest(),
+                'content_bytes':len(html),
+                'patterns':patterns,
+                'diagnostic_anchor_count':len(anchors),
+                'diagnostic_anchors':anchors[:40],
+                'forms_with_identity_values':forms[:20],
+                'five_or_six_digit_token_count':len(digit_candidates),
+                'contains_expected_snum_in_digit_tokens':'015918' in digit_candidates,
+                'sample_digit_tokens':digit_candidates[:40],
+              }
+              try:
+                  out['locator_extract_candidate_snums']=loc.extract_candidate_snums(html)
+              except Exception as e:
+                  out['locator_extract_error']={'type':type(e).__name__,'message':str(e)}
+              out['status']='PASS_PROBE'
+          except Exception as e:
+              out['status']='FAIL_CLOSED_PROBE'
+              out['error_type']=type(e).__name__; out['error_message']=str(e)
+              out['traceback_tail']=traceback.format_exc().splitlines()[-8:]
+          receipt.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(receipt.read_text(encoding='utf-8'))
+          PY
+      - name: Persist probe receipt
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_SEARCH_SEMANTIC_PROBE_v1.json
+          git commit -m 'Record KEIRIN.JP search semantic probe'
+          git push
