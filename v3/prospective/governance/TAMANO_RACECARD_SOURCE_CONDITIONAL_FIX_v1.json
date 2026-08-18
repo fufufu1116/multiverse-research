@@ -1,0 +1,20 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "TAMANO_RACECARD_SOURCE_CONDITIONAL_FIX_v1",
+  "date_jst": "2026-08-18",
+  "status": "IMPLEMENTED_PENDING_FINAL_INDEPENDENT_APPROVAL_NETWORK_OFF",
+  "previous_verdict": "CONDITIONAL APPROVE",
+  "implemented": [
+    "raw-byte SHA-256 before parsing",
+    "Region Isolation on every parse",
+    "Anchor Invariant on every parse",
+    "POST sentinel zero on every parse",
+    "template mismatch => REJECT_FAIL_CLOSED",
+    "single worker hard limit",
+    "minimum spacing 10 seconds hard limit",
+    "max two discovery checks per event day hard limit",
+    "403/429 => persistent HALT no retry",
+    "exact same-session discovery-link binding"
+  ],
+  "network": "OFF"
+}
