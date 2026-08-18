@@ -1,0 +1,67 @@
+name: tamano-fieldsize-marker-map-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tamano-fieldsize-marker-map-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4 PyMuPDF
+      - name: Map field-size markers only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,requests,time,unicodedata,re
+          import fitz
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          from urllib.parse import urljoin,urlparse,unquote
+          W,H=1190.55,841.88; clips={0:fitz.Rect(610,0,W,H),1:fitz.Rect(0,0,W,720)}
+          discovery='https://www.tamano-keirin.jp/racepdf/'; day='2026-07-24'; h={'User-Agent':'Multiverse-Private-Research/1.0'}
+          s=requests.Session(); r=s.get(discovery,headers=h,timeout=20,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'discovery {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser'); urls=[]
+          for a in soup.find_all('a',href=True):
+              u=urljoin(discovery,a['href']); p=urlparse(u)
+              if p.scheme=='https' and p.netloc=='www.tamano-keirin.jp' and p.path.startswith('/wp-content/uploads/') and p.path.lower().endswith('.pdf') and not p.query and unquote(p.path.rsplit('/',1)[-1]).startswith(day.replace('-','')): urls.append(u)
+          urls=sorted(set(urls));
+          if len(urls)!=1: raise RuntimeError(f'pdf cardinality={len(urls)}')
+          time.sleep(10); p=s.get(urls[0],headers=h,timeout=20,allow_redirects=False)
+          if p.status_code!=200: raise RuntimeError(f'pdf {p.status_code}')
+          doc=fitz.open(stream=p.content,filetype='pdf'); allm=[]
+          for pi,clip in clips.items():
+              for w in doc[pi].get_text('words',clip=clip):
+                  t=unicodedata.normalize('NFKC',w[4]); compact=''.join(t.split())
+                  if '車立' in compact:
+                      allm.append({'page':pi+1,'text':compact,'x0':round(w[0],2),'y0':round(w[1],2),'x1':round(w[2],2),'y1':round(w[3],2)})
+          specs=[]
+          raw=[]
+          for b in range(4): raw.append((0,609.6,1+b,220+147.4*b,345+147.4*b))
+          for b in range(4):
+              raw.append((1,0.0,5+b,38+164.4*b,165+164.4*b)); raw.append((1,603.8,9+b,38+164.4*b,165+164.4*b))
+          for pi,ox,rno,ymin,ymax in sorted(raw,key=lambda x:x[2]):
+              nearby=[m for m in allm if m['page']==pi+1 and ox<=m['x0']<=ox+250 and ymax-10<=m['y0']<=ymax+55]
+              specs.append({'race_no':rno,'page':pi+1,'ox':ox,'row_ymin':round(ymin,1),'row_ymax':round(ymax,1),'nearby_markers':nearby})
+          out={'record':'TAMANO_FIELDSIZE_MARKER_MAP_PROBE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),'event_day':day,
+               'pdf_raw_sha256':hashlib.sha256(p.content).hexdigest(),'pre_clips_only':True,'full_document_extraction':False,'holdout_accessed':False,'result_payout_price_accessed':False,
+               'all_markers':allm,'race_mapping':specs,'status':'PASS_PROBE'}
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/TAMANO_FIELDSIZE_MARKER_MAP_PROBE_v1.json');q.parent.mkdir(parents=True,exist_ok=True);q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist probe
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/TAMANO_FIELDSIZE_MARKER_MAP_PROBE_v1.json
+          git commit -m 'Record Tamano field-size marker map probe'
+          git push
