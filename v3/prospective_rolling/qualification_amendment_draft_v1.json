@@ -1,0 +1,38 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "PROSPECTIVE_ROLLING_QUALIFICATION_AMENDMENT_DRAFT_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_PENDING_INDEPENDENT_AUDIT",
+  "recommended_architecture": "C_RETURN_TO_PROSPECTIVE_ROLLING_COLLECTION",
+  "no_external_contact": true,
+  "public_evidence_only_for_source_admission": true,
+  "target": 1000,
+  "append_only": true,
+  "race_order": "strict chronological collection order under frozen deterministic admission rule",
+  "no_posthoc_replacement": true,
+  "candidate_collection_authorized": false,
+  "pre_collection_mandatory_gates": [
+    "SOURCE_ADMISSION_PUBLIC_EVIDENCE",
+    "COLLECTOR_ARTIFACT_INDEPENDENT_AUDIT_APPROVE",
+    "COLLECTOR_CODE_SHA_FREEZE",
+    "CLOCK_AND_TIMESTAMP_SEMANTICS_AUDIT",
+    "PRE_FIELD_SEMANTICS_AUDIT",
+    "PRICE_CUTOFF_SEMANTICS_AUDIT",
+    "HOLDOUT_MEMBERSHIP_COLLISION_GUARD",
+    "RESULT_PAYOUT_FIREWALL_TEST",
+    "APPEND_ONLY_STORAGE_AND_HASH_CHAIN_TEST"
+  ],
+  "frozen_science": {
+    "stage_A": "V3A_ROBUST_SIGN_CONSENSUS unchanged",
+    "stage_B": "V3B_ROBUST_JOINT_RACE_PORTFOLIO unchanged",
+    "markets": ["2shatan","2shahuku","3rentan","3renhuku"],
+    "no_model_threshold_market_or_portfolio_change_during_collection": true
+  },
+  "trial_accounting": {
+    "architecture_and_collector_audit": 0,
+    "prospective_snapshot_collection": 0,
+    "prediction_price_decision_locking_without_scoring": 0,
+    "prospective_v3_scientific_trial": 0
+  },
+  "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+}
