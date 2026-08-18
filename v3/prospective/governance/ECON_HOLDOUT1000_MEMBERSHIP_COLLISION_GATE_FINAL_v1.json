@@ -1,0 +1,47 @@
+{
+  "approved_core": {
+    "allowed_access": "MEMBERSHIP METADATA / race_id membership only",
+    "forbidden_access": [
+      "Price",
+      "PAYOUT",
+      "RESULT",
+      "scoring"
+    ],
+    "mandatory_candidate_gate": {
+      "activation_time_must_be_after": "2026-04-10T23:59:59+09:00",
+      "candidate_race_date_must_be_after": "2026-04-10",
+      "if_not_date_disjoint": "HALT_FAIL_CLOSED",
+      "proof": "All Shadow candidates are after activation; sealed HOLDOUT membership is entirely <=2026-04-10, therefore set intersection is zero without opening outcome/economic fields."
+    },
+    "membership_identity": {
+      "dev_index_max": 2000,
+      "dev_index_min": 1001,
+      "name": "ECON_HOLDOUT_1000",
+      "ordered_race_id_sha256": "814e72d228ebaf40b4fa1aae636c55c69add71d941f27f6900a0e21d91f2e2c8",
+      "payout_accessed": false,
+      "price_accessed": false,
+      "race_date_max": "2026-04-10",
+      "race_date_min": "2026-03-27",
+      "row_count": 1000,
+      "scored": false,
+      "sorted_set_sha256": "54c33d907e2e610599bbdf03b81b655707e2b2a71fce9e1ca1c44295cce54"
+    },
+    "optional_stronger_exact_id_gate": {
+      "failure": "HALT_FAIL_CLOSED",
+      "requirements": [
+        "read race_id/race_date/venue_code/data_status only",
+        "1000 unique race_id",
+        "dev_index 1001..2000",
+        "data_status UNIVERSE_LOCKED_PRE_NOT_COLLECTED",
+        "bind to frozen ordered/set SHA using the original membership-hash procedure",
+        "candidate race_id exact membership intersection must be 0"
+      ],
+      "when_private_membership_file_available": true
+    },
+    "schema": "ECON_HOLDOUT1000_MEMBERSHIP_COLLISION_GATE_v1",
+    "status": "ACTIVE_IN_FREEZE_CANDIDATE_FAIL_CLOSED"
+  },
+  "approved_core_sha256": "4f66e3b05a56eaaa179a8708c476ba9069b502dd458b636b5ea62e4e49516b4e",
+  "record": "ECON_HOLDOUT1000_MEMBERSHIP_COLLISION_GATE_FINAL_v1",
+  "status": "FROZEN_APPROVED_ACTIVE_FAIL_CLOSED"
+}
