@@ -1,4 +1,4 @@
-# trigger: restricted smoke v1.1
+# trigger: restricted smoke v1.2 receipt-commit
 name: KEIRINJP Racerprofile Smoke v1
 
 on:
@@ -7,7 +7,7 @@ on:
       - '.github/workflows/keirinjp_racerprofile_smoke_v1.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   PYTHONUNBUFFERED: '1'
@@ -55,3 +55,43 @@ jobs:
           path: keirinjp_racerprofile_smoke_receipt_v1.json
           if-no-files-found: error
           retention-days: 7
+
+      - name: Commit PASS receipt to provenance ledger
+        run: |
+          mkdir -p v3/prospective/runtime_receipts
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          src=Path('keirinjp_racerprofile_smoke_receipt_v1.json')
+          d=json.loads(src.read_text())
+          adapter=Path('v3/prospective/keirinjp_racerprofile_hardlimit_adapter_v1.py')
+          out={
+            'record':'KEIRINJP_RACERPROFILE_RUNTIME_SMOKE_PASS_v1',
+            'status':'PASS',
+            'workflow_commit_sha':os.environ['GITHUB_SHA'],
+            'adapter_sha256':hashlib.sha256(adapter.read_bytes()).hexdigest(),
+            'registration_number':d['registration_number'],
+            'name':d['name'],
+            'prefecture':d['prefecture'],
+            'term':d['term'],
+            'class':d['class'],
+            'style':d['style'],
+            'profile_updated_at':d['profile_updated_at'],
+            'recent4m_updated_at':d['recent4m_updated_at'],
+            'win_rate':d['win_rate'],
+            'quinella_rate':d['quinella_rate'],
+            'trio_rate':d['trio_rate'],
+            'score':d['score'],
+            'content_hash':d['content_hash'],
+            'capture_timestamp_utc':d['capture_timestamp_utc'],
+            'raw_html_persisted':False,
+            'shadow250_collected':0,
+            'scientific_trial_consumed':False
+          }
+          Path('v3/prospective/runtime_receipts/keirinjp_racerprofile_smoke_pass_v1.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective/runtime_receipts/keirinjp_racerprofile_smoke_pass_v1.json
+          git commit -m 'Record KEIRIN.JP racerprofile runtime smoke PASS'
+          git push
