@@ -1,0 +1,32 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "KEIRINJP_DERIVED_FACT_SOURCE_CANDIDATE_v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_SOURCE_CANDIDATE_NOT_ADMITTED_NETWORK_OFF",
+  "source": "KEIRIN.JP official public website",
+  "source_mode": "DERIVED_FACT_OBSERVATION_ONLY",
+  "network_enabled": false,
+  "public_evidence_state": {
+    "frozen_v3_feature_coverage_in_official_racecard": "PROMISING_IN_PRINCIPLE_NOT_SEMANTICALLY_AUDITED",
+    "four_market_odds_display": "PROMISING_IN_PRINCIPLE_NOT_MACHINE_MAPPING_AUDITED",
+    "automation_permission": "NOT_EXPLICITLY_ESTABLISHED",
+    "legal_opinion": "NONE"
+  },
+  "proposed_controls": {
+    "public_pages_only": true,
+    "login_or_member_area": false,
+    "hidden_or_undocumented_api": false,
+    "captcha_waf_rate_limit_bypass": false,
+    "raw_html_persistence": false,
+    "images_text_layout_persistence": false,
+    "store_derived_factual_values_only": true,
+    "redistribution": false,
+    "commercial_use": false,
+    "single_worker": true,
+    "minimum_seconds_between_requests": 5,
+    "halt_http_codes": [403, 429],
+    "terms_or_schema_change": "HALT_FAIL_CLOSED"
+  },
+  "network_enablement_requires_independent_audit": true,
+  "NO_EXTERNAL_CONTACT": true
+}
