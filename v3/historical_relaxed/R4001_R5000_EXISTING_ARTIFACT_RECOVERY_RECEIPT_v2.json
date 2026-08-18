@@ -1,0 +1,23 @@
+{
+  "record": "R4001_R5000_EXISTING_ARTIFACT_RECOVERY_RECEIPT_v2",
+  "status": "PARTIAL_RECOVERY_GAPS_OPEN_NO_SCORING",
+  "confirmed": {
+    "file_library_notebook": "Multiverse_PRE_BATCH_05_1000R.ipynb",
+    "scope": "R4001-R5000 fixed 1000R",
+    "parent_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "batch_universe_sha256": "964e812d9818cad4b154cec3a883d0a58f5e5dbd4c33e7b8af20245fb1215baf",
+    "design_prohibitions": ["RESULT", "PAYOUT", "Scoring", "TRAIN"],
+    "R4501_R5000_notebook": "Multiverse_PRE_500_BATCH_10.ipynb",
+    "R4501_R5000_batch_sha256": "977313049c20e7f4ce4e54f6c6d71838ee1c1267757156d0df29ee4bb687628f"
+  },
+  "not_found_in_current_recovery": [
+    "standalone exact NEXTGEN_5000_UNIVERSE.csv bytes",
+    "executed R4001-R5000 PRE proxy artifact",
+    "R4001-R5000 four-market historical Price proxy artifact",
+    "R4001-R5000 Result artifact"
+  ],
+  "github_exact_batch_sha_search": "NO_MATCH",
+  "drive_direct_search": "NO_MATCH",
+  "new_web_acquisition": false,
+  "next": "Continue existing-artifact-only recovery; no outcome scoring until all locks and final independent approval."
+}
