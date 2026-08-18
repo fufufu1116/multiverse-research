@@ -1,0 +1,127 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "HANDOFF_STATE_RECEIPT_20260819_v1",
+  "generated_at_jst": "2026-08-19T07:37:00+09:00",
+  "purpose": "Formal recovery-only handoff after chat context limit. This record does not change scientific state, Freeze state, source set, selection rule, trial counts, or authorization.",
+  "repository": {
+    "full_name": "fufufu1116/multiverse-research",
+    "branch": "main",
+    "recovered_head_before_this_receipt": "920aacbad2bcb14f8b6bc6e493f9451895869fe8",
+    "head_message": "Add first PRE G1 G2 resolution candidate"
+  },
+  "RECOVERED": {
+    "activation": {
+      "status": "FROZEN_APPROVED_ACTIVE",
+      "timestamp_jst": "2026-08-19T00:03:49+09:00",
+      "selected_races": 0,
+      "prospective_shadow250_screen_count": 0,
+      "collection_authority": "PRE only, strictly after activation, only after every frozen eligibility gate passes"
+    },
+    "frozen_cores": {
+      "source_set_core_sha256": "7d15d044c53dde706dfe8565db5b516f0e191f66af4236b7f771d49220e49fc6",
+      "selection_rule_core_sha256": "335be03ee68f8ecfc9c4b5afbfeb7e5acce5f7ee90e73bc36c5df3a8fd71fca1",
+      "holdout_collision_gate_core_sha256": "4f66e3b05a56eaaa179a8708c476ba9069b502dd458b636b5ea62e4e49516b4e",
+      "permanent_exclusion_registry_genesis_hash": "c95bad637162f992a27cf9ff24d295ef9183569d0f0d2a7d370fa0276aba0c8e"
+    },
+    "source_set": {
+      "tamano_racecard": "FROZEN_5_FIELD_RACECARD_SOURCE",
+      "tamano_adapter_sha256": "56c4d72f07880153d9a9e32da5a439dd404eb81824f408b7f7a4b7624d900257",
+      "keirinjp_racerprofile": "FROZEN_3_FIELD_SUPPLEMENT_SOURCE",
+      "keirinjp_adapter_sha256": "107040fcfbdcb5418c9aef2a9bd68f0601d4ee5d4e86e8d671495f307941da84",
+      "source_change_semantics": "ANY source/adapter/source-role change requires NEW Shadow universe"
+    },
+    "pre_first_race_gap_state": {
+      "status": "FAIL_CLOSED_BEFORE_FIRST_SELECTED_RACE",
+      "G1_TAMANO_ROW_PARSER": "candidate implemented and real-file receipt PASS, not independently frozen",
+      "G2_KEIRIN_SNUM_RESOLUTION": "guard/operating model implemented, not independently frozen"
+    },
+    "latest_resolution_candidate": {
+      "record": "FIRST_PRE_G1_G2_RESOLUTION_CANDIDATE_v1",
+      "git_blob_sha": "412a4131a51c4f25dac099f7d4a06118dc2ed2c4",
+      "status": "PENDING_INDEPENDENT_GEMINI_AUDIT_NO_SHADOW_RACE_SELECTED",
+      "G1": {
+        "parser_git_blob_sha": "da198c3a6f5c91b676ca570a4a2bb1310c8eb27d",
+        "repo_reported_real_tests": [
+          {
+            "file": "20260728 玉野.pdf",
+            "raw_pdf_sha256": "1c5ec1a04f5fe6b77398ed975a49d1633a4d2c59b4c83624a24b871d7b757a5e",
+            "rows": 84,
+            "races": 12,
+            "status": "PASS"
+          },
+          {
+            "file": "20260729-玉野.pdf",
+            "raw_pdf_sha256": "5adf687d7893341c4a6ae0b32c4a47b57f0f99b70c731fead4d214153e654ea6",
+            "rows": 84,
+            "races": 12,
+            "status": "PASS"
+          }
+        ],
+        "ocr": false,
+        "full_document_extraction": false
+      },
+      "G2": {
+        "guard_git_blob_sha": "4b8d50f0acf35b4b028c6af32d6b0541fbaa6828",
+        "candidate_snum_semantics": "UNTRUSTED_LOCATOR_ONLY",
+        "predictive_feature_use": false,
+        "term_range_guard": "JKA official registration intervals 57..130",
+        "final_identity_authority": "frozen KEIRIN.JP /pc/racerprofile adapter",
+        "required_identity_match": ["registration_number", "normalized_name", "prefecture", "term"],
+        "wrong_hint": "QUARANTINE_FAIL_CLOSED"
+      }
+    },
+    "scientific_state": {
+      "prospective_v3_scientific_trial_last_explicit": 0,
+      "historical_relaxed_scientific_trial_last_explicit": 0,
+      "shadow250_selected_races": 0,
+      "global_scoring": "UNAUTHORIZED",
+      "wagering": "UNAUTHORIZED",
+      "Lane_E": "UNAUTHORIZED"
+    },
+    "historical_lineage_trial_freezes_from_recovered_artifacts": {
+      "v2_7": "30/40 consumed; lineage closed NO_VALIDATED_EDGE; remaining budget not usable to rescue lineage",
+      "v2_8": "26/36 consumed; CLOSED_NO_SURVIVOR_AT_STAGE_C",
+      "v2_9": "9/19 consumed; CLOSED_NO_SURVIVOR_AT_STAGE_A",
+      "cross_lineage_diagnostic": "descriptive diagnostic trial count 0"
+    }
+  },
+  "UNPROVEN": {
+    "candidate_artifact_full_sha256_recomputed_in_current_runtime": false,
+    "G1_independent_reexecution_in_current_runtime": false,
+    "G1_reason": "Both PDFs are visible in ChatGPT File Library but no matching executable raw file was found in connected Google Drive; current evidence is repository real-file receipts plus prior semantic audit.",
+    "G2_real_official_identity_end_to_end_for_seven_riders": false,
+    "G2_current_test_level": "term-range PASS plus synthetic official-identity-verifier PASS",
+    "candidate_snum_discovery_provenance": "NOT_FROZEN",
+    "source_set_drift_answer": "NOT_DECIDED"
+  },
+  "MISSING": {
+    "independent_Gemini_verdict_for_FIRST_PRE_G1_G2_RESOLUTION_CANDIDATE_v1": true,
+    "frozen_PRE_safe_snum_discovery_provenance_or_explicit_adjudication": true,
+    "authorization_to_select_first_Shadow250_race_after_gap_resolution": "NOT_YET_EFFECTIVE_UNTIL_AUDIT_APPROVE"
+  },
+  "SEALED": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "allowed": "membership metadata/race_id collision gate only",
+    "Price_accessed": false,
+    "PAYOUT_accessed": false,
+    "RESULT_accessed": false,
+    "scored": false,
+    "forbidden": ["Price", "PAYOUT", "RESULT", "scoring"]
+  },
+  "NEXT_GATE": {
+    "name": "INDEPENDENT_GEMINI_AUDIT_FIRST_PRE_G1_G2_RESOLUTION_CANDIDATE_v1",
+    "fail_closed": true,
+    "no_race_selection_before_approve": true,
+    "required_decisions": [
+      "Audit G1 deterministic Tamano row parser against frozen region/anchor/source semantics",
+      "Audit G2 term-range guard and official identity verifier",
+      "Decide whether external/untrusted snum locator discovery is source-set drift under frozen source-set rule",
+      "Require exact provenance and fail-closed behavior for any locator hint",
+      "Check that no RESULT/PAYOUT/Price or outcome-bearing field enters eligibility or resolution",
+      "Check parser date binding and withdrawal handling are not ambiguous",
+      "Return APPROVE only if no P0/P1 pre-first-race defect remains"
+    ],
+    "if_source_set_drift_yes": "Do not mutate current Shadow250. Create and independently freeze a NEW Shadow universe before any race.",
+    "if_approve_no_drift": "Freeze the audited G1/G2 implementation and only then evaluate the first strictly-post-activation PRE race through all existing frozen gates."
+  }
+}
