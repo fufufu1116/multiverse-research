@@ -1,4 +1,4 @@
-# trigger: second and final 2026-07-29 discovery smoke using exact discovered href
+# trigger: fresh completed noncandidate 2026-07-24 direct-receipt smoke
 name: Tamano Racecard Smoke v1
 
 on:
@@ -31,7 +31,7 @@ jobs:
       - name: Synthetic hard-limit gate
         run: python v3/prospective/tamano_racecard_hardlimit_adapter_v1.py --synthetic
 
-      - name: Single authorized completed non-candidate live smoke with diagnostic capture
+      - name: Single authorized completed non-candidate live smoke
         id: live
         continue-on-error: true
         shell: bash
@@ -39,13 +39,14 @@ jobs:
           set +e
           python v3/prospective/tamano_racecard_hardlimit_adapter_v1.py \
             --smoke \
-            --event-day '2026-07-29' \
-            --discovery-url 'https://www.tamano-keirin.jp/racepdf/7-27%EF%BD%9E7-29-%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6-%E7%AC%AC4%E5%9B%9E%E5%89%8D%E7%AF%80-%E7%8E%89%E9%87%8E%E5%B8%82%E5%96%B6%E7%8E%89%E9%87%8E%E7%AB%B6%E8%BC%AAf%E2%85%B0%E3%83%8A%E3%82%A4/' \
-            > tamano_live_stdout.json 2> tamano_live_stderr.txt
+            --event-day '2026-07-24' \
+            --discovery-url 'https://www.tamano-keirin.jp/racepdf/' \
+            --output tamano_live_receipt.json \
+            2> tamano_live_stderr.txt
           echo $? > tamano_live_exit_code.txt
           exit 0
 
-      - name: Build normalized PASS/FAIL diagnostic receipt
+      - name: Build normalized diagnostic receipt
         run: |
           mkdir -p v3/prospective/runtime_receipts
           python - <<'PY'
@@ -55,25 +56,31 @@ jobs:
           exit_code=int(Path('tamano_live_exit_code.txt').read_text().strip())
           err=Path('tamano_live_stderr.txt').read_text(errors='replace').strip()[:2000]
           out={
-            'record':'TAMANO_RACECARD_RUNTIME_SMOKE_DIAGNOSTIC_v1',
+            'record':'TAMANO_RACECARD_RUNTIME_SMOKE_DIAGNOSTIC_v2',
             'workflow_commit_sha':os.environ['GITHUB_SHA'],
             'adapter_sha256':hashlib.sha256(adapter.read_bytes()).hexdigest(),
-            'event_day':'2026-07-29',
+            'event_day':'2026-07-24',
             'raw_html_persisted':False,
             'raw_pdf_persisted':False,
             'shadow250_collected':0,
             'scientific_trial_consumed':False,
             'exit_code':exit_code
           }
-          if exit_code==0:
+          src=Path('tamano_live_receipt.json')
+          if exit_code==0 and src.exists():
             try:
-              d=json.loads(Path('tamano_live_stdout.json').read_text())
+              d=json.loads(src.read_text())
               pages=d.get('region_anchor_receipt',[])
-              if d.get('status')!='PASS' or len(pages)!=2 or any(any(x for x in p.get('post_hits',{}).values()) for p in pages):
+              if d.get('status')!='PASS' or len(pages)!=2:
                   raise ValueError('normalized receipt validation failed')
+              if any(any(x for x in p.get('post_hits',{}).values()) for p in pages):
+                  raise ValueError('POST sentinel hit in receipt')
+              if d.get('raw_html_persisted') is not False or d.get('raw_pdf_persisted') is not False:
+                  raise ValueError('raw persistence invariant failed')
               out.update({
                 'status':'PASS',
                 'capture_timestamp_utc':d['capture_timestamp_utc'],
+                'discovery_url':d['discovery_url'],
                 'discovery_content_hash':d['discovery_content_hash'],
                 'pdf_url':d['pdf_url'],
                 'pdf_raw_sha256':d['pdf_raw_sha256'],
@@ -84,16 +91,20 @@ jobs:
             except Exception as e:
               out.update({'status':'FAIL_CLOSED_RECEIPT_PARSE','error':type(e).__name__+': '+str(e)})
           else:
-            out.update({'status':'FAIL_CLOSED_LIVE_SMOKE','error':err})
-          Path('v3/prospective/runtime_receipts/tamano_racecard_smoke_diagnostic_v1.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+            out.update({'status':'FAIL_CLOSED_LIVE_SMOKE','error':err or 'receipt file missing'})
+          Path('v3/prospective/runtime_receipts/tamano_racecard_smoke_diagnostic_v2.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
           PY
 
-      - name: Commit diagnostic receipt regardless of live result
+      - name: Remove transient local receipt
+        if: always()
+        run: rm -f tamano_live_receipt.json tamano_live_stderr.txt tamano_live_exit_code.txt
+
+      - name: Commit normalized diagnostic receipt
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add v3/prospective/runtime_receipts/tamano_racecard_smoke_diagnostic_v1.json
-          git commit -m 'Record Tamano racecard runtime smoke diagnostic'
+          git add v3/prospective/runtime_receipts/tamano_racecard_smoke_diagnostic_v2.json
+          git commit -m 'Record Tamano 7/24 runtime smoke diagnostic'
           git push
 
       - name: Final fail-closed verdict
@@ -101,8 +112,8 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          d=json.loads(Path('v3/prospective/runtime_receipts/tamano_racecard_smoke_diagnostic_v1.json').read_text())
+          d=json.loads(Path('v3/prospective/runtime_receipts/tamano_racecard_smoke_diagnostic_v2.json').read_text())
           if d.get('status')!='PASS':
               raise SystemExit('FAIL_CLOSED Tamano live smoke: '+str(d.get('error')))
-          print(json.dumps({'status':'PASS','pdf_url':d['pdf_url'],'pdf_sha256':d['pdf_raw_sha256']},ensure_ascii=False))
+          print(json.dumps({'status':'PASS','pdf_url':d['pdf_url'],'pdf_sha256':d['pdf_raw_sha256'],'adapter_sha256':d['adapter_sha256']},ensure_ascii=False))
           PY
