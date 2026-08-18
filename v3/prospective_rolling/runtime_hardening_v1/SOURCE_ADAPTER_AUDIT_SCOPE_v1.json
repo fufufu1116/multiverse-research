@@ -1,0 +1,34 @@
+{
+  "record": "SOURCE_ADAPTER_AUDIT_SCOPE_v1",
+  "status": "TEMPLATE_NO_SOURCE_ADMITTED",
+  "required_gates": {
+    "terms": [
+      "public primary evidence captured",
+      "automation permitted or not prohibited under frozen interpretation",
+      "storage/private research compatibility",
+      "rate/concurrency limits frozen",
+      "no WAF/CAPTCHA/authentication/rate-limit circumvention",
+      "no hidden/undocumented endpoint dependence unless explicitly authorized"
+    ],
+    "pre_semantics": [
+      "each frozen PRE field mapped to provider field",
+      "snapshot is actual pre-race state",
+      "withdrawal/substitution semantics audited",
+      "field missingness rules frozen"
+    ],
+    "price_semantics": [
+      "all four markets mapped",
+      "exact cutoff definition documented",
+      "snapshot timing strictly before cutoff",
+      "price is not RESULT/PAYOUT-derived"
+    ],
+    "runtime": [
+      "NTP/clock receipt PASS",
+      "collector code SHA frozen",
+      "adapter code SHA frozen",
+      "append-only hash-chain PASS",
+      "HOLDOUT membership collision guard PASS"
+    ]
+  },
+  "admission_rule": "Every gate must PASS and receive independent APPROVE before provider network enablement."
+}
