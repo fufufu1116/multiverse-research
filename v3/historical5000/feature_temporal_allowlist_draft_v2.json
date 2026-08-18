@@ -1,0 +1,32 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "FEATURE_TEMPORAL_ALLOWLIST_DRAFT_v2",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_FAIL_CLOSED_DYNAMIC_FIELDS_BLOCKED_PENDING_ASOF_PROOF",
+  "required_structural_fields": ["race_id","car_no","rider_id","withdrawn"],
+  "required_prediction_features": ["score","win_rate","quinella_rate","trio_rate","B","S","style","class"],
+  "proof_classes": ["PRE_RACE_SNAPSHOT","VERSIONED_AS_OF_SOURCE","PROVABLY_INVARIANT_FIELD"],
+  "field_rules": {
+    "race_id": {"class":"EVENT_IDENTITY","status":"CONDITIONAL","proof":"canonical event binding; invariant identity may be accepted if independently audited"},
+    "rider_id": {"class":"IDENTITY_WITH_DYNAMIC_EVENT_MEMBERSHIP","status":"BLOCK_EVENT_MEMBERSHIP_UNTIL_PROVEN","proof":"pre-race snapshot or versioned as-of racecard required for membership"},
+    "car_no": {"class":"EVENT_DYNAMIC","status":"BLOCK","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "withdrawn": {"class":"EVENT_DYNAMIC","status":"BLOCK","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "score": {"class":"ROLLING_TIME_DYNAMIC","status":"BLOCK_CURRENT_VALUE_REPLAY","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "win_rate": {"class":"ROLLING_TIME_DYNAMIC","status":"BLOCK_CURRENT_VALUE_REPLAY","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "quinella_rate": {"class":"ROLLING_TIME_DYNAMIC","status":"BLOCK_CURRENT_VALUE_REPLAY","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "trio_rate": {"class":"ROLLING_TIME_DYNAMIC","status":"BLOCK_CURRENT_VALUE_REPLAY","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "B": {"class":"ROLLING_TIME_DYNAMIC","status":"BLOCK","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "S": {"class":"ROLLING_TIME_DYNAMIC","status":"BLOCK","proof":"PRE_RACE_SNAPSHOT or VERSIONED_AS_OF_SOURCE"},
+    "style": {"class":"EVENT_OR_PROFILE_CLASSIFICATION","status":"BLOCK","proof":"event-time snapshot/as-of semantics; current profile value insufficient"},
+    "class": {"class":"EVENT_TIME_CLASSIFICATION","status":"BLOCK","proof":"event-time snapshot/as-of semantics"}
+  },
+  "semantic_findings": [
+    "KEIRIN.JP documents competition score as based on recent four-month performance, so present-day profile values are time-varying and cannot be back-applied.",
+    "Legacy historical PRE collector explicitly marked historical replay availability as unproven, confirming parseability is not temporal proof."
+  ],
+  "allowlist_pass_condition": "Every frozen required field must have an admitted proof route for every candidate race under frozen missingness semantics.",
+  "diagnostic_data": "already-exposed DEV only",
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false
+}
