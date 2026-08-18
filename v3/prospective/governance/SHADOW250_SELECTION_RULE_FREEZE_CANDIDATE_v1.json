@@ -1,0 +1,32 @@
+{
+  "activation_constraint": "scheduled race must be strictly after activation timestamp",
+  "after_prediction_lock": "selected race can never be replaced",
+  "all_selected_races": "PERMANENTLY_DISQUALIFIED_FROM_FINAL_PROSPECTIVE_V3",
+  "cancellation": "use separately frozen cancellation/scoring rule; do not replace",
+  "claim_scope": "venue/source-constrained; no national/general-population claim",
+  "inference_for_missing_source_fields": "PROHIBITED",
+  "membership": "first 250 races satisfying all frozen PRE-only eligibility gates",
+  "ocr": "PROHIBITED",
+  "ordering": ["scheduled_start_ascending", "venue_code_ascending", "race_no_ascending"],
+  "post_outcome_replacement": "PROHIBITED",
+  "pre_only_eligibility": [
+    "racecard source available through frozen admitted source path",
+    "Tamano A3 template PASS",
+    "Region Isolation PASS",
+    "Anchor Invariant PASS",
+    "POST sentinel zero",
+    "complete frozen 5+3 PRE for every active entrant",
+    "KEIRIN supplement capture PASS",
+    "duplicate class/score/quinella_rate consistency PASS",
+    "source capture skew <=120 seconds",
+    "all source captures before Prediction Lock",
+    "HOLDOUT collision gate PASS",
+    "race not previously selected/exposed by Shadow250"
+  ],
+  "result_or_payout_for_eligibility": "PROHIBITED",
+  "role": "SOURCE_CONSTRAINED_PROSPECTIVE_SCREENING_ONLY",
+  "schema": "MULTIVERSE_SHADOW250_SELECTION_RULE_v1",
+  "scoring_gate": "global outcome-bearing scoring forbidden until exact 250 membership + exclusion registry + scoring commitment are frozen",
+  "target_count": 250,
+  "unsupported_template": "PRE_INELIGIBLE_SOURCE_GAP"
+}
