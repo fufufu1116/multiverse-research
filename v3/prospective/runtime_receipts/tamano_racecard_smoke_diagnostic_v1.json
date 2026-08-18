@@ -1,13 +1,13 @@
 {
   "record": "TAMANO_RACECARD_RUNTIME_SMOKE_DIAGNOSTIC_v1",
-  "workflow_commit_sha": "929c2f81f39cd7e30be4e80610cd18e4cb4f31e0",
-  "adapter_sha256": "a1398d5f175510103533fb370d0f043ab720e992728ca3170ffb4ec82fca3d18",
+  "workflow_commit_sha": "4d07714c9c8f3b9c1939d1cd98faaa2b38d33666",
+  "adapter_sha256": "e989609e29bd01a02536bcf147df5d4d3a42718a385e917fe2f11ee2ab780cb6",
   "event_day": "2026-07-29",
   "raw_html_persisted": false,
   "raw_pdf_persisted": false,
   "shadow250_collected": 0,
   "scientific_trial_consumed": false,
-  "exit_code": 1,
-  "status": "FAIL_CLOSED_LIVE_SMOKE",
-  "error": "Traceback (most recent call last):\n  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective/tamano_racecard_hardlimit_adapter_v1.py\", line 203, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective/tamano_racecard_hardlimit_adapter_v1.py\", line 199, in main\n    print(json.dumps(smoke(args.discovery_url,args.pdf_url,args.event_day), ensure_ascii=False)); return 0\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective/tamano_racecard_hardlimit_adapter_v1.py\", line 137, in smoke\n    validate_pdf_url(expected_pdf_url, hrefs)\n  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective/tamano_racecard_hardlimit_adapter_v1.py\", line 44, in validate_pdf_url\n    raise FailClosed(\"REJECT guessed/non-session PDF\")\nFailClosed: REJECT guessed/non-session PDF"
+  "exit_code": 0,
+  "status": "FAIL_CLOSED_RECEIPT_PARSE",
+  "error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
 }
