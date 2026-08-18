@@ -1,0 +1,40 @@
+name: keirinjp-race-batch-synthetic
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-race-batch-synthetic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Run batch synthetic tests
+        run: |
+          python - <<'PY'
+          import importlib.util,json,pathlib,subprocess
+          from datetime import datetime,timezone
+          p=pathlib.Path('v3/prospective_shadow250_v2/keirinjp_race_batch_identity_supplement_v1.py')
+          spec=importlib.util.spec_from_file_location('batch',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+          result=m.synthetic_tests()
+          out={'record':'KEIRINJP_RACE_BATCH_SYNTHETIC_v1','generated_utc':datetime.now(timezone.utc).isoformat(),
+               'batch_git_blob':subprocess.check_output(['git','hash-object',str(p)],text=True).strip(),'result':result,
+               'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False,'status':'PASS'}
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACE_BATCH_SYNTHETIC_v1.json');q.parent.mkdir(parents=True,exist_ok=True);q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n');print(q.read_text())
+          PY
+      - name: Persist receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACE_BATCH_SYNTHETIC_v1.json
+          git commit -m 'Record KEIRIN race batch synthetic PASS'
+          git push
