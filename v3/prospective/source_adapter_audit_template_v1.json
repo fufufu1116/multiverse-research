@@ -1,0 +1,25 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "SOURCE_ADAPTER_AUDIT_TEMPLATE_v1",
+  "status": "TEMPLATE_NETWORK_DISABLED",
+  "policy": "NO_EXTERNAL_CONTACT + PUBLIC_EVIDENCE_ONLY",
+  "required_sections": {
+    "public_primary_terms_evidence": "required",
+    "automation_permission_or_nonprohibition": "ambiguity => BLOCK",
+    "private_storage_hash_provenance": "required",
+    "rate_concurrency_limits": "required frozen rule",
+    "PRE_field_mapping": "all frozen fields",
+    "withdrawal_substitution_semantics": "required",
+    "four_market_price_mapping": ["2shatan", "2shahuku", "3rentan", "3renhuku"],
+    "cutoff_semantics": "must prove executable pre-cutoff snapshot",
+    "result_payout_firewall": "required",
+    "clock_runtime": "abs(offset)<100ms; live receipt age<=10s; audited ACTIVE_SLEW_NO_STEP",
+    "adapter_code_sha": "required before network",
+    "collector_code_sha": "required before network",
+    "hash_chain": "required",
+    "holdout_membership_collision": "membership-only PASS required",
+    "independent_audit": "APPROVE required"
+  },
+  "admission_rule": "All gates PASS+APPROVE before provider network enablement.",
+  "trial_effect": 0
+}
