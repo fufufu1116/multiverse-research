@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   candidate-smoke:
@@ -31,12 +31,15 @@ jobs:
           PYTHONUNBUFFERED: '1'
         run: |
           python - <<'PY'
-          import hashlib, importlib.util, json, pathlib, requests, sys, tempfile, time
+          import hashlib, importlib.util, json, os, pathlib, requests, tempfile, time
           from bs4 import BeautifulSoup
+          from datetime import datetime, timezone
           from urllib.parse import urljoin, urlparse, unquote
 
           # GOVERNANCE: diagnostic/source-validation only. No RESULT/PAYOUT/Price/HOLDOUT/scoring.
           repo=pathlib.Path('.')
+          receipt_path=repo/'v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v1.json'
+          receipt_path.parent.mkdir(parents=True,exist_ok=True)
           def load(name,path):
               spec=importlib.util.spec_from_file_location(name,path)
               m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
@@ -45,6 +48,9 @@ jobs:
 
           out={
               'record':'SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v1',
+              'status':'PASS',
+              'generated_utc':datetime.now(timezone.utc).isoformat(),
+              'workflow_head_sha':os.environ.get('GITHUB_SHA'),
               'scientific_trial_consumed':False,
               'shadow_screen_consumed':False,
               'holdout_accessed':False,
@@ -65,7 +71,7 @@ jobs:
               'search_result_sha256':resolved['search_result_sha256'],
           }
 
-          # G1: discover exact official Tamano PDF for a historical source-validation day.
+          # G1: discover exact official Tamano PDF for historical source validation only.
           discovery_url='https://www.tamano-keirin.jp/racepdf/'
           event_day='2026-07-24'
           s=requests.Session()
@@ -105,5 +111,13 @@ jobs:
               'date_binding':'PASS',
               'raw_pdf_persisted':False,
           }
-          print(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2))
+          receipt_path.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(receipt_path.read_text(encoding='utf-8'))
           PY
+      - name: Persist PASS receipt to repository
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v1.json
+          git commit -m 'Record Shadow250-v2 candidate live smoke PASS'
+          git push
