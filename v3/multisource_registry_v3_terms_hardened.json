@@ -1,0 +1,99 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "MULTISOURCE SOURCE POLICY v1.1 — TERMS HARDENED",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_PENDING_INDEPENDENT_AUDIT",
+  "supersedes_for_execution": "MULTISOURCE_SOURCE_POLICY_v1",
+  "reason_for_revision": "Live primary-source terms review found automation/copy restrictions that were not independently verified in the receipt-only multisource audit. Governance design remains unchanged; automation admission is made stricter before any Fresh discovery execution.",
+  "scientific_charter_changed": false,
+  "frozen_v3_model_changed": false,
+  "source_roles": {
+    "KEIRIN.JP": {
+      "tier": "T0_OFFICIAL_CORROBORATION",
+      "role": [
+        "official schedule/date/venue/grade corroboration",
+        "future event candidate discovery when used within site-policy-compatible private research bounds"
+      ],
+      "automation": "CONSERVATIVE_METADATA_ONLY_LOW_RATE_PRIVATE_RESEARCH",
+      "raw_public_redistribution": false,
+      "raw_git_commit": false
+    },
+    "Kdreams": {
+      "tier": "T0_SEMANTIC_PRIMARY_SOURCE",
+      "role": [
+        "manual/interactive primary-source Event-Slot semantic confirmation",
+        "race-id identity binding",
+        "historical provenance reference"
+      ],
+      "automation": "BLOCKED_PENDING_EXPLICIT_PERMISSION_OR_TERMS_CLEARANCE",
+      "new_raw_archival": false,
+      "new_bulk_scraping": false
+    },
+    "WINTICKET": {
+      "tier": "T1_MANUAL_CROSSCHECK",
+      "automation": "PROHIBITED_UNDER_CURRENT_POLICY",
+      "raw_archival": false
+    },
+    "OddsPark": {
+      "tier": "T1_MANUAL_CROSSCHECK",
+      "automation": "DO_NOT_AUTOMATE",
+      "raw_archival": false
+    },
+    "netkeirin": {
+      "tier": "T2_MANUAL_PRIVATE_USE_ONLY_PENDING_PERMISSION",
+      "automation": "BLOCKED_PENDING_PERMISSION",
+      "raw_archival": false
+    },
+    "Chariloto": {
+      "tier": "T2_MANUAL_FALLBACK",
+      "automation": "NOT_ADMITTED",
+      "raw_archival": false
+    },
+    "JMA_AMeDAS": {
+      "tier": "T0_FUTURE_LINEAGE_ENVIRONMENTAL",
+      "role": ["future-lineage PRE environmental warehouse"],
+      "automation": "SEPARATE_COLLECTOR_AFTER_LOCATION_TIME_MAPPING_AUDIT",
+      "current_v3_model_input": false
+    }
+  },
+  "automation_admission_gate": {
+    "required_before_any_new_automated_source": [
+      "PRIMARY_SOURCE_TERMS_VERIFIED live by auditor",
+      "No explicit prohibition on automated analysis/scraping applicable to intended use",
+      "Copyright/storage policy compatible with intended persistence",
+      "Request-rate and concurrency limits defined",
+      "No login/auth bypass",
+      "No WAF/CAPTCHA circumvention",
+      "PRE/POST endpoint firewall defined",
+      "Raw-publication policy defined",
+      "Parser semantic audit complete",
+      "Provenance schema complete",
+      "Independent audit APPROVE before first real acquisition"
+    ],
+    "if_any_uncertain": "BLOCK_AUTOMATION_FAIL_CLOSED"
+  },
+  "fresh1000_effect": {
+    "current_event_slot_identity_math": "UNCHANGED",
+    "current_target": 1000,
+    "current_trial_count": 0,
+    "real_discovery_execution": "PAUSED_UNTIL_SOURCE_ADMISSION_PATH_IS_AUDITED",
+    "preferred_path": "Use KEIRIN.JP official event schedules as the automated/low-rate discovery backbone where policy-compatible; use Kdreams only for limited manual/interactive semantic confirmation unless explicit permission is obtained.",
+    "if_exact_race_count_cannot_be_established_without_blocked_automation": "Do not guess. Prepare a PRE-OUTCOME method amendment and independently audit it before execution."
+  },
+  "source_disagreement": {
+    "T0_vs_T0": "QUARANTINE_AND_FAIL_CLOSED",
+    "T0_vs_lower": "T0_GOVERNS_IDENTITY_AND_LOG_DISAGREEMENT",
+    "lower_only": "CANNOT_ADD_REPLACE_REORDER_FROZEN_RACE",
+    "outcome_based_source_choice": "PROHIBITED"
+  },
+  "governance": {
+    "v3_scientific_trial_count": 0,
+    "fresh_RESULT_accessed": false,
+    "fresh_PAYOUT_accessed": false,
+    "fresh_scoring_performed": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "Price_accessed": false,
+    "PAYOUT_accessed": false,
+    "scored": false
+  }
+}
