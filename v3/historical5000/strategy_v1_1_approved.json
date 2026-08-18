@@ -1,0 +1,47 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "NEW_HISTORICAL5000_STRATEGY_v1_1_APPROVED",
+  "date_jst": "2026-08-18",
+  "strategy_zip_sha256": "e597a43d668ce6a388e0d041e6085bbe0d961b54daba0a105a4852064d47dca3",
+  "independent_audit": {
+    "verdict": "APPROVE",
+    "P0": "NONE",
+    "P1": "NONE",
+    "P2": "NONE",
+    "required_changes": "NONE"
+  },
+  "scope": "PRE_SCORING_CONSTRUCTION_AND_AUDIT_ONLY",
+  "target": 5000,
+  "split": {
+    "HIST_Q2500": "first chronological 2500 eligible races",
+    "HIST_REP2500": "next chronological 2500 eligible races"
+  },
+  "between_split_changes": "PROHIBITED",
+  "mandatory_gates": [
+    "SOURCE_ADMISSION",
+    "TEMPORAL_CUTOFF",
+    "FEATURE_TEMPORAL_ALLOWLIST",
+    "HISTORICAL_PRICE_FEASIBILITY",
+    "HOLDOUT_COLLISION_GATE",
+    "PRE_PRICE_COMPLETENESS_AND_PROVENANCE",
+    "OUTCOME_VAULT_SEAL"
+  ],
+  "holdout_collision_rule": {
+    "allowed": "ECON_HOLDOUT1000 membership race_id only",
+    "required_overlap": 0,
+    "on_collision": "HALT_FAIL_CLOSED",
+    "silent_replacement": false
+  },
+  "trial_accounting": {
+    "construction_and_audit": 0,
+    "HIST_Q2500_first_scoring": 1,
+    "HIST_REP2500_scoring_only_if_Q_passes": 2,
+    "prospective_v3_trial": 0
+  },
+  "prohibited": [
+    "candidate RESULT/PAYOUT before all locks and authorization",
+    "ECON_HOLDOUT1000 Price/RESULT/PAYOUT access",
+    "terms/rate-limit/CAPTCHA/WAF circumvention",
+    "bulk candidate acquisition before Source Admission PASS"
+  ]
+}
