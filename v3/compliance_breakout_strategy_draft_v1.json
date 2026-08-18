@@ -1,0 +1,42 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "COMPLIANCE BREAKOUT STRATEGY DRAFT v1",
+  "date_jst": "2026-08-18",
+  "status": "DRAFT_PREOUTCOME_PENDING_INDEPENDENT_AUDIT",
+  "purpose": "Solve Fresh1000 acquisition bottlenecks without bypassing terms, rate limits, authentication, WAF/CAPTCHA, copyright restrictions, or outcome firewall.",
+  "path_A_primary": {
+    "name": "OFFICIAL_DOCUMENT_COMPRESSED_UNIVERSE",
+    "sources": [
+      "KEIRIN.JP / 全国競輪施行者協議会 2026 first-half national schedule PDF",
+      "KEIRIN.JP 2026 official program library",
+      "low-rate current monthly schedule for amendments/cancellations"
+    ],
+    "rule": "Accept only events whose venue/date/type/exact race count are unambiguous in official documents; quarantine ambiguity; deterministic chronological first 1000; no replacement.",
+    "composition_gate": "If program-mappability creates a material target-population shift, pause and require PRE-OUTCOME amendment audit."
+  },
+  "path_B_fallback": {
+    "name": "ROLLING_PROSPECTIVE_LOCK",
+    "status": "NOT_AUTHORIZED_UNDER_CURRENT_CHARTER",
+    "rule": "Only after PRE-OUTCOME Charter/operational amendment and independent audit; fixed daily cutoff; append-only locks; results/payout remain sealed until cumulative 1000."
+  },
+  "path_C_parallel": {
+    "name": "OFFICIAL_PERMISSION_OR_DATA_ACCESS",
+    "targets": ["全国競輪施行者協議会", "JKA", "Kdreams if needed"],
+    "request": "machine-readable PRE schedule/program/race identifiers and explicit permitted automated access/storage terms"
+  },
+  "prohibited": [
+    "rotating proxies to evade limits",
+    "CAPTCHA/WAF bypass",
+    "hidden endpoint abuse",
+    "prohibited-time evasion",
+    "Fresh RESULT/PAYOUT access",
+    "HOLDOUT access"
+  ],
+  "governance": {
+    "v3_scientific_trial_count": 0,
+    "fresh_RESULT_accessed": false,
+    "fresh_PAYOUT_accessed": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "frozen_v3_science_changed": false
+  }
+}
