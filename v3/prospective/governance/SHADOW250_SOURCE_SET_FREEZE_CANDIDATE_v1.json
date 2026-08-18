@@ -1,0 +1,27 @@
+{
+  "change_semantics": "ANY source/adapter/source-role change requires NEW Shadow universe",
+  "provider_change_midrun": "PROHIBITED",
+  "racecard_source": {
+    "adapter_sha256": "56c4d72f07880153d9a9e32da5a439dd404eb81824f408b7f7a4b7624d900257",
+    "discovery_prefix": "/racepdf/",
+    "fields": ["score", "quinella_rate", "S", "B", "class"],
+    "host": "www.tamano-keirin.jp",
+    "name": "TAMANO_OFFICIAL_RACECARD_PDF",
+    "pdf_prefix": "/wp-content/uploads/",
+    "role": "FROZEN_5_FIELD_RACECARD_SOURCE",
+    "runtime_smoke": "PASS",
+    "runtime_smoke_event_day": "2026-07-24",
+    "runtime_smoke_pdf_sha256": "a2328d364eec4308adb7024efbb0b0fc7851472dc72a3fad465b5fa5cdc24317"
+  },
+  "schema": "MULTIVERSE_SHADOW250_SOURCE_SET_v1",
+  "supplement_source": {
+    "adapter_sha256": "107040fcfbdcb5418c9aef2a9bd68f0601d4ee5d4e86e8d671495f307941da84",
+    "duplicate_consistency": ["class", "score", "quinella_rate"],
+    "fields": ["style", "win_rate", "trio_rate"],
+    "host": "keirin.jp",
+    "name": "KEIRINJP_RACERPROFILE",
+    "path": "/pc/racerprofile",
+    "role": "FROZEN_3_FIELD_SUPPLEMENT_SOURCE",
+    "runtime_smoke": "PASS"
+  }
+}
