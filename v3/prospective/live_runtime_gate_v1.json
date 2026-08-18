@@ -1,0 +1,25 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "LIVE_RUNTIME_GATE_v1",
+  "date_jst": "2026-08-18",
+  "status": "NETWORK_DISABLED",
+  "clock": {
+    "max_abs_offset_ms": 100.0,
+    "live_max_receipt_age_seconds": 10,
+    "offline_test_max_receipt_age_seconds": 60,
+    "require_timezone_aware": true,
+    "require_synchronized": true,
+    "os_time_policy": "AUDITED_NTP_DAEMON_ACTIVE_SLEW_NO_STEP_REQUIRED"
+  },
+  "manifest": "append-only sequential hash-chain approved; Merkle root not required",
+  "network_enablement_requires": [
+    "collector/runtime audit APPROVE",
+    "provider-specific Source Admission PASS+APPROVE",
+    "adapter code SHA freeze",
+    "live clock/NTP runtime proof",
+    "PRE semantic mapping PASS",
+    "four-market Price/cutoff semantics PASS",
+    "HOLDOUT membership-only collision guard PASS"
+  ],
+  "trial_effect": 0
+}
