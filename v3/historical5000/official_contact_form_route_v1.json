@@ -1,0 +1,28 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "OFFICIAL_CONTACT_FORM_ROUTE_v1",
+  "date_jst": "2026-08-18",
+  "status": "ACTIVE_NO_EMAIL_ROUTE",
+  "user_constraint": "Do not use email for official data-access inquiry.",
+  "primary_route": {
+    "organization": "公益社団法人 全国競輪施行者協議会",
+    "channel": "official web contact form",
+    "url": "https://www.zenrin.or.jp/contact.html",
+    "required_fields_observed": ["氏名", "フリガナ", "電話番号", "お問い合わせ内容", "個人情報保護方針への同意"],
+    "email_field_required": false,
+    "reason": "The organization explicitly lists research and information provision among its activities and exposes a public contact form that does not require an email field in the general inquiry section."
+  },
+  "secondary_routes": [
+    "JKA official web/phone routing if a non-email research/data inquiry channel is identified",
+    "Kdreams explicit permission route only if a non-email compliant contact channel is identified"
+  ],
+  "external_send_policy": "No external submission or message is to be sent by ChatGPT without explicit user instruction to send/submit.",
+  "scientific_state": {
+    "historical_trial_consumed": 0,
+    "prospective_v3_trial": 0,
+    "candidate_RESULT_accessed": false,
+    "candidate_PAYOUT_accessed": false,
+    "HIST_Q2500_scoring": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+  }
+}
