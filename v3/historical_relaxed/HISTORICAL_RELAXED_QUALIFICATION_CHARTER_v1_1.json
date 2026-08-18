@@ -1,0 +1,40 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "HISTORICAL_RELAXED_QUALIFICATION_CHARTER_v1_1",
+  "date_jst": "2026-08-18",
+  "status": "CONDITIONAL_FIX_IMPLEMENTED_PENDING_FINAL_INDEPENDENT_APPROVAL_DO_NOT_SCORE",
+  "parent_draft_sha256": "e04cca0a38132abb5f8f27fc485f8d313871d1a162d46c20857a7f78dfe2496c",
+  "role": "SCREENING_ONLY_NOT_FINAL_EXECUTABLE_ECONOMIC_PROOF",
+  "candidate": {
+    "lineage": "NEXTGEN_5000 R4001-R5000",
+    "count": 1000,
+    "parent_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "batch_universe_sha256": "964e812d9818cad4b154cec3a883d0a58f5e5dbd4c33e7b8af20245fb1215baf",
+    "scoring_authorized": false
+  },
+  "odds_floor_formula": "max(1.00, proxy_odds * haircut)",
+  "haircuts": [1.0, 0.95, 0.90, 0.85],
+  "decision_haircut": 0.90,
+  "folds": {
+    "count": 5,
+    "method": "BLOCKED_CHRONOLOGICAL_BY_RACE_DATE",
+    "same_race_date_must_not_cross_folds": true,
+    "contiguous_date_blocks": true
+  },
+  "price_uncertainty": {
+    "exclude_if_gt": 0.20,
+    "exclusion_unit": "race-level for joint 4-market screen",
+    "force_no_signal_if_exclusion_rate_gt": 0.15,
+    "1_5x_to_1_7x_uncertainty_for_roi": "REJECT"
+  },
+  "screen_counter": {
+    "name": "historical_relaxed_screen_count",
+    "before_scoring": 0,
+    "max_for_this_set": 1,
+    "rescore_after_rule_change": "PROHIBITED"
+  },
+  "scoring_commitment_required": true,
+  "ECON_HOLDOUT1000": "SEALED_MEMBERSHIP_ONLY_COLLISION_CHECK",
+  "historical_scientific_trial": 0,
+  "prospective_v3_trial": 0
+}
