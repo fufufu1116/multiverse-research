@@ -1,0 +1,36 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "GEMINI_REAUDIT_CONDITIONAL_APPROVE_RECEIPT_v1",
+  "date_jst": "2026-08-19",
+  "audited_snapshot_commit": "db5f0aabc68b27752f40f156a81c2fa0080ebec9",
+  "verdict": "CONDITIONAL APPROVE",
+  "explicit_decisions": {
+    "ISSUE-G1-DATE-BINDING": "RESOLVED",
+    "ISSUE-G1-WITHDRAWN-HARDCODE": "RESOLVED",
+    "ISSUE-CLASS-PROGRAM-GATE-MISSING": "RESOLVED",
+    "ISSUE-G2-SNUM-PROVENANCE-UNBOUND": "RESOLVED",
+    "ISSUE-GOV-ADAPTER-HASH-REBINDING": "RESOLVED",
+    "source_role_separation_pc_search_vs_racerprofile": "ACCEPTABLE",
+    "rider_class_temporal_semantics": "ACCEPTABLE",
+    "live_smoke_evidence_at_audited_snapshot": "ABSENT_OR_UNPROVEN"
+  },
+  "remaining_issue": {
+    "id": "ISSUE-V2-LIVE-SMOKE-RECEIPT-MISSING",
+    "severity": "P1_MATERIAL",
+    "required_action": "Run shadow250-v2-candidate-smoke.yml and commit SHADOW250_V2_CANDIDATE_LIVE_SMOKE_v1.json as evidence.",
+    "code_rebind_required_if_code_hashes_unchanged": false,
+    "final_activation_freeze_must_bind_receipt_commit_snapshot": true
+  },
+  "state_confirmed_by_audit": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "Shadow250_v1_selected_races": 0,
+    "Shadow250_v2_selected_races": 0,
+    "Shadow250_v2": "NOT_ACTIVE",
+    "prospective_Shadow_screen_count": 0,
+    "prospective_v3_scientific_trial": 0,
+    "global_scoring": "UNAUTHORIZED",
+    "wagering": "UNAUTHORIZED"
+  },
+  "authorization_effect": "NO_ACTIVATION_NO_RACE_SELECTION_UNTIL_LIVE_SMOKE_PASS_RECEIPT_EXISTS",
+  "holdout_result_payout_price_access": false
+}
