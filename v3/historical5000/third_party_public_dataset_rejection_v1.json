@@ -1,0 +1,31 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "THIRD_PARTY_PUBLIC_DATASET_REJECTION_v1",
+  "date_jst": "2026-08-18",
+  "status": "REJECT_AS_SOURCE_ADMISSION_PATH",
+  "policy": "NO_EXTERNAL_CONTACT_PUBLIC_EVIDENCE_ONLY",
+  "audited_examples": {
+    "snarfnet_keirin_data": {
+      "repository": "snarfnet/keirin-data",
+      "public": true,
+      "repository_license": "NONE_DECLARED",
+      "documented_entry_sources": ["netkeiba", "DMM Keirin GraphQL fallback"],
+      "reason_for_reject": [
+        "underlying source rights/terms are not established for this research lineage",
+        "GraphQL fallback is not independently established as an admitted public machine-readable path",
+        "repository publication does not transfer underlying data-use rights",
+        "four-market price provenance and execution semantics are not established"
+      ]
+    },
+    "other_scraped_public_repositories": {
+      "decision": "DO_NOT_ADMIT_BY_PUBLICATION_ALONE",
+      "rule": "A public GitHub repository can be used only if its own license, underlying source license/terms, temporal provenance, and all required PRE/Price semantics independently pass Source Admission."
+    }
+  },
+  "implication": "No currently discovered third-party public dataset satisfies NEW_HISTORICAL5000 Source Admission.",
+  "candidate_bulk_collection_authorized": false,
+  "trial_effect": 0,
+  "candidate_RESULT_accessed": false,
+  "candidate_PAYOUT_accessed": false,
+  "ECON_HOLDOUT1000": "SEALED_EXCEPT_MEMBERSHIP_ONLY_COLLISION_CHECK"
+}
