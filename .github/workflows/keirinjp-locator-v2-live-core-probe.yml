@@ -1,0 +1,54 @@
+name: keirinjp-locator-v2-live-core-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-locator-v2-live-core-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Run locator v2 live core only
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import importlib.util,json,pathlib,subprocess,traceback
+          from datetime import datetime,timezone
+          p=pathlib.Path('v3/prospective_shadow250_v2/keirinjp_identity_locator_v2.py')
+          receipt=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_LOCATOR_V2_LIVE_CORE_PROBE_v1.json')
+          receipt.parent.mkdir(parents=True,exist_ok=True)
+          out={'record':'KEIRINJP_LOCATOR_V2_LIVE_CORE_PROBE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),
+               'locator_git_blob':subprocess.check_output(['git','hash-object',str(p)],text=True).strip(),
+               'identity_only_probe':True,'predictive_features_collected':False,'raw_html_persisted':False,
+               'holdout_accessed':False,'result_payout_price_accessed':False}
+          try:
+              spec=importlib.util.spec_from_file_location('loc',p); loc=importlib.util.module_from_spec(spec); spec.loader.exec_module(loc)
+              result=loc.resolve_snum('土井慎二','岡山',127)
+              out['result']=result
+              out['status']='PASS' if result.get('snum')=='015918' else 'FAIL_CLOSED'
+              if out['status']!='PASS': out['error_message']='unexpected snum'
+          except Exception as e:
+              out['status']='FAIL_CLOSED'; out['error_type']=type(e).__name__; out['error_message']=str(e)
+              out['traceback_tail']=traceback.format_exc().splitlines()[-10:]
+          receipt.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(receipt.read_text(encoding='utf-8'))
+          PY
+      - name: Persist probe
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_LOCATOR_V2_LIVE_CORE_PROBE_v1.json
+          git commit -m 'Record KEIRIN locator v2 live core probe'
+          git push
