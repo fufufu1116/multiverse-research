@@ -1,0 +1,68 @@
+name: Tamano Robots Primary Evidence v1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tamano_robots_primary_evidence_v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependency
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: Capture exact primary robots evidence
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          import requests
+
+          url='https://www.tamano-keirin.jp/robots.txt'
+          out={
+            'record':'TAMANO_ROBOTS_PRIMARY_EVIDENCE_v1',
+            'target_url':url,
+            'workflow_commit_sha':os.environ['GITHUB_SHA'],
+            'network_scope':'ROBOTS_ONLY_NO_RACE_DATA',
+            'redirects_followed':False
+          }
+          try:
+            r=requests.get(url,timeout=15,allow_redirects=False,headers={'User-Agent':'MultiverseHybridV3-SourceAudit/1.0'})
+            out['http_status']=r.status_code
+            out['location']=r.headers.get('Location')
+            out['content_type']=r.headers.get('Content-Type')
+            out['body_sha256']=hashlib.sha256(r.content).hexdigest()
+            if r.status_code==200:
+              text=r.content.decode(r.encoding or 'utf-8',errors='replace')
+              out['robots_text']=text
+              out['status']='PRIMARY_CAPTURE_PASS'
+            else:
+              out['status']='PRIMARY_CAPTURE_NON200_FAIL_CLOSED'
+          except requests.RequestException as e:
+            out['status']='TRANSPORT_FAIL_CLOSED'
+            out['error_type']=type(e).__name__
+          p=Path('v3/prospective/runtime_receipts/tamano_robots_primary_evidence_v1.json')
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          PY
+
+      - name: Commit robots evidence receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective/runtime_receipts/tamano_robots_primary_evidence_v1.json
+          git commit -m 'Record Tamano robots primary evidence'
+          git push
