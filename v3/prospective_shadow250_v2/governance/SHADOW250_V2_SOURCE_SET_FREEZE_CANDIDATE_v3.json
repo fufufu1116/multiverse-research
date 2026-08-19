@@ -1,0 +1,71 @@
+{
+  "record": "SHADOW250_V2_SOURCE_SET_FREEZE_CANDIDATE_v3",
+  "status": "CANDIDATE_NOT_ACTIVE_PENDING_INDEPENDENT_GEMINI_REAUDIT",
+  "approved_core": {
+    "schema": "MULTIVERSE_SHADOW250_V2_SOURCE_SET_v3",
+    "provider_change_midrun": "PROHIBITED",
+    "predictive_model_change": "PROHIBITED",
+    "racecard_source": {
+      "name": "TAMANO_OFFICIAL_RACECARD_PDF",
+      "host": "www.tamano-keirin.jp",
+      "discovery_prefix": "/racepdf/",
+      "pdf_prefix": "/wp-content/uploads/",
+      "role": "5_FIELD_RACECARD_SOURCE_CANDIDATE",
+      "predictive_fields": ["score", "quinella_rate", "S", "B", "class"],
+      "parser_git_blob": "397ed3c8839b1ad4ffa4835924dd759397e2124c",
+      "event_day_binding": "OFFICIAL_DISCOVERY_EXACT_HREF_DATE_PREFIX+PARSED_BYTES_RAW_SHA256",
+      "pre_region_only": true,
+      "ocr": "PROHIBITED"
+    },
+    "identity_locator": {
+      "name": "KEIRINJP_PLAYER_SEARCH_IDENTITY_ROUTE",
+      "host": "keirin.jp",
+      "landing_path": "/pc/search",
+      "result_path": "/pc/racersearchresult",
+      "profile_path": "/pc/racerprofile",
+      "role": "IDENTITY_LOCATOR_ONLY_ZERO_PREDICTIVE_FIELDS_FROM_SEARCH_RESULT",
+      "locator_git_blob": "c97d1d7c736e8cd778029446ffc704a684d4938e",
+      "query_basis": ["prefecture", "term", "active_only"],
+      "search_result_fields_consumed": ["name", "snum"],
+      "search_result_predictive_fields_consumed": [],
+      "raw_html_persisted": false
+    },
+    "supplement_source": {
+      "name": "KEIRINJP_RACERPROFILE",
+      "host": "keirin.jp",
+      "path": "/pc/racerprofile",
+      "role": "3_FIELD_SUPPLEMENT_SOURCE_CANDIDATE",
+      "predictive_fields": ["style", "win_rate", "trio_rate"],
+      "profile_parser_git_blob": "d8ce951abd1f008f872bc093d6bb12a50d62ca16",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "duplicate_fields": ["class", "score", "quinella_rate"]
+    },
+    "race_batch": {
+      "git_blob": "b0cdb1fa49d3fcf033c09b273a44a47bab9ab4eb",
+      "riders": 7,
+      "shared_provider_limiter": true,
+      "min_spacing_seconds": 5.0,
+      "one_search_per_unique_prefecture_term": true,
+      "one_profile_fetch_per_rider": true,
+      "max_batch_elapsed_seconds": 90.0,
+      "max_source_window_seconds": 120.0
+    },
+    "fusion_guard": {
+      "git_blob": "a74ab32d2c0bd3957995fccfccb403ac3ae225fe",
+      "field_ownership": "5_PLUS_3_FROZEN",
+      "canonical_class_map": {"Ｓ級Ｓ班": "SS", "Ｓ級１班": "S1", "Ｓ級２班": "S2", "Ａ級１班": "A1", "Ａ級２班": "A2", "Ａ級３班": "A3", "Ｌ級１班": "L1"},
+      "duplicate_class": "exact canonical match",
+      "duplicate_score": "exact 0.01 resolution",
+      "duplicate_quinella_rate": "exact 0.001 fraction resolution"
+    },
+    "no_other_sources": true
+  },
+  "approved_core_sha256": "d872652f0b6a83b126a9c1a3537bbe40faa992f02358681207b5bae8b7a1d818",
+  "runtime_evidence": {
+    "record": "SHADOW250_V2_FINAL_CANDIDATE_RUNTIME_EVIDENCE_v1.json",
+    "git_blob": "598de0096298d649793724ab4b3efd4e22d7d8dc",
+    "status": "PASS"
+  },
+  "scientific_effect": "NONE_UNTIL_INDEPENDENT_APPROVAL_AND_SEPARATE_ACTIVATION"
+}
