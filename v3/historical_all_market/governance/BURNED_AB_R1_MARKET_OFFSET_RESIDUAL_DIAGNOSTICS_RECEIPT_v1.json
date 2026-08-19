@@ -1,0 +1,76 @@
+{
+  "record": "BURNED_AB_R1_MARKET_OFFSET_RESIDUAL_DIAGNOSTICS_RECEIPT_v1",
+  "date_jst": "2026-08-19",
+  "status": "PASS_DIAGNOSTICS_ONLY_NO_EDGE_CLAIM",
+  "data_role": "DEV2000_A_B_BURNED_ONLY",
+  "segment_c_accessed": false,
+  "scientific_segment_c_scoring_count": 0,
+  "ECON_HOLDOUT1000": "SEALED",
+  "new_validation_trial_consumed": 0,
+  "question": "Can a regularized runner-level market-offset residual using only frozen Candidate-A/B1a winner outputs improve on the market winner baseline?",
+  "market_baseline_construction": {
+    "source": "BURNED historical 3rentan closing-price ticket surface",
+    "operation": "normalize inverse odds within 3rentan then marginalize normalized ticket mass by first-place car",
+    "live_transport_status": "NOT_ESTABLISHED; historical closing-price use is diagnostic only",
+    "future_requirement": "replace with a preregistered decision-time PRE market snapshot if prospective source semantics are approved"
+  },
+  "R1_model": {
+    "offset": "log market winner probability",
+    "residual_features": [
+      "log(candidate_a / market)",
+      "log(b1a / market)",
+      "candidate_a market-ratio x centered log-market interaction",
+      "b1a market-ratio x centered log-market interaction",
+      "absolute log candidate disagreement",
+      "candidate_a within-race probability rank",
+      "b1a within-race probability rank"
+    ],
+    "objective": "race-normalized multinomial log loss plus L2 penalty",
+    "dead_heat_handling": "fractional target mass across unique first-place winners",
+    "dead_heat_races_A": 3,
+    "dead_heat_races_B": 0
+  },
+  "lambda_selection_A_only": {
+    "grid": [0.0, 0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
+    "rolling_folds": [
+      "train A1-400 validate A401-600",
+      "train A1-600 validate A601-800",
+      "train A1-800 validate A801-1000"
+    ],
+    "selected_lambda": 0.1,
+    "market_mean_validation_log_loss": 1.347821848088965,
+    "R1_mean_validation_log_loss": 1.3424775031778997,
+    "R1_minus_market": -0.00534434491106528
+  },
+  "full_A_fit_then_forward_B_diagnostic": {
+    "A_market_log_loss": 1.3226986021452516,
+    "A_R1_log_loss": 1.315481515883574,
+    "B_market_log_loss": 1.2759443574574048,
+    "B_R1_log_loss": 1.2769818322628566,
+    "B_R1_minus_market_log_loss": 0.001037474805451799,
+    "B_market_top1_accuracy": 0.506,
+    "B_R1_top1_accuracy": 0.508
+  },
+  "verdict": "R1_EXISTING_MODEL_OUTPUTS_ONLY_NOT_ROBUSTLY_BETTER_THAN_MARKET",
+  "interpretation": [
+    "A-only rolling CV produced a small probability improvement, but it did not transport to burned B on the primary log-loss metric.",
+    "The 0.2 percentage-point B top1 accuracy increase is too small and conflicts with slightly worse B log loss; it is not an adoption signal.",
+    "Existing Candidate-A/B1a winner outputs alone do not provide a robust residual layer over the market baseline.",
+    "The next safe development step is to test a strongly regularized market-offset residual using raw point-in-time PRE runner and race context features, still on burned A+B only.",
+    "No economic optimization should be performed until probability metrics improve over market-only out of chronological development blocks."
+  ],
+  "next_safe_tasks": [
+    "locate_and_hash_exact DEV2000 PRE_TABLE artifact",
+    "construct runner-level PRE residual feature matrix with strict allowlist",
+    "chronological A-only hyperparameter selection",
+    "forward burned-B diagnostic comparison to market-only",
+    "retain market-only baseline if no robust log-loss improvement"
+  ],
+  "prohibitions": [
+    "NO_CURRENT_C_ACCESS",
+    "NO_ECON_HOLDOUT_OPEN",
+    "NO_SAME_B_C_RESCUE_TUNING",
+    "NO_TREATMENT_OF_BURNED_B_AS_NEW_VALIDATION",
+    "NO_VALIDATED_EDGE_CLAIM"
+  ]
+}
