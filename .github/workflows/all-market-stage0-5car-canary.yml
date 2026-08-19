@@ -1,0 +1,89 @@
+name: All-Market Stage0 5-car canary
+
+on:
+  push:
+    paths:
+      - '.github/workflows/all-market-stage0-5car-canary.yml'
+      - 'v3/historical_all_market/kdreams_price_catalog_recovery_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  five-car-price-canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet requests lxml
+      - name: Fetch official historical 5-car page and run PRICE-only parser
+        env:
+          TARGET_URL: https://keirin.kdreams.jp/toride/racedetail/2320260324030005/?pageType=showResult
+          RECORDED_OLD_RAW_SHA: 7ec10e859838091a3bec6d51711cacde36607cef2771eb2dfc3d9872cfffe9d0
+        run: |
+          python - <<'PY'
+          import hashlib, importlib.util, json, os, pathlib, requests, sys
+          url=os.environ['TARGET_URL']
+          old=os.environ['RECORDED_OLD_RAW_SHA']
+          headers={'User-Agent':'Mozilla/5.0 MultiverseResearch/Stage0-5car-canary','Accept-Language':'ja,en;q=0.5'}
+          r=requests.get(url,headers=headers,timeout=(5,25),allow_redirects=True)
+          if r.status_code != 200 or not r.content:
+              raise SystemExit(f'FAIL_CLOSED HTTP status={r.status_code} bytes={len(r.content)} final={r.url}')
+          if not r.url.startswith('https://keirin.kdreams.jp/toride/racedetail/2320260324030005/'):
+              raise SystemExit(f'FAIL_CLOSED redirect final={r.url}')
+          raw=bytes(r.content)
+          sha=hashlib.sha256(raw).hexdigest()
+          p=pathlib.Path('v3/historical_all_market/kdreams_price_catalog_recovery_v1.py')
+          spec=importlib.util.spec_from_file_location('price_parser',p)
+          mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+          x=mod.parse_payload(raw, expected_raw_sha256=sha, expected_n_cars=5)
+          counts={k:len(v) for k,v in x['closing_price_catalogs'].items()}
+          expected={'3rentan':60,'2shatan':20,'3renhuku':10,'2shahuku':10,'wide':10}
+          for m,n in expected.items():
+              if x['market_availability'].get(m) and counts.get(m) != n:
+                  raise SystemExit(f'FAIL_CLOSED count {m}={counts.get(m)} expected={n}')
+          receipt={
+            'record':'ALL_MARKET_STAGE0_FRESH_OFFICIAL_5CAR_PRICE_CANARY_v1',
+            'status':'PASS',
+            'race_id':'2320260324030005',
+            'field_size':5,
+            'source_url':url,
+            'final_url':r.url,
+            'fresh_raw_sha256':sha,
+            'recorded_archived_raw_sha256':old,
+            'fresh_matches_archived_raw_sha256':sha==old,
+            'price_parser_path':str(p),
+            'price_parser_git_blob_note':'VERIFY_FROM_COMMIT',
+            'sold_markets':x['sold_markets'],
+            'odds_counts':counts,
+            'wide_semantics':x['wide_price_semantics'],
+            'result_fields_emitted':x['result_fields_emitted'],
+            'settlement_fields_emitted':x['settlement_fields_emitted'],
+            'model_probability_computed':x['model_probability_computed'],
+            'ev_computed':x['ev_computed'],
+            'roi_computed':x['roi_computed'],
+            'network_used_for_canary_only':True,
+            'bulk_recovery_started':False,
+            'stage1_started':False,
+            'holdout_accessed':False
+          }
+          pathlib.Path('stage0_fresh_5car_receipt.json').write_text(json.dumps(receipt,ensure_ascii=False,sort_keys=True,indent=2),encoding='utf-8')
+          print(json.dumps(receipt,ensure_ascii=False,sort_keys=True,indent=2))
+          PY
+      - name: Static PRICE firewall check
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('v3/historical_all_market/kdreams_price_catalog_recovery_v1.py').read_text()
+          forbidden=['refund_table','settlements_yen_per_100','parse_refund','dl_entries(']
+          bad=[x for x in forbidden if x in s]
+          if bad: raise SystemExit(f'FAIL_CLOSED price firewall forbidden symbols={bad}')
+          print('PRICE_FIREWALL_STATIC_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: all-market-stage0-fresh-5car-receipt
+          path: stage0_fresh_5car_receipt.json
