@@ -1,0 +1,63 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "SHADOW250_V2_GENESIS_FINAL_FREEZE_v1",
+  "status": "FROZEN_APPROVED_NOT_ACTIVE",
+  "date_jst": "2026-08-19",
+  "audit_snapshot_commit": "ca8c28b21fbb64d450dfaf3b512d074804392a05",
+  "independent_gemini_final_approve_receipt": {
+    "record": "INDEPENDENT_GEMINI_FINAL_APPROVE_RECEIPT_SHADOW250_V2_CANDIDATE_V3_v1.json",
+    "git_blob": "0943e43911dfd5f03ece8901050a82db2b7b2a75",
+    "verdict": "APPROVE",
+    "universe_boundary_Y": "SHADOW250_V2_CANDIDATE_REBIND_IS_VALID_BEFORE_FIRST_FREEZE"
+  },
+  "pre_freeze_binding_verification": {
+    "record": "SHADOW250_V2_PRE_FREEZE_BINDING_VERIFICATION_v1.json",
+    "git_blob": "98d9d9142d8b1446a2a2f3e25f964dc0b3107b9a",
+    "status": "PASS"
+  },
+  "final_freeze_bindings": {
+    "source_set_final_record": "SHADOW250_V2_SOURCE_SET_FINAL_FREEZE_v1.json",
+    "source_set_final_git_blob": "7e9329e8ad9efd94a7643f05044d1f6bdfbde7c6",
+    "source_set_core_sha256": "d872652f0b6a83b126a9c1a3537bbe40faa992f02358681207b5bae8b7a1d818",
+    "selection_rule_final_record": "SHADOW250_V2_SELECTION_RULE_FINAL_FREEZE_v1.json",
+    "selection_rule_final_git_blob": "7440b14e6e1f749067ec62c5b31348067612f91a",
+    "selection_rule_core_sha256": "26459bbe8db0766918a7511069f0c13354fb8b75d952a1633bbc3b8325f099d6",
+    "tamano_parser_v4_git_blob": "397ed3c8839b1ad4ffa4835924dd759397e2124c",
+    "keirinjp_identity_locator_v3_git_blob": "c97d1d7c736e8cd778029446ffc704a684d4938e",
+    "keirinjp_racerprofile_parser_v4_git_blob": "d8ce951abd1f008f872bc093d6bb12a50d62ca16",
+    "keirinjp_race_batch_v3_git_blob": "b0cdb1fa49d3fcf033c09b273a44a47bab9ab4eb",
+    "tamano_5plus3_fusion_guard_v2_git_blob": "a74ab32d2c0bd3957995fccfccb403ac3ae225fe",
+    "runtime_evidence_git_blob": "598de0096298d649793724ab4b3efd4e22d7d8dc",
+    "prediction_lock_sha256": "2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada",
+    "prediction_model_change": "PROHIBITED"
+  },
+  "predecessor": {
+    "universe": "Shadow250-v1",
+    "mutation": "PROHIBITED",
+    "selected_races": 0
+  },
+  "scientific_state_at_freeze": {
+    "Shadow250_v2_selected_races": 0,
+    "prospective_shadow_screen_count": 0,
+    "prospective_v3_scientific_trial": 0,
+    "prediction_executed_for_Shadow250_v2": false,
+    "outcome_bearing_scoring": "UNAUTHORIZED",
+    "wagering": "UNAUTHORIZED",
+    "Lane_E": "UNAUTHORIZED",
+    "final_v3_proof": "UNAUTHORIZED"
+  },
+  "sealed": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_result_access": false,
+    "holdout_payout_access": false,
+    "holdout_price_access": false,
+    "holdout_scored": false
+  },
+  "activation": {
+    "authorized_after_successful_freeze_self_verification": true,
+    "active": false,
+    "timestamp_jst": null,
+    "first_eligible_scheduled_start_rule": "STRICTLY_AFTER_ACTIVATION_TIMESTAMP"
+  },
+  "immutability": "DO_NOT_EDIT; any source/adapter/source-role/model/selection-rule change after this Freeze requires governance adjudication and must not silently mutate this universe"
+}
