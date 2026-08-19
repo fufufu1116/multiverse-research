@@ -1,0 +1,32 @@
+{
+  "record": "INDEPENDENT_GEMINI_SCHEDULED_START_CONDITIONAL_APPROVE_RECEIPT_v1",
+  "project": "Multiverse Hybrid v3.0",
+  "audit_subject": "scheduled_start Post-Activation Gap v1",
+  "verdict": "CONDITIONAL APPROVE",
+  "universe_boundary": "CURRENT_SHADOW250_V2_MAY_CONTINUE_WITH_SCHEDULED_START_IMPLEMENTATION_COMPLETION",
+  "issue_1": {
+    "id": "ISSUE-V2-SCHEDULED-START-UNBOUND-EXTRACTOR",
+    "severity": "P1_MATERIAL",
+    "new_universe_required_before_race_1": false,
+    "required_correction": "Bind tamano_scheduled_start_metadata_candidate_v1.py Git blob 31aa09d68f68656e6f8b134c2ead28e3bc00b1c1 via governance addendum before any Race 1 screening."
+  },
+  "issue_2": {
+    "id": "ISSUE-V2-SCHEDULED-START-LIVE-SMOKE-MISSING",
+    "severity": "P1_MATERIAL",
+    "new_universe_required_before_race_1": false,
+    "required_correction": "Run the bound extractor on the first post-activation official Tamano PDF, require 12-race complete monotonic PASS, and persist runtime evidence before any Race 1 screening."
+  },
+  "activation_timestamp_jst_must_remain": "2026-08-19T11:38:23.685300+09:00",
+  "screening_before_preconditions": "PROHIBITED",
+  "prediction_before_preconditions": "PROHIBITED",
+  "ECON_HOLDOUT1000": "SEALED",
+  "state_confirmed_by_audit": {
+    "Shadow250_v2_selected_races": 0,
+    "prospective_shadow_screen_count": 0,
+    "prospective_v3_scientific_trial": 0,
+    "first_prospective_prediction_lock": "NOT_EXECUTED",
+    "global_scoring": "UNAUTHORIZED",
+    "wagering": "UNAUTHORIZED"
+  },
+  "authorization_effect": "GOVERNANCE_EVIDENCE_ONLY; DOES_NOT_SCREEN_OR_PREDICT_RACE_1"
+}
