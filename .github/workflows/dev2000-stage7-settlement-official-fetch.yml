@@ -4,7 +4,7 @@ on:
     paths:
       - '.github/workflows/dev2000-stage7-settlement-official-fetch.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
   settlement:
     runs-on: ubuntu-latest
@@ -35,7 +35,31 @@ jobs:
             --parser v3/historical_all_market/kdreams_settlement_recovery_v1.py \
             --output stage7_settlement_output/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_v1.jsonl \
             --receipt stage7_settlement_output/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_RECEIPT_v1.json \
-            --workers 6
+            --workers 4
+      - name: Package compact transport parts
+        if: success()
+        run: |
+          mkdir -p v3/historical_all_market/runtime_artifacts/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_v1_parts
+          python - <<'PY'
+          import base64,gzip,hashlib,json,pathlib
+          src=pathlib.Path('stage7_settlement_output/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_v1.jsonl')
+          b=src.read_bytes(); enc=base64.b64encode(gzip.compress(b,9)).decode()
+          d=pathlib.Path('v3/historical_all_market/runtime_artifacts/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_v1_parts')
+          size=30000; parts=[enc[i:i+size] for i in range(0,len(enc),size)]
+          for i,s in enumerate(parts): (d/f'part_{i:03d}.b64').write_text(s,encoding='ascii')
+          rec=json.load(open('stage7_settlement_output/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_RECEIPT_v1.json'))
+          rec['transport_encoding']='gzip+base64'; rec['transport_part_chars']=size; rec['transport_part_count']=len(parts); rec['uncompressed_sha256']=hashlib.sha256(b).hexdigest()
+          pathlib.Path('v3/historical_all_market/runtime_receipts/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_RECEIPT_v1.json').write_text(json.dumps(rec,sort_keys=True,indent=2)+'\n')
+          print('parts',len(parts),'encoded_chars',len(enc))
+          PY
+      - name: Commit transport receipt and parts
+        if: success()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/historical_all_market/runtime_artifacts/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_v1_parts v3/historical_all_market/runtime_receipts/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_RECEIPT_v1.json
+          git commit -m 'Record authorized DEV2000 Settlement fetch candidate' || exit 0
+          git push
       - uses: actions/upload-artifact@v4
         if: always()
         with:
