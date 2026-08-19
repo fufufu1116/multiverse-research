@@ -1,0 +1,83 @@
+{
+  "record": "SHADOW250_V2_LIVE_SMOKE_REMEDIATION_RECEIPT_v1",
+  "status": "EVIDENCE_ONLY_NO_ACTIVATION",
+  "date_jst": "2026-08-19",
+  "starting_verdict": "GEMINI_REAUDIT_CONDITIONAL_APPROVE_PENDING_LIVE_SMOKE",
+  "scientific_state_throughout": {
+    "Shadow250_v1_selected": 0,
+    "Shadow250_v2_selected": 0,
+    "prospective_screen": 0,
+    "prospective_v3_scientific_trial": 0,
+    "ECON_HOLDOUT1000": "SEALED",
+    "outcome_bearing_scoring": "UNAUTHORIZED",
+    "wagering": "UNAUTHORIZED"
+  },
+  "failures_and_remediation": [
+    {
+      "stage": "G2 locator v1 live smoke",
+      "failure": "QUARANTINE_FAIL_CLOSED no candidate snum",
+      "root_cause": "Official search button uses sensyuSearchExec() and hidden PJ0501_02SubmitForm GET /pc/racersearchresult; v1 incorrectly submitted visible controls to /pc/search and expected plain racerprofile href links.",
+      "remediation": "Live semantic probes bound official two-form search route and sensyuLink(snum) result semantics; locator v3 consumes search-result name+snum only.",
+      "final_locator_git_blob": "c97d1d7c736e8cd778029446ffc704a684d4938e"
+    },
+    {
+      "stage": "G1 parser v2 live smoke",
+      "failure": "REJECT_RACE_DATE binding internal=[]",
+      "root_cause": "Allowed PRE clips contain no usable meeting-date text; internal Reiwa-date assumption was false.",
+      "remediation": "Bind event day to official Tamano discovery exact href YYYYMMDD prefix plus exact raw SHA-256 of parsed bytes; do not extract date from POST/full-document regions.",
+      "final_tamano_parser_git_blob": "397ed3c8839b1ad4ffa4835924dd759397e2124c"
+    },
+    {
+      "stage": "G1 parser v3 live smoke",
+      "failure": "REJECT_FIELD_SIZE values=[]",
+      "root_cause": "(7車立) marker is immediately below entrant row block, outside prior row ymax.",
+      "remediation": "PRE-only mapping of all 12 markers established dedicated narrow marker band x=ox+60..150, y=ymax..ymax+30; entrant extraction region was not widened.",
+      "final_tamano_parser_git_blob": "397ed3c8839b1ad4ffa4835924dd759397e2124c"
+    },
+    {
+      "stage": "Seven-rider race batch v1",
+      "failure": "QUARANTINE_FAIL_CLOSED frozen supplement parse: update timestamp",
+      "root_cause": "Old profile parser globally de-duplicated datetime strings then assigned first/second; section ownership was not explicit and identical timestamps across sections could collapse.",
+      "remediation": "Profile parser v4 binds one unique timestamp between semantic section label and owned target table; DOM row ownership permits tbody but excludes nested layout-table recursion.",
+      "final_profile_parser_git_blob": "d8ce951abd1f008f872bc093d6bb12a50d62ca16"
+    },
+    {
+      "stage": "Profile parser v2/v3 diagnostics",
+      "failure": "Nested layout table duplicate / over-strict direct-child table detection",
+      "root_cause": "Outer layout table recursively contained semantic rows, while tbody prevented direct-child-only detection.",
+      "remediation": "A row belongs to table T iff its nearest parent table is T; cells similarly use nearest parent row ownership.",
+      "final_profile_parser_git_blob": "d8ce951abd1f008f872bc093d6bb12a50d62ca16"
+    },
+    {
+      "stage": "Fusion duplicate consistency pre-freeze review",
+      "failure": "Frozen rule required exact canonical class match but executable canonical Japanese-label mapping was not bound.",
+      "root_cause": "Tamano emits SS/S1/S2/A1/A2/A3/L1 while KEIRIN profile displays full-width Japanese labels such as Ｓ級Ｓ班 and Ａ級２班.",
+      "remediation": "Fusion guard v2 implements only the explicit deterministic seven-label canonical mapping, plus frozen score 0.01 and quinella fraction 0.001 checks; unknown class labels fail closed.",
+      "final_fusion_guard_git_blob": "a74ab32d2c0bd3957995fccfccb403ac3ae225fe"
+    },
+    {
+      "stage": "Provider timing pre-freeze review",
+      "failure": "Per-rider resolver architecture could reset limiter and had no race-wide timing proof.",
+      "root_cause": "Seven independent locators do not prove one shared >=5s provider interval or <=120s whole-source window.",
+      "remediation": "Race batch v3 uses one session/limiter, one search per unique pref+term, one profile fetch per rider, <=90s batch and <=120s whole-source-window fail-closed gates.",
+      "final_batch_git_blob": "b0cdb1fa49d3fcf033c09b273a44a47bab9ab4eb"
+    }
+  ],
+  "final_runtime_evidence": {
+    "record": "SHADOW250_V2_FINAL_CANDIDATE_RUNTIME_EVIDENCE_v1.json",
+    "git_blob": "598de0096298d649793724ab4b3efd4e22d7d8dc",
+    "status": "PASS",
+    "tamano_rows": 84,
+    "tamano_races": 12,
+    "keirin_riders_verified": 7,
+    "keirin_request_count": 15,
+    "batch_elapsed_seconds": 75.846,
+    "source_window_measured_seconds": 76.96,
+    "source_window_limit_seconds": 120,
+    "predictive_search_result_fields_consumed": [],
+    "prediction_executed": false,
+    "cross_source_scientific_fusion_performed": false
+  },
+  "next_gate": "INDEPENDENT_GEMINI_REAUDIT_FINAL_SHADOW250_V2_CANDIDATE_V3",
+  "authorization_effect": "NONE"
+}
