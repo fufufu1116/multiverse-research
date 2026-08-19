@@ -1,6 +1,6 @@
 # Multiverse AI Council — Genesis v7統合運用
 
-最終更新: 2026-08-20 00:20 JST
+最終更新: 2026-08-20 00:41 JST
 
 ## 0. 位置づけ
 
@@ -219,6 +219,154 @@ AI同士が直接同じChatへ入れない場合、**共有Artifactを会話媒�
 将来、無料かつ安定した接続が成立すればReplit等で:
 `watch request -> invoke available reviewer -> write response -> notify judge`
 を自動化候補にする。ただし自動化自体が目的になったらLabが止める。
+
+---
+
+## 6A. iPhone Room Topology — 実際の部屋構成
+
+主が各AIの役割を毎回考えなくてよいよう、部屋構成を固定する。
+
+### ChatGPT: `Multiverse LIVE` Project
+同じProject内に置く:
+- **MAIN / CORE** — この現行チャット。研究を進め、全体を統合する
+- **VAULT** — Artifact / SHA / Canonical / SEALED / Recovery専用
+- **LAB** — 前提攻撃 / Baseline / Benchmark / Failure / 効率化専用
+
+同一Projectにする理由:
+- Core/Vault/Labは日常的に共通のCurrent Stateと資料を参照する
+- 同じ研究Contextを共有しつつ役割Promptを分けられる
+
+### ChatGPT: `Multiverse AUDITOR` Project
+LIVEとは**別Project**にする。
+- Material Promotion
+- Freeze直前
+- Acceptance Criteria変更候補
+- Release判定
+
+だけをFreshなReview Bundleで渡す。
+日常会話を見せすぎず、Coreの結論への追従を減らす。
+
+### Gemini
+Routineの二重作業はしない。
+必要Gate用に:
+- **Core Gemini**
+- **Vault Gemini**
+- **Lab Gemini**
+- **Final Auditor Gemini**（重大Release時、Fresh Chat）
+
+を用意する。
+Gemini側ではCustom Gemを使える場合はRole指示を固定し、毎回長いRole Promptを手入力しない。
+
+### Claude
+無料枠節約のため、原則1系統:
+- **Multiverse Independent Red Team**
+
+Materialな案で「他社モデルからの独立な反証」が必要な時だけ使う。
+毎回Routineで呼ばない。必要なReview Bundleだけ渡し、長大なHistoryを流し込まない。
+
+### 外部AIの役割
+Gemini/ClaudeはOwnerやCoreの代替ではない。
+独立レビューが価値を持つGateだけで使う。
+
+---
+
+## 6B. No-Think Router — 主が振り分けを考えない
+
+Ownerは原則、このMAIN / COREへ普通に話すだけでよい。
+No.3が内容を自動分類する。
+
+- 実装 / 調査 / 通常判断 -> `CORE_CONTINUE`
+- SHA / File / Canonical / Recovery -> `SEND_VAULT`
+- 「本当に正しい？」/ Benchmark / Failure / 効率 -> `SEND_LAB`
+- Material architecture / scoring / baseline dispute -> `SEND_GEMINI_REVIEW`
+- 他社独立Red Teamが有効 -> `SEND_CLAUDE_RED_TEAM`
+- Freeze / Promotion / Release -> `SEND_AUDITOR`
+- 目的 / 費用 / Holdout /不可逆変更 -> `OWNER_GATE`
+
+Ownerに「どこへ送ればいい？」とは原則聞かない。
+No.3が必要な起動文 / Review Bundle / 送り先を準備し、**Ownerが本当に必要な1操作だけ**案内する。
+
+---
+
+## 6C. Error Recovery — エラー時に主が原因を考えない
+
+主が行うことは原則1つ:
+
+**エラー画面・メッセージをそのままMAIN / COREへ貼る。**
+
+No.3側で:
+1. どの部屋 / Tool / Gateのエラーか分類
+2. 研究本体へ影響するか判定
+3. 無料の即時回避策を優先
+4. 代替Transport / 代替AI / 内部ReviewへFailover
+5. 必要なら修正版の手順を1操作ずつ提示
+6. 同じエラーが再発するならWorkflow自体を改善
+
+禁止:
+- Ownerへログ解析を要求する
+- Ownerへ複数案を丸投げする
+- 「しばらく待って再試行」だけで研究を止める
+- 無料枠切れを理由に2〜3日停止する
+- 課金を勝手に解決策にする
+
+課金だけはOwner Gate。
+
+---
+
+## 6D. Setup Wizard — 初回構築の順序
+
+主へ一度に大量操作を要求しない。
+以下をNo.3が順番に案内し、各Step完了後に次へ進む。
+
+### STEP 1 — ChatGPT LIVE
+1. `Multiverse LIVE` Projectを作る
+2. Project-only memoryを選べる場合は選択候補（研究Contextの境界を明確化）
+3. この現行チャットを `Multiverse LIVE` へMove
+4. 同Project内にVAULT / LABチャットを作る
+5. No.3が用意する短い起動文を各1回だけ送る
+
+### STEP 2 — ChatGPT AUDITOR
+1. `Multiverse AUDITOR` Projectを別に作る
+2. Project-only memoryを使える場合は使用候補
+3. Auditor Packet / Review Bundleだけを入れる
+4. 日常Core historyは入れない
+
+### STEP 3 — Gemini
+1. iPhone Safari等のGemini webからRole用Gemを作る
+2. Core/Vault/Lab Role指示を保存
+3. Final Auditorは重大GateでFresh Chat
+4. Knowledgeは必要最小限。巨大History丸ごと投入を避ける
+
+### STEP 4 — Claude
+1. Free Project `Multiverse Red Team`を1つ作る
+2. Red Team roleだけ固定
+3. Material Gate時に短いBundleを渡す
+4. Usage limit時は研究を止めずSkip/後回し
+
+### STEP 5 — Shared Desk
+1. GitHub = Current State / Code / short Review trail
+2. Drive = heavy Artifact / Bundle
+3. MAIN/Coreが次のRequestを準備
+4. Ownerのコピペは自動Transportがない場合の最小限だけ
+
+### STEP 6 — Automation候補
+手動Relayが実際に繰り返し負担になったEvidenceが出た時だけ、Replit等で自動化を評価する。
+最初から複雑なOrchestratorを作らない。
+
+---
+
+## 6E. Owner Shortcut — 主が覚える言葉は3つだけ
+
+通常:
+- **「続行」** -> No.3が次Batchへ
+
+何か変:
+- **「これ変じゃない？」** -> Lab/必要Reviewerへ自動Routing
+
+エラー:
+- **スクショ/エラー文を貼るだけ** -> No.3がRecovery
+
+それ以外の専門的な振り分け語をOwnerへ要求しない。
 
 ---
 
