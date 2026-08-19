@@ -1,7 +1,7 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
-  "updated_jst": "2026-08-20T00:17:00+09:00",
-  "status": "ACTIVE_RESEARCH_MULTIVERSE_GENESIS_V7_BRIDGED_KEIRIN_FIRST_LIVE_DOMAIN",
+  "updated_jst": "2026-08-20T00:29:00+09:00",
+  "status": "ACTIVE_RESEARCH_MULTIVERSE_GENESIS_V7_BRIDGED_DIGITAL_TWIN_REALITY_CALIBRATION",
   "canonical_repo": "fufufu1116/multiverse-research",
   "owner_visible_status": "KEIRIN_NOW.md",
   "ai_governance": "AI_COUNCIL.md",
@@ -116,18 +116,38 @@
     "probability_object_contract": "v3/historical_all_market/new_lineage/probability_object_contract_v1.py",
     "digital_twin": "v3/historical_all_market/new_lineage/digital_twin_v1.py",
     "synthetic_market_odds": "v3/historical_all_market/new_lineage/synthetic_market_odds_v1.py",
-    "synthetic_core_selftest_status": "PASS_SYNTHETIC_ONLY_NO_PREDICTIVE_EVIDENCE",
+    "synthetic_core_selftest": {
+      "path": "v3/historical_all_market/new_lineage/synthetic_selftest_v1.py",
+      "latest_commit": "a6e70e45529527a6676cbe8729de99caf5a078c3",
+      "status": "PASS_SYNTHETIC_ENGINEERING_INVARIANTS_ONLY_NO_REAL_PREDICTIVE_EVIDENCE",
+      "added_checks": [
+        "DEFAULT_STANDARD_FI_FII_IS_7_RIDERS",
+        "SPECIAL_9_REQUIRES_EXPLICIT_EVENT_FORMAT",
+        "FORMAT_CONFLICT_FAILS_CLOSED",
+        "LATENT_SKILL_NOT_EXPOSED_TO_PRE",
+        "W0_TO_W4_SUPPORT_210_FOR_7_RIDERS",
+        "W0_TO_W4_UNIT_MASS_NONNEGATIVE_DISTINCT_FINISHERS"
+      ],
+      "no3_runtime_reconstruction_check": "DIGITAL_TWIN_INVARIANTS_PASS"
+    },
     "synthetic_market_selftest_status": "PASS_SYNTHETIC_ENGINEERING_ONLY"
   },
   "digital_twin_state": {
     "worlds": ["W0_INDIVIDUAL", "W1_STATIC_LINE", "W2_CONDITIONAL_LINE", "W3_LINE_DISRUPTION", "W4_HEAVY_TAIL"],
-    "realism_known_bug": "NORMAL_FI_FII_WAS_RANDOM_7_OR_9",
-    "realism_fix": "NORMAL_FI_FII_DEFAULT_7_SPECIAL_9_EXPLICIT_EVENT_FORMAT",
+    "ordinary_event_format": "STANDARD_FI_FII_7",
+    "ordinary_event_field_size": 7,
+    "special_9_event_format": "SPECIAL_9",
+    "special_9_is_explicit_only": true,
+    "seven_nine_code_separation": "COMPLETE",
     "realism_parameters_still_unproven": [
+      "RACE_BAND_FREQUENCY",
+      "WITHIN_BAND_CLASS_FREQUENCY",
       "LINE_SHAPE_FREQUENCY",
       "STYLE_BY_LINE_POSITION",
       "B_H_S_DISTRIBUTION",
       "NIGE_MAKURI_SASHI_MARK_DISTRIBUTION",
+      "BANK_LENGTH_FREQUENCY",
+      "WIND_DISTRIBUTION",
       "BANK_WIND_EFFECT_SIZE",
       "LINE_EFFECT_SIZE",
       "LINE_BREAK_RATE",
@@ -169,14 +189,14 @@
     "staged_5000_PRE_training_eligibility": false,
     "NEXTGEN5000_auto_admission": "PROHIBITED"
   },
-  "next_gate": "GENESIS_GOVERNANCE_LIVE_PLUS_DIGITAL_TWIN_REALISM_AND_MODEL_ABLATION_IN_PARALLEL",
+  "next_gate": "DIGITAL_TWIN_REALITY_CALIBRATION_PLUS_C0_C1_N1_MULTI_WORLD_STRESS_BEFORE_NEW_UNTOUCHED_REAL_VALIDATION",
   "next_exact_actions": [
-    "Finish code separation NORMAL_7 vs SPECIAL_9 without changing scientific objective.",
-    "Audit publicly available PRE structural distributions and mark VERIFIED vs ASSUMPTION.",
-    "Run Core/Vault/Lab/Auditor autonomous loop every batch.",
-    "Compare C0/C1/N1 across synthetic worlds before consuming new real untouched evidence.",
-    "Prepare owner gate only for material direction/freeze/feature/source/payment changes.",
-    "Do not block research waiting for external AI or paid services."
+    "Classify Digital Twin parameters as VERIFIED_REALITY vs ASSUMPTION_RANGE and never present assumptions as measured reality.",
+    "Use normally accessible public PRE facts for structural calibration without bulk scraping or bypass.",
+    "For unobservable or unavailable calibration values, use multiple plausible world ranges rather than one claimed-real number.",
+    "Compare C0/C1/N1 across the same W0-W4 worlds with proper probability scoring and failure diagnostics before economics.",
+    "Run Core/Vault/Lab/Auditor autonomous review each batch and raise only material changes to Owner Gate.",
+    "Do not block research waiting for Gemini, Claude, Flowise, quota recovery, or paid services."
   ],
   "hard_prohibitions": [
     "NO_CURRENT_DEV2000_C_ACCESS_FOR_NEW_LINEAGE",
