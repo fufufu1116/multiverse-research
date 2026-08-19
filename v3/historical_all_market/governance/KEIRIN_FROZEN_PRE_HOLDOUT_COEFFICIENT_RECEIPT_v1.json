@@ -1,0 +1,61 @@
+{
+  "record": "KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1",
+  "status": "FROZEN_PRE_HOLDOUT_INPUT_NOT_EXECUTED",
+  "source_lab_recheck": {
+    "reviewed_head": "6041f70a78c9f9db21fe22e11586409aacf7764a",
+    "verdict": "PASS_WITH_FIXES",
+    "fresh_synthetic_holdout_may_open": false,
+    "required_fix": "BIND_HOLDOUT_TO_EXACT_FROZEN_RECEIPT"
+  },
+  "source_train_cal_receipt": {
+    "path": "v3/historical_all_market/governance/KEIRIN_BALANCED_SYNTHETIC_FIT_CAL_RECEIPT_20260820_v1.json",
+    "git_blob_sha": "f2e014c5480c31e8cdb1716e50bc58199367ef79"
+  },
+  "prereg": {
+    "path": "v3/historical_all_market/governance/KEIRIN_PREREG_BALANCED_SYNTHETIC_ABLATION_v1.json",
+    "git_blob_sha": "e4131621bf770068ec9d0c44da16356f64027e80",
+    "sha256": "ff565fcbcb524c0d290b22046c2006648f58bed8e20c913704ae6b9ed4634889"
+  },
+  "frozen_after_cal": {
+    "C0": {
+      "architecture": "score_only_PL",
+      "fitted": false
+    },
+    "C1": {
+      "train_params": {
+        "line_mean_coef": 0.0,
+        "position_scale": 0.5,
+        "size_coef": 0.0
+      },
+      "cal_shrinkage": 0.75
+    },
+    "N1": {
+      "c1_base_train_params": {
+        "line_mean_coef": 0.0,
+        "position_scale": 0.5,
+        "size_coef": 0.0
+      },
+      "conditional_train_params": {
+        "same_line_coef": 0.1,
+        "follower_coef": 0.1,
+        "chain_coef": 0.2
+      },
+      "cal_shrinkage": 0.75
+    }
+  },
+  "holdout_execution": "NOT_EXECUTED",
+  "post_holdout_retuning": "PROHIBITED",
+  "promotion": {
+    "C1": "PROHIBITED_PENDING_NATIVE_CONFORMANCE_AND_HOLDOUT",
+    "N1": "PROHIBITED_PENDING_NATIVE_CONFORMANCE_AND_HOLDOUT"
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count": 0,
+    "new_untouched_validation_opened": false,
+    "RESULT_PAYOUT_access": "UNAUTHORIZED"
+  },
+  "rule": "HOLDOUT_EVALUATOR_MUST_REJECT_ANY_INPUT_OTHER_THAN_THIS_EXACT_RECEIPT_BYTES"
+}
