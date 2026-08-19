@@ -1,0 +1,70 @@
+name: shadow250-v2-source-window-live-diagnostic
+
+on:
+  push:
+    paths:
+      - '.github/workflows/shadow250-v2-source-window-live-diagnostic.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4 PyMuPDF pandas
+      - name: Measure Tamano PDF request through seven-rider KEIRIN batch
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib,importlib.util,json,pathlib,requests,subprocess,tempfile,time,traceback
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          from urllib.parse import urljoin,urlparse,unquote
+          pp=pathlib.Path('v3/prospective_shadow250_v2/tamano_racecard_row_parser_v4.py');bp=pathlib.Path('v3/prospective_shadow250_v2/keirinjp_race_batch_identity_supplement_v2.py')
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SOURCE_WINDOW_LIVE_DIAGNOSTIC_v1.json');q.parent.mkdir(parents=True,exist_ok=True)
+          def load(n,p):s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+          out={'record':'SHADOW250_V2_SOURCE_WINDOW_LIVE_DIAGNOSTIC_v1','generated_utc':datetime.now(timezone.utc).isoformat(),'parser_git_blob':subprocess.check_output(['git','hash-object',str(pp)],text=True).strip(),'batch_git_blob':subprocess.check_output(['git','hash-object',str(bp)],text=True).strip(),'tamano_source_validation_only':True,'keirin_source_validation_only':True,'cross_source_scientific_fusion_performed':False,'predictive_values_persisted':False,'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False}
+          entrants=[{'car_no':1,'rider_name':'土井慎二','prefecture':'岡山','term':127},{'car_no':2,'rider_name':'三木健治','prefecture':'沖縄','term':73},{'car_no':3,'rider_name':'鈴木愼二','prefecture':'神奈川','term':74},{'car_no':4,'rider_name':'大崎智久','prefecture':'青森','term':89},{'car_no':5,'rider_name':'田中会心','prefecture':'熊本','term':123},{'car_no':6,'rider_name':'黒瀬浩一','prefecture':'静岡','term':57},{'car_no':7,'rider_name':'山田武','prefecture':'群馬','term':87}]
+          try:
+              parser=load('p4',pp);batch=load('b2',bp)
+              discovery='https://www.tamano-keirin.jp/racepdf/';day='2026-07-24';headers={'User-Agent':'Multiverse-Private-Research/1.0'};s=requests.Session()
+              dr=s.get(discovery,headers=headers,timeout=20,allow_redirects=False)
+              if dr.status_code!=200:raise RuntimeError(f'discovery {dr.status_code}')
+              soup=BeautifulSoup(dr.content,'html.parser');urls=[]
+              for a in soup.find_all('a',href=True):
+                  u=urljoin(discovery,a['href']);p=urlparse(u)
+                  if p.scheme=='https' and p.netloc=='www.tamano-keirin.jp' and p.path.startswith('/wp-content/uploads/') and p.path.lower().endswith('.pdf') and not p.query and unquote(p.path.rsplit('/',1)[-1]).startswith(day.replace('-','')):urls.append(u)
+              urls=sorted(set(urls));
+              if len(urls)!=1:raise RuntimeError(f'PDF cardinality={len(urls)}')
+              source_start=time.monotonic()
+              pr=s.get(urls[0],headers=headers,timeout=20,allow_redirects=False)
+              if pr.status_code!=200 or not pr.content.startswith(b'%PDF-'):raise RuntimeError(f'PDF {pr.status_code}')
+              sha=hashlib.sha256(pr.content).hexdigest()
+              with tempfile.NamedTemporaryFile(suffix='.pdf') as f:f.write(pr.content);f.flush();df=parser.parse_tamano_pdf(f.name,day,urls[0],sha)
+              if len(df)!=84 or df.race_id.nunique()!=12:raise RuntimeError('Tamano parse coverage')
+              after_tamano=time.monotonic()-source_start
+              br=batch.resolve_race(entrants,source_start)
+              total=time.monotonic()-source_start
+              out['tamano']={'status':'PASS','rows':len(df),'races':int(df.race_id.nunique()),'pdf_raw_sha256':sha,'elapsed_from_source_start_seconds':round(after_tamano,3)}
+              out['keirin_batch']={k:br[k] for k in ['status','rider_count','group_count','request_count','batch_elapsed_seconds','source_window_elapsed_seconds','max_batch_elapsed_seconds','max_source_window_seconds','search_result_identity_fields_used','predictive_fields_from_search_result','predictive_fields_from_racerprofile','raw_html_persisted']}
+              out['measured_total_source_window_seconds']=round(total,3);out['source_window_limit_seconds']=120.0
+              if total>120:raise RuntimeError(f'source window exceeded {total:.3f}')
+              out['status']='PASS'
+          except Exception as e:
+              out['status']='FAIL_CLOSED';out['error_type']=type(e).__name__;out['error_message']=str(e);out['traceback_tail']=traceback.format_exc().splitlines()[-12:]
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist diagnostic
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SOURCE_WINDOW_LIVE_DIAGNOSTIC_v1.json
+          git commit -m 'Record Shadow250-v2 source-window diagnostic'
+          git push
