@@ -1,0 +1,50 @@
+name: shadow250-v2-scheduled-start-binding-verification
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-scheduled-start-binding-verification.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify exact binding
+        run: |
+          python - <<'PY'
+          import json,hashlib,subprocess,pathlib,datetime
+          G=pathlib.Path('v3/prospective_shadow250_v2/governance')
+          R=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts')
+          add=json.loads((G/'SHADOW250_V2_SCHEDULED_START_BINDING_ADDENDUM_v1.json').read_text())
+          audit=json.loads((G/'INDEPENDENT_GEMINI_SCHEDULED_START_CONDITIONAL_APPROVE_RECEIPT_v1.json').read_text())
+          act=json.loads((G/'SHADOW250_V2_ACTIVATION_FINAL_v1.json').read_text())
+          sel=json.loads((G/'SHADOW250_V2_SELECTION_RULE_FINAL_FREEZE_v1.json').read_text())
+          core=add['approved_core']
+          calc=hashlib.sha256(json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          assert calc==add['approved_core_sha256']=='4dc95dafd3d6d3a882955b5411ae029d1e9b3dfd8f76c3f4a67dd549a75efe55'
+          def blob(p):return subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+          checks={
+            'extractor':blob('v3/prospective_shadow250_v2/tamano_scheduled_start_metadata_candidate_v1.py'),
+            'tamano_parser':blob('v3/prospective_shadow250_v2/tamano_racecard_row_parser_v4.py'),
+            'genesis_final':blob(G/'SHADOW250_V2_GENESIS_FINAL_FREEZE_v1.json'),
+            'selection_final':blob(G/'SHADOW250_V2_SELECTION_RULE_FINAL_FREEZE_v1.json')}
+          expected={'extractor':'31aa09d68f68656e6f8b134c2ead28e3bc00b1c1','tamano_parser':'397ed3c8839b1ad4ffa4835924dd759397e2124c','genesis_final':'8cea4c1b3f07d9c10eb582426a0fc0ff658adcc8','selection_final':'7440b14e6e1f749067ec62c5b31348067612f91a'}
+          assert checks==expected,(checks,expected)
+          assert sel['approved_core_sha256']=='26459bbe8db0766918a7511069f0c13354fb8b75d952a1633bbc3b8325f099d6'
+          assert act['activation_timestamp_jst']=='2026-08-19T11:38:23.685300+09:00'
+          assert act['selected_races']==0 and act['prospective_shadow_screen_count']==0 and act['prospective_v3_scientific_trial']==0
+          assert audit['verdict']=='CONDITIONAL APPROVE'
+          assert audit['universe_boundary']=='CURRENT_SHADOW250_V2_MAY_CONTINUE_WITH_SCHEDULED_START_IMPLEMENTATION_COMPLETION'
+          out={'record':'SHADOW250_V2_SCHEDULED_START_BINDING_VERIFICATION_v1','status':'PASS','generated_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'approved_core_sha256':calc,'git_blobs':checks,'activation_timestamp_jst':act['activation_timestamp_jst'],'selected_races':0,'prospective_shadow_screen_count':0,'prospective_v3_scientific_trial':0,'ECON_HOLDOUT1000':'SEALED','live_smoke_status':'STILL_REQUIRED_BEFORE_RACE_1','screen_authorized':False,'prediction_authorized':False}
+          R.mkdir(parents=True,exist_ok=True)
+          p=R/'SHADOW250_V2_SCHEDULED_START_BINDING_VERIFICATION_v1.json';p.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n')
+          print(p.read_text())
+          PY
+      - name: Persist verification
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SCHEDULED_START_BINDING_VERIFICATION_v1.json
+          git commit -m 'Record scheduled-start binding verification'
+          git push
