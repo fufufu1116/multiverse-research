@@ -1,0 +1,81 @@
+name: shadow250-v2-separate-activation
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-separate-activation.yml']
+permissions:
+  contents: write
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Create separate activation record
+        run: |
+          python - <<'PY'
+          import json,pathlib,subprocess
+          from datetime import datetime,timezone
+          from zoneinfo import ZoneInfo
+          root=pathlib.Path('v3/prospective_shadow250_v2');gov=root/'governance'
+          paths={
+            'source_final':gov/'SHADOW250_V2_SOURCE_SET_FINAL_FREEZE_v1.json',
+            'selection_final':gov/'SHADOW250_V2_SELECTION_RULE_FINAL_FREEZE_v1.json',
+            'genesis_final':gov/'SHADOW250_V2_GENESIS_FINAL_FREEZE_v1.json',
+            'self_verify':gov/'SHADOW250_V2_FINAL_FREEZE_SELF_VERIFICATION_v1.json',
+            'gemini_approve':gov/'INDEPENDENT_GEMINI_FINAL_APPROVE_RECEIPT_SHADOW250_V2_CANDIDATE_V3_v1.json'
+          }
+          expected={
+            'source_final':'7e9329e8ad9efd94a7643f05044d1f6bdfbde7c6',
+            'selection_final':'7440b14e6e1f749067ec62c5b31348067612f91a',
+            'genesis_final':'8cea4c1b3f07d9c10eb582426a0fc0ff658adcc8',
+            'self_verify':'acfa561dffe521461556021fb856fe267950e16b',
+            'gemini_approve':'0943e43911dfd5f03ece8901050a82db2b7b2a75'
+          }
+          def blob(p):return subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+          actual={k:blob(v) for k,v in paths.items()}
+          if actual!=expected:raise SystemExit(f'ACTIVATION_BINDING_MISMATCH {actual}')
+          sv=json.loads(paths['self_verify'].read_text(encoding='utf-8'));gen=json.loads(paths['genesis_final'].read_text(encoding='utf-8'));audit=json.loads(paths['gemini_approve'].read_text(encoding='utf-8'))
+          assert sv['status']=='PASS' and sv['activation_authorized'] is True and sv['activation_performed'] is False and sv['first_race_selected'] is False
+          assert gen['status']=='FROZEN_APPROVED_NOT_ACTIVE'
+          assert audit['verdict']=='APPROVE'
+          now_utc=datetime.now(timezone.utc);now_jst=now_utc.astimezone(ZoneInfo('Asia/Tokyo'))
+          out={
+            'project':'Multiverse Hybrid v3.0',
+            'record':'SHADOW250_V2_ACTIVATION_FINAL_v1',
+            'status':'FROZEN_APPROVED_ACTIVE',
+            'activation_timestamp_utc':now_utc.isoformat(),
+            'activation_timestamp_jst':now_jst.isoformat(),
+            'activation_timezone':'Asia/Tokyo',
+            'activation_basis':{
+              'genesis_final_git_blob':actual['genesis_final'],
+              'source_final_git_blob':actual['source_final'],
+              'selection_final_git_blob':actual['selection_final'],
+              'freeze_self_verification_git_blob':actual['self_verify'],
+              'freeze_manifest_sha256':sv['freeze_manifest_sha256'],
+              'independent_gemini_approve_git_blob':actual['gemini_approve'],
+              'prediction_lock_sha256':'2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada'
+            },
+            'first_eligible_race_rule':'scheduled_start MUST be strictly greater than activation_timestamp_jst and pass every frozen Selection Rule gate',
+            'selected_races':0,
+            'prospective_shadow_screen_count':0,
+            'prospective_v3_scientific_trial':0,
+            'first_race_selected':False,
+            'prediction_lock_executed_for_shadow250_v2':False,
+            'ECON_HOLDOUT1000':'SEALED',
+            'global_scoring':'UNAUTHORIZED',
+            'Lane_E':'UNAUTHORIZED',
+            'final_v3_proof':'UNAUTHORIZED',
+            'wagering':'UNAUTHORIZED',
+            'authorization_effect':'ACTIVATE_ONLY; DOES_NOT_SELECT_OR_CONSUME_RACE_1'
+          }
+          q=gov/'SHADOW250_V2_ACTIVATION_FINAL_v1.json';q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist activation record
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/governance/SHADOW250_V2_ACTIVATION_FINAL_v1.json
+          git commit -m 'Activate final-frozen Shadow250-v2'
+          git push
