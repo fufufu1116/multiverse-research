@@ -1,0 +1,148 @@
+{
+  "batch_live": {
+    "batch_elapsed_seconds": 75.846,
+    "group_count": 7,
+    "max_batch_elapsed_seconds": 90.0,
+    "max_source_window_seconds": 120.0,
+    "predictive_fields_from_racerprofile": [
+      "style",
+      "win_rate",
+      "trio_rate"
+    ],
+    "predictive_fields_from_search_result": [],
+    "raw_html_persisted": false,
+    "request_count": 15,
+    "rider_count": 7,
+    "search_result_identity_fields_used": [
+      "name",
+      "snum"
+    ],
+    "source_window_elapsed_seconds": 76.959,
+    "status": "PASS_RACE_BATCH_IDENTITY_AND_SUPPLEMENT_V3"
+  },
+  "blobs": {
+    "batch": "b0cdb1fa49d3fcf033c09b273a44a47bab9ab4eb",
+    "fusion": "a74ab32d2c0bd3957995fccfccb403ac3ae225fe",
+    "locator": "c97d1d7c736e8cd778029446ffc704a684d4938e",
+    "profile_parser": "d8ce951abd1f008f872bc093d6bb12a50d62ca16",
+    "tamano_parser": "397ed3c8839b1ad4ffa4835924dd759397e2124c"
+  },
+  "cross_source_scientific_fusion_performed": false,
+  "expected_blobs": {
+    "batch": "b0cdb1fa49d3fcf033c09b273a44a47bab9ab4eb",
+    "fusion": "a74ab32d2c0bd3957995fccfccb403ac3ae225fe",
+    "locator": "c97d1d7c736e8cd778029446ffc704a684d4938e",
+    "profile_parser": "d8ce951abd1f008f872bc093d6bb12a50d62ca16",
+    "tamano_parser": "397ed3c8839b1ad4ffa4835924dd759397e2124c"
+  },
+  "fusion_live_not_run_reason": "Historical Tamano source-validation PDF must not be fused with current racerprofile values; fusion guard validated synthetically only to avoid historical_current_profile_replay.",
+  "generated_utc": "2026-08-19T00:25:12.875238+00:00",
+  "global_scoring_used": false,
+  "holdout_accessed": false,
+  "prediction_executed": false,
+  "predictive_values_persisted": false,
+  "raw_html_persisted": false,
+  "raw_pdf_persisted": false,
+  "record": "SHADOW250_V2_FINAL_CANDIDATE_RUNTIME_EVIDENCE_v1",
+  "result_payout_price_accessed": false,
+  "scientific_trial_consumed": false,
+  "shadow_screen_consumed": false,
+  "source_validation_only": true,
+  "source_window_limit_seconds": 120.0,
+  "source_window_measured_seconds": 76.96,
+  "status": "PASS",
+  "synthetic": {
+    "batch": {
+      "locator_blob": "c97d1d7c736e8cd778029446ffc704a684d4938e",
+      "network_used": false,
+      "race_batch_required": true,
+      "status": "PASS",
+      "supplement_parser_blob": "d8ce951abd1f008f872bc093d6bb12a50d62ca16"
+    },
+    "fusion": {
+      "canonical_class_map": {
+        "Ａ級１班": "A1",
+        "Ａ級２班": "A2",
+        "Ａ級３班": "A3",
+        "Ｌ級１班": "L1",
+        "Ｓ級１班": "S1",
+        "Ｓ級２班": "S2",
+        "Ｓ級Ｓ班": "SS"
+      },
+      "network_used": false,
+      "status": "PASS"
+    },
+    "locator": {
+      "fixture_encoding": "UTF-8_DECLARED",
+      "network_used": false,
+      "status": "PASS"
+    },
+    "profile_parser": {
+      "network_used": false,
+      "status": "PASS"
+    },
+    "tamano": {
+      "network_used": false,
+      "status": "PASS"
+    }
+  },
+  "tamano_live": {
+    "elapsed_seconds": 1.112,
+    "field_size_marker_gate": "PASS",
+    "pdf_raw_sha256": "a2328d364eec4308adb7024efbb0b0fc7851472dc72a3fad465b5fa5cdc24317",
+    "program_counts": {
+      "A12": 5,
+      "L1": 2,
+      "S": 5
+    },
+    "races": 12,
+    "rows": 84,
+    "status": "PASS",
+    "transport_date_binding": "PASS"
+  },
+  "verified_snums": [
+    {
+      "car_no": 1,
+      "snum": "015918",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME"
+    },
+    {
+      "car_no": 2,
+      "snum": "012838",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME"
+    },
+    {
+      "car_no": 3,
+      "snum": "012882",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME"
+    },
+    {
+      "car_no": 4,
+      "snum": "013983",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME"
+    },
+    {
+      "car_no": 5,
+      "snum": "015748",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME"
+    },
+    {
+      "car_no": 6,
+      "snum": "011372",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME"
+    },
+    {
+      "car_no": 7,
+      "snum": "013838",
+      "table_binding": "NEAREST_PARENT_TABLE_ROW_OWNERSHIP",
+      "timestamp_binding": "SECTION_LABEL_TO_OWNED_TARGET_TABLE_UNIQUE_DATETIME"
+    }
+  ],
+  "wagering_used": false
+}
