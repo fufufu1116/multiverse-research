@@ -1,0 +1,81 @@
+{
+  "record": "ALL_MARKET_REGISTRY_CANDIDATE_v1",
+  "status": "CANDIDATE_NOT_YET_INDEPENDENTLY_AUDITED",
+  "track": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
+  "availability_rule": "ONLY_MARKETS_ACTUALLY_PRESENT_AND_SOLD_IN_THE_SHA_BOUND_HISTORICAL_RAW_ARE_ADMITTED_FOR_THAT_RACE",
+  "markets": {
+    "3rentan": {
+      "jp_name": "3連単",
+      "ticket_primitive": "ORDERED_TOP3_CARS",
+      "historical_price_semantics": "POINT_CLOSING_ODDS",
+      "historical_refund": "OFFICIAL_REFUND_YEN_PER_100",
+      "legacy_formal_market": true
+    },
+    "3renhuku": {
+      "jp_name": "3連複",
+      "ticket_primitive": "UNORDERED_TOP3_CARS",
+      "historical_price_semantics": "POINT_CLOSING_ODDS",
+      "historical_refund": "OFFICIAL_REFUND_YEN_PER_100",
+      "legacy_formal_market": true
+    },
+    "2shatan": {
+      "jp_name": "2車単",
+      "ticket_primitive": "ORDERED_TOP2_CARS",
+      "historical_price_semantics": "POINT_CLOSING_ODDS",
+      "historical_refund": "OFFICIAL_REFUND_YEN_PER_100",
+      "legacy_formal_market": true
+    },
+    "2shahuku": {
+      "jp_name": "2車複",
+      "ticket_primitive": "UNORDERED_TOP2_CARS",
+      "historical_price_semantics": "POINT_CLOSING_ODDS",
+      "historical_refund": "OFFICIAL_REFUND_YEN_PER_100",
+      "legacy_formal_market": true
+    },
+    "wide": {
+      "jp_name": "ワイド",
+      "ticket_primitive": "UNORDERED_PAIR_BOTH_IN_TOP3",
+      "historical_price_semantics": "INTERVAL_CLOSING_ODDS_LOW_HIGH",
+      "historical_refund": "THREE_OFFICIAL_WINNING_PAIR_REFUNDS_YEN_PER_100_ON_STANDARD_SINGLETON_TOP3",
+      "legacy_formal_market": false,
+      "stage0_policy": "PRESERVE_LOW_HIGH_EXACTLY; NO_MIDPOINT; NO_POINT_EV",
+      "stage1_probability_candidate": "SUM_JOINT_TOP3_ORDER_PROBABILITIES_CONTAINING_BOTH_CARS",
+      "stage2_primary_price_rule": "NOT_YET_FROZEN"
+    },
+    "2wakutan": {
+      "jp_name": "2枠単",
+      "ticket_primitive": "ORDERED_TOP2_FRAMES",
+      "historical_price_semantics": "POINT_CLOSING_ODDS_WHEN_SOLD",
+      "historical_refund": "OFFICIAL_REFUND_YEN_PER_100_WHEN_SOLD",
+      "legacy_formal_market": false,
+      "stage0_policy": "PARSE_ONLY_WHEN_EXPLICIT_MARKET_CONTENT_AND_STATUS_EXIST",
+      "stage1_probability_candidate": "SUM_DISTINCT_CAR_ORDER_PROBABILITIES_MAPPED_TO_THE_OFFICIAL_FRAME_PAIR",
+      "same_frame_ticket": "ALLOWED_ONLY_WHEN_THE_HISTORICAL_MARKET_PUBLISHES_IT_AND_AT_LEAST_TWO_DISTINCT_CARS_CAN_OCCUPY_THAT_FRAME; EXACT_MAPPING_REQUIRES_STAGE1_AUDIT"
+    },
+    "2wakuhuku": {
+      "jp_name": "2枠複",
+      "ticket_primitive": "UNORDERED_TOP2_FRAMES",
+      "historical_price_semantics": "POINT_CLOSING_ODDS_WHEN_SOLD",
+      "historical_refund": "OFFICIAL_REFUND_YEN_PER_100_WHEN_SOLD",
+      "legacy_formal_market": false,
+      "stage0_policy": "PARSE_ONLY_WHEN_EXPLICIT_MARKET_CONTENT_AND_STATUS_EXIST",
+      "stage1_probability_candidate": "SUM_DISTINCT_CAR_UNORDERED_TOP2_PROBABILITIES_MAPPED_TO_THE_OFFICIAL_FRAME_PAIR",
+      "same_frame_ticket": "ALLOWED_ONLY_WHEN_THE_HISTORICAL_MARKET_PUBLISHES_IT_AND_AT_LEAST_TWO_DISTINCT_CARS_CAN_OCCUPY_THAT_FRAME; EXACT_MAPPING_REQUIRES_STAGE1_AUDIT"
+    }
+  },
+  "portfolio_constructor_families_for_later_stages": {
+    "single_ticket": "one elementary ticket",
+    "top_k": "finite preregistered K values",
+    "box": "all elementary tickets induced by a selected car/frame set under the market definition",
+    "wheel_nagashi": "one or more fixed axis positions/participants with preregistered opponent sets",
+    "formation": "position-specific candidate sets expanded to valid elementary tickets",
+    "multi_ticket_same_market": "finite ticket portfolio",
+    "cross_market": "portfolio spanning multiple sold markets",
+    "no_bet": "explicit admissible action"
+  },
+  "portfolio_rule": "BUYING_METHODS_DO_NOT_CREATE_NEW_OUTCOMES_OR_PROBABILITIES; THEY_EXPAND_TO_A_DEDUPLICATED_SET_OF_ELEMENTARY_TICKETS_AND_A_CAPITAL_ALLOCATION",
+  "stage0_probability_use": "PROHIBITED",
+  "stage0_ev_use": "PROHIBITED",
+  "stage0_scoring": "PROHIBITED",
+  "ECON_HOLDOUT1000": "SEALED"
+}
