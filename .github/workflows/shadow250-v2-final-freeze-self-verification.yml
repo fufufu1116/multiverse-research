@@ -1,0 +1,81 @@
+name: shadow250-v2-final-freeze-self-verification
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-final-freeze-self-verification.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Verify final freeze graph
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess
+          from datetime import datetime,timezone
+          root=pathlib.Path('v3/prospective_shadow250_v2');gov=root/'governance'
+          files={
+            'source_final':gov/'SHADOW250_V2_SOURCE_SET_FINAL_FREEZE_v1.json',
+            'selection_final':gov/'SHADOW250_V2_SELECTION_RULE_FINAL_FREEZE_v1.json',
+            'genesis_final':gov/'SHADOW250_V2_GENESIS_FINAL_FREEZE_v1.json',
+            'gemini_approve':gov/'INDEPENDENT_GEMINI_FINAL_APPROVE_RECEIPT_SHADOW250_V2_CANDIDATE_V3_v1.json',
+            'pre_freeze_verify':gov/'SHADOW250_V2_PRE_FREEZE_BINDING_VERIFICATION_v1.json',
+            'tamano_parser':root/'tamano_racecard_row_parser_v4.py',
+            'locator':root/'keirinjp_identity_locator_v3.py',
+            'profile_parser':root/'keirinjp_racerprofile_parser_v4.py',
+            'batch':root/'keirinjp_race_batch_identity_supplement_v3.py',
+            'fusion':root/'tamano_5plus3_fusion_guard_v2.py',
+            'runtime_evidence':root/'runtime_receipts/SHADOW250_V2_FINAL_CANDIDATE_RUNTIME_EVIDENCE_v1.json'
+          }
+          expected={
+            'source_final':'7e9329e8ad9efd94a7643f05044d1f6bdfbde7c6',
+            'selection_final':'7440b14e6e1f749067ec62c5b31348067612f91a',
+            'genesis_final':'8cea4c1b3f07d9c10eb582426a0fc0ff658adcc8',
+            'gemini_approve':'0943e43911dfd5f03ece8901050a82db2b7b2a75',
+            'pre_freeze_verify':'98d9d9142d8b1446a2a2f3e25f964dc0b3107b9a',
+            'tamano_parser':'397ed3c8839b1ad4ffa4835924dd759397e2124c',
+            'locator':'c97d1d7c736e8cd778029446ffc704a684d4938e',
+            'profile_parser':'d8ce951abd1f008f872bc093d6bb12a50d62ca16',
+            'batch':'b0cdb1fa49d3fcf033c09b273a44a47bab9ab4eb',
+            'fusion':'a74ab32d2c0bd3957995fccfccb403ac3ae225fe',
+            'runtime_evidence':'598de0096298d649793724ab4b3efd4e22d7d8dc'
+          }
+          def blob(p): return subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+          actual={k:blob(v) for k,v in files.items()}
+          if actual!=expected: raise SystemExit(f'FINAL_FREEZE_BLOB_MISMATCH {actual}')
+          src=json.loads(files['source_final'].read_text(encoding='utf-8'));sel=json.loads(files['selection_final'].read_text(encoding='utf-8'));gen=json.loads(files['genesis_final'].read_text(encoding='utf-8'));audit=json.loads(files['gemini_approve'].read_text(encoding='utf-8'));pre=json.loads(files['pre_freeze_verify'].read_text(encoding='utf-8'));ev=json.loads(files['runtime_evidence'].read_text(encoding='utf-8'))
+          def core_sha(obj): return hashlib.sha256(json.dumps(obj['approved_core'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          src_sha=core_sha(src);sel_sha=core_sha(sel)
+          assert src_sha=='d872652f0b6a83b126a9c1a3537bbe40faa992f02358681207b5bae8b7a1d818'==src['approved_core_sha256']
+          assert sel_sha=='26459bbe8db0766918a7511069f0c13354fb8b75d952a1633bbc3b8325f099d6'==sel['approved_core_sha256']
+          assert src['status']=='FROZEN_APPROVED_DO_NOT_EDIT' and sel['status']=='FROZEN_APPROVED_DO_NOT_EDIT' and gen['status']=='FROZEN_APPROVED_NOT_ACTIVE'
+          assert audit['verdict']=='APPROVE' and audit['required_decisions']['universe_boundary_Y']=='SHADOW250_V2_CANDIDATE_REBIND_IS_VALID_BEFORE_FIRST_FREEZE'
+          assert pre['status']=='PASS' and ev['status']=='PASS'
+          fb=gen['final_freeze_bindings']
+          assert fb['source_set_final_git_blob']==actual['source_final'];assert fb['selection_rule_final_git_blob']==actual['selection_final']
+          assert fb['source_set_core_sha256']==src_sha;assert fb['selection_rule_core_sha256']==sel_sha
+          assert fb['tamano_parser_v4_git_blob']==actual['tamano_parser'];assert fb['keirinjp_identity_locator_v3_git_blob']==actual['locator'];assert fb['keirinjp_racerprofile_parser_v4_git_blob']==actual['profile_parser'];assert fb['keirinjp_race_batch_v3_git_blob']==actual['batch'];assert fb['tamano_5plus3_fusion_guard_v2_git_blob']==actual['fusion'];assert fb['runtime_evidence_git_blob']==actual['runtime_evidence']
+          assert fb['prediction_lock_sha256']=='2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada'
+          st=gen['scientific_state_at_freeze'];sealed=gen['sealed'];act=gen['activation']
+          assert st['Shadow250_v2_selected_races']==0 and st['prospective_shadow_screen_count']==0 and st['prospective_v3_scientific_trial']==0
+          assert sealed['ECON_HOLDOUT1000']=='SEALED' and not sealed['holdout_result_access'] and not sealed['holdout_payout_access'] and not sealed['holdout_price_access'] and not sealed['holdout_scored']
+          assert act['authorized_after_successful_freeze_self_verification'] is True and act['active'] is False and act['timestamp_jst'] is None
+          manifest={
+            'source_final_git_blob':actual['source_final'],'selection_final_git_blob':actual['selection_final'],'genesis_final_git_blob':actual['genesis_final'],'source_core_sha256':src_sha,'selection_core_sha256':sel_sha,
+            'tamano_parser_git_blob':actual['tamano_parser'],'locator_git_blob':actual['locator'],'profile_parser_git_blob':actual['profile_parser'],'batch_git_blob':actual['batch'],'fusion_git_blob':actual['fusion'],'runtime_evidence_git_blob':actual['runtime_evidence'],'gemini_approve_git_blob':actual['gemini_approve'],'pre_freeze_verify_git_blob':actual['pre_freeze_verify'],'prediction_lock_sha256':fb['prediction_lock_sha256']
+          }
+          manifest_sha=hashlib.sha256(json.dumps(manifest,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          out={'project':'Multiverse Hybrid v3.0','record':'SHADOW250_V2_FINAL_FREEZE_SELF_VERIFICATION_v1','generated_utc':datetime.now(timezone.utc).isoformat(),'status':'PASS','freeze_manifest':manifest,'freeze_manifest_sha256':manifest_sha,'scientific_state':{'Shadow250_v2_selected_races':0,'prospective_shadow_screen_count':0,'prospective_v3_scientific_trial':0},'ECON_HOLDOUT1000':'SEALED','activation_authorized':True,'activation_performed':False,'first_race_selected':False}
+          q=gov/'SHADOW250_V2_FINAL_FREEZE_SELF_VERIFICATION_v1.json';q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist self-verification receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/governance/SHADOW250_V2_FINAL_FREEZE_SELF_VERIFICATION_v1.json
+          git commit -m 'Record Shadow250-v2 final-freeze self verification'
+          git push
