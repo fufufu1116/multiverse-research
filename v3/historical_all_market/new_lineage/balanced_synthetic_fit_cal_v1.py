@@ -99,7 +99,6 @@ def _c1_utilities(
     for car, r in riders.items():
         pos = int(r["line_position"])
         size = int(r["line_size"])
-        # Position basis is part of the preregistered C1 feature architecture; its scale is fit.
         position_basis = {0: 0.03, 1: 0.08, 2: 0.04}.get(pos, 0.0)
         out[car] = (
             float(r["score"])
@@ -276,7 +275,6 @@ def fit_train_cal() -> dict:
     for shrink in shrinkages:
         c1_score = _mean_ll(cal_cache, lambda pre, s=shrink: _c1(pre, c1_train, s))
         c1_cal_rows.append((c1_score, abs(shrink - 1.0), (shrink,), shrink))
-
         n1_score = _mean_ll(cal_cache, lambda pre, s=shrink: _n1(pre, c1_train, n1_train, s))
         n1_cal_rows.append((n1_score, abs(shrink - 1.0), (shrink,), shrink))
 
@@ -301,20 +299,20 @@ def fit_train_cal() -> dict:
                 "train_params": asdict(c1_train),
                 "train_mean_log_loss": c1_train_score,
                 "cal_shrinkage": c1_shrink,
-                "cal_mean_log_loss": c1_cal_score,
+                "cal_mean_log_loss": c1_cal_score
             },
             "N1": {
                 "c1_base_train_params": asdict(c1_train),
                 "conditional_train_params": asdict(n1_train),
                 "train_mean_log_loss": n1_train_score,
                 "cal_shrinkage": n1_shrink,
-                "cal_mean_log_loss": n1_cal_score,
+                "cal_mean_log_loss": n1_cal_score
             },
-            "C0_cal_mean_log_loss": c0_cal_score,
+            "C0_cal_mean_log_loss": c0_cal_score
         },
         "holdout_execution": "NOT_EXECUTED",
         "post_holdout_retuning": "PROHIBITED",
-        "untouched_real_validation_may_open": false,
+        "untouched_real_validation_may_open": False
     }
 
 
@@ -335,7 +333,6 @@ def _metrics_for_model(
 
 
 def evaluate_holdout(frozen: Mapping[str, object]) -> dict:
-    """Evaluate frozen coefficients only. Caller must govern when this stage is opened."""
     prereg, prereg_sha256 = _load_prereg()
     if frozen.get("prereg_sha256") != prereg_sha256:
         raise ValueError("frozen_prereg_hash_mismatch")
@@ -356,24 +353,20 @@ def evaluate_holdout(frozen: Mapping[str, object]) -> dict:
     models = {
         "C0": _c0,
         "C1": lambda pre: _c1(pre, c1_params, c1_shrink),
-        "N1": lambda pre: _n1(pre, c1_params, n1_params, n1_shrink),
+        "N1": lambda pre: _n1(pre, c1_params, n1_params, n1_shrink)
     }
 
     scenarios = []
     for cfg in ASSUMPTION_GRID:
         row = {"scenario_id": cfg.scenario_id, "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE", "models": {}}
         for name, model in models.items():
-            row["models"][name] = _metrics_for_model(
-                races,
-                lambda race, cfg=cfg: stress_truth_joint(race, cfg),
-                model,
-            )
+            row["models"][name] = _metrics_for_model(races, lambda race, cfg=cfg: stress_truth_joint(race, cfg), model)
         row["winner_by_log_loss"] = min(row["models"], key=lambda m: row["models"][m]["log_loss"])
         scenarios.append(row)
 
     fresh_truths = (
         (SIGNED_CONTEXT_REVERSAL.scenario_id, signed_context_reversal_joint),
-        (ALTERNATE_CONDITIONAL_ID, alternate_conditional_joint),
+        (ALTERNATE_CONDITIONAL_ID, alternate_conditional_joint)
     )
     for scenario_id, truth_fn in fresh_truths:
         row = {"scenario_id": scenario_id, "status": "FRESH_LAB_PRESCRIBED_HOLDOUT", "models": {}}
@@ -386,14 +379,12 @@ def evaluate_holdout(frozen: Mapping[str, object]) -> dict:
         "record": "KEIRIN_BALANCED_SYNTHETIC_HOLDOUT_RESULT_v1",
         "status": "SYNTHETIC_HOLDOUT_EXECUTED_NO_REAL_VALIDATION",
         "prereg_sha256": prereg_sha256,
-        "frozen_config_digest": hashlib.sha256(
-            json.dumps(frozen, sort_keys=True, separators=(",", ":")).encode("utf-8")
-        ).hexdigest(),
+        "frozen_config_digest": hashlib.sha256(json.dumps(frozen, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest(),
         "sample_strata": stratum_counts(races),
         "scenario_count": len(scenarios),
         "scenarios": scenarios,
         "post_holdout_retuning": "PROHIBITED",
-        "untouched_real_validation_may_open": false,
+        "untouched_real_validation_may_open": False
     }
 
 
