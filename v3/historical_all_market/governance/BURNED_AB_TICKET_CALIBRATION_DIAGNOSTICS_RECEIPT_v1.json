@@ -1,0 +1,65 @@
+{
+  "record": "BURNED_AB_TICKET_CALIBRATION_DIAGNOSTICS_RECEIPT_v1",
+  "date_jst": "2026-08-19",
+  "status": "PASS_DIAGNOSTICS_ONLY",
+  "data_role": "DEV2000_A_B_BURNED_DIAGNOSTIC_DEV_ONLY",
+  "segment_c_accessed": false,
+  "scientific_segment_c_scoring_count": 0,
+  "ECON_HOLDOUT1000": "SEALED",
+  "new_validation_trial_consumed": 0,
+  "primary_finding": "SELECTION_CONDITIONAL_HIGH_ODDS_3RENTAN_OVERCONFIDENCE",
+  "A_B_period_stability": "SAME_DIRECTION_IN_A_AND_B",
+  "three_rentan_high_odds": {
+    "candidate_a_300_1000x_obs_to_expected": 0.3599,
+    "candidate_a_1000x_plus_obs_to_expected": 0.1681,
+    "b1a_300_1000x_obs_to_expected": 0.4066,
+    "b1a_1000x_plus_obs_to_expected": 0.2456
+  },
+  "stage7_top1_AB": {
+    "G20": {
+      "decision_count": 950,
+      "model_expected_hits": 6.8345371160,
+      "observed_hits": 1,
+      "raw_market_implied_expected_hits": 1.0158514798,
+      "normalized_market_shape_expected_hits": 0.7588006614,
+      "model_to_market_shape_expected_ratio": 9.0070,
+      "model_internal_probability_at_most_one_hit": 0.00807144
+    },
+    "G25": {
+      "decision_count": 1270,
+      "model_expected_hits": 8.9502191256,
+      "observed_hits": 1,
+      "raw_market_implied_expected_hits": 1.3158128900,
+      "normalized_market_shape_expected_hits": 0.9831194562,
+      "model_to_market_shape_expected_ratio": 9.1039,
+      "model_internal_probability_at_most_one_hit": 0.00121968
+    }
+  },
+  "interpretation": [
+    "Marginal probability-bin calibration is insufficient because Stage7 selects tickets conditional on extreme model-market disagreement.",
+    "The selected disagreement tail is materially overconfident across burned A+B.",
+    "Realized hit counts are much closer to market-implied expectations than to frozen model expectations in the selected region.",
+    "This is a stronger root-cause candidate than A-to-B TV3 drift.",
+    "No same-lineage B/C rescue tuning is authorized."
+  ],
+  "next_lineage_requirement": [
+    "market-conditional calibration by odds and model-market disagreement ratio",
+    "development-only PL dispersion/temperature testing",
+    "development-only market-aware shrinkage candidate",
+    "freeze probability transform before prospective untouched validation"
+  ],
+  "artifacts": {
+    "diagnostic_code_sha256": "026241c98a426d5e38b8ee7ad619e9192f2ad23a6dd5fd81cae810adc54b1b64",
+    "diagnostic_json_sha256": "81eab8097cc8fd0723c1c13953781e5d2ad3cbd06f6b13d9c26fe90a00de7df4",
+    "report_sha256": "daedaf6636da61a584478afd9e030a8d93b3f950d0a2ba9994790a6519174ca1",
+    "drive_code_file_id": "19_aGED7BXjZ4q6oe2X2JVUe2Hxy4TLeI",
+    "drive_json_file_id": "1Buyl0bBYbW1VL1Jd-IWyXYWlkfRcfHjT",
+    "drive_report_file_id": "1lPXqjBkSO7CN5zxUq8pUUSutWhRbUhEY"
+  },
+  "prohibitions": [
+    "NO_CURRENT_C_ACCESS",
+    "NO_ECON_HOLDOUT_OPEN",
+    "NO_SAME_B_C_RETUNING",
+    "NO_TREATMENT_AS_VALIDATED_EDGE"
+  ]
+}
