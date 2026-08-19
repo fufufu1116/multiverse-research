@@ -1,0 +1,92 @@
+{
+  "record": "STAGE7_B_FAILURE_DIAGNOSTICS_RECEIPT_v1",
+  "created_date_jst": "2026-08-19",
+  "status": "PASS_DIAGNOSTICS_ONLY",
+  "scope": "FROZEN_DEV2000_STAGE7_A_B_FAILURE_ANALYSIS_ONLY",
+  "diagnostics_only": true,
+  "same_lineage_rescue_tuning_performed": false,
+  "segment_c_opened": false,
+  "scientific_segment_c_scoring_count": 0,
+  "ECON_HOLDOUT1000": "SEALED",
+  "official_ab_status": "NO_B_VALIDATED_CONFIGURATION",
+  "source_hashes": {
+    "stage0_price_sha256": "2ca98097f74e5282fdc9c91629083f39bef4dafb94a1fc4f7e510acadefc407b",
+    "stage1_probability_sha256": "6348d9af2a535578cf454afca52ea2c944cb6c50cab87f6e6ffa75149880b526",
+    "universe_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "settlement_A_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "settlement_B_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72"
+  },
+  "frozen_code_lineage": {
+    "stage2_engine_git_blob": "9f240c758cb2596e9c67a5214c4e2c610eb82769",
+    "stage456_git_blob": "a0ed6984969b0b98af1b074ef9fd2348f16604a0",
+    "stage7_evaluator_git_blob": "ce8e109fa4c20f683ea1ec999b2fe5dd6f49c865"
+  },
+  "diagnostic_artifacts": {
+    "code_sha256": "36fff3a3346c0cb23186f27a839daca781f1394ca47765ad21638444bc3353dd",
+    "output_sha256": "224c40b8def28dc9cf20356ac8bb413234479a15bab1a07bf6d403101eb08749",
+    "report_sha256": "c9a0e9a95514ce96f05c51fdf149a3f08f4c89763632d4d4f2c2127563a8ddd1",
+    "drive_code_file_id": "1apSDpRlupymkjtafPbwpot_FLHHrvsWh",
+    "drive_output_file_id": "1vo6mnIzstJwplUAvUvkwMbDSIlDqlwDO",
+    "drive_report_file_id": "1jU-G-10LMxY-XsoCvBfDI9oj-zRkpGGy"
+  },
+  "reconstruction_validation": {
+    "A_TOP10_official_metrics_exactly_reproduced": true,
+    "recovered_stage2_sample_ticket_instances_compared": 2068,
+    "recovered_stage2_sample_max_abs_diff": 0.0
+  },
+  "B_failure": {
+    "b_pass_count": 0,
+    "nominal_A_TOP10_count": 10,
+    "unique_realized_B_ledger_count": 2,
+    "G20_family": {
+      "configuration_count": 7,
+      "bet_race_count": 44,
+      "total_stake_yen": 5100,
+      "total_return_yen": 0,
+      "realized_roi": -1.0,
+      "hit_ticket_count": 0,
+      "ending_bankroll_yen": 94900,
+      "maximum_drawdown": 0.051,
+      "fail_reasons": ["ROI_NOT_POSITIVE", "BET_RACE_COUNT_LT_50"]
+    },
+    "G25_family": {
+      "configuration_count": 3,
+      "bet_race_count": 54,
+      "total_stake_yen": 6200,
+      "total_return_yen": 0,
+      "realized_roi": -1.0,
+      "hit_ticket_count": 0,
+      "ending_bankroll_yen": 93800,
+      "maximum_drawdown": 0.062,
+      "fail_reasons": ["ROI_NOT_POSITIVE"]
+    }
+  },
+  "A_profit_concentration": {
+    "unique_positive_return_event_count": 1,
+    "all_gross_return_from_single_event": true,
+    "dev_index": 39,
+    "race_id": "5520260228020002",
+    "race_date": "2026-03-01",
+    "market": "3rentan",
+    "ticket": "7-2-5",
+    "closing_odds": 457.9,
+    "stake_yen": 100,
+    "return_yen": 45790
+  },
+  "key_findings": [
+    "A aggregate profit was fully concentrated in one 457.9x 3rentan hit.",
+    "The nominal A_TOP10 represented only two unique realized B ledgers.",
+    "Selected behavior was overwhelmingly high-odds 3rentan SINGLE betting.",
+    "A-to-B TV3 disagreement distribution was broadly stable, so gate drift was not the primary failure cause.",
+    "FK10_R2 plus the 100-yen floor materially reduced the number of actually staked races.",
+    "Tail exact-order calibration and PL transformation require explicit testing in a new lineage.",
+    "Weekly/monthly stability requires a substantially longer chronological universe."
+  ],
+  "prohibitions": [
+    "DO_NOT_RETUNE_SAME_B_OR_C",
+    "DO_NOT_SCORE_CURRENT_SEGMENT_C",
+    "DO_NOT_OPEN_ECON_HOLDOUT1000",
+    "DO_NOT_TREAT_DIAGNOSTICS_AS_VALIDATED_EDGE"
+  ]
+}
