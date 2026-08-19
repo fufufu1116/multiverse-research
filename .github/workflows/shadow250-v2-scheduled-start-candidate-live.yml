@@ -1,0 +1,48 @@
+name: shadow250-v2-scheduled-start-candidate-live
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-scheduled-start-candidate-live.yml']
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install --disable-pip-version-check requests PyMuPDF pandas
+      - name: Synthetic + historical PRE-only live validation
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import importlib.util,requests,tempfile,pathlib,json,hashlib,traceback,subprocess
+          from datetime import datetime,timezone
+          cpath=pathlib.Path('v3/prospective_shadow250_v2/tamano_scheduled_start_metadata_candidate_v1.py')
+          expected='31aa09d68f68656e6f8b134c2ead28e3bc00b1c1'
+          got=subprocess.check_output(['git','hash-object',str(cpath)],text=True).strip()
+          out={'project':'Multiverse Hybrid v3.0','record':'SHADOW250_V2_SCHEDULED_START_CANDIDATE_LIVE_v1','candidate_git_blob':got,'expected_candidate_git_blob':expected,'purpose':'CANDIDATE_VALIDATION_ONLY_NOT_AUTHORIZED_FOR_SCREENING','prediction_executed':False,'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False,'ECON_HOLDOUT1000':'SEALED'}
+          try:
+            if got!=expected:raise RuntimeError('candidate blob mismatch')
+            s=importlib.util.spec_from_file_location('sched',cpath);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+            out['synthetic']=m.synthetic_tests()
+            url='https://www.tamano-keirin.jp/wp-content/uploads/2026/07/20260724-1.pdf';r=requests.get(url,headers={'User-Agent':'Multiverse-Private-Research/1.0'},timeout=20,allow_redirects=False)
+            if r.status_code!=200 or not r.content.startswith(b'%PDF-'):raise RuntimeError(f'pdf HTTP={r.status_code}')
+            raw=hashlib.sha256(r.content).hexdigest()
+            with tempfile.NamedTemporaryFile(suffix='.pdf') as f:
+              f.write(r.content);f.flush();rows=m.extract_scheduled_starts(f.name,'2026-07-24',url,raw)
+            out['live']={'status':'PASS','race_count':len(rows),'race_numbers':[x['race_no'] for x in rows],'scheduled_start_jst':[x['scheduled_start_jst'] for x in rows],'strictly_increasing':all(rows[i]['scheduled_start_jst']<rows[i+1]['scheduled_start_jst'] for i in range(len(rows)-1)),'source_pdf_raw_sha256':raw,'metadata_role':'NON_PREDICTIVE_SELECTION_ORDER_ONLY'}
+            out['status']='PASS'
+          except Exception as e:
+            out.update({'status':'FAIL_CLOSED','error_type':type(e).__name__,'error_message':str(e),'traceback_tail':traceback.format_exc().splitlines()[-10:]})
+          out['generated_utc']=datetime.now(timezone.utc).isoformat()
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SCHEDULED_START_CANDIDATE_LIVE_v1.json');q.parent.mkdir(parents=True,exist_ok=True);q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist validation receipt
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]';git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SCHEDULED_START_CANDIDATE_LIVE_v1.json
+          git commit -m 'Record scheduled-start candidate validation'
+          git push
