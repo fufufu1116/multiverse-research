@@ -1,6 +1,6 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
-  "updated_jst": "2026-08-19T23:22:00+09:00",
+  "updated_jst": "2026-08-19T23:27:00+09:00",
   "status": "ACTIVE_RESEARCH_NEW_LINEAGE_PREFLIGHT_NO_EXTERNAL_CONTACT_NOT_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
   "bootstrap_protocol": "v3/historical_all_market/governance/HANDOFF_BOOTSTRAP_PROTOCOL_v1.md",
@@ -15,12 +15,21 @@
     "new_validation_trial_consumed_after_close": 0
   },
   "owner_policy": {
+    "factual_collection_history": "INDIVIDUAL_PERSONAL_HOBBY_COLLECTION_PRECEDED_RESEARCH",
+    "research_purpose": "PERSONAL_NONCOMMERCIAL_RESEARCH",
+    "real_money_wagering": "OUT_OF_SCOPE",
+    "real_world_betting_profit": "OUT_OF_SCOPE",
+    "commercial_prediction_service": "OUT_OF_SCOPE",
+    "data_resale_or_redistribution": "OUT_OF_SCOPE",
+    "bankroll_stake_return_roi_drawdown_kelly_portfolio": "VIRTUAL_SIMULATED_MONEY_ONLY",
     "external_provider_contact": "PROHIBITED_UNLESS_OWNER_LATER_EXPLICITLY_REVERSES",
     "external_email_call_form_vendor_account_trial_purchase_contract": "PROHIBITED",
     "personal_nonpublic_research_collection": "PREFERRED_ROUTE_SUBJECT_TO_SOURCE_RULES_AND_SCIENTIFIC_PROVENANCE",
     "false_retroactive_collection_purpose_story": "PROHIBITED",
-    "policy_artifact": "v3/historical_all_market/governance/NO_EXTERNAL_CONTACT_PERSONAL_RESEARCH_COLLECTION_BOUNDARY_v1.md",
-    "policy_commit": "b57f67ba02d03a5cbff41dfe2bd2aaf77479e3c0"
+    "purpose_artifact": "v3/historical_all_market/governance/PERSONAL_NONCOMMERCIAL_VIRTUAL_BANKROLL_PURPOSE_v1.md",
+    "purpose_commit": "af81917cfff8f41c7f81381fb5e5cd248acc4d13",
+    "no_contact_policy_artifact": "v3/historical_all_market/governance/NO_EXTERNAL_CONTACT_PERSONAL_RESEARCH_COLLECTION_BOUNDARY_v1.md",
+    "no_contact_policy_commit": "b57f67ba02d03a5cbff41dfe2bd2aaf77479e3c0"
   },
   "parent_diagnostic_state": {
     "A_TOP10_B_pass_count": 0,
@@ -109,9 +118,10 @@
     "FINAL_one_shot": true,
     "primary_probability_metrics": ["winner_NLL","rank2_conditional_NLL","rank3_conditional_NLL","joint_top3_NLL","calibration"],
     "architecture_selected_by_ROI": false,
-    "first_economic_test": "FLAT100_MAX_ONE_ELEMENTARY_TICKET_PER_RACE_CANDIDATE",
-    "kelly": "SECONDARY_AFTER_COHERENT_CALIBRATION",
-    "portfolio_optimizer": "DEFERRED"
+    "first_economic_test": "VIRTUAL_FLAT100_MAX_ONE_ELEMENTARY_TICKET_PER_RACE_CANDIDATE",
+    "all_economic_metrics": "SIMULATION_ONLY",
+    "kelly": "VIRTUAL_SECONDARY_AFTER_COHERENT_CALIBRATION",
+    "portfolio_optimizer": "VIRTUAL_DEFERRED"
   },
   "independent_audit_state": {
     "updated_package": "v3/historical_all_market/governance/INDEPENDENT_NEXT_LINEAGE_V2_AUDIT_PACKAGE.md",
@@ -130,9 +140,10 @@
   "next_gate": "NO_CONTACT_PERSONAL_DATA_ROUTE_PLUS_UPDATED_INDEPENDENT_AUDIT",
   "next_exact_actions": [
     "Do not contact any external provider under current Owner policy.",
-    "Audit a truthful personal/nonpublic collection route using publicly available information without access-control or anti-bot bypass and without assuming public visibility authorizes bulk crawling.",
+    "Audit a truthful personal/noncommercial/nonpublic collection route using publicly available information without access-control or anti-bot bypass and without assuming public visibility authorizes bulk crawling.",
     "Prefer existing lawfully-held artifacts and manual/minimal structured collection with source/timestamp provenance where scientifically sufficient.",
     "Continue source-independent implementation and independent architecture audit while no-contact data route is evaluated.",
+    "Treat all bankroll/ROI/Kelly/portfolio analysis as virtual simulation only.",
     "Do not open new untouched outcomes until schema, source route, architecture and validation protocol are frozen after independent audit."
   ],
   "hard_prohibitions": [
@@ -145,6 +156,7 @@
     "NO_BULK_SCRAPING_OR_ACCESS_CONTROL_RATE_LIMIT_CAPTCHA_WAF_BYPASS",
     "NO_EXTERNAL_PROVIDER_CONTACT_ACCOUNT_TRIAL_PURCHASE_OR_CONTRACT",
     "NO_FALSE_RETROSPECTIVE_PURPOSE_CHARACTERIZATION",
+    "NO_REAL_MONEY_WAGERING_OR_REAL_WORLD_PROFIT_OPERATION_IN_PROJECT_SCOPE",
     "NO_REVIEWER_NUMERIC_CLAIM_AS_THRESHOLD_WITHOUT_EXACT_PROVENANCE",
     "NO_FINAL_FREEZE_BEFORE_UPDATED_INDEPENDENT_AUDIT"
   ]
