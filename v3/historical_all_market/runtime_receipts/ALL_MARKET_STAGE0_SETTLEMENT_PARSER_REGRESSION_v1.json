@@ -1,0 +1,50 @@
+{
+  "record": "ALL_MARKET_STAGE0_SETTLEMENT_PARSER_REGRESSION_v1",
+  "status": "PASS_TEST_ONLY_OPERATIONALLY_LOCKED",
+  "settlement_parser": {
+    "path": "v3/historical_all_market/kdreams_settlement_recovery_v1.py",
+    "git_blob": "b8b8ab0e0904541bd6fc45e7fe415d323e63ec45",
+    "sha256_tested_source": "8454d5016f57b8b1a23e035c42b4737d4824fdb8c05ddf452dd9b35b91ebe8b8",
+    "role": "OFFICIAL_REFUND_SETTLEMENT_ONLY",
+    "operational_stage": "POST_RULE_FREEZE_SETTLEMENT_ONLY"
+  },
+  "archived_raw_regressions": [
+    {
+      "race_id": "3820260410010003",
+      "raw_sha256": "24551faf351c8216b3d4ceda249b9a369ecdae62f0baf87dcfe91f979ac46285",
+      "settlement_counts": {"3rentan":1,"2shatan":1,"3renhuku":1,"2shahuku":1,"wide":3},
+      "status": "PASS"
+    },
+    {
+      "race_id": "2620260409010001",
+      "raw_sha256": "fb83738b6d2e88f6b56bb6dc5647c1f8803932c3c2709d8c93fb7bfcee987c54",
+      "settlement_counts": {"3rentan":1,"2shatan":1,"3renhuku":1,"2shahuku":1,"2wakutan":1,"2wakuhuku":1,"wide":3},
+      "status": "PASS"
+    }
+  ],
+  "multi_refund_invariants": {
+    "distinct_additional_valid_ticket_is_preserved": true,
+    "observed_wide_count_after_distinct_synthetic_addition": 4,
+    "duplicate_same_ticket_same_refund": "IDEMPOTENT_COLLAPSE_ALLOWED",
+    "duplicate_same_ticket_different_refund": "FAIL_CLOSED"
+  },
+  "firewall": {
+    "price_dom_symbols_absent": true,
+    "price_catalog_output_absent": true,
+    "model_probability_output_absent": true,
+    "ev_output_absent": true,
+    "roi_output_absent": true
+  },
+  "authorization": {
+    "parser_validation_only": true,
+    "bulk_settlement_recovery_now": "PROHIBITED",
+    "settlement_use_before_stage1_to_6_rules_freeze": "PROHIBITED"
+  },
+  "scientific_state": {
+    "all_market_track_trial_count": 0,
+    "bulk_price_recovery_started": false,
+    "bulk_settlement_recovery_started": false,
+    "stage1_started": false,
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
