@@ -61,9 +61,11 @@ def parse_payload(payload:bytes,expected_raw_sha256:str|None=None):
         elif lab=='2車連' and i+2<len(row0): out['2shahuku'].update(dl_entries(row0[i+2],'2shahuku'))
         elif lab=='3連勝' and i+2<len(row0): out['3renhuku'].update(dl_entries(row0[i+2],'3renhuku'))
         elif lab=='ワイド' and i+1<len(row0): out['wide'].update(dl_entries(row0[i+1],'wide'))
-    # Ordered row is fixed semantic layout: frame exacta, car exacta, trifecta.
-    # Each group is ["単", settlement cell]. Explicit 未発売 remains a semantic cell.
+    # Ordered row: walk groups by visible 単 labels; assign according to preceding semantic group order.
+    # Kdreams standard order is frame, car, trifecta. Unsold frame may have an explicit 未発売 cell.
     row1=trs[1].xpath('./th|./td')
+    # Fixed semantic layout paired with row0 group headers:
+    # frame exacta, car exacta, trifecta. Each group is ["単", settlement-cell].
     if len(row1) != 6:
         raise FailClosed(f'ordered settlement row cell count={len(row1)}')
     if [compact(node_text(row1[i])) for i in (0,2,4)] != ['単','単','単']:
