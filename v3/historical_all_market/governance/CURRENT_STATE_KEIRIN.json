@@ -1,6 +1,6 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
-  "updated_jst": "2026-08-19T22:42:00+09:00",
+  "updated_jst": "2026-08-19T22:50:00+09:00",
   "status": "ACTIVE_RESEARCH_NEW_LINEAGE_DESIGN_NOT_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
   "bootstrap_protocol": "v3/historical_all_market/governance/HANDOFF_BOOTSTRAP_PROTOCOL_v1.md",
@@ -50,6 +50,34 @@
       "IMMEDIATE_PORTFOLIO_OPTIMIZER"
     ]
   },
+  "latest_stage0_source_audits": {
+    "structure_provenance_schema": {
+      "artifact": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_STRUCTURE_PROVENANCE_SCHEMA_AUDIT_v1.md",
+      "commit": "fdb0b8372f1e09121e134f64e928c347a589c778",
+      "status": "DESIGN_AUDIT_NOT_FREEZE"
+    },
+    "source_transport_rights": {
+      "artifact": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_SOURCE_TRANSPORT_AUDIT_v1.md",
+      "commit": "c1ed6a6afb0d3d966c8d21fd18d741f37ed397d1",
+      "status": "DESIGN_SOURCE_AUDIT_NOT_FREEZE"
+    }
+  },
+  "source_rights_state": {
+    "official_public_dataplaza_transport": "PLAUSIBLE_PUBLIC_VIEW_SURFACE_DATE_VENUE_RACE_KEYED",
+    "official_observed_legshow_line_machine_transport": "NOT_PROVEN",
+    "race_regime_machine_transport": "NOT_FULLY_PROVEN",
+    "H_historical_point_in_time_transport": "NOT_PROVEN",
+    "maneuver_counts_historical_point_in_time_transport": "NOT_PROVEN",
+    "market_snapshot_historical_archive": "NOT_PROVEN",
+    "public_open_api_or_open_data_license": "NOT_FOUND_IN_CURRENT_AUDIT",
+    "site_reuse_rights": "RESTRICTIONS_IDENTIFIED_PERMISSION_OR_COMPATIBLE_LICENSE_REQUIRED_FOR_BULK_OPERATIONAL_USE",
+    "prospective_collection_authorized": false,
+    "preferred_provider_classes": [
+      "OFFICIAL_AUTHORIZED_FEED",
+      "AUTHORIZED_THIRD_PARTY_FEED"
+    ],
+    "public_view_only_pages": "SEMANTIC_RESEARCH_ONLY_UNTIL_RIGHTS_ARE_CLARIFIED"
+  },
   "current_pre_schema_active_frozen_DEV2000": [
     "race_id",
     "car_no",
@@ -95,44 +123,15 @@
     "wind_direction"
   ],
   "provisional_architecture_ablation_ladder_not_frozen": [
-    {
-      "id": "C0",
-      "name": "FROZEN_CURRENT_PL_CONTROL",
-      "purpose": "structural null/control"
-    },
-    {
-      "id": "C1",
-      "name": "LINE_AUGMENTED_PL",
-      "purpose": "test line-feature value while retaining PL order assumption"
-    },
-    {
-      "id": "N1",
-      "name": "LINE_CONDITIONAL_TOP3",
-      "definition": "P1(i|X)*P2(j|i,X)*P3(k|i,j,X)",
-      "purpose": "test explicit rank2/rank3 relational dependence"
-    },
-    {
-      "id": "N2",
-      "name": "MARKET_RESIDUAL_TOP3",
-      "purpose": "test incremental PRE information over a frozen decision-time market baseline",
-      "condition": "market snapshot must be decision-time actionable and transportable"
-    },
-    {
-      "id": "N3",
-      "name": "INITIATIVE_MIXTURE",
-      "purpose": "higher-complexity structural state model only after N1 evidence"
-    }
+    {"id":"C0","name":"FROZEN_CURRENT_PL_CONTROL","purpose":"structural null/control"},
+    {"id":"C1","name":"LINE_AUGMENTED_PL","purpose":"test line-feature value while retaining PL order assumption"},
+    {"id":"N1","name":"LINE_CONDITIONAL_TOP3","definition":"P1(i|X)*P2(j|i,X)*P3(k|i,j,X)","purpose":"test explicit rank2/rank3 relational dependence"},
+    {"id":"N2","name":"MARKET_RESIDUAL_TOP3","purpose":"test incremental PRE information over a frozen decision-time market baseline","condition":"market snapshot must be decision-time actionable and transportable"},
+    {"id":"N3","name":"INITIATIVE_MIXTURE","purpose":"higher-complexity structural state model only after N1 evidence"}
   ],
   "primary_probability_evaluation_candidate": {
     "selection_order": "PROPER_SCORING_FIRST",
-    "metrics": [
-      "winner_NLL",
-      "rank2_conditional_NLL",
-      "rank3_conditional_NLL",
-      "joint_top3_NLL",
-      "calibration",
-      "expected_vs_observed_hits_by_odds_probability_disagreement_and_structure_slices"
-    ],
+    "metrics": ["winner_NLL","rank2_conditional_NLL","rank3_conditional_NLL","joint_top3_NLL","calibration","expected_vs_observed_hits_by_odds_probability_disagreement_and_structure_slices"],
     "key_ablation_question": "DOES_N1_IMPROVE_RANK2_AND_RANK3_CONDITIONAL_OOF_LIKELIHOOD_OVER_C1_WITH_COMPARABLE_PRE_FEATURES"
   },
   "economic_evaluation_candidate": {
@@ -140,24 +139,7 @@
     "probability_architecture_selection_by_ROI": "PROHIBITED",
     "kelly": "SECONDARY_ONLY_AFTER_COHERENT_CALIBRATION_PASS",
     "portfolio_optimizer": "DEFER_UNTIL_PROBABILITY_AND_SIMPLE_ECONOMICS_PASS",
-    "required_stability_reports": [
-      "weekly_PnL",
-      "monthly_PnL",
-      "positive_week_fraction",
-      "positive_month_fraction",
-      "median_weekly_return",
-      "median_monthly_return",
-      "max_drawdown",
-      "longest_underwater_days",
-      "longest_underwater_races",
-      "recovery_duration",
-      "largest_winner_profit_share",
-      "top3_winner_profit_share",
-      "top5_winner_profit_share",
-      "profit_HHI",
-      "ROI_ex_largest_winner",
-      "ROI_ex_top3_winners"
-    ]
+    "required_stability_reports": ["weekly_PnL","monthly_PnL","positive_week_fraction","positive_month_fraction","median_weekly_return","median_monthly_return","max_drawdown","longest_underwater_days","longest_underwater_races","recovery_duration","largest_winner_profit_share","top3_winner_profit_share","top5_winner_profit_share","profit_HHI","ROI_ex_largest_winner","ROI_ex_top3_winners"]
   },
   "data_recovery_state": {
     "DEV2000_PRE_TABLE_csv_sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
@@ -174,29 +156,24 @@
     "existing_next_lineage_gate_package": "v3/historical_all_market/governance/INDEPENDENT_GEMINI_NEXT_LINEAGE_V1_GATE_PACKAGE.md",
     "existing_package_is_partially_superseded_by_new_tri_model_lessons": true,
     "final_freeze_authorized": false,
-    "required_before_numeric_or_architecture_freeze": "NEW_OR_UPDATED_INDEPENDENT_AUDIT_AFTER_SCHEMA_AND_EXPERIMENT_PROTOCOL_ARE_DRAFTED"
+    "required_before_numeric_or_architecture_freeze": "NEW_OR_UPDATED_INDEPENDENT_AUDIT_AFTER_SCHEMA_ARCHITECTURE_SOURCE_AND_EXPERIMENT_PROTOCOL_ARE_DRAFTED"
   },
   "handoff_state": {
     "durable_bootstrap_installed": true,
     "handoff_protocol_commit": "56019be62e9ce21beb277375926a344c015961a1",
     "pointer_registry_commit": "2c6adbfd1dddf301656d467a7e3a8e30d6214a29",
     "normal_owner_new_chat_effort": "ONE_LINE_OR_CLEAR_CONTINUATION_INTENT",
-    "startup_required_labels": [
-      "RECOVERED",
-      "UNPROVEN",
-      "MISSING",
-      "SEALED",
-      "NEXT_GATE"
-    ]
+    "startup_required_labels": ["RECOVERED","UNPROVEN","MISSING","SEALED","NEXT_GATE"]
   },
-  "next_gate": "NEW_LINEAGE_STAGE0_STRUCTURE_PROVENANCE_AND_SCHEMA_AUDIT",
+  "next_gate": "NEW_LINEAGE_STAGE0_SOURCE_RIGHTS_AND_PROVIDER_SELECTION",
   "next_exact_actions": [
-    "Audit official PRE availability and exact provenance semantics for race_regime, line formation/position/size, H, maneuver counts, bank and weather features without using individual race outcomes as design evidence.",
-    "Draft a minimal versioned NEW-LINEAGE PRE schema with mutable-feature snapshot contracts and regime applicability contracts.",
-    "Draft C0/C1/N1 model specifications and exact probability-object invariants, including cross-market marginalization identities.",
-    "Draft chronological TRAIN/CAL/FINAL validation protocol and falsification conditions before any new untouched outcome access.",
-    "Obtain independent audit on the updated schema/architecture/protocol before any scientific Freeze or prospective collector authorization.",
-    "Only after that, resolve eligible data acquisition/collection path and execute development work."
+    "Identify lawful/authorized provider candidates for structural PRE, official race-card fields, race regime and actionable odds; verify terms/license and timestamp coverage before any collector authorization.",
+    "Separate OFFICIAL_AUTHORIZED_FEED, AUTHORIZED_THIRD_PARTY_FEED and PUBLIC_VIEW_ONLY sources; do not infer collection rights from public visibility.",
+    "Prove or reject observed-line, H/maneuver-count, race-regime and odds-snapshot transport semantics for each candidate provider.",
+    "Draft an allowed-source matrix and source-rights/provenance receipt.",
+    "In parallel, draft C0/C1/N1 model specifications, Probability Object Contracts and cross-market marginalization invariants without touching new outcomes.",
+    "Draft chronological TRAIN/CAL/FINAL validation and falsification protocol before any new untouched outcome access.",
+    "Obtain updated independent audit before any scientific Freeze or prospective collection authorization."
   ],
   "hard_prohibitions": [
     "NO_CURRENT_DEV2000_C_ACCESS_FOR_NEW_LINEAGE",
@@ -205,6 +182,7 @@
     "NO_RESULT_PAYOUT_ACCESS_FOR_FEATURE_SELECTION_OR_MEMBERSHIP_RECOVERY",
     "NO_UNVERIFIED_ARTIFACT_AS_CONFIRMED",
     "NO_UNAUTHORIZED_NETWORK_COLLECTION",
+    "NO_BULK_SCRAPING_OR_ACCESS_CONTROL_RATE_LIMIT_CAPTCHA_WAF_BYPASS",
     "NO_REVIEWER_NUMERIC_CLAIM_AS_THRESHOLD_WITHOUT_EXACT_PROVENANCE",
     "NO_FINAL_FREEZE_BEFORE_UPDATED_INDEPENDENT_AUDIT"
   ]
