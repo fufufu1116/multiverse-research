@@ -1,7 +1,7 @@
 {
   "record": "VNEXT_CURRENT_STATE_v0",
   "status": "WORKING_CANDIDATE_NOT_ACCEPTED_NOT_FROZEN",
-  "updated_jst": "2026-08-20T02:59:00+09:00",
+  "updated_jst": "2026-08-20T03:02:35+09:00",
   "mutability": "MUTABLE_CAS_POINTER",
   "canonical_repo": "fufufu1116/multiverse-research",
   "canonical_main_head_observed": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
@@ -9,25 +9,35 @@
   "working_pr": 2,
   "current_phase": "VNEXT_INDEPENDENT_MATERIAL_ARCHITECTURE_REVIEW_REQUESTED",
   "formal_release_state": "NOT_ACCEPTED",
-  "state_generation": 6,
-  "parent_valid_state_git_blob_sha": "834ecaaec1a74aaf10e01b86129cbc5bdc3fc8a3",
+  "state_generation": 7,
+  "parent_valid_state_git_blob_sha": "885712b86247a0a047a89a6be59f78808bd52c57",
   "supersedes_state_ref": {
     "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
-    "git_blob_sha": "834ecaaec1a74aaf10e01b86129cbc5bdc3fc8a3",
-    "logical_generation": 5
+    "git_blob_sha": "885712b86247a0a047a89a6be59f78808bd52c57",
+    "logical_generation": 6
+  },
+  "invalid_transient_state_excluded": {
+    "commit": "2cc92fcf6cb0379d34e9185c400ab98c4a0c470c",
+    "git_blob_sha": "fa69fb1072a12ecdb954490f2660eac55e406c69",
+    "reason": "STATE_CONTENT_WAS_REWRITTEN_WITHOUT_INCREMENTING_LOGICAL_GENERATION",
+    "classification": "INVALID_TRANSIENT_WRITE_NEVER_VALID_STATE",
+    "effect": "NO_MAIN_OR_KEIRIN_OR_MATERIAL_ARCHITECTURE_CHANGE",
+    "repair": "GENERATION_7_SUPERSEDES_LAST_VALID_GENERATION_6"
   },
   "write_precondition": {
-    "expected_current_state_blob_sha": "834ecaaec1a74aaf10e01b86129cbc5bdc3fc8a3",
+    "expected_current_file_blob_sha": "fa69fb1072a12ecdb954490f2660eac55e406c69",
+    "expected_last_valid_state_blob_sha": "885712b86247a0a047a89a6be59f78808bd52c57",
     "expected_canonical_main_head": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
-    "expected_working_branch_head_before_write": "bec25d124dc4db75fcbe333cb54a96167c084dd1",
-    "expected_generation_of_last_valid_state": 5,
+    "expected_working_branch_head_before_write": "2cc92fcf6cb0379d34e9185c400ab98c4a0c470c",
+    "expected_generation_of_last_valid_state": 6,
+    "new_generation": 7,
     "reject_on_any_mismatch": true,
     "timestamp_can_override": false
   },
   "canonical_precedence_rule": {
     "ordering": "GIT_ANCESTRY_PLUS_MONOTONIC_GENERATION_PLUS_EXPLICIT_SUPERSESSION",
     "timestamp_is_authority": false,
-    "stale_writer_action": "FAIL_CLOSED_NO_WRITE"
+    "stale_or_invalid_writer_action": "FAIL_CLOSED_OR_EXPLICIT_REPAIR_NO_SILENT_ACCEPTANCE"
   },
   "owner_directive": {
     "id": "MULTIVERSE_NORTH_STAR_ARCHITECTURE_CLOSURE",
@@ -49,17 +59,6 @@
     "taxonomy_alignment": "CLEARED",
     "institution_compression": "CLEARED",
     "routing_result": "INDEPENDENT_MATERIAL_ARCHITECTURE_REVIEW_MAY_PROCEED"
-  },
-  "post_lab_delta": {
-    "base": "0887d4363cb15e23a4a376f3d7c0db21c4b67645",
-    "head_after_state_transition": "aae25ce63ea6451b551821051a53c604fa795737",
-    "commits": 2,
-    "files_changed": [
-      "multiverse_vnext/VNEXT_LAB_RECHECK_RECEIPT_20260820_v1.json",
-      "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json"
-    ],
-    "material_architecture_artifacts_changed": false,
-    "classification": "ADMINISTRATIVE_REVIEW_EVIDENCE_AND_STATE_TRANSITION_ONLY"
   },
   "pinned_artifacts": {
     "keirin_pause_receipt": {
@@ -160,7 +159,7 @@
     "default_reviewer_adapter": "GEMINI_CORE",
     "vendor_is_not_institutional_requirement": true,
     "reviewer_must_resolve_exact_latest_pr_head_at_start_and_end": true,
-    "reviewer_must_compare_any_delta_after_lab_rechecked_head": "0887d4363cb15e23a4a376f3d7c0db21c4b67645",
+    "reviewer_must_compare_delta_after_lab_rechecked_head": "0887d4363cb15e23a4a376f3d7c0db21c4b67645",
     "acceptance_without_independent_exact_head_verdict": "PROHIBITED"
   },
   "keirin_firewall": {
@@ -207,7 +206,7 @@
     "optimize_for_fastest_safe_path": true
   },
   "next_actions": [
-    "Request required independent material architecture review on the exact latest PR head; reviewer must verify start/end head and compare any post-Lab administrative delta.",
+    "Request required independent material architecture review on the exact latest PR head; reviewer must verify start/end head and inspect the post-Lab administrative/state delta including the repaired invalid transient state record.",
     "Resolve only true current-version material blockers from independent review; preserve deferred gaps and NEXT_VERSION_CANDIDATE without expanding vNext.",
     "Create final acceptance recovery capsule and zero-history bootstrap only after a review-stable acceptance candidate exists.",
     "Route exact acceptance candidate to Auditor.",
@@ -218,7 +217,7 @@
     "must_fetch_current_blob_and_main_head_first": true,
     "new_generation_must_equal_current_plus_one": true,
     "new_parent_must_equal_current_valid_blob": true,
-    "github_update_must_use_current_blob_sha": true,
+    "github_update_must_use_current_file_blob_sha": true,
     "reject_if_main_head_changed": true
   }
 }
