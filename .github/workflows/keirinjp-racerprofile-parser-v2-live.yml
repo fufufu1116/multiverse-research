@@ -1,0 +1,49 @@
+name: keirinjp-racerprofile-parser-v2-live
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-racerprofile-parser-v2-live.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Run synthetic and live parse
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib,importlib.util,json,pathlib,requests,subprocess,traceback
+          from datetime import datetime,timezone
+          p=pathlib.Path('v3/prospective_shadow250_v2/keirinjp_racerprofile_parser_v2.py');q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACERPROFILE_PARSER_V2_LIVE_v1.json');q.parent.mkdir(parents=True,exist_ok=True)
+          out={'record':'KEIRINJP_RACERPROFILE_PARSER_V2_LIVE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),'parser_git_blob':subprocess.check_output(['git','hash-object',str(p)],text=True).strip(),'expected_parser_git_blob':'8872d32b9e59ca871be2e75dc5487388b906bf2b','raw_html_persisted':False,'predictive_values_persisted':False,'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False}
+          try:
+              if out['parser_git_blob']!=out['expected_parser_git_blob']:raise RuntimeError('blob mismatch')
+              spec=importlib.util.spec_from_file_location('rp2',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);out['synthetic']=m.synthetic_tests()
+              url='https://keirin.jp/pc/racerprofile?snum=015918';r=requests.get(url,headers={'User-Agent':'MultiverseHybridV3-Research/2.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+              if r.status_code!=200:raise RuntimeError(f'HTTP {r.status_code}')
+              h=hashlib.sha256(r.content).hexdigest();parsed=m.parse_profile(r.content,datetime.now(timezone.utc).isoformat(),url,h)
+              out['live']={'registration_number':parsed['registration_number'],'name':parsed['name'],'prefecture':parsed['prefecture'],'term':parsed['term'],'profile_updated_at':parsed['profile_updated_at'],'recent4m_updated_at':parsed['recent4m_updated_at'],'timestamp_binding':parsed['timestamp_binding'],'content_sha256':h,'predictive_fields_present_and_valid':all(k in parsed for k in ['style','win_rate','trio_rate']),'predictive_values_persisted':False}
+              if parsed['registration_number']!='015918':raise RuntimeError('identity mismatch')
+              out['status']='PASS'
+          except Exception as e:
+              out['status']='FAIL_CLOSED';out['error_type']=type(e).__name__;out['error_message']=str(e);out['traceback_tail']=traceback.format_exc().splitlines()[-12:]
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist receipt
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACERPROFILE_PARSER_V2_LIVE_v1.json
+          git commit -m 'Record racerprofile parser v2 live validation'
+          git push
