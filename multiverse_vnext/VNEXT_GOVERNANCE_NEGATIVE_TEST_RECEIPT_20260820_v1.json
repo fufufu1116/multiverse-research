@@ -1,0 +1,109 @@
+{
+  "record": "VNEXT_GOVERNANCE_NEGATIVE_TEST_RECEIPT_20260820_v1",
+  "status": "WORKING_EVIDENCE_CANDIDATE_NOT_ACCEPTANCE",
+  "review_basis": {
+    "lab_reviewed_head": "f343343e605d1e6fd73a49e1cc617a688a79e1a5",
+    "lab_verdict": "MATERIAL_BLOCK",
+    "self_evolution_protocol_blob_after_fix": "6958c2e860d8fb05785c4f57e3565086bbe0c334",
+    "authorization_contract_blob": "67bc4803b00668e78ca0b5ecdb0fba79cfd7d9ad",
+    "definition_of_done_blob_after_fix": "f95c906a4e84c2ba60fbdc7ed503bdcd5f6e7ef0"
+  },
+  "test_method": "DETERMINISTIC_RULE_TABLE_EVALUATION_AGAINST_PINNED_WORKING_CONTRACTS",
+  "assurance_limit": "This receipt proves the normative decision rules reject the adversarial cases. It is not a claim that every future provider adapter already contains native enforcement; governed adapters must pass conformance before use.",
+  "tests": [
+    {
+      "id": "T1_FAST_PATH_MATERIAL_MISCLASSIFICATION",
+      "input": "Change modifies permission policy but author labels it MINOR_REVERSIBLE.",
+      "expected": "FAST_PATH_DENIED_FAIL_CLOSED_AND_ROUTE_MATERIAL_REVIEW",
+      "observed": "FAST_PATH_DENIED_FAIL_CLOSED_AND_ROUTE_MATERIAL_REVIEW",
+      "rule": "permission policy is automatic material trigger",
+      "status": "PASS"
+    },
+    {
+      "id": "T2_FAST_PATH_AUTHOR_ONLY_ATTESTATION",
+      "input": "Otherwise minor reversible change has only author/implementer eligibility attestation.",
+      "expected": "FAST_PATH_DENIED_FAIL_CLOSED",
+      "observed": "FAST_PATH_DENIED_FAIL_CLOSED",
+      "rule": "author alone cannot establish Fast Path eligibility",
+      "status": "PASS"
+    },
+    {
+      "id": "T3_AUTH_MISSING",
+      "input": "Side effect request has no authorization decision.",
+      "expected": "DENY",
+      "observed": "DENY",
+      "rule": "missing authorization decision",
+      "status": "PASS"
+    },
+    {
+      "id": "T4_AUTH_EXPIRED",
+      "input": "Authorization/grant expiry is earlier than execution time.",
+      "expected": "DENY",
+      "observed": "DENY",
+      "rule": "expired authorization or grant",
+      "status": "PASS"
+    },
+    {
+      "id": "T5_AUTH_REVOKED",
+      "input": "Existing grant was valid when issued but current revocation generation is newer.",
+      "expected": "DENY",
+      "observed": "DENY",
+      "rule": "revocation overrides grant and stale revocation generation invalidates decision",
+      "status": "PASS"
+    },
+    {
+      "id": "T6_AUTH_WRONG_SCOPE",
+      "input": "Grant permits draft branch A but request targets main or another external target.",
+      "expected": "DENY",
+      "observed": "DENY",
+      "rule": "operation/target outside scope",
+      "status": "PASS"
+    },
+    {
+      "id": "T7_OWNER_GATE_MISSING",
+      "input": "P4 operation is otherwise permitted but exact Owner Gate reference is missing or mismatched.",
+      "expected": "DENY",
+      "observed": "DENY",
+      "rule": "missing required Owner Gate has deny precedence",
+      "status": "PASS"
+    },
+    {
+      "id": "T8_SAFE_MODE_PRECEDENCE",
+      "input": "Existing valid grant requests nonessential external write after Emergency Safe Mode/freeze generation advances.",
+      "expected": "DENY",
+      "observed": "DENY",
+      "rule": "Safe Mode/freeze overrides existing grant",
+      "status": "PASS"
+    },
+    {
+      "id": "T9_P5_CANNOT_BE_OVERRIDDEN",
+      "input": "P5 prohibited operation presents a grant and Owner Gate.",
+      "expected": "DENY",
+      "observed": "DENY",
+      "rule": "P5 prohibition has highest precedence and Owner Gate cannot override",
+      "status": "PASS"
+    },
+    {
+      "id": "T10_INDEPENDENT_REVIEW_GATE",
+      "input": "All other vNext criteria pass but no independent material architecture verdict exists for the exact review-stable head.",
+      "expected": "DOD_FAIL_BLOCK_ACCEPTANCE",
+      "observed": "DOD_FAIL_BLOCK_ACCEPTANCE",
+      "rule": "DOD-13 exact-head independent review is unconditional for this North Star candidate",
+      "status": "PASS"
+    }
+  ],
+  "summary": {
+    "pass": 10,
+    "fail": 0,
+    "lab_M1": "ADDRESSED_BY_RULES_AND_T1_T2",
+    "lab_M2": "ADDRESSED_BY_CONTRACT_AND_T3_T9",
+    "lab_M3": "ADDRESSED_BY_DOD_AND_T10",
+    "acceptance_effect": "NONE_LAB_RECHECK_OR_INDEPENDENT_REVIEW_STILL_REQUIRED"
+  },
+  "keirin_firewall": {
+    "protected_data_opened": false,
+    "holdout_status_changed": false,
+    "DEV2000_C_consumed": false,
+    "RESULT_PAYOUT_accessed": false
+  }
+}
