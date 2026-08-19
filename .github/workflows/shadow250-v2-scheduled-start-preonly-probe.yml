@@ -1,0 +1,55 @@
+name: shadow250-v2-scheduled-start-preonly-probe
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-scheduled-start-preonly-probe.yml']
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install --disable-pip-version-check requests PyMuPDF
+      - name: Probe only frozen Tamano PRE clips for scheduled-start tokens
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import fitz,requests,re,json,pathlib,hashlib,traceback
+          from datetime import datetime,timezone
+          W,H=1190.55,841.88
+          PRE={0:fitz.Rect(610.0,0.0,W,H),1:fitz.Rect(0.0,0.0,W,720.0)}
+          specs=[]
+          for b in range(4):specs.append((0,609.6,1+b,220+147.4*b,345+147.4*b))
+          for b in range(4):
+            specs.append((1,0.0,5+b,38+164.4*b,165+164.4*b));specs.append((1,603.8,9+b,38+164.4*b,165+164.4*b))
+          specs=sorted(specs,key=lambda x:x[2])
+          urls=[('2026-07-24','https://www.tamano-keirin.jp/wp-content/uploads/2026/07/20260724-1.pdf')]
+          out={'project':'Multiverse Hybrid v3.0','record':'SHADOW250_V2_SCHEDULED_START_PREONLY_PROBE_v1','purpose':'GOVERNANCE_DIAGNOSTIC_ONLY_NOT_A_SCREEN','activation_timestamp_jst':'2026-08-19T11:38:23.685300+09:00','prediction_executed':False,'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False,'ECON_HOLDOUT1000':'SEALED','samples':[]}
+          try:
+            for day,url in urls:
+              r=requests.get(url,headers={'User-Agent':'Multiverse-Private-Research/1.0'},timeout=20,allow_redirects=False)
+              if r.status_code!=200 or not r.content.startswith(b'%PDF-'):raise RuntimeError(f'pdf {day} HTTP={r.status_code}')
+              doc=fitz.open(stream=r.content,filetype='pdf');sample={'race_date':day,'raw_sha256':hashlib.sha256(r.content).hexdigest(),'races':[]}
+              for pi,ox,rno,ymin,ymax in specs:
+                words=doc[pi].get_text('words',clip=PRE[pi])
+                band=[w for w in words if ox<=w[0]<=ox+590 and ymax-8<=w[1]<=ymax+35]
+                txt=''.join(w[4] for w in sorted(band,key=lambda z:(z[1],z[0])))
+                hits=re.findall(r'発走\s*([0-2]?\d):([0-5]\d)',txt)
+                sample['races'].append({'race_no':rno,'band_text':txt[:300],'scheduled_start_hits':['%02d:%s'%(int(h),m) for h,m in hits]})
+              out['samples'].append(sample)
+            out['status']='PASS_PROBE'
+          except Exception as e:
+            out.update({'status':'FAIL_CLOSED_PROBE','error_type':type(e).__name__,'error_message':str(e),'traceback_tail':traceback.format_exc().splitlines()[-10:]})
+          out['generated_utc']=datetime.now(timezone.utc).isoformat()
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SCHEDULED_START_PREONLY_PROBE_v1.json');q.parent.mkdir(parents=True,exist_ok=True);q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist probe receipt
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SCHEDULED_START_PREONLY_PROBE_v1.json
+          git commit -m 'Record Tamano PRE-only scheduled-start probe'
+          git push
