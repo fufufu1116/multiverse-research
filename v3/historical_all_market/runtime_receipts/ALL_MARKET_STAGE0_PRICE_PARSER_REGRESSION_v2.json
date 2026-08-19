@@ -1,0 +1,56 @@
+{
+  "record": "ALL_MARKET_STAGE0_PRICE_PARSER_REGRESSION_v2",
+  "status": "PASS",
+  "price_parser": {
+    "path": "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py",
+    "git_blob": "e57803434df477dce4b68cda32e301bb04c48276",
+    "sha256_tested_source": "ad6dd72abe2846cbfa98b3c9d17b59edbc6f3c591476d30acaeb281bd5ee78e1"
+  },
+  "regressions": [
+    {
+      "race_id": "3820260410010003",
+      "field_size": 7,
+      "raw_sha256": "24551faf351c8216b3d4ceda249b9a369ecdae62f0baf87dcfe91f979ac46285",
+      "counts": {"3rentan":210,"2shatan":42,"3renhuku":35,"2shahuku":21,"wide":21},
+      "3rentan_ticket_identity_check": {"ticket":"1-2-3","odds":3.4},
+      "status": "PASS"
+    },
+    {
+      "race_id": "2620260409010001",
+      "field_size": 9,
+      "raw_sha256": "fb83738b6d2e88f6b56bb6dc5647c1f8803932c3c2709d8c93fb7bfcee987c54",
+      "counts": {"3rentan":504,"2shatan":72,"3renhuku":84,"2shahuku":36,"2wakutan":33,"2wakuhuku":18,"wide":36},
+      "3rentan_ticket_identity_check": {"ticket":"2-5-7","odds":38.4},
+      "status": "PASS"
+    },
+    {
+      "role": "ROWSPAN_AND_PARTIAL_NUMERIC_CATALOG_DIAGNOSTIC",
+      "canonical_url": "https://keirin.kdreams.jp/toyohashi/racedetail/4520260304010005/",
+      "raw_sha256": "75aae0b328db67a5bec995e7eec25ecf63e5797e35f83ba12c689972c74aeb35",
+      "counts_without_expected_n_enforcement": {"3rentan":120,"2shatan":30,"3renhuku":20,"2shahuku":15,"wide":15},
+      "previous_failure": "3renhuku duplicate caused by second-car rowspan state update occurring only after nonblank price",
+      "correction": "update second-car rowspan group state before filtering blank price cells",
+      "status": "PASS"
+    }
+  ],
+  "missing_market_synthetic": {
+    "base_raw_sha256": "24551faf351c8216b3d4ceda249b9a369ecdae62f0baf87dcfe91f979ac46285",
+    "mutation": "remove Wide content and Wide status nodes only",
+    "whole_race_rejected": false,
+    "remaining_sold_markets": ["3rentan","2shatan","3renhuku","2shahuku"],
+    "status": "PASS"
+  },
+  "bulk_policy_question": {
+    "observed_issue": "some historical price pages can contain fewer numeric combinations than nominal field-size combinatorics due to page/race conditions",
+    "current_parser_behavior": "expected_n_cars count invariant is optional; omitted value allows observed complete numeric catalog recovery",
+    "requires_gemini_decision": "whether bulk Stage0 should prohibit expected_n_cars enforcement and record observed numeric catalog counts rather than reject on nominal combinatorics"
+  },
+  "scientific_state": {
+    "bulk_2000_started": false,
+    "stage1_started": false,
+    "ev_computed": false,
+    "roi_computed": false,
+    "all_market_track_trial_count": 0,
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
