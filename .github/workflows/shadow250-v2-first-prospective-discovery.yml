@@ -1,0 +1,70 @@
+name: shadow250-v2-first-prospective-discovery
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-first-prospective-discovery.yml']
+permissions:
+  contents: write
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Live official Tamano discovery only
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json,hashlib,pathlib,traceback
+          from datetime import datetime,timezone,timedelta
+          from urllib.parse import urljoin,urlparse,unquote
+          import requests
+          from bs4 import BeautifulSoup
+          out={
+            'project':'Multiverse Hybrid v3.0',
+            'record':'SHADOW250_V2_FIRST_PROSPECTIVE_DISCOVERY_v1',
+            'purpose':'POST_ACTIVATION_SOURCE_DISCOVERY_ONLY_NOT_A_SCREEN',
+            'activation_timestamp_jst':'2026-08-19T11:38:23.685300+09:00',
+            'selected_races_before':0,
+            'prospective_shadow_screen_count_before':0,
+            'prospective_v3_scientific_trial_before':0,
+            'prediction_executed':False,
+            'holdout_accessed':False,
+            'result_payout_price_accessed':False,
+            'scientific_trial_consumed':False,
+            'shadow_screen_consumed':False,
+            'ECON_HOLDOUT1000':'SEALED'
+          }
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_FIRST_PROSPECTIVE_DISCOVERY_v1.json');q.parent.mkdir(parents=True,exist_ok=True)
+          try:
+            url='https://www.tamano-keirin.jp/racepdf/'
+            r=requests.get(url,headers={'User-Agent':'Multiverse-Private-Research/1.0'},timeout=20,allow_redirects=False)
+            if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+            if urlparse(r.url).scheme!='https' or urlparse(r.url).netloc!='www.tamano-keirin.jp': raise RuntimeError('origin drift')
+            soup=BeautifulSoup(r.content,'html.parser')
+            rows=[]
+            for a in soup.find_all('a',href=True):
+              u=urljoin(url,a['href']);p=urlparse(u)
+              if p.scheme!='https' or p.netloc!='www.tamano-keirin.jp' or not p.path.lower().endswith('.pdf'): continue
+              base=unquote(p.path.rsplit('/',1)[-1])
+              pref=base[:8] if len(base)>=8 and base[:8].isdigit() else None
+              if pref and '20260819'<=pref<='20260822': rows.append({'date_prefix':pref,'url':u,'basename':base})
+            uniq=[];seen=set()
+            for x in sorted(rows,key=lambda z:(z['date_prefix'],z['url'])):
+              if x['url'] not in seen:seen.add(x['url']);uniq.append(x)
+            out.update({'status':'PASS_DISCOVERY','generated_utc':datetime.now(timezone.utc).isoformat(),'landing_content_sha256':hashlib.sha256(r.content).hexdigest(),'matching_pdf_links':uniq,'matching_count':len(uniq),'screen_decision_made':False,'scheduled_start_resolved':False})
+          except Exception as e:
+            out.update({'status':'FAIL_CLOSED_DISCOVERY','error_type':type(e).__name__,'error_message':str(e),'traceback_tail':traceback.format_exc().splitlines()[-10:]})
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(q.read_text())
+          PY
+      - name: Persist discovery receipt
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_FIRST_PROSPECTIVE_DISCOVERY_v1.json
+          git commit -m 'Record Shadow250-v2 first prospective source discovery'
+          git push
