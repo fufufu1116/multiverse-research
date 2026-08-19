@@ -1,0 +1,49 @@
+name: Stage7 Final Static Gate
+
+on:
+  push:
+    paths:
+      - 'v3/historical_all_market/stage7_frozen_evaluator_v1.py'
+      - 'v3/historical_all_market/stage7_settlement_bulk_runner_v1.py'
+      - 'v3/historical_all_market/kdreams_settlement_recovery_v1.py'
+      - 'v3/historical_all_market/stage456_preoutcome_decision_engine_v1.py'
+      - 'v3/historical_all_market/governance/STAGE7_**'
+      - 'v3/historical_all_market/governance/INDEPENDENT_GOVERNANCE_STAGE7_SETTLEMENT_APPROVE_RECEIPT_v1.json'
+      - '.github/workflows/stage7-final-static.yml'
+  workflow_dispatch:
+
+jobs:
+  static-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact Git blob bindings
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object v3/historical_all_market/stage7_frozen_evaluator_v1.py)" = "c19c328ca9ce713d6aac700c1bda509233dd34d8"
+          test "$(git hash-object v3/historical_all_market/stage7_settlement_bulk_runner_v1.py)" = "b258ced7250071d642ebf2d40127146b22e9a313"
+          test "$(git hash-object v3/historical_all_market/kdreams_settlement_recovery_v1.py)" = "b8b8ab0e0904541bd6fc45e7fe415d323e63ec45"
+          test "$(git hash-object v3/historical_all_market/stage456_preoutcome_decision_engine_v1.py)" = "a0ed6984969b0b98af1b074ef9fd2348f16604a0"
+          test "$(git hash-object v3/historical_all_market/governance/STAGE7_TIME_SPLIT_SELECTION_VALIDATION_PREREG_v1.md)" = "0cb70520777d4ac9d00ddd90b888df1f403c3a7e"
+          test "$(git hash-object v3/historical_all_market/governance/STAGE7_EXECUTION_CONVENTIONS_FREEZE_v1.md)" = "b388ef5622d4c92ae4df96ad0105882b4994adf4"
+          test "$(git hash-object v3/historical_all_market/governance/INDEPENDENT_GOVERNANCE_STAGE7_SETTLEMENT_APPROVE_RECEIPT_v1.json)" = "71e87740ded33ea73c3f534d39830080ad8b43bb"
+      - name: Compile
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/stage7_frozen_evaluator_v1.py \
+            v3/historical_all_market/stage7_settlement_bulk_runner_v1.py \
+            v3/historical_all_market/kdreams_settlement_recovery_v1.py \
+            v3/historical_all_market/stage456_preoutcome_decision_engine_v1.py
+      - name: Evaluator deterministic micro self-test
+        run: python v3/historical_all_market/stage7_frozen_evaluator_v1.py --phase self-test
+      - name: Firewall source scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -E 'requests|urllib|httpx|selenium' v3/historical_all_market/stage7_frozen_evaluator_v1.py
+          ! grep -E 'requests|urllib|httpx|selenium' v3/historical_all_market/stage7_settlement_bulk_runner_v1.py
+          grep -q 'ECON_HOLDOUT1000.*SEALED' v3/historical_all_market/governance/INDEPENDENT_GOVERNANCE_STAGE7_SETTLEMENT_APPROVE_RECEIPT_v1.json
