@@ -1,0 +1,112 @@
+{
+  "record": "ALL_MARKET_STAGE0_CANARY_RECEIPT_v1",
+  "project": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
+  "status": "PASS",
+  "parser": {
+    "path": "v3/historical_all_market/kdreams_all_market_offline_parser_v1.py",
+    "git_blob": "297adbc42a6bf593502f55fcd002beb4190469e2",
+    "exact_local_git_hash_object_match": true,
+    "network_used": false,
+    "probabilities_computed": false,
+    "ev_computed": false,
+    "scoring_performed": false
+  },
+  "canaries": [
+    {
+      "role": "7_CAR_NO_FRAME_MARKET_CANARY",
+      "race_id": "3820260410010003",
+      "raw_sha256": "24551faf351c8216b3d4ceda249b9a369ecdae62f0baf87dcfe91f979ac46285",
+      "expected_n_cars": 7,
+      "market_availability": {
+        "3rentan": true,
+        "3renhuku": true,
+        "2shatan": true,
+        "2shahuku": true,
+        "wide": true,
+        "2wakutan": false,
+        "2wakuhuku": false
+      },
+      "odds_counts": {
+        "3rentan": 210,
+        "3renhuku": 35,
+        "2shatan": 42,
+        "2shahuku": 21,
+        "wide": 21
+      },
+      "refund_counts": {
+        "3rentan": 1,
+        "3renhuku": 1,
+        "2shatan": 1,
+        "2shahuku": 1,
+        "wide": 3
+      },
+      "winning_ticket_coverage": {
+        "2shahuku:1=2": {"refund_yen_per_100": 170, "odds_catalog_value": 1.7},
+        "2shatan:1-2": {"refund_yen_per_100": 200, "odds_catalog_value": 2.0},
+        "3renhuku:1=2=3": {"refund_yen_per_100": 160, "odds_catalog_value": 1.6},
+        "3rentan:1-2-3": {"refund_yen_per_100": 340, "odds_catalog_value": 3.8},
+        "wide:1=2": {"refund_yen_per_100": 100, "odds_interval": [1.0, 1.3]},
+        "wide:1=3": {"refund_yen_per_100": 120, "odds_interval": [1.2, 1.7]},
+        "wide:2=3": {"refund_yen_per_100": 130, "odds_interval": [1.3, 2.1]}
+      },
+      "all_winning_refund_tickets_present_in_own_odds_catalog": true
+    },
+    {
+      "role": "9_CAR_ALL_SEVEN_MARKETS_CANARY",
+      "race_id": "2620260409010001",
+      "raw_sha256": "fb83738b6d2e88f6b56bb6dc5647c1f8803932c3c2709d8c93fb7bfcee987c54",
+      "expected_n_cars": 9,
+      "market_availability": {
+        "3rentan": true,
+        "3renhuku": true,
+        "2shatan": true,
+        "2shahuku": true,
+        "wide": true,
+        "2wakutan": true,
+        "2wakuhuku": true
+      },
+      "odds_counts": {
+        "3rentan": 504,
+        "3renhuku": 84,
+        "2shatan": 72,
+        "2shahuku": 36,
+        "wide": 36,
+        "2wakutan": 33,
+        "2wakuhuku": 18
+      },
+      "refund_counts": {
+        "3rentan": 1,
+        "3renhuku": 1,
+        "2shatan": 1,
+        "2shahuku": 1,
+        "wide": 3,
+        "2wakutan": 1,
+        "2wakuhuku": 1
+      },
+      "winning_ticket_coverage": {
+        "2shahuku:2=5": {"refund_yen_per_100": 260, "odds_catalog_value": 2.6},
+        "2shatan:2-5": {"refund_yen_per_100": 850, "odds_catalog_value": 8.5},
+        "2wakuhuku:2=4": {"refund_yen_per_100": 320, "odds_catalog_value": 3.2},
+        "2wakutan:2-4": {"refund_yen_per_100": 980, "odds_catalog_value": 9.8},
+        "3renhuku:2=5=7": {"refund_yen_per_100": 840, "odds_catalog_value": 8.4},
+        "3rentan:2-5-7": {"refund_yen_per_100": 3840, "odds_catalog_value": 132.2},
+        "wide:2=5": {"refund_yen_per_100": 130, "odds_interval": [1.3, 1.4]},
+        "wide:2=7": {"refund_yen_per_100": 540, "odds_interval": [5.4, 7.7]},
+        "wide:5=7": {"refund_yen_per_100": 310, "odds_interval": [3.1, 4.2]}
+      },
+      "all_winning_refund_tickets_present_in_own_odds_catalog": true,
+      "frame_header_labels_retained_as_raw_metadata": true
+    }
+  ],
+  "coverage_note": "Exact new-parser canaries currently cover 7-car no-frame and 9-car all-seven-market structures. A 5-car exact raw canary from old E1 provenance is not yet independently re-located in current raw-folder indexing and is explicitly left as an audit limitation rather than guessed.",
+  "scientific_state": {
+    "new_track_scientific_trial_count": 0,
+    "economic_candidate_evaluated": false,
+    "threshold_selected": false,
+    "bankroll_simulated": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_result_access": false,
+    "holdout_payout_access": false,
+    "holdout_price_access": false
+  }
+}
