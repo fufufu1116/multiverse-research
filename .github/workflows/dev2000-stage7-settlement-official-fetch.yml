@@ -1,0 +1,44 @@
+name: DEV2000 Stage7 Settlement Official Fetch
+on:
+  push:
+    paths:
+      - '.github/workflows/dev2000-stage7-settlement-official-fetch.yml'
+permissions:
+  contents: read
+jobs:
+  settlement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependency
+        run: python -m pip install --disable-pip-version-check lxml
+      - name: Verify audited frozen bindings
+        run: |
+          test "$(git hash-object v3/historical_all_market/kdreams_settlement_recovery_v1.py)" = "b8b8ab0e0904541bd6fc45e7fe415d323e63ec45"
+          test "$(git hash-object v3/historical_all_market/governance/STAGE7_TIME_SPLIT_SELECTION_VALIDATION_PREREG_v1.md)" = "0cb70520777d4ac9d00ddd90b888df1f403c3a7e"
+          python - <<'PY'
+          import json
+          p='v3/historical_all_market/governance/INDEPENDENT_GEMINI_SETTLEMENT_BOUNDARY_APPROVE_RECEIPT_v1.json'
+          x=json.load(open(p))
+          assert x['verdict']=='APPROVE'
+          assert x['DEV2000_SETTLEMENT_BULK']=='AUTHORIZED_FOR_FROZEN_STAGE7_ONLY'
+          assert x['ECON_HOLDOUT1000']=='SEALED'
+          PY
+      - name: Fetch and parse authorized DEV2000 official Settlement
+        run: |
+          mkdir -p stage7_settlement_output
+          python v3/historical_all_market/stage7_settlement_official_fetch_candidate_v1.py \
+            --parser v3/historical_all_market/kdreams_settlement_recovery_v1.py \
+            --output stage7_settlement_output/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_v1.jsonl \
+            --receipt stage7_settlement_output/DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_RECEIPT_v1.json \
+            --workers 6
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dev2000-stage7-settlement-official-fetch-v1
+          path: stage7_settlement_output/
+          retention-days: 7
