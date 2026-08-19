@@ -1,0 +1,91 @@
+name: All-Market Stage0 PRICE bulk runner static self-check
+
+on:
+  push:
+    paths:
+      - '.github/workflows/all-market-stage0-price-bulk-runner-static.yml'
+      - 'v3/historical_all_market/stage0_price_bulk_runner_v1.py'
+      - 'v3/historical_all_market/kdreams_price_catalog_recovery_v1.py'
+      - 'v3/historical_all_market/governance/INDEPENDENT_GEMINI_STAGE0_FINAL_APPROVE_RECEIPT_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  static-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and verify exact bindings
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/stage0_price_bulk_runner_v1.py \
+            v3/historical_all_market/kdreams_price_catalog_recovery_v1.py
+          python - <<'PY'
+          import ast, hashlib, json
+          from pathlib import Path
+
+          RUNNER=Path('v3/historical_all_market/stage0_price_bulk_runner_v1.py')
+          PRICE=Path('v3/historical_all_market/kdreams_price_catalog_recovery_v1.py')
+          APPROVE=Path('v3/historical_all_market/governance/INDEPENDENT_GEMINI_STAGE0_FINAL_APPROVE_RECEIPT_v1.json')
+
+          def git_blob(p):
+              b=p.read_bytes(); return hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest()
+
+          expected_price='f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8'
+          expected_runner='01345100dba64955a080a671f5da3ceba1bc23c0'
+          expected_approve='8643684cf7bf0165968ae667e17e546936a3611d'
+          obs={'runner':git_blob(RUNNER),'price':git_blob(PRICE),'approve':git_blob(APPROVE)}
+          exp={'runner':expected_runner,'price':expected_price,'approve':expected_approve}
+          if obs != exp:
+              raise SystemExit(f'FAIL_CLOSED blob mismatch observed={obs} expected={exp}')
+
+          tree=ast.parse(RUNNER.read_text(encoding='utf-8'))
+          imported=[]
+          for n in ast.walk(tree):
+              if isinstance(n, ast.Import): imported.extend(a.name for a in n.names)
+              elif isinstance(n, ast.ImportFrom): imported.append(n.module or '')
+          bad=[x for x in imported if 'settlement' in x.lower() or x=='requests' or x.startswith('requests.')]
+          if bad: raise SystemExit(f'FAIL_CLOSED forbidden runner import={bad}')
+
+          src=RUNNER.read_text(encoding='utf-8')
+          if 'kdreams_settlement_recovery' in src:
+              raise SystemExit('FAIL_CLOSED runner references settlement executable')
+
+          ar=json.loads(APPROVE.read_text(encoding='utf-8'))
+          if ar.get('verdict')!='APPROVE' or ar.get('authorization',{}).get('price_only_stage0_bulk_2000')!='AUTHORIZED':
+              raise SystemExit('FAIL_CLOSED approval receipt does not authorize PRICE bulk')
+          if ar.get('authorization',{}).get('settlement_bulk_now')!='PROHIBITED':
+              raise SystemExit('FAIL_CLOSED settlement prohibition missing')
+
+          receipt={
+            'record':'ALL_MARKET_STAGE0_BULK_RUNNER_STATIC_SELF_CHECK_v1',
+            'status':'PASS',
+            'runner_git_blob':obs['runner'],
+            'price_parser_git_blob':obs['price'],
+            'gemini_approve_receipt_git_blob':obs['approve'],
+            'python_compile':'PASS',
+            'settlement_executable_imported':False,
+            'requests_race_data_imported':False,
+            'price_bulk_authorized':True,
+            'settlement_bulk_authorized':False,
+            'trial_count':0,
+            'ECON_HOLDOUT1000':'SEALED'
+          }
+          out=Path('v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE0_BULK_RUNNER_STATIC_SELF_CHECK_v1.json')
+          out.parent.mkdir(parents=True,exist_ok=True)
+          out.write_text(json.dumps(receipt,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(receipt,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit PASS receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE0_BULK_RUNNER_STATIC_SELF_CHECK_v1.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Record Stage0 PRICE bulk runner static PASS'
+          git push
