@@ -1,0 +1,49 @@
+{
+  "record": "VNEXT_FINAL_RECOVERY_CAPSULE_RECEIPT_20260820_v1",
+  "status": "ACCEPTANCE_EVIDENCE_CANDIDATE_NOT_ACCEPTED",
+  "frozen_snapshot_anchor_commit": "63bbc906833e73bec13ac103cfd63023aeb12ddd",
+  "architecture_review_anchor": "f4163c20f3251bd4dede97c08f020cc40276f4eb",
+  "canonical_main_observed": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
+  "current_state_generation": 8,
+  "current_state_git_blob_sha": "03f0d70584e7f5068e4c26e8a8ae76a1d574f0e2",
+  "capsule": {
+    "file_name": "MULTIVERSE_VNEXT_FINAL_ACCEPTANCE_RECOVERY_CANDIDATE_20260820_v1.zip",
+    "size_bytes": 52827,
+    "sha256": "30750285c888fe1dc852fc15f9fd6fca873383a3c10588beeee1036d93ff4f9b",
+    "file_count": 15,
+    "capsule_manifest_sha256": "0dd0aba2b53228039196cc4012910bb89ecdcd08e59fd466f08b45ce4cc764e2",
+    "resume_here_sha256": "992c39306ea216adf3189d15252873b9de0f3f2dc5a0e55e896c42737e8494d5",
+    "sha256sums_sha256": "ffcfd711cf8737ed0024792b0d715bc9512cc5ac4a2721ee659580bb9cc178ed"
+  },
+  "frozen_artifact_verification": {
+    "git_blob_checked_artifact_count": 11,
+    "all_git_blob_checks_match_anchor": true,
+    "north_star_git_blob_sha": "5272d5b436282c597fdaa5bcb71e7ef6f0c50d8b",
+    "north_star_raw_sha256": "ae2be16b65f6bde9cc859f6168d12d230f4248ef0fda4ec6b9a0491c869dde6e",
+    "self_evolution_raw_sha256": "aba9cc86c9a73fc0b38c03bcd7e02806833f29fd74f9750ce7c5a4d57c881c91",
+    "authorization_contract_raw_sha256": "eb981d665c4bd0140815f578a5e46b4fe3e2bbae4dda4b12219855e0cb0053a9",
+    "definition_of_done_raw_sha256": "b9aeb38ec3fb33b9a8f8d9a0e18475006c96866601b134b78e33daeff9b2af08",
+    "current_state_raw_sha256": "0a6be0764229eb53b2c96d29289f2ffad7f91e10b90944c7429411c211992fe6"
+  },
+  "google_drive": {
+    "role": "NON_AUTHORITATIVE_RECOVERY_COPY",
+    "parent_folder_id": "1-9uS0-_6oXj9aFbeykonk5-8ss6SpkH4",
+    "file_id": "1YJJusgQoKI5RV0GEuhQt_3Ct4NujlVxe",
+    "uploaded_size_bytes": 52827,
+    "readback_size_bytes": 52827,
+    "readback_sha256": "30750285c888fe1dc852fc15f9fd6fca873383a3c10588beeee1036d93ff4f9b",
+    "byte_identical_readback": true
+  },
+  "self_reference_control": {
+    "rule": "Later capsule/audit receipts point backward to frozen snapshot anchor 63bbc906833e73bec13ac103cfd63023aeb12ddd; the frozen anchor is not required to contain hashes of later receipts.",
+    "self_reference_paradox_present": false
+  },
+  "protected_payload_policy": {
+    "protected_keirin_outcome_payloads_included": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "RESULT_PAYOUT_payload_included": false
+  },
+  "assurance": "Exact frozen artifacts were byte-verified against their Git blob identities before deterministic packaging. The uploaded Drive file was downloaded again and matched both size and SHA-256 exactly.",
+  "acceptance_effect": "RECOVERY_EVIDENCE_READY_ZERO_HISTORY_REHEARSAL_AND_AUDITOR_STILL_REQUIRED"
+}
