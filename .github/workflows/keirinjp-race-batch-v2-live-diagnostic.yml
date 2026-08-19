@@ -1,0 +1,47 @@
+name: keirinjp-race-batch-v2-live-diagnostic
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-race-batch-v2-live-diagnostic.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Run seven-rider batch v2
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import importlib.util,json,pathlib,subprocess,time,traceback
+          from datetime import datetime,timezone
+          p=pathlib.Path('v3/prospective_shadow250_v2/keirinjp_race_batch_identity_supplement_v2.py');q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACE_BATCH_V2_LIVE_DIAGNOSTIC_v1.json');q.parent.mkdir(parents=True,exist_ok=True)
+          out={'record':'KEIRINJP_RACE_BATCH_V2_LIVE_DIAGNOSTIC_v1','generated_utc':datetime.now(timezone.utc).isoformat(),'batch_git_blob':subprocess.check_output(['git','hash-object',str(p)],text=True).strip(),'expected_batch_git_blob':'2b5126e37633e8eee4786e7c4c4f4f140b40d867','source_validation_only':True,'predictive_values_persisted':False,'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False}
+          entrants=[{'car_no':1,'rider_name':'土井慎二','prefecture':'岡山','term':127},{'car_no':2,'rider_name':'三木健治','prefecture':'沖縄','term':73},{'car_no':3,'rider_name':'鈴木愼二','prefecture':'神奈川','term':74},{'car_no':4,'rider_name':'大崎智久','prefecture':'青森','term':89},{'car_no':5,'rider_name':'田中会心','prefecture':'熊本','term':123},{'car_no':6,'rider_name':'黒瀬浩一','prefecture':'静岡','term':57},{'car_no':7,'rider_name':'山田武','prefecture':'群馬','term':87}]
+          try:
+              if out['batch_git_blob']!=out['expected_batch_git_blob']:raise RuntimeError('blob mismatch')
+              spec=importlib.util.spec_from_file_location('batch2',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);out['synthetic']=m.synthetic_tests();started=time.monotonic();r=m.resolve_race(entrants,started)
+              out['result']={k:r[k] for k in ['status','rider_count','group_count','request_count','batch_elapsed_seconds','source_window_elapsed_seconds','max_batch_elapsed_seconds','max_source_window_seconds','search_result_identity_fields_used','predictive_fields_from_search_result','predictive_fields_from_racerprofile','raw_html_persisted']}
+              out['verified_snums']=[{'car_no':x['car_no'],'snum':x['snum'],'timestamp_binding':x['timestamp_binding'],'table_binding':x['table_binding']} for x in r['profiles']]
+              out['status']='PASS'
+          except Exception as e:
+              out['status']='FAIL_CLOSED';out['error_type']=type(e).__name__;out['error_message']=str(e);out['traceback_tail']=traceback.format_exc().splitlines()[-12:]
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist diagnostic
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_RACE_BATCH_V2_LIVE_DIAGNOSTIC_v1.json
+          git commit -m 'Record seven-rider KEIRIN batch v2 diagnostic'
+          git push
