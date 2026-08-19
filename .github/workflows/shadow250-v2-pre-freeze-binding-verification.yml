@@ -1,0 +1,98 @@
+name: shadow250-v2-pre-freeze-binding-verification
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-pre-freeze-binding-verification.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Recompute exact audited bindings
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess
+          from datetime import datetime,timezone
+          root=pathlib.Path('v3/prospective_shadow250_v2')
+          gov=root/'governance'
+          paths={
+            'source_candidate':gov/'SHADOW250_V2_SOURCE_SET_FREEZE_CANDIDATE_v3.json',
+            'selection_candidate':gov/'SHADOW250_V2_SELECTION_RULE_FREEZE_CANDIDATE_v3.json',
+            'genesis_candidate':gov/'SHADOW250_V2_GENESIS_CANDIDATE_v3.json',
+            'tamano_parser':root/'tamano_racecard_row_parser_v4.py',
+            'locator':root/'keirinjp_identity_locator_v3.py',
+            'profile_parser':root/'keirinjp_racerprofile_parser_v4.py',
+            'batch':root/'keirinjp_race_batch_identity_supplement_v3.py',
+            'fusion':root/'tamano_5plus3_fusion_guard_v2.py',
+            'runtime_evidence':root/'runtime_receipts/SHADOW250_V2_FINAL_CANDIDATE_RUNTIME_EVIDENCE_v1.json'
+          }
+          expected_blobs={
+            'source_candidate':'b4bc9fb102939d48878ee450d09fdb3f2c7e5bdf',
+            'selection_candidate':'a1e38aa261ba629e1cd6d426e1381f8d6153e760',
+            'genesis_candidate':'650775e54d914ee34aa02fb118b9fecb06d12f40',
+            'tamano_parser':'397ed3c8839b1ad4ffa4835924dd759397e2124c',
+            'locator':'c97d1d7c736e8cd778029446ffc704a684d4938e',
+            'profile_parser':'d8ce951abd1f008f872bc093d6bb12a50d62ca16',
+            'batch':'b0cdb1fa49d3fcf033c09b273a44a47bab9ab4eb',
+            'fusion':'a74ab32d2c0bd3957995fccfccb403ac3ae225fe',
+            'runtime_evidence':'598de0096298d649793724ab4b3efd4e22d7d8dc'
+          }
+          def blob(p): return subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+          actual={k:blob(v) for k,v in paths.items()}
+          if actual!=expected_blobs: raise SystemExit(f'BLOB_MISMATCH actual={actual}')
+          src=json.loads(paths['source_candidate'].read_text(encoding='utf-8'))
+          sel=json.loads(paths['selection_candidate'].read_text(encoding='utf-8'))
+          def core_sha(obj):
+            b=json.dumps(obj['approved_core'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8')
+            return hashlib.sha256(b).hexdigest()
+          src_core=core_sha(src); sel_core=core_sha(sel)
+          if src_core!=src['approved_core_sha256']: raise SystemExit(f'SOURCE_CORE_SHA_MISMATCH recomputed={src_core} declared={src["approved_core_sha256"]}')
+          if sel_core!=sel['approved_core_sha256']: raise SystemExit(f'SELECTION_CORE_SHA_MISMATCH recomputed={sel_core} declared={sel["approved_core_sha256"]}')
+          gen=json.loads(paths['genesis_candidate'].read_text(encoding='utf-8'))
+          cb=gen['candidate_bindings']
+          assert cb['source_set_core_sha256']==src_core
+          assert cb['selection_rule_core_sha256']==sel_core
+          assert cb['tamano_parser_v4_git_blob']==actual['tamano_parser']
+          assert cb['keirinjp_identity_locator_v3_git_blob']==actual['locator']
+          assert cb['keirinjp_racerprofile_parser_v4_git_blob']==actual['profile_parser']
+          assert cb['keirinjp_race_batch_v3_git_blob']==actual['batch']
+          assert cb['tamano_5plus3_fusion_guard_v2_git_blob']==actual['fusion']
+          assert cb['runtime_evidence_git_blob']==actual['runtime_evidence']
+          ev=json.loads(paths['runtime_evidence'].read_text(encoding='utf-8'))
+          assert ev['status']=='PASS'
+          assert ev['prediction_executed'] is False
+          assert ev['holdout_accessed'] is False
+          assert ev['scientific_trial_consumed'] is False
+          assert ev['shadow_screen_consumed'] is False
+          out={
+            'record':'SHADOW250_V2_PRE_FREEZE_BINDING_VERIFICATION_v1',
+            'generated_utc':datetime.now(timezone.utc).isoformat(),
+            'audit_snapshot_commit':'ca8c28b21fbb64d450dfaf3b512d074804392a05',
+            'status':'PASS',
+            'canonicalization':'json.dumps(approved_core, ensure_ascii=False, sort_keys=True, separators=(comma,colon)) UTF-8 then SHA-256',
+            'source_core_sha256':src_core,
+            'selection_core_sha256':sel_core,
+            'actual_git_blobs':actual,
+            'expected_git_blobs':expected_blobs,
+            'runtime_evidence_status':'PASS',
+            'shadow250_v2_selected_races':0,
+            'prospective_shadow_screen_count':0,
+            'prospective_v3_scientific_trial':0,
+            'ECON_HOLDOUT1000':'SEALED',
+            'authorization_effect':'NONE'
+          }
+          q=gov/'SHADOW250_V2_PRE_FREEZE_BINDING_VERIFICATION_v1.json'
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(q.read_text())
+          PY
+      - name: Persist verification receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/governance/SHADOW250_V2_PRE_FREEZE_BINDING_VERIFICATION_v1.json
+          git commit -m 'Record Shadow250-v2 pre-freeze binding verification'
+          git push
