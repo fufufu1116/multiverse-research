@@ -1,0 +1,27 @@
+name: Stage7 AB Postmortem Static Gate
+
+on:
+  push:
+    paths:
+      - 'v3/historical_all_market/stage7_ab_postmortem_diagnostics_v1.py'
+      - '.github/workflows/stage7-ab-postmortem-static.yml'
+  workflow_dispatch:
+
+jobs:
+  static-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile diagnostic
+        run: python -m py_compile v3/historical_all_market/stage7_ab_postmortem_diagnostics_v1.py
+      - name: Outcome boundary source scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -q 'DEV2000_SETTLEMENT_C_UNTOUCHED' v3/historical_all_market/stage7_ab_postmortem_diagnostics_v1.py
+          ! grep -q 'ECON_HOLDOUT1000.*open' v3/historical_all_market/stage7_ab_postmortem_diagnostics_v1.py
+          grep -q 'segment_C_access.*False' v3/historical_all_market/stage7_ab_postmortem_diagnostics_v1.py
+          grep -q 'new_rule_selection_performed.*False' v3/historical_all_market/stage7_ab_postmortem_diagnostics_v1.py
