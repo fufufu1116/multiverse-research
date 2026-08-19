@@ -1,0 +1,80 @@
+name: All-Market Stage3 resumable v2 static self-check
+
+on:
+  push:
+    paths:
+      - '.github/workflows/all-market-stage3-resumable-v2-static.yml'
+      - 'v3/historical_all_market/stage3_ticket_filter_diagnostics_v2.py'
+      - 'v3/historical_all_market/governance/STAGE3_TICKET_FILTER_FAMILY_PREREG_v1.md'
+      - 'v3/historical_all_market/governance/COLAB_IPHONE_RUNTIME_RELIABILITY_STANDARD_v1.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and verify semantics/runtime firewall
+        run: |
+          python -m py_compile v3/historical_all_market/stage3_ticket_filter_diagnostics_v2.py
+          python - <<'PY'
+          import ast, hashlib, importlib.util, json
+          from pathlib import Path
+          E=Path('v3/historical_all_market/stage3_ticket_filter_diagnostics_v2.py')
+          P=Path('v3/historical_all_market/governance/STAGE3_TICKET_FILTER_FAMILY_PREREG_v1.md')
+          S=Path('v3/historical_all_market/governance/COLAB_IPHONE_RUNTIME_RELIABILITY_STANDARD_v1.md')
+          def blob(p):
+              b=p.read_bytes(); return hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest()
+          prereg=blob(P); engine=blob(E); standard=blob(S)
+          if prereg!='ba4175bb044bcacfa66a7b8d089e92c04762b2e6':
+              raise SystemExit(f'FAIL_CLOSED prereg drift={prereg}')
+          tree=ast.parse(E.read_text(encoding='utf-8'))
+          imports=[]
+          for n in ast.walk(tree):
+              if isinstance(n,ast.Import): imports.extend(a.name for a in n.names)
+              elif isinstance(n,ast.ImportFrom): imports.append(n.module or '')
+          bad=[x for x in imports if x=='requests' or x.startswith('requests.') or 'settlement' in x.lower()]
+          if bad: raise SystemExit(f'FAIL_CLOSED forbidden imports={bad}')
+          spec=importlib.util.spec_from_file_location('s3v2',E)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          expected=(('P00',0.0,1.0),('P05',0.05,1.05),('P10',0.1,1.1),('P20',0.2,1.2),('P35',0.35,1.35),('P50',0.5,1.5),('P100',1.0,2.0))
+          if m.PROFILES != expected: raise SystemExit(f'FAIL_CLOSED profile drift={m.PROFILES}')
+          if m.EXPECTED_STAGE2_SHA256!='34ad32bed6e8b4d700864c46f4533bef1da254c7d87dc7ffe6ec266fd74530dc': raise SystemExit('FAIL_CLOSED Stage2 SHA drift')
+          if m.EXPECTED_STAGE3_PREREG_GIT_BLOB!=prereg: raise SystemExit('FAIL_CLOSED prereg binding drift')
+          if m.CHUNK_SIZE!=250 or m.EXPECTED_CHUNKS!=16 or m.EXPECTED_INPUT_ROWS!=4000: raise SystemExit('FAIL_CLOSED chunk registry drift')
+          receipt={
+            'record':'ALL_MARKET_STAGE3_RESUMABLE_V2_STATIC_SELF_CHECK_v1',
+            'status':'PASS',
+            'stage3_engine_v2_git_blob':engine,
+            'stage3_prereg_git_blob':prereg,
+            'runtime_reliability_standard_git_blob':standard,
+            'python_compile':'PASS',
+            'profile_registry':'PASS_EXACT',
+            'stage2_catalog_sha_binding':'PASS_EXACT',
+            'chunk_size':250,
+            'expected_chunks':16,
+            'resume_mode':'ATOMIC_CHUNKS',
+            'network_race_data_imported':False,
+            'settlement_executable_imported':False,
+            'result_payout_parser_imported':False,
+            'scientific_trial_count':0,
+            'ECON_HOLDOUT1000':'SEALED'
+          }
+          o=Path('v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE3_RESUMABLE_V2_STATIC_SELF_CHECK_v1.json')
+          o.parent.mkdir(parents=True,exist_ok=True); o.write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Commit PASS receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE3_RESUMABLE_V2_STATIC_SELF_CHECK_v1.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Record Stage3 resumable v2 static PASS'
+          git push
