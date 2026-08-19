@@ -1,0 +1,39 @@
+name: keirinjp-identity-locator-v3-live
+on:
+  push:
+    paths: ['.github/workflows/keirinjp-identity-locator-v3-live.yml']
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Run locator v3
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import importlib.util,json,pathlib,subprocess,traceback
+          from datetime import datetime,timezone
+          p=pathlib.Path('v3/prospective_shadow250_v2/keirinjp_identity_locator_v3.py');q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_IDENTITY_LOCATOR_V3_LIVE_v1.json');q.parent.mkdir(parents=True,exist_ok=True)
+          out={'record':'KEIRINJP_IDENTITY_LOCATOR_V3_LIVE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),'locator_git_blob':subprocess.check_output(['git','hash-object',str(p)],text=True).strip(),'expected_locator_git_blob':'c97d1d7c736e8cd778029446ffc704a684d4938e','predictive_values_persisted':False,'raw_html_persisted':False,'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False}
+          try:
+              spec=importlib.util.spec_from_file_location('loc3',p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);out['synthetic']=m.synthetic_tests();r=m.resolve_snum('土井慎二','岡山',127)
+              out['live']={k:r[k] for k in ['status','snum','query_basis','search_result_identity_fields_used','final_identity_checks','search_result_count','name_match_count','locator_elapsed_seconds','predictive_features_emitted','raw_html_persisted']}
+              if r['snum']!='015918':raise RuntimeError('unexpected snum')
+              out['status']='PASS'
+          except Exception as e:
+              out['status']='FAIL_CLOSED';out['error_type']=type(e).__name__;out['error_message']=str(e);out['traceback_tail']=traceback.format_exc().splitlines()[-12:]
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_IDENTITY_LOCATOR_V3_LIVE_v1.json
+          git commit -m 'Record KEIRIN identity locator v3 live validation'
+          git push
