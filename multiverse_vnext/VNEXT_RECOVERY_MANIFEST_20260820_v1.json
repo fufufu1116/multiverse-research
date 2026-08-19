@@ -1,0 +1,49 @@
+{
+  "record": "VNEXT_RECOVERY_MANIFEST_20260820_v1",
+  "status": "WORKING_RECOVERY_MANIFEST_NOT_ACCEPTANCE",
+  "created_jst": "2026-08-20T02:05:00+09:00",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main_head_at_snapshot": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
+  "working_branch": "agent/multiverse-vnext-bootstrap-batch1",
+  "source_artifact_snapshot_commit": "5dfa3b806a49d2f3d02ee55d4aac27c1fa22db37",
+  "physical_root": {
+    "provider": "GOOGLE_DRIVE",
+    "folder_name": "MULTIVERSE_VNEXT_RECOVERY",
+    "folder_id": "1-9uS0-_6oXj9aFbeykonk5-8ss6SpkH4",
+    "role": "NON_AUTHORITATIVE_RECOVERY_COPY",
+    "may_self_promote": false
+  },
+  "artifacts": [
+    {
+      "path": "MULTIVERSE_BOOTSTRAP.md",
+      "git_commit": "c532e0944f2ec96627eab9fef689c0c33671a605",
+      "git_blob_sha": "3d104204510e81a5654c5db12551d82395e72019",
+      "sha256": "61aa81fe44dffa87eef194849a68dc793d6afc8adae56bfd734d2cbae513504d",
+      "mutability": "MUTABLE_CAS_POINTER"
+    },
+    {
+      "path": "multiverse_vnext/VNEXT_KEIRIN_PAUSE_RECEIPT_20260820_v1.json",
+      "git_commit": "16ee9dc454071c34ba977492c33604c5495c876c",
+      "git_blob_sha": "38913d6ebf46265cf186731d1c7726c7ca1dbcf8",
+      "sha256": "2b897c05093ec5a253977968c4f74a54f6830e7e5135eb43aa99b756f1ae9157",
+      "mutability": "IMMUTABLE_AFTER_ACCEPTANCE_SUPERSEDE_ONLY"
+    },
+    {
+      "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
+      "git_commit": "5dfa3b806a49d2f3d02ee55d4aac27c1fa22db37",
+      "git_blob_sha": "6871b61b0724f7b26dcc6acab5351deeaedfefe6",
+      "sha256": "8b7048024106e216397bf616e80250b128294241f6855f1e1f933ef3913887ef",
+      "mutability": "MUTABLE_CAS_POINTER"
+    },
+    {
+      "path": "multiverse_vnext/VNEXT_BATCH1_FOUNDATION_DESIGN_v0.md",
+      "git_commit": "4e2149e3880b34a4616e3d7b25b4be0423a3c4ec",
+      "git_blob_sha": "f9a15c776a749e4f886fadcf22eb0e4b7c1d53e7",
+      "sha256": "7ac14ec7742be1ceea862b0332ff4caef15f2a410b7a1b2acddc4a757a8ac7bd",
+      "mutability": "WORKING_CANDIDATE"
+    }
+  ],
+  "protected_data_included": false,
+  "keirin_firewall_metadata_only": true,
+  "restore_rule": "Verify raw SHA-256, then reconcile against GitHub canonical ancestry before any write or promotion."
+}
