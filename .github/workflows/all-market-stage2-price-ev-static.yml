@@ -1,0 +1,94 @@
+name: All-Market Stage2 PRICE EV static self-check
+
+on:
+  push:
+    paths:
+      - '.github/workflows/all-market-stage2-price-ev-static.yml'
+      - 'v3/historical_all_market/stage2_price_ev_catalog_engine_v1.py'
+      - 'v3/historical_all_market/governance/STAGE2_PRICE_EV_SEMANTICS_PREREG_v1.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile, binding and synthetic semantic checks
+        run: |
+          python -m py_compile v3/historical_all_market/stage2_price_ev_catalog_engine_v1.py
+          python - <<'PY'
+          import ast, hashlib, importlib.util, json, math
+          from pathlib import Path
+
+          E=Path('v3/historical_all_market/stage2_price_ev_catalog_engine_v1.py')
+          P=Path('v3/historical_all_market/governance/STAGE2_PRICE_EV_SEMANTICS_PREREG_v1.md')
+          def blob(p):
+              b=p.read_bytes(); return hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest()
+          obs={'engine':blob(E),'prereg':blob(P)}
+          exp={'engine':'9f240c758cb2596e9c67a5214c4e2c610eb82769','prereg':'4043a07a88fef45014df2df9df5194514c24faf9'}
+          if obs!=exp: raise SystemExit(f'FAIL_CLOSED blob mismatch {obs} != {exp}')
+
+          t=ast.parse(E.read_text(encoding='utf-8'))
+          imports=[]
+          for n in ast.walk(t):
+              if isinstance(n,ast.Import): imports += [a.name for a in n.names]
+              elif isinstance(n,ast.ImportFrom): imports.append(n.module or '')
+          bad=[x for x in imports if x=='requests' or x.startswith('requests.') or 'settlement' in x.lower()]
+          if bad: raise SystemExit(f'FAIL_CLOSED forbidden imports {bad}')
+
+          spec=importlib.util.spec_from_file_location('stage2',E)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+
+          # Point-odds semantic canary: model shape == market shape exactly.
+          pcat={'A':0.6,'B':0.4}; ocat={'A':2.0,'B':3.0}
+          cat,diag=m.point_market_metrics(pcat,ocat,'SYN','candidate_a','2shatan')
+          if abs(cat['A']['raw_ev_primary']-0.2)>1e-12: raise SystemExit('FAIL point EV A')
+          if abs(cat['B']['raw_ev_primary']-0.2)>1e-12: raise SystemExit('FAIL point EV B')
+          if abs(cat['A']['shape_edge_delta_primary'])>1e-12 or abs(cat['B']['shape_edge_delta_primary'])>1e-12: raise SystemExit('FAIL point shape')
+
+          # Wide semantic canary: probability sum=3, low is primary, high diagnostic only.
+          wpcat={'1=2':1.0,'1=3':1.0,'2=3':1.0}
+          wocat={
+            '1=2':{'low':2.0,'high':2.5},
+            '1=3':{'low':4.0,'high':5.0},
+            '2=3':{'low':4.0,'high':5.0},
+          }
+          wcat,wdiag=m.wide_market_metrics(wpcat,wocat,'SYN','candidate_a')
+          if abs(wcat['1=2']['raw_ev_primary']-1.0)>1e-12: raise SystemExit('FAIL wide primary EV')
+          if abs(wcat['1=2']['raw_ev_high_diagnostic']-1.5)>1e-12: raise SystemExit('FAIL wide high diagnostic')
+          if wdiag['wide_price_surface']!='LOW_PRIMARY_HIGH_DIAGNOSTIC': raise SystemExit('FAIL wide role')
+
+          receipt={
+            'record':'ALL_MARKET_STAGE2_PRICE_EV_STATIC_SELF_CHECK_v1',
+            'status':'PASS',
+            'stage2_engine_git_blob':obs['engine'],
+            'stage2_prereg_git_blob':obs['prereg'],
+            'python_compile':'PASS',
+            'point_ev_semantics':'PASS',
+            'wide_low_primary_semantics':'PASS',
+            'wide_high_diagnostic_only':'PASS',
+            'network_race_data_imported':False,
+            'settlement_executable_imported':False,
+            'result_payout_parser_imported':False,
+            'scientific_trial_count':0,
+            'ECON_HOLDOUT1000':'SEALED'
+          }
+          out=Path('v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE2_PRICE_EV_STATIC_SELF_CHECK_v1.json')
+          out.parent.mkdir(parents=True,exist_ok=True)
+          out.write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Commit PASS receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE2_PRICE_EV_STATIC_SELF_CHECK_v1.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Record Stage2 price/EV static PASS'
+          git push
