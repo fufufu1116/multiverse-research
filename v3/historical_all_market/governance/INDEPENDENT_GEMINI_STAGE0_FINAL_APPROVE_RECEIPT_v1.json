@@ -1,0 +1,74 @@
+{
+  "record": "INDEPENDENT_GEMINI_STAGE0_FINAL_APPROVE_RECEIPT_v1",
+  "project": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
+  "source": "USER_SUPPLIED_INDEPENDENT_GEMINI_OUTPUT_IN_CHAT",
+  "audit_subject": "All-Market Historical Economic Track — Stage 0 Remediated v2",
+  "audit_snapshot_commit": "3a6453576b00d7715b05caa11bac3db42c8a2701",
+  "reaudit_prompt_git_blob": "2be76101bcc9e67cc3b9b748ecae75a69b21a8bf",
+  "remediation_receipt_git_blob": "5f9660219eb35c0038dad67ad4c39f8c0bec5925",
+  "verdict": "APPROVE",
+  "issues": {
+    "P0_BLOCKER": 0,
+    "P1_MATERIAL": 0,
+    "P2_NON_BLOCKING": 0,
+    "ISSUE-ALLM-01": "RESOLVED",
+    "ISSUE-ALLM-02": "RESOLVED",
+    "ISSUE-ALLM-03": "FRESH_OFFICIAL_SAME_RACE_5CAR_CANARY_SATISFIES_STAGE0_STRUCTURE_REQUIREMENT"
+  },
+  "accepted_bindings": {
+    "price_parser_git_blob": "f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8",
+    "settlement_parser_git_blob": "b8b8ab0e0904541bd6fc45e7fe415d323e63ec45",
+    "active_sold_car_set_inference": "ACCEPTABLE",
+    "3rentan_ticket_axis_correction": "ACCEPTABLE",
+    "3renhuku_rowspan_correction": "ACCEPTABLE"
+  },
+  "authorization": {
+    "price_only_stage0_bulk_2000": "AUTHORIZED",
+    "scientific_trial_count_during_stage0_bulk": 0,
+    "settlement_bulk_now": "PROHIBITED",
+    "stage1_ticket_probability_modeling": "PROHIBITED_UNTIL_POST_BULK_QUALITY_GATE",
+    "stage2_ev_evaluation": "PROHIBITED",
+    "stage5_portfolio": "PROHIBITED",
+    "bankroll_simulation": "PROHIBITED",
+    "holdout_access": "PROHIBITED",
+    "wagering": "PROHIBITED"
+  },
+  "mandatory_price_output_firewall": {
+    "allowed": [
+      "closing price catalogs",
+      "market availability flags",
+      "active car-number information",
+      "raw/source provenance required for reproducibility",
+      "price timestamps"
+    ],
+    "forbidden": [
+      "official refund values",
+      "finishing order",
+      "profit/loss scoring",
+      "EV scoring",
+      "ROI scoring",
+      "settlement output"
+    ],
+    "separate_price_namespace_required": true
+  },
+  "post_bulk_gate": {
+    "quality_report_required_before_stage1": true,
+    "required_contents": [
+      "all-2000 recovery rate",
+      "per-market availability and sales distribution",
+      "active-car-count distribution",
+      "Fail-Closed exclusion count and reasons",
+      "zero settlement-output access proof"
+    ],
+    "unknown_raw_structure_policy": "FAIL_CLOSED_NO_SILENT_FALLBACK"
+  },
+  "scientific_state_at_approval": {
+    "all_market_track_trial_count": 0,
+    "bulk_price_recovery_started": false,
+    "bulk_settlement_recovery_started": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_result_access": false,
+    "holdout_payout_access": false,
+    "holdout_price_access": false
+  }
+}
