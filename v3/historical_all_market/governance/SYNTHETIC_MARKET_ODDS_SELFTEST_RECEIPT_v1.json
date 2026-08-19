@@ -1,0 +1,30 @@
+{
+  "record": "SYNTHETIC_MARKET_ODDS_SELFTEST_RECEIPT_v1",
+  "created_jst": "2026-08-19T23:33:00+09:00",
+  "status": "PASS_SYNTHETIC_ENGINEERING_ONLY",
+  "implementation": "v3/historical_all_market/new_lineage/synthetic_market_odds_v1.py",
+  "implementation_commit": "3fdd5576b3a2647a3c9d6d61f4d31090d565f0a7",
+  "selftest_script": "v3/historical_all_market/new_lineage/synthetic_market_odds_selftest_v1.py",
+  "selftest_commit": "9ab8b165ea2d8c6af2f650921ed4bab9bb7cf6cf",
+  "runtime_test": {
+    "exclusive_quote_shape_mass": 1.0,
+    "wide_event_input_mass": 3.0,
+    "wide_quote_shape_mass": 1.0,
+    "seed_reproducibility": "PASS",
+    "minimum_decimal_odds_invariant": "PASS",
+    "sample_exclusive_odds": [1.8699398089975152, 1.9143410665200624, 3.6207770901398897],
+    "sample_wide_odds": [1.5724497378139384, 3.094794756648794, 4.090407891377242, 7.705029438916143]
+  },
+  "claim_boundary": {
+    "real_market_evidence": false,
+    "real_world_roi_evidence": false,
+    "market_inefficiency_evidence": false,
+    "allowed": [
+      "PIPELINE_ENGINEERING",
+      "BUY_NO_BET_CODE_TEST",
+      "VIRTUAL_BANKROLL_TEST",
+      "TAIL_AND_ODDS_STRESS_TEST",
+      "SENSITIVITY_ANALYSIS"
+    ]
+  }
+}
