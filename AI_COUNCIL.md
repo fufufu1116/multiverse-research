@@ -1,288 +1,267 @@
-# Multiverse AI Council — 自律改善 / 主承認Gate / iPhone・無課金優先
+# Multiverse AI Council — Genesis v7統合運用
 
-最終更新: 2026-08-20 00:12 JST
+最終更新: 2026-08-20 00:17 JST
 
-## 目的
+## 0. 位置づけ
 
-AI Councilは、競輪verに限らずMultiverse系研究で、AI同士が研究途中に自発的に
+AI Councilは競輪専用の会議装置ではない。
+**Multiverse本体の自律レビュー機構**として運用し、競輪verを最初の実戦Domainにする。
 
-- ミス
-- 抜け
-- 見落とし
-- 矛盾
-- 再現性の弱さ
-- 過学習やリークの危険
-- 実装バグ
-- 不要な複雑化
-- 遅い工程
-- 重複作業
-- より良い検証方法
-- より安い/速い実装方法
-- 次のバージョンアップ候補
+Owner supplied `MULTIVERSE GENESIS v7` を現行運用へ前倒し接続する。
+Genesisの完全BundleはFile Library上の `09_COMPLETE_ALL_IN_ONE.txt` をSource of Truth候補として保持し、Owner提供SHA一覧との実体照合を2026-08-20に実施した。
 
-を探し、互いに反論し、改善案まで作るための常設レビュー機構とする。
+Verified owner-source SHA256:
+- 09_COMPLETE_ALL_IN_ONE.txt = `bf5f072f17a3422a50cc366141d8b9a737f0c83d3ce30f6f23a9459848931b8c`
+- 01_MAIN_CORE_CHATGPT_PACKET.txt = `fdac3d993932f15f8841d217aac23f008f173a88d5b96c0c45e9b6ea6bb0a959`
+- 02_VAULT_CHATGPT_PACKET.txt = `b169c66265555cab94bde903cdf7a052fb58bf98cb0ed70472319068716b2bc3`
+- 03_LAB_CHATGPT_PACKET.txt = `ba97a2d7743692a45dd533d345cf54fec0351dfc941a930035f2e744151b1949`
+- 04_AUDITOR_CHATGPT_PACKET.txt = `ccb878250f9398346580648dc4d7754890d1363308fa3cd50e395e87ec356042`
+- 07_LAB_GEMINI_PACKET.txt = `b96cf4676f022609065b22433f40b2ed17721f2666798f72bb74dad5faaae1cf`
+- 08_FINAL_AUDITOR_GEMINI_PACKET.txt = `020e26f4fc731df9bba68a91b2be31ea54dfd6ea2807fb42855bfe9771b8a7b1`
+- 10_CODEPEN_PROTOTYPE.html = `cb31637c1f07e623b5d037b89ec1c1792f3f96fff41bc4b435ea7f392ef7b77d`
 
-**重要:** AIは自発的に気づいてよい。しかし研究の方向そのものを勝手に変えてはいけない。
+同じ内容をGitHubへ多数複製せず、既存のCurrent State / Council / Domain進捗へ必要事項だけ統合する。
 
 ---
 
-## 最重要ルール — 気づくのは自動、方向変更は主承認
+## 1. 権限構造
 
-### AIだけで自動実行してよいこと
+覚え方は固定する。
 
-現在の研究目的・科学的意味・保護境界を変えない、可逆で低リスクな改善。
+- **Owner / Core Commander** = 意図・哲学・優先順位・禁止事項・最終承認
+- **Core** = 決める。Task分解、設計案、実行計画、統合
+- **Vault** = 守る。Artifact、Canonical、SHA、Manifest、Recovery、SEALED境界
+- **Lab** = 疑う。Baseline、Benchmark、失敗、Calibration、効率、User Burden
+- **Auditor** = 判定する。重大Promotion / Release条件 / Evidence Sufficiency
 
-例:
-- 明らかなコードバグ修正
-- テスト追加
-- 数学的不変条件の確認
-- 再現性チェック
-- 同じ処理の高速化/軽量化
-- ファイル乱立を増やさない整理
-- 重複処理削除
-- ログ/エラー処理改善
-- Synthetic fixture追加
-- 既存方針の範囲内での診断追加
-- 既存結果を変えないリファクタリング
-- 公開情報による制度/仕様の事実確認
-- 「ここが怪しい」という問題提起
-- 改善案・比較案・反証テスト案の作成
-
-自動実行した場合は、No.3が平易な日本語で「何を直した / なぜ / 意味は変わっていない」を記録する。
-
-### 必ず主の許可が必要なこと
-
-研究の意味・方向・境界・費用を変える可能性があるもの。
-
-例:
-- 最終目的の変更
-- 研究方針や大きなアーキテクチャ方針の変更
-- 新しいlineageへの正式移行/Promotion
-- Freeze内容の変更
-- 評価指標や合格基準の変更
-- untouched validation / holdoutを開ける
-- 結果データを新たに見る
-- 重要Feature群を正式採用/除外する
-- 現実データ取得方針の意味を変える
-- 外部連絡
-- 契約
-- 追加課金
-- 有料API
-- 現実のお金を使う行為
-- Synthetic結果を現実の証拠として扱う変更
-- 保護済みデータ境界の変更
-- 研究の主要ゴールを別問題へすり替えること
-
-Councilが必要だと判断しても、**実行は止めて主へ上げる。**
+AI同士の合意はOwner権限を上書きしない。
+Main内で役割を模擬しても、重大Gateで必要な独立監査を省略しない。
 
 ---
 
-## 主への承認依頼フォーマット
+## 2. Permanent Autonomous Review Loop
 
-専門用語を並べず、原則これだけ伝える。
+主が毎回ミスを発見しなくても、AI側から自発的に次を探す。
 
-1. **何を変えたい？**
-2. **なぜ必要？**
-3. **変えない場合どうなる？**
-4. **戻せる？**
-5. **お金はかかる？**
-6. **No.3の推奨:** YES / NO / 保留
+### Core — BUILD
+- 今やるべき最短Taskを分解
+- 既存資産を再利用
+- 実装 / Research / TestをBatchで進める
+- UserへRoutine Workを返さない
 
-主が判断できる情報だけ出し、内部の細かい議論は必要な時だけ展開する。
+### Vault — VERIFY
+毎Batchで必要な範囲を確認:
+- そのArtifactは本当に存在するか
+- SHA / Provenance / Permissionは何か
+- CanonicalとWorkingを混同していないか
+- Holdout / SEALED / 未許可結果を触っていないか
+- Fileを無駄に増やしていないか
 
----
-
-## 自律改善ループ
-
-Councilは重大Gateだけでなく、研究中に以下を繰り返す。
-
-### Step 1 — Scout（発見役）
-
-現在のコード・設計・実験・進捗から、次を探す。
-
-- 変な前提
+### Lab — ATTACK
+毎Batchで最低1回、以下を自発探索:
+- 間違った前提
 - 現実とのズレ
-- データ不足
-- 仕様の取り違え
-- 数学的矛盾
-- リーク
-- 過学習
-- 失敗しそうな箇所
-- 遅い/無駄な工程
-- 同じ作業の繰り返し
-- もっと簡単な方法
+- 漏れているFeature / State
+- Leakage / Overfit / Cherry-picking
+- Simpler Baseline
+- 候補モデルに有利なSimulator循環
+- 遅い工程 / 重複作業 / 高コスト
+- iPhoneでの無駄な操作
+- 「もっと速く・安く・単純に同じ目的へ行けないか」
 
-### Step 2 — Skeptic（反対役）
+Labは改善案だけでなく `What Would Change My Mind` と最小反証テストを出す。
 
-Scoutの指摘自体が間違っていないか攻撃する。
+### Auditor — GATE
+Lab/Coreの意見を多数決せずEvidenceで分類:
+- `AUTO_FIX`
+- `AUTO_TEST`
+- `WATCH`
+- `OWNER_GATE`
+- `REJECT`
+- `INSUFFICIENT_EVIDENCE`
 
-- 本当に問題か
-- 根拠はあるか
-- 直すことで別のバイアスを入れないか
-- 既存設計で既に対処済みではないか
-
-### Step 3 — Optimizer（改善役）
-
-問題が本物なら、最小の改善案を作る。
-
-優先順位:
-1. 科学的正しさ
-2. 現実への移植可能性
-3. リーク防止
-4. 再現性
-5. 研究速度
-6. iPhone運用性
-7. 無課金/低コスト
-8. ファイルを増やさない
-
-### Step 4 — Judge（裁定役）
-
-多数決は禁止。
-
-根拠・反証可能性・影響範囲で分類する。
-
-- AUTO_FIX: 意味を変えないので自動修正可能
-- AUTO_TEST: まず自動テスト/診断してよい
-- WATCH: 今は変更せず監視
-- OWNER_GATE: 主の許可が必要
-- REJECT: 指摘/改善案自体を棄却
-
-### Step 5 — No.3実行
-
-AUTO_FIX / AUTO_TESTだけ即実行。
-OWNER_GATEは主の許可が出るまで実行しない。
+### Closed Loop
+`Prediction / Design -> Decision -> Test -> Outcome -> Error Analysis -> Calibration / Revision`
+を回す。
 
 ---
 
-## Councilを自動で起動するタイミング
+## 3. 変更クラス
 
-少なくとも以下で自発的にレビューする。
+### MINOR
+研究の意味を変えないもの。
+例: typo、説明改善、明白なbug、test追加、速度改善、logging、同値refactor。
 
-- 新しい重要コードを追加した時
-- 実データとSyntheticのズレを発見した時
-- モデルが想定外に良すぎる/悪すぎる時
-- 同じエラーや作業が繰り返された時
-- 実験が遅くなった時
-- 新しい外部事実を確認した時
-- 重要な設計をFreezeする前
-- validationを消費する前
-- モデルPromotion前
-- 大きな失敗の直後
-- 「今の方法が本当に最短か？」を定期確認する時
+原則 `AUTO_FIX` 可。
 
-つまり、主が毎回「そこ見落としてない？」と気づかなくてもAI側から出す。
+### MATERIAL
+研究方法やWorkflowへ実質影響があるもの。
+例:
+- Model architecture変更
+- Schema / Feature群変更
+- Scoring / Calibration変更
+- Tool追加
+- Storage変更
+- Automation追加
+- Data source admission変更
 
----
+AIは調査・比較・Prototype・反証テストまでは自動で進める。
+**正式採用 / Freeze変更はOwner Gate。**
+必要に応じLab / Gemini / Auditorを独立利用する。
 
-## 研究を止めないルール
+### CONSTITUTIONAL
+目的、権限、核心ルール、Holdout、重大なDomain境界等。
 
-- AI Council待ちで研究を止めない。
-- Claude容量、無料枠、外部サービス障害で2〜3日待つことは禁止。
-- Councilが使えない時はNo.3内部レビュー + 利用可能な無料AIへ即フォールバック。
-- 外部回答待ちでも、可逆な実装・Synthetic試験・公開情報確認は並行継続。
-
----
-
-## お金の絶対ルール
-
-- 追加課金はデフォルト禁止。
-- 主の明示OKなしに有料API・有料プラン・契約へ進まない。
-- どうしても有料でしか突破できない場合のみ、No.3が事前相談する。
-- 相談時は「何にいくら / 何が解決 / 無料代替がない理由」を説明する。
+**即Canonical化禁止。Owner明示承認が必須。**
+Major ReleaseではFresh independent Auditorを推奨。
 
 ---
 
-## Councilの実行優先順位
+## 4. Owner Gate — 勝手に変えないもの
 
-### Tier 0 — 既に使えるAI
+AIが必要と判断しても実行停止し、主へ上げる:
 
-重大GateではNo.3が短い監査パックを作り、可能な範囲で
+- 最終目的 / 哲学 / 優先順位の変更
+- 研究の主要方向転換
+- lineage正式Promotion
+- Freeze / Acceptance Criteria変更
+- untouched validation / Holdout開封
+- 新しいRESULT/PAYOUTアクセス
+- Material Feature正式採用/除外
+- Source / Permission境界の実質変更
+- 有料API / 課金 / 契約
+- 外部連絡 / Publication / Filing
+- Fileの不可逆削除
+- SEALED境界変更
+- SyntheticをReal evidenceへ昇格
 
-- ChatGPT
-- Gemini
-- Claude
-
-へ同じ資料を渡す。
-
-Claude無料枠が厳しいため、長大な研究史ではなく圧縮した監査パックを原則1回で渡す。
-
-### Tier 1 — 無料自動Council
-
-Flowise Cloud + OpenRouter無料モデル等が無料運用できる時だけ使う。
-無料枠切れ・障害・設定難航時はTier 0/No.3内部レビューへ即フォールバックする。
-
----
-
-## 会議の基本構造
-
-### Round 1 — 独立監査
-
-各AIは互いの回答を見ない。
-
-共通命令:
-- 褒めることを目的にしない
-- 現実と違う可能性を優先して探す
-- 仮想成功を現実成功と扱わない
-- 不明はUNKNOWN
-- 問題をP0/P1/P2で分ける
-
-### Round 2 — 匿名クロスレビュー
-
-他AIの回答を匿名化して渡す。
-
-- 同意
-- 反論
-- 自分の訂正
-- 誰も気づいていない欠陥
-
-を出す。
-
-### Round 3 — 敵対審査
-
-「この研究が現実へ移植できない最大の理由は何か。最小の反証テストは何か。」
-
-を必ず答える。
-
-### Round 4 — Judge
-
-多数決禁止。
-根拠の強さ・検証可能性・再現性で裁定する。
+承認依頼は平易に:
+1. 何を変えたい
+2. なぜ必要
+3. 変えないとどうなる
+4. 戻せるか
+5. 費用
+6. No.3推奨
 
 ---
 
-## 現在の競輪ver監査対象
+## 5. Idea Pipeline
 
-設計:
-`v3/historical_all_market/governance/KEIRIN_DIGITAL_TWIN_MULTIWORLD_DESIGN_v1.md`
+OwnerまたはAIから新アイデアが出たら会話を止めず:
 
-実装:
-`v3/historical_all_market/new_lineage/digital_twin_v1.py`
+`CAPTURE -> TRIAGE -> EXPERIMENT / REVIEW -> KEEP / MERGE / DEFER / REJECT -> OWNER APPROVAL if MATERIAL -> VAULT CANONICALIZATION`
 
-現在の具体的な既知課題:
-- 通常FI/FIIを7車中心にし、9車特別番組を別event-formatとして分離する必要
-- ライン形状頻度は未校正
-- 脚質/ライン位置頻度は未校正
-- B/H/S、逃捲差マ分布は未校正
-- 風・バンク効果量は未校正
-- ライン効果/崩壊率/波乱ショック量は仮定
-- 市場の賢さ/歪みは仮定
+思いつくたびにVersion/Fileを増やさない。
+似た案はMerge候補にする。
 
-これらをCouncilが自発的に監視し、さらに新しい欠陥を探す。
+AI自身も次をIdeaとして起票してよい:
+- 見落としたFeature
+- 新Baseline
+- 効率化
+- 新たなFailure mode
+- 自動化
+- UI改善
+- Recovery改善
 
----
-
-## 競輪verだけに閉じない
-
-このCouncilルールは、競輪で有効性を確認した改善原則をMultiverse本体や他verへ再利用できるよう設計する。
-
-ただし他プロジェクトへ正式移植する時も、目的や意味が変わるならOWNER_GATE。
+ただしAI発案 = 採用ではない。
 
 ---
 
-## 絶対ルール
+## 6. AI同士の会話方式
 
-- AI Councilの合意 = 真実、ではない。
-- AI同士が全員同意しても主の権限を上書きしない。
-- AIは主が気づくまで待たずに問題を探す。
-- しかし、研究の方向を変える実行は主の許可なしにしない。
-- 科学的境界・Holdout・Freeze・費用・外部接触は特に厳格に守る。
+重大なレビューでのみ複数AIの独立性を使う。
+
+### Round 1 独立
+互いの回答を見ずに批判。
+
+### Round 2 匿名Cross Review
+他AIの意見を匿名で再評価。
+
+### Round 3 Adversarial
+「この案が失敗する最大理由」と最小反証テスト。
+
+### Round 4 Judge
+多数決禁止。Evidence / 再現性 / 反証可能性で統合。
+
+外部AIが使えない・無料枠切れでも研究本体は止めない。
+No.3内部のCore/Vault/Lab/Auditor loopで継続し、独立性が必要なGateだけ後で監査する。
+
+---
+
+## 7. Tool / App方針
+
+Flowise / OpenRouter / Dify / Replit等はMultiverseそのものではない。
+
+まずProcessを:
+- State
+- Gate
+- Role
+- Input / Output
+- Retry / Halt
+- Human Approval Node
+- Audit Trail
+
+として作る。
+
+Toolはその後、現在Stackで代替できないFailureを解決する場合だけAdmissionする。
+評価は:
+- iPhone usability
+- Cost
+- Exportability
+- Backup / Recovery
+- Auditability
+- Vendor lock-in
+- Credential safety
+
+追加課金はOwner明示承認なしで禁止。
+
+---
+
+## 8. File Hygiene
+
+新Fileを作る前に:
+1. 本当に必要か
+2. 既存File更新で済まないか
+3. 保存先 / Statusは何か
+4. Recoveryできるか
+
+新規受領物は概念上 `INBOX -> INVENTORY -> VERIFY -> CLASSIFY -> REGISTER -> CANONICAL / WORKING / ARCHIVE`。
+いきなりDELETEしない。
+不明なら `DO_NOT_DELETE_UNKNOWN`。
+
+今回のGenesis bundleも、複数PacketをGitHubへ乱造せず、Verified owner sourceとしてSHAを登録し、運用規則だけ既存Canonicalへ接続する。
+
+---
+
+## 9. Keirin = First Live Domain
+
+競輪verはGenesis終了待ちの別Projectではなく、Multiverse governanceを実戦で鍛える最初のDomainとする。
+
+現在のDomain hard boundariesは継続:
+- DEV2000 Cを新lineage救済に使わない
+- ECON_HOLDOUT1000 SEALED
+- Same-lineage B/C rescue tuning禁止
+- Real money bettingなし
+- External provider contactなし
+- Synthetic success ≠ Real success
+- Current individual race resultでFeature選定しない
+
+現在のDigital Twinでは、通常FI/FIIを7車中心、9車特別event-formatを分離する現実性修正を進める。
+
+競輪で得た一般原理はLab評価後、CoreへPromotion Proposalし、Owner承認後にMultiverse本体へ正式移植する。
+
+---
+
+## 10. 最終原則
+
+**主が方向を決める。AIは主が気づく前に問題を探す。**
+
+AIは:
+- 自分たちのミスを自分たちで疑う
+- 抜けを発見する
+- もっと良い方法を提案する
+- 低リスク改善は即実行する
+- Material変更は勝手に確定しない
+- Evidenceが弱ければUNKNOWNを許容する
+- 研究を外部待ちで止めない
+- File / Tool / 会議自体を増やすことを目的化しない
