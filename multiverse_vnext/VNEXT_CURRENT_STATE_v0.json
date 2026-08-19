@@ -1,33 +1,26 @@
 {
   "record": "VNEXT_CURRENT_STATE_v0",
   "status": "WORKING_CANDIDATE_NOT_ACCEPTED_NOT_FROZEN",
-  "updated_jst": "2026-08-20T02:03:00+09:00",
+  "updated_jst": "2026-08-20T02:15:00+09:00",
   "mutability": "MUTABLE_CAS_POINTER",
   "canonical_repo": "fufufu1116/multiverse-research",
   "canonical_main_head_observed": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
   "working_branch": "agent/multiverse-vnext-bootstrap-batch1",
   "working_pr": 2,
-  "current_phase": "VNEXT_BATCH1_VAULT_HARDENING_AND_RECOVERY_EVIDENCE",
+  "current_phase": "VNEXT_BATCH1_READY_FOR_VAULT_RECHECK",
   "formal_release_state": "NOT_ACCEPTED",
-  "state_generation": 1,
-  "parent_valid_state_git_blob_sha": "5b10904b10fad27be605a8770988e496544dd9ab",
+  "state_generation": 2,
+  "parent_valid_state_git_blob_sha": "6871b61b0724f7b26dcc6acab5351deeaedfefe6",
   "supersedes_state_ref": {
     "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
-    "git_blob_sha": "5b10904b10fad27be605a8770988e496544dd9ab",
-    "logical_generation": 0
-  },
-  "invalid_intermediate_recovery": {
-    "git_blob_sha": "311c8dd0658759f372c9be9a2065c327fdb1a203",
-    "commit": "e2f9ea119de35c27eefd955434bf1b5420f97d05",
-    "classification": "INVALID_TRANSIENT_WRITE_NEVER_VALID_STATE",
-    "action": "SUPERSEDED_IMMEDIATELY_BY_CAS_REPAIR",
-    "counts_as_state_generation": false
+    "git_blob_sha": "6871b61b0724f7b26dcc6acab5351deeaedfefe6",
+    "logical_generation": 1
   },
   "write_precondition": {
-    "expected_current_state_blob_sha": "311c8dd0658759f372c9be9a2065c327fdb1a203",
+    "expected_current_state_blob_sha": "6871b61b0724f7b26dcc6acab5351deeaedfefe6",
     "expected_canonical_main_head": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
-    "expected_working_branch_head_before_write": "e2f9ea119de35c27eefd955434bf1b5420f97d05",
-    "expected_generation_of_last_valid_state": 0,
+    "expected_working_branch_head_before_write": "c68e487ccebfd911a950a34e31dc9d5ed2b421ac",
+    "expected_generation_of_last_valid_state": 1,
     "reject_on_any_mismatch": true,
     "timestamp_can_override": false
   },
@@ -60,6 +53,27 @@
       "git_blob_sha": "3d104204510e81a5654c5db12551d82395e72019",
       "sha256": "61aa81fe44dffa87eef194849a68dc793d6afc8adae56bfd734d2cbae513504d",
       "mutability": "MUTABLE_CAS_POINTER"
+    },
+    "recovery_manifest": {
+      "path": "multiverse_vnext/VNEXT_RECOVERY_MANIFEST_20260820_v1.json",
+      "git_commit": "0b6511adc55d21c689f9e021d75cbc52eb68bda2",
+      "git_blob_sha": "133aad23a279e4a3771010db8c78d2a526661ae0",
+      "sha256": "117ff8f62e06c1c1f805958f3ad16f999d802bcdf34483e4462b396c75e44b03",
+      "mutability": "WORKING_RECOVERY_MANIFEST"
+    },
+    "recovery_mirror_receipt": {
+      "path": "multiverse_vnext/VNEXT_RECOVERY_MIRROR_RECEIPT_20260820_v1.json",
+      "git_commit": "80a8a5c80c9ae114a6cce7e1e5560e95cb6ca4f8",
+      "git_blob_sha": "5ab3aab4900cee1135d87850281e2aff491f6493",
+      "sha256": "eebf7bdd1a518d3cfbd9fb7cebc8eee202d91d00e86288ba75d23fe1c752a4d7",
+      "mutability": "IMMUTABLE_EVIDENCE_CANDIDATE"
+    },
+    "vault_recovery_test_receipt": {
+      "path": "multiverse_vnext/VNEXT_VAULT_RECOVERY_TEST_RECEIPT_20260820_v1.json",
+      "git_commit": "c68e487ccebfd911a950a34e31dc9d5ed2b421ac",
+      "git_blob_sha": "883aa176f1658c16f60f081c2f2c89edb860cc25",
+      "sha256": "52756e2dd84fc95975828869f2f4793e365447270f758bf6c150aab613160a6f",
+      "mutability": "IMMUTABLE_EVIDENCE_CANDIDATE"
     }
   },
   "keirin_firewall": {
@@ -69,6 +83,7 @@
     "same_lineage_B_C_rescue_tuning": "PROHIBITED",
     "scientific_segment_c_scoring_count": 0,
     "new_untouched_validation_opened": false,
+    "new_validation_trial_consumed_after_close": 0,
     "result_payout_access_authorized": false,
     "exact_resume_required": true,
     "exact_resume_gate": "DIGITAL_TWIN_REALITY_CALIBRATION_PLUS_C0_C1_N1_MULTI_WORLD_STRESS_BEFORE_NEW_UNTOUCHED_REAL_VALIDATION"
@@ -83,29 +98,27 @@
       "role": "NON_AUTHORITATIVE_RECOVERY_COPY",
       "folder_name": "MULTIVERSE_VNEXT_RECOVERY",
       "folder_id": "1-9uS0-_6oXj9aFbeykonk5-8ss6SpkH4",
-      "recovery_package_status": "BEING_MATERIALIZED",
+      "recovery_package_file_id": "1BrLAUbLWwc2sdwrE2_JlLFGMrH5QoG0o",
+      "recovery_package_sha256": "42e56e7392441a31bfadf8f67c0aad5a774f002cc0a7cc62f2de1c60e265abba",
+      "recovery_package_size_bytes": 13421,
+      "drive_readback_sha256_match": true,
+      "snapshot_commit": "5dfa3b806a49d2f3d02ee55d4aac27c1fa22db37",
       "mirror_may_self_promote": false
-    },
-    "iphone_cold_snapshot": {
-      "role": "OPTIONAL_TERTIARY_RECOVERY",
-      "status": "NOT_REQUIRED_FOR_BATCH1_IF_DUAL_ROOT_TEST_PASSES"
     }
   },
-  "recovery_artifact_plan": {
-    "manifest_path": "multiverse_vnext/VNEXT_RECOVERY_MANIFEST_20260820_v1.json",
-    "mirror_receipt_path": "multiverse_vnext/VNEXT_RECOVERY_MIRROR_RECEIPT_20260820_v1.json",
-    "test_receipt_path": "multiverse_vnext/VNEXT_VAULT_RECOVERY_TEST_RECEIPT_20260820_v1.json"
+  "vault_fix_evidence": {
+    "stale_write_cas": "PASS_HTTP_409_NO_MUTATION",
+    "pause_receipt_pinned_identity": "PASS",
+    "bootstrap_discovery_rehearsal": "PASS_ONE_ACTIVE_VNEXT_PR_BASE_MATCHES_MAIN",
+    "dual_root_byte_restore": "PASS_SHA256_MATCH",
+    "firewall_regression": "PASS_METADATA_ONLY_NO_PROTECTED_BYTES",
+    "independent_vault_recheck_required": true
   },
-  "vault_review": {
-    "input_verdict": "MATERIAL_BLOCK_FOR_ACCEPTANCE_CORE_REVISION_ALLOWED",
-    "material_findings": [
-      "STALE_WRITE_NOT_MECHANICALLY_BLOCKED",
-      "PAUSE_RECEIPT_PATH_ONLY_REFERENCE",
-      "NO_SECOND_PHYSICAL_RECOVERY_EVIDENCE",
-      "BOOTSTRAP_NOT_SELF_DISCOVERING"
-    ],
-    "revision_status": "CORE_FIXES_IN_PROGRESS",
-    "acceptance_block_remains_until_vault_recheck": true
+  "operational_incident_audit": {
+    "invalid_transient_write_commit": "e2f9ea119de35c27eefd955434bf1b5420f97d05",
+    "classification": "INVALID_TRANSIENT_WRITE_NEVER_VALID_STATE",
+    "repaired_commit": "5dfa3b806a49d2f3d02ee55d4aac27c1fa22db37",
+    "hidden": false
   },
   "source_intelligence_policy": {
     "acquisition_purpose_at_time_separate_from_later_research_use": true,
@@ -117,12 +130,11 @@
     "NEW_SPEND_DEFAULT": "NO"
   },
   "next_actions": [
-    "Materialize Drive recovery package plus raw SHA-256 manifest.",
-    "Run non-destructive Vault recovery tests and write immutable test receipt.",
-    "Request Vault recheck of PR #2.",
-    "After Vault clears or narrows canonical/recovery block, route revised Batch-1 to Lab."
+    "Request Vault recheck of PR #2 using the revised artifacts and recovery evidence.",
+    "If Vault no longer reports MATERIAL_BLOCK on canonical/recovery, route Batch-1 to Lab.",
+    "Do not request Auditor acceptance yet."
   ],
-  "owner_action_now": "NONE",
+  "owner_action_now": "TEMPORARY_MANUAL_RELAY_TO_EXISTING_VAULT_CHAT",
   "next_write_requirements": {
     "must_fetch_current_blob_and_main_head_first": true,
     "new_generation_must_equal_current_plus_one": true,
