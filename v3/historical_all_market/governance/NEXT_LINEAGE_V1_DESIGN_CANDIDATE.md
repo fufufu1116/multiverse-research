@@ -12,7 +12,7 @@ A negative day is acceptable. Promotion requires evidence that the bankroll path
 
 This candidate is result-aware because it incorporates lessons from the closed DEV2000 A/B lineage. Therefore it MUST receive independent material governance review before Freeze or scientific execution.
 
-Current Segment C is prohibited for redesign/selection. `ECON_HOLDOUT1000` remains `SEALED`.
+Current DEV2000 Segment C is prohibited for redesign/selection **and is retired from any new-lineage untouched-validation claim**. It was part of the prior frozen lineage and its settlement catalog was physically recovered under that audit even though the Stage-7 evaluator never opened/scored it. `ECON_HOLDOUT1000` remains `SEALED`.
 
 ---
 
@@ -116,13 +116,15 @@ Minimum calendar coverage candidate:
 Race count alone cannot satisfy the calendar requirement.
 
 The universe must undergo a collision audit against:
-- DEV2000 A/B/C
+- DEV2000 all 2000 races
 - all previously scored economic datasets
-- SIM100 dates
+- SIM100 dates/races
 - Shadow universes
 - any prior holdout membership
 
-A collision may be admitted only as explicitly exposed development data; it can never be represented as untouched validation.
+DEV2000 Segment C is permanently excluded from new-lineage development, selection, and untouched validation. Its non-scoring in the old lineage is preserved as an audit fact, but it is not recycled as fresh evidence.
+
+A collision may be admitted only as explicitly exposed development data when governance permits; it can never be represented as untouched validation.
 
 ### 4.2 Final untouched evidence
 
@@ -368,7 +370,7 @@ If final untouched validation fails:
 
 This candidate does NOT authorize:
 - execution of the new scientific search
-- current DEV2000 Segment-C use for redesign
+- DEV2000 Segment-C use for any new-lineage evidence claim
 - `ECON_HOLDOUT1000` access
 - Candidate A/B1a refit
 - live order generation
