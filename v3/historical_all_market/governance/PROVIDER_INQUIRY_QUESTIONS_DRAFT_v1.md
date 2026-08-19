@@ -9,6 +9,28 @@ Ask only the minimum questions required to determine whether a provider can supp
 
 Do not disclose proprietary model details beyond what is necessary.
 
+## Verified public contact targets
+
+### JKA / KEIRIN.JP general inquiry
+
+Public contact:
+`webmaster@keirin-autorace.or.jp`
+
+Role status:
+`GENERAL_KEIRIN_JP/JKA_INQUIRY_CONTACT — NOT VERIFIED AS DATA-LICENSING DESK`
+
+If used, the message must explicitly ask to be redirected to the correct department if data licensing / authorized feed provision is handled elsewhere.
+
+### Team-Nave product/service inquiry
+
+Public contact:
+`support@team-nave.com`
+
+Role status:
+`VERIFIED_PUBLIC_PRODUCT_SERVICE_INQUIRY_CONTACT`
+
+Public product pages currently confirm keirin AI and CTC betting API, but not an equivalent public keirin database/data-feed API.
+
 ## Core questions for JKA / official feed route
 
 1. Is there an official data provision/feed/service for keirin race information available to external researchers, developers, businesses, or contracted information providers?
