@@ -1,7 +1,7 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
-  "updated_jst": "2026-08-19T23:07:00+09:00",
-  "status": "ACTIVE_RESEARCH_NEW_LINEAGE_PREFLIGHT_AUDIT_READY_NOT_FROZEN",
+  "updated_jst": "2026-08-19T23:22:00+09:00",
+  "status": "ACTIVE_RESEARCH_NEW_LINEAGE_PREFLIGHT_NO_EXTERNAL_CONTACT_NOT_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
   "bootstrap_protocol": "v3/historical_all_market/governance/HANDOFF_BOOTSTRAP_PROTOCOL_v1.md",
   "artifact_pointer_registry": "v3/historical_all_market/governance/ARTIFACT_POINTER_REGISTRY_KEIRIN_v1.json",
@@ -13,6 +13,14 @@
     "same_lineage_B_C_rescue_tuning": "PROHIBITED",
     "new_untouched_validation_opened": false,
     "new_validation_trial_consumed_after_close": 0
+  },
+  "owner_policy": {
+    "external_provider_contact": "PROHIBITED_UNLESS_OWNER_LATER_EXPLICITLY_REVERSES",
+    "external_email_call_form_vendor_account_trial_purchase_contract": "PROHIBITED",
+    "personal_nonpublic_research_collection": "PREFERRED_ROUTE_SUBJECT_TO_SOURCE_RULES_AND_SCIENTIFIC_PROVENANCE",
+    "false_retroactive_collection_purpose_story": "PROHIBITED",
+    "policy_artifact": "v3/historical_all_market/governance/NO_EXTERNAL_CONTACT_PERSONAL_RESEARCH_COLLECTION_BOUNDARY_v1.md",
+    "policy_commit": "b57f67ba02d03a5cbff41dfe2bd2aaf77479e3c0"
   },
   "parent_diagnostic_state": {
     "A_TOP10_B_pass_count": 0,
@@ -38,88 +46,43 @@
     ]
   },
   "stage0_design_artifacts": {
-    "structure_provenance_schema": {
-      "path": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_STRUCTURE_PROVENANCE_SCHEMA_AUDIT_v1.md",
-      "commit": "fdb0b8372f1e09121e134f64e928c347a589c778"
-    },
-    "source_transport": {
-      "path": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_SOURCE_TRANSPORT_AUDIT_v1.md",
-      "commit": "c1ed6a6afb0d3d966c8d21fd18d741f37ed397d1"
-    },
-    "provider_selection": {
-      "path": "v3/historical_all_market/governance/NEW_LINEAGE_SOURCE_PROVIDER_SELECTION_DRAFT_v1.md",
-      "commit": "f4822e3f30d6f234b13ddb109b779a2372d7e8f3"
-    },
-    "provider_rights_matrix": {
-      "path": "v3/historical_all_market/governance/NEW_LINEAGE_PROVIDER_RIGHTS_MATRIX_v1.md",
-      "commit": "8461a5ca13b25c8ca83011307250e5c350775431"
-    },
+    "structure_provenance_schema": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_STRUCTURE_PROVENANCE_SCHEMA_AUDIT_v1.md",
+    "source_transport": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_SOURCE_TRANSPORT_AUDIT_v1.md",
+    "provider_selection_history_only": "v3/historical_all_market/governance/NEW_LINEAGE_SOURCE_PROVIDER_SELECTION_DRAFT_v1.md",
+    "provider_rights_matrix": "v3/historical_all_market/governance/NEW_LINEAGE_PROVIDER_RIGHTS_MATRIX_v1.md",
     "provider_inquiry_draft": {
       "path": "v3/historical_all_market/governance/PROVIDER_INQUIRY_QUESTIONS_DRAFT_v1.md",
-      "commit": "cad7f94f23b77538fbe86ab19b0c6ac2d9d77bcf",
-      "send_status": "NOT_SENT_OWNER_APPROVAL_REQUIRED"
+      "send_status": "DO_NOT_SEND_UNDER_CURRENT_OWNER_POLICY"
     }
   },
   "source_rights_state": {
+    "KEIRIN_JP_PUBLIC_PAGES": "PUBLICLY_VIEWABLE_BUT_BULK_ML_REUSE_NOT_ASSUMED_AUTHORIZED",
     "JKA_VIS": "OFFICIAL_UPSTREAM_CONFIRMED_PUBLIC_OPEN_ML_LICENSE_NOT_FOUND",
-    "KEIRIN_JP_PUBLIC_PAGES": "SEMANTIC_AUDIT_ONLY_BULK_ML_REUSE_NOT_AUTHORIZED",
-    "Team_Nave": "KEIRIN_AI_AND_BETTING_API_CONFIRMED_KEIRIN_DATABASE_FEED_NOT_PROVEN",
-    "WINTICKET": "MODERN_OPERATIONAL_BENCHMARK_LINEUP_AND_LINE_POWER_USE_CONFIRMED_NOT_TRAINING_SOURCE",
+    "Team_Nave": "BENCHMARK_CONTEXT_ONLY_NO_CONTACT",
+    "WINTICKET": "MODERN_OPERATIONAL_BENCHMARK_CONTEXT_ONLY_NOT_TRAINING_SOURCE",
     "admitted_provider": null,
+    "external_contact_sent": false,
     "prospective_collection_authorized": false,
-    "external_contact_sent": false
+    "personal_manual_collection_candidate": "ALLOWED_ONLY_WITH_TRUTHFUL_PURPOSE_MINIMAL_USE_NO_REDISTRIBUTION_NO_BYPASS_AND_PRE_PROVENANCE",
+    "automated_bulk_collection": "NOT_AUTO_AUTHORIZED_BY_PERSONAL_PURPOSE_OR_PUBLIC_VISIBILITY",
+    "access_control_bypass": "PROHIBITED"
   },
   "new_lineage_schema_candidates_not_frozen": [
-    "race_regime",
-    "line_group_id",
-    "line_position",
-    "line_size",
-    "is_singleton",
-    "num_lines",
-    "line_source",
-    "line_snapshot_timestamp",
-    "line_observation_type",
-    "H",
-    "nige",
-    "makuri",
-    "sashi",
-    "mark",
-    "bank_length_m",
-    "home_straight_m",
-    "bank_cant_deg",
-    "weather",
-    "temperature_c",
-    "wind_speed_mps",
-    "wind_direction"
+    "race_regime","line_group_id","line_position","line_size","is_singleton","num_lines",
+    "line_source","line_snapshot_timestamp","line_observation_type","H",
+    "nige","makuri","sashi","mark",
+    "bank_length_m","home_straight_m","bank_cant_deg",
+    "weather","temperature_c","wind_speed_mps","wind_direction"
   ],
   "source_independent_implementation": {
-    "PRE_interface_schema": {
-      "path": "v3/historical_all_market/new_lineage/PRE_INTERFACE_SCHEMA_DRAFT_v1.json",
-      "commit": "ce405e4aded9d2a033ed29f6cd123e8d92dda02f"
-    },
-    "PRE_structure_validator": {
-      "path": "v3/historical_all_market/new_lineage/validate_pre_structure_v1.py",
-      "commit": "1ad9155ab4654e2656c67318bfa15c7ca326086e"
-    },
-    "top3_architecture_core": {
-      "path": "v3/historical_all_market/new_lineage/top3_architecture_core_v1.py",
-      "commit": "2ebfe605665232941ae53ec598607a15f6e0f88f"
-    },
-    "probability_object_contract": {
-      "path": "v3/historical_all_market/new_lineage/probability_object_contract_v1.py",
-      "commit": "7528981977302cd187cde2814cf40d08a234d8cc"
-    },
-    "synthetic_fixture": {
-      "path": "v3/historical_all_market/new_lineage/fixtures/SYNTHETIC_STANDARD_PRE_v1.json",
-      "commit": "e2d7d09ec94063edb1df3e15f47d16413726e43a"
-    },
-    "synthetic_selftest_script": {
-      "path": "v3/historical_all_market/new_lineage/synthetic_selftest_v1.py",
-      "commit": "dd85b2e0f2c1bc729e9b25ff0b90d90e94aceac7"
-    },
+    "PRE_interface_schema": "v3/historical_all_market/new_lineage/PRE_INTERFACE_SCHEMA_DRAFT_v1.json",
+    "PRE_structure_validator": "v3/historical_all_market/new_lineage/validate_pre_structure_v1.py",
+    "top3_architecture_core": "v3/historical_all_market/new_lineage/top3_architecture_core_v1.py",
+    "probability_object_contract": "v3/historical_all_market/new_lineage/probability_object_contract_v1.py",
+    "synthetic_fixture": "v3/historical_all_market/new_lineage/fixtures/SYNTHETIC_STANDARD_PRE_v1.json",
+    "synthetic_selftest_script": "v3/historical_all_market/new_lineage/synthetic_selftest_v1.py",
     "synthetic_selftest_receipt": {
       "path": "v3/historical_all_market/governance/NEW_LINEAGE_SYNTHETIC_CORE_SELFTEST_RECEIPT_v1.json",
-      "commit": "916754d745816fdef5044878c7682990ef9483ea",
       "status": "PASS_SYNTHETIC_ONLY_NO_PREDICTIVE_EVIDENCE"
     }
   },
@@ -144,27 +107,15 @@
   "validation_candidate": {
     "split": "STRICT_CHRONOLOGICAL_TRAIN_CAL_FINAL",
     "FINAL_one_shot": true,
-    "primary_probability_metrics": [
-      "winner_NLL",
-      "rank2_conditional_NLL",
-      "rank3_conditional_NLL",
-      "joint_top3_NLL",
-      "calibration"
-    ],
+    "primary_probability_metrics": ["winner_NLL","rank2_conditional_NLL","rank3_conditional_NLL","joint_top3_NLL","calibration"],
     "architecture_selected_by_ROI": false,
     "first_economic_test": "FLAT100_MAX_ONE_ELEMENTARY_TICKET_PER_RACE_CANDIDATE",
     "kelly": "SECONDARY_AFTER_COHERENT_CALIBRATION",
     "portfolio_optimizer": "DEFERRED"
   },
   "independent_audit_state": {
-    "updated_package": {
-      "path": "v3/historical_all_market/governance/INDEPENDENT_NEXT_LINEAGE_V2_AUDIT_PACKAGE.md",
-      "commit": "cbb0557169074ee483e2784cddad5f1225a05b09"
-    },
-    "amendment": {
-      "path": "v3/historical_all_market/governance/INDEPENDENT_NEXT_LINEAGE_V2_AUDIT_PACKAGE_AMENDMENT_v1.md",
-      "commit": "9558b733f6fe70ebf0b970766530760452001680"
-    },
+    "updated_package": "v3/historical_all_market/governance/INDEPENDENT_NEXT_LINEAGE_V2_AUDIT_PACKAGE.md",
+    "amendment": "v3/historical_all_market/governance/INDEPENDENT_NEXT_LINEAGE_V2_AUDIT_PACKAGE_AMENDMENT_v1.md",
     "review_result_received": false,
     "final_freeze_authorized": false
   },
@@ -176,13 +127,13 @@
     "staged_5000_PRE_training_eligibility": false,
     "NEXTGEN5000_auto_admission": "PROHIBITED"
   },
-  "next_gate": "PARALLEL_UPDATED_INDEPENDENT_AUDIT_AND_PROVIDER_CONTACT_APPROVAL",
+  "next_gate": "NO_CONTACT_PERSONAL_DATA_ROUTE_PLUS_UPDATED_INDEPENDENT_AUDIT",
   "next_exact_actions": [
-    "Send the updated v2 audit package to independent Claude/Gemini only through an Owner-approved interaction and record their exact responses before any architecture/schema Freeze.",
-    "If Owner approves external provider inquiry, send the prepared minimum questions to the correct JKA/authorized-provider contact; do not purchase or accept terms without separate approval.",
-    "Continue source-independent implementation preflight and test fixtures while provider/audit responses are pending.",
-    "Do not admit any provider until rights, timestamp semantics, historical point-in-time fidelity and machine transport all pass.",
-    "Do not open any new untouched outcomes until schema, architecture, source route and validation protocol are frozen after independent audit."
+    "Do not contact any external provider under current Owner policy.",
+    "Audit a truthful personal/nonpublic collection route using publicly available information without access-control or anti-bot bypass and without assuming public visibility authorizes bulk crawling.",
+    "Prefer existing lawfully-held artifacts and manual/minimal structured collection with source/timestamp provenance where scientifically sufficient.",
+    "Continue source-independent implementation and independent architecture audit while no-contact data route is evaluated.",
+    "Do not open new untouched outcomes until schema, source route, architecture and validation protocol are frozen after independent audit."
   ],
   "hard_prohibitions": [
     "NO_CURRENT_DEV2000_C_ACCESS_FOR_NEW_LINEAGE",
@@ -192,7 +143,8 @@
     "NO_UNVERIFIED_ARTIFACT_AS_CONFIRMED",
     "NO_UNAUTHORIZED_NETWORK_COLLECTION",
     "NO_BULK_SCRAPING_OR_ACCESS_CONTROL_RATE_LIMIT_CAPTCHA_WAF_BYPASS",
-    "NO_EXTERNAL_PROVIDER_CONTACT_OR_PURCHASE_WITHOUT_OWNER_APPROVAL",
+    "NO_EXTERNAL_PROVIDER_CONTACT_ACCOUNT_TRIAL_PURCHASE_OR_CONTRACT",
+    "NO_FALSE_RETROSPECTIVE_PURPOSE_CHARACTERIZATION",
     "NO_REVIEWER_NUMERIC_CLAIM_AS_THRESHOLD_WITHOUT_EXACT_PROVENANCE",
     "NO_FINAL_FREEZE_BEFORE_UPDATED_INDEPENDENT_AUDIT"
   ]
