@@ -10,9 +10,11 @@
       "CAS anti-rollback canonical state discipline",
       "Immutable evidence/provenance pinning",
       "Deterministic bootstrap and dual physical recovery evidence",
-      "Self-Evolution Protocol",
+      "Self-Evolution Protocol with fail-closed Fast Path classification",
+      "Fail-closed Authorization Contract enforced by governed Execution adapters",
       "Permission/autonomy model",
       "Lab Architecture Gap Analysis",
+      "Exact-head independent material architecture review for this North Star candidate",
       "vNext acceptance audit",
       "Exact Keirin resume protection"
     ],
@@ -24,44 +26,83 @@
       "Dify/Replit adoption",
       "New paid services",
       "Complete knowledge graph implementation",
-      "Complete opportunity engine implementation"
+      "Complete opportunity engine implementation",
+      "Canonical-authority host migration implementation",
+      "Full source common-origin/AI-taint graph implementation",
+      "Full deletion propagation implementation",
+      "L3-L5 autonomy evidence profiles",
+      "Dependency SBOM/integrity automation",
+      "Quota circuit breakers and observability SLO implementation"
     ]
   },
+  "finding_taxonomy": {
+    "CURRENT_VERSION_MATERIAL_BLOCK": "A defect that invalidates a vNext acceptance claim or required vNext control; must be fixed before vNext acceptance.",
+    "DEFERRED_NORTH_STAR_MATERIAL_GAP": "Material for a later North Star capability level or milestone but outside vNext claims; must have a named future gate and must not be represented as already solved.",
+    "MINOR_AUTOFIX": "Non-material consistency or clarity issue safe to correct without widening scope.",
+    "NEXT_VERSION_CANDIDATE": "Beneficial nonblocking improvement that does not invalidate current vNext acceptance claims."
+  },
   "blocking_acceptance_criteria": [
-    {"id":"DOD-01","criterion":"No unresolved MATERIAL_ARCHITECTURE_GAP after Lab Architecture Gap Analysis","evidence":"Lab report + Core disposition"},
-    {"id":"DOD-02","criterion":"Vault clears canonical identity, anti-rollback, provenance, bootstrap and dual-root recovery as no MATERIAL_BLOCK","evidence":"Vault recheck verdict"},
+    {"id":"DOD-01","criterion":"No unresolved CURRENT_VERSION_MATERIAL_BLOCK after Lab Architecture Gap Analysis and Core disposition; every DEFERRED_NORTH_STAR_MATERIAL_GAP has an explicit future milestone and does not invalidate a vNext claim","evidence":"Lab report + Core disposition"},
+    {"id":"DOD-02","criterion":"Vault clears canonical identity, anti-rollback, provenance, bootstrap and dual-root recovery as no MATERIAL_BLOCK for the reviewed scope","evidence":"Vault recheck verdict"},
     {"id":"DOD-03","criterion":"North Star Architecture defines provider/tool/source adapter boundaries and provider-independent Multiverse identity","evidence":"pinned architecture artifact"},
-    {"id":"DOD-04","criterion":"Self-Evolution Protocol prevents direct unreviewed production/constitution mutation and defines canary/promotion/monitor/rollback","evidence":"pinned protocol artifact"},
-    {"id":"DOD-05","criterion":"Permission model and Autonomy L0-L5 explicitly state that higher autonomy does not widen forbidden or Owner-gated permissions","evidence":"architecture artifact"},
-    {"id":"DOD-06","criterion":"Threat/security/recovery categories have either architecture coverage or an explicit deferred implementation plan with no material uncovered category","evidence":"Lab gap matrix"},
-    {"id":"DOD-07","criterion":"Current accepted-state recovery can be reconstructed without chat memory and material bytes exist in at least two physical recovery roots","evidence":"bootstrap + recovery manifest + restore receipt"},
+    {"id":"DOD-04","criterion":"Self-Evolution Protocol prevents direct unreviewed production/constitution mutation and prevents change authors from self-classifying into Fast Path without a pinned deterministic classifier or non-author eligibility witness; ambiguity fails closed to material review","evidence":"pinned Self-Evolution Protocol + adversarial Fast Path test receipt"},
+    {"id":"DOD-05","criterion":"Authorization Contract defines policy identity, actor, operation/target, permission ceiling, scope, data exposure, expiry, grant/Owner-Gate references, revocation and Safe-Mode generations; every governed Execution adapter rejects missing/stale/expired/revoked/out-of-scope/over-ceiling/Owner-Gate-missing/prohibited/unknown authorization state and cannot self-grant or downgrade permission classification","evidence":"pinned Authorization Contract + negative authorization test receipt"},
+    {"id":"DOD-06","criterion":"Threat/security/recovery categories have either architecture coverage or an explicit deferred implementation plan with no material uncovered category for vNext claims","evidence":"Lab gap matrix + Core disposition"},
+    {"id":"DOD-07","criterion":"Final accepted-state recovery can be reconstructed without chat memory and material accepted-state bytes exist in at least two physical recovery roots","evidence":"final bootstrap + final recovery manifest + final restore receipt"},
     {"id":"DOD-08","criterion":"Keirin firewall remains unchanged: holdout sealed, DEV2000 C not consumed for new-lineage rescue, no protected RESULT/PAYOUT leakage, no validation trial consumption","evidence":"pinned pause/canonical Keirin state metadata"},
     {"id":"DOD-09","criterion":"Exact resume procedure resolves latest legitimate verified Keirin state and cannot be rolled back by stale pause artifacts","evidence":"precedence test + bootstrap rule"},
-    {"id":"DOD-10","criterion":"Auditor reviews the acceptance candidate and finds no release-blocking issue","evidence":"Auditor verdict"},
-    {"id":"DOD-11","criterion":"Known nonblocking improvements are recorded as NEXT_VERSION_CANDIDATE rather than keeping vNext open","evidence":"acceptance disposition"},
-    {"id":"DOD-12","criterion":"No new spend or provider lock-in is required to satisfy vNext under current Owner constraints","evidence":"cost/resource review"}
+    {"id":"DOD-10","criterion":"Auditor reviews the exact acceptance candidate and finds no release-blocking issue","evidence":"Auditor exact-head verdict"},
+    {"id":"DOD-11","criterion":"Known nonblocking improvements are recorded as NEXT_VERSION_CANDIDATE or DEFERRED_NORTH_STAR_MATERIAL_GAP rather than keeping vNext open","evidence":"acceptance disposition"},
+    {"id":"DOD-12","criterion":"No new spend or provider lock-in is required to satisfy vNext under current Owner constraints","evidence":"cost/resource review"},
+    {"id":"DOD-13","criterion":"This North Star architecture candidate receives an independent material architecture review against the exact review-stable head after Core fixes; absence of that exact-head verdict blocks Acceptance regardless of whether Lab reports no remaining gap","evidence":"independent reviewer exact-head verdict; reviewer provider is replaceable and not constitutionally fixed to Gemini"},
+    {"id":"DOD-14","criterion":"Owner can complete review/recovery routing without routine Git/SHA/shell operations","evidence":"Owner UX rehearsal before Acceptance"}
   ],
-  "definition_of_done": "All blocking acceptance criteria PASS or are explicitly satisfied by equivalent stronger evidence; no unresolved MATERIAL_BLOCK; acceptance receipt pins exact artifacts/commit; rollback/recovery path verified; then core upgrade work pauses and Keirin exact-resumes from the latest legitimate verified canonical state.",
+  "definition_of_done": "All blocking acceptance criteria PASS or are explicitly satisfied by equivalent stronger evidence; no unresolved CURRENT_VERSION_MATERIAL_BLOCK; exact-head independent architecture review completed; acceptance receipt pins exact artifacts/commit; rollback/recovery path verified; then core upgrade work pauses and Keirin exact-resumes from the latest legitimate verified canonical state.",
   "architecture_closure_rule": {
     "reopen_current_version_only_if": [
       "identity invariant violation",
       "acceptance criterion failure",
-      "material security/recovery defect",
+      "material security/recovery defect that affects vNext claims",
       "constitutional contradiction",
       "new evidence invalidates an acceptance claim"
     ],
-    "otherwise": "Record as NEXT_VERSION_CANDIDATE"
+    "otherwise": "Record as NEXT_VERSION_CANDIDATE or DEFERRED_NORTH_STAR_MATERIAL_GAP with a named future milestone"
   },
   "review_sequence": [
     "CORE_DRAFT",
     "VAULT_CANONICAL_RECOVERY_RECHECK",
     "LAB_ARCHITECTURE_GAP_ANALYSIS",
     "CORE_DISPOSITION_AND_COMPRESSION",
-    "INDEPENDENT_REVIEW_IF_MATERIAL_GAP_OR_DISPUTE",
-    "AUDITOR_ACCEPTANCE_REVIEW",
+    "INDEPENDENT_MATERIAL_ARCHITECTURE_REVIEW_EXACT_HEAD_REQUIRED_FOR_THIS_NORTH_STAR",
+    "FINAL_ACCEPTANCE_RECOVERY_CAPSULE_AND_ZERO_HISTORY_BOOTSTRAP",
+    "AUDITOR_ACCEPTANCE_REVIEW_EXACT_HEAD",
     "OWNER_GATE_IF_REQUIRED_BY_GOVERNANCE",
     "ACCEPT_OR_ROLLBACK",
     "KEIRIN_EXACT_RESUME"
   ],
-  "owner_burden_target": "Routine routing/research/file/SHA/recovery work remains system responsibility; Owner receives only material gates and consolidated exceptions."
+  "institution_compression_target": {
+    "principle": "Logical responsibility names may remain for compatibility, but implementation should avoid unnecessary permanent agents/services/chats.",
+    "steady_logical_implementation_groups": [
+      "CORE including Resource and Evolution orchestration",
+      "EVIDENCE_KNOWLEDGE combining Source Intelligence and Knowledge Base",
+      "VAULT_RECOVERY combining Vault and Defense/Recovery custody functions while preserving least-privilege capability boundaries",
+      "EXECUTION_CONNECTION combining execution and adapter registry while remaining separate from permission-policy authorship",
+      "LAB",
+      "AUDITOR"
+    ],
+    "optional_module": "OPPORTUNITY",
+    "independent_reviewer": "ephemeral independent review instance when governance requires; not a permanent thirteenth institution"
+  },
+  "deferred_north_star_material_gaps": [
+    {"gap":"Common-origin evidence correlation and AI-derived evidence taint/lineage","future_gate":"Before Phase C evidence automation or any claim of independent corroboration at scale"},
+    {"gap":"Canonical-authority migration after permanent GitHub loss","future_gate":"Before L5 provider-sovereignty claim or migration away from current canonical host"},
+    {"gap":"Deletion/tombstone propagation across mirrors, derivatives and provider copies","future_gate":"Before automated retention/deletion enforcement or sensitive lifecycle expansion"},
+    {"gap":"Minimum evidence/control profiles for L3-L5 autonomy promotion","future_gate":"Before any promotion above L2"}
+  ],
+  "next_version_candidates": [
+    "Dependency integrity pinning/SBOM/supply-chain automation",
+    "Quota/cost circuit breakers before broad L3 automation",
+    "Observability SLO/threshold/escalation automation"
+  ],
+  "owner_burden_target": "Routine routing/research/file/SHA/recovery work remains system responsibility; Owner receives only material gates, consolidated exceptions and milestone roadmap status."
 }
