@@ -1,0 +1,77 @@
+{
+  "project": "Multiverse Hybrid v3.0",
+  "record": "DEV2000_HISTORICAL_REPLAY_INDEPENDENT_VERIFICATION_v1",
+  "status": "PASS_DIAGNOSTIC_REPLAY_NO_SHADOW_STATE_CHANGE",
+  "purpose": "Verify that frozen pre-result DEV2000 predictions and later-authorized DEV2000 RESULT reproduce the already-recorded Phase-A sporting metrics before first Shadow250-v2 prospective screen.",
+  "input_bindings": {
+    "dev2000_universe_csv_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "dev2000_pre_table_csv_sha256_from_prediction_lock": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
+    "prediction_csv_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "result_jsonl_sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+    "candidate_a_prediction_lock_sha256": "2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada",
+    "b1a_freeze_sha256": "ef93d7ab858320fb18e745a49baf5bb2f4b21aca0f51468c955f9c6100181646"
+  },
+  "integrity": {
+    "prediction_rows": 14255,
+    "prediction_races": 2000,
+    "result_races": 2000,
+    "prediction_result_race_set_equal": true,
+    "race_set_difference_count": 0,
+    "result_standard_races": 2000,
+    "result_first_place_dead_heat_races": 4,
+    "dead_heats_preserved_as_first_set": true
+  },
+  "dev1000_exact_phase_a_reproduction": {
+    "definition": "DEV2000 universe dev_index 1..1000",
+    "races": 1000,
+    "prediction_rows": 7119,
+    "Candidate_A": {
+      "Brier": 0.10149539331217405,
+      "binary_logloss": 0.3375980238720246,
+      "ECE_10bin": 0.026033620923127398
+    },
+    "B1a_RECONSTITUTED_v1": {
+      "Brier": 0.0999370871068068,
+      "binary_logloss": 0.33233806423376144,
+      "ECE_10bin": 0.00785937912627017
+    },
+    "model_disagreement": {
+      "top1_agree_false_races": 196,
+      "Candidate_A_hit_rate": 0.3112244897959184,
+      "B1a_hit_rate": 0.3163265306122449,
+      "top1_agree_true_races": 804,
+      "Candidate_A_hit_rate_when_agree": 0.48258706467661694,
+      "B1a_hit_rate_when_agree": 0.48258706467661694
+    },
+    "matches_existing_PHASE_A_EXECUTION_REPORT_v1_rounded_values": true
+  },
+  "all_dev2000_descriptive_only": {
+    "races": 2000,
+    "Candidate_A": {
+      "Brier": 0.10047269401500326,
+      "binary_logloss": 0.33376882351363435,
+      "ECE_10bin": 0.024929547272704248,
+      "top1_hit_any_first_set": 0.4485
+    },
+    "B1a_RECONSTITUTED_v1": {
+      "Brier": 0.09942562813608169,
+      "binary_logloss": 0.3291065251920662,
+      "ECE_10bin": 0.006986382127043199,
+      "top1_hit_any_first_set": 0.44
+    },
+    "interpretation_policy": "DESCRIPTIVE_REPLAY_ONLY; does not authorize model change, race filter, policy promotion, or Shadow selection change"
+  },
+  "safety": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_result_accessed": false,
+    "holdout_payout_accessed": false,
+    "holdout_price_accessed": false,
+    "dev2000_payout_parsed_for_this_replay": false,
+    "wagering": "UNAUTHORIZED",
+    "Shadow250_v2_selected_races": 0,
+    "prospective_shadow_screen_count": 0,
+    "prospective_v3_scientific_trial": 0
+  },
+  "conclusion_scope": "Historical PRE->pre-result Prediction Lock->later RESULT sporting replay is reproducible. This is validation evidence only and is not a substitute for strictly prospective Shadow250-v2 evaluation.",
+  "next_gate": "Independent Gemini governance adjudication of scheduled_start metadata extraction from the already-frozen Tamano PRE PDF before first prospective screen."
+}
