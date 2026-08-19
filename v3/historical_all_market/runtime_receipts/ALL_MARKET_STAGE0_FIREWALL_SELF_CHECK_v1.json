@@ -1,0 +1,35 @@
+{
+  "record": "ALL_MARKET_STAGE0_FIREWALL_SELF_CHECK_v1",
+  "status": "PASS",
+  "price_executable": {
+    "path": "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py",
+    "git_blob": "f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8",
+    "allowed_output_role": "MARKET_AVAILABILITY_AND_CLOSING_PRICE_ONLY",
+    "static_forbidden_symbols_absent": ["refund_table","settlements_yen_per_100","parse_refund","dl_entries("],
+    "result_fields_emitted": false,
+    "settlement_fields_emitted": false
+  },
+  "settlement_executable": {
+    "path": "v3/historical_all_market/kdreams_settlement_recovery_v1.py",
+    "git_blob": "b8b8ab0e0904541bd6fc45e7fe415d323e63ec45",
+    "allowed_output_role": "OFFICIAL_REFUND_SETTLEMENT_ONLY",
+    "static_forbidden_symbols_absent": ["JS_ODDSCONTENTS","JS_ODDSSTATUS","closing_price_catalogs","B_CLOSING_PRICE","parse_wide","parse_3rentan"],
+    "price_fields_emitted": false,
+    "operational_stage": "POST_RULE_FREEZE_SETTLEMENT_ONLY"
+  },
+  "shared_raw_policy": {
+    "same_sha_bound_post_race_raw_may_be_used_by_both": true,
+    "executables_are_separate": true,
+    "outputs_are_separate": true,
+    "settlement_bulk_before_stage1_to_6_rule_freeze": "PROHIBITED"
+  },
+  "scientific_state": {
+    "bulk_price_recovery_started": false,
+    "bulk_settlement_recovery_started": false,
+    "stage1_started": false,
+    "ev_computed": false,
+    "roi_computed": false,
+    "trial_count": 0,
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
