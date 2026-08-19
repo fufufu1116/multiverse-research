@@ -1,0 +1,59 @@
+{
+  "record": "STAGE7_NO_B_VALIDATION_POSTMORTEM_RECEIPT_v1",
+  "date_jst": "2026-08-19",
+  "lineage_status": "CLOSED_NO_B_VALIDATED_CONFIGURATION",
+  "source_stage7_ab_receipt_record": "STAGE7_AB_SELECTION_RECEIPT_v2",
+  "stage7_status": "NO_B_VALIDATED_CONFIGURATION",
+  "segment_A": {
+    "dev_index": "1..1000",
+    "race_date_range": "2026-03-01..2026-03-27",
+    "unique_race_dates": 15,
+    "top_configuration_example": {
+      "configuration_id": "P00:G20:SINGLE:FK10_R2",
+      "bet_race_count": 148,
+      "total_stake_jpy": 18900,
+      "total_return_jpy": 45790,
+      "realized_roi": 1.4227513227513229,
+      "ending_bankroll_jpy": 126890,
+      "maximum_drawdown": 0.12664326519375044,
+      "hit_ticket_count": 1,
+      "return_concentration_observation": "All realized return in this A result came from the sole hit ticket; therefore the observed A ROI is maximally single-hit concentrated."
+    },
+    "top10_structure_observation": {
+      "all_top10_template": "SINGLE",
+      "all_top10_stake_policy": "FK10_R2",
+      "agreement_gates_present": ["G20", "G25"],
+      "profiles_present": ["P00", "P05", "P10", "P20", "P35", "P50", "P100"],
+      "note": "Several profile variants produced identical A realized metrics, showing that the final SINGLE/FK10 path collapsed multiple upstream profile settings to the same realized path on Segment A."
+    }
+  },
+  "segment_B": {
+    "dev_index": "1001..1500",
+    "race_date_range": "2026-03-27..2026-04-03",
+    "unique_race_dates": 8,
+    "a_top10_evaluated": 10,
+    "b_pass_count": 0,
+    "preregistered_b_pass_rule": "realized_roi > 0 AND bet_race_count >= 50 AND maximum_drawdown <= 0.35 AND no_negative_bankroll",
+    "interpretation": "No A_TOP10 configuration satisfied the complete preregistered B validation gate. This does not imply every day or every subperiod was negative."
+  },
+  "segment_C": {
+    "dev_index": "1501..2000",
+    "race_date_range": "2026-04-03..2026-04-10",
+    "unique_race_dates": 8,
+    "opened_by_stage7_evaluator": false,
+    "scientific_scoring_count": 0,
+    "status": "UNTOUCHED_FOR_SELECTION_EVALUATION"
+  },
+  "diagnostic_conclusions": [
+    "The frozen 784-configuration lineage did not establish a generalizable economic edge because no configuration passed Segment B.",
+    "The strongest Segment-A result was highly return-concentrated: 148 bet races and one hit ticket produced all 45790 JPY of realized return.",
+    "Daily loss is not itself a failure criterion; the next lineage should explicitly measure weekly and monthly profitability/stability rather than requiring every day to be positive.",
+    "DEV2000 contains only 15 unique dates in A and 8 unique dates in B, so it is too short to establish robust monthly stability by itself."
+  ],
+  "next_lineage_constraints": {
+    "post_outcome_rescue_tuning_on_current_C": "PROHIBITED",
+    "reuse_current_C_for_new_rule_selection": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "fresh_long_horizon_validation_required": true
+  }
+}
