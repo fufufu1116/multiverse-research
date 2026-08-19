@@ -119,11 +119,14 @@ def parse_3renhuku(root):
             nums=[compact(node_text(x)) for x in tr.xpath('./th') if compact(node_text(x)).isdigit()]
             tds=tr.xpath('./td')
             if not tds: continue
-            v=fcell(tds[-1])
-            if v is None: continue
+            # Rowspan continuation semantics: a two-number row establishes the new
+            # second-car group even when that row's price cell is blank. Later
+            # one-number rows inherit that second car. Update state before price filtering.
             if len(nums)>=2: current_second=int(nums[0]); third=int(nums[1])
             elif len(nums)==1 and current_second is not None: third=int(nums[0])
             else: continue
+            v=fcell(tds[-1])
+            if v is None: continue
             if len({first,current_second,third})<3: continue
             key=canon_triple(first,current_second,third,False)
             if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"3renhuku inconsistent duplicate {key}")
