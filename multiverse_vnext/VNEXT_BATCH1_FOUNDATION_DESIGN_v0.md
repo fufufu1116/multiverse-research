@@ -22,8 +22,12 @@ A later legitimately verified canonical Keirin milestone may supersede that rece
 ### I1 — CHAT LOSS != PROJECT STATE LOSS
 A chat may disappear without destroying the ability to reconstruct project state.
 
-### I2 — No single canonical root
-No single chat, local runtime, Drive file, GitHub file, or vendor UI may be the only place where an irreplaceable project fact exists.
+### I2 — One logical canonical authority, multiple physical recovery roots
+Avoid split-brain state. GitHub remains the primary logical canonical authority for small text/code/governance/state unless a later accepted governance change explicitly replaces that role.
+
+At the same time, no single chat, runtime, GitHub object, Drive object, device, or vendor account may be the only physical place from which an irreplaceable accepted project state can be reconstructed.
+
+Recovery redundancy must therefore mirror or package sufficient canonical state without creating multiple competing authorities.
 
 ### I3 — Verified newer state wins
 Precedence for conflicting project state:
@@ -81,9 +85,13 @@ Minimum fields:
 - content hash where bytes are available
 - created_at / retrieved_at
 - provenance
+- acquisition_purpose_at_time_of_acquisition when relevant
+- later_research_use when relevant
 - mutable vs immutable
 - canonical / working / fallback status
 - protection class
+
+Do not rewrite acquisition purpose retroactively. Later research use is a separate field and does not automatically change permissions, copyright, terms, access-control, privacy, or redistribution boundaries.
 
 Evidence ladder:
 
@@ -154,12 +162,13 @@ Minimum fields:
 ### 3.1 Recovery roots
 
 **GitHub**
-- canonical small text/code/governance/state
+- primary logical canonical authority for small text/code/governance/state under current governance
 - immutable receipts/checkpoints
 - review trail where concise
 
 **Google Drive**
 - heavy artifacts, ZIP/CSV/large execution products
+- recovery mirror/package for accepted milestone state when required by acceptance criteria
 - each heavy artifact must have a GitHub-side pointer/identity receipt when material
 
 **iPhone Cold Snapshot**
@@ -168,7 +177,9 @@ Minimum fields:
 - open formats only where practical
 
 **Bootstrap file**
-A small restart instruction that points to Current State, manifest, recovery instructions, and acceptance/freeze status.
+A small restart instruction that points to Current State, manifest, recovery instructions, acceptance/freeze status, and the canonical-authority rule.
+
+A mirror or snapshot is a recovery copy, not an independent competing source of truth unless governance explicitly promotes it.
 
 ### 3.2 Recovery test, not backup theater
 
@@ -214,6 +225,8 @@ Never claim that a deleted chat can always be restored.
 - anonymous/single-source rumor or provenance-poor claim.
 - may trigger investigation; must not be promoted to fact without evidence.
 
+Tier is an evidence role, not a permanent platform label. A newly useful source type may be proposed as a `SOURCE_REGISTRY_CANDIDATE`; the Source Universe is not closed by this initial list.
+
 ### 4.2 Discovery -> Proof pipeline
 
 For material claims discovered from any source:
@@ -254,11 +267,15 @@ A material Source Object should support:
   "evidence_level": "...",
   "primary_or_secondary": "...",
   "stance": "support|contradict|context|discovery_only",
+  "acquisition_purpose_at_time_of_acquisition": "...",
+  "later_research_use": "...",
   "applicable_terms": "...",
   "archive_or_reference": "...",
   "notes": "..."
 }
 ```
+
+Acquisition purpose and later research use must remain distinct and truthful. A later research use does not retroactively authorize acquisition, copying, redistribution, automation, or access that was otherwise restricted.
 
 Do not archive or reproduce content beyond rights/terms/technical permission.
 No authentication, CAPTCHA, WAF, or rate-limit bypass.
@@ -399,8 +416,8 @@ Batch-1 is ready for formal acceptance review only if all are demonstrated or ex
 1. **Keirin firewall test** — no protected scientific state changed.
 2. **New-chat bootstrap test** — reconstruct active Multiverse phase from durable artifacts without relying on conversation memory.
 3. **State precedence test** — a stale handoff cannot overwrite newer verified state.
-4. **Recovery-root test** — at least two independent usable roots for material accepted state, with a restore procedure.
-5. **Source object test** — one Tier A claim and one Tier D discovery can be recorded without conflating evidence strength.
+4. **Recovery-root test** — at least two independent usable physical recovery roots for material accepted state, with one logical canonical authority and a restore procedure.
+5. **Source object test** — one Tier A claim and one Tier D discovery can be recorded without conflating evidence strength or acquisition purpose with later research use.
 6. **Contradiction test** — a knowledge object can retain supporting and contradicting evidence simultaneously.
 7. **Interop test** — Core can issue one structured review request and ingest a role response without requiring direct AI-to-AI realtime conversation.
 8. **Self-audit test** — Materiality classifier correctly routes at least one minor, one material, one recovery, and one Owner Gate scenario.
@@ -417,6 +434,7 @@ Batch-1 is ready for formal acceptance review only if all are demonstrated or ex
 Review only:
 - pause receipt identity and correctness;
 - GitHub/current-state precedence;
+- one logical canonical authority vs multiple physical recovery roots;
 - recovery roots and SPOFs;
 - mutable vs immutable policy;
 - SHA/provenance claims;
@@ -428,6 +446,7 @@ Review only after Vault findings are available:
 - needless tools/files;
 - restore-test realism;
 - source bias and contradiction handling;
+- acquisition-purpose / research-use boundary handling;
 - iPhone burden;
 - cost creep;
 - ambiguous acceptance criteria;
