@@ -1,6 +1,6 @@
 # Multiverse AI Council — Genesis v7統合運用
 
-最終更新: 2026-08-20 00:17 JST
+最終更新: 2026-08-20 00:20 JST
 
 ## 0. 位置づけ
 
@@ -185,6 +185,40 @@ AI自身も次をIdeaとして起票してよい:
 
 外部AIが使えない・無料枠切れでも研究本体は止めない。
 No.3内部のCore/Vault/Lab/Auditor loopで継続し、独立性が必要なGateだけ後で監査する。
+
+### Shared Artifact Relay — GitHub / Drive / Replit
+
+AI同士が直接同じChatへ入れない場合、**共有Artifactを会話媒体として使う。**
+
+基本:
+- GitHub = 短いReview Request、差分、回答、判定、監査履歴
+- Google Drive = 大きいBundle、CSV/ZIP、重いEvidence
+- Replit = 必要になった場合だけRelay/Orchestrator実行役。Canonical Storageにはしない
+
+概念Protocol:
+1. No.3/Coreが `REVIEW_REQUEST` 相当を共有場所へ置く
+2. 各AIは独立に同じCandidateを読む
+3. 各AIの回答は互いに上書きせず別Responseとして残す
+4. Cross Reviewでは匿名化した他Responseだけを渡す
+5. Judgeが全ResponseとEvidenceを読む
+6. `AUTO_FIX / AUTO_TEST / WATCH / OWNER_GATE / REJECT`へ分類
+7. Material変更はOwner承認まで実行しない
+
+この方式の目的は**Userのコピペ往復を減らすこと**であり、Fileを増やすことではない。
+同じReviewで細かいFileを大量生成せず、可能なら1つのReview Thread / 1 Bundle / structured sectionsで済ませる。
+
+重要:
+- GitHub/Driveに置くだけではGemini/Claudeが自動起動するわけではない
+- AIを起動するTransportは無料で使える手段をその時選ぶ
+- Transportと研究Protocolを分離し、特定VendorにLock-inしない
+- API課金が必要ならOwner Gate
+- CredentialをReview Artifactへ書かない
+- SEALED / Holdout / 未許可DataをRelayに混ぜない
+- Public visibilityとPermissionを混同しない
+
+将来、無料かつ安定した接続が成立すればReplit等で:
+`watch request -> invoke available reviewer -> write response -> notify judge`
+を自動化候補にする。ただし自動化自体が目的になったらLabが止める。
 
 ---
 
