@@ -1,0 +1,74 @@
+name: All-Market Stage1 PL static self-check
+
+on:
+  push:
+    paths:
+      - '.github/workflows/all-market-stage1-pl-static.yml'
+      - 'v3/historical_all_market/stage1_market_structure_only_v1.py'
+      - 'v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py'
+      - 'v3/historical_all_market/governance/STAGE1_TICKET_PROBABILITY_PREREG_v1.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and semantic firewall check
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/stage1_market_structure_only_v1.py \
+            v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py
+          python - <<'PY'
+          import ast, hashlib, json
+          from pathlib import Path
+          S=Path('v3/historical_all_market/stage1_market_structure_only_v1.py')
+          E=Path('v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py')
+          def blob(p):
+              b=p.read_bytes(); return hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest()
+          obs={'structure':blob(S),'engine':blob(E)}
+          exp={'structure':'23eba6b0423504e59bd7f74d6f22d88c387c8acf','engine':'029904b359e8151263c6a9bf8c4635f026941b0b'}
+          if obs!=exp: raise SystemExit(f'FAIL_CLOSED blob mismatch {obs} != {exp}')
+          for p in (S,E):
+              t=ast.parse(p.read_text())
+              imports=[]
+              for n in ast.walk(t):
+                  if isinstance(n,ast.Import): imports += [a.name for a in n.names]
+                  elif isinstance(n,ast.ImportFrom): imports.append(n.module or '')
+              bad=[x for x in imports if x=='requests' or x.startswith('requests.') or 'settlement' in x.lower()]
+              if bad: raise SystemExit(f'FAIL_CLOSED forbidden imports {p.name}: {bad}')
+          src=E.read_text().lower()
+          for token in ('payout','refund','settlement_recovery','result_only'):
+              if token in src:
+                  raise SystemExit(f'FAIL_CLOSED forbidden Stage1 engine token {token}')
+          receipt={
+            'record':'ALL_MARKET_STAGE1_PL_STATIC_SELF_CHECK_v1',
+            'status':'PASS',
+            'market_structure_git_blob':obs['structure'],
+            'pl_engine_git_blob':obs['engine'],
+            'python_compile':'PASS',
+            'network_race_data_imported':False,
+            'settlement_executable_imported':False,
+            'result_payout_parser_imported':False,
+            'scientific_trial_count':0,
+            'ECON_HOLDOUT1000':'SEALED'
+          }
+          o=Path('v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE1_PL_STATIC_SELF_CHECK_v1.json')
+          o.parent.mkdir(parents=True,exist_ok=True)
+          o.write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Commit PASS receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE1_PL_STATIC_SELF_CHECK_v1.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Record Stage1 PL static PASS'
+          git push
