@@ -1,0 +1,67 @@
+{
+  "record": "VNEXT_ACCEPTANCE_FREEZE_RECEIPT_20260820_v1",
+  "status": "ACCEPTED_FROZEN",
+  "governance_action": "GOVERNED_ACCEPT_FREEZE",
+  "permission_class": "P3_MATERIAL_OPERATION",
+  "owner_gate_required": false,
+  "owner_gate_reason": "Auditor determined the exact Accept/Freeze is governed P3 and does not trigger P4.",
+  "auditor": {
+    "result_comment_id": 5346601637,
+    "reviewed_head": "331b5bf5078d0343c1efb7add04f9c7e1c26fb70",
+    "acceptance_verdict": "PASS",
+    "dod_01_to_14": "PASS_ALL",
+    "release_blocking_findings": [],
+    "recovery_canonical": "PASS",
+    "review_independence": "PASS_WITH_DISCLOSED_ASSURANCE_LIMIT",
+    "keirin_firewall": "PASS",
+    "next_exact_action": "CORE_CAN_PERFORM_GOVERNED_ACCEPT_FREEZE"
+  },
+  "accepted_candidate": {
+    "audited_pr_head": "331b5bf5078d0343c1efb7add04f9c7e1c26fb70",
+    "canonical_main_parent_before_acceptance": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
+    "frozen_material_snapshot_anchor": "63bbc906833e73bec13ac103cfd63023aeb12ddd",
+    "post_audit_material_architecture_change": false
+  },
+  "atomic_transition": {
+    "rule": "THIS_RECEIPT_AND_GENERATION_10_CURRENT_STATE_MUST_SHARE_ONE_GIT_TREE_COMMIT",
+    "first_parent_required": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
+    "second_parent_required": "331b5bf5078d0343c1efb7add04f9c7e1c26fb70",
+    "self_commit_identity": "RESOLVE_FROM_GIT_COMMIT_CONTAINING_THIS_BLOB; DO_NOT_SELF_HASH_COMMIT_SHA",
+    "pr_head_must_not_move_before_transition": true,
+    "state_parent_blob_required": "a890f3d5ddcb39cdbe4cdfe8668682e5a254f295",
+    "generation_transition": "9_TO_10"
+  },
+  "final_recovery": {
+    "capsule_name": "MULTIVERSE_VNEXT_FINAL_ACCEPTANCE_RECOVERY_CANDIDATE_20260820_v1.zip",
+    "capsule_sha256": "30750285c888fe1dc852fc15f9fd6fca873383a3c10588beeee1036d93ff4f9b",
+    "capsule_size_bytes": 52827,
+    "drive_role": "NON_AUTHORITATIVE_RECOVERY_COPY",
+    "drive_folder_id": "1-9uS0-_6oXj9aFbeykonk5-8ss6SpkH4",
+    "drive_capsule_file_id": "1YJJusgQoKI5RV0GEuhQt_3Ct4NujlVxe",
+    "drive_byte_identical_readback": true,
+    "zero_history_bootstrap": "PASS"
+  },
+  "architecture_closure": {
+    "current_vnext": "ACCEPTED_STRONG_L2_FOUNDATION",
+    "noncritical_core_expansion_after_acceptance": "STOP",
+    "reopen_only_for": [
+      "IDENTITY_INVARIANT_VIOLATION",
+      "ACCEPTANCE_CRITERION_FAILURE",
+      "MATERIAL_SECURITY_OR_RECOVERY_DEFECT_AFFECTING_ACCEPTED_CLAIMS",
+      "CONSTITUTIONAL_CONTRADICTION",
+      "EVIDENCE_INVALIDATING_ACCEPTANCE"
+    ],
+    "ordinary_improvements_route_to": "NEXT_VERSION_CANDIDATE"
+  },
+  "keirin_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count": 0,
+    "new_untouched_validation_opened": false,
+    "new_validation_trial_consumed_after_close": 0,
+    "result_payout_access_authorized": false,
+    "protected_state_changed_by_acceptance": false
+  },
+  "next_action_after_canonical_acceptance": "EXACT_RESUME_KEIRIN_FROM_NEWEST_LEGITIMATE_VERIFIED_CANONICAL_STATE"
+}

@@ -1,0 +1,52 @@
+{
+  "record": "VNEXT_LAB_RECHECK_RECEIPT_20260820_v1",
+  "status": "WORKING_REVIEW_EVIDENCE_NOT_ACCEPTANCE",
+  "review_role": "LAB",
+  "reviewed_head": "0887d4363cb15e23a4a376f3d7c0db21c4b67645",
+  "head_reverified_unchanged_at_review_end": true,
+  "verdict": "PASS",
+  "unresolved_current_version_material_block": [],
+  "cleared_findings": {
+    "M1_FAST_PATH_SELF_CLASSIFICATION_BYPASS": "CLEARED",
+    "M2_AUTHORIZATION_SAFE_MODE_REVOCATION": "CLEARED",
+    "M3_INDEPENDENT_REVIEW_GATE": "CLEARED"
+  },
+  "adversarial_tests": {
+    "count": 10,
+    "pass": 10,
+    "fail": 0,
+    "assurance_limit": "Normative rule-table verification only; does not claim native enforcement exists in every future adapter. Governed adapters require conformance before use."
+  },
+  "taxonomy": {
+    "status": "CLEARED",
+    "deferred_north_star_material_gaps_are_not_current_vnext_blockers": true,
+    "deferred_gaps_have_future_gates": true
+  },
+  "institution_compression": {
+    "status": "CLEARED",
+    "steady_groups": [
+      "CORE_PLUS_RESOURCE_PLUS_EVOLUTION",
+      "EVIDENCE_PLUS_KNOWLEDGE",
+      "VAULT_PLUS_RECOVERY",
+      "EXECUTION_PLUS_CONNECTION",
+      "LAB",
+      "AUDITOR"
+    ],
+    "optional_module": "OPPORTUNITY",
+    "required_separations_preserved": [
+      "CORE_FROM_FINAL_AUDIT",
+      "EXECUTION_FROM_PERMISSION_POLICY_AUTHORSHIP",
+      "LAB_FROM_PROMOTION_AUTHORITY",
+      "AUDITOR_FROM_IMPLEMENTATION_OWNERSHIP"
+    ]
+  },
+  "routing_result": "LAB_BLOCKER_CLEARED_INDEPENDENT_MATERIAL_ARCHITECTURE_REVIEW_MAY_PROCEED",
+  "minor_autofix": "NONE_REQUIRED",
+  "keirin_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "RESULT_PAYOUT_accessed": false,
+    "scientific_state_changed": false
+  },
+  "source_note": "This receipt records the Lab recheck result supplied to Core by the Owner relay. It is not itself an independent re-performance of the Lab review."
+}
