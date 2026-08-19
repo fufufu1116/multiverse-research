@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Dict, Tuple
 
 from digital_twin_v1 import (
@@ -105,8 +106,9 @@ def stress_truth_joint(race: Race, cfg: StressAssumptions) -> Dict[Top3, float]:
 
 
 # Every value below is an engineering stress assumption, not a measured real-keirin
-# coefficient or frequency. Each W0-W4 family deliberately has >=2 settings so the
-# architecture is tested against a range rather than one hand-picked synthetic world.
+# coefficient or frequency. These ten scenarios are now LOCKED LEGACY SYNTHETIC HOLDOUT
+# diagnostics: they may be re-evaluated after a new model is frozen, but they must not be
+# used to fit or retune C1/N1 coefficients.
 ASSUMPTION_GRID: Tuple[StressAssumptions, ...] = (
     StressAssumptions(
         "W0_NULL_CONTEXT", "W0", "ASSUMPTION_RANGE_ONLY",
@@ -169,8 +171,17 @@ def validate_assumption_grid(
             raise ValueError(f"scenario_not_labeled_assumption:{cfg.scenario_id}")
         if cfg.line_static_scale < 0.0 or cfg.relation_strength < 0.0:
             raise ValueError(f"negative_line_parameter:{cfg.scenario_id}")
-        if cfg.wind_effect_scale < 0.0 or cfg.bank_effect_scale < 0.0:
-            raise ValueError(f"negative_context_parameter:{cfg.scenario_id}")
+
+        # Bank/wind stress is explicitly allowed to be signed. The calibration registry
+        # requires signed / near-zero / moderate worlds; negative scale means an engineering
+        # reversal stress, not a claim that the real causal effect is negative.
+        for name, value in (
+            ("wind_effect_scale", cfg.wind_effect_scale),
+            ("bank_effect_scale", cfg.bank_effect_scale),
+        ):
+            if not math.isfinite(value) or abs(value) > 3.0:
+                raise ValueError(f"invalid_signed_context_parameter:{cfg.scenario_id}:{name}")
+
         if not (0.0 <= cfg.disruption_weight <= 1.0):
             raise ValueError(f"invalid_disruption_weight:{cfg.scenario_id}")
         if cfg.shock_sigma < 0.0 or cfg.shock_temperature <= 0.0:
