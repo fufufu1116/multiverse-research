@@ -1,0 +1,117 @@
+{
+  "record": "STAGE7_AB_POSTMORTEM_EXACT_DIAGNOSTICS_RECEIPT_v1",
+  "date_jst": "2026-08-19",
+  "status": "PASS_DIAGNOSTIC_ONLY",
+  "closed_lineage_status": "NO_B_VALIDATED_CONFIGURATION",
+  "exact_inputs": {
+    "stage2_sha256": "34ad32bed6e8b4d700864c46f4533bef1da254c7d87dc7ffe6ec266fd74530dc",
+    "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "universe_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "settlement_A_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "settlement_B_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72"
+  },
+  "replay_integrity": {
+    "A_TOP10_exact_metric_match": true,
+    "A_TOP10_count": 10,
+    "segment_C_access": false,
+    "segment_C_scoring_count": 0,
+    "new_rule_selection_performed": false,
+    "model_refit_performed": false,
+    "ECON_HOLDOUT1000": "SEALED"
+  },
+  "segment_A_reference": {
+    "G20_SINGLE_FK10_group": {
+      "configuration_count": 7,
+      "bet_races": 148,
+      "stake_jpy": 18900,
+      "return_jpy": 45790,
+      "roi": 1.4227513227513229,
+      "hit_tickets": 1,
+      "active_days": 15,
+      "positive_active_days": 1,
+      "positive_active_day_share": 0.06666666666666667,
+      "active_weeks": 4,
+      "positive_active_weeks": 1,
+      "positive_active_week_share": 0.25,
+      "largest_ticket_return_share": 1.0,
+      "sole_winning_ticket": {
+        "race_id": "5520260228020002",
+        "dev_index": 39,
+        "market": "3rentan",
+        "ticket": "7-2-5",
+        "stake_jpy": 100,
+        "payout_per_100_jpy": 45790,
+        "model_consensus_probability": 0.012445850216495854,
+        "consensus_raw_ev": 4.698954814133451,
+        "consensus_shape_ratio": 7.6176439973719265,
+        "closing_odds": 457.9
+      }
+    }
+  },
+  "segment_B_exact_groups": [
+    {
+      "configuration_ids": [
+        "P00:G20:SINGLE:FK10_R2",
+        "P05:G20:SINGLE:FK10_R2",
+        "P100:G20:SINGLE:FK10_R2",
+        "P10:G20:SINGLE:FK10_R2",
+        "P20:G20:SINGLE:FK10_R2",
+        "P35:G20:SINGLE:FK10_R2",
+        "P50:G20:SINGLE:FK10_R2"
+      ],
+      "realized_roi": -1.0,
+      "bet_races": 44,
+      "stake_jpy": 5100,
+      "return_jpy": 0,
+      "hit_tickets": 0,
+      "ending_bankroll_jpy": 94900,
+      "maximum_drawdown": 0.051,
+      "active_days": 8,
+      "positive_active_days": 0,
+      "active_weeks": 2,
+      "positive_active_weeks": 0,
+      "active_month_buckets": 2,
+      "positive_active_month_buckets": 0,
+      "market_ticket_counts": {"3rentan": 41, "2shatan": 3},
+      "market_stake_jpy": {"3rentan": 4700, "2shatan": 400},
+      "mean_consensus_expected_hit_count_sum_p": 0.8275645207681845,
+      "3rentan_median_closing_odds": 592.6,
+      "3rentan_mean_closing_odds": 706.4439024390243,
+      "3rentan_mean_consensus_probability": 0.017825389545293686,
+      "3rentan_median_consensus_raw_ev": 7.855457548231698
+    },
+    {
+      "configuration_ids": [
+        "P00:G25:SINGLE:FK10_R2",
+        "P05:G25:SINGLE:FK10_R2",
+        "P100:G25:SINGLE:FK10_R2"
+      ],
+      "realized_roi": -1.0,
+      "bet_races": 54,
+      "stake_jpy": 6200,
+      "return_jpy": 0,
+      "hit_tickets": 0,
+      "ending_bankroll_jpy": 93800,
+      "maximum_drawdown": 0.062,
+      "active_days": 8,
+      "positive_active_days": 0,
+      "active_weeks": 2,
+      "positive_active_weeks": 0,
+      "active_month_buckets": 2,
+      "positive_active_month_buckets": 0,
+      "market_ticket_counts": {"3rentan": 50, "2shatan": 3, "2shahuku": 1},
+      "market_stake_jpy": {"3rentan": 5600, "2shatan": 400, "2shahuku": 200},
+      "mean_consensus_expected_hit_count_sum_p": 1.0118132690694415,
+      "3rentan_median_closing_odds": 488.95,
+      "3rentan_mean_closing_odds": 678.3919999999999,
+      "3rentan_mean_consensus_probability": 0.017517014976954237,
+      "3rentan_median_consensus_raw_ev": 7.485970085921194
+    }
+  ],
+  "diagnostic_interpretation": [
+    "The B failure was not caused by a single losing day. Every active B day and both active B ISO weeks produced zero return for all A_TOP10 paths.",
+    "The A_TOP10 path was dominated by SINGLE selections in 3rentan at very high closing odds, with low per-ticket consensus probabilities and very large modeled raw EV.",
+    "The A aggregate profit depended entirely on one 3rentan hit; this path is incompatible with a weekly/monthly stability objective unless hit frequency/diversification changes materially.",
+    "This is diagnostic evidence only. It must not be converted into rescue tuning on current Segment C. Any redesign requires a new lineage and fresh untouched validation data."
+  ]
+}
