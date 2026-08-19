@@ -13,6 +13,7 @@ from lxml import html
 
 PARSER_ID = "KDREAMS_PRICE_CATALOG_RECOVERY_v1"
 MARKETS = ("3rentan","2shatan","3renhuku","2shahuku","2wakutan","2wakuhuku","wide")
+CAR_MARKETS = ("3rentan","2shatan","3renhuku","2shahuku","wide")
 
 class FailClosed(RuntimeError): pass
 
@@ -201,6 +202,12 @@ def expected_count(m,n):
       '3renhuku':math.comb(n,3),'2shahuku':math.comb(n,2),'wide':math.comb(n,2)
     }.get(m)
 
+def ticket_car_set(catalog):
+    cars=set()
+    for key in catalog:
+        cars.update(int(x) for x in re.findall(r'\d+', key))
+    return tuple(sorted(cars))
+
 def parse_payload(payload:bytes, expected_raw_sha256:str|None=None, expected_n_cars:int|None=None):
     dig=sha256_bytes(payload)
     if expected_raw_sha256 and dig!=expected_raw_sha256: raise FailClosed(f"raw SHA mismatch expected={expected_raw_sha256} observed={dig}")
@@ -217,13 +224,26 @@ def parse_payload(payload:bytes, expected_raw_sha256:str|None=None, expected_n_c
             cat,labels=v; catalogs[m]=cat; frame_labels[m]=labels
         else: catalogs[m]=v
         timestamps[m]=parse_status(root,m)
-        if expected_n_cars is not None:
-            exp=expected_count(m,int(expected_n_cars))
-            if exp is not None and len(catalogs[m])!=exp:
-                raise FailClosed(f"{m} combo count={len(catalogs[m])} expected={exp} n={expected_n_cars}")
+    # Infer the actually sold/active car-number set from ticket keys instead of
+    # imposing nominal pre-race field size. This preserves scratched-rider races
+    # without accepting incomplete catalogs. All sold car markets must agree.
+    car_sets={m:ticket_car_set(catalogs[m]) for m in CAR_MARKETS if m in catalogs}
+    if not car_sets: raise FailClosed('no car-number market sold')
+    unique_sets={v for v in car_sets.values()}
+    if len(unique_sets)!=1:
+        raise FailClosed(f'active car-set mismatch across markets: {car_sets}')
+    active_cars=next(iter(unique_sets)); n_active=len(active_cars)
+    if n_active < 3: raise FailClosed(f'active car set too small: {active_cars}')
+    for m,cars in car_sets.items():
+        exp=expected_count(m,n_active)
+        if exp is not None and len(catalogs[m])!=exp:
+            raise FailClosed(f'{m} incomplete numeric catalog count={len(catalogs[m])} expected={exp} active_cars={active_cars}')
+    if expected_n_cars is not None and n_active!=int(expected_n_cars):
+        raise FailClosed(f'active field size={n_active} expected={expected_n_cars} active_cars={active_cars}')
     return {
       'parser_id':PARSER_ID,'raw_sha256':dig,'market_availability':availability,
-      'sold_markets':sold,'closing_price_catalogs':catalogs,'odds_timestamps':timestamps,
+      'sold_markets':sold,'active_car_numbers':list(active_cars),'active_car_count':n_active,
+      'closing_price_catalogs':catalogs,'odds_timestamps':timestamps,
       'frame_labels_raw':frame_labels,'price_type':'B_CLOSING_PRICE',
       'wide_price_semantics':'INTERVAL_LOW_HIGH_PRESERVED_NO_MIDPOINT',
       'result_fields_emitted':False,'settlement_fields_emitted':False,
