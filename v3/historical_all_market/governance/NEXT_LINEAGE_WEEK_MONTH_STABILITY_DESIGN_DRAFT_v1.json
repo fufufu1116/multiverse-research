@@ -1,0 +1,81 @@
+{
+  "record": "NEXT_LINEAGE_WEEK_MONTH_STABILITY_DESIGN_DRAFT_v1",
+  "date_jst": "2026-08-19",
+  "status": "DRAFT_NOT_FROZEN_PENDING_INDEPENDENT_AUDIT",
+  "trigger": "POST_STAGE7_NO_B_VALIDATED_CONFIGURATION_FAILURE_DIAGNOSTICS",
+  "current_lineage": {
+    "status": "NO_B_VALIDATED_CONFIGURATION",
+    "segment_c_opened": false,
+    "scientific_segment_c_scoring_count": 0,
+    "repurpose_current_C_for_rescue": false,
+    "ECON_HOLDOUT1000": "SEALED"
+  },
+  "data_policy": {
+    "DEV2000_A_B": "BURNED_DIAGNOSTIC_DEV_ONLY",
+    "DEV2000_C": "EXCLUDED_UNSCORED_LEGACY_SEGMENT",
+    "retrospective_NEW_HISTORICAL5000": "FORMALLY_BLOCKED_FAIL_CLOSED",
+    "primary_new_validation_direction": "PROSPECTIVE_ROLLING_AFTER_SOURCE_AND_COLLECTOR_AUTHORIZATION"
+  },
+  "architecture": [
+    "ticket-level calibration before economic EV",
+    "behavioral deduplication before untouched validation",
+    "separate flat-stake edge validation from bankroll optimization",
+    "calendar weekly/monthly stability metrics",
+    "calendar/block bootstrap uncertainty",
+    "explicit profit and market concentration reporting",
+    "later sealed final prospective holdout only after validation pass"
+  ],
+  "candidate_probability_work_DEV_ONLY": [
+    "frozen PL baseline",
+    "regularized temperature/dispersion adjustment",
+    "market-aware probability shrinkage/log-opinion pooling",
+    "parsimonious conditional-order model only if simpler families remain miscalibrated"
+  ],
+  "weekly_monthly_metrics_required": [
+    "weekly_roi",
+    "monthly_roi",
+    "positive_week_fraction",
+    "positive_month_fraction",
+    "rolling_7d_roi",
+    "rolling_30d_roi",
+    "max_consecutive_losing_days",
+    "max_consecutive_losing_weeks",
+    "maximum_drawdown",
+    "underwater_duration",
+    "recovery_time",
+    "hit_dispersion",
+    "largest_single_return_share",
+    "profit_concentration",
+    "market_concentration",
+    "bets_per_week_month"
+  ],
+  "draft_validation_horizon": {
+    "P_VAL": "at_least_8_complete_weeks_and_2_complete_calendar_months_pending_audit",
+    "P_FINAL": "at_least_4_additional_complete_weeks_pending_audit"
+  },
+  "verdict_structure_draft": [
+    "OOS_STRONG_STABLE_PASS",
+    "OOS_POSITIVE_BUT_UNCERTAIN",
+    "OOS_POSITIVE_TAIL_DEPENDENT",
+    "OOS_FAIL"
+  ],
+  "numeric_pass_thresholds_frozen": false,
+  "network_collection_authorized": false,
+  "new_validation_trial_consumed": 0,
+  "drive_design_file_id": "1IlY9ScUKRjKtZbmc4ZsUECAwLLTc97qZ",
+  "design_file_sha256": "1df36477ad971aa4aad5d2a21ac05136caa74b778a72b7ef9915669de04d5f9e",
+  "next_safe_engineering_tasks": [
+    "burned A+B ticket calibration diagnostics",
+    "PL tail calibration by market and odds band",
+    "PRE-only behavioral-signature deduplication tooling",
+    "path-independent E1 evaluator",
+    "weekly/monthly reporter and block-bootstrap test fixture",
+    "prospective collector/source-admission re-audit"
+  ],
+  "prohibitions": [
+    "NO_SAME_B_C_RESCUE_TUNING",
+    "NO_CURRENT_C_SCORING",
+    "NO_ECON_HOLDOUT_OPEN",
+    "NO_UNAUTHORIZED_RETROSPECTIVE_OR_PROSPECTIVE_COLLECTION"
+  ]
+}
