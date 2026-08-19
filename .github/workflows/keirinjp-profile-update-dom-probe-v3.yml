@@ -1,0 +1,56 @@
+name: keirinjp-profile-update-dom-probe-v3
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-profile-update-dom-probe-v3.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Capture update DOM semantics only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          url='https://keirin.jp/pc/racerprofile?snum=015918'
+          r=requests.get(url,headers={'User-Agent':'MultiverseHybridV3-Research/1.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser')
+          hits=[]
+          for s in soup.find_all(string=re.compile(r'20\d{2}/\d{2}/\d{2}')):
+              txt=' '.join(str(s).split())
+              p=s.parent
+              chain=[]
+              cur=p
+              for _ in range(4):
+                  if cur is None: break
+                  chain.append({'tag':cur.name,'id':cur.get('id'),'class':cur.get('class'),'text':' '.join(cur.get_text(' ',strip=True).split())[:500]})
+                  cur=cur.parent
+              hits.append({'string':txt,'ancestors':chain})
+          text=' '.join(soup.stripped_strings)
+          out={'record':'KEIRINJP_PROFILE_UPDATE_DOM_PROBE_v3','generated_utc':datetime.now(timezone.utc).isoformat(),
+               'http_status':r.status_code,'content_sha256':hashlib.sha256(r.content).hexdigest(),'beautifulsoup_original_encoding':soup.original_encoding,
+               'global_datetime_matches':re.findall(r'20\d{2}/\d{2}/\d{2}\s+\d{2}:\d{2}',text),
+               'date_string_nodes':hits,'raw_html_persisted':False,'predictive_values_persisted':False,
+               'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False,'status':'PASS_PROBE'}
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_UPDATE_DOM_PROBE_v3.json');q.parent.mkdir(parents=True,exist_ok=True);q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_UPDATE_DOM_PROBE_v3.json
+          git commit -m 'Record KEIRIN profile update DOM probe v3'
+          git push
