@@ -2,11 +2,24 @@
   "record": "VNEXT_KEIRIN_PAUSE_RECEIPT_20260820_v1",
   "status": "DRAFT_REVIEW_BRANCH_IMMUTABLE_CANDIDATE",
   "created_jst": "2026-08-20T01:41:00+09:00",
+  "reverified_jst": "2026-08-20T02:00:00+09:00",
+  "mutability": "IMMUTABLE_AFTER_ACCEPTANCE_SUPERSEDE_ONLY",
   "purpose": "Preserve the exact latest verified Keirin research restart point while Multiverse Core is upgraded. This receipt does not change scientific state, freezes, trial counts, validation membership, or source permissions.",
   "canonical_repo": "fufufu1116/multiverse-research",
+  "verification_assurance": {
+    "verification_method": "GITHUB_REF_AND_BLOB_OBSERVATION",
+    "verified_at": "2026-08-20T02:00:00+09:00",
+    "verified_by_role": "CORE_WITH_INDEPENDENT_VAULT_REVIEW",
+    "observed_ref": "refs/heads/main",
+    "observed_commit": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
+    "commit_signature_assurance": "UNSIGNED_OBSERVED_NOT_CRYPTOGRAPHICALLY_ATTESTED",
+    "note": "Verified means repository ref/blob identity was observed and cross-checked. It does not imply a signed commit or external cryptographic attestation."
+  },
   "verified_main_head_at_pause": {
     "commit": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
-    "message": "Add iPhone room topology and no-think routing/recovery protocol"
+    "message": "Add iPhone room topology and no-think routing/recovery protocol",
+    "branch_protection_observed": false,
+    "commit_signature_verified": false
   },
   "verified_keirin_state": {
     "current_state_path": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
@@ -40,6 +53,10 @@
     "Resume at Digital Twin reality calibration and C0/C1/N1 multiworld proper-scoring/failure-diagnostic stress unless a later verified canonical Keirin state legitimately supersedes this gate.",
     "Do not rerun completed Keirin stages merely because chat history was lost."
   ],
-  "resume_precedence": "A later independently verified canonical Keirin artifact may supersede this receipt. Older packets, handoffs, or conversation memory may not roll the project backward.",
+  "resume_precedence": {
+    "rule": "LATEST_VERIFIED_CANONICAL_ANCESTRY_AND_EXPLICIT_SUPERSESSION_WINS",
+    "timestamp_is_authority": false,
+    "older_memory_or_handoff_can_rollback": false
+  },
   "upgrade_firewall": "Multiverse vNext work must not read protected result/payout/holdout material or alter Keirin scientific trial accounting unless an explicit Owner Gate later authorizes that specific action."
 }
