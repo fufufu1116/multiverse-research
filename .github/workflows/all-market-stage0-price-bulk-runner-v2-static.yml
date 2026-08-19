@@ -1,0 +1,55 @@
+name: All-Market Stage0 PRICE bulk runner v2 static self-check
+
+on:
+  push:
+    paths:
+      - '.github/workflows/all-market-stage0-price-bulk-runner-v2-static.yml'
+      - 'v3/historical_all_market/stage0_price_bulk_runner_v2.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -q lxml
+      - name: Compile and firewall check
+        run: |
+          python -m py_compile v3/historical_all_market/stage0_price_bulk_runner_v2.py v3/historical_all_market/kdreams_price_catalog_recovery_v1.py
+          python - <<'PY'
+          import ast,hashlib,json
+          from pathlib import Path
+          R=Path('v3/historical_all_market/stage0_price_bulk_runner_v2.py')
+          P=Path('v3/historical_all_market/kdreams_price_catalog_recovery_v1.py')
+          A=Path('v3/historical_all_market/governance/INDEPENDENT_GEMINI_STAGE0_FINAL_APPROVE_RECEIPT_v1.json')
+          def blob(p):
+              b=p.read_bytes(); return hashlib.sha1(f'blob {len(b)}\0'.encode()+b).hexdigest()
+          exp={'runner':'ff2a045c9f7aa893f9bd119a52d27e0899298340','price':'f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8','approve':'8643684cf7bf0165968ae667e17e546936a3611d'}
+          obs={'runner':blob(R),'price':blob(P),'approve':blob(A)}
+          if obs!=exp: raise SystemExit(f'FAIL_CLOSED blob mismatch {obs} != {exp}')
+          tree=ast.parse(R.read_text())
+          imports=[]
+          for n in ast.walk(tree):
+              if isinstance(n,ast.Import): imports += [a.name for a in n.names]
+              elif isinstance(n,ast.ImportFrom): imports.append(n.module or '')
+          bad=[x for x in imports if 'settlement' in x.lower() or x=='requests' or x.startswith('requests.')]
+          if bad: raise SystemExit(f'FAIL_CLOSED forbidden imports {bad}')
+          if 'kdreams_settlement_recovery' in R.read_text(): raise SystemExit('FAIL_CLOSED settlement executable reference')
+          receipt={'record':'ALL_MARKET_STAGE0_BULK_RUNNER_V2_STATIC_SELF_CHECK_v1','status':'PASS','runner_git_blob':obs['runner'],'price_parser_git_blob':obs['price'],'approve_receipt_git_blob':obs['approve'],'python_compile':'PASS','settlement_executable_imported':False,'requests_race_data_imported':False,'trial_count':0,'ECON_HOLDOUT1000':'SEALED'}
+          o=Path('v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE0_BULK_RUNNER_V2_STATIC_SELF_CHECK_v1.json'); o.parent.mkdir(parents=True,exist_ok=True); o.write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Commit receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE0_BULK_RUNNER_V2_STATIC_SELF_CHECK_v1.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Record Stage0 PRICE bulk runner v2 static PASS'
+          git push
