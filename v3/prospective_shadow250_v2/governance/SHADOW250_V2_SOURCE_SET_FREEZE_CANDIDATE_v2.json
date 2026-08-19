@@ -1,0 +1,70 @@
+{
+  "record": "SHADOW250_V2_SOURCE_SET_FREEZE_CANDIDATE_v2",
+  "status": "CANDIDATE_NOT_ACTIVE_PENDING_INDEPENDENT_REAUDIT",
+  "approved_core": {
+    "schema": "MULTIVERSE_SHADOW250_V2_SOURCE_SET_v2",
+    "change_reason": "Live smoke after Gemini re-audit exposed real G1/G2 runtime semantic gaps before activation; candidate rebinding only, selected=0.",
+    "provider_change_midrun": "PROHIBITED",
+    "racecard_source": {
+      "name": "TAMANO_OFFICIAL_RACECARD_PDF",
+      "host": "www.tamano-keirin.jp",
+      "discovery_prefix": "/racepdf/",
+      "pdf_prefix": "/wp-content/uploads/",
+      "role": "FROZEN_5_FIELD_RACECARD_SOURCE_CANDIDATE",
+      "predictive_fields": ["score", "quinella_rate", "S", "B", "class"],
+      "transport_adapter_parent_git_blob": "aec0cace2adc0b132269a1fb77000022993e6623",
+      "pre_region_protocol_parent_git_blob": "bb9ddba1063a648998105fa545bb128d2b510743",
+      "row_parser_v4_git_blob": "397ed3c8839b1ad4ffa4835924dd759397e2124c",
+      "event_day_binding": "OFFICIAL_DISCOVERY_EXACT_HREF_DATE_PREFIX+PARSED_BYTES_RAW_SHA256",
+      "internal_pre_date_required": false,
+      "field_size_marker_gate": "DEDICATED_PRE_MARKER_BAND_X_OX_PLUS_60_TO_150_Y_YMAX_TO_YMAX_PLUS_30",
+      "race_program_class_gate": "REQUIRED",
+      "active_entry_gate": "REQUIRED_FAIL_CLOSED"
+    },
+    "identity_locator_source": {
+      "name": "KEIRINJP_PLAYER_SEARCH_IDENTITY_ROUTE",
+      "host": "keirin.jp",
+      "landing_path": "/pc/search",
+      "result_path": "/pc/racersearchresult",
+      "profile_path": "/pc/racerprofile",
+      "role": "IDENTITY_LOCATOR_ONLY_ZERO_PREDICTIVE_FIELDS_FROM_SEARCH_RESULT",
+      "query_basis": ["prefecture", "term", "active_only"],
+      "search_result_identity_fields_consumed": ["name", "snum"],
+      "search_result_predictive_fields_consumed": [],
+      "search_result_raw_html_may_contain_nonconsumed_predictive_columns": true,
+      "raw_html_persisted": false,
+      "locator_v2_git_blob": "41517a604bb0c23200cb4d0878d8459f9379d63f",
+      "candidate_snum": "UNTRUSTED_ROUTING_METADATA_ONLY_UNTIL_RACERPROFILE_FOUR_FIELD_VERIFY",
+      "max_search_results_per_group": 10,
+      "provider_fallback": "PROHIBITED"
+    },
+    "race_batch_orchestrator": {
+      "name": "KEIRINJP_RACE_BATCH_IDENTITY_SUPPLEMENT",
+      "git_blob": "f360a4ff335a99f315e6343c4dbc04b446e033ad",
+      "required_riders": 7,
+      "shared_provider_limiter": "ONE_LIMITER_FOR_ALL_KEIRIN_REQUESTS_IN_RACE",
+      "minimum_spacing_seconds": 5.0,
+      "grouping": "ONE_SEARCH_PER_UNIQUE_PREFECTURE_TERM",
+      "profile_fetches": "EXACTLY_ONE_PER_VERIFIED_RIDER",
+      "max_batch_elapsed_seconds": 90.0,
+      "max_source_window_seconds": 120.0,
+      "candidate_or_profile_transport_failure": "HALT_ENTIRE_RACE"
+    },
+    "supplement_source": {
+      "name": "KEIRINJP_RACERPROFILE",
+      "host": "keirin.jp",
+      "path": "/pc/racerprofile",
+      "role": "FROZEN_3_FIELD_SUPPLEMENT_SOURCE_CANDIDATE",
+      "predictive_fields": ["style", "win_rate", "trio_rate"],
+      "duplicate_consistency": ["class", "score", "quinella_rate"],
+      "parser_semantics_parent_git_blob": "a73a28e9568c326b8cd10b4cfa70bcb573f0f852",
+      "profile_response_transport": "RACE_BATCH_ORCHESTRATOR_SINGLE_FETCH_PER_RIDER",
+      "final_identity_authority": true,
+      "final_identity_checks": ["registration_number", "normalized_name", "prefecture", "term"],
+      "silent_overwrite": "PROHIBITED"
+    },
+    "no_other_sources": true
+  },
+  "approved_core_sha256": "0db614c2b7a9ab0408704885416fa783b90d32b18e8d5299be80833fb6536aca",
+  "scientific_effect": "NONE_UNTIL_INDEPENDENT_APPROVAL_AND_ACTIVATION"
+}
