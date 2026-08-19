@@ -1,141 +1,172 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
-  "updated_jst": "2026-08-19T22:50:00+09:00",
-  "status": "ACTIVE_RESEARCH_NEW_LINEAGE_DESIGN_NOT_FROZEN",
+  "updated_jst": "2026-08-19T23:07:00+09:00",
+  "status": "ACTIVE_RESEARCH_NEW_LINEAGE_PREFLIGHT_AUDIT_READY_NOT_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
   "bootstrap_protocol": "v3/historical_all_market/governance/HANDOFF_BOOTSTRAP_PROTOCOL_v1.md",
   "artifact_pointer_registry": "v3/historical_all_market/governance/ARTIFACT_POINTER_REGISTRY_KEIRIN_v1.json",
   "scientific_state": {
     "closed_parent_lineage": "NO_B_VALIDATED_CONFIGURATION",
-    "stage7_A": "BURNED_DEVELOPMENT",
-    "stage7_B": "BURNED_DIAGNOSTIC_ONLY_FOR_POSTMORTEM_NO_RESCUE",
-    "current_DEV2000_C_scored": false,
+    "current_DEV2000_C_scored_for_new_lineage": false,
     "scientific_segment_c_scoring_count": 0,
     "ECON_HOLDOUT1000": "SEALED",
     "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "new_untouched_validation_opened": false,
     "new_validation_trial_consumed_after_close": 0
   },
-  "verified_parent_findings": {
+  "parent_diagnostic_state": {
     "A_TOP10_B_pass_count": 0,
     "A_apparent_profit_single_hit_dominated": true,
     "A_sole_material_return_event_odds": 457.9,
-    "high_odds_3rentan_selected_region_overconfidence": "OBSERVED_IN_BURNED_A_B_DIAGNOSTICS",
-    "existing_candidate_A_B1a_output_only_market_residual_R1": "DID_NOT_ROBUSTLY_BEAT_MARKET_IN_B",
-    "market_baseline_principle": "RETAIN_AS_CANDIDATE_NOT_YET_VALIDATED"
+    "selected_high_odds_3rentan_overconfidence": "BURNED_A_B_DIAGNOSTIC",
+    "existing_A_B1a_output_only_market_residual_R1": "DID_NOT_ROBUSTLY_BEAT_MARKET_IN_B",
+    "PL_as_causal_root_cause": "NOT_ESTABLISHED"
   },
-  "latest_architecture_lessons": {
+  "architecture_lessons": {
     "artifact": "v3/historical_all_market/governance/TRI_MODEL_ARCHITECTURE_REVIEW_LESSONS_LEARNED_v1.md",
     "commit": "d9178e35dccd7492e82622b078cd3dbd50119a74",
-    "accepted_core_lessons": [
-      "CURRENT_PL_IS_STRUCTURAL_NULL_CONTROL_NOT_PRESUMED_FINAL_TOP3_GENERATOR",
-      "ENSEMBLE_OUTPUT_AGREEMENT_DOES_NOT_PROTECT_AGAINST_SHARED_MISSPECIFICATION",
+    "active_principles": [
+      "PL_IS_STRUCTURAL_NULL_CONTROL_NOT_PRESUMED_FINAL_TOP3_GENERATOR",
+      "SHARED_MISSPECIFICATION_AUDIT_FOR_ENSEMBLES",
       "PROBABILITY_OBJECT_CONTRACT_REQUIRED",
-      "WIDE_EVENT_PROBABILITY_AND_UNIT_MASS_MARKET_SHAPE_PROXY_MUST_BE_SEMANTICALLY_SEPARATE",
-      "RACE_REGIME_REQUIRED_BEFORE_LINE_MODELING",
-      "MUTABLE_LINE_FEATURES_REQUIRE_SOURCE_SPECIFIC_SNAPSHOT_PROVENANCE",
-      "H_IS_A_GENUINE_PRE_FEATURE_CANDIDATE_GAP",
-      "DECISION_AVAILABLE_AND_PRE_AVAILABLE_ARE_SEPARATE_REQUIREMENTS",
-      "CONDITIONAL_TOP3_IS_PRIMARY_LOW_FREEDOM_STRUCTURAL_ALTERNATIVE",
-      "PROPER_SCORING_BEFORE_ECONOMIC_OPTIMIZATION",
-      "FLAT100_PRIMARY_FOR_FIRST_CLEAN_ECONOMIC_EDGE_TEST",
-      "KELLY_SECONDARY_UNTIL_COHERENT_CALIBRATED_PROBABILITIES",
-      "PROFIT_CONCENTRATION_AND_UNDERWATER_METRICS_CORE_EVALUATION"
-    ],
-    "not_established": [
-      "PL_CAUSED_PRIOR_B_FAILURE",
-      "LINE_POSITION_EXPLAINS_70_PERCENT_PLUS_OF_RESULTS",
-      "SAME_LINE_ONE_TWO_TRUE_RATE_40_TO_50_PERCENT",
-      "NESTED_PL_AUTOMATICALLY_SUFFICIENT",
-      "BUCKETWISE_ISOTONIC_DEFAULT",
-      "IMMEDIATE_PORTFOLIO_OPTIMIZER"
+      "PRE_AVAILABLE_AND_DECISION_AVAILABLE_ARE_SEPARATE",
+      "MUTABLE_LINE_PROVENANCE_REQUIRED",
+      "RACE_REGIME_REQUIRED_BEFORE_LINE_MODEL",
+      "PROPER_SCORING_BEFORE_ECONOMICS",
+      "FLAT100_BEFORE_KELLY_AND_PORTFOLIO",
+      "TAIL_CONCENTRATION_AND_UNDERWATER_CORE_EVALUATION"
     ]
   },
-  "latest_stage0_source_audits": {
+  "stage0_design_artifacts": {
     "structure_provenance_schema": {
-      "artifact": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_STRUCTURE_PROVENANCE_SCHEMA_AUDIT_v1.md",
-      "commit": "fdb0b8372f1e09121e134f64e928c347a589c778",
-      "status": "DESIGN_AUDIT_NOT_FREEZE"
+      "path": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_STRUCTURE_PROVENANCE_SCHEMA_AUDIT_v1.md",
+      "commit": "fdb0b8372f1e09121e134f64e928c347a589c778"
     },
-    "source_transport_rights": {
-      "artifact": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_SOURCE_TRANSPORT_AUDIT_v1.md",
-      "commit": "c1ed6a6afb0d3d966c8d21fd18d741f37ed397d1",
-      "status": "DESIGN_SOURCE_AUDIT_NOT_FREEZE"
+    "source_transport": {
+      "path": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_SOURCE_TRANSPORT_AUDIT_v1.md",
+      "commit": "c1ed6a6afb0d3d966c8d21fd18d741f37ed397d1"
     },
     "provider_selection": {
-      "artifact": "v3/historical_all_market/governance/NEW_LINEAGE_SOURCE_PROVIDER_SELECTION_DRAFT_v1.md",
-      "commit": "f4822e3f30d6f234b13ddb109b779a2372d7e8f3",
-      "status": "PROVIDER_RESEARCH_DRAFT_NOT_AUTHORIZATION"
-    }
-  },
-  "new_lineage_design_artifacts": {
-    "C0_C1_N1_probability_architecture": {
-      "artifact": "v3/historical_all_market/governance/NEW_LINEAGE_C0_C1_N1_PROBABILITY_ARCHITECTURE_DRAFT_v1.md",
-      "commit": "fdbac43ceaba8adf66f289c1969b0e83ffe826e8",
-      "status": "DESIGN_CANDIDATE_NOT_FROZEN"
+      "path": "v3/historical_all_market/governance/NEW_LINEAGE_SOURCE_PROVIDER_SELECTION_DRAFT_v1.md",
+      "commit": "f4822e3f30d6f234b13ddb109b779a2372d7e8f3"
     },
-    "TRAIN_CAL_FINAL_validation": {
-      "artifact": "v3/historical_all_market/governance/NEW_LINEAGE_TRAIN_CAL_FINAL_VALIDATION_PROTOCOL_DRAFT_v1.md",
-      "commit": "0b3ef8ccf6d0d6c1bb30ec4ad30b9eec5d9dfc91",
-      "status": "DESIGN_CANDIDATE_NOT_FROZEN"
+    "provider_rights_matrix": {
+      "path": "v3/historical_all_market/governance/NEW_LINEAGE_PROVIDER_RIGHTS_MATRIX_v1.md",
+      "commit": "8461a5ca13b25c8ca83011307250e5c350775431"
+    },
+    "provider_inquiry_draft": {
+      "path": "v3/historical_all_market/governance/PROVIDER_INQUIRY_QUESTIONS_DRAFT_v1.md",
+      "commit": "cad7f94f23b77538fbe86ab19b0c6ac2d9d77bcf",
+      "send_status": "NOT_SENT_OWNER_APPROVAL_REQUIRED"
     }
   },
   "source_rights_state": {
-    "official_public_dataplaza_transport": "PLAUSIBLE_PUBLIC_VIEW_SURFACE_DATE_VENUE_RACE_KEYED",
-    "official_observed_legshow_line_machine_transport": "NOT_PROVEN",
-    "race_regime_machine_transport": "NOT_FULLY_PROVEN",
-    "H_historical_point_in_time_transport": "NOT_PROVEN",
-    "maneuver_counts_historical_point_in_time_transport": "NOT_PROVEN",
-    "market_snapshot_historical_archive": "NOT_PROVEN",
-    "public_open_api_or_open_data_license": "NOT_FOUND_IN_CURRENT_AUDIT",
-    "site_reuse_rights": "RESTRICTIONS_IDENTIFIED_PERMISSION_OR_COMPATIBLE_LICENSE_REQUIRED_FOR_BULK_OPERATIONAL_USE",
+    "JKA_VIS": "OFFICIAL_UPSTREAM_CONFIRMED_PUBLIC_OPEN_ML_LICENSE_NOT_FOUND",
+    "KEIRIN_JP_PUBLIC_PAGES": "SEMANTIC_AUDIT_ONLY_BULK_ML_REUSE_NOT_AUTHORIZED",
+    "Team_Nave": "KEIRIN_AI_AND_BETTING_API_CONFIRMED_KEIRIN_DATABASE_FEED_NOT_PROVEN",
+    "WINTICKET": "MODERN_OPERATIONAL_BENCHMARK_LINEUP_AND_LINE_POWER_USE_CONFIRMED_NOT_TRAINING_SOURCE",
+    "admitted_provider": null,
     "prospective_collection_authorized": false,
-    "preferred_provider_classes": ["OFFICIAL_AUTHORIZED_FEED","AUTHORIZED_THIRD_PARTY_FEED"],
-    "public_view_only_pages": "SEMANTIC_RESEARCH_ONLY_UNTIL_RIGHTS_ARE_CLARIFIED",
-    "JKA_VIS": "TOP_PRIORITY_UPSTREAM_ROUTE_BUT_PUBLIC_SELF_SERVICE_LICENSE_NOT_FOUND",
-    "Team_Nave": "PROMISING_CONTACT_CANDIDATE_CTC_BETTING_API_AND_KEIRIN_AI_CONFIRMED_BUT_KEIRIN_DATA_FEED_NOT_PROVEN",
-    "external_contact_needed_if_public_research_exhausted": true,
     "external_contact_sent": false
   },
-  "current_pre_schema_active_frozen_DEV2000": ["race_id","car_no","rider_id","class","style","score","S","B","win_rate","quinella_rate","trio_rate","withdrawn"],
-  "new_lineage_core_schema_candidates_not_yet_admitted": ["race_regime","line_group_id","line_position","line_size","is_singleton","num_lines","line_source","line_snapshot_timestamp","line_observation_type","H"],
-  "already_registered_nextgen_candidates_not_active_in_DEV2000": ["nige","makuri","sashi","mark","line_id","line_position","line_size","line_score_sum","self_power_count","bank_length_m","home_straight_m","bank_cant_deg","weather","temperature_c","wind_speed_mps","wind_direction"],
-  "provisional_architecture_ablation_ladder_not_frozen": [
-    {"id":"C0","name":"FROZEN_CURRENT_PL_CONTROL","purpose":"structural null/control"},
-    {"id":"C1","name":"LINE_AUGMENTED_PL","purpose":"test line-feature value while retaining PL order assumption"},
-    {"id":"N1","name":"LINE_CONDITIONAL_TOP3","definition":"P1(i|X)*P2(j|i,X)*P3(k|i,j,X)","purpose":"test explicit rank2/rank3 relational dependence"},
-    {"id":"N2","name":"MARKET_RESIDUAL_TOP3","purpose":"test incremental PRE information over a frozen decision-time market baseline","condition":"market snapshot must be decision-time actionable and transportable"},
-    {"id":"N3","name":"INITIATIVE_MIXTURE","purpose":"higher-complexity structural state model only after N1 evidence"}
+  "new_lineage_schema_candidates_not_frozen": [
+    "race_regime",
+    "line_group_id",
+    "line_position",
+    "line_size",
+    "is_singleton",
+    "num_lines",
+    "line_source",
+    "line_snapshot_timestamp",
+    "line_observation_type",
+    "H",
+    "nige",
+    "makuri",
+    "sashi",
+    "mark",
+    "bank_length_m",
+    "home_straight_m",
+    "bank_cant_deg",
+    "weather",
+    "temperature_c",
+    "wind_speed_mps",
+    "wind_direction"
   ],
-  "probability_object_contract_candidate": {
-    "ordered_top3_mass": 1,
+  "source_independent_implementation": {
+    "PRE_interface_schema": {
+      "path": "v3/historical_all_market/new_lineage/PRE_INTERFACE_SCHEMA_DRAFT_v1.json",
+      "commit": "ce405e4aded9d2a033ed29f6cd123e8d92dda02f"
+    },
+    "PRE_structure_validator": {
+      "path": "v3/historical_all_market/new_lineage/validate_pre_structure_v1.py",
+      "commit": "1ad9155ab4654e2656c67318bfa15c7ca326086e"
+    },
+    "top3_architecture_core": {
+      "path": "v3/historical_all_market/new_lineage/top3_architecture_core_v1.py",
+      "commit": "2ebfe605665232941ae53ec598607a15f6e0f88f"
+    },
+    "probability_object_contract": {
+      "path": "v3/historical_all_market/new_lineage/probability_object_contract_v1.py",
+      "commit": "7528981977302cd187cde2814cf40d08a234d8cc"
+    },
+    "synthetic_fixture": {
+      "path": "v3/historical_all_market/new_lineage/fixtures/SYNTHETIC_STANDARD_PRE_v1.json",
+      "commit": "e2d7d09ec94063edb1df3e15f47d16413726e43a"
+    },
+    "synthetic_selftest_script": {
+      "path": "v3/historical_all_market/new_lineage/synthetic_selftest_v1.py",
+      "commit": "dd85b2e0f2c1bc729e9b25ff0b90d90e94aceac7"
+    },
+    "synthetic_selftest_receipt": {
+      "path": "v3/historical_all_market/governance/NEW_LINEAGE_SYNTHETIC_CORE_SELFTEST_RECEIPT_v1.json",
+      "commit": "916754d745816fdef5044878c7682990ef9483ea",
+      "status": "PASS_SYNTHETIC_ONLY_NO_PREDICTIVE_EVIDENCE"
+    }
+  },
+  "provisional_architecture_ablation_not_frozen": [
+    {"id":"C0","name":"FROZEN_CURRENT_PL_CONTROL"},
+    {"id":"C1","name":"LINE_AUGMENTED_PL_SAME_PL_ORDER_GENERATOR"},
+    {"id":"N1","name":"LINE_CONDITIONAL_TOP3","definition":"P1(i|X)*P2(j|i,X)*P3(k|i,j,X)"},
+    {"id":"N2","name":"DECISION_TIME_MARKET_RESIDUAL_TOP3","status":"DEFER_UNTIL_ACTIONABLE_MARKET_TRANSPORT_PROVEN"},
+    {"id":"N3","name":"INITIATIVE_MIXTURE","status":"DEFER_UNTIL_N1_EVIDENCE"}
+  ],
+  "probability_object_contract": {
+    "single_source_of_truth": "ORDERED_TOP3_JOINT",
     "3rentan_mass": 1,
     "3renhuku_mass": 1,
     "2shatan_mass": 1,
     "2shahuku_mass": 1,
     "wide_event_mass": 3,
-    "sold_frame_market_mass": 1,
-    "lower_envelope_is_distribution": false,
-    "all_markets_derived_from_single_ordered_top3_source_of_truth": true
-  },
-  "primary_probability_evaluation_candidate": {
-    "selection_order": "PROPER_SCORING_FIRST",
-    "metrics": ["winner_NLL","rank2_conditional_NLL","rank3_conditional_NLL","joint_top3_NLL","calibration","expected_vs_observed_hits_by_odds_probability_disagreement_and_structure_slices"],
-    "key_ablation_question": "DOES_N1_IMPROVE_RANK2_AND_RANK3_CONDITIONAL_OOF_LIKELIHOOD_OVER_C1_WITH_COMPARABLE_PRE_FEATURES"
+    "frame_markets": "DETERMINISTIC_AGGREGATION_FROM_TOP2_WITH_RACE_CARD_CAR_TO_FRAME_MAPPING",
+    "same_frame_zorome_supported": true,
+    "lower_envelope_is_distribution": false
   },
   "validation_candidate": {
-    "partition": "STRICT_CHRONOLOGICAL_TRAIN_CAL_FINAL",
-    "random_primary_split": false,
+    "split": "STRICT_CHRONOLOGICAL_TRAIN_CAL_FINAL",
     "FINAL_one_shot": true,
+    "primary_probability_metrics": [
+      "winner_NLL",
+      "rank2_conditional_NLL",
+      "rank3_conditional_NLL",
+      "joint_top3_NLL",
+      "calibration"
+    ],
     "architecture_selected_by_ROI": false,
-    "time_aware_uncertainty_required": true,
-    "exact_numeric_pass_thresholds_frozen": false
+    "first_economic_test": "FLAT100_MAX_ONE_ELEMENTARY_TICKET_PER_RACE_CANDIDATE",
+    "kelly": "SECONDARY_AFTER_COHERENT_CALIBRATION",
+    "portfolio_optimizer": "DEFERRED"
   },
-  "economic_evaluation_candidate": {
-    "first_clean_policy": "FLAT100_MAX_ONE_ELEMENTARY_TICKET_PER_RACE_CANDIDATE",
-    "probability_architecture_selection_by_ROI": "PROHIBITED",
-    "kelly": "SECONDARY_ONLY_AFTER_COHERENT_CALIBRATION_PASS",
-    "portfolio_optimizer": "DEFER_UNTIL_PROBABILITY_AND_SIMPLE_ECONOMICS_PASS",
-    "required_stability_reports": ["weekly_PnL","monthly_PnL","positive_week_fraction","positive_month_fraction","median_weekly_return","median_monthly_return","max_drawdown","longest_underwater_days","longest_underwater_races","recovery_duration","largest_winner_profit_share","top3_winner_profit_share","top5_winner_profit_share","profit_HHI","ROI_ex_largest_winner","ROI_ex_top3_winners"]
+  "independent_audit_state": {
+    "updated_package": {
+      "path": "v3/historical_all_market/governance/INDEPENDENT_NEXT_LINEAGE_V2_AUDIT_PACKAGE.md",
+      "commit": "cbb0557169074ee483e2784cddad5f1225a05b09"
+    },
+    "amendment": {
+      "path": "v3/historical_all_market/governance/INDEPENDENT_NEXT_LINEAGE_V2_AUDIT_PACKAGE_AMENDMENT_v1.md",
+      "commit": "9558b733f6fe70ebf0b970766530760452001680"
+    },
+    "review_result_received": false,
+    "final_freeze_authorized": false
   },
   "data_recovery_state": {
     "DEV2000_PRE_TABLE_csv_sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
@@ -143,31 +174,15 @@
     "DEV2000_PRE_TABLE_races": 2000,
     "raw_bytes_active_for_new_training": false,
     "staged_5000_PRE_training_eligibility": false,
-    "NEXTGEN5000_standalone_exact_universe_bytes_recovered": false,
-    "NEXTGEN5000_auto_admission": "PROHIBITED",
-    "retrospective_NEW_HISTORICAL5000": "FORMALLY_BLOCKED_FAIL_CLOSED",
-    "prospective_collection": "NOT_AUTHORIZED_UNTIL_SOURCE_COLLECTOR_AND_GOVERNANCE_AUDIT_PASS"
+    "NEXTGEN5000_auto_admission": "PROHIBITED"
   },
-  "independent_audit_state": {
-    "existing_next_lineage_gate_package": "v3/historical_all_market/governance/INDEPENDENT_GEMINI_NEXT_LINEAGE_V1_GATE_PACKAGE.md",
-    "existing_package_is_partially_superseded_by_new_tri_model_lessons": true,
-    "final_freeze_authorized": false,
-    "required_before_numeric_or_architecture_freeze": "NEW_OR_UPDATED_INDEPENDENT_AUDIT_AFTER_SCHEMA_ARCHITECTURE_SOURCE_AND_EXPERIMENT_PROTOCOL_ARE_DRAFTED"
-  },
-  "handoff_state": {
-    "durable_bootstrap_installed": true,
-    "handoff_protocol_commit": "56019be62e9ce21beb277375926a344c015961a1",
-    "pointer_registry_commit": "2c6adbfd1dddf301656d467a7e3a8e30d6214a29",
-    "normal_owner_new_chat_effort": "ONE_LINE_OR_CLEAR_CONTINUATION_INTENT",
-    "startup_required_labels": ["RECOVERED","UNPROVEN","MISSING","SEALED","NEXT_GATE"]
-  },
-  "next_gate": "NEW_LINEAGE_STAGE0_SOURCE_RIGHTS_AND_PROVIDER_SELECTION_PLUS_UPDATED_INDEPENDENT_DESIGN_AUDIT",
+  "next_gate": "PARALLEL_UPDATED_INDEPENDENT_AUDIT_AND_PROVIDER_CONTACT_APPROVAL",
   "next_exact_actions": [
-    "Continue public research for a lawful/authorized keirin data provider covering structural PRE, race regime, point-in-time race-card fields and actionable odds; do not infer rights from public visibility.",
-    "If public evidence cannot resolve provider coverage/rights, prepare exact inquiry questions for Owner approval before any external contact; do not send or purchase without approval.",
-    "Draft source-independent synthetic interface/parser fixtures for the admitted-candidate schema without collecting protected data.",
-    "Prepare an updated independent audit package covering source rights, C0/C1/N1 architecture, Probability Object Contract and TRAIN/CAL/FINAL protocol.",
-    "Resolve all P0 audit conditions before any scientific Freeze or prospective collector authorization."
+    "Send the updated v2 audit package to independent Claude/Gemini only through an Owner-approved interaction and record their exact responses before any architecture/schema Freeze.",
+    "If Owner approves external provider inquiry, send the prepared minimum questions to the correct JKA/authorized-provider contact; do not purchase or accept terms without separate approval.",
+    "Continue source-independent implementation preflight and test fixtures while provider/audit responses are pending.",
+    "Do not admit any provider until rights, timestamp semantics, historical point-in-time fidelity and machine transport all pass.",
+    "Do not open any new untouched outcomes until schema, architecture, source route and validation protocol are frozen after independent audit."
   ],
   "hard_prohibitions": [
     "NO_CURRENT_DEV2000_C_ACCESS_FOR_NEW_LINEAGE",
