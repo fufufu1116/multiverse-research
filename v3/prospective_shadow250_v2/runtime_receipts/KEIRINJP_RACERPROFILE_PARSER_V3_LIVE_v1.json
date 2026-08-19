@@ -1,0 +1,30 @@
+{
+  "error_message": "QUARANTINE_FAIL_CLOSED direct-table cardinality headers=['氏名', '府県', '登録番号'] count=0",
+  "error_type": "Halt",
+  "expected_parser_git_blob": "be9570e61edbf6dd73f5bf58e004de6685d9afa0",
+  "generated_utc": "2026-08-19T00:12:43.232539+00:00",
+  "holdout_accessed": false,
+  "parser_git_blob": "be9570e61edbf6dd73f5bf58e004de6685d9afa0",
+  "predictive_values_persisted": false,
+  "raw_html_persisted": false,
+  "record": "KEIRINJP_RACERPROFILE_PARSER_V3_LIVE_v1",
+  "result_payout_price_accessed": false,
+  "scientific_trial_consumed": false,
+  "shadow_screen_consumed": false,
+  "status": "FAIL_CLOSED",
+  "synthetic": {
+    "network_used": false,
+    "status": "PASS"
+  },
+  "traceback_tail": [
+    "Traceback (most recent call last):",
+    "  File \"<stdin>\", line 10, in <module>",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/keirinjp_racerprofile_parser_v3.py\", line 69, in parse_profile",
+    "    basic,basic_table=_table_map_and_node(soup,['氏名','府県','登録番号'])",
+    "                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/keirinjp_racerprofile_parser_v3.py\", line 33, in _table_map_and_node",
+    "    if len(found)!=1:raise Halt(f'QUARANTINE_FAIL_CLOSED direct-table cardinality headers={req} count={len(found)}')",
+    "                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "rp3.Halt: QUARANTINE_FAIL_CLOSED direct-table cardinality headers=['氏名', '府県', '登録番号'] count=0"
+  ]
+}
