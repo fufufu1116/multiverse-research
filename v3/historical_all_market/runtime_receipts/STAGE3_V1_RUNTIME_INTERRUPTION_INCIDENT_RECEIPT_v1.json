@@ -1,0 +1,37 @@
+{
+  "record": "STAGE3_V1_RUNTIME_INTERRUPTION_INCIDENT_RECEIPT_v1",
+  "status": "RUNTIME_INTERRUPTED_SUPERSEDED_BY_V2",
+  "date_jst": "2026-08-19",
+  "stage": "All-Market Historical Track Stage 3",
+  "failed_runtime_artifact": "STAGE3_TICKET_FILTER_RACE_COUNTS_v1.csv",
+  "failed_runtime_artifact_sha256": "d4bb900224ec7a285a7673cd8d2a28321b122e584355f65fe601118736b2989b",
+  "observed_partial_csv_rows": 75204,
+  "observed_unique_race_ids": 1037,
+  "last_observed_row": {
+    "race_id": "3620260326030006",
+    "probability_source": "candidate_a",
+    "market": "2shahuku",
+    "profile_id": "P10",
+    "total_ticket_count": 21,
+    "candidate_count": 11,
+    "candidate_share": 0.52380952381,
+    "no_bet": 0
+  },
+  "diagnosis": "RUNTIME_OR_GOOGLE_DRIVE_IO_INTERRUPTION_DURING_EXPANDED_CSV_WRITE",
+  "diagnosis_basis": [
+    "v1 writes all seven profile rows for a market only after computing the full market pass-count dictionary",
+    "the persisted CSV terminates inside the seven profile rows for one market rather than at a semantic Fail-Closed boundary",
+    "no Stage3 quality or PASS receipt was produced"
+  ],
+  "scientific_semantics_changed": false,
+  "stage3_prereg_remains": "STAGE3_TICKET_FILTER_FAMILY_PREREG_v1",
+  "replacement_runtime": "stage3_ticket_filter_diagnostics_v2.py",
+  "replacement_runtime_mode": "RESUMABLE_ATOMIC_CHUNKS",
+  "runtime_reliability_standard": "COLAB_IPHONE_RUNTIME_RELIABILITY_STANDARD_v1",
+  "result_access": false,
+  "payout_access": false,
+  "settlement_access": false,
+  "realized_roi_computed": false,
+  "scientific_trial_count": 0,
+  "ECON_HOLDOUT1000": "SEALED"
+}
