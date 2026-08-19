@@ -1,26 +1,26 @@
 {
   "record": "VNEXT_CURRENT_STATE_v0",
   "status": "WORKING_CANDIDATE_NOT_ACCEPTED_NOT_FROZEN",
-  "updated_jst": "2026-08-20T02:52:00+09:00",
+  "updated_jst": "2026-08-20T02:59:00+09:00",
   "mutability": "MUTABLE_CAS_POINTER",
   "canonical_repo": "fufufu1116/multiverse-research",
   "canonical_main_head_observed": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
   "working_branch": "agent/multiverse-vnext-bootstrap-batch1",
   "working_pr": 2,
-  "current_phase": "VNEXT_CORE_LAB_BLOCKERS_FIXED_READY_FOR_LAB_RECHECK",
+  "current_phase": "VNEXT_INDEPENDENT_MATERIAL_ARCHITECTURE_REVIEW_REQUESTED",
   "formal_release_state": "NOT_ACCEPTED",
-  "state_generation": 5,
-  "parent_valid_state_git_blob_sha": "2b33be0771e0163b07f6a9c927eb60e8f1c90887",
+  "state_generation": 6,
+  "parent_valid_state_git_blob_sha": "834ecaaec1a74aaf10e01b86129cbc5bdc3fc8a3",
   "supersedes_state_ref": {
     "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
-    "git_blob_sha": "2b33be0771e0163b07f6a9c927eb60e8f1c90887",
-    "logical_generation": 4
+    "git_blob_sha": "834ecaaec1a74aaf10e01b86129cbc5bdc3fc8a3",
+    "logical_generation": 5
   },
   "write_precondition": {
-    "expected_current_state_blob_sha": "2b33be0771e0163b07f6a9c927eb60e8f1c90887",
+    "expected_current_state_blob_sha": "834ecaaec1a74aaf10e01b86129cbc5bdc3fc8a3",
     "expected_canonical_main_head": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
-    "expected_working_branch_head_before_write": "147943a103b4e41d28a96018a1ba5b84a2f723e7",
-    "expected_generation_of_last_valid_state": 4,
+    "expected_working_branch_head_before_write": "bec25d124dc4db75fcbe333cb54a96167c084dd1",
+    "expected_generation_of_last_valid_state": 5,
     "reject_on_any_mismatch": true,
     "timestamp_can_override": false
   },
@@ -37,20 +37,18 @@
     "owner_must_not_be_routine_designer_or_operator": true
   },
   "lab_status": {
-    "reviewed_head": "f343343e605d1e6fd73a49e1cc617a688a79e1a5",
-    "verdict": "MATERIAL_BLOCK",
-    "current_version_material_blockers": [
-      "M1_FAST_PATH_SELF_CLASSIFICATION_BYPASS",
-      "M2_MISSING_EXECUTION_AUTHORIZATION_CONTRACT",
-      "M3_INDEPENDENT_REVIEW_GATE_CONTRADICTION"
-    ],
-    "core_disposition": {
-      "M1": "FIXED_IN_SELF_EVOLUTION_PROTOCOL_PENDING_LAB_RECHECK",
-      "M2": "FIXED_BY_AUTHORIZATION_CONTRACT_PENDING_LAB_RECHECK",
-      "M3": "FIXED_IN_DOD_EXACT_HEAD_INDEPENDENT_REVIEW_REQUIRED_PENDING_LAB_RECHECK",
-      "taxonomy_alignment": "FIXED_IN_DOD"
-    },
-    "acceptance_effect": "BLOCKED_UNTIL_LAB_RECHECK_AND_LATER_REQUIRED_REVIEWS"
+    "initial_reviewed_head": "f343343e605d1e6fd73a49e1cc617a688a79e1a5",
+    "initial_verdict": "MATERIAL_BLOCK",
+    "rechecked_head": "0887d4363cb15e23a4a376f3d7c0db21c4b67645",
+    "recheck_verdict": "PASS",
+    "head_reverified_unchanged_at_recheck_end": true,
+    "unresolved_current_version_material_blockers": [],
+    "M1": "CLEARED",
+    "M2": "CLEARED",
+    "M3": "CLEARED",
+    "taxonomy_alignment": "CLEARED",
+    "institution_compression": "CLEARED",
+    "routing_result": "INDEPENDENT_MATERIAL_ARCHITECTURE_REVIEW_MAY_PROCEED"
   },
   "pinned_artifacts": {
     "keirin_pause_receipt": {
@@ -96,6 +94,12 @@
       "git_blob_sha": "8f1f852c466bb0b008d1497d7503f0456c305152",
       "assurance": "DETERMINISTIC_RULE_TABLE_EVALUATION_NOT_PRODUCTION_ADAPTER_NATIVE_ENFORCEMENT"
     },
+    "lab_recheck_receipt": {
+      "path": "multiverse_vnext/VNEXT_LAB_RECHECK_RECEIPT_20260820_v1.json",
+      "git_commit": "bec25d124dc4db75fcbe333cb54a96167c084dd1",
+      "git_blob_sha": "3894ea4ec2b830d7a8ae4e8588dbd4eaf397d406",
+      "source_assurance": "OWNER_RELAY_OF_LAB_RESULT_NOT_CORE_REPERFORMANCE"
+    },
     "bootstrap": {
       "path": "MULTIVERSE_BOOTSTRAP.md",
       "git_commit": "c532e0944f2ec96627eab9fef689c0c33671a605",
@@ -105,12 +109,12 @@
   },
   "finding_taxonomy": {
     "CURRENT_VERSION_MATERIAL_BLOCK": "must be fixed before vNext acceptance",
-    "DEFERRED_NORTH_STAR_MATERIAL_GAP": "material for a later North Star milestone but outside current vNext acceptance claims; future gate required",
+    "DEFERRED_NORTH_STAR_MATERIAL_GAP": "important for a later North Star milestone but outside current L2 vNext claims; explicit future gate required",
     "MINOR_AUTOFIX": "safe non-material correction",
     "NEXT_VERSION_CANDIDATE": "beneficial nonblocking improvement"
   },
   "institution_compression": {
-    "status": "LAB_RECOMMENDATION_ADOPTED_AS_IMPLEMENTATION_TARGET_PENDING_REVIEW",
+    "status": "LAB_CLEARED_IMPLEMENTATION_TARGET",
     "steady_groups": [
       "CORE_PLUS_RESOURCE_PLUS_EVOLUTION_ORCHESTRATION",
       "EVIDENCE_KNOWLEDGE",
@@ -120,25 +124,14 @@
       "AUDITOR"
     ],
     "optional_module": "OPPORTUNITY",
-    "note": "Existing logical names remain compatible aliases; this does not require six separate paid services or chats."
+    "required_separations_preserved": true,
+    "note": "Logical aliases remain compatible; no requirement for six separate paid services/chats."
   },
   "deferred_north_star_material_gaps": [
-    {
-      "gap": "COMMON_ORIGIN_AND_AI_EVIDENCE_TAINT_LINEAGE",
-      "future_gate": "BEFORE_PHASE_C_EVIDENCE_AUTOMATION_OR_SCALED_INDEPENDENT_CORROBORATION_CLAIMS"
-    },
-    {
-      "gap": "CANONICAL_AUTHORITY_HOST_MIGRATION_AFTER_PERMANENT_GITHUB_LOSS",
-      "future_gate": "BEFORE_L5_PROVIDER_SOVEREIGNTY_CLAIM_OR_CANONICAL_HOST_MIGRATION"
-    },
-    {
-      "gap": "DELETION_TOMBSTONE_PROPAGATION_ACROSS_MIRRORS_DERIVATIVES_PROVIDER_COPIES",
-      "future_gate": "BEFORE_AUTOMATED_RETENTION_DELETION_ENFORCEMENT_OR_SENSITIVE_LIFECYCLE_EXPANSION"
-    },
-    {
-      "gap": "L3_TO_L5_MINIMUM_EVIDENCE_AND_CONTROL_PROFILES",
-      "future_gate": "BEFORE_ANY_AUTONOMY_PROMOTION_ABOVE_L2"
-    }
+    {"gap":"COMMON_ORIGIN_AND_AI_EVIDENCE_TAINT_LINEAGE","future_gate":"BEFORE_PHASE_C_EVIDENCE_AUTOMATION_OR_SCALED_INDEPENDENT_CORROBORATION_CLAIMS"},
+    {"gap":"CANONICAL_AUTHORITY_HOST_MIGRATION_AFTER_PERMANENT_GITHUB_LOSS","future_gate":"BEFORE_L5_PROVIDER_SOVEREIGNTY_CLAIM_OR_CANONICAL_HOST_MIGRATION"},
+    {"gap":"DELETION_TOMBSTONE_PROPAGATION_ACROSS_MIRRORS_DERIVATIVES_PROVIDER_COPIES","future_gate":"BEFORE_AUTOMATED_RETENTION_DELETION_ENFORCEMENT_OR_SENSITIVE_LIFECYCLE_EXPANSION"},
+    {"gap":"L3_TO_L5_MINIMUM_EVIDENCE_AND_CONTROL_PROFILES","future_gate":"BEFORE_ANY_AUTONOMY_PROMOTION_ABOVE_L2"}
   ],
   "next_version_candidates": [
     "DEPENDENCY_INTEGRITY_SBOM_SUPPLY_CHAIN_AUTOMATION",
@@ -147,9 +140,17 @@
   ],
   "required_architecture_reviews": {
     "vault": "FOUNDATION_CANONICAL_RECOVERY_MATERIAL_BLOCK_CLEARED_FOR_LAB_ROUTING",
-    "lab": "RECHECK_REQUIRED_ON_POST_FIX_EXACT_HEAD",
-    "independent_reviewer": "EXACT_HEAD_MATERIAL_ARCHITECTURE_REVIEW_REQUIRED_BEFORE_ACCEPTANCE_PROVIDER_NEUTRAL_DEFAULT_GEMINI_CORE",
+    "lab": "PASS_ON_POST_FIX_HEAD_0887D4363CB15E23A4A376F3D7C0DB21C4B67645",
+    "independent_reviewer": "EXACT_LATEST_HEAD_MATERIAL_ARCHITECTURE_REVIEW_REQUIRED_BEFORE_ACCEPTANCE_PROVIDER_NEUTRAL_DEFAULT_GEMINI_CORE",
     "auditor": "ONLY_AFTER_REVIEW_STABLE_ACCEPTANCE_CANDIDATE_AND_FINAL_RECOVERY_CAPSULE"
+  },
+  "independent_review_policy": {
+    "required_for_this_north_star_candidate": true,
+    "default_reviewer_adapter": "GEMINI_CORE",
+    "vendor_is_not_institutional_requirement": true,
+    "reviewer_must_resolve_exact_latest_pr_head_at_start_and_end": true,
+    "reviewer_must_compare_any_delta_after_lab_rechecked_head": "0887d4363cb15e23a4a376f3d7c0db21c4b67645",
+    "acceptance_without_independent_exact_head_verdict": "PROHIBITED"
   },
   "keirin_firewall": {
     "scientific_state_change_authorized": false,
@@ -186,7 +187,8 @@
     "low_data": true,
     "low_storage": true,
     "owner_action_minimization": true,
-    "milestone_reports_include_current_work_struggle_solution_terms_and_roadmap": true
+    "milestone_reports_include_current_work_struggle_solution_terms": true,
+    "roadmap_only_on_material_progress_milestones": true
   },
   "execution_efficiency_policy": {
     "parallelize_independent_reads_research_and_checks": true,
@@ -194,14 +196,13 @@
     "optimize_for_fastest_safe_path": true
   },
   "next_actions": [
-    "Request Lab recheck of M1/M2/M3 and taxonomy against the latest exact PR head.",
-    "If Lab clears CURRENT_VERSION_MATERIAL_BLOCK, request required independent material architecture review on the exact stable head.",
-    "Resolve only true current-version blockers; preserve deferred gaps and NEXT_VERSION_CANDIDATE without expanding vNext.",
-    "Create final acceptance recovery capsule and zero-history bootstrap only after review-stable acceptance candidate exists.",
+    "Request required independent material architecture review on the exact latest PR head; reviewer must verify start/end head and compare any post-Lab administrative delta.",
+    "Resolve only true current-version material blockers from independent review; preserve deferred gaps and NEXT_VERSION_CANDIDATE without expanding vNext.",
+    "Create final acceptance recovery capsule and zero-history bootstrap only after a review-stable acceptance candidate exists.",
     "Route exact acceptance candidate to Auditor.",
     "After acceptance, stop noncritical Multiverse core expansion and exact-resume Keirin from latest legitimate verified canonical state."
   ],
-  "owner_action_now": "ONE_LINE_RELAY_TO_LAB_CHAT_FOR_RECHECK",
+  "owner_action_now": "ONE_LINE_RELAY_TO_INDEPENDENT_GEMINI_CORE_REVIEW",
   "next_write_requirements": {
     "must_fetch_current_blob_and_main_head_first": true,
     "new_generation_must_equal_current_plus_one": true,
