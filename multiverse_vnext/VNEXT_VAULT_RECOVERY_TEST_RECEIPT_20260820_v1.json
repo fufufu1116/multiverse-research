@@ -1,0 +1,61 @@
+{
+  "record": "VNEXT_VAULT_RECOVERY_TEST_RECEIPT_20260820_v1",
+  "status": "CORE_REHEARSAL_EVIDENCE_PENDING_VAULT_RECHECK",
+  "created_jst": "2026-08-20T02:07:00+09:00",
+  "tests": {
+    "stale_write_cas": {
+      "result": "PASS",
+      "evidence": "GitHub update using stale blob 5b10904b10fad27be605a8770988e496544dd9ab was rejected HTTP 409; no mutation occurred."
+    },
+    "immutable_receipt_identity": {
+      "result": "PASS_LOCAL_HASH_REHEARSAL",
+      "pinned_sha256": "2b897c05093ec5a253977968c4f74a54f6830e7e5135eb43aa99b756f1ae9157",
+      "modified_copy_sha256": "a37a99b40ba8e52a8eab3bdd98fbf0df3055a0e6d859985543d0909bd62274ee",
+      "mismatch_detected": true
+    },
+    "repo_locator_bootstrap": {
+      "result": "PASS_PROCEDURE_REHEARSAL",
+      "main_head": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
+      "active_vnext_pr_count": 1,
+      "active_pr": 2,
+      "active_pr_base_matches_main": true,
+      "note": "Independent zero-history fresh-chat repetition remains appropriate for Vault recheck."
+    },
+    "dual_root_restore": {
+      "result": "PASS",
+      "drive_file_id": "1BrLAUbLWwc2sdwrE2_JlLFGMrH5QoG0o",
+      "source_sha256": "42e56e7392441a31bfadf8f67c0aad5a774f002cc0a7cc62f2de1c60e265abba",
+      "drive_readback_sha256": "42e56e7392441a31bfadf8f67c0aad5a774f002cc0a7cc62f2de1c60e265abba",
+      "byte_identity_match": true,
+      "mirror_authority": "NON_AUTHORITATIVE_RECOVERY_COPY"
+    },
+    "newer_state_precedence": {
+      "result": "PASS_DESIGN_REHEARSAL",
+      "rule": "GIT_ANCESTRY_PLUS_MONOTONIC_GENERATION_PLUS_EXPLICIT_SUPERSESSION; timestamp cannot override"
+    },
+    "working_branch_loss": {
+      "result": "PASS_NONDESTRUCTIVE_REHEARSAL",
+      "evidence": "Drive snapshot commit 5dfa3b806a49d2f3d02ee55d4aac27c1fa22db37 is independently recoverable; no branch deletion was performed."
+    },
+    "firewall_regression": {
+      "result": "PASS",
+      "package_members": [
+        "MULTIVERSE_BOOTSTRAP.md",
+        "SHA256SUMS.txt",
+        "VNEXT_RECOVERY_MANIFEST_20260820_v1.json",
+        "multiverse_vnext/VNEXT_BATCH1_FOUNDATION_DESIGN_v0.md",
+        "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
+        "multiverse_vnext/VNEXT_KEIRIN_PAUSE_RECEIPT_20260820_v1.json"
+      ],
+      "protected_holdout_result_payout_bytes_included": false
+    }
+  },
+  "operational_incident": {
+    "invalid_transient_current_state_write_commit": "e2f9ea119de35c27eefd955434bf1b5420f97d05",
+    "invalid_blob": "311c8dd0658759f372c9be9a2065c327fdb1a203",
+    "classification": "INVALID_TRANSIENT_WRITE_NEVER_VALID_STATE",
+    "repaired_commit": "5dfa3b806a49d2f3d02ee55d4aac27c1fa22db37",
+    "lesson": "Working-state writes must use exact CAS preconditions and invalid intermediates must remain auditable rather than hidden."
+  },
+  "acceptance_effect": "NONE; Vault recheck still required before clearing MATERIAL_BLOCK."
+}
