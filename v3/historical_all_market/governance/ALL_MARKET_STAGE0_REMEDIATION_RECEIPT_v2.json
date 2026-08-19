@@ -1,0 +1,94 @@
+{
+  "record": "ALL_MARKET_STAGE0_REMEDIATION_RECEIPT_v2",
+  "project": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
+  "parent_gemini_audit_blob": "af11fac1ab7115ae376f2109141669a1ef088408",
+  "parent_verdict": "CONDITIONAL_APPROVE",
+  "status": "REMEDIATED_PENDING_INDEPENDENT_GEMINI_REAUDIT",
+  "issue_status": {
+    "ISSUE-ALLM-01": "RESOLVED_CANDIDATE",
+    "ISSUE-ALLM-02": "RESOLVED_CANDIDATE",
+    "ISSUE-ALLM-03": "FRESH_OFFICIAL_5CAR_PASS_PENDING_GEMINI_ACCEPTANCE_AS_REQUIRED_CANARY"
+  },
+  "exact_bindings": {
+    "price_parser_path": "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py",
+    "price_parser_git_blob": "f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8",
+    "settlement_parser_path": "v3/historical_all_market/kdreams_settlement_recovery_v1.py",
+    "settlement_parser_git_blob": "b8b8ab0e0904541bd6fc45e7fe415d323e63ec45",
+    "firewall_self_check_blob": "dfc6a4d1e48fc13c6afacbe589fe3f761800d42a",
+    "price_regression_v3_blob": "441200deaca73f0830d978cbc8ae0b870f2b9c76",
+    "settlement_regression_v1_blob": "47dea8164154242726577a6c996c8ebc6815ae9d",
+    "fresh_5car_receipt_blob": "55f58be453563bcf2ed7cfe3cc9b2c42007fe79c"
+  },
+  "price_settlement_firewall": {
+    "price_outputs_refund_result_payout": false,
+    "settlement_outputs_odds_catalog": false,
+    "settlement_operational_use_before_stage1_to_6_rules_freeze": "PROHIBITED",
+    "same_sha_bound_raw_use": "ALLOWED_ONLY_THROUGH_SEPARATE_EXECUTABLES_AND_OUTPUT_ARTIFACTS"
+  },
+  "market_presence_remediation": {
+    "all_core_markets_hard_required": false,
+    "per_market_presence_independent": true,
+    "only_present_markets_parsed": true,
+    "missing_market_synthetic_pass": true
+  },
+  "catalog_completeness_remediation": {
+    "nominal_field_size_is_not_bulk_primary_invariant": true,
+    "active_car_numbers_inferred_from_sold_car_ticket_keys": true,
+    "sold_car_markets_must_agree_on_active_car_set": true,
+    "each_sold_car_market_must_have_complete_combinatorial_catalog_for_inferred_active_set": true,
+    "optional_expected_n_cars": "CANARY_ONLY_EXTERNAL_ASSERTION"
+  },
+  "ticket_identity_repairs": {
+    "3rentan": {
+      "old_problem": "second_and_third_matrix_axes_swapped",
+      "corrected": "column_is_second_place_row_is_third_place",
+      "7car_check": {"ticket":"1-2-3","closing_odds":3.4},
+      "9car_check": {"ticket":"2-5-7","closing_odds":38.4},
+      "classification": "TICKET_IDENTITY_REPAIR_NOT_STRATEGY_TUNING"
+    },
+    "3renhuku": {
+      "old_problem": "rowspan_second_car_state_updated_only_after_nonblank_price",
+      "corrected": "two-number row updates second-car group before blank-price filtering",
+      "regression_raw_sha256": "75aae0b328db67a5bec995e7eec25ecf63e5797e35f83ba12c689972c74aeb35",
+      "inferred_active_car_numbers": [1,2,3,4,6,7],
+      "counts": {"3rentan":120,"2shatan":30,"3renhuku":20,"2shahuku":15,"wide":15},
+      "classification": "PRICE_TABLE_SEMANTICS_REPAIR_NOT_STRATEGY_TUNING"
+    }
+  },
+  "five_car_canary": {
+    "race_id": "2320260324030005",
+    "field_size": 5,
+    "legacy_recorded_archived_raw_sha256": "7ec10e859838091a3bec6d51711cacde36607cef2771eb2dfc3d9872cfffe9d0",
+    "fresh_official_receipt_blob": "55f58be453563bcf2ed7cfe3cc9b2c42007fe79c",
+    "fresh_official_raw_sha256": "a2cfc26e3e7891391e59ab1ac69b43216a655493310269e7d55a459bbd056934",
+    "fresh_matches_archived_raw_sha256": false,
+    "fresh_active_car_numbers": [1,2,3,4,5],
+    "fresh_counts": {"3rentan":60,"2shatan":20,"3renhuku":10,"2shahuku":10,"wide":10},
+    "fresh_price_parser_git_blob": "f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8",
+    "interpretation": "FRESH_OFFICIAL_HISTORICAL_5CAR_STRUCTURE_PASS_NOT_ARCHIVED_BYTE_IDENTITY_PROOF",
+    "dynamic_html_evidence": "successive fresh fetches produced different raw SHA values while structural price counts remained identical"
+  },
+  "settlement_multi_refund": {
+    "distinct_multiple_refund_entries_preserved": true,
+    "same_ticket_same_refund_duplicate": "IDEMPOTENT",
+    "same_ticket_conflicting_refund": "FAIL_CLOSED",
+    "bulk_settlement_now": "PROHIBITED"
+  },
+  "scientific_state": {
+    "bulk_2000_price_recovery_started": false,
+    "bulk_settlement_recovery_started": false,
+    "stage1_started": false,
+    "stage2_started": false,
+    "stage5_started": false,
+    "ticket_probability_computed": false,
+    "ev_computed": false,
+    "roi_computed": false,
+    "portfolio_constructed": false,
+    "bankroll_simulated": false,
+    "all_market_track_trial_count": 0,
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_result_access": false,
+    "holdout_payout_access": false,
+    "holdout_price_access": false
+  }
+}
