@@ -61,31 +61,23 @@ def parse_payload(payload:bytes,expected_raw_sha256:str|None=None):
         elif lab=='2車連' and i+2<len(row0): out['2shahuku'].update(dl_entries(row0[i+2],'2shahuku'))
         elif lab=='3連勝' and i+2<len(row0): out['3renhuku'].update(dl_entries(row0[i+2],'3renhuku'))
         elif lab=='ワイド' and i+1<len(row0): out['wide'].update(dl_entries(row0[i+1],'wide'))
-    # Ordered row: walk groups by visible 単 labels; assign according to preceding semantic group order.
-    # Kdreams standard order is frame, car, trifecta. Unsold frame may have an explicit 未発売 cell.
+    # Ordered row is fixed semantic layout: frame exacta, car exacta, trifecta.
+    # Each group is ["単", settlement cell]. Explicit 未発売 remains a semantic cell.
     row1=trs[1].xpath('./th|./td')
-    payout_cells=[]
-    for c in row1:
-        vals=[]
-        for dl in c.xpath('.//dl'):
-            if dl.xpath('./dt') and dl.xpath('./dd'): vals.append(dl)
-        if vals or compact(node_text(c))=='未発売': payout_cells.append(c)
-    # More robustly identify all cells containing ordered-looking combo refunds, preserving left-to-right.
-    ordered_cells=[]
-    for c in row1:
-        raws=[compact(node_text(dt)) for dt in c.xpath('.//dl/dt')]
-        if raws and any(x!='未発売' for x in raws): ordered_cells.append((c,raws))
-    # Determine frame sold from unordered frame refund; if sold, first ordered cell is frame exacta.
-    idx=0
-    if out['2wakuhuku']:
-        if idx>=len(ordered_cells): raise FailClosed('frame exacta settlement cell missing')
-        out['2wakutan'].update(dl_entries(ordered_cells[idx][0],'2wakutan')); idx+=1
-    if idx>=len(ordered_cells): raise FailClosed('car exacta settlement cell missing')
-    out['2shatan'].update(dl_entries(ordered_cells[idx][0],'2shatan')); idx+=1
-    if idx>=len(ordered_cells): raise FailClosed('trifecta settlement cell missing')
-    out['3rentan'].update(dl_entries(ordered_cells[idx][0],'3rentan')); idx+=1
-    # Any remaining dl-bearing ordered cell means structure drift / ambiguity.
-    if idx != len(ordered_cells): raise FailClosed(f'unassigned ordered settlement cells={len(ordered_cells)-idx}')
+    if len(row1) != 6:
+        raise FailClosed(f'ordered settlement row cell count={len(row1)}')
+    if [compact(node_text(row1[i])) for i in (0,2,4)] != ['単','単','単']:
+        raise FailClosed('ordered settlement semantic labels drifted')
+    ordered_specs=((1,'2wakutan'),(3,'2shatan'),(5,'3rentan'))
+    for idx,market in ordered_specs:
+        cell=row1[idx]
+        txt=compact(node_text(cell))
+        if txt=='未発売':
+            continue
+        vals=dl_entries(cell,market)
+        if not vals:
+            raise FailClosed(f'sold ordered settlement has no entries market={market}')
+        out[market].update(vals)
     sold={m:bool(out[m]) for m in MARKETS}
     if not any(sold.values()): raise FailClosed('no settlement entries parsed')
     return {'parser_id':PARSER_ID,'raw_sha256':dig,'settlements_yen_per_100':out,'settled_market_presence':sold,
