@@ -1,24 +1,21 @@
 # START HERE — Multiverse 競輪ver
 
-This file is the stable new-chat bootstrap entrypoint.
+このファイルは新チャット用の固定入口です。
 
-## Canonical source
+## まず読む
+
+1. `KEIRIN_NOW.md` — 主向けの簡単な現在地
+2. `v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json` — 正確な機械用Current State
+3. `v3/historical_all_market/governance/HANDOFF_BOOTSTRAP_PROTOCOL_v1.md` — 復旧手順
+4. `v3/historical_all_market/governance/ARTIFACT_POINTER_REGISTRY_KEIRIN_v1.json` — Artifact場所
 
 Repository: `fufufu1116/multiverse-research`
 
-Read first:
+## 新チャットでNo.3がやること
 
-1. `v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json`
-2. `v3/historical_all_market/governance/HANDOFF_BOOTSTRAP_PROTOCOL_v1.md`
-3. `v3/historical_all_market/governance/ARTIFACT_POINTER_REGISTRY_KEIRIN_v1.json`
+主に過去説明をやり直させない。
 
-Then follow the artifact paths referenced by CURRENT_STATE.
-
-## Startup behavior
-
-Do not ask the Owner to reconstruct the research history before attempting recovery.
-
-Recover GitHub + referenced Google Drive artifacts first, classify important objects as:
+GitHub → 必要なDrive実物 → SHA/保護状態を自動回収し、重要物を:
 
 - RECOVERED
 - UNPROVEN
@@ -26,32 +23,40 @@ Recover GitHub + referenced Google Drive artifacts first, classify important obj
 - SEALED
 - NEXT_GATE
 
-Never treat remembered SHA/path claims as current byte verification.
+に分類して続行する。
 
-## Current protected boundaries
+記憶にあるSHAやパスだけで「確認済み」扱いしない。
 
-The canonical values are in CURRENT_STATE. At the time this entrypoint was created:
+## 主への報告
 
-- parent lineage = `NO_B_VALIDATED_CONFIGURATION`
-- current DEV2000 C is not available for new-lineage rescue
+原則、次の4点だけを平易な日本語で伝える。
+
+- いま何をしてる
+- 何が分かった
+- 次に何をする
+- 主がやること
+
+専門用語は必要最小限。使う場合はすぐ日本語訳を付ける。
+
+## 現在の固定境界
+
+正本はCURRENT_STATE。少なくとも現在:
+
+- 親lineageは `NO_B_VALIDATED_CONFIGURATION`
+- current DEV2000 Cを新lineage救済には使わない
 - `ECON_HOLDOUT1000 = SEALED`
-- same-lineage B/C rescue tuning is prohibited
-- unauthorized RESULT/PAYOUT/network access is prohibited
+- 現実のお金は使わず、経済指標は仮想資金のみ
+- 外部業者への連絡はしない
+- Synthetic世界/オッズは開発・ストレス試験用であり、現実で勝てる証拠にはしない
 
-If this file and CURRENT_STATE disagree, read Git history and the later verified governance artifact; do not guess.
+## 現在の研究方向
 
-## Current research direction
+現実の競輪を最終目標にしつつ、まず複数の仮想競輪世界（Digital Twin）で旧モデルと新モデルを壊し、必要なレース情報・ライン構造・予測方法・仮想資金配分を高速に固める。
 
-The active work is new-lineage design, not parent-lineage rescue.
+その後、現実のPREデータで段階的に検証する。
 
-Provisional ablation ladder:
-
-`C0 frozen PL control -> C1 line-augmented PL -> N1 line-conditional top3 -> N2 decision-time market residual -> N3 initiative mixture`
-
-This ladder is a design candidate, not yet a scientific Freeze.
-
-## Minimal owner trigger
+## 最小起動文
 
 `Multiverse競輪ver 引き継ぎ起動。実物優先で自動回収し、CURRENT_STATEから続行。`
 
-A clearly stated continuation request is also sufficient.
+明確な「続きから」でも可。
