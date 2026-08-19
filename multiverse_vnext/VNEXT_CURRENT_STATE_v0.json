@@ -1,26 +1,26 @@
 {
   "record": "VNEXT_CURRENT_STATE_v0",
   "status": "WORKING_CANDIDATE_NOT_ACCEPTED_NOT_FROZEN",
-  "updated_jst": "2026-08-20T02:30:00+09:00",
+  "updated_jst": "2026-08-20T02:52:00+09:00",
   "mutability": "MUTABLE_CAS_POINTER",
   "canonical_repo": "fufufu1116/multiverse-research",
   "canonical_main_head_observed": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
   "working_branch": "agent/multiverse-vnext-bootstrap-batch1",
   "working_pr": 2,
-  "current_phase": "VNEXT_LAB_ARCHITECTURE_GAP_ANALYSIS_REQUESTED",
+  "current_phase": "VNEXT_CORE_LAB_BLOCKERS_FIXED_READY_FOR_LAB_RECHECK",
   "formal_release_state": "NOT_ACCEPTED",
-  "state_generation": 4,
-  "parent_valid_state_git_blob_sha": "d9f0f6eac8a26eef61510b938f0c830049a7769f",
+  "state_generation": 5,
+  "parent_valid_state_git_blob_sha": "2b33be0771e0163b07f6a9c927eb60e8f1c90887",
   "supersedes_state_ref": {
     "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
-    "git_blob_sha": "d9f0f6eac8a26eef61510b938f0c830049a7769f",
-    "logical_generation": 3
+    "git_blob_sha": "2b33be0771e0163b07f6a9c927eb60e8f1c90887",
+    "logical_generation": 4
   },
   "write_precondition": {
-    "expected_current_state_blob_sha": "d9f0f6eac8a26eef61510b938f0c830049a7769f",
+    "expected_current_state_blob_sha": "2b33be0771e0163b07f6a9c927eb60e8f1c90887",
     "expected_canonical_main_head": "ea2559b429bf04a1bd0acee13412ed783e92be5d",
-    "expected_working_branch_head_before_write": "eebef2b7ca3627d3f547d462bc03dd931d9f6972",
-    "expected_generation_of_last_valid_state": 3,
+    "expected_working_branch_head_before_write": "147943a103b4e41d28a96018a1ba5b84a2f723e7",
+    "expected_generation_of_last_valid_state": 4,
     "reject_on_any_mismatch": true,
     "timestamp_can_override": false
   },
@@ -36,9 +36,24 @@
     "future_provider_or_tool_change_defaults_to_module_or_adapter_candidate": true,
     "owner_must_not_be_routine_designer_or_operator": true
   },
+  "lab_status": {
+    "reviewed_head": "f343343e605d1e6fd73a49e1cc617a688a79e1a5",
+    "verdict": "MATERIAL_BLOCK",
+    "current_version_material_blockers": [
+      "M1_FAST_PATH_SELF_CLASSIFICATION_BYPASS",
+      "M2_MISSING_EXECUTION_AUTHORIZATION_CONTRACT",
+      "M3_INDEPENDENT_REVIEW_GATE_CONTRADICTION"
+    ],
+    "core_disposition": {
+      "M1": "FIXED_IN_SELF_EVOLUTION_PROTOCOL_PENDING_LAB_RECHECK",
+      "M2": "FIXED_BY_AUTHORIZATION_CONTRACT_PENDING_LAB_RECHECK",
+      "M3": "FIXED_IN_DOD_EXACT_HEAD_INDEPENDENT_REVIEW_REQUIRED_PENDING_LAB_RECHECK",
+      "taxonomy_alignment": "FIXED_IN_DOD"
+    },
+    "acceptance_effect": "BLOCKED_UNTIL_LAB_RECHECK_AND_LATER_REQUIRED_REVIEWS"
+  },
   "pinned_artifacts": {
     "keirin_pause_receipt": {
-      "repo": "fufufu1116/multiverse-research",
       "path": "multiverse_vnext/VNEXT_KEIRIN_PAUSE_RECEIPT_20260820_v1.json",
       "git_commit": "16ee9dc454071c34ba977492c33604c5495c876c",
       "git_blob_sha": "38913d6ebf46265cf186731d1c7726c7ca1dbcf8",
@@ -49,53 +64,92 @@
       "path": "multiverse_vnext/VNEXT_BATCH1_FOUNDATION_DESIGN_v0.md",
       "git_commit": "4e2149e3880b34a4616e3d7b25b4be0423a3c4ec",
       "git_blob_sha": "f9a15c776a749e4f886fadcf22eb0e4b7c1d53e7",
-      "sha256": "7ac14ec7742be1ceea862b0332ff4caef15f2a410b7a1b2acddc4a757a8ac7bd",
-      "mutability": "WORKING_CANDIDATE"
+      "sha256": "7ac14ec7742be1ceea862b0332ff4caef15f2a410b7a1b2acddc4a757a8ac7bd"
     },
     "north_star_architecture": {
       "path": "multiverse_vnext/VNEXT_NORTH_STAR_ARCHITECTURE_v0.md",
       "git_commit": "ff204ce3140fc1f1bbedd2cdb5b3698482636092",
       "git_blob_sha": "5272d5b436282c597fdaa5bcb71e7ef6f0c50d8b",
-      "sha256": "ae2be16b65f6bde9cc859f6168d12d230f4248ef0fda4ec6b9a0491c869dde6e",
-      "mutability": "WORKING_ARCHITECTURE_CANDIDATE"
+      "sha256": "ae2be16b65f6bde9cc859f6168d12d230f4248ef0fda4ec6b9a0491c869dde6e"
     },
     "self_evolution_protocol": {
       "path": "multiverse_vnext/VNEXT_SELF_EVOLUTION_PROTOCOL_v0.md",
-      "git_commit": "5fd2010db614a8f5e14d80b9d394d65cac768e55",
-      "git_blob_sha": "3c864ff27561c0b651aad30b47aa6437875041b2",
-      "sha256": "e7e28eeb49057b9be4d0790de80477f1946bf881b30dd804ccc51c06f9ffebd5",
-      "mutability": "WORKING_NORMATIVE_CANDIDATE"
+      "git_commit": "6ee9816b69a0a8d595275bfac658c405c5136144",
+      "git_blob_sha": "6958c2e860d8fb05785c4f57e3565086bbe0c334",
+      "raw_sha256_status": "FINAL_PIN_REQUIRED_BEFORE_ACCEPTANCE"
+    },
+    "authorization_contract": {
+      "path": "multiverse_vnext/VNEXT_AUTHORIZATION_CONTRACT_v0.json",
+      "git_commit": "83e2fd170cedcc0e6adaeaf739a94e6ab681ddac",
+      "git_blob_sha": "67bc4803b00668e78ca0b5ecdb0fba79cfd7d9ad",
+      "raw_sha256_status": "FINAL_PIN_REQUIRED_BEFORE_ACCEPTANCE"
     },
     "vnext_definition_of_done": {
       "path": "multiverse_vnext/VNEXT_DEFINITION_OF_DONE_v0.json",
-      "git_commit": "c4091e38e6adb4224865488fab0b6d554fef85d2",
-      "git_blob_sha": "b063428e5574a3ea42350cb56f06ebb52c5667a0",
-      "sha256": "582300c02fe6a6db700cf4c3578bae6b5751c1db71e182ef8945b91f09f81163",
-      "mutability": "WORKING_ACCEPTANCE_CANDIDATE"
+      "git_commit": "f6213b0a569902d74915b81d12bfe62b3e5a0f68",
+      "git_blob_sha": "f95c906a4e84c2ba60fbdc7ed503bdcd5f6e7ef0",
+      "raw_sha256_status": "FINAL_PIN_REQUIRED_BEFORE_ACCEPTANCE"
+    },
+    "governance_negative_test_receipt": {
+      "path": "multiverse_vnext/VNEXT_GOVERNANCE_NEGATIVE_TEST_RECEIPT_20260820_v1.json",
+      "git_commit": "147943a103b4e41d28a96018a1ba5b84a2f723e7",
+      "git_blob_sha": "8f1f852c466bb0b008d1497d7503f0456c305152",
+      "assurance": "DETERMINISTIC_RULE_TABLE_EVALUATION_NOT_PRODUCTION_ADAPTER_NATIVE_ENFORCEMENT"
     },
     "bootstrap": {
       "path": "MULTIVERSE_BOOTSTRAP.md",
       "git_commit": "c532e0944f2ec96627eab9fef689c0c33671a605",
       "git_blob_sha": "3d104204510e81a5654c5db12551d82395e72019",
-      "sha256": "61aa81fe44dffa87eef194849a68dc793d6afc8adae56bfd734d2cbae513504d",
-      "mutability": "MUTABLE_CAS_POINTER"
+      "sha256": "61aa81fe44dffa87eef194849a68dc793d6afc8adae56bfd734d2cbae513504d"
     }
   },
-  "north_star_architecture": {
-    "closure_status": "PENDING_LAB_GAP_ANALYSIS_AND_REQUIRED_INDEPENDENT_REVIEW",
-    "logical_institution_count_is_not_physical_agent_count": true,
-    "provider_neutral_identity": true,
-    "self_evolution_direct_to_production_prohibited": true,
-    "future_improvements_after_dod": "NEXT_VERSION_CANDIDATE",
-    "autonomy_north_star": "L5_SOVEREIGN_CORE",
-    "current_target": "L2_ORCHESTRATED_FOUNDATION",
-    "higher_autonomy_widens_permissions": false
+  "finding_taxonomy": {
+    "CURRENT_VERSION_MATERIAL_BLOCK": "must be fixed before vNext acceptance",
+    "DEFERRED_NORTH_STAR_MATERIAL_GAP": "material for a later North Star milestone but outside current vNext acceptance claims; future gate required",
+    "MINOR_AUTOFIX": "safe non-material correction",
+    "NEXT_VERSION_CANDIDATE": "beneficial nonblocking improvement"
   },
+  "institution_compression": {
+    "status": "LAB_RECOMMENDATION_ADOPTED_AS_IMPLEMENTATION_TARGET_PENDING_REVIEW",
+    "steady_groups": [
+      "CORE_PLUS_RESOURCE_PLUS_EVOLUTION_ORCHESTRATION",
+      "EVIDENCE_KNOWLEDGE",
+      "VAULT_RECOVERY",
+      "EXECUTION_CONNECTION",
+      "LAB",
+      "AUDITOR"
+    ],
+    "optional_module": "OPPORTUNITY",
+    "note": "Existing logical names remain compatible aliases; this does not require six separate paid services or chats."
+  },
+  "deferred_north_star_material_gaps": [
+    {
+      "gap": "COMMON_ORIGIN_AND_AI_EVIDENCE_TAINT_LINEAGE",
+      "future_gate": "BEFORE_PHASE_C_EVIDENCE_AUTOMATION_OR_SCALED_INDEPENDENT_CORROBORATION_CLAIMS"
+    },
+    {
+      "gap": "CANONICAL_AUTHORITY_HOST_MIGRATION_AFTER_PERMANENT_GITHUB_LOSS",
+      "future_gate": "BEFORE_L5_PROVIDER_SOVEREIGNTY_CLAIM_OR_CANONICAL_HOST_MIGRATION"
+    },
+    {
+      "gap": "DELETION_TOMBSTONE_PROPAGATION_ACROSS_MIRRORS_DERIVATIVES_PROVIDER_COPIES",
+      "future_gate": "BEFORE_AUTOMATED_RETENTION_DELETION_ENFORCEMENT_OR_SENSITIVE_LIFECYCLE_EXPANSION"
+    },
+    {
+      "gap": "L3_TO_L5_MINIMUM_EVIDENCE_AND_CONTROL_PROFILES",
+      "future_gate": "BEFORE_ANY_AUTONOMY_PROMOTION_ABOVE_L2"
+    }
+  ],
+  "next_version_candidates": [
+    "DEPENDENCY_INTEGRITY_SBOM_SUPPLY_CHAIN_AUTOMATION",
+    "QUOTA_COST_CIRCUIT_BREAKERS",
+    "OBSERVABILITY_SLO_THRESHOLD_ESCALATION_AUTOMATION"
+  ],
   "required_architecture_reviews": {
     "vault": "FOUNDATION_CANONICAL_RECOVERY_MATERIAL_BLOCK_CLEARED_FOR_LAB_ROUTING",
-    "lab": "REQUIRED_ARCHITECTURE_GAP_ANALYSIS_AND_OVERENGINEERING_COMPRESSION",
-    "independent_reviewer": "REQUIRED_FOR_MATERIAL_NORTH_STAR_ARCHITECTURE_BEFORE_FINAL_ACCEPTANCE; DEFAULT_GEMINI_CORE_UNLESS_ROUTING_CHANGES",
-    "auditor": "ONLY_AFTER_ACCEPTANCE_CANDIDATE_EXISTS"
+    "lab": "RECHECK_REQUIRED_ON_POST_FIX_EXACT_HEAD",
+    "independent_reviewer": "EXACT_HEAD_MATERIAL_ARCHITECTURE_REVIEW_REQUIRED_BEFORE_ACCEPTANCE_PROVIDER_NEUTRAL_DEFAULT_GEMINI_CORE",
+    "auditor": "ONLY_AFTER_REVIEW_STABLE_ACCEPTANCE_CANDIDATE_AND_FINAL_RECOVERY_CAPSULE"
   },
   "keirin_firewall": {
     "scientific_state_change_authorized": false,
@@ -111,39 +165,19 @@
   },
   "recovery_roots": {
     "logical_canonical_authority": "GITHUB_VERIFIED_CANONICAL_LINEAGE",
-    "github": {
-      "role": "CANONICAL_AUTHORITY",
-      "repo": "fufufu1116/multiverse-research"
-    },
+    "github": {"role":"CANONICAL_AUTHORITY","repo":"fufufu1116/multiverse-research"},
     "google_drive": {
       "role": "NON_AUTHORITATIVE_RECOVERY_COPY",
-      "folder_name": "MULTIVERSE_VNEXT_RECOVERY",
       "folder_id": "1-9uS0-_6oXj9aFbeykonk5-8ss6SpkH4",
       "latest_proven_working_snapshot_commit": "5dfa3b806a49d2f3d02ee55d4aac27c1fa22db37",
-      "note": "Final acceptance capsule must snapshot the exact acceptance candidate; this earlier package proves dual-root restore mechanics but does not claim to contain later North Star artifacts."
+      "acceptance_requirement": "REFRESH_TO_EXACT_FINAL_ACCEPTANCE_CANDIDATE_AND_REVERIFY_SHA256_READBACK"
     }
-  },
-  "vault_status": {
-    "initial_verdict": "MATERIAL_BLOCK_FOR_ACCEPTANCE_CORE_REVISION_ALLOWED",
-    "recheck_verdict": "PASS_FOR_LAB_ROUTING_NOT_ACCEPTANCE",
-    "reviewed_head": "f2526791fc6ed8f6240d8c49c2d26442bcc54b2e",
-    "unresolved_material_findings": [],
-    "scope": "CANONICAL_RECOVERY_FOUNDATION",
-    "north_star_added_after_reviewed_head": true,
-    "acceptance_only_deferred": [
-      "refresh Drive snapshot to final acceptance candidate",
-      "repeat zero-history bootstrap on final topology",
-      "final immutable anchors in Acceptance Receipt",
-      "external anchor of accepted commit in second root"
-    ]
   },
   "definition_of_done_policy": {
     "finite_gate_required": true,
     "could_be_better_is_not_a_blocker": true,
+    "exact_head_independent_architecture_review_required_for_this_north_star": true,
     "reopen_after_acceptance_only_for_material_defect_or_invalidated_acceptance_claim": true
-  },
-  "cost_policy": {
-    "NEW_SPEND_DEFAULT": "NO"
   },
   "owner_interaction_policy": {
     "routine_handoffs_should_be_one_line_or_one_clean_copy_paste_block": true,
@@ -151,25 +185,23 @@
     "iphone_first": true,
     "low_data": true,
     "low_storage": true,
-    "avoid_resending_artifacts": true,
-    "prefer_pr_issue_comment_locator_over_attachment": true,
-    "owner_action_minimization": true
+    "owner_action_minimization": true,
+    "milestone_reports_include_current_work_struggle_solution_terms_and_roadmap": true
   },
   "execution_efficiency_policy": {
     "parallelize_independent_reads_research_and_checks": true,
     "serialize_dependency_sensitive_cas_and_canonical_writes": true,
-    "avoid_duplicate_reads_when_pinned_identity_is_sufficient": true,
     "optimize_for_fastest_safe_path": true
   },
   "next_actions": [
-    "Run Lab Architecture Gap Analysis on the latest PR head covering North Star Architecture, Self-Evolution Protocol, vNext Definition of Done, full PR, and institution compression.",
-    "Core resolves only true blocking gaps; nonblocking improvements become NEXT_VERSION_CANDIDATE.",
-    "Run required independent material architecture review after Lab/Core disposition.",
-    "Create exact acceptance recovery capsule only after review-stable acceptance candidate exists.",
-    "Route to Auditor for final acceptance review.",
-    "After vNext acceptance, stop noncritical Multiverse core expansion and exact-resume Keirin from latest legitimate verified canonical state."
+    "Request Lab recheck of M1/M2/M3 and taxonomy against the latest exact PR head.",
+    "If Lab clears CURRENT_VERSION_MATERIAL_BLOCK, request required independent material architecture review on the exact stable head.",
+    "Resolve only true current-version blockers; preserve deferred gaps and NEXT_VERSION_CANDIDATE without expanding vNext.",
+    "Create final acceptance recovery capsule and zero-history bootstrap only after review-stable acceptance candidate exists.",
+    "Route exact acceptance candidate to Auditor.",
+    "After acceptance, stop noncritical Multiverse core expansion and exact-resume Keirin from latest legitimate verified canonical state."
   ],
-  "owner_action_now": "ONE_LINE_RELAY_TO_LAB_CHAT_ONLY",
+  "owner_action_now": "ONE_LINE_RELAY_TO_LAB_CHAT_FOR_RECHECK",
   "next_write_requirements": {
     "must_fetch_current_blob_and_main_head_first": true,
     "new_generation_must_equal_current_plus_one": true,
