@@ -1,0 +1,63 @@
+name: keirinjp-profile-parser-diagnostic-v2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-profile-parser-diagnostic-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Always produce parser diagnostic receipt
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests,traceback
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_PARSER_DIAGNOSTIC_v2.json');q.parent.mkdir(parents=True,exist_ok=True)
+          out={'record':'KEIRINJP_PROFILE_PARSER_DIAGNOSTIC_v2','generated_utc':datetime.now(timezone.utc).isoformat(),'snum':'015918',
+               'raw_html_persisted':False,'predictive_values_persisted':False,'holdout_accessed':False,'result_payout_price_accessed':False}
+          try:
+              url='https://keirin.jp/pc/racerprofile?snum=015918';r=requests.get(url,headers={'User-Agent':'MultiverseHybridV3-Research/1.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+              out['http']={'status':r.status_code,'content_type':r.headers.get('Content-Type'),'requests_encoding':r.encoding,'apparent_encoding':r.apparent_encoding,'bytes':len(r.content),'sha256':hashlib.sha256(r.content).hexdigest()}
+              if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+              raw_ascii=r.content.decode('ascii','ignore')
+              out['raw_ascii_patterns']={
+                'slash_datetime':re.findall(r'20\d{2}/\d{2}/\d{2}\s+\d{2}:\d{2}',raw_ascii),
+                'slash_date':re.findall(r'20\d{2}/\d{2}/\d{2}',raw_ascii),
+                'colon_time':re.findall(r'\d{2}:\d{2}',raw_ascii)[:30],
+              }
+              soup_bytes=BeautifulSoup(r.content,'html.parser'); text_bytes=' '.join(soup_bytes.stripped_strings)
+              out['soup_from_bytes']={'original_encoding':soup_bytes.original_encoding,
+                'slash_datetime':re.findall(r'20\d{2}/\d{2}/\d{2}\s+\d{2}:\d{2}',text_bytes),
+                'slash_date':re.findall(r'20\d{2}/\d{2}/\d{2}',text_bytes)}
+              decoded=r.content.decode(r.encoding or 'utf-8','replace');soup_decoded=BeautifulSoup(decoded,'html.parser');text_decoded=' '.join(soup_decoded.stripped_strings)
+              out['soup_from_requests_decoded_text']={'slash_datetime':re.findall(r'20\d{2}/\d{2}/\d{2}\s+\d{2}:\d{2}',text_decoded),'slash_date':re.findall(r'20\d{2}/\d{2}/\d{2}',text_decoded)}
+              contexts=[]
+              for m in re.finditer(r'20\d{2}/\d{2}/\d{2}',text_decoded):contexts.append(text_decoded[max(0,m.start()-40):m.end()+60])
+              out['date_contexts']=contexts[:12];out['status']='PASS_DIAGNOSTIC'
+          except Exception as e:
+              out['status']='FAIL_CLOSED_DIAGNOSTIC';out['error_type']=type(e).__name__;out['error_message']=str(e);out['traceback_tail']=traceback.format_exc().splitlines()[-10:]
+          q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist receipt
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          test -f v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_PARSER_DIAGNOSTIC_v2.json
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_PARSER_DIAGNOSTIC_v2.json
+          git commit -m 'Record KEIRIN profile parser diagnostic v2'
+          git push
