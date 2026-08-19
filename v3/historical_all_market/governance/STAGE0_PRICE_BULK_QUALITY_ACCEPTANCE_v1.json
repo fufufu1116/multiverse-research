@@ -1,0 +1,67 @@
+{
+  "record": "STAGE0_PRICE_BULK_QUALITY_ACCEPTANCE_v1",
+  "project": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
+  "status": "PASS_ACCEPTED_FOR_STAGE1_PROBABILITY_ENGINEERING",
+  "basis": {
+    "bulk_receipt_status": "PASS_COMPLETE",
+    "universe_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "provenance_sha256": "0e9dbba0bf0427bd1b5903c196a93a31678375170e6d5164b3d8d8f052ca97f1",
+    "price_parser_git_blob": "f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8",
+    "approve_receipt_git_blob": "8643684cf7bf0165968ae667e17e546936a3611d",
+    "price_catalog_sha256": "2ca98097f74e5282fdc9c91629083f39bef4dafb94a1fc4f7e510acadefc407b",
+    "quality_report_sha256": "064b8372b4179ee44c6f50cc0fc324971c0624c1276dd0d17ca109a2db610b8d",
+    "artifact_sha256": "f88f29c8f7f0796def5a570a9f6fcc5ae6fc1c172230c89b4b0865098c6d1541"
+  },
+  "recovery": {
+    "universe_races": 2000,
+    "raw_preflight_pass": 2000,
+    "raw_preflight_fail_closed": 0,
+    "price_parsed_races": 2000,
+    "price_fail_closed_total": 0,
+    "recovery_rate": 1.0
+  },
+  "market_sales_counts": {
+    "3rentan": 2000,
+    "3renhuku": 2000,
+    "2shatan": 2000,
+    "2shahuku": 2000,
+    "wide": 2000,
+    "2wakutan": 211,
+    "2wakuhuku": 211
+  },
+  "active_car_count_distribution": {
+    "5": 11,
+    "6": 109,
+    "7": 1675,
+    "8": 24,
+    "9": 181
+  },
+  "firewall": {
+    "price_namespace": "PRICE_ONLY",
+    "settlement_executable_imported": false,
+    "official_refund_values_emitted": false,
+    "finishing_order_emitted": false,
+    "profit_loss_scored": false,
+    "ev_scored": false,
+    "roi_scored": false,
+    "network_race_data_fetch": false
+  },
+  "scientific_state": {
+    "all_market_track_trial_count": 0,
+    "stage1_started_at_acceptance": false,
+    "stage2_started": false,
+    "stage5_started": false,
+    "settlement_bulk_started": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_result_access": false,
+    "holdout_payout_access": false,
+    "holdout_price_access": false
+  },
+  "authorization_after_acceptance": {
+    "stage1_probability_engineering": "AUTHORIZED",
+    "stage1_outcome_scoring": "PROHIBITED",
+    "stage2_ev_rule_selection": "PROHIBITED_UNTIL_STAGE1_OUTPUT_IS_FROZEN_AND_STAGE2_RULES_PREREGISTERED",
+    "settlement_bulk": "PROHIBITED_UNTIL_STAGE1_TO_STAGE6_DECISION_RULES_ARE_FROZEN",
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
