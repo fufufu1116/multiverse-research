@@ -1,0 +1,141 @@
+{
+  "record": "NEXT_LINEAGE_MARKET_BASELINE_RESIDUAL_ARCHITECTURE_DRAFT_v1",
+  "date_jst": "2026-08-19",
+  "status": "DRAFT_NOT_FROZEN_PENDING_INDEPENDENT_AUDIT",
+  "trigger": "BURNED_AB_CALIBRATION_AND_ECONOMIC_FAILURE_DIAGNOSTICS",
+  "current_lineage_seals": {
+    "official_stage7_status": "NO_B_VALIDATED_CONFIGURATION",
+    "segment_c_opened": false,
+    "scientific_segment_c_scoring_count": 0,
+    "same_lineage_rescue_tuning_authorized": false,
+    "ECON_HOLDOUT1000": "SEALED"
+  },
+  "diagnostic_basis": {
+    "A_profit_was_single_hit_dominated": true,
+    "A_single_positive_return_event_odds": 457.9,
+    "B_pass_count": 0,
+    "selected_high_odds_3rentan_model_expectation_materially_exceeded_observed_hits": true,
+    "selected_region_realized_hits_were_closer_to_market_implied_than_model_implied": true,
+    "simple_PL_temperature_fix_sufficient": false,
+    "simple_market_model_reverse_residual_fix_economically_sufficient": false,
+    "current_PRE_model_additive_value_over_market_demonstrated": false
+  },
+  "primary_design_principle": "MARKET_IS_BASELINE_NOT_OPPONENT",
+  "market_baseline_rule": {
+    "required_semantics": "MARKET_SNAPSHOT_OBSERVED_AT_A_FROZEN_DECISION_TIME_BEFORE_WAGER_COMMITMENT",
+    "final_or_post_decision_closing_price_as_live_feature": "PROHIBITED_UNLESS_PROVEN_AVAILABLE_AT_THE_FROZEN_DECISION_TIME",
+    "historical_closing_market_data": "BURNED_DEVELOPMENT_DIAGNOSTIC_ONLY_UNLESS_POINT_IN_TIME_AVAILABILITY_IS_PROVEN",
+    "snapshot_time": "TO_BE_PREREGISTERED_BEFORE_PROSPECTIVE_COLLECTION",
+    "transport_requirement": "THE_SAME_SNAPSHOT_SEMANTICS_MUST_EXIST_IN_DEVELOPMENT_VALIDATION_AND_LIVE_OPERATION"
+  },
+  "probability_architecture_candidates_DEV_ONLY": [
+    {
+      "id": "R1_RUNNER_WIN_RESIDUAL",
+      "definition": "p_i proportional to q_market_win_i * exp(f_pre_runner_i)",
+      "purpose": "test whether PRE runner information adds out-of-market winner signal without replacing the market baseline",
+      "normalization": "fieldwise_softmax_after_market_log_offset",
+      "regularization": "strong_shrinkage_toward_zero_residual"
+    },
+    {
+      "id": "R2_DIRECT_TICKET_RESIDUAL",
+      "definition": "p_ticket proportional to q_market_ticket * exp(g_pre_ticket)",
+      "purpose": "avoid unconditional Plackett-Luce expansion when the wager market itself supplies a ticket probability surface",
+      "normalization": "within_market_probability_mass_constraint",
+      "regularization": "hierarchical_shrinkage_by_market_and_odds_band"
+    },
+    {
+      "id": "R3_CONDITIONAL_ORDER_RESIDUAL",
+      "definition": "market-anchored conditional order model for second and third position only if R1/R2 cannot express useful residual structure",
+      "purpose": "repair order structure without giving the residual model freedom to overwrite the market baseline",
+      "status": "LAST_RESORT_MORE_COMPLEX_FAMILY"
+    }
+  ],
+  "PRE_feature_policy": {
+    "allowed_direction": [
+      "frozen_pre_race_runner_features",
+      "field_composition",
+      "class_and_style",
+      "line_or_tactical_structure_if_point_in_time_proven",
+      "frozen_candidate_a_or_b1a_outputs_as_inputs_only",
+      "market_snapshot_features_available_at_frozen_decision_time"
+    ],
+    "forbidden": [
+      "RESULT",
+      "PAYOUT",
+      "post_race_features",
+      "future_profile_values",
+      "post_decision_market_movement",
+      "same_validation_period_parameter_selection"
+    ]
+  },
+  "development_protocol": {
+    "data": "DEV2000_A_B_BURNED_ONLY",
+    "time_order": "STRICT_CHRONOLOGICAL_BLOCKED_OR_ROLLING_CV",
+    "primary_probability_metrics": [
+      "log_loss",
+      "Brier_score_where_well_defined",
+      "calibration_by_market",
+      "calibration_by_odds_band",
+      "calibration_by_model_market_disagreement_band",
+      "selected_region_expected_vs_observed_hits"
+    ],
+    "baseline_comparators": [
+      "market_only",
+      "frozen_candidate_a",
+      "frozen_b1a_reconstituted_v1",
+      "frozen_PL_ticket_probabilities"
+    ],
+    "success_condition": "RESIDUAL_MODEL_MUST_IMPROVE_OUT_OF_BLOCK_PROBABILITY_METRICS_OVER_MARKET_ONLY_BEFORE_ANY_ECONOMIC_OPTIMIZATION"
+  },
+  "economic_protocol": {
+    "stage_E0": "NO_BANKROLL_OPTIMIZATION; PROBABILITY_CALIBRATION_ONLY",
+    "stage_E1": "PATH_INDEPENDENT_FLAT100_EDGE_TEST",
+    "stage_E2": "ONLY_AFTER_E1_PASS, TEST_SIMPLE_RISK_CAPS",
+    "stage_E3": "ONLY_AFTER_UNTOUCHED_VALIDATION_PASS, CONSIDER_BANKROLL_POLICY",
+    "selection_constraints": [
+      "behavioral_signature_deduplication",
+      "profit_concentration_report",
+      "largest_single_return_share",
+      "weekly_and_monthly_stability",
+      "minimum_effective_bet_count",
+      "market_and_odds_band_concentration"
+    ]
+  },
+  "validation_policy": {
+    "retrospective_NEW_HISTORICAL5000": "FORMALLY_BLOCKED_FAIL_CLOSED",
+    "prospective_collection": "NOT_AUTHORIZED_UNTIL_SOURCE_AND_COLLECTOR_AUDIT_PASS",
+    "current_DEV2000_C": "DO_NOT_REPURPOSE_FOR_RESCUE",
+    "current_ECON_HOLDOUT1000": "DO_NOT_OPEN",
+    "new_untouched_validation": "FUTURE_PROSPECTIVE_LINEAGE_ONLY_AFTER_FULL_FREEZE"
+  },
+  "freeze_order_required": [
+    "decision_time_market_snapshot_semantics",
+    "PRE_feature_allowlist",
+    "residual_model_family",
+    "hyperparameter_search_space",
+    "calibration_metrics_and_gates",
+    "economic_E1_rules",
+    "behavioral_deduplication_rule",
+    "weekly_monthly_stability_report",
+    "prospective_validation_horizon",
+    "only_then_open_new_untouched_validation_outcomes"
+  ],
+  "numeric_pass_thresholds_frozen": false,
+  "network_collection_authorized": false,
+  "new_validation_trial_consumed": 0,
+  "next_safe_tasks": [
+    "implement_burned_A_B_runner_market_baseline_dataset_builder",
+    "implement_R1_regularized_market_offset_residual_CV",
+    "implement_direct_ticket_R2_only_if_point_in_time_ticket_market_surface_is_transportable",
+    "implement_path_independent_E1_flat100_evaluator",
+    "implement_behavioral_signature_deduplication",
+    "independent_audit_before_any_numeric_freeze_or_network_collection"
+  ],
+  "prohibitions": [
+    "NO_CURRENT_C_ACCESS",
+    "NO_ECON_HOLDOUT_OPEN",
+    "NO_SAME_B_C_RESCUE_TUNING",
+    "NO_UNAUTHORIZED_NETWORK_COLLECTION",
+    "NO_CLAIM_OF_VALIDATED_EDGE_FROM_BURNED_A_B"
+  ]
+}
