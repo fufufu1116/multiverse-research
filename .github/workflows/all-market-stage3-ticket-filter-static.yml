@@ -23,7 +23,7 @@ jobs:
         run: |
           python -m py_compile v3/historical_all_market/stage3_ticket_filter_diagnostics_v1.py
           python - <<'PY'
-          import ast, hashlib, json
+          import ast, hashlib, json, runpy
           from pathlib import Path
 
           ENGINE=Path('v3/historical_all_market/stage3_ticket_filter_diagnostics_v1.py')
@@ -46,8 +46,7 @@ jobs:
           bad=[x for x in imports if x=='requests' or x.startswith('requests.') or 'settlement' in x.lower()]
           if bad: raise SystemExit(f'FAIL_CLOSED forbidden import={bad}')
 
-          ns={}
-          exec(compile(ENGINE.read_text(encoding='utf-8'),str(ENGINE),'exec'),ns)
+          ns=runpy.run_path(str(ENGINE),run_name='stage3_static_check')
           expected_profiles=(
               ('P00',0.00,1.00),('P05',0.05,1.05),('P10',0.10,1.10),
               ('P20',0.20,1.20),('P35',0.35,1.35),('P50',0.50,1.50),('P100',1.00,2.00),
