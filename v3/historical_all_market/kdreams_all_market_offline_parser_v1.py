@@ -161,6 +161,7 @@ def parse_frame_point(root, market: str, ordered: bool):
     if len(trs)<3: raise FailClosed(f"{market} rows={len(trs)}")
     headers=[int(compact(node_text(x))) for x in trs[0].xpath('./th') if compact(node_text(x)).isdigit()]
     if headers != list(range(1,7)): raise FailClosed(f"{market} frame headers={headers}")
+    # Retain raw rider-group labels as metadata for later independently-audited car->frame mapping.
     labels=[]
     if len(trs)>1:
         labels=[node_text(x) for x in trs[1].xpath('./th|./td')][:6]
@@ -177,7 +178,8 @@ def parse_frame_point(root, market: str, ordered: bool):
             v=fcell(td)
             if v is None: continue
             if ordered:
-                key=canon_pair(col,row,True)
+                # Exact frame ticket. Same-frame is legitimate when page publishes it.
+                key=canon_pair(col,row,True)  # Kdreams matrix: column=1st frame, row=2nd frame.
             else:
                 key=canon_pair(row,col,False)
             if key in out and abs(out[key]-v)>1e-12:
@@ -233,6 +235,7 @@ def parse_refunds(root):
     if len(trs)<2: raise FailClosed(f"refund rows={len(trs)}")
     r0=trs[0].xpath('./th|./td'); r1=trs[1].xpath('./th|./td')
     out={m:{} for m in MARKETS}
+    # Row0 group headers: 2枠連 [複,payout], 2車連 [複,payout], 3連勝 [複,payout], ワイド [payout]
     for i,c in enumerate(r0):
         lab=compact(node_text(c))
         target=None; off=None
@@ -243,13 +246,17 @@ def parse_refunds(root):
         if target and i+off < len(r0):
             for raw,pay in _refund_dls(r0[i+off]):
                 out[target][normalize_refund_combo(raw,target)]=pay
+    # Row1 is ordered payouts aligned as: frame exacta, car exacta, trifecta.
     cells=[c for c in r1 if c.tag=='td']
+    ordered_markets=('2wakutan','2shatan','3rentan')
     payout_cells=[]
+    # actual structure alternates label=単 then payout cell; identify cells containing yen/refund dls.
     for c in cells:
         vals=_refund_dls(c)
         if vals: payout_cells.append(c)
     if len(payout_cells) not in (2,3):
         raise FailClosed(f"ordered refund payout cell count={len(payout_cells)}")
+    # If frame market unsold, its cell can be absent; distinguish by combo format / row0 frame presence.
     idx=0
     frame_sold=bool(out['2wakuhuku'])
     if frame_sold:
@@ -269,8 +276,10 @@ def parse_payload(payload: bytes, expected_raw_sha256: str|None=None, expected_n
     except Exception as e: raise FailClosed(f"HTML parse {e}") from e
     if '確定オッズ' not in node_text(root): raise FailClosed('confirmed-odds marker missing')
     availability={m:market_presence(root,m) for m in MARKETS}
+    # Core car markets and wide should be present on standard sold page.
     for m in ('3rentan','2shatan','3renhuku','2shahuku','wide'):
         if not availability[m]: raise FailClosed(f"core market absent {m}")
+    # Frame exacta/quinella must appear together or neither.
     if availability['2wakutan'] != availability['2wakuhuku']:
         raise FailClosed('frame-market availability mismatch')
     odds={}; metadata={}
@@ -289,6 +298,7 @@ def parse_payload(payload: bytes, expected_raw_sha256: str|None=None, expected_n
     for m in MARKETS:
         if availability[m] and not refunds[m]: raise FailClosed(f"sold market missing refund {m}")
         if not availability[m] and refunds[m]: raise FailClosed(f"unsold market has refund {m}")
+    # Count invariants for car-number markets if field size is supplied.
     if expected_n_cars is not None:
         n=int(expected_n_cars)
         exp={
@@ -297,6 +307,7 @@ def parse_payload(payload: bytes, expected_raw_sha256: str|None=None, expected_n
         }
         for m,k in exp.items():
             if len(odds[m])!=k: raise FailClosed(f"combo count {m}={len(odds[m])} expected={k}")
+    # Point odds are finite positive; wide interval validated in parser.
     for m in POINT_MARKETS:
         if availability[m]:
             if not odds.get(m): raise FailClosed(f"empty sold market {m}")
