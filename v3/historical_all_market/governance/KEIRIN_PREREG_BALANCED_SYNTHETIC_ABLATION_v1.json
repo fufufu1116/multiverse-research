@@ -1,0 +1,102 @@
+{
+  "record": "KEIRIN_PREREG_BALANCED_SYNTHETIC_ABLATION_v1",
+  "status": "PREREGISTERED_DESIGN_NOT_FINAL_HOLDOUT_EXECUTED",
+  "source_lab_review": {
+    "lab_reviewed_material_head": "18c0a4c89c886a09e47e0e8aa9911a2ec1f6f76c",
+    "lab_result_comment_id": 5347356681,
+    "verdict": "PASS_WITH_FIXES"
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count": 0,
+    "new_untouched_validation_opened": false,
+    "RESULT_PAYOUT_access": "UNAUTHORIZED"
+  },
+  "purpose": "Separate architecture capability from hand-picked proxy coefficients and uncalibrated synthetic population composition before any C1/N1 promotion decision.",
+  "sample_control": {
+    "field_format": "STANDARD_FI_FII_7",
+    "balanced_dimensions": [
+      "race_band in S/A12/A3",
+      "line_shape in 3-2-2 / 3-3-1 / 2-2-2-1"
+    ],
+    "stratum_count": 9,
+    "repeats_per_stratum": 12,
+    "races_per_seed": 108,
+    "bank_cycle_m": [333, 400, 500],
+    "wind_cycle_mps": [0.0, 1.5, 3.0, 5.0],
+    "population_frequency_claim": false,
+    "reason": "Equalization is an engineering control; it is not a claim that the strata or environments are equally frequent in real keirin."
+  },
+  "splits": {
+    "TRAIN": {
+      "seeds": [73101, 73102],
+      "use": "coefficient fitting only",
+      "may_select_coefficients": true
+    },
+    "CAL": {
+      "seeds": [73201],
+      "use": "choose among train-fitted shrinkage variants and freeze",
+      "may_select_coefficients": true,
+      "may_change_candidate_grids": false
+    },
+    "LEGACY_W0_W4_HOLDOUT": {
+      "scenario_source": "digital_twin_stress_grid_v1.ASSUMPTION_GRID",
+      "scenario_count": 10,
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "note": "These scenarios were already observed in the prior engineering receipt. They are prohibited from tuning now and may only be re-evaluated after freeze as locked diagnostic holdout."
+    },
+    "FRESH_LAB_PRESCRIBED_HOLDOUT_EXTENSION": {
+      "seed": 73301,
+      "scenario_ids": [
+        "HX_SIGNED_BANK_WIND_REVERSAL",
+        "HX_ALTERNATE_CONDITIONAL_CROSS_LINE_ANTI_CHAIN"
+      ],
+      "status": "PREREGISTERED_NOT_EXECUTED",
+      "use": "fresh robustness check after coefficients are frozen and after Lab recheck authorizes execution"
+    }
+  },
+  "train_truth_scenarios": [
+    {"id": "TR_INDIVIDUAL_CONTEXT", "line_static_scale": 0.0, "relation_strength": 0.0, "wind_effect_scale": 0.5, "bank_effect_scale": 0.5, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "TR_STATIC_MILD", "line_static_scale": 0.35, "relation_strength": 0.0, "wind_effect_scale": 1.0, "bank_effect_scale": 1.0, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "TR_STATIC_MEDIUM", "line_static_scale": 0.90, "relation_strength": 0.0, "wind_effect_scale": 1.0, "bank_effect_scale": 1.0, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "TR_CONDITIONAL_MILD", "line_static_scale": 0.60, "relation_strength": 0.35, "wind_effect_scale": 1.0, "bank_effect_scale": 1.0, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "TR_CONDITIONAL_MIXED", "line_static_scale": 0.90, "relation_strength": 0.80, "wind_effect_scale": 0.75, "bank_effect_scale": 1.25, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "TR_DISRUPTION_MILD", "line_static_scale": 0.70, "relation_strength": 0.50, "wind_effect_scale": 1.25, "bank_effect_scale": 0.75, "disruption_weight": 0.25, "shock_sigma": 0.55, "shock_temperature": 1.20, "disrupted_relation_strength": 0.10}
+  ],
+  "cal_truth_scenarios": [
+    {"id": "CA_CONTEXT_HIGH", "line_static_scale": 0.0, "relation_strength": 0.0, "wind_effect_scale": 1.5, "bank_effect_scale": 0.5, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "CA_STATIC_INTERMEDIATE", "line_static_scale": 0.65, "relation_strength": 0.0, "wind_effect_scale": 1.0, "bank_effect_scale": 1.0, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "CA_CONDITIONAL_INTERMEDIATE", "line_static_scale": 0.75, "relation_strength": 0.60, "wind_effect_scale": 1.0, "bank_effect_scale": 1.0, "disruption_weight": 0.0, "shock_sigma": 0.0, "shock_temperature": 1.0, "disrupted_relation_strength": 0.0},
+    {"id": "CA_DISRUPTION", "line_static_scale": 0.60, "relation_strength": 0.40, "wind_effect_scale": 0.75, "bank_effect_scale": 1.25, "disruption_weight": 0.35, "shock_sigma": 0.70, "shock_temperature": 1.30, "disrupted_relation_strength": 0.05}
+  ],
+  "model_search": {
+    "C0": "frozen score-only PL; no fitted coefficient",
+    "C1_train_grid": {
+      "line_mean_coef": [0.0, 0.05, 0.10, 0.15, 0.20],
+      "position_scale": [0.0, 0.5, 1.0, 1.5],
+      "size_coef": [0.0, 0.01, 0.02, 0.03]
+    },
+    "N1_train_grid_after_C1_base_fit": {
+      "same_line_coef": [0.0, 0.10, 0.20, 0.30],
+      "follower_coef": [0.0, 0.10, 0.20, 0.30],
+      "chain_coef": [0.0, 0.10, 0.20, 0.30]
+    },
+    "CAL_shrinkage_candidates": [0.75, 1.0, 1.25],
+    "objective": "mean exact expected ordered-top3 log loss across the split's preregistered synthetic truth scenarios",
+    "tie_break": "lower coefficient L1 norm, then lexicographic parameter tuple"
+  },
+  "freeze_rule": {
+    "after_CAL": "write one frozen coefficient receipt before any holdout execution",
+    "post_holdout_retuning": "PROHIBITED",
+    "holdout_failure_action": "diagnose/queue next experiment; do not rescue-tune on the same holdout"
+  },
+  "scoring": [
+    "expected ordered-top3 log loss under exact synthetic truth",
+    "KL(q || p) = expected log loss - truth entropy",
+    "ordered-top3 joint Brier distance"
+  ],
+  "promotion_rule": "No architecture promotion from TRAIN/CAL alone. No architecture promotion until exact-byte/native-conformance evidence and Lab recheck clear the design, and synthetic holdout is evaluated without post-hoc tuning.",
+  "real_validation_rule": "UNTOUCHED_VALIDATION_MAY_OPEN = NO"
+}
