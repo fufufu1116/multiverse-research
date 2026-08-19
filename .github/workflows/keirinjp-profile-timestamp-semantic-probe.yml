@@ -1,0 +1,54 @@
+name: keirinjp-profile-timestamp-semantic-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-profile-timestamp-semantic-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe timestamp semantics only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          url='https://keirin.jp/pc/racerprofile?snum=015918'
+          r=requests.get(url,headers={'User-Agent':'MultiverseHybridV3-Research/1.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+          if r.status_code!=200: raise RuntimeError(f'HTTP {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser'); text=' '.join(soup.stripped_strings)
+          patterns={
+            'slash_datetime':re.findall(r'20\d{2}/\d{2}/\d{2}\s+\d{2}:\d{2}',text),
+            'slash_date':re.findall(r'20\d{2}/\d{1,2}/\d{1,2}',text),
+            'hyphen_datetime':re.findall(r'20\d{2}-\d{2}-\d{2}\s+\d{2}:\d{2}',text),
+            'jp_datetime':re.findall(r'20\d{2}年\d{1,2}月\d{1,2}日\s*\d{1,2}:\d{2}',text),
+          }
+          contexts=[]
+          for node in soup.find_all(string=re.compile(r'更新|現在|時点|日時')):
+              par=node.parent
+              contexts.append({'tag':par.name if par else None,'text':' '.join((par.get_text(' ',strip=True) if par else str(node)).split())[:300]})
+          out={'record':'KEIRINJP_PROFILE_TIMESTAMP_SEMANTIC_PROBE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),
+               'snum':'015918','content_sha256':hashlib.sha256(r.content).hexdigest(),'timestamp_patterns':patterns,
+               'timestamp_contexts':contexts[:40],'raw_html_persisted':False,'predictive_values_persisted':False,
+               'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False,'status':'PASS_PROBE'}
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_TIMESTAMP_SEMANTIC_PROBE_v1.json');q.parent.mkdir(parents=True,exist_ok=True);q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist probe
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_TIMESTAMP_SEMANTIC_PROBE_v1.json
+          git commit -m 'Record KEIRIN profile timestamp semantic probe'
+          git push
