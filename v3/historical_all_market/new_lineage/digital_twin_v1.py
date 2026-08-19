@@ -32,6 +32,7 @@ class Rider:
 class Race:
     race_id: str
     regime: str
+    event_format: str
     race_band: str
     bank_length_m: int
     wind_speed_mps: float
@@ -93,12 +94,49 @@ def _style_for_position(line_position: int, line_size: int, rng: random.Random) 
     return rng.choices(["逃", "両", "追"], weights=weights, k=1)[0]
 
 
-def generate_race(seed: int, race_index: int, n_riders: int | None = None) -> Race:
+def _resolve_event_format(n_riders: int | None, event_format: str | None) -> Tuple[int, str]:
+    """Resolve field size without silently mixing normal and special formats.
+
+    Normal synthetic FI/FII-style races default to seven riders. Nine-rider races
+    must be represented as a distinct special-event format. Other field sizes are
+    allowed only as explicit engineering fixtures.
+    """
+    if event_format is None:
+        if n_riders is None or n_riders == 7:
+            return 7, "STANDARD_FI_FII_7"
+        if n_riders == 9:
+            return 9, "SPECIAL_9"
+        if n_riders >= 3:
+            return n_riders, "CUSTOM_TEST_FIXTURE"
+        raise ValueError("race requires >=3 riders")
+
+    if event_format == "STANDARD_FI_FII_7":
+        if n_riders not in (None, 7):
+            raise ValueError("STANDARD_FI_FII_7 requires 7 riders")
+        return 7, event_format
+
+    if event_format == "SPECIAL_9":
+        if n_riders not in (None, 9):
+            raise ValueError("SPECIAL_9 requires 9 riders")
+        return 9, event_format
+
+    if event_format == "CUSTOM_TEST_FIXTURE":
+        if n_riders is None or n_riders < 3:
+            raise ValueError("CUSTOM_TEST_FIXTURE requires explicit n_riders >=3")
+        return n_riders, event_format
+
+    raise ValueError(f"unknown event_format {event_format}")
+
+
+def generate_race(
+    seed: int,
+    race_index: int,
+    n_riders: int | None = None,
+    event_format: str | None = None,
+) -> Race:
     """Generate one synthetic PRE race with hidden truth separated from observable PRE."""
     rng = random.Random(f"keirin-dt:{seed}:{race_index}")
-    n = n_riders or rng.choice([7, 9])
-    if n < 3:
-        raise ValueError("race requires >=3 riders")
+    n, resolved_event_format = _resolve_event_format(n_riders, event_format)
 
     race_band = rng.choices(["S", "A12", "A3"], weights=[0.32, 0.43, 0.25], k=1)[0]
     bank = rng.choice([333, 400, 500])
@@ -152,6 +190,7 @@ def generate_race(seed: int, race_index: int, n_riders: int | None = None) -> Ra
     return Race(
         race_id=f"SYN_{seed}_{race_index}",
         regime=regime,
+        event_format=resolved_event_format,
         race_band=race_band,
         bank_length_m=bank,
         wind_speed_mps=wind,
@@ -165,7 +204,9 @@ def pre_view(race: Race) -> Dict[str, object]:
     return {
         "race_id": race.race_id,
         "race_regime": race.regime,
+        "event_format": race.event_format,
         "race_band": race.race_band,
+        "field_size": len(race.riders),
         "bank_length_m": race.bank_length_m,
         "wind_speed_mps": race.wind_speed_mps,
         "num_lines": len(line_ids),
@@ -369,7 +410,9 @@ def generate_world_batch(seed: int, n_races: int, world: str) -> List[Dict[str, 
     out: List[Dict[str, object]] = []
     rng = random.Random(seed + offsets[world])
     for idx in range(n_races):
-        race = generate_race(seed=seed, race_index=idx)
+        # Default research batch represents ordinary seven-rider FI/FII-style races.
+        # Special nine-rider events are generated only when explicitly requested.
+        race = generate_race(seed=seed, race_index=idx, event_format="STANDARD_FI_FII_7")
         joint = world_joint_distribution(race, world)
         outcome = sample_top3(joint, rng)
         out.append(
