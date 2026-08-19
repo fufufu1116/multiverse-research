@@ -1,0 +1,32 @@
+{
+  "record": "STAGE2_EXECUTION_ACCEPTANCE_RECEIPT_v1",
+  "status": "PASS_STAGE2_ACCEPTED_POSTPROCESS_ERROR_NON_SCIENTIFIC",
+  "basis": {
+    "drive_stage2_receipt_status": "PASS",
+    "drive_stage2_quality_status": "PASS",
+    "races": 2000,
+    "output_rows": 4000,
+    "ticket_join_mismatches": 0,
+    "catalog_sha256": "34ad32bed6e8b4d700864c46f4533bef1da254c7d87dc7ffe6ec266fd74530dc",
+    "quality_sha256": "2f9398ebb7ff188a507da2f5fa627ac6f8dcd4de0643c0f1ef19ceeffe917656",
+    "price_sha256": "2ca98097f74e5282fdc9c91629083f39bef4dafb94a1fc4f7e510acadefc407b",
+    "ticket_probability_sha256": "6348d9af2a535578cf454afca52ea2c944cb6c50cab87f6e6ffa75149880b526"
+  },
+  "postprocess_diagnosis": {
+    "scientific_engine_completed": true,
+    "artifact_zip_exists": true,
+    "v1_receipt_missing_final_artifact_sha256_field": true,
+    "inference": "failure occurred after scientific catalog and quality/receipt PASS artifacts were written, in the non-scientific packaging tail near ZIP hashing/final receipt rewrite",
+    "scientific_recompute_required": false,
+    "remediation": "use Multiverse_STAGE2_PRICE_EV_2000_IPHONE_LITE_v2.ipynb; validate existing artifacts only; do not create or rehash large ZIP"
+  },
+  "firewall": {
+    "result_access": false,
+    "settlement_access": false,
+    "realized_roi_computed": false,
+    "threshold_selected": false,
+    "portfolio_constructed": false,
+    "scientific_trial_count": 0,
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
