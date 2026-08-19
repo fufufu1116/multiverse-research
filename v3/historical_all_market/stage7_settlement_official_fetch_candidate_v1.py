@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+import argparse, base64, concurrent.futures, gzip, hashlib, importlib.util, json, time, urllib.request
+from pathlib import Path
+
+RACE_IDS_GZ_B64='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'
+VENUE={"11":"hakodate","13":"iwakitaira","22":"maebashi","23":"toride","24":"utsunomiya","26":"seibuen","27":"keiokaku","28":"tachikawa","31":"matsudo","35":"hiratsuka","36":"odawara","37":"ito","38":"shizuoka","42":"nagoya","43":"gifu","44":"ogaki","45":"toyohashi","47":"matsusaka","53":"nara","55":"wakayama","56":"kishiwada","61":"tamano","62":"hiroshima","63":"hofu","73":"komatsushima","74":"kochi","75":"matsuyama","81":"kokura","83":"kurume","84":"takeo","86":"beppu","87":"kumamoto"}
+UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36'
+
+def load_parser(p):
+    s=importlib.util.spec_from_file_location('settle',p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
+
+def race_ids():
+    b=gzip.decompress(base64.b64decode(RACE_IDS_GZ_B64)).decode(); xs=[x for x in b.splitlines() if x]
+    if len(xs)!=2000 or len(set(xs))!=2000: raise RuntimeError(f'embedded race ids invalid {len(xs)}')
+    return xs
+
+def fetch_one(rid,parser):
+    slug=VENUE.get(rid[:2]);
+    if not slug: return {'race_id':rid,'status':'VENUE_MAP_MISSING'}
+    url=f'https://keirin.kdreams.jp/{slug}/racedetail/{rid}/?pageType=showResult'
+    err=None
+    for a in range(6):
+        try:
+            req=urllib.request.Request(url,headers={'User-Agent':UA,'Accept-Encoding':'identity'})
+            with urllib.request.urlopen(req,timeout=30) as r: data=r.read(); code=getattr(r,'status',200)
+            if code!=200: raise RuntimeError(f'HTTP {code}')
+            sha=hashlib.sha256(data).hexdigest(); s=parser.parse_payload(data)
+            return {'race_id':rid,'status':'PASS_OFFICIAL_FETCH','source_url':url,'observed_raw_sha256':sha,**s}
+        except Exception as e:
+            err=f'{type(e).__name__}: {e}'
+            if a<5: time.sleep(min(12,1.5*(2**a)))
+    return {'race_id':rid,'status':'FETCH_OR_PARSE_ERROR','source_url':url,'error':err}
+
+def main():
+    ap=argparse.ArgumentParser(); ap.add_argument('--parser',required=True); ap.add_argument('--output',required=True); ap.add_argument('--receipt',required=True); ap.add_argument('--workers',type=int,default=6); a=ap.parse_args()
+    p=load_parser(Path(a.parser)); xs=race_ids(); out=[]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=a.workers) as ex:
+        fs={ex.submit(fetch_one,r,p):r for r in xs}
+        for i,f in enumerate(concurrent.futures.as_completed(fs),1):
+            out.append(f.result())
+            if i%100==0: print(f'[settlement-fetch] {i}/2000',flush=True)
+    out.sort(key=lambda x:x['race_id']); bad=[x for x in out if x['status']!='PASS_OFFICIAL_FETCH']
+    Path(a.output).write_text(''.join(json.dumps(x,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n' for x in out),encoding='utf-8')
+    receipt={'record':'DEV2000_SETTLEMENT_OFFICIAL_FETCH_CANDIDATE_RECEIPT_v1','status':'PASS_FETCH' if not bad else 'FAIL_CLOSED','rows':len(out),'parsed_rows':len(out)-len(bad),'failure_rows':len(bad),'failure_sample':bad[:20],'output_sha256':hashlib.sha256(Path(a.output).read_bytes()).hexdigest(),'archive_sha_reconciliation_required':True,'settlement_parser_id':getattr(p,'PARSER_ID',None),'ECON_HOLDOUT1000':'SEALED'}
+    Path(a.receipt).write_text(json.dumps(receipt,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8'); print(json.dumps(receipt,ensure_ascii=False,indent=2))
+    if bad: raise SystemExit(2)
+if __name__=='__main__': main()
