@@ -1,0 +1,57 @@
+{
+  "record": "LEGACY_ASSET_REUSE_REGISTRY_v1",
+  "status": "CANDIDATE_NOT_YET_INDEPENDENTLY_AUDITED",
+  "track": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
+  "immutable_inputs": {
+    "DEV2000_UNIVERSE_v1.csv": {
+      "sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+      "role": "FROZEN_2000_RACE_DEVELOPMENT_UNIVERSE"
+    },
+    "DEV2000_PRE_TABLE_v1.csv": {
+      "sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
+      "role": "FROZEN_PRE_ONLY_ENTRANT_TABLE_14255_ROWS_2000_RACES"
+    },
+    "DEV2000_CANDIDATE_A_B1A_RECONSTITUTED_v1_PREDICTIONS.csv": {
+      "sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+      "role": "FROZEN_PRE_RESULT_PREDICTIONS_FOR_CANDIDATE_A_AND_B1A"
+    },
+    "DEV2000_RESULT_ONLY_v3.jsonl": {
+      "sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+      "role": "LATER_AUTHORIZED_RESULT_ONLY_2000_RACES"
+    },
+    "DEV2000_RESULT_PROVENANCE_v3.jsonl": {
+      "sha256": "0e9dbba0bf0427bd1b5903c196a93a31678375170e6d5164b3d8d8f052ca97f1",
+      "role": "RACE_TO_RAW_PAYLOAD_SHA_PROVENANCE"
+    },
+    "MULTIVERSE_V2_7_ECONOMIC_E1_PRELOCK_v1_ARTIFACT.zip": {
+      "sha256": "db06d5cf1468d236131245c0c8d66791a21ae059b788938270bb8e5f1924cd4c",
+      "role": "LEGACY_GOVERNANCE_AND_ECONOMIC_DIAGNOSTIC_PRECEDENT_ONLY"
+    }
+  },
+  "prediction_model_bindings": {
+    "Candidate_A_prediction_lock_sha256": "2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada",
+    "refit_in_this_track_at_stage0": "PROHIBITED"
+  },
+  "raw_quarantine": {
+    "source": "MULTIVERSE_DEV2000_RESULT_COLLECTION_v3_HARDENED/RAW_RESULT_QUARANTINE",
+    "admission_rule": "EVERY_RAW_MUST_MATCH_THE_PER_RACE_raw_payload_sha256_IN_DEV2000_RESULT_PROVENANCE_v3.jsonl",
+    "network_refetch_before_stage0": "PROHIBITED_UNLESS_A_SEPARATE_MISSING_RAW_INCIDENT_IS_FORMALLY_ADJUDICATED"
+  },
+  "closed_lineages": {
+    "v2.7": "CLOSED; DO_NOT_RESCUE_OR_REWRITE",
+    "v2.8": "CLOSED_NO_SURVIVOR_AT_STAGE_C; DO_NOT_REOPEN",
+    "v2.9": "CLOSED; CORRECTED_RERUN_DID_NOT_AUTHORIZE_RESCUE"
+  },
+  "shadow250_v2": {
+    "role_in_this_track": "OPERATIONAL_SAFETY_LESSONS_AND_LATER_SAME_DAY_LIVE_INFRASTRUCTURE_ONLY",
+    "selected_races": 0,
+    "prospective_shadow_screen_count": 0,
+    "prospective_v3_scientific_trial": 0,
+    "not_used_to_select_historical_economic_candidates": true
+  },
+  "ECON_HOLDOUT1000": "SEALED",
+  "holdout_result_access": false,
+  "holdout_payout_access": false,
+  "holdout_price_access": false,
+  "holdout_scoring": false
+}
