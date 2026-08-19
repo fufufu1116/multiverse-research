@@ -1,0 +1,73 @@
+{
+  "record": "STAGE456_PRESETTLEMENT_ACCEPTANCE_RECEIPT_v1",
+  "status": "PASS_PRESETTLEMENT_FREEZE_COMPLETE",
+  "stage2_catalog_sha256": "34ad32bed6e8b4d700864c46f4533bef1da254c7d87dc7ffe6ec266fd74530dc",
+  "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+  "universe_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+  "stage456_engine_git_blob": "a0ed6984969b0b98af1b074ef9fd2348f16604a0",
+  "stage4_prereg_git_blob": "f5bb38e97dd2543842308f9b8ee401957d2e5216",
+  "stage5_prereg_git_blob": "f13b5aa5584d260d30032c269cfc205a312f2426",
+  "stage6_prereg_git_blob": "7dc0ac09440755ad1c43959237c0d975be11b245",
+  "stage7_prereg_git_blob": "0cb70520777d4ac9d00ddd90b888df1f403c3a7e",
+  "local_quality_sha256": "2f7c3a3d42e1f273a3a935e29c66c397494b0aaa3a830139c2ac6d4f51dabac4",
+  "races": 2000,
+  "stage2_rows": 4000,
+  "stage3_profiles": ["P00", "P05", "P10", "P20", "P35", "P50", "P100"],
+  "stage4_agreement_gates": ["G0", "G20", "G25", "G30"],
+  "stage4_gate_pass_races": {
+    "G0": 2000,
+    "G20": 1261,
+    "G25": 1694,
+    "G30": 1821
+  },
+  "tv3_diagnostics": {
+    "min": 0.0,
+    "p25": 0.16706884366239708,
+    "median": 0.1883784364775173,
+    "p75": 0.21693886416936356,
+    "p90": 0.29230844784584864,
+    "p95": 0.34411749516206996,
+    "p99": 0.4388004799251464,
+    "max": 0.5248220235294262
+  },
+  "stage5_templates": [
+    "SINGLE",
+    "TOP1_PER_MARKET",
+    "TOP3_PER_MARKET",
+    "TOP5_PER_MARKET",
+    "BOX3",
+    "WHEEL1x3",
+    "FORMATION_2x3x4"
+  ],
+  "stage5_template_runtime_sanity": {
+    "SINGLE": {"max_tickets_any_race": 1},
+    "TOP1_PER_MARKET": {"max_tickets_any_race": 7},
+    "TOP3_PER_MARKET": {"max_tickets_any_race": 21},
+    "TOP5_PER_MARKET": {"max_tickets_any_race": 35},
+    "BOX3": {"max_tickets_any_race": 30},
+    "WHEEL1x3": {"max_tickets_any_race": 24},
+    "FORMATION_2x3x4": {"max_tickets_any_race": 17}
+  },
+  "stage6_stake_policies": ["FLAT100", "RACE2PCT_EQUAL", "FK10_R2", "FK25_R3"],
+  "initial_bankroll_jpy": 100000,
+  "initial_race_stake_cap_sanity_jpy": {
+    "FLAT100_max_observed_by_template_size": 3500,
+    "RACE2PCT_EQUAL": 2000,
+    "FK10_R2": 2000,
+    "FK25_R3": 3000
+  },
+  "pre_bankroll_portfolio_configuration_count": 196,
+  "full_frozen_configuration_count": 784,
+  "stage7_split": {
+    "A_DEVELOPMENT": "dev_index 1..1000",
+    "B_VALIDATION": "dev_index 1001..1500",
+    "C_UNTOUCHED_TEST": "dev_index 1501..2000"
+  },
+  "result_access": false,
+  "payout_access": false,
+  "settlement_access": false,
+  "realized_roi_computed": false,
+  "scientific_trial_count": 0,
+  "ECON_HOLDOUT1000": "SEALED",
+  "next_boundary": "INDEPENDENT_HIGH_LEVEL_AUDIT_REQUIRED_BEFORE_SETTLEMENT_OPEN"
+}
