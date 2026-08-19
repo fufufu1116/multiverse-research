@@ -1,0 +1,93 @@
+{
+  "record": "PRE_INTERFACE_SCHEMA_DRAFT_v1",
+  "status": "SOURCE_INDEPENDENT_DRAFT_NOT_SCIENTIFIC_FREEZE",
+  "purpose": "Canonical source-independent interface between any future authorized PRE provider and C1/N1 modeling code.",
+  "firewall": [
+    "NO_RESULT",
+    "NO_PAYOUT",
+    "NO_POST_RACE_LINE_RECONSTRUCTION",
+    "ALL_DECISION_INPUTS_MUST_BE_PRE_AND_DECISION_AVAILABLE",
+    "SOURCE_ADMISSION_REQUIRES_SEPARATE_RIGHTS_PROVENANCE_AUDIT"
+  ],
+  "race_regime_enum": [
+    "STANDARD_ORIGINAL_LINE_KEIRIN",
+    "INTERNATIONAL_FIXED_PACER",
+    "UNKNOWN_OR_OTHER"
+  ],
+  "line_observation_type_enum": [
+    "LEGSHOW_OBSERVED_LINE",
+    "PRE_EVENT_EXPECTED_LINE",
+    "NONE"
+  ],
+  "required_race_fields": [
+    "race_id",
+    "prediction_timestamp",
+    "decision_timestamp",
+    "decision_cutoff_rule_id",
+    "race_regime",
+    "race_regime_source",
+    "race_regime_source_timestamp",
+    "race_regime_raw_provenance_sha",
+    "riders"
+  ],
+  "standard_line_required_race_fields": [
+    "line_source",
+    "line_snapshot_timestamp",
+    "line_observation_type",
+    "line_raw_provenance_sha",
+    "num_lines"
+  ],
+  "required_active_rider_identity_fields": [
+    "car_no",
+    "rider_id",
+    "active"
+  ],
+  "standard_line_required_rider_fields": [
+    "line_group_id",
+    "line_position",
+    "line_size",
+    "is_singleton"
+  ],
+  "sporting_pre_candidate_fields": [
+    "class",
+    "style",
+    "score",
+    "S",
+    "H",
+    "B",
+    "win_rate",
+    "quinella_rate",
+    "trio_rate",
+    "nige",
+    "makuri",
+    "sashi",
+    "mark"
+  ],
+  "context_pre_candidate_fields": [
+    "bank_length_m",
+    "home_straight_m",
+    "bank_cant_deg",
+    "weather",
+    "temperature_c",
+    "wind_speed_mps",
+    "wind_direction"
+  ],
+  "semantic_rules": {
+    "line_group_id": "WITHIN_RACE_GROUPING_KEY_ONLY_NEVER_RAW_STRENGTH_PREDICTOR",
+    "line_position": "ZERO_BASED_HEAD_EQUALS_0_AND_CONTIGUOUS_WITHIN_LINE",
+    "is_singleton": "MUST_EQUAL_LINE_SIZE_EQUALS_1",
+    "line_snapshot_timestamp": "MUST_BE_AT_OR_BEFORE_DECISION_TIMESTAMP",
+    "race_regime_source_timestamp": "MUST_BE_AT_OR_BEFORE_DECISION_TIMESTAMP",
+    "unknown_regime": "FAIL_CLOSED_FOR_LINE_DEPENDENT_MODEL",
+    "post_race_reconstructed_line": "PROHIBITED_AS_PRE_INPUT",
+    "H_B_S_maneuver_counts": "MUST_PRESERVE_HISTORICAL_POINT_IN_TIME_PUBLISHER_SEMANTICS"
+  },
+  "evidence_levels": [
+    "REFERENCED",
+    "LOCATED",
+    "READABLE",
+    "BYTE_ACCESSIBLE",
+    "HASH_VERIFIED",
+    "CANONICAL"
+  ]
+}
