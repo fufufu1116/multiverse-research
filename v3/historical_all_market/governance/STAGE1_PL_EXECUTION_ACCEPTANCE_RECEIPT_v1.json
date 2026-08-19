@@ -1,0 +1,40 @@
+{
+  "record": "STAGE1_PL_EXECUTION_ACCEPTANCE_RECEIPT_v1",
+  "project": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
+  "status": "PASS_ACCEPTED",
+  "execution_source": "GOOGLE_DRIVE_STAGE1_OUTPUTS_AND_RUN_LOG",
+  "execution_outcome": {
+    "structure_stage_return_code": 0,
+    "probability_stage_return_code": 0,
+    "races": 2000,
+    "prediction_rows": 14255,
+    "output_rows": 4000,
+    "ticket_key_mismatches": 0,
+    "quality_status": "PASS"
+  },
+  "bindings": {
+    "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "stage0_price_catalog_sha256": "2ca98097f74e5282fdc9c91629083f39bef4dafb94a1fc4f7e510acadefc407b",
+    "market_structure_git_blob": "23eba6b0423504e59bd7f74d6f22d88c387c8acf",
+    "pl_engine_git_blob": "029904b359e8151263c6a9bf8c4635f026941b0b",
+    "market_structure_sha256": "54e549875ce4eb6bd587e393c043686f54e3343aeb6f78dacd505bdba7dae4a4",
+    "ticket_probability_catalog_sha256": "6348d9af2a535578cf454afca52ea2c944cb6c50cab87f6e6ffa75149880b526",
+    "quality_report_sha256": "3ca93ec8b05ce5f617471082d6e408158d6a0513c9fde8d314692aab7793e747"
+  },
+  "firewall": {
+    "closing_odds_values_included": false,
+    "result_fields_included": false,
+    "settlement_fields_included": false,
+    "ev_roi_computed": false,
+    "scientific_trial_count": 0,
+    "ECON_HOLDOUT1000": "SEALED"
+  },
+  "ui_error_adjudication": {
+    "scientific_execution_failed": false,
+    "scientific_outputs_complete": true,
+    "error_scope": "POST_EXECUTION_COLAB_IPHONE_DOWNLOAD_OR_UI_HANDOFF",
+    "recomputation_required": false,
+    "remediation": "IPHONE_LITE_v2 removes files.download and validates existing PASS outputs before any recomputation"
+  },
+  "remediated_notebook": "v3/historical_all_market/Multiverse_STAGE1_PL_PROBABILITY_2000_IPHONE_LITE_v2.ipynb"
+}
