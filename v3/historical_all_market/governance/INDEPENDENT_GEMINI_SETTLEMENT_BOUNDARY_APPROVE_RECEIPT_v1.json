@@ -1,0 +1,36 @@
+{
+  "record": "INDEPENDENT_GEMINI_SETTLEMENT_BOUNDARY_APPROVE_RECEIPT_v1",
+  "audit_date_jst": "2026-08-19",
+  "audit_snapshot_commit": "a0360b1c5622b0664e8180186a40eca9827fc63e",
+  "verdict": "APPROVE",
+  "p0_blockers": [],
+  "p1_material": [],
+  "p2_non_blocking": ["ISSUE-SETTLE-P2-01_BOOTSTRAP_COMPUTATION_RESOURCE_MONITORING"],
+  "STAGE3_FREEZE": "ACCEPTABLE",
+  "STAGE4_FREEZE": "ACCEPTABLE",
+  "STAGE5_FREEZE": "ACCEPTABLE",
+  "STAGE6_FREEZE": "ACCEPTABLE",
+  "STAGE7_VALIDATION_PROTOCOL": "ACCEPTABLE",
+  "STAGE2_EXACT_LOCAL_RECONSTRUCTION": "ACCEPTABLE",
+  "STAGE3_LOCAL_AUTO_COMPLETION": "ACCEPTABLE",
+  "FINITE_784_CONFIGURATION_SEARCH_AND_SELECTION": "ACCEPTABLE",
+  "DEV2000_SETTLEMENT_BULK": "AUTHORIZED_FOR_FROZEN_STAGE7_ONLY",
+  "SETTLEMENT_PARSER_GIT_BLOB": "b8b8ab0e0904541bd6fc45e7fe415d323e63ec45",
+  "ECON_HOLDOUT1000": "SEALED",
+  "STAGE7_REALIZED_SCIENTIFIC_TRIAL_COUNT_BEFORE_OPEN": 0,
+  "authorized_scope": [
+    "DEV2000 official refund/settlement bulk recovery",
+    "Frozen Stage7 Segment A 1..1000 evaluation",
+    "Frozen Stage7 Segment B 1001..1500 selection",
+    "Single-shot frozen Stage7 Segment C 1501..2000 OOS evaluation",
+    "10000 whole-race bootstrap replicates with seed 20260819"
+  ],
+  "strict_prohibitions": [
+    "ECON_HOLDOUT1000 access",
+    "Candidate A or B1a refitting",
+    "Post-outcome modification of Stage3-6 thresholds/profiles/gates/stake policies",
+    "Segment C rescue tuning",
+    "Live market order generation or real-money wagering"
+  ],
+  "source": "Independent Governance Audit Report pasted by Owner in ChatGPT conversation after audit package review"
+}
