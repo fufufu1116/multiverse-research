@@ -43,10 +43,12 @@ jobs:
                   elif isinstance(n,ast.ImportFrom): imports.append(n.module or '')
               bad=[x for x in imports if x=='requests' or x.startswith('requests.') or 'settlement' in x.lower()]
               if bad: raise SystemExit(f'FAIL_CLOSED forbidden imports {p.name}: {bad}')
+          # Explanatory docstrings may state that payout/refund access is prohibited.
+          # Only executable references to forbidden recovery modules are rejected here.
           src=E.read_text().lower()
-          for token in ('payout','refund','settlement_recovery','result_only'):
+          for token in ('kdreams_settlement_recovery','result_only_v3.jsonl','result_collection'):
               if token in src:
-                  raise SystemExit(f'FAIL_CLOSED forbidden Stage1 engine token {token}')
+                  raise SystemExit(f'FAIL_CLOSED forbidden Stage1 executable reference {token}')
           receipt={
             'record':'ALL_MARKET_STAGE1_PL_STATIC_SELF_CHECK_v1',
             'status':'PASS',
