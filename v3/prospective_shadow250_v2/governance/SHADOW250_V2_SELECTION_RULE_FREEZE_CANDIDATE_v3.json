@@ -1,0 +1,42 @@
+{
+  "record": "SHADOW250_V2_SELECTION_RULE_FREEZE_CANDIDATE_v3",
+  "status": "CANDIDATE_NOT_ACTIVE_PENDING_INDEPENDENT_GEMINI_REAUDIT",
+  "approved_core": {
+    "schema": "MULTIVERSE_SHADOW250_V2_SELECTION_RULE_v3",
+    "target_count": 250,
+    "membership": "first 250 races satisfying every frozen PRE-only gate after activation",
+    "activation_constraint": "scheduled_start strictly after Shadow250-v2 activation timestamp",
+    "ordering": ["scheduled_start_ascending", "venue_code_ascending", "race_no_ascending"],
+    "pre_only_gates": [
+      "Tamano discovery exact event-day PDF cardinality=1",
+      "PDF URL YYYYMMDD binding + raw SHA match",
+      "two-page template + PRE region + POST sentinel PASS",
+      "dedicated 7-car marker band + cars 1..7 + active-entry PASS",
+      "race-program/class compatibility PASS",
+      "complete racecard five fields for every entrant",
+      "exactly seven entrants into one shared-limiter KEIRIN batch",
+      "search result identity consumption name+snum only",
+      "unique four-field racerprofile identity verification every entrant",
+      "section-bound profile/recent update timestamps PASS",
+      "complete supplement three fields every entrant",
+      "canonical duplicate consistency class/score/quinella PASS",
+      "KEIRIN batch <=90 seconds",
+      "source window from Tamano PDF request through last profile capture <=120 seconds",
+      "all captures before Prediction Lock",
+      "HOLDOUT collision PASS",
+      "not previously selected/exposed by predecessor Shadow universe"
+    ],
+    "admissible_programs": {"S": "subset {SS,S1,S2}", "A12": "subset {A1,A2}", "A3": "exact {A3}", "L1": "exact {L1}"},
+    "race_time_class": "current racecard authoritative; profile duplicate-check only; no historical current-profile replay",
+    "inference_for_missing_fields": "PROHIBITED",
+    "ocr": "PROHIBITED",
+    "provider_fallback": "PROHIBITED",
+    "result_payout_price_for_eligibility": "PROHIBITED",
+    "post_outcome_replacement": "PROHIBITED",
+    "after_prediction_lock": "selected race never replaced",
+    "scoring_gate": "no outcome-bearing scoring until exact 250 membership + exclusion registry + scoring commitment frozen"
+  },
+  "approved_core_sha256": "26459bbe8db0766918a7511069f0c13354fb8b75d952a1633bbc3b8325f099d6",
+  "runtime_evidence": {"record": "SHADOW250_V2_FINAL_CANDIDATE_RUNTIME_EVIDENCE_v1.json", "git_blob": "598de0096298d649793724ab4b3efd4e22d7d8dc", "status": "PASS"},
+  "scientific_effect": "NONE_UNTIL_INDEPENDENT_APPROVAL_AND_SEPARATE_ACTIVATION"
+}
