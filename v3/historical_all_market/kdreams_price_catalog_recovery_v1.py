@@ -22,74 +22,91 @@ def node_text(n) -> str: return " ".join(" ".join(n.itertext()).split())
 def canon_pair(a:int,b:int,ordered:bool)->str:
     a,b=int(a),int(b); return f"{a}-{b}" if ordered else "=".join(map(str,sorted((a,b))))
 def canon_triple(a:int,b:int,c:int,ordered:bool)->str:
-    vals=(int(a),int(b),int(c)); return "-".join(map(str,vals)) if ordered else "=".join(map(str,sorted(vals)))
+    x=(int(a),int(b),int(c)); return "-".join(map(str,x)) if ordered else "=".join(map(str,sorted(x)))
 def fcell(td):
-    s=compact(node_text(td))
-    if not s or s in {"-","—","－","未発売"}: return None
-    if not re.fullmatch(r"[\d,]+(?:\.\d+)?",s): return None
-    v=float(s.replace(",","")); return v if math.isfinite(v) and v>0 else None
+    s=compact(node_text(td)).replace(',','')
+    if not s or s in {'-','—','－','未発売'}: return None
+    try: v=float(s)
+    except Exception: return None
+    return v if math.isfinite(v) and v>0 else None
 
-def market_presence(root,market):
-    c=root.xpath(f'//*[@id="JS_ODDSCONTENTS_{market}"]'); s=root.xpath(f'//*[@id="JS_ODDSSTATUS_{market}"]')
-    if bool(c)!=bool(s): raise FailClosed(f"content/status presence mismatch {market} content={len(c)} status={len(s)}")
-    if len(c)>1 or len(s)>1: raise FailClosed(f"duplicate market container/status {market}")
-    return len(c)==1
+def _nodes(root,market):
+    c=root.xpath(f'//*[@id="JS_ODDSCONTENTS_{market}"]')
+    s=root.xpath(f'//*[@id="JS_ODDSSTATUS_{market}"]')
+    if len(c)>1 or len(s)>1: raise FailClosed(f"duplicate market DOM {market}: content={len(c)} status={len(s)}")
+    if bool(c)!=bool(s): raise FailClosed(f"market content/status mismatch {market}: content={len(c)} status={len(s)}")
+    return (c[0],s[0]) if c else (None,None)
+
+def market_presence(root,market): return _nodes(root,market)[0] is not None
 
 def parse_status(root,market):
-    st=root.xpath(f'//*[@id="JS_ODDSSTATUS_{market}"]')
-    if len(st)!=1: raise FailClosed(f"status cardinality {market}={len(st)}")
-    tt=st[0].xpath('.//*[contains(concat(" ",normalize-space(@class)," ")," time ")]')
+    _,st=_nodes(root,market)
+    if st is None: raise FailClosed(f"status requested for absent market {market}")
+    tt=st.xpath('.//*[contains(concat(" ",normalize-space(@class)," ")," time ")]')
     if len(tt)!=1: raise FailClosed(f"timestamp cardinality {market}={len(tt)}")
     ts=node_text(tt[0])
-    if "現在" not in ts: raise FailClosed(f"timestamp malformed {market}: {ts}")
+    if '現在' not in ts: raise FailClosed(f"timestamp malformed {market}: {ts}")
     return ts
 
+def _container(root,market):
+    c,_=_nodes(root,market)
+    if c is None: raise FailClosed(f"parse requested for absent market {market}")
+    return c
+
 def parse_2way(root,market,ordered):
-    c=root.xpath(f'//*[@id="JS_ODDSCONTENTS_{market}"]')
-    t=c[0].xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
-    if len(t)!=1: raise FailClosed(f"{market} table count={len(t)}")
-    trs=t[0].xpath('.//tr'); headers=[int(compact(node_text(x))) for x in trs[0].xpath('./th') if compact(node_text(x)).isdigit()]
+    c=_container(root,market)
+    tbs=c.xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
+    if len(tbs)!=1: raise FailClosed(f"{market} table count={len(tbs)}")
+    trs=tbs[0].xpath('.//tr')
+    if not trs: raise FailClosed(f"{market} empty")
+    headers=[int(compact(node_text(x))) for x in trs[0].xpath('./th') if compact(node_text(x)).isdigit()]
+    if not headers: raise FailClosed(f"{market} headers missing")
     out={}
     for tr in trs[2:]:
-        th=tr.xpath('./th')
-        if not th: continue
-        rs=compact(node_text(th[0]))
+        ths=tr.xpath('./th')
+        if not ths: continue
+        rs=compact(node_text(ths[0]))
         if not rs.isdigit(): continue
         row=int(rs)
         for col,td in zip(headers,tr.xpath('./td')[:len(headers)]):
             v=fcell(td)
             if v is None: continue
             key=canon_pair(col,row,True) if ordered else canon_pair(row,col,False)
-            if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"duplicate inconsistent {market}/{key}")
+            if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"{market} inconsistent duplicate {key}")
             out[key]=v
+    if not out: raise FailClosed(f"{market} zero numeric prices")
     return out
 
 def parse_3rentan(root):
-    c=root.xpath('//*[@id="JS_ODDSCONTENTS_3rentan"]')
-    tbs=c[0].xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]"); out={}
+    c=_container(root,'3rentan')
+    tbs=c.xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
+    out={}
     for t in tbs:
         trs=t.xpath('.//tr')
         if len(trs)<4: continue
         sp=trs[0].xpath('.//span[contains(@class,"number")]')
-        if len(sp)!=1 or not compact(node_text(sp[0])).isdigit(): raise FailClosed('3rentan first header')
-        first=int(compact(node_text(sp[0]))); thirds=[int(compact(node_text(x))) for x in trs[1].xpath('./th') if compact(node_text(x)).isdigit()]
+        if len(sp)!=1 or not compact(node_text(sp[0])).isdigit(): raise FailClosed('3rentan first-car header')
+        first=int(compact(node_text(sp[0])))
+        thirds=[int(compact(node_text(x))) for x in trs[1].xpath('./th') if compact(node_text(x)).isdigit()]
         for tr in trs[3:]:
-            th=tr.xpath('./th')
-            if not th: continue
-            ss=compact(node_text(th[0]))
+            ths=tr.xpath('./th')
+            if not ths: continue
+            ss=compact(node_text(ths[0]))
             if not ss.isdigit(): continue
             second=int(ss)
             for third,td in zip(thirds,tr.xpath('./td')[:len(thirds)]):
                 v=fcell(td)
                 if v is None: continue
                 key=canon_triple(first,second,third,True)
-                if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"duplicate inconsistent 3rentan/{key}")
+                if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"3rentan inconsistent duplicate {key}")
                 out[key]=v
+    if not out: raise FailClosed('3rentan zero numeric prices')
     return out
 
 def parse_3renhuku(root):
-    c=root.xpath('//*[@id="JS_ODDSCONTENTS_3renhuku"]')
-    tbs=c[0].xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]"); out={}
+    c=_container(root,'3renhuku')
+    tbs=c.xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
+    out={}
     for t in tbs:
         trs=t.xpath('.//tr')
         if not trs: continue
@@ -97,32 +114,35 @@ def parse_3renhuku(root):
         if not hh: continue
         first=int(hh[0]); current_second=None
         for tr in trs[2:]:
-            nums=[compact(node_text(x)) for x in tr.xpath('./th') if compact(node_text(x)).isdigit()]; tds=tr.xpath('./td')
+            nums=[compact(node_text(x)) for x in tr.xpath('./th') if compact(node_text(x)).isdigit()]
+            tds=tr.xpath('./td')
             if not tds: continue
             v=fcell(tds[-1])
             if v is None: continue
             if len(nums)>=2: current_second=int(nums[0]); third=int(nums[1])
             elif len(nums)==1 and current_second is not None: third=int(nums[0])
             else: continue
+            if len({first,current_second,third})<3: continue
             key=canon_triple(first,current_second,third,False)
-            if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"duplicate inconsistent 3renhuku/{key}")
+            if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"3renhuku inconsistent duplicate {key}")
             out[key]=v
+    if not out: raise FailClosed('3renhuku zero numeric prices')
     return out
 
 def parse_frame(root,market,ordered):
-    c=root.xpath(f'//*[@id="JS_ODDSCONTENTS_{market}"]')
-    t=c[0].xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
-    if len(t)!=1: raise FailClosed(f"{market} table count={len(t)}")
-    trs=t[0].xpath('.//tr')
+    c=_container(root,market)
+    tbs=c.xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
+    if len(tbs)!=1: raise FailClosed(f"{market} table count={len(tbs)}")
+    trs=tbs[0].xpath('.//tr')
     if len(trs)<3: raise FailClosed(f"{market} rows={len(trs)}")
     headers=[int(compact(node_text(x))) for x in trs[0].xpath('./th') if compact(node_text(x)).isdigit()]
-    if headers!=list(range(1,7)): raise FailClosed(f"{market} frame headers={headers}")
+    if headers != list(range(1,7)): raise FailClosed(f"{market} frame headers={headers}")
     labels=[node_text(x) for x in trs[1].xpath('./th|./td')][:6] if len(trs)>1 else []
     out={}
     for tr in trs[2:]:
-        th=tr.xpath('./th')
-        if not th: continue
-        rs=compact(node_text(th[0]))
+        ths=tr.xpath('./th')
+        if not ths: continue
+        rs=compact(node_text(ths[0]))
         if not rs.isdigit(): continue
         row=int(rs)
         if row not in range(1,7): continue
@@ -130,19 +150,21 @@ def parse_frame(root,market,ordered):
             v=fcell(td)
             if v is None: continue
             key=canon_pair(col,row,True) if ordered else canon_pair(row,col,False)
-            if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"duplicate inconsistent {market}/{key}")
+            if key in out and abs(out[key]-v)>1e-12: raise FailClosed(f"{market} inconsistent duplicate {key}")
             out[key]=v
+    if not out: raise FailClosed(f"{market} zero numeric prices")
     return out,labels
 
 def parse_wide(root):
-    c=root.xpath('//*[@id="JS_ODDSCONTENTS_wide"]')
-    t=c[0].xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
-    if len(t)!=1: raise FailClosed(f"wide table count={len(t)}")
-    trs=t[0].xpath('.//tr'); headers=[int(compact(node_text(x))) for x in trs[0].xpath('./th') if compact(node_text(x)).isdigit()]; out={}
+    c=_container(root,'wide')
+    tbs=c.xpath(".//div[contains(@class,'odds_table_wrapper')]//table[contains(@class,'odds_table')]")
+    if len(tbs)!=1: raise FailClosed(f"wide table count={len(tbs)}")
+    trs=tbs[0].xpath('.//tr'); headers=[int(compact(node_text(x))) for x in trs[0].xpath('./th') if compact(node_text(x)).isdigit()]
+    out={}
     for tr in trs[2:]:
-        th=tr.xpath('./th')
-        if not th: continue
-        rs=compact(node_text(th[0]))
+        ths=tr.xpath('./th')
+        if not ths: continue
+        rs=compact(node_text(ths[0]))
         if not rs.isdigit(): continue
         row=int(rs)
         for col,td in zip(headers,tr.xpath('./td')[:len(headers)]):
@@ -152,13 +174,17 @@ def parse_wide(root):
             lo,hi=map(float,m.groups())
             if not (math.isfinite(lo) and math.isfinite(hi) and 0<lo<=hi): raise FailClosed(f"wide invalid {s}")
             key=canon_pair(row,col,False)
-            if key in out and out[key]!={'low':lo,'high':hi}: raise FailClosed(f"duplicate inconsistent wide/{key}")
-            out[key]={'low':lo,'high':hi}
+            val={'low':lo,'high':hi}
+            if key in out and out[key]!=val: raise FailClosed(f"wide inconsistent duplicate {key}")
+            out[key]=val
+    if not out: raise FailClosed('wide zero interval prices')
     return out
 
 PARSERS={
- '3rentan':parse_3rentan,'2shatan':lambda r:parse_2way(r,'2shatan',True),
- '3renhuku':parse_3renhuku,'2shahuku':lambda r:parse_2way(r,'2shahuku',False),
+ '3rentan':lambda r:parse_3rentan(r),
+ '2shatan':lambda r:parse_2way(r,'2shatan',True),
+ '3renhuku':lambda r:parse_3renhuku(r),
+ '2shahuku':lambda r:parse_2way(r,'2shahuku',False),
  '2wakutan':lambda r:parse_frame(r,'2wakutan',True),
  '2wakuhuku':lambda r:parse_frame(r,'2wakuhuku',False),
  'wide':lambda r:parse_wide(r),
