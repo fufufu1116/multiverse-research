@@ -1,0 +1,58 @@
+name: shadow250-v2-scheduled-start-post-activation-live-smoke-once
+on:
+  push:
+    paths: ['.github/workflows/shadow250-v2-scheduled-start-post-activation-live-smoke-once.yml']
+permissions:
+  contents: write
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install --disable-pip-version-check requests beautifulsoup4 PyMuPDF pandas
+      - name: Discover and smoke without screening
+        run: |
+          python - <<'PY'
+          import requests,hashlib,tempfile,pathlib,json,datetime,re,importlib.util,subprocess
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin,urlparse,unquote
+          ROOT=pathlib.Path('v3/prospective_shadow250_v2')
+          G=ROOT/'governance';R=ROOT/'runtime_receipts';R.mkdir(parents=True,exist_ok=True)
+          out={'record':'SHADOW250_V2_SCHEDULED_START_POST_ACTIVATION_LIVE_SMOKE_v1','generated_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'purpose':'POST_ACTIVATION_LIVE_SMOKE_ONLY_NOT_A_SCREEN','activation_timestamp_jst':'2026-08-19T11:38:23.685300+09:00','extractor_git_blob':subprocess.check_output(['git','hash-object',str(ROOT/'tamano_scheduled_start_metadata_candidate_v1.py')],text=True).strip(),'expected_extractor_git_blob':'31aa09d68f68656e6f8b134c2ead28e3bc00b1c1','prediction_executed':False,'screen_decision_made':False,'shadow_screen_consumed':False,'scientific_trial_consumed':False,'selected_races':0,'ECON_HOLDOUT1000':'SEALED','result_payout_price_accessed':False}
+          try:
+            assert out['extractor_git_blob']==out['expected_extractor_git_blob']
+            landing='https://www.tamano-keirin.jp/racepdf/';h={'User-Agent':'Multiverse-Private-Research/1.0'}
+            r=requests.get(landing,headers=h,timeout=20,allow_redirects=False)
+            if r.status_code!=200: raise RuntimeError(f'landing HTTP {r.status_code}')
+            soup=BeautifulSoup(r.content,'html.parser');cand=[]
+            for a in soup.find_all('a',href=True):
+              u=urljoin(landing,a['href']);p=urlparse(u);base=unquote(p.path.rsplit('/',1)[-1])
+              m=re.match(r'^(20\d{6}).*\.pdf$',base,re.I)
+              if p.scheme=='https' and p.netloc=='www.tamano-keirin.jp' and p.path.startswith('/wp-content/uploads/') and not p.query and m and m.group(1)>='20260820': cand.append((m.group(1),u))
+            cand=sorted(set(cand));out['discovered_post_activation_pdf_count']=len(cand);out['discovered_dates']=sorted(set(x[0] for x in cand))
+            if not cand:
+              out['status']='WAITING_SOURCE';out['live_smoke_pass']=False
+            else:
+              day=cand[0][0];same=[u for d,u in cand if d==day]
+              if len(same)!=1: raise RuntimeError(f'earliest day PDF cardinality {day}={len(same)}')
+              u=same[0];pr=requests.get(u,headers=h,timeout=20,allow_redirects=False)
+              if pr.status_code!=200 or not pr.content.startswith(b'%PDF-'): raise RuntimeError(f'PDF HTTP/content {pr.status_code}')
+              sha=hashlib.sha256(pr.content).hexdigest();race_date=f'{day[:4]}-{day[4:6]}-{day[6:]}'
+              spec=importlib.util.spec_from_file_location('ss',ROOT/'tamano_scheduled_start_metadata_candidate_v1.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+              with tempfile.NamedTemporaryFile(suffix='.pdf') as f:
+                f.write(pr.content);f.flush();rows=m.extract_scheduled_starts(f.name,race_date,u,sha)
+              assert len(rows)==12 and [x['race_no'] for x in rows]==list(range(1,13))
+              out.update({'status':'PASS','live_smoke_pass':True,'race_date':race_date,'source_url':u,'source_pdf_raw_sha256':sha,'scheduled_starts':[{'race_no':x['race_no'],'scheduled_start_jst':x['scheduled_start_jst']} for x in rows],'coverage':12,'strictly_increasing':True})
+          except Exception as e:
+            out['status']='FAIL_CLOSED';out['live_smoke_pass']=False;out['error_type']=type(e).__name__;out['error_message']=str(e)
+          p=R/'SHADOW250_V2_SCHEDULED_START_POST_ACTIVATION_LIVE_SMOKE_v1.json';p.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n');print(p.read_text())
+          PY
+      - name: Persist smoke receipt
+        run: |
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/SHADOW250_V2_SCHEDULED_START_POST_ACTIVATION_LIVE_SMOKE_v1.json
+          git commit -m 'Record post-activation scheduled-start live smoke'
+          git push
