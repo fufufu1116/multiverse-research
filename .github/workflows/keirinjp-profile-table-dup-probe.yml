@@ -1,0 +1,58 @@
+name: keirinjp-profile-table-dup-probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirinjp-profile-table-dup-probe.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe matching table identities and semantic hashes
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,re,requests
+          from bs4 import BeautifulSoup
+          from datetime import datetime,timezone
+          r=requests.get('https://keirin.jp/pc/racerprofile?snum=015918',headers={'User-Agent':'MultiverseHybridV3-Research/2.0','Accept':'text/html'},timeout=15,allow_redirects=False)
+          if r.status_code!=200:raise RuntimeError(f'HTTP {r.status_code}')
+          soup=BeautifulSoup(r.content,'html.parser')
+          specs=[('basic',['氏名','府県','登録番号']),('profile',['期別','級班','脚質']),('recent',['勝率','2連対率','3連対率','競走得点'])]
+          groups={}
+          for label,req in specs:
+              found=[]
+              for ti,table in enumerate(soup.find_all('table')):
+                  rows=table.find_all('tr'); matched=False
+                  for ri,row in enumerate(rows[:-1]):
+                      cells=[' '.join(c.get_text(' ',strip=True).split()) for c in row.find_all(['th','td'])]
+                      if all(h in cells for h in req):
+                          vals=[' '.join(c.get_text(' ',strip=True).split()) for c in rows[ri+1].find_all(['th','td'])]
+                          norm='|'.join(cells)+'\n'+'|'.join(vals)
+                          found.append({'table_index':ti,'header_row_index':ri,'id':table.get('id'),'class':table.get('class'),
+                                        'parent_id':table.parent.get('id') if table.parent else None,'parent_class':table.parent.get('class') if table.parent else None,
+                                        'semantic_sha256':hashlib.sha256(norm.encode()).hexdigest(),
+                                        'header_cells':cells,
+                                        'row_cell_count':len(vals)})
+                          matched=True;break
+              groups[label]={'count':len(found),'tables':found,'semantic_hash_unique_count':len(set(x['semantic_sha256'] for x in found))}
+          out={'record':'KEIRINJP_PROFILE_TABLE_DUP_PROBE_v1','generated_utc':datetime.now(timezone.utc).isoformat(),'content_sha256':hashlib.sha256(r.content).hexdigest(),
+               'groups':groups,'raw_html_persisted':False,'predictive_values_persisted':False,'holdout_accessed':False,'result_payout_price_accessed':False,'scientific_trial_consumed':False,'shadow_screen_consumed':False,'status':'PASS_PROBE'}
+          q=pathlib.Path('v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_TABLE_DUP_PROBE_v1.json');q.parent.mkdir(parents=True,exist_ok=True);q.write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8');print(q.read_text())
+          PY
+      - name: Persist receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/prospective_shadow250_v2/runtime_receipts/KEIRINJP_PROFILE_TABLE_DUP_PROBE_v1.json
+          git commit -m 'Record KEIRIN profile table duplicate probe'
+          git push
