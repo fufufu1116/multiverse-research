@@ -1,7 +1,7 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
-  "updated_jst": "2026-08-19T23:27:00+09:00",
-  "status": "ACTIVE_RESEARCH_NEW_LINEAGE_PREFLIGHT_NO_EXTERNAL_CONTACT_NOT_FROZEN",
+  "updated_jst": "2026-08-19T23:33:00+09:00",
+  "status": "ACTIVE_RESEARCH_NEW_LINEAGE_PREFLIGHT_NO_EXTERNAL_CONTACT_SYNTHETIC_MARKET_READY_NOT_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
   "bootstrap_protocol": "v3/historical_all_market/governance/HANDOFF_BOOTSTRAP_PROTOCOL_v1.md",
   "artifact_pointer_registry": "v3/historical_all_market/governance/ARTIFACT_POINTER_REGISTRY_KEIRIN_v1.json",
@@ -25,11 +25,10 @@
     "external_provider_contact": "PROHIBITED_UNLESS_OWNER_LATER_EXPLICITLY_REVERSES",
     "external_email_call_form_vendor_account_trial_purchase_contract": "PROHIBITED",
     "personal_nonpublic_research_collection": "PREFERRED_ROUTE_SUBJECT_TO_SOURCE_RULES_AND_SCIENTIFIC_PROVENANCE",
-    "false_retroactive_collection_purpose_story": "PROHIBITED",
+    "synthetic_odds_fallback": "AUTHORIZED_FOR_ENGINEERING_AND_VIRTUAL_SIMULATION_IF_REAL_ODDS_UNAVAILABLE",
+    "synthetic_odds_real_market_claim": "PROHIBITED",
     "purpose_artifact": "v3/historical_all_market/governance/PERSONAL_NONCOMMERCIAL_VIRTUAL_BANKROLL_PURPOSE_v1.md",
-    "purpose_commit": "af81917cfff8f41c7f81381fb5e5cd248acc4d13",
-    "no_contact_policy_artifact": "v3/historical_all_market/governance/NO_EXTERNAL_CONTACT_PERSONAL_RESEARCH_COLLECTION_BOUNDARY_v1.md",
-    "no_contact_policy_commit": "b57f67ba02d03a5cbff41dfe2bd2aaf77479e3c0"
+    "no_contact_policy_artifact": "v3/historical_all_market/governance/NO_EXTERNAL_CONTACT_PERSONAL_RESEARCH_COLLECTION_BOUNDARY_v1.md"
   },
   "parent_diagnostic_state": {
     "A_TOP10_B_pass_count": 0,
@@ -50,7 +49,7 @@
       "MUTABLE_LINE_PROVENANCE_REQUIRED",
       "RACE_REGIME_REQUIRED_BEFORE_LINE_MODEL",
       "PROPER_SCORING_BEFORE_ECONOMICS",
-      "FLAT100_BEFORE_KELLY_AND_PORTFOLIO",
+      "VIRTUAL_FLAT100_BEFORE_VIRTUAL_KELLY_AND_PORTFOLIO",
       "TAIL_CONCENTRATION_AND_UNDERWATER_CORE_EVALUATION"
     ]
   },
@@ -59,47 +58,46 @@
     "source_transport": "v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_SOURCE_TRANSPORT_AUDIT_v1.md",
     "provider_selection_history_only": "v3/historical_all_market/governance/NEW_LINEAGE_SOURCE_PROVIDER_SELECTION_DRAFT_v1.md",
     "provider_rights_matrix": "v3/historical_all_market/governance/NEW_LINEAGE_PROVIDER_RIGHTS_MATRIX_v1.md",
-    "provider_inquiry_draft": {
-      "path": "v3/historical_all_market/governance/PROVIDER_INQUIRY_QUESTIONS_DRAFT_v1.md",
-      "send_status": "DO_NOT_SEND_UNDER_CURRENT_OWNER_POLICY"
-    }
+    "synthetic_market_boundary": "v3/historical_all_market/governance/SYNTHETIC_MARKET_ODDS_BOUNDARY_v1.md"
   },
   "source_rights_state": {
     "KEIRIN_JP_PUBLIC_PAGES": "PUBLICLY_VIEWABLE_BUT_BULK_ML_REUSE_NOT_ASSUMED_AUTHORIZED",
     "JKA_VIS": "OFFICIAL_UPSTREAM_CONFIRMED_PUBLIC_OPEN_ML_LICENSE_NOT_FOUND",
     "Team_Nave": "BENCHMARK_CONTEXT_ONLY_NO_CONTACT",
     "WINTICKET": "MODERN_OPERATIONAL_BENCHMARK_CONTEXT_ONLY_NOT_TRAINING_SOURCE",
-    "admitted_provider": null,
     "external_contact_sent": false,
     "prospective_collection_authorized": false,
     "personal_manual_collection_candidate": "ALLOWED_ONLY_WITH_TRUTHFUL_PURPOSE_MINIMAL_USE_NO_REDISTRIBUTION_NO_BYPASS_AND_PRE_PROVENANCE",
     "automated_bulk_collection": "NOT_AUTO_AUTHORIZED_BY_PERSONAL_PURPOSE_OR_PUBLIC_VISIBILITY",
     "access_control_bypass": "PROHIBITED"
   },
-  "new_lineage_schema_candidates_not_frozen": [
-    "race_regime","line_group_id","line_position","line_size","is_singleton","num_lines",
-    "line_source","line_snapshot_timestamp","line_observation_type","H",
-    "nige","makuri","sashi","mark",
-    "bank_length_m","home_straight_m","bank_cant_deg",
-    "weather","temperature_c","wind_speed_mps","wind_direction"
-  ],
   "source_independent_implementation": {
     "PRE_interface_schema": "v3/historical_all_market/new_lineage/PRE_INTERFACE_SCHEMA_DRAFT_v1.json",
     "PRE_structure_validator": "v3/historical_all_market/new_lineage/validate_pre_structure_v1.py",
     "top3_architecture_core": "v3/historical_all_market/new_lineage/top3_architecture_core_v1.py",
     "probability_object_contract": "v3/historical_all_market/new_lineage/probability_object_contract_v1.py",
     "synthetic_fixture": "v3/historical_all_market/new_lineage/fixtures/SYNTHETIC_STANDARD_PRE_v1.json",
-    "synthetic_selftest_script": "v3/historical_all_market/new_lineage/synthetic_selftest_v1.py",
-    "synthetic_selftest_receipt": {
+    "synthetic_core_selftest": {
       "path": "v3/historical_all_market/governance/NEW_LINEAGE_SYNTHETIC_CORE_SELFTEST_RECEIPT_v1.json",
       "status": "PASS_SYNTHETIC_ONLY_NO_PREDICTIVE_EVIDENCE"
+    },
+    "synthetic_market_odds": {
+      "path": "v3/historical_all_market/new_lineage/synthetic_market_odds_v1.py",
+      "commit": "3fdd5576b3a2647a3c9d6d61f4d31090d565f0a7",
+      "boundary": "v3/historical_all_market/governance/SYNTHETIC_MARKET_ODDS_BOUNDARY_v1.md",
+      "boundary_commit": "3945b2b1b1b1cc65470b1b7881b61789b6235264",
+      "selftest": "v3/historical_all_market/new_lineage/synthetic_market_odds_selftest_v1.py",
+      "selftest_receipt": "v3/historical_all_market/governance/SYNTHETIC_MARKET_ODDS_SELFTEST_RECEIPT_v1.json",
+      "selftest_status": "PASS_SYNTHETIC_ENGINEERING_ONLY",
+      "price_object_type": "SYNTHETIC_MARKET_SIMULATION_ONLY",
+      "real_market_evidence": false
     }
   },
   "provisional_architecture_ablation_not_frozen": [
     {"id":"C0","name":"FROZEN_CURRENT_PL_CONTROL"},
     {"id":"C1","name":"LINE_AUGMENTED_PL_SAME_PL_ORDER_GENERATOR"},
     {"id":"N1","name":"LINE_CONDITIONAL_TOP3","definition":"P1(i|X)*P2(j|i,X)*P3(k|i,j,X)"},
-    {"id":"N2","name":"DECISION_TIME_MARKET_RESIDUAL_TOP3","status":"DEFER_UNTIL_ACTIONABLE_MARKET_TRANSPORT_PROVEN"},
+    {"id":"N2","name":"DECISION_TIME_MARKET_RESIDUAL_TOP3","status":"DEFER_REAL_MARKET_CLAIM_UNTIL_ACTIONABLE_REAL_MARKET_TRANSPORT_PROVEN_SYNTHETIC_CAN_TEST_PIPELINE_ONLY"},
     {"id":"N3","name":"INITIATIVE_MIXTURE","status":"DEFER_UNTIL_N1_EVIDENCE"}
   ],
   "probability_object_contract": {
@@ -109,8 +107,9 @@
     "2shatan_mass": 1,
     "2shahuku_mass": 1,
     "wide_event_mass": 3,
+    "wide_synthetic_quote_shape_mass": 1,
+    "wide_quote_shape_is_event_probability": false,
     "frame_markets": "DETERMINISTIC_AGGREGATION_FROM_TOP2_WITH_RACE_CARD_CAR_TO_FRAME_MAPPING",
-    "same_frame_zorome_supported": true,
     "lower_envelope_is_distribution": false
   },
   "validation_candidate": {
@@ -120,6 +119,7 @@
     "architecture_selected_by_ROI": false,
     "first_economic_test": "VIRTUAL_FLAT100_MAX_ONE_ELEMENTARY_TICKET_PER_RACE_CANDIDATE",
     "all_economic_metrics": "SIMULATION_ONLY",
+    "synthetic_market_results": "ENGINEERING_AND_STRESS_EVIDENCE_ONLY_NOT_REAL_MARKET_PROMOTION_EVIDENCE",
     "kelly": "VIRTUAL_SECONDARY_AFTER_COHERENT_CALIBRATION",
     "portfolio_optimizer": "VIRTUAL_DEFERRED"
   },
@@ -137,13 +137,13 @@
     "staged_5000_PRE_training_eligibility": false,
     "NEXTGEN5000_auto_admission": "PROHIBITED"
   },
-  "next_gate": "NO_CONTACT_PERSONAL_DATA_ROUTE_PLUS_UPDATED_INDEPENDENT_AUDIT",
+  "next_gate": "NO_CONTACT_PERSONAL_DATA_ROUTE_PLUS_UPDATED_INDEPENDENT_AUDIT_WITH_SYNTHETIC_MARKET_ENGINEERING_IN_PARALLEL",
   "next_exact_actions": [
     "Do not contact any external provider under current Owner policy.",
-    "Audit a truthful personal/noncommercial/nonpublic collection route using publicly available information without access-control or anti-bot bypass and without assuming public visibility authorizes bulk crawling.",
-    "Prefer existing lawfully-held artifacts and manual/minimal structured collection with source/timestamp provenance where scientifically sufficient.",
-    "Continue source-independent implementation and independent architecture audit while no-contact data route is evaluated.",
-    "Treat all bankroll/ROI/Kelly/portfolio analysis as virtual simulation only.",
+    "Continue personal/noncommercial PRE-data route audit with no bypass and strict provenance.",
+    "Use synthetic odds only to remove price-pipeline engineering blockers and stress-test virtual BUY/risk logic.",
+    "Do not use synthetic ROI as evidence of real keirin market edge or to select an architecture by profitability.",
+    "Continue source-independent C0/C1/N1 implementation and updated independent architecture audit.",
     "Do not open new untouched outcomes until schema, source route, architecture and validation protocol are frozen after independent audit."
   ],
   "hard_prohibitions": [
@@ -155,8 +155,8 @@
     "NO_UNAUTHORIZED_NETWORK_COLLECTION",
     "NO_BULK_SCRAPING_OR_ACCESS_CONTROL_RATE_LIMIT_CAPTCHA_WAF_BYPASS",
     "NO_EXTERNAL_PROVIDER_CONTACT_ACCOUNT_TRIAL_PURCHASE_OR_CONTRACT",
-    "NO_FALSE_RETROSPECTIVE_PURPOSE_CHARACTERIZATION",
     "NO_REAL_MONEY_WAGERING_OR_REAL_WORLD_PROFIT_OPERATION_IN_PROJECT_SCOPE",
+    "NO_SYNTHETIC_MARKET_RESULT_AS_REAL_MARKET_EDGE_EVIDENCE",
     "NO_REVIEWER_NUMERIC_CLAIM_AS_THRESHOLD_WITHOUT_EXACT_PROVENANCE",
     "NO_FINAL_FREEZE_BEFORE_UPDATED_INDEPENDENT_AUDIT"
   ]
