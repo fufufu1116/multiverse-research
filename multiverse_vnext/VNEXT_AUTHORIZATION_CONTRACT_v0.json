@@ -1,0 +1,112 @@
+{
+  "record": "VNEXT_AUTHORIZATION_CONTRACT_v0",
+  "status": "WORKING_NORMATIVE_CANDIDATE_NOT_ACCEPTED",
+  "purpose": "Fail-closed authorization contract between Control Plane policy and every Execution/Connection adapter that can cause a side effect.",
+  "authorization_decision": {
+    "required_fields": [
+      "authorization_decision_id",
+      "policy_generation",
+      "policy_digest",
+      "actor_role",
+      "actor_instance",
+      "operation",
+      "target",
+      "permission_class_requested",
+      "permission_ceiling",
+      "scope",
+      "data_exposure_scope",
+      "issued_at",
+      "expires_at",
+      "grant_ref",
+      "owner_gate_ref",
+      "revocation_generation_seen",
+      "safe_mode_generation_seen",
+      "decision",
+      "reason_codes",
+      "evidence_refs"
+    ],
+    "decision_values": ["ALLOW", "DENY"],
+    "unknown_or_missing_field_behavior": "DENY_FAIL_CLOSED"
+  },
+  "permission_classes": {
+    "P0_READ_PUBLIC_OR_CANONICAL": "routine permitted reads within declared data exposure scope",
+    "P1_REVERSIBLE_INTERNAL_WRITE": "branch/draft/noncanonical reversible writes with receipts",
+    "P2_EXTERNAL_OR_SHARED_WRITE": "external communication or shared-state mutation",
+    "P3_MATERIAL_OPERATION": "material architecture/security/data-lifecycle/production operation",
+    "P4_OWNER_GATE_REQUIRED": "protected data, gated spend, constitutional or major irreversible/external commitment operations",
+    "P5_PROHIBITED": "forbidden regardless of autonomy or grant"
+  },
+  "deny_precedence_high_to_low": [
+    "P5_PROHIBITION",
+    "EMERGENCY_SAFE_MODE_OR_FREEZE",
+    "REVOCATION",
+    "MISSING_REQUIRED_OWNER_GATE",
+    "STALE_OR_INVALID_POLICY",
+    "EXPIRED_OR_INVALID_GRANT",
+    "PERMISSION_CEILING",
+    "SCOPE_TARGET_OR_DATA_EXPOSURE_MISMATCH",
+    "ALLOW"
+  ],
+  "execution_must_reject_when": [
+    "authorization decision is missing",
+    "decision is not ALLOW",
+    "policy_generation or policy_digest does not match the currently accepted policy identity",
+    "authorization is expired",
+    "grant is missing where required, expired, superseded or revoked",
+    "revocation generation is stale relative to current revocation state",
+    "safe mode generation is stale relative to current safe-mode state",
+    "requested permission class exceeds permission ceiling",
+    "operation or target is outside authorized scope",
+    "data exposure exceeds authorized data_exposure_scope",
+    "P4 operation lacks the exact valid Owner Gate reference",
+    "operation is P5_PROHIBITED",
+    "adapter attempts to downgrade the operation's permission classification to fit a grant",
+    "any required fact is UNKNOWN, contradictory or cannot be verified"
+  ],
+  "self_grant_rules": {
+    "executor_may_mint_or_elevate_own_grant": false,
+    "requester_may_raise_own_permission_ceiling": false,
+    "adapter_may_reclassify_operation_to_lower_permission": false,
+    "policy_change_requires_self_evolution_material_review": true
+  },
+  "safe_mode_rules": {
+    "safe_mode_overrides_existing_grants": true,
+    "default_during_safe_mode": "DENY_NONESSENTIAL_SIDE_EFFECTS",
+    "allowed_classes_by_default": [
+      "canonical read",
+      "recovery read/verification",
+      "audit/evidence preservation",
+      "reversible containment explicitly authorized by safe-mode policy"
+    ],
+    "safe_mode_exit_requires_auditable_state_transition": true
+  },
+  "revocation_rules": {
+    "revocation_overrides_existing_grants": true,
+    "newer_revocation_generation_invalidates_stale_authorization_decisions": true,
+    "recheck_required_immediately_before_material_side_effect": true
+  },
+  "owner_gate_rules": {
+    "owner_gate_is_operation_and_scope_specific": true,
+    "owner_gate_is_not_blanket_permission": true,
+    "missing_or_mismatched_owner_gate": "DENY",
+    "owner_gate_does_not_override_P5": true
+  },
+  "receipt_requirements": {
+    "side_effect_receipt_required": true,
+    "fields": [
+      "actor/role",
+      "authorization_decision_id",
+      "policy_generation",
+      "operation",
+      "target",
+      "preconditions",
+      "result",
+      "provenance",
+      "rollback_pointer_if_applicable"
+    ]
+  },
+  "autonomy_rule": "L0-L5 changes orchestration freedom only inside the permission envelope; autonomy never widens permission ceiling or overrides deny precedence.",
+  "adapter_rule": "Every side-effecting provider/tool adapter MUST enforce this contract or be classified nonconforming and unavailable for governed execution.",
+  "failure_rule": "Missing/stale/out-of-scope/revoked/unknown authorization state MUST reject rather than guess or continue.",
+  "lab_finding_addressed": "M2_PERMISSION_ENFORCEMENT_CONTRACT"
+}
