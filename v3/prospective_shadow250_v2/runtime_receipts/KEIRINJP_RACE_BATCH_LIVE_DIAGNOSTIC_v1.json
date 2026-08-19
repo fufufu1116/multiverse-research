@@ -1,0 +1,22 @@
+{
+  "batch_git_blob": "f360a4ff335a99f315e6343c4dbc04b446e033ad",
+  "error_message": "QUARANTINE_FAIL_CLOSED frozen supplement parse: Halt: QUARANTINE_FAIL_CLOSED update timestamp",
+  "error_type": "FailClosed",
+  "generated_utc": "2026-08-19T00:01:28.512911+00:00",
+  "holdout_accessed": false,
+  "predictive_values_persisted": false,
+  "record": "KEIRINJP_RACE_BATCH_LIVE_DIAGNOSTIC_v1",
+  "result_payout_price_accessed": false,
+  "scientific_trial_consumed": false,
+  "shadow_screen_consumed": false,
+  "source_validation_only": true,
+  "status": "FAIL_CLOSED",
+  "traceback_tail": [
+    "Traceback (most recent call last):",
+    "  File \"<stdin>\", line 19, in <module>",
+    "  File \"/home/runner/work/multiverse-research/multiverse-research/v3/prospective_shadow250_v2/keirinjp_race_batch_identity_supplement_v1.py\", line 105, in resolve_race",
+    "    except Exception as ex: raise FailClosed(f'QUARANTINE_FAIL_CLOSED frozen supplement parse: {type(ex).__name__}: {ex}') from None",
+    "                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "batch.FailClosed: QUARANTINE_FAIL_CLOSED frozen supplement parse: Halt: QUARANTINE_FAIL_CLOSED update timestamp"
+  ]
+}
