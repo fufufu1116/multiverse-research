@@ -1,0 +1,51 @@
+{
+  "record": "NEW_LINEAGE_SYNTHETIC_CORE_SELFTEST_RECEIPT_v1",
+  "date_jst": "2026-08-19",
+  "status": "PASS_SYNTHETIC_ONLY",
+  "scientific_role": "IMPLEMENTATION_PREFLIGHT_NOT_MODEL_EVIDENCE",
+  "real_race_data_used": false,
+  "result_used": false,
+  "payout_used": false,
+  "holdout_used": false,
+  "cars": 5,
+  "ordered_top3_support_expected": 60,
+  "tests": {
+    "PL_core": {
+      "ordered_top3_support": 60,
+      "ordered_top3_mass": 0.9999999999999999,
+      "3renhuku_mass": 0.9999999999999999,
+      "2shatan_mass": 1.0,
+      "2shahuku_mass": 1.0,
+      "wide_event_mass": 3.0,
+      "2wakutan_mass_with_synthetic_frame_map": 1.0,
+      "2wakuhuku_mass_with_synthetic_frame_map": 1.0,
+      "pass": true
+    },
+    "N1_chain_core": {
+      "ordered_top3_support": 60,
+      "ordered_top3_mass": 0.9999999999999999,
+      "3renhuku_mass": 0.9999999999999999,
+      "2shatan_mass": 0.9999999999999999,
+      "2shahuku_mass": 0.9999999999999999,
+      "wide_event_mass": 3.0,
+      "2wakutan_mass_with_synthetic_frame_map": 0.9999999999999999,
+      "2wakuhuku_mass_with_synthetic_frame_map": 0.9999999999999999,
+      "pass": true
+    }
+  },
+  "code": {
+    "top3_core_commit": "2ebfe605665232941ae53ec598607a15f6e0f88f",
+    "probability_contract_latest_commit": "7528981977302cd187cde2814cf40d08a234d8cc",
+    "synthetic_test_script_commit": "dd85b2e0f2c1bc729e9b25ff0b90d90e94aceac7"
+  },
+  "interpretation": [
+    "Exact top-3 enumeration and chain-rule normalization behave coherently on synthetic inputs.",
+    "Wide overlapping-event mass equals 3 as required.",
+    "Frame markets can be deterministically aggregated from ordered top-2 probabilities including same-frame outcomes when supplied a race-card car-to-frame map.",
+    "This receipt does not show predictive accuracy, calibration, economic edge, provider eligibility or live transportability."
+  ],
+  "protected_state": {
+    "current_DEV2000_C": "UNTOUCHED_FOR_NEW_LINEAGE",
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
