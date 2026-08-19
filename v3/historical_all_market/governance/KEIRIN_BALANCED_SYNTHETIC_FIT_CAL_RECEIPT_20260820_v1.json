@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_BALANCED_SYNTHETIC_FIT_CAL_RECEIPT_20260820_v1",
+  "status": "WORKING_SYNTHETIC_TRAIN_CAL_EVIDENCE_PENDING_LAB_RECHECK_NATIVE_CONFORMANCE_AND_HOLDOUT",
+  "source_branch_head_before_receipt": "02bb446424ef8114ffd60c2ae37da4a34e29dedb",
+  "source_artifact_blobs": {
+    "prereg": "e4131621bf770068ec9d0c44da16356f64027e80",
+    "calibration_validator": "bbcd6159d1e44f6ef301cfe635962e28313c1369",
+    "stress_grid": "c877d2982a2708d4aeb5f8793381a4abd2b07eac",
+    "balanced_sampler": "458c1603ebf5b73836ac0dc798519f3a87288661",
+    "fresh_holdout_extensions": "63776de158ce54bd0d96975aafd21f8c76ceb6ce",
+    "fit_cal_harness": "336faa66311394d07c03548a179cac6ab31fcec7"
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count": 0,
+    "new_untouched_validation_opened": false,
+    "RESULT_PAYOUT_access": "UNAUTHORIZED"
+  },
+  "runtime_assurance": {
+    "method": "CORE_LOCAL_RECONSTRUCTION_OF_CURRENT_SOURCE_LOGIC",
+    "native_clean_checkout": "NOT_EXECUTED",
+    "native_clean_checkout_attempt": "FAILED_ENVIRONMENT_DNS_COULD_NOT_RESOLVE_GITHUB_COM",
+    "claim_limit": "This receipt is working synthetic evidence only and does not satisfy Lab's required native/exact-byte conformance gate for promotion."
+  },
+  "sample_control": {
+    "balanced_dimensions": "race_band x line_shape",
+    "train_seeds": [73101, 73102],
+    "cal_seed": 73201,
+    "repeats_per_stratum": 12,
+    "train_races": 216,
+    "cal_races": 108,
+    "train_count_per_each_of_9_strata": 24,
+    "cal_count_per_each_of_9_strata": 12,
+    "population_frequency_claim": false
+  },
+  "fit_result": {
+    "C0_train_mean_log_loss": 4.74819358188218,
+    "C1_train_mean_log_loss": 4.7480813990827455,
+    "N1_train_mean_log_loss": 4.745638003602102,
+    "C1_train_params": {
+      "line_mean_coef": 0.0,
+      "position_scale": 0.5,
+      "size_coef": 0.0
+    },
+    "N1_conditional_train_params": {
+      "same_line_coef": 0.1,
+      "follower_coef": 0.1,
+      "chain_coef": 0.2
+    }
+  },
+  "cal_and_freeze_result": {
+    "C0_cal_mean_log_loss": 4.850648751182955,
+    "C1_cal_shrinkage": 0.75,
+    "C1_cal_mean_log_loss": 4.85126538411032,
+    "N1_cal_shrinkage": 0.75,
+    "N1_cal_mean_log_loss": 4.849810379032809,
+    "coefficients_frozen_for_next_review": true
+  },
+  "interpretation": [
+    "N1 has only a very small synthetic CAL log-loss advantage over C0 under this preregistered TRAIN/CAL design.",
+    "C1 is slightly worse than C0 on CAL after train-only fitting and CAL shrinkage selection.",
+    "These differences are not architecture promotion evidence and are not real-keirin edge evidence.",
+    "No coefficient may be retuned from the locked W0-W4 diagnostic scenarios or the fresh Lab-prescribed holdout extensions."
+  ],
+  "synthetic_holdout": {
+    "legacy_W0_W4_status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_USED_FOR_NEW_TUNING",
+    "fresh_signed_context_reversal": "PREREGISTERED_NOT_EXECUTED",
+    "fresh_alternate_conditional_cross_line_anti_chain": "PREREGISTERED_NOT_EXECUTED",
+    "holdout_execution": "NOT_EXECUTED",
+    "post_holdout_retuning": "PROHIBITED"
+  },
+  "promotion": {
+    "C1": "PROHIBITED_PENDING_LAB_RECHECK_NATIVE_CONFORMANCE_AND_HOLDOUT",
+    "N1": "PROHIBITED_PENDING_LAB_RECHECK_NATIVE_CONFORMANCE_AND_HOLDOUT",
+    "untouched_real_validation_may_open": false
+  },
+  "next_exact_action": "LAB_RECHECK_FIXES_AND_PREREG_DESIGN_BEFORE_FRESH_SYNTHETIC_HOLDOUT"
+}
