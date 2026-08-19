@@ -87,14 +87,16 @@ def parse_3rentan(root):
         sp=trs[0].xpath('.//span[contains(@class,"number")]')
         if len(sp)!=1 or not compact(node_text(sp[0])).isdigit(): raise FailClosed('3rentan first-car header')
         first=int(compact(node_text(sp[0])))
-        thirds=[int(compact(node_text(x))) for x in trs[1].xpath('./th') if compact(node_text(x)).isdigit()]
+        # Kdreams matrix semantics: column header = 2nd-place car; row header = 3rd-place car.
+        # This orientation is independently supported by the legacy DEV1000 semantic correction.
+        seconds=[int(compact(node_text(x))) for x in trs[1].xpath('./th') if compact(node_text(x)).isdigit()]
         for tr in trs[3:]:
             ths=tr.xpath('./th')
             if not ths: continue
-            ss=compact(node_text(ths[0]))
-            if not ss.isdigit(): continue
-            second=int(ss)
-            for third,td in zip(thirds,tr.xpath('./td')[:len(thirds)]):
+            rr=compact(node_text(ths[0]))
+            if not rr.isdigit(): continue
+            third=int(rr)
+            for second,td in zip(seconds,tr.xpath('./td')[:len(seconds)]):
                 v=fcell(td)
                 if v is None: continue
                 key=canon_triple(first,second,third,True)
@@ -201,6 +203,7 @@ def parse_payload(payload:bytes, expected_raw_sha256:str|None=None, expected_n_c
     if expected_raw_sha256 and dig!=expected_raw_sha256: raise FailClosed(f"raw SHA mismatch expected={expected_raw_sha256} observed={dig}")
     try: root=html.fromstring(payload)
     except Exception as e: raise FailClosed(f"HTML parse {e}") from e
+    if '確定オッズ' not in node_text(root): raise FailClosed('confirmed closing-odds marker missing')
     availability={m:market_presence(root,m) for m in MARKETS}
     sold=[m for m in MARKETS if availability[m]]
     if not sold: raise FailClosed('no sold markets detected')
