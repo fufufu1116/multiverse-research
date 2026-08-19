@@ -3,11 +3,11 @@
   "project": "Multiverse Hybrid v3.0 — All-Market Historical Economic Track",
   "audit_parent_blob": "af11fac1ab7115ae376f2109141669a1ef088408",
   "audit_verdict": "CONDITIONAL_APPROVE",
-  "status": "PASS_ALLM01_ALLM02_PENDING_ALLM03_5CAR",
+  "status": "PASS_REMEDIATION_CANDIDATE_PENDING_GEMINI_REAUDIT",
   "issue_status": {
     "ISSUE-ALLM-01": "RESOLVED_CANDIDATE_REQUIRES_REAUDIT",
     "ISSUE-ALLM-02": "RESOLVED_CANDIDATE_REQUIRES_REAUDIT",
-    "ISSUE-ALLM-03": "PENDING_5CAR_CANARY"
+    "ISSUE-ALLM-03": "FRESH_OFFICIAL_5CAR_CANARY_PASS_ARCHIVED_SHA_IDENTITY_NOT_REESTABLISHED_REQUIRES_GEMINI_DECISION"
   },
   "price_recovery": {
     "path": "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py",
@@ -37,7 +37,7 @@
     "operational_stage": "POST_RULE_FREEZE_SETTLEMENT_ONLY",
     "bulk_operational_use_now": "PROHIBITED"
   },
-  "exact_raw_regression_tests": [
+  "exact_archived_raw_regression_tests": [
     {
       "field_size": 7,
       "race_id": "3820260410010003",
@@ -57,6 +57,24 @@
       "status": "PASS"
     }
   ],
+  "fresh_official_five_car_test": {
+    "receipt_path": "v3/historical_all_market/runtime_receipts/ALL_MARKET_STAGE0_FRESH_OFFICIAL_5CAR_PRICE_CANARY_v1.json",
+    "receipt_git_blob": "44afe76597e72cccbc7d3db15c31137074c3b1c7",
+    "race_id": "2320260324030005",
+    "field_size": 5,
+    "official_source": "https://keirin.kdreams.jp/toride/racedetail/2320260324030005/?pageType=showResult",
+    "fresh_raw_sha256": "be998473080ed54b66ef5b6d469af385e47d18507ae4d0bdaf11b146190a3163",
+    "recorded_archived_raw_sha256": "7ec10e859838091a3bec6d51711cacde36607cef2771eb2dfc3d9872cfffe9d0",
+    "fresh_matches_archived_raw_sha256": false,
+    "interpretation": "CURRENT_OFFICIAL_HISTORICAL_PAGE_STRUCTURE_CANARY_ONLY_NOT_ARCHIVED_RAW_IDENTITY_PROOF",
+    "price_counts": {"3rentan":60,"2shatan":20,"3renhuku":10,"2shahuku":10,"wide":10},
+    "frame_markets_present": false,
+    "result_fields_emitted": false,
+    "settlement_fields_emitted": false,
+    "ev_computed": false,
+    "roi_computed": false,
+    "status": "PASS"
+  },
   "selection_bias_synthetic": {
     "source": "7-car exact raw with Wide content/status removed only for synthetic structural test",
     "result": "PASS",
@@ -75,13 +93,6 @@
     "corrected_semantics": "column_header_is_second_place_and_row_header_is_third_place",
     "classification": "TICKET_IDENTITY_REPAIR_NOT_STRATEGY_TUNING",
     "requires_gemini_readjudication": true
-  },
-  "five_car_gate": {
-    "canonical_race_id": "2320260324030005",
-    "field_size": 5,
-    "legacy_e1_canary_role": "5_CAR",
-    "recorded_archived_raw_sha256": "7ec10e859838091a3bec6d51711cacde36607cef2771eb2dfc3d9872cfffe9d0",
-    "current_status": "PENDING_NEW_EXACT_PRICE_PARSER_CANARY"
   },
   "scientific_state": {
     "bulk_2000_price_recovery_started": false,
