@@ -1,0 +1,66 @@
+{
+  "record": "ALL_MARKET_STAGE0_PRICE_PARSER_REGRESSION_v3",
+  "status": "PASS",
+  "price_parser": {
+    "path": "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py",
+    "git_blob": "f94a08a3ea7c0a4f110dc0df82433eecc25b0cf8",
+    "sha256_tested_source": "aa2b533c192d176680c30d92a7c66dd5681cc24f53eeacf232aaef062a3a1ca1"
+  },
+  "invariants": {
+    "market_presence_is_independent": true,
+    "active_car_set_is_inferred_from_sold_car_ticket_keys": true,
+    "all_sold_car_markets_must_share_same_active_car_set": true,
+    "catalog_counts_must_be_complete_for_inferred_active_car_set": true,
+    "nominal_field_size_not_required_for_bulk": true,
+    "optional_expected_n_cars_is_canary_only_external_assertion": true,
+    "wide_interval_preserved": true,
+    "refund_result_payout_output": false
+  },
+  "regressions": [
+    {
+      "race_id": "3820260410010003",
+      "raw_sha256": "24551faf351c8216b3d4ceda249b9a369ecdae62f0baf87dcfe91f979ac46285",
+      "active_car_numbers": [1,2,3,4,5,6,7],
+      "counts": {"3rentan":210,"2shatan":42,"3renhuku":35,"2shahuku":21,"wide":21},
+      "3rentan_ticket_identity": {"ticket":"1-2-3","odds":3.4},
+      "status": "PASS"
+    },
+    {
+      "race_id": "2620260409010001",
+      "raw_sha256": "fb83738b6d2e88f6b56bb6dc5647c1f8803932c3c2709d8c93fb7bfcee987c54",
+      "active_car_numbers": [1,2,3,4,5,6,7,8,9],
+      "counts": {"3rentan":504,"2shatan":72,"3renhuku":84,"2shahuku":36,"2wakutan":33,"2wakuhuku":18,"wide":36},
+      "3rentan_ticket_identity": {"ticket":"2-5-7","odds":38.4},
+      "status": "PASS"
+    },
+    {
+      "canonical_url": "https://keirin.kdreams.jp/toyohashi/racedetail/4520260304010005/",
+      "raw_sha256": "75aae0b328db67a5bec995e7eec25ecf63e5797e35f83ba12c689972c74aeb35",
+      "active_car_numbers": [1,2,3,4,6,7],
+      "active_car_count": 6,
+      "counts": {"3rentan":120,"2shatan":30,"3renhuku":20,"2shahuku":15,"wide":15},
+      "rowspan_state_bug_fixed": true,
+      "status": "PASS"
+    }
+  ],
+  "synthetic_tests": {
+    "missing_wide": {
+      "whole_race_rejected": false,
+      "remaining_sold_markets": ["3rentan","2shatan","3renhuku","2shahuku"],
+      "active_car_numbers": [1,2,3,4,5,6,7],
+      "status": "PASS"
+    },
+    "one_numeric_price_removed": {
+      "status": "PASS_FAIL_CLOSED",
+      "reason": "incomplete numeric catalog detected against inferred active-car combinatorics"
+    }
+  },
+  "scientific_state": {
+    "bulk_2000_started": false,
+    "stage1_started": false,
+    "ev_computed": false,
+    "roi_computed": false,
+    "all_market_track_trial_count": 0,
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
