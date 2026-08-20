@@ -1,0 +1,48 @@
+name: Keirin Canonical Pause Rewrite Plan v1 CI
+
+on:
+  push:
+    branches:
+      - agent/keirin-canonical-pause-rewrite-plan-v1
+    paths:
+      - 'governance/KEIRIN_CANONICAL_PAUSE_STATE_REWRITE_PLAN_CANDIDATE_20260821_v1.json'
+      - 'tools/keirin_canonical_pause_rewrite_plan_selftest_v1.py'
+      - '.github/workflows/keirin-canonical-pause-rewrite-plan-v1-ci.yml'
+  pull_request:
+    paths:
+      - 'governance/KEIRIN_CANONICAL_PAUSE_STATE_REWRITE_PLAN_CANDIDATE_20260821_v1.json'
+      - 'tools/keirin_canonical_pause_rewrite_plan_selftest_v1.py'
+      - '.github/workflows/keirin-canonical-pause-rewrite-plan-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rewrite-plan-v1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact plan head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Verify exact checkout
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: Run fail-closed rewrite-plan selftest
+        run: python tools/keirin_canonical_pause_rewrite_plan_selftest_v1.py
+      - name: Protected boundary terminal
+        run: |
+          echo 'KEIRIN_CANONICAL_PAUSE_REWRITE_PLAN_V1_CI_PASS'
+          echo 'ACTUAL_LEGACY_CURRENT_STATE_MODIFIED=false'
+          echo 'SCIENTIFIC_EXECUTION_PERFORMED=false'
+          echo 'SCIENTIFIC_RESUME_ALLOWED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'PR15_QUARANTINED_METRICS_INSPECTED=false'
