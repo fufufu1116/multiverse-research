@@ -5,7 +5,7 @@ import argparse
 import json
 import string
 
-from broad_stress_fast_kernel_v1 import score_arrays, stress_truth_array
+from broad_stress_fast_kernel_v1 import score_arrays
 from c0_c1_n1_broad_assumption_range_stress_v1 import (
     BANKS,
     MODELS,
@@ -17,6 +17,7 @@ from c0_c1_n1_broad_assumption_range_stress_v1 import (
     _cached_predictions,
     _line_race,
 )
+from continuous_assumption_surface_truth_v1 import continuous_surface_truth_array
 from continuous_assumption_surface_v1 import (
     POINT_COUNT,
     canonical_points_sha256,
@@ -94,7 +95,7 @@ def evaluate_surface_shard(
                     for rho in RHOS:
                         race = replace(rho_races[rho], bank_length_m=bank, wind_speed_mps=wind)
                         for point_index in point_indices:
-                            truth = stress_truth_array(race, configs[point_index])
+                            truth = continuous_surface_truth_array(race, configs[point_index])
                             if abs(float(truth.sum()) - 1.0) > 1e-10:
                                 raise AssertionError(
                                     f"truth_mass:{pre_world}:{line_id}:{race_index}:{bank}:{wind}:{rho}:{point_index}"
@@ -149,6 +150,10 @@ def evaluate_surface_shard(
         "canonical_64_point_surface_sha256": canonical_points_sha256(),
         "cell_count": len(cells),
         "scenario_race_evaluations": len(cells) * races_per_context,
+        "common_random_numbers": {
+            "enabled": True,
+            "shock_draw_shared_across_all_64_truth_points_for_same_race_and_car": True,
+        },
         "cells": cells,
         "claim_boundary": "Synthetic interior sensitivity/boundary mapping only; no real-world density, edge, ROI, causal effect, model promotion or equivalence may be inferred.",
         "scientific_firewall": {
