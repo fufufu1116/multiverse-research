@@ -1,0 +1,52 @@
+name: Keirin Post-Foundation Pause Truth Sync v1 CI
+
+on:
+  push:
+    branches:
+      - agent/keirin-post-foundation-pause-truth-sync-v1
+    paths:
+      - 'governance/KEIRIN_POST_FOUNDATION_PAUSE_SYNC_CANDIDATE_20260821_v1.json'
+      - 'tools/keirin_post_foundation_pause_sync_selftest_v1.py'
+      - '.github/workflows/keirin-post-foundation-pause-sync-v1-ci.yml'
+      - 'KEIRIN_NOW.md'
+      - 'v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json'
+  pull_request:
+    paths:
+      - 'governance/KEIRIN_POST_FOUNDATION_PAUSE_SYNC_CANDIDATE_20260821_v1.json'
+      - 'tools/keirin_post_foundation_pause_sync_selftest_v1.py'
+      - '.github/workflows/keirin-post-foundation-pause-sync-v1-ci.yml'
+      - 'KEIRIN_NOW.md'
+      - 'v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pause-truth-sync-v1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Verify exact checkout
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: Run pause truth-sync selftest
+        run: python tools/keirin_post_foundation_pause_sync_selftest_v1.py
+      - name: Protected boundary terminal
+        run: |
+          echo 'KEIRIN_POST_FOUNDATION_PAUSE_SYNC_V1_CI_PASS'
+          echo 'FOUNDATION_ACCEPTED=true'
+          echo 'SCIENTIFIC_EXECUTION_PERFORMED=false'
+          echo 'SCIENTIFIC_RESUME_ALLOWED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'PR15_QUARANTINED_METRICS_INSPECTED=false'
