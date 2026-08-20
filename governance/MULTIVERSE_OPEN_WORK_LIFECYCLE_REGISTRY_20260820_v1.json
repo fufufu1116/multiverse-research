@@ -1,0 +1,148 @@
+{
+  "record": "MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v1",
+  "status": "DRAFT_NONCANONICAL_AUDIT_EVIDENCE",
+  "purpose": "Provide one machine-readable view of open work so OPEN, ACTIVE, REVIEW_REQUESTED, REVIEW_PASSED, ACCEPTANCE_PENDING, PAUSED, SUPERSEDED and EXPIRED are not conflated.",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main_observed": "819afb723c8f14000757b2e53b6664d71ab01227",
+  "owner_global_keirin_directive": "PAUSED_FOR_MULTIVERSE_ZERO_BASE_FOUNDATION_AUDIT",
+  "registry_is_authoritative": false,
+  "authority_rule": "This registry is a derived audit view. Exact PR heads, Git history, canonical state files and review receipts/comments remain the underlying evidence. It must not become a second canonical truth source.",
+  "state_vocabulary": {
+    "ACTIVE": "work may proceed within current gate",
+    "PAUSED": "work preserved but must not execute scientific next steps",
+    "LAB_PASS": "Lab review passed exact reviewed head; not equivalent to merge/acceptance",
+    "ACCEPTANCE_PENDING": "review may have passed but canonical promotion/merge is not established",
+    "COLLECTION_CLOSED": "time-bounded collection attempt ended and should not be resumed as if live",
+    "SUPERSEDED_CANDIDATE": "later work or changed purpose likely makes this non-primary; closure decision still required",
+    "EXPIRED_CANDIDATE": "time-specific purpose has passed; do not treat as active without explicit reauthorization",
+    "UNREVIEWED": "no final review result located",
+    "QUARANTINED": "output exists but is not admitted for research decisions",
+    "UNKNOWN_REVIEW_REQUIRED": "insufficient evidence was read during this audit to safely classify further"
+  },
+  "open_items": [
+    {
+      "pr": 1,
+      "title": "Automation/security v3.3 v2",
+      "domain": "MULTIVERSE_LEGACY_AUTOMATION_SECURITY",
+      "head": "11f5a24325547e4c11fdf205c3b07b2cae45fd69",
+      "draft": false,
+      "classification": ["UNKNOWN_REVIEW_REQUIRED", "LEGACY_OPEN_ITEM"],
+      "review_state": "NOT_AUDITED_IN_THIS_PASS",
+      "next_action": "Inspect lineage/relevance before any close/merge action; do not infer active status merely because PR is open."
+    },
+    {
+      "pr": 4,
+      "title": "Reality calibration Batch 2 — public PRE-only anchors",
+      "domain": "KEIRIN",
+      "head": "e3d162a5de346f3169738d59ab828ac2565ebb8a",
+      "draft": true,
+      "classification": ["PAUSED", "LAB_ACCEPTED_COLLECTION_PLAN"],
+      "review_state": "EXPEDITED_COLLECTION_MAY_BEGIN_WAS_YES_BEFORE_GLOBAL_PAUSE",
+      "time_dependency": "2026-08-21 target plan",
+      "global_pause_override": true,
+      "next_action": "Do not collect during foundation pause. Re-evaluate time-window validity and usefulness on resume."
+    },
+    {
+      "pr": 9,
+      "title": "Fixed-pacer line-model routing guard v1",
+      "domain": "KEIRIN",
+      "head": "1bfaac046c66997cfe50f6b1c983b1b3b444b43a",
+      "draft": true,
+      "classification": ["LAB_PASS", "ACCEPTANCE_PENDING", "PAUSED"],
+      "review_state": "LAB_FIXED_PACER_VERDICT_PASS",
+      "review_comment_id": 5353496194,
+      "next_action": "No rerun needed during foundation audit. Route acceptance/merge only after lifecycle cleanup confirms correct gate."
+    },
+    {
+      "pr": 10,
+      "title": "Same-day live PRE smoke — Tamano 2026-08-20",
+      "domain": "KEIRIN",
+      "head": "f9885a497066484c4e167ec747915350df122615",
+      "draft": true,
+      "classification": ["COLLECTION_CLOSED", "LAB_PASS", "ZERO_ADMITTED_SAMPLE", "CLOSURE_PENDING"],
+      "review_state": "LAB_LIVE_COLLECTION_VERDICT_PASS",
+      "review_comment_id": 5353471346,
+      "time_dependency": "2026-08-20 same-day live window ended",
+      "next_action": "Do not resume collection. Preserve as access/discipline evidence and decide close/merge/archive disposition."
+    },
+    {
+      "pr": 11,
+      "title": "Same-day public PRE distributor fallback smoke — 2026-08-20",
+      "domain": "KEIRIN",
+      "head": "580e1f6574aa8071030268878043ee1fe8523057",
+      "draft": true,
+      "classification": ["UNREVIEWED", "EXPIRED_CANDIDATE", "SUPERSEDED_CANDIDATE", "PAUSED"],
+      "review_state": "LAB_REVIEW_REQUEST_FOUND_NO_FINAL_RESULT_LOCATED",
+      "time_dependency": "2026-08-20 same-day fallback purpose",
+      "next_action": "Do not execute. During lifecycle cleanup determine whether to close as expired/superseded without scientific admission."
+    },
+    {
+      "pr": 12,
+      "title": "Reality-calibrated Digital Twin empirical PRE envelope v1",
+      "domain": "KEIRIN",
+      "head": "2e070d8094abdda9138865787e5540087fa05ea3",
+      "draft": true,
+      "classification": ["LAB_PASS", "SYNTHETIC_ENGINEERING_EVIDENCE", "ACCEPTANCE_PENDING", "PAUSED"],
+      "review_state": "LAB_DT_REALITY_FINAL_VERDICT_PASS",
+      "review_comment_id": 5354457713,
+      "source_admission": "NOT_GRANTED",
+      "same_source_tuning": "CLOSED",
+      "next_action": "Do not retune on same staged source. Acceptance/merge disposition only after foundation lifecycle cleanup."
+    },
+    {
+      "pr": 13,
+      "title": "Independent official PRE realism sensor v1",
+      "domain": "KEIRIN",
+      "head": "5b9bd82d99f2e2e322c93bb1b2c79c9243e84358",
+      "draft": true,
+      "classification": ["UNREVIEWED", "PAUSED", "PROSPECTIVE_SENSOR"],
+      "review_state": "NO_PR_COMMENTS_FOUND_DURING_AUDIT",
+      "locked_window": "2026-08-20 19:15 JST through 2026-08-22 23:59:59 JST",
+      "next_action": "Do not capture during global pause. On resume decide whether remaining prospective window is still valid/useful; never backfill post-race information as PRE."
+    },
+    {
+      "pr": 14,
+      "title": "Broad assumption-range topology stress v1",
+      "domain": "KEIRIN",
+      "head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+      "draft": true,
+      "classification": ["LAB_PASS", "SYNTHETIC_ENGINEERING_EVIDENCE", "AUDITOR_NOT_RUN", "PAUSED"],
+      "review_state": "LAB_BROAD_DT_VERDICT_PASS",
+      "review_comment_id": 5355087275,
+      "exact_evaluations": 388800,
+      "next_action": "Treat as strongest completed synthetic checkpoint. No real-world promotion. Auditor/acceptance disposition after foundation repair if governance requires."
+    },
+    {
+      "pr": 15,
+      "title": "[PAUSED][KEIRIN] Continuous assumption-surface boundary map v1",
+      "domain": "KEIRIN",
+      "head": "6d10cad66cf4e6040faec547f155b8a5c9e0ea03",
+      "draft": true,
+      "classification": ["PAUSED", "QUARANTINED", "CHILD_OF_PR14"],
+      "review_state": "NO_SCIENTIFIC_VERDICT_AFTER_PAUSE",
+      "pre_pause_scientific_head": "07a1911d662c887c8edbffef2f2a9256577b3c2b",
+      "post_pause_run": 32363915537,
+      "post_pause_run_disposition": "QUARANTINED_NOT_ADMITTED",
+      "automatic_scientific_execution": "DISABLED_MANUAL_ONLY_PAUSE_STUB",
+      "next_action": "Do not inspect quarantined metrics. Foundation gate first, then decide admission/rejection without outcome-aware selection."
+    },
+    {
+      "pr": 16,
+      "title": "[MULTIVERSE] Zero-base foundation audit + Keirin safe-pause review",
+      "domain": "MULTIVERSE_CORE_AUDIT",
+      "head": "DERIVE_FROM_LIVE_PR_HEAD",
+      "draft": true,
+      "classification": ["ACTIVE", "FOUNDATION_AUDIT", "NONCANONICAL_NEXT_VERSION_CANDIDATE"],
+      "review_state": "LAB_NOT_YET_RUN_FOR_FOUNDATION_AUDIT",
+      "next_action": "Implement minimal lifecycle/state/pause repair candidate, then route exact-head Lab attack."
+    }
+  ],
+  "global_scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "UNTOUCHED_VALIDATION": "CLOSED",
+    "MODEL_PROMOTION": "PROHIBITED",
+    "REAL_MONEY_WAGERING": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE"
+}
