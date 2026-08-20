@@ -1,0 +1,173 @@
+{
+  "record": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_COMPARISON_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_FIRST_SCIENTIFIC_SENSOR_SAMPLE_AND_BEFORE_R0_R1_R2_COMPARISON",
+  "locked_at_jst": "2026-08-20T19:24:48+09:00",
+  "sensor_pr": 13,
+  "sensor_head_before_this_lock": "8142d004b3b5e2d7397ee17c264c8697553a9ee1",
+  "sensor_parent_prereg": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_PREREG_20260820_v1",
+  "sensor_quality_amendment": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_SENSOR_ADMISSION_QUALITY_AMENDMENT_20260820_v1",
+  "admitted_scientific_races_before_lock": 0,
+  "r0_r1_r2_comparisons_before_lock": 0,
+  "frozen_twin_reference": {
+    "pr": 12,
+    "reviewed_exact_head": "2e070d8094abdda9138865787e5540087fa05ea3",
+    "result_generating_exact_head": "95f5792b283e2c4b2b6fba5b7fb14ae32cb3aa19",
+    "lab_result_comment_id": 5354457713,
+    "worlds": [
+      "R0_CURRENT_SYNTHETIC",
+      "R1_EMPIRICAL_MARGINAL",
+      "R2_EMPIRICAL_JOINT"
+    ],
+    "world_selection_before_sensor_receipt_freeze": "PROHIBITED",
+    "generator_retuning_before_sensor_receipt_freeze": "PROHIBITED"
+  },
+  "purpose": "Use independently acquired prospective first-party official rider-level PRE to falsify or constrain the already-frozen R0/R1/R2 Digital Twin worlds without choosing metrics after seeing the sensor sample and without using sporting outcomes.",
+  "input_contract": {
+    "scientific_rows": "only races admitted by independent_official_pre_sensor_validator_v1 under the quality amendment",
+    "field_size": 7,
+    "raw_identity": "PROHIBITED",
+    "no_imputation": true,
+    "field_complete_rule": "A race contributes to a field-specific metric only when all seven rider rows contain that field directly from the admitted official racecard.",
+    "required_for_every_admitted_race": [
+      "rider_class",
+      "competition_score"
+    ],
+    "optional_field_complete_metrics": [
+      "style",
+      "H",
+      "B",
+      "S",
+      "nige",
+      "makuri",
+      "sashi",
+      "mark"
+    ]
+  },
+  "race_level_feature_contract": {
+    "always_when_admitted": [
+      "class_fraction_S1",
+      "class_fraction_S2",
+      "class_fraction_A1",
+      "class_fraction_A2",
+      "class_fraction_A3",
+      "score_mean",
+      "score_std_population",
+      "score_range"
+    ],
+    "when_style_complete": [
+      "style_fraction_nige",
+      "style_fraction_ryo",
+      "style_fraction_oi"
+    ],
+    "for_each_complete_numeric_tactical_field": [
+      "field_mean",
+      "field_std_population",
+      "field_zero_fraction",
+      "field_range"
+    ],
+    "forbidden": [
+      "rider_name",
+      "registration_number",
+      "race_id_as_predictor",
+      "venue_as_predictor",
+      "date_as_predictor",
+      "source_url_as_predictor",
+      "RESULT",
+      "PAYOUT",
+      "odds",
+      "post_race_information"
+    ]
+  },
+  "synthetic_reference_generation": {
+    "seed": 2026082101,
+    "races_per_world": 10000,
+    "worlds": [
+      "R0_CURRENT_SYNTHETIC",
+      "R1_EMPIRICAL_MARGINAL",
+      "R2_EMPIRICAL_JOINT"
+    ],
+    "generator_code": "frozen PR12 reviewed/result-generating implementation only; no coefficient or generator change",
+    "race_indices": "0..9999",
+    "environment_fields_not_measured_by_sensor": "excluded from realism comparison rather than inferred"
+  },
+  "univariate_distance": {
+    "minimum_real_races_per_feature_for_distance": 8,
+    "metrics": [
+      "KS_DISTANCE_EMPIRICAL_CDF",
+      "WASSERSTEIN1_NORMALIZED_BY_SYNTHETIC_IQR"
+    ],
+    "zero_iqr_policy": "If synthetic IQR is <=1e-12, report UNINFORMATIVE_CONSTANT_REFERENCE unless real values differ, in which case report HARD_SUPPORT_MISMATCH.",
+    "no_feature_weight_tuning": true
+  },
+  "small_sample_self_consistency_calibration": {
+    "purpose": "Judge real-vs-world distance against the distance that the same frozen world naturally produces for a sensor batch of the same size, rather than using arbitrary absolute thresholds.",
+    "pseudo_sensor_replicates": 200,
+    "replicate_seed": 2026082102,
+    "replicate_sample_size": "exact number of official field-complete races for that metric",
+    "sampling": "without replacement from the 10000-race frozen synthetic reference when possible",
+    "reference_comparison": "each pseudo-sensor batch versus the remaining/reference synthetic world under the identical metric",
+    "reported_quantity": "SELF_CONSISTENCY_PERCENTILE = fraction of pseudo-sensor distances >= official-sensor distance",
+    "interpretation": {
+      "below_0_01": "MATERIAL_TENSION",
+      "0_01_to_below_0_05": "TENSION",
+      "0_05_or_higher": "NOT_FALSIFIED_ON_THIS_METRIC",
+      "insufficient_sample": "INSUFFICIENT_DATA"
+    },
+    "semantics": "This is an engineering self-consistency percentile, not a classical p-value and not proof of reality equivalence."
+  },
+  "multivariate_joint_check": {
+    "minimum_admitted_races": 20,
+    "minimum_common_race_level_features": 8,
+    "standardization": "use frozen-world synthetic mean and std per feature; zero-variance features excluded before projection",
+    "projection_count": 32,
+    "projection_seed": 2026082103,
+    "projection_family": "fixed random sign vectors normalized to unit L2 norm",
+    "per_projection_metric": "WASSERSTEIN1_ON_STANDARDIZED_RACE_LEVEL_PROJECTION",
+    "aggregate": "median of 32 projection distances",
+    "self_consistency": "same 200 pseudo-sensor replicate procedure and percentile thresholds as univariate distance",
+    "if_not_enough_data": "INSUFFICIENT_DATA_NO_JOINT_VERDICT"
+  },
+  "world_level_summary": {
+    "minimum_condition_for_any_world_compatibility_label": "at least 8 admitted races with always-required class/score feature contract",
+    "primary_features": [
+      "class fractions",
+      "score_mean",
+      "score_std_population",
+      "score_range"
+    ],
+    "label_rule": {
+      "MATERIAL_TENSION": "at least two primary feature metrics have SELF_CONSISTENCY_PERCENTILE < 0.01, or a hard support mismatch occurs",
+      "TENSION": "not MATERIAL_TENSION and at least two primary feature metrics have percentile < 0.05",
+      "NOT_FALSIFIED": "minimum sample met and neither MATERIAL_TENSION nor TENSION rule fires",
+      "INSUFFICIENT_DATA": "minimum sample not met"
+    },
+    "joint_check_role": "reported separately as corroborating or conflicting evidence; it cannot silently override the preregistered primary label rule",
+    "no_single_best_world_selection": true,
+    "report_all_three_worlds": true
+  },
+  "post_receipt_rule": {
+    "freeze_sensor_receipt_before_any_generator_revision": true,
+    "if_all_worlds_show_material_tension": "preregister a new Digital Twin revision using only the frozen official sensor receipt as stated calibration/falsification evidence; do not retroactively alter R0/R1/R2",
+    "if_multiple_worlds_not_falsified": "retain uncertainty; do not select one by smallest distance on this batch alone",
+    "same_kdreams_1539_tuning": "CLOSED"
+  },
+  "claim_limits": [
+    "NOT_REAL_WORLD_EQUIVALENCE_PROOF",
+    "NOT_REAL_KEIRIN_EDGE",
+    "NOT_REAL_ROI",
+    "NOT_MODEL_PROMOTION",
+    "NOT_PROVIDER_SOURCE_ADMISSION_FOR_KDREAMS",
+    "NOT_OUTCOME_VALIDATION"
+  ],
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "ADMIT_FIRST_QUALIFYING_PROSPECTIVE_OFFICIAL_RACECARD_SAMPLE_OR_CONTINUE_APPEND_ONLY_ZERO_ADMISSION_ACCESS_OBSERVATIONS_WITHOUT_CHANGING_COMPARISON_METRICS"
+}
