@@ -1,0 +1,109 @@
+{
+  "record": "KEIRIN_DT_BROAD_ASSUMPTION_RANGE_EXACT_CI_RECEIPT_20260820_v1",
+  "status": "EXACT_HEAD_CI_SUCCESS_SYNTHETIC_ENGINEERING_EVIDENCE_ONLY",
+  "result_generating_head": "e45a61f9ef74ef4e762fa4445e05e26dbbf056cb",
+  "workflow_run_id": 32361755011,
+  "precheck_job_id": 96402624264,
+  "aggregate_job_id": 96402882273,
+  "workflow_name": "Keirin Broad Assumption-Range DT PR14",
+  "exact_head_regression_workflow": {
+    "workflow_run_id": 32361755085,
+    "conclusion": "success",
+    "meaning": "Existing PR #12 exact-head selftests and locked prior stress still pass on the PR #14 result-generating head."
+  },
+  "precheck": {
+    "conclusion": "success",
+    "seven_rider_partition_coverage": "PASS_15_OF_15",
+    "L43_4_3_included": true,
+    "rho_exactness_selftest": "PASS",
+    "fast_kernel_numeric_equivalence_to_existing_truth_and_scoring": "PASS"
+  },
+  "execution": {
+    "seed": 20260820,
+    "races_per_structural_context": 24,
+    "line_partition_count": 15,
+    "line_shards_success": 15,
+    "scenario_world_cell_count": 16200,
+    "total_scenario_race_evaluations": 388800,
+    "aggregate_conclusion": "success",
+    "terminal": "BROAD_ASSUMPTION_RANGE_LOCKED_388800_PASS"
+  },
+  "artifact": {
+    "name": "broad-assumption-range-final",
+    "artifact_id": 9403796953,
+    "artifact_zip_sha256": "c0ea4a04ac1efdd795a96fd26876bc1693827dff151417234f4e6619bafc5a0f",
+    "result_json_sha256": "db6d50e6eb8bfeed2cee4bed15c23db83638ede22f3a4ff1163828e4276f848a",
+    "retention_days": 30
+  },
+  "primary_tier_A_existing_or_project_supported_topologies": {
+    "cell_count": 6480,
+    "winner_counts": {"C0": 5025, "C1": 365, "N1": 1090},
+    "models": {
+      "C0": {
+        "mean_log_loss": 5.088823475129846,
+        "mean_excess_log_loss": 0.00346382898184729,
+        "p90_excess_log_loss": 0.011655685346206646,
+        "worst_case_excess_log_loss": 0.059545028186328786,
+        "zero_regret_cell_count": 5025
+      },
+      "C1": {
+        "mean_log_loss": 5.11185080101761,
+        "mean_excess_log_loss": 0.026491154869612687,
+        "p90_excess_log_loss": 0.05653793798651385,
+        "worst_case_excess_log_loss": 0.1023661616662821,
+        "zero_regret_cell_count": 365
+      },
+      "N1": {
+        "mean_log_loss": 5.115907309114271,
+        "mean_excess_log_loss": 0.030547662966252834,
+        "p90_excess_log_loss": 0.07098233066475146,
+        "worst_case_excess_log_loss": 0.12132280207448254,
+        "zero_regret_cell_count": 1090
+      }
+    },
+    "line_winner_counts": {
+      "L43": {"C0": 718, "C1": 83, "N1": 279},
+      "L421": {"C0": 924, "C1": 36, "N1": 120},
+      "L4111": {"C0": 960, "C1": 24, "N1": 96},
+      "L331": {"C0": 795, "C1": 72, "N1": 213},
+      "L322": {"C0": 744, "C1": 80, "N1": 256},
+      "L2221": {"C0": 884, "C1": 70, "N1": 126}
+    }
+  },
+  "all_15_topologies_diagnostic_only": {
+    "cell_count": 16200,
+    "winner_counts": {"C0": 12849, "C1": 799, "N1": 2552}
+  },
+  "information_value_diagnostics": {
+    "rho_winner_counts": {
+      "0.55": {"C0": 4995, "C1": 12, "N1": 393},
+      "0.75": {"C0": 4485, "C1": 131, "N1": 784},
+      "0.90": {"C0": 3369, "C1": 656, "N1": 1375}
+    },
+    "truth_scenario_highlight": {
+      "W2_CONDITIONAL_LINE_STRONG": {"C0": 545, "C1": 12, "N1": 1063},
+      "interpretation": "N1 has a conditional advantage when the synthetic truth explicitly makes line relations strong; this is not evidence that real Keirin belongs to that world."
+    },
+    "engineering_read": "C0 remains the lowest-regret null/control across the locked broad uncertainty range. The largest decision value now lies in independent information about the real observable-score/hidden-ability relationship and real line-relation strength, not in retuning C0/C1/N1 to this synthetic result."
+  },
+  "claim_boundary": {
+    "real_world_predictive_edge": false,
+    "real_world_equivalence": false,
+    "real_line_frequency_claim": false,
+    "real_causal_effect_claim": false,
+    "model_promotion": false,
+    "source_admission": false
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "same_source_KDreams_realism_tuning": "CLOSED",
+    "new_untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "FRESH_READ_RECEIPT_INCLUSIVE_HEAD_RERUN_EXACT_CI_THEN_INDEPENDENT_LAB_REVIEW"
+}
