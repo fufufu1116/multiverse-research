@@ -1,0 +1,29 @@
+{
+  "record": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_SENSOR_VALIDATOR_EXACT_CI_RECEIPT_20260820_v1",
+  "status": "EXACT_HEAD_GITHUB_ACTIONS_PASS",
+  "executed_head": "bd19f392588c50d833dc8c057bc2e769a44d50dc",
+  "workflow_run_id": 32357754058,
+  "job_id": 96390533934,
+  "executed_at_jst_window": "2026-08-20T19:12:10+09:00/2026-08-20T19:12:13+09:00",
+  "exact_checkout_verified": true,
+  "terminals": [
+    "INDEPENDENT_OFFICIAL_PRE_SENSOR_VALIDATOR_SELFTEST_PASS",
+    "INDEPENDENT_OFFICIAL_PRE_SENSOR_COMMITTED_CAPTURES_PASS"
+  ],
+  "validated_committed_state": {
+    "admitted_races": 0,
+    "admitted_venues": 0,
+    "meaning": "Pre-window discovery receipts remain non-scientific zero-admission preflight only."
+  },
+  "validator_guards_verified": [
+    "pre-window scientific admission rejected",
+    "third-party HTTPS race source rejected",
+    "post-start capture rejected",
+    "prospective central KEIRIN.JP official sample accepted",
+    "RESULT/PAYOUT remains unauthorized",
+    "third-party completion remains prohibited",
+    "post-race backfill remains prohibited",
+    "external provider contact remains prohibited"
+  ],
+  "next_gate": "AFTER_2026-08-20T19:15:00+09:00_APPEND_ONLY_PROSPECTIVE_OFFICIAL_CAPTURE_ATTEMPTS"
+}

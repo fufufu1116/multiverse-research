@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_SENSOR_ADMISSION_QUALITY_AMENDMENT_20260820_v1",
+  "status": "PREREG_AMENDMENT_BEFORE_FIRST_SCIENTIFIC_ADMISSION",
+  "locked_at_jst": "2026-08-20T19:20:11+09:00",
+  "parent_prereg": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_PREREG_20260820_v1",
+  "admitted_races_before_amendment": 0,
+  "digital_twin_comparisons_before_amendment": 0,
+  "pre_amendment_exposure_disclosure": {
+    "official_routes_seen": [
+      "Ogaki venue schedule and midnight information pages",
+      "Matsuyama venue schedule pages",
+      "Takeo venue schedule/race pages",
+      "KEIRIN.JP central raceprogram links for KCD 44/75/84"
+    ],
+    "specific_exposure": "Ogaki official midnight page was observed to expose per-race start times and an event-level 7-car format statement, but no rider-level realism payload was formally extracted or admitted.",
+    "central_raceprogram_body_observed": false,
+    "model_or_world_result_used_to_choose_this_amendment": false
+  },
+  "reason": "The original minimum admission contract can be satisfied by schedule/field-size structure alone. Filling the 30-race cap with structurally valid but rider-information-empty races would not materially challenge the frozen R0/R1/R2 PRE realism worlds. Before any scientific sample is admitted, tighten admission to require a meaningful directly observed rider-level PRE payload.",
+  "effect": "TIGHTEN_ONLY_NO_SOURCE_RIGHTS_EXPANSION_NO_MODEL_TUNING",
+  "admission_quality_v1": {
+    "all_original_required_race_fields_still_required": true,
+    "field_size": 7,
+    "rider_count": 7,
+    "every_rider_must_have_direct": [
+      "rider_class",
+      "competition_score"
+    ],
+    "every_rider_must_have_at_least_one_direct_tactical_field_from": [
+      "style",
+      "H",
+      "B",
+      "S",
+      "nige",
+      "makuri",
+      "sashi",
+      "mark"
+    ],
+    "line_information": "OPTIONAL_DIRECT_ONLY_NEVER_INFER",
+    "missing_required_quality_field": "RACE_NOT_ADMITTED",
+    "partial_rider_payload": "RACE_NOT_ADMITTED",
+    "schedule_only_or_field_size_only": "DISCOVERY_OR_STRUCTURE_SENSOR_ONLY_NOT_SCIENTIFIC_ADMISSION"
+  },
+  "official_source_operationalization": {
+    "central_keirin_jp": "ALLOWED_FOR_DIRECT_RACECARD_PRE",
+    "venue_first_party_official_racecard_page_or_file": "ALLOWED_ONLY_IF_DIRECT_RACECARD_PRE_AND_DOMAIN_IS_EXPLICITLY_ALLOWLISTED_BEFORE_EXTRACTION",
+    "generic_venue_schedule_page": "DISCOVERY_ONLY_UNLESS_IT_CONTAINS_FULL_ADMISSION_QUALITY_PAYLOAD",
+    "third_party": "PROHIBITED_FOR_ADMISSION",
+    "search_snippet": "DISCOVERY_ONLY",
+    "rider_profile_assignment_to_race": "PROHIBITED_INFERENCE"
+  },
+  "initial_venue_domain_allowlist_before_racecard_extraction": [
+    "www.ogakikeirin.com",
+    "ogakikeirin.com",
+    "www.matsuyamakeirin.jp",
+    "matsuyamakeirin.jp",
+    "www.keirin.city.takeo.lg.jp",
+    "keirin.city.takeo.lg.jp"
+  ],
+  "frozen_analysis_boundary": {
+    "same_source_kdreams_retuning": "PROHIBITED",
+    "R0_R1_R2_generator_selection_before_sensor_receipt_freeze": "PROHIBITED",
+    "RESULT_PAYOUT_access": "PROHIBITED",
+    "post_race_backfill": "PROHIBITED",
+    "external_provider_contact": "PROHIBITED"
+  }
+}
