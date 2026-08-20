@@ -60,11 +60,17 @@ def main() -> None:
     assert p["real_money_wagering"] == "OUT_OF_SCOPE"
     assert p["synthetic_evidence_is_real_world_edge_evidence"] is False
 
-    # The point of this candidate is to neutralize stale pre-pause display truth,
-    # not to pretend those older files were already updated.
+    # The legacy scientific state is intentionally recognized as older/stale.
     assert legacy["updated_jst"] == "2026-08-20T00:29:00+09:00"
     assert legacy["status"].startswith("ACTIVE_RESEARCH_")
-    assert "最終更新: 2026-08-20 00:29 JST" in now
+
+    # The owner-facing view must now tell the effective post-Foundation truth.
+    assert "最終更新: 2026-08-21 00:29 JST" in now
+    assert "**競輪の科学実験は停止中です。**" in now
+    assert "scientific resume allowed: false" in now
+    assert "PR #15" in now and "QUARANTINED_NOT_ADMITTED" in now
+    assert "ECON_HOLDOUT1000" in now and "SEALED" in now
+    assert "RESULT/PAYOUT" in now and "UNAUTHORIZED" in now
 
     scope = sync["candidate_scope"]
     assert scope["may_resume_science"] is False
