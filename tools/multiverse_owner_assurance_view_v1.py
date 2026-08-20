@@ -84,21 +84,18 @@ def build_view(lifecycle: Dict[str, Any], operational: Dict[str, Any], safe_mode
     f2 = operational.get("scientific_firewall_preserved")
     if not isinstance(f1, dict) or not isinstance(f2, dict):
         raise AssuranceError("MISSING_FIREWALL_STATE")
-    required = {
-        "ECON_HOLDOUT1000": ("SEALED", "SEALED"),
-        "RESULT_PAYOUT": ("UNAUTHORIZED", "UNAUTHORIZED"),
-        "UNTOUCHED_VALIDATION": ("CLOSED", False),
-        "MODEL_PROMOTION": ("PROHIBITED", "PROHIBITED"),
-        "REAL_MONEY_WAGERING": ("OUT_OF_SCOPE", "OUT_OF_SCOPE"),
+    field_map = {
+        "ECON_HOLDOUT1000": ("ECON_HOLDOUT1000", "SEALED", "SEALED"),
+        "RESULT_PAYOUT": ("RESULT_PAYOUT", "UNAUTHORIZED", "UNAUTHORIZED"),
+        "UNTOUCHED_VALIDATION": ("new_untouched_validation_opened", "CLOSED", False),
+        "MODEL_PROMOTION": ("model_promotion", "PROHIBITED", "PROHIBITED"),
+        "REAL_MONEY_WAGERING": ("real_money_wagering", "OUT_OF_SCOPE", "OUT_OF_SCOPE"),
     }
-    for key, expected in required.items():
-        left = f1.get(key)
-        if key == "UNTOUCHED_VALIDATION":
-            right = f2.get("new_untouched_validation_opened")
-        else:
-            right = f2.get(key)
-        if (left, right) != expected:
-            raise AssuranceError(f"FIREWALL_MISMATCH:{key}:{left}:{right}")
+    for lifecycle_key, (operational_key, expected_left, expected_right) in field_map.items():
+        left = f1.get(lifecycle_key)
+        right = f2.get(operational_key)
+        if left != expected_left or right != expected_right:
+            raise AssuranceError(f"FIREWALL_MISMATCH:{lifecycle_key}:{left}:{right}")
 
     pending_review = []
     expired = []
@@ -113,7 +110,7 @@ def build_view(lifecycle: Dict[str, Any], operational: Dict[str, Any], safe_mode
             acceptance_pending.append(item.get("pr"))
 
     state_word = "PAUSED（科学実験停止中）" if paused else "ACTIVE（実行可否は別Gate確認）"
-    owner_action = operational.get("operational_state", {}).get("owner_action_now", "UNKNOWN")
+    owner_action = op.get("owner_action_now", "UNKNOWN")
     if owner_action != "NONE":
         owner_line = f"要確認: {owner_action}"
     else:
@@ -125,9 +122,9 @@ def build_view(lifecycle: Dict[str, Any], operational: Dict[str, Any], safe_mode
         "> Generated view candidate. 正本ではなく、下記state/registryから作る表示。",
         "",
         f"- **競輪研究:** {state_word}",
-        f"- **今進める場所:** PR #16 Foundation Audit（全体監査）",
-        f"- **最後に完了した科学Checkpoint:** PR #14 / Lab PASS / Synthetic engineering only（仮想世界の開発証拠のみ）",
-        f"- **停止中の子作業:** PR #15 / QUARANTINED（隔離） / metricsは再開経路選択に使わない",
+        "- **今進める場所:** PR #16 Foundation Audit（全体監査）",
+        "- **最後に完了した科学Checkpoint:** PR #14 / Lab PASS / Synthetic engineering only（仮想世界の開発証拠のみ）",
+        "- **停止中の子作業:** PR #15 / QUARANTINED（隔離） / metricsは再開経路選択に使わない",
         f"- **未レビューPR:** {pending_review or 'なし'}",
         f"- **期限切れ候補PR:** {expired or 'なし'}",
         f"- **Lab PASS後の受理待ちPR:** {acceptance_pending or 'なし'}",
