@@ -28,28 +28,27 @@ SCIENTIFIC_FILENAME_MARKERS = (
     "holdout",
 )
 
+# Stronger content markers only. Ordinary words like RESULT/PAYOUT are deliberately
+# excluded because governance/audit workflows may mention them while proving firewalls.
 SCIENTIFIC_CONTENT_MARKERS = (
-    "DEV2000",
-    "ECON_HOLDOUT",
-    "RESULT",
-    "PAYOUT",
-    "settlement",
-    "prediction",
-    "simulate",
-    "simulation",
-    "digital_twin",
-    "top3",
-    "ticket",
-    "odds",
-    "scoring",
+    "stage7_settlement",
+    "settlement_eval",
+    "prediction_lock",
+    "synthetic_market_odds",
+    "digital_twin_v1.py",
+    "c0_c1_n1",
+    "top3_architecture",
+    "ticket_probability",
+    "price_catalog",
+    "score_predictions",
+    "simulate_race",
 )
 
-AUDIT_FILENAME_MARKERS = (
-    "multiverse-foundation-candidate-ci",
-    "audit",
-    "recovery",
-    "bootstrap",
-)
+# Exemption by broad words such as 'audit' or 'recovery' is unsafe. Only an exact,
+# already-reviewed governance-only workflow name can be called audit-only here.
+AUDIT_EXACT_ALLOWLIST = {
+    "multiverse-foundation-candidate-ci-v1.yml",
+}
 
 GUARD_MARKERS = (
     "multiverse_pause_guard_v1.py",
@@ -69,7 +68,6 @@ def _contains_any(text: str, markers: Iterable[str]) -> List[str]:
 
 
 def _looks_like_workflow(text: str) -> bool:
-    # Do not need a full YAML parser for inventory. Require at least jobs + an event-ish key.
     return bool(re.search(r"(?m)^\s*jobs\s*:", text)) and bool(re.search(r"(?m)^\s*on\s*:", text))
 
 
@@ -80,21 +78,24 @@ def classify(path: Path, root: Path) -> Dict[str, Any]:
 
     filename_science = [m for m in SCIENTIFIC_FILENAME_MARKERS if m in name]
     content_science = _contains_any(text, SCIENTIFIC_CONTENT_MARKERS)
-    audit_name = [m for m in AUDIT_FILENAME_MARKERS if m in name]
+    exact_audit_allowlisted = name in AUDIT_EXACT_ALLOWLIST
     guard_hits = _contains_any(text, GUARD_MARKERS)
 
     if not _looks_like_workflow(text):
         classification = "UNKNOWN_REVIEW_REQUIRED"
         reason = "YAML_FILE_NOT_CONFIRMED_AS_WORKFLOW_BY_MINIMAL_SHAPE_CHECK"
-    elif filename_science or content_science:
+    elif filename_science:
         classification = "SCIENTIFIC_CANDIDATE"
-        reason = "SCIENTIFIC_MARKER_PRESENT"
-    elif audit_name:
+        reason = "SCIENTIFIC_FILENAME_MARKER_PRESENT"
+    elif exact_audit_allowlisted and not content_science:
         classification = "AUDIT_OR_GOVERNANCE_ONLY"
-        reason = "AUDIT_GOVERNANCE_FILENAME_MARKER_AND_NO_SCIENCE_MARKER"
+        reason = "EXACT_AUDIT_ALLOWLIST_AND_NO_STRONG_SCIENCE_CONTENT_MARKER"
+    elif content_science:
+        classification = "SCIENTIFIC_CANDIDATE"
+        reason = "STRONG_SCIENCE_CONTENT_MARKER_PRESENT"
     else:
         classification = "UNKNOWN_REVIEW_REQUIRED"
-        reason = "NO_SUFFICIENT_MARKER_TO_CALL_SCIENTIFIC_OR_AUDIT_ONLY"
+        reason = "NO_SUFFICIENT_EVIDENCE_TO_CALL_SAFE_OR_SCIENTIFIC"
 
     return {
         "path": rel,
@@ -102,7 +103,7 @@ def classify(path: Path, root: Path) -> Dict[str, Any]:
         "reason": reason,
         "filename_science_markers": filename_science,
         "content_science_markers": content_science,
-        "audit_filename_markers": audit_name,
+        "exact_audit_allowlisted": exact_audit_allowlisted,
         "pause_guard_markers": guard_hits,
         "pause_guard_present": bool(guard_hits),
         "automatic_triggers_detected": {
@@ -147,7 +148,7 @@ def inventory(root: Path, workflow_dir: Path) -> Dict[str, Any]:
         "uncovered_scientific_candidates": uncovered,
         "unknown_review_required": unknown,
         "entries": entries,
-        "interpretation_rule": "UNKNOWN_REVIEW_REQUIRED is not safe/exempt. SCIENTIFIC_CANDIDATE_WITHOUT_GUARD is an integration gap candidate requiring review/remediation before a workflow-wide pause guarantee.",
+        "interpretation_rule": "UNKNOWN_REVIEW_REQUIRED is not safe/exempt. SCIENTIFIC_CANDIDATE without the guard is an integration-gap candidate requiring review/remediation before any workflow-wide pause guarantee.",
     }
 
 
