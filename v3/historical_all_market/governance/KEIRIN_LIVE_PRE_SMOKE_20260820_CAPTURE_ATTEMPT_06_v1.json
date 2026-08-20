@@ -1,0 +1,45 @@
+{
+  "record": "KEIRIN_LIVE_PRE_SMOKE_20260820_CAPTURE_ATTEMPT_06_v1",
+  "status": "RACE_5_NOT_ADMITTED_PRIMARY_PRE_AND_PROSPECTIVE_ELIGIBILITY_NOT_ESTABLISHED",
+  "captured_at_jst": "2026-08-20T17:09:30+09:00",
+  "parent_pr_head_observed_before_write": "d708d67c107816e719a07bfc5aaddcf8ec7cd748",
+  "candidate_race": 5,
+  "frozen_selection_cutoff_jst": "16:30",
+  "primary_capture_state": {
+    "tamano_official_current_event_link_to_keirin_jp_raceprogram_confirmed": true,
+    "keirin_jp_direct_raceprogram_fetch_state": "HTTP_500_FROM_CURRENT_OFFICIAL_LINK",
+    "tamano_official_racepdf_index_current_event_entry_captured": false,
+    "ctc_official_event_identity_and_program_structure_confirmed": true,
+    "ctc_official_race_level_allocation_captured": false,
+    "direct_official_race_level_pre_racecard_captured": false,
+    "official_current_scheduled_start_captured": false,
+    "official_sex_category_captured": false,
+    "official_field_size_captured": false,
+    "official_race_regime_captured": false,
+    "official_pre_line_forecast_captured": false
+  },
+  "sensor_only_context": {
+    "winticket_current_event_race_5_link_exists": true,
+    "role": "DISCOVERY_SENSOR_NOT_SAMPLE_TRUTH",
+    "scheduled_start_time_admitted": false,
+    "rider_allocation_admitted": false,
+    "numeric_fields_admitted": false
+  },
+  "eligibility_state": "UNKNOWN_PRIMARY_RACE_LEVEL_FACTS_NOT_ESTABLISHED",
+  "prospective_state": "UNKNOWN_OFFICIAL_START_TIME_NOT_CAPTURED",
+  "scientific_disposition": "UNMEASURED_NOT_NEGATIVE_NOT_RESULT_INFERRED",
+  "decision": "DO_NOT_ADMIT_RACE_5; DO_NOT_INFER ELIGIBILITY OR PRE FIELDS FROM NON_PRIMARY SOURCES",
+  "next_candidate": 6,
+  "next_action": "CONTINUE_ASCENDING_RACE_ORDER; ATTEMPT PRIMARY PRE CAPTURE FOR RACE_6 ONLY IF SAFE; NEVER BACKFILL A STARTED RACE",
+  "firewall": {
+    "RESULT_PAYOUT_access": "UNAUTHORIZED_AND_NOT_USED_FOR_TARGET_MEETING",
+    "odds_used": false,
+    "post_race_line_truth_used": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR3_consumed_holdout_reuse": false,
+    "DEV2000_C_rescue": false,
+    "same_lineage_BC_rescue_tuning": false,
+    "untouched_validation_opened": false,
+    "model_promotion": false
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_LIVE_PRE_SMOKE_20260820_COLLECTION_DISPOSITION_v1",
+  "captured_at_jst": "2026-08-20T17:21:25+09:00",
+  "parent_pr_head_observed_before_write": "37b34040b93600c95c4583581b19c337a8d5f310",
+  "status": "COLLECTION_CLOSED_ZERO_ADMITTED_SAMPLE_CURRENT_SAFE_PRIMARY_PRE_PATHS_UNAVAILABLE",
+  "target_event": {
+    "venue": "玉野",
+    "venue_code": "61",
+    "date": "2026-08-20",
+    "day": 1
+  },
+  "selection_rule_preserved": {
+    "scheduled_start_cutoff_jst": "16:30",
+    "order": "RACE_NUMBER_ASCENDING",
+    "male_only": true,
+    "field_size": 7,
+    "race_regime": "STANDARD_ORIGINAL_LINE_KEIRIN",
+    "official_pre_racecard_required_before_start": true,
+    "take_first_eligible": 3,
+    "max_races": 3
+  },
+  "race_numbers_traversed_in_order": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  "terminal_disposition": {
+    "2": "NOT_ADMITTED_PRIMARY_RACE_LEVEL_PRE_NOT_ESTABLISHED_PROSPECTIVELY",
+    "3": "UNMEASURED_PRIMARY_PRE_NOT_ESTABLISHED_PROSPECTIVELY",
+    "4": "UNMEASURED_PRIMARY_PRE_NOT_ESTABLISHED_PROSPECTIVELY",
+    "5": "UNMEASURED_PRIMARY_PRE_NOT_ESTABLISHED_PROSPECTIVELY",
+    "6": "UNMEASURED_PRIMARY_PRE_AND_ELIGIBILITY_NOT_ESTABLISHED_PROSPECTIVELY",
+    "7": "UNMEASURED_PRIMARY_PRE_AND_ELIGIBILITY_NOT_ESTABLISHED_PROSPECTIVELY",
+    "8": "UNMEASURED_PRIMARY_PRE_AND_ELIGIBILITY_NOT_ESTABLISHED_PROSPECTIVELY",
+    "9": "UNMEASURED_PRIMARY_PRE_AND_ELIGIBILITY_NOT_ESTABLISHED_PROSPECTIVELY",
+    "10": "UNMEASURED_PRIMARY_PRE_AND_ELIGIBILITY_NOT_ESTABLISHED_PROSPECTIVELY",
+    "11": "UNMEASURED_PRIMARY_PRE_AND_ELIGIBILITY_NOT_ESTABLISHED_PROSPECTIVELY"
+  },
+  "admitted_races": [],
+  "admitted_sample_count": 0,
+  "scientific_interpretation": "ACCESS_MEASUREMENT_OUTCOME_ONLY_NOT_A_NEGATIVE_MODEL_OR_POPULATION_RESULT",
+  "primary_access_summary": {
+    "keirin_jp_raceprogram": "HTTP_500_ON_CURRENT_SAFE_OFFICIAL_FETCH_PATH_DURING_REPEATED_PROSPECTIVE_RETRIES",
+    "tamano_official_racepdf_current_event_captured_from_safe_path": false,
+    "tamano_official_prediction_current_target_information_captured": false,
+    "ctc_event_level_information_used_for_race_allocation": false,
+    "non_primary_sensor_used_as_sample_truth": false
+  },
+  "prohibited_inferences_not_made": [
+    "NO_RIDER_ALLOCATION_FROM_SENSOR_OR_EVENT_LEVEL_PARTICIPANT_LIST",
+    "NO_SEX_CATEGORY_FROM_SENSOR",
+    "NO_FIELD_SIZE_FROM_SENSOR",
+    "NO_RACE_REGIME_FROM_SENSOR",
+    "NO_CLASS_STYLE_SCORE_OR_LINE_FROM_SENSOR",
+    "NO_POST_START_BACKFILL"
+  ],
+  "firewall": {
+    "RESULT_PAYOUT_access": "UNAUTHORIZED_AND_NOT_USED_FOR_TARGET_MEETING",
+    "odds_used": false,
+    "post_race_line_truth_used": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR3_consumed_holdout_reuse": false,
+    "DEV2000_C_rescue": false,
+    "same_lineage_BC_rescue_tuning": false,
+    "untouched_validation_opened": false,
+    "model_promotion": false
+  },
+  "next_gate": "LAB_REVIEW_COLLECTION_EVIDENCE_ONLY",
+  "live_pre_collection_may_continue_for_this_preregistered_target_day": false,
+  "untouched_validation_may_open": false
+}

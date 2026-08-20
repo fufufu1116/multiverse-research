@@ -1,0 +1,47 @@
+{
+  "record": "KEIRIN_LIVE_PRE_SMOKE_20260820_CAPTURE_ATTEMPT_01_v1",
+  "status": "PROSPECTIVE_CAPTURE_PENDING_PRIMARY_RACECARD",
+  "captured_at_jst": "2026-08-20T16:21:15+09:00",
+  "lab_accepted_pre_collection_head": "f6b7c505d7ac9e046eaf977d3dd4099141a0a140",
+  "target_event": {
+    "venue": "玉野",
+    "venue_code": "61",
+    "date": "2026-08-20",
+    "title": "おもちゃ王国杯＆マリンホテルＣ",
+    "day": 1
+  },
+  "candidate_race": 2,
+  "frozen_cutoff_jst": "16:30",
+  "primary_current_evidence": {
+    "keirin_jp_schedule_event_identity_confirmed": true,
+    "ctc_official_event_format_confirmed": true,
+    "direct_race_level_official_pre_racecard_captured": false,
+    "official_current_scheduled_start_captured": false,
+    "official_current_line_forecast_captured": false
+  },
+  "sensor_only_current_evidence": {
+    "rakuten_kdreams": {
+      "role": "DISCOVERY_SENSOR_NOT_SAMPLE_TRUTH",
+      "race_2_deadline_jst": "16:26",
+      "day1_program_category_block": "CHALLENGE_PRELIMINARY_FOR_EARLY_RACES",
+      "race_level_detail_not_admitted": true
+    },
+    "winticket": {
+      "role": "DISCOVERY_SENSOR_NOT_SAMPLE_TRUTH",
+      "current_event_race_2_link_exists": true,
+      "race_2_page_fetch_state": "CACHE_MISS",
+      "race_level_detail_not_admitted": true
+    }
+  },
+  "admission_state": "NOT_YET_ELIGIBLE_PRIMARY_CAPTURE_NOT_ESTABLISHED",
+  "decision": "DO_NOT_COLLECT_OR_INFER_RIDER_ALLOCATION_CLASS_STYLE_SCORE_OR_LINE_FROM_NON_PRIMARY_SENSOR",
+  "next_action": "RETRY_SAFE_PRIMARY_PRE_CAPTURE_BEFORE_START; IF NOT ESTABLISHED BEFORE START, DO_NOT ADMIT RACE_2 AND CONTINUE ASCENDING RACE ORDER",
+  "firewall": {
+    "RESULT_PAYOUT_access": "UNAUTHORIZED_AND_NOT_USED",
+    "odds_used": false,
+    "post_race_line_truth_used": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "untouched_validation_opened": false,
+    "model_promotion": false
+  }
+}
