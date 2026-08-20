@@ -1,0 +1,98 @@
+name: Keirin Reality-Calibrated DT Exact-Head Check
+
+on:
+  push:
+    branches:
+      - agent/keirin-reality-calibrated-dt-envelope-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-selftest-and-stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact triggering head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Show exact head
+        run: |
+          echo "GITHUB_SHA=${GITHUB_SHA}"
+          git rev-parse HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Run empirical PRE adapter selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python digital_twin_empirical_pre_adapter_selftest_v1.py
+
+      - name: Run locked 240x10 reality-scaled stress
+        working-directory: v3/historical_all_market/new_lineage
+        run: |
+          python c0_c1_n1_reality_scaled_multiworld_stress_v1.py > /tmp/reality_scaled_stress.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('/tmp/reality_scaled_stress.json').read_text())
+          assert result['seed'] == 20260820
+          assert result['n_races_per_scenario'] == 240
+          assert result['scenario_count'] == 10
+          assert result['coefficient_retuning'] is False
+          assert result['scientific_firewall']['ECON_HOLDOUT1000'] == 'SEALED'
+          assert result['scientific_firewall']['RESULT_PAYOUT_access'] == 'UNAUTHORIZED'
+          assert result['scientific_firewall']['new_untouched_validation_opened'] is False
+          print('REALITY_SCALED_LOCKED_STRESS_EXECUTION_PASS')
+          print('win_counts=', result['win_counts_by_expected_log_loss'])
+          print('baseline_win_counts=', result['baseline_win_counts_by_expected_log_loss'])
+          PY
+
+      - name: Compare exact-head output to reconstructed-runtime receipt
+        working-directory: v3/historical_all_market/new_lineage
+        run: |
+          python - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+          result = json.loads(Path('/tmp/reality_scaled_stress.json').read_text())
+          receipt_path = Path('../governance/KEIRIN_DT_REALITY_SCALED_STRESS_RECONSTRUCTED_RUNTIME_RECEIPT_20260820_v1.json')
+          receipt = json.loads(receipt_path.read_text())['execution']
+
+          def compare(a, b, path='root'):
+              if isinstance(a, dict) and isinstance(b, dict):
+                  if set(a) != set(b):
+                      raise AssertionError(f'key mismatch at {path}: {set(a)^set(b)}')
+                  for k in a:
+                      compare(a[k], b[k], f'{path}.{k}')
+              elif isinstance(a, list) and isinstance(b, list):
+                  if len(a) != len(b):
+                      raise AssertionError(f'length mismatch at {path}')
+                  for i, (x, y) in enumerate(zip(a, b)):
+                      compare(x, y, f'{path}[{i}]')
+              elif isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool) and not isinstance(b, bool):
+                  if not math.isclose(float(a), float(b), rel_tol=1e-12, abs_tol=1e-12):
+                      raise AssertionError(f'numeric mismatch at {path}: {a} != {b}')
+              elif a != b:
+                  raise AssertionError(f'value mismatch at {path}: {a!r} != {b!r}')
+
+          keys = [
+              'seed', 'n_races_per_scenario', 'scenario_count',
+              'win_counts_by_expected_log_loss',
+              'baseline_win_counts_by_expected_log_loss',
+              'mean_metrics_across_scenarios',
+              'baseline_mean_metrics_across_scenarios',
+              'delta_mean_metrics_vs_current_synthetic_baseline',
+              'scenarios'
+          ]
+          for key in keys:
+              compare(result[key], receipt[key], key)
+          print('RECONSTRUCTED_RECEIPT_NUMERIC_MATCH_PASS')
+          PY
