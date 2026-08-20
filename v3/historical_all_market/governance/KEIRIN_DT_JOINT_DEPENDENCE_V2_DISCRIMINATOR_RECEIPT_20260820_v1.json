@@ -1,0 +1,49 @@
+{
+  "record": "KEIRIN_DT_JOINT_DEPENDENCE_V2_DISCRIMINATOR_RECEIPT_20260820_v1",
+  "status": "ONE_SHOT_V2_IN_SOURCE_ENGINEERING_RESULT_SAME_SOURCE_TUNING_NOW_CLOSED",
+  "prereg": "KEIRIN_DT_JOINT_DEPENDENCE_V2_PREREG_20260820_v1",
+  "executed_at_jst": "2026-08-20T18:27:00+09:00",
+  "source_status": "STAGED_UNPROVEN_HISTORICAL_PRE_NOT_REALITY_TRUTH",
+  "sample": {"real_candidate_races": 1539, "v2_synthetic_races": 1539, "seed": 20260820},
+  "fixed_protocol": {
+    "cv": "StratifiedKFold(n_splits=5, shuffle=true, random_state=20260820)",
+    "HGB": "max_iter=200 learning_rate=0.05 max_leaf_nodes=15 l2_regularization=1.0 random_state=20260820",
+    "Logit": "C=1.0 max_iter=2000 lbfgs standardized",
+    "hyperparameter_search": false,
+    "scale_neutral_numeric_erratum_applied": "score_mean and score_std excluded because they are deterministic z-normalization identities; score_range retained"
+  },
+  "v2_results": {
+    "AUDIT_REALISM_VIEW": {
+      "HistGradientBoostingClassifier": {"roc_auc": 0.8303667140802213, "balanced_accuracy": 0.755685510071475, "auc_distance_from_0_5": 0.3303667140802213},
+      "LogisticRegression": {"roc_auc": 0.6871174036455662, "balanced_accuracy": 0.6361273554256011, "auc_distance_from_0_5": 0.1871174036455662}
+    },
+    "SCALE_NEUTRAL_CORRECTED_VIEW": {
+      "HistGradientBoostingClassifier": {"roc_auc": 0.747137137479465, "balanced_accuracy": 0.6887589343729694, "auc_distance_from_0_5": 0.247137137479465},
+      "LogisticRegression": {"roc_auc": 0.6873610155873644, "balanced_accuracy": 0.6367771280051981, "auc_distance_from_0_5": 0.1873610155873644}
+    }
+  },
+  "comparison_to_v1": {
+    "AUDIT_HGB": {"v1_auc": 0.8813069421803732, "v2_auc": 0.8303667140802213, "direction": "IMPROVED_CLOSER_TO_0_5"},
+    "SCALE_NEUTRAL_HGB": {"v1_corrected_auc": 0.8210089756434501, "v2_auc": 0.747137137479465, "direction": "IMPROVED_CLOSER_TO_0_5"},
+    "AUDIT_LOGIT": {"v1_auc": 0.5043649602431222, "v2_auc": 0.6871174036455662, "direction": "WORSE_FARTHER_FROM_0_5"},
+    "SCALE_NEUTRAL_LOGIT": {"v1_corrected_auc": 0.4936177471088498, "v2_auc": 0.6873610155873644, "direction": "WORSE_FARTHER_FROM_0_5"}
+  },
+  "interpretation": {
+    "joint_dependence_goal": "PARTIAL_SUCCESS. Fixed nonlinear discriminator separability decreased materially, especially in corrected scale-neutral view.",
+    "marginal_linear_side_effect": "MATERIAL_REGRESSION. Fixed logistic separability increased, indicating v2 introduced or exposed a linear/marginal signature while repairing some nonlinear joint signature.",
+    "single_best_twin_claim": "NOT_JUSTIFIED",
+    "recommended_use": "Retain v1 and v2 as separate PRE-realism candidate worlds and require architecture robustness across both rather than selecting the one that looks best on this same staged source.",
+    "same_source_further_tuning": "PROHIBITED_BY_V2_ONE_SHOT_RULE",
+    "next_calibration": "Independent prospective official PRE or independent time/source sensor must provide the next realism information."
+  },
+  "not_evidence_of": ["REAL_WORLD_EQUIVALENCE", "KEIRIN_POPULATION_TRUTH", "SOURCE_ADMISSION", "REAL_EDGE", "REAL_ROI", "MODEL_PROMOTION"],
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED"
+  },
+  "next_gate": "FREEZE_V1_V2_AS_PRE_REALISM_MULTIWORLD_AXIS_RUN_C0_C1_N1_ACROSS_BOTH_THEN_USE_INDEPENDENT_PRE_SENSOR_FOR_FURTHER_CALIBRATION"
+}
