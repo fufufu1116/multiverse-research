@@ -1,0 +1,53 @@
+name: Tamano PRE public probe
+
+on:
+  push:
+    branches:
+      - probe/tamano-pre-20260820
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Fetch future race-member pages only
+        shell: bash
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          import json
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          
+          out = Path('probe')
+          out.mkdir()
+          meta = {
+              'fetched_at_utc': datetime.now(timezone.utc).isoformat(),
+              'venue_code': '61',
+              'date': '20260820',
+              'endpoint_scope': 'racemember_only_no_result_no_odds_no_payout',
+              'races': []
+          }
+          for rno in (4, 5, 6, 7, 8, 9, 10, 11, 12):
+              url = f'https://keirin.jp/pc/dfw/dataplaza/guest/racemember?KCD=61&KBI=20260820&RNO={rno}'
+              req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+              try:
+                  with urlopen(req, timeout=15) as resp:
+                      body = resp.read()
+                      status = getattr(resp, 'status', 200)
+                      (out / f'race_{rno}.html').write_bytes(body)
+                      meta['races'].append({'race_no': rno, 'url': url, 'http_status': status, 'bytes': len(body)})
+              except Exception as exc:
+                  meta['races'].append({'race_no': rno, 'url': url, 'error': type(exc).__name__ + ':' + str(exc)[:180]})
+          (out / 'metadata.json').write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding='utf-8')
+          print(json.dumps(meta, ensure_ascii=False))
+          PY
+      - name: Upload PRE-only probe
+        uses: actions/upload-artifact@v4
+        with:
+          name: tamano-pre-racemember-probe
+          path: probe/
+          if-no-files-found: error
