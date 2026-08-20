@@ -30,6 +30,7 @@ jobs:
       TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       LEGACY_PATH: v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json
       EXPECTED_LEGACY_BLOB: 248616ba6e8e671d044793ff82bbec2a04804611
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Checkout exact candidate head
         uses: actions/checkout@v4
