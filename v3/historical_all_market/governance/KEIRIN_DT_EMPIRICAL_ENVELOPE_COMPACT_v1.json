@@ -1,0 +1,130 @@
+{
+  "record": "KEIRIN_DT_EMPIRICAL_ENVELOPE_COMPACT_v1",
+  "status": "CANDIDATE_SENSOR_ENVELOPE_NOT_REALITY_ADMISSION",
+  "source": {
+    "pre_structured_sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+    "pre_provenance_sha256": "86627fe4151074f2d20db637a7f5468e24ae3c6e878a82a33fde7b3218261b27",
+    "universe_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "provider": "KDreams historical race-detail pages",
+    "source_status": "STAGED_UNPROVEN_HISTORICAL_PRE",
+    "availability_proof": "NOT_YET_PROVEN_FOR_HISTORICAL_REPLAY",
+    "training_eligibility": false,
+    "raw_rows_committed": false
+  },
+  "coverage": {
+    "races_all": 2000,
+    "entrant_rows_all": 14255,
+    "date_range": ["2026-03-01", "2026-04-10"],
+    "venue_codes": 32,
+    "standard7_ordinary_candidate_races": 1539,
+    "standard7_ordinary_candidate_entrant_rows": 10773,
+    "excluded_from_standard7_candidate": {
+      "non7_field_or_L1_or_SS": 461
+    }
+  },
+  "race_band_candidate": {
+    "S": {"center": 0.248213, "fold_min": 0.222603, "fold_max": 0.273885},
+    "A12": {"center": 0.521767, "fold_min": 0.464164, "fold_max": 0.55418},
+    "A3": {"center": 0.230019, "fold_min": 0.195046, "fold_max": 0.266212}
+  },
+  "class_within_band_candidate": {
+    "S": {"S1": 0.28534, "S2": 0.71466},
+    "A12": {"A1": 0.503825, "A2": 0.496175},
+    "A3": {"A3": 1.0}
+  },
+  "style_candidate": {
+    "overall": {
+      "逃": {"center": 0.280702, "fold_min": 0.272505, "fold_max": 0.296178},
+      "両": {"center": 0.212383, "fold_min": 0.209281, "fold_max": 0.21648},
+      "追": {"center": 0.506915, "fold_min": 0.49454, "fold_max": 0.514188}
+    },
+    "by_band": {
+      "S": {"逃": 0.298429, "両": 0.253553, "追": 0.448018},
+      "A12": {"逃": 0.280733, "両": 0.207081, "追": 0.512186},
+      "A3": {"逃": 0.261501, "両": 0.179984, "追": 0.558515}
+    }
+  },
+  "score_nonzero_by_band": {
+    "S": {"n": 2668, "mean": 100.568804, "std": 5.12324, "p05": 92.88, "p25": 96.9875, "p50": 100.0, "p75": 103.8725, "p95": 109.699},
+    "A12": {"n": 5603, "mean": 85.605315, "std": 4.764554, "p05": 78.452, "p25": 82.0, "p50": 85.28, "p75": 88.95, "p95": 93.73},
+    "A3": {"n": 2466, "mean": 70.826602, "std": 3.792464, "p05": 65.52, "p25": 68.0625, "p50": 70.29, "p75": 73.5675, "p95": 77.66}
+  },
+  "tactical_per_start_by_style": {
+    "逃": {
+      "B": {"mean": 0.415549, "p25": 0.266667, "p50": 0.407407, "p75": 0.571429, "p95": 0.740741},
+      "S": {"mean": 0.186976, "p25": 0.047619, "p50": 0.140394, "p75": 0.275078, "p95": 0.576923},
+      "nige": {"mean": 0.204067, "p25": 0.083333, "p50": 0.166667, "p75": 0.285714, "p95": 0.541667},
+      "makuri": {"mean": 0.128276, "p25": 0.047619, "p50": 0.105263, "p75": 0.190476, "p95": 0.333333},
+      "sashi": {"mean": 0.041987, "p25": 0.0, "p50": 0.030303, "p75": 0.071429, "p95": 0.142857},
+      "mark": {"mean": 0.0164, "p25": 0.0, "p50": 0.0, "p75": 0.037037, "p95": 0.074074}
+    },
+    "両": {
+      "B": {"mean": 0.117057, "p25": 0.0, "p50": 0.076923, "p75": 0.185185, "p95": 0.383883},
+      "S": {"mean": 0.126297, "p25": 0.0, "p50": 0.08, "p75": 0.181818, "p95": 0.423077},
+      "nige": {"mean": 0.044392, "p25": 0.0, "p50": 0.0, "p75": 0.068966, "p95": 0.189881},
+      "makuri": {"mean": 0.075496, "p25": 0.0, "p50": 0.047619, "p75": 0.12, "p95": 0.25641},
+      "sashi": {"mean": 0.113984, "p25": 0.041667, "p50": 0.090909, "p75": 0.166667, "p95": 0.333333},
+      "mark": {"mean": 0.047198, "p25": 0.0, "p50": 0.037037, "p75": 0.074074, "p95": 0.166667}
+    },
+    "追": {
+      "B": {"mean": 0.003903, "p25": 0.0, "p50": 0.0, "p75": 0.0, "p95": 0.04},
+      "S": {"mean": 0.10672, "p25": 0.0, "p50": 0.0625, "p75": 0.16129, "p95": 0.37037},
+      "nige": {"mean": 0.000587, "p25": 0.0, "p50": 0.0, "p75": 0.0, "p95": 0.0},
+      "makuri": {"mean": 0.007053, "p25": 0.0, "p50": 0.0, "p75": 0.0, "p95": 0.047619},
+      "sashi": {"mean": 0.131389, "p25": 0.05, "p50": 0.111111, "p75": 0.190476, "p95": 0.333333},
+      "mark": {"mean": 0.082012, "p25": 0.034483, "p50": 0.068966, "p75": 0.125, "p95": 0.217391}
+    }
+  },
+  "quality_flags": {
+    "score_zero_rows": 36,
+    "score_zero_rate": 0.003342,
+    "starts_zero_rows": 31,
+    "rate_internal_consistency_max_abs_pct_point_error": 0.098,
+    "withdrawn_rows_in_collection": 0
+  },
+  "current_twin_gap": {
+    "race_band_prior": {
+      "current": {"S": 0.32, "A12": 0.43, "A3": 0.25},
+      "candidate_center": {"S": 0.248213, "A12": 0.521767, "A3": 0.230019},
+      "absolute_gap": {"S": 0.071787, "A12": 0.091767, "A3": 0.019981}
+    },
+    "within_band_class_prior": {
+      "S1_current": 0.35,
+      "S1_candidate": 0.28534,
+      "A1_current": 0.48,
+      "A1_candidate": 0.503825
+    },
+    "style_marginal_expected_from_current_equal_line_template_prior": {
+      "current_expected": {"逃": 0.224762, "両": 0.335238, "追": 0.44},
+      "candidate_center": {"逃": 0.280702, "両": 0.212383, "追": 0.506915},
+      "absolute_gap": {"逃": 0.05594, "両": 0.122855, "追": 0.066915}
+    }
+  },
+  "support_gaps": {
+    "H": "ABSENT",
+    "line_membership_order": "ABSENT",
+    "bank_length": "ABSENT_FROM_THIS_ARTIFACT",
+    "wind": "ABSENT",
+    "race_regime": "NOT_EXPLICIT",
+    "population_representativeness": "NOT_PROVEN",
+    "official_point_in_time_availability": "NOT_PROVEN_FOR_HISTORICAL_REPLAY"
+  },
+  "use_boundary": {
+    "allowed": "candidate observable PRE envelope and falsification of unrealistic synthetic PRE",
+    "forbidden": [
+      "REALITY_TRUTH_PROMOTION",
+      "SPORTING_MODEL_TRAINING_FROM_RAW_ROWS",
+      "MODEL_PROMOTION",
+      "RESULT_PAYOUT",
+      "LINE_OR_BANK_OR_WIND_INFERENCE"
+    ]
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED"
+  }
+}
