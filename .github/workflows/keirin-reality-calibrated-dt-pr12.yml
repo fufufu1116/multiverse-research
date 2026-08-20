@@ -1,142 +1,22 @@
-name: Keirin Reality-Calibrated DT Exact-Head Check
+name: Keirin Reality-Calibrated DT PR12 — PAUSED
+
+# OWNER-DIRECTED GLOBAL KEIRIN SAFE PAUSE — 2026-08-20 JST
+# The Lab-reviewed scientific head remains preserved in Git history.
+# This pause-control commit changes workflow execution only; research code/results are unchanged.
 
 on:
-  push:
-    branches:
-      - agent/keirin-reality-calibrated-dt-envelope-v1
-  pull_request:
-    branches:
-      - main
-    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  exact-head-selftest-and-stress:
+  paused-checkpoint:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Checkout exact PR head
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TARGET_SHA }}
-          persist-credentials: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Show exact head
+      - name: Confirm owner-directed global Keirin pause
         run: |
-          echo "TARGET_SHA=${TARGET_SHA}"
-          git rev-parse HEAD
-          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
-
-      - name: Run empirical PRE adapter selftest
-        working-directory: v3/historical_all_market/new_lineage
-        run: python digital_twin_empirical_pre_adapter_selftest_v1.py
-
-      - name: Run locked 240x10 reality-scaled stress
-        working-directory: v3/historical_all_market/new_lineage
-        run: |
-          python c0_c1_n1_reality_scaled_multiworld_stress_v1.py > /tmp/reality_scaled_stress.json
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          result = json.loads(Path('/tmp/reality_scaled_stress.json').read_text())
-          assert result['seed'] == 20260820
-          assert result['n_races_per_scenario'] == 240
-          assert result['scenario_count'] == 10
-          assert result['coefficient_retuning'] is False
-          assert result['scientific_firewall']['ECON_HOLDOUT1000'] == 'SEALED'
-          assert result['scientific_firewall']['RESULT_PAYOUT_access'] == 'UNAUTHORIZED'
-          assert result['scientific_firewall']['new_untouched_validation_opened'] is False
-          print('REALITY_SCALED_LOCKED_STRESS_EXECUTION_PASS')
-          print('win_counts=', result['win_counts_by_expected_log_loss'])
-          print('baseline_win_counts=', result['baseline_win_counts_by_expected_log_loss'])
-          PY
-
-      - name: Compare exact-head output to reconstructed-runtime receipt
-        working-directory: v3/historical_all_market/new_lineage
-        run: |
-          python - <<'PY'
-          import json
-          import math
-          from pathlib import Path
-          result = json.loads(Path('/tmp/reality_scaled_stress.json').read_text())
-          receipt_path = Path('../governance/KEIRIN_DT_REALITY_SCALED_STRESS_RECONSTRUCTED_RUNTIME_RECEIPT_20260820_v1.json')
-          receipt = json.loads(receipt_path.read_text())['execution']
-
-          def compare(a, b, path='root'):
-              if isinstance(a, dict) and isinstance(b, dict):
-                  if set(a) != set(b):
-                      raise AssertionError(f'key mismatch at {path}: {set(a)^set(b)}')
-                  for k in a:
-                      compare(a[k], b[k], f'{path}.{k}')
-              elif isinstance(a, list) and isinstance(b, list):
-                  if len(a) != len(b):
-                      raise AssertionError(f'length mismatch at {path}')
-                  for i, (x, y) in enumerate(zip(a, b)):
-                      compare(x, y, f'{path}[{i}]')
-              elif isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool) and not isinstance(b, bool):
-                  if not math.isclose(float(a), float(b), rel_tol=1e-12, abs_tol=1e-12):
-                      raise AssertionError(f'numeric mismatch at {path}: {a} != {b}')
-              elif a != b:
-                  raise AssertionError(f'value mismatch at {path}: {a!r} != {b!r}')
-
-          keys = [
-              'seed', 'n_races_per_scenario', 'scenario_count',
-              'win_counts_by_expected_log_loss',
-              'baseline_win_counts_by_expected_log_loss',
-              'mean_metrics_across_scenarios',
-              'baseline_mean_metrics_across_scenarios',
-              'delta_mean_metrics_vs_current_synthetic_baseline',
-              'scenarios'
-          ]
-          for key in keys:
-              compare(result[key], receipt[key], key)
-          print('RECONSTRUCTED_RECEIPT_NUMERIC_MATCH_PASS')
-          PY
-
-      - name: Run joint-dependence PRE adapter V2 selftest
-        working-directory: v3/historical_all_market/new_lineage
-        run: python digital_twin_empirical_pre_adapter_v2_selftest.py
-
-      - name: Run locked R0 R1 R2 PRE-realism multiworld stress
-        working-directory: v3/historical_all_market/new_lineage
-        run: |
-          python c0_c1_n1_pre_realism_multiworld_stress_v1.py > /tmp/pre_realism_multiworld.json
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          result = json.loads(Path('/tmp/pre_realism_multiworld.json').read_text())
-          assert result['seed'] == 20260820
-          assert result['n_races_per_truth_scenario_per_pre_world'] == 240
-          assert result['truth_scenario_count'] == 10
-          assert result['scenario_world_cell_count'] == 30
-          assert result['pre_worlds'] == [
-              'R0_CURRENT_SYNTHETIC',
-              'R1_EMPIRICAL_MARGINAL',
-              'R2_EMPIRICAL_JOINT',
-          ]
-          assert result['scientific_firewall']['ECON_HOLDOUT1000'] == 'SEALED'
-          assert result['scientific_firewall']['RESULT_PAYOUT_access'] == 'UNAUTHORIZED'
-          assert result['scientific_firewall']['new_untouched_validation_opened'] is False
-          assert sum(result['winner_counts'].values()) == 30
-          for model in ('C0', 'C1', 'N1'):
-              assert model in result['robustness']
-              assert result['robustness'][model]['mean_excess_log_loss'] >= -1e-15
-              assert result['robustness'][model]['worst_case_excess_log_loss'] >= -1e-15
-          print('PRE_REALISM_MULTIWORLD_LOCKED_STRESS_PASS')
-          print('winner_counts=', json.dumps(result['winner_counts'], sort_keys=True))
-          print('robustness=', json.dumps(result['robustness'], sort_keys=True))
-          print('cell_winners=', json.dumps([
-              [x['pre_world'], x['scenario_id'], x['winner_by_expected_log_loss']]
-              for x in result['cells']
-          ], sort_keys=True))
-          PY
+          echo "KEIRIN_RESEARCH_PAUSED_BY_OWNER_DIRECTIVE"
+          echo "PR12_SCIENTIFIC_EXECUTION_DISABLED"
+          echo "LAB_REVIEWED_SCIENTIFIC_HEAD=2e070d8094abdda9138865787e5540087fa05ea3"
+          echo "Do not restore scientific execution before the Multiverse foundation resume gate and Pause Guard conformance are satisfied."
