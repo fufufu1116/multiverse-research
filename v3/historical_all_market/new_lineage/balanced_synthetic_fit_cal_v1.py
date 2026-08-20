@@ -1,25 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-import argparse
 import hashlib
 import json
 import math
 from pathlib import Path
-from typing import Callable, Dict, Iterable, Mapping, Sequence, Tuple
+from typing import Callable, Dict, Iterable, Mapping, Sequence
 
 from balanced_synthetic_sampler_v1 import balanced_races, stratum_counts
-from digital_twin_holdout_extensions_v1 import (
-    ALTERNATE_CONDITIONAL_ID,
-    SIGNED_CONTEXT_REVERSAL,
-    alternate_conditional_joint,
-    signed_context_reversal_joint,
-)
-from digital_twin_stress_grid_v1 import (
-    ASSUMPTION_GRID,
-    StressAssumptions,
-    stress_truth_joint,
-)
+from digital_twin_stress_grid_v1 import StressAssumptions, stress_truth_joint
 from digital_twin_v1 import Race, Top3, pre_view
 from top3_architecture_core_v1 import (
     conditional_top3_from_context_logits,
@@ -299,109 +288,28 @@ def fit_train_cal() -> dict:
                 "train_params": asdict(c1_train),
                 "train_mean_log_loss": c1_train_score,
                 "cal_shrinkage": c1_shrink,
-                "cal_mean_log_loss": c1_cal_score
+                "cal_mean_log_loss": c1_cal_score,
             },
             "N1": {
                 "c1_base_train_params": asdict(c1_train),
                 "conditional_train_params": asdict(n1_train),
                 "train_mean_log_loss": n1_train_score,
                 "cal_shrinkage": n1_shrink,
-                "cal_mean_log_loss": n1_cal_score
+                "cal_mean_log_loss": n1_cal_score,
             },
-            "C0_cal_mean_log_loss": c0_cal_score
+            "C0_cal_mean_log_loss": c0_cal_score,
         },
         "holdout_execution": "NOT_EXECUTED",
         "post_holdout_retuning": "PROHIBITED",
-        "untouched_real_validation_may_open": False
-    }
-
-
-def _metrics_for_model(
-    races: Sequence[Race],
-    truth_fn: Callable[[Race], Mapping[Top3, float]],
-    predict_fn: Callable[[Mapping[str, object]], Mapping[Top3, float]],
-) -> dict:
-    sums = {"log_loss": 0.0, "kl": 0.0, "brier": 0.0}
-    for race in races:
-        truth = truth_fn(race)
-        pred = predict_fn(pre_view(race))
-        ll = _expected_log_loss(truth, pred)
-        sums["log_loss"] += ll
-        sums["kl"] += ll - _truth_entropy(truth)
-        sums["brier"] += _joint_brier(truth, pred)
-    return {k: v / len(races) for k, v in sums.items()}
-
-
-def evaluate_holdout(frozen: Mapping[str, object]) -> dict:
-    prereg, prereg_sha256 = _load_prereg()
-    if frozen.get("prereg_sha256") != prereg_sha256:
-        raise ValueError("frozen_prereg_hash_mismatch")
-    if frozen.get("holdout_execution") != "NOT_EXECUTED":
-        raise ValueError("frozen_receipt_not_pre_holdout")
-
-    c1_row = frozen["frozen_after_cal"]["C1"]
-    n1_row = frozen["frozen_after_cal"]["N1"]
-    c1_params = C1Params(**c1_row["train_params"])
-    n1_params = N1Params(**n1_row["conditional_train_params"])
-    c1_shrink = float(c1_row["cal_shrinkage"])
-    n1_shrink = float(n1_row["cal_shrinkage"])
-
-    repeats = int(prereg["sample_control"]["repeats_per_stratum"])
-    seed = int(prereg["splits"]["FRESH_LAB_PRESCRIBED_HOLDOUT_EXTENSION"]["seed"])
-    races = balanced_races(seed=seed, repeats_per_stratum=repeats)
-
-    models = {
-        "C0": _c0,
-        "C1": lambda pre: _c1(pre, c1_params, c1_shrink),
-        "N1": lambda pre: _n1(pre, c1_params, n1_params, n1_shrink)
-    }
-
-    scenarios = []
-    for cfg in ASSUMPTION_GRID:
-        row = {"scenario_id": cfg.scenario_id, "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE", "models": {}}
-        for name, model in models.items():
-            row["models"][name] = _metrics_for_model(races, lambda race, cfg=cfg: stress_truth_joint(race, cfg), model)
-        row["winner_by_log_loss"] = min(row["models"], key=lambda m: row["models"][m]["log_loss"])
-        scenarios.append(row)
-
-    fresh_truths = (
-        (SIGNED_CONTEXT_REVERSAL.scenario_id, signed_context_reversal_joint),
-        (ALTERNATE_CONDITIONAL_ID, alternate_conditional_joint)
-    )
-    for scenario_id, truth_fn in fresh_truths:
-        row = {"scenario_id": scenario_id, "status": "FRESH_LAB_PRESCRIBED_HOLDOUT", "models": {}}
-        for name, model in models.items():
-            row["models"][name] = _metrics_for_model(races, truth_fn, model)
-        row["winner_by_log_loss"] = min(row["models"], key=lambda m: row["models"][m]["log_loss"])
-        scenarios.append(row)
-
-    return {
-        "record": "KEIRIN_BALANCED_SYNTHETIC_HOLDOUT_RESULT_v1",
-        "status": "SYNTHETIC_HOLDOUT_EXECUTED_NO_REAL_VALIDATION",
-        "prereg_sha256": prereg_sha256,
-        "frozen_config_digest": hashlib.sha256(json.dumps(frozen, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest(),
-        "sample_strata": stratum_counts(races),
-        "scenario_count": len(scenarios),
-        "scenarios": scenarios,
-        "post_holdout_retuning": "PROHIBITED",
-        "untouched_real_validation_may_open": False
+        "untouched_real_validation_may_open": False,
     }
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=("train-cal", "holdout"), default="train-cal")
-    parser.add_argument("--frozen-json")
-    args = parser.parse_args()
-
-    if args.stage == "train-cal":
-        result = fit_train_cal()
-    else:
-        if not args.frozen_json:
-            raise SystemExit("--frozen-json is required for holdout")
-        frozen = json.loads(Path(args.frozen_json).read_text(encoding="utf-8"))
-        result = evaluate_holdout(frozen)
-
+    # This module is intentionally TRAIN/CAL-only.
+    # Fresh synthetic holdout is available only through locked_synthetic_holdout_runner_v1.py,
+    # which binds execution to the exact frozen receipt identity.
+    result = fit_train_cal()
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
 
 
