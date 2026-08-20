@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_LONG_LINE_TOPOLOGY_SUPPORT_PREREG_CHRONOLOGY_ERRATUM_20260820_v1",
+  "status": "IMMUTABLE_ERRATUM_TO_PREREG_CHRONOLOGY_METADATA",
+  "date_jst": "2026-08-20",
+  "original_prereg": {
+    "path": "v3/historical_all_market/governance/KEIRIN_LONG_LINE_TOPOLOGY_SUPPORT_PREREG_20260820_v1.json",
+    "commit": "198ab39dc3f307f35db3acf23984fd7dafefb664",
+    "original_locked_at_jst": "2026-08-20T13:27+09:00",
+    "preservation_rule": "ORIGINAL_PREREG_BYTES_MUST_REMAIN_UNCHANGED"
+  },
+  "erratum": {
+    "field": "locked_at_jst",
+    "classification": "CHRONOLOGY_METADATA_ERROR",
+    "statement": "The original prereg locked_at_jst value is later than the Git commit timestamps of the prereg and subsequent implementation commits and therefore must not be used as authoritative chronology.",
+    "authoritative_chronology_source": "GIT_COMMIT_ANCESTRY_AND_COMMIT_TIMESTAMPS",
+    "authoritative_sequence": [
+      {
+        "role": "accepted_domain_matrix_base",
+        "commit": "8da439e44c6d3b54c821a71557b5ec7d063b3b9f"
+      },
+      {
+        "role": "preregistration",
+        "commit": "198ab39dc3f307f35db3acf23984fd7dafefb664",
+        "commit_time_utc": "2026-08-20T04:24:43Z",
+        "commit_time_jst": "2026-08-20T13:24:43+09:00"
+      },
+      {
+        "role": "fixture_implementation",
+        "commit": "12bd218a60e393973e47ed74ec878dd7c5c137e3",
+        "commit_time_utc": "2026-08-20T04:25:18Z",
+        "commit_time_jst": "2026-08-20T13:25:18+09:00"
+      },
+      {
+        "role": "selftest_implementation",
+        "commit": "33f2d7900e60a5051a501de0efcda8a71fbf7270",
+        "commit_time_utc": "2026-08-20T04:25:37Z",
+        "commit_time_jst": "2026-08-20T13:25:37+09:00"
+      }
+    ],
+    "interpretation": "Git ancestry demonstrates that the preregistration commit precedes both implementation commits. This erratum corrects chronology metadata only and does not alter preregistered scope, hypotheses, fixtures, prohibited actions, or scientific gates."
+  },
+  "scientific_boundary": {
+    "topology_support_effect_assumption_separation": "UNCHANGED",
+    "real_frequency_claims": "PROHIBITED",
+    "C0_C1_N1_retuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "untouched_real_validation_opened": false,
+    "model_promotion": "PROHIBITED"
+  },
+  "next_gate": "LAB_MICRO_RECHECK_REQUIRED_FOR_CHRONOLOGY_ERRATUM_ONLY"
+}
