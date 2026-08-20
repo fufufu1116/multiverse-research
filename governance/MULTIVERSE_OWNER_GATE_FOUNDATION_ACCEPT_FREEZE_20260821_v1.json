@@ -1,0 +1,44 @@
+{
+  "record": "MULTIVERSE_OWNER_GATE_FOUNDATION_ACCEPT_FREEZE_20260821_v1",
+  "status": "OWNER_APPROVED_OPERATION_AND_SCOPE_SPECIFIC",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "owner_role": "OWNER",
+  "approval_captured_at_jst": "2026-08-21T00:21:00+09:00",
+  "approval_text_exact": "承認する",
+  "operation": "GOVERNED_ACCEPT_FREEZE",
+  "target": "MULTIVERSE_FOUNDATION_v1",
+  "permission_class": "P4_OWNER_GATE_REQUIRED",
+  "scope": {
+    "candidate_pr": 24,
+    "audited_pr_head": "2f81464a0a159f7d643105e176edbf289f263cda",
+    "required_canonical_main_before_transition": "819afb723c8f14000757b2e53b6664d71ab01227",
+    "transition_style": "CAS_LIKE_TWO_PARENT_ACCEPTANCE_COMMIT",
+    "foundation_canonical_acceptance": true,
+    "foundation_freeze": true
+  },
+  "explicit_exclusions": {
+    "keirin_scientific_resume": false,
+    "result_payout_access": false,
+    "holdout_access": false,
+    "untouched_validation_open": false,
+    "pr15_quarantined_metrics_inspection": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  },
+  "auditor_dependency": {
+    "result_comment_id": 5357896969,
+    "verdict": "PASS",
+    "owner_gate_required": true,
+    "atomic_canonical_transition_allowed_after_owner_gate": true,
+    "foundation_canonical_acceptance_may_occur_after_owner_gate": true,
+    "keirin_scientific_resume_may_occur": false
+  },
+  "validity": {
+    "operation_and_scope_specific": true,
+    "blanket_permission": false,
+    "single_use_for_this_transition": true,
+    "invalid_on_pr24_head_drift": true,
+    "invalid_on_canonical_main_drift": true
+  },
+  "source_assurance": "OWNER_EXPLICIT_APPROVAL_CAPTURED_IN_PROJECT_CONVERSATION_BY_CORE"
+}

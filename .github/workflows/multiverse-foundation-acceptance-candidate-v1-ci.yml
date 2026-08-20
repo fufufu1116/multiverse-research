@@ -1,0 +1,73 @@
+name: Multiverse Foundation Acceptance Candidate v1 CI
+
+on:
+  push:
+    branches:
+      - agent/multiverse-foundation-canonical-acceptance-v1
+    paths:
+      - 'governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v4.json'
+      - 'governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v4.json'
+      - 'governance/MULTIVERSE_FOUNDATION_ACCEPTANCE_EVIDENCE_CANDIDATE_20260820_v1.json'
+      - 'tools/multiverse_foundation_acceptance_candidate_selftest_v1.py'
+      - '.github/workflows/multiverse-foundation-acceptance-candidate-v1-ci.yml'
+  pull_request:
+    paths:
+      - 'governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v4.json'
+      - 'governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v4.json'
+      - 'governance/MULTIVERSE_FOUNDATION_ACCEPTANCE_EVIDENCE_CANDIDATE_20260820_v1.json'
+      - 'tools/multiverse_foundation_acceptance_candidate_selftest_v1.py'
+      - '.github/workflows/multiverse-foundation-acceptance-candidate-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  foundation-acceptance-candidate-v1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact acceptance candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Verify exact head
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: Latest Foundation safety selftests
+        working-directory: tools
+        run: |
+          python multiverse_pause_guard_selftest_v2.py
+          python multiverse_zero_history_resume_resolver_selftest_v2.py
+          python multiverse_foundation_lab_remediation_selftest_v1.py
+          python multiverse_owner_assurance_view_selftest_v2.py
+          python multiverse_workflow_trigger_inventory_selftest_v1.py
+          python multiverse_workflow_trigger_exposure_selftest_v1.py
+      - name: Acceptance candidate state selftest
+        run: python tools/multiverse_foundation_acceptance_candidate_selftest_v1.py
+      - name: Render Owner Assurance from final pre-acceptance v4 state
+        run: |
+          python tools/multiverse_owner_assurance_view_v2.py \
+            --lifecycle governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v4.json \
+            --operational governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v4.json \
+            --safe-mode governance/MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v2.json \
+            > /tmp/owner_assurance_v4.md
+          grep -F '今進める場所:** PR #24 Foundation canonical acceptance candidate v1' /tmp/owner_assurance_v4.md
+          grep -F '競輪研究:** PAUSED（科学実験停止中）' /tmp/owner_assurance_v4.md
+          grep -F 'ECON_HOLDOUT1000:** SEALED' /tmp/owner_assurance_v4.md
+          grep -F 'RESULT/PAYOUT:** UNAUTHORIZED' /tmp/owner_assurance_v4.md
+      - name: Protected boundary terminal
+        run: |
+          echo 'MULTIVERSE_FOUNDATION_ACCEPTANCE_CANDIDATE_V1_EXACT_HEAD_CI_PASS'
+          echo 'FOUNDATION_ACCEPTED=false'
+          echo 'FINAL_AUDITOR_REQUIRED=true'
+          echo 'SCIENTIFIC_EXECUTION_PERFORMED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'PR15_QUARANTINED_METRICS_INSPECTED=false'
+          echo 'SCIENTIFIC_RESUME_ALLOWED=false'

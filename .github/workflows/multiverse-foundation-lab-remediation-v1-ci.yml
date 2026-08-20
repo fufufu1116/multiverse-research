@@ -1,0 +1,68 @@
+name: Multiverse Foundation Lab Remediation v1 CI
+
+on:
+  push:
+    branches:
+      - agent/multiverse-foundation-lab-remediation-v1
+    paths:
+      - 'governance/MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v2.json'
+      - 'governance/MULTIVERSE_ZERO_HISTORY_RESUME_POINTER_CANDIDATE_20260820_v2.json'
+      - 'governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v3.json'
+      - 'governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v3.json'
+      - 'tools/multiverse_pause_guard_v2.py'
+      - 'tools/multiverse_pause_guard_selftest_v2.py'
+      - 'tools/multiverse_zero_history_resume_resolver_v2.py'
+      - 'tools/multiverse_zero_history_resume_resolver_selftest_v2.py'
+      - 'tools/multiverse_foundation_lab_remediation_selftest_v1.py'
+      - '.github/workflows/multiverse-foundation-lab-remediation-v1-ci.yml'
+  pull_request:
+    paths:
+      - 'governance/MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v2.json'
+      - 'governance/MULTIVERSE_ZERO_HISTORY_RESUME_POINTER_CANDIDATE_20260820_v2.json'
+      - 'governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v3.json'
+      - 'governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v3.json'
+      - 'tools/multiverse_pause_guard_v2.py'
+      - 'tools/multiverse_pause_guard_selftest_v2.py'
+      - 'tools/multiverse_zero_history_resume_resolver_v2.py'
+      - 'tools/multiverse_zero_history_resume_resolver_selftest_v2.py'
+      - 'tools/multiverse_foundation_lab_remediation_selftest_v1.py'
+      - '.github/workflows/multiverse-foundation-lab-remediation-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  foundation-lab-remediation-v1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact remediation head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Verify exact head
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: Pause Guard v2 selftest
+        working-directory: tools
+        run: python multiverse_pause_guard_selftest_v2.py
+      - name: Zero-History orientation resolver v2 selftest
+        working-directory: tools
+        run: python multiverse_zero_history_resume_resolver_selftest_v2.py
+      - name: Integrated Lab remediation selftest
+        working-directory: tools
+        run: python multiverse_foundation_lab_remediation_selftest_v1.py
+      - name: Protected boundary terminal
+        run: |
+          echo 'MULTIVERSE_FOUNDATION_LAB_REMEDIATION_V1_EXACT_HEAD_CI_PASS'
+          echo 'SCIENTIFIC_EXECUTION_PERFORMED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'PR15_QUARANTINED_METRICS_INSPECTED=false'
+          echo 'SCIENTIFIC_RESUME_ALLOWED=false'

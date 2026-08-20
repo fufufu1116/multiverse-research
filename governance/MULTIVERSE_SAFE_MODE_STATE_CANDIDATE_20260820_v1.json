@@ -1,0 +1,49 @@
+{
+  "record": "MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v1",
+  "status": "DRAFT_NONCANONICAL_NEXT_VERSION_CANDIDATE",
+  "purpose": "Provide one explicit fail-closed pause state that governed execution adapters can check immediately before scientific or other nonessential side effects.",
+  "canonical_authority": false,
+  "candidate_generation": 1,
+  "owner_directive": "PAUSE_CURRENT_KEIRIN_RESEARCH_FOR_MULTIVERSE_ZERO_BASE_FOUNDATION_AUDIT",
+  "safe_mode": {
+    "active": true,
+    "scope": [
+      "KEIRIN_SCIENTIFIC_EXECUTION"
+    ],
+    "reason_code": "OWNER_DIRECTED_FOUNDATION_AUDIT",
+    "entered_jst": "2026-08-20T20:00:00+09:00",
+    "new_scientific_execution_allowed": false
+  },
+  "operation_classes": {
+    "SCIENTIFIC_EXECUTION": "DENY_WHILE_SCOPE_PAUSED",
+    "PROTECTED_DATA_OPEN": "DENY",
+    "MODEL_PROMOTION": "DENY",
+    "EXTERNAL_PROVIDER_CONTACT": "DENY_BY_OWNER_POLICY",
+    "AUDIT_READ": "ALLOW",
+    "RECOVERY_READ_VERIFY": "ALLOW",
+    "EVIDENCE_PRESERVATION": "ALLOW",
+    "REVERSIBLE_CONTAINMENT": "ALLOW_IF_EXPLICITLY_WITHIN_PAUSE_REPAIR"
+  },
+  "running_job_policy": {
+    "if_provider_can_cancel": "REQUEST_CANCEL_AND_RECORD_RECEIPT",
+    "if_provider_cannot_cancel_or_race_already_completed": "QUARANTINE_OUTPUT_BY_DEFAULT",
+    "quarantined_output_may_influence_research": false
+  },
+  "fail_closed_rules": [
+    "MISSING_STATE_DENY_GOVERNED_SCIENTIFIC_EXECUTION",
+    "MALFORMED_STATE_DENY_GOVERNED_SCIENTIFIC_EXECUTION",
+    "UNKNOWN_OPERATION_DENY",
+    "STALE_EXPECTED_GENERATION_DENY",
+    "SCOPE_AMBIGUITY_DENY",
+    "SAFE_MODE_EXIT_REQUIRES_AUDITABLE_STATE_TRANSITION"
+  ],
+  "integration_rule": "This candidate must not become a second canonical authority. If accepted, the safe-mode generation/state must live in or be deterministically resolved from the canonical governance state, and every governed scientific workflow must invoke the same guard before expensive/protected execution.",
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "UNTOUCHED_VALIDATION": "CLOSED",
+    "MODEL_PROMOTION": "PROHIBITED",
+    "REAL_MONEY_WAGERING": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE"
+}

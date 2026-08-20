@@ -1,0 +1,29 @@
+{
+  "record": "MULTIVERSE_ZERO_HISTORY_RESUME_RESOLVER_SELFTEST_RECEIPT_20260820_v1",
+  "status": "DRAFT_AUDIT_EVIDENCE_NOT_ACCEPTED",
+  "stacked_pr": 17,
+  "executed_candidate_head": "e493fcbdf59a7ac793c260bf6edcccbfcfa49f7a",
+  "execution_mode": "ISOLATED_RUNTIME_EXACT_GIT_BLOB_SHA_VERIFIED_NOT_FULL_REPOSITORY_CHECKOUT",
+  "git_blob_identities": {
+    "tools/multiverse_zero_history_resume_resolver_v1.py": "be1046e3104827df139d728f6c0c4f4a852e818d",
+    "tools/multiverse_zero_history_resume_resolver_selftest_v1.py": "3e6ea9af90ce54512573c2e620f723cb8130a421"
+  },
+  "runtime": {
+    "exit_code": 0,
+    "terminal": "MULTIVERSE_ZERO_HISTORY_RESUME_RESOLVER_SELFTEST_PASS"
+  },
+  "checks": {
+    "CURRENT_OWNER_PAUSE_ORIENTS_TO_PR16": "PASS",
+    "CURRENT_OWNER_PAUSE_DENIES_SCIENTIFIC_RESUME": "PASS",
+    "PAUSE_PERMISSION_CONTRADICTION_FAILS_CLOSED": "PASS",
+    "G1_G5_SET_MISMATCH_FAILS_CLOSED": "PASS",
+    "INCOMPLETE_G1_G5_DENIES_RESUME": "PASS",
+    "UNRESOLVED_QUARANTINED_PR15_RUN_DENIES_RESUME": "PASS",
+    "EXPLICIT_ACCEPTED_RESUME_POINTER_REQUIRED": "PASS",
+    "EXPLICIT_POINTER_WITH_RESUME_FALSE_REMAINS_CLOSED": "PASS",
+    "ONLY_EXPLICIT_STRUCTURALLY_VALID_RESUME_TRUE_POINTER_CAN_ALLOW": "PASS"
+  },
+  "critical_limit": "This proves deterministic candidate resolution logic only. It does not establish live GitHub freshness by itself, does not accept G1-G5, does not decide the PR15 quarantined-run disposition, and does not authorize Keirin scientific execution.",
+  "scientific_resume_allowed": false,
+  "owner_action_now": "NONE"
+}

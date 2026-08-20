@@ -1,0 +1,99 @@
+name: Multiverse Workflow Trigger Inventory v1
+
+on:
+  push:
+    branches:
+      - agent/multiverse-workflow-pause-inventory-v1
+    paths:
+      - 'tools/multiverse_workflow_trigger_inventory_v1.py'
+      - 'tools/multiverse_workflow_trigger_inventory_selftest_v1.py'
+      - 'tools/multiverse_workflow_trigger_exposure_v1.py'
+      - 'tools/multiverse_workflow_trigger_exposure_selftest_v1.py'
+      - '.github/workflows/multiverse-workflow-trigger-inventory-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inventory-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_SHA: ${{ github.sha }}
+      TARGET_BRANCH: agent/multiverse-workflow-pause-inventory-v1
+    steps:
+      - name: Checkout exact head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: true
+          fetch-depth: 1
+      - name: Verify exact head
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: Scanner selftests
+        working-directory: tools
+        run: |
+          python multiverse_workflow_trigger_inventory_selftest_v1.py
+          python multiverse_workflow_trigger_exposure_selftest_v1.py
+      - name: Inventory triggers and path exposure only — do not execute target workflows
+        run: |
+          python tools/multiverse_workflow_trigger_inventory_v1.py --output /tmp/workflow-trigger-inventory.json
+          python tools/multiverse_workflow_trigger_exposure_v1.py --output /tmp/workflow-trigger-exposure.json
+          python - <<'PY'
+          import json, os
+          for p, scope in [
+              ('/tmp/workflow-trigger-inventory.json','TRIGGER_TEXT_INVENTORY_ONLY_NO_TARGET_WORKFLOW_EXECUTION'),
+              ('/tmp/workflow-trigger-exposure.json','TRIGGER_PATH_EXPOSURE_ONLY_NO_TARGET_WORKFLOW_EXECUTION')
+          ]:
+              x=json.load(open(p))
+              x['executed_head']=os.environ['TARGET_SHA']
+              x['evidence_scope']=scope
+              open(p,'w').write(json.dumps(x,ensure_ascii=False,sort_keys=True,indent=2)+'\n')
+              assert x['scientific_execution_performed'] is False
+              assert x['result_payout_accessed'] is False
+              assert x['holdout_accessed'] is False
+          x=json.load(open('/tmp/workflow-trigger-inventory.json'))
+          e=json.load(open('/tmp/workflow-trigger-exposure.json'))
+          print('WORKFLOW_COUNT',x['workflow_count'])
+          print('SENSITIVE_AUTO_TRIGGER_COUNT',x['sensitive_auto_trigger_count'])
+          print('SENSITIVE_UNKNOWN_TRIGGER_COUNT',x['sensitive_unknown_trigger_count'])
+          print('SENSITIVE_SELF_FILE_ONLY',e['sensitive_push_self_file_only'])
+          print('SENSITIVE_RESTRICTED_PATHS',e['sensitive_push_restricted_paths'])
+          print('SENSITIVE_ANY_PUSH',e['sensitive_push_any_path'])
+          print('SENSITIVE_ANY_PUSH_EXCEPT_IGNORED',e['sensitive_push_any_path_except_ignored'])
+          print('SENSITIVE_ANY_PR',e['sensitive_pull_request_any_path'])
+          print('SENSITIVE_RESTRICTED_PR',e['sensitive_pull_request_restricted_paths'])
+          print('SENSITIVE_SCHEDULE',e['sensitive_schedule'])
+          for r in e['rows']:
+              if r['keirin_sensitive_name']:
+                  for ev in r['events']:
+                      if ev['exposure'] in ('ANY_PATH','ANY_PATH_EXCEPT_IGNORED','ANY_PR_PATH','SCHEDULED','OTHER_AUTO_OR_UNKNOWN'):
+                          print('BROAD_EXPOSURE',ev['exposure'],ev['event'],r['path'],json.dumps(ev['filters'],sort_keys=True))
+          print('MULTIVERSE_WORKFLOW_TRIGGER_INVENTORY_EXACT_HEAD_PASS')
+          PY
+      - name: Commit exact-head inventory receipts without retrigger loop
+        run: |
+          remote_head="$(git ls-remote origin "refs/heads/${TARGET_BRANCH}" | cut -f1)"
+          echo "REMOTE_HEAD=${remote_head}"
+          test "${remote_head}" = "${TARGET_SHA}"
+          git switch -C "${TARGET_BRANCH}" "${TARGET_SHA}"
+          mkdir -p governance
+          cp /tmp/workflow-trigger-inventory.json governance/MULTIVERSE_WORKFLOW_TRIGGER_INVENTORY_20260820_v1.json
+          cp /tmp/workflow-trigger-exposure.json governance/MULTIVERSE_WORKFLOW_TRIGGER_EXPOSURE_20260820_v1.json
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add governance/MULTIVERSE_WORKFLOW_TRIGGER_INVENTORY_20260820_v1.json governance/MULTIVERSE_WORKFLOW_TRIGGER_EXPOSURE_20260820_v1.json
+          git commit -m 'Record exact-head workflow trigger exposure inventory'
+          git push origin "HEAD:${TARGET_BRANCH}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: multiverse-workflow-trigger-inventory
+          path: |
+            /tmp/workflow-trigger-inventory.json
+            /tmp/workflow-trigger-exposure.json
+          if-no-files-found: error
+          retention-days: 7

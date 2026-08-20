@@ -1,0 +1,86 @@
+{
+  "record": "MULTIVERSE_FOUNDATION_ACCEPTANCE_FREEZE_RECEIPT_20260821_v1",
+  "status": "ACCEPTED_FROZEN",
+  "governance_action": "GOVERNED_ACCEPT_FREEZE",
+  "permission_class": "P4_OWNER_GATE_REQUIRED",
+  "owner_gate_required": true,
+  "owner_gate": {
+    "record_path": "governance/MULTIVERSE_OWNER_GATE_FOUNDATION_ACCEPT_FREEZE_20260821_v1.json",
+    "git_blob_sha": "abf41ce2cf3c35a9ee65ac04be6eda4132606030",
+    "sha256": "2c2af5eda140af939a94e4bf34a8923c150707f6248cdc35934dc5ed1c89c07e",
+    "operation_and_scope_specific": true,
+    "approval_text_exact": "承認する",
+    "approval_captured_at_jst": "2026-08-21T00:21:00+09:00"
+  },
+  "auditor": {
+    "result_comment_id": 5357896969,
+    "reviewed_head": "2f81464a0a159f7d643105e176edbf289f263cda",
+    "acceptance_verdict": "PASS",
+    "g1_to_g5": "PASS_ALL",
+    "pr22_auditor_fix_closed_by_pr23": true,
+    "exact_head_ci": "PASS",
+    "dual_root_recovery": "PASS",
+    "unresolved_release_blocking_findings": [],
+    "permission_class": "P4_OWNER_GATE_REQUIRED",
+    "owner_gate_required": true,
+    "atomic_canonical_transition_allowed": true,
+    "foundation_canonical_acceptance_may_occur": true,
+    "keirin_scientific_resume_may_occur": false,
+    "assurance_limit": "Drive ACL shared=false/owner-only was not independently re-proven by Auditor; exact bytes, file identity/size, noncanonical role and reconstructability were independently verified."
+  },
+  "accepted_candidate": {
+    "candidate_pr": 24,
+    "audited_pr_head": "2f81464a0a159f7d643105e176edbf289f263cda",
+    "canonical_main_parent_before_acceptance": "819afb723c8f14000757b2e53b6664d71ab01227",
+    "candidate_evidence_path": "governance/MULTIVERSE_FOUNDATION_ACCEPTANCE_EVIDENCE_CANDIDATE_20260820_v1.json",
+    "post_audit_material_architecture_change": false
+  },
+  "foundation_gates": {
+    "G1_PAUSE_SEMANTICS_FIXED": "ACCEPTED",
+    "G2_CURRENT_STATE_SYNCHRONIZED": "ACCEPTED",
+    "G3_REVIEW_LIFECYCLE_REGISTRY_EXISTS": "ACCEPTED",
+    "G4_ZERO_HISTORY_ORIENTATION_SAFE": "ACCEPTED",
+    "G5_OWNER_ASSURANCE_MINIMAL_VIEW": "ACCEPTED",
+    "all_foundation_gates_accepted": true
+  },
+  "atomic_transition": {
+    "rule": "THIS_RECEIPT_AND_GENERATION_11_CURRENT_STATE_MUST_SHARE_ONE_GIT_TREE_COMMIT",
+    "transition_style": "CAS_LIKE_TWO_PARENT_ACCEPTANCE_COMMIT",
+    "first_parent_required": "819afb723c8f14000757b2e53b6664d71ab01227",
+    "second_parent_required": "2f81464a0a159f7d643105e176edbf289f263cda",
+    "self_commit_identity": "RESOLVE_FROM_GIT_COMMIT_CONTAINING_THIS_BLOB; DO_NOT_SELF_HASH_COMMIT_SHA",
+    "pr_head_must_not_move_before_transition": true,
+    "canonical_main_must_not_move_before_transition": true,
+    "state_parent_blob_required": "a6577d2267a6c0e6eed8af248682827c783e2970",
+    "generation_transition": "10_TO_11"
+  },
+  "recovery": {
+    "recovery_run": 32383034746,
+    "recovery_job": 96470656193,
+    "inner_repo_zip_sha256": "291df8ee537ec8af72a4f94756509e955cc6528257495a65c04c7880bf57477e",
+    "inner_repo_zip_size_bytes": 1007679,
+    "inner_repo_zip_entries": 513,
+    "github_artifact_id": 9411765380,
+    "github_artifact_zip_sha256": "8c9bfc4bb1dec04139da9200954ab1c1e3b36c4c367223a402d875b4a92ecae1",
+    "github_artifact_zip_size_bytes": 928634,
+    "drive_file_id": "1BFqJ9TQk-xhVS2BQdUfetgIXa4wjB8gx",
+    "drive_role": "NONAUTHORITATIVE_RECOVERY_COPY",
+    "drive_byte_identical_readback": true,
+    "acl_independent_reverification": "NOT_AVAILABLE_TO_AUDITOR_API"
+  },
+  "keirin_firewall": {
+    "scientific_execution_authorized_by_this_acceptance": false,
+    "scientific_resume_allowed": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "pr15_quarantined_metrics_inspection_allowed": false,
+    "external_provider_contact_authorized": false,
+    "real_money_wagering": "OUT_OF_SCOPE",
+    "synthetic_evidence_is_real_world_edge_evidence": false
+  },
+  "next_gate": "SEPARATE_SCIENTIFIC_EXECUTION_AUTHORIZATION_REQUIRED_BEFORE_ANY_KEIRIN_SCIENTIFIC_RESUME"
+}

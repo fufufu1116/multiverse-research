@@ -1,0 +1,1094 @@
+{
+  "evidence_scope": "TRIGGER_PATH_EXPOSURE_ONLY_NO_TARGET_WORKFLOW_EXECUTION",
+  "executed_head": "e886a9efd660eb35a7a40f3a08598d87ed24121f",
+  "holdout_accessed": false,
+  "record": "MULTIVERSE_WORKFLOW_TRIGGER_EXPOSURE_v1",
+  "result_payout_accessed": false,
+  "rows": [
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/all-market-stage0-5car-canary.yml",
+              "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/all-market-stage0-5car-canary.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/all-market-stage0-price-bulk-runner-static.yml",
+              "v3/historical_all_market/stage0_price_bulk_runner_v1.py",
+              "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py",
+              "v3/historical_all_market/governance/INDEPENDENT_GEMINI_STAGE0_FINAL_APPROVE_RECEIPT_v1.json"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/all-market-stage0-price-bulk-runner-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/all-market-stage0-price-bulk-runner-v2-static.yml",
+              "v3/historical_all_market/stage0_price_bulk_runner_v2.py"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/all-market-stage0-price-bulk-runner-v2-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/all-market-stage1-pl-static.yml",
+              "v3/historical_all_market/stage1_market_structure_only_v1.py",
+              "v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py",
+              "v3/historical_all_market/governance/STAGE1_TICKET_PROBABILITY_PREREG_v1.md"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/all-market-stage1-pl-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/all-market-stage2-price-ev-static.yml",
+              "v3/historical_all_market/stage2_price_ev_catalog_engine_v1.py",
+              "v3/historical_all_market/governance/STAGE2_PRICE_EV_SEMANTICS_PREREG_v1.md"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/all-market-stage2-price-ev-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/all-market-stage3-resumable-v2-static.yml",
+              "v3/historical_all_market/stage3_ticket_filter_diagnostics_v2.py",
+              "v3/historical_all_market/governance/STAGE3_TICKET_FILTER_FAMILY_PREREG_v1.md",
+              "v3/historical_all_market/governance/COLAB_IPHONE_RUNTIME_RELIABILITY_STANDARD_v1.md"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/all-market-stage3-resumable-v2-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/all-market-stage3-ticket-filter-static.yml",
+              "v3/historical_all_market/stage3_ticket_filter_diagnostics_v1.py",
+              "v3/historical_all_market/governance/STAGE3_TICKET_FILTER_FAMILY_PREREG_v1.md"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/all-market-stage3-ticket-filter-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/dev2000-stage7-settlement-official-fetch.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/dev2000-stage7-settlement-official-fetch.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "branches": [
+              "agent/keirin-exact-resume-calibration-batch1"
+            ],
+            "paths": [
+              ".github/workflows/keirin-native-conformance-v1.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirin-native-conformance-v1.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-identity-locator-v3-live.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-identity-locator-v3-live.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-locator-v2-live-core-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-locator-v2-live-core-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-profile-parser-diagnostic-v2.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-profile-parser-diagnostic-v2.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-profile-table-dup-probe.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-profile-table-dup-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-profile-timestamp-semantic-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-profile-timestamp-semantic-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-profile-update-dom-probe-v3.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-profile-update-dom-probe-v3.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-race-batch-live-diagnostic.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-race-batch-live-diagnostic.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-race-batch-synthetic.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-race-batch-synthetic.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-race-batch-v2-live-diagnostic.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-race-batch-v2-live-diagnostic.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-racerprofile-parser-v2-live.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-racerprofile-parser-v2-live.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-racerprofile-parser-v3-live.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-racerprofile-parser-v3-live.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-racerprofile-parser-v4-live.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-racerprofile-parser-v4-live.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-racersearchresult-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-racersearchresult-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-racersearchresult-structure-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-racersearchresult-structure-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-search-control-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-search-control-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-search-semantic-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-search-semantic-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp-search-submitform-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp-search-submitform-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/keirinjp_racerprofile_smoke_v1.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/keirinjp_racerprofile_smoke_v1.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "pull_request",
+          "exposure": "PR_RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              "governance/**",
+              "tools/**",
+              ".github/workflows/multiverse-foundation-candidate-ci-v1.yml"
+            ]
+          }
+        },
+        {
+          "event": "push",
+          "exposure": "ANY_PATH",
+          "filters": {
+            "branches": [
+              "agent/multiverse-owner-assurance-view-v1"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": false,
+      "path": ".github/workflows/multiverse-foundation-candidate-ci-v1.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "branches": [
+              "agent/multiverse-workflow-pause-inventory-v1"
+            ],
+            "paths": [
+              "tools/multiverse_workflow_trigger_inventory_v1.py",
+              "tools/multiverse_workflow_trigger_inventory_selftest_v1.py",
+              "tools/multiverse_workflow_trigger_exposure_v1.py",
+              "tools/multiverse_workflow_trigger_exposure_selftest_v1.py",
+              ".github/workflows/multiverse-workflow-trigger-inventory-v1.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": false,
+      "path": ".github/workflows/multiverse-workflow-trigger-inventory-v1.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {
+            "inputs": []
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/nextgen-pre-staging.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": false,
+      "path": ".github/workflows/remote-proof.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-candidate-smoke-v2.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-candidate-smoke-v2.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-candidate-smoke-v3.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-candidate-smoke-v3.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-candidate-smoke-v4.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-candidate-smoke-v4.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-candidate-smoke.yml",
+              "v3/prospective_shadow250_v2/tamano_racecard_row_parser_v2.py",
+              "v3/prospective_shadow250_v2/keirinjp_identity_locator_v1.py"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-candidate-smoke.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-final-candidate-runtime-evidence.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-final-candidate-runtime-evidence.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-final-freeze-self-verification.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-final-freeze-self-verification.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-first-prospective-discovery.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-first-prospective-discovery.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-live-smoke-diagnostic.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-live-smoke-diagnostic.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-pre-freeze-binding-verification.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-pre-freeze-binding-verification.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-scheduled-start-binding-verification.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-scheduled-start-binding-verification.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-scheduled-start-candidate-live.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-scheduled-start-candidate-live.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-scheduled-start-post-activation-live-smoke-once.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-scheduled-start-post-activation-live-smoke-once.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-scheduled-start-preonly-probe.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-scheduled-start-preonly-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-separate-activation.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-separate-activation.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/shadow250-v2-source-window-live-diagnostic.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/shadow250-v2-source-window-live-diagnostic.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/sim100-prelock.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/sim100-result-capture-fixed.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/sim100-scoring.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              "v3/historical_all_market/stage7_ab_postmortem_diagnostics_v1.py",
+              ".github/workflows/stage7-ab-postmortem-static.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/stage7-ab-postmortem-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              "v3/historical_all_market/stage7_frozen_evaluator_v2.py",
+              "v3/historical_all_market/stage7_settlement_bulk_runner_v1.py",
+              "v3/historical_all_market/kdreams_settlement_recovery_v1.py",
+              "v3/historical_all_market/stage456_preoutcome_decision_engine_v1.py",
+              "v3/historical_all_market/governance/STAGE7_**",
+              "v3/historical_all_market/governance/INDEPENDENT_GOVERNANCE_STAGE7_SETTLEMENT_APPROVE_RECEIPT_v1.json",
+              ".github/workflows/stage7-final-static.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/stage7-final-static.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/tamano-fieldsize-marker-map-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/tamano-fieldsize-marker-map-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/tamano-parser-v2-live-core-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/tamano-parser-v2-live-core-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/tamano-parser-v4-live-core-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/tamano-parser-v4-live-core-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/tamano-pre-date-semantic-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/tamano-pre-date-semantic-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/tamano-pre-header-date-probe.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {}
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/tamano-pre-header-date-probe.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/tamano_racecard_smoke_v1.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/tamano_racecard_smoke_v1.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "SELF_FILE_ONLY",
+          "filters": {
+            "paths": [
+              ".github/workflows/tamano_robots_primary_evidence_v1.yml"
+            ]
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/tamano_robots_primary_evidence_v1.yml"
+    },
+    {
+      "events": [
+        {
+          "event": "push",
+          "exposure": "RESTRICTED_PATHS",
+          "filters": {
+            "paths": [
+              "v3/fresh_universe_discovery.py",
+              ".github/workflows/v3-fresh-universe-discovery.yml"
+            ]
+          }
+        },
+        {
+          "event": "workflow_dispatch",
+          "exposure": "MANUAL_ONLY",
+          "filters": {
+            "inputs": []
+          }
+        }
+      ],
+      "keirin_sensitive_name": true,
+      "path": ".github/workflows/v3-fresh-universe-discovery.yml"
+    }
+  ],
+  "scientific_execution_performed": false,
+  "sensitive_name_count": 56,
+  "sensitive_pull_request_any_path": 0,
+  "sensitive_pull_request_restricted_paths": 0,
+  "sensitive_push_any_path": 0,
+  "sensitive_push_any_path_except_ignored": 0,
+  "sensitive_push_restricted_paths": 11,
+  "sensitive_push_self_file_only": 41,
+  "sensitive_schedule": 0,
+  "workflow_count": 59
+}

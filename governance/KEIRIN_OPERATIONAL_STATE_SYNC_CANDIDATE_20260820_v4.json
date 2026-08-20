@@ -1,0 +1,95 @@
+{
+  "record": "KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v4",
+  "status": "DRAFT_NONCANONICAL_FINAL_FOUNDATION_ACCEPTANCE_LANE",
+  "observed_at_jst": "2026-08-20T23:42:12+09:00",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main_observed": "819afb723c8f14000757b2e53b6664d71ab01227",
+  "operational_state": {
+    "keirin_research": "PAUSED_FOR_MULTIVERSE_ZERO_BASE_FOUNDATION_AUDIT",
+    "pause_source": "OWNER_DIRECTIVE",
+    "new_scientific_execution_allowed": false,
+    "audit_recovery_evidence_work_allowed": true,
+    "active_foundation_remediation_pr": 24,
+    "active_foundation_acceptance_pr": 24,
+    "fresh_read_pr24_current_head_required": true,
+    "owner_action_now": "NONE"
+  },
+  "latest_legitimate_completed_scientific_checkpoint": {
+    "pr": 14,
+    "exact_lab_reviewed_scientific_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+    "current_pause_control_head": "500a96f8bc38d151a4240f0aba576e7ede9e232b",
+    "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "model_promotion_allowed": false
+  },
+  "paused_scientific_work": {
+    "pr4": {"current_head":"e3d162a5de346f3169738d59ab828ac2565ebb8a","global_pause_override":true,"collection_may_begin_now":false},
+    "pr12": {"lab_reviewed_scientific_head":"2e070d8094abdda9138865787e5540087fa05ea3","current_pause_control_head":"05f636ce82b3eeb45bedc6652182f1dda6a7481b"},
+    "pr13": {"pre_pause_head":"5b9bd82d99f2e2e322c93bb1b2c79c9243e84358","current_pause_control_head":"096ffebf24c5c3f747ff3024899f4512c5a8b348"},
+    "pr14": {"lab_reviewed_scientific_head":"e70bda39a5d3ce585af4e028b35106b859871bd9","current_pause_control_head":"500a96f8bc38d151a4240f0aba576e7ede9e232b"},
+    "pr15": {"pre_pause_scientific_head":"07a1911d662c887c8edbffef2f2a9256577b3c2b","current_pause_control_head":"6d10cad66cf4e6040faec547f155b8a5c9e0ea03","post_pause_already_armed_run":32363915537,"post_pause_run_disposition":"QUARANTINED_NOT_ADMITTED","metrics_may_be_opened_for_resume_selection":false}
+  },
+  "foundation_review_state": {
+    "pr22": {
+      "reviewed_head":"1806d1343e13d9c1cb28ffacad49d90f458c0f01",
+      "lab_verdict":"PASS",
+      "lab_comment_id":5356781881,
+      "auditor_verdict":"PASS_WITH_FIXES",
+      "auditor_comment_id":5357226704,
+      "foundation_minimum_gate":"ACCEPTABLE_FOR_GOVERNED_ACCEPTANCE_AFTER_MINOR_UX_FIX",
+      "minor_fix":"OWNER_ASSURANCE_CURRENT_WORK_TRUTHFULNESS",
+      "minor_fix_closed_by_pr":23
+    },
+    "pr23": {
+      "reviewed_head":"95e1db2a2cd52a68b7dd3e2458243ce8b64daded",
+      "lab_verdict":"PASS",
+      "lab_comment_id":5357391050,
+      "auditor_minor_fix_closed":true,
+      "foundation_acceptance_may_proceed_after_this_fix":true
+    },
+    "pr24": {
+      "current_head":"FRESH_READ_REQUIRED",
+      "state":"FINAL_CANONICAL_ACCEPTANCE_CANDIDATE_CONSTRUCTION",
+      "final_auditor_acceptance_review":"NOT_YET_PERFORMED"
+    }
+  },
+  "workflow_pause_exposure": {
+    "evidence_pr":20,
+    "reviewed_head":"0d896bc5349c8eb5837ec90f79de336af761d00c",
+    "lab_verdict":"PASS",
+    "workflow_count":59,
+    "keirin_sensitive_name_count":56,
+    "sensitive_push_self_file_only":41,
+    "sensitive_push_restricted_paths":11,
+    "sensitive_push_any_path":0,
+    "sensitive_pull_request_any_path":0,
+    "sensitive_schedule":0
+  },
+  "foundation_resume_gate": {
+    "G1_PAUSE_SEMANTICS_FIXED":"REVIEWED_READY_FOR_CANONICAL_ACCEPTANCE_NOT_YET_ACCEPTED",
+    "G2_CURRENT_STATE_SYNCHRONIZED":"REVIEWED_READY_FOR_CANONICAL_ACCEPTANCE_NOT_YET_ACCEPTED",
+    "G3_REVIEW_LIFECYCLE_REGISTRY_EXISTS":"REVIEWED_READY_FOR_CANONICAL_ACCEPTANCE_NOT_YET_ACCEPTED",
+    "G4_ZERO_HISTORY_ORIENTATION_SAFE":"REVIEWED_READY_FOR_CANONICAL_ACCEPTANCE_NOT_YET_ACCEPTED",
+    "G5_OWNER_ASSURANCE_MINIMAL_VIEW":"REVIEWED_READY_FOR_CANONICAL_ACCEPTANCE_NOT_YET_ACCEPTED"
+  },
+  "foundation_acceptance_candidate_ready": true,
+  "all_foundation_gates_accepted": false,
+  "explicit_scientific_execution_authorization_exists": false,
+  "scientific_resume_allowed": false,
+  "resume_rule": "Foundation acceptance is not Keirin execution authorization. Zero-History orientation cannot authorize science. A separate future canonical Execution/Authorization Gate is required before any scientific side effect.",
+  "scientific_firewall_preserved": {
+    "ECON_HOLDOUT1000":"SEALED",
+    "current_DEV2000_C_scored_for_new_lineage":false,
+    "same_lineage_B_C_rescue_tuning":"PROHIBITED",
+    "RESULT_PAYOUT":"UNAUTHORIZED",
+    "new_untouched_validation_opened":false,
+    "model_promotion":"PROHIBITED",
+    "real_money_wagering":"OUT_OF_SCOPE",
+    "synthetic_real_world_claim":"PROHIBITED"
+  },
+  "source_policy_preserved": {
+    "external_provider_contact":"PROHIBITED_UNLESS_OWNER_EXPLICITLY_REVERSES",
+    "access_control_bypass":"PROHIBITED",
+    "automated_bulk_collection":"NOT_AUTO_AUTHORIZED_BY_PERSONAL_PURPOSE_OR_PUBLIC_VISIBILITY"
+  },
+  "owner_action_now":"NONE"
+}
