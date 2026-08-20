@@ -8,7 +8,7 @@ on:
       - '.github/workflows/keirin-native-conformance-v1.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   native-conformance:
@@ -79,15 +79,8 @@ jobs:
                   binding['frozen_receipt_path'] = '<ENVIRONMENT_SPECIFIC_PATH>'
               return obj
 
-          e = normalize(expected)
-          a = normalize(actual)
-          if a != e:
+          if normalize(actual) != normalize(expected):
               print('NATIVE_REPRODUCTION_MATCH=NO')
-              # Emit compact mismatch hints without mutating any evidence.
-              print('EXPECTED_RECORD=' + str(e.get('record')))
-              print('ACTUAL_RECORD=' + str(a.get('record')))
-              print('EXPECTED_SCENARIO_COUNT=' + str(e.get('scenario_count')))
-              print('ACTUAL_SCENARIO_COUNT=' + str(a.get('scenario_count')))
               raise SystemExit(1)
 
           print('NATIVE_REPRODUCTION_MATCH=YES')
@@ -95,3 +88,63 @@ jobs:
           print('UNTOUCHED_REAL_VALIDATION_OPENED=NO')
           print('CONFORMANCE_SCOPE=REPRODUCIBILITY_ONLY_NO_TUNING_NO_PROMOTION')
           PY
+
+      - name: Commit PASS conformance receipt
+        shell: bash
+        env:
+          TARGET_BRANCH: agent/keirin-exact-resume-calibration-batch1
+          EXACT_TARGET: 26f3377db085208986449b3c163582f3dc890a96
+          FIXED_EVIDENCE_BLOB: 2f4919c1c4794cfac6ee8c3fbd78fd0726e86a45
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, platform, subprocess
+          from pathlib import Path
+
+          evidence_path = Path('evidence/v3/historical_all_market/governance/KEIRIN_FRESH_SYNTHETIC_HOLDOUT_RESULT_20260820_v1.json')
+          evidence_sha256 = hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+          receipt = {
+              'record': 'KEIRIN_NATIVE_CLEAN_CHECKOUT_CONFORMANCE_RECEIPT_20260820_v1',
+              'status': 'PASS',
+              'scope': 'POST_HOLDOUT_REPRODUCIBILITY_ONLY_NO_TUNING_NO_PROMOTION',
+              'exact_execution_target': os.environ['EXACT_TARGET'],
+              'native_checkout': {
+                  'provider': 'GITHUB_ACTIONS_HOSTED_RUNNER',
+                  'clean_checkout': True,
+                  'detached_head_verified': True,
+                  'git_status_clean_before_execution': True,
+                  'github_run_id': os.environ.get('GITHUB_RUN_ID'),
+                  'github_run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+                  'runner_os': os.environ.get('RUNNER_OS'),
+                  'python_version': platform.python_version(),
+              },
+              'fixed_evidence': {
+                  'path': str(evidence_path.relative_to('evidence')),
+                  'git_blob_sha': os.environ['FIXED_EVIDENCE_BLOB'],
+                  'sha256': evidence_sha256,
+              },
+              'reproduction': {
+                  'result_match_after_environment_path_normalization': True,
+                  'environment_only_normalization': ['frozen_receipt_binding.frozen_receipt_path'],
+                  'scientific_metrics_changed': False,
+                  'coefficients_changed': False,
+                  'worlds_changed': False,
+                  'post_holdout_retuning': 'PROHIBITED',
+              },
+              'scientific_firewall': {
+                  'untouched_real_validation_opened': False,
+                  'result_payout_access': 'UNAUTHORIZED',
+              },
+              'claim_limit': 'THIS_REPRODUCTION_DOES_NOT_RESTORE_FRESHNESS_AND_DOES_NOT_SUPPORT_PROMOTION_BY_ITSELF',
+          }
+          out = Path('evidence/v3/historical_all_market/governance/KEIRIN_NATIVE_CLEAN_CHECKOUT_CONFORMANCE_RECEIPT_20260820_v1.json')
+          out.write_text(json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + '\n')
+          PY
+
+          cd evidence
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --ff-only origin "$TARGET_BRANCH"
+          git add v3/historical_all_market/governance/KEIRIN_NATIVE_CLEAN_CHECKOUT_CONFORMANCE_RECEIPT_20260820_v1.json
+          git commit -m 'Record Keirin native clean-checkout conformance PASS'
+          git push origin HEAD:"$TARGET_BRANCH"
