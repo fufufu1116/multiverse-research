@@ -39,6 +39,17 @@ jobs:
           test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
       - name: State and lifecycle v2 selftest only
         run: python tools/multiverse_state_lifecycle_sync_selftest_v2.py
+      - name: Verify Owner Assurance renderer accepts v2 state
+        run: |
+          python tools/multiverse_owner_assurance_view_v1.py \
+            --lifecycle governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v2.json \
+            --operational governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v2.json \
+            --safe-mode governance/MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v1.json \
+            > /tmp/owner-assurance-v2.md
+          grep -q 'PAUSED' /tmp/owner-assurance-v2.md
+          grep -q 'PR #16' /tmp/owner-assurance-v2.md
+          grep -q 'ECON_HOLDOUT1000' /tmp/owner-assurance-v2.md
+          echo 'MULTIVERSE_OWNER_ASSURANCE_V2_INPUT_COMPAT_PASS'
       - name: Protected boundary terminal
         run: |
           echo 'MULTIVERSE_STATE_LIFECYCLE_SYNC_V2_EXACT_HEAD_CI_PASS'
