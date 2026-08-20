@@ -1,0 +1,54 @@
+{
+  "record": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_CAPTURE_01_20260820_v1",
+  "status": "ZERO_RACES_ADMITTED_OFFICIAL_SOURCE_DISCOVERY_ESTABLISHED",
+  "captured_at_jst": "2026-08-20T19:00:35+09:00",
+  "parent_prereg": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_PREREG_20260820_v1",
+  "admitted_race_count": 0,
+  "discovery": [
+    {
+      "venue": "松山",
+      "first_party_venue_url": "https://www.matsuyamakeirin.jp/race-info/",
+      "evidence": "Official venue page lists FII midnight event 2026-08-21 through 2026-08-23 and exposes KEIRIN.JP event/raceprogram links.",
+      "central_official_raceprogram_pc": "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=75&KST=20260821",
+      "central_official_raceprogram_sp": "https://keirin.jp/sp/dfw/dataplaza/guest/raceprogram?KCD=75&KST=20260821",
+      "transport_result": "WEB_CACHE_MISS_AND_SINGLE_DIRECT_DOWNLOAD_FAILED",
+      "race_level_pre_admitted": false,
+      "reason": "Race-level PRE body not obtained prospectively by available normal transport; existence of a link is not treated as field truth."
+    },
+    {
+      "venue": "大垣",
+      "first_party_venue_url": "https://www.ogakikeirin.com/schedule/2026/08",
+      "evidence": "Official venue schedule lists home midnight FII event 2026-08-21 through 2026-08-23, K Dreams Cup / Satellite Himeji Award, with KEIRIN.JP event link.",
+      "race_level_pre_admitted": false,
+      "reason": "Official schedule/event identity established but no directly fetched race-level PRE fields at capture time."
+    },
+    {
+      "venue": "玉野",
+      "first_party_venue_url": "https://www.tamano-keirin.jp/schedule/",
+      "evidence": "Official venue schedule is available for August 2026, but the current holding-information endpoint did not expose a usable prospective race-level PRE body through the tested route.",
+      "race_level_pre_admitted": false,
+      "reason": "No directly available race-level PRE was admitted."
+    }
+  ],
+  "acquisition_policy_observed": {
+    "normal_public_get_only": true,
+    "authentication_or_bypass": false,
+    "captcha_or_waf_bypass": false,
+    "rate_limit_evasion": false,
+    "third_party_completion": false,
+    "result_or_payout_access": false,
+    "post_race_backfill": false,
+    "external_contact": false
+  },
+  "scientific_interpretation": {
+    "zero_is_not_negative_evidence_about_twin": true,
+    "meaning": "This capture establishes official prospective event/link discovery but not yet an admitted race-level PRE sensor sample.",
+    "next_action": "Continue within the preregistered 2026-08-20T19:15+09:00 to 2026-08-22T23:59:59+09:00 window using only first-party normal-access routes; admit only directly observed PRE fields before scheduled start."
+  },
+  "firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED"
+  }
+}
