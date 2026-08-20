@@ -4,11 +4,13 @@ from datetime import datetime
 import json
 from pathlib import Path
 from typing import Iterable
+from urllib.parse import urlparse
 
 HERE = Path(__file__).resolve().parent
 GOV = HERE.parent / "governance"
 PREREG = GOV / "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_PREREG_20260820_v1.json"
 CAPTURE_GLOB = "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_CAPTURE_*_20260820_v1.json"
+CENTRAL_OFFICIAL_RACE_HOSTS = {"keirin.jp", "www.keirin.jp"}
 
 
 def _dt(value: str) -> datetime:
@@ -20,6 +22,11 @@ def _dt(value: str) -> datetime:
 
 def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _official_race_url(value: str) -> bool:
+    parsed = urlparse(value)
+    return parsed.scheme == "https" and parsed.hostname in CENTRAL_OFFICIAL_RACE_HOSTS
 
 
 def validate(prereg_path: Path = PREREG, capture_paths: Iterable[Path] | None = None) -> dict:
@@ -54,7 +61,7 @@ def validate(prereg_path: Path = PREREG, capture_paths: Iterable[Path] | None = 
         if admitted < 0:
             raise ValueError(f"negative_admitted_count:{path.name}")
 
-        # Pre-window discovery/preflight is allowed only when it admits no scientific sample.
+        # Discovery/preflight before the scientific window is permitted only at zero admission.
         if captured < start and admitted != 0:
             raise ValueError(f"pre_window_admission_prohibited:{path.name}")
         if captured > end and admitted != 0:
@@ -91,8 +98,10 @@ def validate(prereg_path: Path = PREREG, capture_paths: Iterable[Path] | None = 
                 raise ValueError(f"admitted_capture_outside_window:{path.name}")
             if not captured < scheduled:
                 raise ValueError(f"not_prospective:{path.name}:{race['venue']}:{race['race_number']}")
-            if not str(race["source_url"]).startswith(("https://keirin.jp/", "https://www.keirin.jp/", "https://")):
-                raise ValueError(f"invalid_source_url:{path.name}")
+            # Scientific race-level admission is intentionally narrower than discovery:
+            # only central first-party KEIRIN.JP race pages may supply admitted fields in v1.
+            if not _official_race_url(str(race["source_url"])):
+                raise ValueError(f"race_source_not_central_official:{path.name}")
             if race.get("source_class") != "FIRST_PARTY_OFFICIAL":
                 raise ValueError(f"source_class_not_official:{path.name}")
             key = (str(race["race_date"]), str(race["venue"]), int(race["race_number"]))
@@ -113,6 +122,7 @@ def validate(prereg_path: Path = PREREG, capture_paths: Iterable[Path] | None = 
         "capture_files_checked": checked,
         "admitted_races": admitted_total,
         "admitted_venues": len(venues),
+        "central_official_admission_hosts": sorted(CENTRAL_OFFICIAL_RACE_HOSTS),
         "pre_window_zero_admission_preflight_allowed": True,
         "scientific_firewall": {
             "RESULT_PAYOUT_access": "UNAUTHORIZED",
