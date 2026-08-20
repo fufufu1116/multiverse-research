@@ -1,0 +1,84 @@
+{
+  "record": "KEIRIN_C0_C1_N1_MULTIWORLD_STRESS_RECEIPT_20260820_v1",
+  "status": "WORKING_SYNTHETIC_ENGINEERING_EVIDENCE_NOT_REAL_VALIDATION",
+  "base_accepted_main": "460e46440edecf90bfd4028b085ad28c0bd3327c",
+  "branch": "agent/keirin-exact-resume-calibration-batch1",
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count": 0,
+    "new_untouched_validation_opened": false,
+    "RESULT_PAYOUT_access": "UNAUTHORIZED"
+  },
+  "test_design": {
+    "world_families": ["W0", "W1", "W2", "W3", "W4"],
+    "scenarios_per_family": 2,
+    "scenario_count": 10,
+    "seeds": [20260820, 20260821, 20260822],
+    "races_per_seed_per_scenario": 48,
+    "scenario_race_evaluations": 1440,
+    "same_race_structure_across_models_and_scenarios": true,
+    "environment_coverage": {
+      "bank_cycle_m": [333, 400, 500],
+      "wind_cycle_mps": [0.0, 1.5, 3.0, 5.0],
+      "population_frequency_claim": false
+    },
+    "scoring": [
+      "expected ordered-top3 log loss under exact synthetic truth",
+      "KL regret to exact synthetic truth",
+      "ordered-top3 joint Brier distance"
+    ],
+    "model_status": "FIXED_ARCHITECTURE_PROXIES_NOT_FITTED_REAL_KEIRIN_MODELS",
+    "post_first_run_coefficient_retuning": false
+  },
+  "runtime_assurance": {
+    "method": "CORE_LOCAL_RECONSTRUCTION_EXECUTION_AGAINST_CURRENT_DIGITAL_TWIN_AND_TOP3_API_LOGIC",
+    "new_files_python_syntax_compile": "PASS",
+    "three_seed_deterministic_execution": "PASS",
+    "native_branch_runtime_execution": "PENDING",
+    "limit": "This receipt does not claim a GitHub-hosted/native runtime executed the exact branch bytes. Native/conformance execution remains required before research promotion."
+  },
+  "aggregate_scenario_wins_expected_log_loss_across_three_seeds": {
+    "C0": 27,
+    "C1": 0,
+    "N1": 3
+  },
+  "per_seed_scenario_wins": {
+    "20260820": {"C0": 9, "C1": 0, "N1": 1},
+    "20260821": {"C0": 9, "C1": 0, "N1": 1},
+    "20260822": {"C0": 9, "C1": 0, "N1": 1}
+  },
+  "aggregate_mean_kl_by_scenario": [
+    {"scenario_id": "W0_NULL_CONTEXT", "world_family": "W0", "winner": "C0", "C0": 0.311303115, "C1": 0.341846690, "N1": 0.353854384},
+    {"scenario_id": "W0_CONTEXT_MODERATE", "world_family": "W0", "winner": "C0", "C0": 0.310032028, "C1": 0.340027842, "N1": 0.351796388},
+    {"scenario_id": "W1_STATIC_LINE_WEAK", "world_family": "W1", "winner": "C0", "C0": 0.309823232, "C1": 0.333988238, "N1": 0.343716643},
+    {"scenario_id": "W1_STATIC_LINE_STRONG", "world_family": "W1", "winner": "C0", "C0": 0.321240889, "C1": 0.334458486, "N1": 0.339686454},
+    {"scenario_id": "W2_CONDITIONAL_LINE_WEAK", "world_family": "W2", "winner": "C0", "C0": 0.316526638, "C1": 0.335415287, "N1": 0.332802393},
+    {"scenario_id": "W2_CONDITIONAL_LINE_STRONG", "world_family": "W2", "winner": "N1", "C0": 0.370058155, "C1": 0.378587019, "N1": 0.347585576},
+    {"scenario_id": "W3_DISRUPTION_LOW", "world_family": "W3", "winner": "C0", "C0": 0.330277704, "C1": 0.347544351, "N1": 0.334953469},
+    {"scenario_id": "W3_DISRUPTION_HIGH", "world_family": "W3", "winner": "C0", "C0": 0.442994671, "C1": 0.470684845, "N1": 0.466065167},
+    {"scenario_id": "W4_HEAVY_TAIL_MODERATE", "world_family": "W4", "winner": "C0", "C0": 0.447259737, "C1": 0.482304816, "N1": 0.483999405},
+    {"scenario_id": "W4_HEAVY_TAIL_SEVERE", "world_family": "W4", "winner": "C0", "C0": 0.884793745, "C1": 0.940137210, "N1": 0.950574778}
+  ],
+  "diagnostic_interpretation": [
+    "C0 remained the lowest-regret fixed proxy in nine of ten assumption scenarios across all three seeds.",
+    "N1 became the lowest-regret proxy only in W2_CONDITIONAL_LINE_STRONG, where rank-2/rank-3 conditional line dependence is strong.",
+    "The current naive fixed-coefficient C1 line augmentation never won a scenario; adding line fields is therefore not automatically an improvement.",
+    "Do not retune C1/N1 merely to win this synthetic grid. Use the result to identify failure modes and design future preregistered training/ablation."
+  ],
+  "scientific_claim_limit": [
+    "NO_REAL_PREDICTIVE_EDGE_CLAIM",
+    "NO_REAL_FREQUENCY_CLAIM",
+    "NO_REAL_CAUSAL_COEFFICIENT_CLAIM",
+    "NO_ROI_CLAIM",
+    "NO_PROTECTED_VALIDATION_CLAIM",
+    "SYNTHETIC_ENGINEERING_STRESS_ONLY"
+  ],
+  "next_exact_actions": [
+    "Run exact branch bytes in a native/conformance runtime and require identical qualitative scenario ordering or explain drift.",
+    "Lab reviews whether the stress grid is adversarial enough and whether C0/C1/N1 proxy construction unfairly favors or handicaps any architecture.",
+    "Do not promote C1 or N1 from this receipt.",
+    "After Lab, refine only preregistered synthetic-training/ablation design or safe PRE calibration; do not open untouched validation."
+  ]
+}

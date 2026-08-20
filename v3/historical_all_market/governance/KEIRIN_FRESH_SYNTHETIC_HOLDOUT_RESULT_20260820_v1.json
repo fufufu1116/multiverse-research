@@ -1,0 +1,154 @@
+{
+  "arbitrary_json_input_accepted": false,
+  "execution_entrypoint": "locked_synthetic_holdout_runner_v1",
+  "frozen_receipt_binding": {
+    "arbitrary_json_input_accepted": false,
+    "binding": "PASS",
+    "frozen_receipt_git_blob_sha": "f531d72929c846da1c932451873c94bb9b526ae7",
+    "frozen_receipt_path": "/mnt/data/keirin_exact/v3/historical_all_market/governance/KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json",
+    "frozen_receipt_sha256": "4d68c9d7a87b38b8e18e5eb983f9b87865dc7345f6c248656222bdc4c9c6e597",
+    "prereg_git_blob_sha": "e4131621bf770068ec9d0c44da16356f64027e80",
+    "prereg_sha256": "ff565fcbcb524c0d290b22046c2006648f58bed8e20c913704ae6b9ed4634889"
+  },
+  "frozen_receipt_git_blob_sha": "f531d72929c846da1c932451873c94bb9b526ae7",
+  "frozen_receipt_sha256": "4d68c9d7a87b38b8e18e5eb983f9b87865dc7345f6c248656222bdc4c9c6e597",
+  "post_holdout_retuning": "PROHIBITED",
+  "prereg_sha256": "ff565fcbcb524c0d290b22046c2006648f58bed8e20c913704ae6b9ed4634889",
+  "record": "KEIRIN_BALANCED_SYNTHETIC_HOLDOUT_RESULT_v1",
+  "sample_strata": {
+    "A12|2-2-2-1": 12,
+    "A12|3-2-2": 12,
+    "A12|3-3-1": 12,
+    "A3|2-2-2-1": 12,
+    "A3|3-2-2": 12,
+    "A3|3-3-1": 12,
+    "S|2-2-2-1": 12,
+    "S|3-2-2": 12,
+    "S|3-3-1": 12
+  },
+  "scenario_count": 12,
+  "scenarios": [
+    {
+      "models": {
+        "C0": {"brier": 0.009053132352847047, "kl": 0.3286928411242418, "log_loss": 4.74079068144327},
+        "C1": {"brier": 0.009058666580548432, "kl": 0.32884036870945815, "log_loss": 4.74093820902849},
+        "N1": {"brier": 0.00903553209255369, "kl": 0.3291492778443294, "log_loss": 4.741247118163361}
+      },
+      "scenario_id": "W0_NULL_CONTEXT",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "C0"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.009046267197845369, "kl": 0.3271876982625424, "log_loss": 4.735521141682693},
+        "C1": {"brier": 0.009048200959186141, "kl": 0.3272136113897268, "log_loss": 4.735547054809879},
+        "N1": {"brier": 0.009029997000310465, "kl": 0.3275272742205254, "log_loss": 4.735860717640677}
+      },
+      "scenario_id": "W0_CONTEXT_MODERATE",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "C0"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.009364541821554316, "kl": 0.33266092144896686, "log_loss": 4.700689069668805},
+        "C1": {"brier": 0.009359927356266942, "kl": 0.33243998653620865, "log_loss": 4.700468134756046},
+        "N1": {"brier": 0.009307699969547256, "kl": 0.33196851690178336, "log_loss": 4.6999966651216205}
+      },
+      "scenario_id": "W1_STATIC_LINE_WEAK",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.010532869468479873, "kl": 0.35600142722338995, "log_loss": 4.6403364491261225},
+        "C1": {"brier": 0.010515046768672046, "kl": 0.3552973977308365, "log_loss": 4.639632419633568},
+        "N1": {"brier": 0.010388968808709598, "kl": 0.35311396111639914, "log_loss": 4.63744898301913}
+      },
+      "scenario_id": "W1_STATIC_LINE_STRONG",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.009930369639022506, "kl": 0.3452579759184578, "log_loss": 4.690835270248805},
+        "C1": {"brier": 0.00992125803156303, "kl": 0.34484604170325034, "log_loss": 4.690423336033597},
+        "N1": {"brier": 0.009744498263060302, "kl": 0.3398516528725552, "log_loss": 4.685428947202902}
+      },
+      "scenario_id": "W2_CONDITIONAL_LINE_WEAK",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.012565581067494959, "kl": 0.4080565406639678, "log_loss": 4.683905470050852},
+        "C1": {"brier": 0.01254763010319303, "kl": 0.40725993861392695, "log_loss": 4.683108868000809},
+        "N1": {"brier": 0.012092494456525335, "kl": 0.3917091445338132, "log_loss": 4.667558073920696}
+      },
+      "scenario_id": "W2_CONDITIONAL_LINE_STRONG",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.01059924173274865, "kl": 0.3672365407774318, "log_loss": 4.727176195221423},
+        "C1": {"brier": 0.010586589786228147, "kl": 0.3666275199916089, "log_loss": 4.726567174435598},
+        "N1": {"brier": 0.01031188272635991, "kl": 0.35787340498594566, "log_loss": 4.717813059429937}
+      },
+      "scenario_id": "W3_DISRUPTION_LOW",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.01266494650160919, "kl": 0.5140389877117508, "log_loss": 4.964585335546911},
+        "C1": {"brier": 0.012649089956682513, "kl": 0.5131302117131342, "log_loss": 4.963676559548293},
+        "N1": {"brier": 0.012451334505801551, "kl": 0.5070865478454715, "log_loss": 4.957632895680633}
+      },
+      "scenario_id": "W3_DISRUPTION_HIGH",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.01146549642474229, "kl": 0.48679134454015033, "log_loss": 4.999256966744034},
+        "C1": {"brier": 0.011461272667657795, "kl": 0.48650099062836955, "log_loss": 4.998966612832252},
+        "N1": {"brier": 0.011314508718490272, "kl": 0.48306732117172246, "log_loss": 4.995532943375605}
+      },
+      "scenario_id": "W4_HEAVY_TAIL_MODERATE",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.02011193723634523, "kl": 0.9364892319312982, "log_loss": 5.4118833223303975},
+        "C1": {"brier": 0.02010655894000102, "kl": 0.9366975165403804, "log_loss": 5.412091606939475},
+        "N1": {"brier": 0.020039320653954303, "kl": 0.9363153341113929, "log_loss": 5.411709424510489}
+      },
+      "scenario_id": "W4_HEAVY_TAIL_SEVERE",
+      "status": "LOCKED_OBSERVED_DIAGNOSTIC_NOT_PRISTINE",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.009925372085273174, "kl": 0.34742715242705374, "log_loss": 4.696272104125324},
+        "C1": {"brier": 0.009923617796797613, "kl": 0.3472535159639957, "log_loss": 4.696098467662265},
+        "N1": {"brier": 0.009765208246708344, "kl": 0.34342733665924174, "log_loss": 4.692272288357512}
+      },
+      "scenario_id": "HX_SIGNED_BANK_WIND_REVERSAL",
+      "status": "FRESH_LAB_PRESCRIBED_HOLDOUT",
+      "winner_by_log_loss": "N1"
+    },
+    {
+      "models": {
+        "C0": {"brier": 0.009541579414972716, "kl": 0.34072029119457986, "log_loss": 4.687970355608714},
+        "C1": {"brier": 0.009552420045175961, "kl": 0.34108913844295585, "log_loss": 4.688339202857089},
+        "N1": {"brier": 0.009651201512592321, "kl": 0.34628868306790916, "log_loss": 4.693538747482044}
+      },
+      "scenario_id": "HX_ALTERNATE_CONDITIONAL_CROSS_LINE_ANTI_CHAIN",
+      "status": "FRESH_LAB_PRESCRIBED_HOLDOUT",
+      "winner_by_log_loss": "C0"
+    }
+  ],
+  "status": "SYNTHETIC_HOLDOUT_EXECUTED_NO_REAL_VALIDATION",
+  "untouched_real_validation_may_open": false
+}
