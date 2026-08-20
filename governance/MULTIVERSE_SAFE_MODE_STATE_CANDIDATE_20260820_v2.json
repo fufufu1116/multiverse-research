@@ -1,0 +1,62 @@
+{
+  "record": "MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v2",
+  "status": "DRAFT_NONCANONICAL_LAB_REMEDIATION_CANDIDATE",
+  "purpose": "Fail-closed Owner-pause state for governance adapters after PR #16 Lab PASS_WITH_FIXES remediation.",
+  "canonical_authority": false,
+  "candidate_generation": 2,
+  "owner_directive": "PAUSE_CURRENT_KEIRIN_RESEARCH_FOR_MULTIVERSE_ZERO_BASE_FOUNDATION_AUDIT",
+  "safe_mode": {
+    "active": true,
+    "scope": [
+      "KEIRIN_SCIENTIFIC_EXECUTION"
+    ],
+    "reason_code": "OWNER_DIRECTED_FOUNDATION_AUDIT",
+    "entered_jst": "2026-08-20T20:00:00+09:00",
+    "new_scientific_execution_allowed": false
+  },
+  "operation_classes": {
+    "SCIENTIFIC_EXECUTION": "DENY_WHILE_SCOPE_PAUSED",
+    "PROTECTED_DATA_OPEN": "DENY",
+    "MODEL_PROMOTION": "DENY",
+    "EXTERNAL_PROVIDER_CONTACT": "DENY_BY_OWNER_POLICY",
+    "AUDIT_READ": "ALLOW",
+    "RECOVERY_READ_VERIFY": "ALLOW",
+    "EVIDENCE_PRESERVATION": "ALLOW",
+    "REVERSIBLE_CONTAINMENT": "DENY_UNTIL_SEPARATE_REVIEWED_AUDITABLE_PAUSE_REPAIR_AUTHORIZATION_EXISTS"
+  },
+  "containment_semantics": {
+    "unconditional_safe_mode_allow": false,
+    "current_guard_may_self_authorize_containment": false,
+    "future_rule": "A separately reviewed and auditable scoped pause-repair authorization mechanism is required before REVERSIBLE_CONTAINMENT can be allowed by this guard family."
+  },
+  "running_job_policy": {
+    "if_provider_can_cancel": "REQUEST_CANCEL_AND_RECORD_RECEIPT",
+    "if_provider_cannot_cancel_or_race_already_completed": "QUARANTINE_OUTPUT_BY_DEFAULT",
+    "quarantined_output_may_influence_research": false
+  },
+  "fail_closed_rules": [
+    "MISSING_STATE_DENY_GOVERNED_SCIENTIFIC_EXECUTION",
+    "MALFORMED_STATE_DENY_GOVERNED_SCIENTIFIC_EXECUTION",
+    "UNKNOWN_OPERATION_DENY",
+    "STALE_EXPECTED_GENERATION_DENY",
+    "SCOPE_AMBIGUITY_DENY",
+    "REVERSIBLE_CONTAINMENT_DENY_WITHOUT_SEPARATE_REVIEWED_AUTHORIZATION",
+    "SAFE_MODE_EXIT_REQUIRES_AUDITABLE_STATE_TRANSITION"
+  ],
+  "workflow_exposure_evidence": {
+    "pr": 20,
+    "reviewed_head": "0d896bc5349c8eb5837ec90f79de336af761d00c",
+    "lab_verdict": "PASS",
+    "lab_comment_id": 5356402581,
+    "bounded_interpretation": "No detected schedule/ANY_PUSH/ANY_PR sensitive surface under the reviewed scanner; 11 RESTRICTED_PATHS remain frozen during Owner pause unless separately reviewed reversible containment is authorized."
+  },
+  "integration_rule": "This candidate is not a second canonical authority. Scientific reactivation requires a separately reviewed canonical execution/authorization path and Pause Guard conformance before side effects.",
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "UNTOUCHED_VALIDATION": "CLOSED",
+    "MODEL_PROMOTION": "PROHIBITED",
+    "REAL_MONEY_WAGERING": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE"
+}

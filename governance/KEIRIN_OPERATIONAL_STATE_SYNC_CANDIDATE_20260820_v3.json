@@ -1,0 +1,149 @@
+{
+  "record": "KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v3",
+  "status": "DRAFT_NONCANONICAL_LAB_REFRESHED_STATE_SYNC_CANDIDATE",
+  "observed_at_jst": "2026-08-20T22:17:00+09:00",
+  "purpose": "Fresh operational/review/resume state after independent Lab final results and before PR #22 remediation micro-review.",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main_observed": "819afb723c8f14000757b2e53b6664d71ab01227",
+  "base_current_state": {
+    "path": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "base_updated_jst": "2026-08-20T00:29:00+09:00",
+    "problem": "Canonical mutable Keirin current-state is operationally stale relative to later verified work and current Owner pause; historical scientific content is not declared false."
+  },
+  "operational_state": {
+    "keirin_research": "PAUSED_FOR_MULTIVERSE_ZERO_BASE_FOUNDATION_AUDIT",
+    "pause_source": "OWNER_DIRECTIVE",
+    "new_scientific_execution_allowed": false,
+    "audit_recovery_evidence_work_allowed": true,
+    "active_foundation_remediation_pr": 22,
+    "active_foundation_orientation_anchor_head": "6b31cbc226ad135f240b7487a83380fd29e48766",
+    "fresh_read_pr22_current_head_required": true,
+    "owner_action_now": "NONE"
+  },
+  "latest_legitimate_completed_scientific_checkpoint": {
+    "pr": 14,
+    "exact_lab_reviewed_scientific_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+    "current_pause_control_head": "500a96f8bc38d151a4240f0aba576e7ede9e232b",
+    "lab": "PASS_ON_HISTORICAL_SCIENTIFIC_HEAD",
+    "auditor": "NOT_RUN_FOR_THIS_CHECKPOINT",
+    "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "scenario_race_evaluations": 388800,
+    "model_promotion_allowed": false
+  },
+  "paused_scientific_work": {
+    "pr4": {
+      "current_head": "e3d162a5de346f3169738d59ab828ac2565ebb8a",
+      "global_pause_override": true,
+      "automatic_or_manual_collection_may_begin_now": false
+    },
+    "pr12": {
+      "lab_reviewed_scientific_head": "2e070d8094abdda9138865787e5540087fa05ea3",
+      "current_pause_control_head": "05f636ce82b3eeb45bedc6652182f1dda6a7481b",
+      "automatic_scientific_execution": "DISABLED_MANUAL_ONLY_PAUSE_STUB"
+    },
+    "pr13": {
+      "pre_pause_head": "5b9bd82d99f2e2e322c93bb1b2c79c9243e84358",
+      "current_pause_control_head": "096ffebf24c5c3f747ff3024899f4512c5a8b348",
+      "automatic_scientific_execution": "DISABLED_MANUAL_ONLY_PAUSE_STUB"
+    },
+    "pr14": {
+      "lab_reviewed_scientific_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+      "current_pause_control_head": "500a96f8bc38d151a4240f0aba576e7ede9e232b",
+      "automatic_scientific_execution": "DISABLED_MANUAL_ONLY_PAUSE_STUBS_ATOMIC_TWO_WORKFLOW_CHANGE"
+    },
+    "pr15": {
+      "pre_pause_scientific_head": "07a1911d662c887c8edbffef2f2a9256577b3c2b",
+      "current_pause_control_head": "6d10cad66cf4e6040faec547f155b8a5c9e0ea03",
+      "post_pause_already_armed_run": 32363915537,
+      "post_pause_run_disposition": "QUARANTINED_NOT_ADMITTED",
+      "metrics_may_be_opened_for_resume_selection": false,
+      "automatic_scientific_execution": "DISABLED_MANUAL_ONLY_PAUSE_STUB"
+    }
+  },
+  "foundation_review_state": {
+    "pr16": {
+      "reviewed_head": "45b1721c73bafffcf1635af46e56e5f6c06f4a55",
+      "lab_verdict": "PASS_WITH_FIXES",
+      "lab_comment_id": 5356392738,
+      "gates": {
+        "G1": "NOT_ACCEPTED_FIX_REQUIRED",
+        "G2": "NOT_ACCEPTED_FIX_REQUIRED",
+        "G3": "NOT_ACCEPTED_FIX_REQUIRED"
+      }
+    },
+    "pr17": {
+      "reviewed_head": "3d95f20d65eaaa0647f0c854b6bcebc31258938a",
+      "lab_verdict": "MATERIAL_BLOCK",
+      "lab_comment_id": 5356396200,
+      "G4_MAY_BE_ACCEPTED": false,
+      "material_finding": "NONCANONICAL_ZERO_HISTORY_POINTER_COULD_SELF_AUTHORIZE_SCIENTIFIC_RESUME"
+    },
+    "pr18": {
+      "reviewed_head": "5240242543f475bb72fa5eaed4bb4d2db892062e",
+      "lab_verdict": "PASS_WITH_FIXES",
+      "lab_comment_id": 5356399606,
+      "G5_MAY_BE_ACCEPTED": true,
+      "stacked_G4_cleared": false
+    },
+    "pr20": {
+      "reviewed_head": "0d896bc5349c8eb5837ec90f79de336af761d00c",
+      "lab_verdict": "PASS",
+      "lab_comment_id": 5356402581,
+      "WORKFLOW_EXPOSURE_AUDIT_MAY_BE_USED_FOR_G1": true
+    },
+    "pr21": {
+      "reviewed_head": "2bd3799bcb70200df68892f4fc1f7b79fe288b5d",
+      "lab_verdict": "PASS_WITH_FIXES",
+      "lab_comment_id": 5356410689,
+      "G2_G3_MAY_BE_ACCEPTED": false,
+      "required_fix": "FRESH_REFRESH_AFTER_FINAL_LAB_RESULTS"
+    },
+    "pr22": {
+      "orientation_anchor_head": "6b31cbc226ad135f240b7487a83380fd29e48766",
+      "current_head": "FRESH_READ_REQUIRED",
+      "state": "REMEDIATION_IMPLEMENTATION_IN_PROGRESS",
+      "lab_micro_review": "NOT_COMPLETED"
+    }
+  },
+  "workflow_pause_exposure": {
+    "evidence_pr": 20,
+    "reviewed_head": "0d896bc5349c8eb5837ec90f79de336af761d00c",
+    "lab_verdict": "PASS",
+    "workflow_count": 59,
+    "keirin_sensitive_name_count": 56,
+    "sensitive_push_self_file_only": 41,
+    "sensitive_push_restricted_paths": 11,
+    "sensitive_push_any_path": 0,
+    "sensitive_pull_request_any_path": 0,
+    "sensitive_schedule": 0,
+    "interpretation": "No detected broad/scheduled sensitive auto-run surface under reviewed scanner. Eleven restricted path sets remain frozen during Owner pause unless separately reviewed reversible containment authorization exists."
+  },
+  "foundation_resume_gate": {
+    "G1_PAUSE_SEMANTICS_FIXED": "NOT_ACCEPTED_PAUSE_GUARD_V2_MICRO_REVIEW_PENDING",
+    "G2_CURRENT_STATE_SYNCHRONIZED": "NOT_ACCEPTED_STATE_V3_MICRO_REVIEW_PENDING",
+    "G3_REVIEW_LIFECYCLE_REGISTRY_EXISTS": "NOT_ACCEPTED_LIFECYCLE_V3_MICRO_REVIEW_PENDING",
+    "G4_ZERO_HISTORY_RESUME_POINTER_DETERMINISTIC": "MATERIAL_BLOCK_V1_ORIENTATION_ONLY_V2_MICRO_REVIEW_PENDING",
+    "G5_OWNER_ASSURANCE_MINIMAL_VIEW": "LAB_G5_MAY_BE_ACCEPTED_YES_NOT_CANONICAL"
+  },
+  "all_foundation_gates_accepted": false,
+  "explicit_scientific_execution_authorization_exists": false,
+  "scientific_resume_allowed": false,
+  "resume_rule": "Zero-History orientation is not execution authority. Require accepted G1-G5 from authoritative evidence plus a separate canonical Execution/Authorization Gate and Fresh Read before any future scientific side effect.",
+  "scientific_firewall_preserved": {
+    "closed_parent_lineage": "NO_B_VALIDATED_CONFIGURATION",
+    "ECON_HOLDOUT1000": "SEALED",
+    "current_DEV2000_C_scored_for_new_lineage": false,
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE",
+    "synthetic_real_world_claim": "PROHIBITED"
+  },
+  "source_policy_preserved": {
+    "external_provider_contact": "PROHIBITED_UNLESS_OWNER_EXPLICITLY_REVERSES",
+    "access_control_bypass": "PROHIBITED",
+    "automated_bulk_collection": "NOT_AUTO_AUTHORIZED_BY_PERSONAL_PURPOSE_OR_PUBLIC_VISIBILITY"
+  },
+  "owner_action_now": "NONE"
+}
