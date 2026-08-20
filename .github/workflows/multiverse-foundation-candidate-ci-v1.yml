@@ -1,0 +1,85 @@
+name: Multiverse Foundation Candidate CI v1
+
+on:
+  push:
+    branches:
+      - agent/multiverse-owner-assurance-view-v1
+  pull_request:
+    paths:
+      - 'governance/**'
+      - 'tools/**'
+      - '.github/workflows/multiverse-foundation-candidate-ci-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  foundation-candidate-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Show exact head
+        run: |
+          echo "checked_out_head=$(git rev-parse HEAD)"
+          echo "event_head=${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+
+      - name: Pause guard selftest
+        run: python tools/multiverse_pause_guard_selftest_v1.py
+
+      - name: Pause guard must deny Keirin scientific execution
+        shell: bash
+        run: |
+          set +e
+          python tools/multiverse_pause_guard_v1.py \
+            --state governance/MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v1.json \
+            --domain KEIRIN \
+            --operation SCIENTIFIC_EXECUTION \
+            --expected-generation 1
+          code=$?
+          set -e
+          test "$code" -eq 42
+
+      - name: Zero-history resolver selftest
+        run: python tools/multiverse_zero_history_resume_resolver_selftest_v1.py
+
+      - name: Current zero-history pointer must orient to foundation audit without scientific resume
+        shell: bash
+        run: |
+          python tools/multiverse_zero_history_resume_resolver_v1.py \
+            --pointer governance/MULTIVERSE_ZERO_HISTORY_RESUME_POINTER_CANDIDATE_20260820_v1.json \
+            > /tmp/resume.json
+          grep -q '"mode": "FOUNDATION_AUDIT_CONTINUATION"' /tmp/resume.json
+          grep -q '"scientific_resume_allowed": false' /tmp/resume.json
+          grep -q '"read_first_pr": 16' /tmp/resume.json
+
+      - name: Owner Assurance generator selftest
+        run: python tools/multiverse_owner_assurance_view_selftest_v1.py
+
+      - name: Generate Owner Assurance from inherited real candidate state files
+        shell: bash
+        run: |
+          python tools/multiverse_owner_assurance_view_v1.py \
+            --lifecycle governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v1.json \
+            --operational governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v1.json \
+            --safe-mode governance/MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v1.json \
+            > /tmp/owner-assurance.md
+          grep -q 'PAUSED（科学実験停止中）' /tmp/owner-assurance.md
+          grep -q 'PR #14 / Lab PASS' /tmp/owner-assurance.md
+          grep -q 'PR #15 / QUARANTINED' /tmp/owner-assurance.md
+          grep -q '主が今やること:.*なし' /tmp/owner-assurance.md
+
+      - name: Protected boundary smoke
+        shell: bash
+        run: |
+          grep -q 'SEALED' /tmp/owner-assurance.md
+          grep -q 'UNAUTHORIZED' /tmp/owner-assurance.md
+          grep -q 'CLOSED' /tmp/owner-assurance.md
+          grep -q 'PROHIBITED' /tmp/owner-assurance.md
+          echo MULTIVERSE_FOUNDATION_CANDIDATE_CI_PASS

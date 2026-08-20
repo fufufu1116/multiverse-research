@@ -1,0 +1,41 @@
+{
+  "record": "MULTIVERSE_FOUNDATION_EXACT_HEAD_INTEGRATION_CI_RECEIPT_20260820_v1",
+  "status": "DRAFT_AUDIT_EVIDENCE_NOT_ACCEPTED",
+  "stacked_pr": 18,
+  "result_generating_head": "b0af704e98e7b69852ac939a53e6c716664f9bcf",
+  "workflow": "Multiverse Foundation Candidate CI v1",
+  "workflow_run_id": 32367529837,
+  "job_id": 96420263464,
+  "workflow_conclusion": "success",
+  "checkout": {
+    "requested_ref": "b0af704e98e7b69852ac939a53e6c716664f9bcf",
+    "observed_git_head": "b0af704e98e7b69852ac939a53e6c716664f9bcf",
+    "exact_head_match": true
+  },
+  "checks": {
+    "PAUSE_GUARD_SELFTEST": "PASS",
+    "KEIRIN_SCIENTIFIC_EXECUTION_DURING_OWNER_PAUSE": "DENY_OWNER_PAUSE_SCOPE_DENY",
+    "ZERO_HISTORY_RESOLVER_SELFTEST": "PASS",
+    "ZERO_HISTORY_CURRENT_MODE": "FOUNDATION_AUDIT_CONTINUATION",
+    "ZERO_HISTORY_SCIENTIFIC_RESUME_ALLOWED": false,
+    "ZERO_HISTORY_READ_FIRST_PR": 16,
+    "OWNER_ASSURANCE_GENERATOR_SELFTEST": "PASS",
+    "OWNER_ASSURANCE_REAL_CANDIDATE_STATE_INTEGRATION": "PASS",
+    "PROTECTED_BOUNDARY_SMOKE": "PASS",
+    "FINAL_TERMINAL": "MULTIVERSE_FOUNDATION_CANDIDATE_CI_PASS"
+  },
+  "protected_boundaries_observed_in_generated_view": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "UNTOUCHED_VALIDATION": "CLOSED",
+    "MODEL_PROMOTION": "PROHIBITED"
+  },
+  "prior_merge_ref_run": {
+    "run_id": 32367408304,
+    "disposition": "MERGE_REF_INTEGRATION_PASS_NOT_USED_AS_EXACT_HEAD_EVIDENCE",
+    "reason": "default pull_request checkout resolved to a synthetic merge ref before explicit head pinning was added"
+  },
+  "critical_limit": "This validates the stacked candidate logic and state-file integration at the exact result-generating head. It does not make the candidates canonical, does not prove every existing scientific workflow is wired to the pause guard, does not cancel already-running jobs, and does not authorize Keirin scientific resume.",
+  "scientific_resume_allowed": false,
+  "owner_action_now": "NONE"
+}

@@ -1,0 +1,27 @@
+{
+  "record": "MULTIVERSE_OWNER_ASSURANCE_VIEW_SELFTEST_RECEIPT_20260820_v1",
+  "status": "DRAFT_AUDIT_EVIDENCE_NOT_ACCEPTED",
+  "executed_candidate_head": "c70f85d63b34b0a4736556ccb90b9ba75d30d278",
+  "execution_mode": "ISOLATED_RUNTIME_EXACT_GIT_BLOB_SHA_VERIFIED_FIXTURE_SELFTEST_NOT_FULL_STATE_INTEGRATION",
+  "git_blob_identities": {
+    "tools/multiverse_owner_assurance_view_v1.py": "28c7671d60157907e72ef12c0fbe8231592a74dc",
+    "tools/multiverse_owner_assurance_view_selftest_v1.py": "d297eb9348965f69ab935392690d607f67f01572"
+  },
+  "runtime": {
+    "exit_code": 0,
+    "terminal": "MULTIVERSE_OWNER_ASSURANCE_VIEW_SELFTEST_PASS"
+  },
+  "checks": {
+    "VALID_PAUSE_VIEW_GENERATES": "PASS",
+    "DERIVED_REGISTRY_CANNOT_MARK_ITSELF_AUTHORITATIVE": "PASS",
+    "CANONICAL_MAIN_OBSERVATION_MISMATCH_FAILS_CLOSED": "PASS",
+    "PAUSE_STATE_MISMATCH_FAILS_CLOSED": "PASS",
+    "PAUSE_WITH_SCIENTIFIC_EXECUTION_ALLOWED_FAILS_CLOSED": "PASS",
+    "PR15_QUARANTINE_MARKER_MISSING_FAILS_CLOSED": "PASS",
+    "SCIENTIFIC_FIREWALL_MISMATCH_FAILS_CLOSED": "PASS",
+    "OWNER_ACTION_NONE_RENDERED": "PASS"
+  },
+  "critical_limit": "Fixture selftest proves generator logic only. It does not yet constitute a full exact-head CLI integration run over the inherited lifecycle/operational/safe-mode JSON files and does not make the generated view canonical.",
+  "scientific_resume_allowed": false,
+  "owner_action_now": "NONE"
+}
