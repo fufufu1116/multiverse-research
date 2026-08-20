@@ -1,201 +1,22 @@
-name: Keirin Continuous Assumption Surface v1
+name: Keirin Continuous Assumption Surface v1 — PAUSED
+
+# OWNER-DIRECTED SAFE CHECKPOINT — 2026-08-20 JST
+# Scientific execution is intentionally disabled while the Multiverse zero-base
+# foundation audit runs. The immediately previous PR #15 head preserves the full
+# 48-shard workflow for exact restoration on resume.
 
 on:
-  push:
-    branches:
-      - agent/keirin-continuous-assumption-surface-v1
-  pull_request:
-    branches:
-      - agent/keirin-broad-assumption-range-stress-v1
-    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  precheck:
+  paused-checkpoint:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-      PARENT_PR14_HEAD: e70bda39a5d3ce585af4e028b35106b859871bd9
     steps:
-      - name: Checkout exact head
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TARGET_SHA }}
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install locked numeric dependency
-        run: python -m pip install --disable-pip-version-check numpy==2.3.5
-
-      - name: Verify exact head and parent PR14 immutability
-        shell: bash
+      - name: Confirm owner-directed pause
         run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
-          cat > /tmp/expected_surface_paths.txt <<'EOF'
-          .github/workflows/keirin-continuous-assumption-surface-v1.yml
-          v3/historical_all_market/governance/KEIRIN_DT_CONTINUOUS_ASSUMPTION_SURFACE_EXECUTION_LOCK_20260820_v1.json
-          v3/historical_all_market/governance/KEIRIN_DT_CONTINUOUS_ASSUMPTION_SURFACE_PREREG_20260820_v1.json
-          v3/historical_all_market/new_lineage/aggregate_continuous_assumption_surface_selftest_v1.py
-          v3/historical_all_market/new_lineage/aggregate_continuous_assumption_surface_v1.py
-          v3/historical_all_market/new_lineage/c0_c1_n1_continuous_assumption_surface_v1.py
-          v3/historical_all_market/new_lineage/continuous_assumption_surface_runner_selftest_v1.py
-          v3/historical_all_market/new_lineage/continuous_assumption_surface_selftest_v1.py
-          v3/historical_all_market/new_lineage/continuous_assumption_surface_truth_v1.py
-          v3/historical_all_market/new_lineage/continuous_assumption_surface_v1.py
-          EOF
-          git diff --name-only "${PARENT_PR14_HEAD}" HEAD | sort > /tmp/actual_surface_paths.txt
-          sort /tmp/expected_surface_paths.txt -o /tmp/expected_surface_paths.txt
-          diff -u /tmp/expected_surface_paths.txt /tmp/actual_surface_paths.txt
-          echo "PARENT_PR14_FILES_UNCHANGED_FROM_E70BDA39_PASS"
-
-      - name: Run locked pre-result selftests
-        working-directory: v3/historical_all_market/new_lineage
-        run: |
-          python continuous_assumption_surface_selftest_v1.py
-          python broad_assumption_range_stress_selftest_v1.py
-          python broad_stress_fast_kernel_selftest_v1.py
-          python continuous_assumption_surface_runner_selftest_v1.py
-          python aggregate_continuous_assumption_surface_selftest_v1.py
-
-  surface-shards:
-    needs: precheck
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-    strategy:
-      fail-fast: false
-      matrix:
-        line: [L43, L421, L4111, L331, L322, L2221]
-        block: [0, 1, 2, 3, 4, 5, 6, 7]
-    steps:
-      - name: Checkout exact head
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TARGET_SHA }}
-          persist-credentials: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install locked numeric dependency
-        run: python -m pip install --disable-pip-version-check numpy==2.3.5
-
-      - name: Execute locked surface shard
-        working-directory: v3/historical_all_market/new_lineage
-        shell: bash
-        run: |
-          set -euo pipefail
-          OUT="/tmp/surface_${{ matrix.line }}_b${{ matrix.block }}.json"
-          python c0_c1_n1_continuous_assumption_surface_v1.py \
-            --line-shape "${{ matrix.line }}" \
-            --halton-block "${{ matrix.block }}" \
-            --executed-head "${TARGET_SHA}" > "${OUT}"
-          python - "${OUT}" "${TARGET_SHA}" "${{ matrix.line }}" "${{ matrix.block }}" <<'PY'
-          import json, sys
-          path, head, line, block = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
-          with open(path, encoding='utf-8') as f:
-              r = json.load(f)
-          assert r['record'] == 'C0_C1_N1_CONTINUOUS_ASSUMPTION_SURFACE_SHARD_v1'
-          assert r['executed_head'] == head
-          assert r['line_id'] == line
-          assert r['halton_block_index'] == block
-          assert r['cell_count'] == 864
-          assert r['scenario_race_evaluations'] == 20736
-          assert r['canonical_64_point_surface_sha256'] == 'fba866b7421a5d19cdf5408f736691b0e34321ee799d19a09666a47beba8485a'
-          assert r['common_random_numbers']['enabled'] is True
-          assert r['scientific_firewall']['ECON_HOLDOUT1000'] == 'SEALED'
-          assert r['scientific_firewall']['RESULT_PAYOUT_access'] == 'UNAUTHORIZED'
-          assert r['scientific_firewall']['new_untouched_validation'] == 'CLOSED'
-          print('CONTINUOUS_SURFACE_SHARD_PASS', line, block)
-          PY
-
-      - name: Upload shard
-        uses: actions/upload-artifact@v4
-        with:
-          name: continuous-surface-${{ matrix.line }}-b${{ matrix.block }}
-          path: /tmp/surface_${{ matrix.line }}_b${{ matrix.block }}.json
-          if-no-files-found: error
-          retention-days: 30
-
-  aggregate:
-    needs: surface-shards
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-    steps:
-      - name: Checkout exact head
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TARGET_SHA }}
-          persist-credentials: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install locked numeric dependency
-        run: python -m pip install --disable-pip-version-check numpy==2.3.5
-
-      - name: Download all 48 exact-head shards
-        uses: actions/download-artifact@v4
-        with:
-          pattern: continuous-surface-*
-          path: /tmp/surface-shards
-          merge-multiple: true
-
-      - name: Fail-closed aggregate
-        working-directory: v3/historical_all_market/new_lineage
-        run: |
-          python aggregate_continuous_assumption_surface_v1.py \
-            --input-dir /tmp/surface-shards \
-            --executed-head "${TARGET_SHA}" > /tmp/continuous_surface_final.json
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          r = json.loads(Path('/tmp/continuous_surface_final.json').read_text())
-          assert r['terminal'] == 'CONTINUOUS_ASSUMPTION_SURFACE_LOCKED_995328_PASS'
-          assert r['executed_head'] == '${{ env.TARGET_SHA }}'
-          assert r['shard_count'] == 48
-          assert r['continuous_truth_point_count'] == 64
-          assert r['scenario_world_cell_count'] == 41472
-          assert r['total_scenario_race_evaluations'] == 995328
-          assert sum(r['overall']['winner_counts'].values()) == 41472
-          assert len(r['all_cells_canonical_sha256']) == 64
-          assert r['scientific_firewall']['ECON_HOLDOUT1000'] == 'SEALED'
-          assert r['scientific_firewall']['RESULT_PAYOUT_access'] == 'UNAUTHORIZED'
-          assert r['scientific_firewall']['new_untouched_validation'] == 'CLOSED'
-          assert r['scientific_firewall']['model_promotion'] == 'PROHIBITED'
-          print('CONTINUOUS_ASSUMPTION_SURFACE_LOCKED_995328_PASS')
-          print('winner_counts=', json.dumps(r['overall']['winner_counts'], sort_keys=True))
-          print('overall_signed_deltas=', json.dumps({
-              'N1_minus_C0': r['overall']['mean_signed_N1_minus_C0_log_loss'],
-              'C1_minus_C0': r['overall']['mean_signed_C1_minus_C0_log_loss'],
-          }, sort_keys=True))
-          print('robustness=', json.dumps(r['robustness'], sort_keys=True))
-          print('by_rho=', json.dumps(r['breakdowns']['by_rho'], sort_keys=True))
-          print('relation_strength_quartile_x_rho=', json.dumps(r['breakdowns']['relation_strength_quartile_x_rho'], sort_keys=True))
-          PY
-          sha256sum /tmp/continuous_surface_final.json
-
-      - name: Upload final continuous surface result
-        uses: actions/upload-artifact@v4
-        with:
-          name: continuous-assumption-surface-final
-          path: /tmp/continuous_surface_final.json
-          if-no-files-found: error
-          retention-days: 30
+          echo "KEIRIN_RESEARCH_PAUSED_BY_OWNER_DIRECTIVE"
+          echo "NO_CONTINUOUS_ASSUMPTION_SURFACE_SCIENTIFIC_EXECUTION"
+          echo "Restore the pre-pause workflow only after the foundation resume gate is satisfied."
