@@ -1,0 +1,78 @@
+{
+  "record": "KEIRIN_LONG_LINE_TOPOLOGY_SUPPORT_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_LONG_LINE_SUPPORT_IMPLEMENTATION",
+  "locked_at_jst": "2026-08-20T13:27+09:00",
+  "parent_evidence": {
+    "accepted_domain_matrix_merge": "8da439e44c6d3b54c821a71557b5ec7d063b3b9f",
+    "tracking_issue": 5,
+    "finding": "LONG_LINE_POSITION_3_PLUS_SUPPORT_MATERIAL_BEFORE_LONG_LINE_ROBUSTNESS_CLAIMS"
+  },
+  "purpose": "Close topology-support and invariant-test coverage for 4+ rider lines without retuning C1/N1, ranking architectures, or making real-world effect/frequency claims.",
+  "scope": {
+    "allowed": [
+      "add an explicit forced line-shape interface for synthetic engineering fixtures",
+      "validate requested line shapes fail-closed",
+      "generate PRE-consistent line_group_id/line_position/line_size/is_singleton fields for long lines",
+      "test position 3+ and long-line invariants",
+      "test ordered-top3 world support/mass only as mechanical compatibility"
+    ],
+    "prohibited": [
+      "change C0/C1/N1 fitted coefficients",
+      "assign a new real-truth bonus to fourth-or-deeper positions",
+      "claim 4-rider or 5-rider lines are stronger/weaker in real keirin",
+      "claim motif frequencies",
+      "reuse the consumed PR3 holdout for rescue tuning",
+      "open RESULT/PAYOUT",
+      "open untouched real validation",
+      "open ECON_HOLDOUT1000",
+      "DEV2000 C rescue",
+      "model promotion"
+    ]
+  },
+  "topology_support_vs_effect_assumption": {
+    "topology_support": "A layout can be represented and mechanically tested.",
+    "effect_assumption": "Any synthetic utility consequence remains a scenario assumption and is not validated by topology support.",
+    "separation_required": true
+  },
+  "forced_fixture_motifs": {
+    "seven_rider_engineering_only": [
+      [4, 3],
+      [4, 2, 1],
+      [4, 1, 1, 1]
+    ],
+    "nine_rider_domain_supported_or_engineering": [
+      [4, 3, 2],
+      [5, 4],
+      [4, 2, 1, 1, 1]
+    ],
+    "claim_limit": "Motifs are support fixtures, not measured frequencies. Exact 7-rider 4-3 frequency/existence is not promoted beyond current evidence."
+  },
+  "fail_closed_invariants": [
+    "all requested line sizes are positive integers",
+    "requested line sizes sum exactly to field size",
+    "every active car belongs to exactly one line",
+    "line positions are exactly 0 through line_size-1 within each line",
+    "reported line_size is identical for all members of a line",
+    "singleton iff line_size equals 1",
+    "default generator behavior remains unchanged when no override is supplied",
+    "STANDARD_FI_FII_7 and SPECIAL_9 field-size guards remain unchanged"
+  ],
+  "mechanical_world_check": {
+    "worlds": ["W0", "W1", "W2", "W3", "W4"],
+    "allowed_assertions": [
+      "ordered-top3 support has no duplicate finishers",
+      "probability mass sums to 1",
+      "probabilities are nonnegative"
+    ],
+    "forbidden_interpretation": "No architecture winner, effect size, frequency, calibration, or real-edge inference from these fixtures."
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false
+  },
+  "next_gate": "LAB_REVIEW_REQUIRED_BEFORE_ANY_MATERIAL_ARCHITECTURE_COMPARISON_OR_INTERPRETATION"
+}
