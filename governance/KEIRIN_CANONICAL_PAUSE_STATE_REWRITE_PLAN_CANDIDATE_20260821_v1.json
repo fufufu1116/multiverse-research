@@ -1,0 +1,73 @@
+{
+  "record": "KEIRIN_CANONICAL_PAUSE_STATE_REWRITE_PLAN_CANDIDATE_20260821_v1",
+  "status": "DRAFT_NONCANONICAL_REWRITE_PLAN_ONLY",
+  "observed_at_jst": "2026-08-21T00:37:00+09:00",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main_observed": "47240792f9f9833b969c0767cac561941a00b710",
+  "purpose": "Prepare a fail-closed replacement plan for the stale fixed-path Keirin current-state file without changing that file, resuming science, or asserting Lab approval.",
+  "target": {
+    "path": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "expected_current_blob_sha": "248616ba6e8e671d044793ff82bbec2a04804611",
+    "expected_legacy_updated_jst": "2026-08-20T00:29:00+09:00",
+    "expected_legacy_status_prefix": "ACTIVE_RESEARCH_",
+    "must_fail_closed_on_blob_or_main_drift": true
+  },
+  "authoritative_precedence_source": {
+    "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
+    "expected_blob_sha": "f4295fe416667745688f17ab390246cbb64e0dc8",
+    "state_generation": 11,
+    "foundation_v1": "ACCEPTED_FROZEN",
+    "keirin_scientific_resume_allowed": false,
+    "separate_scientific_execution_authorization_required": true
+  },
+  "proposed_rewrite_semantics": {
+    "status": "PAUSED_POST_FOUNDATION_ACCEPTANCE_AWAITING_SEPARATE_SCIENTIFIC_EXECUTION_AUTHORIZATION",
+    "scientific_execution_allowed": false,
+    "scientific_resume_allowed": false,
+    "pause_source": "CANONICAL_FOUNDATION_GENERATION_11_PLUS_EXISTING_OWNER_PAUSE_DIRECTIVE",
+    "foundation_acceptance_is_not_scientific_authorization": true,
+    "zero_history_orientation_is_not_scientific_authorization": true,
+    "preserve_historical_scientific_architecture_and_diagnostics": true,
+    "preserve_latest_legitimate_completed_scientific_checkpoint": true,
+    "do_not_import_quarantined_or_protected_results": true,
+    "do_not_reinterpret_synthetic_as_real_world_evidence": true
+  },
+  "latest_legitimate_completed_scientific_checkpoint": {
+    "pr": 14,
+    "exact_lab_reviewed_scientific_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+    "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "real_world_edge_or_roi_evidence": false
+  },
+  "quarantine": {
+    "pr15": "QUARANTINED_NOT_ADMITTED",
+    "run": 32363915537,
+    "metrics_may_be_opened_for_resume_selection": false
+  },
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "external_provider_contact_authorized": false,
+    "real_money_wagering": "OUT_OF_SCOPE",
+    "synthetic_evidence_is_real_world_edge_evidence": false
+  },
+  "preservation_contract": {
+    "may_delete_legacy_architecture_history": false,
+    "may_change_research_goal_or_direction": false,
+    "may_promote_model_or_lineage": false,
+    "may_open_protected_data": false,
+    "may_resume_science": false,
+    "actual_target_file_modified_by_this_plan": false
+  },
+  "dependency": {
+    "pr26": 26,
+    "pr26_frozen_head": "9a06997638bac405b4035cdbb23d833acdc5b86a",
+    "lab_verdict_required_before_any_canonical_rewrite": true,
+    "lab_must_decide_legacy_rewrite_required": true,
+    "owner_gate_classification_must_come_from_independent_review_or_canonical_policy_check": true
+  },
+  "next_gate": "INDEPENDENT_LAB_REVIEW; THIS PLAN DOES NOT AUTHORIZE CANONICAL WRITE OR SCIENTIFIC RESUME"
+}
