@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from broad_stress_fast_kernel_v1 import stress_truth_array
+from broad_stress_fast_kernel_v1 import stress_truth_array as parent_stress_truth_array
 from c0_c1_n1_broad_assumption_range_stress_v1 import (
     BANKS,
     PRE_WORLDS,
@@ -17,6 +17,10 @@ from c0_c1_n1_continuous_assumption_surface_v1 import (
     HALTON_BLOCK_COUNT,
     POINTS_PER_BLOCK,
     point_indices_for_block,
+)
+from continuous_assumption_surface_truth_v1 import (
+    COMMON_SHOCK_SCENARIO_TAG,
+    continuous_surface_truth_array,
 )
 from continuous_assumption_surface_v1 import POINT_COUNT, stress_assumptions, validate_surface
 from digital_twin_v1 import pre_view
@@ -69,15 +73,28 @@ def main() -> None:
     predictions = _cached_predictions(pre_world, line_id, seed, race_index)
     prediction_snapshot = {m: p.copy() for m, p in predictions.items()}
 
+    cfg1 = stress_assumptions(1)
+    alias = replace(cfg1, scenario_id="ARBITRARY_DIFFERENT_LABEL")
+
     for rho in RHOS:
         rho_race = _apply_exact_rho(base, seed, race_index, rho)
         assert _visible_nontruth_view(rho_race) == visible_before
         for bank in (333, 500):
             for wind in (0.0, 5.0):
                 race = replace(rho_race, bank_length_m=bank, wind_speed_mps=wind)
+
+                common_a = continuous_surface_truth_array(race, cfg1)
+                common_b = continuous_surface_truth_array(race, alias)
+                assert abs(float((common_a - common_b).max())) < 1e-15
+                parent_fixed = parent_stress_truth_array(
+                    race,
+                    replace(cfg1, scenario_id=COMMON_SHOCK_SCENARIO_TAG),
+                )
+                assert abs(float((common_a - parent_fixed).max())) < 1e-15
+
                 for point_index in (1, 32, 64):
                     cfg = stress_assumptions(point_index)
-                    truth = stress_truth_array(race, cfg)
+                    truth = continuous_surface_truth_array(race, cfg)
                     assert abs(float(truth.sum()) - 1.0) < 1e-10
                     assert (truth >= 0.0).all()
                     assert _visible_nontruth_view(race) == visible_before
@@ -85,6 +102,7 @@ def main() -> None:
                         assert (pred == prediction_snapshot[model]).all()
 
     print("CONTINUOUS_ASSUMPTION_SURFACE_RUNNER_SELFTEST_PASS")
+    print("common_shock_tag=", COMMON_SHOCK_SCENARIO_TAG)
 
 
 if __name__ == "__main__":
