@@ -1,0 +1,87 @@
+{
+  "record": "KEIRIN_DT_CONTINUOUS_ASSUMPTION_SURFACE_EXECUTION_LOCK_20260820_v1",
+  "status": "LOCKED_AFTER_IMPLEMENTATION_BEFORE_ANY_CONTINUOUS_SURFACE_METRIC_OUTPUT",
+  "locked_date_jst": "2026-08-20",
+  "timestamp_authority": "GIT_PROVIDER_COMMIT_ANCESTRY_AND_TIMESTAMP",
+  "parent_prereg_commit": "0769037eb048e3463e4e3022cc1d4f29af661e73",
+  "parent_broad_stress_frozen_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+  "pre_result_disclosure": {
+    "continuous_surface_metric_output_observed": false,
+    "continuous_surface_shard_completed": false,
+    "continuous_surface_aggregate_completed": false,
+    "implementation_selftests_run_in_exact_head_CI_yet": false,
+    "known_parent_PR14_results_only": true
+  },
+  "surface_identity": {
+    "method": "64_POINT_UNSCRAMBLED_HALTON_INDICES_1_TO_64",
+    "bases": [2, 3, 5, 7, 11, 13, 17, 19],
+    "canonical_64_point_surface_sha256": "fba866b7421a5d19cdf5408f736691b0e34321ee799d19a09666a47beba8485a",
+    "interpolation_only_inside_legacy_coordinate_ranges": true,
+    "legacy_10_scenarios_retained_separately": true,
+    "population_probability_claim": false
+  },
+  "common_random_numbers_contract": {
+    "enabled": true,
+    "shock_seed_tag": "CONTINUOUS_SURFACE_COMMON_SHOCK_V1",
+    "same_base_shock_draw_for_same_race_and_car_across_all_64_truth_points": true,
+    "reason": "Prevent truth-point comparisons from mixing parameter changes with a different random shock direction. Shock sigma/temperature/disruption parameters transform the same underlying deterministic residual draw.",
+    "parent_truth_formula_changed": false
+  },
+  "execution_identity": {
+    "seed": 20260820,
+    "races_per_structural_context_per_truth_point": 24,
+    "pre_worlds": 3,
+    "tier_A_line_shapes": 6,
+    "banks": 3,
+    "winds": 4,
+    "rhos": 3,
+    "truth_points": 64,
+    "cell_count": 41472,
+    "total_scenario_race_evaluations": 995328,
+    "shard_axis": "6_LINE_SHAPES_X_8_HALTON_BLOCKS",
+    "shard_count": 48,
+    "points_per_block": 8,
+    "cells_per_shard": 864,
+    "evaluations_per_shard": 20736
+  },
+  "pre_execution_tests_required": [
+    "CONTINUOUS_ASSUMPTION_SURFACE_SELFTEST_PASS",
+    "CONTINUOUS_ASSUMPTION_SURFACE_RUNNER_SELFTEST_PASS",
+    "AGGREGATE_CONTINUOUS_ASSUMPTION_SURFACE_SELFTEST_PASS",
+    "BROAD_ASSUMPTION_RANGE_STRESS_SELFTEST_PASS",
+    "BROAD_STRESS_FAST_KERNEL_SELFTEST_PASS",
+    "PARENT_PR14_FILES_UNCHANGED_FROM_E70BDA39"
+  ],
+  "aggregation_fail_closed": {
+    "require_exact_shard_count": 48,
+    "require_every_line_x_block_exactly_once": true,
+    "require_same_executed_head": true,
+    "require_exact_surface_hash": true,
+    "require_exact_cell_count": 41472,
+    "require_exact_evaluation_count": 995328,
+    "require_scientific_firewall_in_every_shard": true,
+    "emit_all_cells_canonical_sha256": true
+  },
+  "result_interpretation_lock": {
+    "primary_question": "WHERE_INSIDE_THE_EXISTING_SYNTHETIC_ASSUMPTION_ENVELOPE_DO_C1_OR_N1_BEAT_THE_ROBUST_C0_CONTROL",
+    "purpose": "INFORMATION_VALUE_AND_CALIBRATION_PRIORITY_MAP",
+    "no_model_retuning": true,
+    "no_truth_range_retuning": true,
+    "no_post_result_fitted_boundary_model_in_primary_receipt": true,
+    "no_real_world_winner_claim": true,
+    "no_real_frequency_or_density_claim": true,
+    "no_real_edge_or_ROI_claim": true,
+    "no_model_promotion": true
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "same_source_KDreams_realism_tuning": "CLOSED",
+    "new_untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "ADD_EXACT_HEAD_CI_WORKFLOW_RUN_PRECHECKS_THEN_EXECUTE_ALL_48_SHARDS_AND_FAIL_CLOSED_AGGREGATION_ONCE"
+}
