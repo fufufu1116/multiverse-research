@@ -23,6 +23,8 @@ from digital_twin_stress_grid_v1 import (
 )
 
 Top3 = Tuple[int, int, int]
+LOCKED_SEED = 20260820
+LOCKED_N_RACES = 240
 
 
 def _stress_bundle(seed: int, race_index: int) -> EmpiricalRaceBundle:
@@ -59,10 +61,13 @@ def _aggregate_scenario_means(scenarios: list[dict]) -> dict:
     }
 
 
-def evaluate(seed: int = 20260820, n_races: int = 96) -> dict:
+def evaluate(seed: int = LOCKED_SEED, n_races: int = LOCKED_N_RACES) -> dict:
     validate_assumption_grid()
-    if n_races <= 0:
-        raise ValueError("n_races_must_be_positive")
+    if seed != LOCKED_SEED or n_races != LOCKED_N_RACES:
+        raise ValueError(
+            f"execution_lock_mismatch:seed={seed}:n_races={n_races}:"
+            f"expected_seed={LOCKED_SEED}:expected_n_races={LOCKED_N_RACES}"
+        )
 
     totals = {
         cfg.scenario_id: {
