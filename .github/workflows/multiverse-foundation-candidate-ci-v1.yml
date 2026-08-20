@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - agent/multiverse-owner-assurance-view-v1
+  pull_request:
+    paths:
+      - 'governance/**'
+      - 'tools/**'
+      - '.github/workflows/multiverse-foundation-candidate-ci-v1.yml'
   workflow_dispatch:
 
 permissions:
