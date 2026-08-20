@@ -37,9 +37,6 @@ EXPECTED_ANCHOR_FIREWALL = {
     "ECON_HOLDOUT1000": "SEALED",
 }
 
-# Exact official-schedule F2 candidate inventory for the locked window. Time-band icons
-# do not exclude an F2 event. Race-level male/original-line/7-rider eligibility is
-# applied only after event selection.
 EXPECTED_F2_CANDIDATES = (
     ("大垣", "2026-08-21", "F2", 400),
     ("松山", "2026-08-21", "F2", 400),
@@ -51,7 +48,7 @@ EXPECTED_F2_CANDIDATES = (
     ("熊本", "2026-08-24", "F2", 400),
     ("松阪", "2026-08-25", "F2", 400),
     ("高知", "2026-08-25", "F2", 500),
-    ("伊東", "2026-08-27", "F2", 333),
+    ("伊東温泉", "2026-08-27", "F2", 333),
     ("岸和田", "2026-08-27", "F2", 400),
     ("小松島", "2026-08-27", "F2", 400),
     ("四日市", "2026-08-29", "F2", 400),
@@ -63,7 +60,10 @@ EXPECTED_F2_CANDIDATES = (
 EXPECTED_TARGET_TITLES = {
     ("大垣", "2026-08-21"): "Ｋドリームス杯サテライト姫路賞",
     ("宇都宮", "2026-08-24"): "オッズパーク杯",
-    ("伊東", "2026-08-27"): "前検コメはウィンチケット杯",
+    ("伊東温泉", "2026-08-27"): "前検コメはウィンチケット杯",
+}
+EXPECTED_OFFICIAL_VENUE_LABELS = {
+    ("伊東温泉", "2026-08-27"): "伊東",
 }
 EXPECTED_EVENT_ELIGIBILITY = {
     "official_schedule_grade": "F2",
@@ -141,8 +141,6 @@ def _select_targets(candidates: tuple[tuple[str, str, str, int], ...]) -> list[t
         rows = [row for row in candidates if row[3] == bank]
         if not rows:
             raise ValueError(f"missing_f2_candidate_for_target_bank:{bank}")
-        # ISO dates and Python strings make this exactly the preregistered
-        # start_date ascending, then venue Unicode code-point ascending rule.
         selected.append(sorted(rows, key=lambda x: (x[1], x[0]))[0])
     return selected
 
@@ -153,7 +151,6 @@ def validate() -> dict:
     batch = _load(BATCH)
     yahoo = _load(YAHOO)
 
-    # Exact artifact identities / statuses.
     if anchor.get("record") != "KEIRIN_BANK_LENGTH_SCHEDULE_WINDOW_ANCHOR_20260821_0831_v1":
         raise ValueError("anchor_record_identity_drift")
     if anchor.get("status") != "VERIFIED_SCOPED_REALITY_ANCHOR_CORRECTED":
@@ -169,7 +166,6 @@ def validate() -> dict:
     if yahoo.get("record") != "KEIRIN_BATCH2_YAHOO_SENSOR_LOG_20260820_v1" or yahoo.get("status") != "SENSOR_ONLY_NO_NUMERIC_TRUTH_PROMOTION":
         raise ValueError("yahoo_identity_or_status_drift")
 
-    # Schedule anchor consistency.
     events = anchor.get("events")
     if not isinstance(events, list) or not events:
         raise ValueError("missing_event_inventory")
@@ -215,7 +211,6 @@ def validate() -> dict:
     if anchor.get("scientific_firewall") != EXPECTED_ANCHOR_FIREWALL:
         raise ValueError("anchor_scientific_firewall_drift")
 
-    # Event selection must be independently reproducible from the frozen candidate inventory.
     frame = sample.get("sampling_frame", {})
     if frame.get("window") != "2026-08-21_through_2026-08-31":
         raise ValueError("sample_window_drift")
@@ -230,11 +225,15 @@ def validate() -> dict:
     observed_candidates = tuple(_candidate_tuple(row) for row in candidate_rows)
     if observed_candidates != EXPECTED_F2_CANDIDATES:
         raise ValueError(f"f2_candidate_inventory_drift:{observed_candidates}")
-    for venue, start, grade, bank in observed_candidates:
+    for row in candidate_rows:
+        venue, start, grade, bank = _candidate_tuple(row)
         if grade != "F2":
             raise ValueError(f"candidate_not_f2:{venue}:{start}")
         if event_index.get((venue, start)) != bank:
             raise ValueError(f"candidate_not_in_anchor_or_bank_mismatch:{venue}:{start}:{bank}")
+        expected_label = EXPECTED_OFFICIAL_VENUE_LABELS.get((venue, start))
+        if expected_label is not None and row.get("official_schedule_venue_label") != expected_label:
+            raise ValueError(f"candidate_official_venue_label_drift:{venue}:{start}")
 
     expected_selected = _select_targets(EXPECTED_F2_CANDIDATES)
     sample_events = frame.get("events", [])
@@ -247,8 +246,10 @@ def validate() -> dict:
         key = (str(row["venue"]), str(row["start_date"]))
         if row.get("official_schedule_title") != EXPECTED_TARGET_TITLES.get(key):
             raise ValueError(f"target_title_identity_drift:{key}")
+        expected_label = EXPECTED_OFFICIAL_VENUE_LABELS.get(key)
+        if expected_label is not None and row.get("official_schedule_venue_label") != expected_label:
+            raise ValueError(f"target_official_venue_label_drift:{key}")
 
-    # Race-level collection gate is exact and must not drift after target racecards are visible.
     if frame.get("race_selection") != EXPECTED_RACE_SELECTION:
         raise ValueError("race_selection_rule_drift")
     if frame.get("replacement_rule") != EXPECTED_REPLACEMENT_RULE:
@@ -256,7 +257,6 @@ def validate() -> dict:
     if frame.get("population_claim") is not False:
         raise ValueError("population_claim_drift")
 
-    # PRE semantics.
     fields = sample.get("admissible_fields", {})
     if fields.get("CLASS") != {
         "status": "VERIFIED_OFFICIAL_PRE_FIELD",
@@ -279,7 +279,6 @@ def validate() -> dict:
     if line.get("if_unavailable") != "Do not infer line membership from prefecture, style, score, commentary, or later results. Leave line-derived targets unmeasured.":
         raise ValueError("pre_line_forecast_unavailable_rule_drift")
 
-    # Yahoo is a sensor only; verify the log itself, not just a pointer string.
     if sample.get("source_policy", {}).get("yahoo") != "SENSOR_ONLY_DISCOVERY_CONTRADICTION_NOT_SAMPLE_TRUTH":
         raise ValueError("sample_yahoo_boundary_drift")
     if batch.get("source_policy", {}).get("yahoo_role") != "SENSOR_ONLY_DISCOVERY_CONTRADICTION_NOT_NUMERIC_TRUTH":
@@ -295,7 +294,6 @@ def validate() -> dict:
     if yahoo.get("scientific_firewall") != EXPECTED_YAHOO_FIREWALL:
         raise ValueError("yahoo_scientific_firewall_drift")
 
-    # Parent batch + sample firewalls and claim limits are exact.
     if batch.get("scientific_firewall") != EXPECTED_BATCH_FIREWALL:
         raise ValueError("batch_scientific_firewall_drift")
     if batch.get("promotion_rule") != "NO_MODEL_PROMOTION_FROM_BATCH2_CALIBRATION_ALONE":
