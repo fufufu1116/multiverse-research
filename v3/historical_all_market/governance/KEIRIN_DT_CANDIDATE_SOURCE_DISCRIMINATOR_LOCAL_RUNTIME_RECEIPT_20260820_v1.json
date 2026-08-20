@@ -1,0 +1,66 @@
+{
+  "record": "KEIRIN_DT_CANDIDATE_SOURCE_DISCRIMINATOR_LOCAL_RUNTIME_RECEIPT_20260820_v1",
+  "status": "LOCKED_PROTOCOL_LOCAL_RUNTIME_ENGINEERING_DIAGNOSTIC_NOT_REALITY_VALIDATION",
+  "executed_at_jst": "2026-08-20T18:27:00+09:00",
+  "prereg": "KEIRIN_DT_CANDIDATE_SOURCE_DISCRIMINATOR_PREREG_20260820_v1",
+  "source": {
+    "provider": "KDreams historical race-detail pages",
+    "status": "STAGED_UNPROVEN_HISTORICAL_PRE",
+    "training_eligibility": false,
+    "population_representativeness": "NOT_PROVEN",
+    "pre_structured_sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+    "standard7_candidate_races": 1539
+  },
+  "execution": {
+    "synthetic_seed": 20260820,
+    "synthetic_races_each": 1539,
+    "cv": "StratifiedKFold(n_splits=5, shuffle=true, random_state=20260820)",
+    "hyperparameter_search": false,
+    "results": {
+      "AUDIT_REALISM_VIEW": {
+        "CURRENT_TWIN": {
+          "HistGradientBoostingClassifier": {"roc_auc": 1.0, "balanced_accuracy": 1.0, "auc_distance_from_0_5": 0.5},
+          "LogisticRegression": {"roc_auc": 1.0, "balanced_accuracy": 1.0, "auc_distance_from_0_5": 0.5}
+        },
+        "EMPIRICAL_ADAPTER_TWIN": {
+          "HistGradientBoostingClassifier": {"roc_auc": 0.8813069421803732, "balanced_accuracy": 0.7953216374269005, "auc_distance_from_0_5": 0.3813069421803732},
+          "LogisticRegression": {"roc_auc": 0.5043649602431222, "balanced_accuracy": 0.5, "auc_distance_from_0_5": 0.004364960243122162}
+        }
+      },
+      "SCALE_NEUTRAL_VIEW": {
+        "CURRENT_TWIN": {
+          "HistGradientBoostingClassifier": {"roc_auc": 1.0, "balanced_accuracy": 1.0, "auc_distance_from_0_5": 0.5},
+          "LogisticRegression": {"roc_auc": 1.0, "balanced_accuracy": 1.0, "auc_distance_from_0_5": 0.5}
+        },
+        "EMPIRICAL_ADAPTER_TWIN": {
+          "HistGradientBoostingClassifier": {"roc_auc": 0.8595917030079108, "balanced_accuracy": 0.7797270955165692, "auc_distance_from_0_5": 0.35959170300791077},
+          "LogisticRegression": {"roc_auc": 0.4981957094743935, "balanced_accuracy": 0.5051981806367771, "auc_distance_from_0_5": 0.001804290525606489}
+        }
+      }
+    }
+  },
+  "interpretation": {
+    "clear_improvement": "YES. Under the same locked feature contract the empirical adapter is substantially harder to distinguish from the staged PRE candidate than the current Twin.",
+    "linear_first_order_fit": "VERY_CLOSE_UNDER_LOCKED_LOGISTIC_DIAGNOSTIC",
+    "nonlinear_joint_fit": "STILL_MATERIALLY_DISTINGUISHABLE_UNDER_LOCKED_HGB_DIAGNOSTIC",
+    "engineering_conclusion": "The adapter appears to correct much of the obvious marginal/linear mismatch, but nonlinear combinations and race-level joint shape still contain synthetic signatures. A v2 realism layer should focus on joint/dependence/race-shape calibration rather than retuning only marginal centers.",
+    "not_evidence_of": [
+      "REAL_WORLD_EQUIVALENCE",
+      "KEIRIN_POPULATION_TRUTH",
+      "SOURCE_ADMISSION",
+      "REAL_PREDICTIVE_EDGE",
+      "REAL_ROI",
+      "MODEL_PROMOTION"
+    ]
+  },
+  "post_result_rule": "Any feature attribution, ablation, or generator change after this receipt is post-result engineering diagnosis and must be labeled as such. Do not reinterpret it as preregistered validation.",
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED"
+  },
+  "next_gate": "POST_RESULT_ATTRIBUTION_DIAGNOSTIC_THEN_PREREGISTER_JOINT_SHAPE_CALIBRATION_V2_BEFORE_ANY_V2_DISCRIMINATOR_RESULT"
+}

@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_DT_JOINT_DEPENDENCE_V2_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_V2_PARAMETER_EXTRACTION_IMPLEMENTATION_OR_V2_DISCRIMINATOR_RESULT",
+  "locked_at_jst": "2026-08-20T18:27:00+09:00",
+  "purpose": "One-shot engineering upgrade of the staged-candidate PRE realism layer from marginal sampling to class/style-conditioned multivariate dependence, then stop same-source realism tuning and seek external calibration/falsification.",
+  "post_v1_disclosure": {
+    "known_before_v2_lock": [
+      "v1 dramatically reduced linear/logistic distinguishability versus the staged source candidate.",
+      "v1 remained nonlinearly distinguishable: corrected scale-neutral fixed-HGB AUC about 0.821 and audit-view fixed-HGB AUC about 0.881.",
+      "post-result group diagnostics implicated multifeature tactical dependence rather than a single marginal feature.",
+      "large observed race-level Spearman gaps include makuri-vs-sashi, S-vs-sashi, B-vs-nige, and band/class-vs-nige relationships.",
+      "All of these are in-source staged-candidate diagnostics and not admitted real-world evidence."
+    ]
+  },
+  "source_boundary": {
+    "provider": "KDreams historical race-detail pages",
+    "source_status": "STAGED_UNPROVEN_HISTORICAL_PRE",
+    "training_eligibility": false,
+    "population_representativeness": "NOT_PROVEN",
+    "raw_rows_committed": false,
+    "derived_aggregate_constraints_only": true
+  },
+  "one_shot_rule": {
+    "same_source_v2_generator_iterations_allowed_after_v2_discriminator": 0,
+    "no_hyperparameter_or_generator_retuning_after_v2_discriminator": true,
+    "next_realism_gain_after_v2": "must come from independent time/source/official prospective calibration or falsification rather than repeated fitting to these same 1539 races"
+  },
+  "parameter_extraction_contract": {
+    "candidate_subset": "same 1539 standard-7 ordinary races / 10773 entrants used in v1 envelope",
+    "rider_conditioning_cells": "rider_class x style = 5 classes x 3 styles = 15 cells",
+    "minimum_observed_cell_size_before_lock": 215,
+    "tactical_fields": ["B", "S", "nige", "makuri", "sashi", "mark"],
+    "real_rate_transform": "count / (wins + seconds + thirds + outs) when starts>0; starts=0 contributes zero tactical rate and is retained only with explicit quality accounting",
+    "quantile_grid": [0.0, 0.05, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 1.0],
+    "joint_rank_variables": ["score_within_race_z", "B_rate", "S_rate", "nige_rate", "makuri_rate", "sashi_rate", "mark_rate"],
+    "dependence_statistic": "Spearman rank correlation within each rider_class x style cell",
+    "copula_transform": "rho_gaussian = 2*sin(pi*rho_spearman/6)",
+    "runtime_recipe": "For each class/style cell store score-to-tactical Gaussian correlations and a Cholesky factor of the conditional tactical covariance. Use the generated rider score latent as z_score, sample conditional correlated tactical normals, map through standard-normal CDF to the locked empirical quantile grid by linear interpolation.",
+    "positive_semidefinite_policy": "If numeric transformed correlation is not Cholesky-positive-definite, apply the smallest preregistered identity shrinkage from grid [0.00,0.01,0.02,...,0.50] that permits Cholesky; record shrinkage per cell. No post-result choice.",
+    "score_class_structure": "Derive within-race score residual mean by rider class and use it as a centered class offset while retaining the v1 race-band hierarchy. Offsets are recentered within each synthetic race so the race-level mean hierarchy is not silently shifted.",
+    "style_line_coupling": "retain v1 bounded assumption-shaped line-position/style coupling; line membership/order remains unavailable from this source and is not newly calibrated"
+  },
+  "v2_runtime_constraints": {
+    "stdlib_only": true,
+    "raw_identity": "NEVER_USED_OR_EMITTED",
+    "H": "UNCHANGED_ASSUMPTION_UNMEASURED",
+    "line_shape_frequency": "UNCHANGED_ASSUMPTION_RANGE",
+    "bank_frequency": "UNCHANGED_ASSUMPTION_RANGE",
+    "wind_distribution": "UNCHANGED_ASSUMPTION_RANGE",
+    "sporting_truth_effect_sizes": "UNCHANGED_SYNTHETIC_ASSUMPTION_GRID",
+    "C0_C1_N1_coefficients": "UNCHANGED"
+  },
+  "v2_evaluation_contract": {
+    "reuse_discriminator_protocol": "KEIRIN_DT_CANDIDATE_SOURCE_DISCRIMINATOR_PREREG_20260820_v1",
+    "scale_neutral_erratum": "Treat z-score mean/std as normalization identities and exclude them from corrected scale-neutral tree diagnostic; retain score_range.",
+    "report_both_views": true,
+    "report_both_fixed_classifiers": true,
+    "compare_current_v1_v2": true,
+    "desired_engineering_direction": "V2 fixed-HGB AUC should move closer to 0.5 than v1 without worsening source-boundary or firewall checks.",
+    "no_numeric_pass_threshold_claimed": true,
+    "reason_no_threshold": "This is in-source engineering fit, not independent validation; arbitrary AUC pass thresholds would create false reality-equivalence semantics."
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "source_admission": "NOT_GRANTED"
+  },
+  "next_gate": "EXTRACT_V2_DERIVED_PARAMS_IMPLEMENT_V2_ADAPTER_SELFTEST_RUN_ONE_V2_DISCRIMINATOR_THEN_STOP_SAME_SOURCE_TUNING"
+}

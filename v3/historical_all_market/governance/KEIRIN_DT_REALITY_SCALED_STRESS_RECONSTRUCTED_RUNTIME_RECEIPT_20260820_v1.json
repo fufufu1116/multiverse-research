@@ -1,0 +1,67 @@
+{
+  "executed_at_jst": "2026-08-20T18:11:00+09:00",
+  "execution": {
+    "baseline_mean_metrics_across_scenarios": {
+      "C0": {"brier": 0.01031825510960615, "kl": 0.40538458982741277, "log_loss": 4.888518528132799},
+      "C1": {"brier": 0.011200882862802635, "kl": 0.42990555575379147, "log_loss": 4.913039494059179},
+      "N1": {"brier": 0.011371579353480165, "kl": 0.4294651021989907, "log_loss": 4.912599040504377}
+    },
+    "baseline_win_counts_by_expected_log_loss": {"C0": 9, "C1": 0, "N1": 1},
+    "delta_mean_metrics_vs_current_synthetic_baseline": {
+      "C0": {"brier": -0.003572096767226119, "kl": -0.07062784486677126, "log_loss": 0.0930795403217699},
+      "C1": {"brier": -0.004272498183675411, "kl": -0.08737771688620477, "log_loss": 0.07632966830233556},
+      "N1": {"brier": -0.004448288191661728, "kl": -0.08804688562750657, "log_loss": 0.07566049956103438}
+    },
+    "mean_metrics_across_scenarios": {
+      "C0": {"brier": 0.006746158342380032, "kl": 0.3347567449606415, "log_loss": 4.981598068454569},
+      "C1": {"brier": 0.006928384679127224, "kl": 0.3425278388675867, "log_loss": 4.989369162361514},
+      "N1": {"brier": 0.006923291161818437, "kl": 0.34141821657148413, "log_loss": 4.988259540065411}
+    },
+    "n_races_per_scenario": 240,
+    "observable_pre_source_status": "CANDIDATE_SENSOR_ENVELOPE_NOT_REALITY_ADMISSION",
+    "record": "C0_C1_N1_REALITY_SCALED_MULTIWORLD_SYNTHETIC_STRESS_v1",
+    "scenario_count": 10,
+    "scenarios": [
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.005180707353171215,"kl":0.2560769276422366,"log_loss":4.9403574518337},"C1":{"brier":0.005472293479416463,"kl":0.26766696566370385,"log_loss":4.951947489855167},"N1":{"brier":0.005765537981912006,"kl":0.2785960652636159,"log_loss":4.962876589455081}},"scenario_id":"W0_NULL_CONTEXT","winner_by_expected_log_loss":"C0","world_family":"W0"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.005195283801885802,"kl":0.25758916048916286,"log_loss":4.941687205840626},"C1":{"brier":0.005480231658344359,"kl":0.2687651535658891,"log_loss":4.952863198917355},"N1":{"brier":0.005769234507087325,"kl":0.2794642138122993,"log_loss":4.963562259163768}},"scenario_id":"W0_CONTEXT_MODERATE","winner_by_expected_log_loss":"C0","world_family":"W0"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.005482057408293013,"kl":0.26611308834329955,"log_loss":4.920560232964291},"C1":{"brier":0.005687436713838013,"kl":0.27366431508685324,"log_loss":4.9281114597078455},"N1":{"brier":0.00591715685169803,"kl":0.2825573034614044,"log_loss":4.937004448082399}},"scenario_id":"W1_STATIC_LINE_WEAK","winner_by_expected_log_loss":"C0","world_family":"W1"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.006314206618420807,"kl":0.29137269800567245,"log_loss":4.882262971528231},"C1":{"brier":0.006360524296478685,"kl":0.29200959877781396,"log_loss":4.8828998723003725},"N1":{"brier":0.00646041448278333,"kl":0.29697052182196415,"log_loss":4.8878607953445234}},"scenario_id":"W1_STATIC_LINE_STRONG","winner_by_expected_log_loss":"C0","world_family":"W1"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.00582945829834903,"kl":0.277187172647842,"log_loss":4.912281559129838},"C1":{"brier":0.00593545521383128,"kl":0.28126163423314055,"log_loss":4.9163560207151376},"N1":{"brier":0.005878713699286034,"kl":0.277549347060697,"log_loss":4.912643733542696}},"scenario_id":"W2_CONDITIONAL_LINE_WEAK","winner_by_expected_log_loss":"C0","world_family":"W2"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.0077668195323626265,"kl":0.3375231448336045,"log_loss":4.902775822665204},"C1":{"brier":0.007668262911376062,"kl":0.3346051721220414,"log_loss":4.899857849953639},"N1":{"brier":0.006934950944020581,"kl":0.30155592111725443,"log_loss":4.866808598948851}},"scenario_id":"W2_CONDITIONAL_LINE_STRONG","winner_by_expected_log_loss":"N1","world_family":"W2"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.006107545057145957,"kl":0.28826746805399783,"log_loss":4.92702724870556},"C1":{"brier":0.006161946379522181,"kl":0.2908384635443175,"log_loss":4.929598244195876},"N1":{"brier":0.00587557105835439,"kl":0.27693982561499003,"log_loss":4.915699606266545}},"scenario_id":"W3_DISRUPTION_LOW","winner_by_expected_log_loss":"N1","world_family":"W3"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.006745642300716701,"kl":0.3612278844883084,"log_loss":5.039925781146538},"C1":{"brier":0.0069509438139740455,"kl":0.37109004990186245,"log_loss":5.049787946560095},"N1":{"brier":0.006824099036987044,"kl":0.36555023129793957,"log_loss":5.04424812795617}},"scenario_id":"W3_DISRUPTION_HIGH","winner_by_expected_log_loss":"C0","world_family":"W3"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.006169722846348415,"kl":0.3460298938907836,"log_loss":5.08698063265302},"C1":{"brier":0.006439806244247453,"kl":0.3582941764269274,"log_loss":5.099244915189169},"N1":{"brier":0.0064810470068313916,"kl":0.3592485313194641,"log_loss":5.1001992700817045}},"scenario_id":"W4_HEAVY_TAIL_MODERATE","winner_by_expected_log_loss":"C0","world_family":"W4"},
+      {"assurance":"ASSUMPTION_RANGE_ONLY","models":{"C0":{"brier":0.012670140207106757,"kl":0.6661800112115069,"log_loss":5.2621217780786775},"C1":{"brier":0.013126946080243689,"kl":0.6870828593533174,"log_loss":5.283024626220485},"N1":{"brier":0.013326186049224246,"kl":0.6957502049452121,"log_loss":5.29169197181238}},"scenario_id":"W4_HEAVY_TAIL_SEVERE","winner_by_expected_log_loss":"C0","world_family":"W4"}
+    ],
+    "seed": 20260820,
+    "status": "SENSOR_SHAPED_SYNTHETIC_ENGINEERING_EVIDENCE_ONLY",
+    "win_counts_by_expected_log_loss": {"C0": 8, "C1": 0, "N1": 2}
+  },
+  "execution_lock": "KEIRIN_DT_REALITY_SCALED_STRESS_EXECUTION_LOCK_20260820_v1",
+  "interpretation": {
+    "engineering_observation": "Reality-shaped observable PRE changed scenario behavior modestly: N1 wins 2/10 stress scenarios versus 1/10 in the current synthetic baseline; C0 remains the broad stress winner at 8/10; C1 wins 0/10.",
+    "n1_win_scenarios": ["W2_CONDITIONAL_LINE_STRONG", "W3_DISRUPTION_LOW"],
+    "not_evidence_of": ["REAL_KEIRIN_EDGE", "REAL_ROI", "REAL_WORLD_EQUIVALENCE", "SOURCE_ADMISSION", "MODEL_PROMOTION"]
+  },
+  "next_gate": "EXACT_HEAD_SELFTEST_AND_STRESS_RERUN_THEN_LAB_REVIEW",
+  "record": "KEIRIN_DT_REALITY_SCALED_STRESS_RECONSTRUCTED_RUNTIME_RECEIPT_20260820_v1",
+  "scientific_firewall": {
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "model_promotion": "PROHIBITED",
+    "new_untouched_validation_opened": false,
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED"
+  },
+  "source_identities": {
+    "adapter_blob_sha": "f13392417a62ea863dbe9c5580b5674992ae22a7",
+    "baseline_stress_blob_sha": "f080a4ae8cd8e2a2d44f022350a1fddb7a9a653b",
+    "digital_twin_blob_sha": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "params_blob_sha": "58a8c4723fd6c55a9c1238e14d2ae49eba896a6f",
+    "runner_blob_sha": "4aaf288f5ff9527057734f6cc752db64b5395cf8",
+    "stress_grid_blob_sha": "c877d2982a2708d4aeb5f8793381a4abd2b07eac",
+    "top3_core_blob_sha": "4e2a819dce69240792d927cceba434f53932b829"
+  },
+  "status": "RECONSTRUCTED_RUNTIME_RESULT_REQUIRES_EXACT_HEAD_RERUN_FOR_HIGHER_EVIDENCE",
+  "transport_caveat": "GitHub exact branch checkout was unavailable in this runtime. Required logic was independently reconstructed from connector-fetched source and executed in an isolated local runtime. Treat numeric agreement as provisional until exact-head rerun."
+}
