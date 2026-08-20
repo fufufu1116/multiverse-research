@@ -151,7 +151,7 @@ def evaluate(seed: int = LOCKED_SEED, n_races: int = LOCKED_N_RACES) -> dict:
         "bank_wind_sampling": "EXISTING_EQUAL_ENGINEERING_CYCLES_NOT_REAL_FREQUENCY",
         "line_shape_sampling": "EXISTING_SYNTHETIC_ASSUMPTION_NOT_SENSOR_CALIBRATED",
         "H_sampling": "EXISTING_SYNTHETIC_ASSUMPTION_UNMEASURED_BY_SENSOR",
-        "coefficient_retuning": false,
+        "coefficient_retuning": False,
         "scientific_claim_limit": (
             "No real-keirin predictive edge, real-world equivalence, source admission, "
             "frequency, causal coefficient, ROI, or model promotion may be inferred."
@@ -167,7 +167,7 @@ def evaluate(seed: int = LOCKED_SEED, n_races: int = LOCKED_N_RACES) -> dict:
             "DEV2000_C_new_lineage_rescue": "PROHIBITED",
             "same_lineage_B_C_rescue_tuning": "PROHIBITED",
             "RESULT_PAYOUT_access": "UNAUTHORIZED",
-            "new_untouched_validation_opened": false,
+            "new_untouched_validation_opened": False,
             "model_promotion": "PROHIBITED"
         }
     }
