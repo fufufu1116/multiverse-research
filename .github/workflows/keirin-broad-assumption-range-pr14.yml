@@ -1,143 +1,22 @@
-name: Keirin Broad Assumption-Range DT PR14
+name: Keirin Broad Assumption-Range DT PR14 — PAUSED
+
+# OWNER-DIRECTED GLOBAL KEIRIN SAFE PAUSE — 2026-08-20 JST
+# Lab-reviewed scientific evidence remains preserved at e70bda39a5d3ce585af4e028b35106b859871bd9.
+# This workflow no longer auto-runs scientific stress during the foundation audit.
 
 on:
-  push:
-    branches:
-      - agent/keirin-broad-assumption-range-stress-v1
-  pull_request:
-    branches:
-      - main
-    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  precheck:
+  paused-checkpoint:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TARGET_SHA }}
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Verify exact head
-        run: test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
-      - name: Install pinned PR14 numerical dependency
-        run: python -m pip install --disable-pip-version-check numpy==2.3.5
-      - name: Run topology/rho selftest
-        working-directory: v3/historical_all_market/new_lineage
-        run: python broad_assumption_range_stress_selftest_v1.py
-      - name: Prove fast kernel numerical equivalence
-        working-directory: v3/historical_all_market/new_lineage
-        run: python broad_stress_fast_kernel_selftest_v1.py
-
-  line-shard:
-    needs: precheck
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        line: [L43, L421, L4111, L331, L322, L2221, L7, L61, L52, L511, L3211, L31111, L22111, L211111, L1111111]
-    env:
-      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TARGET_SHA }}
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Verify exact head
-        run: test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
-      - name: Install pinned PR14 numerical dependency
-        run: python -m pip install --disable-pip-version-check numpy==2.3.5
-      - name: Run locked line shard
-        working-directory: v3/historical_all_market/new_lineage
+      - name: Confirm owner-directed global Keirin pause
         run: |
-          python c0_c1_n1_broad_assumption_range_stress_v1.py \
-            --line-shape "${{ matrix.line }}" \
-            --executed-head "${TARGET_SHA}" \
-            > "/tmp/broad_${{ matrix.line }}.json"
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          line=os.environ['LINE_ID']
-          p=Path(f'/tmp/broad_{line}.json')
-          d=json.loads(p.read_text())
-          assert d['executed_head']==os.environ['TARGET_SHA']
-          assert d['line_id']==line
-          assert d['cell_count']==1080
-          assert d['scenario_race_evaluations']==25920
-          assert d['scientific_firewall']['ECON_HOLDOUT1000']=='SEALED'
-          assert d['scientific_firewall']['RESULT_PAYOUT_access']=='UNAUTHORIZED'
-          print('BROAD_LINE_SHARD_PASS', line)
-          PY
-        env:
-          LINE_ID: ${{ matrix.line }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: broad-shard-${{ matrix.line }}
-          path: /tmp/broad_${{ matrix.line }}.json
-          if-no-files-found: error
-          retention-days: 7
-
-  aggregate:
-    needs: line-shard
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ env.TARGET_SHA }}
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Verify exact head
-        run: test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
-      - name: Install pinned PR14 numerical dependency
-        run: python -m pip install --disable-pip-version-check numpy==2.3.5
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: broad-shard-*
-          path: /tmp/broad-shards
-          merge-multiple: false
-      - name: Aggregate and fail closed
-        working-directory: v3/historical_all_market/new_lineage
-        run: |
-          python aggregate_broad_assumption_range_stress_v1.py \
-            --input-dir /tmp/broad-shards \
-            --output /tmp/broad_assumption_range_result.json
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          d=json.loads(Path('/tmp/broad_assumption_range_result.json').read_text())
-          assert d['executed_head']==os.environ['TARGET_SHA']
-          assert d['scenario_world_cell_count']==16200
-          assert d['total_scenario_race_evaluations']==388800
-          assert d['primary_tier_A_robustness']['cell_count']==6480
-          assert d['all_topologies_diagnostic_only']['cell_count']==16200
-          assert sum(d['primary_tier_A_robustness']['winner_counts'].values())==6480
-          assert sum(d['all_topologies_diagnostic_only']['winner_counts'].values())==16200
-          print('BROAD_ASSUMPTION_RANGE_LOCKED_388800_PASS')
-          print('tierA_wins=',json.dumps(d['primary_tier_A_robustness']['winner_counts'],sort_keys=True))
-          print('all_wins=',json.dumps(d['all_topologies_diagnostic_only']['winner_counts'],sort_keys=True))
-          print('tierA_robustness=',json.dumps(d['primary_tier_A_robustness']['models'],sort_keys=True))
-          PY
-      - uses: actions/upload-artifact@v4
-        with:
-          name: broad-assumption-range-final
-          path: /tmp/broad_assumption_range_result.json
-          if-no-files-found: error
-          retention-days: 30
+          echo "KEIRIN_RESEARCH_PAUSED_BY_OWNER_DIRECTIVE"
+          echo "PR14_BROAD_SCIENTIFIC_EXECUTION_DISABLED"
+          echo "LAB_REVIEWED_SCIENTIFIC_HEAD=e70bda39a5d3ce585af4e028b35106b859871bd9"
+          echo "Do not restore scientific execution before the Multiverse foundation resume gate and Pause Guard conformance are satisfied."
