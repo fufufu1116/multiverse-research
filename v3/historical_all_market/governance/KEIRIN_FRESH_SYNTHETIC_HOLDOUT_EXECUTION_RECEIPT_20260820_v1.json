@@ -1,0 +1,77 @@
+{
+  "record": "KEIRIN_FRESH_SYNTHETIC_HOLDOUT_EXECUTION_RECEIPT_20260820_v1",
+  "status": "WORKING_SYNTHETIC_HOLDOUT_EXECUTED_PENDING_LAB_EVALUATION_AND_PRE_PROMOTION_CONFORMANCE",
+  "execution_authorization": {
+    "lab_micro_rechecked_head": "26f3377db085208986449b3c163582f3dc890a96",
+    "lab_micro_recheck_verdict": "PASS",
+    "fresh_synthetic_holdout_may_open": true,
+    "c1_n1_promotion_allowed_at_authorization": false,
+    "untouched_validation_may_open": false,
+    "github_relay_comment_id": 5350370281
+  },
+  "execution_target_head": "26f3377db085208986449b3c163582f3dc890a96",
+  "execution_entrypoint": "locked_synthetic_holdout_runner_v1.py --stage execute-after-lab-authorization",
+  "execution_count": 1,
+  "runtime_assurance": {
+    "method": "CORE_LOCAL_EXACT_GIT_BLOB_RECONSTRUCTION",
+    "native_clean_checkout": "NOT_EXECUTED",
+    "native_git_clone_attempt": "FAILED_ENVIRONMENT_DNS_COULD_NOT_RESOLVE_GITHUB_COM",
+    "exact_git_blob_set_verified_before_execution": true,
+    "claim_limit": "The executed source bytes were reconstructed from GitHub connector blob content and independently verified to the exact Git blob SHA set. This is not claimed as a native clean-checkout run; Lab must decide whether it satisfies the remaining exact-byte conformance requirement or whether native checkout evidence is still required."
+  },
+  "exact_blob_set": {
+    "locked_synthetic_holdout_runner_v1.py": "f1f8915eac091b3a7e8c36c1a875d8a8a982467d",
+    "balanced_synthetic_fit_cal_v1.py": "6dbdbe0f597f30a10bd341d8d48875d266409eda",
+    "balanced_synthetic_sampler_v1.py": "458c1603ebf5b73836ac0dc798519f3a87288661",
+    "digital_twin_holdout_extensions_v1.py": "63776de158ce54bd0d96975aafd21f8c76ceb6ce",
+    "digital_twin_stress_grid_v1.py": "c877d2982a2708d4aeb5f8793381a4abd2b07eac",
+    "digital_twin_v1.py": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_core_v1.py": "4e2a819dce69240792d927cceba434f53932b829",
+    "KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json": "f531d72929c846da1c932451873c94bb9b526ae7",
+    "KEIRIN_PREREG_BALANCED_SYNTHETIC_ABLATION_v1.json": "e4131621bf770068ec9d0c44da16356f64027e80"
+  },
+  "binding": {
+    "frozen_receipt_sha256": "4d68c9d7a87b38b8e18e5eb983f9b87865dc7345f6c248656222bdc4c9c6e597",
+    "frozen_receipt_git_blob_sha": "f531d72929c846da1c932451873c94bb9b526ae7",
+    "prereg_sha256": "ff565fcbcb524c0d290b22046c2006648f58bed8e20c913704ae6b9ed4634889",
+    "prereg_git_blob_sha": "e4131621bf770068ec9d0c44da16356f64027e80",
+    "arbitrary_json_input_accepted": false,
+    "post_holdout_retuning": "PROHIBITED"
+  },
+  "result_artifact": {
+    "path": "v3/historical_all_market/governance/KEIRIN_FRESH_SYNTHETIC_HOLDOUT_RESULT_20260820_v1.json",
+    "git_blob_sha": "2f4919c1c4794cfac6ee8c3fbd78fd0726e86a45",
+    "local_exact_runner_stdout_sha256": "920026dd78e3cae339b43bb3b446cfa838f8aaa25ce3e5d567d44cd3df138d8b",
+    "local_exact_runner_stdout_size_bytes": 8729,
+    "canonical_json_sha256": "d248db3b95309d0d1a0c58f552c08d36d4725f7089fd10c4a138b7936b69fd6a",
+    "scenario_count": 12,
+    "note": "GitHub result artifact preserves the exact numerical/object result with normalized JSON whitespace. The local stdout hash records the exact runner stdout bytes."
+  },
+  "fresh_holdout_summary": {
+    "HX_SIGNED_BANK_WIND_REVERSAL": {
+      "winner_by_log_loss": "N1",
+      "C0": {"log_loss": 4.696272104125324, "kl": 0.34742715242705374, "brier": 0.009925372085273174},
+      "C1": {"log_loss": 4.696098467662265, "kl": 0.3472535159639957, "brier": 0.009923617796797613},
+      "N1": {"log_loss": 4.692272288357512, "kl": 0.34342733665924174, "brier": 0.009765208246708344}
+    },
+    "HX_ALTERNATE_CONDITIONAL_CROSS_LINE_ANTI_CHAIN": {
+      "winner_by_log_loss": "C0",
+      "C0": {"log_loss": 4.687970355608714, "kl": 0.34072029119457986, "brier": 0.009541579414972716},
+      "C1": {"log_loss": 4.688339202857089, "kl": 0.34108913844295585, "brier": 0.009552420045175961},
+      "N1": {"log_loss": 4.693538747482044, "kl": 0.34628868306790916, "brier": 0.009651201512592321}
+    }
+  },
+  "scientific_interpretation_guardrails": [
+    "Fresh synthetic holdout is now consumed and must never be used for rescue tuning on this lineage.",
+    "The two fresh scenarios split: N1 wins signed bank/wind reversal, while C0 wins the non-mirroring alternate conditional world.",
+    "This is synthetic engineering evidence only; it is not real-keirin predictive edge, ROI, causal-effect, or frequency evidence.",
+    "No C1/N1 architecture promotion is authorized by this receipt.",
+    "No untouched real validation, RESULT, PAYOUT, ECON_HOLDOUT1000, or DEV2000 C rescue evidence was opened or consumed."
+  ],
+  "promotion": {
+    "C1": "PROHIBITED_PENDING_LAB_HOLDOUT_EVALUATION_AND_CONFORMANCE",
+    "N1": "PROHIBITED_PENDING_LAB_HOLDOUT_EVALUATION_AND_CONFORMANCE",
+    "untouched_real_validation_may_open": false
+  },
+  "next_exact_action": "LAB_REVIEW_FRESH_SYNTHETIC_HOLDOUT_EVIDENCE_AND_DECIDE_REMAINING_CONFORMANCE_REQUIREMENT_BEFORE_ANY_PROMOTION"
+}
