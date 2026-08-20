@@ -1,0 +1,76 @@
+name: Keirin Fixed-Path Pause Rewrite Dry Run v1 CI
+
+on:
+  push:
+    branches:
+      - agent/keirin-fixed-path-pause-implementation-candidate-v1
+    paths:
+      - 'governance/KEIRIN_FIXED_PATH_PAUSE_REWRITE_DRY_RUN_CANDIDATE_20260821_v1.json'
+      - 'tools/keirin_fixed_path_pause_rewrite_dry_run_v1.py'
+      - 'tools/keirin_fixed_path_pause_rewrite_dry_run_selftest_v1.py'
+      - '.github/workflows/keirin-fixed-path-pause-rewrite-dry-run-v1-ci.yml'
+      - 'v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json'
+  pull_request:
+    paths:
+      - 'governance/KEIRIN_FIXED_PATH_PAUSE_REWRITE_DRY_RUN_CANDIDATE_20260821_v1.json'
+      - 'tools/keirin_fixed_path_pause_rewrite_dry_run_v1.py'
+      - 'tools/keirin_fixed_path_pause_rewrite_dry_run_selftest_v1.py'
+      - '.github/workflows/keirin-fixed-path-pause-rewrite-dry-run-v1-ci.yml'
+      - 'v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fixed-path-pause-rewrite-dry-run-v1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      LEGACY_PATH: v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json
+      EXPECTED_LEGACY_BLOB: 248616ba6e8e671d044793ff82bbec2a04804611
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Verify exact checkout and untouched fixed path
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+          echo "LEGACY_BLOB=$(git hash-object "${LEGACY_PATH}")"
+          test "$(git hash-object "${LEGACY_PATH}")" = "${EXPECTED_LEGACY_BLOB}"
+      - name: Run preservation selftest
+        run: python tools/keirin_fixed_path_pause_rewrite_dry_run_selftest_v1.py
+      - name: Generate dry-run rewritten state outside repository
+        run: |
+          python tools/keirin_fixed_path_pause_rewrite_dry_run_v1.py \
+            --input "${LEGACY_PATH}" \
+            --output /tmp/CURRENT_STATE_KEIRIN.pause-candidate.json
+          python - <<'PY'
+          import json
+          p='/tmp/CURRENT_STATE_KEIRIN.pause-candidate.json'
+          d=json.load(open(p, encoding='utf-8'))
+          assert d['status']=='PAUSED_POST_FOUNDATION_ACCEPTANCE_AWAITING_SEPARATE_SCIENTIFIC_EXECUTION_AUTHORIZATION'
+          assert d['effective_scientific_execution_control']['scientific_execution_allowed'] is False
+          assert d['effective_scientific_execution_control']['scientific_resume_allowed'] is False
+          print('DRY_RUN_OUTPUT_SEMANTICS_PASS')
+          PY
+      - name: Reconfirm repository fixed path remained byte-identical
+        run: |
+          test "$(git hash-object "${LEGACY_PATH}")" = "${EXPECTED_LEGACY_BLOB}"
+          git status --porcelain
+          test -z "$(git status --porcelain)"
+      - name: Protected boundary terminal
+        run: |
+          echo 'KEIRIN_FIXED_PATH_PAUSE_REWRITE_DRY_RUN_V1_CI_PASS'
+          echo 'ACTUAL_FIXED_PATH_MODIFIED=false'
+          echo 'HISTORICAL_ARCHITECTURE_PRESERVED=true'
+          echo 'SCIENTIFIC_EXECUTION_PERFORMED=false'
+          echo 'SCIENTIFIC_RESUME_ALLOWED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'PR15_QUARANTINED_METRICS_INSPECTED=false'
