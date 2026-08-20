@@ -1,0 +1,69 @@
+{
+  "record": "MULTIVERSE_ZERO_HISTORY_RESUME_POINTER_CANDIDATE_20260820_v1",
+  "status": "DRAFT_NONCANONICAL_STACKED_ON_PR16",
+  "purpose": "Resolve the safe zero-chat-history continuation point without confusing orientation with permission to resume scientific execution.",
+  "canonical_authority": false,
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "accepted_core_anchor": {
+    "main_observed": "819afb723c8f14000757b2e53b6664d71ab01227",
+    "vnext_state": "ACCEPTED_FROZEN",
+    "rule": "Fresh Read current canonical main/VNEXT_CURRENT_STATE before any future promotion or scientific resume."
+  },
+  "current_operational_resolution": {
+    "mode": "FOUNDATION_AUDIT_CONTINUATION",
+    "scientific_resume_allowed": false,
+    "read_first_pr": 16,
+    "read_first_exact_head": "45b1721c73bafffcf1635af46e56e5f6c06f4a55",
+    "reason": "OWNER_DIRECTED_KEIRIN_PAUSE_AND_FOUNDATION_AUDIT_ACTIVE"
+  },
+  "latest_completed_scientific_checkpoint": {
+    "pr": 14,
+    "exact_lab_reviewed_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+    "lab": "PASS",
+    "auditor": "NOT_RUN_NO_FINAL_VERDICT_LOCATED",
+    "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "scientific_resume_from_here_now": false
+  },
+  "paused_child": {
+    "pr": 15,
+    "pre_pause_scientific_head": "07a1911d662c887c8edbffef2f2a9256577b3c2b",
+    "pause_control_head": "6d10cad66cf4e6040faec547f155b8a5c9e0ea03",
+    "post_pause_run": 32363915537,
+    "post_pause_run_disposition": "QUARANTINED_NOT_ADMITTED",
+    "metrics_may_be_opened_for_resume_selection": false,
+    "automatic_scientific_execution": "DISABLED_MANUAL_ONLY_PAUSE_STUB"
+  },
+  "foundation_gates": {
+    "G1_PAUSE_SEMANTICS_FIXED": "CANDIDATE_IMPLEMENTED_SELFTEST_PASS_REVIEW_PENDING",
+    "G2_CURRENT_STATE_SYNCHRONIZED": "CANDIDATE_EXISTS_REVIEW_PENDING",
+    "G3_REVIEW_LIFECYCLE_REGISTRY_EXISTS": "CANDIDATE_EXISTS_REVIEW_PENDING",
+    "G4_ZERO_HISTORY_RESUME_POINTER_DETERMINISTIC": "THIS_CANDIDATE_REVIEW_PENDING",
+    "G5_OWNER_ASSURANCE_MINIMAL_VIEW": "CANDIDATE_EXISTS_REVIEW_PENDING"
+  },
+  "resume_permission_requirements": [
+    "PR16_FOUNDATION_REVIEW_ACCEPTED_FOR_REQUIRED_SCOPE",
+    "SAFE_MODE_EXIT_HAS_AUDITABLE_STATE_TRANSITION",
+    "G1_TO_G5_ACCEPTED_OR_STRONGER_EQUIVALENT_EVIDENCE",
+    "QUARANTINED_PR15_RUN_DISPOSITION_DECIDED_WITHOUT_OUTCOME_AWARE_SELECTION",
+    "FRESH_READ_CANONICAL_MAIN_AND_KEIRIN_STATE",
+    "EXPLICIT_ACCEPTED_RESUME_POINTER_IDENTIFIES_EXACT_NEXT_HEAD_AND_GATE"
+  ],
+  "fail_closed_resolution_rules": [
+    "IF_OWNER_PAUSE_ACTIVE_THEN_FOUNDATION_AUDIT_CONTINUATION_ONLY",
+    "IF_POINTER_OR_REQUIRED_STATE_MISSING_OR_CONTRADICTORY_THEN_RECOVERY_AMBIGUOUS_NO_SCIENTIFIC_EXECUTION",
+    "IF_GATES_INCOMPLETE_THEN_NO_SCIENTIFIC_EXECUTION",
+    "IF_QUARANTINED_RUN_UNRESOLVED_THEN_DO_NOT_INSPECT_METRICS_TO_CHOOSE_RESUME_PATH",
+    "IF_EXPLICIT_ACCEPTED_RESUME_POINTER_ABSENT_THEN_NO_SCIENTIFIC_EXECUTION",
+    "NEVER_RESUME_FROM_CHAT_MEMORY_ALONE"
+  ],
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "UNTOUCHED_VALIDATION": "CLOSED",
+    "MODEL_PROMOTION": "PROHIBITED",
+    "CURRENT_DEV2000_C_RESCUE": "PROHIBITED",
+    "SAME_LINEAGE_B_C_RESCUE_TUNING": "PROHIBITED",
+    "REAL_MONEY_WAGERING": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE"
+}
