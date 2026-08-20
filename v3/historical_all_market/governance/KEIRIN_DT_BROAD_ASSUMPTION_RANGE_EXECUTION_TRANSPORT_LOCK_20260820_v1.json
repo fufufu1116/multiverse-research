@@ -1,0 +1,48 @@
+{
+  "record": "KEIRIN_DT_BROAD_ASSUMPTION_RANGE_EXECUTION_TRANSPORT_LOCK_20260820_v1",
+  "status": "LOCKED_BEFORE_ANY_BROAD_RANGE_METRIC_OUTPUT",
+  "locked_at_jst": "2026-08-20T20:03:00+09:00",
+  "parent_amendment_commit": "6332e53235b00469a75c73ca193eb8835aae64db",
+  "pre_result_runtime_disclosure": {
+    "local_full_run_attempts": 2,
+    "attempt_1_timeout_seconds": 180,
+    "attempt_2_timeout_seconds": 480,
+    "broad_metric_output_observed": false,
+    "result_file_bytes_after_timeout": 0,
+    "reason_for_transport_change": "Serial execution cost only. No scientific axis, model, truth scenario, seed, race count, metric, topology tier or interpretation rule is changed."
+  },
+  "execution_transport": {
+    "logical_run": "ONE_LOCKED_388800_EVALUATION",
+    "parallel_shard_axis": "line_shape",
+    "shard_count": 15,
+    "one_shard_per_locked_seven_rider_partition": true,
+    "each_shard_pre_world_count": 3,
+    "each_shard_bank_count": 3,
+    "each_shard_wind_count": 4,
+    "each_shard_rho_count": 3,
+    "each_shard_truth_scenario_count": 10,
+    "each_shard_races_per_structural_context": 24,
+    "each_shard_scenario_race_evaluations": 25920,
+    "aggregate_total_scenario_race_evaluations": 388800,
+    "common_seed": 20260820,
+    "aggregation": "Merge all 15 exact-head shard receipts only after every shard passes invariants; fail closed if any shard missing, duplicated, wrong line shape, wrong count, or wrong head."
+  },
+  "implementation_constraints": {
+    "existing_PR12_tests_must_still_pass": true,
+    "existing_PR8_line_fixture_reused": true,
+    "fast_kernel_must_match_existing_truth_and_scoring_functions_within_1e_12_before_locked_run": true,
+    "numpy_dependency_scope": "PR14_BROAD_STRESS_ONLY_PINNED_IN_CI",
+    "no_model_retuning": true,
+    "no_truth_retuning": true,
+    "no_world_weighting": true,
+    "no_same_source_realism_retuning": true
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "COMMIT_FAST_KERNEL_EQUIVALENCE_SELFTEST_SHARDED_RUNNER_AGGREGATOR_AND_EXACT_HEAD_CI_THEN_EXECUTE_ALL_15_SHARDS"
+}

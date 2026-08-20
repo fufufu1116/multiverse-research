@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_DT_JOINT_DEPENDENCE_PARAMS_V2_AUDIT_SUMMARY_20260820_v1",
+  "status": "DERIVED_STAGED_SENSOR_ONLY_PARAMS_NOT_REALITY_TRUTH",
+  "prereg": "KEIRIN_DT_JOINT_DEPENDENCE_V2_PREREG_20260820_v1",
+  "payload_path": "v3/historical_all_market/new_lineage/fixtures/keirin_dt_joint_dependence_params_v2.json.zlib.b85",
+  "encoding": "zlib_level9_then_base85",
+  "decoded_json_sha256": "0f23a54cc4af204c83bfb47d8bb272e5eec0a7d5e210233900e0435ff7fffbd9",
+  "decoded_json_bytes_approx": 73710,
+  "source_pre_structured_sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+  "candidate_subset": {"races": 1539, "entrant_rows": 10773},
+  "parameter_contract": {
+    "cells": 15,
+    "conditioning": "rider_class_x_style",
+    "minimum_cell_n": 215,
+    "tactical_fields": ["B", "S", "nige", "makuri", "sashi", "mark"],
+    "quantile_grid": [0.0,0.05,0.10,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,0.95,1.0],
+    "joint_variables": ["score_within_race_z", "B_rate", "S_rate", "nige_rate", "makuri_rate", "sashi_rate", "mark_rate"],
+    "dependence": "Spearman -> Gaussian copula transform -> score-conditioned tactical covariance Cholesky",
+    "max_identity_shrinkage_required": 0.0,
+    "score_zero_rows_excluded_from_score_correlation": 36,
+    "starts_zero_rows_retained_as_zero_tactical_rates": 31,
+    "class_score_within_race_residual_mean": {
+      "S1": 1.940529977,
+      "S2": -0.7772306,
+      "A1": 1.423597,
+      "A2": -1.45286,
+      "A3": 0.0
+    }
+  },
+  "raw_identity_committed": false,
+  "raw_rider_rows_committed": false,
+  "unmeasured_unchanged": ["H", "LINE_SHAPE_FREQUENCY", "BANK_FREQUENCY", "WIND_DISTRIBUTION", "REAL_EFFECT_SIZES"],
+  "use_boundary": "SYNTHETIC_PRE_ENGINEERING_ONLY_NO_SOURCE_ADMISSION",
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED"
+  }
+}

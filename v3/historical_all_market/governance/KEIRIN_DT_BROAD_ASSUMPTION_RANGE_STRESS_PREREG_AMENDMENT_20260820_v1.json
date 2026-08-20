@@ -1,0 +1,85 @@
+{
+  "record": "KEIRIN_DT_BROAD_ASSUMPTION_RANGE_STRESS_PREREG_AMENDMENT_20260820_v1",
+  "status": "PRE_RESULT_AMENDMENT_SUPERSEDES_ORIGINAL_LINE_AXIS_AND_EXECUTION_COUNT_ONLY",
+  "amended_at_jst": "2026-08-20T19:47:00+09:00",
+  "original_prereg_commit": "5f7d7d4c5f4d088ded146906b71202108123aa75",
+  "reason": "Commander continuity/domain-coverage correction before runner implementation or any broad-range result. The original three-shape line axis omitted already-merged PR #8 seven-rider long-line support including 4-3, 4-2-1 and 4-1-1-1. Owner explicitly identified 3-4/4-3 before result. Original preregistration remains immutable history.",
+  "pre_result_disclosure": {
+    "broad_range_runner_implemented_before_amendment": false,
+    "broad_range_result_seen_before_amendment": false,
+    "owner_identified_missing_4_3_before_result": true,
+    "existing_project_evidence_recovered": "Merged PR #8 explicitly supports seven-rider 4-3, 4-2-1 and 4-1-1-1 topology fixtures and separates topology support from effect assumptions and real frequency."
+  },
+  "design_correction": {
+    "method": "Use merged long_line_topology_fixture_v1.apply_line_shape_fixture on an already-generated race so rider ability, visible PRE descriptors, class/style/tactical values, bank and wind remain unchanged while only line membership/position/size changes.",
+    "counterfactual_goal": "Compare the same rider PRE world under alternative line topology rather than regenerate a different rider field for each topology.",
+    "real_frequency_claim": false
+  },
+  "seven_rider_partition_audit": {
+    "coverage_rule": "All integer partitions of seven are mechanically covered as topology stress. Partition order is canonicalized largest-to-smallest; 3-4 and 4-3 are the same topology shape L43. No partition is assigned a real population frequency.",
+    "tier_A_existing_or_project_supported_motifs": {
+      "L43": [4, 3],
+      "L421": [4, 2, 1],
+      "L4111": [4, 1, 1, 1],
+      "L331": [3, 3, 1],
+      "L322": [3, 2, 2],
+      "L2221": [2, 2, 2, 1]
+    },
+    "tier_B_extreme_falsification_only": {
+      "L7": [7],
+      "L61": [6, 1],
+      "L52": [5, 2],
+      "L511": [5, 1, 1],
+      "L3211": [3, 2, 1, 1],
+      "L31111": [3, 1, 1, 1, 1],
+      "L22111": [2, 2, 1, 1, 1],
+      "L211111": [2, 1, 1, 1, 1, 1],
+      "L1111111": [1, 1, 1, 1, 1, 1, 1]
+    },
+    "tier_B_interpretation": "Mechanical falsification extremes only. Do not call these common, plausible-frequency, or representative real-keirin structures without independent PRE evidence."
+  },
+  "superseding_execution_lock": {
+    "seed": 20260820,
+    "race_indices_per_structural_context": 24,
+    "common_random_numbers": true,
+    "pre_world_count": 3,
+    "line_shape_count": 15,
+    "bank_count": 3,
+    "wind_count": 4,
+    "rho_count": 3,
+    "truth_scenario_count": 10,
+    "structural_context_count": 1620,
+    "scenario_world_cell_count": 16200,
+    "total_scenario_race_evaluations": 388800,
+    "tier_A_structural_context_count": 648,
+    "tier_A_scenario_world_cell_count": 6480,
+    "tier_A_total_scenario_race_evaluations": 155520,
+    "tier_B_structural_context_count": 972,
+    "tier_B_scenario_world_cell_count": 9720,
+    "tier_B_total_scenario_race_evaluations": 233280,
+    "model_coefficients": "C0_C1_N1_EXISTING_FIXED_PROXY_COEFFICIENTS_UNCHANGED"
+  },
+  "reporting_lock": {
+    "primary_robustness_population": "TIER_A_ONLY",
+    "tier_B_report_separately": true,
+    "reason": "Extreme mechanically valid topology partitions must not numerically dominate the primary robustness summary as if they had real population weight.",
+    "no_world_weighting": true,
+    "report_all_15_shape_breakdowns": true,
+    "report_tier_A_and_tier_B_separately": true
+  },
+  "unchanged_axes_and_firewall": {
+    "pre_worlds": ["R0_CURRENT_SYNTHETIC", "R1_EMPIRICAL_MARGINAL", "R2_EMPIRICAL_JOINT"],
+    "bank_lengths_m": [333, 400, 500],
+    "wind_speeds_mps": [0.0, 1.5, 3.0, 5.0],
+    "observable_hidden_skill_rho": [0.55, 0.75, 0.90],
+    "truth_scenarios": "EXISTING_ASSUMPTION_GRID_10_SCENARIOS_UNCHANGED",
+    "same_source_realism_retuning": "CLOSED",
+    "model_retuning": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "IMPLEMENT_USING_EXISTING_LINE_FIXTURE_WITH_REGRESSION_AND_PARTITION_COVERAGE_SELFTESTS_THEN_RUN_LOCKED_388800_EVALUATION_ONCE"
+}

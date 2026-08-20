@@ -1,0 +1,109 @@
+{
+  "record": "KEIRIN_DT_CANDIDATE_SOURCE_DISCRIMINATOR_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_NEW_ADAPTER_DISCRIMINATOR_EVALUATION",
+  "locked_at_jst": "2026-08-20T18:27:00+09:00",
+  "purpose": "Measure how distinguishable current versus empirical-adapter synthetic PRE races are from the already-held staged PRE candidate distribution, without promoting that third-party source to admitted real-world truth.",
+  "pre_execution_disclosure": {
+    "known_before_lock": [
+      "A prior private prototype indicated the current uncalibrated Twin is trivially distinguishable from the staged PRE candidate source.",
+      "No discriminator result for digital_twin_empirical_pre_adapter_v1 has been computed before this lock.",
+      "The empirical adapter was built from preregistered aggregate constraints derived from the same staged PRE candidate source, so this diagnostic measures in-source envelope fit and cannot establish external real-world equivalence."
+    ]
+  },
+  "source_boundary": {
+    "provider": "KDreams historical race-detail pages",
+    "source_status": "STAGED_UNPROVEN_HISTORICAL_PRE",
+    "training_eligibility": false,
+    "population_representativeness": "NOT_PROVEN",
+    "source_vs_twin_classification_only": true,
+    "sporting_outcomes_used": false,
+    "result_payout_access": false,
+    "raw_identity_features_used": false
+  },
+  "sample": {
+    "real_candidate_subset": "same standard-7 ordinary candidate subset used by KEIRIN_DT_EMPIRICAL_ENVELOPE_COMPACT_v1",
+    "real_candidate_races": 1539,
+    "synthetic_races_each": 1539,
+    "synthetic_seed": 20260820,
+    "synthetic_race_indices": "0..1538",
+    "comparisons": [
+      "STAGED_PRE_CANDIDATE_vs_CURRENT_DIGITAL_TWIN",
+      "STAGED_PRE_CANDIDATE_vs_EMPIRICAL_ADAPTER_TWIN"
+    ]
+  },
+  "race_level_feature_contract": {
+    "forbidden": ["race_id", "rider_identity", "name", "venue", "date", "source_url", "provenance_id", "line", "bank", "wind", "H", "RESULT", "PAYOUT"],
+    "allowed_common_features": [
+      "race_band_one_hot",
+      "class_fractions_S1_S2_A1_A2_A3",
+      "style_fractions_nige_ryo_oi",
+      "score_mean",
+      "score_std",
+      "score_range",
+      "mean_B_per_start",
+      "mean_S_per_start",
+      "mean_nige_per_start",
+      "mean_makuri_per_start",
+      "mean_sashi_per_start",
+      "mean_mark_per_start",
+      "zero_fraction_B_per_start",
+      "zero_fraction_S_per_start",
+      "zero_fraction_nige_per_start",
+      "zero_fraction_makuri_per_start",
+      "zero_fraction_sashi_per_start",
+      "zero_fraction_mark_per_start"
+    ],
+    "real_rate_transform": "starts = wins + seconds + thirds + outs; tactical count per start = count / starts when starts>0, else 0 with starts-zero race rows excluded only if a race-level feature cannot be formed",
+    "current_twin_tactical_semantics": "existing synthetic B/S/nige/makuri/sashi/mark values used as generated rates",
+    "empirical_twin_tactical_semantics": "empirical adapter B/S/nige/makuri/sashi/mark values used as generated rates"
+  },
+  "views": {
+    "AUDIT_REALISM_VIEW": "Use score on each source's presented PRE scale; this intentionally measures obvious unit/scale realism as part of audit-level resemblance.",
+    "SCALE_NEUTRAL_VIEW": "Within each race replace rider score by race z-score before race-level score summaries; all non-score features unchanged. This tests remaining structural/tactical distinguishability without raw score units."
+  },
+  "classifiers": {
+    "primary": {
+      "name": "HistGradientBoostingClassifier",
+      "max_iter": 200,
+      "learning_rate": 0.05,
+      "max_leaf_nodes": 15,
+      "l2_regularization": 1.0,
+      "random_state": 20260820
+    },
+    "secondary": {
+      "name": "LogisticRegression",
+      "C": 1.0,
+      "max_iter": 2000,
+      "solver": "lbfgs",
+      "standardize_numeric": true
+    }
+  },
+  "evaluation": {
+    "cv": "StratifiedKFold(n_splits=5, shuffle=true, random_state=20260820)",
+    "primary_metric": "out_of_fold_ROC_AUC",
+    "secondary_metrics": ["out_of_fold_balanced_accuracy_at_0.5", "AUC_distance_from_0.5"],
+    "same_folds_and_classifier_settings_for_old_and_new_twin": true,
+    "no_hyperparameter_search": true
+  },
+  "interpretation": {
+    "desired_direction": "Empirical-adapter AUC should be materially closer to 0.5 than current-Twin AUC in both views and both fixed classifiers.",
+    "AUC_near_0_5_means": "harder to distinguish from this staged candidate source under the locked race-level feature contract",
+    "AUC_near_0_5_does_not_mean": [
+      "REAL_WORLD_EQUIVALENCE",
+      "KEIRIN_POPULATION_TRUTH",
+      "SOURCE_ADMISSION",
+      "REAL_PREDICTIVE_EDGE",
+      "REAL_ROI",
+      "MODEL_PROMOTION"
+    ]
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED"
+  },
+  "next_gate": "RUN_LOCKED_CANDIDATE_SOURCE_DISCRIMINATOR_ONCE_AND_RECORD_ALL_RESULTS_WITHOUT_RETUNING_GENERATOR"
+}

@@ -1,0 +1,22 @@
+name: Keirin Broad Assumption-Range DT PR14 — PAUSED
+
+# OWNER-DIRECTED GLOBAL KEIRIN SAFE PAUSE — 2026-08-20 JST
+# Lab-reviewed scientific evidence remains preserved at e70bda39a5d3ce585af4e028b35106b859871bd9.
+# This workflow no longer auto-runs scientific stress during the foundation audit.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paused-checkpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm owner-directed global Keirin pause
+        run: |
+          echo "KEIRIN_RESEARCH_PAUSED_BY_OWNER_DIRECTIVE"
+          echo "PR14_BROAD_SCIENTIFIC_EXECUTION_DISABLED"
+          echo "LAB_REVIEWED_SCIENTIFIC_HEAD=e70bda39a5d3ce585af4e028b35106b859871bd9"
+          echo "Do not restore scientific execution before the Multiverse foundation resume gate and Pause Guard conformance are satisfied."
