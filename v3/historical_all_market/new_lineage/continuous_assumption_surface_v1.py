@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 import hashlib
 import json
 from typing import Dict, Tuple
@@ -105,7 +104,7 @@ def canonical_points_sha256() -> str:
 
 
 def validate_surface() -> None:
-    if len(BASES) != len(DIMENSION_RANGES) != 8:
+    if len(BASES) != 8 or len(DIMENSION_RANGES) != 8:
         raise AssertionError("continuous_surface_dimension_count_drift")
     records = all_point_audit_records()
     if len(records) != POINT_COUNT:
