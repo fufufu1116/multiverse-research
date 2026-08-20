@@ -1,0 +1,108 @@
+MULTIVERSE v3.3 FINAL ACCEPTANCE REBUILD — ONE-SHOT
+
+You are the repair/build agent. Produce a single Python build script that creates a self-contained
+Security v3.3 candidate pack using SYNTHETIC FIXTURES ONLY. The real ECON_HOLDOUT1000, real PRICE,
+and real PAYOUT must remain SEALED and must not be read, copied, inferred, scored, or embedded.
+
+Fix all previously identified blockers, including:
+1) valid Python booleans and JSON serialization;
+2) no hardcoded test count; derive from pytest --collect-only;
+3) FILE_MANIFEST_SHA256.json from actual bytes and independently rehash;
+4) authoritative HOLDOUT membership commitment is commit-once, idempotent on same SHA,
+   different SHA => durable FAIL_CLOSED + reject; absent authority never PASS;
+5) no non-reentrant lock deadlock on FitManifest mismatch.
+
+Mandatory executable acceptance properties include wrong-key no-burn/retry safety, two independent
+file-backed concurrent instances with exactly one OPEN success, restart persistence, signature binding,
+non-bricking unauthenticated failures, local ledger/anchor integrity, immutable HOLDOUT identity,
+fit/validation overlap rejection, deterministic fold chronology and embargo/min-size/version binding,
+phase preregistration and candidate identity, family manifest commit-once and market evidence completeness,
+correct exacta/quinella/trifecta/trio settlement semantics, source/schema/parser identity quarantine,
+persistent discrepancy/kill switch, withdrawal/cancel/refund provenance, and Candidate v5 evidence floors.
+
+The build script itself must generate source, tests, FILE_MANIFEST_SHA256.json, PYTEST_RESULT.txt,
+and BUILD_RECEIPT.json, and actually run compileall, pytest -q, and pytest --collect-only -q.
+
+Acceptance requires compileall exit 0; pytest 0 failed; zero mandatory xfail; collected count matches receipt;
+manifest actual-byte rehash matches 100%; receipt matches actual subprocess results.
+
+Maximum status before independent auditor APPROVE:
+LOCAL_TESTED — pending independent re-audit
+
+Never emit SECURITY_AUDIT_PASSED and never Freeze before independent exact APPROVE.
+Receipt must state ECON_HOLDOUT1000 = SEALED, Price_accessed=false, PAYOUT_accessed=false, scored=false.
+Synthetic fixtures only.
+
+Output ONLY strict JSON:
+{"build_script":"<complete Python build script>"}
+The build script MUST create the complete generated candidate under exactly ./candidate. A successful exit without ./candidate is a hard failure.
+MANDATORY RECEIPT FINALIZATION: BUILD_RECEIPT.json MUST be written only AFTER compileall, pytest -q, and pytest --collect-only -q have actually completed. Its compileall_exit_code, pytest_exit_code, collect_exit_code, and collected_test_count MUST come directly from those actual subprocess results. Never hardcode, prefill, guess, or preserve stale values. The receipt must exactly match the final observed results.
+MANDATORY HOLDOUT AUTHORITY TEST SEMANTICS: once an authority-absent commit attempt causes durable FAIL_CLOSED, that SAME persisted authority/state must remain FAIL_CLOSED and must NOT be recoverable by later setting authority_present=True. Test the successful commit-once path using a fresh independent authority/store that has never entered FAIL_CLOSED. Do not weaken durable FAIL_CLOSED semantics to make a test pass.
+
+MANDATORY HOLDOUT RECEIPT SCHEMA:
+BUILD_RECEIPT.json MUST contain ECON_HOLDOUT1000 as a JSON OBJECT, never a string:
+"ECON_HOLDOUT1000": {
+  "state": "SEALED",
+  "Price_accessed": false,
+  "PAYOUT_accessed": false,
+  "scored": false
+}
+These four fields are mandatory and exact. This records non-access only; do NOT open, read, inspect, infer, score, copy, or embed any real HOLDOUT/PRICE/PAYOUT data.
+
+MANDATORY HOLDOUT SHA-MISMATCH RETURN SEMANTICS:
+For the authoritative HOLDOUT membership commitment, once a different SHA is presented after the first successful commit, the operation MUST durably reject it and the externally observable return/status MUST be exactly:
+FAIL_CLOSED
+Do NOT return FAIL_CLOSED_SHA_MISMATCH or any other variant.
+The persisted state must remain FAIL_CLOSED across restart and must not become recoverable by later inputs.
+Do not weaken the underlying rejection semantics; only conform the externally observed status to the exact acceptance contract.
+
+MANDATORY COVERAGE ANTI-TOY CONTRACT:
+
+A test name or comment containing a mandatory property name is NOT evidence.
+
+For every mandatory security property, the test MUST exercise implementation code created under candidate/security_v3_3/.
+Tests must NOT implement the security behavior locally just to make assertions pass.
+
+PROHIBITED AS ACCEPTANCE EVIDENCE:
+- direct toy AESGCM/HMAC demonstrations that do not mutate/check candidate persisted state
+- trivial hashlib length checks
+- "candidate_id is not None" style assertions
+- plain threshold comparisons pretending to prove kill-switch persistence
+- literal dict checks pretending to prove refund/provenance behavior
+- invented ROI, race counts, profit, payout, or economic metrics
+- hardcoded PYTEST_RESULT text
+- hardcoded PASS/PASSED preflight status
+- hardcoded manifest hashes
+- hardcoded subprocess exit codes or collected test counts
+- candidate-controlled record_pass()/verified_properties declarations as proof
+
+MANDATORY TEST STRUCTURE:
+Each required test must import and invoke code from candidate/security_v3_3/.
+The test suite must use exact test names:
+
+test_wrong_key_decrypt_no_burn
+test_signature_auth_binding
+test_file_backed_independent_restart_persistence
+test_ledger_hash_linkage_anchor_immutable
+test_update_delete_denial
+test_fold_version_binding
+test_phase_preregistration_candidate_identity
+test_family_manifest_commit_once
+test_market_evidence_completeness
+test_deadheat_malformed_payout_handling
+test_source_schema_parser_fingerprint_quarantine
+test_persistent_discrepancy_kill_switch
+test_withdrawal_cancel_refund_provenance
+
+For persistence properties, close the first implementation instance and create a fresh independent instance/process against the same backing store before asserting persisted state.
+
+For mutation/rejection properties, capture persisted state before the invalid operation, perform the invalid operation, reopen state, and prove unauthorized mutation did not occur.
+
+MARKET EVIDENCE TEST:
+Use synthetic structural evidence only. Do NOT fabricate ROI > 1, net profit, real race counts, or other economic outcomes.
+
+All evidence files must be produced from actual runtime/subprocess results only.
+
+Real ECON_HOLDOUT1000, PRICE, PAYOUT remain SEALED and untouched.
+Maximum status remains:
+LOCAL_TESTED — pending independent re-audit
