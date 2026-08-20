@@ -1,0 +1,145 @@
+{
+  "record": "KEIRIN_DT_CONTINUOUS_ASSUMPTION_SURFACE_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_CONTINUOUS_SURFACE_IMPLEMENTATION_OR_RESULT",
+  "locked_at_jst": "2026-08-20T20:17:00+09:00",
+  "timestamp_authority": "GIT_PROVIDER_COMMIT_ANCESTRY_AND_TIMESTAMP_OVERRIDE_FILE_LOCAL_MINUTE_IF_ANY_DISCREPANCY",
+  "parent_broad_stress_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+  "parent_broad_stress_lab_verdict": "PASS_SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "purpose": "Map robustness and model-dominance boundaries between the ten existing hand-authored legacy synthetic truth scenarios. This fills the interior of the already-used assumption coordinate ranges with a deterministic low-discrepancy design so future real-world calibration can target the unknowns with highest decision value. It is not an attempt to manufacture real-world evidence by increasing simulation count.",
+  "pre_result_disclosure": {
+    "known_before_lock": [
+      "PR #14 Tier-A locked broad stress: C0 won 5025/6480 cells, C1 365, N1 1090; C0 had lowest mean and worst excess log loss on that synthetic grid.",
+      "PR #14 all-15-topology diagnostic result: C0 12849, C1 799, N1 2552 cell wins.",
+      "N1 won 1063/1620 cells in W2_CONDITIONAL_LINE_STRONG and became more competitive as observable-score/hidden-skill rho increased.",
+      "The largest current information-value unknowns include real line-relation strength and observable-score/hidden-ability coupling.",
+      "The ten legacy truth scenarios are assumption-range-only engineering worlds, not measured real coefficients or population weights."
+    ],
+    "continuous_surface_metric_seen_before_lock": false,
+    "continuous_surface_runner_implemented_before_lock": false
+  },
+  "zero_base_decision": {
+    "why_not_more_repeats_of_same_10_worlds": "Additional repetitions of the same ten fixed truth points mainly reduce Monte Carlo noise and do not materially expand assumption-space coverage.",
+    "why_continuous_surface": "The next useful synthetic question is where model preference changes inside the already-explored coordinate envelope, especially C0-vs-N1 boundaries, so independent real calibration can later focus on decisive unknowns.",
+    "why_not_expand_beyond_legacy_ranges_yet": "Extrapolation would add new hand-authored assumptions without current external calibration. V1 therefore interpolates only inside coordinate-wise minima and maxima already present in the locked legacy grid.",
+    "why_tier_A_only": "PR #14 already used all 15 integer partitions for mechanical falsification. Continuous boundary mapping uses only the six Tier-A supported/ordinary engineering topology motifs so extreme partitions do not dominate the surface map."
+  },
+  "continuous_truth_design": {
+    "method": "DETERMINISTIC_HALTON_LOW_DISCREPANCY_INTERIOR_COVERAGE",
+    "point_count": 64,
+    "point_indices": "1_THROUGH_64_INCLUSIVE",
+    "dimensions": 8,
+    "bases_in_dimension_order": [2, 3, 5, 7, 11, 13, 17, 19],
+    "scrambling": false,
+    "linear_map_from_unit_interval": true,
+    "endpoint_behavior": "HALTON_INDICES_1_TO_64_DO_NOT_INTENTIONALLY_REPEAT_LEGACY_ENDPOINT_ANCHORS",
+    "population_probability_interpretation": "PROHIBITED",
+    "world_weighting_claim": "NONE_EQUAL_CELL_WEIGHT_IS_ENGINEERING_SUMMARY_ONLY_NOT_REALITY_PRIOR",
+    "legacy_10_scenarios": "RETAINED_AS_SEPARATE_LOCKED_ANCHORS_NOT_MIXED_INTO_64_POINT_SURFACE_COUNTS"
+  },
+  "dimension_order_and_ranges": [
+    {"dimension": 1, "name": "line_static_scale", "min": 0.0, "max": 1.5},
+    {"dimension": 2, "name": "relation_strength", "min": 0.0, "max": 1.5},
+    {"dimension": 3, "name": "wind_effect_scale", "min": 0.0, "max": 1.5},
+    {"dimension": 4, "name": "bank_effect_scale", "min": 0.0, "max": 1.0},
+    {"dimension": 5, "name": "disruption_weight", "min": 0.0, "max": 0.55},
+    {"dimension": 6, "name": "shock_sigma", "min": 0.0, "max": 1.25},
+    {"dimension": 7, "name": "shock_temperature", "min": 1.0, "max": 1.9},
+    {"dimension": 8, "name": "disrupted_relation_strength", "min": 0.0, "max": 0.15}
+  ],
+  "fixed_structural_axes": {
+    "pre_worlds": ["R0_CURRENT_SYNTHETIC", "R1_EMPIRICAL_MARGINAL", "R2_EMPIRICAL_JOINT"],
+    "tier_A_line_shapes": {
+      "L43": [4, 3],
+      "L421": [4, 2, 1],
+      "L4111": [4, 1, 1, 1],
+      "L331": [3, 3, 1],
+      "L322": [3, 2, 2],
+      "L2221": [2, 2, 2, 1]
+    },
+    "bank_lengths_m": [333, 400, 500],
+    "wind_speeds_mps": [0.0, 1.5, 3.0, 5.0],
+    "observable_hidden_skill_rho": [0.55, 0.75, 0.90],
+    "model_coefficients": "C0_C1_N1_EXISTING_FIXED_PROXY_COEFFICIENTS_UNCHANGED"
+  },
+  "execution_lock": {
+    "seed": 20260820,
+    "races_per_structural_context_per_truth_point": 24,
+    "common_random_numbers": true,
+    "pre_world_count": 3,
+    "tier_A_line_shape_count": 6,
+    "bank_count": 3,
+    "wind_count": 4,
+    "rho_count": 3,
+    "structural_context_count": 648,
+    "continuous_truth_point_count": 64,
+    "scenario_world_cell_count": 41472,
+    "total_scenario_race_evaluations": 995328,
+    "parallel_shard_axis": "LINE_SHAPE_X_HALTON_BLOCK",
+    "halton_block_count": 8,
+    "halton_points_per_block": 8,
+    "shard_count": 48,
+    "cells_per_shard": 864,
+    "scenario_race_evaluations_per_shard": 20736,
+    "fail_closed_aggregation": "REQUIRE_ALL_48_EXACT_HEAD_SHARDS_EACH_EXPECTED_LINE_AND_HALTON_BLOCK_EXACTLY_ONCE_AND_EXACT_TOTAL_COUNTS"
+  },
+  "metrics_lock": {
+    "primary": "expected ordered-top3 log loss",
+    "secondary": ["KL regret to exact synthetic truth", "ordered-top3 joint Brier"],
+    "robustness": [
+      "winner_count_across_41472_cells",
+      "mean_excess_log_loss_vs_cell_best",
+      "worst_case_excess_log_loss",
+      "p90_excess_log_loss_nearest_rank"
+    ],
+    "boundary_diagnostics": [
+      "signed_N1_minus_C0_expected_log_loss_delta",
+      "signed_C1_minus_C0_expected_log_loss_delta",
+      "per_halton_truth_point_breakdown",
+      "per_rho_breakdown",
+      "per_line_shape_breakdown",
+      "per_PRE_world_breakdown",
+      "per_bank_breakdown",
+      "per_wind_breakdown",
+      "per_parameter_quartile_breakdown",
+      "relation_strength_quartile_x_rho_breakdown",
+      "relation_strength_quartile_x_disruption_weight_quartile_x_rho_breakdown"
+    ],
+    "negative_signed_delta_semantics": "NEGATIVE_MODEL_MINUS_C0_DELTA_MEANS_THE_MODEL_HAS_LOWER_EXPECTED_LOG_LOSS_THAN_C0",
+    "no_post_result_fitted_boundary_model_in_primary_receipt": true
+  },
+  "implementation_contract": {
+    "reuse_parent_fast_kernel": true,
+    "reuse_parent_topology_fixture": true,
+    "reuse_parent_exact_rho_construction": true,
+    "parent_PR14_files_must_not_be_modified_for_surface_result": true,
+    "halton_generator_must_have_fixed_known_value_selftests_before_result": true,
+    "surface_truth_points_must_be_deterministic_from_point_index_only": true,
+    "all_truth_parameters_must_remain_within_locked_ranges": true,
+    "models_must_receive_PRE_only_and_not_truth_parameters": true,
+    "no_model_retuning": true,
+    "no_truth_range_retuning_after_result": true,
+    "no_world_selection_for_real_claim": true
+  },
+  "interpretation_lock": {
+    "goal": "Produce an engineering dominance/sensitivity map showing which unmeasured assumptions would have to be true for C1/N1 to outperform the robust C0 control, and thereby identify high-value independent calibration measurements.",
+    "synthetic_count_does_not_upgrade_evidence_tier": true,
+    "no_real_world_equivalence_claim": true,
+    "no_real_edge_or_ROI_claim": true,
+    "no_model_promotion": true,
+    "no_population_density_or_frequency_claim": true,
+    "no_same_source_KDreams_realism_retuning": true,
+    "next_realism_information_must_be_independent": true
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "same_source_KDreams_realism_tuning": "CLOSED",
+    "new_untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "IMPLEMENT_HALTON_AND_FAIL_CLOSED_48_SHARD_SURFACE_WITH_SELFTESTS_THEN_RUN_LOCKED_995328_EVALUATION_ONCE"
+}

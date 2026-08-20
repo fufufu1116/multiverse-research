@@ -1,0 +1,22 @@
+name: Keirin Continuous Assumption Surface v1 — PAUSED
+
+# OWNER-DIRECTED SAFE CHECKPOINT — 2026-08-20 JST
+# Scientific execution is intentionally disabled while the Multiverse zero-base
+# foundation audit runs. The immediately previous PR #15 head preserves the full
+# 48-shard workflow for exact restoration on resume.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paused-checkpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm owner-directed pause
+        run: |
+          echo "KEIRIN_RESEARCH_PAUSED_BY_OWNER_DIRECTIVE"
+          echo "NO_CONTINUOUS_ASSUMPTION_SURFACE_SCIENTIFIC_EXECUTION"
+          echo "Restore the pre-pause workflow only after the foundation resume gate is satisfied."
