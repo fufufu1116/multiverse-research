@@ -33,7 +33,7 @@ def _visible_nontruth_view(race) -> tuple:
         tuple(
             (
                 r["car_no"], r["class"], r["score"], r["style"],
-                r["line_id"], r["line_position"], r["line_size"],
+                r["line_group_id"], r["line_position"], r["line_size"],
                 r["H"], r["B"], r["S"], r["nige"], r["makuri"], r["sashi"], r["mark"],
             )
             for r in pre["riders"]
