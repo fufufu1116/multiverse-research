@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - agent/keirin-reality-calibrated-dt-envelope-v1
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 permissions:
@@ -13,11 +17,13 @@ jobs:
   exact-head-selftest-and-stress:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Checkout exact triggering head
+      - name: Checkout exact PR head
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.TARGET_SHA }}
           persist-credentials: false
 
       - name: Set up Python
@@ -27,9 +33,9 @@ jobs:
 
       - name: Show exact head
         run: |
-          echo "GITHUB_SHA=${GITHUB_SHA}"
+          echo "TARGET_SHA=${TARGET_SHA}"
           git rev-parse HEAD
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
 
       - name: Run empirical PRE adapter selftest
         working-directory: v3/historical_all_market/new_lineage
