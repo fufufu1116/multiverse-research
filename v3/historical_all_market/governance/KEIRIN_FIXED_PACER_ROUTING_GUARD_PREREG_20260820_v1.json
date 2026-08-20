@@ -1,0 +1,41 @@
+{
+  "record": "KEIRIN_FIXED_PACER_ROUTING_GUARD_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_IMPLEMENTATION",
+  "locked_at_jst": "2026-08-20T15:37:59+09:00",
+  "base_main": "819afb723c8f14000757b2e53b6664d71ab01227",
+  "purpose": "Mechanically prevent current line-dependent model families from receiving non-standard/fixed-pacer or unknown race regimes without changing model coefficients or claiming another family is valid for those regimes.",
+  "scope": {
+    "guarded_model_families": ["C1", "N1"],
+    "allowed_race_regime": "STANDARD_ORIGINAL_LINE_KEIRIN",
+    "blocked_race_regimes": ["INTERNATIONAL_FIXED_PACER", "UNKNOWN_OR_OTHER"],
+    "structural_validator_must_pass_first": true,
+    "C0_applicability_claim": "NONE_THIS_PR",
+    "fixed_pacer_model_support_claim": false,
+    "real_frequency_or_effect_claim": false
+  },
+  "implementation_plan": [
+    "add a small routing-guard module downstream of PRE structural validation and upstream of C1/N1 execution",
+    "do not modify PRE_INTERFACE_SCHEMA_DRAFT_v1.json",
+    "do not modify validate_pre_structure_v1.py",
+    "do not modify C0/C1/N1 coefficients or architecture code",
+    "add deterministic selftest proving STANDARD may pass and fixed-pacer/unknown fail closed for C1/N1"
+  ],
+  "claim_limits": [
+    "ROUTING_SAFETY_ONLY",
+    "NO_FIXED_PACER_MODEL_VALIDITY_CLAIM",
+    "NO_C0_FALLBACK_CLAIM",
+    "NO_REAL_FREQUENCY_OR_EFFECT_CLAIM",
+    "NO_ARCHITECTURE_RANKING",
+    "NO_MODEL_PROMOTION"
+  ],
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR3_CONSUMED_HOLDOUT_REUSE": "PROHIBITED",
+    "DEV2000_C_RESCUE": "PROHIBITED",
+    "SAME_LINEAGE_RESCUE_RETUNING": "PROHIBITED",
+    "RESULT_PAYOUT_ACCESS": "UNAUTHORIZED",
+    "UNTOUCHED_REAL_VALIDATION_OPENED": false,
+    "NEW_SPEND": "NO"
+  },
+  "next_gate": "IMPLEMENT_MECHANICAL_GUARD_AND_SELFTEST_THEN_LAB_REVIEW"
+}
