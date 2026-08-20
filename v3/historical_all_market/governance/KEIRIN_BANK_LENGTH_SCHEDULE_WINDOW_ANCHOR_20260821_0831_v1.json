@@ -1,0 +1,84 @@
+{
+  "record": "KEIRIN_BANK_LENGTH_SCHEDULE_WINDOW_ANCHOR_20260821_0831_v1",
+  "status": "VERIFIED_SCOPED_REALITY_ANCHOR_CORRECTED",
+  "parameter": "BANK_LENGTH_FREQUENCY",
+  "scope": {
+    "unit": "EVENT_START",
+    "window": "2026-08-21_through_2026-08-31",
+    "selection_rule": "All KEIRIN.JP official schedule entries whose event start date falls in the window; events already started before 2026-08-21 are excluded even if still running.",
+    "field": "official venue bank circumference",
+    "claim_limit": "This is an event-level schedule-window distribution, not a race-level frequency and not a global real-keirin population frequency."
+  },
+  "correction": {
+    "prior_count": 25,
+    "corrected_count": 27,
+    "cause": "Two official schedule entries were inadvertently omitted from the first inventory.",
+    "added_entries": [
+      {"venue":"大垣","start":"2026-08-21","bank_m":400},
+      {"venue":"静岡","start":"2026-08-30","bank_m":400}
+    ],
+    "scientific_effect": "Only the scoped event-level bank mix changes. No model coefficient, holdout, RESULT/PAYOUT, or protected validation state is affected."
+  },
+  "sources": [
+    {
+      "role": "PRIMARY_SCHEDULE",
+      "url": "https://www.keirin.jp/sp/raceschedule",
+      "description": "KEIRIN.JP official August 2026 schedule"
+    },
+    {
+      "role": "PRIMARY_BANK_LENGTH",
+      "url": "https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+      "description": "KEIRIN.JP official bank circumference table, dated 2026-04-23 on page"
+    }
+  ],
+  "events": [
+    {"venue":"西武園","start":"2026-08-21","bank_m":400},
+    {"venue":"大垣","start":"2026-08-21","bank_m":400},
+    {"venue":"松山","start":"2026-08-21","bank_m":400},
+    {"venue":"武雄","start":"2026-08-21","bank_m":400},
+    {"venue":"立川","start":"2026-08-22","bank_m":400},
+    {"venue":"松戸","start":"2026-08-22","bank_m":333},
+    {"venue":"和歌山","start":"2026-08-23","bank_m":400},
+    {"venue":"防府","start":"2026-08-23","bank_m":333},
+    {"venue":"青森","start":"2026-08-24","bank_m":400},
+    {"venue":"宇都宮","start":"2026-08-24","bank_m":500},
+    {"venue":"岐阜","start":"2026-08-24","bank_m":400},
+    {"venue":"熊本","start":"2026-08-24","bank_m":400},
+    {"venue":"松阪","start":"2026-08-25","bank_m":400},
+    {"venue":"高知","start":"2026-08-25","bank_m":500},
+    {"venue":"奈良","start":"2026-08-26","bank_m":333},
+    {"venue":"玉野","start":"2026-08-26","bank_m":400},
+    {"venue":"伊東温泉","start":"2026-08-27","bank_m":333},
+    {"venue":"前橋","start":"2026-08-27","bank_m":335},
+    {"venue":"岸和田","start":"2026-08-27","bank_m":400},
+    {"venue":"小松島","start":"2026-08-27","bank_m":400},
+    {"venue":"小倉","start":"2026-08-28","bank_m":400},
+    {"venue":"四日市","start":"2026-08-29","bank_m":400},
+    {"venue":"いわき平","start":"2026-08-30","bank_m":400},
+    {"venue":"川崎","start":"2026-08-30","bank_m":400},
+    {"venue":"静岡","start":"2026-08-30","bank_m":400},
+    {"venue":"岐阜","start":"2026-08-30","bank_m":400},
+    {"venue":"和歌山","start":"2026-08-30","bank_m":400}
+  ],
+  "counts": {
+    "333": 4,
+    "335": 1,
+    "400": 20,
+    "500": 2,
+    "total_events": 27
+  },
+  "event_level_proportions": {
+    "333": 0.14814814814814814,
+    "335": 0.037037037037037035,
+    "400": 0.7407407407407407,
+    "500": 0.07407407407407407,
+    "short_333_or_335": 0.18518518518518517
+  },
+  "calibration_use": "Use only as a scoped reality anchor and contradiction check for broad synthetic bank mixes. Do not set the Digital Twin per-race bank prior equal to these values without a race-level sampling design.",
+  "yahoo_sensor_note": "Yahoo/Chiebukuro may be used to discover qualitative bank/wind hypotheses, but no Yahoo claim was used to produce these numeric counts.",
+  "scientific_firewall": {
+    "RESULT_PAYOUT_used": false,
+    "untouched_real_validation_opened": false,
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}

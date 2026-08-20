@@ -1,0 +1,58 @@
+{
+  "record": "KEIRIN_REALITY_CALIBRATION_BATCH2_PREREG_v1",
+  "status": "PREREGISTERED_PUBLIC_PRE_ONLY_CALIBRATION_BATCH",
+  "base_main": "eb1482030e70aa101f452abe16fd687a2f2f16be",
+  "purpose": "Move measurable Digital Twin realism parameters toward scoped real-world anchors using public PRE/schedule facts only, while keeping outcome-dependent quantities as assumptions or deferred.",
+  "source_policy": {
+    "primary_truth_preference": ["KEIRIN.JP official schedule", "KEIRIN.JP official bank/track data", "official pre-race/racecard pages when safely accessible"],
+    "yahoo_role": "SENSOR_ONLY_DISCOVERY_CONTRADICTION_NOT_NUMERIC_TRUTH",
+    "result_snippets": "EXCLUDE_FROM_CALIBRATION_EVIDENCE",
+    "bulk_scraping_or_bypass": "PROHIBITED",
+    "collection_mode": "SMALL_MANUAL_OR_NORMALLY_ACCESSIBLE_PUBLIC_PRE_COLLECTION_WITH_PROVENANCE"
+  },
+  "phase_a_targets": [
+    {
+      "parameter": "BANK_LENGTH_FREQUENCY",
+      "target": "SCOPED_SCHEDULE_WINDOW_EVENT_LEVEL_ANCHOR",
+      "window": "EVENTS_STARTING_2026-08-21_THROUGH_2026-08-31",
+      "claim_limit": "EVENT_LEVEL_WINDOW_SAMPLE_ONLY_NOT_RACE_LEVEL_OR_GLOBAL_FREQUENCY"
+    },
+    {
+      "parameter": "RACE_BAND_FREQUENCY",
+      "target": "SCHEDULE_GRADE_MIX_ANCHOR_IF_OFFICIAL_PAGE_SEMANTICS_ARE_UNAMBIGUOUS",
+      "claim_limit": "DO_NOT_MAP_EVENT_GRADE_DIRECTLY_TO_RACE_BAND_WITHOUT_SCHEMA_CONFIRMATION"
+    },
+    {
+      "parameter": "WITHIN_BAND_CLASS_FREQUENCY",
+      "target": "SMALL_UPCOMING_PRE_RACECARD_SAMPLE",
+      "claim_limit": "SAMPLE_ONLY_UNTIL COVERAGE_AND_SELECTION_RULE_ARE_PREREGISTERED"
+    },
+    {
+      "parameter": "LINE_SHAPE_FREQUENCY",
+      "target": "SMALL_UPCOMING_PRE_LINE_SAMPLE_IF_OFFICIAL_LINE_INFORMATION_IS_AVAILABLE_PRE_RACE",
+      "claim_limit": "NO RESULT_DERIVATION_AND_NO POST_RACE_LINE_RECONSTRUCTION"
+    },
+    {
+      "parameter": "STYLE_BY_LINE_POSITION",
+      "target": "DERIVE_ONLY_FROM SAME PRE_SAMPLE_AFTER LINE_AND_STYLE_FIELDS_ARE VERIFIED",
+      "claim_limit": "NO POPULATION CLAIM_FROM SMALL SAMPLE"
+    }
+  ],
+  "remain_assumption_or_deferred": [
+    "BANK_WIND_EFFECT_SIZE",
+    "LINE_EFFECT_SIZE",
+    "LINE_BREAK_RATE",
+    "HEAVY_TAIL_SHOCK",
+    "MARKET_STRENGTH_BIAS"
+  ],
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count": 0,
+    "new_untouched_validation_opened": false,
+    "RESULT_PAYOUT_access": "UNAUTHORIZED"
+  },
+  "promotion_rule": "NO_MODEL_PROMOTION_FROM_BATCH2_CALIBRATION_ALONE",
+  "untouched_real_validation_may_open": false
+}
