@@ -1,0 +1,22 @@
+name: Multiverse Owner Assurance Candidate Selftest
+
+on:
+  push:
+    branches:
+      - agent/multiverse-owner-assurance-generator-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Show exact head
+        run: echo "EXACT_HEAD=$(git rev-parse HEAD)"
+      - name: Run Owner assurance renderer selftest
+        run: python tools/render_keirin_owner_assurance_selftest_v1.py
