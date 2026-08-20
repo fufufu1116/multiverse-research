@@ -1,0 +1,55 @@
+name: Keirin Independent Official PRE Sensor Check
+
+on:
+  push:
+    branches:
+      - agent/keirin-independent-official-pre-sensor-20260820-v1
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-validator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact head
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: Run validator selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python independent_official_pre_sensor_validator_selftest_v1.py
+      - name: Validate committed captures
+        working-directory: v3/historical_all_market/new_lineage
+        run: |
+          python independent_official_pre_sensor_validator_v1.py > /tmp/sensor_validation.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x = json.loads(Path('/tmp/sensor_validation.json').read_text())
+          assert x['status'] == 'PASS'
+          assert x['scientific_firewall']['RESULT_PAYOUT_access'] == 'UNAUTHORIZED'
+          assert x['scientific_firewall']['third_party_completion'] == 'PROHIBITED'
+          assert x['scientific_firewall']['post_race_backfill'] == 'PROHIBITED'
+          assert x['scientific_firewall']['external_provider_contact'] == 'PROHIBITED'
+          print('INDEPENDENT_OFFICIAL_PRE_SENSOR_COMMITTED_CAPTURES_PASS')
+          print('admitted_races=', x['admitted_races'])
+          print('admitted_venues=', x['admitted_venues'])
+          PY
