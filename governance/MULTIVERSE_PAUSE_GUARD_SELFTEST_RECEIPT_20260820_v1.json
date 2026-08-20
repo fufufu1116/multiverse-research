@@ -1,0 +1,31 @@
+{
+  "record": "MULTIVERSE_PAUSE_GUARD_SELFTEST_RECEIPT_20260820_v1",
+  "status": "DRAFT_AUDIT_EVIDENCE_NOT_ACCEPTED",
+  "purpose": "Record isolated exact-blob-verified runtime evidence for the PR #16 pause-guard candidate before any workflow-wide adoption.",
+  "reviewed_pr": 16,
+  "executed_candidate_head": "1abe897eef8670e3844b26b5534320ddfe1d2db5",
+  "execution_mode": "ISOLATED_RUNTIME_EXACT_GIT_BLOB_SHA_VERIFIED_NOT_FULL_REPOSITORY_CHECKOUT",
+  "git_blob_identities": {
+    "tools/multiverse_pause_guard_v1.py": "963c951f05b1e082dc1c972f3b80bedcdead6114",
+    "tools/multiverse_pause_guard_selftest_v1.py": "c94a4317c4a9686e98b46379a85705a9c09df8cc"
+  },
+  "runtime": {
+    "command_equivalent": "python multiverse_pause_guard_selftest_v1.py",
+    "exit_code": 0,
+    "terminal": "MULTIVERSE_PAUSE_GUARD_SELFTEST_PASS"
+  },
+  "checks": {
+    "KEIRIN_SCIENTIFIC_EXECUTION_DENIED_DURING_OWNER_PAUSE": "PASS",
+    "AUDIT_RECOVERY_EVIDENCE_CONTAINMENT_ALLOWED_DURING_PAUSE": "PASS",
+    "PROTECTED_DATA_MODEL_PROMOTION_EXTERNAL_CONTACT_DENIED": "PASS",
+    "UNKNOWN_OPERATION_FAILS_CLOSED": "PASS",
+    "STALE_GENERATION_FAILS_CLOSED": "PASS",
+    "MISSING_STATE_FAILS_CLOSED": "PASS",
+    "MALFORMED_STATE_FAILS_CLOSED": "PASS",
+    "SCOPED_PAUSE_DOES_NOT_SILENTLY_BECOME_GLOBAL": "PASS",
+    "EXPLICIT_SAFE_MODE_EXIT_REQUIRED_BEFORE_KEIRIN_SCIENTIFIC_ALLOW": "PASS"
+  },
+  "evidence_limit": "This proves the candidate decision logic/selftest for the exact two Git blobs. It does not prove every scientific workflow is wired to the guard, does not cancel already-running provider jobs by itself, and does not promote the candidate into Accepted/Frozen policy.",
+  "next_gate": "LAB_REVIEW_PR16_EXACT_HEAD_THEN_DECIDE_MINIMUM_WORKFLOW_INTEGRATION",
+  "owner_action_now": "NONE"
+}
