@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_CAPTURE_03_20260820_v1",
+  "status": "IN_WINDOW_ZERO_RACES_ADMITTED_THREE_FIRST_PARTY_RACEPROGRAM_ROUTES_CACHE_MISS",
+  "captured_at_jst": "2026-08-20T19:17:48+09:00",
+  "parent_prereg": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_PREREG_20260820_v1",
+  "window_status": "INSIDE_LOCKED_PROSPECTIVE_WINDOW",
+  "admitted_race_count": 0,
+  "admitted_races": [],
+  "attempts": [
+    {
+      "venue": "大垣",
+      "venue_code": "44",
+      "race_date": "2026-08-21",
+      "venue_official_source": "https://www.ogakikeirin.com/schedule/2026/08",
+      "central_official_raceprogram": "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=44&KST=20260821",
+      "discovery": "VENUE_OFFICIAL_PAGE_CURRENTLY_LINKS_TO_CENTRAL_RACEPROGRAM",
+      "transport_result": "WEB_CACHE_MISS",
+      "race_level_pre_body_observed": false,
+      "admitted": false
+    },
+    {
+      "venue": "松山",
+      "venue_code": "75",
+      "race_date": "2026-08-21",
+      "venue_official_source": "https://www.matsuyamakeirin.jp/race/",
+      "central_official_raceprogram": "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=75&KST=20260821",
+      "discovery": "VENUE_OFFICIAL_PAGE_CURRENTLY_LINKS_TO_CENTRAL_RACEPROGRAM",
+      "transport_result": "WEB_CACHE_MISS",
+      "race_level_pre_body_observed": false,
+      "admitted": false
+    },
+    {
+      "venue": "武雄",
+      "venue_code": "84",
+      "race_date": "2026-08-21",
+      "venue_official_source": "https://www.keirin.city.takeo.lg.jp/",
+      "central_official_raceprogram": "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=84&KST=20260821",
+      "discovery": "VENUE_OFFICIAL_PAGE_CURRENTLY_LINKS_TO_CENTRAL_RACEPROGRAM",
+      "transport_result": "WEB_CACHE_MISS",
+      "race_level_pre_body_observed": false,
+      "admitted": false
+    }
+  ],
+  "policy_observed": {
+    "first_party_only": true,
+    "normal_public_fetch_only": true,
+    "bypass": false,
+    "third_party_completion": false,
+    "result_or_payout_access": false,
+    "post_race_backfill": false,
+    "external_contact": false
+  },
+  "meaning": "This is a prospective access/availability observation inside the locked window. Zero admitted races is not negative evidence about R0/R1/R2 Digital Twin realism and must not be converted into inferred PRE fields.",
+  "next_step": "Continue append-only first-party discovery using independent official venue/static routes; admit only directly observed race-level PRE that passes the validator."
+}
