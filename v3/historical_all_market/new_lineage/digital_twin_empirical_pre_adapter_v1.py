@@ -72,35 +72,59 @@ def _style_conditionals_for_race(
     race: Race,
     target: Mapping[str, float],
 ) -> Dict[str, Dict[str, float]]:
-    """Reweight existing synthetic position coupling to a target style marginal.
+    """Preserve target style marginal while retaining bounded position coupling.
 
-    Position/style coupling itself remains an assumption. Iterative proportional
-    fitting changes only style multipliers so the weighted expected marginal for the
-    selected line shape matches the staged sensor-only target.
+    The existing hand-authored position/style probabilities are treated only as an
+    assumption-shaped deviation.  For the selected line shape we subtract their
+    weighted marginal, then add the zero-mean deviation back to the sensor target.
+    Coupling strength is reduced automatically only as far as required to keep every
+    conditional probability in [0, 1].  Therefore the race-level expected style
+    marginal remains exactly the sensor target for any supported line shape.
     """
+    target_total = sum(float(target[s]) for s in STYLES)
+    if target_total <= 0.0:
+        raise ValueError("invalid_style_target_mass")
+    target_norm = {s: float(target[s]) / target_total for s in STYLES}
+
     categories = [_position_category(r) for r in race.riders]
     n = len(categories)
     cat_weight = {c: categories.count(c) / n for c in set(categories)}
-    lam = {s: 1.0 for s in STYLES}
+    base_marginal = {
+        s: sum(cat_weight[c] * BASE_POSITION_STYLE[c][s] for c in cat_weight)
+        for s in STYLES
+    }
 
-    for _ in range(500):
-        cond: Dict[str, Dict[str, float]] = {}
-        for category in cat_weight:
-            z = sum(BASE_POSITION_STYLE[category][s] * lam[s] for s in STYLES)
-            cond[category] = {
-                s: BASE_POSITION_STYLE[category][s] * lam[s] / z for s in STYLES
-            }
-        marginal = {
-            s: sum(cat_weight[c] * cond[c][s] for c in cat_weight)
-            for s in STYLES
-        }
-        error = max(abs(marginal[s] - float(target[s])) for s in STYLES)
-        if error < 1e-12:
-            return cond
-        for s in STYLES:
-            lam[s] *= float(target[s]) / max(marginal[s], 1e-15)
+    max_lambda = 1.0
+    for category in cat_weight:
+        for style in STYLES:
+            delta = BASE_POSITION_STYLE[category][style] - base_marginal[style]
+            t = target_norm[style]
+            if delta < 0.0:
+                max_lambda = min(max_lambda, t / (-delta))
+            elif delta > 0.0:
+                max_lambda = min(max_lambda, (1.0 - t) / delta)
+    coupling = max(0.0, min(1.0, max_lambda * 0.999999))
 
-    raise ValueError("style_ipf_did_not_converge")
+    cond: Dict[str, Dict[str, float]] = {}
+    for category in cat_weight:
+        cond[category] = {}
+        for style in STYLES:
+            delta = BASE_POSITION_STYLE[category][style] - base_marginal[style]
+            value = target_norm[style] + coupling * delta
+            if value < -1e-12 or value > 1.0 + 1e-12:
+                raise ValueError("style_coupling_probability_out_of_bounds")
+            cond[category][style] = min(1.0, max(0.0, value))
+        z = sum(cond[category].values())
+        if abs(z - 1.0) > 1e-12:
+            raise ValueError("style_conditional_mass_drift")
+
+    marginal = {
+        s: sum(cat_weight[c] * cond[c][s] for c in cat_weight)
+        for s in STYLES
+    }
+    if max(abs(marginal[s] - target_norm[s]) for s in STYLES) > 1e-12:
+        raise ValueError("style_target_marginal_drift")
+    return cond
 
 
 def _sample_scores(
