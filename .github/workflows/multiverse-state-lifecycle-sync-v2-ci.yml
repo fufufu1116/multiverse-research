@@ -1,0 +1,48 @@
+name: Multiverse State Lifecycle Sync v2 CI
+
+on:
+  push:
+    branches:
+      - agent/multiverse-state-lifecycle-sync-v2
+    paths:
+      - 'governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v2.json'
+      - 'governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v2.json'
+      - 'tools/multiverse_state_lifecycle_sync_selftest_v2.py'
+      - '.github/workflows/multiverse-state-lifecycle-sync-v2-ci.yml'
+  pull_request:
+    paths:
+      - 'governance/MULTIVERSE_OPEN_WORK_LIFECYCLE_REGISTRY_20260820_v2.json'
+      - 'governance/KEIRIN_OPERATIONAL_STATE_SYNC_CANDIDATE_20260820_v2.json'
+      - 'tools/multiverse_state_lifecycle_sync_selftest_v2.py'
+      - '.github/workflows/multiverse-state-lifecycle-sync-v2-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  state-lifecycle-sync-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Verify exact head
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: State and lifecycle v2 selftest only
+        run: python tools/multiverse_state_lifecycle_sync_selftest_v2.py
+      - name: Protected boundary terminal
+        run: |
+          echo 'MULTIVERSE_STATE_LIFECYCLE_SYNC_V2_EXACT_HEAD_CI_PASS'
+          echo 'SCIENTIFIC_EXECUTION_PERFORMED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'SCIENTIFIC_RESUME_ALLOWED=false'
