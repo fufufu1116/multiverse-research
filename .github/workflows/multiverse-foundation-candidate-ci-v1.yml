@@ -21,9 +21,14 @@ jobs:
     steps:
       - name: Checkout exact candidate head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Show exact head
-        run: git rev-parse HEAD
+        run: |
+          echo "checked_out_head=$(git rev-parse HEAD)"
+          echo "event_head=${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
 
       - name: Pause guard selftest
         run: python tools/multiverse_pause_guard_selftest_v1.py
