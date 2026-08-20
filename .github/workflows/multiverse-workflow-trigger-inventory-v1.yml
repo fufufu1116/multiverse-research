@@ -1,0 +1,54 @@
+name: Multiverse Workflow Trigger Inventory v1
+
+on:
+  push:
+    branches:
+      - agent/multiverse-workflow-pause-inventory-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TARGET_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout exact head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          persist-credentials: false
+      - name: Verify exact head
+        run: |
+          echo "TARGET_SHA=${TARGET_SHA}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${TARGET_SHA}"
+      - name: Scanner selftest
+        working-directory: tools
+        run: python multiverse_workflow_trigger_inventory_selftest_v1.py
+      - name: Inventory triggers only — do not execute target workflows
+        run: |
+          python tools/multiverse_workflow_trigger_inventory_v1.py --output /tmp/workflow-trigger-inventory.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/workflow-trigger-inventory.json'))
+          assert x['scientific_execution_performed'] is False
+          assert x['result_payout_accessed'] is False
+          assert x['holdout_accessed'] is False
+          print('WORKFLOW_COUNT',x['workflow_count'])
+          print('SENSITIVE_AUTO_TRIGGER_COUNT',x['sensitive_auto_trigger_count'])
+          print('SENSITIVE_UNKNOWN_TRIGGER_COUNT',x['sensitive_unknown_trigger_count'])
+          for r in x['rows']:
+              if r['keirin_sensitive_name'] and r['trigger_class'] != 'MANUAL_ONLY':
+                  print('SENSITIVE_TRIGGER',r['trigger_class'],','.join(r['events']),r['path'])
+          print('MULTIVERSE_WORKFLOW_TRIGGER_INVENTORY_EXACT_HEAD_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: multiverse-workflow-trigger-inventory
+          path: /tmp/workflow-trigger-inventory.json
+          if-no-files-found: error
+          retention-days: 7
