@@ -1,0 +1,113 @@
+{
+  "record": "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1",
+  "status": "FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_APPROVED_RUNTIME_NOT_ACTIVATED",
+  "canonical_base_main": "3871de67900f31496ee9725a77ff1048cede906f",
+  "owner_gate": {
+    "approval_comment_id": 5367308652,
+    "reviewed_scope_head": "785e8d08029d57122076309fb4eb0b4c568c2229",
+    "scope_is_reusable_outside_stage1": false,
+    "activation_is_conditional_on_ci_lab_auditor_pass": true
+  },
+  "responsibilities": [
+    "Source Audit Cache administration from already-supplied metadata/evidence",
+    "Reliable Task Execution with explicit enqueue, idempotency, lease/fencing, checkpoint/recovery, retry/dead-letter, CAS, durable receipts, and stale-main denial",
+    "Owner Exception View with zero approval authority"
+  ],
+  "enqueue_contract": {
+    "schema_version": "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v1",
+    "exact_operation": "R1_STAGE1_ENQUEUE_SOURCE_AUDIT_ADMIN_TASK",
+    "exact_target": "runtime/r1-source-audit-stage1-v1",
+    "exact_scope": "GITHUB_INTERNAL_SOURCE_AUDIT_ADMIN_METADATA_ONLY",
+    "permission_class": "P1_REVERSIBLE_INTERNAL_WRITE",
+    "raw_github_event_comment_url_or_untrusted_branch_is_authority": false,
+    "fresh_authorization_decision_required": true,
+    "actor_and_worker_binding_required": true,
+    "malformed_or_unknown_field_behavior": "DENY_FAIL_CLOSED"
+  },
+  "runtime_branch_contract": {
+    "branch": "runtime/r1-source-audit-stage1-v1",
+    "canonical": false,
+    "permission_authority": false,
+    "allowed_prefixes": [
+      "runtime/r1_source_audit_stage1/cache/",
+      "runtime/r1_source_audit_stage1/tasks/",
+      "runtime/r1_source_audit_stage1/receipts/",
+      "runtime/r1_source_audit_stage1/exceptions/"
+    ],
+    "writes_to_main_or_governance": false,
+    "fast_forward_and_expected_old_head_cas_required": true,
+    "force_push_reset_history_rewrite_authorized": false,
+    "pinned_genesis_ancestry_required": true
+  },
+  "ceiling_contract": {
+    "one_worker": true,
+    "max_tasks_per_invocation": 10,
+    "retry_budget_per_task": 2,
+    "terminal_task_ceiling": 25,
+    "window_days": 7,
+    "immutable_activation_timestamp": true,
+    "monotonic_terminal_count": true,
+    "persistent_high_water_evidence_required": true,
+    "high_water_is_permission_authority": false,
+    "branch_or_counter_rollback_behavior": "FAIL_CLOSED_PAUSE_OWNER_EXCEPTION",
+    "second_worker_behavior": "DENY_AND_SURFACE_CONFLICT",
+    "task_26_behavior": "DENY_AND_REMAIN_PAUSED",
+    "post_7_day_behavior": "DENY_AND_REMAIN_PAUSED",
+    "auto_resume": false
+  },
+  "second_authority_rejection": {
+    "runtime_artifact_authority_class": "NONE_NONCANONICAL_OPERATIONAL_STATE_ONLY",
+    "must_reject_as": [
+      "OWNER_GATE",
+      "AUTHORIZATION_GRANT",
+      "PERMISSION_EVIDENCE",
+      "SOURCE_ADMISSION_RECEIPT",
+      "CANONICAL_GOVERNANCE_FACT"
+    ],
+    "ADMITTED_cache_state_allowed": false,
+    "runtime_artifact_may_promote_source_or_widen_permission": false
+  },
+  "trusted_authority_dependency": {
+    "canonical_live_authority_snapshot_provider_in_this_candidate": "NOT_IMPLEMENTED_AND_NOT_FAKED",
+    "stage1_library_may_load_authority_state_from_enqueue_payload": false,
+    "stage1_library_may_assume_grant_current_without_external_verification": false,
+    "required_before_activation": "An independently reviewed trusted canonical control-plane adapter must construct current AuthorizationRuntime facts (policy identity, current valid grants, revocation generation, safe-mode generation, actor binding, current time). If those facts are unavailable or unverifiable, Stage 1 must remain OFF.",
+    "reason": "Creating a Stage-1-local grant/revocation authority would violate the reviewed no-second-authority boundary."
+  },
+  "implementation_files": [
+    "tools/multiverse_r1_stage1_runtime_v1.py",
+    ".github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml"
+  ],
+  "candidate_runtime_behavior": {
+    "default": "LIBRARY_ONLY_DORMANT",
+    "runtime_workflow_present": false,
+    "scheduler_present": false,
+    "network_collection_present": false,
+    "activation_receipt_present": false,
+    "runtime_branch_created": false,
+    "runtime_activation_performed": false
+  },
+  "dedicated_negative_evidence_required": [
+    "unauthorized actor/wrong operation/target/scope/malformed enqueue denied",
+    "raw GitHub event/comment/URL/untrusted branch cannot auto-taskify",
+    "second worker/parallel invocation denied",
+    "wrong runtime ref/path traversal/main/governance writes denied",
+    "runtime ref movement/ancestry tamper/high-water rollback denied and paused",
+    "terminal counter/timestamp rollback denied",
+    "task 26/post-7-day/post-pause auto-resume denied",
+    "lost-ACK terminal receipt replay does not double count",
+    "runtime state rejected as Owner Gate/grant/permission/admission/canonical fact",
+    "ADMITTED/permission-like runtime states rejected",
+    "existing R1 stale-main/stale-lease/duplicate/lost-ACK/retry/corrupt-state/network/permission tests remain PASS"
+  ],
+  "pre_activation_reviews_required": [
+    "dedicated Stage-1 CI PASS",
+    "Lab implementation review PASS",
+    "independent Auditor implementation review PASS",
+    "trusted authority adapter review PASS",
+    "no material scope drift"
+  ],
+  "runtime_activation_authorized_now": false,
+  "source_or_scientific_permission_expansion": false,
+  "fail_closed": true
+}
