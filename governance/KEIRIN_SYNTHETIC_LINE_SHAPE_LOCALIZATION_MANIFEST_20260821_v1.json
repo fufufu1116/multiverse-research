@@ -1,0 +1,39 @@
+{
+  "record": "KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_MANIFEST_20260821_v1",
+  "status": "AUTHORIZED_SYNTHETIC_DIAGNOSTIC_PENDING_CI",
+  "authorized_base_main": "0403aa5b040b5d61d26d231efaccc8c086b52670",
+  "purpose": "Localize C0/C1/N1 synthetic probability-quality differences by existing seven-rider line topology to detect concentration in one engineered line shape.",
+  "scope": "source-independent Digital Twin W0-W4 synthetic failure localization only",
+  "sample_reuse": {
+    "source": "canonical Batch 4 seed blocks",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false
+  },
+  "stratification": {
+    "field": "PRE line topology",
+    "definition": "descending multiset of line sizes per race",
+    "known_generator_motifs_for_standard_7": ["3-2-2", "3-3-1", "2-2-2-1"],
+    "synthetic_frequency_is_real_frequency_claim": false
+  },
+  "models": ["C0", "C1", "N1"],
+  "reported_diagnostic": "expected ordered-top3 log loss by world, model, and observed line shape, with C1-C0 and N1-C1 deltas",
+  "pass_criterion": "execution and probability invariants only; PASS does not require any topology to favor any model",
+  "scientific_decision_rule": "FAILURE_LOCALIZATION_ONLY_NO_SELECTION_RETUNING_FREEZE_OR_PROMOTION",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "model_or_coefficient_change": false,
+  "explicitly_not_authorized": [
+    "real/live input collection",
+    "economics",
+    "real-world or untouched validation",
+    "PR #15 quarantined metrics",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000",
+    "scientific Segment C",
+    "model promotion",
+    "external provider contact",
+    "real-money wagering"
+  ],
+  "fail_closed": true
+}
