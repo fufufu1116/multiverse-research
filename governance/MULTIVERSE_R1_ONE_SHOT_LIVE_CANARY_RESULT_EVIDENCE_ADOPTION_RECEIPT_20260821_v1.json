@@ -1,0 +1,82 @@
+{
+  "record": "MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_RESULT_EVIDENCE_ADOPTION_RECEIPT_20260821_v1",
+  "status": "ACCEPTED_ONE_SHOT_CANARY_RESULT_EVIDENCE_RUNTIME_STILL_OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "adoption_main_before_receipt": "70da4153552c84a54fe4998e452e949da404838c",
+  "execution_evidence": {
+    "trigger_pr": 56,
+    "trigger_pr_state": "CLOSED_UNMERGED",
+    "trigger_head": "f374feda2de09dc3c5e0fa81286a31aabe58118a",
+    "trigger_changed_files": [
+      "governance/MULTIVERSE_R1_LIVE_CANARY_TRIGGER_ONCE_20260821_v1.json"
+    ],
+    "workflow_run": 32457026990,
+    "run_attempt": 1,
+    "classify_and_validate_job": 96696176544,
+    "live_one_shot_job": 96696205774,
+    "workflow_conclusion": "SUCCESS",
+    "live_job_conclusion": "SUCCESS",
+    "canonical_main_used": "70da4153552c84a54fe4998e452e949da404838c"
+  },
+  "one_shot_consumption": {
+    "consumed_marker_ref": "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1",
+    "consumed_marker_object": "b2b5985eba46f948585dcb4cfa7c745d3f7fae08",
+    "marker_peeled_commit": "70da4153552c84a54fe4998e452e949da404838c",
+    "marker_created_before_workload": true,
+    "marker_persists_after_result_review": true,
+    "owner_gate_consumed": true,
+    "owner_gate_reusable": false,
+    "automatic_retry_authorized": false,
+    "second_canary_authorized": false,
+    "marker_reset_or_delete_authorized": false
+  },
+  "bounded_canary_result": {
+    "result_marker": "R1_LIVE_CANARY_ONE_SHOT_PASS",
+    "task_id": "task-44d00f3b0e7e3253",
+    "receipt_id": "receipt-09299125f83ceded09e8",
+    "lease_epoch": 1,
+    "state_generation": 4,
+    "final_candidate_state": "REVIEWED_NO_ADMISSION",
+    "source_collection_performed": false,
+    "external_contact_performed": false,
+    "repository_business_write_performed": false,
+    "full_runtime_activation_performed": false
+  },
+  "independent_review_evidence": {
+    "result_review_request_comment": 5366406746,
+    "independent_result_comment": 5366545898,
+    "independent_result_verdict": "PASS",
+    "reviewed_head": "f374feda2de09dc3c5e0fa81286a31aabe58118a",
+    "canonical_main_fresh_read": "70da4153552c84a54fe4998e452e949da404838c",
+    "canonicalize_result_evidence_with_runtime_still_off": true,
+    "unresolved_material_items": "NONE_FOR_THIS_CANARY_RESULT_REVIEW"
+  },
+  "evidence_class": "BOUNDED_CANONICAL_R1_EXECUTION_IN_GITHUB_ACTIONS_WITH_SYNTHETIC_LOCAL_WORKLOAD_ONLY",
+  "authority_not_granted": {
+    "second_canary_or_rerun": false,
+    "broader_runtime_activation": false,
+    "source_admission": false,
+    "real_or_live_PRE_collection_or_use": false,
+    "provider_contact": false,
+    "new_spend_or_contract": false,
+    "RESULT_PAYOUT": false,
+    "protected_data_or_holdout_access": false,
+    "PR15_use": false,
+    "model_promotion": false,
+    "automated_bulk_collection": false,
+    "scheduler_or_always_on_worker": false,
+    "real_money_wagering": false
+  },
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR15": "QUARANTINED_NOT_ADMITTED_DO_NOT_INSPECT_FOR_SELECTION",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "NEW_SCOPE_SPECIFIC_OWNER_GATE_REQUIRED_BEFORE_ANY_BROADER_RUNTIME_DECISION",
+  "claim_boundary": "This receipt canonicalizes only the independently audited evidence that exactly one bounded canonical R1 canary executed successfully in GitHub Actions with synthetic/local workload state and that the one-shot Owner Gate is consumed. It grants no second canary, no Source/data/scientific authority, and no broader runtime authority.",
+  "owner_action_now": "NONE_AFTER_EVIDENCE_ADOPTION_UNTIL_A_NEW_SCOPE_SPECIFIC_OWNER_GATE",
+  "fail_closed": true
+}
