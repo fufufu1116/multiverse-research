@@ -15,6 +15,7 @@
   "one_shot_trigger": {
     "event": "pull_request opened only",
     "required_base_branch": "main",
+    "required_head_repository": "fufufu1116/multiverse-research",
     "required_head_branch": "agent/r1-live-canary-trigger-once-20260821-v1",
     "required_changed_files": ["governance/MULTIVERSE_R1_LIVE_CANARY_TRIGGER_ONCE_20260821_v1.json"],
     "max_changed_files": 1,
@@ -23,7 +24,21 @@
     "automatic_retry": false,
     "trigger_pr_must_not_merge": true,
     "trigger_expected_canonical_main_must_equal_pr_base_sha": true,
-    "different_head_branch_cannot_activate": true
+    "different_head_branch_cannot_activate": true,
+    "different_head_repository_cannot_activate": true
+  },
+  "global_single_use": {
+    "global_concurrency_group": "multiverse-r1-one-shot-live-canary-global-v1",
+    "persistent_consumed_marker_ref": "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1",
+    "marker_target": "TRIGGER_PR_BASE_SHA",
+    "marker_claim": "ATOMIC_CREATE_IF_ABSENT",
+    "claim_must_fail_if_marker_exists": true,
+    "claim_occurs_before_r1_workload": true,
+    "marker_persists_after_success_or_failure": true,
+    "second_distinct_qualifying_pr_must_fail": true,
+    "second_run_attempt_must_fail": true,
+    "consumed_marker_reset_authorized": false,
+    "control_plane_only_not_business_state": true
   },
   "workload": {
     "uses_canonical_r1_engine": true,
@@ -36,6 +51,7 @@
     "source_admission": false,
     "real_or_live_PRE": false,
     "repository_business_state_write": false,
+    "control_plane_consumed_marker_write_only": true,
     "result_payout": false,
     "protected_data_access": false,
     "model_promotion": false,
@@ -50,6 +66,9 @@
     "fixture_expiry_is_fail_closed": true
   },
   "required_canary_sequence": [
+    "verify trigger PR base/head repository/head branch/exact one-file identity",
+    "verify GitHub run attempt equals one",
+    "atomically claim persistent global consumed marker before workload",
     "inspect synthetic candidate",
     "acquire worker lease",
     "write checkpoint",
@@ -66,10 +85,11 @@
     "CANARY_REPOSITORY_BUSINESS_WRITE_PERFORMED=false",
     "CANARY_FULL_RUNTIME_ACTIVATION_PERFORMED=false"
   ],
-  "failure_rule": "Any gate, trigger, authorization, schema, canonical identity, lease, receipt, branch identity, or state mismatch fails closed and MUST NOT be automatically retried.",
-  "claim_boundary": "A PASS proves one bounded canonical-code execution in GitHub Actions with synthetic/local workload state. It does not prove production Authorization issuance, network Source collection, always-on scheduling, general runtime readiness, business correctness, or real-world scientific performance.",
+  "failure_rule": "Any gate, trigger, authorization, schema, canonical identity, lease, receipt, branch/repository identity, consumed-marker claim, or state mismatch fails closed and MUST NOT be automatically retried. If the persistent consumed marker was already claimed, failure does not restore the Owner Gate.",
+  "claim_boundary": "A PASS proves one bounded canonical-code execution in GitHub Actions with synthetic/local workload state. The persistent tag is only control-plane evidence enforcing single use. A PASS does not prove production Authorization issuance, network Source collection, always-on scheduling, general runtime readiness, business correctness, or real-world scientific performance.",
   "after_success": {
     "close_trigger_pr": true,
+    "consumed_marker_must_remain": true,
     "broader_runtime_activation_authorized": false,
     "independent_canary_result_review_required": true,
     "new_owner_gate_required_for_broader_runtime": true
