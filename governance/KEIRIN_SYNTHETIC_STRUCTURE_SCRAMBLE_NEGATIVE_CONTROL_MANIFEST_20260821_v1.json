@@ -1,0 +1,47 @@
+{
+  "record": "KEIRIN_SYNTHETIC_STRUCTURE_SCRAMBLE_NEGATIVE_CONTROL_MANIFEST_20260821_v1",
+  "status": "AUTHORIZED_SYNTHETIC_DIAGNOSTIC_PENDING_CI",
+  "authorized_base_main": "13d9800c0fd2879706ea09d51a162707fa6bc269",
+  "purpose": "Test whether C1/N1 synthetic probability quality depends on the correct rider-to-line-structure mapping rather than generic model flexibility.",
+  "scope": "source-independent Digital Twin W0-W4 synthetic failure diagnostic only",
+  "sample_reuse": {
+    "source": "canonical Batch 4 seed blocks",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false
+  },
+  "negative_control_transform": {
+    "name": "DETERMINISTIC_RIDER_TO_STRUCTURE_SLOT_ROTATION",
+    "rotation_slots": 1,
+    "individual_PRE_fields_preserved": true,
+    "line_structure_slot_multiset_preserved": true,
+    "num_lines_preserved": true,
+    "rider_to_structure_mapping_intentionally_broken": true,
+    "truth_distribution_unchanged": true
+  },
+  "models": ["C0", "C1", "N1"],
+  "expected_invariants": [
+    "C0 predictions are exactly unchanged by structure scrambling",
+    "all probability objects keep complete support and unit mass",
+    "C1 and N1 keep the same rank-1 marginal within each PRE condition",
+    "every rider receives a different complete structure slot while the slot multiset is preserved"
+  ],
+  "reported_diagnostic": "scrambled minus intact expected ordered-top3 log loss by world and seed block; positive means intact structure scored better",
+  "pass_criterion": "execution and invariants only; PASS does not require any sign or ranking outcome",
+  "scientific_decision_rule": "NEGATIVE_CONTROL_DIAGNOSTIC_ONLY_NO_SELECTION_RETUNING_FREEZE_OR_PROMOTION",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "explicitly_not_authorized": [
+    "real/live input collection",
+    "economics",
+    "real-world or untouched validation",
+    "PR #15 quarantined metrics",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000",
+    "scientific Segment C",
+    "model promotion",
+    "external provider contact",
+    "real-money wagering"
+  ],
+  "fail_closed": true
+}
