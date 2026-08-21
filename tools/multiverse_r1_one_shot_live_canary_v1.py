@@ -63,7 +63,7 @@ def _validate_envelope(trigger, canonical_main):
     _require(gate["execution_limits"]["application_network_access_authorized"] is False, "OWNER_GATE_NETWORK_MUST_BE_FALSE")
     _require(gate["execution_limits"]["full_runtime_activation_authorized"] is False, "OWNER_GATE_FULL_RUNTIME_MUST_BE_FALSE")
 
-    _require(contract["status"] in {"DORMANT_LIVE_CANARY_FRAMEWORK_CANDIDATE_PENDING_INDEPENDENT_REVIEW", "CANONICAL_DORMANT_ONE_SHOT_LIVE_CANARY_FRAMEWORK"}, "CONTRACT_STATUS_INVALID")
+    _require(contract["status"] == "DORMANT_ONE_SHOT_LIVE_CANARY_FRAMEWORK_RUNTIME_OFF", "CONTRACT_STATUS_INVALID")
     _require(contract["one_shot_trigger"]["max_execution_count"] == 1, "CONTRACT_COUNT_MISMATCH")
     _require(contract["one_shot_trigger"]["automatic_retry"] is False, "CONTRACT_RETRY_MUST_BE_FALSE")
     _require(contract["runtime_authorization"]["owner_gate_reused_as_operation_grant"] is False, "OWNER_GATE_OPERATION_REUSE_FORBIDDEN")
