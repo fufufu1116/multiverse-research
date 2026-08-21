@@ -56,7 +56,7 @@
     "required_mechanisms": [
       "stable idempotency key",
       "durable receipt",
-      "CAS/generation and record-version preconditions",
+      "locked state transaction plus explicit CAS generation/version preconditions",
       "monotonic fencing token / lease epoch",
       "finite retry budget",
       "checkpoint/resume",
@@ -72,9 +72,10 @@
       "Atomic durable state+receipt write"
     ],
     "read_only_receipt_rule": "Receipt retrieval is a distinct read-only operation; stale commit attempts cannot obtain commit-success by bypassing fencing.",
+    "duplicate_candidate_rule": "Candidate inspection/staging occurs inside the locked state transaction so same candidate+docs_hash converges to the same task instead of requiring the caller to resolve an avoidable write race.",
     "embedded_interlocks": [
       "stale target + governed write => DENY",
-      "Owner Gate required + missing/mismatched approval => DENY",
+      "Owner Gate required + missing/mismatched operation-specific approval => DENY",
       "protected/SEALED data scope request => DENY",
       "concurrent state generation/version drift => CAS conflict",
       "expired/old lease worker + commit attempt => DENY_OR_CONFLICT",
@@ -86,6 +87,9 @@
     "executor_may_mint_or_elevate_own_grant": false,
     "string_or_boolean_allow_shortcut_permitted": false,
     "recheck_immediately_before_governed_side_effect": true,
+    "implementation_owner_gate_is_not_runtime_operation_grant": true,
+    "source_review_commit_classification": "P1_REVERSIBLE_INTERNAL_WRITE_FOR_SOURCE_AUDIT_METADATA_ONLY_NOT_SOURCE_ADMISSION",
+    "operation_specific_owner_gate_required_only_when_the_exact_operation_is_classified_P4": true,
     "required_preconditions": [
       "decision == ALLOW",
       "policy generation and digest match accepted runtime identity",
@@ -95,7 +99,7 @@
       "operation/target/scope/data exposure exact match",
       "permission class within permission ceiling",
       "grant present where required",
-      "exact Owner Gate reference present where required"
+      "exact operation-specific Owner Gate reference present where required"
     ]
   },
   "owner_exception_view": {
@@ -120,13 +124,14 @@
       "expired old-worker revival after newer lease takeover",
       "stale canonical input",
       "authorization DENY",
-      "Owner-Gate mismatch",
+      "operation-specific Owner-Gate mismatch",
       "protected-data scope request",
       "retry exhaustion / dead-letter",
       "state committed then ACK lost / same-payload retry",
       "same idempotency key with conflicting payload",
       "concurrent generation/version conflict",
-      "unknown schema/enum value"
+      "unknown schema/enum value",
+      "implementation Owner Gate is not reused as runtime operation permission"
     ]
   },
   "runtime": {
