@@ -1,0 +1,213 @@
+{
+  "record": "MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_ACCEPTANCE_CONTRACT_CANDIDATE_20260821_v1",
+  "status": "DRAFT_NONCANONICAL_ACCEPTANCE_CONTRACT_NO_RUNTIME_AUTHORITY",
+  "purpose": "Define one end-to-end no-contact Source-candidate automation acceptance target without creating a new top-level system or granting runtime/source authority.",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "prepared_from_fresh_read_main": "40a1522ad74f6ef7c82c5c2b948ee775d2133f56",
+  "pr45_review_dependency": {
+    "pr": 45,
+    "lab_review_target_head_must_not_be_moved_by_this_work": "bf7555c9662eff374cd5f17fb65fef5a9e809ef2",
+    "lab_verdict_observed_at_draft_time": "NOT_YET_WRITTEN_BACK",
+    "this_branch_does_not_modify_pr45": true,
+    "implementation_or_promotion_before_governance_disposition": false
+  },
+  "canonical_inputs_pinned": {
+    "phase_a_source_audit": {
+      "path": "governance/KEIRIN_SOURCE_PHASE_A_PUBLIC_TERMS_AUDIT_20260821_v1.json",
+      "blob_sha": "ad5fe081e362069f30515f13612100f9961419e5",
+      "preserved_truth": "No provider was confirmed formally admissible from the public terms/licenses/documentation checked; this is not proof that no lawful source exists."
+    },
+    "authorization_contract": {
+      "path": "multiverse_vnext/VNEXT_AUTHORIZATION_CONTRACT_v0.json",
+      "blob_sha": "67bc4803b00668e78ca0b5ecdb0fba79cfd7d9ad",
+      "reuse_rule": "Do not create a second permission authority; use existing deny precedence, scope checks, Owner-Gate checks, safe-mode/revocation checks and fail-closed unknown handling."
+    },
+    "owner_assurance": {
+      "path": "tools/multiverse_owner_assurance_view_v2.py",
+      "blob_sha": "55e3c0cbdf0439e71668143b89d4d5b7375b1175",
+      "reuse_rule": "Owner-facing output remains a derived non-authoritative view, not a second canonical state."
+    }
+  },
+  "r1_definition": {
+    "unit_of_delivery": "ONE_VERTICAL_SLICE_NOT_FIVE_SEPARATE_FEATURES",
+    "success_statement": "One Source candidate can be processed from intake to durable no-contact audit disposition, with duplicate/stale/unauthorized work prevented, crash/retry convergence demonstrated, and only exceptions/decisions surfaced to Owner.",
+    "runtime_responsibilities": [
+      "SOURCE_AUDIT_CACHE",
+      "RELIABLE_TASK_EXECUTION_WITH_EXISTING_INTERLOCKS",
+      "OWNER_EXCEPTION_VIEW"
+    ],
+    "acceptance_evidence_not_runtime_component": "FAKE_WORKER_RELIABILITY_REHEARSAL",
+    "new_top_level_systems": []
+  },
+  "source_audit_cache_contract": {
+    "minimum_identity": [
+      "candidate_id",
+      "source_class",
+      "public_terms_or_docs_refs",
+      "terms_or_docs_hashes",
+      "last_checked_at",
+      "audit_scope",
+      "verdict_state",
+      "verdict_reason",
+      "freshness_state",
+      "recheck_trigger"
+    ],
+    "allowed_states_for_r1": [
+      "UNKNOWN",
+      "REVIEW_REQUIRED",
+      "REVIEWED_NO_ADMISSION",
+      "CHANGED_REVIEW_REQUIRED",
+      "EXPLICIT_INELIGIBLE_WHEN_EVIDENCE_SUPPORTS_IT"
+    ],
+    "blanket_permanent_rejected_state_for_ordinary_phase_a_nonadmission": false,
+    "r1_may_set_formal_source_admitted": false,
+    "unchanged_reviewed_candidate_behavior": "NO_DUPLICATE_REAUDIT_TASK",
+    "changed_terms_or_docs_hash_behavior": "CHANGED_REVIEW_REQUIRED_AND_AT_MOST_ONE_CURRENT_REVIEW_TASK"
+  },
+  "reliable_task_execution_contract": {
+    "delivery_semantics": "AT_LEAST_ONCE_ATTEMPTS_WITH_IDEMPOTENT_CONVERGENCE_NOT_EXACTLY_ONCE_PROMISE",
+    "minimum_task_fields": [
+      "task_id",
+      "idempotency_key",
+      "task_type",
+      "candidate_id",
+      "input_hashes",
+      "authorization_ref",
+      "expected_canonical_or_state_version",
+      "attempt_count",
+      "retry_budget",
+      "checkpoint_ref",
+      "lease_owner",
+      "lease_expires_at",
+      "fencing_token_or_equivalent_generation",
+      "durable_receipt_ref",
+      "output_refs",
+      "dead_letter_reason"
+    ],
+    "required_guarantees": [
+      "duplicate delivery with same idempotency key does not create duplicate committed outcomes",
+      "retry budget is finite",
+      "checkpoint/resume does not widen authorization or scope",
+      "stale canonical/state precondition rejects before commit",
+      "expired/old lease worker cannot commit after a newer worker owns the task",
+      "missing/stale/out-of-scope authorization rejects using existing Authorization Contract semantics",
+      "result converges through idempotency plus durable receipt plus CAS/version precondition",
+      "dead-letter/quarantine records failure without silently treating it as success"
+    ],
+    "exactly_once_claim_allowed": false,
+    "fencing_requirement": "FENCING_TOKEN_OR_EQUIVALENT_CAS_GENERATION_REQUIRED_FOR_COMMIT",
+    "new_permission_authority": false,
+    "new_canonical_state_authority": false
+  },
+  "owner_exception_view_contract": {
+    "minimum_output": [
+      "what_changed",
+      "what_ran_automatically",
+      "what_did_not_run",
+      "what_is_blocked",
+      "whether_owner_action_is_required",
+      "next_safe_action"
+    ],
+    "normal_success_should_not_require_owner_routing": true,
+    "must_not_claim_source_watcher_is_running": true,
+    "must_not_be_second_canonical_authority": true
+  },
+  "acceptance_rehearsal": {
+    "environment": "NONCANONICAL_FAKE_WORKER_NO_EXTERNAL_SIDE_EFFECTS",
+    "minimum_negative_cases": [
+      {
+        "case": "DUPLICATE_SOURCE_CANDIDATE_UNCHANGED",
+        "expected": "ONE_DURABLE_DISPOSITION_NO_DUPLICATE_REAUDIT_TASK"
+      },
+      {
+        "case": "TERMS_OR_DOCS_HASH_CHANGED",
+        "expected": "CHANGED_REVIEW_REQUIRED_AND_ONE_CURRENT_REVIEW_TASK"
+      },
+      {
+        "case": "DUPLICATE_TASK_DELIVERY",
+        "expected": "IDEMPOTENT_CONVERGENCE_ONE_COMMITTED_RESULT"
+      },
+      {
+        "case": "WORKER_DIES_AFTER_CHECKPOINT",
+        "expected": "AUTHORIZED_RETRY_RESUMES_WITHOUT_SCOPE_WIDENING"
+      },
+      {
+        "case": "OLD_WORKER_REVIVES_AFTER_LEASE_REPLACEMENT",
+        "expected": "OLD_FENCING_TOKEN_OR_STALE_CAS_COMMIT_DENIED"
+      },
+      {
+        "case": "TIMEOUT_AND_RETRY_BUDGET_EXHAUSTION",
+        "expected": "DEAD_LETTER_OR_QUARANTINE_NOT_INFINITE_RETRY"
+      },
+      {
+        "case": "STALE_CANONICAL_OR_STATE_VERSION",
+        "expected": "DENY_OR_CONFLICT_BEFORE_COMMIT"
+      },
+      {
+        "case": "MISSING_REQUIRED_OWNER_GATE_OR_AUTHORIZATION",
+        "expected": "DENY_FAIL_CLOSED"
+      },
+      {
+        "case": "SEALED_OR_PROTECTED_DATA_ACCESS_REQUEST",
+        "expected": "DENY_FAIL_CLOSED_NO_ACCESS"
+      },
+      {
+        "case": "STATE_WRITE_SUCCEEDS_THEN_TRANSPORT_ACK_FAILS",
+        "expected": "RETRY_READS_DURABLE_RECEIPT_AND_CONVERGES_WITHOUT_SECOND_COMMITTED_RESULT"
+      },
+      {
+        "case": "OWNER_VIEW_NORMAL_SUCCESS",
+        "expected": "NO_ROUTINE_OWNER_ACTION_REQUIRED"
+      },
+      {
+        "case": "OWNER_VIEW_MATERIAL_BLOCK",
+        "expected": "ONE_CONCISE_OWNER_DECISION_OR_EXCEPTION_SURFACED"
+      }
+    ],
+    "all_cases_must_preserve_protected_boundaries": true
+  },
+  "explicit_non_goals": [
+    "always-on Source watcher or automatic source detection runtime",
+    "Source admission",
+    "real/live PRE collection or use",
+    "historical race dataset ingestion",
+    "external provider contact",
+    "new spend, paid API, contract or subscription",
+    "RESULT/PAYOUT access",
+    "ECON_HOLDOUT1000 access",
+    "PR15 quarantined metric use",
+    "untouched validation",
+    "model selection/freeze/promotion",
+    "Synthetic-to-Real Edge/ROI promotion",
+    "economics/bankroll evaluation",
+    "real-money wagering",
+    "access-control or terms bypass",
+    "broad Task Bus/Flow Governor/autonomy platform redesign"
+  ],
+  "governance": {
+    "this_document_is_implementation_authority": false,
+    "this_document_is_owner_gate": false,
+    "this_document_is_canonical_adoption_authority": false,
+    "formal_implementation_change_class": "PENDING_PR45_LAB_CLASSIFICATION_FAIL_CLOSED",
+    "owner_gate_for_formal_adoption_or_runtime_activation": "PENDING_PR45_LAB_CLASSIFICATION_DO_NOT_INFER_FROM_THIS_DRAFT",
+    "auditor_requirement": "PENDING_PR45_LAB_CLASSIFICATION_DO_NOT_INFER_FROM_THIS_DRAFT",
+    "noncanonical_runtime_prototype_execution_authority_from_this_document": false,
+    "safe_reversible_design_and_test_spec_work_only": true
+  },
+  "protected_boundaries": {
+    "source_admission": "UNAUTHORIZED",
+    "real_or_live_PRE_collection_or_use": "UNAUTHORIZED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR15": "QUARANTINED_NOT_ADMITTED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "external_provider_contact": "UNAUTHORIZED",
+    "automated_bulk_collection": "UNAUTHORIZED",
+    "new_spend_or_contract": "UNAUTHORIZED",
+    "synthetic_to_real_edge_or_roi_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE_PENDING_PR45_LAB_VERDICT",
+  "fail_closed": true
+}
