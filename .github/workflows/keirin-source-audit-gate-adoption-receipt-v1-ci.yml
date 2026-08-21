@@ -1,0 +1,71 @@
+name: Keirin Source Audit Gate Adoption Receipt v1 CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-source-audit-gate-adoption-receipt-v1-ci.yml'
+      - 'governance/KEIRIN_SOURCE_AUDIT_GATE_ADOPTION_RECEIPT_20260821_v1.json'
+  push:
+    paths:
+      - '.github/workflows/keirin-source-audit-gate-adoption-receipt-v1-ci.yml'
+      - 'governance/KEIRIN_SOURCE_AUDIT_GATE_ADOPTION_RECEIPT_20260821_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  EXPECTED_MAIN: a259e63092377e3f7da4a3661033d98ca3716a8c
+  CANDIDATE_BLOB: 9b39b4c79fa9c2d7e5cb8ad90ac0b445079f1b1d
+
+jobs:
+  adoption-receipt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Verify exact evidence and limited diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "$EXPECTED_MAIN"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test "$(git rev-parse "$EXPECTED_MAIN:governance/KEIRIN_SOURCE_RIGHTS_PRE_TRANSPORT_GATE_CANDIDATE_20260821_v1.json")" = "$CANDIDATE_BLOB"
+          git diff --name-only "$EXPECTED_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-source-audit-gate-adoption-receipt-v1-ci.yml
+          governance/KEIRIN_SOURCE_AUDIT_GATE_ADOPTION_RECEIPT_20260821_v1.json
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+      - name: Validate nonauthorizing adoption receipt
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          p='governance/KEIRIN_SOURCE_AUDIT_GATE_ADOPTION_RECEIPT_20260821_v1.json'
+          x=json.load(open(p, encoding='utf-8'))
+          assert x['status']=='ACCEPTED_NONAUTHORIZING_PHASE_A_SOURCE_AUDIT_GATE'
+          assert x['source_gate_candidate']['reviewed_exact_head']=='baac4ae19730dbeea33e187417024fee3a91df3e'
+          assert x['review_evidence']['micro_lab_verdict']=='PASS'
+          assert x['review_evidence']['canonical_adoption_may_proceed'] is True
+          assert all(x['phase_A_authorized_now'].values())
+          assert not any(x['authority_not_granted'].values())
+          g=x['future_gates']
+          assert all(g.values())
+          pb=x['protected_boundaries']
+          assert pb['ECON_HOLDOUT1000']=='SEALED'
+          assert pb['scientific_segment_C_scoring_count']==0
+          assert pb['RESULT_PAYOUT']=='UNAUTHORIZED'
+          assert pb['untouched_validation']=='CLOSED'
+          assert pb['model_promotion']=='PROHIBITED'
+          assert x['owner_action_now']=='NONE'
+          assert x['fail_closed'] is True
+          print('KEIRIN_SOURCE_AUDIT_GATE_ADOPTION_RECEIPT_PASS')
+          PY
