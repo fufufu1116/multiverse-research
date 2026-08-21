@@ -1,6 +1,6 @@
 {
   "record": "MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_CAS_PREACTIVATION_CONTRACT_20260821_v1",
-  "status": "PREACTIVATION_GITHUB_RUNTIME_CAS_ADAPTER_CANDIDATE_RUNTIME_OFF",
+  "status": "PREACTIVATION_GITHUB_RUNTIME_CAS_ADAPTER_LAB_HARDENED_RUNTIME_OFF",
   "canonical_repo": "fufufu1116/multiverse-research",
   "stacked_parent": {
     "pr": 59,
@@ -9,71 +9,126 @@
     "protocol_micro_verdict": "PASS",
     "parent_head_must_not_move": true
   },
-  "owner_gate": {
-    "record": "governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json",
-    "approval_comment": 5367308652,
-    "scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1_ONLY",
-    "material_scope_expansion": false
+  "lab_hardening": {
+    "prior_review_comment": 5370201094,
+    "prior_verdict": "PASS_WITH_FIXES",
+    "scope": "NARROW_GITHUB_CAS_HARDENING_ONLY",
+    "fixes": [
+      "bind every effective fetch URL and push URL to the canonical repository and reject Git url.*.insteadOf/pushInsteadOf rewrite configuration",
+      "require an externally verified immutable activation anchor for activation id, canonical main, audited implementation head, runtime branch, runtime genesis, activation timestamp and Stage-1 ceilings",
+      "bind that activation anchor to an exact GitHub tag ruleset id and updated_at plus an independently attested no-bypass fact",
+      "require the live ruleset to target the journal tag namespace with deletion/update/non-fast-forward protection and no creation restriction; missing or changed ruleset fails closed",
+      "Fresh Read canonical main again immediately before journal push and again immediately before runtime-branch push",
+      "move all local-origin bypass subclasses inside selftest() so no module-scope test adapter is importable",
+      "extend selftest to pushurl/rewrite rejection, protected journal deletion plus rollback, journal-first crash, mid-mutation main drift, activation re-key and forbidden-path-write-then-revert history"
+    ]
   },
   "purpose": "Implement only the concrete GitHub runtime-state compare-and-swap ledger dependency required before Stage-1 activation. Do not issue authorization decisions and do not activate or create the production runtime branch.",
   "implementation": {
     "file": "tools/multiverse_r1_stage1_github_runtime_cas_v1.py",
+    "ledger_schema": "MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_LEDGER_v2",
     "runtime_branch": "runtime/r1-source-audit-stage1-v1",
     "runtime_state_path": "runtime/r1_source_audit_stage1/exceptions/control_plane/runtime_ledger.json",
-    "state_path_reason": "The independently audited Stage-1 protocol head permits only cache/tasks/receipts/exceptions runtime prefixes. The control-plane ledger is stored under the existing exceptions prefix so the audited four-file protocol head does not move.",
     "writes_to_main_or_governance": false,
     "production_runtime_branch_created_by_candidate": false,
     "runtime_activation_performed_by_candidate": false
   },
+  "origin_identity_contract": {
+    "all_effective_fetch_urls_must_be_canonical": true,
+    "all_effective_push_urls_must_be_canonical": true,
+    "accepted_repository": "fufufu1116/multiverse-research",
+    "git_url_insteadOf_or_pushInsteadOf_allowed": false,
+    "validation_repeated_before_remote_mutation": true,
+    "test_only_local_origin_bypass_module_scope_importable": false,
+    "mismatch_behavior": "DENY_FAIL_CLOSED"
+  },
   "cas_contract": {
     "remote_current_main_fresh_read_before_every_ledger_mutation": true,
+    "remote_current_main_rechecked_immediately_before_journal_push": true,
+    "remote_current_main_rechecked_immediately_before_runtime_branch_push": true,
     "runtime_control_canonical_main_must_equal_fresh_remote_main": true,
     "expected_old_head_required": true,
     "new_runtime_commit_must_be_fast_forward_descendant_of_expected_old_head": true,
     "branch_update": "git push with --force-with-lease=<runtime-ref>:<expected-old-head> after explicit local fast-forward ancestry check",
     "stale_expected_head_behavior": "DENY_FAIL_CLOSED",
+    "mid_mutation_main_drift_behavior": "JOURNAL_MAY_REMAIN_AHEAD_BUT_RUNTIME_BRANCH_MUST_NOT_ADVANCE; NEXT_LOAD_FAIL_CLOSED",
     "stale_or_nonowner_claim_may_persist": false,
     "branch_reset_force_push_history_rewrite_by_adapter": false,
     "runtime_genesis_ancestry_required": true,
     "every_path_touched_since_runtime_genesis_must_pass_existing_stage1_validate_write_path": true
   },
+  "activation_anchor": {
+    "source": "SEPARATELY_REVIEWED_IMMUTABLE_ACTIVATION_RECEIPT_LOADER_REQUIRED",
+    "runtime_state_may_self_assert_anchor": false,
+    "verified_anchor_required_for_production_adapter_construction": true,
+    "bound_fields": [
+      "activation_receipt_id",
+      "canonical_main",
+      "audited_implementation_head",
+      "runtime_branch",
+      "runtime_genesis",
+      "activated_at",
+      "max_concurrent_workers",
+      "max_terminal_tasks",
+      "runtime_window_days",
+      "retry_budget_per_task",
+      "auto_resume_authorized",
+      "receipt_ref",
+      "receipt_sha256",
+      "journal_ruleset_id",
+      "journal_ruleset_updated_at",
+      "journal_ruleset_no_bypass_attested"
+    ],
+    "activation_rekey_or_genesis_rekey_behavior": "DENY_FAIL_CLOSED_BEFORE_JOURNAL_NAMESPACE_SELECTION"
+  },
   "append_only_journal": {
-    "purpose": "Independent remote evidence for ledger sequence/history and terminal-count high-water.",
+    "purpose": "Remote evidence for ledger sequence/history and terminal-count high-water, protected by an activation-anchored GitHub tag ruleset.",
     "ref_pattern": "refs/tags/multiverse-r1-stage1-ledger-v1-<activation-id-digest>-s<8-digit-sequence>-t<8-digit-terminal-count>",
-    "tag_type": "LIGHTWEIGHT_IMMUTABLE_CONTROL_PLANE_REF",
     "journal_ref_claim": "EXPECTED_ABSENT_FORCE_WITH_LEASE",
     "journal_claim_occurs_before_runtime_branch_advance": true,
-    "journal_delete_or_rewrite_by_adapter": false,
+    "required_repository_ruleset_target": "tag",
+    "required_repository_ruleset_include": "refs/tags/multiverse-r1-stage1-ledger-v1-*",
+    "required_repository_rules": ["deletion", "update", "non_fast_forward"],
+    "creation_restriction_allowed": false,
+    "no_bypass_required": true,
+    "ruleset_id_and_updated_at_pinned_by_activation_anchor": true,
+    "ruleset_missing_changed_or_unverifiable_behavior": "DENY_FAIL_CLOSED",
+    "ruleset_provisioned_by_this_candidate": false,
     "sequence_must_be_gap_free_from_1": true,
     "latest_journal_target_must_equal_current_runtime_head": true,
     "journal_terminal_high_water_must_equal_current_control_terminal_count": true,
     "crash_after_journal_claim_before_branch_advance": "FAIL_CLOSED_ON_NEXT_LOAD_EXPLICIT_REPAIR_REQUIRED_NO_AUTO_RESUME",
-    "rollback_to_older_runtime_head_without_deleting_journal": "DETECTED_AND_DENIED",
-    "history_rewrite_to_different_commit_with_same_payload": "DETECTED_BY_LATEST_JOURNAL_TARGET_MISMATCH",
+    "rollback_to_older_runtime_head_with_protected_journal_intact": "DETECTED_AND_DENIED",
     "authority_role": "NONE_NONCANONICAL_CONTROL_PLANE_EVIDENCE_ONLY"
   },
-  "mutation_rules": {
-    "claim_invocation": "durable remote CAS before R1 side effects; claimed control must preserve activation identity and bind exact claim_id",
-    "persist_r1_state": "requires current durable claim ownership; stale/nonowner denied; each mutation gets a new journal sequence and CAS commit",
-    "release_invocation": "requires current durable claim ownership; claim must be cleared; terminal count may only increase; paused state may not auto-resume",
-    "terminal_receipt_history": "counted receipt ids are append-only and terminal_count cannot decrease"
+  "repository_protection_assurance": {
+    "github_rulesets_support_tag_deletion_update_and_force_push_restrictions": true,
+    "production_adapter_rechecks_exact_anchored_ruleset_before_each_remote_mutation": true,
+    "no_runtime_permission_to_create_modify_or_delete_rulesets_is_requested_by_this_candidate": true,
+    "ruleset_configuration_and_no_bypass_attestation_remain_activation_setup_evidence": true,
+    "runtime_off_if_ruleset_evidence_absent": true
   },
   "authority_boundary": {
     "authorization_decision_issuer_in_this_candidate": "NONE",
     "canonical_authority_decision_trusted_time_adapter_implemented_here": false,
-    "reason": "Fresh Read found no accepted generic production Stage-1 authority source that may safely be treated as a live grant/decision issuer. The existing one-shot canary authorization fixture explicitly says NOT_PRODUCTION_AUTHORITY and the generic vNext authorization/safe-mode artifacts are candidate/noncanonical.",
     "missing_or_unverifiable_authority_behavior": "STAGE1_REMAINS_OFF_DENY_FAIL_CLOSED",
     "canary_fixture_reuse_as_stage1_authority": false,
     "stage1_local_grant_or_revocation_registry": false,
     "owner_gate_reused_as_routine_operation_grant": false
   },
   "selftest_evidence_required": [
+    "split canonical fetch URL plus noncanonical push URL is rejected",
+    "git url rewrite configuration is rejected",
+    "strict journal ruleset shape is accepted and weakened/bypass shape rejected",
     "two callers sharing one remote expected-old-head cannot both claim",
     "stale or nonowner R1 persistence is rejected",
     "append-only journal sequence and terminal high-water advance with state",
-    "external runtime branch rollback is detected by journal mismatch",
-    "runtime commit touching governance or another forbidden path is rejected",
-    "selftest uses only temporary local bare Git remotes",
+    "protected journal deletion attempt is rejected and branch rollback remains detected",
+    "journal-first crash leaves journal-ahead state and next load fails closed",
+    "main drift injected after journal claim is denied before runtime branch advance",
+    "activation id re-key with sequence reset is rejected by external activation anchor",
+    "forbidden runtime path touched and later reverted is still rejected by history scan",
+    "local origin bypass classes exist only inside selftest function scope",
     "production runtime branch is not created",
     "runtime activation is not performed",
     "authorization decision issuance is not performed"
@@ -89,11 +144,12 @@
     "external_provider_contact": false
   },
   "remaining_preactivation_dependencies": [
-    "independent Lab review of this exact GitHub runtime-CAS adapter candidate",
-    "independent Implementation Auditor review of this exact GitHub runtime-CAS adapter candidate",
-    "concrete canonical authority/decision/trusted-time adapter with an accepted live authority source or equivalent immutable issuance/membership attestation",
+    "Lab micro re-review of the narrow hardening on this exact head",
+    "independent Implementation Auditor review after Lab micro PASS",
+    "concrete canonical authority/decision/trusted-time adapter with accepted live authority source or equivalent immutable issuance/membership attestation",
     "independent review of that authority adapter",
-    "final unchanged exact-head binding and activation receipt before any runtime branch creation or activation"
+    "repository tag ruleset must actually be provisioned and independently attested no-bypass before immutable activation receipt is issued",
+    "final immutable activation receipt must bind exact implementation head, activation identity, runtime genesis, ceilings and journal ruleset id/updated_at before any runtime branch creation or activation"
   ],
   "protected_boundaries": {
     "runtime_activation_authorized_now": false,
