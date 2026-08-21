@@ -1,24 +1,24 @@
 {
   "record": "VNEXT_CURRENT_STATE_v0",
   "status": "ACCEPTED_FROZEN",
-  "updated_jst": "2026-08-21T00:21:00+09:00",
+  "updated_jst": "2026-08-21T09:43:00+09:00",
   "mutability": "MUTABLE_CAS_POINTER_WITH_ACCEPTED_VNEXT_AND_FOUNDATION_ARTIFACTS_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
-  "current_phase": "VNEXT_ACCEPTED_FROZEN_FOUNDATION_V1_ACCEPTED_KEIRIN_SCIENCE_PAUSED",
+  "current_phase": "VNEXT_ACCEPTED_FROZEN_FOUNDATION_V1_ACCEPTED_KEIRIN_LIMITED_SYNTHETIC_SCIENCE_AUTHORIZED",
   "formal_release_state": "ACCEPTED_FROZEN",
-  "state_generation": 11,
-  "parent_valid_state_git_blob_sha": "a6577d2267a6c0e6eed8af248682827c783e2970",
+  "state_generation": 12,
+  "parent_valid_state_git_blob_sha": "f4295fe416667745688f17ab390246cbb64e0dc8",
   "supersedes_state_ref": {
     "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
-    "git_blob_sha": "a6577d2267a6c0e6eed8af248682827c783e2970",
-    "logical_generation": 10
+    "git_blob_sha": "f4295fe416667745688f17ab390246cbb64e0dc8",
+    "logical_generation": 11
   },
   "write_precondition": {
-    "expected_current_file_blob_sha": "a6577d2267a6c0e6eed8af248682827c783e2970",
-    "expected_canonical_main_head": "819afb723c8f14000757b2e53b6664d71ab01227",
-    "expected_audited_pr_head": "2f81464a0a159f7d643105e176edbf289f263cda",
-    "expected_generation_of_last_valid_state": 10,
-    "new_generation": 11,
+    "expected_current_file_blob_sha": "f4295fe416667745688f17ab390246cbb64e0dc8",
+    "expected_canonical_main_head": "7993d8d90d0154913e6335bf5219477cf1f8fd38",
+    "expected_audited_pr_head": "5ddca980391c0a3692454cdad540825c155852e7",
+    "expected_generation_of_last_valid_state": 11,
+    "new_generation": 12,
     "reject_on_any_mismatch": true,
     "timestamp_can_override": false
   },
@@ -95,8 +95,8 @@
   },
   "keirin_firewall": {
     "scientific_state_change_authorized_by_foundation_acceptance": false,
-    "scientific_resume_allowed": false,
-    "separate_scientific_execution_authorization_required": true,
+    "scientific_resume_allowed": true,
+    "separate_scientific_execution_authorization_required": false,
     "ECON_HOLDOUT1000": "SEALED",
     "DEV2000_C_new_lineage_rescue": "PROHIBITED",
     "same_lineage_B_C_rescue_tuning": "PROHIBITED",
@@ -110,10 +110,11 @@
     "current_scientific_state_source": "FRESH_READ_v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json_REQUIRED"
   },
   "next_actions": [
-    "Verify canonical main contains the generation-11 atomic two-parent Foundation Accept/Freeze commit.",
-    "Keep Keirin scientific execution paused until a separate canonical Scientific Execution Authorization Gate is satisfied.",
-    "Create one sanitized Project Source v3 update candidate after the accepted Foundation checkpoint is verified stable.",
-    "Do not use PR #15 quarantined metrics, RESULT/PAYOUT, holdout or untouched validation to choose a resume path."
+    "Immediately before first Keirin execution, Fresh Read canonical main, generation-12 VNEXT_CURRENT_STATE_v0.json, CURRENT_STATE_KEIRIN.json, and governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json; fail closed on relevant drift.",
+    "Execute only source-independent synthetic regression checks, Digital Twin W0-W4 synthetic stress/failure diagnostics, and C0/C1/N1 comparison inside those synthetic worlds.",
+    "Keep real/live input collection, economics, real-world or untouched validation, PR #15 metrics, RESULT/PAYOUT, ECON_HOLDOUT1000, DEV2000 C rescue, same-lineage B/C rescue, model promotion, external contact, bulk collection and real-money wagering unauthorized.",
+    "Keep scientific segment C scoring count at 0 and treat all authorized output as synthetic engineering/falsification evidence only.",
+    "Any scope expansion requires a separate governed gate and cannot reuse the 2026-08-21 limited-synthetic Owner Gate."
   ],
   "owner_action_now": "NONE"
 }
