@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - "tools/multiverse_r1_source_vertical_slice_v2.py"
+      - "tools/multiverse_r1_auth_v1.py"
+      - "tools/multiverse_r1_state_v1.py"
+      - "tools/multiverse_r1_engine_v1.py"
       - "governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json"
       - "governance/MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_IMPLEMENTATION_CONTRACT_20260821_v1.json"
       - ".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml"
@@ -29,15 +32,12 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-
           gate = json.loads(Path("governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json").read_text())
           contract = json.loads(Path("governance/MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_IMPLEMENTATION_CONTRACT_20260821_v1.json").read_text())
-
           assert gate["status"] == "OWNER_APPROVED_SCOPE_SPECIFIC_R1_FORMAL_IMPLEMENTATION_ONLY"
           assert gate["runtime_activation_authorized"] is False
           assert gate["source_or_scientific_permission_expansion"] is False
           assert set(gate["auditor_conditions_bound"]) == {"A", "B", "C", "D"}
-
           assert contract["status"] == "FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_GATED_NOT_RUNTIME_ACTIVATED"
           assert contract["reliable_task_execution"]["exactly_once_claim"] is False
           assert contract["authorization"]["string_or_boolean_allow_shortcut_permitted"] is False
@@ -50,14 +50,23 @@ jobs:
           assert contract["runtime"]["runtime_activation_authorized"] is False
           PY
 
-      - name: Reject network collector imports schedule triggers or implementation-gate runtime reuse
+      - name: Reject network collectors schedule triggers and implementation-gate runtime reuse
         run: |
           python - <<'PY'
           from pathlib import Path
-          code = Path("tools/multiverse_r1_source_vertical_slice_v2.py").read_text()
+          paths = [
+              "tools/multiverse_r1_source_vertical_slice_v2.py",
+              "tools/multiverse_r1_auth_v1.py",
+              "tools/multiverse_r1_state_v1.py",
+              "tools/multiverse_r1_engine_v1.py",
+          ]
+          code = "\n".join(Path(p).read_text() for p in paths)
           for forbidden in ("import requests", "import httpx", "import urllib", "import socket", "5365031899"):
               assert forbidden not in code, forbidden
-          assert 'permission_class="P1_REVERSIBLE_INTERNAL_WRITE"' in code
+          assert "P5_PROHIBITED" in code
+          assert "AUTH_ACTOR_MISMATCH" in code
+          assert "AUTH_GRANT_INVALID_OR_REVOKED" in code
+          assert "RECEIPT_IDENTITY" in code
           workflow = Path(".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml").read_text()
           forbidden_schedule = "sche" + "dule:"
           forbidden_cron = "cr" + "on:"
@@ -65,8 +74,25 @@ jobs:
           assert forbidden_cron not in workflow
           PY
 
-      - name: Run dedicated R1 fake-worker acceptance harness
-        run: python tools/multiverse_r1_source_vertical_slice_v2.py --selftest
+      - name: Run dedicated R1 fake-worker acceptance harness including B C negative cases
+        run: |
+          output="$(python tools/multiverse_r1_source_vertical_slice_v2.py --selftest)"
+          printf '%s\n' "$output"
+          for required in \
+            'AUTH_ACTOR_BINDING_ENFORCED=true' \
+            'P5_DENY_PRECEDENCE_ENFORCED=true' \
+            'GRANT_VALIDITY_BINDING_ENFORCED=true' \
+            'SAFE_MODE_DENY_ENFORCED=true' \
+            'TASK_AND_RECEIPT_SCHEMA_STRICT=true' \
+            'RECEIPT_IDENTITY_STRICT=true' \
+            'FENCING_BEFORE_COMMIT_SUCCESS=true' \
+            'EXACTLY_ONCE_CLAIM=false' \
+            'NETWORK_ACCESS_PERFORMED=false' \
+            'RUNTIME_ACTIVATION_PERFORMED=false' \
+            'MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_SELFTEST_PASS'
+          do
+            printf '%s\n' "$output" | grep -Fx "$required"
+          done
 
       - name: Confirm no runtime activation entrypoint
         run: |
