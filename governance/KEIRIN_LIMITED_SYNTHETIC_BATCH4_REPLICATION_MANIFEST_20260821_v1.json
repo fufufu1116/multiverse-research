@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1",
+  "status": "AUTHORIZED_POST_BATCH3_SYNTHETIC_ROBUSTNESS_EXECUTED_PASS",
+  "authorized_base_main": "8fb885edea8783339bb8fd3978d6baf93af94828",
+  "purpose": "Post-Batch3 robustness diagnostic across disjoint synthetic seed blocks; not a holdout and not model-selection evidence.",
+  "fixed_inputs": {
+    "batch3_harness_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_core_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "pre_holdout_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "sampling": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "worlds": ["W0", "W1", "W2", "W3", "W4"]
+  },
+  "execution_evidence": {
+    "exact_executed_pr_head": "d2cacc48a8e2fbcbb40c31245aa131e3b939798f",
+    "workflow_run": 32435423130,
+    "job": 96635542771,
+    "conclusion": "success",
+    "checked_out_equals_pr_event_head": true,
+    "foundation_candidate_run": 32435423224,
+    "foundation_candidate_conclusion": "success",
+    "world_evaluations": 2560,
+    "model_world_evaluations": 7680,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_C1_N1_rank1_marginal_difference": 5.551115123125783e-16
+  },
+  "result_snapshot": {
+    "n1_minus_c1_world_block_sign_counts": {
+      "negative_better": 16,
+      "positive_worse": 4,
+      "zero": 0,
+      "total_cells": 20
+    },
+    "n1_minus_c1_expected_log_loss_by_block": {
+      "20261001": {"W0": 0.0011096481303232153, "W1": -0.0005803078965032071, "W2": -0.009806604332961655, "W3": -0.006816437278728493, "W4": -0.0052201845999366725},
+      "20262001": {"W0": 0.000535057375142145, "W1": -0.0016083398212654032, "W2": -0.011536745806851378, "W3": -0.008506920429075748, "W4": -0.005673722982874274},
+      "20263001": {"W0": 0.0008351777672217509, "W1": -0.0009787526774411859, "W2": -0.010152770610321937, "W3": -0.007000209595333651, "W4": -0.0058587523679776154},
+      "20264001": {"W0": 0.00036777926550879414, "W1": -0.0013889774102207042, "W2": -0.010535808655032675, "W3": -0.007868249588862675, "W4": -0.005552471332356923}
+    },
+    "overall_equal_world_weight_expected_log_loss_mean_across_four_blocks": {
+      "C0": 4.80051276336489,
+      "C1": 4.800178951407309,
+      "N1": 4.795367071764932
+    },
+    "diagnostic_interpretation_only": [
+      "Across all four post-hoc seed blocks, N1 is worse than C1 in W0 and better than C1 in W1-W4.",
+      "The Batch 3 null-world cost versus relational-world gain pattern reproduced in these additional engineered synthetic draws.",
+      "Because these blocks were chosen after Batch 3, this is post-hoc robustness evidence and must not be labeled an untouched holdout or independent validation.",
+      "No model selection, retuning, freeze, promotion, real-keirin edge, ROI, or causal claim is authorized or made."
+    ]
+  },
+  "pass_criterion": "execution and probability invariants only; no required model ranking",
+  "scientific_decision_rule": "POST_HOC_ROBUSTNESS_DIAGNOSTIC_ONLY_NO_SELECTION_RETUNING_FREEZE_OR_PROMOTION",
+  "model_or_coefficient_change": false,
+  "locked_legacy_synthetic_holdout_used": false,
+  "fresh_synthetic_holdout_used": false,
+  "real_live_input_collection": false,
+  "economics": false,
+  "real_world_validation": false,
+  "pr15_metrics_access": false,
+  "result_payout_access": false,
+  "holdout_access": false,
+  "scientific_segment_c_scoring_count": 0,
+  "model_promotion": false,
+  "external_provider_contact": false,
+  "real_money_wagering": false,
+  "real_world_edge_or_roi_evidence": false,
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "fail_closed": true
+}
