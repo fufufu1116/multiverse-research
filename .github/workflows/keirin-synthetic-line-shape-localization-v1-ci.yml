@@ -1,0 +1,133 @@
+name: Keirin Synthetic Line Shape Localization v1 CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-synthetic-line-shape-localization-v1-ci.yml'
+      - 'governance/KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_MANIFEST_20260821_v1.json'
+      - 'tools/keirin_synthetic_line_shape_localization_v1.py'
+  push:
+    paths:
+      - '.github/workflows/keirin-synthetic-line-shape-localization-v1-ci.yml'
+      - 'governance/KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_MANIFEST_20260821_v1.json'
+      - 'tools/keirin_synthetic_line_shape_localization_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AUTHORIZED_MAIN: 0403aa5b040b5d61d26d231efaccc8c086b52670
+  VNEXT_BLOB: afe746287c7e911d214202abdf2de076f63ab30c
+  KEIRIN_STATE_BLOB: 962d9c75b0611d52bd264a8b88bb1fe259cb8aeb
+  AUTH_RECEIPT_BLOB: 4c2e5364ad229a5dd413a19d0cf970c478692584
+  DIGITAL_TWIN_BLOB: 1f1574400e43648e60af43d059965d021d8bbad8
+  TOP3_CORE_BLOB: 4e2a819dce69240792d927cceba434f53932b829
+  PRE_HOLDOUT_COEFF_RECEIPT_BLOB: f531d72929c846da1c932451873c94bb9b526ae7
+  BATCH3_HARNESS_BLOB: 9531715a8f346aec370bf1be24017a8ff577506b
+  BATCH4_MANIFEST_BLOB: 6bd86411861501a6bed2f7b9fdc12e27caa0dd34
+  STRUCTURE_SCRAMBLE_MANIFEST_BLOB: fde4b29ea224b77e23f364162ebd2dad93d8a094
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  line-shape-localization:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Fail closed unless exact head authorization and fixed inputs are unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          echo "ORIGIN_MAIN=$(git rev-parse origin/main)"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "PR_EVENT_HEAD=${{ github.event.pull_request.head.sha }}"
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test "$(git rev-parse origin/main)" = "$AUTHORIZED_MAIN"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:multiverse_vnext/VNEXT_CURRENT_STATE_v0.json")" = "$VNEXT_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json")" = "$KEIRIN_STATE_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json")" = "$AUTH_RECEIPT_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/new_lineage/digital_twin_v1.py")" = "$DIGITAL_TWIN_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/new_lineage/top3_architecture_core_v1.py")" = "$TOP3_CORE_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/governance/KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json")" = "$PRE_HOLDOUT_COEFF_RECEIPT_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:tools/keirin_synthetic_c0_c1_n1_comparison_v1.py")" = "$BATCH3_HARNESS_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1.json")" = "$BATCH4_MANIFEST_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_SYNTHETIC_STRUCTURE_SCRAMBLE_NEGATIVE_CONTROL_MANIFEST_20260821_v1.json")" = "$STRUCTURE_SCRAMBLE_MANIFEST_BLOB"
+
+      - name: Verify localization changes only harness manifest and CI
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only "$AUTHORIZED_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-synthetic-line-shape-localization-v1-ci.yml
+          governance/KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_MANIFEST_20260821_v1.json
+          tools/keirin_synthetic_line_shape_localization_v1.py
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Reject protected evaluator imports and network science inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          HARNESS=tools/keirin_synthetic_line_shape_localization_v1.py
+          ! grep -Eq 'digital_twin_stress_grid_v1|c0_c1_n1_multiworld_stress_v1|locked_synthetic_holdout_runner_v1|fresh_synthetic_holdout' "$HARNESS"
+          ! grep -Eq 'requests|urllib|http://|https://' "$HARNESS"
+
+      - name: Execute authorized line-shape failure localization
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/keirin_synthetic_line_shape_localization_v1.py | tee /tmp/localization.log
+          grep -Fx 'KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_PASS' /tmp/localization.log
+          head -n 1 /tmp/localization.log > /tmp/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/result.json', encoding='utf-8'))
+          assert r['status']=='PASS'
+          assert r['evidence_class']=='SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          assert r['block_seed_bases']==[20261001,20262001,20263001,20264001]
+          assert r['cases_per_block']==128 and r['total_cases']==512
+          assert r['new_seed_selection'] is False
+          assert r['worlds']==['W0','W1','W2','W3','W4']
+          assert r['world_evaluations']==2560
+          assert r['model_world_evaluations']==7680
+          assert sum(r['shape_race_counts'].values())==512
+          assert r['synthetic_shape_frequency_is_real_frequency_claim'] is False
+          assert r['max_C1_N1_rank1_marginal_difference'] <= 1e-12
+          assert r['max_prediction_probability_mass_error'] <= 1e-10
+          assert r['n1_minus_c1_shape_world_sign_counts']['total_cells']==len(r['observed_line_shapes'])*5
+          assert r['pass_does_not_require_any_topology_model_ranking'] is True
+          assert r['scientific_decision']=='FAILURE_LOCALIZATION_ONLY_NO_SELECTION_RETUNING_FREEZE_OR_PROMOTION'
+          assert r['model_or_coefficient_change'] is False
+          for key in ('real_live_input_collection','economics','real_world_validation','protected_or_quarantined_input','pr15_metrics_access','result_payout_access','holdout_access','model_promotion','external_provider_contact','real_money_wagering','real_world_edge_or_roi_evidence'):
+              assert r[key] is False, (key, r[key])
+          assert r['scientific_segment_c_scoring_count']==0
+          print('LINE_SHAPE_LOCALIZATION_RESULT_CONTRACT_PASS')
+          PY
+
+      - name: Protected-boundary terminal
+        shell: bash
+        run: |
+          echo 'KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_PASS'
+          echo 'EVIDENCE_CLASS=SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          echo 'NEW_SEED_SELECTION=false'
+          echo 'MODEL_OR_COEFFICIENT_CHANGE=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'SCIENTIFIC_SEGMENT_C_SCORING_COUNT=0'
+          echo 'MODEL_PROMOTION_PERFORMED=false'
+          echo 'EXTERNAL_PROVIDER_CONTACT_PERFORMED=false'
+          echo 'REAL_MONEY_WAGERING_PERFORMED=false'
+          echo 'SYNTHETIC_IS_REAL_WORLD_EDGE_EVIDENCE=false'
+
+      - name: Verify clean worktree
+        run: test -z "$(git status --porcelain)"
