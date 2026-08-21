@@ -1,7 +1,7 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
-  "updated_jst": "2026-08-21T09:03:00+09:00",
-  "status": "PAUSED_POST_FOUNDATION_ACCEPTANCE_AWAITING_SEPARATE_SCIENTIFIC_EXECUTION_AUTHORIZATION",
+  "updated_jst": "2026-08-21T09:43:00+09:00",
+  "status": "LIMITED_SYNTHETIC_SCIENTIFIC_EXECUTION_AUTHORIZED_POST_LAB_AUDITOR_OWNER_GATE",
   "canonical_repo": "fufufu1116/multiverse-research",
   "owner_visible_status": "KEIRIN_NOW.md",
   "ai_governance": "AI_COUNCIL.md",
@@ -189,15 +189,17 @@
     "staged_5000_PRE_training_eligibility": false,
     "NEXTGEN5000_auto_admission": "PROHIBITED"
   },
-  "next_gate": "SEPARATE_SCIENTIFIC_EXECUTION_AUTHORIZATION_REQUIRED_BEFORE_ANY_KEIRIN_SCIENTIFIC_EXECUTION",
+  "next_gate": "AUTHORIZED_SYNTHETIC_ONLY_EXECUTION; ANY_SCOPE_EXPANSION_REQUIRES_SEPARATE_GOVERNED_GATE",
   "next_exact_actions": [
-    "Maintain Keirin scientific execution PAUSED until a separate Scientific Execution Authorization Gate is validly satisfied.",
-    "Treat Foundation acceptance and Zero-History orientation as non-authorizing for Keirin scientific execution.",
+    "Immediately before first execution, Fresh Read canonical main, VNEXT_CURRENT_STATE_v0.json, CURRENT_STATE_KEIRIN.json, and the limited-synthetic authorization receipt; fail closed on relevant drift.",
+    "Execute source-independent synthetic regression checks only.",
+    "Execute Digital Twin W0-W4 synthetic stress and failure diagnostics only.",
+    "Compare C0/C1/N1 only inside those synthetic worlds.",
     "Keep PR #15 QUARANTINED_NOT_ADMITTED and do not inspect its metrics for resume selection.",
-    "Keep ECON_HOLDOUT1000 SEALED and RESULT/PAYOUT UNAUTHORIZED.",
-    "Do not use DEV2000 C for new-lineage rescue or same-lineage B/C rescue tuning.",
-    "Do not open untouched validation, promote a model, contact an external provider, or use real money.",
-    "Preserve PR #14 as the latest legitimate completed scientific checkpoint; synthetic engineering evidence is not real-world edge or ROI evidence."
+    "Keep ECON_HOLDOUT1000 SEALED, RESULT/PAYOUT UNAUTHORIZED, and scientific segment C scoring count at 0.",
+    "Do not collect real/live inputs, perform economics or real-world/untouched validation, use DEV2000 C rescue or same-lineage B/C rescue, promote a model, contact an external provider, automate bulk collection, bypass access controls, or use real money.",
+    "Treat all resulting evidence as SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY, never as real-world edge or ROI evidence.",
+    "Any scope expansion requires a separate governed gate and cannot reuse this Owner approval."
   ],
   "hard_prohibitions": [
     "NO_CURRENT_DEV2000_C_ACCESS_FOR_NEW_LINEAGE",
