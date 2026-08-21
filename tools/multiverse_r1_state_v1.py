@@ -20,6 +20,10 @@ FINAL={AuditState.REVIEWED_NO_ADMISSION,AuditState.EXPLICIT_INELIGIBLE_ONLY_WHEN
 def _strings(v):return isinstance(v,list) and all(isinstance(x,str) for x in v)
 def _nonempty_string(v):return isinstance(v,str) and bool(v)
 def _strict_nonnegative_int(v):return isinstance(v,int) and not isinstance(v,bool) and v>=0
+def _fsync_parent_dir(path:Path)->None:
+    dir_fd=os.open(str(path),os.O_RDONLY|os.O_DIRECTORY)
+    try:os.fsync(dir_fd)
+    finally:os.close(dir_fd)
 def empty_state():return {"schema_version":SCHEMA_VERSION,"generation":0,"cache":{},"tasks":{},"task_by_idempotency":{},"receipts_by_idempotency":{}}
 def validate_state(s:dict)->None:
     if not isinstance(s,dict) or set(s)!=STATE_FIELDS or s.get("schema_version")!=SCHEMA_VERSION:raise SchemaError("STATE_SCHEMA")
@@ -82,8 +86,10 @@ class PersistentStore:
     def _write(self,s):
         validate_state(s);fd,name=tempfile.mkstemp(dir=self.root,prefix="r1-",suffix=".tmp")
         try:
-            with os.fdopen(fd,"w") as fh:fh.write(json.dumps(s,sort_keys=True,indent=2)+"\n");fh.flush();os.fsync(fh.fileno())
+            with os.fdopen(fd,"w") as fh:
+                fh.write(json.dumps(s,sort_keys=True,indent=2)+"\n");fh.flush();os.fsync(fh.fileno())
             os.replace(name,self.state_path)
+            _fsync_parent_dir(self.root)
         finally:
             if os.path.exists(name):os.unlink(name)
     def read(self):
