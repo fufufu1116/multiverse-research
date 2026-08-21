@@ -84,9 +84,11 @@ jobs:
           assert gate["execution_limits"]["control_plane_consumed_marker_write_authorized"] is True
           assert gate["execution_limits"]["control_plane_consumed_marker_ref"] == marker
           assert gate["execution_limits"]["full_runtime_activation_authorized"] is False
-          assert gate["global_single_use_enforcement"]["required_head_repository"] == "fufufu1116/multiverse-research"
-          assert gate["global_single_use_enforcement"]["persistent_consumed_marker_ref"] == marker
-          assert gate["global_single_use_enforcement"]["failure_after_marker_claim_still_consumes_owner_gate"] is True
+          single_gate = gate["global_single_use_enforcement"]
+          assert single_gate["required_head_repository"] == "fufufu1116/multiverse-research"
+          assert single_gate["persistent_consumed_marker_ref"] == marker
+          assert single_gate["same_target_noop_bypass_forbidden"] is True
+          assert single_gate["failure_after_marker_claim_still_consumes_owner_gate"] is True
           assert auth["status"] == "CANARY_FIXTURE_ONLY_NOT_PRODUCTION_AUTHORITY"
           assert all(x["owner_gate_ref"] is None for x in auth["decisions"].values())
           assert all(x["permission_class_requested"] in {"P0_READ_PUBLIC_OR_CANONICAL", "P1_REVERSIBLE_INTERNAL_WRITE"} for x in auth["decisions"].values())
@@ -101,7 +103,9 @@ jobs:
           single = contract["global_single_use"]
           assert single["global_concurrency_group"] == "multiverse-r1-one-shot-live-canary-global-v1"
           assert single["persistent_consumed_marker_ref"] == marker
+          assert single["marker_target"] == "UNIQUE_ANNOTATED_TAG_OBJECT_WITH_RUN_ID_PR_NUMBER_AND_TRIGGER_PR_BASE_SHA"
           assert single["claim_must_fail_if_marker_exists"] is True
+          assert single["same_target_noop_bypass_prevented_by_unique_marker_object"] is True
           assert single["claim_occurs_before_r1_workload"] is True
           assert single["marker_persists_after_success_or_failure"] is True
           assert single["second_distinct_qualifying_pr_must_fail"] is True
@@ -138,12 +142,13 @@ jobs:
           assert "multiverse-r1-one-shot-live-canary-global-v1" in workflow
           assert "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1" in workflow
           assert "--force-with-lease=$MARKER_REF:" in workflow
-          marker_push = "git " + "push origin " + '"$BASE_SHA:$MARKER_REF"'
+          assert 'git tag -a "$CONSUMPTION_TAG"' in workflow
+          marker_push = "git " + "push origin " + '"$MARKER_OBJECT:$MARKER_REF"'
           assert workflow.count(marker_push) == 1
           assert "GITHUB_RUN_ATTEMPT" in workflow
           PY
 
-      - name: Prove consumed-marker replay is rejected
+      - name: Prove distinct-object consumed-marker replay is rejected
         run: |
           set -eu
           tmp="$(mktemp -d)"
@@ -157,12 +162,17 @@ jobs:
           git commit -m init >/dev/null
           git push origin HEAD:refs/heads/main >/dev/null
           marker="refs/tags/r1-live-canary-consumed-selftest"
-          git push origin HEAD:"$marker" "--force-with-lease=$marker:" >/dev/null
-          if git push origin HEAD:"$marker" "--force-with-lease=$marker:" >/dev/null 2>&1; then
-            echo "ERROR: consumed marker replay unexpectedly succeeded"
+          git tag -a claim-one HEAD -m 'claim-one-run-id-1'
+          one="$(git rev-parse refs/tags/claim-one)"
+          git push origin "$one:$marker" "--force-with-lease=$marker:" >/dev/null
+          git tag -a claim-two HEAD -m 'claim-two-run-id-2'
+          two="$(git rev-parse refs/tags/claim-two)"
+          test "$one" != "$two"
+          if git push origin "$two:$marker" "--force-with-lease=$marker:" >/dev/null 2>&1; then
+            echo "ERROR: distinct-object consumed marker replay unexpectedly succeeded"
             exit 1
           fi
-          echo "GLOBAL_SINGLE_USE_MARKER_REPLAY_REJECTED"
+          echo "GLOBAL_SINGLE_USE_DISTINCT_OBJECT_REPLAY_REJECTED"
 
       - name: Run framework selftest without live trigger
         if: steps.mode.outputs.mode == 'validation'
@@ -225,10 +235,16 @@ jobs:
       - name: Atomically consume Owner Gate before workload
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           MARKER_REF: refs/tags/multiverse-r1-live-canary-consumed-20260821-v1
         run: |
-          echo "Claiming persistent one-shot marker: $MARKER_REF"
-          git push origin "$BASE_SHA:$MARKER_REF" "--force-with-lease=$MARKER_REF:"
+          git config user.name multiverse-r1-live-canary
+          git config user.email multiverse-r1-live-canary@example.invalid
+          CONSUMPTION_TAG="r1-live-canary-consumption-${GITHUB_RUN_ID}-${PR_NUMBER}"
+          git tag -a "$CONSUMPTION_TAG" "$BASE_SHA" -m "owner-gate-one-shot-consumed run_id=$GITHUB_RUN_ID pr=$PR_NUMBER base=$BASE_SHA"
+          MARKER_OBJECT="$(git rev-parse "refs/tags/$CONSUMPTION_TAG")"
+          echo "Claiming persistent one-shot marker with unique object: $MARKER_REF"
+          git push origin "$MARKER_OBJECT:$MARKER_REF" "--force-with-lease=$MARKER_REF:"
           echo "OWNER_GATE_ONE_SHOT_MARKER_CONSUMED"
 
       - name: Execute exactly one bounded live canary
