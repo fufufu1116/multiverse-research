@@ -1,0 +1,117 @@
+name: Multiverse R1 Limited Internal Runtime Stage 1 Candidate CI v1
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml'
+      - 'governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json'
+      - 'governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1.json'
+      - 'tools/multiverse_r1_stage1_runtime_v1.py'
+
+permissions:
+  contents: read
+
+env:
+  EXPECTED_BASE_MAIN: 3871de67900f31496ee9725a77ff1048cede906f
+  REVIEWED_SCOPE_HEAD: 785e8d08029d57122076309fb4eb0b4c568c2229
+  OWNER_APPROVAL_COMMENT: '5367308652'
+
+jobs:
+  stage1-candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Verify exact base and candidate file scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "$EXPECTED_BASE_MAIN"
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          git diff --name-only "$EXPECTED_BASE_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml
+          governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1.json
+          governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json
+          tools/multiverse_r1_stage1_runtime_v1.py
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Validate Owner Gate and dormant implementation contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          gate=json.load(open('governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json'))
+          contract=json.load(open('governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1.json'))
+          assert gate['status']=='OWNER_APPROVED_SCOPE_SPECIFIC_STAGE1_IMPLEMENTATION_AND_CONDITIONAL_ACTIVATION'
+          assert gate['owner_decision']['decision_text']=='すすめて'
+          assert gate['owner_decision']['github_record_comment_id']==5367308652
+          assert gate['fresh_read_at_approval']['canonical_main']=='3871de67900f31496ee9725a77ff1048cede906f'
+          assert gate['fresh_read_at_approval']['reviewed_scope_head']=='785e8d08029d57122076309fb4eb0b4c568c2229'
+          assert gate['fresh_read_at_approval']['lab_micro_verdict']=='PASS'
+          assert gate['authorized_scope']['max_concurrent_workers']==1
+          assert gate['authorized_scope']['max_terminal_tasks']==25
+          assert gate['authorized_scope']['runtime_window_days']==7
+          assert gate['authorized_scope']['network_or_public_web_authorized'] is False
+          assert gate['authorized_scope']['source_collection_or_admission_authorized'] is False
+          assert gate['runtime_activation_performed_by_this_receipt'] is False
+          assert contract['status']=='FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_APPROVED_RUNTIME_NOT_ACTIVATED'
+          assert contract['owner_gate']['approval_comment_id']==5367308652
+          assert contract['trusted_authority_dependency']['canonical_live_authority_snapshot_provider_in_this_candidate']=='NOT_IMPLEMENTED_AND_NOT_FAKED'
+          assert contract['candidate_runtime_behavior']['runtime_workflow_present'] is False
+          assert contract['candidate_runtime_behavior']['runtime_activation_performed'] is False
+          assert contract['runtime_activation_authorized_now'] is False
+          assert contract['source_or_scientific_permission_expansion'] is False
+          print('STAGE1_GATE_AND_CONTRACT_VALID')
+          PY
+
+      - name: Reject hidden network or activation triggers in Stage 1 library
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -nE '(^|[[:space:]])(import|from)[[:space:]]+(requests|urllib|httpx|aiohttp|socket|ftplib|paramiko)\b' tools/multiverse_r1_stage1_runtime_v1.py; then
+            echo 'network-capable import found in Stage 1 runtime library'
+            exit 1
+          fi
+          grep -F 'R1_STAGE1_LIBRARY_ONLY_RUNTIME_OFF_NO_TRUSTED_AUTHORITY_ADAPTER' tools/multiverse_r1_stage1_runtime_v1.py
+          trigger_pattern='schedule:|workflow_dispatch:|repository_dispatch:|push:'
+          if grep -nE "$trigger_pattern" .github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml; then
+            echo 'candidate CI unexpectedly contains runtime/schedule trigger'
+            exit 1
+          fi
+
+      - name: Compile and run dedicated Stage 1 negative selftest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/multiverse_r1_stage1_runtime_v1.py
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_runtime_v1.py --selftest | tee /tmp/stage1.log
+          grep -F 'EXPLICIT_AUTHORIZED_ENQUEUE_ONLY' /tmp/stage1.log
+          grep -F 'RAW_GITHUB_EVENT_COMMENT_URL_NOT_AUTHORITY' /tmp/stage1.log
+          grep -F 'ONE_WORKER_CEILING_ENFORCED' /tmp/stage1.log
+          grep -F 'ROLLBACK_ANCESTRY_AND_HIGH_WATER_TAMPER_DENIED' /tmp/stage1.log
+          grep -F 'TERMINAL_25_OR_7_DAY_AUTO_PAUSE_ENFORCED' /tmp/stage1.log
+          grep -F 'LOST_ACK_TERMINAL_COUNT_IDEMPOTENT' /tmp/stage1.log
+          grep -F 'RUNTIME_STATE_SECOND_AUTHORITY_REJECTED' /tmp/stage1.log
+          grep -F 'ADMITTED_AND_PERMISSION_LIKE_RUNTIME_STATE_DENIED' /tmp/stage1.log
+          grep -F 'TRUSTED_AUTHORITY_CONTEXT_REQUIRED_EXTERNALLY' /tmp/stage1.log
+          grep -F 'NETWORK_ACCESS_PERFORMED=false' /tmp/stage1.log
+          grep -F 'RUNTIME_ACTIVATION_PERFORMED=false' /tmp/stage1.log
+          grep -F 'MULTIVERSE_R1_STAGE1_RUNTIME_SELFTEST_PASS' /tmp/stage1.log
+
+      - name: Re-run canonical R1 safety selftest
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=tools python tools/multiverse_r1_source_vertical_slice_v2.py --selftest | tee /tmp/r1.log
+          grep -F 'MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_SELFTEST_PASS' /tmp/r1.log
+          grep -F 'NETWORK_ACCESS_PERFORMED=false' /tmp/r1.log
+          grep -F 'RUNTIME_ACTIVATION_PERFORMED=false' /tmp/r1.log
