@@ -34,16 +34,20 @@ jobs:
       - name: Checkout exact PR head
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
-      - name: Fail closed unless canonical authorization and fixed inputs are unchanged
+      - name: Fail closed unless exact head canonical authorization and fixed inputs are unchanged
         shell: bash
         run: |
           set -euo pipefail
           git fetch --no-tags origin main
           echo "ORIGIN_MAIN=$(git rev-parse origin/main)"
-          echo "PR_HEAD=$(git rev-parse HEAD)"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "PR_EVENT_HEAD=${{ github.event.pull_request.head.sha }}"
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
           test "$(git rev-parse origin/main)" = "$AUTHORIZED_MAIN"
           test "$(git rev-parse "$AUTHORIZED_MAIN:multiverse_vnext/VNEXT_CURRENT_STATE_v0.json")" = "$VNEXT_BLOB"
           test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json")" = "$KEIRIN_STATE_BLOB"
