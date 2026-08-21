@@ -1,0 +1,70 @@
+name: Keirin Limited Synthetic Authorization v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'KEIRIN_NOW.md'
+      - 'governance/KEIRIN_OWNER_GATE_LIMITED_SYNTHETIC_EXECUTION_20260821_v1.json'
+      - 'governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json'
+      - 'multiverse_vnext/VNEXT_CURRENT_STATE_v0.json'
+      - 'v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json'
+      - 'tools/keirin_limited_synthetic_authorization_selftest_v1.py'
+      - '.github/workflows/keirin-limited-synthetic-authorization-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-authorization-transition:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      BASE_MAIN: '7993d8d90d0154913e6335bf5219477cf1f8fd38'
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Verify exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "TARGET_SHA=${{ github.event.pull_request.head.sha }}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+
+      - name: Verify transition file set only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only "$BASE_MAIN"...HEAD | sort > /tmp/actual_files.txt
+          cat > /tmp/expected_files.txt <<'EOF'
+          .github/workflows/keirin-limited-synthetic-authorization-v1-ci.yml
+          KEIRIN_NOW.md
+          governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json
+          governance/KEIRIN_OWNER_GATE_LIMITED_SYNTHETIC_EXECUTION_20260821_v1.json
+          multiverse_vnext/VNEXT_CURRENT_STATE_v0.json
+          tools/keirin_limited_synthetic_authorization_selftest_v1.py
+          v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json
+          EOF
+          sort -o /tmp/expected_files.txt /tmp/expected_files.txt
+          diff -u /tmp/expected_files.txt /tmp/actual_files.txt
+
+      - name: Run governance authorization selftest
+        run: python tools/keirin_limited_synthetic_authorization_selftest_v1.py
+
+      - name: Verify clean worktree
+        run: test -z "$(git status --porcelain)"
+
+      - name: Protected-boundary terminal
+        run: |
+          echo 'KEIRIN_LIMITED_SYNTHETIC_AUTHORIZATION_V1_CI_PASS'
+          echo 'SCIENTIFIC_EXECUTION_PERFORMED=false'
+          echo 'PR15_QUARANTINED_METRICS_INSPECTED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'REAL_LIVE_INPUT_COLLECTION_PERFORMED=false'
+          echo 'EXTERNAL_PROVIDER_CONTACT_PERFORMED=false'
+          echo 'REAL_MONEY_WAGERING_PERFORMED=false'
