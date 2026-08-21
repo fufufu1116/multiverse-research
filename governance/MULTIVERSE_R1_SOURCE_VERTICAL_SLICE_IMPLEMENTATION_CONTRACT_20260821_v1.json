@@ -4,83 +4,25 @@
   "canonical_design_anchor": "ddf0b808aa8e4014dad59dd350c225970f916b89",
   "owner_gate_receipt": "governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json",
   "principle": "One Source candidate end-to-end; capabilities into existing boxes; no new top-level institution.",
-  "responsibilities": [
-    "Source Audit Cache",
-    "Reliable Task Execution including interlocks",
-    "Owner Exception View"
-  ],
+  "responsibilities": ["Source Audit Cache","Reliable Task Execution including interlocks","Owner Exception View"],
   "source_audit_cache": {
-    "audit_state_enum": [
-      "UNKNOWN",
-      "REVIEW_REQUIRED",
-      "REVIEWED_NO_ADMISSION",
-      "CHANGED_REVIEW_REQUIRED",
-      "EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT"
-    ],
-    "minimum_fields": [
-      "candidate_id",
-      "source_class",
-      "evidence_refs",
-      "terms_or_docs_hashes",
-      "docs_hash",
-      "last_checked_at",
-      "audit_state",
-      "verdict_reason",
-      "freshness_state",
-      "recheck_trigger",
-      "version"
-    ],
+    "audit_state_enum": ["UNKNOWN","REVIEW_REQUIRED","REVIEWED_NO_ADMISSION","CHANGED_REVIEW_REQUIRED","EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT"],
+    "minimum_fields": ["candidate_id","source_class","evidence_refs","terms_or_docs_hashes","docs_hash","last_checked_at","audit_state","verdict_reason","freshness_state","recheck_trigger","version"],
     "epistemic_rule": "REVIEWED_NO_ADMISSION is not a permanent claim that no lawful source exists; changed evidence reopens review.",
     "unknown_enum_behavior": "FAIL_CLOSED"
   },
   "reliable_task_execution": {
-    "minimum_fields": [
-      "task_id",
-      "idempotency_key",
-      "candidate_id",
-      "input_hash",
-      "attempt_count",
-      "retry_budget",
-      "checkpoint_ref",
-      "lease_owner",
-      "lease_expires_at",
-      "heartbeat_at",
-      "lease_epoch",
-      "expected_cache_version",
-      "dead_letter_reason",
-      "authorization_ref",
-      "durable_receipt_ref"
-    ],
+    "minimum_fields": ["task_id","idempotency_key","candidate_id","input_hash","attempt_count","retry_budget","checkpoint_ref","lease_owner","lease_expires_at","heartbeat_at","lease_epoch","expected_cache_version","dead_letter_reason","authorization_ref","durable_receipt_ref"],
     "exactly_once_claim": false,
     "target": "RETRY_SAFE_CONVERGENCE",
-    "required_mechanisms": [
-      "stable idempotency key",
-      "durable receipt",
-      "locked state transaction plus explicit CAS generation/version preconditions",
-      "monotonic fencing token / lease epoch",
-      "finite retry budget",
-      "checkpoint/resume",
-      "dead-letter quarantine"
-    ],
-    "commit_ordering_invariant": [
-      "Fresh canonical identity check",
-      "Full authorization decision/ref validation immediately before side effect",
-      "Dead-letter check",
-      "Current lease owner/epoch/expiry fencing check",
-      "Existing same-payload durable receipt may be returned only after fencing passes",
-      "Record version/hash CAS preconditions",
-      "Atomic durable state+receipt write"
-    ],
+    "required_mechanisms": ["stable idempotency key","durable receipt","locked state transaction plus explicit CAS generation/version preconditions","monotonic fencing token / lease epoch","finite retry budget","checkpoint/resume","dead-letter quarantine","file fsync + atomic replace + parent-directory fsync for POSIX crash-durability pattern"],
+    "all_task_write_canonical_freshness_rule": "inspect, lease acquisition, checkpoint, failure accounting and final commit require the caller-supplied current canonical identity to match the engine-pinned accepted identity; mismatch fails closed.",
+    "task_mutation_fencing_rule": "checkpoint and failure accounting require the current lease owner, exact lease epoch and unexpired lease; a superseded worker cannot mutate checkpoint progress or consume retry budget.",
+    "commit_ordering_invariant": ["Fresh canonical identity check","Full authorization decision/ref validation immediately before side effect","Dead-letter check","Current lease owner/epoch/expiry fencing check","Existing same-payload durable receipt may be returned only after fencing passes","Record version/hash CAS preconditions","Atomic state+receipt write using file fsync, replace, then parent-directory fsync"],
     "read_only_receipt_rule": "Receipt retrieval is a distinct read-only operation; stale commit attempts cannot obtain commit-success by bypassing fencing.",
     "duplicate_candidate_rule": "Candidate inspection/staging occurs inside the locked state transaction so same candidate+docs_hash converges to the same task instead of requiring the caller to resolve an avoidable write race.",
-    "embedded_interlocks": [
-      "stale target + governed write => DENY",
-      "Owner Gate required + missing/mismatched operation-specific approval => DENY",
-      "protected/SEALED data scope request => DENY",
-      "concurrent state generation/version drift => CAS conflict",
-      "expired/old lease worker + commit attempt => DENY_OR_CONFLICT",
-      "unknown or contradictory authorization/state fact => DENY_FAIL_CLOSED"
-    ]
+    "durability_claim_boundary": "Evidence supports the POSIX file-fsync + atomic-replace + parent-directory-fsync crash-durability pattern; it is not an unconditional guarantee across arbitrary hardware/filesystem failure semantics.",
+    "embedded_interlocks": ["stale target + governed write => DENY","Owner Gate required + missing/mismatched operation-specific approval => DENY","protected/SEALED data scope request => DENY","concurrent state generation/version drift => CAS conflict","expired/old lease worker + any task mutation => DENY_OR_CONFLICT","unknown or contradictory authorization/state fact => DENY_FAIL_CLOSED"]
   },
   "authorization": {
     "source_contract": "multiverse_vnext/VNEXT_AUTHORIZATION_CONTRACT_v0.json",
@@ -90,71 +32,16 @@
     "implementation_owner_gate_is_not_runtime_operation_grant": true,
     "source_review_commit_classification": "P1_REVERSIBLE_INTERNAL_WRITE_FOR_SOURCE_AUDIT_METADATA_ONLY_NOT_SOURCE_ADMISSION",
     "operation_specific_owner_gate_required_only_when_the_exact_operation_is_classified_P4": true,
-    "required_preconditions": [
-      "decision == ALLOW",
-      "policy generation and digest match accepted runtime identity",
-      "authorization not expired and not future-issued",
-      "revocation generation current",
-      "safe-mode generation current",
-      "operation/target/scope/data exposure exact match",
-      "permission class within permission ceiling",
-      "grant present where required",
-      "exact operation-specific Owner Gate reference present where required"
-    ]
+    "required_preconditions": ["decision == ALLOW","policy generation and digest match accepted runtime identity","authorization not expired and not future-issued","revocation generation current","safe-mode generation current","operation/target/scope/data exposure exact match","permission class within permission ceiling","grant present where required","exact operation-specific Owner Gate reference present where required"]
   },
-  "owner_exception_view": {
-    "role": "OBSERVABILITY_ONLY",
-    "approval_authority": "NONE",
-    "minimum_output": [
-      "what changed",
-      "what ran automatically",
-      "what did not run",
-      "what is blocked and why",
-      "whether Owner action is required",
-      "next safe action"
-    ]
-  },
+  "owner_exception_view": {"role":"OBSERVABILITY_ONLY","approval_authority":"NONE","minimum_output":["what changed","what ran automatically","what did not run","what is blocked and why","whether Owner action is required","next safe action"]},
   "acceptance_harness": {
     "is_runtime_component": false,
     "network_or_external_side_effects_allowed": false,
-    "required_faults": [
-      "duplicate candidate delivery",
-      "duplicate task delivery",
-      "worker death with checkpoint takeover",
-      "expired old-worker revival after newer lease takeover",
-      "stale canonical input",
-      "authorization DENY",
-      "operation-specific Owner-Gate mismatch",
-      "protected-data scope request",
-      "retry exhaustion / dead-letter",
-      "state committed then ACK lost / same-payload retry",
-      "same idempotency key with conflicting payload",
-      "concurrent generation/version conflict",
-      "unknown schema/enum value",
-      "implementation Owner Gate is not reused as runtime operation permission"
-    ]
+    "required_faults": ["duplicate candidate delivery","duplicate task delivery","worker death with checkpoint takeover","expired old-worker revival after newer lease takeover","stale worker checkpoint mutation","stale worker retry-budget/dead-letter mutation","stale canonical identity on lease/checkpoint/failure write","stale canonical input","authorization DENY","operation-specific Owner-Gate mismatch","protected-data scope request","retry exhaustion / dead-letter","state committed then ACK lost / same-payload retry","same idempotency key with conflicting payload","concurrent generation/version conflict","unknown schema/enum value","implementation Owner Gate is not reused as runtime operation permission","parent-directory fsync path invoked after atomic replace"]
   },
-  "runtime": {
-    "scheduler_included": false,
-    "always_on_source_watcher_included": false,
-    "network_collection_included": false,
-    "runtime_activation_authorized": false
-  },
-  "protected_boundaries": {
-    "source_admission": "UNAUTHORIZED",
-    "real_or_live_PRE_collection_or_use": "UNAUTHORIZED",
-    "external_provider_contact": "UNAUTHORIZED",
-    "new_spend_or_contract": "UNAUTHORIZED",
-    "RESULT_PAYOUT": "UNAUTHORIZED",
-    "ECON_HOLDOUT1000": "SEALED",
-    "PR15": "QUARANTINED_NOT_ADMITTED",
-    "untouched_validation": "CLOSED",
-    "model_promotion": "PROHIBITED",
-    "automated_bulk_collection": "UNAUTHORIZED",
-    "terms_or_access_control_bypass": "PROHIBITED",
-    "synthetic_to_real_edge_or_roi_promotion": "PROHIBITED",
-    "real_money_wagering": "OUT_OF_SCOPE"
-  },
-  "next_gate": "POST_IMPLEMENTATION_LAB_AUDITOR_AND_CANARY_OR_EQUIVALENT_BEFORE_RUNTIME_ACTIVATION",
+  "runtime": {"scheduler_included":false,"always_on_source_watcher_included":false,"network_collection_included":false,"runtime_activation_authorized":false},
+  "protected_boundaries": {"source_admission":"UNAUTHORIZED","real_or_live_PRE_collection_or_use":"UNAUTHORIZED","external_provider_contact":"UNAUTHORIZED","new_spend_or_contract":"UNAUTHORIZED","RESULT_PAYOUT":"UNAUTHORIZED","ECON_HOLDOUT1000":"SEALED","PR15":"QUARANTINED_NOT_ADMITTED","untouched_validation":"CLOSED","model_promotion":"PROHIBITED","automated_bulk_collection":"UNAUTHORIZED","terms_or_access_control_bypass":"PROHIBITED","synthetic_to_real_edge_or_roi_promotion":"PROHIBITED","real_money_wagering":"OUT_OF_SCOPE"},
+  "next_gate": "IMPLEMENTATION_AUDITOR_MICRO_REREVIEW_THEN_BOUNDED_CANARY_PREPARATION_IF_PASS",
   "fail_closed": true
 }
