@@ -138,7 +138,8 @@ jobs:
           assert "multiverse-r1-one-shot-live-canary-global-v1" in workflow
           assert "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1" in workflow
           assert "--force-with-lease=$MARKER_REF:" in workflow
-          assert workflow.count('git push origin "$BASE_SHA:$MARKER_REF"') == 1
+          marker_push = "git " + "push origin " + '"$BASE_SHA:$MARKER_REF"'
+          assert workflow.count(marker_push) == 1
           assert "GITHUB_RUN_ATTEMPT" in workflow
           PY
 
