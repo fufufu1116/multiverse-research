@@ -1,0 +1,97 @@
+{
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "deny_all_root_semantics": {
+    "root_adoption_enables_runtime": false,
+    "root_is_not_stage1_activation_authority": true,
+    "unknown_or_unlisted_envelope_behavior": "DENY_FAIL_CLOSED",
+    "zero_bundles_allowed_only_when_safe_mode_active": true,
+    "zero_bundles_allowed_only_when_valid_grant_refs_empty": true
+  },
+  "fail_closed": true,
+  "freshness_barrier": {
+    "adapter_requires_current_main_equal_activation_anchor_canonical_main": true,
+    "any_effective_authority_change_requires_manifest_bytes_to_change": true,
+    "canonical_manifest_change_requires_canonical_main_to_advance": true,
+    "external_authority_state_refs_must_equal": [],
+    "main_advance_makes_old_activation_authority_stale": true,
+    "manifest_contains_all_preissued_bundle_membership": true,
+    "manifest_contains_policy_definition": true,
+    "manifest_contains_revocation_generation": true,
+    "manifest_contains_safe_mode_generation_and_state": true,
+    "manifest_contains_valid_grant_set": true,
+    "mode": "SELF_CONTAINED_SINGLE_CANONICAL_MAIN_BLOB",
+    "policy_digest_recomputed_from_embedded_policy": true,
+    "self_asserted_freshness_boolean_used_as_only_proof": false
+  },
+  "future_populated_snapshot_constraints": {
+    "all_effective_changes_require_new_manifest_blob_and_new_canonical_main": true,
+    "decision_ids_unique_across_manifest": true,
+    "exact_envelope_digest_membership_required": true,
+    "existing_pr59_authorization_guard_remains_required": true,
+    "max_bundles": 25,
+    "non_p0_grants_must_be_in_manifest_valid_grant_refs": true,
+    "policy_generation_and_digest_must_match_manifest": true,
+    "runtime_or_on_demand_permission_minting": false,
+    "worker_binding_exact": true
+  },
+  "owner_gate": {
+    "approval_decision_text": "OWNER APPROVE — R1 STAGE1 PRODUCTION AUTHORITY SOURCE v1",
+    "approval_file": "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_OWNER_GATE_APPROVAL_20260822_v1.json",
+    "approval_record_comment": 5374516958,
+    "preparation_comment": 5374466048
+  },
+  "protected_boundaries": {
+    "activation_receipt_created_by_this_candidate": false,
+    "external_contact": false,
+    "live_pre": false,
+    "merges_performed_by_this_candidate": false,
+    "network_or_public_web_source_collection": false,
+    "production_runtime_branch_present_now": false,
+    "ruleset_provisioned_by_this_candidate": false,
+    "runtime_activation_authorized_now": false,
+    "scheduler_or_always_on_worker": false,
+    "source_admission_or_promotion": false,
+    "spend_or_wagering": false,
+    "writer_key_provisioned_by_this_candidate": false
+  },
+  "purpose": "Prepare one Stage-1-specific production authority source whose entire effective policy/grant/revocation/Safe-Mode/preissued-decision state is self-contained in one governance manifest blob. The initial root is deny-all: Safe Mode ON, zero valid grants, zero preissued bundles. It cannot authorize Runtime work.",
+  "real_source_integration_remediation": {
+    "audited_v1_file_modified": false,
+    "new_adapter_file": "tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py",
+    "pr61_v1_issue": "The v1 manifest required a canonical_main field inside the manifest while also requiring the manifest commit to equal that canonical main, creating a content-address self-reference for a real adopted source.",
+    "resolution": "Add adapter v2 as a child of the audited v1. Manifest v2 does not embed its containing commit SHA. The immutable activation anchor pins canonical main, manifest commit/path/blob/SHA-256, while manifest v2 structurally contains all effective Stage-1 authority state."
+  },
+  "record": "MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_CONTRACT_20260822_v1",
+  "required_reviews_before_canonical_adoption": [
+    "dedicated exact-head CI PASS",
+    "independent Lab PASS",
+    "independent Auditor PASS",
+    "unchanged exact parent and file scope"
+  ],
+  "runtime_activation_authorized_now": false,
+  "source_root": {
+    "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+    "canonical_authority_field": true,
+    "path": "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json",
+    "policy_digest": "30695c878c200aaa5f592fa13b1e8b119f5f3caa65cefa571daf9b76386c033d",
+    "policy_generation": "R1_STAGE1_PRODUCTION_AUTHORITY_POLICY_v1",
+    "preissued_bundle_count": 0,
+    "reviewed_content_sha256": "298c76f7788149bb771165034dd4a010de15fcdf694449320a00926d2d22254e",
+    "root_can_return_allow_bundle": false,
+    "safe_mode_active": true,
+    "safe_mode_generation": 1,
+    "schema_version": "MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_MANIFEST_v2",
+    "status_field": "ACCEPTED_CANONICAL_STAGE1_AUTHORITY_SNAPSHOT",
+    "status_field_is_not_sufficient_authority_without_canonical_main_and_verified_anchor": true,
+    "valid_grant_count": 0,
+    "revocation_generation": 1
+  },
+  "stacked_parent": {
+    "audited_read_only_authority_adapter_head": "9355d8d8730c85b44c114bc96a908f9d46917cd6",
+    "auditor_pass_comment": 5374408042,
+    "lab_pass_comment": 5374272647,
+    "parent_head_must_not_move": true,
+    "pr": 61
+  },
+  "status": "OWNER_APPROVED_PREACTIVATION_PRODUCTION_AUTHORITY_SOURCE_CANDIDATE_RUNTIME_OFF"
+}

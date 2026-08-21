@@ -1,0 +1,143 @@
+name: Multiverse R1 Stage1 Production Authority Source v1 CI
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/multiverse-r1-stage1-production-authority-source-v1-ci.yml"
+      - "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_OWNER_GATE_APPROVAL_20260822_v1.json"
+      - "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_CONTRACT_20260822_v1.json"
+      - "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json"
+      - "tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py"
+
+permissions:
+  contents: read
+
+jobs:
+  production-authority-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout literal PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Enforce exact audited parent and five-file scope
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test "$BASE_REF" = "agent/r1-stage1-canonical-authority-preactivation-v1-final"
+          test "$BASE_SHA" = "9355d8d8730c85b44c114bc96a908f9d46917cd6"
+          git fetch --no-tags origin "$BASE_SHA"
+          files="$(git diff --name-only "$BASE_SHA...$HEAD_SHA" | sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/multiverse-r1-stage1-production-authority-source-v1-ci.yml' \
+            'governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json' \
+            'governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_CONTRACT_20260822_v1.json' \
+            'governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_OWNER_GATE_APPROVAL_20260822_v1.json' \
+            'tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py' | sort)"
+          test "$files" = "$expected"
+          test "$(git rev-list --count "$BASE_SHA..$HEAD_SHA")" = "1"
+          echo "PRODUCTION_AUTHORITY_EXACT_PARENT_ONE_COMMIT_FIVE_FILE_SCOPE_PASS"
+
+      - name: Validate Owner Gate record and source contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          gate = json.loads(Path("governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_OWNER_GATE_APPROVAL_20260822_v1.json").read_text())
+          contract = json.loads(Path("governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_CONTRACT_20260822_v1.json").read_text())
+          root_path = Path("governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json")
+          root_raw = root_path.read_bytes()
+          root = json.loads(root_raw)
+
+          assert gate["status"] == "OWNER_APPROVED_STAGE1_PRODUCTION_AUTHORITY_SOURCE_IMPLEMENTATION_AND_CONDITIONAL_ADOPTION_RUNTIME_OFF"
+          assert gate["owner_decision"]["decision_text"] == "OWNER APPROVE — R1 STAGE1 PRODUCTION AUTHORITY SOURCE v1"
+          assert gate["owner_decision"]["github_record_comment_id"] == 5374516958
+          assert gate["owner_decision"]["preparation_comment_id"] == 5374466048
+          assert gate["fresh_read_at_approval_recording"]["authority_adapter_pr61_head"] == "9355d8d8730c85b44c114bc96a908f9d46917cd6"
+          assert gate["authorized_scope"]["finite_preissued_bundle_ceiling"] == 25
+          assert gate["authorized_scope"]["permission_class_ceiling"] == "P1_REVERSIBLE_INTERNAL_WRITE"
+          assert gate["authorized_scope"]["one_worker"] is True
+          assert gate["authorized_scope"]["max_terminal_tasks"] == 25
+          assert gate["authorized_scope"]["runtime_window_days"] == 7
+          assert gate["authorized_scope"]["runtime_or_on_demand_permission_minting_authorized"] is False
+          assert gate["runtime_activation_authorized_now"] is False
+
+          assert contract["status"] == "OWNER_APPROVED_PREACTIVATION_PRODUCTION_AUTHORITY_SOURCE_CANDIDATE_RUNTIME_OFF"
+          assert contract["stacked_parent"]["audited_read_only_authority_adapter_head"] == "9355d8d8730c85b44c114bc96a908f9d46917cd6"
+          assert contract["owner_gate"]["approval_record_comment"] == 5374516958
+          assert contract["real_source_integration_remediation"]["audited_v1_file_modified"] is False
+          assert contract["freshness_barrier"]["mode"] == "SELF_CONTAINED_SINGLE_CANONICAL_MAIN_BLOB"
+          assert contract["freshness_barrier"]["external_authority_state_refs_must_equal"] == []
+          assert contract["freshness_barrier"]["self_asserted_freshness_boolean_used_as_only_proof"] is False
+          assert contract["source_root"]["safe_mode_active"] is True
+          assert contract["source_root"]["valid_grant_count"] == 0
+          assert contract["source_root"]["preissued_bundle_count"] == 0
+          assert contract["source_root"]["root_can_return_allow_bundle"] is False
+          assert contract["runtime_activation_authorized_now"] is False
+
+          assert hashlib.sha256(root_raw).hexdigest() == contract["source_root"]["reviewed_content_sha256"]
+          assert "canonical_main" not in root
+          assert root["safe_mode_active"] is True
+          assert root["valid_grant_refs"] == []
+          assert root["bundles"] == []
+          print("OWNER_GATE_AND_DENY_ALL_ROOT_CONTRACT_PASS")
+          PY
+
+      - name: Compile and validate production authority source v2
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py \
+            --validate-source governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json
+          out="$(PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py --selftest)"
+          printf '%s\n' "$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_DENY_ALL_ROOT_VALID' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_CONTENT_ADDRESS_SELF_REFERENCE_REMOVED' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_EXTERNAL_STATE_REJECTED' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_EMPTY_ROOT_SAFE_MODE_ENFORCED' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_EMPTY_ROOT_ZERO_GRANTS_ENFORCED' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_POLICY_SCOPE_DRIFT_REJECTED' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_POPULATED_V2_REUSES_AUDITED_V1_GUARD' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_STRUCTURAL_FRESHNESS_BARRIER_PASS' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_ROOT_ALLOW_BUNDLES=0' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_ROOT_SAFE_MODE=true' <<<"$out"
+          grep -Fqx 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_SOURCE_V2_SELFTEST_PASS' <<<"$out"
+
+      - name: Regress audited Stage1 CAS and authority-v1 guards
+        run: |
+          set -euo pipefail
+          stage="$(PYTHONPATH=tools python tools/multiverse_r1_stage1_runtime_v1.py --selftest)"
+          grep -Fq 'MULTIVERSE_R1_STAGE1_RUNTIME_SELFTEST_PASS' <<<"$stage"
+          grep -Fq 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$stage"
+          cas="$(PYTHONPATH=tools python tools/multiverse_r1_stage1_github_runtime_cas_v1.py --selftest)"
+          grep -Fq 'GITHUB_RUNTIME_CAS_ADAPTER_SELFTEST_PASS' <<<"$cas"
+          grep -Fq 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$cas"
+          auth="$(PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py --selftest)"
+          grep -Fq 'CANONICAL_AUTHORITY_ADAPTER_SELFTEST_PASS' <<<"$auth"
+          grep -Fq 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$auth"
+          echo "PRODUCTION_AUTHORITY_PARENT_REGRESSION_PASS"
+
+      - name: Reject activation and write surfaces
+        run: |
+          set -euo pipefail
+          wf=".github/workflows/multiverse-r1-stage1-production-authority-source-v1-ci.yml"
+          ! grep -Eq '^[[:space:]]*(schedule|workflow_dispatch|push):' "$wf"
+          ! grep -Eq 'contents:[[:space:]]*write' "$wf"
+          ! grep -Eq 'gh[[:space:]]+api.*(-X|--method)[[:space:]]+(POST|PUT|PATCH|DELETE)' "$wf"
+          f="tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py"
+          ! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+(requests|urllib|httpx|aiohttp|socket)' "$f"
+          grep -Fq 'SELF_CONTAINED_SINGLE_CANONICAL_MAIN_BLOB' "$f"
+          grep -Fq 'AUTHORITY_V2_EXTERNAL_AUTHORITY_STATE_PROHIBITED' "$f"
+          grep -Fq 'AUTHORITY_V2_EMPTY_ROOT_REQUIRES_SAFE_MODE' "$f"
+          grep -Fq 'AUTHORITY_V2_EMPTY_ROOT_REQUIRES_ZERO_GRANTS' "$f"
+          echo "NO_RUNTIME_ACTIVATION_OR_AUTHORITY_WRITE_SURFACE_PASS"
