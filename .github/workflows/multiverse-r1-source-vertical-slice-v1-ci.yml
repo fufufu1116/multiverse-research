@@ -56,8 +56,10 @@ jobs:
           for forbidden in ("import requests", "import httpx", "import urllib", "import socket"):
               assert forbidden not in code, forbidden
           workflow = Path(".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml").read_text()
-          assert "schedule:" not in workflow
-          assert "cron:" not in workflow
+          forbidden_schedule = "sche" + "dule:"
+          forbidden_cron = "cr" + "on:"
+          assert forbidden_schedule not in workflow
+          assert forbidden_cron not in workflow
           PY
 
       - name: Run dedicated R1 fake-worker acceptance harness
