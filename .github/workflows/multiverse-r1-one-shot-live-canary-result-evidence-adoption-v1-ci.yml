@@ -1,0 +1,134 @@
+name: Multiverse R1 One-Shot Live Canary Result Evidence Adoption v1 CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/multiverse-r1-one-shot-live-canary-result-evidence-adoption-v1-ci.yml'
+      - 'governance/MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_RESULT_EVIDENCE_ADOPTION_RECEIPT_20260821_v1.json'
+  push:
+    paths:
+      - '.github/workflows/multiverse-r1-one-shot-live-canary-result-evidence-adoption-v1-ci.yml'
+      - 'governance/MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_RESULT_EVIDENCE_ADOPTION_RECEIPT_20260821_v1.json'
+
+permissions:
+  contents: read
+
+env:
+  EXPECTED_MAIN: 70da4153552c84a54fe4998e452e949da404838c
+  TRIGGER_HEAD: f374feda2de09dc3c5e0fa81286a31aabe58118a
+  TRIGGER_BRANCH: agent/r1-live-canary-trigger-once-20260821-v1
+  TRIGGER_FILE: governance/MULTIVERSE_R1_LIVE_CANARY_TRIGGER_ONCE_20260821_v1.json
+  MARKER_REF: refs/tags/multiverse-r1-live-canary-consumed-20260821-v1
+  MARKER_OBJECT: b2b5985eba46f948585dcb4cfa7c745d3f7fae08
+
+jobs:
+  result-evidence-adoption:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact receipt candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          fetch-tags: false
+
+      - name: Verify exact base and two-file receipt scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "$EXPECTED_MAIN"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          git diff --name-only "$EXPECTED_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/multiverse-r1-one-shot-live-canary-result-evidence-adoption-v1-ci.yml
+          governance/MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_RESULT_EVIDENCE_ADOPTION_RECEIPT_20260821_v1.json
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Verify trigger ancestry and consumed seal still resolves exactly
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "refs/heads/$TRIGGER_BRANCH:refs/remotes/origin/$TRIGGER_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$TRIGGER_BRANCH)" = "$TRIGGER_HEAD"
+          test "$(git rev-parse "$TRIGGER_HEAD^")" = "$EXPECTED_MAIN"
+          git diff --name-only "$EXPECTED_MAIN" "$TRIGGER_HEAD" | sed '/^$/d' > /tmp/trigger-files.txt
+          test "$(wc -l < /tmp/trigger-files.txt | tr -d ' ')" = "1"
+          test "$(cat /tmp/trigger-files.txt)" = "$TRIGGER_FILE"
+          if git cat-file -e "$EXPECTED_MAIN:$TRIGGER_FILE" 2>/dev/null; then
+            echo "trigger file unexpectedly exists in canonical main"
+            exit 1
+          fi
+          git fetch --force origin "$MARKER_REF:$MARKER_REF"
+          test "$(git rev-parse "$MARKER_REF")" = "$MARKER_OBJECT"
+          test "$(git rev-parse "$MARKER_REF^{}")" = "$EXPECTED_MAIN"
+          echo "R1_ONE_SHOT_CONSUMED_MARKER_STILL_PRESENT"
+
+      - name: Validate nonauthorizing audited result evidence receipt
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path('governance/MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_RESULT_EVIDENCE_ADOPTION_RECEIPT_20260821_v1.json')
+          x = json.loads(p.read_text())
+
+          assert x['status'] == 'ACCEPTED_ONE_SHOT_CANARY_RESULT_EVIDENCE_RUNTIME_STILL_OFF'
+          assert x['canonical_repo'] == 'fufufu1116/multiverse-research'
+          assert x['adoption_main_before_receipt'] == '70da4153552c84a54fe4998e452e949da404838c'
+
+          e = x['execution_evidence']
+          assert e['trigger_pr'] == 56
+          assert e['trigger_pr_state'] == 'CLOSED_UNMERGED'
+          assert e['trigger_head'] == 'f374feda2de09dc3c5e0fa81286a31aabe58118a'
+          assert e['trigger_changed_files'] == ['governance/MULTIVERSE_R1_LIVE_CANARY_TRIGGER_ONCE_20260821_v1.json']
+          assert e['workflow_run'] == 32457026990
+          assert e['run_attempt'] == 1
+          assert e['live_one_shot_job'] == 96696205774
+          assert e['workflow_conclusion'] == 'SUCCESS'
+          assert e['live_job_conclusion'] == 'SUCCESS'
+          assert e['canonical_main_used'] == '70da4153552c84a54fe4998e452e949da404838c'
+
+          c = x['one_shot_consumption']
+          assert c['consumed_marker_ref'] == 'refs/tags/multiverse-r1-live-canary-consumed-20260821-v1'
+          assert c['consumed_marker_object'] == 'b2b5985eba46f948585dcb4cfa7c745d3f7fae08'
+          assert c['marker_peeled_commit'] == '70da4153552c84a54fe4998e452e949da404838c'
+          assert c['marker_created_before_workload'] is True
+          assert c['marker_persists_after_result_review'] is True
+          assert c['owner_gate_consumed'] is True
+          assert c['owner_gate_reusable'] is False
+          assert c['automatic_retry_authorized'] is False
+          assert c['second_canary_authorized'] is False
+          assert c['marker_reset_or_delete_authorized'] is False
+
+          r = x['bounded_canary_result']
+          assert r['result_marker'] == 'R1_LIVE_CANARY_ONE_SHOT_PASS'
+          assert r['task_id'] == 'task-44d00f3b0e7e3253'
+          assert r['receipt_id'] == 'receipt-09299125f83ceded09e8'
+          assert r['lease_epoch'] == 1
+          assert r['state_generation'] == 4
+          assert r['final_candidate_state'] == 'REVIEWED_NO_ADMISSION'
+          assert r['source_collection_performed'] is False
+          assert r['external_contact_performed'] is False
+          assert r['repository_business_write_performed'] is False
+          assert r['full_runtime_activation_performed'] is False
+
+          a = x['independent_review_evidence']
+          assert a['result_review_request_comment'] == 5366406746
+          assert a['independent_result_comment'] == 5366545898
+          assert a['independent_result_verdict'] == 'PASS'
+          assert a['canonicalize_result_evidence_with_runtime_still_off'] is True
+
+          assert not any(x['authority_not_granted'].values())
+          assert x['protected_boundaries']['ECON_HOLDOUT1000'] == 'SEALED'
+          assert x['protected_boundaries']['RESULT_PAYOUT'] == 'UNAUTHORIZED'
+          assert x['protected_boundaries']['model_promotion'] == 'PROHIBITED'
+          assert x['next_gate'] == 'NEW_SCOPE_SPECIFIC_OWNER_GATE_REQUIRED_BEFORE_ANY_BROADER_RUNTIME_DECISION'
+          assert x['fail_closed'] is True
+          print('MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_RESULT_EVIDENCE_ADOPTION_PASS')
+          PY
