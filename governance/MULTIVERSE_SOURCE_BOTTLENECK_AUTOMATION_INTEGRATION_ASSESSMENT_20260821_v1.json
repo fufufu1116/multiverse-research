@@ -1,0 +1,256 @@
+{
+  "record": "MULTIVERSE_SOURCE_BOTTLENECK_AUTOMATION_INTEGRATION_ASSESSMENT_20260821_v1",
+  "status": "DRAFT_NONCANONICAL_NEXT_VERSION_INTEGRATION_ASSESSMENT_REMEDIATED_PENDING_LAB_MICRO_REREVIEW_NO_RUNTIME_AUTHORITY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "fresh_read_main": "40a1522ad74f6ef7c82c5c2b948ee775d2133f56",
+  "advisor_input": {
+    "name": "MULTIVERSE_SOURCE_BOTTLENECK_AUTOMATION_HANDOFF_v1.zip",
+    "sha256": "a9957001413ca8d66dcea15235c7e83218b59e038be4ed183bb889bc8116ad57",
+    "classification": "ADVISOR_DRAFT_NONCANONICAL_NEXT_VERSION_CANDIDATE_INPUT",
+    "is_owner_gate": false,
+    "is_implementation_authority": false,
+    "is_canonical_change_authority": false
+  },
+  "phase_A_truth_preserved": {
+    "statement": "At the current Phase A audit, no Keirin source was confirmed formally admissible from the public terms, licenses, documentation and public specifications that were checked.",
+    "does_not_mean_no_lawful_source_exists": true,
+    "does_not_mean_no_future_source_can_be_found": true,
+    "does_not_mean_keirin_research_failed": true,
+    "continued_public_discovery_allowed": true
+  },
+  "prior_advisor_bundle_overlap_check": {
+    "requested_prior_bundle": "MULTIVERSE_ADVISOR_FINAL_HANDOFF_BUNDLE_v1",
+    "exact_bundle_bytes_available_in_current_canonical_or_project_source_archive_by_name": false,
+    "exact_file_by_file_diff_performed": false,
+    "functional_overlap_basis_used": [
+      "Owner-specified existing responsibilities: Core, Task Bus, Worker Adapters, Review Router, State Sync, Cost Governor, Owner Assurance, Arena, Experience Engine candidates",
+      "multiverse_vnext/VNEXT_NORTH_STAR_ARCHITECTURE_v0.md",
+      "multiverse_vnext/VNEXT_SELF_EVOLUTION_PROTOCOL_v0.md",
+      "multiverse_vnext/VNEXT_DEFINITION_OF_DONE_v0.json",
+      "multiverse_vnext/VNEXT_AUTHORIZATION_CONTRACT_v0.json",
+      "AI_COUNCIL.md",
+      "current Source Audit Gate / Phase A source audit records"
+    ],
+    "rule": "Do not claim exact prior-bundle deduplication beyond evidence available; deduplicate responsibilities against current canonical architecture and Owner-provided overlap map."
+  },
+  "lab_review": {
+    "comment_id": 5364833654,
+    "reviewed_head": "bf7555c9662eff374cd5f17fb65fef5a9e809ef2",
+    "verdict": "PASS_WITH_FIXES",
+    "preconditions_match": true,
+    "required_fixes": [
+      "compress R1 from A-E into one vertical slice with three responsibilities",
+      "fold Conflict Interlock into Reliable Task Execution and existing Authorization/CAS/State Sync/Review Router enforcement",
+      "treat fake-worker rehearsal as cross-cutting acceptance harness only",
+      "add monotonic fencing token / lease epoch / equivalent CAS ownership precondition",
+      "require expired_or_old_lease_worker + commit_attempt => DENY_OR_CONFLICT",
+      "do not claim exactly-once; require idempotency + durable receipt + CAS/version precondition + retry-safe convergence",
+      "distinguish REVIEWED_NO_ADMISSION / CHANGED_REVIEW_REQUIRED / UNKNOWN from evidence-supported explicit ineligibility",
+      "formal adoption requires independent Auditor review plus Owner Gate"
+    ]
+  },
+  "classification": [
+    {
+      "capability": "Data Access Router as a separate top-level system",
+      "class": ["DUPLICATE", "MERGE_INTO_EXISTING"],
+      "integrate_into": ["SOURCE_INTELLIGENCE", "CONNECTION/source adapters", "RESOURCE/Cost Governor", "current Source Audit Gate"],
+      "keep_capabilities": ["raw-data-necessity triage", "zero-cost-first route ordering", "source-rights class", "information-gain-per-owner-minute metric"]
+    },
+    {
+      "capability": "Source Audit Cache",
+      "class": ["NEW_VALUE", "INTEGRATION_CANDIDATE"],
+      "integrate_into": ["SOURCE_INTELLIGENCE", "State Sync"],
+      "runtime_claim_now": "NOT_IMPLEMENTED",
+      "required_state_semantics": ["UNKNOWN", "REVIEW_REQUIRED", "REVIEWED_NO_ADMISSION", "CHANGED_REVIEW_REQUIRED", "EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT"]
+    },
+    {
+      "capability": "Reality Bridge Engine as a separate top-level system",
+      "class": ["DUPLICATE_AS_BOX", "DEFER_CAPABILITY_EXPANSION"],
+      "integrate_into": ["LAB", "Arena", "Evidence/Knowledge Plane", "Source Intelligence"],
+      "keep_for_future": ["information-gain-per-real-sample", "active-learning question selection", "world-envelope reduction"],
+      "blocked_now_by": ["no admitted real PRE source", "Owner Gate required for real PRE collection/use"]
+    },
+    {
+      "capability": "Public Keirin Model Zoo expansion",
+      "class": ["DEFER_NOW", "POSSIBLE_FUTURE_ARENA_INPUT"],
+      "reason": "Current limited Synthetic campaign is canonically informationally saturated; broad model search does not resolve the current source bottleneck."
+    },
+    {
+      "capability": "ROI / bankroll stack",
+      "class": ["CONFLICT_WITH_CURRENT_BOUNDARY", "NOT_NOW"],
+      "reason": "RESULT/PAYOUT, economics/bankroll and real-money wagering remain unauthorized/out-of-scope."
+    },
+    {
+      "capability": "Mission Reliability Kernel as a new service",
+      "class": ["DUPLICATE_AS_BOX", "NEW_VALUE_AS_CAPABILITIES"],
+      "integrate_into": ["Core execution loop", "Task Bus", "Worker Adapters"],
+      "keep_capabilities": ["idempotency_key", "finite retry_budget", "checkpoint/resume", "lease/heartbeat", "monotonic fencing token or lease epoch", "CAS/version precondition", "durable receipt", "dead-letter quarantine"]
+    },
+    {
+      "capability": "Conflict Interlock",
+      "class": ["MERGE_INTO_RELIABLE_TASK_EXECUTION", "DETERMINISTIC_ENFORCEMENT_AND_TESTS_ONLY"],
+      "must_not_be_new_service": true,
+      "integrate_into": ["Authorization Contract", "Review Router", "State Sync", "Worker Adapters"],
+      "existing_authority_reused": ["deny precedence", "Owner-Gate scope specificity", "CAS/stale-state checks", "Safe Mode"]
+    },
+    {
+      "capability": "Owner Assurance exception summary",
+      "class": ["NEW_VALUE", "INTEGRATION_CANDIDATE"],
+      "integrate_into": ["Owner Assurance"],
+      "runtime_claim_now": "NOT_IMPLEMENTED_FOR_R1"
+    },
+    {
+      "capability": "Fake-worker reliability rehearsal",
+      "class": ["ACCEPTANCE_HARNESS_ONLY", "SAFE_NONCANONICAL_PREIMPLEMENTATION_EVIDENCE"],
+      "must_not_be_runtime_component": true
+    },
+    {
+      "capability": "Adaptive Flow Governor",
+      "class": ["DEFER_NOW"],
+      "reason": "Do not add broad scheduling/parallelism control before one vertical slice is proven."
+    },
+    {
+      "capability": "Autonomy Error Budget",
+      "class": ["DEFERRED_NEXT_VERSION"],
+      "reason": "Do not add before basic task reliability evidence exists."
+    },
+    {
+      "capability": "Progressive Evolution Lane / Shadow-Arena-Canary-Promotion",
+      "class": ["MOSTLY_DUPLICATE"],
+      "integrate_into": ["Self-Evolution Protocol", "Arena"]
+    },
+    {
+      "capability": "Truth Reconciliation Loop / Mission Provenance / Incident-to-Experience",
+      "class": ["PARTLY_IMPLEMENTED_OR_INTEGRATION_CANDIDATE", "NOT_R1_CORE"],
+      "integrate_into": ["State Sync", "Vault/receipts", "Experience Engine candidate"]
+    },
+    {
+      "capability": "Cellular Multiverse / many domain cells",
+      "class": ["NOT_NEEDED_NOW"]
+    },
+    {
+      "capability": "Selective Scatter-Gather multi-AI review",
+      "class": ["MOSTLY_DUPLICATE_CONCEPT", "AUTOMATION_NOT_IMPLEMENTED"],
+      "integrate_into": ["AI Council", "Review Router", "Worker Adapters"]
+    },
+    {
+      "capability": "Always-on Source Watcher / automatic source detection",
+      "class": ["NOT_IMPLEMENTED", "DEFER_UNTIL_WORKER_EXISTS"],
+      "reason": "Do not claim monitoring until an Automation/Worker is actually built, triggered/scheduled and runtime-confirmed."
+    }
+  ],
+  "minimal_next_version_candidate": {
+    "name": "AUTOMATION_RELIABILITY_R1_SOURCE_VERTICAL_SLICE",
+    "principle": "One Source candidate end-to-end; capabilities into existing boxes; no new top-level institution.",
+    "vertical_slice": [
+      "Source candidate enters",
+      "cached evidence/hash/freshness is checked",
+      "only necessary already-authorized work is dispatched",
+      "duplicate/stale/unauthorized execution is blocked",
+      "idempotency + CAS/version + fencing causes retries/takeovers to converge",
+      "durable result receipt is written",
+      "Owner receives only exception/decision summary"
+    ],
+    "responsibilities": [
+      {
+        "id": "R1-1",
+        "capability": "Source Audit Cache",
+        "integrate_into": ["SOURCE_INTELLIGENCE", "State Sync"],
+        "minimum_fields": ["candidate_id", "source_class", "evidence_refs", "terms_or_docs_hashes", "last_checked_at", "audit_state", "verdict_reason", "freshness_state", "recheck_trigger"],
+        "audit_state_values": ["UNKNOWN", "REVIEW_REQUIRED", "REVIEWED_NO_ADMISSION", "CHANGED_REVIEW_REQUIRED", "EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT"],
+        "goal": "Do not repeat unchanged public-source audits while preserving uncertainty and re-review on change."
+      },
+      {
+        "id": "R1-2",
+        "capability": "Reliable Task Execution",
+        "integrate_into": ["Task Bus", "Worker Adapters", "Authorization Contract", "Review Router", "State Sync"],
+        "minimum_fields": ["task_id", "idempotency_key", "attempt_count", "retry_budget", "checkpoint_ref", "lease_owner", "lease_expires_at", "heartbeat_at", "fencing_token_or_lease_epoch", "expected_state_version", "dead_letter_reason", "authorization_ref", "input_hashes", "durable_receipt_ref"],
+        "execution_contract": {
+          "exactly_once_claim": false,
+          "target": "RETRY_SAFE_CONVERGENCE",
+          "required_mechanisms": ["stable idempotency key", "durable receipt", "CAS/version precondition", "monotonic fencing token or equivalent lease epoch", "finite retry budget", "checkpoint/resume", "dead-letter quarantine"]
+        },
+        "embedded_interlocks": [
+          "stale target + material write => DENY",
+          "Owner Gate required + missing or mismatched approval => DENY",
+          "SEALED protected data + access request => DENY",
+          "same artifact concurrent write => CAS conflict or quarantine",
+          "review head drift => STALE_NO_PROMOTION",
+          "expired_or_old_lease_worker + commit_attempt => DENY_OR_CONFLICT"
+        ],
+        "goal": "Make duplicate delivery, retry, crash and worker takeover converge without stale or unauthorized commit."
+      },
+      {
+        "id": "R1-3",
+        "capability": "Owner Exception View",
+        "integrate_into": ["Owner Assurance"],
+        "minimum_output": ["what changed", "what ran automatically", "what did not run", "what is blocked and why", "whether Owner action is required", "next safe action"],
+        "goal": "Owner sees exceptions and material decisions, not routing/SHA/repeated-source clerical work."
+      }
+    ],
+    "cross_cutting_acceptance_harness": {
+      "name": "FAKE_WORKER_RELIABILITY_REHEARSAL",
+      "is_runtime_component": false,
+      "minimum_faults": ["duplicate candidate delivery", "duplicate task delivery", "worker death with checkpoint takeover", "expired old worker revival after newer lease takeover", "timeout and retry exhaustion", "stale canonical input", "authorization DENY / missing Owner Gate", "protected-data request", "state or side-effect committed then transport ACK lost", "same idempotency key with conflicting payload", "concurrent write version conflict"],
+      "required_negative_case": "expired_or_old_lease_worker + commit_attempt => DENY_OR_CONFLICT",
+      "external_or_protected_side_effects_allowed": false
+    },
+    "explicit_non_goals": [
+      "building a new Data Access Router service",
+      "building a new Reality Bridge service",
+      "building a new Conflict Interlock service",
+      "building a broad generic Flow Governor before the vertical slice is proven",
+      "opening or collecting real/live PRE",
+      "source admission",
+      "external provider contact",
+      "new spend or contract",
+      "RESULT/PAYOUT or economics",
+      "holdout/untouched validation",
+      "PR15 use",
+      "model promotion",
+      "broad Keirin model-zoo search",
+      "always-on source monitoring claim"
+    ],
+    "runtime_authority_from_this_assessment": false
+  },
+  "noncanonical_prototype_evidence": {
+    "authority": "NONE",
+    "branch": "agent/r1-source-vertical-slice-acceptance-contract-v1",
+    "latest_commit_observed_before_this_remediation": "afc127a5968e99de337447aa86739c4fb5ba79a7",
+    "prototype_path": "tools/multiverse_r1_source_vertical_slice_prototype_v1.py",
+    "prototype_blob": "81cb1938e467c45eda5a3a3ee342830541ebd76b",
+    "scope": "FAKE_RECORDS_ONLY_NO_NETWORK_NO_EXTERNAL_OR_PROTECTED_SIDE_EFFECTS",
+    "status": "NONCANONICAL_SELFTEST_EVIDENCE_ONLY_NOT_RUNTIME_ADOPTION",
+    "note": "Prototype evidence is not part of PR #45 changed files and does not satisfy Auditor or Owner Gate."
+  },
+  "governance": {
+    "candidate_change_class": "MATERIAL_REVIEW_REQUIRED_NEXT_VERSION_CANDIDATE",
+    "basis": "AI_COUNCIL classifies Automation additions/workflow changes as MATERIAL; isolated reversible prototype/selftests may proceed, formal adoption/runtime activation requires independent Auditor review and Owner Gate.",
+    "lab_initial_review_comment_id": 5364833654,
+    "lab_initial_verdict": "PASS_WITH_FIXES",
+    "lab_micro_rereview_required_after_this_remediation": true,
+    "auditor_required_before_formal_adoption": true,
+    "owner_gate_required_for_formal_adoption_or_runtime_activation": true,
+    "owner_gate_satisfied": false,
+    "formal_adoption_or_permission_change_may_occur_from_this_draft": false,
+    "external_contact_authority": false,
+    "new_spend_authority": false,
+    "scientific_scope_expansion_authority": false
+  },
+  "protected_boundaries": {
+    "real_or_live_PRE_collection": "UNAUTHORIZED",
+    "source_admission": "UNAUTHORIZED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR15": "QUARANTINED_NOT_ADMITTED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "external_provider_contact": "UNAUTHORIZED",
+    "automated_bulk_collection": "UNAUTHORIZED",
+    "terms_or_access_control_bypass": "PROHIBITED",
+    "synthetic_to_real_edge_or_roi_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE_PENDING_LAB_MICRO_REREVIEW",
+  "fail_closed": true
+}
