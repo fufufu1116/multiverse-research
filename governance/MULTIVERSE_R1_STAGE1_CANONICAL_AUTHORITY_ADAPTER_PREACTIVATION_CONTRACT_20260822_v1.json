@@ -65,7 +65,12 @@
     "policy_generation_and_digest_pinned": true,
     "revocation_and_safe_mode_generation_pinned": true,
     "safe_mode_active_propagated_into_existing_authorization_guard": true,
-    "canonical_main_drift_behavior": "DENY_FAIL_CLOSED"
+    "canonical_main_drift_behavior": "DENY_FAIL_CLOSED",
+    "canonical_main_is_complete_authority_freshness_barrier_required": true,
+    "freshness_barrier_semantics": "Every policy/grant/revocation/Safe-Mode change relevant to Stage 1 MUST advance canonical main before it can affect governed execution; otherwise this adapter is not conforming and Stage 1 remains OFF.",
+    "authorization_decision_ids_must_be_unique_across_manifest": true,
+    "decision_policy_and_generation_fields_must_match_manifest": true,
+    "non_P0_decision_grants_must_be_in_current_valid_grant_refs": true
   },
   "trusted_clock_contract": {
     "source": "GITHUB_API_SERVER_DATE_HEADER",
@@ -74,7 +79,15 @@
     "missing_ambiguous_or_malformed_server_date_behavior": "DENY_FAIL_CLOSED",
     "canonical_main_fresh_read_before_manifest_selection": true,
     "canonical_main_refreshed_after_server_time_fetch": true,
-    "main_drift_during_decision_load_behavior": "DENY_FAIL_CLOSED"
+    "main_drift_during_decision_load_behavior": "DENY_FAIL_CLOSED",
+    "fresh_main_and_trusted_time_are_read_together_from_github_api_branch_response": true,
+    "github_api_hostname_pinned": "github.com",
+    "gh_host_override_to_non_github_com_allowed": false,
+    "http_https_all_proxy_environment_allowed": false,
+    "custom_ssl_cert_environment_allowed": false,
+    "gh_http_unix_socket_allowed": false,
+    "manifest_bytes_loaded_via_pinned_github_contents_api": true,
+    "git_transport_used_for_authority_freshness_or_manifest_bytes": false
   },
   "activation_anchor_boundary": {
     "separately_reviewed_immutable_activation_receipt_loader_required": true,
@@ -92,7 +105,8 @@
       "policy_digest",
       "revocation_generation",
       "safe_mode_generation",
-      "trusted_clock_source"
+      "trusted_clock_source",
+      "canonical_main_is_complete_authority_freshness_barrier"
     ]
   },
   "authority_separation": {
@@ -119,7 +133,7 @@
   "remaining_preactivation_dependencies": [
     "Independent Lab review of this exact-head read-only authority adapter candidate",
     "Independent Implementation Auditor review after Lab PASS",
-    "A separately governed and accepted canonical Stage-1 authority manifest/source must exist; this candidate does not create or adopt it",
+    "A separately governed and accepted canonical Stage-1 authority manifest/source must exist and attest that canonical main is the complete freshness barrier for all relevant policy/grant/revocation/Safe-Mode changes; this candidate does not create or adopt it",
     "Actual GitHub journal ruleset provisioning and independent no-bypass attestation",
     "Production runtime writer key provisioning",
     "Immutable activation receipt plus independently reviewed verified-anchor loader binding CAS and authority dependencies",
