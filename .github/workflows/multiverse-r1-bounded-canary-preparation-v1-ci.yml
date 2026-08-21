@@ -1,0 +1,86 @@
+name: Multiverse R1 Bounded Canary Preparation CI v1
+
+on:
+  pull_request:
+    paths:
+      - "tools/multiverse_r1_bounded_canary_preparation_v1.py"
+      - "governance/MULTIVERSE_R1_BOUNDED_CANARY_PREPARATION_CONTRACT_20260821_v1.json"
+      - ".github/workflows/multiverse-r1-bounded-canary-preparation-v1-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-canary-preparation-rehearsal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Show exact head
+        run: git rev-parse HEAD
+
+      - name: Validate bounded preparation contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("governance/MULTIVERSE_R1_BOUNDED_CANARY_PREPARATION_CONTRACT_20260821_v1.json")
+          c = json.loads(p.read_text())
+          assert c["status"] == "BOUNDED_CANARY_PREPARATION_REHEARSAL_ONLY_NOT_RUNTIME_ACTIVATION"
+          assert c["implementation_anchor"] == "af7b8ded52678846a87ba5d565f30c6f0554624b"
+          assert c["implementation_auditor_micro_pass_comment"] == 5365600482
+          assert c["environment"]["data"] == "SYNTHETIC_FAKE_SOURCE_METADATA_ONLY"
+          assert c["environment"]["network"] is False
+          assert c["environment"]["scheduler"] is False
+          assert c["environment"]["always_on_worker"] is False
+          assert c["environment"]["external_side_effects"] is False
+          assert c["environment"]["runtime_activation"] is False
+          assert c["runtime_activation_authorized_now"] is False
+          assert c["protected_boundaries"]["source_admission"] == "UNAUTHORIZED"
+          assert c["protected_boundaries"]["ECON_HOLDOUT1000"] == "SEALED"
+          assert c["protected_boundaries"]["PR15"] == "QUARANTINED_NOT_ADMITTED"
+          PY
+
+      - name: Reject network scheduling and hidden activation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          code = Path("tools/multiverse_r1_bounded_canary_preparation_v1.py").read_text()
+          for forbidden in (
+              "import requests",
+              "import httpx",
+              "import urllib",
+              "import socket",
+              "subprocess",
+              "os.system",
+          ):
+              assert forbidden not in code, forbidden
+          workflow = Path(".github/workflows/multiverse-r1-bounded-canary-preparation-v1-ci.yml").read_text()
+          assert ("sche" + "dule:") not in workflow
+          assert ("cr" + "on:") not in workflow
+          assert "R1_BOUNDED_CANARY_PREPARATION_ONLY_NO_RUNTIME_ACTIVATION" in code
+          PY
+
+      - name: Run bounded fake-worker rehearsal
+        run: |
+          output="$(python tools/multiverse_r1_bounded_canary_preparation_v1.py --rehearse)"
+          printf '%s\n' "$output"
+          printf '%s\n' "$output" | grep -F '"runtime_activation_performed": false'
+          printf '%s\n' "$output" | grep -F '"network_access_performed": false'
+          printf '%s\n' "$output" | grep -F '"external_data_used": false'
+          printf '%s\n' "$output" | grep -F '"source_admission_performed": false'
+          printf '%s\n' "$output" | grep -F '"stale_worker_checkpoint_denied": true'
+          printf '%s\n' "$output" | grep -F '"stale_worker_failure_poisoning_denied": true'
+          printf '%s\n' "$output" | grep -F '"lost_ack_process_restart_converged": true'
+          printf '%s\n' "$output" | grep -F '"old_task_denied_after_docs_drift": true'
+          printf '%s\n' "$output" | grep -F '"finite_retry_dead_letter_explicit": true'
+          printf '%s\n' "$output" | grep -Fx 'MULTIVERSE_R1_BOUNDED_CANARY_PREPARATION_REHEARSAL_PASS'
+
+      - name: Confirm default invocation cannot activate runtime
+        run: |
+          output="$(python tools/multiverse_r1_bounded_canary_preparation_v1.py)"
+          test "$output" = "R1_BOUNDED_CANARY_PREPARATION_ONLY_NO_RUNTIME_ACTIVATION"
