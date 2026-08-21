@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """R1 Limited Internal Runtime Stage 1 library.
 
-Dormant by default. The production-shaped path never accepts caller-supplied
-AuthorizationRuntime facts directly: it asks an independently reviewed
-control-plane adapter for canonical authority facts and for durable remote-CAS
-runtime state. No concrete live GitHub adapter is activated in this candidate.
+Dormant by default. The production-shaped path accepts no caller-supplied
+AuthorizationRuntime or authorization decision payloads. An independently
+reviewed control-plane adapter must supply canonical-issued decisions and
+current runtime authority facts as one provenance-attested bundle.
 """
 from __future__ import annotations
 
@@ -20,17 +20,10 @@ from typing import Any, Mapping, Optional, Protocol
 
 from multiverse_r1_auth_v1 import AuthorizationDenied, AuthorizationRuntime, validate_authorization
 from multiverse_r1_engine_v1 import R1Engine
-from multiverse_r1_state_v1 import (
-    AuditState,
-    PersistentStore,
-    SchemaError,
-    StaleState,
-    empty_state,
-    validate_state,
-)
+from multiverse_r1_state_v1 import AuditState, PersistentStore, StaleState, empty_state, validate_state
 
 STAGE_SCHEMA = "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_SCHEMA_v2"
-ENQUEUE_SCHEMA = "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v1"
+ENQUEUE_SCHEMA = "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v2"
 STAGE_ID = "R1_LIMITED_INTERNAL_RUNTIME_STAGE1"
 RUNTIME_BRANCH = "runtime/r1-source-audit-stage1-v1"
 ENQUEUE_OPERATION = "R1_STAGE1_ENQUEUE_SOURCE_AUDIT_ADMIN_TASK"
@@ -64,10 +57,8 @@ ENQUEUE_FIELDS = {
     "requested_final_state",
     "verdict_reason",
     "evidence_refs",
-    "enqueue_authorization",
-    "operation_authorizations",
 }
-OP_AUTH_FIELDS = {"inspect", "lease", "checkpoint", "commit"}
+AUTH_KEYS = {"inspect", "lease", "checkpoint", "commit"}
 CONTROL_FIELDS = {
     "schema_version",
     "stage_id",
@@ -130,6 +121,15 @@ def _utc(value: str) -> datetime:
     return out.astimezone(timezone.utc)
 
 
+def _decision_digest(enqueue_decision: Mapping[str, Any], operation_decisions: Mapping[str, Any]) -> str:
+    payload = {
+        "enqueue": enqueue_decision,
+        "operations": operation_decisions,
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def validate_write_path(branch: str, path: str) -> None:
     if branch != RUNTIME_BRANCH:
         _deny("RUNTIME_WRONG_BRANCH")
@@ -163,12 +163,18 @@ def validate_runtime_cache_state(value: Any) -> str:
 
 
 @dataclass(frozen=True)
-class TrustedAuthorityContext:
+class TrustedAuthorizationBundle:
+    """Decisions plus current authority facts supplied only by control-plane adapter."""
+
+    enqueue_decision: dict
+    operation_decisions: dict
     enqueue_runtime: AuthorizationRuntime
     worker_runtime: AuthorizationRuntime
     canonical_main: str
     provenance_ref: str
+    decision_payload_digest: str
     verified_from_canonical_authority: bool
+    decisions_verified_from_canonical_policy: bool
 
 
 @dataclass(frozen=True)
@@ -187,15 +193,13 @@ class ControlPlaneAdapter(Protocol):
 
     def load_snapshot(self) -> RemoteSnapshot: ...
 
-    def load_trusted_authority(
+    def issue_authorization_bundle(
         self,
         *,
         current_main: str,
-        enqueue_actor_role: str,
-        enqueue_actor_instance: str,
-        worker_actor_instance: str,
+        envelope: Mapping[str, Any],
         now: datetime,
-    ) -> TrustedAuthorityContext: ...
+    ) -> TrustedAuthorizationBundle: ...
 
     def claim_invocation(
         self,
@@ -292,17 +296,6 @@ def validate_control(control: Mapping[str, Any]) -> None:
         _utc(claim_expiry)
 
 
-def validate_trusted_authority_context(trusted: TrustedAuthorityContext, *, current_main: str) -> None:
-    if not isinstance(trusted, TrustedAuthorityContext):
-        _deny("TRUSTED_AUTHORITY_CONTEXT_TYPE")
-    if trusted.verified_from_canonical_authority is not True:
-        _deny("TRUSTED_AUTHORITY_PROVENANCE_UNVERIFIED", AuthorizationDenied)
-    if trusted.canonical_main != current_main or not _hex40(trusted.canonical_main):
-        _deny("TRUSTED_AUTHORITY_CANONICAL_MAIN_MISMATCH", AuthorizationDenied)
-    if not _nonempty(trusted.provenance_ref):
-        _deny("TRUSTED_AUTHORITY_PROVENANCE_REF_MISSING", AuthorizationDenied)
-
-
 def reconcile_terminal_receipts(control: Mapping[str, Any], r1_state: Mapping[str, Any]) -> dict:
     validate_control(control)
     state = copy.deepcopy(r1_state)
@@ -394,18 +387,7 @@ def record_terminal_receipt(control: Mapping[str, Any], receipt_id: str) -> dict
     if out["terminal_count"] >= MAX_TERMINAL_TASKS:
         out["paused"] = True
         out["pause_reason"] = "STAGE_TERMINAL_CEILING_REACHED"
-    return out
-
-
-def pause_for_integrity(control: Mapping[str, Any], reason: str) -> dict:
-    validate_control(control)
-    if not _nonempty(reason):
-        _deny("PAUSE_REASON_INVALID")
-    out = copy.deepcopy(control)
-    out["paused"] = True
-    out["pause_reason"] = reason
-    out["invocation_claim_id"] = None
-    out["invocation_claim_expires_at"] = None
+    validate_control(out)
     return out
 
 
@@ -419,8 +401,6 @@ def _validate_envelope_shape(envelope: Mapping[str, Any]) -> None:
             _deny("ENQUEUE_STRING")
     if not isinstance(envelope["evidence_refs"], list) or not all(_nonempty(x) for x in envelope["evidence_refs"]):
         _deny("ENQUEUE_EVIDENCE")
-    if not isinstance(envelope["operation_authorizations"], dict) or set(envelope["operation_authorizations"]) != OP_AUTH_FIELDS:
-        _deny("ENQUEUE_OPERATION_AUTH_SCHEMA")
     if envelope["requested_final_state"] not in {
         AuditState.REVIEWED_NO_ADMISSION.value,
         AuditState.EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT.value,
@@ -434,24 +414,75 @@ def _validate_envelope_shape(envelope: Mapping[str, Any]) -> None:
         _deny("ENQUEUE_INELIGIBLE_EVIDENCE_REQUIRED")
 
 
-def validate_enqueue_authority(
-    envelope: Mapping[str, Any],
+def _task_id(cid: str, docs: str) -> str:
+    idem = f"source-review:{cid}:{docs}"
+    encoded = json.dumps(idem, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    digest = hashlib.sha256(encoded).hexdigest()
+    return "task-" + digest[:16]
+
+
+def _expected_operation_specs(envelope: Mapping[str, Any]) -> dict[str, tuple[str, str, str]]:
+    cid = envelope["candidate_id"]
+    tid = _task_id(cid, envelope["docs_hash"])
+    return {
+        "inspect": (
+            "R1_SOURCE_CACHE_INSPECT_OR_STAGE",
+            f"source-candidate:{cid}",
+            "PUBLIC_TERMS_METADATA_ONLY",
+        ),
+        "lease": ("R1_TASK_ACQUIRE_LEASE", f"task:{tid}", "INTERNAL_R1_STATE_ONLY"),
+        "checkpoint": ("R1_TASK_CHECKPOINT", f"task:{tid}", "INTERNAL_R1_STATE_ONLY"),
+        "commit": ("R1_SOURCE_REVIEW_COMMIT", f"task:{tid}", "PUBLIC_TERMS_METADATA_ONLY"),
+    }
+
+
+def validate_authorization_bundle(
+    bundle: TrustedAuthorizationBundle,
     *,
-    trusted: TrustedAuthorityContext,
+    envelope: Mapping[str, Any],
     current_main: str,
 ) -> None:
     _validate_envelope_shape(envelope)
-    validate_trusted_authority_context(trusted, current_main=current_main)
+    if not isinstance(bundle, TrustedAuthorizationBundle):
+        _deny("AUTHORIZATION_BUNDLE_TYPE", AuthorizationDenied)
+    if bundle.verified_from_canonical_authority is not True:
+        _deny("AUTHORIZATION_BUNDLE_AUTHORITY_PROVENANCE_UNVERIFIED", AuthorizationDenied)
+    if bundle.decisions_verified_from_canonical_policy is not True:
+        _deny("AUTHORIZATION_DECISION_PROVENANCE_UNVERIFIED", AuthorizationDenied)
+    if bundle.canonical_main != current_main or not _hex40(bundle.canonical_main):
+        _deny("AUTHORIZATION_BUNDLE_CANONICAL_MAIN_MISMATCH", AuthorizationDenied)
+    if not _nonempty(bundle.provenance_ref):
+        _deny("AUTHORIZATION_BUNDLE_PROVENANCE_REF_MISSING", AuthorizationDenied)
+    if not isinstance(bundle.enqueue_decision, dict):
+        _deny("AUTHORIZATION_BUNDLE_ENQUEUE_DECISION_INVALID", AuthorizationDenied)
+    if not isinstance(bundle.operation_decisions, dict) or set(bundle.operation_decisions) != AUTH_KEYS:
+        _deny("AUTHORIZATION_BUNDLE_OPERATION_SET", AuthorizationDenied)
+    expected_digest = _decision_digest(bundle.enqueue_decision, bundle.operation_decisions)
+    if bundle.decision_payload_digest != expected_digest:
+        _deny("AUTHORIZATION_DECISION_PAYLOAD_DIGEST_MISMATCH", AuthorizationDenied)
+
     validate_authorization(
-        envelope["enqueue_authorization"],
-        trusted.enqueue_runtime,
+        bundle.enqueue_decision,
+        bundle.enqueue_runtime,
         operation=ENQUEUE_OPERATION,
         target=ENQUEUE_TARGET,
         permission_class="P1_REVERSIBLE_INTERNAL_WRITE",
         data_exposure_scope=ENQUEUE_SCOPE,
     )
-    if envelope["worker_id"] != trusted.worker_runtime.actor_instance:
+    if envelope["worker_id"] != bundle.worker_runtime.actor_instance:
         _deny("ENQUEUE_WORKER_BINDING_MISMATCH", AuthorizationDenied)
+    for key, (operation, target, scope) in _expected_operation_specs(envelope).items():
+        decision = bundle.operation_decisions[key]
+        if not isinstance(decision, dict):
+            _deny("AUTHORIZATION_BUNDLE_OPERATION_DECISION_INVALID", AuthorizationDenied)
+        validate_authorization(
+            decision,
+            bundle.worker_runtime,
+            operation=operation,
+            target=target,
+            permission_class="P1_REVERSIBLE_INTERNAL_WRITE",
+            data_exposure_scope=scope,
+        )
 
 
 def _materialize_store(root: Path, state: Mapping[str, Any]) -> PersistentStore:
@@ -467,27 +498,25 @@ def _process_claimed(
     adapter: ControlPlaneAdapter,
     claimed: RemoteSnapshot,
     envelope: Mapping[str, Any],
-    trusted: TrustedAuthorityContext,
-    now: datetime,
+    bundle: TrustedAuthorizationBundle,
     now_tick: int,
     claim_id: str,
     failpoint: Optional[str] = None,
 ) -> tuple[Optional[dict], dict]:
-    validate_enqueue_authority(envelope, trusted=trusted, current_main=claimed.canonical_main)
+    validate_authorization_bundle(bundle, envelope=envelope, current_main=claimed.canonical_main)
     with tempfile.TemporaryDirectory() as td:
         store = _materialize_store(Path(td), claimed.r1_state)
         engine = R1Engine(store, claimed.canonical_main)
-        auths = envelope["operation_authorizations"]
+        auths = bundle.operation_decisions
         cid = envelope["candidate_id"]
-        docs_hash = envelope["docs_hash"]
         worker = envelope["worker_id"]
 
         task_id = engine.inspect_candidate(
             current_main=claimed.canonical_main,
             candidate_id=cid,
-            docs_hash=docs_hash,
+            docs_hash=envelope["docs_hash"],
             authorization=auths["inspect"],
-            auth_runtime=trusted.worker_runtime,
+            auth_runtime=bundle.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
@@ -511,7 +540,7 @@ def _process_claimed(
             now_tick=now_tick,
             lease_ticks=10,
             authorization=auths["lease"],
-            auth_runtime=trusted.worker_runtime,
+            auth_runtime=bundle.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
@@ -526,7 +555,7 @@ def _process_claimed(
             now_tick=now_tick + 1,
             checkpoint_ref="stage1:supplied-evidence-validated",
             authorization=auths["checkpoint"],
-            auth_runtime=trusted.worker_runtime,
+            auth_runtime=bundle.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
@@ -543,7 +572,7 @@ def _process_claimed(
             verdict_reason=envelope["verdict_reason"],
             evidence_refs=envelope["evidence_refs"],
             authorization=auths["commit"],
-            auth_runtime=trusted.worker_runtime,
+            auth_runtime=bundle.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
@@ -572,6 +601,8 @@ def _process_one_controlled(
     claim_id: str,
     failpoint: Optional[str] = None,
 ) -> tuple[Optional[dict], dict]:
+    # Reject malformed/forged decision-bearing payloads before any remote claim.
+    _validate_envelope_shape(envelope)
     snapshot = adapter.load_snapshot()
     if not _hex40(snapshot.remote_head) or not _hex40(snapshot.canonical_main):
         _deny("CONTROL_PLANE_SNAPSHOT_IDENTITY")
@@ -590,23 +621,17 @@ def _process_one_controlled(
         claim_id=claim_id,
         claimed_control=claimed_control,
     )
-    enqueue_decision = envelope.get("enqueue_authorization")
-    if not isinstance(enqueue_decision, dict):
-        _deny("ENQUEUE_AUTHORIZATION_MISSING")
-    trusted = adapter.load_trusted_authority(
+    bundle = adapter.issue_authorization_bundle(
         current_main=claimed.canonical_main,
-        enqueue_actor_role=enqueue_decision.get("actor_role"),
-        enqueue_actor_instance=enqueue_decision.get("actor_instance"),
-        worker_actor_instance=envelope.get("worker_id"),
+        envelope=envelope,
         now=now,
     )
-    validate_trusted_authority_context(trusted, current_main=claimed.canonical_main)
+    validate_authorization_bundle(bundle, envelope=envelope, current_main=claimed.canonical_main)
     return _process_claimed(
         adapter=adapter,
         claimed=claimed,
         envelope=envelope,
-        trusted=trusted,
-        now=now,
+        bundle=bundle,
         now_tick=now_tick,
         claim_id=claim_id,
         failpoint=failpoint,
@@ -621,7 +646,7 @@ def process_one_controlled(
     now_tick: int,
     claim_id: str,
 ) -> tuple[Optional[dict], dict]:
-    """Production-shaped entrypoint. No direct TrustedAuthorityContext argument."""
+    """Production-shaped entrypoint. No caller-supplied authority or decisions."""
     return _process_one_controlled(
         adapter=adapter,
         envelope=envelope,
@@ -681,15 +706,7 @@ def _runtime(actor: str, now: datetime, *, valid=True, safe=False) -> Authorizat
     )
 
 
-def _task_id(cid: str, docs: str) -> str:
-    idem = f"source-review:{cid}:{docs}"
-    encoded = json.dumps(idem, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    digest = hashlib.sha256(encoded).hexdigest()
-    return "task-" + digest[:16]
-
-
 def _envelope(cid="source-a", docs="docs-a", actor="worker-1") -> dict:
-    tid = _task_id(cid, docs)
     return {
         "schema_version": ENQUEUE_SCHEMA,
         "stage_id": STAGE_ID,
@@ -699,18 +716,6 @@ def _envelope(cid="source-a", docs="docs-a", actor="worker-1") -> dict:
         "requested_final_state": AuditState.REVIEWED_NO_ADMISSION.value,
         "verdict_reason": "supplied evidence supports no admission",
         "evidence_refs": ["governance:evidence-a"],
-        "enqueue_authorization": _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, "router-1"),
-        "operation_authorizations": {
-            "inspect": _decision(
-                "R1_SOURCE_CACHE_INSPECT_OR_STAGE",
-                f"source-candidate:{cid}",
-                "PUBLIC_TERMS_METADATA_ONLY",
-                actor,
-            ),
-            "lease": _decision("R1_TASK_ACQUIRE_LEASE", f"task:{tid}", "INTERNAL_R1_STATE_ONLY", actor),
-            "checkpoint": _decision("R1_TASK_CHECKPOINT", f"task:{tid}", "INTERNAL_R1_STATE_ONLY", actor),
-            "commit": _decision("R1_SOURCE_REVIEW_COMMIT", f"task:{tid}", "PUBLIC_TERMS_METADATA_ONLY", actor),
-        },
     }
 
 
@@ -740,9 +745,18 @@ class _SharedRemote:
 
 
 class _FakeControlPlaneAdapter:
-    def __init__(self, shared: _SharedRemote, *, verified=True, valid_grant=True, safe=False):
+    def __init__(
+        self,
+        shared: _SharedRemote,
+        *,
+        verified=True,
+        decision_provenance_valid=True,
+        valid_grant=True,
+        safe=False,
+    ):
         self.shared = shared
         self.verified = verified
+        self.decision_provenance_valid = decision_provenance_valid
         self.valid_grant = valid_grant
         self.safe = safe
 
@@ -760,25 +774,32 @@ class _FakeControlPlaneAdapter:
     def load_snapshot(self) -> RemoteSnapshot:
         return self._snapshot()
 
-    def load_trusted_authority(
+    def issue_authorization_bundle(
         self,
         *,
         current_main: str,
-        enqueue_actor_role: str,
-        enqueue_actor_instance: str,
-        worker_actor_instance: str,
+        envelope: Mapping[str, Any],
         now: datetime,
-    ) -> TrustedAuthorityContext:
-        if enqueue_actor_role != "EXECUTION":
-            _deny("FAKE_CANONICAL_ACTOR_ROLE_DENY", AuthorizationDenied)
-        if enqueue_actor_instance != "router-1" or worker_actor_instance != "worker-1":
-            _deny("FAKE_CANONICAL_ACTOR_INSTANCE_DENY", AuthorizationDenied)
-        return TrustedAuthorityContext(
-            enqueue_runtime=_runtime("router-1", now, valid=self.valid_grant, safe=self.safe),
-            worker_runtime=_runtime("worker-1", now, valid=self.valid_grant, safe=self.safe),
+    ) -> TrustedAuthorizationBundle:
+        _validate_envelope_shape(envelope)
+        router = "router-1"
+        worker = "worker-1"
+        specs = _expected_operation_specs(envelope)
+        enqueue_decision = _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, router)
+        operations = {
+            key: _decision(operation, target, scope, worker)
+            for key, (operation, target, scope) in specs.items()
+        }
+        return TrustedAuthorizationBundle(
+            enqueue_decision=enqueue_decision,
+            operation_decisions=operations,
+            enqueue_runtime=_runtime(router, now, valid=self.valid_grant, safe=self.safe),
+            worker_runtime=_runtime(worker, now, valid=self.valid_grant, safe=self.safe),
             canonical_main=current_main,
             provenance_ref="canonical:test-authority-snapshot",
+            decision_payload_digest=_decision_digest(enqueue_decision, operations),
             verified_from_canonical_authority=self.verified,
+            decisions_verified_from_canonical_policy=self.decision_provenance_valid,
         )
 
     def _cas(self, expected_remote_head: str) -> None:
@@ -889,11 +910,10 @@ def selftest() -> int:
             remote_high_water_count=0,
         ),
     )
-    rollback = copy.deepcopy(control)
     _expect(
         Stage1Tamper,
         lambda: assert_ceiling_and_integrity(
-            rollback,
+            control,
             current_main=main,
             now=activated + timedelta(hours=1),
             genesis_is_ancestor=True,
@@ -919,6 +939,15 @@ def selftest() -> int:
     _expect(Stage1Paused, lambda: record_terminal_receipt(c, "receipt-26"))
 
     env = _envelope()
+    forged = copy.deepcopy(env)
+    forged["enqueue_authorization"] = _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, "router-1")
+    _expect(Stage1Denied, lambda: _validate_envelope_shape(forged))
+    forged2 = copy.deepcopy(env)
+    forged2["operation_authorizations"] = {
+        "inspect": _decision("R1_SOURCE_CACHE_INSPECT_OR_STAGE", "source-candidate:source-a", "PUBLIC_TERMS_METADATA_ONLY", "worker-1")
+    }
+    _expect(Stage1Denied, lambda: _validate_envelope_shape(forged2))
+
     shared = _SharedRemote(control, main, genesis)
     a1 = _FakeControlPlaneAdapter(shared)
     a2 = _FakeControlPlaneAdapter(shared)
@@ -943,15 +972,41 @@ def selftest() -> int:
     )
 
     shared = _SharedRemote(control, main, genesis)
-    bad_provenance = _FakeControlPlaneAdapter(shared, verified=False)
+    bad_authority = _FakeControlPlaneAdapter(shared, verified=False)
     _expect(
         AuthorizationDenied,
         lambda: _process_one_controlled(
-            adapter=bad_provenance,
+            adapter=bad_authority,
             envelope=env,
             now=activated + timedelta(hours=1),
             now_tick=1,
-            claim_id="bad-prov",
+            claim_id="bad-authority",
+        ),
+    )
+
+    shared = _SharedRemote(control, main, genesis)
+    forged_decision_source = _FakeControlPlaneAdapter(shared, decision_provenance_valid=False)
+    _expect(
+        AuthorizationDenied,
+        lambda: _process_one_controlled(
+            adapter=forged_decision_source,
+            envelope=env,
+            now=activated + timedelta(hours=1),
+            now_tick=1,
+            claim_id="forged-decision",
+        ),
+    )
+
+    shared = _SharedRemote(control, main, genesis)
+    bad_worker_env = _envelope(actor="forged-worker")
+    _expect(
+        AuthorizationDenied,
+        lambda: _process_one_controlled(
+            adapter=_FakeControlPlaneAdapter(shared),
+            envelope=bad_worker_env,
+            now=activated + timedelta(hours=1),
+            now_tick=1,
+            claim_id="bad-worker",
         ),
     )
 
@@ -997,8 +1052,7 @@ def selftest() -> int:
     assert out2["terminal_count"] == 1
     assert len(out2["counted_receipt_ids"]) == 1
     assert shared.high_water == 1
-    again = reconcile_terminal_receipts(out2, shared.r1_state)
-    assert again == out2
+    assert reconcile_terminal_receipts(out2, shared.r1_state) == out2
 
     tampered = copy.deepcopy(shared.control)
     tampered["terminal_count"] = 0
@@ -1023,6 +1077,10 @@ def selftest() -> int:
         "RAW_GITHUB_EVENT_COMMENT_URL_NOT_AUTHORITY",
         "TRUSTED_AUTHORITY_CONTEXT_NOT_CALLER_INJECTABLE_ON_CONTROLLED_PATH",
         "TRUSTED_AUTHORITY_PROVENANCE_FAIL_CLOSED",
+        "CALLER_SUPPLIED_AUTHORIZATION_DECISIONS_REJECTED_AT_ENQUEUE_SCHEMA",
+        "CANONICAL_ADAPTER_SUPPLIES_AUTHORIZATION_DECISION_OBJECTS",
+        "FORGED_BUT_OTHERWISE_VALID_ALLOW_DECISION_INJECTION_DENIED",
+        "AUTHORIZATION_DECISION_PAYLOAD_DIGEST_ENFORCED",
         "REMOTE_SINGLE_INVOCATION_CAS_SHARED_BACKEND_REJECTS_SECOND",
         "STALE_CONTROL_PLANE_CLAIM_REJECTED",
         "CROSS_STORE_RECEIPT_RECONCILIATION_AFTER_CRASH",
