@@ -32,6 +32,8 @@ jobs:
         run: |
           echo "base=${{ github.event.pull_request.base.sha }}"
           echo "head=${{ github.event.pull_request.head.sha }}"
+          echo "base_ref=${{ github.base_ref }}"
+          echo "head_ref=${{ github.head_ref }}"
           git rev-parse HEAD
 
       - name: Determine validation versus one-shot trigger
@@ -39,12 +41,15 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           trigger="governance/MULTIVERSE_R1_LIVE_CANARY_TRIGGER_ONCE_20260821_v1.json"
+          required_head="agent/r1-live-canary-trigger-once-20260821-v1"
           git diff --name-only "$BASE_SHA" "$HEAD_SHA" | sed '/^$/d' > /tmp/r1_changed_files.txt
           cat /tmp/r1_changed_files.txt
           count="$(wc -l < /tmp/r1_changed_files.txt | tr -d ' ')"
-          if [ "$count" = "1" ] && [ "$(cat /tmp/r1_changed_files.txt)" = "$trigger" ]; then
+          if [ "$count" = "1" ] && [ "$(cat /tmp/r1_changed_files.txt)" = "$trigger" ] && [ "$BASE_REF" = "main" ] && [ "$HEAD_REF" = "$required_head" ]; then
             echo "mode=live" >> "$GITHUB_OUTPUT"
           else
             echo "mode=validation" >> "$GITHUB_OUTPUT"
@@ -66,8 +71,12 @@ jobs:
           assert auth["status"] == "CANARY_FIXTURE_ONLY_NOT_PRODUCTION_AUTHORITY"
           assert all(x["owner_gate_ref"] is None for x in auth["decisions"].values())
           assert all(x["permission_class_requested"] in {"P0_READ_PUBLIC_OR_CANONICAL", "P1_REVERSIBLE_INTERNAL_WRITE"} for x in auth["decisions"].values())
-          assert contract["one_shot_trigger"]["max_execution_count"] == 1
-          assert contract["one_shot_trigger"]["automatic_retry"] is False
+          trigger = contract["one_shot_trigger"]
+          assert trigger["max_execution_count"] == 1
+          assert trigger["automatic_retry"] is False
+          assert trigger["required_base_branch"] == "main"
+          assert trigger["required_head_branch"] == "agent/r1-live-canary-trigger-once-20260821-v1"
+          assert trigger["different_head_branch_cannot_activate"] is True
           assert contract["runtime_authorization"]["owner_gate_reused_as_operation_grant"] is False
           assert contract["workload"]["network_source_collection"] is False
           assert contract["workload"]["repository_business_state_write"] is False
@@ -95,6 +104,7 @@ jobs:
           assert "types: [opened]" in workflow
           assert "contents: read" in workflow
           assert "GITHUB_RUN_ATTEMPT" in workflow
+          assert "agent/r1-live-canary-trigger-once-20260821-v1" in workflow
           PY
 
       - name: Run framework selftest without live trigger
@@ -117,8 +127,12 @@ jobs:
         if: steps.mode.outputs.mode == 'live'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$BASE_REF" = "main"
+          test "$HEAD_REF" = "agent/r1-live-canary-trigger-once-20260821-v1"
           python - <<'PY'
           import json, os
           from pathlib import Path
