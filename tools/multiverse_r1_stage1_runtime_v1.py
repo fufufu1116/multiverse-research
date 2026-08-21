@@ -683,7 +683,8 @@ def _runtime(actor: str, now: datetime, *, valid=True, safe=False) -> Authorizat
 
 def _task_id(cid: str, docs: str) -> str:
     idem = f"source-review:{cid}:{docs}"
-    digest = hashlib.sha256(idem.encode()).hexdigest()
+    encoded = json.dumps(idem, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    digest = hashlib.sha256(encoded).hexdigest()
     return "task-" + digest[:16]
 
 
