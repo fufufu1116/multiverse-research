@@ -1,0 +1,117 @@
+name: Multiverse R1 Source Vertical Slice Candidate CI v1
+
+on:
+  pull_request:
+    paths:
+      - "tools/multiverse_r1_source_vertical_slice_v2.py"
+      - "tools/multiverse_r1_auth_v1.py"
+      - "tools/multiverse_r1_state_v1.py"
+      - "tools/multiverse_r1_engine_v1.py"
+      - "governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json"
+      - "governance/MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_IMPLEMENTATION_CONTRACT_20260821_v1.json"
+      - ".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r1-candidate-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Show exact head
+        run: git rev-parse HEAD
+
+      - name: Validate implementation contract and Owner Gate receipt
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          gate = json.loads(Path("governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json").read_text())
+          contract = json.loads(Path("governance/MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_IMPLEMENTATION_CONTRACT_20260821_v1.json").read_text())
+          assert gate["status"] == "OWNER_APPROVED_SCOPE_SPECIFIC_R1_FORMAL_IMPLEMENTATION_ONLY"
+          assert gate["runtime_activation_authorized"] is False
+          assert gate["source_or_scientific_permission_expansion"] is False
+          assert set(gate["auditor_conditions_bound"]) == {"A", "B", "C", "D"}
+          assert contract["status"] == "FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_GATED_NOT_RUNTIME_ACTIVATED"
+          rte = contract["reliable_task_execution"]
+          assert rte["exactly_once_claim"] is False
+          assert "checkpoint and failure accounting require the current lease owner" in rte["task_mutation_fencing_rule"]
+          assert "lease acquisition, checkpoint, failure accounting" in rte["all_task_write_canonical_freshness_rule"]
+          assert "parent-directory-fsync" in rte["durability_claim_boundary"]
+          assert contract["authorization"]["string_or_boolean_allow_shortcut_permitted"] is False
+          assert contract["authorization"]["implementation_owner_gate_is_not_runtime_operation_grant"] is True
+          assert contract["authorization"]["source_review_commit_classification"].startswith("P1_REVERSIBLE_INTERNAL_WRITE")
+          assert contract["owner_exception_view"]["approval_authority"] == "NONE"
+          assert contract["runtime"]["scheduler_included"] is False
+          assert contract["runtime"]["always_on_source_watcher_included"] is False
+          assert contract["runtime"]["network_collection_included"] is False
+          assert contract["runtime"]["runtime_activation_authorized"] is False
+          PY
+
+      - name: Reject network collectors schedule triggers and implementation-gate runtime reuse
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          paths = [
+              "tools/multiverse_r1_source_vertical_slice_v2.py",
+              "tools/multiverse_r1_auth_v1.py",
+              "tools/multiverse_r1_state_v1.py",
+              "tools/multiverse_r1_engine_v1.py",
+          ]
+          code = "\n".join(Path(p).read_text() for p in paths)
+          for forbidden in ("import requests", "import httpx", "import urllib", "import socket", "5365031899"):
+              assert forbidden not in code, forbidden
+          assert "P5_PROHIBITED" in code
+          assert "AUTH_ACTOR_MISMATCH" in code
+          assert "AUTH_GRANT_INVALID_OR_REVOKED" in code
+          assert "RECEIPT_IDENTITY" in code
+          state_code = Path("tools/multiverse_r1_state_v1.py").read_text()
+          assert "_fsync_parent_dir(self.root)" in state_code
+          assert "os.O_DIRECTORY" in state_code
+          engine_code = Path("tools/multiverse_r1_engine_v1.py").read_text()
+          assert "def checkpoint(self,*,current_main,task_id,worker_id,lease_epoch,now_tick" in engine_code
+          assert "def record_failure(self,*,current_main,task_id,worker_id,lease_epoch,now_tick" in engine_code
+          assert "def acquire_lease(self,*,current_main,task_id,worker_id" in engine_code
+          workflow = Path(".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml").read_text()
+          forbidden_schedule = "sche" + "dule:"
+          forbidden_cron = "cr" + "on:"
+          assert forbidden_schedule not in workflow
+          assert forbidden_cron not in workflow
+          PY
+
+      - name: Run dedicated R1 fake-worker acceptance harness including auditor gap cases
+        run: |
+          output="$(python tools/multiverse_r1_source_vertical_slice_v2.py --selftest)"
+          printf '%s\n' "$output"
+          for required in \
+            'AUTH_ACTOR_BINDING_ENFORCED=true' \
+            'P5_DENY_PRECEDENCE_ENFORCED=true' \
+            'GRANT_VALIDITY_BINDING_ENFORCED=true' \
+            'SAFE_MODE_DENY_ENFORCED=true' \
+            'TASK_AND_RECEIPT_SCHEMA_STRICT=true' \
+            'RECEIPT_IDENTITY_STRICT=true' \
+            'RECEIPT_SCALAR_TYPES_STRICT=true' \
+            'BOOL_AS_INT_REJECTED=true' \
+            'FENCING_BEFORE_COMMIT_SUCCESS=true' \
+            'STALE_WORKER_CHECKPOINT_DENIED=true' \
+            'STALE_WORKER_FAILURE_ACCOUNTING_DENIED=true' \
+            'CANONICAL_FRESHNESS_ALL_TASK_WRITES=true' \
+            'PARENT_DIRECTORY_FSYNC_AFTER_REPLACE=true' \
+            'EXACTLY_ONCE_CLAIM=false' \
+            'NETWORK_ACCESS_PERFORMED=false' \
+            'RUNTIME_ACTIVATION_PERFORMED=false' \
+            'MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_SELFTEST_PASS'
+          do
+            printf '%s\n' "$output" | grep -Fx "$required"
+          done
+
+      - name: Confirm no runtime activation entrypoint
+        run: |
+          output="$(python tools/multiverse_r1_source_vertical_slice_v2.py)"
+          test "$output" = "R1_LIBRARY_ONLY_NO_AUTORUN_RUNTIME_ACTIVATION"
