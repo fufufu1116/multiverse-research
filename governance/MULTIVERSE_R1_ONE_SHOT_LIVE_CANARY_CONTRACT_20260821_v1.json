@@ -30,9 +30,10 @@
   "global_single_use": {
     "global_concurrency_group": "multiverse-r1-one-shot-live-canary-global-v1",
     "persistent_consumed_marker_ref": "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1",
-    "marker_target": "TRIGGER_PR_BASE_SHA",
-    "marker_claim": "ATOMIC_CREATE_IF_ABSENT",
+    "marker_target": "UNIQUE_ANNOTATED_TAG_OBJECT_WITH_RUN_ID_PR_NUMBER_AND_TRIGGER_PR_BASE_SHA",
+    "marker_claim": "FORCE_WITH_LEASE_EXPECT_REMOTE_REF_ABSENT_AND_PUSH_UNIQUE_TAG_OBJECT",
     "claim_must_fail_if_marker_exists": true,
+    "same_target_noop_bypass_prevented_by_unique_marker_object": true,
     "claim_occurs_before_r1_workload": true,
     "marker_persists_after_success_or_failure": true,
     "second_distinct_qualifying_pr_must_fail": true,
@@ -68,7 +69,8 @@
   "required_canary_sequence": [
     "verify trigger PR base/head repository/head branch/exact one-file identity",
     "verify GitHub run attempt equals one",
-    "atomically claim persistent global consumed marker before workload",
+    "create unique annotated consumption tag object bound to run identity and canonical base SHA",
+    "atomically claim persistent global consumed marker with expected-absent lease before workload",
     "inspect synthetic candidate",
     "acquire worker lease",
     "write checkpoint",
