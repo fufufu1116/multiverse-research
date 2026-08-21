@@ -6,6 +6,11 @@ on:
       - '.github/workflows/keirin-limited-synthetic-batch3-c0-c1-n1-v1-ci.yml'
       - 'governance/KEIRIN_LIMITED_SYNTHETIC_BATCH3_C0_C1_N1_MANIFEST_20260821_v1.json'
       - 'tools/keirin_synthetic_c0_c1_n1_comparison_v1.py'
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-limited-synthetic-batch3-c0-c1-n1-v1-ci.yml'
+      - 'governance/KEIRIN_LIMITED_SYNTHETIC_BATCH3_C0_C1_N1_MANIFEST_20260821_v1.json'
+      - 'tools/keirin_synthetic_c0_c1_n1_comparison_v1.py'
   workflow_dispatch:
 
 permissions:
