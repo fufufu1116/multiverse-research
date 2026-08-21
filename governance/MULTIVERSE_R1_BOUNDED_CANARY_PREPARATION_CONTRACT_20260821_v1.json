@@ -1,0 +1,57 @@
+{
+  "record": "MULTIVERSE_R1_BOUNDED_CANARY_PREPARATION_CONTRACT_20260821_v1",
+  "status": "BOUNDED_CANARY_PREPARATION_REHEARSAL_ONLY_NOT_RUNTIME_ACTIVATION",
+  "implementation_anchor": "af7b8ded52678846a87ba5d565f30c6f0554624b",
+  "canonical_design_anchor": "ddf0b808aa8e4014dad59dd350c225970f916b89",
+  "implementation_owner_gate_comment": 5365031899,
+  "implementation_auditor_micro_pass_comment": 5365600482,
+  "purpose": "Rehearse the audited R1 vertical slice under deterministic fake-worker failure scenarios before any runtime activation decision.",
+  "environment": {
+    "data": "SYNTHETIC_FAKE_SOURCE_METADATA_ONLY",
+    "storage": "TEMPORARY_LOCAL_DIRECTORY_ONLY",
+    "network": false,
+    "scheduler": false,
+    "always_on_worker": false,
+    "external_side_effects": false,
+    "runtime_activation": false
+  },
+  "bounded_scenarios": [
+    "duplicate candidate delivery converges to one task",
+    "worker A checkpoints then disappears; worker B takes over after lease expiry",
+    "superseded worker A cannot checkpoint, consume retry budget, dead-letter, or commit",
+    "worker B commits; simulated lost ACK plus process restart converges to the same durable receipt",
+    "changed source-document hash makes the older task stale and unable to commit",
+    "stale canonical identity fails before task mutation",
+    "safe mode denies governed write without staging a candidate",
+    "current valid worker can exhaust finite retry budget and task becomes dead-lettered"
+  ],
+  "success_invariants": [
+    "no duplicate committed outcome",
+    "old worker cannot mutate post-takeover task state",
+    "checkpoint survives takeover and can advance only under current lease",
+    "same-payload retry after process restart returns the same durable receipt",
+    "old task cannot commit after source-document version drift",
+    "stale canonical identity and safe mode fail closed",
+    "dead-letter is explicit rather than silent success",
+    "Owner Exception View is not used as approval authority"
+  ],
+  "claim_boundary": "This rehearsal is deterministic local fake-worker evidence only. It is not production runtime evidence, not a live canary, and not evidence of provider/source admissibility or scientific edge.",
+  "protected_boundaries": {
+    "source_admission": "UNAUTHORIZED",
+    "real_or_live_PRE_collection_or_use": "UNAUTHORIZED",
+    "external_provider_contact": "UNAUTHORIZED",
+    "new_spend_or_contract": "UNAUTHORIZED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR15": "QUARANTINED_NOT_ADMITTED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "automated_bulk_collection": "UNAUTHORIZED",
+    "terms_or_access_control_bypass": "PROHIBITED",
+    "synthetic_to_real_edge_or_roi_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate_if_rehearsal_passes": "INDEPENDENT_REVIEW_OF_BOUNDED_CANARY_PREPARATION_EVIDENCE_BEFORE_ANY_LIVE_OR_RUNTIME_ACTIVATION_DECISION",
+  "runtime_activation_authorized_now": false,
+  "fail_closed": true
+}
