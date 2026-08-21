@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_LIMITED_SYNTHETIC_BATCH2_W0_W4_SWEEP_MANIFEST_20260821_v1",
+  "status": "EXECUTED_PASS_SYNTHETIC_ENGINEERING_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authorized_base_main": "52496512e44aabfaad11f0fb330688c54dcc86f8",
+  "authorization_state": {
+    "vnext_generation": 12,
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "owner_gate_blob": "eba1c776da5efded3b99dfa2cb40271f79efa823"
+  },
+  "existing_scientific_code": {
+    "digital_twin_path": "v3/historical_all_market/new_lineage/digital_twin_v1.py",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "must_remain_unmodified_by_this_batch": true
+  },
+  "test_harness": "tools/keirin_synthetic_w0_w4_invariant_sweep_v1.py",
+  "batch_scope": "W0-W4 source-independent synthetic stress/failure diagnostics only",
+  "execution_evidence": {
+    "pr": 35,
+    "executed_pr_head": "033354f10fa29bdd90405d46e493e06e1ea941c6",
+    "workflow_run": 32434538293,
+    "workflow_job": 96632929503,
+    "job_conclusion": "success",
+    "pass_marker": "KEIRIN_SYNTHETIC_W0_W4_INVARIANT_SWEEP_PASS"
+  },
+  "observed_results": {
+    "case_count": 128,
+    "worlds": ["W0", "W1", "W2", "W3", "W4"],
+    "world_evaluations": 640,
+    "expected_support_per_world": 210,
+    "max_probability_mass_error": 2.220446049250313e-16,
+    "minimum_observed_probability": 5.481336858899975e-07,
+    "deterministic_repeat_checks": 40,
+    "observed_event_formats": ["STANDARD_FI_FII_7"],
+    "observed_bank_lengths_m": [333, 400, 500]
+  },
+  "checks": [
+    "standard 7-rider format remained explicit",
+    "latent simulator skill did not leak into PRE",
+    "ordered-top3 support size remained complete",
+    "probability mass remained one within tolerance",
+    "finishers remained distinct",
+    "probabilities remained finite and nonnegative",
+    "repeated identical synthetic world calls were deterministic"
+  ],
+  "protected_boundary_truths": {
+    "locked_legacy_synthetic_holdout_used": false,
+    "c0_c1_n1_multiworld_locked_grid_used": false,
+    "real_live_input_collection": false,
+    "economics": false,
+    "real_world_validation": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "holdout_access": false,
+    "scientific_segment_c_scoring_count": 0,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false,
+    "synthetic_is_real_world_edge_evidence": false
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "real_world_edge_or_roi_evidence": false,
+  "model_or_scoring_semantics_changed": false,
+  "fail_closed": true
+}
