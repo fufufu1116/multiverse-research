@@ -1,0 +1,115 @@
+{
+  "record": "MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_CAS_PREACTIVATION_CONTRACT_20260821_v1",
+  "status": "PREACTIVATION_GITHUB_RUNTIME_CAS_ADAPTER_CANDIDATE_RUNTIME_OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "stacked_parent": {
+    "pr": 59,
+    "audited_stage1_protocol_head": "67e1b98b8283e93084f26f50efae210a9793709f",
+    "independent_auditor_result_comment": 5369794582,
+    "protocol_micro_verdict": "PASS",
+    "parent_head_must_not_move": true
+  },
+  "owner_gate": {
+    "record": "governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json",
+    "approval_comment": 5367308652,
+    "scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1_ONLY",
+    "material_scope_expansion": false
+  },
+  "purpose": "Implement only the concrete GitHub runtime-state compare-and-swap ledger dependency required before Stage-1 activation. Do not issue authorization decisions and do not activate or create the production runtime branch.",
+  "implementation": {
+    "file": "tools/multiverse_r1_stage1_github_runtime_cas_v1.py",
+    "runtime_branch": "runtime/r1-source-audit-stage1-v1",
+    "runtime_state_path": "runtime/r1_source_audit_stage1/exceptions/control_plane/runtime_ledger.json",
+    "state_path_reason": "The independently audited Stage-1 protocol head permits only cache/tasks/receipts/exceptions runtime prefixes. The control-plane ledger is stored under the existing exceptions prefix so the audited four-file protocol head does not move.",
+    "writes_to_main_or_governance": false,
+    "production_runtime_branch_created_by_candidate": false,
+    "runtime_activation_performed_by_candidate": false
+  },
+  "cas_contract": {
+    "remote_current_main_fresh_read_before_every_ledger_mutation": true,
+    "runtime_control_canonical_main_must_equal_fresh_remote_main": true,
+    "expected_old_head_required": true,
+    "new_runtime_commit_must_be_fast_forward_descendant_of_expected_old_head": true,
+    "branch_update": "git push with --force-with-lease=<runtime-ref>:<expected-old-head> after explicit local fast-forward ancestry check",
+    "stale_expected_head_behavior": "DENY_FAIL_CLOSED",
+    "stale_or_nonowner_claim_may_persist": false,
+    "branch_reset_force_push_history_rewrite_by_adapter": false,
+    "runtime_genesis_ancestry_required": true,
+    "every_path_touched_since_runtime_genesis_must_pass_existing_stage1_validate_write_path": true
+  },
+  "append_only_journal": {
+    "purpose": "Independent remote evidence for ledger sequence/history and terminal-count high-water.",
+    "ref_pattern": "refs/tags/multiverse-r1-stage1-ledger-v1-<activation-id-digest>-s<8-digit-sequence>-t<8-digit-terminal-count>",
+    "tag_type": "LIGHTWEIGHT_IMMUTABLE_CONTROL_PLANE_REF",
+    "journal_ref_claim": "EXPECTED_ABSENT_FORCE_WITH_LEASE",
+    "journal_claim_occurs_before_runtime_branch_advance": true,
+    "journal_delete_or_rewrite_by_adapter": false,
+    "sequence_must_be_gap_free_from_1": true,
+    "latest_journal_target_must_equal_current_runtime_head": true,
+    "journal_terminal_high_water_must_equal_current_control_terminal_count": true,
+    "crash_after_journal_claim_before_branch_advance": "FAIL_CLOSED_ON_NEXT_LOAD_EXPLICIT_REPAIR_REQUIRED_NO_AUTO_RESUME",
+    "rollback_to_older_runtime_head_without_deleting_journal": "DETECTED_AND_DENIED",
+    "history_rewrite_to_different_commit_with_same_payload": "DETECTED_BY_LATEST_JOURNAL_TARGET_MISMATCH",
+    "authority_role": "NONE_NONCANONICAL_CONTROL_PLANE_EVIDENCE_ONLY"
+  },
+  "mutation_rules": {
+    "claim_invocation": "durable remote CAS before R1 side effects; claimed control must preserve activation identity and bind exact claim_id",
+    "persist_r1_state": "requires current durable claim ownership; stale/nonowner denied; each mutation gets a new journal sequence and CAS commit",
+    "release_invocation": "requires current durable claim ownership; claim must be cleared; terminal count may only increase; paused state may not auto-resume",
+    "terminal_receipt_history": "counted receipt ids are append-only and terminal_count cannot decrease"
+  },
+  "authority_boundary": {
+    "authorization_decision_issuer_in_this_candidate": "NONE",
+    "canonical_authority_decision_trusted_time_adapter_implemented_here": false,
+    "reason": "Fresh Read found no accepted generic production Stage-1 authority source that may safely be treated as a live grant/decision issuer. The existing one-shot canary authorization fixture explicitly says NOT_PRODUCTION_AUTHORITY and the generic vNext authorization/safe-mode artifacts are candidate/noncanonical.",
+    "missing_or_unverifiable_authority_behavior": "STAGE1_REMAINS_OFF_DENY_FAIL_CLOSED",
+    "canary_fixture_reuse_as_stage1_authority": false,
+    "stage1_local_grant_or_revocation_registry": false,
+    "owner_gate_reused_as_routine_operation_grant": false
+  },
+  "selftest_evidence_required": [
+    "two callers sharing one remote expected-old-head cannot both claim",
+    "stale or nonowner R1 persistence is rejected",
+    "append-only journal sequence and terminal high-water advance with state",
+    "external runtime branch rollback is detected by journal mismatch",
+    "runtime commit touching governance or another forbidden path is rejected",
+    "selftest uses only temporary local bare Git remotes",
+    "production runtime branch is not created",
+    "runtime activation is not performed",
+    "authorization decision issuance is not performed"
+  ],
+  "ci_boundary": {
+    "pull_request_only": true,
+    "contents_permission": "read",
+    "scheduler": false,
+    "workflow_dispatch": false,
+    "push_trigger": false,
+    "production_runtime_write": false,
+    "network_source_collection": false,
+    "external_provider_contact": false
+  },
+  "remaining_preactivation_dependencies": [
+    "independent Lab review of this exact GitHub runtime-CAS adapter candidate",
+    "independent Implementation Auditor review of this exact GitHub runtime-CAS adapter candidate",
+    "concrete canonical authority/decision/trusted-time adapter with an accepted live authority source or equivalent immutable issuance/membership attestation",
+    "independent review of that authority adapter",
+    "final unchanged exact-head binding and activation receipt before any runtime branch creation or activation"
+  ],
+  "protected_boundaries": {
+    "runtime_activation_authorized_now": false,
+    "production_runtime_branch_present_now": false,
+    "activation_receipt_present_now": false,
+    "scheduler_or_always_on_worker": false,
+    "network_or_public_web_source_collection": false,
+    "source_admission": false,
+    "real_live_PRE": false,
+    "external_contact": false,
+    "result_payout": false,
+    "econ_holdout1000": false,
+    "pr15": false,
+    "scientific_or_model_promotion": false,
+    "spend_or_wagering": false
+  },
+  "owner_action_now": "NONE",
+  "fail_closed": true
+}
