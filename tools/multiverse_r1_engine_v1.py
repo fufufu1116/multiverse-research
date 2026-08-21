@@ -8,11 +8,19 @@ class FencingConflict(RuntimeError):pass
 class ReceiptConflict(RuntimeError):pass
 class DeadLettered(RuntimeError):pass
 def _digest(v):return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()).hexdigest()
+def _tick(v,name,positive=False):
+    if not isinstance(v,int) or isinstance(v,bool) or v < (1 if positive else 0):raise ValueError(name+"_INVALID")
 class R1Engine:
     def __init__(self,store:PersistentStore,canonical_main:str):self.store=store;self.canonical_main=canonical_main
     def _main(self,m):
         if m!=self.canonical_main:raise StaleState("STALE_CANONICAL_MAIN")
     def idem(self,c,h):return f"source-review:{c}:{h}"
+    @staticmethod
+    def _worker(worker_id,auth_runtime):
+        if worker_id!=auth_runtime.actor_instance:raise AuthorizationDenied("WORKER_ACTOR_MISMATCH")
+    @staticmethod
+    def _lease(t,w,e,n):
+        if t["lease_owner"]!=w or t["lease_epoch"]!=e or n>=t["lease_expires_at"]:raise FencingConflict("STALE_EXPIRED_OR_NONOWNER_LEASE")
     def inspect_candidate(self,*,current_main,candidate_id,docs_hash,authorization,auth_runtime):
         self._main(current_main);validate_authorization(authorization,auth_runtime,operation="R1_SOURCE_CACHE_INSPECT_OR_STAGE",target=f"source-candidate:{candidate_id}",permission_class="P1_REVERSIBLE_INTERNAL_WRITE",data_exposure_scope="PUBLIC_TERMS_METADATA_ONLY");idem=self.idem(candidate_id,docs_hash)
         def mutate(s):
@@ -29,14 +37,18 @@ class R1Engine:
             if idem in s["task_by_idempotency"]:return s["task_by_idempotency"][idem]
             tid="task-"+_digest(idem)[:16];s["tasks"][tid]={"task_id":tid,"idempotency_key":idem,"candidate_id":candidate_id,"input_hash":docs_hash,"attempt_count":0,"retry_budget":2,"checkpoint_ref":None,"lease_owner":None,"lease_expires_at":None,"heartbeat_at":None,"lease_epoch":0,"expected_cache_version":x["version"],"dead_letter_reason":None,"authorization_ref":authorization["authorization_decision_id"],"durable_receipt_ref":None};s["task_by_idempotency"][idem]=tid;return tid
         return self.store.transact(mutate)
-    def checkpoint(self,*,task_id,checkpoint_ref,authorization,auth_runtime):
+    def checkpoint(self,*,current_main,task_id,worker_id,lease_epoch,now_tick,checkpoint_ref,authorization,auth_runtime):
+        self._main(current_main);self._worker(worker_id,auth_runtime);_tick(lease_epoch,"lease_epoch");_tick(now_tick,"now_tick")
+        if not isinstance(checkpoint_ref,str) or not checkpoint_ref:raise SchemaError("CHECKPOINT_REF_INVALID")
         validate_authorization(authorization,auth_runtime,operation="R1_TASK_CHECKPOINT",target=f"task:{task_id}",permission_class="P1_REVERSIBLE_INTERNAL_WRITE",data_exposure_scope="INTERNAL_R1_STATE_ONLY")
         def mutate(s):
-            if task_id not in s["tasks"]:raise StaleState("TASK_NOT_FOUND")
-            s["tasks"][task_id]["checkpoint_ref"]=checkpoint_ref
+            t=s["tasks"].get(task_id)
+            if not t:raise StaleState("TASK_NOT_FOUND")
+            if t["dead_letter_reason"]:raise DeadLettered(t["dead_letter_reason"])
+            self._lease(t,worker_id,lease_epoch,now_tick);t["checkpoint_ref"]=checkpoint_ref;t["heartbeat_at"]=now_tick
         self.store.transact(mutate)
-    def acquire_lease(self,*,task_id,worker_id,now_tick,lease_ticks,authorization,auth_runtime):
-        if worker_id!=auth_runtime.actor_instance:raise AuthorizationDenied("WORKER_ACTOR_MISMATCH")
+    def acquire_lease(self,*,current_main,task_id,worker_id,now_tick,lease_ticks,authorization,auth_runtime):
+        self._main(current_main);self._worker(worker_id,auth_runtime);_tick(now_tick,"now_tick");_tick(lease_ticks,"lease_ticks",positive=True)
         validate_authorization(authorization,auth_runtime,operation="R1_TASK_ACQUIRE_LEASE",target=f"task:{task_id}",permission_class="P1_REVERSIBLE_INTERNAL_WRITE",data_exposure_scope="INTERNAL_R1_STATE_ONLY")
         def mutate(s):
             t=s["tasks"].get(task_id)
@@ -45,20 +57,19 @@ class R1Engine:
             if t["lease_owner"] is not None and now_tick<t["lease_expires_at"]:raise FencingConflict("LEASE_ALREADY_ACTIVE")
             t["lease_epoch"]+=1;t["lease_owner"]=worker_id;t["heartbeat_at"]=now_tick;t["lease_expires_at"]=now_tick+lease_ticks;return t["lease_epoch"]
         return self.store.transact(mutate)
-    @staticmethod
-    def _lease(t,w,e,n):
-        if t["lease_owner"]!=w or t["lease_epoch"]!=e or n>=t["lease_expires_at"]:raise FencingConflict("STALE_EXPIRED_OR_NONOWNER_LEASE")
-    def record_failure(self,*,task_id,reason,authorization,auth_runtime):
+    def record_failure(self,*,current_main,task_id,worker_id,lease_epoch,now_tick,reason,authorization,auth_runtime):
+        self._main(current_main);self._worker(worker_id,auth_runtime);_tick(lease_epoch,"lease_epoch");_tick(now_tick,"now_tick")
+        if not isinstance(reason,str) or not reason:raise SchemaError("FAILURE_REASON_INVALID")
         validate_authorization(authorization,auth_runtime,operation="R1_TASK_RECORD_FAILURE",target=f"task:{task_id}",permission_class="P1_REVERSIBLE_INTERNAL_WRITE",data_exposure_scope="INTERNAL_R1_STATE_ONLY")
         def mutate(s):
             t=s["tasks"].get(task_id)
             if not t:raise StaleState("TASK_NOT_FOUND")
-            t["attempt_count"]+=1
+            if t["dead_letter_reason"]:raise DeadLettered(t["dead_letter_reason"])
+            self._lease(t,worker_id,lease_epoch,now_tick);t["attempt_count"]+=1;t["heartbeat_at"]=now_tick
             if t["attempt_count"]>t["retry_budget"]:t["dead_letter_reason"]=reason
         self.store.transact(mutate)
     def commit_review(self,*,current_main,task_id,worker_id,lease_epoch,now_tick,committed_state,verdict_reason,evidence_refs,authorization,auth_runtime):
-        self._main(current_main)
-        if worker_id!=auth_runtime.actor_instance:raise AuthorizationDenied("WORKER_ACTOR_MISMATCH")
+        self._main(current_main);self._worker(worker_id,auth_runtime);_tick(lease_epoch,"lease_epoch");_tick(now_tick,"now_tick")
         validate_authorization(authorization,auth_runtime,operation="R1_SOURCE_REVIEW_COMMIT",target=f"task:{task_id}",permission_class="P1_REVERSIBLE_INTERNAL_WRITE",data_exposure_scope="PUBLIC_TERMS_METADATA_ONLY")
         try:state=AuditState(committed_state)
         except Exception as exc:raise SchemaError("COMMIT_ENUM") from exc
