@@ -1,6 +1,6 @@
 # Multiverse 競輪ver — いまここ
 
-最終更新: 2026-08-21 09:10 JST
+最終更新: 2026-08-21 09:12 JST
 
 この1枚は **主向けの現在地表示**。
 NOW / CURRENT / LATEST の技術確認は必ず GitHub Fresh Read を優先する。
@@ -63,25 +63,24 @@ Lab（検証室）が確認した科学head:
 
 ## 今やっていること
 
-科学実験を進めている段階ではありません。
+Foundation受理後に残った状態表示の矛盾整理は **完了しました**。
 
-Foundation受理後に残った状態表示の矛盾を整理し、
-**「競輪は停止中」という正本の状態を、機械向けCurrent Stateと主向け表示の両方で一致させる作業**をしています。
+- fixed-path `CURRENT_STATE_KEIRIN.json`: PR #29で `PAUSED` へ同期済み
+- 主向け `KEIRIN_NOW.md`: PR #30で停止状態へ同期済み
 
-fixed-path `CURRENT_STATE_KEIRIN.json` の同期は完了済み。
-この `KEIRIN_NOW.md` の同期が、残っている主向け表示修理です。
+現在は競輪科学の停止を維持しています。
+表示同期完了だけを理由に、科学実験・データ取得・モデル比較・経済評価を再開しません。
 
 ---
 
 ## 次の門
 
-表示同期が完了した後も、競輪科学は自動では再開しません。
-
-再開するには別途、
+次の段階は、競輪科学を再開するかどうかを決めるための
 **Scientific Execution Authorization Gate（科学実行許可の審査）**
-を正本上で満たす必要があります。
+です。
 
-そのGateが成立するまでは、研究継続を指示する旧文言を実行根拠にしません。
+このGateを設計・確認する段階では、PR #15隔離指標、RESULT/PAYOUT、Holdout、untouched validationを開きません。
+Gateが正本上で成立するまでは、科学実行を開始しません。
 
 ---
 
@@ -89,7 +88,7 @@ fixed-path `CURRENT_STATE_KEIRIN.json` の同期は完了済み。
 
 **今はなし。**
 
-表示同期・証拠整理・不要候補の整理はNo.3側で進めます。
+不要になった旧候補PRの整理と、次のGateに必要な前提確認はNo.3側で進めます。
 
 詳細ルール: `AI_COUNCIL.md`
 科学的Current State: `v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json`
