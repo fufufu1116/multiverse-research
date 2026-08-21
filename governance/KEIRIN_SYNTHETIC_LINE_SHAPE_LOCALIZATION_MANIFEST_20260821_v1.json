@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_MANIFEST_20260821_v1",
+  "status": "AUTHORIZED_SYNTHETIC_DIAGNOSTIC_EXECUTED_PASS",
+  "authorized_base_main": "0403aa5b040b5d61d26d231efaccc8c086b52670",
+  "purpose": "Localize C0/C1/N1 synthetic probability-quality differences by existing seven-rider line topology to detect concentration in one engineered line shape.",
+  "scope": "source-independent Digital Twin W0-W4 synthetic failure localization only",
+  "sample_reuse": {
+    "source": "canonical Batch 4 seed blocks",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false
+  },
+  "stratification": {
+    "field": "PRE line topology",
+    "definition": "descending multiset of line sizes per race",
+    "observed_line_shapes": ["2-2-2-1", "3-2-2", "3-3-1"],
+    "shape_race_counts": {
+      "2-2-2-1": 184,
+      "3-2-2": 165,
+      "3-3-1": 163
+    },
+    "synthetic_frequency_is_real_frequency_claim": false
+  },
+  "models": ["C0", "C1", "N1"],
+  "execution_evidence": {
+    "exact_executed_pr_head": "f5f708efefb15ed498647314fb1f22b7c610125d",
+    "workflow_run": 32437139568,
+    "job": 96640530718,
+    "conclusion": "success",
+    "checked_out_equals_pr_event_head": true,
+    "foundation_candidate_run": 32437139630,
+    "foundation_candidate_conclusion": "success",
+    "world_evaluations": 2560,
+    "model_world_evaluations": 7680,
+    "max_C1_N1_rank1_marginal_difference": 5.551115123125783e-16,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16
+  },
+  "result_snapshot": {
+    "n1_minus_c1_shape_world_sign_counts": {
+      "negative_n1_better": 13,
+      "positive_n1_worse": 2,
+      "zero": 0,
+      "total_cells": 15
+    },
+    "n1_minus_c1_expected_log_loss_by_shape": {
+      "2-2-2-1": {
+        "W0": 0.0007559980507130248,
+        "W1": -0.0009770867908862613,
+        "W2": -0.007962788062227055,
+        "W3": -0.005685689917744874,
+        "W4": -0.004495066644699897
+      },
+      "3-2-2": {
+        "W0": -0.000087384094482168,
+        "W1": -0.002045827783401677,
+        "W2": -0.012271014531171076,
+        "W3": -0.00914366070391992,
+        "W4": -0.006320782347433607
+      },
+      "3-3-1": {
+        "W0": 0.001471260976374289,
+        "W1": -0.0004041153700100608,
+        "W2": -0.011596420630483273,
+        "W3": -0.00803485644886237,
+        "W4": -0.006043162296268889
+      }
+    },
+    "overall_equal_world_weight_expected_log_loss_by_shape": {
+      "2-2-2-1": {"C0": 4.750465289202306, "C1": 4.750333345819156, "N1": 4.7466604191461865},
+      "3-2-2": {"C0": 4.847235208406212, "C1": 4.846941243623183, "N1": 4.840967509731101},
+      "3-3-1": {"C0": 4.809712345046467, "C1": 4.809110320809772, "N1": 4.804188862055922}
+    },
+    "diagnostic_interpretation_only": [
+      "N1 scored better than C1 in W1-W4 for every observed engineered seven-rider line shape.",
+      "The relational-world advantage is therefore not concentrated in only one of the 2-2-2-1, 3-2-2, or 3-3-1 synthetic topology motifs.",
+      "W0 remained the only topology-dependent null-like cost: N1 was worse for 2-2-2-1 and 3-3-1 and only trivially better for 3-2-2.",
+      "These topology frequencies and performance patterns are engineered synthetic diagnostics only and are not claims about real-keirin frequency, causality, edge, ROI, or model selection."
+    ]
+  },
+  "reported_diagnostic": "expected ordered-top3 log loss by world, model, and observed line shape, with C1-C0 and N1-C1 deltas",
+  "pass_criterion": "execution and probability invariants only; PASS does not require any topology to favor any model",
+  "scientific_decision_rule": "FAILURE_LOCALIZATION_ONLY_NO_SELECTION_RETUNING_FREEZE_OR_PROMOTION",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "model_or_coefficient_change": false,
+  "real_live_input_collection": false,
+  "economics": false,
+  "real_world_validation": false,
+  "pr15_metrics_access": false,
+  "result_payout_access": false,
+  "holdout_access": false,
+  "scientific_segment_c_scoring_count": 0,
+  "model_promotion": false,
+  "external_provider_contact": false,
+  "real_money_wagering": false,
+  "real_world_edge_or_roi_evidence": false,
+  "fail_closed": true
+}
