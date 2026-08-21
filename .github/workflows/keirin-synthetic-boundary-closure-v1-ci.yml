@@ -1,0 +1,76 @@
+name: Keirin Synthetic Boundary Closure v1 CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-synthetic-boundary-closure-v1-ci.yml'
+      - 'governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json'
+  push:
+    paths:
+      - '.github/workflows/keirin-synthetic-boundary-closure-v1-ci.yml'
+      - 'governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AUTHORIZED_MAIN: 28fdfbb0fbb6863ff40fa962557d7d665cd86ce7
+  AUTH_RECEIPT_BLOB: 4c2e5364ad229a5dd413a19d0cf970c478692584
+  BATCH3_BLOB: 1458682ecf9033e017b1136c580a1055ba395db8
+  BATCH4_BLOB: 6bd86411861501a6bed2f7b9fdc12e27caa0dd34
+  SYNTHESIS_BLOB: 17c8e06faed4537aec6d42e75149331e8e59f533
+  SCRAMBLE_BLOB: fde4b29ea224b77e23f364162ebd2dad93d8a094
+  LINE_SHAPE_BLOB: ee8f05c6f04d79a050c7e092c5892e5bf7d080ca
+
+jobs:
+  boundary-closure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Verify exact canonical evidence sources and limited diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test "$(git rev-parse origin/main)" = "$AUTHORIZED_MAIN"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json")" = "$AUTH_RECEIPT_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_BATCH3_C0_C1_N1_MANIFEST_20260821_v1.json")" = "$BATCH3_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1.json")" = "$BATCH4_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_SYNTHETIC_DIAGNOSTIC_EVIDENCE_SYNTHESIS_20260821_v1.json")" = "$SYNTHESIS_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_SYNTHETIC_STRUCTURE_SCRAMBLE_NEGATIVE_CONTROL_MANIFEST_20260821_v1.json")" = "$SCRAMBLE_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_SYNTHETIC_LINE_SHAPE_LOCALIZATION_MANIFEST_20260821_v1.json")" = "$LINE_SHAPE_BLOB"
+          git diff --name-only "$AUTHORIZED_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-synthetic-boundary-closure-v1-ci.yml
+          governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Validate nonauthorizing closure contract
+        run: |
+          python - <<'PY'
+          import json
+          p='governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json'
+          r=json.load(open(p, encoding='utf-8'))
+          assert r['status']=='NONAUTHORIZING_CURRENT_SYNTHETIC_CAMPAIGN_INFORMATIONALLY_SATURATED'
+          assert r['authority']=='NONE_BEYOND_SUMMARIZING_CANONICAL_SYNTHETIC_EVIDENCE_AND_NONBINDING_WORKFLOW_GUIDANCE'
+          assert r['current_campaign_stop_guidance_nonbinding']['current_limited_synthetic_authorization_revoked'] is False
+          assert r['current_campaign_stop_guidance_nonbinding']['binding_rule_created'] is False
+          for key in ('scope_expansion_authorized_by_this_record','real_live_input_authorized','real_world_validation_authorized','economics_authorized','holdout_opening_authorized','model_promotion_authorized','external_provider_contact_authorized'):
+              assert r[key] is False, (key, r[key])
+          assert r['scientific_segment_c_scoring_count']==0
+          assert r['evidence_class']=='SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          assert r['owner_action_now']=='NONE'
+          assert r['fail_closed'] is True
+          print('KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_CONTRACT_PASS')
+          PY
