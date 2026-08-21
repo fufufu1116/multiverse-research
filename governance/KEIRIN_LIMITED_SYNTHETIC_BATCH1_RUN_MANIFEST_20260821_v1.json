@@ -1,6 +1,6 @@
 {
   "record": "KEIRIN_LIMITED_SYNTHETIC_BATCH1_RUN_MANIFEST_20260821_v1",
-  "status": "AUTHORIZED_SYNTHETIC_BATCH_PENDING_CI_EXECUTION",
+  "status": "EXECUTED_PASS_SYNTHETIC_ENGINEERING_ONLY",
   "canonical_repo": "fufufu1116/multiverse-research",
   "authorized_main": "2496636a8782d195c7e7a7f8899dc9cfe2d7ed67",
   "authorization_state": {
@@ -20,6 +20,15 @@
     "Digital Twin W0-W4 synthetic stress and failure diagnostics only",
     "C0/C1/N1 comparison only inside those synthetic worlds"
   ],
+  "execution_evidence": {
+    "pr": 34,
+    "executed_pr_head": "4756d2b1c04f5e04081f00c19ebd63f94a5d7000",
+    "workflow_run": 32434267212,
+    "workflow_job": 96632136162,
+    "job_conclusion": "success",
+    "synthetic_selftest_pass": true,
+    "batch_terminal_pass": true
+  },
   "execution_environment": {
     "network_input_to_science": false,
     "external_provider_contact": false,
@@ -31,10 +40,27 @@
     "holdout_access": false,
     "pr15_metrics_access": false,
     "scientific_segment_c_scoring_count_before": 0,
-    "scientific_segment_c_scoring_count_after_required": 0
+    "scientific_segment_c_scoring_count_after": 0,
+    "model_promotion": false,
+    "real_money_wagering": false
+  },
+  "observed_terminal_truths": {
+    "EVIDENCE_CLASS": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "REAL_LIVE_INPUT_COLLECTION_PERFORMED": false,
+    "ECONOMICS_PERFORMED": false,
+    "REAL_WORLD_VALIDATION_PERFORMED": false,
+    "PR15_QUARANTINED_METRICS_INSPECTED": false,
+    "RESULT_PAYOUT_ACCESSED": false,
+    "HOLDOUT_ACCESSED": false,
+    "SCIENTIFIC_SEGMENT_C_SCORING_COUNT": 0,
+    "MODEL_PROMOTION_PERFORMED": false,
+    "EXTERNAL_PROVIDER_CONTACT_PERFORMED": false,
+    "REAL_MONEY_WAGERING_PERFORMED": false,
+    "SYNTHETIC_IS_REAL_WORLD_EDGE_EVIDENCE": false
   },
   "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "real_world_edge_or_roi_evidence": false,
   "fail_closed": true,
-  "success_condition": "synthetic_selftest_v1.py prints SYNTHETIC_SELFTEST_PASS at the exact authorized code blob while canonical authorization preconditions remain unchanged",
-  "failure_rule": "A failure is diagnostic evidence only. It must not trigger real-data access, scope expansion, protected-data inspection, model promotion, or automatic tuning outside the authorized synthetic scope."
+  "success_condition": "synthetic_selftest_v1.py printed SYNTHETIC_SELFTEST_PASS at the exact authorized code blob while canonical authorization preconditions remained unchanged",
+  "failure_rule": "A future failure is diagnostic evidence only. It must not trigger real-data access, scope expansion, protected-data inspection, model promotion, or automatic tuning outside the authorized synthetic scope."
 }
