@@ -1,0 +1,127 @@
+{
+  "record": "KEIRIN_SOURCE_PHASE_A_PUBLIC_TERMS_AUDIT_20260821_v1",
+  "status": "PHASE_A_PUBLIC_TERMS_AUDIT_COMPLETE_NO_SOURCE_ADMITTED",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "audited_from_main": "af3682e75d59e07be8b0b8e4ea58ad4fe1ba3484",
+  "authorization_receipt": {
+    "path": "governance/KEIRIN_SOURCE_AUDIT_GATE_ADOPTION_RECEIPT_20260821_v1.json",
+    "git_blob_sha": "7c91dfb8df9f56c58b103c908c3d1c0cd7801429",
+    "required_status": "ACCEPTED_NONAUTHORIZING_PHASE_A_SOURCE_AUDIT_GATE"
+  },
+  "audit_scope": "PUBLIC_TERMS_LICENSE_DOCUMENTATION_AND_SOURCE_SEMANTICS_ONLY_NO_RACE_DATASET_INGESTION",
+  "candidate_findings": [
+    {
+      "candidate": "KEIRIN.JP",
+      "class": "OFFICIAL_PUBLIC_VIEW_ONLY",
+      "public_evidence_urls": [
+        "https://keirin.jp/pc/dfw/portal/guest/policy/index.html"
+      ],
+      "rights_finding": "Site policy states site text, illustrations, photos, video and other information are legally protected and cannot be reproduced or repurposed except uses permitted by law such as private copying or quotation; private-use-range commercial exploitation is also rejected.",
+      "transport_finding": "Public race and profile surfaces exist, but this audit found no public open-data or API license proving storage, automated processing, model training/evaluation and operational reuse rights for the required structural PRE dataset.",
+      "admission_verdict": "NOT_ADMITTED",
+      "reason": "PUBLIC_VISIBILITY_WITHOUT_COMPATIBLE_REUSE_AND_TRANSPORT_RIGHTS"
+    },
+    {
+      "candidate": "WINTICKET",
+      "class": "MODERN_OPERATIONAL_PREDICTION_BENCHMARK_NOT_DATA_SOURCE",
+      "public_evidence_urls": [
+        "https://www.winticket.jp/terms"
+      ],
+      "rights_finding": "Current terms prohibit unauthorized or improper use and include prohibitions on analysis of service programs, unauthorized access and rights-infringing conduct; no public license compatible with harvesting, storage and model-training reuse of race information was identified.",
+      "transport_finding": "Provides race-related information and prediction context, but no admitted structural PRE feed with project-compatible reuse semantics was established.",
+      "admission_verdict": "NOT_ADMITTED_AS_SCIENTIFIC_DATA_SOURCE",
+      "context_verdict": "MAY_REMAIN_EXTERNAL_CONTEXT_ONLY_UNDER_EXISTING_CANONICAL_BOUNDARY"
+    },
+    {
+      "candidate": "RAKUTEN_KDREAMS",
+      "class": "PUBLIC_PRE_DISTRIBUTOR_VIEW_ONLY",
+      "public_evidence_urls": [
+        "https://keirin.kdreams.jp/info/sitepolicy/"
+      ],
+      "rights_finding": "Site policy states site information and other works belong to the provider and prohibits unauthorized reproduction and copying.",
+      "transport_finding": "Historical/public race surfaces may contain useful PRE semantics, but this audit found no public license proving bulk archival, automated model processing or training/evaluation reuse rights.",
+      "admission_verdict": "NOT_ADMITTED",
+      "reason": "REUSE_RIGHTS_NOT_PROVEN"
+    },
+    {
+      "candidate": "TEAM_NAVE_KEIRIN",
+      "class": "AUTHORIZED_THIRD_PARTY_CANDIDATE_NOT_PROVEN",
+      "public_evidence_urls": [
+        "https://www.team-nave.com/system/jp/products/",
+        "https://www.team-nave.com/system/jp/products/ctcapi/help_function.html",
+        "https://www.team-nave.com/system/jp/products/kbdbapi/help_setup.html"
+      ],
+      "rights_finding": "Team-Nave publicly demonstrates paid/licensed database-API and business-plan patterns for other sports, but the public Keirin catalog reviewed here lists KeiRin Tips Ai and CTC/other betting APIs rather than a Keirin historical structural database API.",
+      "transport_finding": "CTC-API is a betting/account API and must not be treated as a historical structural PRE data feed. No public Keirin database feed with line/race-regime/timestamp coverage and compatible reuse terms was proven.",
+      "admission_verdict": "NOT_ADMITTED_NOT_PROVEN",
+      "possible_resolution": "WOULD_REQUIRE_NEW_PUBLIC_DOCUMENTATION_OR_SEPARATE_OWNER_AUTHORIZED_PROVIDER_CONTACT"
+    },
+    {
+      "candidate": "JAPAN_PUBLIC_OPEN_DATA_PORTALS",
+      "class": "OPEN_DATA_DISCOVERY_ROUTE",
+      "public_evidence_urls": [
+        "https://data.e-gov.go.jp/data/ja/api_guide",
+        "https://data.e-gov.go.jp/data/dataset"
+      ],
+      "rights_finding": "e-Gov provides a freely usable metadata API for listed open-data datasets.",
+      "transport_finding": "No Japanese Keirin structural PRE dataset satisfying the project's required line/race-regime/timestamp semantics was located in this public-search audit. This is a search result, not proof that no such dataset can exist.",
+      "admission_verdict": "NO_ADMISSIBLE_KEIRIN_DATASET_LOCATED_IN_THIS_AUDIT"
+    },
+    {
+      "candidate": "PUBLIC_GITHUB_RACE_DATASETS",
+      "class": "PUBLIC_GITHUB_DATASET_WITHOUT_UNDERLYING_DATA_LICENSE",
+      "rights_finding": "Repository visibility or repository-code licensing does not prove that underlying race data are licensed for storage, automated processing or model reuse.",
+      "transport_finding": "No public GitHub dataset is admitted unless underlying provider/data rights and PRE provenance/timestamp semantics independently satisfy the canonical source gate.",
+      "admission_verdict": "NOT_ADMITTED_BY_DEFAULT"
+    }
+  ],
+  "overall_verdict": "NO_PROVIDER_CURRENTLY_ADMISSIBLE_FROM_PUBLIC_TERMS_AND_DOCUMENTATION_ALONE",
+  "blockers_remaining": [
+    "compatible storage/automated-processing/model-evaluation reuse rights",
+    "lawful reproducible point-in-time PRE transport",
+    "race-regime coverage or deterministic fail-closed unknown routing",
+    "observed line grouping/order or clearly labeled expected-line semantics",
+    "stable provenance/version/raw-payload identity",
+    "development-to-prospective semantic continuity"
+  ],
+  "no_contact_path": {
+    "current_known_candidates_exhausted_for_public_terms_only_admission": true,
+    "continue_public_discovery_allowed": true,
+    "provider_contact_authorized": false,
+    "provider_contact_requires_separate_explicit_owner_decision": true
+  },
+  "authority_from_this_audit": {
+    "source_admission": false,
+    "real_or_live_PRE_collection": false,
+    "historical_race_dataset_ingestion": false,
+    "scientific_use_of_external_race_data": false,
+    "automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "payment_or_contract": false,
+    "real_world_validation": false,
+    "untouched_validation": false,
+    "RESULT_PAYOUT_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "PR15_quarantined_metric_access": false,
+    "economics": false,
+    "model_selection": false,
+    "model_freeze_or_promotion": false
+  },
+  "future_gates_preserved": {
+    "Auditor_required_before_actual_source_admission": true,
+    "Owner_Gate_required_for_actual_source_admission": true,
+    "Owner_Gate_required_for_actual_real_PRE_collection_or_use": true,
+    "external_provider_contact_requires_separate_explicit_owner_decision": true
+  },
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "scientific_segment_C_scoring_count": 0,
+    "PR15": "QUARANTINED_NOT_ADMITTED_DO_NOT_INSPECT_FOR_SELECTION",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE",
+  "fail_closed": true
+}
