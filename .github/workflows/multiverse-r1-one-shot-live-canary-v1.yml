@@ -82,7 +82,15 @@ jobs:
           for forbidden in ("import requests", "import httpx", "import urllib", "import socket", "import subprocess", "os.system(", "subprocess."):
               assert forbidden not in runner, forbidden
           workflow = Path(".github/workflows/multiverse-r1-one-shot-live-canary-v1.yml").read_text()
-          for forbidden in ("schedule:", "workflow_dispatch:", "push:", "reopened", "synchronize", "labeled"):
+          forbidden_tokens = [
+              "sche" + "dule:",
+              "workflow_" + "dispatch:",
+              "pu" + "sh:",
+              "re" + "opened",
+              "synch" + "ronize",
+              "lab" + "eled",
+          ]
+          for forbidden in forbidden_tokens:
               assert forbidden not in workflow, forbidden
           assert "types: [opened]" in workflow
           assert "contents: read" in workflow
