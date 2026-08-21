@@ -1,0 +1,73 @@
+name: Keirin Synthetic Evidence Synthesis v1 CI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-synthetic-evidence-synthesis-v1-ci.yml'
+      - 'governance/KEIRIN_SYNTHETIC_DIAGNOSTIC_EVIDENCE_SYNTHESIS_20260821_v1.json'
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-synthetic-evidence-synthesis-v1-ci.yml'
+      - 'governance/KEIRIN_SYNTHETIC_DIAGNOSTIC_EVIDENCE_SYNTHESIS_20260821_v1.json'
+
+permissions:
+  contents: read
+
+env:
+  SOURCE_MAIN: 24138f8e9d6ba59ecfc0a14cf4f9e9937fb6b96c
+  BATCH3_BLOB: 1458682ecf9033e017b1136c580a1055ba395db8
+  BATCH4_BLOB: 6bd86411861501a6bed2f7b9fdc12e27caa0dd34
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  evidence-synthesis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Verify exact source evidence and limited diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "$SOURCE_MAIN"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test "$(git rev-parse "$SOURCE_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_BATCH3_C0_C1_N1_MANIFEST_20260821_v1.json")" = "$BATCH3_BLOB"
+          test "$(git rev-parse "$SOURCE_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1.json")" = "$BATCH4_BLOB"
+          git diff --name-only "$SOURCE_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-synthetic-evidence-synthesis-v1-ci.yml
+          governance/KEIRIN_SYNTHETIC_DIAGNOSTIC_EVIDENCE_SYNTHESIS_20260821_v1.json
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Validate nonauthorizing synthesis contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          p='governance/KEIRIN_SYNTHETIC_DIAGNOSTIC_EVIDENCE_SYNTHESIS_20260821_v1.json'
+          x=json.load(open(p, encoding='utf-8'))
+          assert x['status']=='EVIDENCE_SUMMARY_NONAUTHORIZING'
+          assert x['source_records']['batch3_blob']=='1458682ecf9033e017b1136c580a1055ba395db8'
+          assert x['source_records']['batch4_blob']=='6bd86411861501a6bed2f7b9fdc12e27caa0dd34'
+          assert x['evidence_class']=='SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          assert x['authority']=='NONE_BEYOND_SUMMARIZING_ALREADY_CANONICAL_EVIDENCE'
+          assert x['evidence_saturation_observation']['binding_rule_created'] is False
+          n=x['next_boundary']
+          for key in ('scope_expansion_authorized_by_this_record','holdout_opening_authorized','model_promotion_authorized','real_live_input_authorized','economics_authorized','external_provider_contact_authorized'):
+              assert n[key] is False, key
+          pbs=x['protected_boundary_state']
+          for key in ('locked_legacy_synthetic_holdout_used','fresh_synthetic_holdout_used','pr15_quarantined_metrics_inspected','result_payout_accessed','econ_holdout1000_accessed','real_live_input_collection_performed','model_promotion_performed','real_money_wagering_performed'):
+              assert pbs[key] is False, key
+          assert pbs['scientific_segment_c_scoring_count']==0
+          assert x['owner_action_now']=='NONE'
+          print('KEIRIN_SYNTHETIC_EVIDENCE_SYNTHESIS_PASS')
+          PY
