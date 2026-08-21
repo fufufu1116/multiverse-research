@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """R1 Limited Internal Runtime Stage 1 library.
 
-Dormant by default. The production-shaped path accepts no caller-supplied
-AuthorizationRuntime or authorization decision payloads. An independently
-reviewed control-plane adapter must supply canonical-issued decisions and
-current runtime authority facts as one provenance-attested bundle.
+Dormant by default. Production-shaped execution accepts no caller-supplied
+AuthorizationRuntime, authorization decision payloads, or wall-clock time.
+A reviewed control-plane adapter must supply canonical-issued decisions plus
+current runtime authority facts. Decisions are validated, copied into an
+immutable serialized seal, and only the seal is consumed after adapter re-entry.
 """
 from __future__ import annotations
 
 import argparse
 import copy
 import hashlib
+import inspect
 import json
 import tempfile
 from dataclasses import dataclass
@@ -19,8 +21,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Optional, Protocol
 
 from multiverse_r1_auth_v1 import AuthorizationDenied, AuthorizationRuntime, validate_authorization
-from multiverse_r1_engine_v1 import R1Engine
-from multiverse_r1_state_v1 import AuditState, PersistentStore, StaleState, empty_state, validate_state
+from multiverse_r1_engine_v1 import DeadLettered, FencingConflict, R1Engine, ReceiptConflict
+from multiverse_r1_state_v1 import AuditState, PersistentStore, SchemaError, StaleState, empty_state, validate_state
 
 STAGE_SCHEMA = "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_SCHEMA_v2"
 ENQUEUE_SCHEMA = "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v2"
@@ -35,6 +37,7 @@ MAX_TERMINAL_TASKS = 25
 WINDOW_DAYS = 7
 RETRY_BUDGET = 2
 INVOCATION_LEASE_MINUTES = 5
+
 ALLOWED_PREFIXES = (
     "runtime/r1_source_audit_stage1/cache/",
     "runtime/r1_source_audit_stage1/tasks/",
@@ -58,7 +61,7 @@ ENQUEUE_FIELDS = {
     "verdict_reason",
     "evidence_refs",
 }
-AUTH_KEYS = {"inspect", "lease", "checkpoint", "commit"}
+AUTH_KEYS = {"inspect", "lease", "checkpoint", "failure", "commit"}
 CONTROL_FIELDS = {
     "schema_version",
     "stage_id",
@@ -121,13 +124,26 @@ def _utc(value: str) -> datetime:
     return out.astimezone(timezone.utc)
 
 
+def _aware_utc(value: datetime, code: str) -> datetime:
+    if not isinstance(value, datetime) or value.tzinfo is None:
+        _deny(code)
+    return value.astimezone(timezone.utc)
+
+
+def _json_clone(value: Any) -> Any:
+    try:
+        return json.loads(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+    except Exception as exc:
+        raise AuthorizationDenied("AUTHORIZATION_BUNDLE_NOT_JSON_SERIALIZABLE") from exc
+
+
+def _canonical_json(value: Any) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
 def _decision_digest(enqueue_decision: Mapping[str, Any], operation_decisions: Mapping[str, Any]) -> str:
-    payload = {
-        "enqueue": enqueue_decision,
-        "operations": operation_decisions,
-    }
-    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    return hashlib.sha256(encoded).hexdigest()
+    payload = {"enqueue": enqueue_decision, "operations": operation_decisions}
+    return hashlib.sha256(_canonical_json(payload).encode()).hexdigest()
 
 
 def validate_write_path(branch: str, path: str) -> None:
@@ -164,7 +180,7 @@ def validate_runtime_cache_state(value: Any) -> str:
 
 @dataclass(frozen=True)
 class TrustedAuthorizationBundle:
-    """Decisions plus current authority facts supplied only by control-plane adapter."""
+    """Adapter-issued mutable objects are input only; they are never consumed directly."""
 
     enqueue_decision: dict
     operation_decisions: dict
@@ -175,6 +191,20 @@ class TrustedAuthorizationBundle:
     decision_payload_digest: str
     verified_from_canonical_authority: bool
     decisions_verified_from_canonical_policy: bool
+
+
+@dataclass(frozen=True)
+class SealedAuthorizationBundle:
+    """JSON-sealed decision bytes plus immutable runtime facts."""
+
+    enqueue_decision_json: str
+    operation_decision_jsons: tuple[tuple[str, str], ...]
+    enqueue_runtime: AuthorizationRuntime
+    worker_runtime: AuthorizationRuntime
+    canonical_main: str
+    provenance_ref: str
+    decision_payload_digest: str
+    trusted_now: datetime
 
 
 @dataclass(frozen=True)
@@ -189,7 +219,7 @@ class RemoteSnapshot:
 
 
 class ControlPlaneAdapter(Protocol):
-    """Pre-activation contract for an independently reviewed canonical adapter."""
+    """Pre-activation contract. Concrete live adapter remains separately review-gated."""
 
     def load_snapshot(self) -> RemoteSnapshot: ...
 
@@ -198,7 +228,6 @@ class ControlPlaneAdapter(Protocol):
         *,
         current_main: str,
         envelope: Mapping[str, Any],
-        now: datetime,
     ) -> TrustedAuthorizationBundle: ...
 
     def claim_invocation(
@@ -241,8 +270,7 @@ def empty_control(
         or not _hex40(runtime_genesis)
     ):
         _deny("ACTIVATION_IDENTITY_INVALID")
-    if activated_at.tzinfo is None:
-        _deny("ACTIVATION_TIME_NOT_AWARE")
+    activated_at = _aware_utc(activated_at, "ACTIVATION_TIME_NOT_AWARE")
     return {
         "schema_version": STAGE_SCHEMA,
         "stage_id": STAGE_ID,
@@ -251,7 +279,7 @@ def empty_control(
         "audited_implementation_head": audited_implementation_head,
         "runtime_branch": RUNTIME_BRANCH,
         "runtime_genesis": runtime_genesis,
-        "activated_at": activated_at.astimezone(timezone.utc).isoformat(),
+        "activated_at": activated_at.isoformat(),
         "terminal_count": 0,
         "counted_receipt_ids": [],
         "paused": False,
@@ -321,11 +349,12 @@ def assert_ceiling_and_integrity(
     control: Mapping[str, Any],
     *,
     current_main: str,
-    now: datetime,
+    trusted_now: datetime,
     genesis_is_ancestor: bool,
     remote_high_water_count: int,
 ) -> None:
     validate_control(control)
+    trusted_now = _aware_utc(trusted_now, "TRUSTED_NOW_NOT_OFFSET_AWARE")
     if current_main != control["canonical_main"]:
         _deny("STALE_CANONICAL_MAIN", StaleState)
     if not genesis_is_ancestor:
@@ -338,27 +367,22 @@ def assert_ceiling_and_integrity(
         _deny("STAGE_ALREADY_PAUSED", Stage1Paused)
     if control["terminal_count"] >= MAX_TERMINAL_TASKS:
         _deny("STAGE_TERMINAL_CEILING_REACHED", Stage1Paused)
-    if now.tzinfo is None:
-        _deny("NOW_NOT_OFFSET_AWARE")
-    if now.astimezone(timezone.utc) >= _utc(control["activated_at"]) + timedelta(days=WINDOW_DAYS):
+    if trusted_now >= _utc(control["activated_at"]) + timedelta(days=WINDOW_DAYS):
         _deny("STAGE_TIME_CEILING_REACHED", Stage1Paused)
 
 
-def claim_control(control: Mapping[str, Any], *, claim_id: str, now: datetime) -> dict:
+def claim_control(control: Mapping[str, Any], *, claim_id: str, trusted_now: datetime) -> dict:
     validate_control(control)
+    trusted_now = _aware_utc(trusted_now, "TRUSTED_NOW_NOT_OFFSET_AWARE")
     if not _nonempty(claim_id):
         _deny("INVOCATION_CLAIM_ID_INVALID")
-    if now.tzinfo is None:
-        _deny("NOW_NOT_OFFSET_AWARE")
     existing = control["invocation_claim_id"]
     expiry = control["invocation_claim_expires_at"]
-    if existing is not None and now.astimezone(timezone.utc) < _utc(expiry):
+    if existing is not None and trusted_now < _utc(expiry):
         _deny("SECOND_WORKER_OR_PARALLEL_INVOCATION")
     out = copy.deepcopy(control)
     out["invocation_claim_id"] = claim_id
-    out["invocation_claim_expires_at"] = (
-        now.astimezone(timezone.utc) + timedelta(minutes=INVOCATION_LEASE_MINUTES)
-    ).isoformat()
+    out["invocation_claim_expires_at"] = (trusted_now + timedelta(minutes=INVOCATION_LEASE_MINUTES)).isoformat()
     validate_control(out)
     return out
 
@@ -414,6 +438,13 @@ def _validate_envelope_shape(envelope: Mapping[str, Any]) -> None:
         _deny("ENQUEUE_INELIGIBLE_EVIDENCE_REQUIRED")
 
 
+def _seal_envelope(envelope: Mapping[str, Any]) -> dict:
+    _validate_envelope_shape(envelope)
+    sealed = _json_clone(envelope)
+    _validate_envelope_shape(sealed)
+    return sealed
+
+
 def _task_id(cid: str, docs: str) -> str:
     idem = f"source-review:{cid}:{docs}"
     encoded = json.dumps(idem, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
@@ -425,23 +456,20 @@ def _expected_operation_specs(envelope: Mapping[str, Any]) -> dict[str, tuple[st
     cid = envelope["candidate_id"]
     tid = _task_id(cid, envelope["docs_hash"])
     return {
-        "inspect": (
-            "R1_SOURCE_CACHE_INSPECT_OR_STAGE",
-            f"source-candidate:{cid}",
-            "PUBLIC_TERMS_METADATA_ONLY",
-        ),
+        "inspect": ("R1_SOURCE_CACHE_INSPECT_OR_STAGE", f"source-candidate:{cid}", "PUBLIC_TERMS_METADATA_ONLY"),
         "lease": ("R1_TASK_ACQUIRE_LEASE", f"task:{tid}", "INTERNAL_R1_STATE_ONLY"),
         "checkpoint": ("R1_TASK_CHECKPOINT", f"task:{tid}", "INTERNAL_R1_STATE_ONLY"),
+        "failure": ("R1_TASK_RECORD_FAILURE", f"task:{tid}", "INTERNAL_R1_STATE_ONLY"),
         "commit": ("R1_SOURCE_REVIEW_COMMIT", f"task:{tid}", "PUBLIC_TERMS_METADATA_ONLY"),
     }
 
 
-def validate_authorization_bundle(
+def seal_authorization_bundle(
     bundle: TrustedAuthorizationBundle,
     *,
     envelope: Mapping[str, Any],
     current_main: str,
-) -> None:
+) -> SealedAuthorizationBundle:
     _validate_envelope_shape(envelope)
     if not isinstance(bundle, TrustedAuthorizationBundle):
         _deny("AUTHORIZATION_BUNDLE_TYPE", AuthorizationDenied)
@@ -457,12 +485,21 @@ def validate_authorization_bundle(
         _deny("AUTHORIZATION_BUNDLE_ENQUEUE_DECISION_INVALID", AuthorizationDenied)
     if not isinstance(bundle.operation_decisions, dict) or set(bundle.operation_decisions) != AUTH_KEYS:
         _deny("AUTHORIZATION_BUNDLE_OPERATION_SET", AuthorizationDenied)
-    expected_digest = _decision_digest(bundle.enqueue_decision, bundle.operation_decisions)
+
+    enqueue_decision = _json_clone(bundle.enqueue_decision)
+    operation_decisions = _json_clone(bundle.operation_decisions)
+    expected_digest = _decision_digest(enqueue_decision, operation_decisions)
     if bundle.decision_payload_digest != expected_digest:
         _deny("AUTHORIZATION_DECISION_PAYLOAD_DIGEST_MISMATCH", AuthorizationDenied)
 
+    enqueue_now = _aware_utc(bundle.enqueue_runtime.now, "ENQUEUE_RUNTIME_NOW_UNTRUSTED")
+    worker_now = _aware_utc(bundle.worker_runtime.now, "WORKER_RUNTIME_NOW_UNTRUSTED")
+    if enqueue_now != worker_now:
+        _deny("AUTHORIZATION_RUNTIME_CLOCK_MISMATCH", AuthorizationDenied)
+    trusted_now = worker_now
+
     validate_authorization(
-        bundle.enqueue_decision,
+        enqueue_decision,
         bundle.enqueue_runtime,
         operation=ENQUEUE_OPERATION,
         target=ENQUEUE_TARGET,
@@ -472,7 +509,7 @@ def validate_authorization_bundle(
     if envelope["worker_id"] != bundle.worker_runtime.actor_instance:
         _deny("ENQUEUE_WORKER_BINDING_MISMATCH", AuthorizationDenied)
     for key, (operation, target, scope) in _expected_operation_specs(envelope).items():
-        decision = bundle.operation_decisions[key]
+        decision = operation_decisions[key]
         if not isinstance(decision, dict):
             _deny("AUTHORIZATION_BUNDLE_OPERATION_DECISION_INVALID", AuthorizationDenied)
         validate_authorization(
@@ -484,6 +521,31 @@ def validate_authorization_bundle(
             data_exposure_scope=scope,
         )
 
+    operation_jsons = tuple(sorted((key, _canonical_json(value)) for key, value in operation_decisions.items()))
+    sealed = SealedAuthorizationBundle(
+        enqueue_decision_json=_canonical_json(enqueue_decision),
+        operation_decision_jsons=operation_jsons,
+        enqueue_runtime=bundle.enqueue_runtime,
+        worker_runtime=bundle.worker_runtime,
+        canonical_main=bundle.canonical_main,
+        provenance_ref=bundle.provenance_ref,
+        decision_payload_digest=expected_digest,
+        trusted_now=trusted_now,
+    )
+    reconstructed = {key: json.loads(raw) for key, raw in sealed.operation_decision_jsons}
+    if _decision_digest(json.loads(sealed.enqueue_decision_json), reconstructed) != sealed.decision_payload_digest:
+        _deny("SEALED_AUTHORIZATION_DIGEST_MISMATCH", AuthorizationDenied)
+    return sealed
+
+
+def _sealed_decision(sealed: SealedAuthorizationBundle, key: str) -> dict:
+    if key == "enqueue":
+        return json.loads(sealed.enqueue_decision_json)
+    for candidate, raw in sealed.operation_decision_jsons:
+        if candidate == key:
+            return json.loads(raw)
+    _deny("SEALED_AUTHORIZATION_DECISION_MISSING", AuthorizationDenied)
+
 
 def _materialize_store(root: Path, state: Mapping[str, Any]) -> PersistentStore:
     root.mkdir(parents=True, exist_ok=True)
@@ -493,21 +555,32 @@ def _materialize_store(root: Path, state: Mapping[str, Any]) -> PersistentStore:
     return PersistentStore(root)
 
 
+def _release_remote(adapter: ControlPlaneAdapter, claimed: RemoteSnapshot, claim_id: str) -> RemoteSnapshot:
+    finished = reconcile_terminal_receipts(claimed.control, claimed.r1_state)
+    finished = release_control(finished, claim_id=claim_id)
+    return adapter.release_invocation(
+        expected_remote_head=claimed.remote_head,
+        claim_id=claim_id,
+        released_control=finished,
+    )
+
+
 def _process_claimed(
     *,
     adapter: ControlPlaneAdapter,
     claimed: RemoteSnapshot,
     envelope: Mapping[str, Any],
-    bundle: TrustedAuthorizationBundle,
+    sealed: SealedAuthorizationBundle,
     now_tick: int,
     claim_id: str,
     failpoint: Optional[str] = None,
 ) -> tuple[Optional[dict], dict]:
-    validate_authorization_bundle(bundle, envelope=envelope, current_main=claimed.canonical_main)
+    if claimed.canonical_main != sealed.canonical_main:
+        _deny("CLAIMED_MAIN_AUTHORIZATION_SEAL_MISMATCH", AuthorizationDenied)
+
     with tempfile.TemporaryDirectory() as td:
         store = _materialize_store(Path(td), claimed.r1_state)
         engine = R1Engine(store, claimed.canonical_main)
-        auths = bundle.operation_decisions
         cid = envelope["candidate_id"]
         worker = envelope["worker_id"]
 
@@ -515,8 +588,8 @@ def _process_claimed(
             current_main=claimed.canonical_main,
             candidate_id=cid,
             docs_hash=envelope["docs_hash"],
-            authorization=auths["inspect"],
-            auth_runtime=bundle.worker_runtime,
+            authorization=_sealed_decision(sealed, "inspect"),
+            auth_runtime=sealed.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
@@ -524,14 +597,15 @@ def _process_claimed(
             r1_state=store.read(),
         )
         if task_id is None:
-            finished = reconcile_terminal_receipts(claimed.control, claimed.r1_state)
-            finished = release_control(finished, claim_id=claim_id)
-            released = adapter.release_invocation(
-                expected_remote_head=claimed.remote_head,
-                claim_id=claim_id,
-                released_control=finished,
-            )
+            released = _release_remote(adapter, claimed, claim_id)
             return None, released.control
+
+        before_lease = store.read()["tasks"][task_id]
+        if before_lease["retry_budget"] != RETRY_BUDGET:
+            _deny("R1_RETRY_BUDGET_SCOPE_MISMATCH", Stage1Tamper)
+        previous_epoch = before_lease["lease_epoch"]
+        previous_expiry = before_lease["lease_expires_at"]
+        previous_receipt = before_lease["durable_receipt_ref"]
 
         epoch = engine.acquire_lease(
             current_main=claimed.canonical_main,
@@ -539,14 +613,44 @@ def _process_claimed(
             worker_id=worker,
             now_tick=now_tick,
             lease_ticks=10,
-            authorization=auths["lease"],
-            auth_runtime=bundle.worker_runtime,
+            authorization=_sealed_decision(sealed, "lease"),
+            auth_runtime=sealed.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
             claim_id=claim_id,
             r1_state=store.read(),
         )
+
+        if (
+            previous_epoch > 0
+            and previous_receipt is None
+            and _strict_int(previous_expiry)
+            and now_tick >= previous_expiry
+        ):
+            engine.record_failure(
+                current_main=claimed.canonical_main,
+                task_id=task_id,
+                worker_id=worker,
+                lease_epoch=epoch,
+                now_tick=now_tick,
+                reason=f"STAGE1_PREVIOUS_ATTEMPT_EXPIRED_EPOCH_{previous_epoch}",
+                authorization=_sealed_decision(sealed, "failure"),
+                auth_runtime=sealed.worker_runtime,
+            )
+            claimed = adapter.persist_r1_state(
+                expected_remote_head=claimed.remote_head,
+                claim_id=claim_id,
+                r1_state=store.read(),
+            )
+            task_after_failure = store.read()["tasks"][task_id]
+            if task_after_failure["dead_letter_reason"]:
+                released = _release_remote(adapter, claimed, claim_id)
+                raise Stage1Paused("STAGE1_RETRY_BUDGET_EXHAUSTED")
+
+        if failpoint == "AFTER_LEASE_BEFORE_CHECKPOINT":
+            raise InjectedCrash(failpoint)
+
         engine.checkpoint(
             current_main=claimed.canonical_main,
             task_id=task_id,
@@ -554,8 +658,8 @@ def _process_claimed(
             lease_epoch=epoch,
             now_tick=now_tick + 1,
             checkpoint_ref="stage1:supplied-evidence-validated",
-            authorization=auths["checkpoint"],
-            auth_runtime=bundle.worker_runtime,
+            authorization=_sealed_decision(sealed, "checkpoint"),
+            auth_runtime=sealed.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
@@ -571,8 +675,8 @@ def _process_claimed(
             committed_state=envelope["requested_final_state"],
             verdict_reason=envelope["verdict_reason"],
             evidence_refs=envelope["evidence_refs"],
-            authorization=auths["commit"],
-            auth_runtime=bundle.worker_runtime,
+            authorization=_sealed_decision(sealed, "commit"),
+            auth_runtime=sealed.worker_runtime,
         )
         claimed = adapter.persist_r1_state(
             expected_remote_head=claimed.remote_head,
@@ -582,13 +686,7 @@ def _process_claimed(
         if failpoint == "AFTER_DURABLE_RECEIPT_BEFORE_STAGE_COUNT":
             raise InjectedCrash(failpoint)
 
-        finished = reconcile_terminal_receipts(claimed.control, claimed.r1_state)
-        finished = release_control(finished, claim_id=claim_id)
-        released = adapter.release_invocation(
-            expected_remote_head=claimed.remote_head,
-            claim_id=claim_id,
-            released_control=finished,
-        )
+        released = _release_remote(adapter, claimed, claim_id)
         return receipt, released.control
 
 
@@ -596,42 +694,49 @@ def _process_one_controlled(
     *,
     adapter: ControlPlaneAdapter,
     envelope: Mapping[str, Any],
-    now: datetime,
     now_tick: int,
     claim_id: str,
     failpoint: Optional[str] = None,
 ) -> tuple[Optional[dict], dict]:
-    # Reject malformed/forged decision-bearing payloads before any remote claim.
-    _validate_envelope_shape(envelope)
+    sealed_envelope = _seal_envelope(envelope)
     snapshot = adapter.load_snapshot()
     if not _hex40(snapshot.remote_head) or not _hex40(snapshot.canonical_main):
         _deny("CONTROL_PLANE_SNAPSHOT_IDENTITY")
     validate_state(copy.deepcopy(snapshot.r1_state))
+
+    raw_bundle = adapter.issue_authorization_bundle(
+        current_main=snapshot.canonical_main,
+        envelope=copy.deepcopy(sealed_envelope),
+    )
+    sealed_auth = seal_authorization_bundle(
+        raw_bundle,
+        envelope=sealed_envelope,
+        current_main=snapshot.canonical_main,
+    )
+
     reconciled = reconcile_terminal_receipts(snapshot.control, snapshot.r1_state)
     assert_ceiling_and_integrity(
         reconciled,
         current_main=snapshot.canonical_main,
-        now=now,
+        trusted_now=sealed_auth.trusted_now,
         genesis_is_ancestor=snapshot.genesis_is_ancestor,
         remote_high_water_count=snapshot.high_water_count,
     )
-    claimed_control = claim_control(reconciled, claim_id=claim_id, now=now)
+    claimed_control = claim_control(
+        reconciled,
+        claim_id=claim_id,
+        trusted_now=sealed_auth.trusted_now,
+    )
     claimed = adapter.claim_invocation(
         expected_remote_head=snapshot.remote_head,
         claim_id=claim_id,
         claimed_control=claimed_control,
     )
-    bundle = adapter.issue_authorization_bundle(
-        current_main=claimed.canonical_main,
-        envelope=envelope,
-        now=now,
-    )
-    validate_authorization_bundle(bundle, envelope=envelope, current_main=claimed.canonical_main)
     return _process_claimed(
         adapter=adapter,
         claimed=claimed,
-        envelope=envelope,
-        bundle=bundle,
+        envelope=sealed_envelope,
+        sealed=sealed_auth,
         now_tick=now_tick,
         claim_id=claim_id,
         failpoint=failpoint,
@@ -642,15 +747,13 @@ def process_one_controlled(
     *,
     adapter: ControlPlaneAdapter,
     envelope: Mapping[str, Any],
-    now: datetime,
     now_tick: int,
     claim_id: str,
 ) -> tuple[Optional[dict], dict]:
-    """Production-shaped entrypoint. No caller-supplied authority or decisions."""
+    """Production-shaped entrypoint: no caller authority, decisions, or wall-clock."""
     return _process_one_controlled(
         adapter=adapter,
         envelope=envelope,
-        now=now,
         now_tick=now_tick,
         claim_id=claim_id,
         failpoint=None,
@@ -666,7 +769,8 @@ def owner_exception(reason: str, next_safe_action: str = "PAUSE_AND_REVIEW") -> 
     )
 
 
-def _decision(operation: str, target: str, scope: str, actor: str, *, decision: str = "ALLOW") -> dict:
+def _decision(operation: str, target: str, scope: str, actor: str, now: datetime, *, decision: str = "ALLOW") -> dict:
+    now = _aware_utc(now, "SELFTEST_NOW_INVALID")
     return {
         "authorization_decision_id": f"auth-{operation}-{actor}",
         "policy_generation": "g-stage1-test",
@@ -679,8 +783,8 @@ def _decision(operation: str, target: str, scope: str, actor: str, *, decision: 
         "permission_ceiling": "P1_REVERSIBLE_INTERNAL_WRITE",
         "scope": {"operation": operation, "target": target, "data_exposure_scope": scope},
         "data_exposure_scope": scope,
-        "issued_at": "2026-08-21T07:00:00+00:00",
-        "expires_at": "2026-08-22T07:00:00+00:00",
+        "issued_at": (now - timedelta(minutes=1)).isoformat(),
+        "expires_at": (now + timedelta(hours=1)).isoformat(),
         "grant_ref": "grant-stage1-test",
         "owner_gate_ref": None,
         "revocation_generation_seen": 4,
@@ -697,7 +801,7 @@ def _runtime(actor: str, now: datetime, *, valid=True, safe=False) -> Authorizat
         "digest-stage1-test",
         4,
         2,
-        now,
+        _aware_utc(now, "SELFTEST_NOW_INVALID"),
         "EXECUTION",
         actor,
         frozenset({"grant-stage1-test"}) if valid else frozenset(),
@@ -749,16 +853,24 @@ class _FakeControlPlaneAdapter:
         self,
         shared: _SharedRemote,
         *,
+        now: datetime,
         verified=True,
         decision_provenance_valid=True,
         valid_grant=True,
         safe=False,
+        worker_clock_skew: timedelta = timedelta(0),
     ):
         self.shared = shared
+        self.now = _aware_utc(now, "FAKE_ADAPTER_NOW_INVALID")
         self.verified = verified
         self.decision_provenance_valid = decision_provenance_valid
         self.valid_grant = valid_grant
         self.safe = safe
+        self.worker_clock_skew = worker_clock_skew
+        self.last_bundle: Optional[TrustedAuthorizationBundle] = None
+
+    def set_now(self, value: datetime) -> None:
+        self.now = _aware_utc(value, "FAKE_ADAPTER_NOW_INVALID")
 
     def _snapshot(self) -> RemoteSnapshot:
         return RemoteSnapshot(
@@ -779,28 +891,34 @@ class _FakeControlPlaneAdapter:
         *,
         current_main: str,
         envelope: Mapping[str, Any],
-        now: datetime,
     ) -> TrustedAuthorizationBundle:
         _validate_envelope_shape(envelope)
         router = "router-1"
         worker = "worker-1"
         specs = _expected_operation_specs(envelope)
-        enqueue_decision = _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, router)
+        enqueue_decision = _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, router, self.now)
         operations = {
-            key: _decision(operation, target, scope, worker)
+            key: _decision(operation, target, scope, worker, self.now)
             for key, (operation, target, scope) in specs.items()
         }
-        return TrustedAuthorizationBundle(
+        bundle = TrustedAuthorizationBundle(
             enqueue_decision=enqueue_decision,
             operation_decisions=operations,
-            enqueue_runtime=_runtime(router, now, valid=self.valid_grant, safe=self.safe),
-            worker_runtime=_runtime(worker, now, valid=self.valid_grant, safe=self.safe),
+            enqueue_runtime=_runtime(router, self.now, valid=self.valid_grant, safe=self.safe),
+            worker_runtime=_runtime(
+                worker,
+                self.now + self.worker_clock_skew,
+                valid=self.valid_grant,
+                safe=self.safe,
+            ),
             canonical_main=current_main,
             provenance_ref="canonical:test-authority-snapshot",
             decision_payload_digest=_decision_digest(enqueue_decision, operations),
             verified_from_canonical_authority=self.verified,
             decisions_verified_from_canonical_policy=self.decision_provenance_valid,
         )
+        self.last_bundle = bundle
+        return bundle
 
     def _cas(self, expected_remote_head: str) -> None:
         if expected_remote_head != self.shared.head:
@@ -856,11 +974,26 @@ class _FakeControlPlaneAdapter:
         return self._snapshot()
 
 
+class _MutatingDecisionAdapter(_FakeControlPlaneAdapter):
+    """Mutates the original bundle after Stage 1 has validated/sealed it."""
+
+    def claim_invocation(self, *, expected_remote_head: str, claim_id: str, claimed_control: Mapping[str, Any]) -> RemoteSnapshot:
+        if self.last_bundle is not None:
+            self.last_bundle.operation_decisions["commit"]["operation"] = "FORGED_AFTER_VALIDATION"
+            self.last_bundle.operation_decisions["commit"]["authorization_decision_id"] = "forged-after-validation"
+        return super().claim_invocation(
+            expected_remote_head=expected_remote_head,
+            claim_id=claim_id,
+            claimed_control=claimed_control,
+        )
+
+
 def selftest() -> int:
     main = "a" * 40
     impl = "b" * 40
     genesis = "c" * 40
     activated = datetime.fromisoformat("2026-08-21T07:30:00+00:00")
+    t1 = activated + timedelta(hours=1)
     control = empty_control(
         activation_receipt_id="activation-stage1-test",
         canonical_main=main,
@@ -886,7 +1019,7 @@ def selftest() -> int:
     assert_ceiling_and_integrity(
         control,
         current_main=main,
-        now=activated + timedelta(hours=1),
+        trusted_now=t1,
         genesis_is_ancestor=True,
         remote_high_water_count=0,
     )
@@ -895,7 +1028,7 @@ def selftest() -> int:
         lambda: assert_ceiling_and_integrity(
             control,
             current_main="d" * 40,
-            now=activated + timedelta(hours=1),
+            trusted_now=t1,
             genesis_is_ancestor=True,
             remote_high_water_count=0,
         ),
@@ -905,7 +1038,7 @@ def selftest() -> int:
         lambda: assert_ceiling_and_integrity(
             control,
             current_main=main,
-            now=activated + timedelta(hours=1),
+            trusted_now=t1,
             genesis_is_ancestor=False,
             remote_high_water_count=0,
         ),
@@ -915,19 +1048,9 @@ def selftest() -> int:
         lambda: assert_ceiling_and_integrity(
             control,
             current_main=main,
-            now=activated + timedelta(hours=1),
+            trusted_now=t1,
             genesis_is_ancestor=True,
             remote_high_water_count=1,
-        ),
-    )
-    _expect(
-        Stage1Paused,
-        lambda: assert_ceiling_and_integrity(
-            control,
-            current_main=main,
-            now=activated + timedelta(days=7),
-            genesis_is_ancestor=True,
-            remote_high_water_count=0,
         ),
     )
 
@@ -940,26 +1063,24 @@ def selftest() -> int:
 
     env = _envelope()
     forged = copy.deepcopy(env)
-    forged["enqueue_authorization"] = _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, "router-1")
+    forged["enqueue_authorization"] = _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, "router-1", t1)
     _expect(Stage1Denied, lambda: _validate_envelope_shape(forged))
     forged2 = copy.deepcopy(env)
-    forged2["operation_authorizations"] = {
-        "inspect": _decision("R1_SOURCE_CACHE_INSPECT_OR_STAGE", "source-candidate:source-a", "PUBLIC_TERMS_METADATA_ONLY", "worker-1")
-    }
+    forged2["operation_authorizations"] = {"inspect": {}}
     _expect(Stage1Denied, lambda: _validate_envelope_shape(forged2))
 
     shared = _SharedRemote(control, main, genesis)
-    a1 = _FakeControlPlaneAdapter(shared)
-    a2 = _FakeControlPlaneAdapter(shared)
+    a1 = _FakeControlPlaneAdapter(shared, now=t1)
+    a2 = _FakeControlPlaneAdapter(shared, now=t1)
     stale_head = a2.load_snapshot().remote_head
-    claim = claim_control(control, claim_id="claim-a", now=activated + timedelta(hours=1))
+    claim = claim_control(control, claim_id="claim-a", trusted_now=t1)
     first = a1.claim_invocation(expected_remote_head=stale_head, claim_id="claim-a", claimed_control=claim)
     _expect(
         Stage1Tamper,
         lambda: a2.claim_invocation(
             expected_remote_head=stale_head,
             claim_id="claim-b",
-            claimed_control=claim_control(control, claim_id="claim-b", now=activated + timedelta(hours=1)),
+            claimed_control=claim_control(control, claim_id="claim-b", trusted_now=t1),
         ),
     )
     _expect(
@@ -972,50 +1093,63 @@ def selftest() -> int:
     )
 
     shared = _SharedRemote(control, main, genesis)
-    bad_authority = _FakeControlPlaneAdapter(shared, verified=False)
     _expect(
         AuthorizationDenied,
         lambda: _process_one_controlled(
-            adapter=bad_authority,
+            adapter=_FakeControlPlaneAdapter(shared, now=t1, verified=False),
             envelope=env,
-            now=activated + timedelta(hours=1),
             now_tick=1,
             claim_id="bad-authority",
         ),
     )
-
     shared = _SharedRemote(control, main, genesis)
-    forged_decision_source = _FakeControlPlaneAdapter(shared, decision_provenance_valid=False)
     _expect(
         AuthorizationDenied,
         lambda: _process_one_controlled(
-            adapter=forged_decision_source,
+            adapter=_FakeControlPlaneAdapter(shared, now=t1, decision_provenance_valid=False),
             envelope=env,
-            now=activated + timedelta(hours=1),
             now_tick=1,
             claim_id="forged-decision",
         ),
     )
-
     shared = _SharedRemote(control, main, genesis)
-    bad_worker_env = _envelope(actor="forged-worker")
     _expect(
         AuthorizationDenied,
         lambda: _process_one_controlled(
-            adapter=_FakeControlPlaneAdapter(shared),
-            envelope=bad_worker_env,
-            now=activated + timedelta(hours=1),
+            adapter=_FakeControlPlaneAdapter(shared, now=t1, worker_clock_skew=timedelta(seconds=1)),
+            envelope=env,
+            now_tick=1,
+            claim_id="clock-mismatch",
+        ),
+    )
+    shared = _SharedRemote(control, main, genesis)
+    _expect(
+        AuthorizationDenied,
+        lambda: _process_one_controlled(
+            adapter=_FakeControlPlaneAdapter(shared, now=t1),
+            envelope=_envelope(actor="forged-worker"),
             now_tick=1,
             claim_id="bad-worker",
         ),
     )
 
     shared = _SharedRemote(control, main, genesis)
-    good = _FakeControlPlaneAdapter(shared)
+    mutating = _MutatingDecisionAdapter(shared, now=t1)
+    receipt_mut, out_mut = process_one_controlled(
+        adapter=mutating,
+        envelope=env,
+        now_tick=1,
+        claim_id="claim-mutating",
+    )
+    assert receipt_mut and out_mut["terminal_count"] == 1
+    assert receipt_mut["authorization_decision_id"].startswith("auth-R1_SOURCE_REVIEW_COMMIT")
+    assert mutating.last_bundle.operation_decisions["commit"]["operation"] == "FORGED_AFTER_VALIDATION"
+
+    shared = _SharedRemote(control, main, genesis)
+    good = _FakeControlPlaneAdapter(shared, now=t1)
     receipt, out = process_one_controlled(
         adapter=good,
         envelope=env,
-        now=activated + timedelta(hours=1),
         now_tick=1,
         claim_id="claim-good",
     )
@@ -1023,14 +1157,26 @@ def selftest() -> int:
     assert shared.high_water == 1
     assert shared.control["invocation_claim_id"] is None
 
+    assert "now" not in inspect.signature(process_one_controlled).parameters
     shared = _SharedRemote(control, main, genesis)
-    crash_adapter = _FakeControlPlaneAdapter(shared)
+    _expect(
+        Stage1Paused,
+        lambda: process_one_controlled(
+            adapter=_FakeControlPlaneAdapter(shared, now=activated + timedelta(days=7)),
+            envelope=env,
+            now_tick=1,
+            claim_id="too-late",
+        ),
+    )
+    assert shared.control["invocation_claim_id"] is None
+
+    shared = _SharedRemote(control, main, genesis)
+    crash_adapter = _FakeControlPlaneAdapter(shared, now=t1)
     _expect(
         InjectedCrash,
         lambda: _process_one_controlled(
             adapter=crash_adapter,
             envelope=env,
-            now=activated + timedelta(hours=1),
             now_tick=1,
             claim_id="claim-crash",
             failpoint="AFTER_DURABLE_RECEIPT_BEFORE_STAGE_COUNT",
@@ -1039,12 +1185,10 @@ def selftest() -> int:
     assert len(shared.r1_state["receipts_by_idempotency"]) == 1
     assert shared.control["terminal_count"] == 0
     assert shared.control["invocation_claim_id"] == "claim-crash"
-
     later = activated + timedelta(hours=2)
     receipt2, out2 = process_one_controlled(
-        adapter=_FakeControlPlaneAdapter(shared),
+        adapter=_FakeControlPlaneAdapter(shared, now=later),
         envelope=env,
-        now=later,
         now_tick=50,
         claim_id="claim-restart",
     )
@@ -1062,11 +1206,61 @@ def selftest() -> int:
         lambda: assert_ceiling_and_integrity(
             tampered,
             current_main=main,
-            now=later,
+            trusted_now=later,
             genesis_is_ancestor=True,
             remote_high_water_count=1,
         ),
     )
+
+    retry_shared = _SharedRemote(control, main, genesis)
+    retry_adapter = _FakeControlPlaneAdapter(retry_shared, now=t1)
+    _expect(
+        InjectedCrash,
+        lambda: _process_one_controlled(
+            adapter=retry_adapter,
+            envelope=env,
+            now_tick=1,
+            claim_id="retry-1",
+            failpoint="AFTER_LEASE_BEFORE_CHECKPOINT",
+        ),
+    )
+    retry_adapter.set_now(t1 + timedelta(hours=1))
+    _expect(
+        InjectedCrash,
+        lambda: _process_one_controlled(
+            adapter=retry_adapter,
+            envelope=env,
+            now_tick=20,
+            claim_id="retry-2",
+            failpoint="AFTER_LEASE_BEFORE_CHECKPOINT",
+        ),
+    )
+    retry_adapter.set_now(t1 + timedelta(hours=2))
+    _expect(
+        InjectedCrash,
+        lambda: _process_one_controlled(
+            adapter=retry_adapter,
+            envelope=env,
+            now_tick=40,
+            claim_id="retry-3",
+            failpoint="AFTER_LEASE_BEFORE_CHECKPOINT",
+        ),
+    )
+    retry_adapter.set_now(t1 + timedelta(hours=3))
+    _expect(
+        Stage1Paused,
+        lambda: _process_one_controlled(
+            adapter=retry_adapter,
+            envelope=env,
+            now_tick=60,
+            claim_id="retry-4",
+            failpoint="AFTER_LEASE_BEFORE_CHECKPOINT",
+        ),
+    )
+    retry_task = retry_shared.r1_state["tasks"][_task_id("source-a", "docs-a")]
+    assert retry_task["attempt_count"] == RETRY_BUDGET + 1
+    assert retry_task["dead_letter_reason"]
+    assert retry_shared.control["invocation_claim_id"] is None
 
     view = owner_exception("AUTHORIZATION_DENY")
     assert view["approval_authority"] == "NONE_OBSERVABILITY_ONLY"
@@ -1081,6 +1275,11 @@ def selftest() -> int:
         "CANONICAL_ADAPTER_SUPPLIES_AUTHORIZATION_DECISION_OBJECTS",
         "FORGED_BUT_OTHERWISE_VALID_ALLOW_DECISION_INJECTION_DENIED",
         "AUTHORIZATION_DECISION_PAYLOAD_DIGEST_ENFORCED",
+        "POST_VALIDATION_DECISION_BUNDLE_MUTATION_ISOLATED",
+        "AUTHORIZATION_RUNTIME_CLOCK_BOUND_TO_TRUSTED_TIME",
+        "TRUSTED_CONTROL_PLANE_CLOCK_ENFORCES_7_DAY_CEILING",
+        "RETRY_BUDGET_2_ENFORCED_VIA_RECORD_FAILURE",
+        "FOURTH_ATTEMPT_BLOCKED_AFTER_INITIAL_PLUS_TWO_RETRIES",
         "REMOTE_SINGLE_INVOCATION_CAS_SHARED_BACKEND_REJECTS_SECOND",
         "STALE_CONTROL_PLANE_CLAIM_REJECTED",
         "CROSS_STORE_RECEIPT_RECONCILIATION_AFTER_CRASH",
