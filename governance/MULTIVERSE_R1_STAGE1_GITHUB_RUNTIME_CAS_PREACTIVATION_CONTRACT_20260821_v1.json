@@ -1,6 +1,6 @@
 {
   "record": "MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_CAS_PREACTIVATION_CONTRACT_20260821_v1",
-  "status": "PREACTIVATION_GITHUB_RUNTIME_CAS_ADAPTER_LAB_HARDENED_RUNTIME_OFF",
+  "status": "PREACTIVATION_GITHUB_RUNTIME_CAS_ADAPTER_AUDITOR_HARDENED_RUNTIME_OFF",
   "canonical_repo": "fufufu1116/multiverse-research",
   "stacked_parent": {
     "pr": 59,
@@ -9,24 +9,24 @@
     "protocol_micro_verdict": "PASS",
     "parent_head_must_not_move": true
   },
-  "lab_hardening": {
-    "prior_review_comment": 5370201094,
+  "auditor_hardening": {
+    "prior_review_comment": 5370807002,
     "prior_verdict": "PASS_WITH_FIXES",
-    "scope": "NARROW_GITHUB_CAS_HARDENING_ONLY",
+    "scope": "NARROW_RUNTIME_CAS_AUDITOR_REMEDIATION_ONLY",
     "fixes": [
-      "bind every effective fetch URL and push URL to the canonical repository and reject Git url.*.insteadOf/pushInsteadOf rewrite configuration",
-      "require an externally verified immutable activation anchor for activation id, canonical main, audited implementation head, runtime branch, runtime genesis, activation timestamp and Stage-1 ceilings",
-      "bind that activation anchor to an exact GitHub tag ruleset id and updated_at plus an independently attested no-bypass fact",
-      "require the live ruleset to target the journal tag namespace with deletion/update/non-fast-forward protection and no creation restriction; missing or changed ruleset fails closed",
-      "Fresh Read canonical main again immediately before journal push and again immediately before runtime-branch push",
-      "move all local-origin bypass subclasses inside selftest() so no module-scope test adapter is importable",
-      "extend selftest to pushurl/rewrite rejection, protected journal deletion plus rollback, journal-first crash, mid-mutation main drift, activation re-key and forbidden-path-write-then-revert history"
+      "restrict production Git transport to canonical HTTPS origin forms and fail closed on GIT_SSH, GIT_SSH_COMMAND, core.sshCommand, url.*.insteadOf and url.*.pushInsteadOf overrides",
+      "require live ruleset detail to contain bypass_actors explicitly and equal [] exactly; missing no-bypass evidence fails closed",
+      "anchor a dedicated runtime-writer authentication key id and key digest plus the exact initial sequence-0 ledger head in the separately reviewed immutable activation receipt",
+      "authenticate every N-to-N+1 ledger mutation with an HMAC-SHA256 transition record binding activation id, writer key id, previous head, sequence, operation, claim id and payload digest",
+      "replay the complete journal transition chain from the activation-anchored initial ledger head and verify parent linkage, sequence, terminal tag, activation identity, transition MAC and operation transition semantics",
+      "reject a raw repository writer who appends a syntactically valid next journal tag and fast-forward ledger commit without the reviewed writer key",
+      "strengthen PR CI checkout discipline by explicitly checking out and asserting github.event.pull_request.head.sha"
     ]
   },
-  "purpose": "Implement only the concrete GitHub runtime-state compare-and-swap ledger dependency required before Stage-1 activation. Do not issue authorization decisions and do not activate or create the production runtime branch.",
+  "purpose": "Implement only the concrete GitHub runtime-state compare-and-swap ledger dependency required before Stage-1 activation. Do not issue authorization decisions, provision runtime rulesets, create the production runtime branch, merge PRs, or activate Runtime.",
   "implementation": {
     "file": "tools/multiverse_r1_stage1_github_runtime_cas_v1.py",
-    "ledger_schema": "MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_LEDGER_v2",
+    "ledger_schema": "MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_LEDGER_v3",
     "runtime_branch": "runtime/r1-source-audit-stage1-v1",
     "runtime_state_path": "runtime/r1_source_audit_stage1/exceptions/control_plane/runtime_ledger.json",
     "writes_to_main_or_governance": false,
@@ -34,9 +34,15 @@
     "runtime_activation_performed_by_candidate": false
   },
   "origin_identity_contract": {
-    "all_effective_fetch_urls_must_be_canonical": true,
-    "all_effective_push_urls_must_be_canonical": true,
-    "accepted_repository": "fufufu1116/multiverse-research",
+    "production_transport": "CANONICAL_HTTPS_ONLY",
+    "accepted_fetch_and_push_urls": [
+      "https://github.com/fufufu1116/multiverse-research",
+      "https://github.com/fufufu1116/multiverse-research.git"
+    ],
+    "ssh_origin_forms_allowed": false,
+    "git_ssh_environment_override_allowed": false,
+    "git_ssh_command_environment_override_allowed": false,
+    "core_sshCommand_allowed": false,
     "git_url_insteadOf_or_pushInsteadOf_allowed": false,
     "validation_repeated_before_remote_mutation": true,
     "test_only_local_origin_bypass_module_scope_importable": false,
@@ -67,6 +73,7 @@
       "audited_implementation_head",
       "runtime_branch",
       "runtime_genesis",
+      "initial_ledger_head",
       "activated_at",
       "max_concurrent_workers",
       "max_terminal_tasks",
@@ -77,56 +84,87 @@
       "receipt_sha256",
       "journal_ruleset_id",
       "journal_ruleset_updated_at",
-      "journal_ruleset_no_bypass_attested"
+      "journal_ruleset_no_bypass_attested",
+      "writer_key_id",
+      "writer_key_sha256"
     ],
-    "activation_rekey_or_genesis_rekey_behavior": "DENY_FAIL_CLOSED_BEFORE_JOURNAL_NAMESPACE_SELECTION"
+    "writer_auth_key_minimum_bytes": 32,
+    "writer_auth_key_secret_stored_in_repository": false,
+    "activation_rekey_genesis_rekey_or_writer_key_rekey_behavior": "DENY_FAIL_CLOSED_BEFORE_JOURNAL_ACCEPTANCE"
+  },
+  "authenticated_transition_chain": {
+    "scheme": "HMAC_SHA256_STAGE1_LEDGER_TRANSITION_v1",
+    "purpose": "Authenticate creation of each new forward ledger state independently of raw repository write permission.",
+    "sequence_zero_head_pinned_by_activation_anchor": true,
+    "sequence_zero_transition_auth": null,
+    "each_transition_binds": [
+      "activation_receipt_id",
+      "writer_key_id",
+      "previous_head",
+      "sequence",
+      "operation",
+      "claim_id",
+      "payload_digest"
+    ],
+    "payload_digest": "SHA256_CANONICAL_JSON_OF_LEDGER_EXCLUDING_TRANSITION_AUTH",
+    "operations": [
+      "claim_invocation",
+      "persist_r1_state",
+      "release_invocation"
+    ],
+    "load_replays_all_journal_transitions_from_initial_ledger_head": true,
+    "load_checks_exact_single_parent_chain": true,
+    "load_checks_tag_sequence_matches_payload_sequence": true,
+    "load_checks_tag_terminal_matches_control_terminal_count": true,
+    "load_checks_transition_mac": true,
+    "load_checks_control_identity_prefix_and_pause_monotonicity": true,
+    "raw_repository_writer_without_writer_key_can_forge_valid_next_transition": false,
+    "invalid_or_missing_transition_auth_behavior": "DENY_FAIL_CLOSED"
   },
   "append_only_journal": {
-    "purpose": "Remote evidence for ledger sequence/history and terminal-count high-water, protected by an activation-anchored GitHub tag ruleset.",
+    "purpose": "Remote sequence/history and terminal-count high-water evidence protected by an activation-anchored GitHub tag ruleset; new transition authenticity is separately enforced by the authenticated transition chain.",
     "ref_pattern": "refs/tags/multiverse-r1-stage1-ledger-v1-<activation-id-digest>-s<8-digit-sequence>-t<8-digit-terminal-count>",
     "journal_ref_claim": "EXPECTED_ABSENT_FORCE_WITH_LEASE",
     "journal_claim_occurs_before_runtime_branch_advance": true,
     "required_repository_ruleset_target": "tag",
     "required_repository_ruleset_include": "refs/tags/multiverse-r1-stage1-ledger-v1-*",
-    "required_repository_rules": ["deletion", "update", "non_fast_forward"],
+    "required_repository_rules": [
+      "deletion",
+      "update",
+      "non_fast_forward"
+    ],
     "creation_restriction_allowed": false,
-    "no_bypass_required": true,
+    "bypass_actors_field_must_be_present": true,
+    "bypass_actors_required_exact_value": [],
     "ruleset_id_and_updated_at_pinned_by_activation_anchor": true,
-    "ruleset_missing_changed_or_unverifiable_behavior": "DENY_FAIL_CLOSED",
+    "ruleset_missing_changed_bypass_missing_or_unverifiable_behavior": "DENY_FAIL_CLOSED",
     "ruleset_provisioned_by_this_candidate": false,
     "sequence_must_be_gap_free_from_1": true,
-    "latest_journal_target_must_equal_current_runtime_head": true,
     "journal_terminal_high_water_must_equal_current_control_terminal_count": true,
     "crash_after_journal_claim_before_branch_advance": "FAIL_CLOSED_ON_NEXT_LOAD_EXPLICIT_REPAIR_REQUIRED_NO_AUTO_RESUME",
-    "rollback_to_older_runtime_head_with_protected_journal_intact": "DETECTED_AND_DENIED",
     "authority_role": "NONE_NONCANONICAL_CONTROL_PLANE_EVIDENCE_ONLY"
-  },
-  "repository_protection_assurance": {
-    "github_rulesets_support_tag_deletion_update_and_force_push_restrictions": true,
-    "production_adapter_rechecks_exact_anchored_ruleset_before_each_remote_mutation": true,
-    "no_runtime_permission_to_create_modify_or_delete_rulesets_is_requested_by_this_candidate": true,
-    "ruleset_configuration_and_no_bypass_attestation_remain_activation_setup_evidence": true,
-    "runtime_off_if_ruleset_evidence_absent": true
   },
   "authority_boundary": {
     "authorization_decision_issuer_in_this_candidate": "NONE",
     "canonical_authority_decision_trusted_time_adapter_implemented_here": false,
+    "writer_transition_authentication_is_operation_authorization": false,
+    "writer_transition_authentication_only_proves_runtime_ledger_writer_identity": true,
     "missing_or_unverifiable_authority_behavior": "STAGE1_REMAINS_OFF_DENY_FAIL_CLOSED",
     "canary_fixture_reuse_as_stage1_authority": false,
     "stage1_local_grant_or_revocation_registry": false,
     "owner_gate_reused_as_routine_operation_grant": false
   },
   "selftest_evidence_required": [
-    "split canonical fetch URL plus noncanonical push URL is rejected",
+    "canonical HTTPS fetch/push origin accepted and canonical-looking SSH origin rejected",
+    "GIT_SSH_COMMAND and core.sshCommand transport overrides are rejected",
     "git url rewrite configuration is rejected",
-    "strict journal ruleset shape is accepted and weakened/bypass shape rejected",
+    "strict journal ruleset shape is accepted while missing bypass_actors and nonempty bypass actors are rejected",
     "two callers sharing one remote expected-old-head cannot both claim",
     "stale or nonowner R1 persistence is rejected",
-    "append-only journal sequence and terminal high-water advance with state",
-    "protected journal deletion attempt is rejected and branch rollback remains detected",
+    "authenticated journal transition chain advances and replays successfully",
+    "raw valid-looking N+1 journal plus fast-forward ledger forged outside adapter is rejected without deleting prior journals",
     "journal-first crash leaves journal-ahead state and next load fails closed",
     "main drift injected after journal claim is denied before runtime branch advance",
-    "activation id re-key with sequence reset is rejected by external activation anchor",
     "forbidden runtime path touched and later reverted is still rejected by history scan",
     "local origin bypass classes exist only inside selftest function scope",
     "production runtime branch is not created",
@@ -136,6 +174,8 @@
   "ci_boundary": {
     "pull_request_only": true,
     "contents_permission": "read",
+    "explicit_checkout_ref": "${{ github.event.pull_request.head.sha }}",
+    "literal_head_sha_asserted": true,
     "scheduler": false,
     "workflow_dispatch": false,
     "push_trigger": false,
@@ -144,17 +184,19 @@
     "external_provider_contact": false
   },
   "remaining_preactivation_dependencies": [
-    "Lab micro re-review of the narrow hardening on this exact head",
-    "independent Implementation Auditor review after Lab micro PASS",
+    "independent Auditor micro re-review of only the three material runtime-CAS remediations on the new exact head",
     "concrete canonical authority/decision/trusted-time adapter with accepted live authority source or equivalent immutable issuance/membership attestation",
     "independent review of that authority adapter",
     "repository tag ruleset must actually be provisioned and independently attested no-bypass before immutable activation receipt is issued",
-    "final immutable activation receipt must bind exact implementation head, activation identity, runtime genesis, ceilings and journal ruleset id/updated_at before any runtime branch creation or activation"
+    "runtime writer authentication key must be provisioned outside the repository and its key id/digest pinned by the immutable activation receipt",
+    "final immutable activation receipt must bind exact accepted implementation head, initial ledger head, activation identity, ceilings, ruleset id/version/no-bypass and writer key identity before any activation"
   ],
   "protected_boundaries": {
     "runtime_activation_authorized_now": false,
     "production_runtime_branch_present_now": false,
     "activation_receipt_present_now": false,
+    "ruleset_provisioned_now": false,
+    "writer_key_provisioned_now": false,
     "scheduler_or_always_on_worker": false,
     "network_or_public_web_source_collection": false,
     "source_admission": false,
