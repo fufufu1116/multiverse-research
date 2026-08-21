@@ -1,6 +1,6 @@
 {
   "record": "KEIRIN_LIMITED_SYNTHETIC_BATCH3_C0_C1_N1_MANIFEST_20260821_v1",
-  "status": "AUTHORIZED_SYNTHETIC_BATCH_PENDING_CI_EXECUTION",
+  "status": "AUTHORIZED_SYNTHETIC_BATCH_EXECUTED_PASS",
   "canonical_repo": "fufufu1116/multiverse-research",
   "authorized_base_main": "55fde4d67655e22c2fb6c45de578e99ffc35b61e",
   "authorization_state": {
@@ -59,6 +59,69 @@
     "only N1 rank-2/rank-3 relation terms differ from C1",
     "all model probability objects have complete support and unit mass"
   ],
+  "execution_evidence": {
+    "exact_executed_pr_head": "25a3fac874346ae1ab7d2861c5e06167adc6f4ca",
+    "workflow_run": 32435145008,
+    "job": 96634722318,
+    "conclusion": "success",
+    "checked_out_equals_pr_event_head": true,
+    "world_evaluations": 640,
+    "model_world_evaluations": 1920,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_C1_N1_rank1_marginal_difference": 4.440892098500626e-16
+  },
+  "result_snapshot": {
+    "overall_equal_world_weight_models": {
+      "C0": {
+        "expected_log_loss": 4.785429769289532,
+        "kl_regret": 0.3501499166316028,
+        "joint_brier": 0.009393961612368343
+      },
+      "C1": {
+        "expected_log_loss": 4.784868344025702,
+        "kl_regret": 0.34958849136777187,
+        "joint_brier": 0.009389823524770633
+      },
+      "N1": {
+        "expected_log_loss": 4.780444098076334,
+        "kl_regret": 0.34516424541840457,
+        "joint_brier": 0.009281674009754094
+      }
+    },
+    "expected_log_loss_deltas_lower_is_better": {
+      "W0": {
+        "C1_minus_C0": -0.000041418784921809504,
+        "N1_minus_C1": 0.001812695092961114,
+        "N1_minus_C0": 0.0017712763080393046
+      },
+      "W1": {
+        "C1_minus_C0": -0.0006761726500714715,
+        "N1_minus_C1": -0.00029370469884515416,
+        "N1_minus_C0": -0.0009698773489166257
+      },
+      "W2": {
+        "C1_minus_C0": -0.0009435844561984652,
+        "N1_minus_C1": -0.010880457414574884,
+        "N1_minus_C0": -0.01182404187077335
+      },
+      "W3": {
+        "C1_minus_C0": -0.0005260370921984503,
+        "N1_minus_C1": -0.007459816742396264,
+        "N1_minus_C0": -0.007985853834594714
+      },
+      "W4": {
+        "C1_minus_C0": -0.0006199133357576159,
+        "N1_minus_C1": -0.00529994598398531,
+        "N1_minus_C0": -0.005919859319742926
+      }
+    },
+    "diagnostic_interpretation_only": [
+      "C1 expected log loss is slightly lower than C0 in all five ordinary synthetic worlds under the frozen pre-holdout coefficients.",
+      "N1 expected log loss is worse than C1/C0 in W0, only slightly better in W1, and more clearly lower in W2-W4.",
+      "This pattern is consistent with relation terms helping in synthetic worlds that contain relational dependence while imposing a cost in the null-like W0 world.",
+      "This is engineered synthetic falsification evidence only and is not model-selection, promotion, real-keirin edge, ROI, or causal evidence."
+    ]
+  },
   "explicitly_forbidden_inputs": [
     "digital_twin_stress_grid_v1 locked legacy synthetic holdout",
     "c0_c1_n1_multiworld_stress_v1 locked-grid evaluator",
@@ -74,8 +137,14 @@
   "economics": false,
   "real_world_validation": false,
   "model_or_scoring_semantics_changed": false,
+  "result_adaptive_retuning": false,
   "locked_or_protected_holdout_used": false,
+  "pr15_quarantined_metrics_inspected": false,
+  "result_payout_accessed": false,
   "scientific_segment_c_scoring_count_required": 0,
+  "model_promotion_performed": false,
+  "external_provider_contact_performed": false,
+  "real_money_wagering_performed": false,
   "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
   "fail_closed": true
 }
