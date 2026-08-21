@@ -15,12 +15,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: r1-one-shot-live-canary-pr-${{ github.event.pull_request.number }}
+  group: multiverse-r1-one-shot-live-canary-global-v1
   cancel-in-progress: false
 
 jobs:
-  validate-or-run-one-shot:
+  classify-and-validate:
     runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
     steps:
       - name: Checkout exact PR head
         uses: actions/checkout@v4
@@ -34,6 +36,8 @@ jobs:
           echo "head=${{ github.event.pull_request.head.sha }}"
           echo "base_ref=${{ github.base_ref }}"
           echo "head_ref=${{ github.head_ref }}"
+          echo "head_repo=${{ github.event.pull_request.head.repo.full_name }}"
+          echo "repository=${{ github.repository }}"
           git rev-parse HEAD
 
       - name: Determine validation versus one-shot trigger
@@ -43,19 +47,26 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           BASE_REF: ${{ github.base_ref }}
           HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          CANONICAL_REPO: ${{ github.repository }}
         run: |
           trigger="governance/MULTIVERSE_R1_LIVE_CANARY_TRIGGER_ONCE_20260821_v1.json"
           required_head="agent/r1-live-canary-trigger-once-20260821-v1"
           git diff --name-only "$BASE_SHA" "$HEAD_SHA" | sed '/^$/d' > /tmp/r1_changed_files.txt
           cat /tmp/r1_changed_files.txt
           count="$(wc -l < /tmp/r1_changed_files.txt | tr -d ' ')"
-          if [ "$count" = "1" ] && [ "$(cat /tmp/r1_changed_files.txt)" = "$trigger" ] && [ "$BASE_REF" = "main" ] && [ "$HEAD_REF" = "$required_head" ]; then
+          if [ "$count" = "1" ] \
+             && [ "$(cat /tmp/r1_changed_files.txt)" = "$trigger" ] \
+             && [ "$BASE_REF" = "main" ] \
+             && [ "$HEAD_REF" = "$required_head" ] \
+             && [ "$HEAD_REPO" = "$CANONICAL_REPO" ] \
+             && [ "$CANONICAL_REPO" = "fufufu1116/multiverse-research" ]; then
             echo "mode=live" >> "$GITHUB_OUTPUT"
           else
             echo "mode=validation" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Validate dormant framework and authority separation
+      - name: Validate dormant framework authority and single-use contract
         run: |
           python - <<'PY'
           import json
@@ -63,11 +74,19 @@ jobs:
           gate = json.loads(Path("governance/MULTIVERSE_R1_OWNER_GATE_ONE_SHOT_LIVE_CANARY_20260821_v1.json").read_text())
           auth = json.loads(Path("governance/MULTIVERSE_R1_LIVE_CANARY_AUTHORIZATION_FIXTURE_20260821_v1.json").read_text())
           contract = json.loads(Path("governance/MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_CONTRACT_20260821_v1.json").read_text())
+          marker = "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1"
           assert gate["status"] == "OWNER_APPROVED_SCOPE_SPECIFIC_ONE_SHOT_LIVE_CANARY_ONLY"
+          assert gate["canonical_repo"] == "fufufu1116/multiverse-research"
           assert gate["execution_limits"]["max_live_canary_executions"] == 1
           assert gate["execution_limits"]["automatic_retry_authorized"] is False
           assert gate["execution_limits"]["application_network_access_authorized"] is False
+          assert gate["execution_limits"]["repository_business_state_write_authorized"] is False
+          assert gate["execution_limits"]["control_plane_consumed_marker_write_authorized"] is True
+          assert gate["execution_limits"]["control_plane_consumed_marker_ref"] == marker
           assert gate["execution_limits"]["full_runtime_activation_authorized"] is False
+          assert gate["global_single_use_enforcement"]["required_head_repository"] == "fufufu1116/multiverse-research"
+          assert gate["global_single_use_enforcement"]["persistent_consumed_marker_ref"] == marker
+          assert gate["global_single_use_enforcement"]["failure_after_marker_claim_still_consumes_owner_gate"] is True
           assert auth["status"] == "CANARY_FIXTURE_ONLY_NOT_PRODUCTION_AUTHORITY"
           assert all(x["owner_gate_ref"] is None for x in auth["decisions"].values())
           assert all(x["permission_class_requested"] in {"P0_READ_PUBLIC_OR_CANONICAL", "P1_REVERSIBLE_INTERNAL_WRITE"} for x in auth["decisions"].values())
@@ -75,15 +94,26 @@ jobs:
           assert trigger["max_execution_count"] == 1
           assert trigger["automatic_retry"] is False
           assert trigger["required_base_branch"] == "main"
+          assert trigger["required_head_repository"] == "fufufu1116/multiverse-research"
           assert trigger["required_head_branch"] == "agent/r1-live-canary-trigger-once-20260821-v1"
           assert trigger["different_head_branch_cannot_activate"] is True
+          assert trigger["different_head_repository_cannot_activate"] is True
+          single = contract["global_single_use"]
+          assert single["global_concurrency_group"] == "multiverse-r1-one-shot-live-canary-global-v1"
+          assert single["persistent_consumed_marker_ref"] == marker
+          assert single["claim_must_fail_if_marker_exists"] is True
+          assert single["claim_occurs_before_r1_workload"] is True
+          assert single["marker_persists_after_success_or_failure"] is True
+          assert single["second_distinct_qualifying_pr_must_fail"] is True
+          assert single["consumed_marker_reset_authorized"] is False
           assert contract["runtime_authorization"]["owner_gate_reused_as_operation_grant"] is False
           assert contract["workload"]["network_source_collection"] is False
           assert contract["workload"]["repository_business_state_write"] is False
+          assert contract["workload"]["control_plane_consumed_marker_write_only"] is True
           assert contract["after_success"]["broader_runtime_activation_authorized"] is False
           PY
 
-      - name: Reject hidden network scheduling retry or alternate activation paths
+      - name: Reject hidden application network scheduling retry or alternate activation paths
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -102,10 +132,36 @@ jobs:
           for forbidden in forbidden_tokens:
               assert forbidden not in workflow, forbidden
           assert "types: [opened]" in workflow
-          assert "contents: read" in workflow
-          assert "GITHUB_RUN_ATTEMPT" in workflow
+          assert "github.event.pull_request.head.repo.full_name" in workflow
+          assert "fufufu1116/multiverse-research" in workflow
           assert "agent/r1-live-canary-trigger-once-20260821-v1" in workflow
+          assert "multiverse-r1-one-shot-live-canary-global-v1" in workflow
+          assert "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1" in workflow
+          assert "--force-with-lease=$MARKER_REF:" in workflow
+          assert workflow.count("git push origin") == 1
+          assert "GITHUB_RUN_ATTEMPT" in workflow
           PY
+
+      - name: Prove consumed-marker replay is rejected
+        run: |
+          set -eu
+          tmp="$(mktemp -d)"
+          git init --bare "$tmp/remote.git" >/dev/null
+          git clone "$tmp/remote.git" "$tmp/work" >/dev/null 2>&1
+          cd "$tmp/work"
+          git config user.name r1-canary-selftest
+          git config user.email r1-canary-selftest@example.invalid
+          printf 'one-shot\n' > marker-test.txt
+          git add marker-test.txt
+          git commit -m init >/dev/null
+          git push origin HEAD:refs/heads/main >/dev/null
+          marker="refs/tags/r1-live-canary-consumed-selftest"
+          git push origin HEAD:"$marker" "--force-with-lease=$marker:" >/dev/null
+          if git push origin HEAD:"$marker" "--force-with-lease=$marker:" >/dev/null 2>&1; then
+            echo "ERROR: consumed marker replay unexpectedly succeeded"
+            exit 1
+          fi
+          echo "GLOBAL_SINGLE_USE_MARKER_REPLAY_REJECTED"
 
       - name: Run framework selftest without live trigger
         if: steps.mode.outputs.mode == 'validation'
@@ -123,16 +179,33 @@ jobs:
         run: |
           test "$(python tools/multiverse_r1_one_shot_live_canary_v1.py)" = "R1_LIVE_CANARY_FRAMEWORK_DORMANT_NO_TRIGGER"
 
-      - name: Enforce exact single-use live trigger
-        if: steps.mode.outputs.mode == 'live'
+  live-one-shot:
+    needs: classify-and-validate
+    if: needs.classify-and-validate.outputs.mode == 'live'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact trigger PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Enforce canonical trigger identity and first run attempt
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           BASE_REF: ${{ github.base_ref }}
           HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          CANONICAL_REPO: ${{ github.repository }}
         run: |
           test "$GITHUB_RUN_ATTEMPT" = "1"
           test "$BASE_REF" = "main"
           test "$HEAD_REF" = "agent/r1-live-canary-trigger-once-20260821-v1"
+          test "$HEAD_REPO" = "$CANONICAL_REPO"
+          test "$CANONICAL_REPO" = "fufufu1116/multiverse-research"
           python - <<'PY'
           import json, os
           from pathlib import Path
@@ -148,8 +221,16 @@ jobs:
           assert trigger["contract"] == "governance/MULTIVERSE_R1_ONE_SHOT_LIVE_CANARY_CONTRACT_20260821_v1.json"
           PY
 
+      - name: Atomically consume Owner Gate before workload
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          MARKER_REF: refs/tags/multiverse-r1-live-canary-consumed-20260821-v1
+        run: |
+          echo "Claiming persistent one-shot marker: $MARKER_REF"
+          git push origin "$BASE_SHA:$MARKER_REF" "--force-with-lease=$MARKER_REF:"
+          echo "OWNER_GATE_ONE_SHOT_MARKER_CONSUMED"
+
       - name: Execute exactly one bounded live canary
-        if: steps.mode.outputs.mode == 'live'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
