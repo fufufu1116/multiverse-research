@@ -14,13 +14,16 @@
   },
   "one_shot_trigger": {
     "event": "pull_request opened only",
+    "required_base_branch": "main",
+    "required_head_branch": "agent/r1-live-canary-trigger-once-20260821-v1",
     "required_changed_files": ["governance/MULTIVERSE_R1_LIVE_CANARY_TRIGGER_ONCE_20260821_v1.json"],
     "max_changed_files": 1,
     "max_execution_count": 1,
     "github_run_attempt_required": 1,
     "automatic_retry": false,
     "trigger_pr_must_not_merge": true,
-    "trigger_expected_canonical_main_must_equal_pr_base_sha": true
+    "trigger_expected_canonical_main_must_equal_pr_base_sha": true,
+    "different_head_branch_cannot_activate": true
   },
   "workload": {
     "uses_canonical_r1_engine": true,
@@ -63,7 +66,7 @@
     "CANARY_REPOSITORY_BUSINESS_WRITE_PERFORMED=false",
     "CANARY_FULL_RUNTIME_ACTIVATION_PERFORMED=false"
   ],
-  "failure_rule": "Any gate, trigger, authorization, schema, canonical identity, lease, receipt, or state mismatch fails closed and MUST NOT be automatically retried.",
+  "failure_rule": "Any gate, trigger, authorization, schema, canonical identity, lease, receipt, branch identity, or state mismatch fails closed and MUST NOT be automatically retried.",
   "claim_boundary": "A PASS proves one bounded canonical-code execution in GitHub Actions with synthetic/local workload state. It does not prove production Authorization issuance, network Source collection, always-on scheduling, general runtime readiness, business correctness, or real-world scientific performance.",
   "after_success": {
     "close_trigger_pr": true,
