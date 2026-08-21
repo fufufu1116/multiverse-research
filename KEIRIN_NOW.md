@@ -1,137 +1,87 @@
 # Multiverse 競輪ver — いまここ
 
-最終更新: 2026-08-20 00:29 JST
+最終更新: 2026-08-21 09:10 JST
 
-この1枚が **主向けの進捗表**。
-内部の専門用語・SHA・監査証拠は必要な時だけ展開する。
+この1枚は **主向けの現在地表示**。
+NOW / CURRENT / LATEST の技術確認は必ず GitHub Fresh Read を優先する。
 
-## 最終ゴール
+## 現在の結論
 
-現実の競輪について、発走前情報だけから
+**競輪の科学実験は停止中です。**
 
-1. 着順確率
-2. 各券種確率
-3. 市場価格との比較
-4. 仮想資金でBUY/NO-BETと資金配分
-5. 未知の現実レースで再現するか
+Multiverse Foundation v1（基盤 v1）は正式受理・固定済みですが、
+**Foundationの受理 = 競輪研究の再開許可ではありません。**
 
-まで到達する。
+正本の Foundation Current State（generation 11）は:
+- Foundation v1: `ACCEPTED_FROZEN`（正式受理・固定済み）
+- Keirin science: `PAUSED`（科学実行停止）
+- scientific resume allowed: `false`（科学再開不可）
+- 別の Scientific Execution Authorization Gate（科学実行許可の審査）が必要
 
----
-
-## 運用OS
-
-競輪verは `MULTIVERSE GENESIS v7` を前倒し接続した最初の実戦Domain。
-
-- **主** = 方向・優先順位・最終承認
-- **Core** = 進める
-- **Vault** = 証拠・正本・保護状態を守る
-- **Lab** = ミス・抜け・もっと良い方法を探す
-- **Auditor** = 重大変更を止める/通す
-
-AIは主から指摘されるまで待たず、自分たちで改善点を探す。
-ただし研究方向・Freeze・Holdout・費用などは勝手に変えない。
-
-Genesis完全Bundle `09_COMPLETE_ALL_IN_ONE.txt` はOwner付属SHA一覧と実体照合済み。
-同じBundleをGitHubへ大量複製せず、必要規則だけ既存のCouncil/Current Stateへ統合する。
+2026-08-21、旧 `CURRENT_STATE_KEIRIN.json` の矛盾表示も PR #29 で最小修理済み。
+現在の fixed-path Current State も `PAUSED` を示し、次の門は別の科学実行許可です。
 
 ---
 
-## いま何をしてる？
+## 最後に正当に完了した科学チェックポイント
 
-**Digital Twinを現実に近づけながら、自律レビューを毎Batchで回している。**
+PR #14
 
-`作る -> 証拠確認 -> 穴を探す -> 判定 -> 直す`
+Lab（検証室）が確認した科学head:
+`e70bda39a5d3ce585af4e028b35106b859871bd9`
 
-外部AI会議や無料枠を待たない。
-重大変更だけ主へ上げる。
+証拠の種類:
+**Synthetic engineering / falsification only
+（合成データによる工学・壊れ方検証のみ）**
 
----
-
-## 今日ここまでで直したこと
-
-### 1. 通常7車 / 特別9車をCode上で分離 — 完了
-
-KEIRIN.JPの2026年度概定番組を再確認。
-通常FI/FIIのS級・A級1/2班・A級3班は7車立てが基本で、一部の特別番組に9車立てが存在する。
-
-Simulatorは現在:
-- `STANDARD_FI_FII_7` = 7車
-- `SPECIAL_9` = 明示した時だけ9車
-- その他の人数 = engineering fixtureとして明示
-
-に分離済み。
-
-### 2. Digital Twinの壊れ方を自動検査するTestを強化 — 完了
-
-既存 `synthetic_selftest_v1.py` に以下を追加:
-- 通常生成が必ず7車か
-- SPECIAL_9だけ9車になるか
-- 7車形式へ9車を無理に入れた時Fail-Closedするか
-- PRE側へ見えない本当の能力が漏れていないか
-- W0〜W4の全世界で3着順確率が210通り揃うか
-- 確率合計=1、負確率なし、同じ選手が重複しないか
-
-commit: `a6e70e45529527a6676cbe8729de99caf5a078c3`
-
-No.3 runtimeで同じ現行Digital Twin logicを再構成して上記不変条件を実行し、`DIGITAL_TWIN_INVARIANTS_PASS` を確認。
-これはSimulatorの数学/配管確認であり、現実予測力の証拠ではない。
+これは現実世界で勝てる、利益が出る、ROI（投資収益率）がある、という証拠ではありません。
 
 ---
 
-## Labが次に見つけている重要点
+## PR #15
 
-今のSimulatorには、**数字は入っているが現実からまだ校正していない部分**が残る。
+`QUARANTINED_NOT_ADMITTED（隔離・採用禁止）`
 
-例:
-- S / A1-A2 / A3を生成する割合
-- S1/S2、A1/A2の割合
-- ライン形状の頻度
-- 逃/両/追とライン位置の頻度
-- B/H/S、逃/捲/差/マの分布
-- バンク周長の出現頻度
-- 風速の分布
-- 風・バンクが着順へ効く強さ
-- ライン効果の強さ
-- ライン崩壊率
-- 波乱ショック量
-
-ここを「現実確認済み」と「仮定」に分離し、仮定を現実の事実っぽく扱わない。
+この結果や指標は、再開方法を選ぶために開きません。
 
 ---
 
-## 次にやること
+## 保護状態
 
-1. 上の未校正パラメータを現実確認済み / 仮定へ分類
-2. 公開PREから確認できる根本統計をNo.3側で集める
-3. 現実値が取れないものは1個の正解に固定せず、複数世界の範囲として振る
-4. 旧方式・ライン入り方式・新方式を同条件比較
-5. 各方式が「どんな世界で壊れるか」を先に確認
-6. Materialな改善だけOwner Gateへまとめる
-7. 仮想で壊した後、現実PREへ戻って検証
-
----
-
-## AI同士の会話
-
-GitHub / Driveを共有机にする非同期Council方式を採用。
-
-- 短い依頼・差分・監査ログ = GitHub
-- 大きいBundle = Drive
-- Gemini / Claude等が直接読める時はそこから受け渡す
-- Replit等は本当に往復自動化が必要になった時だけ候補
-
-特定AI/サービスが使えなくても研究本体は止めない。
+- ECON_HOLDOUT1000（最終未使用検証データ）: **SEALED / 封印**
+- RESULT/PAYOUT（結果・払戻）: **UNAUTHORIZED / 未許可**
+- DEV2000 C の新系統救済利用: **禁止**
+- 同じ系統の B/C 救済チューニング: **禁止**
+- 新しい untouched validation（未使用検証）の開封: **していない**
+- model promotion（モデル昇格）: **禁止**
+- PR #15隔離指標の再開選択への利用: **禁止**
+- 外部業者・外部提供者への連絡: **未許可**
+- 現実のお金を使う賭け: **対象外**
+- Synthetic（合成）好成績を現実の優位性として扱う: **禁止**
 
 ---
 
-## 研究を止めない
+## 今やっていること
 
-- 2〜3日待機は禁止
-- Gemini/Claude/Flowise無料枠待ちで停止しない
-- データ待ちでも実装・Synthetic・公開情報確認を並行
-- 1件でもズレを見つけたら即修正候補へ
-- 課金が本当に避けられない時だけ事前相談
+科学実験を進めている段階ではありません。
+
+Foundation受理後に残った状態表示の矛盾を整理し、
+**「競輪は停止中」という正本の状態を、機械向けCurrent Stateと主向け表示の両方で一致させる作業**をしています。
+
+fixed-path `CURRENT_STATE_KEIRIN.json` の同期は完了済み。
+この `KEIRIN_NOW.md` の同期が、残っている主向け表示修理です。
+
+---
+
+## 次の門
+
+表示同期が完了した後も、競輪科学は自動では再開しません。
+
+再開するには別途、
+**Scientific Execution Authorization Gate（科学実行許可の審査）**
+を正本上で満たす必要があります。
+
+そのGateが成立するまでは、研究継続を指示する旧文言を実行根拠にしません。
 
 ---
 
@@ -139,20 +89,8 @@ GitHub / Driveを共有机にする非同期Council方式を採用。
 
 **今はなし。**
 
-主は方向・優先順位・重大承認に集中。
-コード収集、大量転記、大量スクショ、routine整理はNo.3側。
-
----
-
-## 重要な保護状態
-
-- DEV2000 C: 新lineage救済に使わない
-- ECON_HOLDOUT1000: SEALED
-- same-lineage B/C rescue tuning: 禁止
-- 現実のお金: 使わない
-- 外部業者への連絡: しない
-- Synthetic好成績: 現実で勝てる証拠ではない
-- 追加課金: 主の明示OKなしではしない
+表示同期・証拠整理・不要候補の整理はNo.3側で進めます。
 
 詳細ルール: `AI_COUNCIL.md`
 科学的Current State: `v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json`
+Foundation Current State: `multiverse_vnext/VNEXT_CURRENT_STATE_v0.json`
