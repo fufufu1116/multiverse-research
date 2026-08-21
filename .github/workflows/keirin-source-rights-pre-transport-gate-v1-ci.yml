@@ -1,0 +1,121 @@
+name: Keirin Source Rights PRE Transport Gate v1 CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-source-rights-pre-transport-gate-v1-ci.yml'
+      - 'governance/KEIRIN_SOURCE_RIGHTS_PRE_TRANSPORT_GATE_CANDIDATE_20260821_v1.json'
+  push:
+    paths:
+      - '.github/workflows/keirin-source-rights-pre-transport-gate-v1-ci.yml'
+      - 'governance/KEIRIN_SOURCE_RIGHTS_PRE_TRANSPORT_GATE_CANDIDATE_20260821_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  EXPECTED_MAIN: ca87c6ace2744c7cc25abcf9c83c54bd8137e346
+  VNEXT_BLOB: afe746287c7e911d214202abdf2de076f63ab30c
+  KEIRIN_STATE_BLOB: 962d9c75b0611d52bd264a8b88bb1fe259cb8aeb
+  SYNTHETIC_CLOSURE_BLOB: 3aa8a51cb12da4d7838bcb527807fe98622a43ae
+  PROVIDER_MATRIX_BLOB: 973fb49b57a160887bf8e58683d9b5dc40157f65
+  SOURCE_TRANSPORT_AUDIT_BLOB: cdbc2c9c4f45678ed7bafce23a1a6b2868886432
+
+jobs:
+  source-rights-pre-transport-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Verify exact head canonical evidence and limited diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          echo "ORIGIN_MAIN=$(git rev-parse origin/main)"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "PR_EVENT_HEAD=${{ github.event.pull_request.head.sha }}"
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test "$(git rev-parse origin/main)" = "$EXPECTED_MAIN"
+          test "$(git rev-parse "$EXPECTED_MAIN:multiverse_vnext/VNEXT_CURRENT_STATE_v0.json")" = "$VNEXT_BLOB"
+          test "$(git rev-parse "$EXPECTED_MAIN:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json")" = "$KEIRIN_STATE_BLOB"
+          test "$(git rev-parse "$EXPECTED_MAIN:governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json")" = "$SYNTHETIC_CLOSURE_BLOB"
+          test "$(git rev-parse "$EXPECTED_MAIN:v3/historical_all_market/governance/NEW_LINEAGE_PROVIDER_RIGHTS_MATRIX_v1.md")" = "$PROVIDER_MATRIX_BLOB"
+          test "$(git rev-parse "$EXPECTED_MAIN:v3/historical_all_market/governance/NEW_LINEAGE_STAGE0_SOURCE_TRANSPORT_AUDIT_v1.md")" = "$SOURCE_TRANSPORT_AUDIT_BLOB"
+          git diff --name-only "$EXPECTED_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-source-rights-pre-transport-gate-v1-ci.yml
+          governance/KEIRIN_SOURCE_RIGHTS_PRE_TRANSPORT_GATE_CANDIDATE_20260821_v1.json
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Validate nonauthorizing fail-closed source gate
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          p='governance/KEIRIN_SOURCE_RIGHTS_PRE_TRANSPORT_GATE_CANDIDATE_20260821_v1.json'
+          x=json.load(open(p, encoding='utf-8'))
+          assert x['status']=='DRAFT_NONCANONICAL_SOURCE_AUDIT_ONLY_NO_DATA_AUTHORITY'
+          a=x['authority_from_this_draft']
+          for k,v in a.items():
+              if k == 'owner_action_now':
+                  assert v == 'NONE'
+              else:
+                  assert v is False, (k,v)
+          phase=x['phase_A_source_admission_audit_only']
+          assert 'contacting a provider or rights holder' in phase['explicitly_not_allowed']
+          assert 'automated bulk harvesting or archival' in phase['explicitly_not_allowed']
+          assert 'collecting target race records for modeling or calibration' in phase['explicitly_not_allowed']
+          assert x['phase_B_after_source_admission_only']['status']=='NOT_AUTHORIZED_BY_THIS_DRAFT'
+          assert x['phase_B_after_source_admission_only']['requires_separate_governed_authorization'] is True
+          rules=x['source_class_fail_closed_rules']
+          assert rules['POST_RACE_RECONSTRUCTION']=='PROHIBITED_AS_PRE_MODEL_INPUT'
+          assert rules['PUBLIC_GITHUB_DATASET_WITHOUT_UNDERLYING_DATA_LICENSE']=='NOT_ADMITTED'
+          pb=x['protected_boundaries']
+          assert pb['ECON_HOLDOUT1000']=='SEALED'
+          assert pb['scientific_segment_C_scoring_count']==0
+          assert pb['RESULT_PAYOUT']=='UNAUTHORIZED'
+          assert pb['untouched_validation']=='CLOSED'
+          assert pb['model_promotion']=='PROHIBITED'
+          rg=x['review_gate']
+          assert rg['independent_Lab_review_required_before_canonical_adoption'] is True
+          assert rg['Lab_classification_source']['reviewed_head']=='2ea17e7552a4ffc307aa51eaf722ff84d60b092d'
+          assert rg['Lab_classification_source']['result_comment_id']==5364319133
+          assert rg['Lab_classification_source']['verdict']=='PASS_WITH_FIXES'
+          assert rg['expected_fail_closed_answer_for_data_collection_from_this_draft']=='NO'
+          assert rg['Auditor_required_before_actual_source_admission'] is True
+          assert rg['Owner_Gate_required_for_actual_source_admission'] is True
+          assert rg['Owner_Gate_required_for_actual_real_PRE_collection_or_use'] is True
+          assert rg['external_provider_contact_requires_separate_explicit_owner_decision'] is True
+          assert rg['source_admission_may_occur_from_this_draft'] is False
+          assert rg['real_PRE_collection_may_occur_from_this_draft'] is False
+          assert rg['micro_Lab_rereview_required_after_this_remediation'] is True
+          assert x['scope_expansion_requires_separate_governed_gate'] is True
+          assert x['fail_closed'] is True
+          print('KEIRIN_SOURCE_RIGHTS_PRE_TRANSPORT_GATE_CANDIDATE_PASS')
+          PY
+
+      - name: Verify no science or source side effects
+        shell: bash
+        run: |
+          echo 'SOURCE_ADMISSION_PERFORMED=false'
+          echo 'REAL_LIVE_PRE_COLLECTION_PERFORMED=false'
+          echo 'SCIENTIFIC_EXTERNAL_DATA_INGESTION_PERFORMED=false'
+          echo 'AUTOMATED_BULK_COLLECTION_PERFORMED=false'
+          echo 'EXTERNAL_PROVIDER_CONTACT_PERFORMED=false'
+          echo 'PAYMENT_OR_CONTRACT_PERFORMED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'SCIENTIFIC_SEGMENT_C_SCORING_COUNT=0'
+          echo 'MODEL_SELECTION_OR_PROMOTION_PERFORMED=false'
+          echo 'OWNER_ACTION_NOW=NONE'
+          test -z "$(git status --porcelain)"
