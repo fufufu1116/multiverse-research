@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_SCIENTIFIC_EXECUTION_AUTHORIZATION_GATE_CANDIDATE_20260821_v1",
+  "status": "DRAFT_NONCANONICAL_NO_EXECUTION_AUTHORITY",
+  "purpose": "Define and independently classify the narrow gate required before any Keirin scientific execution may resume after Foundation acceptance and pause-state synchronization.",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "fresh_read_preconditions": {
+    "expected_canonical_main": "7993d8d90d0154913e6335bf5219477cf1f8fd38",
+    "foundation_current_state_path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
+    "foundation_current_state_blob": "f4295fe416667745688f17ab390246cbb64e0dc8",
+    "foundation_state_generation": 11,
+    "keirin_current_state_path": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "keirin_current_state_blob": "9c73c0098611fae0449c2a76ab7c5715b6b72d7d",
+    "keirin_owner_view_path": "KEIRIN_NOW.md",
+    "keirin_owner_view_blob": "e19bf3fbfa83783394ae785ec54c258d427325ea",
+    "reject_on_any_relevant_drift": true
+  },
+  "current_truth": {
+    "foundation_v1": "ACCEPTED_FROZEN",
+    "keirin_science": "PAUSED",
+    "scientific_resume_allowed": false,
+    "separate_scientific_execution_authorization_required": true,
+    "latest_legitimate_completed_scientific_checkpoint": {
+      "pr": 14,
+      "exact_lab_reviewed_head": "e70bda39a5d3ce585af4e028b35106b859871bd9",
+      "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY"
+    },
+    "pr15": {
+      "status": "QUARANTINED_NOT_ADMITTED",
+      "metrics_may_be_inspected_for_resume_selection": false
+    }
+  },
+  "supersession_and_history": {
+    "old_pause_receipt_path": "multiverse_vnext/VNEXT_KEIRIN_PAUSE_RECEIPT_20260820_v1.json",
+    "old_pause_receipt_role_now": "HISTORICAL_ORIENTATION_ONLY_NOT_EXECUTION_AUTHORITY",
+    "old_resume_gate": "DIGITAL_TWIN_REALITY_CALIBRATION_PLUS_C0_C1_N1_MULTI_WORLD_STRESS_BEFORE_NEW_UNTOUCHED_REAL_VALIDATION",
+    "rule": "NEWER_CANONICAL_GENERATION_11_PLUS_PR29_PR30_PR31_PAUSE_TRUTH_WINS; OLD_RECEIPT_CANNOT_AUTHORIZE_RESUME"
+  },
+  "proposed_initial_authorization_scope_if_and_only_if_gate_is_later_accepted": {
+    "allowed": [
+      "source-independent synthetic engineering and regression checks",
+      "Digital Twin multi-world W0-W4 stress and failure diagnostics",
+      "C0/C1/N1 comparison only where it can be performed without protected or quarantined information",
+      "proper probability scoring on synthetic or otherwise already-authorized non-protected inputs",
+      "diagnostic investigation that does not consume untouched validation or a protected scientific trial"
+    ],
+    "not_allowed": [
+      "PR #15 quarantined metric inspection or use for resume selection",
+      "RESULT/PAYOUT access",
+      "ECON_HOLDOUT1000 opening, scoring or access-policy change",
+      "DEV2000 C new-lineage rescue",
+      "same-lineage B/C rescue tuning",
+      "opening untouched validation",
+      "model promotion",
+      "result-aware feature, threshold, exclusion, ticket or bankroll adoption",
+      "external provider contact",
+      "automated bulk collection not already explicitly admitted",
+      "access-control, rate-limit, CAPTCHA or WAF bypass",
+      "real-money wagering",
+      "claiming synthetic evidence as real-world edge or ROI evidence"
+    ],
+    "economics_authorized": false,
+    "real_world_validation_authorized": false,
+    "scientific_segment_c_scoring_count_must_remain": 0
+  },
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "external_provider_contact": "UNAUTHORIZED",
+    "real_money_wagering": "OUT_OF_SCOPE",
+    "synthetic_is_real_world_evidence": false
+  },
+  "permission_and_review_classification": {
+    "execution_state_change": "PAUSED_TO_LIMITED_EXECUTION_IF_LATER_ACCEPTED",
+    "owner_gate_required": "UNRESOLVED_REQUIRES_INDEPENDENT_CLASSIFICATION",
+    "why_unresolved": "Historical operational state records pause_source=OWNER_DIRECTIVE, while current AI_COUNCIL Owner-Gate list does not explicitly name narrow resumption inside unchanged scientific boundaries.",
+    "independent_lab_review_required_before_any_acceptance": true,
+    "auditor_review_required": "LAB_TO_CLASSIFY",
+    "this_candidate_itself_authorizes_execution": false
+  },
+  "required_lab_return": {
+    "LAB_REVIEWED_HEAD": "<exact PR head>",
+    "LAB_VERDICT": "PASS | PASS_WITH_FIXES | MATERIAL_BLOCK",
+    "CANONICAL_MAIN_FRESH_READ": "<sha>",
+    "PRECONDITIONS_MATCH": "YES/NO",
+    "OLD_PAUSE_RECEIPT_IS_HISTORY_ONLY": "PASS/FAIL",
+    "PROPOSED_INITIAL_SCOPE_IS_NONCONTAMINATING": "PASS/FAIL",
+    "PROTECTED_BOUNDARIES": "PASS/FAIL",
+    "OWNER_GATE_REQUIRED_FOR_LIMITED_SCIENTIFIC_RESUME": "YES/NO",
+    "AUDITOR_REQUIRED_BEFORE_CANONICAL_EXECUTION_AUTHORIZATION": "YES/NO",
+    "UNRESOLVED_FINDINGS": "<text>",
+    "KEIRIN_SCIENTIFIC_EXECUTION_MAY_OCCUR_FROM_THIS_DRAFT": "NO"
+  },
+  "hard_stop": "NO_SCIENTIFIC_EXECUTION_UNTIL_A_LATER_CANONICAL_AUTHORIZATION_TRANSITION_SATISFIES_THE_REVIEW_AND_PERMISSION_REQUIREMENTS"
+}
