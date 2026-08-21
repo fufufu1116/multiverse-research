@@ -14,15 +14,34 @@
     "Owner Exception View with zero approval authority"
   ],
   "enqueue_contract": {
-    "schema_version": "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v1",
+    "schema_version": "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v2",
     "exact_operation": "R1_STAGE1_ENQUEUE_SOURCE_AUDIT_ADMIN_TASK",
     "exact_target": "runtime/r1-source-audit-stage1-v1",
     "exact_scope": "GITHUB_INTERNAL_SOURCE_AUDIT_ADMIN_METADATA_ONLY",
     "permission_class": "P1_REVERSIBLE_INTERNAL_WRITE",
+    "caller_supplied_authorization_decision_fields_allowed": false,
+    "caller_supplied_authorization_runtime_allowed": false,
     "raw_github_event_comment_url_or_untrusted_branch_is_authority": false,
-    "fresh_authorization_decision_required": true,
-    "actor_and_worker_binding_required": true,
-    "malformed_or_unknown_field_behavior": "DENY_FAIL_CLOSED"
+    "malformed_or_unknown_field_behavior": "DENY_FAIL_CLOSED_BEFORE_REMOTE_CLAIM",
+    "worker_binding_required": true
+  },
+  "decision_provenance_contract": {
+    "decision_source": "CONTROL_PLANE_ADAPTER_SUPPLIES_CANONICAL_ISSUED_DECISION_OBJECTS",
+    "enqueue_decision_from_untrusted_envelope": false,
+    "worker_operation_decisions_from_untrusted_envelope": false,
+    "required_decisions": [
+      "R1_STAGE1_ENQUEUE_SOURCE_AUDIT_ADMIN_TASK",
+      "R1_SOURCE_CACHE_INSPECT_OR_STAGE",
+      "R1_TASK_ACQUIRE_LEASE",
+      "R1_TASK_CHECKPOINT",
+      "R1_SOURCE_REVIEW_COMMIT"
+    ],
+    "bundle_requires_verified_canonical_authority_provenance": true,
+    "bundle_requires_decisions_verified_from_canonical_policy": true,
+    "bundle_payload_digest_recomputed_before_r1_side_effect": true,
+    "exact_operation_target_scope_actor_revalidated_before_r1_side_effect": true,
+    "forged_but_otherwise_valid_allow_decision_behavior": "DENY_FAIL_CLOSED",
+    "decision_membership_or_issuance_attestation_is_concrete_adapter_responsibility": true
   },
   "runtime_branch_contract": {
     "branch": "runtime/r1-source-audit-stage1-v1",
@@ -42,9 +61,11 @@
   "control_plane_contract": {
     "library_schema_version": "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_SCHEMA_v2",
     "production_shaped_entrypoint_accepts_caller_supplied_authorization_runtime": false,
+    "production_shaped_entrypoint_accepts_caller_supplied_authorization_decisions": false,
     "production_shaped_entrypoint_requires_control_plane_adapter": true,
     "trusted_authority_context_requires_canonical_main_and_provenance_ref": true,
     "unverified_authority_provenance_behavior": "DENY_FAIL_CLOSED",
+    "unverified_decision_provenance_behavior": "DENY_FAIL_CLOSED",
     "single_invocation_claim_must_be_remote_durable_before_r1_side_effect": true,
     "single_invocation_claim_requires_expected_old_head_cas": true,
     "stale_or_nonowner_claim_may_persist_r1_state": false,
@@ -55,7 +76,7 @@
     "receipt_counting_identity": "R1_DURABLE_RECEIPT_ID_EXACTLY_ONCE_IN_STAGE1_LEDGER",
     "crash_after_receipt_before_terminal_count_behavior": "NEXT_EXPLICIT_INVOCATION_RECONCILES_DURABLE_RECEIPT_BEFORE_CEILING_CHECK_AND_NEW_WORK",
     "concrete_live_github_control_plane_adapter_in_this_candidate": "NOT_IMPLEMENTED_NOT_FAKED_PREACTIVATION_DEPENDENCY",
-    "selftest_adapter_role": "TEST_ONLY_SHARED_REMOTE_CAS_AND_CRASH_WINDOW_EVIDENCE_NOT_PRODUCTION_AUTHORITY"
+    "selftest_adapter_role": "TEST_ONLY_SHARED_REMOTE_CAS_CRASH_WINDOW_AND_DECISION_PROVENANCE_EVIDENCE_NOT_PRODUCTION_AUTHORITY"
   },
   "ceiling_contract": {
     "one_worker": true,
@@ -89,10 +110,11 @@
     "control_plane_adapter_protocol_implemented": true,
     "canonical_live_authority_snapshot_provider_in_this_candidate": "NOT_IMPLEMENTED_AND_NOT_FAKED",
     "stage1_live_entrypoint_may_accept_trusted_authority_context_from_caller": false,
+    "stage1_live_entrypoint_may_accept_authorization_decisions_from_caller": false,
     "stage1_library_may_load_authority_state_from_enqueue_payload": false,
     "stage1_library_may_assume_grant_current_without_external_verification": false,
-    "required_before_activation": "An independently reviewed concrete canonical control-plane adapter must Fresh Read canonical authority facts and construct current AuthorizationRuntime facts (policy identity, current valid grants, revocation generation, safe-mode generation, actor binding, current time). If unavailable or unverifiable, Stage 1 remains OFF.",
-    "reason": "Creating a Stage-1-local grant/revocation authority would violate the reviewed no-second-authority boundary."
+    "required_before_activation": "An independently reviewed concrete canonical control-plane adapter must Fresh Read canonical authority facts and supply canonical-issued decision objects or equivalent immutable decision membership/issuance attestation for every governed side effect. If unavailable or unverifiable, Stage 1 remains OFF.",
+    "reason": "Creating a Stage-1-local grant/revocation or decision authority would violate the reviewed no-second-authority boundary."
   },
   "implementation_files": [
     "tools/multiverse_r1_stage1_runtime_v1.py",
@@ -108,9 +130,12 @@
     "runtime_activation_performed": false
   },
   "dedicated_negative_evidence_required": [
-    "unauthorized actor/wrong operation/target/scope/malformed enqueue denied",
+    "caller-supplied enqueue authorization decision rejected as unknown field before remote claim",
+    "caller-supplied worker operation authorization decisions rejected as unknown field before remote claim",
+    "otherwise-valid ALLOW decision bundle with unverified canonical decision provenance denied",
+    "authorization decision payload digest mismatch denied",
+    "wrong operation target scope actor or worker binding denied",
     "raw GitHub event/comment/URL/untrusted branch cannot auto-taskify",
-    "unverified trusted-authority provenance denied",
     "two adapters sharing one remote snapshot cannot both claim the same expected-old-head",
     "stale/nonowner control-plane claim cannot persist R1 state",
     "crash after durable R1 receipt and before Stage1 terminal count is reconciled on explicit restart",
@@ -124,10 +149,10 @@
   ],
   "pre_activation_reviews_required": [
     "dedicated Stage-1 CI PASS",
-    "Lab implementation micro re-review PASS on control-plane remediation",
+    "Lab implementation micro re-review PASS on decision-provenance remediation",
     "independent Auditor implementation review PASS",
-    "concrete canonical authority adapter review PASS",
-    "concrete runtime-state GitHub CAS adapter review PASS",
+    "concrete canonical authority/decision adapter review PASS before activation",
+    "concrete runtime-state GitHub CAS adapter review PASS before activation",
     "no material scope drift"
   ],
   "runtime_activation_authorized_now": false,
