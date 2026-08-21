@@ -21,6 +21,7 @@
     "permission_class": "P1_REVERSIBLE_INTERNAL_WRITE",
     "caller_supplied_authorization_decision_fields_allowed": false,
     "caller_supplied_authorization_runtime_allowed": false,
+    "caller_supplied_wall_clock_allowed": false,
     "raw_github_event_comment_url_or_untrusted_branch_is_authority": false,
     "malformed_or_unknown_field_behavior": "DENY_FAIL_CLOSED_BEFORE_REMOTE_CLAIM",
     "worker_binding_required": true
@@ -34,14 +35,25 @@
       "R1_SOURCE_CACHE_INSPECT_OR_STAGE",
       "R1_TASK_ACQUIRE_LEASE",
       "R1_TASK_CHECKPOINT",
+      "R1_TASK_RECORD_FAILURE",
       "R1_SOURCE_REVIEW_COMMIT"
     ],
     "bundle_requires_verified_canonical_authority_provenance": true,
     "bundle_requires_decisions_verified_from_canonical_policy": true,
-    "bundle_payload_digest_recomputed_before_r1_side_effect": true,
-    "exact_operation_target_scope_actor_revalidated_before_r1_side_effect": true,
+    "bundle_payload_digest_recomputed_before_seal": true,
+    "validated_decision_objects_are_json_deep_copied_and_immutable_sealed_before_adapter_reentry": true,
+    "post_validation_mutation_of_adapter_owned_decision_dicts_can_change_consumed_decision": false,
+    "exact_operation_target_scope_actor_revalidated_before_seal": true,
     "forged_but_otherwise_valid_allow_decision_behavior": "DENY_FAIL_CLOSED",
     "decision_membership_or_issuance_attestation_is_concrete_adapter_responsibility": true
+  },
+  "trusted_clock_contract": {
+    "wall_clock_source": "CONTROL_PLANE_AUTHORIZATION_BUNDLE_RUNTIME_NOW_ONLY",
+    "production_entrypoint_accepts_caller_wall_clock": false,
+    "enqueue_and_worker_authorization_runtime_now_must_match_exactly": true,
+    "trusted_time_is_used_for_7_day_ceiling": true,
+    "trusted_time_is_used_for_invocation_claim_expiry": true,
+    "untrusted_or_mismatched_clock_behavior": "DENY_FAIL_CLOSED"
   },
   "runtime_branch_contract": {
     "branch": "runtime/r1-source-audit-stage1-v1",
@@ -62,6 +74,7 @@
     "library_schema_version": "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_SCHEMA_v2",
     "production_shaped_entrypoint_accepts_caller_supplied_authorization_runtime": false,
     "production_shaped_entrypoint_accepts_caller_supplied_authorization_decisions": false,
+    "production_shaped_entrypoint_accepts_caller_supplied_wall_clock": false,
     "production_shaped_entrypoint_requires_control_plane_adapter": true,
     "trusted_authority_context_requires_canonical_main_and_provenance_ref": true,
     "unverified_authority_provenance_behavior": "DENY_FAIL_CLOSED",
@@ -76,7 +89,18 @@
     "receipt_counting_identity": "R1_DURABLE_RECEIPT_ID_EXACTLY_ONCE_IN_STAGE1_LEDGER",
     "crash_after_receipt_before_terminal_count_behavior": "NEXT_EXPLICIT_INVOCATION_RECONCILES_DURABLE_RECEIPT_BEFORE_CEILING_CHECK_AND_NEW_WORK",
     "concrete_live_github_control_plane_adapter_in_this_candidate": "NOT_IMPLEMENTED_NOT_FAKED_PREACTIVATION_DEPENDENCY",
-    "selftest_adapter_role": "TEST_ONLY_SHARED_REMOTE_CAS_CRASH_WINDOW_AND_DECISION_PROVENANCE_EVIDENCE_NOT_PRODUCTION_AUTHORITY"
+    "selftest_adapter_role": "TEST_ONLY_SHARED_REMOTE_CAS_CRASH_WINDOW_DECISION_PROVENANCE_CLOCK_AND_RETRY_EVIDENCE_NOT_PRODUCTION_AUTHORITY"
+  },
+  "retry_contract": {
+    "retry_budget_per_task": 2,
+    "canonical_failure_operation": "R1_TASK_RECORD_FAILURE",
+    "failure_decision_must_be_in_canonical_authorization_bundle": true,
+    "initial_attempt_counts_as_retry": false,
+    "expired_nonterminal_prior_lease_is_accounted_before_retry_work": true,
+    "prior_failed_attempt_accounting_uses_current_fenced_lease_and_canonical_record_failure": true,
+    "initial_plus_two_retries_allowed": true,
+    "fourth_attempt_after_three_failed_prior_attempts": "DENY_DEAD_LETTER_AND_RELEASE_STAGE1_INVOCATION",
+    "runtime_may_override_canonical_r1_retry_budget": false
   },
   "ceiling_contract": {
     "one_worker": true,
@@ -111,10 +135,11 @@
     "canonical_live_authority_snapshot_provider_in_this_candidate": "NOT_IMPLEMENTED_AND_NOT_FAKED",
     "stage1_live_entrypoint_may_accept_trusted_authority_context_from_caller": false,
     "stage1_live_entrypoint_may_accept_authorization_decisions_from_caller": false,
+    "stage1_live_entrypoint_may_accept_wall_clock_from_caller": false,
     "stage1_library_may_load_authority_state_from_enqueue_payload": false,
     "stage1_library_may_assume_grant_current_without_external_verification": false,
-    "required_before_activation": "An independently reviewed concrete canonical control-plane adapter must Fresh Read canonical authority facts and supply canonical-issued decision objects or equivalent immutable decision membership/issuance attestation for every governed side effect. If unavailable or unverifiable, Stage 1 remains OFF.",
-    "reason": "Creating a Stage-1-local grant/revocation or decision authority would violate the reviewed no-second-authority boundary."
+    "required_before_activation": "An independently reviewed concrete canonical control-plane adapter must Fresh Read canonical authority facts and supply canonical-issued decision objects or equivalent immutable decision membership/issuance attestation plus trusted current time for every governed side effect. A separately reviewed concrete GitHub runtime-CAS adapter must enforce remote state facts. If unavailable or unverifiable, Stage 1 remains OFF.",
+    "reason": "Creating a Stage-1-local grant/revocation/decision/clock authority would violate the reviewed no-second-authority boundary."
   },
   "implementation_files": [
     "tools/multiverse_r1_stage1_runtime_v1.py",
@@ -134,12 +159,16 @@
     "caller-supplied worker operation authorization decisions rejected as unknown field before remote claim",
     "otherwise-valid ALLOW decision bundle with unverified canonical decision provenance denied",
     "authorization decision payload digest mismatch denied",
+    "malicious adapter mutating original decision dicts after validation cannot alter sealed consumed decisions",
     "wrong operation target scope actor or worker binding denied",
+    "enqueue and worker AuthorizationRuntime clock mismatch denied",
+    "production entrypoint exposes no caller wall-clock and control-plane trusted time enforces day-7 ceiling",
     "raw GitHub event/comment/URL/untrusted branch cannot auto-taskify",
     "two adapters sharing one remote snapshot cannot both claim the same expected-old-head",
     "stale/nonowner control-plane claim cannot persist R1 state",
     "crash after durable R1 receipt and before Stage1 terminal count is reconciled on explicit restart",
     "reconciled durable receipt is counted exactly once",
+    "three successive pre-terminal failed lease epochs consume canonical R1 failure accounting and fourth attempt is dead-letter blocked",
     "runtime ref ancestry/high-water rollback denied",
     "task 26/post-7-day/post-pause auto-resume denied",
     "wrong runtime ref/path traversal/main/governance writes denied",
@@ -149,9 +178,8 @@
   ],
   "pre_activation_reviews_required": [
     "dedicated Stage-1 CI PASS",
-    "Lab implementation micro re-review PASS on decision-provenance remediation",
-    "independent Auditor implementation review PASS",
-    "concrete canonical authority/decision adapter review PASS before activation",
+    "independent Auditor exact-head micro re-review PASS on three protocol remediations",
+    "concrete canonical authority/decision/trusted-time adapter review PASS before activation",
     "concrete runtime-state GitHub CAS adapter review PASS before activation",
     "no material scope drift"
   ],
