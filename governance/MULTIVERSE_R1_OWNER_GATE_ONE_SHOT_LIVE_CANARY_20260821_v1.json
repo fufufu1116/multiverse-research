@@ -1,0 +1,74 @@
+{
+  "record": "MULTIVERSE_R1_OWNER_GATE_ONE_SHOT_LIVE_CANARY_20260821_v1",
+  "status": "OWNER_APPROVED_SCOPE_SPECIFIC_ONE_SHOT_LIVE_CANARY_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "owner_decision": {
+    "decision_text": "よし、進めよう",
+    "context": "Immediately after Core explained that the next Owner Gate would decide whether to run the already-audited R1 safety mechanism in a very small real execution environment, while keeping external data collection, Source admission, provider contact, spending, protected data, and full runtime activation out of scope."
+  },
+  "anchors": {
+    "canonical_r1_implementation_main_at_gate": "fa01b35d262f479adef3d647390ebfa6fd9d408b",
+    "audited_canary_preparation_head": "cacc51df74d0176a3edc210acb8d377834a46104",
+    "canary_preparation_auditor_result_comment_id": 5365749889,
+    "canary_preparation_auditor_verdict": "PASS"
+  },
+  "authorized_now": [
+    "Prepare and independently review a dormant one-shot R1 live-canary framework",
+    "Canonicalize that dormant framework only after independent review PASS",
+    "Create exactly one non-merged trigger PR from the pinned canonical repository and pinned trigger branch whose only changed file is the one-shot trigger record",
+    "Atomically claim exactly one persistent control-plane consumed marker in the canonical repository immediately before any bounded canary workload begins",
+    "Execute exactly one GitHub Actions canary run from that trigger PR using canonical R1 code and synthetic/local metadata only",
+    "Use temporary local workload state only and emit only canary success/failure evidence to GitHub Actions logs",
+    "Close/disarm the trigger PR after result capture"
+  ],
+  "execution_limits": {
+    "max_live_canary_executions": 1,
+    "automatic_retry_authorized": false,
+    "scheduler_authorized": false,
+    "always_on_worker_authorized": false,
+    "application_network_access_authorized": false,
+    "source_collection_authorized": false,
+    "repository_business_state_write_authorized": false,
+    "control_plane_consumed_marker_write_authorized": true,
+    "control_plane_consumed_marker_ref": "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1",
+    "full_runtime_activation_authorized": false
+  },
+  "global_single_use_enforcement": {
+    "required_head_repository": "fufufu1116/multiverse-research",
+    "required_head_branch": "agent/r1-live-canary-trigger-once-20260821-v1",
+    "global_concurrency_key": "multiverse-r1-one-shot-live-canary-global-v1",
+    "persistent_consumed_marker_ref": "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1",
+    "marker_claim_timing": "BEFORE_BOUNDED_R1_WORKLOAD",
+    "marker_target_semantics": "UNIQUE_ANNOTATED_TAG_OBJECT_BOUND_TO_RUN_ID_PR_NUMBER_AND_CANONICAL_BASE_SHA",
+    "marker_creation_semantics": "PUSH_UNIQUE_OBJECT_WITH_FORCE_WITH_LEASE_EXPECTING_REMOTE_REF_ABSENT",
+    "same_target_noop_bypass_forbidden": true,
+    "marker_is_never_deleted_or_reused_under_this_owner_gate": true,
+    "failure_after_marker_claim_still_consumes_owner_gate": true
+  },
+  "authorization_separation_rule": "This Owner Gate authorizes the one-shot canary launch envelope and its single-use control-plane marker only. It MUST NOT be reused as an R1 operation grant. R1 P1 operations consume a separate canary-only authorization fixture with owner_gate_ref=null and no production-authority claim.",
+  "control_plane_marker_boundary": "The persistent consumed marker is governance/control-plane state used only to enforce max_live_canary_executions=1. Its tag object records the canary run identity and canonical base SHA only. It is not Source data, scientific evidence, business state, an R1 operation grant, or broader runtime authority.",
+  "explicitly_not_authorized": [
+    "second canary execution or rerun",
+    "deletion or reset of the consumed marker to obtain another execution",
+    "arbitrary repository content or business-state writes",
+    "production scheduling",
+    "always-on Source watcher",
+    "network Source collection",
+    "Source admission",
+    "real/live PRE collection or use",
+    "external provider contact",
+    "new spend or contract",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000",
+    "PR #15 use",
+    "untouched validation",
+    "model promotion",
+    "automated bulk collection",
+    "terms/access-control bypass",
+    "Synthetic-to-Real Edge/ROI promotion",
+    "real-money wagering",
+    "general or full runtime activation"
+  ],
+  "next_gate_after_success": "INDEPENDENT_CANARY_RESULT_REVIEW_BEFORE_ANY_BROADER_RUNTIME_ACTIVATION",
+  "fail_closed": true
+}
