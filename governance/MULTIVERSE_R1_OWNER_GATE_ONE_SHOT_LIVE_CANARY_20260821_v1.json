@@ -39,12 +39,14 @@
     "global_concurrency_key": "multiverse-r1-one-shot-live-canary-global-v1",
     "persistent_consumed_marker_ref": "refs/tags/multiverse-r1-live-canary-consumed-20260821-v1",
     "marker_claim_timing": "BEFORE_BOUNDED_R1_WORKLOAD",
-    "marker_creation_semantics": "ATOMIC_CREATE_IF_ABSENT_FAIL_IF_ALREADY_EXISTS",
+    "marker_target_semantics": "UNIQUE_ANNOTATED_TAG_OBJECT_BOUND_TO_RUN_ID_PR_NUMBER_AND_CANONICAL_BASE_SHA",
+    "marker_creation_semantics": "PUSH_UNIQUE_OBJECT_WITH_FORCE_WITH_LEASE_EXPECTING_REMOTE_REF_ABSENT",
+    "same_target_noop_bypass_forbidden": true,
     "marker_is_never_deleted_or_reused_under_this_owner_gate": true,
     "failure_after_marker_claim_still_consumes_owner_gate": true
   },
   "authorization_separation_rule": "This Owner Gate authorizes the one-shot canary launch envelope and its single-use control-plane marker only. It MUST NOT be reused as an R1 operation grant. R1 P1 operations consume a separate canary-only authorization fixture with owner_gate_ref=null and no production-authority claim.",
-  "control_plane_marker_boundary": "The persistent consumed marker is governance/control-plane state used only to enforce max_live_canary_executions=1. It is not Source data, scientific evidence, business state, an R1 operation grant, or broader runtime authority.",
+  "control_plane_marker_boundary": "The persistent consumed marker is governance/control-plane state used only to enforce max_live_canary_executions=1. Its tag object records the canary run identity and canonical base SHA only. It is not Source data, scientific evidence, business state, an R1 operation grant, or broader runtime authority.",
   "explicitly_not_authorized": [
     "second canary execution or rerun",
     "deletion or reset of the consumed marker to obtain another execution",
