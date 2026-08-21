@@ -1,0 +1,69 @@
+name: Multiverse R1 Source Vertical Slice Candidate CI v1
+
+on:
+  pull_request:
+    paths:
+      - "tools/multiverse_r1_source_vertical_slice_v1.py"
+      - "governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json"
+      - "governance/MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_IMPLEMENTATION_CONTRACT_20260821_v1.json"
+      - ".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r1-candidate-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Show exact head
+        run: git rev-parse HEAD
+
+      - name: Validate implementation contract and Owner Gate receipt
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          gate = json.loads(Path("governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json").read_text())
+          contract = json.loads(Path("governance/MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_IMPLEMENTATION_CONTRACT_20260821_v1.json").read_text())
+
+          assert gate["status"] == "OWNER_APPROVED_SCOPE_SPECIFIC_R1_FORMAL_IMPLEMENTATION_ONLY"
+          assert gate["runtime_activation_authorized"] is False
+          assert gate["source_or_scientific_permission_expansion"] is False
+          assert set(gate["auditor_conditions_bound"]) == {"A", "B", "C", "D"}
+
+          assert contract["status"] == "FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_GATED_NOT_RUNTIME_ACTIVATED"
+          assert contract["reliable_task_execution"]["exactly_once_claim"] is False
+          assert contract["authorization"]["string_or_boolean_allow_shortcut_permitted"] is False
+          assert contract["owner_exception_view"]["approval_authority"] == "NONE"
+          assert contract["runtime"]["scheduler_included"] is False
+          assert contract["runtime"]["always_on_source_watcher_included"] is False
+          assert contract["runtime"]["network_collection_included"] is False
+          assert contract["runtime"]["runtime_activation_authorized"] is False
+          PY
+
+      - name: Reject network collector imports or schedule triggers
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          code = Path("tools/multiverse_r1_source_vertical_slice_v1.py").read_text()
+          for forbidden in ("import requests", "import httpx", "import urllib", "import socket"):
+              assert forbidden not in code, forbidden
+          workflow = Path(".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml").read_text()
+          assert "schedule:" not in workflow
+          assert "cron:" not in workflow
+          PY
+
+      - name: Run dedicated R1 fake-worker acceptance harness
+        run: python tools/multiverse_r1_source_vertical_slice_v1.py --selftest
+
+      - name: Confirm no runtime activation entrypoint
+        run: |
+          output="$(python tools/multiverse_r1_source_vertical_slice_v1.py)"
+          test "$output" = "R1_LIBRARY_ONLY_NO_AUTORUN_RUNTIME_ACTIVATION"
