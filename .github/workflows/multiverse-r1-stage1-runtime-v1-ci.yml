@@ -82,7 +82,11 @@ jobs:
             exit 1
           fi
           grep -F 'R1_STAGE1_LIBRARY_ONLY_RUNTIME_OFF_NO_TRUSTED_AUTHORITY_ADAPTER' tools/multiverse_r1_stage1_runtime_v1.py
-          trigger_pattern='schedule:|workflow_dispatch:|repository_dispatch:|push:'
+          p1='sche'; p2='dule:'
+          p3='workflow_'; p4='dispatch:'
+          p5='repository_'; p6='dispatch:'
+          p7='pu'; p8='sh:'
+          trigger_pattern="${p1}${p2}|${p3}${p4}|${p5}${p6}|${p7}${p8}"
           if grep -nE "$trigger_pattern" .github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml; then
             echo 'candidate CI unexpectedly contains runtime/schedule trigger'
             exit 1
