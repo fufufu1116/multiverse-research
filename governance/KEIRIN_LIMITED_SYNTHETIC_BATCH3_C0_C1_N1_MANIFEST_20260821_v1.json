@@ -1,0 +1,150 @@
+{
+  "record": "KEIRIN_LIMITED_SYNTHETIC_BATCH3_C0_C1_N1_MANIFEST_20260821_v1",
+  "status": "AUTHORIZED_SYNTHETIC_BATCH_EXECUTED_PASS",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authorized_base_main": "55fde4d67655e22c2fb6c45de578e99ffc35b61e",
+  "authorization_state": {
+    "vnext_generation": 12,
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "owner_gate_blob": "eba1c776da5efded3b99dfa2cb40271f79efa823"
+  },
+  "fixed_scientific_inputs": {
+    "digital_twin_path": "v3/historical_all_market/new_lineage/digital_twin_v1.py",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_core_path": "v3/historical_all_market/new_lineage/top3_architecture_core_v1.py",
+    "top3_core_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "pre_holdout_coefficient_receipt_path": "v3/historical_all_market/governance/KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json",
+    "pre_holdout_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "fixed_model_parameters": {
+    "C0": {
+      "architecture": "score_only_PL",
+      "fitted": false
+    },
+    "C1": {
+      "line_mean_coef": 0.0,
+      "position_scale": 0.5,
+      "size_coef": 0.0,
+      "cal_shrinkage": 0.75
+    },
+    "N1": {
+      "c1_base_line_mean_coef": 0.0,
+      "c1_base_position_scale": 0.5,
+      "c1_base_size_coef": 0.0,
+      "same_line_coef": 0.1,
+      "follower_coef": 0.1,
+      "chain_coef": 0.2,
+      "cal_shrinkage": 0.75
+    },
+    "source": "exact pre-holdout frozen receipt; no coefficient selected from this Batch 3 result"
+  },
+  "batch_scope": "C0/C1/N1 probability-quality comparison only inside ordinary Digital Twin W0-W4 synthetic worlds",
+  "sampling": {
+    "case_count": 128,
+    "seed_rule": "seed = 20260821 + case for case in [0,127]",
+    "race_index_rule": "case % 32",
+    "same_sampling_as_batch2": true,
+    "result_adaptive_sampling": false
+  },
+  "proper_scoring_only": [
+    "expected ordered-top3 log loss under exact synthetic truth",
+    "KL regret relative to exact synthetic truth entropy",
+    "ordered-top3 joint Brier distance"
+  ],
+  "required_architecture_invariants": [
+    "C0 and C1 use the same PL ordered-top3 generator",
+    "C1 and N1 use the same fixed P1 utility layer",
+    "only N1 rank-2/rank-3 relation terms differ from C1",
+    "all model probability objects have complete support and unit mass"
+  ],
+  "execution_evidence": {
+    "exact_executed_pr_head": "25a3fac874346ae1ab7d2861c5e06167adc6f4ca",
+    "workflow_run": 32435145008,
+    "job": 96634722318,
+    "conclusion": "success",
+    "checked_out_equals_pr_event_head": true,
+    "world_evaluations": 640,
+    "model_world_evaluations": 1920,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_C1_N1_rank1_marginal_difference": 4.440892098500626e-16
+  },
+  "result_snapshot": {
+    "overall_equal_world_weight_models": {
+      "C0": {
+        "expected_log_loss": 4.785429769289532,
+        "kl_regret": 0.3501499166316028,
+        "joint_brier": 0.009393961612368343
+      },
+      "C1": {
+        "expected_log_loss": 4.784868344025702,
+        "kl_regret": 0.34958849136777187,
+        "joint_brier": 0.009389823524770633
+      },
+      "N1": {
+        "expected_log_loss": 4.780444098076334,
+        "kl_regret": 0.34516424541840457,
+        "joint_brier": 0.009281674009754094
+      }
+    },
+    "expected_log_loss_deltas_lower_is_better": {
+      "W0": {
+        "C1_minus_C0": -0.000041418784921809504,
+        "N1_minus_C1": 0.001812695092961114,
+        "N1_minus_C0": 0.0017712763080393046
+      },
+      "W1": {
+        "C1_minus_C0": -0.0006761726500714715,
+        "N1_minus_C1": -0.00029370469884515416,
+        "N1_minus_C0": -0.0009698773489166257
+      },
+      "W2": {
+        "C1_minus_C0": -0.0009435844561984652,
+        "N1_minus_C1": -0.010880457414574884,
+        "N1_minus_C0": -0.01182404187077335
+      },
+      "W3": {
+        "C1_minus_C0": -0.0005260370921984503,
+        "N1_minus_C1": -0.007459816742396264,
+        "N1_minus_C0": -0.007985853834594714
+      },
+      "W4": {
+        "C1_minus_C0": -0.0006199133357576159,
+        "N1_minus_C1": -0.00529994598398531,
+        "N1_minus_C0": -0.005919859319742926
+      }
+    },
+    "diagnostic_interpretation_only": [
+      "C1 expected log loss is slightly lower than C0 in all five ordinary synthetic worlds under the frozen pre-holdout coefficients.",
+      "N1 expected log loss is worse than C1/C0 in W0, only slightly better in W1, and more clearly lower in W2-W4.",
+      "This pattern is consistent with relation terms helping in synthetic worlds that contain relational dependence while imposing a cost in the null-like W0 world.",
+      "This is engineered synthetic falsification evidence only and is not model-selection, promotion, real-keirin edge, ROI, or causal evidence."
+    ]
+  },
+  "explicitly_forbidden_inputs": [
+    "digital_twin_stress_grid_v1 locked legacy synthetic holdout",
+    "c0_c1_n1_multiworld_stress_v1 locked-grid evaluator",
+    "locked_synthetic_holdout_runner_v1",
+    "fresh synthetic holdout result artifacts",
+    "PR #15 quarantined metrics",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000",
+    "scientific Segment C",
+    "real/live inputs"
+  ],
+  "scientific_decision_rule": "DIAGNOSTIC_ONLY_NO_MODEL_SELECTION_RETUNING_FREEZE_OR_PROMOTION_FROM_THIS_BATCH",
+  "economics": false,
+  "real_world_validation": false,
+  "model_or_scoring_semantics_changed": false,
+  "result_adaptive_retuning": false,
+  "locked_or_protected_holdout_used": false,
+  "pr15_quarantined_metrics_inspected": false,
+  "result_payout_accessed": false,
+  "scientific_segment_c_scoring_count_required": 0,
+  "model_promotion_performed": false,
+  "external_provider_contact_performed": false,
+  "real_money_wagering_performed": false,
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "fail_closed": true
+}
