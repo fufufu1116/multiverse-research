@@ -1,0 +1,93 @@
+{
+  "authorized_scope": {
+    "allowed_operations": [
+      "R1_SOURCE_CACHE_INSPECT_OR_STAGE",
+      "R1_SOURCE_REVIEW_COMMIT",
+      "R1_STAGE1_ENQUEUE_SOURCE_AUDIT_ADMIN_TASK",
+      "R1_TASK_ACQUIRE_LEASE",
+      "R1_TASK_CHECKPOINT",
+      "R1_TASK_RECORD_FAILURE"
+    ],
+    "always_on_worker_authorized": false,
+    "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+    "authority_source_name": "R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_v1",
+    "auto_resume_authorized": false,
+    "conditional_canonical_adoption_authorized": true,
+    "exact_enqueue_scope": "GITHUB_INTERNAL_SOURCE_AUDIT_ADMIN_METADATA_ONLY",
+    "exact_enqueue_target": "runtime/r1-source-audit-stage1-v1",
+    "exact_runtime_branch": "runtime/r1-source-audit-stage1-v1",
+    "external_contact_authorized": false,
+    "finite_preissued_bundle_ceiling": 25,
+    "general_purpose_authority_platform_authorized": false,
+    "max_tasks_per_invocation": 10,
+    "max_terminal_tasks": 25,
+    "network_or_public_web_authorized": false,
+    "one_worker": true,
+    "permission_class_ceiling": "P1_REVERSIBLE_INTERNAL_WRITE",
+    "real_or_live_pre_authorized": false,
+    "retry_budget_per_task": 2,
+    "runtime_or_on_demand_permission_minting_authorized": false,
+    "runtime_window_days": 7,
+    "scheduler_authorized": false,
+    "source_admission_or_promotion_authorized": false,
+    "source_collection_authorized": false,
+    "stage_id": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1"
+  },
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "conditional_adoption_preconditions": [
+    "dedicated production-authority-source CI PASS",
+    "independent Lab exact-head PASS",
+    "independent Auditor exact-head PASS",
+    "exact scope and parent integrity unchanged",
+    "deny-all root or any populated snapshot remains within this Owner Gate",
+    "canonical adoption evidence explicitly records the reviewed exact head and resulting canonical main"
+  ],
+  "explicitly_not_authorized": [
+    "Stage-1 Runtime activation",
+    "production runtime branch creation",
+    "GitHub ruleset provisioning or modification",
+    "production writer key or secret provisioning",
+    "activation receipt creation",
+    "verified-anchor loader bypass",
+    "PR #59/#60/#61 merge by this gate alone",
+    "runtime writes to canonical main or governance",
+    "runtime or on-demand permission minting or widening",
+    "P0/P2/P3/P4/P5 expansion beyond the existing Stage-1 P1 scope",
+    "Source admission or promotion",
+    "network/public-web Source collection",
+    "live PRE",
+    "external contact",
+    "spend or wagering",
+    "scheduler or always-on worker",
+    "general-purpose authority outside R1 Stage 1"
+  ],
+  "fail_closed": true,
+  "fresh_read_at_approval_recording": {
+    "authority_adapter_auditor_pass_comment": 5374408042,
+    "authority_adapter_lab_pass_comment": 5374272647,
+    "authority_adapter_pr61_head": "9355d8d8730c85b44c114bc96a908f9d46917cd6",
+    "canonical_main": "3871de67900f31496ee9725a77ff1048cede906f",
+    "production_runtime_branch_present": false,
+    "runtime_cas_pr60_head": "e473d9f712043c26ce42a92611b923d4eca76e0f",
+    "stage1_protocol_pr59_head": "67e1b98b8283e93084f26f50efae210a9793709f"
+  },
+  "freshness_and_authority_separation": {
+    "all_stage1_authority_state_must_be_self_contained_in_one_canonical_governance_blob": true,
+    "authority_state_includes_policy_grants_revocation_safe_mode_and_preissued_bundles": true,
+    "every_authority_state_change_must_change_that_blob_and_advance_canonical_main": true,
+    "existing_pr59_authorization_guard_must_remain_in_force": true,
+    "existing_pr61_verifier_may_only_be_narrowly_extended_to_remove_real_source_self_reference_and_prove_freshness_structurally": true,
+    "external_authority_state_refs_allowed": false,
+    "old_snapshot_after_main_advance_behavior": "DENY_FAIL_CLOSED",
+    "runtime_state_comment_event_url_canary_fixture_vnext_candidate_or_safe_mode_candidate_is_authority": false,
+    "status_string_or_candidate_branch_alone_is_authority": false
+  },
+  "owner_decision": {
+    "decision_text": "OWNER APPROVE — R1 STAGE1 PRODUCTION AUTHORITY SOURCE v1",
+    "github_record_comment_id": 5374516958,
+    "preparation_comment_id": 5374466048
+  },
+  "record": "MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_SOURCE_OWNER_GATE_APPROVAL_20260822_v1",
+  "runtime_activation_authorized_now": false,
+  "status": "OWNER_APPROVED_STAGE1_PRODUCTION_AUTHORITY_SOURCE_IMPLEMENTATION_AND_CONDITIONAL_ADOPTION_RUNTIME_OFF"
+}
