@@ -1,0 +1,133 @@
+name: Multiverse R1 Stage1 GitHub Runtime CAS Adapter v1 CI
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/multiverse-r1-stage1-github-runtime-cas-v1-ci.yml"
+      - "governance/MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_CAS_PREACTIVATION_CONTRACT_20260821_v1.json"
+      - "tools/multiverse_r1_stage1_github_runtime_cas_v1.py"
+
+permissions:
+  contents: read
+
+jobs:
+  preactivation-runtime-cas:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout literal PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Enforce literal head stacked parent and exact candidate scope
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test "$BASE_REF" = "agent/r1-limited-internal-runtime-stage1-implementation-v1"
+          test "$BASE_SHA" = "67e1b98b8283e93084f26f50efae210a9793709f"
+          git fetch --no-tags origin "$BASE_SHA"
+          files="$(git diff --name-only "$BASE_SHA...$HEAD_SHA" | sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/multiverse-r1-stage1-github-runtime-cas-v1-ci.yml' \
+            'governance/MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_CAS_PREACTIVATION_CONTRACT_20260821_v1.json' \
+            'tools/multiverse_r1_stage1_github_runtime_cas_v1.py' | sort)"
+          test "$files" = "$expected"
+          echo "LITERAL_PR_HEAD_AND_EXACT_THREE_FILE_SCOPE_PASS"
+
+      - name: Validate Auditor-hardened preactivation contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path("governance/MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_CAS_PREACTIVATION_CONTRACT_20260821_v1.json").read_text())
+          assert d["status"] == "PREACTIVATION_GITHUB_RUNTIME_CAS_ADAPTER_AUDITOR_HARDENED_RUNTIME_OFF"
+          assert d["stacked_parent"]["audited_stage1_protocol_head"] == "67e1b98b8283e93084f26f50efae210a9793709f"
+          assert d["auditor_hardening"]["prior_review_comment"] == 5370807002
+          assert d["origin_identity_contract"]["production_transport"] == "CANONICAL_HTTPS_ONLY"
+          assert d["origin_identity_contract"]["ssh_origin_forms_allowed"] is False
+          assert d["origin_identity_contract"]["git_ssh_environment_override_allowed"] is False
+          assert d["append_only_journal"]["bypass_actors_field_must_be_present"] is True
+          assert d["append_only_journal"]["bypass_actors_required_exact_value"] == []
+          assert d["activation_anchor"]["verified_anchor_required_for_production_adapter_construction"] is True
+          assert "initial_ledger_head" in d["activation_anchor"]["bound_fields"]
+          assert "writer_key_id" in d["activation_anchor"]["bound_fields"]
+          assert "writer_key_sha256" in d["activation_anchor"]["bound_fields"]
+          assert d["authenticated_transition_chain"]["load_replays_all_journal_transitions_from_initial_ledger_head"] is True
+          assert d["authenticated_transition_chain"]["raw_repository_writer_without_writer_key_can_forge_valid_next_transition"] is False
+          assert d["authority_boundary"]["authorization_decision_issuer_in_this_candidate"] == "NONE"
+          assert d["authority_boundary"]["writer_transition_authentication_is_operation_authorization"] is False
+          assert d["protected_boundaries"]["runtime_activation_authorized_now"] is False
+          assert d["protected_boundaries"]["production_runtime_branch_present_now"] is False
+          assert d["protected_boundaries"]["ruleset_provisioned_now"] is False
+          assert d["protected_boundaries"]["writer_key_provisioned_now"] is False
+          assert d["ci_boundary"]["contents_permission"] == "read"
+          assert d["ci_boundary"]["literal_head_sha_asserted"] is True
+          print("AUDITOR_HARDENED_CONTRACT_FAIL_CLOSED_PASS")
+          PY
+
+      - name: Reject runtime activation workflow surfaces
+        run: |
+          set -euo pipefail
+          wf=".github/workflows/multiverse-r1-stage1-github-runtime-cas-v1-ci.yml"
+          ! grep -Eq '^[[:space:]]*(schedule|workflow_dispatch|push):' "$wf"
+          ! grep -Eq 'contents:[[:space:]]*write' "$wf"
+          ! grep -Eq 'runtime/r1-source-audit-stage1-v1' "$wf"
+          echo "NO_PRODUCTION_RUNTIME_TRIGGER_OR_WRITE_SURFACE_PASS"
+
+      - name: Compile and run Auditor hardening selftest
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/multiverse_r1_stage1_github_runtime_cas_v1.py
+          out="$(python tools/multiverse_r1_stage1_github_runtime_cas_v1.py --selftest)"
+          printf '%s\n' "$out"
+          grep -Fqx 'GITHUB_RUNTIME_EFFECTIVE_TRANSPORT_IDENTITY_PASS' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_RULESET_NO_BYPASS_FAIL_CLOSED_PASS' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_EXPECTED_OLD_HEAD_CAS_PASS' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_STALE_NONOWNER_REJECTED' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_AUTHENTICATED_TRANSITION_CHAIN_PASS' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_RAW_FORWARD_FORGERY_REJECTED' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_JOURNAL_FIRST_CRASH_FAIL_CLOSED_PASS' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_MID_MUTATION_MAIN_DRIFT_DENIED' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_FORBIDDEN_PATH_HISTORY_DRIFT_REJECTED' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_TEST_ONLY_ORIGIN_BYPASS_FUNCTION_LOCAL_PASS' <<<"$out"
+          grep -Fqx 'GITHUB_RUNTIME_CAS_ADAPTER_SELFTEST_PASS' <<<"$out"
+          grep -Fqx 'PRODUCTION_RUNTIME_BRANCH_CREATED=false' <<<"$out"
+          grep -Fqx 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$out"
+          grep -Fqx 'AUTHORIZATION_DECISION_ISSUANCE_PERFORMED=false' <<<"$out"
+
+      - name: Regress audited Stage1 protocol selftest
+        run: |
+          set -euo pipefail
+          out="$(python tools/multiverse_r1_stage1_runtime_v1.py --selftest)"
+          printf '%s\n' "$out"
+          grep -Fq 'POST_VALIDATION_DECISION_BUNDLE_MUTATION_ISOLATED' <<<"$out"
+          grep -Fq 'TRUSTED_CONTROL_PLANE_CLOCK_ENFORCES_7_DAY_CEILING' <<<"$out"
+          grep -Fq 'RETRY_BUDGET_2_ENFORCED_VIA_RECORD_FAILURE' <<<"$out"
+          grep -Fq 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$out"
+          echo "AUDITED_STAGE1_PROTOCOL_REGRESSION_PASS"
+
+      - name: Static Auditor hardening boundary checks
+        run: |
+          set -euo pipefail
+          f="tools/multiverse_r1_stage1_github_runtime_cas_v1.py"
+          grep -Fq 'CANONICAL_REPO = "fufufu1116/multiverse-research"' "$f"
+          grep -Fq 'GITHUB_RUNTIME_SSH_TRANSPORT_OVERRIDE_PROHIBITED' "$f"
+          grep -Fq 'detail.get("bypass_actors") != []' "$f"
+          grep -Fq 'HMAC_SHA256_STAGE1_LEDGER_TRANSITION_v1' "$f"
+          grep -Fq 'GITHUB_RUNTIME_TRANSITION_MAC_INVALID' "$f"
+          grep -Fq 'GITHUB_RUNTIME_INITIAL_LEDGER_HEAD_MISMATCH' "$f"
+          grep -Fq 'GITHUB_RUNTIME_FORWARD_CHAIN_PARENT_MISMATCH' "$f"
+          grep -Fq 'GITHUB_RUNTIME_RAW_FORWARD_FORGERY_REJECTED' "$f"
+          grep -Fq 'validate_write_path(RUNTIME_BRANCH, STATE_PATH)' "$f"
+          grep -Fq -- '--force-with-lease=' "$f"
+          grep -Fq 'merge-base", "--is-ancestor"' "$f"
+          grep -Fq 'GITHUB_RUNTIME_STALE_NONOWNER_PERSIST' "$f"
+          ! grep -Fq 'class _SelftestLedger' "$f"
+          ! grep -Eq 'requests|urllib|httpx|aiohttp|socket' "$f"
+          echo "GITHUB_RUNTIME_AUDITOR_HARDENING_STATIC_BOUNDARY_PASS"
