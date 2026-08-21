@@ -1,6 +1,6 @@
 {
   "record": "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1",
-  "status": "CONTROL_PLANE_REMEDIATION_CANDIDATE_OWNER_APPROVED_RUNTIME_NOT_ACTIVATED",
+  "status": "FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_APPROVED_RUNTIME_NOT_ACTIVATED_CONTROL_PLANE_HARDENED",
   "canonical_base_main": "3871de67900f31496ee9725a77ff1048cede906f",
   "owner_gate": {
     "approval_comment_id": 5367308652,
@@ -8,51 +8,24 @@
     "scope_is_reusable_outside_stage1": false,
     "activation_is_conditional_on_ci_lab_auditor_pass": true
   },
-  "lab_remediation_basis": {
-    "prior_lab_result_comment": 5367753588,
-    "prior_verdict": "PASS_WITH_FIXES",
-    "remediation_scope_only": [
-      "canonical trusted authority provenance",
-      "durable remote single-invocation CAS",
-      "durable receipt to terminal-count crash reconciliation and trusted high-water"
-    ],
-    "stage1_business_scope_changed": false
-  },
   "responsibilities": [
     "Source Audit Cache administration from already-supplied metadata/evidence",
     "Reliable Task Execution with explicit enqueue, idempotency, lease/fencing, checkpoint/recovery, retry/dead-letter, CAS, durable receipts, and stale-main denial",
     "Owner Exception View with zero approval authority"
   ],
   "enqueue_contract": {
-    "schema_version": "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v2",
-    "external_enqueue_contains_authorization_decision_or_runtime_context": false,
+    "schema_version": "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v1",
     "exact_operation": "R1_STAGE1_ENQUEUE_SOURCE_AUDIT_ADMIN_TASK",
     "exact_target": "runtime/r1-source-audit-stage1-v1",
     "exact_scope": "GITHUB_INTERNAL_SOURCE_AUDIT_ADMIN_METADATA_ONLY",
     "permission_class": "P1_REVERSIBLE_INTERNAL_WRITE",
     "raw_github_event_comment_url_or_untrusted_branch_is_authority": false,
-    "canonical_adapter_issues_fresh_decision_from_separate_canonical_P1_grant": true,
+    "fresh_authorization_decision_required": true,
     "actor_and_worker_binding_required": true,
     "malformed_or_unknown_field_behavior": "DENY_FAIL_CLOSED"
   },
-  "trusted_authority_control_plane": {
-    "adapter": "GitCanonicalAuthorityAdapter",
-    "grant_record": "governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OPERATION_GRANT_20260821_v1.json",
-    "grant_is_owner_gate_itself": false,
-    "grant_is_runtime_local_authority": false,
-    "grant_effective_from_feature_branch": false,
-    "production_origin_must_equal": "https://github.com/fufufu1116/multiverse-research",
-    "adapter_fresh_fetches_main_before_each_authorization": true,
-    "adapter_reads_grant_owner_gate_and_authorization_contract_from_exact_expected_main": true,
-    "authorization_contract_blob_pinned": "67bc4803b00668e78ca0b5ecdb0fba79cfd7d9ad",
-    "caller_supplied_AuthorizationRuntime_or_valid_grant_set_accepted": false,
-    "canonical_main_drift": "DENY_FAIL_CLOSED",
-    "safe_mode_or_revocation_change": "REQUIRES_CANONICAL_MAIN_CHANGE_AND_THEREFORE_STALE_MAIN_DENY_BEFORE_FURTHER_SIDE_EFFECT",
-    "decision_ttl_seconds": 300
-  },
   "runtime_branch_contract": {
     "branch": "runtime/r1-source-audit-stage1-v1",
-    "high_water_ref": "refs/heads/runtime/r1-source-audit-stage1-v1-highwater",
     "canonical": false,
     "permission_authority": false,
     "allowed_prefixes": [
@@ -61,49 +34,43 @@
       "runtime/r1_source_audit_stage1/receipts/",
       "runtime/r1_source_audit_stage1/exceptions/"
     ],
-    "control_path": "runtime/r1_source_audit_stage1/tasks/_stage1_control.json",
-    "r1_state_path": "runtime/r1_source_audit_stage1/receipts/r1_state.json",
     "writes_to_main_or_governance": false,
-    "runtime_commit_must_be_descendant_of_expected_old_head": true,
-    "remote_push_requires_expected_old_head_force_with_lease_and_fast_forward_commit": true,
-    "non_fast_forward_commit_or_push": "DENY",
+    "fast_forward_and_expected_old_head_cas_required": true,
     "force_push_reset_history_rewrite_authorized": false,
-    "pinned_genesis_ancestry_required": true,
-    "separate_high_water_ref_must_remain_ancestor_of_runtime_head": true,
-    "runtime_branch_rollback_below_high_water_behavior": "FAIL_CLOSED_TAMPER"
+    "pinned_genesis_ancestry_required": true
   },
-  "single_invocation_interlock": {
-    "in_memory_boolean_is_sufficient": false,
-    "durable_claim_required_before_R1_side_effect": true,
-    "claim_storage": "runtime branch control file",
-    "claim_fields": [
-      "claim_id",
-      "worker_id",
-      "claimed_at",
-      "expires_at",
-      "base_head"
-    ],
-    "remote_expected_old_head_CAS": true,
-    "max_concurrent_workers": 1,
-    "parallel_or_second_claim": "REMOTE_CAS_OR_ACTIVE_LEASE_DENY",
-    "expired_claim_takeover": "ALLOWED_ONLY_AFTER_FRESH_REMOTE_READ_AND_RECEIPT_RECONCILIATION"
+  "control_plane_contract": {
+    "library_schema_version": "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_SCHEMA_v2",
+    "production_shaped_entrypoint_accepts_caller_supplied_authorization_runtime": false,
+    "production_shaped_entrypoint_requires_control_plane_adapter": true,
+    "trusted_authority_context_requires_canonical_main_and_provenance_ref": true,
+    "unverified_authority_provenance_behavior": "DENY_FAIL_CLOSED",
+    "single_invocation_claim_must_be_remote_durable_before_r1_side_effect": true,
+    "single_invocation_claim_requires_expected_old_head_cas": true,
+    "stale_or_nonowner_claim_may_persist_r1_state": false,
+    "claim_expiry_allows_explicit_later_takeover_only": true,
+    "scheduler_or_automatic_resume": false,
+    "r1_state_must_be_persisted_after_each_mutating_r1_step_before_later_steps": true,
+    "durable_r1_receipts_must_be_reconciled_into_terminal_count_before_new_work": true,
+    "receipt_counting_identity": "R1_DURABLE_RECEIPT_ID_EXACTLY_ONCE_IN_STAGE1_LEDGER",
+    "crash_after_receipt_before_terminal_count_behavior": "NEXT_EXPLICIT_INVOCATION_RECONCILES_DURABLE_RECEIPT_BEFORE_CEILING_CHECK_AND_NEW_WORK",
+    "concrete_live_github_control_plane_adapter_in_this_candidate": "NOT_IMPLEMENTED_NOT_FAKED_PREACTIVATION_DEPENDENCY",
+    "selftest_adapter_role": "TEST_ONLY_SHARED_REMOTE_CAS_AND_CRASH_WINDOW_EVIDENCE_NOT_PRODUCTION_AUTHORITY"
   },
-  "ceiling_and_crash_reconciliation": {
+  "ceiling_contract": {
+    "one_worker": true,
     "max_tasks_per_invocation": 10,
-    "current_orchestration_primitive_processes_exactly_one": true,
     "retry_budget_per_task": 2,
     "terminal_task_ceiling": 25,
     "window_days": 7,
     "immutable_activation_timestamp": true,
     "monotonic_terminal_count": true,
-    "terminal_truth_source": "durable R1 receipts persisted on runtime branch",
-    "R1_receipt_persisted_before_terminal_counter_finalize": true,
-    "restart_reconciles_all_unseen_durable_receipt_ids_before_new_claim": true,
-    "receipt_counting_identity": "receipt_id exactly once",
-    "crash_after_receipt_before_counter_behavior": "NEXT_CLAIM_COUNTS_RECEIPT_BEFORE_ALLOWING_NEW_WORK",
-    "count_reconcile_reaching_25": "PERSIST_PAUSE_AND_DENY_NEW_CLAIM",
-    "task_26": "DENY",
-    "post_7_day": "PERSIST_PAUSE_AND_DENY",
+    "persistent_high_water_evidence_required": true,
+    "high_water_is_permission_authority": false,
+    "branch_or_counter_rollback_behavior": "FAIL_CLOSED_PAUSE_OWNER_EXCEPTION",
+    "second_worker_behavior": "REMOTE_CAS_DENY_AND_SURFACE_CONFLICT",
+    "task_26_behavior": "DENY_AND_REMAIN_PAUSED",
+    "post_7_day_behavior": "DENY_AND_REMAIN_PAUSED",
     "auto_resume": false
   },
   "second_authority_rejection": {
@@ -118,45 +85,49 @@
     "ADMITTED_cache_state_allowed": false,
     "runtime_artifact_may_promote_source_or_widen_permission": false
   },
+  "trusted_authority_dependency": {
+    "control_plane_adapter_protocol_implemented": true,
+    "canonical_live_authority_snapshot_provider_in_this_candidate": "NOT_IMPLEMENTED_AND_NOT_FAKED",
+    "stage1_live_entrypoint_may_accept_trusted_authority_context_from_caller": false,
+    "stage1_library_may_load_authority_state_from_enqueue_payload": false,
+    "stage1_library_may_assume_grant_current_without_external_verification": false,
+    "required_before_activation": "An independently reviewed concrete canonical control-plane adapter must Fresh Read canonical authority facts and construct current AuthorizationRuntime facts (policy identity, current valid grants, revocation generation, safe-mode generation, actor binding, current time). If unavailable or unverifiable, Stage 1 remains OFF.",
+    "reason": "Creating a Stage-1-local grant/revocation authority would violate the reviewed no-second-authority boundary."
+  },
   "implementation_files": [
     "tools/multiverse_r1_stage1_runtime_v1.py",
-    "tools/multiverse_r1_stage1_authority_v1.py",
-    "tools/multiverse_r1_stage1_git_runtime_v1.py",
-    ".github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml",
-    "governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OPERATION_GRANT_20260821_v1.json"
+    ".github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml"
   ],
   "candidate_runtime_behavior": {
-    "default": "LIBRARY_AND_CONTROL_PLANE_ADAPTERS_ONLY_DORMANT",
+    "default": "LIBRARY_ONLY_DORMANT",
     "runtime_workflow_present": false,
     "scheduler_present": false,
-    "public_web_or_source_network_collection_present": false,
+    "network_collection_present": false,
     "activation_receipt_present": false,
     "runtime_branch_created": false,
-    "runtime_activation_performed": false,
-    "GitHub_control_plane_transport_code_present": true,
-    "GitHub_control_plane_transport_authorized_for_live_use_now": false
+    "runtime_activation_performed": false
   },
   "dedicated_negative_evidence_required": [
-    "caller-supplied authorization context or decision field in enqueue denied",
-    "canonical grant must come from exact expected main and pinned authorization-contract blob",
-    "wrong operation/target/scope denied",
-    "two distinct processes preparing same remote head cannot both CAS-claim",
-    "active unexpired invocation lease denies second worker",
-    "runtime ref rollback below separate high-water ref denied",
-    "crash after durable R1 receipt before terminal counter is reconciled before next claim",
-    "25th reconciled receipt pauses before any 26th task",
-    "post-7-day claim persists pause and denies",
+    "unauthorized actor/wrong operation/target/scope/malformed enqueue denied",
+    "raw GitHub event/comment/URL/untrusted branch cannot auto-taskify",
+    "unverified trusted-authority provenance denied",
+    "two adapters sharing one remote snapshot cannot both claim the same expected-old-head",
+    "stale/nonowner control-plane claim cannot persist R1 state",
+    "crash after durable R1 receipt and before Stage1 terminal count is reconciled on explicit restart",
+    "reconciled durable receipt is counted exactly once",
+    "runtime ref ancestry/high-water rollback denied",
+    "task 26/post-7-day/post-pause auto-resume denied",
     "wrong runtime ref/path traversal/main/governance writes denied",
     "runtime state rejected as Owner Gate/grant/permission/admission/canonical fact",
     "ADMITTED/permission-like runtime states rejected",
-    "existing canonical R1 selftest remains PASS"
+    "existing R1 stale-main/stale-lease/duplicate/lost-ACK/retry/corrupt-state/network/permission tests remain PASS"
   ],
   "pre_activation_reviews_required": [
-    "dedicated Stage-1 CI PASS on final exact head",
-    "Lab micro re-review PASS on the three control-plane remediations",
+    "dedicated Stage-1 CI PASS",
+    "Lab implementation micro re-review PASS on control-plane remediation",
     "independent Auditor implementation review PASS",
-    "canonical adoption of the implementation and separate Stage-1 P1 grant",
-    "separate activation receipt/runtime genesis preparation inside the already-approved fixed ceiling",
+    "concrete canonical authority adapter review PASS",
+    "concrete runtime-state GitHub CAS adapter review PASS",
     "no material scope drift"
   ],
   "runtime_activation_authorized_now": false,

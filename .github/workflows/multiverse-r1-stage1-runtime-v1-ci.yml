@@ -6,10 +6,7 @@ on:
       - '.github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml'
       - 'governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json'
       - 'governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1.json'
-      - 'governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OPERATION_GRANT_20260821_v1.json'
       - 'tools/multiverse_r1_stage1_runtime_v1.py'
-      - 'tools/multiverse_r1_stage1_authority_v1.py'
-      - 'tools/multiverse_r1_stage1_git_runtime_v1.py'
 
 permissions:
   contents: read
@@ -29,7 +26,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: Verify exact base and seven-file remediation scope
+      - name: Verify exact base and candidate file scope
         shell: bash
         run: |
           set -euo pipefail
@@ -40,16 +37,13 @@ jobs:
           cat > /tmp/expected.txt <<'EOF'
           .github/workflows/multiverse-r1-stage1-runtime-v1-ci.yml
           governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1.json
-          governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OPERATION_GRANT_20260821_v1.json
           governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json
-          tools/multiverse_r1_stage1_authority_v1.py
-          tools/multiverse_r1_stage1_git_runtime_v1.py
           tools/multiverse_r1_stage1_runtime_v1.py
           EOF
           sort -o /tmp/expected.txt /tmp/expected.txt
           diff -u /tmp/expected.txt /tmp/actual.txt
 
-      - name: Validate Owner Gate, separate P1 grant, and dormancy
+      - name: Validate Owner Gate and dormant implementation contract
         shell: bash
         run: |
           set -euo pipefail
@@ -57,48 +51,45 @@ jobs:
           import json
           gate=json.load(open('governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1.json'))
           contract=json.load(open('governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_IMPLEMENTATION_CONTRACT_20260821_v1.json'))
-          grant=json.load(open('governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OPERATION_GRANT_20260821_v1.json'))
           assert gate['status']=='OWNER_APPROVED_SCOPE_SPECIFIC_STAGE1_IMPLEMENTATION_AND_CONDITIONAL_ACTIVATION'
+          assert gate['owner_decision']['decision_text']=='すすめて'
           assert gate['owner_decision']['github_record_comment_id']==5367308652
+          assert gate['fresh_read_at_approval']['canonical_main']=='3871de67900f31496ee9725a77ff1048cede906f'
           assert gate['fresh_read_at_approval']['reviewed_scope_head']=='785e8d08029d57122076309fb4eb0b4c568c2229'
           assert gate['fresh_read_at_approval']['lab_micro_verdict']=='PASS'
-          assert contract['status']=='CONTROL_PLANE_REMEDIATION_CANDIDATE_OWNER_APPROVED_RUNTIME_NOT_ACTIVATED'
-          assert contract['lab_remediation_basis']['prior_lab_result_comment']==5367753588
-          assert contract['trusted_authority_control_plane']['caller_supplied_AuthorizationRuntime_or_valid_grant_set_accepted'] is False
-          assert contract['single_invocation_interlock']['durable_claim_required_before_R1_side_effect'] is True
-          assert contract['ceiling_and_crash_reconciliation']['restart_reconciles_all_unseen_durable_receipt_ids_before_new_claim'] is True
+          assert gate['authorized_scope']['max_concurrent_workers']==1
+          assert gate['authorized_scope']['max_terminal_tasks']==25
+          assert gate['authorized_scope']['runtime_window_days']==7
+          assert gate['authorized_scope']['network_or_public_web_authorized'] is False
+          assert gate['authorized_scope']['source_collection_or_admission_authorized'] is False
+          assert gate['runtime_activation_performed_by_this_receipt'] is False
+          assert contract['status']=='FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_APPROVED_RUNTIME_NOT_ACTIVATED_CONTROL_PLANE_HARDENED'
+          assert contract['owner_gate']['approval_comment_id']==5367308652
+          cp=contract['control_plane_contract']
+          assert cp['production_shaped_entrypoint_accepts_caller_supplied_authorization_runtime'] is False
+          assert cp['single_invocation_claim_must_be_remote_durable_before_r1_side_effect'] is True
+          assert cp['single_invocation_claim_requires_expected_old_head_cas'] is True
+          assert cp['durable_r1_receipts_must_be_reconciled_into_terminal_count_before_new_work'] is True
+          dep=contract['trusted_authority_dependency']
+          assert dep['control_plane_adapter_protocol_implemented'] is True
+          assert dep['canonical_live_authority_snapshot_provider_in_this_candidate']=='NOT_IMPLEMENTED_AND_NOT_FAKED'
+          assert dep['stage1_live_entrypoint_may_accept_trusted_authority_context_from_caller'] is False
           assert contract['candidate_runtime_behavior']['runtime_workflow_present'] is False
           assert contract['candidate_runtime_behavior']['runtime_activation_performed'] is False
           assert contract['runtime_activation_authorized_now'] is False
-          assert grant['status']=='ACTIVE_ONLY_WHEN_READ_FROM_CANONICAL_MAIN_AFTER_AUDIT'
-          assert grant['owner_gate_approval_comment']==5367308652
-          assert grant['authority_semantics']['owner_gate_is_reused_as_operation_grant'] is False
-          assert grant['authority_semantics']['feature_branch_copy_is_authority'] is False
-          assert grant['grant']['permission_class']=='P1_REVERSIBLE_INTERNAL_WRITE'
-          assert grant['grant']['permission_ceiling']=='P1_REVERSIBLE_INTERNAL_WRITE'
-          assert len(grant['grant']['operations'])==5
-          assert grant['scope_ceiling']['max_concurrent_workers']==1
-          assert grant['scope_ceiling']['max_terminal_tasks']==25
-          assert grant['scope_ceiling']['runtime_window_days']==7
-          assert grant['scope_ceiling']['source_collection_or_admission'] is False
-          assert grant['activation_dependency']['this_record_alone_activates_runtime'] is False
-          print('STAGE1_GATE_GRANT_AND_CONTRACT_VALID')
+          assert contract['source_or_scientific_permission_expansion'] is False
+          print('STAGE1_GATE_AND_CONTROL_PLANE_CONTRACT_VALID')
           PY
-          if git cat-file -e "$EXPECTED_BASE_MAIN:governance/MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OPERATION_GRANT_20260821_v1.json" 2>/dev/null; then
-            echo 'Stage1 operation grant unexpectedly already exists on pre-remediation canonical main'
-            exit 1
-          fi
-          echo 'FEATURE_BRANCH_GRANT_NOT_CANONICAL_AUTHORITY=true'
 
-      - name: Reject public-web/source network imports and activation triggers
+      - name: Reject hidden network or activation triggers in Stage 1 library
         shell: bash
         run: |
           set -euo pipefail
-          if grep -nE '(^|[[:space:]])(import|from)[[:space:]]+(requests|urllib|httpx|aiohttp|socket|ftplib|paramiko)\b' tools/multiverse_r1_stage1_runtime_v1.py tools/multiverse_r1_stage1_authority_v1.py tools/multiverse_r1_stage1_git_runtime_v1.py; then
-            echo 'public-web/source-network capable import found'
+          if grep -nE '(^|[[:space:]])(import|from)[[:space:]]+(requests|urllib|httpx|aiohttp|socket|ftplib|paramiko)\b' tools/multiverse_r1_stage1_runtime_v1.py; then
+            echo 'network-capable import found in Stage 1 runtime library'
             exit 1
           fi
-          grep -F 'R1_STAGE1_LIBRARY_ONLY_RUNTIME_OFF_NO_ACTIVATION_WORKFLOW' tools/multiverse_r1_stage1_runtime_v1.py
+          grep -F 'R1_STAGE1_LIBRARY_ONLY_RUNTIME_OFF_CONTROL_PLANE_ADAPTER_REQUIRED' tools/multiverse_r1_stage1_runtime_v1.py
           p1='sche'; p2='dule:'
           p3='workflow_'; p4='dispatch:'
           p5='repository_'; p6='dispatch:'
@@ -109,25 +100,29 @@ jobs:
             exit 1
           fi
 
-      - name: Run control-plane remediation negative evidence
+      - name: Compile and run dedicated Stage 1 control-plane negative selftest
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile tools/multiverse_r1_stage1_runtime_v1.py tools/multiverse_r1_stage1_authority_v1.py tools/multiverse_r1_stage1_git_runtime_v1.py
+          python -m py_compile tools/multiverse_r1_stage1_runtime_v1.py
           PYTHONPATH=tools python tools/multiverse_r1_stage1_runtime_v1.py --selftest | tee /tmp/stage1.log
-          grep -F 'CANONICAL_GIT_AUTHORITY_PROVENANCE_ENFORCED' /tmp/stage1.log
-          grep -F 'CALLER_SUPPLIED_AUTHORIZATION_CONTEXT_REJECTED' /tmp/stage1.log
           grep -F 'EXPLICIT_AUTHORIZED_ENQUEUE_ONLY' /tmp/stage1.log
           grep -F 'RAW_GITHUB_EVENT_COMMENT_URL_NOT_AUTHORITY' /tmp/stage1.log
-          grep -F 'REMOTE_SINGLE_INVOCATION_CAS_DISTINCT_PROCESS_REPLAY_REJECTED' /tmp/stage1.log
-          grep -F 'RUNTIME_BRANCH_HIGH_WATER_ROLLBACK_DETECTED' /tmp/stage1.log
-          grep -F 'DURABLE_R1_RECEIPT_RECONCILED_BEFORE_NEXT_CLAIM' /tmp/stage1.log
-          grep -F 'TERMINAL_25_OR_7_DAY_AUTO_PAUSE_CONTRACT_ENFORCED' /tmp/stage1.log
+          grep -F 'TRUSTED_AUTHORITY_CONTEXT_NOT_CALLER_INJECTABLE_ON_CONTROLLED_PATH' /tmp/stage1.log
+          grep -F 'TRUSTED_AUTHORITY_PROVENANCE_FAIL_CLOSED' /tmp/stage1.log
+          grep -F 'REMOTE_SINGLE_INVOCATION_CAS_SHARED_BACKEND_REJECTS_SECOND' /tmp/stage1.log
+          grep -F 'STALE_CONTROL_PLANE_CLAIM_REJECTED' /tmp/stage1.log
+          grep -F 'CROSS_STORE_RECEIPT_RECONCILIATION_AFTER_CRASH' /tmp/stage1.log
+          grep -F 'DURABLE_RECEIPT_COUNTED_EXACTLY_ONCE_AFTER_RESTART' /tmp/stage1.log
+          grep -F 'ROLLBACK_ANCESTRY_AND_HIGH_WATER_TAMPER_DENIED' /tmp/stage1.log
+          grep -F 'TERMINAL_25_OR_7_DAY_AUTO_PAUSE_ENFORCED' /tmp/stage1.log
+          grep -F 'RUNTIME_BRANCH_AND_PATH_BOUNDARY_ENFORCED' /tmp/stage1.log
           grep -F 'RUNTIME_STATE_SECOND_AUTHORITY_REJECTED' /tmp/stage1.log
           grep -F 'ADMITTED_AND_PERMISSION_LIKE_RUNTIME_STATE_DENIED' /tmp/stage1.log
-          grep -F 'NETWORK_PUBLIC_WEB_ACCESS_PERFORMED=false' /tmp/stage1.log
+          grep -F 'CONCRETE_LIVE_CONTROL_PLANE_ADAPTER_STILL_REQUIRED' /tmp/stage1.log
+          grep -F 'NETWORK_ACCESS_PERFORMED=false' /tmp/stage1.log
           grep -F 'RUNTIME_ACTIVATION_PERFORMED=false' /tmp/stage1.log
-          grep -F 'MULTIVERSE_R1_STAGE1_CONTROL_PLANE_SELFTEST_PASS' /tmp/stage1.log
+          grep -F 'MULTIVERSE_R1_STAGE1_RUNTIME_SELFTEST_PASS' /tmp/stage1.log
 
       - name: Re-run canonical R1 safety selftest
         shell: bash
