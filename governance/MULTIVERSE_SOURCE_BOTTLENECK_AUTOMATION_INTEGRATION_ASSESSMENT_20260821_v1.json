@@ -1,0 +1,227 @@
+{
+  "record": "MULTIVERSE_SOURCE_BOTTLENECK_AUTOMATION_INTEGRATION_ASSESSMENT_20260821_v1",
+  "status": "DRAFT_NONCANONICAL_NEXT_VERSION_INTEGRATION_ASSESSMENT_NO_RUNTIME_AUTHORITY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "fresh_read_main": "40a1522ad74f6ef7c82c5c2b948ee775d2133f56",
+  "advisor_input": {
+    "name": "MULTIVERSE_SOURCE_BOTTLENECK_AUTOMATION_HANDOFF_v1.zip",
+    "sha256": "a9957001413ca8d66dcea15235c7e83218b59e038be4ed183bb889bc8116ad57",
+    "classification": "ADVISOR_DRAFT_NONCANONICAL_NEXT_VERSION_CANDIDATE_INPUT",
+    "is_owner_gate": false,
+    "is_implementation_authority": false,
+    "is_canonical_change_authority": false
+  },
+  "phase_A_truth_preserved": {
+    "statement": "At the current Phase A audit, no Keirin source was confirmed formally admissible from the public terms, licenses, documentation and public specifications that were checked.",
+    "does_not_mean_no_lawful_source_exists": true,
+    "does_not_mean_no_future_source_can_be_found": true,
+    "does_not_mean_keirin_research_failed": true
+  },
+  "prior_advisor_bundle_overlap_check": {
+    "requested_prior_bundle": "MULTIVERSE_ADVISOR_FINAL_HANDOFF_BUNDLE_v1",
+    "exact_bundle_bytes_available_in_current_canonical_or_project_source_archive_by_name": false,
+    "exact_file_by_file_diff_performed": false,
+    "functional_overlap_basis_used": [
+      "Owner-specified existing responsibilities: Core, Task Bus, Worker Adapters, Review Router, State Sync, Cost Governor, Owner Assurance, Arena, Experience Engine candidates",
+      "multiverse_vnext/VNEXT_NORTH_STAR_ARCHITECTURE_v0.md",
+      "multiverse_vnext/VNEXT_SELF_EVOLUTION_PROTOCOL_v0.md",
+      "multiverse_vnext/VNEXT_DEFINITION_OF_DONE_v0.json",
+      "multiverse_vnext/VNEXT_AUTHORIZATION_CONTRACT_v0.json",
+      "AI_COUNCIL.md",
+      "current Source Audit Gate / Phase A source audit records"
+    ],
+    "rule": "Do not claim exact prior-bundle deduplication beyond evidence available; deduplicate responsibilities against current canonical architecture and Owner-provided overlap map."
+  },
+  "classification": [
+    {
+      "capability": "Data Access Router as a separate top-level system",
+      "class": ["DUPLICATE", "MERGE_INTO_EXISTING"],
+      "integrate_into": ["SOURCE_INTELLIGENCE", "CONNECTION/source adapters", "RESOURCE/Cost Governor", "current Source Audit Gate"],
+      "reason": "North Star already defines source classification, adapter permission/cost/provenance fields and fail-closed source semantics. A second source router would duplicate authority and state.",
+      "keep_capabilities": ["raw-data-necessity triage", "zero-cost-first route ordering", "source-rights class", "information-gain-per-owner-minute metric"]
+    },
+    {
+      "capability": "Source candidate audit cache / duplicate detection / changed-or-stale status",
+      "class": ["NEW_VALUE", "INTEGRATION_CANDIDATE"],
+      "integrate_into": ["SOURCE_INTELLIGENCE", "State Sync", "Owner Assurance"],
+      "reason": "Current Phase A evidence prevents admission but does not provide a reusable machine-readable cache that stops repeated human review of unchanged candidates.",
+      "runtime_claim_now": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Reality Bridge Engine as a separate top-level system",
+      "class": ["DUPLICATE_AS_BOX", "DEFER_CAPABILITY_EXPANSION"],
+      "integrate_into": ["LAB", "Arena", "Evidence/Knowledge Plane", "Source Intelligence"],
+      "reason": "Synthetic-to-reality separation, falsification, Arena and source gates already exist conceptually. Any real-sensor acquisition/use remains outside current authority.",
+      "keep_for_future": ["information-gain-per-real-sample", "active-learning question selection", "world-envelope reduction"],
+      "blocked_now_by": ["no admitted real PRE source", "Owner Gate required for real PRE collection/use"]
+    },
+    {
+      "capability": "Public Keirin Model Zoo expansion",
+      "class": ["DEFER_NOW", "POSSIBLE_FUTURE_ARENA_INPUT"],
+      "integrate_into": ["LAB", "Arena"],
+      "reason": "Current limited Synthetic campaign is canonically informationally saturated. Broad model search now risks reopening low-information model churn without resolving the source bottleneck.",
+      "allowed_now": "read-only public algorithm/concept inventory only if separately useful; no promotion or new real-evidence claim"
+    },
+    {
+      "capability": "ROI / bankroll stack",
+      "class": ["CONFLICT_WITH_CURRENT_BOUNDARY", "NOT_NOW"],
+      "reason": "RESULT/PAYOUT, economics/bankroll and real-money wagering remain unauthorized/out-of-scope.",
+      "keep_only": ["prediction quality must precede economics", "calibration and abstention remain separable concepts"]
+    },
+    {
+      "capability": "Mission Reliability Kernel as a new service",
+      "class": ["DUPLICATE_AS_BOX", "NEW_VALUE_AS_CAPABILITIES"],
+      "integrate_into": ["Core execution loop", "Task Bus", "Worker Adapters"],
+      "canonical_overlap": ["CAS/anti-rollback", "receipts", "rollback/recovery concepts", "fail-closed execution"],
+      "generic_runtime_gaps_not_confirmed_implemented": ["idempotency_key", "retry_budget/backoff/jitter", "lease/heartbeat", "checkpoint/resume", "dead-letter quarantine", "transactional outbox", "compensation"],
+      "priority": "HIGHEST_AUTOMATION_VALUE"
+    },
+    {
+      "capability": "Conflict Interlock",
+      "class": ["PARTLY_IMPLEMENTED_CONCEPTUALLY", "NEW_VALUE_AS_DETERMINISTIC_ENFORCEMENT"],
+      "integrate_into": ["Authorization Contract enforcement", "Review Router", "State Sync", "Worker Adapters"],
+      "existing": ["deny precedence", "Owner-Gate scope specificity", "CAS/stale-state checks", "Safe Mode"],
+      "candidate_extension": ["same-artifact write lock", "exact-target lock", "state+permission impossible-combination checks", "pre-execution interlock selftests"]
+    },
+    {
+      "capability": "Adaptive Flow Governor",
+      "class": ["PARTLY_PRESENT_AS_POLICY", "NEW_VALUE_AS_RUNTIME_CONTROL"],
+      "integrate_into": ["RESOURCE/Cost Governor", "Core scheduler/Task Bus"],
+      "existing": ["cost/quota awareness", "degraded mode", "priority on correctness/recovery/Owner burden"],
+      "candidate_extension": ["WIP limit", "pull queue", "load shedding", "adaptive parallelism"],
+      "priority": "AFTER_TASK_RELIABILITY_ENVELOPE"
+    },
+    {
+      "capability": "Autonomy Error Budget",
+      "class": ["NEW_VALUE", "DEFERRED_NEXT_VERSION"],
+      "reason": "Definition of Done explicitly defers L3-L5 autonomy evidence profiles and quota/circuit-breaker automation. Do not add it before basic task reliability evidence exists."
+    },
+    {
+      "capability": "Progressive Evolution Lane / Shadow-Arena-Canary-Promotion",
+      "class": ["MOSTLY_DUPLICATE"],
+      "integrate_into": ["Self-Evolution Protocol", "Arena"],
+      "existing": "IDEA -> PROPOSAL -> IMPACT_ANALYSIS -> SANDBOX -> BENCHMARK -> RED_TEAM -> AUDIT -> OWNER_GATE_IF_REQUIRED -> CANARY -> PROMOTION -> MONITOR -> ROLLBACK_OR_CLOSE",
+      "new_value_only": ["synthetic fault-injection test pack", "Andon-style stop naming if useful"]
+    },
+    {
+      "capability": "Truth Reconciliation Loop",
+      "class": ["PARTLY_IMPLEMENTED", "INTEGRATION_CANDIDATE"],
+      "integrate_into": ["State Sync", "Owner Assurance"],
+      "existing": ["state/lifecycle sync selftests", "CAS/stale write prevention"],
+      "candidate_extension": ["desired-vs-observed classification", "safe auto-repair only for already-authorized minor drift"]
+    },
+    {
+      "capability": "Mission Provenance Capsule",
+      "class": ["PARTLY_IMPLEMENTED", "MERGE_INTO_EXISTING"],
+      "integrate_into": ["Vault/receipts", "State Sync", "Experience Engine"],
+      "existing": ["artifact hashes", "provenance", "review refs", "rollback evidence"],
+      "candidate_extension": ["task_graph_version", "attempt/worker identity", "cost/elapsed time", "capability composition"]
+    },
+    {
+      "capability": "Incident -> Experience Loop",
+      "class": ["INTEGRATION_CANDIDATE", "NEW_VALUE_IN_GENERIC_AUTOMATION"],
+      "integrate_into": ["Experience Engine candidate", "Task Bus", "State Sync"],
+      "reason": "Incident receipts exist in domain history, but a generic automatic incident-to-regression-learning loop is not established as implemented current runtime."
+    },
+    {
+      "capability": "Cellular Multiverse / many domain cells",
+      "class": ["NOT_NEEDED_NOW"],
+      "reason": "North Star already uses logical institutions and explicitly compresses physical implementation. More cells now would add topology before demonstrated load/isolation need."
+    },
+    {
+      "capability": "Selective Scatter-Gather multi-AI review",
+      "class": ["MOSTLY_DUPLICATE_CONCEPT", "AUTOMATION_NOT_IMPLEMENTED"],
+      "integrate_into": ["AI Council", "Review Router", "Worker Adapters"],
+      "existing": "AI Council already says do not run all-AI meetings routinely; use independent reviewers only when review value is material.",
+      "future_value": "automated reviewer invocation/collection only after a real transport worker is built and observed running"
+    },
+    {
+      "capability": "Always-on Source Watcher / automatic source detection",
+      "class": ["NOT_IMPLEMENTED", "DEFER_UNTIL_WORKER_EXISTS"],
+      "reason": "A chat or design document is not monitoring. No implementation status may be claimed until an Automation/Worker is built, scheduled/triggered and runtime-confirmed."
+    }
+  ],
+  "minimal_next_version_candidate": {
+    "name": "AUTOMATION_RELIABILITY_INCREMENT_R1",
+    "principle": "Capabilities into existing boxes; no new top-level institution.",
+    "proposed_scope": [
+      {
+        "id": "R1-A",
+        "capability": "Source Audit Cache",
+        "integrate_into": ["SOURCE_INTELLIGENCE", "State Sync"],
+        "minimum_fields": ["candidate_id", "source_class", "evidence_refs", "terms_or_docs_hashes", "last_checked_at", "verdict", "verdict_reason", "freshness_state", "recheck_trigger"],
+        "goal": "Do not repeat unchanged public-source audits; surface only NEW/CHANGED/STALE candidates."
+      },
+      {
+        "id": "R1-B",
+        "capability": "Task Reliability Envelope",
+        "integrate_into": ["Task Bus", "Worker Adapters"],
+        "minimum_fields": ["task_id", "idempotency_key", "attempt_count", "retry_budget", "checkpoint_ref", "lease_owner", "lease_expires_at", "heartbeat_at", "dead_letter_reason", "authorization_ref", "input_hashes", "output_refs"],
+        "goal": "Prevent duplicate execution, infinite retry and lost/resumeless work."
+      },
+      {
+        "id": "R1-C",
+        "capability": "Conflict Interlock Selftests",
+        "integrate_into": ["Authorization Contract", "Review Router", "State Sync"],
+        "minimum_tests": ["stale target + material write => DENY", "Owner Gate required + missing approval => DENY", "SEALED protected data + access request => DENY", "same artifact concurrent write => one writer/quarantine", "review head drift => stale/no promotion"],
+        "goal": "Turn critical rules into deterministic impossible-state tests before any broader automation."
+      },
+      {
+        "id": "R1-D",
+        "capability": "Owner Assurance exception-only automation summary",
+        "integrate_into": ["Owner Assurance"],
+        "minimum_output": ["what is blocked", "what changed since last check", "what ran automatically", "what did not run", "whether Owner action is required", "next safe action"],
+        "goal": "Owner sees exceptions and decisions, not routing/SHA/repeated-source clerical work."
+      },
+      {
+        "id": "R1-E",
+        "capability": "Fake-worker reliability rehearsal",
+        "integrate_into": ["Arena", "Task Bus test harness"],
+        "minimum_faults": ["duplicate task", "worker death", "timeout", "retry exhaustion", "stale canonical input", "state write then transport failure"],
+        "goal": "Evidence before real worker autonomy; no external/provider side effects."
+      }
+    ],
+    "explicit_non_goals": [
+      "building a new Data Access Router service",
+      "building a new Reality Bridge service",
+      "opening or collecting real/live PRE",
+      "source admission",
+      "external provider contact",
+      "new spend or contract",
+      "RESULT/PAYOUT or economics",
+      "holdout/untouched validation",
+      "PR15 use",
+      "model promotion",
+      "broad Keirin model-zoo search",
+      "always-on source monitoring claim"
+    ],
+    "runtime_authority_from_this_assessment": false
+  },
+  "governance": {
+    "candidate_change_class": "MATERIAL_REVIEW_REQUIRED",
+    "basis": "AI_COUNCIL classifies Automation additions and workflow changes as MATERIAL; research/comparison/prototype may proceed, formal adoption requires Owner Gate.",
+    "lab_review_required_for_candidate_classification_and_compression": true,
+    "auditor_required_now": false,
+    "owner_gate_satisfied": false,
+    "formal_adoption_or_permission_change_may_occur_from_this_draft": false,
+    "external_contact_authority": false,
+    "new_spend_authority": false,
+    "scientific_scope_expansion_authority": false
+  },
+  "protected_boundaries": {
+    "real_or_live_PRE_collection": "UNAUTHORIZED",
+    "source_admission": "UNAUTHORIZED",
+    "RESULT_PAYOUT": "UNAUTHORIZED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR15": "QUARANTINED_NOT_ADMITTED",
+    "untouched_validation": "CLOSED",
+    "model_promotion": "PROHIBITED",
+    "external_provider_contact": "UNAUTHORIZED",
+    "automated_bulk_collection": "UNAUTHORIZED",
+    "terms_or_access_control_bypass": "PROHIBITED",
+    "synthetic_to_real_edge_or_roi_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "owner_action_now": "NONE_PENDING_LAB_CLASSIFICATION",
+  "fail_closed": true
+}
