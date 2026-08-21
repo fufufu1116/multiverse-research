@@ -1,0 +1,22 @@
+{
+  "record": "KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1",
+  "status": "AUTHORIZED_POST_BATCH3_SYNTHETIC_ROBUSTNESS_PENDING_CI",
+  "authorized_base_main": "8fb885edea8783339bb8fd3978d6baf93af94828",
+  "purpose": "Post-Batch3 robustness diagnostic across disjoint synthetic seed blocks; not a holdout and not model-selection evidence.",
+  "fixed_inputs": {
+    "batch3_harness_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_core_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "pre_holdout_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "sampling": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "worlds": ["W0", "W1", "W2", "W3", "W4"]
+  },
+  "pass_criterion": "execution and probability invariants only; no required model ranking",
+  "scientific_decision_rule": "DIAGNOSTIC_ONLY_NO_MODEL_CHANGE",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "fail_closed": true
+}
