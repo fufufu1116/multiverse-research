@@ -1,0 +1,133 @@
+name: Keirin Limited Synthetic Batch 4 Replication v1 CI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-limited-synthetic-batch4-replication-v1-ci.yml'
+      - 'governance/KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1.json'
+      - 'tools/keirin_synthetic_c0_c1_n1_replication_blocks_v1.py'
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-limited-synthetic-batch4-replication-v1-ci.yml'
+      - 'governance/KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1.json'
+      - 'tools/keirin_synthetic_c0_c1_n1_replication_blocks_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AUTHORIZED_MAIN: 8fb885edea8783339bb8fd3978d6baf93af94828
+  VNEXT_BLOB: afe746287c7e911d214202abdf2de076f63ab30c
+  KEIRIN_STATE_BLOB: 962d9c75b0611d52bd264a8b88bb1fe259cb8aeb
+  AUTH_RECEIPT_BLOB: 4c2e5364ad229a5dd413a19d0cf970c478692584
+  OWNER_GATE_BLOB: eba1c776da5efded3b99dfa2cb40271f79efa823
+  DIGITAL_TWIN_BLOB: 1f1574400e43648e60af43d059965d021d8bbad8
+  TOP3_CORE_BLOB: 4e2a819dce69240792d927cceba434f53932b829
+  PRE_HOLDOUT_COEFF_RECEIPT_BLOB: f531d72929c846da1c932451873c94bb9b526ae7
+  BATCH3_HARNESS_BLOB: 9531715a8f346aec370bf1be24017a8ff577506b
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  replication-blocks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Fail closed unless exact head authorization and fixed inputs are unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          echo "ORIGIN_MAIN=$(git rev-parse origin/main)"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "PR_EVENT_HEAD=${{ github.event.pull_request.head.sha }}"
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test "$(git rev-parse origin/main)" = "$AUTHORIZED_MAIN"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:multiverse_vnext/VNEXT_CURRENT_STATE_v0.json")" = "$VNEXT_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json")" = "$KEIRIN_STATE_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json")" = "$AUTH_RECEIPT_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:governance/KEIRIN_OWNER_GATE_LIMITED_SYNTHETIC_EXECUTION_20260821_v1.json")" = "$OWNER_GATE_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/new_lineage/digital_twin_v1.py")" = "$DIGITAL_TWIN_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/new_lineage/top3_architecture_core_v1.py")" = "$TOP3_CORE_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:v3/historical_all_market/governance/KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json")" = "$PRE_HOLDOUT_COEFF_RECEIPT_BLOB"
+          test "$(git rev-parse "$AUTHORIZED_MAIN:tools/keirin_synthetic_c0_c1_n1_comparison_v1.py")" = "$BATCH3_HARNESS_BLOB"
+
+      - name: Verify Batch 4 changes only harness manifest and CI
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only "$AUTHORIZED_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-limited-synthetic-batch4-replication-v1-ci.yml
+          governance/KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1.json
+          tools/keirin_synthetic_c0_c1_n1_replication_blocks_v1.py
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Reject protected evaluator imports and network science inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          HARNESS=tools/keirin_synthetic_c0_c1_n1_replication_blocks_v1.py
+          ! grep -Eq 'digital_twin_stress_grid_v1|c0_c1_n1_multiworld_stress_v1|locked_synthetic_holdout_runner_v1|fresh_synthetic_holdout' "$HARNESS"
+          ! grep -Eq 'requests|urllib|http://|https://' "$HARNESS"
+
+      - name: Execute post-Batch3 robustness blocks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/keirin_synthetic_c0_c1_n1_replication_blocks_v1.py | tee /tmp/batch4.log
+          grep -Fx 'KEIRIN_SYNTHETIC_C0_C1_N1_REPLICATION_BLOCKS_PASS' /tmp/batch4.log
+          head -n 1 /tmp/batch4.log > /tmp/batch4-result.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/batch4-result.json', encoding='utf-8'))
+          assert r['status']=='PASS'
+          assert r['evidence_class']=='SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          assert r['post_batch3_robustness_not_holdout'] is True
+          assert r['block_seed_bases']==[20261001,20262001,20263001,20264001]
+          assert r['block_count']==4 and r['cases_per_block']==128 and r['total_cases']==512
+          assert r['world_evaluations']==2560
+          assert r['model_world_evaluations']==7680
+          assert r['pass_does_not_require_any_model_ranking'] is True
+          assert r['model_or_coefficient_change'] is False
+          assert r['locked_legacy_synthetic_holdout_used'] is False
+          assert r['fresh_synthetic_holdout_used'] is False
+          assert r['max_C1_N1_rank1_marginal_difference'] <= 1e-12
+          for key in ('real_live_input_collection','economics','real_world_validation','pr15_metrics_access','result_payout_access','holdout_access','model_promotion','external_provider_contact','real_money_wagering','real_world_edge_or_roi_evidence'):
+              assert r[key] is False, (key, r[key])
+          assert r['scientific_segment_c_scoring_count']==0
+          print('BATCH4_RESULT_CONTRACT_PASS')
+          PY
+
+      - name: Protected-boundary terminal
+        shell: bash
+        run: |
+          echo 'KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_PASS'
+          echo 'EVIDENCE_CLASS=SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          echo 'POST_BATCH3_ROBUSTNESS_NOT_HOLDOUT=true'
+          echo 'MODEL_OR_COEFFICIENT_CHANGE=false'
+          echo 'LOCKED_LEGACY_SYNTHETIC_HOLDOUT_USED=false'
+          echo 'FRESH_SYNTHETIC_HOLDOUT_USED=false'
+          echo 'REAL_LIVE_INPUT_COLLECTION_PERFORMED=false'
+          echo 'ECONOMICS_PERFORMED=false'
+          echo 'REAL_WORLD_VALIDATION_PERFORMED=false'
+          echo 'PR15_QUARANTINED_METRICS_INSPECTED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'HOLDOUT_ACCESSED=false'
+          echo 'SCIENTIFIC_SEGMENT_C_SCORING_COUNT=0'
+          echo 'MODEL_PROMOTION_PERFORMED=false'
+          echo 'EXTERNAL_PROVIDER_CONTACT_PERFORMED=false'
+          echo 'REAL_MONEY_WAGERING_PERFORMED=false'
+          echo 'SYNTHETIC_IS_REAL_WORLD_EDGE_EVIDENCE=false'
+
+      - name: Verify clean worktree
+        run: test -z "$(git status --porcelain)"
