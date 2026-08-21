@@ -1,0 +1,160 @@
+{
+  "record": "MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_ADAPTER_PREACTIVATION_CONTRACT_20260822_v1",
+  "status": "PREACTIVATION_CANONICAL_AUTHORITY_DECISION_TRUSTED_TIME_ADAPTER_CANDIDATE_RUNTIME_OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "stacked_parent": {
+    "pr": 60,
+    "audited_github_cas_head": "e473d9f712043c26ce42a92611b923d4eca76e0f",
+    "independent_auditor_micro_pass_comment": 5373951694,
+    "parent_head_must_not_move": true
+  },
+  "purpose": "Implement a read-only verifier/adapter that can consume only separately accepted immutable Stage-1 authorization decisions and GitHub control-plane trusted time. It must not mint authority, grants, Owner Gates, revocation state, Safe Mode state, or activation authority.",
+  "fresh_authority_source_discovery": {
+    "canonical_main_fresh_read": "3871de67900f31496ee9725a77ff1048cede906f",
+    "accepted_production_stage1_authority_source_present_now": false,
+    "observed_nonqualifying_sources": [
+      {
+        "path": "governance/MULTIVERSE_R1_LIVE_CANARY_AUTHORIZATION_FIXTURE_20260821_v1.json",
+        "status": "CANARY_FIXTURE_ONLY_NOT_PRODUCTION_AUTHORITY",
+        "usable_as_stage1_production_authority": false
+      },
+      {
+        "path": "multiverse_vnext/VNEXT_AUTHORIZATION_CONTRACT_v0.json",
+        "status": "WORKING_NORMATIVE_CANDIDATE_NOT_ACCEPTED",
+        "usable_as_stage1_production_authority": false
+      },
+      {
+        "path": "governance/MULTIVERSE_SAFE_MODE_STATE_CANDIDATE_20260820_v2.json",
+        "status": "DRAFT_NONCANONICAL_LAB_REMEDIATION_CANDIDATE",
+        "canonical_authority": false,
+        "usable_as_stage1_production_authority": false
+      },
+      {
+        "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
+        "status": "ACCEPTED_FROZEN",
+        "note": "Accepted state pointer, not by itself a Stage-1 operation decision issuer or finite preissued decision manifest.",
+        "usable_as_stage1_production_authority": false
+      }
+    ],
+    "rule": "Do not promote a fixture, candidate, state pointer, Owner Gate, runtime ledger, or this adapter candidate into a second canonical authority."
+  },
+  "implementation": {
+    "file": "tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py",
+    "authority_manifest_schema": "MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_MANIFEST_v1",
+    "accepted_manifest_status_required": "ACCEPTED_CANONICAL_STAGE1_AUTHORITY_SNAPSHOT",
+    "max_preissued_bundles": 25,
+    "read_only": true,
+    "decision_minting": false,
+    "grant_minting": false,
+    "owner_gate_reuse_as_operation_grant": false,
+    "runtime_state_as_authority": false,
+    "canary_fixture_reuse": false
+  },
+  "authority_manifest_contract": {
+    "source": "SEPARATELY_ACCEPTED_CANONICAL_GOVERNANCE_ARTIFACT_REQUIRED",
+    "candidate_provisions_that_source": false,
+    "manifest_commit_must_equal_activation_canonical_main": true,
+    "manifest_path_must_be_under_governance": true,
+    "manifest_git_blob_and_sha256_must_be_pinned_by_activation_anchor": true,
+    "canonical_authority_field_must_be_true": true,
+    "exact_accepted_status_required": true,
+    "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+    "finite_preissued_envelope_membership": true,
+    "unknown_or_unlisted_envelope_behavior": "DENY_FAIL_CLOSED",
+    "decision_bundle_digest_verified": true,
+    "policy_generation_and_digest_pinned": true,
+    "revocation_and_safe_mode_generation_pinned": true,
+    "safe_mode_active_propagated_into_existing_authorization_guard": true,
+    "canonical_main_drift_behavior": "DENY_FAIL_CLOSED",
+    "canonical_main_is_complete_authority_freshness_barrier_required": true,
+    "freshness_barrier_semantics": "Every policy/grant/revocation/Safe-Mode change relevant to Stage 1 MUST advance canonical main before it can affect governed execution; otherwise this adapter is not conforming and Stage 1 remains OFF.",
+    "authorization_decision_ids_must_be_unique_across_manifest": true,
+    "decision_policy_and_generation_fields_must_match_manifest": true,
+    "non_P0_decision_grants_must_be_in_current_valid_grant_refs": true
+  },
+  "trusted_clock_contract": {
+    "source": "GITHUB_API_SERVER_DATE_HEADER",
+    "caller_supplied_wall_clock_allowed": false,
+    "local_process_clock_is_authority": false,
+    "missing_ambiguous_or_malformed_server_date_behavior": "DENY_FAIL_CLOSED",
+    "canonical_main_fresh_read_before_manifest_selection": true,
+    "canonical_main_refreshed_after_server_time_fetch": true,
+    "main_drift_during_decision_load_behavior": "DENY_FAIL_CLOSED",
+    "fresh_main_and_trusted_time_are_read_together_from_github_api_branch_response": true,
+    "github_api_hostname_pinned": "github.com",
+    "gh_host_override_to_non_github_com_allowed": false,
+    "http_https_all_proxy_environment_allowed": false,
+    "custom_ssl_cert_environment_allowed": false,
+    "gh_http_unix_socket_allowed": false,
+    "manifest_bytes_loaded_via_pinned_github_contents_api": true,
+    "git_transport_used_for_authority_freshness_or_manifest_bytes": false
+  },
+  "activation_anchor_boundary": {
+    "separately_reviewed_immutable_activation_receipt_loader_required": true,
+    "implemented_by_this_candidate": false,
+    "boolean_verified_flag_alone_is_not_production_receipt_verification": true,
+    "activation_receipt_must_pin": [
+      "canonical_main",
+      "authority_manifest_commit",
+      "authority_manifest_path",
+      "authority_manifest_blob_sha",
+      "authority_manifest_sha256",
+      "authority_manifest_status",
+      "authority_scope",
+      "policy_generation",
+      "policy_digest",
+      "revocation_generation",
+      "safe_mode_generation",
+      "trusted_clock_source",
+      "canonical_main_is_complete_authority_freshness_barrier"
+    ]
+  },
+  "authority_separation": {
+    "this_adapter_is_authority_issuer": false,
+    "this_adapter_is_permission_policy": false,
+    "this_adapter_is_revocation_registry": false,
+    "this_adapter_is_safe_mode_registry": false,
+    "this_adapter_is_owner_gate": false,
+    "this_adapter_only_verifies_and_translates_preissued_decisions": true,
+    "missing_accepted_authority_source_behavior": "STAGE1_REMAINS_OFF"
+  },
+  "ci_boundary": {
+    "pull_request_only": true,
+    "contents_permission": "read",
+    "literal_pr_head_checkout_required": true,
+    "scheduler": false,
+    "workflow_dispatch": false,
+    "push_trigger": false,
+    "production_runtime_write": false,
+    "production_authority_write": false,
+    "network_source_collection": false,
+    "external_provider_contact": false
+  },
+  "remaining_preactivation_dependencies": [
+    "Independent Lab review of this exact-head read-only authority adapter candidate",
+    "Independent Implementation Auditor review after Lab PASS",
+    "A separately governed and accepted canonical Stage-1 authority manifest/source must exist and attest that canonical main is the complete freshness barrier for all relevant policy/grant/revocation/Safe-Mode changes; this candidate does not create or adopt it",
+    "Actual GitHub journal ruleset provisioning and independent no-bypass attestation",
+    "Production runtime writer key provisioning",
+    "Immutable activation receipt plus independently reviewed verified-anchor loader binding CAS and authority dependencies",
+    "Final unchanged-head integration review before any production runtime branch creation or Stage-1 activation"
+  ],
+  "protected_boundaries": {
+    "runtime_activation_authorized_now": false,
+    "production_runtime_branch_present_now": false,
+    "production_authority_manifest_present_now": false,
+    "activation_receipt_present_now": false,
+    "ruleset_provisioned_by_candidate": false,
+    "writer_secret_provisioned_by_candidate": false,
+    "source_collection_or_admission": false,
+    "external_contact": false,
+    "real_live_PRE": false,
+    "result_payout": false,
+    "econ_holdout1000": false,
+    "pr15": false,
+    "scientific_or_model_promotion": false,
+    "spend_or_wagering": false
+  },
+  "owner_action_now": "NONE_FOR_ADAPTER_PREACTIVATION_CANDIDATE",
+  "fail_closed": true
+}
