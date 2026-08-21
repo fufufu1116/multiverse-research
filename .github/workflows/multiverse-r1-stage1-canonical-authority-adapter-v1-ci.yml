@@ -1,0 +1,130 @@
+name: Multiverse R1 Stage1 Canonical Authority Adapter v1 CI
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/multiverse-r1-stage1-canonical-authority-adapter-v1-ci.yml"
+      - "governance/MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_ADAPTER_PREACTIVATION_CONTRACT_20260822_v1.json"
+      - "tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py"
+
+permissions:
+  contents: read
+
+jobs:
+  preactivation-authority-adapter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout literal PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Enforce literal head stacked parent and exact candidate scope
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test "$BASE_REF" = "agent/r1-stage1-github-runtime-cas-preactivation-v1"
+          test "$BASE_SHA" = "e473d9f712043c26ce42a92611b923d4eca76e0f"
+          git fetch --no-tags origin "$BASE_SHA"
+          files="$(git diff --name-only "$BASE_SHA...$HEAD_SHA" | sort)"
+          expected="$(printf '%s\n' \
+            '.github/workflows/multiverse-r1-stage1-canonical-authority-adapter-v1-ci.yml' \
+            'governance/MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_ADAPTER_PREACTIVATION_CONTRACT_20260822_v1.json' \
+            'tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py' | sort)"
+          test "$files" = "$expected"
+          echo "AUTHORITY_STACKED_PARENT_AND_EXACT_THREE_FILE_SCOPE_PASS"
+
+      - name: Validate fail-closed authority preactivation contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("governance/MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_ADAPTER_PREACTIVATION_CONTRACT_20260822_v1.json")
+          d = json.loads(p.read_text())
+          assert d["status"] == "PREACTIVATION_CANONICAL_AUTHORITY_DECISION_TRUSTED_TIME_ADAPTER_CANDIDATE_RUNTIME_OFF"
+          assert d["stacked_parent"]["audited_github_cas_head"] == "e473d9f712043c26ce42a92611b923d4eca76e0f"
+          assert d["stacked_parent"]["independent_auditor_micro_pass_comment"] == 5373951694
+          assert d["fresh_authority_source_discovery"]["accepted_production_stage1_authority_source_present_now"] is False
+          assert d["implementation"]["read_only"] is True
+          assert d["implementation"]["decision_minting"] is False
+          assert d["implementation"]["grant_minting"] is False
+          assert d["implementation"]["canary_fixture_reuse"] is False
+          assert d["authority_manifest_contract"]["candidate_provisions_that_source"] is False
+          assert d["authority_manifest_contract"]["canonical_main_is_complete_authority_freshness_barrier_required"] is True
+          assert d["trusted_clock_contract"]["source"] == "GITHUB_API_SERVER_DATE_HEADER"
+          assert d["trusted_clock_contract"]["caller_supplied_wall_clock_allowed"] is False
+          assert d["trusted_clock_contract"]["github_api_hostname_pinned"] == "github.com"
+          assert d["trusted_clock_contract"]["http_https_all_proxy_environment_allowed"] is False
+          assert d["trusted_clock_contract"]["gh_http_unix_socket_allowed"] is False
+          assert d["trusted_clock_contract"]["git_transport_used_for_authority_freshness_or_manifest_bytes"] is False
+          assert d["activation_anchor_boundary"]["implemented_by_this_candidate"] is False
+          assert d["authority_separation"]["this_adapter_is_authority_issuer"] is False
+          assert d["protected_boundaries"]["runtime_activation_authorized_now"] is False
+          assert d["protected_boundaries"]["production_authority_manifest_present_now"] is False
+          assert d["ci_boundary"]["contents_permission"] == "read"
+          print("AUTHORITY_PREACTIVATION_CONTRACT_FAIL_CLOSED_PASS")
+          PY
+
+      - name: Reject activation and authority-write workflow surfaces
+        run: |
+          set -euo pipefail
+          wf=".github/workflows/multiverse-r1-stage1-canonical-authority-adapter-v1-ci.yml"
+          ! grep -Eq '^[[:space:]]*(schedule|workflow_dispatch|push):' "$wf"
+          ! grep -Eq 'contents:[[:space:]]*write' "$wf"
+          ! grep -Eq 'runtime/r1-source-audit-stage1-v1' "$wf"
+          echo "NO_AUTHORITY_OR_RUNTIME_WRITE_TRIGGER_SURFACE_PASS"
+
+      - name: Compile and run authority adapter selftest
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py
+          out="$(python tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py --selftest)"
+          printf '%s\n' "$out"
+          grep -Fqx 'CANONICAL_AUTHORITY_PREISSUED_BUNDLE_ACCEPTED' <<<"$out"
+          grep -Fqx 'CANONICAL_AUTHORITY_MAIN_DRIFT_FAIL_CLOSED' <<<"$out"
+          grep -Fqx 'CANONICAL_AUTHORITY_UNISSUED_ENVELOPE_DENIED' <<<"$out"
+          grep -Fqx 'CANONICAL_AUTHORITY_UNVERIFIED_ACTIVATION_ANCHOR_DENIED' <<<"$out"
+          grep -Fqx 'CANARY_AND_NONCANONICAL_AUTHORITY_SOURCES_REJECTED' <<<"$out"
+          grep -Fqx 'AUTHORITY_FRESHNESS_BARRIER_AND_DECISION_UNIQUENESS_FAIL_CLOSED' <<<"$out"
+          grep -Fqx 'GITHUB_SERVER_DATE_AND_API_TRANSPORT_FAIL_CLOSED' <<<"$out"
+          grep -Fqx 'CANONICAL_AUTHORITY_ADAPTER_SELFTEST_PASS' <<<"$out"
+          grep -Fqx 'PRODUCTION_AUTHORITY_MANIFEST_PROVISIONED=false' <<<"$out"
+          grep -Fqx 'AUTHORIZATION_DECISION_MINTING_PERFORMED=false' <<<"$out"
+          grep -Fqx 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$out"
+
+      - name: Regress Stage1 and CAS preactivation selftests
+        run: |
+          set -euo pipefail
+          stage="$(python tools/multiverse_r1_stage1_runtime_v1.py --selftest)"
+          grep -Fq 'POST_VALIDATION_DECISION_BUNDLE_MUTATION_ISOLATED' <<<"$stage"
+          grep -Fq 'TRUSTED_CONTROL_PLANE_CLOCK_ENFORCES_7_DAY_CEILING' <<<"$stage"
+          grep -Fq 'RETRY_BUDGET_2_ENFORCED_VIA_RECORD_FAILURE' <<<"$stage"
+          cas="$(python tools/multiverse_r1_stage1_github_runtime_cas_v1.py --selftest)"
+          grep -Fq 'GITHUB_RUNTIME_CAS_ADAPTER_SELFTEST_PASS' <<<"$cas"
+          grep -Fq 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$cas"
+          echo "AUTHORITY_PARENT_REGRESSION_PASS"
+
+      - name: Static authority-separation checks
+        run: |
+          set -euo pipefail
+          f="tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py"
+          grep -Fq 'ACCEPTED_AUTHORITY_STATUS = "ACCEPTED_CANONICAL_STAGE1_AUTHORITY_SNAPSHOT"' "$f"
+          grep -Fq 'TRUSTED_CLOCK_SOURCE = "GITHUB_API_SERVER_DATE_HEADER"' "$f"
+          grep -Fq 'CANARY_FIXTURE_ONLY_NOT_PRODUCTION_AUTHORITY' "$f"
+          grep -Fq 'seal_authorization_bundle' "$f"
+          grep -Fq 'AUTHORITY_ENVELOPE_NOT_PREISSUED_OR_AMBIGUOUS' "$f"
+          grep -Fq 'AUTHORITY_MAIN_DRIFT_DURING_DECISION_LOAD' "$f"
+          grep -Fq '"gh", "api", "--hostname", "github.com"' "$f"
+          grep -Fq 'AUTHORITY_MANIFEST_MAIN_FRESHNESS_BARRIER_UNVERIFIED' "$f"
+          grep -Fq 'AUTHORITY_MANIFEST_DECISION_ID_NOT_UNIQUE' "$f"
+          grep -Fq 'AUTHORITY_API_PROXY_OR_CUSTOM_CA_PROHIBITED' "$f"
+          grep -Fq 'AUTHORITY_GH_HTTP_UNIX_SOCKET_PROHIBITED' "$f"
+          ! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+(requests|urllib|httpx|aiohttp|socket)' "$f"
+          echo "AUTHORITY_ADAPTER_STATIC_BOUNDARY_PASS"
