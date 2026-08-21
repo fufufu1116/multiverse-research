@@ -3,7 +3,7 @@ name: Multiverse R1 Source Vertical Slice Candidate CI v1
 on:
   pull_request:
     paths:
-      - "tools/multiverse_r1_source_vertical_slice_v1.py"
+      - "tools/multiverse_r1_source_vertical_slice_v2.py"
       - "governance/MULTIVERSE_R1_OWNER_GATE_LIMITED_IMPLEMENTATION_20260821_v1.json"
       - "governance/MULTIVERSE_R1_SOURCE_VERTICAL_SLICE_IMPLEMENTATION_CONTRACT_20260821_v1.json"
       - ".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml"
@@ -41,6 +41,8 @@ jobs:
           assert contract["status"] == "FORMAL_IMPLEMENTATION_CANDIDATE_OWNER_GATED_NOT_RUNTIME_ACTIVATED"
           assert contract["reliable_task_execution"]["exactly_once_claim"] is False
           assert contract["authorization"]["string_or_boolean_allow_shortcut_permitted"] is False
+          assert contract["authorization"]["implementation_owner_gate_is_not_runtime_operation_grant"] is True
+          assert contract["authorization"]["source_review_commit_classification"].startswith("P1_REVERSIBLE_INTERNAL_WRITE")
           assert contract["owner_exception_view"]["approval_authority"] == "NONE"
           assert contract["runtime"]["scheduler_included"] is False
           assert contract["runtime"]["always_on_source_watcher_included"] is False
@@ -48,13 +50,14 @@ jobs:
           assert contract["runtime"]["runtime_activation_authorized"] is False
           PY
 
-      - name: Reject network collector imports or schedule triggers
+      - name: Reject network collector imports schedule triggers or implementation-gate runtime reuse
         run: |
           python - <<'PY'
           from pathlib import Path
-          code = Path("tools/multiverse_r1_source_vertical_slice_v1.py").read_text()
-          for forbidden in ("import requests", "import httpx", "import urllib", "import socket"):
+          code = Path("tools/multiverse_r1_source_vertical_slice_v2.py").read_text()
+          for forbidden in ("import requests", "import httpx", "import urllib", "import socket", "5365031899"):
               assert forbidden not in code, forbidden
+          assert 'permission_class="P1_REVERSIBLE_INTERNAL_WRITE"' in code
           workflow = Path(".github/workflows/multiverse-r1-source-vertical-slice-v1-ci.yml").read_text()
           forbidden_schedule = "sche" + "dule:"
           forbidden_cron = "cr" + "on:"
@@ -63,9 +66,9 @@ jobs:
           PY
 
       - name: Run dedicated R1 fake-worker acceptance harness
-        run: python tools/multiverse_r1_source_vertical_slice_v1.py --selftest
+        run: python tools/multiverse_r1_source_vertical_slice_v2.py --selftest
 
       - name: Confirm no runtime activation entrypoint
         run: |
-          output="$(python tools/multiverse_r1_source_vertical_slice_v1.py)"
+          output="$(python tools/multiverse_r1_source_vertical_slice_v2.py)"
           test "$output" = "R1_LIBRARY_ONLY_NO_AUTORUN_RUNTIME_ACTIVATION"
