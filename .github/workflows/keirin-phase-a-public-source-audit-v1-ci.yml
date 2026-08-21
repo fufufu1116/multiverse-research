@@ -1,0 +1,71 @@
+name: Keirin Phase A Public Source Audit v1 CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/keirin-phase-a-public-source-audit-v1-ci.yml'
+      - 'governance/KEIRIN_SOURCE_PHASE_A_PUBLIC_TERMS_AUDIT_20260821_v1.json'
+  push:
+    paths:
+      - '.github/workflows/keirin-phase-a-public-source-audit-v1-ci.yml'
+      - 'governance/KEIRIN_SOURCE_PHASE_A_PUBLIC_TERMS_AUDIT_20260821_v1.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  EXPECTED_MAIN: af3682e75d59e07be8b0b8e4ea58ad4fe1ba3484
+  ADOPTION_RECEIPT_BLOB: 7c91dfb8df9f56c58b103c908c3d1c0cd7801429
+
+jobs:
+  phase-a-public-source-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Verify exact canonical authority and limited diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          test "$(git rev-parse origin/main)" = "$EXPECTED_MAIN"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test "$(git rev-parse "$EXPECTED_MAIN:governance/KEIRIN_SOURCE_AUDIT_GATE_ADOPTION_RECEIPT_20260821_v1.json")" = "$ADOPTION_RECEIPT_BLOB"
+          git diff --name-only "$EXPECTED_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-phase-a-public-source-audit-v1-ci.yml
+          governance/KEIRIN_SOURCE_PHASE_A_PUBLIC_TERMS_AUDIT_20260821_v1.json
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+      - name: Validate fail-closed audit verdict
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          p='governance/KEIRIN_SOURCE_PHASE_A_PUBLIC_TERMS_AUDIT_20260821_v1.json'
+          x=json.load(open(p, encoding='utf-8'))
+          assert x['status']=='PHASE_A_PUBLIC_TERMS_AUDIT_COMPLETE_NO_SOURCE_ADMITTED'
+          assert x['overall_verdict']=='NO_PROVIDER_CURRENTLY_ADMISSIBLE_FROM_PUBLIC_TERMS_AND_DOCUMENTATION_ALONE'
+          assert len(x['candidate_findings']) >= 5
+          assert all('ADMITTED' not in c['admission_verdict'] or c['admission_verdict'].startswith('NOT_ADMITTED') or c['admission_verdict'].startswith('NO_ADMISSIBLE') for c in x['candidate_findings'])
+          assert x['no_contact_path']['continue_public_discovery_allowed'] is True
+          assert x['no_contact_path']['provider_contact_authorized'] is False
+          assert not any(x['authority_from_this_audit'].values())
+          assert all(x['future_gates_preserved'].values())
+          pb=x['protected_boundaries']
+          assert pb['ECON_HOLDOUT1000']=='SEALED'
+          assert pb['scientific_segment_C_scoring_count']==0
+          assert pb['RESULT_PAYOUT']=='UNAUTHORIZED'
+          assert pb['untouched_validation']=='CLOSED'
+          assert pb['model_promotion']=='PROHIBITED'
+          assert x['owner_action_now']=='NONE'
+          assert x['fail_closed'] is True
+          print('KEIRIN_PHASE_A_PUBLIC_SOURCE_AUDIT_PASS')
+          PY
