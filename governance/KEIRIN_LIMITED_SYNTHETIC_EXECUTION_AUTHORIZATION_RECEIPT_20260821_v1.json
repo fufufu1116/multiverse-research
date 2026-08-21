@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1",
+  "status": "CANONICAL_IF_MERGED_WITH_GENERATION_12_STATE_TRANSITION",
+  "created_jst": "2026-08-21T09:43:00+09:00",
+  "timestamp_is_authority": false,
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "purpose": "Authorize only the independently reviewed and Owner-approved narrow synthetic Keirin execution scope after the post-Foundation pause.",
+  "preconditions": {
+    "expected_main_before_transition": "7993d8d90d0154913e6335bf5219477cf1f8fd38",
+    "expected_foundation_state_generation": 11,
+    "expected_foundation_state_blob": "f4295fe416667745688f17ab390246cbb64e0dc8",
+    "expected_keirin_state_blob": "9c73c0098611fae0449c2a76ab7c5715b6b72d7d",
+    "reviewed_pr": 32,
+    "reviewed_exact_head": "5ddca980391c0a3692454cdad540825c155852e7",
+    "lab_pass_comment_id": 5363706178,
+    "auditor_pass_comment_id": 5363766595,
+    "owner_gate_path": "governance/KEIRIN_OWNER_GATE_LIMITED_SYNTHETIC_EXECUTION_20260821_v1.json",
+    "reject_on_relevant_drift": true
+  },
+  "authorization_scope": {
+    "allowed": [
+      "source-independent synthetic regression checks only",
+      "Digital Twin W0-W4 synthetic stress and failure diagnostics only",
+      "C0/C1/N1 comparison only inside those synthetic worlds"
+    ],
+    "explicitly_not_authorized": [
+      "real or live input collection",
+      "economics or bankroll evaluation",
+      "real-world or untouched validation",
+      "PR #15 quarantined metric inspection or use for resume selection",
+      "RESULT/PAYOUT access",
+      "ECON_HOLDOUT1000 opening, scoring or access-policy change",
+      "DEV2000 C new-lineage rescue",
+      "same-lineage B/C rescue tuning",
+      "model promotion",
+      "result-aware feature, threshold, exclusion, ticket or bankroll adoption",
+      "external provider contact",
+      "automated bulk collection",
+      "access-control, rate-limit, CAPTCHA or WAF bypass",
+      "real-money wagering",
+      "claiming synthetic evidence as real-world edge or ROI evidence",
+      "any protected or quarantined information"
+    ],
+    "scientific_segment_c_scoring_count_must_remain": 0
+  },
+  "evidence_class_limit": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY_NOT_REAL_WORLD_EDGE_OR_ROI_EVIDENCE",
+  "canonicalization_rule": "This receipt becomes execution authority only when canonical main contains this receipt together with the generation-12 VNEXT current-state transition and the matching CURRENT_STATE_KEIRIN limited-synthetic authorization state. The reviewed PR #32 draft alone is never execution authority.",
+  "first_execution_rule": "Immediately before first execution, Fresh Read canonical main and both current-state files; fail closed on any relevant drift or scope contradiction.",
+  "scope_expansion_rule": "Any expansion beyond the three allowed synthetic-only classes requires a separate governed gate and cannot reuse this Owner approval.",
+  "canonical_commit_identity": "RESOLVE_FROM_GIT_COMMIT_OR_MERGE_COMMIT_CONTAINING_THIS_RECEIPT_AND_MATCHING_STATE_TRANSITION"
+}
