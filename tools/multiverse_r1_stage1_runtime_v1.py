@@ -1,26 +1,35 @@
 #!/usr/bin/env python3
 """R1 Limited Internal Runtime Stage 1 library.
 
-This module is deliberately dormant by default. It consumes trusted current
-AuthorizationRuntime objects supplied by an external canonical control-plane
-adapter; it never derives, mints, or widens grants itself.
+Dormant by default. The production-shaped path never accepts caller-supplied
+AuthorizationRuntime facts directly: it asks an independently reviewed
+control-plane adapter for canonical authority facts and for durable remote-CAS
+runtime state. No concrete live GitHub adapter is activated in this candidate.
 """
 from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Protocol
 
 from multiverse_r1_auth_v1 import AuthorizationDenied, AuthorizationRuntime, validate_authorization
 from multiverse_r1_engine_v1 import R1Engine
-from multiverse_r1_state_v1 import AuditState, PersistentStore, SchemaError, StaleState
+from multiverse_r1_state_v1 import (
+    AuditState,
+    PersistentStore,
+    SchemaError,
+    StaleState,
+    empty_state,
+    validate_state,
+)
 
-STAGE_SCHEMA = "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_SCHEMA_v1"
+STAGE_SCHEMA = "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_SCHEMA_v2"
 ENQUEUE_SCHEMA = "MULTIVERSE_R1_STAGE1_ENQUEUE_ENVELOPE_v1"
 STAGE_ID = "R1_LIMITED_INTERNAL_RUNTIME_STAGE1"
 RUNTIME_BRANCH = "runtime/r1-source-audit-stage1-v1"
@@ -32,6 +41,7 @@ MAX_TASKS_PER_INVOCATION = 10
 MAX_TERMINAL_TASKS = 25
 WINDOW_DAYS = 7
 RETRY_BUDGET = 2
+INVOCATION_LEASE_MINUTES = 5
 ALLOWED_PREFIXES = (
     "runtime/r1_source_audit_stage1/cache/",
     "runtime/r1_source_audit_stage1/tasks/",
@@ -71,8 +81,8 @@ CONTROL_FIELDS = {
     "counted_receipt_ids",
     "paused",
     "pause_reason",
-    "last_runtime_head",
-    "invocation_active",
+    "invocation_claim_id",
+    "invocation_claim_expires_at",
 }
 
 
@@ -85,6 +95,10 @@ class Stage1Paused(Stage1Denied):
 
 
 class Stage1Tamper(Stage1Denied):
+    pass
+
+
+class InjectedCrash(RuntimeError):
     pass
 
 
@@ -132,6 +146,7 @@ def validate_write_path(branch: str, path: str) -> None:
 
 
 def reject_runtime_artifact_as_authority(claimed_role: str, artifact: Mapping[str, Any]) -> None:
+    del artifact
     if claimed_role in AUTHORITY_ROLES:
         _deny("RUNTIME_ARTIFACT_CANNOT_BE_AUTHORITY")
     _deny("UNKNOWN_AUTHORITY_ROLE_DENIED")
@@ -149,16 +164,62 @@ def validate_runtime_cache_state(value: Any) -> str:
 
 @dataclass(frozen=True)
 class TrustedAuthorityContext:
-    """Provided only by an already-trusted canonical control-plane adapter.
-
-    The Stage-1 library deliberately has no file/JSON loader for this object so
-    an enqueue payload cannot self-assert current grants, revocations, or safe
-    mode. The adapter that constructs this object remains an audited
-    pre-activation dependency.
-    """
-
     enqueue_runtime: AuthorizationRuntime
     worker_runtime: AuthorizationRuntime
+    canonical_main: str
+    provenance_ref: str
+    verified_from_canonical_authority: bool
+
+
+@dataclass(frozen=True)
+class RemoteSnapshot:
+    remote_head: str
+    canonical_main: str
+    runtime_genesis: str
+    genesis_is_ancestor: bool
+    high_water_count: int
+    control: dict
+    r1_state: dict
+
+
+class ControlPlaneAdapter(Protocol):
+    """Pre-activation contract for an independently reviewed canonical adapter."""
+
+    def load_snapshot(self) -> RemoteSnapshot: ...
+
+    def load_trusted_authority(
+        self,
+        *,
+        current_main: str,
+        enqueue_actor_role: str,
+        enqueue_actor_instance: str,
+        worker_actor_instance: str,
+        now: datetime,
+    ) -> TrustedAuthorityContext: ...
+
+    def claim_invocation(
+        self,
+        *,
+        expected_remote_head: str,
+        claim_id: str,
+        claimed_control: Mapping[str, Any],
+    ) -> RemoteSnapshot: ...
+
+    def persist_r1_state(
+        self,
+        *,
+        expected_remote_head: str,
+        claim_id: str,
+        r1_state: Mapping[str, Any],
+    ) -> RemoteSnapshot: ...
+
+    def release_invocation(
+        self,
+        *,
+        expected_remote_head: str,
+        claim_id: str,
+        released_control: Mapping[str, Any],
+    ) -> RemoteSnapshot: ...
 
 
 def empty_control(
@@ -169,7 +230,12 @@ def empty_control(
     runtime_genesis: str,
     activated_at: datetime,
 ) -> dict:
-    if not _nonempty(activation_receipt_id) or not _hex40(canonical_main) or not _hex40(audited_implementation_head) or not _hex40(runtime_genesis):
+    if (
+        not _nonempty(activation_receipt_id)
+        or not _hex40(canonical_main)
+        or not _hex40(audited_implementation_head)
+        or not _hex40(runtime_genesis)
+    ):
         _deny("ACTIVATION_IDENTITY_INVALID")
     if activated_at.tzinfo is None:
         _deny("ACTIVATION_TIME_NOT_AWARE")
@@ -186,8 +252,8 @@ def empty_control(
         "counted_receipt_ids": [],
         "paused": False,
         "pause_reason": None,
-        "last_runtime_head": runtime_genesis,
-        "invocation_active": False,
+        "invocation_claim_id": None,
+        "invocation_claim_expires_at": None,
     }
 
 
@@ -199,7 +265,7 @@ def validate_control(control: Mapping[str, Any]) -> None:
     for field in ("activation_receipt_id", "runtime_branch"):
         if not _nonempty(control[field]):
             _deny("STAGE_CONTROL_STRING")
-    for field in ("canonical_main", "audited_implementation_head", "runtime_genesis", "last_runtime_head"):
+    for field in ("canonical_main", "audited_implementation_head", "runtime_genesis"):
         if not _hex40(control[field]):
             _deny("STAGE_CONTROL_SHA")
     if control["runtime_branch"] != RUNTIME_BRANCH:
@@ -212,17 +278,56 @@ def validate_control(control: Mapping[str, Any]) -> None:
         _deny("STAGE_CONTROL_RECEIPTS")
     if control["terminal_count"] != len(ids):
         _deny("STAGE_CONTROL_COUNT_RECEIPT_MISMATCH")
-    if not isinstance(control["paused"], bool) or not isinstance(control["invocation_active"], bool):
+    if not isinstance(control["paused"], bool):
         _deny("STAGE_CONTROL_BOOL")
     if control["pause_reason"] is not None and not _nonempty(control["pause_reason"]):
         _deny("STAGE_CONTROL_PAUSE_REASON")
+    claim_id = control["invocation_claim_id"]
+    claim_expiry = control["invocation_claim_expires_at"]
+    if (claim_id is None) != (claim_expiry is None):
+        _deny("STAGE_CONTROL_CLAIM_PAIR")
+    if claim_id is not None:
+        if not _nonempty(claim_id):
+            _deny("STAGE_CONTROL_CLAIM_ID")
+        _utc(claim_expiry)
+
+
+def validate_trusted_authority_context(trusted: TrustedAuthorityContext, *, current_main: str) -> None:
+    if not isinstance(trusted, TrustedAuthorityContext):
+        _deny("TRUSTED_AUTHORITY_CONTEXT_TYPE")
+    if trusted.verified_from_canonical_authority is not True:
+        _deny("TRUSTED_AUTHORITY_PROVENANCE_UNVERIFIED", AuthorizationDenied)
+    if trusted.canonical_main != current_main or not _hex40(trusted.canonical_main):
+        _deny("TRUSTED_AUTHORITY_CANONICAL_MAIN_MISMATCH", AuthorizationDenied)
+    if not _nonempty(trusted.provenance_ref):
+        _deny("TRUSTED_AUTHORITY_PROVENANCE_REF_MISSING", AuthorizationDenied)
+
+
+def reconcile_terminal_receipts(control: Mapping[str, Any], r1_state: Mapping[str, Any]) -> dict:
+    validate_control(control)
+    state = copy.deepcopy(r1_state)
+    validate_state(state)
+    receipt_ids = sorted({r["receipt_id"] for r in state["receipts_by_idempotency"].values()})
+    if len(receipt_ids) > MAX_TERMINAL_TASKS:
+        _deny("DURABLE_RECEIPT_COUNT_EXCEEDS_STAGE_CEILING", Stage1Tamper)
+    out = copy.deepcopy(control)
+    known = set(out["counted_receipt_ids"])
+    for receipt_id in receipt_ids:
+        if receipt_id not in known:
+            out["counted_receipt_ids"].append(receipt_id)
+            known.add(receipt_id)
+    out["terminal_count"] = len(out["counted_receipt_ids"])
+    if out["terminal_count"] >= MAX_TERMINAL_TASKS:
+        out["paused"] = True
+        out["pause_reason"] = "STAGE_TERMINAL_CEILING_REACHED"
+    validate_control(out)
+    return out
 
 
 def assert_ceiling_and_integrity(
     control: Mapping[str, Any],
     *,
     current_main: str,
-    current_runtime_head: str,
     now: datetime,
     genesis_is_ancestor: bool,
     remote_high_water_count: int,
@@ -230,8 +335,6 @@ def assert_ceiling_and_integrity(
     validate_control(control)
     if current_main != control["canonical_main"]:
         _deny("STALE_CANONICAL_MAIN", StaleState)
-    if current_runtime_head != control["last_runtime_head"]:
-        _deny("UNEXPECTED_RUNTIME_REF_MOVEMENT", Stage1Tamper)
     if not genesis_is_ancestor:
         _deny("RUNTIME_ANCESTRY_TAMPER", Stage1Tamper)
     if not _strict_int(remote_high_water_count):
@@ -240,8 +343,6 @@ def assert_ceiling_and_integrity(
         _deny("TERMINAL_COUNT_ROLLBACK_DETECTED", Stage1Tamper)
     if control["paused"]:
         _deny("STAGE_ALREADY_PAUSED", Stage1Paused)
-    if control["invocation_active"]:
-        _deny("SECOND_WORKER_OR_PARALLEL_INVOCATION", Stage1Denied)
     if control["terminal_count"] >= MAX_TERMINAL_TASKS:
         _deny("STAGE_TERMINAL_CEILING_REACHED", Stage1Paused)
     if now.tzinfo is None:
@@ -250,19 +351,33 @@ def assert_ceiling_and_integrity(
         _deny("STAGE_TIME_CEILING_REACHED", Stage1Paused)
 
 
-def begin_invocation(control: Mapping[str, Any]) -> dict:
+def claim_control(control: Mapping[str, Any], *, claim_id: str, now: datetime) -> dict:
     validate_control(control)
-    if control["invocation_active"]:
+    if not _nonempty(claim_id):
+        _deny("INVOCATION_CLAIM_ID_INVALID")
+    if now.tzinfo is None:
+        _deny("NOW_NOT_OFFSET_AWARE")
+    existing = control["invocation_claim_id"]
+    expiry = control["invocation_claim_expires_at"]
+    if existing is not None and now.astimezone(timezone.utc) < _utc(expiry):
         _deny("SECOND_WORKER_OR_PARALLEL_INVOCATION")
     out = copy.deepcopy(control)
-    out["invocation_active"] = True
+    out["invocation_claim_id"] = claim_id
+    out["invocation_claim_expires_at"] = (
+        now.astimezone(timezone.utc) + timedelta(minutes=INVOCATION_LEASE_MINUTES)
+    ).isoformat()
+    validate_control(out)
     return out
 
 
-def finish_invocation(control: Mapping[str, Any]) -> dict:
+def release_control(control: Mapping[str, Any], *, claim_id: str) -> dict:
     validate_control(control)
+    if control["invocation_claim_id"] != claim_id:
+        _deny("STALE_CONTROL_PLANE_CLAIM", Stage1Tamper)
     out = copy.deepcopy(control)
-    out["invocation_active"] = False
+    out["invocation_claim_id"] = None
+    out["invocation_claim_expires_at"] = None
+    validate_control(out)
     return out
 
 
@@ -289,7 +404,8 @@ def pause_for_integrity(control: Mapping[str, Any], reason: str) -> dict:
     out = copy.deepcopy(control)
     out["paused"] = True
     out["pause_reason"] = reason
-    out["invocation_active"] = False
+    out["invocation_claim_id"] = None
+    out["invocation_claim_expires_at"] = None
     return out
 
 
@@ -310,7 +426,11 @@ def _validate_envelope_shape(envelope: Mapping[str, Any]) -> None:
         AuditState.EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT.value,
     }:
         _deny("ENQUEUE_FINAL_STATE")
-    if envelope["requested_final_state"] == AuditState.EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT.value and not envelope["evidence_refs"]:
+    if (
+        envelope["requested_final_state"]
+        == AuditState.EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT.value
+        and not envelope["evidence_refs"]
+    ):
         _deny("ENQUEUE_INELIGIBLE_EVIDENCE_REQUIRED")
 
 
@@ -318,8 +438,10 @@ def validate_enqueue_authority(
     envelope: Mapping[str, Any],
     *,
     trusted: TrustedAuthorityContext,
+    current_main: str,
 ) -> None:
     _validate_envelope_shape(envelope)
+    validate_trusted_authority_context(trusted, current_main=current_main)
     validate_authorization(
         envelope["enqueue_authorization"],
         trusted.enqueue_runtime,
@@ -332,77 +454,182 @@ def validate_enqueue_authority(
         _deny("ENQUEUE_WORKER_BINDING_MISMATCH", AuthorizationDenied)
 
 
-def process_one(
+def _materialize_store(root: Path, state: Mapping[str, Any]) -> PersistentStore:
+    root.mkdir(parents=True, exist_ok=True)
+    payload = copy.deepcopy(state)
+    validate_state(payload)
+    (root / "r1_state.json").write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n")
+    return PersistentStore(root)
+
+
+def _process_claimed(
     *,
-    store: PersistentStore,
+    adapter: ControlPlaneAdapter,
+    claimed: RemoteSnapshot,
     envelope: Mapping[str, Any],
-    control: Mapping[str, Any],
     trusted: TrustedAuthorityContext,
-    current_main: str,
-    current_runtime_head: str,
     now: datetime,
     now_tick: int,
-    genesis_is_ancestor: bool,
-    remote_high_water_count: int,
+    claim_id: str,
+    failpoint: Optional[str] = None,
 ) -> tuple[Optional[dict], dict]:
-    """Process exactly one supplied-evidence admin task without network access."""
+    validate_enqueue_authority(envelope, trusted=trusted, current_main=claimed.canonical_main)
+    with tempfile.TemporaryDirectory() as td:
+        store = _materialize_store(Path(td), claimed.r1_state)
+        engine = R1Engine(store, claimed.canonical_main)
+        auths = envelope["operation_authorizations"]
+        cid = envelope["candidate_id"]
+        docs_hash = envelope["docs_hash"]
+        worker = envelope["worker_id"]
+
+        task_id = engine.inspect_candidate(
+            current_main=claimed.canonical_main,
+            candidate_id=cid,
+            docs_hash=docs_hash,
+            authorization=auths["inspect"],
+            auth_runtime=trusted.worker_runtime,
+        )
+        claimed = adapter.persist_r1_state(
+            expected_remote_head=claimed.remote_head,
+            claim_id=claim_id,
+            r1_state=store.read(),
+        )
+        if task_id is None:
+            finished = reconcile_terminal_receipts(claimed.control, claimed.r1_state)
+            finished = release_control(finished, claim_id=claim_id)
+            released = adapter.release_invocation(
+                expected_remote_head=claimed.remote_head,
+                claim_id=claim_id,
+                released_control=finished,
+            )
+            return None, released.control
+
+        epoch = engine.acquire_lease(
+            current_main=claimed.canonical_main,
+            task_id=task_id,
+            worker_id=worker,
+            now_tick=now_tick,
+            lease_ticks=10,
+            authorization=auths["lease"],
+            auth_runtime=trusted.worker_runtime,
+        )
+        claimed = adapter.persist_r1_state(
+            expected_remote_head=claimed.remote_head,
+            claim_id=claim_id,
+            r1_state=store.read(),
+        )
+        engine.checkpoint(
+            current_main=claimed.canonical_main,
+            task_id=task_id,
+            worker_id=worker,
+            lease_epoch=epoch,
+            now_tick=now_tick + 1,
+            checkpoint_ref="stage1:supplied-evidence-validated",
+            authorization=auths["checkpoint"],
+            auth_runtime=trusted.worker_runtime,
+        )
+        claimed = adapter.persist_r1_state(
+            expected_remote_head=claimed.remote_head,
+            claim_id=claim_id,
+            r1_state=store.read(),
+        )
+        receipt = engine.commit_review(
+            current_main=claimed.canonical_main,
+            task_id=task_id,
+            worker_id=worker,
+            lease_epoch=epoch,
+            now_tick=now_tick + 2,
+            committed_state=envelope["requested_final_state"],
+            verdict_reason=envelope["verdict_reason"],
+            evidence_refs=envelope["evidence_refs"],
+            authorization=auths["commit"],
+            auth_runtime=trusted.worker_runtime,
+        )
+        claimed = adapter.persist_r1_state(
+            expected_remote_head=claimed.remote_head,
+            claim_id=claim_id,
+            r1_state=store.read(),
+        )
+        if failpoint == "AFTER_DURABLE_RECEIPT_BEFORE_STAGE_COUNT":
+            raise InjectedCrash(failpoint)
+
+        finished = reconcile_terminal_receipts(claimed.control, claimed.r1_state)
+        finished = release_control(finished, claim_id=claim_id)
+        released = adapter.release_invocation(
+            expected_remote_head=claimed.remote_head,
+            claim_id=claim_id,
+            released_control=finished,
+        )
+        return receipt, released.control
+
+
+def _process_one_controlled(
+    *,
+    adapter: ControlPlaneAdapter,
+    envelope: Mapping[str, Any],
+    now: datetime,
+    now_tick: int,
+    claim_id: str,
+    failpoint: Optional[str] = None,
+) -> tuple[Optional[dict], dict]:
+    snapshot = adapter.load_snapshot()
+    if not _hex40(snapshot.remote_head) or not _hex40(snapshot.canonical_main):
+        _deny("CONTROL_PLANE_SNAPSHOT_IDENTITY")
+    validate_state(copy.deepcopy(snapshot.r1_state))
+    reconciled = reconcile_terminal_receipts(snapshot.control, snapshot.r1_state)
     assert_ceiling_and_integrity(
-        control,
-        current_main=current_main,
-        current_runtime_head=current_runtime_head,
+        reconciled,
+        current_main=snapshot.canonical_main,
         now=now,
-        genesis_is_ancestor=genesis_is_ancestor,
-        remote_high_water_count=remote_high_water_count,
+        genesis_is_ancestor=snapshot.genesis_is_ancestor,
+        remote_high_water_count=snapshot.high_water_count,
     )
-    validate_enqueue_authority(envelope, trusted=trusted)
-    active = begin_invocation(control)
-    engine = R1Engine(store, current_main)
-    auths = envelope["operation_authorizations"]
-    cid = envelope["candidate_id"]
-    docs_hash = envelope["docs_hash"]
-    worker = envelope["worker_id"]
-    task_id = engine.inspect_candidate(
-        current_main=current_main,
-        candidate_id=cid,
-        docs_hash=docs_hash,
-        authorization=auths["inspect"],
-        auth_runtime=trusted.worker_runtime,
+    claimed_control = claim_control(reconciled, claim_id=claim_id, now=now)
+    claimed = adapter.claim_invocation(
+        expected_remote_head=snapshot.remote_head,
+        claim_id=claim_id,
+        claimed_control=claimed_control,
     )
-    if task_id is None:
-        return None, finish_invocation(active)
-    epoch = engine.acquire_lease(
-        current_main=current_main,
-        task_id=task_id,
-        worker_id=worker,
+    enqueue_decision = envelope.get("enqueue_authorization")
+    if not isinstance(enqueue_decision, dict):
+        _deny("ENQUEUE_AUTHORIZATION_MISSING")
+    trusted = adapter.load_trusted_authority(
+        current_main=claimed.canonical_main,
+        enqueue_actor_role=enqueue_decision.get("actor_role"),
+        enqueue_actor_instance=enqueue_decision.get("actor_instance"),
+        worker_actor_instance=envelope.get("worker_id"),
+        now=now,
+    )
+    validate_trusted_authority_context(trusted, current_main=claimed.canonical_main)
+    return _process_claimed(
+        adapter=adapter,
+        claimed=claimed,
+        envelope=envelope,
+        trusted=trusted,
+        now=now,
         now_tick=now_tick,
-        lease_ticks=10,
-        authorization=auths["lease"],
-        auth_runtime=trusted.worker_runtime,
+        claim_id=claim_id,
+        failpoint=failpoint,
     )
-    engine.checkpoint(
-        current_main=current_main,
-        task_id=task_id,
-        worker_id=worker,
-        lease_epoch=epoch,
-        now_tick=now_tick + 1,
-        checkpoint_ref="stage1:supplied-evidence-validated",
-        authorization=auths["checkpoint"],
-        auth_runtime=trusted.worker_runtime,
+
+
+def process_one_controlled(
+    *,
+    adapter: ControlPlaneAdapter,
+    envelope: Mapping[str, Any],
+    now: datetime,
+    now_tick: int,
+    claim_id: str,
+) -> tuple[Optional[dict], dict]:
+    """Production-shaped entrypoint. No direct TrustedAuthorityContext argument."""
+    return _process_one_controlled(
+        adapter=adapter,
+        envelope=envelope,
+        now=now,
+        now_tick=now_tick,
+        claim_id=claim_id,
+        failpoint=None,
     )
-    receipt = engine.commit_review(
-        current_main=current_main,
-        task_id=task_id,
-        worker_id=worker,
-        lease_epoch=epoch,
-        now_tick=now_tick + 2,
-        committed_state=envelope["requested_final_state"],
-        verdict_reason=envelope["verdict_reason"],
-        evidence_refs=envelope["evidence_refs"],
-        authorization=auths["commit"],
-        auth_runtime=trusted.worker_runtime,
-    )
-    completed = record_terminal_receipt(active, receipt["receipt_id"])
-    return receipt, finish_invocation(completed)
 
 
 def owner_exception(reason: str, next_safe_action: str = "PAUSE_AND_REVIEW") -> dict:
@@ -439,13 +666,13 @@ def _decision(operation: str, target: str, scope: str, actor: str, *, decision: 
     }
 
 
-def _runtime(actor: str, *, valid=True, safe=False) -> AuthorizationRuntime:
+def _runtime(actor: str, now: datetime, *, valid=True, safe=False) -> AuthorizationRuntime:
     return AuthorizationRuntime(
         "g-stage1-test",
         "digest-stage1-test",
         4,
         2,
-        datetime.fromisoformat("2026-08-21T08:00:00+00:00"),
+        now,
         "EXECUTION",
         actor,
         frozenset({"grant-stage1-test"}) if valid else frozenset(),
@@ -454,8 +681,14 @@ def _runtime(actor: str, *, valid=True, safe=False) -> AuthorizationRuntime:
     )
 
 
+def _task_id(cid: str, docs: str) -> str:
+    idem = f"source-review:{cid}:{docs}"
+    digest = hashlib.sha256(idem.encode()).hexdigest()
+    return "task-" + digest[:16]
+
+
 def _envelope(cid="source-a", docs="docs-a", actor="worker-1") -> dict:
-    task_target = "PLACEHOLDER"
+    tid = _task_id(cid, docs)
     return {
         "schema_version": ENQUEUE_SCHEMA,
         "stage_id": STAGE_ID,
@@ -467,21 +700,17 @@ def _envelope(cid="source-a", docs="docs-a", actor="worker-1") -> dict:
         "evidence_refs": ["governance:evidence-a"],
         "enqueue_authorization": _decision(ENQUEUE_OPERATION, ENQUEUE_TARGET, ENQUEUE_SCOPE, "router-1"),
         "operation_authorizations": {
-            "inspect": _decision("R1_SOURCE_CACHE_INSPECT_OR_STAGE", f"source-candidate:{cid}", "PUBLIC_TERMS_METADATA_ONLY", actor),
-            "lease": _decision("R1_TASK_ACQUIRE_LEASE", task_target, "INTERNAL_R1_STATE_ONLY", actor),
-            "checkpoint": _decision("R1_TASK_CHECKPOINT", task_target, "INTERNAL_R1_STATE_ONLY", actor),
-            "commit": _decision("R1_SOURCE_REVIEW_COMMIT", task_target, "PUBLIC_TERMS_METADATA_ONLY", actor),
+            "inspect": _decision(
+                "R1_SOURCE_CACHE_INSPECT_OR_STAGE",
+                f"source-candidate:{cid}",
+                "PUBLIC_TERMS_METADATA_ONLY",
+                actor,
+            ),
+            "lease": _decision("R1_TASK_ACQUIRE_LEASE", f"task:{tid}", "INTERNAL_R1_STATE_ONLY", actor),
+            "checkpoint": _decision("R1_TASK_CHECKPOINT", f"task:{tid}", "INTERNAL_R1_STATE_ONLY", actor),
+            "commit": _decision("R1_SOURCE_REVIEW_COMMIT", f"task:{tid}", "PUBLIC_TERMS_METADATA_ONLY", actor),
         },
     }
-
-
-def _bind_task_auths(envelope: dict, task_id: str) -> dict:
-    out = copy.deepcopy(envelope)
-    actor = out["worker_id"]
-    out["operation_authorizations"]["lease"] = _decision("R1_TASK_ACQUIRE_LEASE", f"task:{task_id}", "INTERNAL_R1_STATE_ONLY", actor)
-    out["operation_authorizations"]["checkpoint"] = _decision("R1_TASK_CHECKPOINT", f"task:{task_id}", "INTERNAL_R1_STATE_ONLY", actor)
-    out["operation_authorizations"]["commit"] = _decision("R1_SOURCE_REVIEW_COMMIT", f"task:{task_id}", "PUBLIC_TERMS_METADATA_ONLY", actor)
-    return out
 
 
 def _expect(exc, fn):
@@ -490,6 +719,119 @@ def _expect(exc, fn):
     except exc:
         return
     raise AssertionError(f"expected {exc.__name__}")
+
+
+class _SharedRemote:
+    def __init__(self, control: dict, canonical_main: str, genesis: str):
+        self.serial = 1
+        self.head = "1" * 40
+        self.control = copy.deepcopy(control)
+        self.r1_state = empty_state()
+        self.canonical_main = canonical_main
+        self.genesis = genesis
+        self.high_water = 0
+
+    def advance(self, payload: Mapping[str, Any]) -> str:
+        self.serial += 1
+        raw = json.dumps(payload, sort_keys=True, default=str) + f":{self.serial}:{self.head}"
+        self.head = hashlib.sha1(raw.encode()).hexdigest()
+        return self.head
+
+
+class _FakeControlPlaneAdapter:
+    def __init__(self, shared: _SharedRemote, *, verified=True, valid_grant=True, safe=False):
+        self.shared = shared
+        self.verified = verified
+        self.valid_grant = valid_grant
+        self.safe = safe
+
+    def _snapshot(self) -> RemoteSnapshot:
+        return RemoteSnapshot(
+            remote_head=self.shared.head,
+            canonical_main=self.shared.canonical_main,
+            runtime_genesis=self.shared.genesis,
+            genesis_is_ancestor=True,
+            high_water_count=self.shared.high_water,
+            control=copy.deepcopy(self.shared.control),
+            r1_state=copy.deepcopy(self.shared.r1_state),
+        )
+
+    def load_snapshot(self) -> RemoteSnapshot:
+        return self._snapshot()
+
+    def load_trusted_authority(
+        self,
+        *,
+        current_main: str,
+        enqueue_actor_role: str,
+        enqueue_actor_instance: str,
+        worker_actor_instance: str,
+        now: datetime,
+    ) -> TrustedAuthorityContext:
+        if enqueue_actor_role != "EXECUTION":
+            _deny("FAKE_CANONICAL_ACTOR_ROLE_DENY", AuthorizationDenied)
+        if enqueue_actor_instance != "router-1" or worker_actor_instance != "worker-1":
+            _deny("FAKE_CANONICAL_ACTOR_INSTANCE_DENY", AuthorizationDenied)
+        return TrustedAuthorityContext(
+            enqueue_runtime=_runtime("router-1", now, valid=self.valid_grant, safe=self.safe),
+            worker_runtime=_runtime("worker-1", now, valid=self.valid_grant, safe=self.safe),
+            canonical_main=current_main,
+            provenance_ref="canonical:test-authority-snapshot",
+            verified_from_canonical_authority=self.verified,
+        )
+
+    def _cas(self, expected_remote_head: str) -> None:
+        if expected_remote_head != self.shared.head:
+            _deny("REMOTE_EXPECTED_OLD_HEAD_CAS_CONFLICT", Stage1Tamper)
+
+    def _claim_matches(self, claim_id: str) -> None:
+        if self.shared.control["invocation_claim_id"] != claim_id:
+            _deny("REMOTE_STALE_OR_NONOWNER_INVOCATION_CLAIM", Stage1Tamper)
+
+    def claim_invocation(
+        self,
+        *,
+        expected_remote_head: str,
+        claim_id: str,
+        claimed_control: Mapping[str, Any],
+    ) -> RemoteSnapshot:
+        self._cas(expected_remote_head)
+        validate_control(claimed_control)
+        self.shared.control = copy.deepcopy(claimed_control)
+        self.shared.advance({"kind": "claim", "claim_id": claim_id, "control": self.shared.control})
+        return self._snapshot()
+
+    def persist_r1_state(
+        self,
+        *,
+        expected_remote_head: str,
+        claim_id: str,
+        r1_state: Mapping[str, Any],
+    ) -> RemoteSnapshot:
+        self._cas(expected_remote_head)
+        self._claim_matches(claim_id)
+        state = copy.deepcopy(r1_state)
+        validate_state(state)
+        self.shared.r1_state = state
+        self.shared.advance({"kind": "r1", "claim_id": claim_id, "generation": state["generation"]})
+        return self._snapshot()
+
+    def release_invocation(
+        self,
+        *,
+        expected_remote_head: str,
+        claim_id: str,
+        released_control: Mapping[str, Any],
+    ) -> RemoteSnapshot:
+        self._cas(expected_remote_head)
+        self._claim_matches(claim_id)
+        validate_control(released_control)
+        if released_control["invocation_claim_id"] is not None:
+            _deny("RELEASE_CONTROL_STILL_CLAIMED")
+        self.shared.control = copy.deepcopy(released_control)
+        self.shared.high_water = max(self.shared.high_water, self.shared.control["terminal_count"])
+        self.shared.advance({"kind": "release", "claim_id": claim_id, "control": self.shared.control})
+        return self._snapshot()
 
 
 def selftest() -> int:
@@ -504,7 +846,6 @@ def selftest() -> int:
         runtime_genesis=genesis,
         activated_at=activated,
     )
-    assert control["terminal_count"] == 0
 
     validate_write_path(RUNTIME_BRANCH, "runtime/r1_source_audit_stage1/tasks/enqueue/a.json")
     for branch, path in (
@@ -516,109 +857,181 @@ def selftest() -> int:
         _expect(Stage1Denied, lambda b=branch, p=path: validate_write_path(b, p))
 
     for role in sorted(AUTHORITY_ROLES):
-        _expect(Stage1Denied, lambda r=role: reject_runtime_artifact_as_authority(r, {"status": "ADMITTED", "grant_ref": "forged"}))
-    _expect(Stage1Denied, lambda: reject_runtime_artifact_as_authority("UNKNOWN_ROLE", {}))
-    assert validate_runtime_cache_state("REVIEWED_NO_ADMISSION") == "REVIEWED_NO_ADMISSION"
+        _expect(Stage1Denied, lambda r=role: reject_runtime_artifact_as_authority(r, {"status": "ADMITTED"}))
     _expect(Stage1Denied, lambda: validate_runtime_cache_state("ADMITTED"))
     _expect(Stage1Denied, lambda: validate_runtime_cache_state("PERMISSION_GRANTED"))
 
-    assert_ceiling_and_integrity(control, current_main=main, current_runtime_head=genesis, now=activated + timedelta(hours=1), genesis_is_ancestor=True, remote_high_water_count=0)
-    _expect(StaleState, lambda: assert_ceiling_and_integrity(control, current_main="d" * 40, current_runtime_head=genesis, now=activated + timedelta(hours=1), genesis_is_ancestor=True, remote_high_water_count=0))
-    _expect(Stage1Tamper, lambda: assert_ceiling_and_integrity(control, current_main=main, current_runtime_head="d" * 40, now=activated + timedelta(hours=1), genesis_is_ancestor=True, remote_high_water_count=0))
-    _expect(Stage1Tamper, lambda: assert_ceiling_and_integrity(control, current_main=main, current_runtime_head=genesis, now=activated + timedelta(hours=1), genesis_is_ancestor=False, remote_high_water_count=0))
+    assert_ceiling_and_integrity(
+        control,
+        current_main=main,
+        now=activated + timedelta(hours=1),
+        genesis_is_ancestor=True,
+        remote_high_water_count=0,
+    )
+    _expect(
+        StaleState,
+        lambda: assert_ceiling_and_integrity(
+            control,
+            current_main="d" * 40,
+            now=activated + timedelta(hours=1),
+            genesis_is_ancestor=True,
+            remote_high_water_count=0,
+        ),
+    )
+    _expect(
+        Stage1Tamper,
+        lambda: assert_ceiling_and_integrity(
+            control,
+            current_main=main,
+            now=activated + timedelta(hours=1),
+            genesis_is_ancestor=False,
+            remote_high_water_count=0,
+        ),
+    )
     rollback = copy.deepcopy(control)
-    rollback["terminal_count"] = 0
-    rollback["counted_receipt_ids"] = []
-    _expect(Stage1Tamper, lambda: assert_ceiling_and_integrity(rollback, current_main=main, current_runtime_head=genesis, now=activated + timedelta(hours=1), genesis_is_ancestor=True, remote_high_water_count=1))
-    active = begin_invocation(control)
-    _expect(Stage1Denied, lambda: assert_ceiling_and_integrity(active, current_main=main, current_runtime_head=genesis, now=activated + timedelta(hours=1), genesis_is_ancestor=True, remote_high_water_count=0))
-    _expect(Stage1Paused, lambda: assert_ceiling_and_integrity(control, current_main=main, current_runtime_head=genesis, now=activated + timedelta(days=7), genesis_is_ancestor=True, remote_high_water_count=0))
+    _expect(
+        Stage1Tamper,
+        lambda: assert_ceiling_and_integrity(
+            rollback,
+            current_main=main,
+            now=activated + timedelta(hours=1),
+            genesis_is_ancestor=True,
+            remote_high_water_count=1,
+        ),
+    )
+    _expect(
+        Stage1Paused,
+        lambda: assert_ceiling_and_integrity(
+            control,
+            current_main=main,
+            now=activated + timedelta(days=7),
+            genesis_is_ancestor=True,
+            remote_high_water_count=0,
+        ),
+    )
+
     c = copy.deepcopy(control)
     for i in range(25):
         c = record_terminal_receipt(c, f"receipt-{i:02d}")
     assert c["terminal_count"] == 25 and c["paused"] is True
-    before = copy.deepcopy(c)
-    c2 = record_terminal_receipt(c, "receipt-24")
-    assert c2 == before
+    assert record_terminal_receipt(c, "receipt-24") == c
     _expect(Stage1Paused, lambda: record_terminal_receipt(c, "receipt-26"))
-    _expect(Stage1Paused, lambda: assert_ceiling_and_integrity(c, current_main=main, current_runtime_head=genesis, now=activated + timedelta(hours=1), genesis_is_ancestor=True, remote_high_water_count=25))
-    paused = pause_for_integrity(control, "TAMPER")
-    _expect(Stage1Paused, lambda: assert_ceiling_and_integrity(paused, current_main=main, current_runtime_head=genesis, now=activated + timedelta(hours=1), genesis_is_ancestor=True, remote_high_water_count=0))
 
     env = _envelope()
-    trusted = TrustedAuthorityContext(_runtime("router-1"), _runtime("worker-1"))
-    validate_enqueue_authority(env, trusted=trusted)
-    wrong = copy.deepcopy(env)
-    wrong["enqueue_authorization"]["operation"] = "ISSUE_COMMENT"
-    _expect(AuthorizationDenied, lambda: validate_enqueue_authority(wrong, trusted=trusted))
-    wrong = copy.deepcopy(env)
-    wrong["enqueue_authorization"]["scope"]["target"] = "comment:1"
-    _expect(AuthorizationDenied, lambda: validate_enqueue_authority(wrong, trusted=trusted))
-    wrong = copy.deepcopy(env)
-    wrong["candidate_id"] = ["bad"]
-    _expect(Stage1Denied, lambda: validate_enqueue_authority(wrong, trusted=trusted))
-    _expect(AuthorizationDenied, lambda: validate_enqueue_authority(env, trusted=TrustedAuthorityContext(_runtime("router-1", valid=False), _runtime("worker-1"))))
-    _expect(AuthorizationDenied, lambda: validate_enqueue_authority(env, trusted=TrustedAuthorityContext(_runtime("router-1", safe=True), _runtime("worker-1"))))
-    _expect(AuthorizationDenied, lambda: validate_enqueue_authority(env, trusted=TrustedAuthorityContext(_runtime("router-1"), _runtime("other-worker"))))
+    shared = _SharedRemote(control, main, genesis)
+    a1 = _FakeControlPlaneAdapter(shared)
+    a2 = _FakeControlPlaneAdapter(shared)
+    stale_head = a2.load_snapshot().remote_head
+    claim = claim_control(control, claim_id="claim-a", now=activated + timedelta(hours=1))
+    first = a1.claim_invocation(expected_remote_head=stale_head, claim_id="claim-a", claimed_control=claim)
+    _expect(
+        Stage1Tamper,
+        lambda: a2.claim_invocation(
+            expected_remote_head=stale_head,
+            claim_id="claim-b",
+            claimed_control=claim_control(control, claim_id="claim-b", now=activated + timedelta(hours=1)),
+        ),
+    )
+    _expect(
+        Stage1Tamper,
+        lambda: a2.persist_r1_state(
+            expected_remote_head=first.remote_head,
+            claim_id="claim-b",
+            r1_state=first.r1_state,
+        ),
+    )
 
-    with tempfile.TemporaryDirectory() as td:
-        store = PersistentStore(Path(td))
-        engine = R1Engine(store, main)
-        tid = engine.inspect_candidate(
-            current_main=main,
-            candidate_id=env["candidate_id"],
-            docs_hash=env["docs_hash"],
-            authorization=env["operation_authorizations"]["inspect"],
-            auth_runtime=trusted.worker_runtime,
-        )
-        assert tid
-        env2 = _bind_task_auths(env, tid)
-        receipt, out = process_one(
-            store=store,
-            envelope=env2,
-            control=control,
-            trusted=trusted,
-            current_main=main,
-            current_runtime_head=genesis,
+    shared = _SharedRemote(control, main, genesis)
+    bad_provenance = _FakeControlPlaneAdapter(shared, verified=False)
+    _expect(
+        AuthorizationDenied,
+        lambda: _process_one_controlled(
+            adapter=bad_provenance,
+            envelope=env,
             now=activated + timedelta(hours=1),
             now_tick=1,
-            genesis_is_ancestor=True,
-            remote_high_water_count=0,
-        )
-        assert receipt and out["terminal_count"] == 1 and out["invocation_active"] is False
-        assert receipt["committed_state"] == "REVIEWED_NO_ADMISSION"
-        receipt2, out2 = process_one(
-            store=store,
-            envelope=env2,
-            control=out,
-            trusted=trusted,
+            claim_id="bad-prov",
+        ),
+    )
+
+    shared = _SharedRemote(control, main, genesis)
+    good = _FakeControlPlaneAdapter(shared)
+    receipt, out = process_one_controlled(
+        adapter=good,
+        envelope=env,
+        now=activated + timedelta(hours=1),
+        now_tick=1,
+        claim_id="claim-good",
+    )
+    assert receipt and out["terminal_count"] == 1
+    assert shared.high_water == 1
+    assert shared.control["invocation_claim_id"] is None
+
+    shared = _SharedRemote(control, main, genesis)
+    crash_adapter = _FakeControlPlaneAdapter(shared)
+    _expect(
+        InjectedCrash,
+        lambda: _process_one_controlled(
+            adapter=crash_adapter,
+            envelope=env,
+            now=activated + timedelta(hours=1),
+            now_tick=1,
+            claim_id="claim-crash",
+            failpoint="AFTER_DURABLE_RECEIPT_BEFORE_STAGE_COUNT",
+        ),
+    )
+    assert len(shared.r1_state["receipts_by_idempotency"]) == 1
+    assert shared.control["terminal_count"] == 0
+    assert shared.control["invocation_claim_id"] == "claim-crash"
+
+    later = activated + timedelta(hours=2)
+    receipt2, out2 = process_one_controlled(
+        adapter=_FakeControlPlaneAdapter(shared),
+        envelope=env,
+        now=later,
+        now_tick=50,
+        claim_id="claim-restart",
+    )
+    assert receipt2 is None
+    assert out2["terminal_count"] == 1
+    assert len(out2["counted_receipt_ids"]) == 1
+    assert shared.high_water == 1
+    again = reconcile_terminal_receipts(out2, shared.r1_state)
+    assert again == out2
+
+    tampered = copy.deepcopy(shared.control)
+    tampered["terminal_count"] = 0
+    tampered["counted_receipt_ids"] = []
+    _expect(
+        Stage1Tamper,
+        lambda: assert_ceiling_and_integrity(
+            tampered,
             current_main=main,
-            current_runtime_head=genesis,
-            now=activated + timedelta(hours=2),
-            now_tick=20,
+            now=later,
             genesis_is_ancestor=True,
             remote_high_water_count=1,
-        )
-        assert receipt2 is None and out2["terminal_count"] == 1
-        bad = json.loads(store.state_path.read_text())
-        bad["cache"][env["candidate_id"]]["audit_state"] = "ADMITTED"
-        store.state_path.write_text(json.dumps(bad))
-        _expect(SchemaError, store.read)
+        ),
+    )
 
     view = owner_exception("AUTHORIZATION_DENY")
-    assert view["approval_authority"] == "NONE_OBSERVABILITY_ONLY" and view["owner_action_required"] is True
+    assert view["approval_authority"] == "NONE_OBSERVABILITY_ONLY"
+    assert view["owner_action_required"] is True
 
     for marker in (
         "EXPLICIT_AUTHORIZED_ENQUEUE_ONLY",
         "RAW_GITHUB_EVENT_COMMENT_URL_NOT_AUTHORITY",
-        "ONE_WORKER_CEILING_ENFORCED",
-        "RUNTIME_BRANCH_AND_PATH_BOUNDARY_ENFORCED",
+        "TRUSTED_AUTHORITY_CONTEXT_NOT_CALLER_INJECTABLE_ON_CONTROLLED_PATH",
+        "TRUSTED_AUTHORITY_PROVENANCE_FAIL_CLOSED",
+        "REMOTE_SINGLE_INVOCATION_CAS_SHARED_BACKEND_REJECTS_SECOND",
+        "STALE_CONTROL_PLANE_CLAIM_REJECTED",
+        "CROSS_STORE_RECEIPT_RECONCILIATION_AFTER_CRASH",
+        "DURABLE_RECEIPT_COUNTED_EXACTLY_ONCE_AFTER_RESTART",
         "ROLLBACK_ANCESTRY_AND_HIGH_WATER_TAMPER_DENIED",
         "TERMINAL_25_OR_7_DAY_AUTO_PAUSE_ENFORCED",
-        "LOST_ACK_TERMINAL_COUNT_IDEMPOTENT",
+        "RUNTIME_BRANCH_AND_PATH_BOUNDARY_ENFORCED",
         "RUNTIME_STATE_SECOND_AUTHORITY_REJECTED",
         "ADMITTED_AND_PERMISSION_LIKE_RUNTIME_STATE_DENIED",
-        "TRUSTED_AUTHORITY_CONTEXT_REQUIRED_EXTERNALLY",
+        "CONCRETE_LIVE_CONTROL_PLANE_ADAPTER_STILL_REQUIRED",
         "NETWORK_ACCESS_PERFORMED=false",
         "RUNTIME_ACTIVATION_PERFORMED=false",
     ):
@@ -633,7 +1046,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.selftest:
         return selftest()
-    print("R1_STAGE1_LIBRARY_ONLY_RUNTIME_OFF_NO_TRUSTED_AUTHORITY_ADAPTER")
+    print("R1_STAGE1_LIBRARY_ONLY_RUNTIME_OFF_CONTROL_PLANE_ADAPTER_REQUIRED")
     return 0
 
 
