@@ -1,0 +1,100 @@
+{
+  "record": "KEIRIN_SYNTHETIC_STRUCTURE_SCRAMBLE_NEGATIVE_CONTROL_MANIFEST_20260821_v1",
+  "status": "AUTHORIZED_SYNTHETIC_DIAGNOSTIC_EXECUTED_PASS",
+  "authorized_base_main": "13d9800c0fd2879706ea09d51a162707fa6bc269",
+  "purpose": "Test whether C1/N1 synthetic probability quality depends on the correct rider-to-line-structure mapping rather than generic model flexibility.",
+  "scope": "source-independent Digital Twin W0-W4 synthetic failure diagnostic only",
+  "sample_reuse": {
+    "source": "canonical Batch 4 seed blocks",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false
+  },
+  "negative_control_transform": {
+    "name": "DETERMINISTIC_RIDER_TO_STRUCTURE_SLOT_ROTATION",
+    "rotation_slots": 1,
+    "individual_PRE_fields_preserved": true,
+    "line_structure_slot_multiset_preserved": true,
+    "num_lines_preserved": true,
+    "rider_to_structure_mapping_intentionally_broken": true,
+    "truth_distribution_unchanged": true
+  },
+  "models": ["C0", "C1", "N1"],
+  "expected_invariants": [
+    "C0 predictions are exactly unchanged by structure scrambling",
+    "all probability objects keep complete support and unit mass",
+    "C1 and N1 keep the same rank-1 marginal within each PRE condition",
+    "every rider receives a different complete structure slot while the slot multiset is preserved"
+  ],
+  "execution_evidence": {
+    "exact_executed_pr_head": "0df04a442023a4a7617cb1a8e1814cd4d4d2eee4",
+    "workflow_run": 32436835035,
+    "job": 96639641340,
+    "conclusion": "success",
+    "checked_out_equals_pr_event_head": true,
+    "foundation_candidate_run": 32436835094,
+    "foundation_candidate_conclusion": "success",
+    "world_evaluations": 2560,
+    "model_condition_world_evaluations": 15360,
+    "max_C0_scramble_probability_difference": 0.0,
+    "max_C1_N1_rank1_marginal_difference": 5.551115123125783e-16,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16
+  },
+  "result_snapshot": {
+    "scramble_penalty_sign_counts": {
+      "C1": {
+        "positive_intact_better": 17,
+        "negative_intact_worse": 3,
+        "zero": 0,
+        "total_cells": 20
+      },
+      "N1": {
+        "positive_intact_better": 19,
+        "negative_intact_worse": 1,
+        "zero": 0,
+        "total_cells": 20
+      }
+    },
+    "mean_scrambled_minus_intact_log_loss_by_world": {
+      "C1": {
+        "W0": 0.00006835816239814108,
+        "W1": 0.0007390035558236807,
+        "W2": 0.0010258694537459423,
+        "W3": 0.0007427305685869801,
+        "W4": 0.0007676795156545957
+      },
+      "N1": {
+        "W0": 0.0005483987006147384,
+        "W1": 0.0031182082917764475,
+        "W2": 0.012687640446296555,
+        "W3": 0.009372259124572846,
+        "W4": 0.007176724204422724
+      }
+    },
+    "diagnostic_interpretation_only": [
+      "C0 remained exactly invariant, confirming the transform changed only structure fields ignored by C0.",
+      "N1 intact structure scored better than scrambled structure in 19 of 20 world-by-seed-block cells.",
+      "N1 mean scramble penalty was much larger in relational W2-W4 than in W0, consistent with N1 using the intended line-relation mechanism inside the engineered synthetic worlds.",
+      "C1 also showed smaller structure sensitivity, consistent with its line-position utility term.",
+      "This is a synthetic mechanism-sensitivity negative control, not real-keirin causal evidence, model-selection evidence, or promotion authority."
+    ]
+  },
+  "reported_diagnostic": "scrambled minus intact expected ordered-top3 log loss by world and seed block; positive means intact structure scored better",
+  "pass_criterion": "execution and invariants only; PASS does not require any sign or ranking outcome",
+  "scientific_decision_rule": "NEGATIVE_CONTROL_DIAGNOSTIC_ONLY_NO_SELECTION_RETUNING_FREEZE_OR_PROMOTION",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "model_or_coefficient_change": false,
+  "real_live_input_collection": false,
+  "economics": false,
+  "real_world_validation": false,
+  "pr15_metrics_access": false,
+  "result_payout_access": false,
+  "holdout_access": false,
+  "scientific_segment_c_scoring_count": 0,
+  "model_promotion": false,
+  "external_provider_contact": false,
+  "real_money_wagering": false,
+  "real_world_edge_or_roi_evidence": false,
+  "fail_closed": true
+}
