@@ -216,6 +216,11 @@ class _InternalSnapshot:
 class GitHubRuntimeCASLedger:
     """Concrete production GitHub CAS ledger. No authorization issuance."""
 
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        if __name__ != "__main__":
+            raise TypeError("GitHubRuntimeCASLedger is final in production imports")
+        super().__init_subclass__(**kwargs)
+
     def __init__(
         self,
         repo_root: Path | str,
@@ -230,6 +235,23 @@ class GitHubRuntimeCASLedger:
         if not isinstance(activation_anchor, VerifiedActivationAnchor):
             _deny("GITHUB_RUNTIME_ACTIVATION_ANCHOR_TYPE", Stage1Tamper)
         activation_anchor.validate()
+        if __name__ != "__main__":
+            if type(self) is not GitHubRuntimeCASLedger:
+                _deny("GITHUB_RUNTIME_PRODUCTION_SUBCLASS_PROHIBITED", Stage1Tamper)
+            try:
+                from multiverse_r1_stage1_verified_activation_receipt_loader_v2 import (
+                    verify_runtime_consumer_anchor,
+                )
+                activation_anchor = verify_runtime_consumer_anchor(
+                    self.repo_root, activation_anchor
+                )
+            except Stage1Tamper:
+                raise
+            except Exception as exc:
+                raise Stage1Tamper(
+                    "GITHUB_RUNTIME_PRODUCTION_ANCHOR_PROVENANCE_UNVERIFIED:"
+                    + str(exc)[:200]
+                ) from exc
         if not isinstance(writer_auth_key, bytes) or len(writer_auth_key) < 32:
             _deny("GITHUB_RUNTIME_WRITER_KEY_INVALID", Stage1Tamper)
         if hashlib.sha256(writer_auth_key).hexdigest() != activation_anchor.writer_key_sha256:
