@@ -47,7 +47,7 @@ def expect_denied(details: list[dict], needle: str) -> None:
         raise AssertionError(f"expected denial containing {needle}")
 
 
-def assert_mutation_tamper_denied_without_transport(tamper, restore) -> None:
+def assert_tamper_denied_without_transport(target, tamper, restore) -> None:
     calls: list[tuple] = []
     original_run = m.subprocess.run
 
@@ -59,7 +59,7 @@ def assert_mutation_tamper_denied_without_transport(tamper, restore) -> None:
     m.subprocess.run = forbidden_run
     try:
         try:
-            m._post_exact_ruleset_after_fresh_barrier()
+            target()
         except m.Denied as exc:
             assert "MUTATION_BINDING_TAMPERED" in str(exc), str(exc)
         else:
@@ -68,6 +68,36 @@ def assert_mutation_tamper_denied_without_transport(tamper, restore) -> None:
         m.subprocess.run = original_run
         restore()
     assert calls == [], calls
+
+
+def global_tamper(name: str, bad_value):
+    original = getattr(m, name)
+
+    def tamper() -> None:
+        setattr(m, name, bad_value)
+
+    def restore() -> None:
+        setattr(m, name, original)
+
+    return tamper, restore
+
+
+def payload_tamper():
+    def tamper() -> None:
+        m.RULESET_PAYLOAD = {
+            "name": m.RULESET_NAME,
+            "target": "tag",
+            "enforcement": "active",
+            "bypass_actors": [{"actor_id": 999}],
+            "conditions": {"ref_name": {"include": [], "exclude": []}},
+            "rules": [],
+        }
+
+    def restore() -> None:
+        if hasattr(m, "RULESET_PAYLOAD"):
+            delattr(m, "RULESET_PAYLOAD")
+
+    return tamper, restore
 
 
 def main() -> None:
@@ -112,6 +142,7 @@ def main() -> None:
     assert not hasattr(m, "_gh_json")
     assert not hasattr(m, "RULESET_PAYLOAD")
     assert list(inspect.signature(m._post_exact_ruleset_after_fresh_barrier).parameters) == []
+    assert list(inspect.signature(m._assert_mutation_bindings_untampered).parameters) == []
     assert m._build_get_endpoint("main") == f"/repos/{m.REPO}/branches/main"
     try:
         m._build_get_endpoint("arbitrary_endpoint")
@@ -120,34 +151,43 @@ def main() -> None:
     else:
         raise AssertionError("non-allowlisted GET selector must deny")
 
-    # Regression for final Lab finding: reintroducing/injecting a mutable
-    # module-level payload must deny before *any* subprocess/transport call.
-    def tamper_payload() -> None:
-        m.RULESET_PAYLOAD = {
-            "name": m.RULESET_NAME,
-            "target": "tag",
-            "enforcement": "active",
-            "bypass_actors": [{"actor_id": 999}],
-            "conditions": {"ref_name": {"include": [], "exclude": []}},
-            "rules": [],
-        }
+    # Direct zero-argument mutation primitive remains fail-closed before
+    # transport if a mutable payload is reintroduced or repo identity is rebound.
+    for tamper, restore in (
+        payload_tamper(),
+        global_tamper("REPO", "attacker/alternate-repository"),
+    ):
+        assert_tamper_denied_without_transport(
+            m._post_exact_ruleset_after_fresh_barrier,
+            tamper,
+            restore,
+        )
 
-    def restore_payload() -> None:
-        if hasattr(m, "RULESET_PAYLOAD"):
-            delattr(m, "RULESET_PAYLOAD")
-
-    assert_mutation_tamper_denied_without_transport(tamper_payload, restore_payload)
-
-    # Repo identity is also caller-independent at the mutation boundary.
-    original_repo = m.REPO
-
-    def tamper_repo() -> None:
-        m.REPO = "attacker/alternate-repository"
-
-    def restore_repo() -> None:
-        m.REPO = original_repo
-
-    assert_mutation_tamper_denied_without_transport(tamper_repo, restore_repo)
+    # Auditor regression: the *actual CLI --apply entrypoint* must run the same
+    # mutation-binding guard before its first Fresh Read / gh transport. Attack
+    # every mutation-bound global named in the final Auditor request plus an
+    # injected mutable payload and require zero subprocess calls.
+    entrypoint_tampers = [
+        global_tamper("REPO", "attacker/alternate-repository"),
+        global_tamper("EXPECTED_MAIN", "0" * 40),
+        global_tamper("PHASE_B_PR", 999),
+        global_tamper("PHASE_B_HEAD", "1" * 40),
+        global_tamper("PHASE_B_LAB_COMMENT", 9999999999),
+        global_tamper("PHASE_B_AUDITOR_REVIEW", 9999999999),
+        global_tamper("RUNTIME_BRANCH", "runtime/attacker"),
+        global_tamper("RULESET_NAME", "attacker-ruleset"),
+        global_tamper("JOURNAL_INCLUDE", "refs/tags/attacker-*"),
+        global_tamper("ACTIVATION_INCLUDE", "refs/tags/attacker-activation"),
+        global_tamper("API_VERSION", "2099-01-01"),
+        global_tamper("_CANONICAL_BLOBS", {"attacker": ("x", "y")}),
+        payload_tamper(),
+    ]
+    for tamper, restore in entrypoint_tampers:
+        assert_tamper_denied_without_transport(
+            lambda: m.main(["--apply"]),
+            tamper,
+            restore,
+        )
 
     dry = m._result("DRY_RUN_WOULD_CREATE_EXACT_RULESET")
     assert dry["secret_material_present"] is False
