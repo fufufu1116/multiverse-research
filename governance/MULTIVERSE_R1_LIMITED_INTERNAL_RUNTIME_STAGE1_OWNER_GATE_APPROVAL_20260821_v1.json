@@ -1,0 +1,83 @@
+{
+  "record": "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_APPROVAL_20260821_v1",
+  "status": "OWNER_APPROVED_SCOPE_SPECIFIC_STAGE1_IMPLEMENTATION_AND_CONDITIONAL_ACTIVATION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "owner_decision": {
+    "decision_text": "すすめて",
+    "decision_context": "Immediately after the exact Stage-1 scope passed Lab gate-hardening micro re-review and Core presented a single Owner Gate for implementation plus conditional same-scope activation after dedicated CI, Lab PASS, and independent Auditor PASS.",
+    "github_record_comment_id": 5367308652
+  },
+  "fresh_read_at_approval": {
+    "canonical_main": "3871de67900f31496ee9725a77ff1048cede906f",
+    "reviewed_scope_head": "785e8d08029d57122076309fb4eb0b4c568c2229",
+    "reviewed_scope_changed_files": 1,
+    "scope_candidate_blob": "42bcbebc572d3fe39f89658d9739e0ab0045ead0",
+    "lab_scope_result_comment": 5366947336,
+    "lab_scope_verdict": "PASS_WITH_FIXES",
+    "lab_micro_result_comment": 5367168428,
+    "lab_micro_verdict": "PASS"
+  },
+  "authorized_scope": {
+    "runtime_name": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+    "purpose": "GitHub-internal Source-audit administration only: duplicate/cache checks, explicit task management, reliable recovery, dead-letter isolation, durable receipts, and exception-only Owner view for already-supplied metadata/evidence.",
+    "implementation_authorized": true,
+    "conditional_activation_authorized": true,
+    "conditional_activation_preconditions": [
+      "dedicated Stage-1 implementation CI PASS",
+      "Lab implementation review PASS",
+      "independent Auditor implementation review PASS",
+      "unchanged final implementation and exact operation/scope binding",
+      "no material drift from the reviewed Owner Gate scope",
+      "runtime branch created dormant from the exact activation canonical main",
+      "activation receipt pins canonical main, independently audited implementation head, runtime genesis, immutable activation timestamp, one-worker ceiling, 25-terminal ceiling, seven-day ceiling, and no-auto-resume",
+      "trusted current Authorization state is verifiable fail-closed before every governed side effect"
+    ],
+    "max_concurrent_workers": 1,
+    "max_tasks_per_invocation": 10,
+    "automatic_retry_budget_per_task": 2,
+    "max_terminal_tasks": 25,
+    "runtime_window_days": 7,
+    "auto_resume_authorized": false,
+    "scheduler_authorized": false,
+    "always_on_worker_authorized": false,
+    "network_or_public_web_authorized": false,
+    "source_collection_or_admission_authorized": false,
+    "real_or_live_PRE_authorized": false,
+    "external_contact_authorized": false
+  },
+  "authorization_separation": {
+    "owner_gate_is_blanket_runtime_grant": false,
+    "routine_enqueue_and_runtime_mutations_require_fresh_authorization_contract_decision": true,
+    "runtime_may_mint_or_widen_grants": false,
+    "runtime_state_may_be_permission_or_source_authority": false,
+    "missing_current_grant_revocation_safe_mode_or_policy_facts_behavior": "DENY_FAIL_CLOSED"
+  },
+  "explicitly_not_authorized": [
+    "network or public-web research",
+    "automated Source discovery or bulk collection",
+    "Source admission or promotion",
+    "real/live PRE collection or use",
+    "external provider contact or outreach",
+    "new spend/payment/procurement/contract",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000",
+    "PR #15 quarantined metrics",
+    "untouched validation",
+    "model/scientific lineage promotion",
+    "Segment C scientific expansion",
+    "Synthetic-to-Real Edge/ROI promotion",
+    "real-money wagering",
+    "scheduler or always-on worker",
+    "more than one concurrent worker",
+    "runtime writes to canonical main or governance",
+    "permission minting/widening/downgrading/reclassification",
+    "using comments/events/URLs/untrusted branch content as implicit enqueue authority",
+    "runtime branch reset/force-push/history rewrite or ceiling rollback",
+    "using runtime artifacts as Owner Gate, grant, permission evidence, Source-admission receipt, or canonical governance fact",
+    "continuation after Stage-1 auto-pause",
+    "broader runtime"
+  ],
+  "new_owner_gate_required_for_any_material_expansion": true,
+  "runtime_activation_performed_by_this_receipt": false,
+  "fail_closed": true
+}
