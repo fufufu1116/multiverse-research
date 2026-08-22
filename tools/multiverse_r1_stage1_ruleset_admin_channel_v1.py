@@ -304,13 +304,8 @@ def _classify_existing(details: list[dict]) -> tuple[str, dict | None]:
     return "ABSENT_UNAMBIGUOUS", None
 
 
-def _post_exact_ruleset_after_fresh_barrier() -> tuple[str, dict]:
-    """Perform the only production mutation, with no caller-supplied inputs.
-
-    Mutation-bound identity is checked against inline reviewed literals before
-    any transport. The POST endpoint and body are then rebuilt locally from
-    literals, never from a module-level mutable payload object.
-    """
+def _assert_mutation_bindings_untampered() -> None:
+    """Reject mutation-bound identity drift before any transport is possible."""
     expected_canonical_blobs = {
         "authority": (
             "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json",
@@ -341,6 +336,16 @@ def _post_exact_ruleset_after_fresh_barrier() -> tuple[str, dict]:
         or "RULESET_PAYLOAD" in globals()
     ):
         _deny("RULESET_ADMIN_MUTATION_BINDING_TAMPERED")
+
+
+def _post_exact_ruleset_after_fresh_barrier() -> tuple[str, dict]:
+    """Perform the only production mutation, with no caller-supplied inputs.
+
+    Mutation-bound identity is checked against inline reviewed literals before
+    any transport. The POST endpoint and body are then rebuilt locally from
+    literals, never from a module-level mutable payload object.
+    """
+    _assert_mutation_bindings_untampered()
 
     _preconditions()
     state, detail = _classify_existing(_repository_ruleset_details())
@@ -436,6 +441,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true", help="create the exact ruleset if unambiguously absent")
     args = parser.parse_args(argv)
+
+    # On the mutating CLI path, reject binding tamper before the first Fresh
+    # Read or any other operation that can invoke gh/transport.
+    if args.apply:
+        _assert_mutation_bindings_untampered()
 
     _preconditions()
     state, detail = _classify_existing(_repository_ruleset_details())
