@@ -1,0 +1,153 @@
+name: Multiverse R1 Stage1 Verified Activation Receipt Loader v1 CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verified-activation-receipt-loader:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout literal PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Enforce exact parent and final Lab-remediation scope
+        shell: bash
+        env:
+          EXPECTED_PARENT: 8a6c9850645912676ac97085ecb1b0fbdc918be8
+        run: |
+          set -euo pipefail
+          test "${{ github.event.pull_request.base.sha }}" = "$EXPECTED_PARENT"
+          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "17"
+          mapfile -t files < <(git diff --name-only "$EXPECTED_PARENT"...HEAD | sort)
+          expected=(
+            ".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml"
+            "governance/MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_PREACTIVATION_CONTRACT_20260822_v1.json"
+            "governance/MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_LAB_REMEDIATION_CONTRACT_20260822_v2.json"
+            "tools/multiverse_r1_stage1_github_runtime_cas_v1.py"
+            "tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py"
+            "tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py"
+            "tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py"
+          )
+          mapfile -t want < <(printf '%s\n' "${expected[@]}" | sort)
+          test "${#files[@]}" = "${#want[@]}"
+          diff -u <(printf '%s\n' "${want[@]}") <(printf '%s\n' "${files[@]}")
+
+      - name: Fresh Read canonical main and populated authority root
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_MAIN: ac30c7246c67e41837b5a32824ee91f9520ea3b0
+          EXPECTED_ROOT_BLOB: fed643f0ec5e2146dc0ea1031371fd1caf121fc6
+        run: |
+          set -euo pipefail
+          main="$(gh api --hostname github.com repos/fufufu1116/multiverse-research/branches/main --jq .commit.sha)"
+          test "$main" = "$EXPECTED_MAIN"
+          blob="$(gh api --hostname github.com "repos/fufufu1116/multiverse-research/contents/governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json?ref=$main" --jq .sha)"
+          test "$blob" = "$EXPECTED_ROOT_BLOB"
+
+      - name: Validate final one-finding remediation contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('governance/MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_LAB_REMEDIATION_CONTRACT_20260822_v2.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='PREACTIVATION_LAB_MICRO_REMEDIATION_FINAL_FINDING_CANDIDATE_RUNTIME_OFF'
+          assert d['lab_pass_with_fixes_comment']==5377207648
+          assert d['lab_micro_pass_with_fixes_comment']==5377350424
+          assert d['remediation_scope']=='ONE_REMAINING_CALLER_CONSTRUCTION_FINDING_ONLY_AFTER_FINDINGS_2_AND_3_CLOSED'
+          f=d['final_remaining_fix']
+          assert f['strategy']=='CONSUMER_SIDE_FRESH_VERIFIED_RECEIPT_REVERIFICATION_WITH_NO_CALLER_SEAL'
+          assert f['runtime_consumer']['production_import_is_subclassable'] is False
+          assert f['runtime_consumer']['raw_anchor_boolean_is_sufficient'] is False
+          assert f['runtime_consumer']['candidate_anchor_must_equal_fresh_verified_receipt_product'] is True
+          assert f['authority_consumer']['production_import_is_subclassable'] is False
+          assert f['authority_consumer']['raw_anchor_boolean_is_sufficient'] is False
+          assert f['authority_consumer']['candidate_anchor_must_equal_fresh_verified_receipt_product'] is True
+          assert f['verified_loader_integration']['module_global_context_seal_present'] is False
+          assert f['verified_loader_integration']['production_context_accepts_loaded_anchors_or_seal_from_caller'] is False
+          assert d['findings_closed_and_unchanged']['runtime_genesis_initial_ledger']['lab_micro_result']=='PASS'
+          assert d['findings_closed_and_unchanged']['final_review_and_ci_evidence']['lab_micro_result']=='PASS'
+          assert d['review_requirement']['new_owner_gate_required_for_this_final_fix'] is False
+          assert d['review_requirement']['runtime_must_remain_off'] is True
+          print('ONE_REMAINING_LAB_FINDING_ONLY_CONTRACT_PASS')
+          PY
+
+      - name: Compile and selftest loader plus production consumers
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/multiverse_r1_stage1_github_runtime_cas_v1.py \
+            tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py \
+            tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py \
+            tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py --selftest
+          out="$(PYTHONPATH=tools python tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py --selftest)"
+          printf '%s\n' "$out"
+          grep -Fqx 'HANDMADE_RUNTIME_ANCHOR_REQUIRES_FRESH_VERIFIED_RECEIPT_PRODUCT' <<<"$out"
+          grep -Fqx 'HANDMADE_AUTHORITY_ANCHOR_REQUIRES_FRESH_VERIFIED_RECEIPT_PRODUCT' <<<"$out"
+          grep -Fqx 'FAKE_LOADED_ANCHORS_AND_CALLER_REACHABLE_SEAL_PATH_REMOVED' <<<"$out"
+          grep -Fqx 'FAKE_OR_SUBCLASSED_V1_LOADER_CANNOT_REACH_PRODUCTION_PATH' <<<"$out"
+          grep -Fqx 'PRODUCTION_CONSUMERS_FINAL_AND_PROVENANCE_REVERIFYING' <<<"$out"
+          grep -Fqx 'INITIAL_LEDGER_SEQUENCE_ZERO_AND_EMPTY_STATE_REQUIRED' <<<"$out"
+          grep -Fqx 'FINAL_LAB_AUDITOR_AND_CI_EVIDENCE_STRUCTURED_AND_PINNED' <<<"$out"
+          grep -Fqx 'AUDITED_IMPLEMENTATION_HEAD_MUST_EQUAL_FINAL_REVIEWED_HEAD' <<<"$out"
+          grep -Fqx 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$out"
+          grep -Fqx 'PRODUCTION_PROVISIONING_PERFORMED=false' <<<"$out"
+          grep -Fqx 'MULTIVERSE_R1_STAGE1_VERIFIED_RECEIPT_HARDENING_V2_SELFTEST_PASS' <<<"$out"
+
+      - name: Regression Stage1 runtime CAS and authority guards
+        run: |
+          set -euo pipefail
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_runtime_v1.py --selftest
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_github_runtime_cas_v1.py --selftest
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py --selftest
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py --selftest
+
+      - name: Static consumer provenance and retained hardening checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          v2=tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py
+          runtime=tools/multiverse_r1_stage1_github_runtime_cas_v1.py
+          authority=tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py
+          grep -Fq 'def load_verified_stage1_context(repo_root' "$v2"
+          grep -Fq 'def _load_and_verify_production_anchors(repo_root' "$v2"
+          grep -Fq 'def verify_runtime_consumer_anchor(' "$v2"
+          grep -Fq 'candidate != loaded.runtime' "$v2"
+          grep -Fq 'def verify_authority_consumer_anchor(' "$v2"
+          grep -Fq 'candidate != loaded.authority' "$v2"
+          ! grep -Fq '_CONTEXT_SEAL' "$v2"
+          grep -Fq 'GitHubRuntimeCASLedger is final in production imports' "$runtime"
+          grep -Fq 'verify_runtime_consumer_anchor' "$runtime"
+          grep -Fq 'permits only the audited v2 subclass in production imports' "$authority"
+          grep -Fq 'type(self) is _ProductionAuthorityDecisionAdapter' "$authority"
+          grep -Fq 'verify_authority_consumer_anchor' "$authority"
+          grep -Fq 'ACTIVATION_GENESIS_MUST_BE_SINGLE_CHILD_OF_CANONICAL_MAIN' "$v2"
+          grep -Fq 'ACTIVATION_GENESIS_CONTROL_NOT_EXACT_EMPTY_CONTROL' "$v2"
+          grep -Fq 'ACTIVATION_GENESIS_R1_STATE_NOT_EMPTY' "$v2"
+          grep -Fq 'ACTIVATION_AUDITED_IMPLEMENTATION_HEAD_NOT_FINAL_REVIEW_HEAD' "$v2"
+          grep -Fq 'ACTIVATION_FINAL_CI_NOT_SUCCESS' "$v2"
+          ! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+(requests|urllib|httpx|aiohttp|socket)' "$v2"
+
+      - name: Assert workflow remains preactivation-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          wf=.github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml
+          if grep -Eq '^[[:space:]]{2}(schedule|workflow_dispatch|push):' "$wf"; then
+            echo "forbidden workflow trigger"
+            exit 1
+          fi
+          if grep -Eq '^[[:space:]]+(contents|actions):[[:space:]]+write([[:space:]]|$)' "$wf"; then
+            echo "forbidden workflow permission"
+            exit 1
+          fi

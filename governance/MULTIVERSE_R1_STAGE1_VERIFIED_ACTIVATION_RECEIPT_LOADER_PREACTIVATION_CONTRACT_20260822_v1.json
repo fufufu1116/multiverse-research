@@ -1,0 +1,85 @@
+{
+  "record": "MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_PREACTIVATION_CONTRACT_v1",
+  "status": "PREACTIVATION_IMPLEMENTATION_CANDIDATE_NONCANONICAL",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+  "scope_owner_gate_comment": 5367308652,
+  "production_authority_owner_gate_comment": 5374516958,
+  "expected_canonical_main_at_candidate_creation": "ac30c7246c67e41837b5a32824ee91f9520ea3b0",
+  "parent_candidate": {
+    "pr": 62,
+    "head": "8a6c9850645912676ac97085ecb1b0fbdc918be8",
+    "reason": "requires audited PR59 runtime, PR60 runtime-CAS anchor, PR61 authority anchor, and PR62 v2 authority source integration without modifying frozen parent heads"
+  },
+  "purpose": [
+    "replace caller-constructible verified booleans with one read-only GitHub Fresh-Read loader",
+    "load one strict activation receipt from a fixed annotated Git tag",
+    "verify the receipt tag targets current canonical main",
+    "verify the current no-bypass tag ruleset protects both the activation receipt tag and the append-only Stage1 journal tag namespace",
+    "verify the current canonical populated authority manifest identity and decision expiry ceiling",
+    "verify the production runtime ref is at the receipt-pinned initial ledger head",
+    "return both VerifiedActivationAnchor and VerifiedCanonicalAuthorityAnchor from the same receipt"
+  ],
+  "activation_receipt_storage": {
+    "tag_ref": "refs/tags/multiverse-r1-stage1-activation-v1",
+    "must_be_annotated_tag": true,
+    "tag_target_must_equal_current_canonical_main": true,
+    "message_must_be_exact_canonical_json": true,
+    "tag_ref_must_be_covered_by_same_no_bypass_ruleset_as_journal": true
+  },
+  "fail_closed_requirements": {
+    "github_api_host": "github.com",
+    "trusted_clock": "GitHub API Date header only",
+    "main_fresh_read_before_and_after": true,
+    "proxy_or_custom_ca_override_rejected": true,
+    "lightweight_tag_rejected": true,
+    "ruleset_bypass_actors_must_equal": [],
+    "ruleset_must_block": [
+      "deletion",
+      "update",
+      "non_fast_forward"
+    ],
+    "ruleset_creation_rule_must_be_absent": true,
+    "authority_manifest_must_be_populated": true,
+    "authority_manifest_safe_mode_must_be_off": true,
+    "activation_window_max_days": 7,
+    "activation_window_must_not_exceed_min_authority_decision_expiry": true,
+    "runtime_initial_head_must_match_receipt": true,
+    "unknown_or_extra_receipt_fields_rejected": true
+  },
+  "exact_stage1_ceiling": {
+    "runtime_branch": "runtime/r1-source-audit-stage1-v1",
+    "max_concurrent_workers": 1,
+    "max_tasks_per_invocation": 10,
+    "retry_budget_per_task": 2,
+    "max_terminal_tasks": 25,
+    "runtime_window_days": 7,
+    "auto_resume_authorized": false,
+    "scheduler_authorized": false,
+    "always_on_worker_authorized": false,
+    "permission_class": "P1_REVERSIBLE_INTERNAL_WRITE",
+    "policy_digest": "30695c878c200aaa5f592fa13b1e8b119f5f3caa65cefa571daf9b76386c033d"
+  },
+  "explicitly_not_performed_or_authorized_by_this_candidate": [
+    "create or update the activation receipt tag",
+    "provision or modify a GitHub ruleset",
+    "provision or expose the production writer key",
+    "create the production runtime branch",
+    "write runtime state",
+    "merge PR59 PR60 PR61 PR62 PR63",
+    "update canonical main",
+    "issue new authorization grants or decisions",
+    "source discovery collection admission or promotion",
+    "network or public-web source access",
+    "external contact",
+    "real or live PRE",
+    "scheduler or always-on execution",
+    "Runtime activation"
+  ],
+  "review_requirement": {
+    "dedicated_ci_required": true,
+    "independent_lab_required": true,
+    "independent_auditor_required": true,
+    "runtime_must_remain_off": true
+  }
+}

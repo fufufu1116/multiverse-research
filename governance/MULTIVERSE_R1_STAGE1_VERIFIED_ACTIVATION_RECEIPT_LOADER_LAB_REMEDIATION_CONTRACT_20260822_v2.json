@@ -1,0 +1,112 @@
+{
+  "record": "MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_LAB_REMEDIATION_CONTRACT_v2",
+  "status": "PREACTIVATION_LAB_MICRO_REMEDIATION_FINAL_FINDING_CANDIDATE_RUNTIME_OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+  "scope_owner_gate_comment": 5367308652,
+  "production_authority_owner_gate_comment": 5374516958,
+  "lab_pass_with_fixes_comment": 5377207648,
+  "lab_micro_pass_with_fixes_comment": 5377350424,
+  "remediation_scope": "ONE_REMAINING_CALLER_CONSTRUCTION_FINDING_ONLY_AFTER_FINDINGS_2_AND_3_CLOSED",
+  "parent_loader_candidate": {
+    "pr": 66,
+    "pre_first_remediation_head": "0494007ba5ce4df7d1b229b6cda3177a1bd1a33f",
+    "first_micro_reviewed_head": "72f7191c34d73657c68a5f9a352b9d70e1f5caed",
+    "canonical_main_at_remediation_start": "ac30c7246c67e41837b5a32824ee91f9520ea3b0",
+    "canonical_populated_authority_root_blob": "fed643f0ec5e2146dc0ea1031371fd1caf121fc6"
+  },
+  "final_remaining_fix": {
+    "finding": "PRODUCTION_CONSUMER_BOUNDARY_STILL_ACCEPTS_DIRECT_RAW_ANCHORS_AND_CONTEXT_SEAL_IS_CALLER_REACHABLE",
+    "strategy": "CONSUMER_SIDE_FRESH_VERIFIED_RECEIPT_REVERIFICATION_WITH_NO_CALLER_SEAL",
+    "runtime_consumer": {
+      "class": "GitHubRuntimeCASLedger",
+      "production_import_is_subclassable": false,
+      "raw_anchor_boolean_is_sufficient": false,
+      "constructor_must_call": "verify_runtime_consumer_anchor(repo_root, activation_anchor)",
+      "candidate_anchor_must_equal_fresh_verified_receipt_product": true,
+      "selftest_subclasses_allowed_only_when_module_itself_executes_as___main__": true
+    },
+    "authority_consumer": {
+      "class": "CanonicalAuthorityDecisionAdapter",
+      "production_import_is_subclassable": false,
+      "raw_anchor_boolean_is_sufficient": false,
+      "constructor_must_call": "verify_authority_consumer_anchor(repo_root, anchor)",
+      "candidate_anchor_must_equal_fresh_verified_receipt_product": true,
+      "selftest_subclasses_allowed_only_when_module_itself_executes_as___main__": true
+    },
+    "verified_loader_integration": {
+      "common_fresh_verifier": "_load_and_verify_production_anchors(repo_root)",
+      "module_global_context_seal_present": false,
+      "production_context_accepts_loaded_anchors_or_seal_from_caller": false,
+      "production_context_constructor_parameters": ["repo_root"],
+      "exact_v1_loader_type_constructed_internally": true,
+      "initial_ledger_semantics_reverified": true,
+      "final_lab_auditor_ci_evidence_reverified": true,
+      "trusted_time_and_current_main_reverified": true
+    },
+    "required_negative_cases": [
+      "hand-made runtime anchor cannot become production runtime consumer without Fresh verified receipt equality",
+      "hand-made authority anchor cannot become production authority consumer without Fresh verified receipt equality",
+      "fake LoadedActivationAnchors plus caller-reachable seal path is removed",
+      "fake or subclassed v1 loader cannot reach production path"
+    ]
+  },
+  "findings_closed_and_unchanged": {
+    "runtime_genesis_initial_ledger": {
+      "lab_micro_result": "PASS",
+      "runtime_ref_must_equal_receipt_initial_ledger_head": true,
+      "initial_ledger_commit_must_have_exactly_one_parent_equal_runtime_genesis": true,
+      "initial_ledger_commit_changed_path_must_equal": "runtime/r1_source_audit_stage1/exceptions/control_plane/runtime_ledger.json",
+      "ledger_schema_must_pass_existing_pr60_validator": true,
+      "sequence_must_equal": 0,
+      "transition_auth_must_be_null": true,
+      "control_must_equal_existing_empty_control_from_receipt_identity": true,
+      "r1_state_must_equal_existing_empty_state": true
+    },
+    "final_review_and_ci_evidence": {
+      "lab_micro_result": "PASS",
+      "legacy_receipt_string_slots_reinterpreted_as_strict_canonical_json_descriptors": true,
+      "lab_and_auditor_review_ids_pinned": true,
+      "lab_and_auditor_reviewed_heads_must_match": true,
+      "audited_implementation_head_must_equal_final_reviewed_head": true,
+      "review_objects_fresh_read_from_github": true,
+      "current_pr_head_must_equal_final_reviewed_head": true,
+      "dedicated_and_foundation_ci_identity_fresh_read": true
+    }
+  },
+  "unchanged_passed_properties": [
+    "one annotated activation tag with canonical JSON receipt",
+    "dual runtime and authority binding to the same receipt",
+    "no-bypass ruleset compatibility and mutation fail-closed behavior",
+    "GitHub API Date trusted clock",
+    "GitHub API transport identity guards",
+    "canonical main before/after TOCTOU denial",
+    "populated v2 authority manifest provenance and structure validation",
+    "activation expiry bounded by seven days and authority decision expiry",
+    "writer secret excluded from receipt",
+    "no provisioning or activation surface"
+  ],
+  "explicitly_not_performed_or_authorized": [
+    "provision or modify a GitHub ruleset",
+    "create store or expose a production writer key",
+    "create the production runtime branch",
+    "create or update the activation receipt tag",
+    "write runtime state",
+    "update canonical main",
+    "merge PR59 PR60 PR61 PR62 PR63 PR66",
+    "issue or widen grants or decisions",
+    "Source discovery collection admission or promotion",
+    "network or public-web Source access",
+    "external contact",
+    "real or live PRE",
+    "scheduler or always-on execution",
+    "Runtime activation"
+  ],
+  "review_requirement": {
+    "dedicated_ci_required": true,
+    "independent_lab_micro_rereview_required": true,
+    "independent_auditor_only_after_lab_micro_pass": true,
+    "new_owner_gate_required_for_this_final_fix": false,
+    "runtime_must_remain_off": true
+  }
+}
