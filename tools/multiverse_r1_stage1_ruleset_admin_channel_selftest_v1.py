@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import inspect
 import json
 
 import multiverse_r1_stage1_ruleset_admin_channel_v1 as m
@@ -37,6 +38,15 @@ def must_fail(mutator) -> None:
     assert not m._strict_ruleset_detail(value), json.dumps(value, sort_keys=True)
 
 
+def expect_denied(details: list[dict], needle: str) -> None:
+    try:
+        m._classify_existing(details)
+    except m.Denied as exc:
+        assert needle in str(exc), str(exc)
+    else:
+        raise AssertionError(f"expected denial containing {needle}")
+
+
 def main() -> None:
     good = base_detail()
     assert m._strict_ruleset_detail(good)
@@ -53,30 +63,38 @@ def main() -> None:
 
     same_name_bad = base_detail()
     same_name_bad["bypass_actors"] = [{"actor_id": 1}]
-    try:
-        m._classify_existing([same_name_bad])
-    except m.Denied as exc:
-        assert "SAME_NAME_NONCOMPLIANT" in str(exc)
-    else:
-        raise AssertionError("same-name noncompliant ruleset must deny")
+    expect_denied([same_name_bad], "SAME_NAME_NONCOMPLIANT")
 
     other_tag = base_detail()
     other_tag["name"] = "other-tag-ruleset"
-    try:
-        m._classify_existing([other_tag])
-    except m.Denied as exc:
-        assert "OTHER_TAG_RULESET_REQUIRES_REREVIEW" in str(exc)
-    else:
-        raise AssertionError("other tag ruleset must deny")
+    expect_denied([other_tag], "OTHER_TAG_RULESET_REQUIRES_REREVIEW")
 
     duplicate = [base_detail(), copy.deepcopy(base_detail())]
     duplicate[1]["id"] = 124
+    expect_denied(duplicate, "DUPLICATE_EXACT")
+
+    # Regression for Lab finding: an exact ruleset must not early-return past
+    # any competing tag ruleset or same-name noncompliant ruleset.
+    exact_plus_other = [base_detail(), copy.deepcopy(other_tag)]
+    exact_plus_other[1]["id"] = 125
+    expect_denied(exact_plus_other, "OTHER_TAG_RULESET_REQUIRES_REREVIEW")
+
+    exact_plus_same_name_bad = [base_detail(), copy.deepcopy(same_name_bad)]
+    exact_plus_same_name_bad[1]["id"] = 126
+    expect_denied(exact_plus_same_name_bad, "SAME_NAME_NONCOMPLIANT")
+
+    # Generic endpoint/method/payload primitive is gone. Read-only endpoints
+    # come only from a closed builder; the production mutation is argument-free
+    # and reruns Fresh barriers internally before the fixed POST.
+    assert not hasattr(m, "_gh_json")
+    assert list(inspect.signature(m._post_exact_ruleset_after_fresh_barrier).parameters) == []
+    assert m._build_get_endpoint("main") == f"/repos/{m.REPO}/branches/main"
     try:
-        m._classify_existing(duplicate)
+        m._build_get_endpoint("arbitrary_endpoint")
     except m.Denied as exc:
-        assert "DUPLICATE_EXACT" in str(exc)
+        assert "GET_RESOURCE_NOT_ALLOWLISTED" in str(exc)
     else:
-        raise AssertionError("duplicate exact rulesets must deny")
+        raise AssertionError("non-allowlisted GET selector must deny")
 
     dry = m._result("DRY_RUN_WOULD_CREATE_EXACT_RULESET")
     assert dry["secret_material_present"] is False
