@@ -168,6 +168,11 @@ class VerifiedCanonicalAuthorityAnchor:
 class CanonicalAuthorityDecisionAdapter:
     """Verification-only adapter; accepted immutable authority remains external."""
 
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        if __name__ != "__main__":
+            raise TypeError("CanonicalAuthorityDecisionAdapter is final in production imports")
+        super().__init_subclass__(**kwargs)
+
     def __init__(self, repo_root: Path | str, *, anchor: VerifiedCanonicalAuthorityAnchor):
         self.repo_root = Path(repo_root).resolve()
         if not (self.repo_root / ".git").exists():
@@ -175,6 +180,21 @@ class CanonicalAuthorityDecisionAdapter:
         if not isinstance(anchor, VerifiedCanonicalAuthorityAnchor):
             _deny("AUTHORITY_ANCHOR_TYPE")
         anchor.validate()
+        if __name__ != "__main__":
+            if type(self) is not CanonicalAuthorityDecisionAdapter:
+                _deny("AUTHORITY_PRODUCTION_SUBCLASS_PROHIBITED")
+            try:
+                from multiverse_r1_stage1_verified_activation_receipt_loader_v2 import (
+                    verify_authority_consumer_anchor,
+                )
+                anchor = verify_authority_consumer_anchor(self.repo_root, anchor)
+            except CanonicalAuthorityDenied:
+                raise
+            except Exception as exc:
+                raise CanonicalAuthorityDenied(
+                    "AUTHORITY_PRODUCTION_ANCHOR_PROVENANCE_UNVERIFIED:"
+                    + str(exc)[:200]
+                ) from exc
         self.anchor = anchor
         self._validate_api_transport()
 
