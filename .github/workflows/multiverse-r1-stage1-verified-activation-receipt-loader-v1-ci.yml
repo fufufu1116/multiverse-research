@@ -1,0 +1,76 @@
+name: Multiverse R1 Stage1 Verified Activation Receipt Loader v1 CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verified-activation-receipt-loader:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout literal PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Enforce exact parent and candidate scope
+        shell: bash
+        env:
+          EXPECTED_PARENT: 8a6c9850645912676ac97085ecb1b0fbdc918be8
+        run: |
+          set -euo pipefail
+          test "${{ github.event.pull_request.base.sha }}" = "$EXPECTED_PARENT"
+          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "3"
+          mapfile -t files < <(git diff --name-only "$EXPECTED_PARENT"...HEAD | sort)
+          expected=(
+            ".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml"
+            "governance/MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_PREACTIVATION_CONTRACT_20260822_v1.json"
+            "tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py"
+          )
+          mapfile -t want < <(printf '%s\n' "${expected[@]}" | sort)
+          test "${#files[@]}" = "${#want[@]}"
+          diff -u <(printf '%s\n' "${want[@]}") <(printf '%s\n' "${files[@]}")
+
+      - name: Fresh Read canonical main and populated authority root
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_MAIN: ac30c7246c67e41837b5a32824ee91f9520ea3b0
+          EXPECTED_ROOT_BLOB: fed643f0ec5e2146dc0ea1031371fd1caf121fc6
+        run: |
+          set -euo pipefail
+          main="$(gh api --hostname github.com repos/fufufu1116/multiverse-research/branches/main --jq .commit.sha)"
+          test "$main" = "$EXPECTED_MAIN"
+          blob="$(gh api --hostname github.com "repos/fufufu1116/multiverse-research/contents/governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json?ref=$main" --jq .sha)"
+          test "$blob" = "$EXPECTED_ROOT_BLOB"
+
+      - name: Compile and selftest loader
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py --selftest
+
+      - name: Regression Stage1 runtime CAS and authority guards
+        run: |
+          set -euo pipefail
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_runtime_v1.py --selftest
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_github_runtime_cas_v1.py --selftest
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py --selftest
+          PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py --selftest
+
+      - name: Assert workflow remains preactivation-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path(".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml")
+          text = p.read_text()
+          forbidden = ["schedule:", "workflow_dispatch:", "push:", "contents: write", "actions: write"]
+          for token in forbidden:
+              if token in text:
+                  raise SystemExit(f"forbidden workflow surface: {token}")
+          PY
