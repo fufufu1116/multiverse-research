@@ -1,0 +1,90 @@
+{
+  "record": "R1_STAGE1_PRODUCTION_AUTHORITY_POPULATED_BATCH1_ADOPTION_RECEIPT_v1",
+  "status": "ACCEPTED_CANONICAL_STAGE1_PRODUCTION_AUTHORITY_POPULATED_BATCH1",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+  "pre_transition_main": "741b4dcd1035ce9959eed9bef143d206301c6bcc",
+  "adoption_commit_identity": "RESOLVE_FROM_CONTAINING_COMMIT",
+  "transition": {
+    "mode": "FIRST_PARENT_ONLY_EXPECTED_OLD_MAIN_CAS",
+    "sole_parent_required": true,
+    "sole_parent": "741b4dcd1035ce9959eed9bef143d206301c6bcc",
+    "additional_git_parents": [],
+    "pr_head_as_git_parent": false,
+    "stacked_pr_ancestry_bridge": false,
+    "force_ref_update_allowed": false,
+    "canonical_tree_delta_exactly_two_files": true,
+    "canonical_tree_delta": [
+      "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json",
+      "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_POPULATED_BATCH1_ADOPTION_RECEIPT_20260822_v1.json"
+    ],
+    "pr63_ci_or_contract_canonicalized": false
+  },
+  "reviewed_source": {
+    "pr": 63,
+    "head": "559bcfee801e0259cd4762c60daa8ad145386013",
+    "base_branch": "main",
+    "base_head": "741b4dcd1035ce9959eed9bef143d206301c6bcc",
+    "commits_above_base": 3,
+    "changed_files": 3,
+    "candidate_root_git_blob_sha": "fed643f0ec5e2146dc0ea1031371fd1caf121fc6"
+  },
+  "authority_snapshot": {
+    "path": "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json",
+    "git_blob_sha": "fed643f0ec5e2146dc0ea1031371fd1caf121fc6",
+    "schema_version": "MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_MANIFEST_v2",
+    "safe_mode_active": false,
+    "revocation_generation": 2,
+    "safe_mode_generation": 2,
+    "valid_grant_count": 1,
+    "preissued_bundle_count": 1,
+    "permission_class": "P1_REVERSIBLE_INTERNAL_WRITE",
+    "envelope_sha256": "68bda72f9bc81efc7a0538752f12b762f61acafd465c8d75991a67b6bb764c7e",
+    "deterministic_task_id": "task-3d41c6e18c00bbd6",
+    "decision_payload_digest": "9bf0cdd0da66a85a208f0c5cb332b636b18708c80e2a576f9601d06cd7e31402",
+    "candidate_id": "KEIRIN.JP",
+    "worker_id": "stage1-worker-1",
+    "requested_final_state": "REVIEWED_NO_ADMISSION",
+    "expires_at": "2026-08-29T00:25:24+00:00",
+    "freshness_barrier_mode": "SELF_CONTAINED_SINGLE_CANONICAL_MAIN_BLOB"
+  },
+  "canonical_evidence": {
+    "path": "governance/KEIRIN_SOURCE_PHASE_A_PUBLIC_TERMS_AUDIT_20260821_v1.json",
+    "git_blob_sha": "ad5fe081e362069f30515f13612100f9961419e5",
+    "candidate": "KEIRIN.JP",
+    "finding": "NOT_ADMITTED"
+  },
+  "governance_evidence": {
+    "owner_gate_approval_comment": 5374516958,
+    "deny_all_canonical_adoption_commit": "741b4dcd1035ce9959eed9bef143d206301c6bcc",
+    "lab_request_comment": 5376811065,
+    "lab_pass_comment": 5376858001,
+    "auditor_request_comment": 5376870920,
+    "auditor_pass_review_id": 4998444884,
+    "dedicated_ci_run": 32540811470,
+    "foundation_ci_run": 32540811430
+  },
+  "protected_boundaries": {
+    "source_discovery_authorized": false,
+    "source_collection_authorized": false,
+    "source_admission_or_promotion_authorized": false,
+    "network_or_public_web_authorized": false,
+    "external_contact_authorized": false,
+    "real_or_live_pre_authorized": false,
+    "scheduler_authorized": false,
+    "always_on_worker_authorized": false,
+    "auto_resume_authorized": false,
+    "runtime_writes_to_canonical_main_or_governance_authorized": false,
+    "on_demand_permission_minting_authorized": false
+  },
+  "runtime_boundary": {
+    "runtime_activation_performed": false,
+    "runtime_activation_authorized_now": false,
+    "production_runtime_branch_created": false,
+    "verified_activation_receipt_loader_satisfied": false,
+    "actual_ruleset_provisioned": false,
+    "production_writer_key_provisioned": false,
+    "stage1_activation_ready_now": false
+  },
+  "fail_closed": true
+}
