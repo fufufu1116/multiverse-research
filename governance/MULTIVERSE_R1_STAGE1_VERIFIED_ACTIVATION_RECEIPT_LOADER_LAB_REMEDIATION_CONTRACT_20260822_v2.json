@@ -1,0 +1,87 @@
+{
+  "record": "MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_LAB_REMEDIATION_CONTRACT_v2",
+  "status": "PREACTIVATION_LAB_NARROW_REMEDIATION_CANDIDATE_RUNTIME_OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+  "scope_owner_gate_comment": 5367308652,
+  "production_authority_owner_gate_comment": 5374516958,
+  "lab_pass_with_fixes_comment": 5377207648,
+  "remediation_scope": "EXACTLY_THREE_LAB_FINDINGS_ONLY",
+  "parent_loader_candidate": {
+    "pr": 66,
+    "pre_remediation_head": "0494007ba5ce4df7d1b229b6cda3177a1bd1a33f",
+    "canonical_main_at_remediation_start": "ac30c7246c67e41837b5a32824ee91f9520ea3b0",
+    "canonical_populated_authority_root_blob": "fed643f0ec5e2146dc0ea1031371fd1caf121fc6"
+  },
+  "three_narrow_fixes": {
+    "caller_construction_bypass": {
+      "strategy": "SOLE_NON_SUBCLASSABLE_PRODUCTION_INTEGRATION_ENTRYPOINT",
+      "entrypoint": "load_verified_stage1_context(repo_root)",
+      "caller_supplied_runtime_anchor_accepted": false,
+      "caller_supplied_authority_anchor_accepted": false,
+      "caller_supplied_loader_or_api_adapter_accepted": false,
+      "raw_anchor_objects_exposed_by_production_context": false,
+      "production_context_constructor_requires_module_private_seal": true,
+      "production_loader_is_subclassable": false,
+      "legacy_v1_loader_and_anchor_classes_remain_preactivation_building_blocks_not_production_entrypoint": true
+    },
+    "runtime_genesis_initial_ledger": {
+      "runtime_ref_must_equal_receipt_initial_ledger_head": true,
+      "initial_ledger_commit_must_have_exactly_one_parent_equal_runtime_genesis": true,
+      "initial_ledger_commit_changed_path_must_equal": "runtime/r1_source_audit_stage1/exceptions/control_plane/runtime_ledger.json",
+      "ledger_schema_must_pass_existing_pr60_validator": true,
+      "sequence_must_equal": 0,
+      "transition_auth_must_be_null": true,
+      "control_must_equal_existing_empty_control_from_receipt_identity": true,
+      "r1_state_must_equal_existing_empty_state": true,
+      "arbitrary_commit_named_by_receipt_is_accepted": false
+    },
+    "final_review_and_ci_evidence": {
+      "legacy_receipt_string_slots_reinterpreted_as_strict_canonical_json_descriptors": true,
+      "lab_and_auditor_review_ids_pinned": true,
+      "lab_and_auditor_reviewed_heads_must_match": true,
+      "audited_implementation_head_must_equal_final_reviewed_head": true,
+      "review_objects_fresh_read_from_github": true,
+      "review_body_must_contain_exact_reviewed_head_and_pass_fields": true,
+      "current_pr_head_must_equal_final_reviewed_head": true,
+      "dedicated_ci_run_id_name_head_success_and_pull_request_event_fresh_read": true,
+      "foundation_ci_run_id_name_head_success_and_pull_request_event_fresh_read": true,
+      "decorative_nonempty_review_strings_accepted": false
+    }
+  },
+  "unchanged_passed_properties": [
+    "one annotated activation tag with canonical JSON receipt",
+    "dual runtime and authority binding to the same receipt",
+    "no-bypass ruleset compatibility and mutation fail-closed behavior",
+    "GitHub API Date trusted clock",
+    "GitHub API transport identity guards",
+    "canonical main before/after TOCTOU denial",
+    "populated v2 authority manifest provenance and structure validation",
+    "activation expiry bounded by seven days and authority decision expiry",
+    "writer secret excluded from receipt",
+    "no provisioning or activation surface"
+  ],
+  "explicitly_not_performed_or_authorized": [
+    "provision or modify a GitHub ruleset",
+    "create store or expose a production writer key",
+    "create the production runtime branch",
+    "create or update the activation receipt tag",
+    "write runtime state",
+    "update canonical main",
+    "merge PR59 PR60 PR61 PR62 PR63 PR66",
+    "issue or widen grants or decisions",
+    "Source discovery collection admission or promotion",
+    "network or public-web Source access",
+    "external contact",
+    "real or live PRE",
+    "scheduler or always-on execution",
+    "Runtime activation"
+  ],
+  "review_requirement": {
+    "dedicated_ci_required": true,
+    "independent_lab_micro_rereview_required": true,
+    "independent_auditor_only_after_lab_micro_pass": true,
+    "new_owner_gate_required_for_these_three_fixes": false,
+    "runtime_must_remain_off": true
+  }
+}
