@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
-"""iPhone-compatible Codespaces wrapper for the already-approved Stage1 ruleset operator.
+"""iPhone Codespaces gate for the already-approved Stage1 ruleset operator.
 
-DRAFT / review-only candidate. Default mode is read-only. Actual ruleset mutation
-is delegated only to the exact approved PR #69 operator and remains unavailable
-until this Codespaces execution channel receives independent Lab and Auditor PASS.
-
-No PAT/token/password is accepted as an argument, stdin value, file input, or
-printed output. Authentication is expected to be a GitHub CLI browser-OAuth
-credential stored only in an explicitly selected tmpfs GH_CONFIG_DIR.
+DRAFT/review-only. Default is non-mutating rehearsal. Successful apply remains
+cleanup-pending and never opens Phase C by itself.
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import pathlib
 import re
+import stat
 import subprocess
 import sys
 from typing import Any, Mapping
@@ -24,14 +21,14 @@ CANONICAL_REPO = "fufufu1116/multiverse-research"
 EXPECTED_LOGIN = "fufufu1116"
 APPROVED_ADMIN_HEAD = "49ab50cfce03e29eedd95d66ee76a41de159940e"
 APPROVED_AUDITOR_REVIEW = 4999948431
+LAB_RESULT_COMMENT = 5379999637
 APPROVED_OPERATOR_PATH = "tools/multiverse_r1_stage1_ruleset_admin_channel_v1.py"
 APPROVED_OPERATOR_BLOB = "673501d6c083ee240811156ce5917d34b7a1bee4"
-EXPECTED_GH_CONFIG_DIR = "/dev/shm/multiverse-r1-stage1-gh-auth"
+EXPECTED_GH_CONFIG_DIR = "/mnt/multiverse-r1-stage1-gh-auth"
 REQUIRED_SCOPE = "repo"
 ALLOWED_OAUTH_SCOPES = {"repo", "read:org", "gist", "workflow"}
 API_VERSION = "2022-11-28"
-
-_HEX40 = re.compile(r"^[0-9a-f]{40}$")
+_HEX32 = re.compile(r"^[0-9a-f]{32}$")
 
 
 class Denied(RuntimeError):
@@ -46,10 +43,9 @@ def _canonical_json(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
-def _run(cmd: list[str], *, input_text: str | None = None) -> subprocess.CompletedProcess[str]:
+def _run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         cmd,
-        input=input_text,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -57,51 +53,74 @@ def _run(cmd: list[str], *, input_text: str | None = None) -> subprocess.Complet
     )
 
 
-def _assert_environment_before_any_gh() -> None:
+def _assert_env_clean() -> None:
     if os.environ.get("CODESPACES") != "true":
         _deny("CODESPACES_CHANNEL_REQUIRED")
-    if os.environ.get("GH_CONFIG_DIR") != EXPECTED_GH_CONFIG_DIR:
-        _deny("CODESPACES_GH_CONFIG_DIR_NOT_PINNED_TO_REVIEWED_TMPFS_PATH")
-    for key in (
-        "GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHUB_ENTERPRISE_TOKEN",
-    ):
+    for key in ("GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHUB_ENTERPRISE_TOKEN"):
         if os.environ.get(key):
             _deny("CODESPACES_ENVIRONMENT_TOKEN_PROHIBITED:" + key)
     if os.environ.get("GH_HOST") not in (None, "", "github.com"):
         _deny("CODESPACES_GH_HOST_OVERRIDE_PROHIBITED")
     for key in (
-        "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY",
-        "http_proxy", "https_proxy", "all_proxy",
-        "SSL_CERT_FILE", "SSL_CERT_DIR",
-        "GH_DEBUG", "DEBUG",
+        "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy",
+        "SSL_CERT_FILE", "SSL_CERT_DIR", "GH_DEBUG", "DEBUG",
     ):
         if os.environ.get(key):
             _deny("CODESPACES_PROXY_CA_OR_DEBUG_PROHIBITED:" + key)
-    shm = pathlib.Path("/dev/shm")
+
+
+def _assert_swap_absent() -> None:
+    try:
+        lines = [x for x in pathlib.Path("/proc/swaps").read_text().splitlines() if x.strip()]
+    except Exception as exc:
+        raise Denied("CODESPACES_SWAP_STATE_UNREADABLE") from exc
+    if len(lines) != 1 or not lines[0].lower().startswith("filename"):
+        _deny("CODESPACES_ACTIVE_SWAP_PROHIBITED")
+
+
+def _assert_auth_storage_secure() -> None:
+    if os.environ.get("GH_CONFIG_DIR") != EXPECTED_GH_CONFIG_DIR:
+        _deny("CODESPACES_GH_CONFIG_DIR_NOT_PINNED_TO_REVIEWED_RAMFS_PATH")
     cfg = pathlib.Path(EXPECTED_GH_CONFIG_DIR)
     try:
-        if not shm.is_dir() or not os.access(shm, os.W_OK):
-            _deny("CODESPACES_TMPFS_UNAVAILABLE")
-        probe = _run(["stat", "-f", "-c", "%T", "/dev/shm"])
+        st = os.lstat(cfg)
     except FileNotFoundError as exc:
-        raise Denied("CODESPACES_TMPFS_PROBE_UNAVAILABLE") from exc
-    if probe.returncode != 0 or probe.stdout.strip() not in {"tmpfs", "ramfs"}:
-        _deny("CODESPACES_GH_CONFIG_NOT_MEMORY_BACKED")
-    try:
-        cfg.resolve().relative_to(shm.resolve())
-    except Exception as exc:
-        raise Denied("CODESPACES_GH_CONFIG_ESCAPES_TMPFS") from exc
+        raise Denied("CODESPACES_RAMFS_AUTH_DIR_MISSING") from exc
+    if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
+        _deny("CODESPACES_RAMFS_AUTH_DIR_MUST_BE_REAL_DIRECTORY")
+    if st.st_uid != os.getuid():
+        _deny("CODESPACES_RAMFS_AUTH_DIR_OWNER_MISMATCH")
+    if stat.S_IMODE(st.st_mode) != 0o700:
+        _deny("CODESPACES_RAMFS_AUTH_DIR_MODE_NOT_0700")
+    probe = _run(["stat", "-f", "-c", "%T", EXPECTED_GH_CONFIG_DIR])
+    if probe.returncode != 0 or probe.stdout.strip() != "ramfs":
+        _deny("CODESPACES_AUTH_STORAGE_MUST_BE_NONSWAPPABLE_RAMFS")
+    _assert_swap_absent()
+    for root, dirs, files in os.walk(cfg, topdown=True, followlinks=False):
+        base = pathlib.Path(root)
+        for name in dirs:
+            s = os.lstat(base / name)
+            if stat.S_ISLNK(s.st_mode) or not stat.S_ISDIR(s.st_mode):
+                _deny("CODESPACES_AUTH_STORAGE_NON_DIRECTORY_ENTRY")
+            if s.st_uid != os.getuid() or stat.S_IMODE(s.st_mode) != 0o700:
+                _deny("CODESPACES_AUTH_STORAGE_DIRECTORY_PERMISSIONS")
+        for name in files:
+            s = os.lstat(base / name)
+            if stat.S_ISLNK(s.st_mode) or not stat.S_ISREG(s.st_mode):
+                _deny("CODESPACES_AUTH_STORAGE_FILE_MUST_BE_REGULAR_NON_SYMLINK")
+            if s.st_nlink != 1 or s.st_uid != os.getuid():
+                _deny("CODESPACES_AUTH_STORAGE_FILE_IDENTITY")
+            mode = stat.S_IMODE(s.st_mode)
+            if mode & 0o177:
+                _deny("CODESPACES_AUTH_STORAGE_FILE_MODE_TOO_BROAD")
 
 
 def _assert_local_gh_config_safe() -> None:
     proc = _run(["gh", "config", "list", "--host", "github.com"])
     if proc.returncode != 0:
         _deny("CODESPACES_GH_CONFIG_QUERY_FAILED")
-    sockets = [
-        row.split("=", 1)[1].strip()
-        for row in proc.stdout.splitlines()
-        if row.startswith("http_unix_socket=") and "=" in row
-    ]
+    sockets = [row.split("=", 1)[1].strip() for row in proc.stdout.splitlines()
+               if row.startswith("http_unix_socket=") and "=" in row]
     if len(sockets) != 1 or sockets[0]:
         _deny("CODESPACES_GH_HTTP_UNIX_SOCKET_PROHIBITED_OR_AMBIGUOUS")
 
@@ -111,16 +130,18 @@ def _parse_include_json(text: str) -> tuple[Mapping[str, str], Any]:
     if not sep:
         _deny("CODESPACES_API_HEADERS_OR_BODY_MISSING")
     lines = [line for line in header.splitlines() if line]
-    if not lines or not lines[0].startswith("HTTP/"):
+    if not lines or not lines[0].startswith("HTTP/") or len(lines[0].split()) < 2:
         _deny("CODESPACES_API_STATUS_MISSING")
-    parts = lines[0].split()
-    if len(parts) < 2 or parts[1] != "200":
+    if lines[0].split()[1] != "200":
         _deny("CODESPACES_API_NON_200")
     headers: dict[str, str] = {}
     for line in lines[1:]:
         if ":" in line:
             key, value = line.split(":", 1)
-            headers[key.strip().lower()] = value.strip()
+            key = key.strip().lower()
+            if key in headers:
+                _deny("CODESPACES_API_DUPLICATE_HEADER:" + key)
+            headers[key] = value.strip()
     try:
         payload = json.loads(body)
     except Exception as exc:
@@ -129,25 +150,26 @@ def _parse_include_json(text: str) -> tuple[Mapping[str, str], Any]:
 
 
 def _gh_api_include(endpoint: str) -> tuple[Mapping[str, str], Any]:
+    if endpoint not in {"/user", f"/repos/{CANONICAL_REPO}"}:
+        _deny("CODESPACES_API_ENDPOINT_NOT_ALLOWLISTED")
     proc = _run([
         "gh", "api", "--hostname", "github.com", "--include",
         "-H", "Accept: application/vnd.github+json",
-        "-H", f"X-GitHub-Api-Version: {API_VERSION}",
-        endpoint,
+        "-H", f"X-GitHub-Api-Version: {API_VERSION}", endpoint,
     ])
     if proc.returncode != 0:
         _deny("CODESPACES_GITHUB_API_FAILED")
     return _parse_include_json(proc.stdout)
 
 
-def _verify_browser_oauth_identity_and_scope() -> list[str]:
+def _verify_oauth() -> list[str]:
     headers, user = _gh_api_include("/user")
     if not isinstance(user, dict) or user.get("login") != EXPECTED_LOGIN:
         _deny("CODESPACES_GITHUB_LOGIN_MISMATCH")
-    raw_scopes = headers.get("x-oauth-scopes")
-    if raw_scopes is None:
+    raw = headers.get("x-oauth-scopes")
+    if raw is None:
         _deny("CODESPACES_BROWSER_OAUTH_SCOPE_HEADER_MISSING")
-    scopes = sorted({item.strip() for item in raw_scopes.split(",") if item.strip()})
+    scopes = sorted({x.strip() for x in raw.split(",") if x.strip()})
     if REQUIRED_SCOPE not in scopes:
         _deny("CODESPACES_BROWSER_OAUTH_REPO_SCOPE_MISSING")
     if not set(scopes).issubset(ALLOWED_OAUTH_SCOPES):
@@ -159,83 +181,127 @@ def _verify_browser_oauth_identity_and_scope() -> list[str]:
     return scopes
 
 
-def _verify_approved_operator_blob() -> None:
+def _verify_approved_operator() -> None:
     proc = _run(["git", "hash-object", APPROVED_OPERATOR_PATH])
     if proc.returncode != 0 or proc.stdout.strip() != APPROVED_OPERATOR_BLOB:
         _deny("CODESPACES_APPROVED_OPERATOR_BLOB_MISMATCH")
-    ancestry = _run(["git", "merge-base", "--is-ancestor", APPROVED_ADMIN_HEAD, "HEAD"])
-    if ancestry.returncode != 0:
+    if _run(["git", "merge-base", "--is-ancestor", APPROVED_ADMIN_HEAD, "HEAD"]).returncode != 0:
         _deny("CODESPACES_APPROVED_ADMIN_HEAD_NOT_ANCESTOR")
 
 
-def _run_approved_operator(*, apply: bool) -> dict:
-    cmd = [sys.executable, APPROVED_OPERATOR_PATH]
-    if apply:
-        cmd.append("--apply")
+def _operator(*, apply: bool) -> dict:
+    cmd = [sys.executable, APPROVED_OPERATOR_PATH] + (["--apply"] if apply else [])
     proc = _run(cmd)
     if proc.returncode != 0:
-        reason = proc.stderr.strip()[:240] if proc.stderr else ""
-        raise Denied("CODESPACES_APPROVED_OPERATOR_FAILED:" + reason)
+        _deny("CODESPACES_APPROVED_OPERATOR_FAILED")
     try:
-        result = json.loads(proc.stdout)
+        value = json.loads(proc.stdout)
     except Exception as exc:
         raise Denied("CODESPACES_APPROVED_OPERATOR_JSON_INVALID") from exc
-    if not isinstance(result, dict):
+    if not isinstance(value, dict):
         _deny("CODESPACES_APPROVED_OPERATOR_RESULT_INVALID")
-    allowed = {
-        "DRY_RUN_WOULD_CREATE_EXACT_RULESET",
-        "EXISTING_EXACT_VERIFIED",
-        "EXISTING_EXACT_VERIFIED_AFTER_REFRESH",
-        "CREATED_AND_FRESH_VERIFIED",
-    }
-    if result.get("status") not in allowed:
+    allowed = {"DRY_RUN_WOULD_CREATE_EXACT_RULESET", "EXISTING_EXACT_VERIFIED",
+               "EXISTING_EXACT_VERIFIED_AFTER_REFRESH", "CREATED_AND_FRESH_VERIFIED"}
+    if value.get("status") not in allowed:
         _deny("CODESPACES_APPROVED_OPERATOR_STATUS_UNEXPECTED")
-    if apply and result.get("status") not in {
-        "EXISTING_EXACT_VERIFIED",
-        "EXISTING_EXACT_VERIFIED_AFTER_REFRESH",
-        "CREATED_AND_FRESH_VERIFIED",
-    }:
+    if apply and value.get("status") not in allowed - {"DRY_RUN_WOULD_CREATE_EXACT_RULESET"}:
         _deny("CODESPACES_APPLY_DID_NOT_PROVISION_OR_VERIFY")
-    return result
+    return value
 
 
-def _result(status: str, *, scopes: list[str], operator_result: Mapping[str, Any]) -> dict:
-    return {
-        "schema_version": "MULTIVERSE_R1_STAGE1_CODESPACES_ADMIN_CHANNEL_RESULT_v1",
-        "status": status,
-        "canonical_repo": CANONICAL_REPO,
+def _session_id(*, apply: bool, operator_result: Mapping[str, Any]) -> str:
+    material = {
+        "codespace_name": os.environ.get("CODESPACE_NAME", ""),
         "approved_admin_head": APPROVED_ADMIN_HEAD,
-        "approved_auditor_review": APPROVED_AUDITOR_REVIEW,
         "approved_operator_blob": APPROVED_OPERATOR_BLOB,
-        "execution_environment": "GITHUB_CODESPACES_BROWSER_TERMINAL_IPHONE_COMPATIBLE",
-        "authentication_method": "GH_CLI_WEB_OAUTH_TMPFS_ONLY",
-        "oauth_scopes": scopes,
-        "environment_token_used": False,
-        "credential_material_printed": False,
-        "credential_material_accepted_as_argument": False,
-        "credential_storage": "TMPFS_GH_CONFIG_DIR_DELETE_AFTER_USE",
+        "mode": "apply" if apply else "rehearsal",
         "operator_status": operator_result.get("status"),
         "ruleset_id": operator_result.get("ruleset_id"),
         "ruleset_updated_at": operator_result.get("ruleset_updated_at"),
+    }
+    return hashlib.sha256(_canonical_json(material).encode()).hexdigest()[:32]
+
+
+def _result(*, apply: bool, scopes: list[str], operator_result: Mapping[str, Any]) -> dict:
+    return {
+        "schema_version": "MULTIVERSE_R1_STAGE1_CODESPACES_ADMIN_CHANNEL_RESULT_v2",
+        "status": "CODESPACES_APPLY_PENDING_MANDATORY_CLEANUP" if apply
+                  else "CODESPACES_IPHONE_REHEARSAL_DRY_RUN_PENDING_CLEANUP",
+        "session_id": _session_id(apply=apply, operator_result=operator_result),
+        "canonical_repo": CANONICAL_REPO,
+        "approved_admin_head": APPROVED_ADMIN_HEAD,
+        "approved_auditor_review": APPROVED_AUDITOR_REVIEW,
+        "lab_result_comment": LAB_RESULT_COMMENT,
+        "approved_operator_blob": APPROVED_OPERATOR_BLOB,
+        "authentication_method": "GH_CLI_WEB_OAUTH_RAMFS_NO_SWAP",
+        "oauth_scopes": scopes,
+        "operator_status": operator_result.get("status"),
+        "ruleset_id": operator_result.get("ruleset_id"),
+        "ruleset_updated_at": operator_result.get("ruleset_updated_at"),
+        "credential_material_printed": False,
+        "environment_token_used": False,
+        "local_cleanup_proof_required": True,
+        "codespace_deletion_required": True,
+        "durable_github_cleanup_receipt_required": True,
+        "phase_c_gate_open": False,
         "runtime_activation_performed": False,
-        "writer_key_created": False,
-        "runtime_branch_created": False,
-        "activation_receipt_created": False,
+    }
+
+
+def _mountinfo_has_exact(path: str) -> bool:
+    try:
+        text = pathlib.Path("/proc/self/mountinfo").read_text()
+    except Exception as exc:
+        raise Denied("CODESPACES_MOUNTINFO_UNREADABLE") from exc
+    for line in text.splitlines():
+        fields = line.split()
+        if len(fields) >= 5 and fields[4].replace("\\040", " ") == path:
+            return True
+    return False
+
+
+def _cleanup_check(session_id: str) -> dict:
+    if not _HEX32.fullmatch(session_id):
+        _deny("CODESPACES_CLEANUP_SESSION_ID_INVALID")
+    _assert_env_clean()
+    if os.environ.get("GH_CONFIG_DIR") not in (None, ""):
+        _deny("CODESPACES_CLEANUP_GH_CONFIG_DIR_MUST_BE_UNSET")
+    if pathlib.Path(EXPECTED_GH_CONFIG_DIR).exists():
+        _deny("CODESPACES_CLEANUP_AUTH_PATH_STILL_EXISTS")
+    if _mountinfo_has_exact(EXPECTED_GH_CONFIG_DIR):
+        _deny("CODESPACES_CLEANUP_RAMFS_STILL_MOUNTED")
+    return {
+        "schema_version": "MULTIVERSE_R1_STAGE1_CODESPACES_LOCAL_CLEANUP_PROOF_v1",
+        "status": "CODESPACES_LOCAL_CREDENTIAL_CLEANUP_VERIFIED",
+        "session_id": session_id,
+        "codespace_name": os.environ.get("CODESPACE_NAME", ""),
+        "environment_tokens_absent": True,
+        "gh_config_dir_unset": True,
+        "ramfs_unmounted": True,
+        "auth_path_absent": True,
+        "codespace_deletion_still_required": True,
+        "durable_github_cleanup_receipt_still_required": True,
+        "phase_c_gate_open": False,
     }
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--cleanup-check")
     args = parser.parse_args(argv)
-
-    _assert_environment_before_any_gh()
+    if args.apply and args.cleanup_check:
+        _deny("CODESPACES_ARGUMENT_MODE_CONFLICT")
+    if args.cleanup_check:
+        print(_canonical_json(_cleanup_check(args.cleanup_check)))
+        return 0
+    _assert_env_clean()
+    _assert_auth_storage_secure()
     _assert_local_gh_config_safe()
-    scopes = _verify_browser_oauth_identity_and_scope()
-    _verify_approved_operator_blob()
-    operator_result = _run_approved_operator(apply=args.apply)
-    status = "CODESPACES_APPLY_COMPLETE" if args.apply else "CODESPACES_DRY_RUN_COMPLETE"
-    print(_canonical_json(_result(status, scopes=scopes, operator_result=operator_result)))
+    scopes = _verify_oauth()
+    _verify_approved_operator()
+    operator_result = _operator(apply=args.apply)
+    print(_canonical_json(_result(apply=args.apply, scopes=scopes, operator_result=operator_result)))
     return 0
 
 
