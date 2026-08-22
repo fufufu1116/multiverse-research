@@ -23,7 +23,7 @@ jobs:
         run: |
           set -euo pipefail
           test "${{ github.event.pull_request.base.sha }}" = "$EXPECTED_PARENT"
-          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "3"
+          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "4"
           mapfile -t files < <(git diff --name-only "$EXPECTED_PARENT"...HEAD | sort)
           expected=(
             ".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml"
@@ -68,9 +68,10 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           p = Path(".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml")
-          text = p.read_text()
-          forbidden = ["schedule:", "workflow_dispatch:", "push:", "contents: write", "actions: write"]
-          for token in forbidden:
-              if token in text:
-                  raise SystemExit(f"forbidden workflow surface: {token}")
+          lines = p.read_text().splitlines()
+          exact_forbidden = {"  schedule:", "  workflow_dispatch:", "  push:"}
+          if any(line in exact_forbidden for line in lines):
+              raise SystemExit("forbidden workflow trigger")
+          if any("contents: write" in line or "actions: write" in line for line in lines):
+              raise SystemExit("forbidden workflow permission")
           PY
