@@ -47,6 +47,29 @@ def expect_denied(details: list[dict], needle: str) -> None:
         raise AssertionError(f"expected denial containing {needle}")
 
 
+def assert_mutation_tamper_denied_without_transport(tamper, restore) -> None:
+    calls: list[tuple] = []
+    original_run = m.subprocess.run
+
+    def forbidden_run(*args, **kwargs):
+        calls.append((args, kwargs))
+        raise AssertionError("mutation tamper must deny before transport")
+
+    tamper()
+    m.subprocess.run = forbidden_run
+    try:
+        try:
+            m._post_exact_ruleset_after_fresh_barrier()
+        except m.Denied as exc:
+            assert "MUTATION_BINDING_TAMPERED" in str(exc), str(exc)
+        else:
+            raise AssertionError("mutation binding tamper must deny")
+    finally:
+        m.subprocess.run = original_run
+        restore()
+    assert calls == [], calls
+
+
 def main() -> None:
     good = base_detail()
     assert m._strict_ruleset_detail(good)
@@ -73,7 +96,7 @@ def main() -> None:
     duplicate[1]["id"] = 124
     expect_denied(duplicate, "DUPLICATE_EXACT")
 
-    # Regression for Lab finding: an exact ruleset must not early-return past
+    # Regression for the first Lab finding: exact reuse cannot early-return past
     # any competing tag ruleset or same-name noncompliant ruleset.
     exact_plus_other = [base_detail(), copy.deepcopy(other_tag)]
     exact_plus_other[1]["id"] = 125
@@ -83,10 +106,11 @@ def main() -> None:
     exact_plus_same_name_bad[1]["id"] = 126
     expect_denied(exact_plus_same_name_bad, "SAME_NAME_NONCOMPLIANT")
 
-    # Generic endpoint/method/payload primitive is gone. Read-only endpoints
-    # come only from a closed builder; the production mutation is argument-free
-    # and reruns Fresh barriers internally before the fixed POST.
+    # Generic endpoint/method/payload primitive remains absent. Read-only
+    # endpoints come only from a closed builder and production mutation has no
+    # caller parameters.
     assert not hasattr(m, "_gh_json")
+    assert not hasattr(m, "RULESET_PAYLOAD")
     assert list(inspect.signature(m._post_exact_ruleset_after_fresh_barrier).parameters) == []
     assert m._build_get_endpoint("main") == f"/repos/{m.REPO}/branches/main"
     try:
@@ -95,6 +119,35 @@ def main() -> None:
         assert "GET_RESOURCE_NOT_ALLOWLISTED" in str(exc)
     else:
         raise AssertionError("non-allowlisted GET selector must deny")
+
+    # Regression for final Lab finding: reintroducing/injecting a mutable
+    # module-level payload must deny before *any* subprocess/transport call.
+    def tamper_payload() -> None:
+        m.RULESET_PAYLOAD = {
+            "name": m.RULESET_NAME,
+            "target": "tag",
+            "enforcement": "active",
+            "bypass_actors": [{"actor_id": 999}],
+            "conditions": {"ref_name": {"include": [], "exclude": []}},
+            "rules": [],
+        }
+
+    def restore_payload() -> None:
+        if hasattr(m, "RULESET_PAYLOAD"):
+            delattr(m, "RULESET_PAYLOAD")
+
+    assert_mutation_tamper_denied_without_transport(tamper_payload, restore_payload)
+
+    # Repo identity is also caller-independent at the mutation boundary.
+    original_repo = m.REPO
+
+    def tamper_repo() -> None:
+        m.REPO = "attacker/alternate-repository"
+
+    def restore_repo() -> None:
+        m.REPO = original_repo
+
+    assert_mutation_tamper_denied_without_transport(tamper_repo, restore_repo)
 
     dry = m._result("DRY_RUN_WOULD_CREATE_EXACT_RULESET")
     assert dry["secret_material_present"] is False
