@@ -170,7 +170,16 @@ class CanonicalAuthorityDecisionAdapter:
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         if __name__ != "__main__":
-            raise TypeError("CanonicalAuthorityDecisionAdapter is final in production imports")
+            exact_v2_definition = (
+                cls.__module__ == "multiverse_r1_stage1_canonical_authority_adapter_v2"
+                and cls.__name__ == "ProductionAuthorityDecisionAdapter"
+                and "__init__" not in cls.__dict__
+                and "__new__" not in cls.__dict__
+            )
+            if not exact_v2_definition:
+                raise TypeError(
+                    "CanonicalAuthorityDecisionAdapter permits only the audited v2 subclass in production imports"
+                )
         super().__init_subclass__(**kwargs)
 
     def __init__(self, repo_root: Path | str, *, anchor: VerifiedCanonicalAuthorityAnchor):
@@ -181,7 +190,19 @@ class CanonicalAuthorityDecisionAdapter:
             _deny("AUTHORITY_ANCHOR_TYPE")
         anchor.validate()
         if __name__ != "__main__":
-            if type(self) is not CanonicalAuthorityDecisionAdapter:
+            allowed_type = type(self) is CanonicalAuthorityDecisionAdapter
+            if not allowed_type:
+                try:
+                    from multiverse_r1_stage1_canonical_authority_adapter_v2 import (
+                        ProductionAuthorityDecisionAdapter as _ProductionAuthorityDecisionAdapter,
+                    )
+                except Exception as exc:
+                    raise CanonicalAuthorityDenied(
+                        "AUTHORITY_PRODUCTION_SUBCLASS_IDENTITY_UNAVAILABLE:"
+                        + str(exc)[:200]
+                    ) from exc
+                allowed_type = type(self) is _ProductionAuthorityDecisionAdapter
+            if not allowed_type:
                 _deny("AUTHORITY_PRODUCTION_SUBCLASS_PROHIBITED")
             try:
                 from multiverse_r1_stage1_verified_activation_receipt_loader_v2 import (
