@@ -171,7 +171,10 @@ class CanonicalAuthorityDecisionAdapter:
     def __init_subclass__(cls, **kwargs: Any) -> None:
         if __name__ != "__main__":
             exact_v2_definition = (
-                cls.__module__ == "multiverse_r1_stage1_canonical_authority_adapter_v2"
+                cls.__module__ in {
+                    "multiverse_r1_stage1_canonical_authority_adapter_v2",
+                    "__main__",
+                }
                 and cls.__name__ == "ProductionAuthorityDecisionAdapter"
                 and "__init__" not in cls.__dict__
                 and "__new__" not in cls.__dict__
