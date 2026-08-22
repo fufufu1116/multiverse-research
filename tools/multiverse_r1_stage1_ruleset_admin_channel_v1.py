@@ -34,24 +34,6 @@ JOURNAL_INCLUDE = "refs/tags/multiverse-r1-stage1-ledger-v1-*"
 ACTIVATION_INCLUDE = "refs/tags/multiverse-r1-stage1-activation-v1"
 API_VERSION = "2022-11-28"
 
-RULESET_PAYLOAD = {
-    "name": RULESET_NAME,
-    "target": "tag",
-    "enforcement": "active",
-    "bypass_actors": [],
-    "conditions": {
-        "ref_name": {
-            "include": [JOURNAL_INCLUDE, ACTIVATION_INCLUDE],
-            "exclude": [],
-        }
-    },
-    "rules": [
-        {"type": "deletion"},
-        {"type": "update"},
-        {"type": "non_fast_forward"},
-    ],
-}
-
 _CANONICAL_BLOBS = {
     "authority": (AUTHORITY_PATH, AUTHORITY_BLOB),
     "runtime_cas": (RUNTIME_CAS_PATH, RUNTIME_CAS_BLOB),
@@ -325,26 +307,85 @@ def _classify_existing(details: list[dict]) -> tuple[str, dict | None]:
 def _post_exact_ruleset_after_fresh_barrier() -> tuple[str, dict]:
     """Perform the only production mutation, with no caller-supplied inputs.
 
-    This function is safe even if imported and called directly: it reruns all
-    Fresh preconditions and the complete ambiguity classifier before POST.
+    Mutation-bound identity is checked against inline reviewed literals before
+    any transport. The POST endpoint and body are then rebuilt locally from
+    literals, never from a module-level mutable payload object.
     """
+    expected_canonical_blobs = {
+        "authority": (
+            "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json",
+            "fed643f0ec5e2146dc0ea1031371fd1caf121fc6",
+        ),
+        "runtime_cas": (
+            "tools/multiverse_r1_stage1_github_runtime_cas_v1.py",
+            "57164a9c6a42a89af9ea45366bc93bfed88b0244",
+        ),
+        "loader": (
+            "tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py",
+            "b1ae9e525f68db7bf5a321c8e90000497980e67e",
+        ),
+    }
+    if (
+        REPO != "fufufu1116/multiverse-research"
+        or EXPECTED_MAIN != "66e342fced4bfbd3b1124a49e185b175db359e86"
+        or PHASE_B_PR != 68
+        or PHASE_B_HEAD != "ccdc66c3c877c4a9fb598cf5da7ecb3ff9208b26"
+        or PHASE_B_LAB_COMMENT != 5378314532
+        or PHASE_B_AUDITOR_REVIEW != 4999306904
+        or RUNTIME_BRANCH != "runtime/r1-source-audit-stage1-v1"
+        or RULESET_NAME != "multiverse-r1-stage1-journal-activation-protection-v1"
+        or JOURNAL_INCLUDE != "refs/tags/multiverse-r1-stage1-ledger-v1-*"
+        or ACTIVATION_INCLUDE != "refs/tags/multiverse-r1-stage1-activation-v1"
+        or API_VERSION != "2022-11-28"
+        or _CANONICAL_BLOBS != expected_canonical_blobs
+        or "RULESET_PAYLOAD" in globals()
+    ):
+        _deny("RULESET_ADMIN_MUTATION_BINDING_TAMPERED")
+
     _preconditions()
     state, detail = _classify_existing(_repository_ruleset_details())
     if state == "EXISTING_EXACT" and detail is not None:
         return "EXISTING_EXACT_VERIFIED_AFTER_REFRESH", detail
 
+    reviewed_payload = {
+        "name": "multiverse-r1-stage1-journal-activation-protection-v1",
+        "target": "tag",
+        "enforcement": "active",
+        "bypass_actors": [],
+        "conditions": {
+            "ref_name": {
+                "include": [
+                    "refs/tags/multiverse-r1-stage1-ledger-v1-*",
+                    "refs/tags/multiverse-r1-stage1-activation-v1",
+                ],
+                "exclude": [],
+            }
+        },
+        "rules": [
+            {"type": "deletion"},
+            {"type": "update"},
+            {"type": "non_fast_forward"},
+        ],
+    }
+    reviewed_body = json.dumps(
+        reviewed_payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
+
     _validate_transport()
     cmd = [
         "gh", "api", "--hostname", "github.com",
         "-H", "Accept: application/vnd.github+json",
-        "-H", f"X-GitHub-Api-Version: {API_VERSION}",
+        "-H", "X-GitHub-Api-Version: 2022-11-28",
         "--method", "POST",
         "--input", "-",
-        f"/repos/{REPO}/rulesets",
+        "/repos/fufufu1116/multiverse-research/rulesets",
     ]
     proc = subprocess.run(
         cmd,
-        input=_canonical_json(RULESET_PAYLOAD),
+        input=reviewed_body,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
