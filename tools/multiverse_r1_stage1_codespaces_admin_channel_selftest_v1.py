@@ -116,7 +116,7 @@ def expect_env_denied_before_run(key: str, value: str) -> None:
     assert calls == []
 
 
-def test_tmpfs_rejected() -> None:
+def test_nonmemory_fs_rejected() -> None:
     old = setup_env()
     original_lstat = m.os.lstat
     original_run = m._run
@@ -124,19 +124,27 @@ def test_tmpfs_rejected() -> None:
     fake_dir = SimpleNamespace(st_mode=stat.S_IFDIR | 0o700, st_uid=os.getuid())
     m.os.lstat = lambda path: fake_dir
     m.os.walk = lambda *args, **kwargs: []
-    m._run = lambda cmd: subprocess.CompletedProcess(cmd, 0, "tmpfs\n", "")
+    m._run = lambda cmd: subprocess.CompletedProcess(cmd, 0, "ext2/ext3\n", "")
     try:
         try:
             m._assert_auth_storage_secure()
         except m.Denied as exc:
-            assert "NONSWAPPABLE_RAMFS" in str(exc)
+            assert "MEMORY_FILESYSTEM" in str(exc)
         else:
-            raise AssertionError("tmpfs must be rejected")
+            raise AssertionError("non-memory filesystem must be rejected")
     finally:
         m.os.lstat = original_lstat
         m.os.walk = original_walk
         m._run = original_run
         restore_env(old)
+
+
+def test_tmpfs_requires_swap_check() -> None:
+    source = inspect.getsource(m._assert_auth_storage_secure)
+    assert '{"tmpfs", "ramfs"}' in source
+    assert "_assert_swap_absent()" in source
+    swap_source = inspect.getsource(m._assert_swap_absent)
+    assert "/proc/swaps" in swap_source and "ACTIVE_SWAP_PROHIBITED" in swap_source
 
 
 def main() -> None:
@@ -162,20 +170,15 @@ def main() -> None:
                            ("SSL_CERT_FILE", "/tmp/ca"), ("GH_DEBUG", "api")):
             expect_env_denied_before_run(key, value)
 
-        test_tmpfs_rejected()
+        test_nonmemory_fs_rejected()
+        test_tmpfs_requires_swap_check()
 
-        # Structural regression assertions for the new storage boundary.
         source = inspect.getsource(m._assert_auth_storage_secure)
-        assert '!= "ramfs"' in source
         assert "st_uid" in source and "0o700" in source
         assert "S_ISLNK" in source and "S_ISREG" in source and "st_nlink" in source
-        assert "/proc/swaps" in inspect.getsource(m._assert_swap_absent)
 
-        # Local cleanup proof itself is non-network and cannot open Phase C.
-        old_mount = m._mountinfo_has_exact
         old_exists = m.pathlib.Path.exists
         os.environ.pop("GH_CONFIG_DIR", None)
-        m._mountinfo_has_exact = lambda path: False
         m.pathlib.Path.exists = lambda self: False
         try:
             cleanup = m._cleanup_check(applied["session_id"])
@@ -183,7 +186,6 @@ def main() -> None:
             assert cleanup["phase_c_gate_open"] is False
             assert cleanup["codespace_deletion_still_required"] is True
         finally:
-            m._mountinfo_has_exact = old_mount
             m.pathlib.Path.exists = old_exists
             os.environ["GH_CONFIG_DIR"] = m.EXPECTED_GH_CONFIG_DIR
 
