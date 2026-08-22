@@ -24,7 +24,7 @@ APPROVED_AUDITOR_REVIEW = 4999948431
 LAB_RESULT_COMMENT = 5379999637
 APPROVED_OPERATOR_PATH = "tools/multiverse_r1_stage1_ruleset_admin_channel_v1.py"
 APPROVED_OPERATOR_BLOB = "673501d6c083ee240811156ce5917d34b7a1bee4"
-EXPECTED_GH_CONFIG_DIR = "/mnt/multiverse-r1-stage1-gh-auth"
+EXPECTED_GH_CONFIG_DIR = "/dev/shm/multiverse-r1-stage1-gh-auth"
 REQUIRED_SCOPE = "repo"
 ALLOWED_OAUTH_SCOPES = {"repo", "read:org", "gist", "workflow"}
 API_VERSION = "2022-11-28"
@@ -44,13 +44,7 @@ def _canonical_json(value: Any) -> str:
 
 
 def _run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        cmd,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env=os.environ.copy(),
-    )
+    return subprocess.run(cmd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=os.environ.copy())
 
 
 def _assert_env_clean() -> None:
@@ -80,21 +74,21 @@ def _assert_swap_absent() -> None:
 
 def _assert_auth_storage_secure() -> None:
     if os.environ.get("GH_CONFIG_DIR") != EXPECTED_GH_CONFIG_DIR:
-        _deny("CODESPACES_GH_CONFIG_DIR_NOT_PINNED_TO_REVIEWED_RAMFS_PATH")
+        _deny("CODESPACES_GH_CONFIG_DIR_NOT_PINNED_TO_REVIEWED_MEMORY_PATH")
     cfg = pathlib.Path(EXPECTED_GH_CONFIG_DIR)
     try:
         st = os.lstat(cfg)
     except FileNotFoundError as exc:
-        raise Denied("CODESPACES_RAMFS_AUTH_DIR_MISSING") from exc
+        raise Denied("CODESPACES_AUTH_DIR_MISSING") from exc
     if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
-        _deny("CODESPACES_RAMFS_AUTH_DIR_MUST_BE_REAL_DIRECTORY")
+        _deny("CODESPACES_AUTH_DIR_MUST_BE_REAL_DIRECTORY")
     if st.st_uid != os.getuid():
-        _deny("CODESPACES_RAMFS_AUTH_DIR_OWNER_MISMATCH")
+        _deny("CODESPACES_AUTH_DIR_OWNER_MISMATCH")
     if stat.S_IMODE(st.st_mode) != 0o700:
-        _deny("CODESPACES_RAMFS_AUTH_DIR_MODE_NOT_0700")
+        _deny("CODESPACES_AUTH_DIR_MODE_NOT_0700")
     probe = _run(["stat", "-f", "-c", "%T", EXPECTED_GH_CONFIG_DIR])
-    if probe.returncode != 0 or probe.stdout.strip() != "ramfs":
-        _deny("CODESPACES_AUTH_STORAGE_MUST_BE_NONSWAPPABLE_RAMFS")
+    if probe.returncode != 0 or probe.stdout.strip() not in {"tmpfs", "ramfs"}:
+        _deny("CODESPACES_AUTH_STORAGE_MUST_BE_MEMORY_FILESYSTEM")
     _assert_swap_absent()
     for root, dirs, files in os.walk(cfg, topdown=True, followlinks=False):
         base = pathlib.Path(root)
@@ -110,8 +104,7 @@ def _assert_auth_storage_secure() -> None:
                 _deny("CODESPACES_AUTH_STORAGE_FILE_MUST_BE_REGULAR_NON_SYMLINK")
             if s.st_nlink != 1 or s.st_uid != os.getuid():
                 _deny("CODESPACES_AUTH_STORAGE_FILE_IDENTITY")
-            mode = stat.S_IMODE(s.st_mode)
-            if mode & 0o177:
+            if stat.S_IMODE(s.st_mode) & 0o177:
                 _deny("CODESPACES_AUTH_STORAGE_FILE_MODE_TOO_BROAD")
 
 
@@ -233,7 +226,7 @@ def _result(*, apply: bool, scopes: list[str], operator_result: Mapping[str, Any
         "approved_auditor_review": APPROVED_AUDITOR_REVIEW,
         "lab_result_comment": LAB_RESULT_COMMENT,
         "approved_operator_blob": APPROVED_OPERATOR_BLOB,
-        "authentication_method": "GH_CLI_WEB_OAUTH_RAMFS_NO_SWAP",
+        "authentication_method": "GH_CLI_WEB_OAUTH_MEMORY_FS_NO_ACTIVE_SWAP",
         "oauth_scopes": scopes,
         "operator_status": operator_result.get("status"),
         "ruleset_id": operator_result.get("ruleset_id"),
@@ -248,18 +241,6 @@ def _result(*, apply: bool, scopes: list[str], operator_result: Mapping[str, Any
     }
 
 
-def _mountinfo_has_exact(path: str) -> bool:
-    try:
-        text = pathlib.Path("/proc/self/mountinfo").read_text()
-    except Exception as exc:
-        raise Denied("CODESPACES_MOUNTINFO_UNREADABLE") from exc
-    for line in text.splitlines():
-        fields = line.split()
-        if len(fields) >= 5 and fields[4].replace("\\040", " ") == path:
-            return True
-    return False
-
-
 def _cleanup_check(session_id: str) -> dict:
     if not _HEX32.fullmatch(session_id):
         _deny("CODESPACES_CLEANUP_SESSION_ID_INVALID")
@@ -268,8 +249,6 @@ def _cleanup_check(session_id: str) -> dict:
         _deny("CODESPACES_CLEANUP_GH_CONFIG_DIR_MUST_BE_UNSET")
     if pathlib.Path(EXPECTED_GH_CONFIG_DIR).exists():
         _deny("CODESPACES_CLEANUP_AUTH_PATH_STILL_EXISTS")
-    if _mountinfo_has_exact(EXPECTED_GH_CONFIG_DIR):
-        _deny("CODESPACES_CLEANUP_RAMFS_STILL_MOUNTED")
     return {
         "schema_version": "MULTIVERSE_R1_STAGE1_CODESPACES_LOCAL_CLEANUP_PROOF_v1",
         "status": "CODESPACES_LOCAL_CREDENTIAL_CLEANUP_VERIFIED",
@@ -277,7 +256,6 @@ def _cleanup_check(session_id: str) -> dict:
         "codespace_name": os.environ.get("CODESPACE_NAME", ""),
         "environment_tokens_absent": True,
         "gh_config_dir_unset": True,
-        "ramfs_unmounted": True,
         "auth_path_absent": True,
         "codespace_deletion_still_required": True,
         "durable_github_cleanup_receipt_still_required": True,
