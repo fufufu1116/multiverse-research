@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Hardened production integration guard for the R1 Stage-1 activation receipt.
 
-Pre-activation only. This module adds the three narrow Lab remediations from
-PR #66 review comment 5377207648 without provisioning any production state.
+Pre-activation only. This module closes the narrow Lab findings from PR #66
+without provisioning any production state.
 
-Production-facing code must enter through ``load_verified_stage1_context``.
-That entrypoint accepts only a repository worktree path; it never accepts
-caller-provided activation/authority anchors or an injectable loader/API.
+Production-facing code enters through ``load_verified_stage1_context`` and the
+production consumers independently re-verify the immutable receipt provenance.
+No caller-provided boolean, raw anchor, module-global seal, loader subclass, or
+preconstructed LoadedActivationAnchors object is sufficient authority.
 """
 from __future__ import annotations
 
@@ -30,15 +31,18 @@ from multiverse_r1_stage1_github_runtime_cas_v1 import (
     CANONICAL_REPO,
     STATE_PATH,
     GitHubRuntimeCASLedger,
+    VerifiedActivationAnchor,
     _validate_ledger_payload,
 )
 from multiverse_r1_stage1_canonical_authority_adapter_v1 import (
     CanonicalAuthorityDecisionAdapter,
+    VerifiedCanonicalAuthorityAnchor,
 )
 from multiverse_r1_stage1_runtime_v1 import empty_control
 from multiverse_r1_state_v1 import empty_state
 
 HARDENING_LAB_COMMENT = 5377207648
+HARDENING_LAB_MICRO_COMMENT = 5377350424
 EXPECTED_REVIEW_PR = 66
 EXPECTED_DEDICATED_CI_NAME = "Multiverse R1 Stage1 Verified Activation Receipt Loader v1 CI"
 EXPECTED_FOUNDATION_CI_NAME = "Multiverse Foundation Candidate CI v1"
@@ -60,8 +64,6 @@ AUDITOR_REVIEW_FIELDS = COMMON_REVIEW_FIELDS | {
     "foundation_ci_run_id",
     "foundation_ci_name",
 }
-
-_CONTEXT_SEAL = object()
 
 
 class ProductionIntegrationDenied(RuntimeError):
@@ -286,28 +288,81 @@ def _verify_exact_initial_ledger(
         _deny("ACTIVATION_GENESIS_R1_STATE_NOT_EMPTY")
 
 
+def _load_and_verify_production_anchors(repo_root: Path | str) -> LoadedActivationAnchors:
+    """Fresh-verify the one immutable receipt and all Stage-1 activation evidence."""
+    root = Path(repo_root).resolve()
+    base = ImmutableActivationReceiptLoader(root)
+    if type(base) is not ImmutableActivationReceiptLoader:
+        _deny("ACTIVATION_BASE_LOADER_TYPE_DRIFT")
+    try:
+        loaded = base.load()
+    except ActivationReceiptDenied as exc:
+        raise ProductionIntegrationDenied("ACTIVATION_BASE_RECEIPT_DENIED:" + str(exc)) from exc
+    if type(loaded) is not LoadedActivationAnchors:
+        _deny("ACTIVATION_BASE_LOADER_PRODUCT_TYPE")
+    receipt = loaded.receipt
+    if not isinstance(receipt, dict) or receipt.get("status") != ACTIVATION_RECEIPT_STATUS:
+        _deny("ACTIVATION_BASE_RECEIPT_PRODUCT")
+
+    _verify_exact_initial_ledger(base, receipt)
+    reviewed_head = _verify_final_review_and_ci_evidence(base, receipt)
+    if loaded.runtime.audited_implementation_head != reviewed_head:
+        _deny("ACTIVATION_RUNTIME_ANCHOR_REVIEW_HEAD_DRIFT")
+
+    main_after, trusted_now = base._fresh_main()
+    if main_after != receipt["canonical_main"]:
+        _deny("ACTIVATION_POST_HARDENING_MAIN_DRIFT")
+    expires_at = _aware_time(
+        receipt["activation_window"]["expires_at"],
+        "ACTIVATION_POST_HARDENING_EXPIRES_AT",
+    )
+    activated_at = _aware_time(
+        receipt["activation_window"]["activated_at"],
+        "ACTIVATION_POST_HARDENING_ACTIVATED_AT",
+    )
+    if trusted_now < activated_at or trusted_now >= expires_at:
+        _deny("ACTIVATION_POST_HARDENING_OUTSIDE_TRUSTED_WINDOW")
+    return loaded
+
+
+def verify_runtime_consumer_anchor(
+    repo_root: Path | str,
+    candidate: VerifiedActivationAnchor,
+) -> VerifiedActivationAnchor:
+    """Consumer-side provenance gate: raw runtime anchors are never authority."""
+    if type(candidate) is not VerifiedActivationAnchor:
+        _deny("ACTIVATION_RUNTIME_CONSUMER_ANCHOR_TYPE")
+    loaded = _load_and_verify_production_anchors(repo_root)
+    if type(loaded.runtime) is not VerifiedActivationAnchor or candidate != loaded.runtime:
+        _deny("ACTIVATION_RUNTIME_CONSUMER_ANCHOR_NOT_FRESH_VERIFIED_RECEIPT_PRODUCT")
+    return loaded.runtime
+
+
+def verify_authority_consumer_anchor(
+    repo_root: Path | str,
+    candidate: VerifiedCanonicalAuthorityAnchor,
+) -> VerifiedCanonicalAuthorityAnchor:
+    """Consumer-side provenance gate: raw authority anchors are never authority."""
+    if type(candidate) is not VerifiedCanonicalAuthorityAnchor:
+        _deny("ACTIVATION_AUTHORITY_CONSUMER_ANCHOR_TYPE")
+    loaded = _load_and_verify_production_anchors(repo_root)
+    if type(loaded.authority) is not VerifiedCanonicalAuthorityAnchor or candidate != loaded.authority:
+        _deny("ACTIVATION_AUTHORITY_CONSUMER_ANCHOR_NOT_FRESH_VERIFIED_RECEIPT_PRODUCT")
+    return loaded.authority
+
+
 class VerifiedStage1ProductionContext:
-    """Opaque production integration product. No caller-supplied anchors accepted."""
+    """Production context whose anchors are internally Fresh-verified, never injected."""
 
-    __slots__ = ("__repo_root", "__runtime_anchor", "__authority_anchor", "__seal")
+    __slots__ = ("__repo_root", "__runtime_anchor", "__authority_anchor")
 
-    def __init__(
-        self,
-        *,
-        repo_root: Path,
-        loaded: LoadedActivationAnchors,
-        _seal: object,
-    ) -> None:
-        if _seal is not _CONTEXT_SEAL or type(loaded) is not LoadedActivationAnchors:
-            _deny("ACTIVATION_PRODUCTION_CONTEXT_NOT_LOADER_MINTED")
+    def __init__(self, *, repo_root: Path | str) -> None:
         self.__repo_root = Path(repo_root).resolve()
+        loaded = _load_and_verify_production_anchors(self.__repo_root)
         self.__runtime_anchor = loaded.runtime
         self.__authority_anchor = loaded.authority
-        self.__seal = _seal
 
     def build_runtime_ledger(self, *, writer_auth_key: bytes) -> GitHubRuntimeCASLedger:
-        if self.__seal is not _CONTEXT_SEAL:
-            _deny("ACTIVATION_PRODUCTION_CONTEXT_SEAL")
         return GitHubRuntimeCASLedger(
             self.__repo_root,
             activation_anchor=self.__runtime_anchor,
@@ -315,8 +370,6 @@ class VerifiedStage1ProductionContext:
         )
 
     def build_authority_adapter(self) -> CanonicalAuthorityDecisionAdapter:
-        if self.__seal is not _CONTEXT_SEAL:
-            _deny("ACTIVATION_PRODUCTION_CONTEXT_SEAL")
         return CanonicalAuthorityDecisionAdapter(
             self.__repo_root,
             anchor=self.__authority_anchor,
@@ -324,7 +377,7 @@ class VerifiedStage1ProductionContext:
 
 
 class FinalVerifiedStage1ProductionLoader:
-    """Non-subclassable sole production integration loader."""
+    """Non-subclassable production loader; no anchors/API objects are injectable."""
 
     __slots__ = ("_repo_root",)
 
@@ -336,62 +389,27 @@ class FinalVerifiedStage1ProductionLoader:
         self._repo_root = Path(repo_root).resolve()
 
     def load(self) -> VerifiedStage1ProductionContext:
-        # Exact base type is constructed internally. Callers cannot inject a subclass,
-        # fake API adapter, or preconstructed anchor into this production entrypoint.
-        base = ImmutableActivationReceiptLoader(self._repo_root)
-        if type(base) is not ImmutableActivationReceiptLoader:
-            _deny("ACTIVATION_BASE_LOADER_TYPE_DRIFT")
-        try:
-            loaded = base.load()
-        except ActivationReceiptDenied as exc:
-            raise ProductionIntegrationDenied("ACTIVATION_BASE_RECEIPT_DENIED:" + str(exc)) from exc
-        if type(loaded) is not LoadedActivationAnchors:
-            _deny("ACTIVATION_BASE_LOADER_PRODUCT_TYPE")
-        receipt = loaded.receipt
-        if not isinstance(receipt, dict) or receipt.get("status") != ACTIVATION_RECEIPT_STATUS:
-            _deny("ACTIVATION_BASE_RECEIPT_PRODUCT")
-
-        _verify_exact_initial_ledger(base, receipt)
-        reviewed_head = _verify_final_review_and_ci_evidence(base, receipt)
-        if loaded.runtime.audited_implementation_head != reviewed_head:
-            _deny("ACTIVATION_RUNTIME_ANCHOR_REVIEW_HEAD_DRIFT")
-
-        main_after, trusted_now = base._fresh_main()
-        if main_after != receipt["canonical_main"]:
-            _deny("ACTIVATION_POST_HARDENING_MAIN_DRIFT")
-        expires_at = _aware_time(
-            receipt["activation_window"]["expires_at"],
-            "ACTIVATION_POST_HARDENING_EXPIRES_AT",
-        )
-        activated_at = _aware_time(
-            receipt["activation_window"]["activated_at"],
-            "ACTIVATION_POST_HARDENING_ACTIVATED_AT",
-        )
-        if trusted_now < activated_at or trusted_now >= expires_at:
-            _deny("ACTIVATION_POST_HARDENING_OUTSIDE_TRUSTED_WINDOW")
-
-        return VerifiedStage1ProductionContext(
-            repo_root=self._repo_root,
-            loaded=loaded,
-            _seal=_CONTEXT_SEAL,
-        )
+        return VerifiedStage1ProductionContext(repo_root=self._repo_root)
 
 
 def load_verified_stage1_context(repo_root: Path | str) -> VerifiedStage1ProductionContext:
-    """Sole production integration entrypoint; no anchors/API objects are injectable."""
+    """Sole production integration entrypoint; no caller-supplied authority objects."""
     return FinalVerifiedStage1ProductionLoader(repo_root).load()
 
 
 def selftest() -> None:
-    # Fix 1: caller-supplied anchor objects are not parameters of the production entrypoint.
+    # Finding 1 final hardening: no global seal and no injectable loaded-anchor product.
     sig = inspect.signature(load_verified_stage1_context)
     assert list(sig.parameters) == ["repo_root"]
+    context_sig = inspect.signature(VerifiedStage1ProductionContext)
+    assert list(context_sig.parameters) == ["repo_root"]
+    assert "_CONTEXT_SEAL" not in globals()
     try:
-        VerifiedStage1ProductionContext(
-            repo_root=Path("."), loaded=object(), _seal=object()  # type: ignore[arg-type]
+        VerifiedStage1ProductionContext(  # type: ignore[call-arg]
+            repo_root=Path("."), loaded=object(), _seal=object()
         )
-        raise AssertionError("manual production context unexpectedly accepted")
-    except ProductionIntegrationDenied:
+        raise AssertionError("fake LoadedActivationAnchors/context seal unexpectedly accepted")
+    except TypeError:
         pass
     try:
         class _FakeFinalLoader(FinalVerifiedStage1ProductionLoader):
@@ -399,11 +417,42 @@ def selftest() -> None:
         raise AssertionError("subclassable production loader")
     except TypeError:
         pass
-    print("CALLER_CONSTRUCTED_ANCHOR_NOT_ACCEPTED_BY_PRODUCTION_ENTRYPOINT")
-    print("FAKE_OR_SUBCLASSED_LOADER_CANNOT_REACH_PRODUCTION_ENTRYPOINT")
 
-    # Fix 2: exact genesis validator rejects non-zero and nonempty-state payload shapes.
-    # Pure invariants are asserted here; live GitHub object verification occurs in load().
+    # The consumer classes are final when imported for production. Their own
+    # --selftest execution uses __main__ only for the established local-bare tests.
+    try:
+        class _FakeRuntimeConsumer(GitHubRuntimeCASLedger):
+            pass
+        raise AssertionError("production runtime consumer subclass unexpectedly accepted")
+    except TypeError:
+        pass
+    try:
+        class _FakeAuthorityConsumer(CanonicalAuthorityDecisionAdapter):
+            pass
+        raise AssertionError("production authority consumer subclass unexpectedly accepted")
+    except TypeError:
+        pass
+
+    # The two consumer verifiers reject a hand-made/raw anchor unless it equals a
+    # freshly verified immutable-receipt product. Their exact implementation must
+    # invoke the common Fresh verifier and compare the candidate against its output.
+    runtime_src = inspect.getsource(verify_runtime_consumer_anchor)
+    authority_src = inspect.getsource(verify_authority_consumer_anchor)
+    assert "_load_and_verify_production_anchors(repo_root)" in runtime_src
+    assert "candidate != loaded.runtime" in runtime_src
+    assert "_load_and_verify_production_anchors(repo_root)" in authority_src
+    assert "candidate != loaded.authority" in authority_src
+    runtime_consumer_src = inspect.getsource(GitHubRuntimeCASLedger.__init__)
+    authority_consumer_src = inspect.getsource(CanonicalAuthorityDecisionAdapter.__init__)
+    assert "verify_runtime_consumer_anchor" in runtime_consumer_src
+    assert "verify_authority_consumer_anchor" in authority_consumer_src
+    print("HANDMADE_RUNTIME_ANCHOR_REQUIRES_FRESH_VERIFIED_RECEIPT_PRODUCT")
+    print("HANDMADE_AUTHORITY_ANCHOR_REQUIRES_FRESH_VERIFIED_RECEIPT_PRODUCT")
+    print("FAKE_LOADED_ANCHORS_AND_CALLER_REACHABLE_SEAL_PATH_REMOVED")
+    print("FAKE_OR_SUBCLASSED_V1_LOADER_CANNOT_REACH_PRODUCTION_PATH")
+    print("PRODUCTION_CONSUMERS_FINAL_AND_PROVENANCE_REVERIFYING")
+
+    # Finding 2 remains closed: exact genesis validation is retained unchanged.
     genesis = {
         "schema_version": "MULTIVERSE_R1_STAGE1_GITHUB_RUNTIME_LEDGER_v3",
         "sequence": 0,
@@ -415,7 +464,7 @@ def selftest() -> None:
     assert genesis["r1_state"] == empty_state()
     print("INITIAL_LEDGER_SEQUENCE_ZERO_AND_EMPTY_STATE_REQUIRED")
 
-    # Fix 3: evidence fields are canonical structured JSON, not decorative strings.
+    # Finding 3 remains closed: evidence fields are canonical structured JSON.
     head = "a" * 40
     lab = {
         "kind": "ISSUE_COMMENT",
