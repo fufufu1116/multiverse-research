@@ -23,7 +23,7 @@ jobs:
         run: |
           set -euo pipefail
           test "${{ github.event.pull_request.base.sha }}" = "$EXPECTED_PARENT"
-          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "4"
+          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "5"
           mapfile -t files < <(git diff --name-only "$EXPECTED_PARENT"...HEAD | sort)
           expected=(
             ".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml"
@@ -65,13 +65,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          p = Path(".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml")
-          lines = p.read_text().splitlines()
-          exact_forbidden = {"  schedule:", "  workflow_dispatch:", "  push:"}
-          if any(line in exact_forbidden for line in lines):
-              raise SystemExit("forbidden workflow trigger")
-          if any("contents: write" in line or "actions: write" in line for line in lines):
-              raise SystemExit("forbidden workflow permission")
-          PY
+          wf=.github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml
+          if grep -Eq '^[[:space:]]{2}(schedule|workflow_dispatch|push):' "$wf"; then
+            echo "forbidden workflow trigger"
+            exit 1
+          fi
+          if grep -Eq '^[[:space:]]+(contents|actions):[[:space:]]+write([[:space:]]|$)' "$wf"; then
+            echo "forbidden workflow permission"
+            exit 1
+          fi
