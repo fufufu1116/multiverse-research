@@ -16,19 +16,21 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: Enforce exact parent and candidate scope
+      - name: Enforce exact parent and Lab-remediation scope
         shell: bash
         env:
           EXPECTED_PARENT: 8a6c9850645912676ac97085ecb1b0fbdc918be8
         run: |
           set -euo pipefail
           test "${{ github.event.pull_request.base.sha }}" = "$EXPECTED_PARENT"
-          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "5"
+          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "8"
           mapfile -t files < <(git diff --name-only "$EXPECTED_PARENT"...HEAD | sort)
           expected=(
             ".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml"
             "governance/MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_PREACTIVATION_CONTRACT_20260822_v1.json"
+            "governance/MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_LAB_REMEDIATION_CONTRACT_20260822_v2.json"
             "tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py"
+            "tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py"
           )
           mapfile -t want < <(printf '%s\n' "${expected[@]}" | sort)
           test "${#files[@]}" = "${#want[@]}"
@@ -47,11 +49,49 @@ jobs:
           blob="$(gh api --hostname github.com "repos/fufufu1116/multiverse-research/contents/governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json?ref=$main" --jq .sha)"
           test "$blob" = "$EXPECTED_ROOT_BLOB"
 
-      - name: Compile and selftest loader
+      - name: Validate exact three-fix remediation contract
+        shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('governance/MULTIVERSE_R1_STAGE1_VERIFIED_ACTIVATION_RECEIPT_LOADER_LAB_REMEDIATION_CONTRACT_20260822_v2.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='PREACTIVATION_LAB_NARROW_REMEDIATION_CANDIDATE_RUNTIME_OFF'
+          assert d['lab_pass_with_fixes_comment']==5377207648
+          assert d['remediation_scope']=='EXACTLY_THREE_LAB_FINDINGS_ONLY'
+          f=d['three_narrow_fixes']
+          assert set(f)=={'caller_construction_bypass','runtime_genesis_initial_ledger','final_review_and_ci_evidence'}
+          assert f['caller_construction_bypass']['caller_supplied_runtime_anchor_accepted'] is False
+          assert f['caller_construction_bypass']['caller_supplied_authority_anchor_accepted'] is False
+          assert f['caller_construction_bypass']['caller_supplied_loader_or_api_adapter_accepted'] is False
+          assert f['runtime_genesis_initial_ledger']['sequence_must_equal']==0
+          assert f['runtime_genesis_initial_ledger']['transition_auth_must_be_null'] is True
+          assert f['runtime_genesis_initial_ledger']['r1_state_must_equal_existing_empty_state'] is True
+          assert f['final_review_and_ci_evidence']['decorative_nonempty_review_strings_accepted'] is False
+          assert d['review_requirement']['new_owner_gate_required_for_these_three_fixes'] is False
+          assert d['review_requirement']['runtime_must_remain_off'] is True
+          print('EXACT_THREE_LAB_REMEDIATIONS_ONLY_PASS')
+          PY
+
+      - name: Compile and selftest loader v1 plus hardened production guard v2
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py \
+            tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py
           PYTHONPATH=tools python tools/multiverse_r1_stage1_verified_activation_receipt_loader_v1.py --selftest
+          out="$(PYTHONPATH=tools python tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py --selftest)"
+          printf '%s\n' "$out"
+          grep -Fqx 'CALLER_CONSTRUCTED_ANCHOR_NOT_ACCEPTED_BY_PRODUCTION_ENTRYPOINT' <<<"$out"
+          grep -Fqx 'FAKE_OR_SUBCLASSED_LOADER_CANNOT_REACH_PRODUCTION_ENTRYPOINT' <<<"$out"
+          grep -Fqx 'INITIAL_LEDGER_SEQUENCE_ZERO_AND_EMPTY_STATE_REQUIRED' <<<"$out"
+          grep -Fqx 'FINAL_LAB_AUDITOR_AND_CI_EVIDENCE_STRUCTURED_AND_PINNED' <<<"$out"
+          grep -Fqx 'AUDITED_IMPLEMENTATION_HEAD_MUST_EQUAL_FINAL_REVIEWED_HEAD' <<<"$out"
+          grep -Fqx 'RUNTIME_ACTIVATION_PERFORMED=false' <<<"$out"
+          grep -Fqx 'PRODUCTION_PROVISIONING_PERFORMED=false' <<<"$out"
+          grep -Fqx 'MULTIVERSE_R1_STAGE1_VERIFIED_RECEIPT_HARDENING_V2_SELFTEST_PASS' <<<"$out"
 
       - name: Regression Stage1 runtime CAS and authority guards
         run: |
@@ -60,6 +100,20 @@ jobs:
           PYTHONPATH=tools python tools/multiverse_r1_stage1_github_runtime_cas_v1.py --selftest
           PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v1.py --selftest
           PYTHONPATH=tools python tools/multiverse_r1_stage1_canonical_authority_adapter_v2.py --selftest
+
+      - name: Static narrow-hardening checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          f=tools/multiverse_r1_stage1_verified_activation_receipt_loader_v2.py
+          grep -Fq 'def load_verified_stage1_context(repo_root' "$f"
+          grep -Fq 'FinalVerifiedStage1ProductionLoader cannot be subclassed' "$f"
+          grep -Fq 'ACTIVATION_GENESIS_MUST_BE_SINGLE_CHILD_OF_CANONICAL_MAIN' "$f"
+          grep -Fq 'ACTIVATION_GENESIS_CONTROL_NOT_EXACT_EMPTY_CONTROL' "$f"
+          grep -Fq 'ACTIVATION_GENESIS_R1_STATE_NOT_EMPTY' "$f"
+          grep -Fq 'ACTIVATION_AUDITED_IMPLEMENTATION_HEAD_NOT_FINAL_REVIEW_HEAD' "$f"
+          grep -Fq 'ACTIVATION_FINAL_CI_NOT_SUCCESS' "$f"
+          ! grep -Eq '^[[:space:]]*(import|from)[[:space:]]+(requests|urllib|httpx|aiohttp|socket)' "$f"
 
       - name: Assert workflow remains preactivation-only
         shell: bash
