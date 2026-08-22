@@ -1,0 +1,74 @@
+{
+  "record": "R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_ADOPTION_RECEIPT_v1",
+  "status": "ACCEPTED_CANONICAL_STAGE1_PRODUCTION_AUTHORITY_DENY_ALL_ROOT",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority_scope": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+  "pre_transition_main": "3871de67900f31496ee9725a77ff1048cede906f",
+  "adoption_commit_identity": "RESOLVE_FROM_CONTAINING_COMMIT",
+  "transition": {
+    "mode": "FIRST_PARENT_ONLY_EXPECTED_OLD_MAIN_CAS",
+    "sole_parent_required": true,
+    "sole_parent": "3871de67900f31496ee9725a77ff1048cede906f",
+    "additional_git_parents": [],
+    "pr_head_as_git_parent": false,
+    "stacked_pr_ancestry_bridge": false,
+    "force_ref_update_allowed": false,
+    "canonical_tree_delta_exactly_two_files": true,
+    "canonical_tree_delta": [
+      "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json",
+      "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_ADOPTION_RECEIPT_20260822_v1.json"
+    ]
+  },
+  "reviewed_source": {
+    "pr": 62,
+    "head": "8a6c9850645912676ac97085ecb1b0fbdc918be8",
+    "base_head": "9355d8d8730c85b44c114bc96a908f9d46917cd6",
+    "commits_above_base": 1,
+    "changed_files": 5
+  },
+  "authority_root": {
+    "path": "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json",
+    "git_blob_sha": "5ae7f09fb4cdc679b80d44d0e7751de7d2a231d9",
+    "raw_sha256": "298c76f7788149bb771165034dd4a010de15fcdf694449320a00926d2d22254e",
+    "schema_version": "MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_MANIFEST_v2",
+    "safe_mode_active": true,
+    "valid_grant_count": 0,
+    "preissued_bundle_count": 0,
+    "can_return_allow": false,
+    "freshness_barrier_mode": "SELF_CONTAINED_SINGLE_CANONICAL_MAIN_BLOB"
+  },
+  "governance_evidence": {
+    "owner_gate_preparation_comment": 5374466048,
+    "owner_gate_approval_comment": 5374516958,
+    "owner_decision": "OWNER APPROVE — R1 STAGE1 PRODUCTION AUTHORITY SOURCE v1",
+    "lab_pass_comment": 5376485081,
+    "implementation_auditor_pass_comment": 5376549914,
+    "transition_auditor_pass_with_fixes_comment": 5376653114,
+    "transition_fix_rereview_request_comment": 5376679178,
+    "transition_fix_rereview_pass_comment": 5376716874
+  },
+  "frozen_parent_candidates": {
+    "pr59_head": "67e1b98b8283e93084f26f50efae210a9793709f",
+    "pr60_head": "e473d9f712043c26ce42a92611b923d4eca76e0f",
+    "pr61_head": "9355d8d8730c85b44c114bc96a908f9d46917cd6",
+    "pr62_head": "8a6c9850645912676ac97085ecb1b0fbdc918be8",
+    "introduced_as_git_ancestors_by_this_transition": false
+  },
+  "runtime_boundary": {
+    "runtime_activation_performed": false,
+    "runtime_activation_authorized_now": false,
+    "production_runtime_branch_created": false,
+    "populated_exact_envelope_authority_present": false,
+    "verified_activation_receipt_loader_satisfied": false,
+    "actual_ruleset_provisioned": false,
+    "production_writer_key_provisioned": false,
+    "scheduler_authorized": false,
+    "always_on_worker_authorized": false,
+    "auto_resume_authorized": false,
+    "network_or_public_web_authorized": false,
+    "source_collection_or_admission_authorized": false,
+    "external_contact_authorized": false,
+    "real_or_live_pre_authorized": false
+  },
+  "effect": "CANONICALLY_ADOPTS_ONLY_THE_REVIEWED_DENY_ALL_AUTHORITY_ROOT; DOES_NOT_ACTIVATE_RUNTIME_OR_CANONICALIZE_STACKED_IMPLEMENTATION_CANDIDATES"
+}
