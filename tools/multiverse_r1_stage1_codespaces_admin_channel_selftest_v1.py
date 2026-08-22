@@ -6,8 +6,10 @@ import inspect
 import io
 import json
 import os
+import pathlib
 import stat
 import subprocess
+import tempfile
 from types import SimpleNamespace
 
 import multiverse_r1_stage1_codespaces_admin_channel_v1 as m
@@ -81,8 +83,10 @@ def restore_env(old: dict[str, str | None]) -> None:
 def run_main(*, apply: bool, fake: FakeRun) -> dict:
     original_run = m._run
     original_storage = m._assert_auth_storage_secure
+    original_marker = m._create_origin_session_marker
     m._run = fake
-    m._assert_auth_storage_secure = lambda: None
+    m._assert_auth_storage_secure = lambda **kwargs: "tmpfs"
+    m._create_origin_session_marker = lambda *, apply: ("b" if apply else "a") * 32
     out = io.StringIO()
     try:
         with contextlib.redirect_stdout(out):
@@ -90,6 +94,7 @@ def run_main(*, apply: bool, fake: FakeRun) -> dict:
     finally:
         m._run = original_run
         m._assert_auth_storage_secure = original_storage
+        m._create_origin_session_marker = original_marker
     assert rc == 0
     return json.loads(out.getvalue())
 
@@ -121,7 +126,7 @@ def test_nonmemory_fs_rejected() -> None:
     original_lstat = m.os.lstat
     original_run = m._run
     original_walk = m.os.walk
-    fake_dir = SimpleNamespace(st_mode=stat.S_IFDIR | 0o700, st_uid=os.getuid())
+    fake_dir = SimpleNamespace(st_mode=stat.S_IFDIR | 0o700, st_uid=os.geteuid())
     m.os.lstat = lambda path: fake_dir
     m.os.walk = lambda *args, **kwargs: []
     m._run = lambda cmd: subprocess.CompletedProcess(cmd, 0, "ext2/ext3\n", "")
@@ -141,10 +146,109 @@ def test_nonmemory_fs_rejected() -> None:
 
 def test_tmpfs_requires_swap_check() -> None:
     source = inspect.getsource(m._assert_auth_storage_secure)
-    assert '{"tmpfs", "ramfs"}' in source
+    assert "_memory_filesystem_type" in source
     assert "_assert_swap_absent()" in source
+    memory_source = inspect.getsource(m._memory_filesystem_type)
+    assert '{"tmpfs", "ramfs"}' in memory_source
     swap_source = inspect.getsource(m._assert_swap_absent)
     assert "/proc/swaps" in swap_source and "ACTIVE_SWAP_PROHIBITED" in swap_source
+
+
+def test_pre_auth_storage_gate() -> None:
+    old = setup_env()
+    original_storage = m._assert_auth_storage_secure
+    calls: list[bool] = []
+    def fake_storage(*, require_empty: bool = False) -> str:
+        calls.append(require_empty)
+        return "tmpfs"
+    m._assert_auth_storage_secure = fake_storage
+    try:
+        proof = m._pre_auth_check()
+        assert proof["status"] == "CODESPACES_PRE_AUTH_STORAGE_VERIFIED"
+        assert proof["active_swap_absent"] is True
+        assert proof["auth_directory_empty"] is True
+        assert proof["credential_material_accessed"] is False
+        assert calls == [True]
+    finally:
+        m._assert_auth_storage_secure = original_storage
+        restore_env(old)
+    source = inspect.getsource(m._pre_auth_check)
+    assert "_assert_auth_storage_secure(require_empty=True)" in source
+    owner_source = inspect.getsource(m._effective_uid)
+    assert "os.geteuid()" in owner_source
+    assert "os.getuid()" not in inspect.getsource(m._assert_auth_storage_secure)
+
+
+def test_origin_session_binding_and_replay() -> None:
+    old = setup_env(auth_dir=False)
+    original_dir = m.SESSION_STATE_DIR
+    original_secure = m._assert_session_state_storage_secure
+    with tempfile.TemporaryDirectory() as td:
+        m.SESSION_STATE_DIR = td
+        m._assert_session_state_storage_secure = lambda *, create: pathlib.Path(td)
+        try:
+            session_id = m._create_origin_session_marker(apply=False)
+            assert len(session_id) == 32
+            marker = pathlib.Path(td) / (session_id + ".json")
+            assert marker.exists()
+            os.environ["CODESPACE_NAME"] = "different-codespace"
+            try:
+                m._consume_origin_session_marker(session_id)
+            except m.Denied as exc:
+                assert "BINDING_MISMATCH:codespace_name" in str(exc)
+            else:
+                raise AssertionError("different Codespace must not consume marker")
+            assert marker.exists()
+            os.environ["CODESPACE_NAME"] = "rehearsal-test-codespace"
+            payload = m._consume_origin_session_marker(session_id)
+            assert payload["session_id"] == session_id
+            assert payload["codespace_name"] == "rehearsal-test-codespace"
+            assert not os.path.lexists(marker)
+            try:
+                m._consume_origin_session_marker(session_id)
+            except m.Denied as exc:
+                assert "MARKER_MISSING" in str(exc)
+            else:
+                raise AssertionError("consumed marker must not replay")
+            fabricated = "f" * 32
+            try:
+                m._consume_origin_session_marker(fabricated)
+            except m.Denied as exc:
+                assert "MARKER_MISSING" in str(exc)
+            else:
+                raise AssertionError("fabricated session id must not verify")
+        finally:
+            m.SESSION_STATE_DIR = original_dir
+            m._assert_session_state_storage_secure = original_secure
+            restore_env(old)
+
+
+def test_cleanup_uses_no_follow_absence_and_origin_marker() -> None:
+    old = setup_env(auth_dir=False)
+    original_lexists = m.os.path.lexists
+    original_consume = m._consume_origin_session_marker
+    seen: list[str] = []
+    m.os.path.lexists = lambda path: False
+    def consume(session_id: str) -> dict:
+        seen.append(session_id)
+        return {"mode": "apply", "codespace_name": os.environ["CODESPACE_NAME"]}
+    m._consume_origin_session_marker = consume
+    try:
+        session_id = "c" * 32
+        cleanup = m._cleanup_check(session_id)
+        assert seen == [session_id]
+        assert cleanup["status"] == "CODESPACES_LOCAL_CREDENTIAL_CLEANUP_VERIFIED"
+        assert cleanup["origin_session_bound"] is True
+        assert cleanup["origin_codespace_bound"] is True
+        assert cleanup["origin_session_marker_consumed"] is True
+        assert cleanup["auth_path_absent_no_follow"] is True
+        assert cleanup["phase_c_gate_open"] is False
+        assert cleanup["codespace_deletion_still_required"] is True
+    finally:
+        m.os.path.lexists = original_lexists
+        m._consume_origin_session_marker = original_consume
+        restore_env(old)
+    assert "os.path.lexists(EXPECTED_GH_CONFIG_DIR)" in inspect.getsource(m._cleanup_check)
 
 
 def main() -> None:
@@ -155,6 +259,7 @@ def main() -> None:
         assert dry["phase_c_gate_open"] is False
         assert dry["local_cleanup_proof_required"] is True
         assert dry["codespace_deletion_required"] is True
+        assert dry["origin_session_marker_created"] is True
         assert len(dry["session_id"]) == 32
 
         fake = FakeRun()
@@ -162,6 +267,7 @@ def main() -> None:
         assert applied["status"] == "CODESPACES_APPLY_PENDING_MANDATORY_CLEANUP"
         assert applied["operator_status"] == "CREATED_AND_FRESH_VERIFIED"
         assert applied["phase_c_gate_open"] is False
+        assert applied["origin_session_marker_created"] is True
         assert fake.operator_apply is True
 
         for key in ("GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHUB_ENTERPRISE_TOKEN"):
@@ -172,22 +278,13 @@ def main() -> None:
 
         test_nonmemory_fs_rejected()
         test_tmpfs_requires_swap_check()
+        test_pre_auth_storage_gate()
+        test_origin_session_binding_and_replay()
+        test_cleanup_uses_no_follow_absence_and_origin_marker()
 
         source = inspect.getsource(m._assert_auth_storage_secure)
         assert "st_uid" in source and "0o700" in source
         assert "S_ISLNK" in source and "S_ISREG" in source and "st_nlink" in source
-
-        old_exists = m.pathlib.Path.exists
-        os.environ.pop("GH_CONFIG_DIR", None)
-        m.pathlib.Path.exists = lambda self: False
-        try:
-            cleanup = m._cleanup_check(applied["session_id"])
-            assert cleanup["status"] == "CODESPACES_LOCAL_CREDENTIAL_CLEANUP_VERIFIED"
-            assert cleanup["phase_c_gate_open"] is False
-            assert cleanup["codespace_deletion_still_required"] is True
-        finally:
-            m.pathlib.Path.exists = old_exists
-            os.environ["GH_CONFIG_DIR"] = m.EXPECTED_GH_CONFIG_DIR
 
         assert m.APPROVED_ADMIN_HEAD == "49ab50cfce03e29eedd95d66ee76a41de159940e"
         assert m.APPROVED_OPERATOR_BLOB == "673501d6c083ee240811156ce5917d34b7a1bee4"
