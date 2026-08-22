@@ -52,6 +52,12 @@ RULESET_PAYLOAD = {
     ],
 }
 
+_CANONICAL_BLOBS = {
+    "authority": (AUTHORITY_PATH, AUTHORITY_BLOB),
+    "runtime_cas": (RUNTIME_CAS_PATH, RUNTIME_CAS_BLOB),
+    "loader": (LOADER_PATH, LOADER_BLOB),
+}
+
 
 class Denied(RuntimeError):
     pass
@@ -95,28 +101,64 @@ def _validate_transport() -> None:
         _deny("RULESET_ADMIN_GH_HTTP_UNIX_SOCKET_PROHIBITED_OR_AMBIGUOUS")
 
 
-def _gh_json(endpoint: str, *, method: str = "GET", payload: Any | None = None) -> Any:
+def _build_get_endpoint(resource: str, *, value: int | str | None = None, page: int | None = None) -> str:
+    """Build only allowlisted read-only GitHub API endpoints."""
+    if resource == "main":
+        if value is not None or page is not None:
+            _deny("RULESET_ADMIN_GET_ARGUMENTS_INVALID")
+        return f"/repos/{REPO}/branches/main"
+    if resource == "phase_b_pr":
+        if value is not None or page is not None:
+            _deny("RULESET_ADMIN_GET_ARGUMENTS_INVALID")
+        return f"/repos/{REPO}/pulls/{PHASE_B_PR}"
+    if resource == "phase_b_lab":
+        if value is not None or page is not None:
+            _deny("RULESET_ADMIN_GET_ARGUMENTS_INVALID")
+        return f"/repos/{REPO}/issues/comments/{PHASE_B_LAB_COMMENT}"
+    if resource == "phase_b_auditor":
+        if value is not None or page is not None:
+            _deny("RULESET_ADMIN_GET_ARGUMENTS_INVALID")
+        return f"/repos/{REPO}/pulls/{PHASE_B_PR}/reviews/{PHASE_B_AUDITOR_REVIEW}"
+    if resource == "canonical_blob":
+        if not isinstance(value, str) or value not in _CANONICAL_BLOBS or page is not None:
+            _deny("RULESET_ADMIN_CANONICAL_BLOB_SELECTOR_INVALID")
+        path = _CANONICAL_BLOBS[value][0]
+        return f"/repos/{REPO}/contents/{path}?ref={EXPECTED_MAIN}"
+    if resource == "branches_page":
+        if value is not None or not isinstance(page, int) or isinstance(page, bool) or not (1 <= page <= 100):
+            _deny("RULESET_ADMIN_BRANCH_PAGE_INVALID")
+        return f"/repos/{REPO}/branches?per_page=100&page={page}"
+    if resource == "rulesets_page":
+        if value is not None or not isinstance(page, int) or isinstance(page, bool) or not (1 <= page <= 100):
+            _deny("RULESET_ADMIN_RULESET_PAGE_INVALID")
+        return f"/repos/{REPO}/rulesets?includes_parents=false&per_page=100&page={page}"
+    if resource == "ruleset_detail":
+        if page is not None or not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+            _deny("RULESET_ADMIN_RULESET_ID_INVALID")
+        return f"/repos/{REPO}/rulesets/{value}?includes_parents=false"
+    _deny("RULESET_ADMIN_GET_RESOURCE_NOT_ALLOWLISTED")
+    raise AssertionError("unreachable")
+
+
+def _gh_get_json(resource: str, *, value: int | str | None = None, page: int | None = None) -> Any:
+    """Read-only GitHub API through the closed endpoint builder."""
+    endpoint = _build_get_endpoint(resource, value=value, page=page)
     _validate_transport()
     cmd = [
         "gh", "api", "--hostname", "github.com",
         "-H", "Accept: application/vnd.github+json",
         "-H", f"X-GitHub-Api-Version: {API_VERSION}",
+        endpoint,
     ]
-    if method != "GET":
-        cmd += ["--method", method]
-    if payload is not None:
-        cmd += ["--input", "-"]
-    cmd.append(endpoint)
     proc = subprocess.run(
         cmd,
-        input=None if payload is None else _canonical_json(payload),
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env=os.environ.copy(),
     )
     if proc.returncode != 0:
-        _deny("RULESET_ADMIN_GITHUB_API_FAILED:" + proc.stderr.strip()[:240])
+        _deny("RULESET_ADMIN_GITHUB_API_GET_FAILED:" + proc.stderr.strip()[:240])
     try:
         return json.loads(proc.stdout)
     except Exception as exc:
@@ -124,7 +166,7 @@ def _gh_json(endpoint: str, *, method: str = "GET", payload: Any | None = None) 
 
 
 def _fresh_main() -> str:
-    payload = _gh_json(f"/repos/{REPO}/branches/main")
+    payload = _gh_get_json("main")
     sha = payload.get("commit", {}).get("sha") if isinstance(payload, dict) else None
     if sha != EXPECTED_MAIN:
         _deny("RULESET_ADMIN_CANONICAL_MAIN_DRIFT")
@@ -132,7 +174,7 @@ def _fresh_main() -> str:
 
 
 def _verify_pr_and_reviews() -> None:
-    pr = _gh_json(f"/repos/{REPO}/pulls/{PHASE_B_PR}")
+    pr = _gh_get_json("phase_b_pr")
     if not isinstance(pr, dict):
         _deny("RULESET_ADMIN_PHASE_B_PR_INVALID")
     if pr.get("state") != "open" or pr.get("draft") is not True or pr.get("merged_at") is not None:
@@ -142,7 +184,7 @@ def _verify_pr_and_reviews() -> None:
     if pr.get("base", {}).get("ref") != "main" or pr.get("base", {}).get("sha") != EXPECTED_MAIN:
         _deny("RULESET_ADMIN_PHASE_B_BASE_DRIFT")
 
-    lab = _gh_json(f"/repos/{REPO}/issues/comments/{PHASE_B_LAB_COMMENT}")
+    lab = _gh_get_json("phase_b_lab")
     body = lab.get("body") if isinstance(lab, dict) else None
     if not isinstance(body, str) or (
         f"LAB_PHASE_B_REVIEWED_HEAD: {PHASE_B_HEAD}" not in body
@@ -150,9 +192,9 @@ def _verify_pr_and_reviews() -> None:
     ):
         _deny("RULESET_ADMIN_PHASE_B_LAB_PASS_MISSING")
 
-    auditor = _gh_json(f"/repos/{REPO}/pulls/{PHASE_B_PR}/reviews/{PHASE_B_AUDITOR_REVIEW}")
+    auditor = _gh_get_json("phase_b_auditor")
     body = auditor.get("body") if isinstance(auditor, dict) else None
-    if auditor.get("commit_id") != PHASE_B_HEAD or not isinstance(body, str) or (
+    if not isinstance(auditor, dict) or auditor.get("commit_id") != PHASE_B_HEAD or not isinstance(body, str) or (
         f"AUDITOR_PHASE_B_REVIEWED_HEAD: {PHASE_B_HEAD}" not in body
         or "AUDITOR_PHASE_B_RULESET_SPEC_VERDICT: PASS" not in body
         or "CAN_EXECUTE_GOVERNED_ACTUAL_RULESET_PROVISIONING_AFTER_THIS_VERDICT_IF_APPROVED_ADMIN_CHANNEL_EXISTS: YES" not in body
@@ -160,8 +202,12 @@ def _verify_pr_and_reviews() -> None:
         _deny("RULESET_ADMIN_PHASE_B_AUDITOR_PASS_MISSING")
 
 
-def _verify_canonical_blob(path: str, expected_blob: str) -> None:
-    payload = _gh_json(f"/repos/{REPO}/contents/{path}?ref={EXPECTED_MAIN}")
+def _verify_canonical_blob(selector: str) -> None:
+    expected = _CANONICAL_BLOBS.get(selector)
+    if expected is None:
+        _deny("RULESET_ADMIN_CANONICAL_BLOB_SELECTOR_INVALID")
+    path, expected_blob = expected
+    payload = _gh_get_json("canonical_blob", value=selector)
     if not isinstance(payload, dict) or payload.get("type") != "file" or payload.get("sha") != expected_blob:
         _deny("RULESET_ADMIN_CANONICAL_BLOB_DRIFT:" + path)
 
@@ -169,7 +215,7 @@ def _verify_canonical_blob(path: str, expected_blob: str) -> None:
 def _verify_runtime_branch_absent() -> None:
     page = 1
     while True:
-        rows = _gh_json(f"/repos/{REPO}/branches?per_page=100&page={page}")
+        rows = _gh_get_json("branches_page", page=page)
         if not isinstance(rows, list):
             _deny("RULESET_ADMIN_BRANCH_LIST_INVALID")
         if any(isinstance(row, dict) and row.get("name") == RUNTIME_BRANCH for row in rows):
@@ -184,9 +230,9 @@ def _verify_runtime_branch_absent() -> None:
 def _preconditions() -> None:
     _fresh_main()
     _verify_pr_and_reviews()
-    _verify_canonical_blob(AUTHORITY_PATH, AUTHORITY_BLOB)
-    _verify_canonical_blob(RUNTIME_CAS_PATH, RUNTIME_CAS_BLOB)
-    _verify_canonical_blob(LOADER_PATH, LOADER_BLOB)
+    _verify_canonical_blob("authority")
+    _verify_canonical_blob("runtime_cas")
+    _verify_canonical_blob("loader")
     _verify_runtime_branch_absent()
     _fresh_main()
 
@@ -232,14 +278,14 @@ def _repository_ruleset_details() -> list[dict]:
     out: list[dict] = []
     page = 1
     while True:
-        rows = _gh_json(f"/repos/{REPO}/rulesets?includes_parents=false&per_page=100&page={page}")
+        rows = _gh_get_json("rulesets_page", page=page)
         if not isinstance(rows, list):
             _deny("RULESET_ADMIN_RULESET_LIST_INVALID")
         for row in rows:
             rid = row.get("id") if isinstance(row, dict) else None
             if not isinstance(rid, int) or isinstance(rid, bool) or rid <= 0:
                 _deny("RULESET_ADMIN_RULESET_ID_INVALID")
-            detail = _gh_json(f"/repos/{REPO}/rulesets/{rid}?includes_parents=false")
+            detail = _gh_get_json("ruleset_detail", value=rid)
             if not isinstance(detail, dict):
                 _deny("RULESET_ADMIN_RULESET_DETAIL_INVALID")
             out.append(detail)
@@ -252,18 +298,76 @@ def _repository_ruleset_details() -> list[dict]:
 
 
 def _classify_existing(details: list[dict]) -> tuple[str, dict | None]:
+    # Evaluate the full ruleset set before reuse. The exact reviewed ruleset is
+    # reusable only when it is the sole repository-level tag ruleset.
     exact = [d for d in details if _strict_ruleset_detail(d)]
     if len(exact) > 1:
         _deny("RULESET_ADMIN_DUPLICATE_EXACT_RULESETS_AMBIGUOUS")
-    if len(exact) == 1:
-        return "EXISTING_EXACT", exact[0]
-    if any(d.get("name") == RULESET_NAME for d in details):
+
+    same_name_noncompliant = [
+        d for d in details
+        if d.get("name") == RULESET_NAME and not _strict_ruleset_detail(d)
+    ]
+    if same_name_noncompliant:
         _deny("RULESET_ADMIN_SAME_NAME_NONCOMPLIANT_RULESET")
-    # Fail closed on any other repository-level tag ruleset rather than trying
-    # to infer overlap from GitHub fnmatch semantics during a production mutation.
-    if any(d.get("target") == "tag" for d in details):
+
+    tag_rulesets = [d for d in details if d.get("target") == "tag"]
+    if len(exact) == 1:
+        if len(tag_rulesets) != 1 or tag_rulesets[0] is not exact[0]:
+            _deny("RULESET_ADMIN_OTHER_TAG_RULESET_REQUIRES_REREVIEW")
+        return "EXISTING_EXACT", exact[0]
+
+    if tag_rulesets:
         _deny("RULESET_ADMIN_OTHER_TAG_RULESET_REQUIRES_REREVIEW")
     return "ABSENT_UNAMBIGUOUS", None
+
+
+def _post_exact_ruleset_after_fresh_barrier() -> tuple[str, dict]:
+    """Perform the only production mutation, with no caller-supplied inputs.
+
+    This function is safe even if imported and called directly: it reruns all
+    Fresh preconditions and the complete ambiguity classifier before POST.
+    """
+    _preconditions()
+    state, detail = _classify_existing(_repository_ruleset_details())
+    if state == "EXISTING_EXACT" and detail is not None:
+        return "EXISTING_EXACT_VERIFIED_AFTER_REFRESH", detail
+
+    _validate_transport()
+    cmd = [
+        "gh", "api", "--hostname", "github.com",
+        "-H", "Accept: application/vnd.github+json",
+        "-H", f"X-GitHub-Api-Version: {API_VERSION}",
+        "--method", "POST",
+        "--input", "-",
+        f"/repos/{REPO}/rulesets",
+    ]
+    proc = subprocess.run(
+        cmd,
+        input=_canonical_json(RULESET_PAYLOAD),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=os.environ.copy(),
+    )
+    if proc.returncode != 0:
+        _deny("RULESET_ADMIN_GITHUB_API_POST_FAILED:" + proc.stderr.strip()[:240])
+    try:
+        created = json.loads(proc.stdout)
+    except Exception as exc:
+        raise Denied("RULESET_ADMIN_GITHUB_API_JSON_INVALID") from exc
+    if not isinstance(created, dict) or not _strict_ruleset_detail(created):
+        _deny("RULESET_ADMIN_CREATED_RULESET_NOT_EXACT")
+
+    # Fresh post-create verification detects any concurrent/unexpected tag
+    # ruleset and fails closed rather than silently accepting the created one.
+    _fresh_main()
+    state, detail = _classify_existing(_repository_ruleset_details())
+    if state != "EXISTING_EXACT" or detail is None:
+        _deny("RULESET_ADMIN_POST_CREATE_FRESH_VERIFY_FAILED")
+    if detail.get("id") != created.get("id") or detail.get("updated_at") != created.get("updated_at"):
+        _deny("RULESET_ADMIN_POST_CREATE_ID_OR_UPDATED_AT_DRIFT")
+    return "CREATED_AND_FRESH_VERIFIED", detail
 
 
 def _result(status: str, detail: Mapping[str, Any] | None = None) -> dict:
@@ -301,24 +405,8 @@ def main(argv: list[str] | None = None) -> int:
         print(_canonical_json(_result("DRY_RUN_WOULD_CREATE_EXACT_RULESET")))
         return 0
 
-    # Execution-time Fresh Read barrier immediately before mutation.
-    _preconditions()
-    state, detail = _classify_existing(_repository_ruleset_details())
-    if state == "EXISTING_EXACT":
-        print(_canonical_json(_result("EXISTING_EXACT_VERIFIED_AFTER_REFRESH", detail)))
-        return 0
-
-    created = _gh_json(f"/repos/{REPO}/rulesets", method="POST", payload=RULESET_PAYLOAD)
-    if not isinstance(created, dict) or not _strict_ruleset_detail(created):
-        _deny("RULESET_ADMIN_CREATED_RULESET_NOT_EXACT")
-
-    _fresh_main()
-    state, detail = _classify_existing(_repository_ruleset_details())
-    if state != "EXISTING_EXACT" or detail is None:
-        _deny("RULESET_ADMIN_POST_CREATE_FRESH_VERIFY_FAILED")
-    if detail.get("id") != created.get("id") or detail.get("updated_at") != created.get("updated_at"):
-        _deny("RULESET_ADMIN_POST_CREATE_ID_OR_UPDATED_AT_DRIFT")
-    print(_canonical_json(_result("CREATED_AND_FRESH_VERIFIED", detail)))
+    status, detail = _post_exact_ruleset_after_fresh_barrier()
+    print(_canonical_json(_result(status, detail)))
     return 0
 
 
