@@ -23,7 +23,7 @@ jobs:
         run: |
           set -euo pipefail
           test "${{ github.event.pull_request.base.sha }}" = "$EXPECTED_PARENT"
-          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "13"
+          test "$(git rev-list --count "$EXPECTED_PARENT"..HEAD)" = "15"
           mapfile -t files < <(git diff --name-only "$EXPECTED_PARENT"...HEAD | sort)
           expected=(
             ".github/workflows/multiverse-r1-stage1-verified-activation-receipt-loader-v1-ci.yml"
@@ -128,7 +128,8 @@ jobs:
           ! grep -Fq '_CONTEXT_SEAL' "$v2"
           grep -Fq 'GitHubRuntimeCASLedger is final in production imports' "$runtime"
           grep -Fq 'verify_runtime_consumer_anchor' "$runtime"
-          grep -Fq 'CanonicalAuthorityDecisionAdapter is final in production imports' "$authority"
+          grep -Fq 'permits only the audited v2 subclass in production imports' "$authority"
+          grep -Fq 'type(self) is _ProductionAuthorityDecisionAdapter' "$authority"
           grep -Fq 'verify_authority_consumer_anchor' "$authority"
           grep -Fq 'ACTIVATION_GENESIS_MUST_BE_SINGLE_CHILD_OF_CANONICAL_MAIN' "$v2"
           grep -Fq 'ACTIVATION_GENESIS_CONTROL_NOT_EXACT_EMPTY_CONTROL' "$v2"
