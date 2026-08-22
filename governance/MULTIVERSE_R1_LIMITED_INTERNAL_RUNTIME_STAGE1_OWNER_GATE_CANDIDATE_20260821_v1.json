@@ -1,0 +1,233 @@
+{
+  "record": "MULTIVERSE_R1_LIMITED_INTERNAL_RUNTIME_STAGE1_OWNER_GATE_CANDIDATE_20260821_v1",
+  "status": "DRAFT_NONAUTHORIZING_PENDING_LAB_MICRO_REREVIEW_AND_OWNER_DECISION_NO_RUNTIME_AUTHORITY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "candidate_based_on_main": "3871de67900f31496ee9725a77ff1048cede906f",
+  "purpose": "Define the first practical R1 runtime scope that reduces Owner relay and clerical burden without expanding Source, network, scientific, financial, or external-contact authority.",
+  "why_now": {
+    "one_shot_canary_evidence_status": "ACCEPTED_ONE_SHOT_CANARY_RESULT_EVIDENCE_RUNTIME_STILL_OFF",
+    "prior_one_shot_owner_gate": "CONSUMED_AND_NON_REUSABLE",
+    "runtime_currently": "OFF",
+    "goal": "Move from audited one-shot execution to a small useful internal operational runtime while keeping all material data/science/external boundaries closed."
+  },
+  "proposed_scope_if_owner_approves": {
+    "runtime_name": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+    "scope_class": "BOUNDED_INTERNAL_OPERATIONAL_AUTOMATION_ONLY",
+    "authorized_responsibilities": [
+      "SOURCE_AUDIT_CACHE lookup and fail-closed state transition for candidate metadata/evidence already supplied to the task",
+      "RELIABLE_TASK_EXECUTION including duplicate suppression, idempotency, lease/fencing, checkpoint, retry, dead-letter, CAS/version preconditions, durable receipts, and stale-canonical denial",
+      "OWNER_EXCEPTION_VIEW generation for material blocks and failures without any approval authority",
+      "Routine successful task completion without Owner relay when the full Authorization Contract permits the exact operation"
+    ],
+    "allowed_inputs": [
+      "canonical repository governance and evidence artifacts",
+      "candidate metadata explicitly supplied inside an authorized Stage-1 enqueue envelope",
+      "public URLs or source identifiers only as inert metadata strings",
+      "previously accepted Phase A public-terms audit records and Source Audit Cache state"
+    ],
+    "source_audit_cache_states": [
+      "UNKNOWN",
+      "REVIEW_REQUIRED",
+      "REVIEWED_NO_ADMISSION",
+      "CHANGED_REVIEW_REQUIRED",
+      "EXPLICIT_INELIGIBLE_ONLY_WHEN_EVIDENCE_SUPPORTS_IT"
+    ],
+    "network_access_authorized": false,
+    "public_web_fetch_authorized": false,
+    "provider_contact_authorized": false,
+    "source_collection_authorized": false,
+    "source_admission_authorized": false,
+    "real_or_live_PRE_authorized": false
+  },
+  "task_enqueue_authority": {
+    "exact_operation": "R1_STAGE1_ENQUEUE_SOURCE_AUDIT_ADMIN_TASK",
+    "exact_target": "runtime/r1-source-audit-stage1-v1",
+    "exact_scope": "GITHUB_INTERNAL_SOURCE_AUDIT_ADMIN_METADATA_ONLY",
+    "allowed_actor_class": "A_CURRENT_MULTIVERSE_ACTOR_INSTANCE_EXPLICITLY_BOUND_BY_A_FRESH_AUTHORIZATION_CONTRACT_ALLOW_DECISION_FOR_THIS_EXACT_OPERATION_TARGET_AND_SCOPE",
+    "actor_role_and_instance_binding_required": true,
+    "fresh_authorization_decision_required_at_enqueue": true,
+    "enqueue_payload_schema_must_be_exact_and_fail_closed": true,
+    "raw_github_event_is_authority": false,
+    "issue_or_pr_comment_is_authority": false,
+    "url_or_source_identifier_is_authority": false,
+    "untrusted_branch_content_is_authority": false,
+    "visible_metadata_may_auto_convert_to_task": false,
+    "permission_mismatch_denies_enqueue": true,
+    "runtime_may_not_mint_enqueue_authority": true,
+    "implementation_rule": "Only a structured Stage-1 enqueue envelope presented by an already-authorized caller may create an executable task. Raw GitHub events/comments/URLs/branch content remain inert input until an exact current Authorization decision independently permits the enqueue operation."
+  },
+  "operational_state_model": {
+    "canonical_main_remains_authority": true,
+    "runtime_state_is_noncanonical": true,
+    "runtime_state_must_not_be_permission_authority": true,
+    "proposed_runtime_state_branch": "runtime/r1-source-audit-stage1-v1",
+    "allowed_runtime_state_prefixes": [
+      "runtime/r1_source_audit_stage1/cache/",
+      "runtime/r1_source_audit_stage1/tasks/",
+      "runtime/r1_source_audit_stage1/receipts/",
+      "runtime/r1_source_audit_stage1/exceptions/"
+    ],
+    "writes_to_main_by_runtime_authorized": false,
+    "writes_to_governance_by_runtime_authorized": false,
+    "arbitrary_repository_writes_authorized": false,
+    "runtime_state_write_requires": [
+      "full Authorization Contract ALLOW for the exact operation",
+      "current canonical-main identity match",
+      "actor/worker binding",
+      "current lease owner and fencing epoch",
+      "expected state version / CAS precondition",
+      "stable idempotency identity",
+      "current Stage-1 activation identity and ceiling-integrity checks",
+      "durable receipt"
+    ]
+  },
+  "stage_ceiling_integrity": {
+    "stage_identity": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+    "activation_must_have_exact_control_plane_receipt": true,
+    "activation_receipt_must_pin": [
+      "canonical main SHA",
+      "final independently audited implementation head SHA",
+      "runtime branch name",
+      "runtime branch genesis commit SHA",
+      "immutable activation timestamp UTC",
+      "Stage-1 identity",
+      "initial terminal-task count 0",
+      "one-worker ceiling",
+      "25-terminal-task ceiling",
+      "7-day window",
+      "no-auto-resume rule"
+    ],
+    "activation_receipt_is_permission_authority": false,
+    "activation_receipt_purpose": "Control-plane identity and ceiling anchor only; routine operations still require their own current Authorization Contract decisions.",
+    "runtime_branch_updates_must_be_fast_forward_and_expected_old_head_cas": true,
+    "force_push_by_runtime_authorized": false,
+    "branch_reset_by_runtime_authorized": false,
+    "history_rewrite_by_runtime_authorized": false,
+    "runtime_branch_must_descend_from_pinned_genesis": true,
+    "unexpected_ref_movement_or_ancestry_mismatch_action": "FAIL_CLOSED_AND_PAUSE_OWNER_EXCEPTION",
+    "activation_timestamp_is_immutable": true,
+    "terminal_task_count_is_monotonic": true,
+    "counter_or_timestamp_rollback_action": "FAIL_CLOSED_AND_PAUSE_OWNER_EXCEPTION",
+    "ceiling_high_water_evidence_required": true,
+    "ceiling_high_water_evidence_class": "NONCANONICAL_CONTROL_PLANE_CEILING_EVIDENCE_ONLY_NOT_PERMISSION_AUTHORITY",
+    "implementation_must_make_branch_rollback_or_counter_reset_detectable_without_trusting_mutable_runtime_payload_alone": true,
+    "second_worker_or_parallel_invocation_action": "DENY_AND_SURFACE_CONFLICT",
+    "task_26_action": "DENY_AND_REMAIN_PAUSED",
+    "post_7_day_action": "DENY_AND_REMAIN_PAUSED",
+    "post_auto_pause_auto_resume_authorized": false,
+    "tamper_or_integrity_failure_may_reset_stage_ceiling": false
+  },
+  "runtime_state_authority_rejection": {
+    "runtime_artifact_authority_class": "NONE_NONCANONICAL_OPERATIONAL_STATE_ONLY",
+    "downstream_authorization_adapters_must_reject_runtime_state_as": [
+      "OWNER_GATE",
+      "AUTHORIZATION_GRANT",
+      "PERMISSION_EVIDENCE",
+      "SOURCE_ADMISSION_RECEIPT",
+      "CANONICAL_GOVERNANCE_FACT"
+    ],
+    "downstream_source_admission_adapters_must_accept_runtime_branch_artifacts": false,
+    "canonical_authority_evidence_must_resolve_from_canonical_main_or_other_already_canonical_authority_source": true,
+    "runtime_source_cache_enum_is_exact_and_excludes_ADMITTED": true,
+    "unknown_or_permission_like_runtime_state_action": "FAIL_CLOSED_AND_OWNER_EXCEPTION",
+    "forged_owner_gate_or_grant_refs_from_runtime_state_action": "DENY",
+    "runtime_receipt_task_or_cache_may_promote_source": false,
+    "runtime_receipt_task_or_cache_may_widen_permission": false,
+    "runtime_may_not_write_canonical_admission_transition": true
+  },
+  "execution_ceiling": {
+    "activation_style": "EVENT_DRIVEN_EXPLICIT_AUTHORIZED_TASK_ENQUEUE_ONLY",
+    "scheduler_authorized": false,
+    "always_on_worker_authorized": false,
+    "background_source_watcher_authorized": false,
+    "max_concurrent_workers": 1,
+    "max_tasks_per_invocation": 10,
+    "automatic_retry_budget_per_task": 2,
+    "max_total_stage1_completed_or_dead_letter_tasks_before_auto_pause": 25,
+    "stage1_runtime_window_days_before_auto_pause": 7,
+    "auto_pause_condition": "WHICHEVER_OCCURS_FIRST: 25 terminal tasks or 7 days from immutable activation timestamp",
+    "auto_resume_authorized": false,
+    "scope_expansion_without_new_owner_gate_authorized": false
+  },
+  "owner_attention_policy": {
+    "routine_success_requires_owner_notification": false,
+    "notify_or_route_to_owner_only_for": [
+      "OWNER_DECISION_REQUIRED",
+      "AUTHORIZATION_DENY_OR_OWNER_GATE_MISMATCH",
+      "CANONICAL_DRIFT_OR_STALE_TARGET",
+      "DEAD_LETTER_OR_RETRY_EXHAUSTION",
+      "SCHEMA_OR_STATE_CORRUPTION",
+      "RUNTIME_BRANCH_OR_STAGE_CEILING_TAMPER_DETECTED",
+      "UNAUTHORIZED_ENQUEUE_OR_SECOND_AUTHORITY_ATTEMPT",
+      "CONFLICT_OR_UNRESOLVED_MATERIAL_BOUNDARY"
+    ],
+    "owner_exception_view_can_approve_actions": false
+  },
+  "explicitly_not_authorized": [
+    "network or public-web research by the runtime",
+    "automated Source discovery or bulk collection",
+    "Source admission or promotion",
+    "real/live PRE collection or use",
+    "external provider contact or outreach",
+    "new spend, payment, procurement, or contract",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000 access",
+    "PR #15 quarantined metric use",
+    "untouched validation access",
+    "model promotion or scientific lineage promotion",
+    "scientific scoring expansion including Segment C",
+    "terms/access-control bypass",
+    "Synthetic-to-Real Edge/ROI promotion",
+    "real-money wagering",
+    "scheduler or always-on worker",
+    "arbitrary writes to canonical main or governance",
+    "minting, widening, downgrading, or reclassifying permissions",
+    "using GitHub comments/events/URLs/untrusted branch content as implicit task-enqueue authority",
+    "runtime branch force-push/reset/history rewrite or ceiling rollback",
+    "using runtime cache/task/receipt/exception state as Owner Gate, grant, permission evidence, Source admission, or canonical governance fact",
+    "general full runtime activation outside this Stage 1 scope"
+  ],
+  "required_pre_activation_evidence_if_approved": [
+    "implementation built from Fresh Read canonical main on a noncanonical branch",
+    "dedicated Stage 1 CI covering allowed writes and all deny boundaries",
+    "negative tests for unauthorized/untrusted task enqueue, wrong operation/target/scope, malformed enqueue payload, and permission mismatch",
+    "negative tests proving raw GitHub comments/events/URLs/untrusted branch content cannot auto-convert into executable tasks",
+    "negative tests for second worker or parallel invocation denial",
+    "negative tests for runtime wrong-ref/path-traversal/main/governance write denial",
+    "negative tests for runtime branch rollback/reset/force-push/ancestry tamper causing fail-closed pause",
+    "negative tests for activation timestamp or terminal-count rollback denial",
+    "negative tests for task 26 denial, post-7-day denial, and no automatic resume after pause",
+    "negative tests proving runtime cache/task/receipt cannot be consumed as Owner Gate, grant, permission evidence, Source-admission receipt, or canonical governance fact",
+    "negative tests for injected ADMITTED/permission-like states and forged grant/Owner-Gate refs",
+    "negative tests for direct runtime-state input to a canonical Source-admission transition",
+    "existing R1 negative tests remain required: stale main, stale lease, duplicate task, lost ACK, retry exhaustion, corrupt state, network attempt, and permission mismatch",
+    "Lab implementation review PASS",
+    "independent Auditor implementation review PASS",
+    "exact scope and code head unchanged between final audit and activation",
+    "runtime state branch created dormant and pinned to the exact activation receipt/genesis identity before activation",
+    "activation-time control-plane receipt and tamper-resistant ceiling mechanism verified while runtime remains OFF"
+  ],
+  "post_activation_requirements_if_approved": {
+    "automatic_pause_at_stage1_ceiling": true,
+    "tamper_detection_forces_pause": true,
+    "independent_post_run_review_required_before_any_expansion": true,
+    "new_owner_gate_required_for": [
+      "network/public-web access",
+      "Source collection or Source admission",
+      "scheduler/always-on operation",
+      "more than one concurrent worker",
+      "continuation beyond Stage 1 auto-pause ceiling",
+      "scientific/data/financial/external-contact scope expansion",
+      "any broader runtime"
+    ]
+  },
+  "owner_decision_requested": {
+    "plain_japanese": "R1を最初の限定実用運転へ進める。対象はGitHub内部のSource調査事務局（認可済みTask投入・重複確認・Task管理・復旧・失敗隔離・完了記録・例外報告）のみ。Task投入はcurrent Authorization decisionでactor/operation/target/scopeが一致した明示enqueueだけ。ネット調査、外部連絡、Source採用、実データ/PRE、競輪の科学判断、RESULT/PAYOUT、holdout、課金、常時監視は許可しない。Runtime台帳は権限やSource採用の証拠にならない。25件/7日の上限やRuntime branchにrollback/tamperを検知したら即停止する。実装後にLabと独立AuditorがPASSした場合だけ、最大1 worker・25件または7日で自動停止するStage 1を稼働してよい。",
+    "recommendation": "APPROVE_ONLY_AFTER_NARROW_LAB_MICRO_REREVIEW_PASS",
+    "approval_is_scope_specific_and_non_reusable": true,
+    "same_scope_activation_after_ci_lab_auditor_pass_may_proceed_without_reasking_identical_owner_question": true,
+    "any_material_scope_or_operation_drift_requires_new_owner_gate": true
+  },
+  "current_authority": "NONE_UNTIL_EXPLICIT_OWNER_APPROVAL",
+  "fail_closed": true
+}
