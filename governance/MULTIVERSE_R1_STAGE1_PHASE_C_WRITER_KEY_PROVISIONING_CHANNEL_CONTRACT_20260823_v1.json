@@ -1,11 +1,12 @@
 {
-  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONING_CHANNEL_CONTRACT_v3",
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONING_CHANNEL_CONTRACT_v4",
   "status": "PREACTIVATION_REVIEW_ONLY",
   "canonical_repo": "fufufu1116/multiverse-research",
   "stage_id": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
   "prepared_from_canonical_main": "66e342fced4bfbd3b1124a49e185b175db359e86",
   "governing_review_blocks": [5384855283, 5384933478],
-  "purpose": "Freeze a nonsecret Phase-C contract that keeps the writer secret unreadable until Phase E and replaces an unavailable atomic fixed-name create-only guarantee with an explicitly Owner-classified cryptographic one-time storage identity.",
+  "governing_pass_with_fixes_review": 5385006936,
+  "purpose": "Freeze a nonsecret Phase-C contract that keeps the writer secret unreadable until Phase E and replaces an unavailable atomic fixed-name create-only guarantee with an explicitly Owner-classified cryptographic one-time storage identity plus an immediately-pre-ARM single-secret inventory gate.",
   "phase_b_binding": {
     "execution_receipt_comment": 5384690796,
     "acceptance_auditor_review": 5001848345,
@@ -34,12 +35,13 @@
     "replacement_invariant": "generated exact target name is a fresh unpredictable one-time identifier unknown outside the provisioner until confirmed creation",
     "writer_storage_nonce_entropy_bits": 128,
     "writer_storage_nonce_independent_from_writer_key": true,
-    "same_name_blind_precreation_or_random_collision_upper_bound": "2^-128 under uncompromised CSPRNG and no identifier disclosure before PUT",
+    "single_blind_same_name_guess_probability": "2^-128 under uncompromised CSPRNG and no identifier disclosure before PUT",
+    "q_blind_same_name_guesses_union_bound": "min(1,q/2^128) for q independent blind guesses before PUT under the same assumptions",
+    "no_unconditional_2^-128_claim_for_multiple_attacker_guesses": true,
     "accepted_response": "HTTP_201_CREATED_ONLY",
     "http_204_updated": "MATERIAL_INCIDENT_FAIL_CLOSED_AFTER_DETECTED_PROHIBITED_MUTATION_NO_RECEIPT_NO_PHASE_PROGRESS",
     "any_other_or_ambiguous_response": "FAIL_CLOSED_NO_OUTPUT_NO_RETRY",
-    "owner_gate_must_explicitly_accept_probabilistic_uniqueness_residual": true,
-    "lab_must_decide_if_this_is_proportionate_before_owner_presentation": true
+    "owner_gate_must_explicitly_accept_probabilistic_uniqueness_residual_and_q_dependent_bound": true
   },
   "writer_identity_generation_contract": {
     "writer_key_bytes_entropy_bits_minimum": 256,
@@ -71,6 +73,10 @@
     "concurrent_different_name_prefix_secret": "FAIL_CLOSED_NO_RECEIPT_ENVIRONMENT_STAYS_LOCKED_SEPARATE_RECOVERY_REVIEW",
     "same_name_204_update": "MATERIAL_INCIDENT_NO_RECEIPT_ENVIRONMENT_STAYS_LOCKED_SEPARATE_RECOVERY_REVIEW",
     "active_writer_key_definition": "writer key whose durable Phase-C provisioning receipt has been independently accepted",
+    "phase_e_immediately_pre_arm_fresh_scan": ["repository Actions secret names", "exact environment secret names"],
+    "phase_e_immediately_pre_arm_require_exactly_one_prefix_name": true,
+    "phase_e_immediately_pre_arm_name_must_equal_accepted_phase_c_receipt_writer_key_id": true,
+    "phase_e_immediately_pre_arm_inventory_mismatch": "FAIL_CLOSED_NO_ARM_SEPARATE_RECOVERY_REVIEW",
     "second_accepted_active_writer_key": false,
     "automatic_secret_delete_overwrite_rotation_or_recovery": false
   },
@@ -116,9 +122,11 @@
     "ruleset_or_main_mutation": false
   },
   "phase_e_environment_arm_contract": {
-    "pre_arm_fresh_requirements": ["environment exact and still deny-all", "admin bypass false", "activation tag absent before controlled creation", "Phase-D accepted", "activation receipt independently accepted", "canonical main and ruleset barriers pass"],
+    "pre_tag_fresh_requirements": ["environment exact and still deny-all", "admin bypass false", "activation tag absent before controlled creation", "Phase-D accepted", "activation receipt independently accepted", "canonical main and ruleset barriers pass"],
     "controlled_tag_creation_then_verify": true,
     "arm_only_after_exact_tag_object_verification": true,
+    "immediately_pre_arm_secret_inventory_requirements": ["Fresh repository Actions secret-name inventory", "Fresh exact-environment secret-name inventory", "exactly one reserved-prefix secret exists across the governed inventory", "that exact name equals writer_key_id in the independently accepted Phase-C provisioning receipt"],
+    "immediately_pre_arm_inventory_mismatch": "FAIL_CLOSED_NO_ARM_SEPARATE_RECOVERY_REVIEW",
     "arm_mutation": {"operation": "create exactly one deployment policy", "type": "tag", "name": "multiverse-r1-stage1-activation-v1"},
     "post_arm_fresh_requirements": ["exactly one deployment policy total", "exact tag policy", "zero branch policies", "admin bypass false"],
     "early_or_competing_tag": "FAIL_CLOSED_NO_ARM",
@@ -138,7 +146,8 @@
     "secret_bearing_job_requires_successful_preflight": true,
     "secret_bearing_job_environment": "multiverse-r1-stage1-writer-key-v1",
     "launcher_step_dynamic_secret_reference_candidate": "secrets[needs.preflight.outputs.writer_key_id]",
-    "independent_implementation_test_of_dynamic_index_expression_required": true,
+    "dynamic_index_expression_and_exact_environment_secret_release_timing": "IMPLEMENTATION_PROOF_REQUIRED",
+    "independent_implementation_test_of_dynamic_index_expression_and_release_timing_required": true,
     "caller_supplied_writer_key_id": false,
     "secret_reference_location": "exact launcher/runtime step only",
     "launcher_hash_check": "SHA256(exact received secret bytes) must equal Fresh-verified activation receipt writer_key_sha256 before Runtime-CAS construction",
@@ -172,6 +181,7 @@
     "Phase D sequence-0 and Runtime branch",
     "Phase E activation receipt",
     "Phase E controlled activation-tag creation and Fresh verification",
+    "Phase E Fresh reserved-prefix inventory bound to accepted Phase-C receipt",
     "Phase E environment arm",
     "Phase F exact-tag loader preflight",
     "final independent activation decision"
