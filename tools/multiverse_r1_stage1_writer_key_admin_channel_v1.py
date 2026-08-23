@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Reviewed iPhone Codespaces administration boundary for R1 Stage-1 Phase C.
+"""iPhone Codespaces administration boundary for R1 Stage-1 Phase C.
 
-Candidate implementation only. It exposes a narrow API client used by the
-writer-key provisioner and a local cleanup operation. It never prints or reads
-secret values from GitHub and it rejects environment-supplied GitHub tokens.
+Candidate implementation only. The client is method/endpoint allowlisted,
+rejects ambient GitHub tokens/proxies/debug transport, requires an exact OAuth
+scope set, uses memory-backed local credential state, never reads secret values,
+and provides a bound local-cleanup proof. No CLI mode performs production
+provisioning; the separately reviewed provisioner is the only future caller.
 """
 from __future__ import annotations
 
@@ -35,6 +37,7 @@ EXPECTED_EFFECTIVE_OAUTH_SCOPES = {"repo", "read:org", "gist"}
 EXPECTED_GH_CONFIG_DIR = "/dev/shm/multiverse-r1-stage1-phase-c-gh-auth"
 SESSION_STATE_DIR = "/dev/shm/multiverse-r1-stage1-phase-c-session-state"
 API_VERSION = "2022-11-28"
+MAX_PAGES = 100
 _HEX40 = re.compile(r"^[0-9a-f]{40}$")
 _WRITER_ID = re.compile(r"^MULTIVERSE_R1_STAGE1_WRITER_KEY_[0-9A-F]{32}$")
 _SESSION_ID = re.compile(r"^[0-9a-f]{32}$")
@@ -125,6 +128,19 @@ def _assert_memory_dir(path: str, *, require_empty: bool = False, create: bool =
     return p
 
 
+def _assert_local_gh_config_safe() -> None:
+    proc = _run(["gh", "config", "list", "--host", "github.com"])
+    if proc.returncode != 0:
+        _deny("PHASE_C_GH_CONFIG_QUERY_FAILED")
+    sockets = [
+        row.split("=", 1)[1].strip()
+        for row in proc.stdout.splitlines()
+        if row.startswith("http_unix_socket=") and "=" in row
+    ]
+    if len(sockets) != 1 or sockets[0]:
+        _deny("PHASE_C_GH_HTTP_UNIX_SOCKET_PROHIBITED_OR_AMBIGUOUS")
+
+
 def preauth_storage_proof() -> dict[str, Any]:
     name = _assert_env_clean()
     if os.environ.get("GH_CONFIG_DIR") != EXPECTED_GH_CONFIG_DIR:
@@ -143,8 +159,7 @@ def preauth_storage_proof() -> dict[str, Any]:
 
 
 def _parse_included_response(text: str) -> tuple[int, dict[str, str], Any]:
-    normalized = text.replace("\r\n", "\n")
-    header, sep, body = normalized.partition("\n\n")
+    header, sep, body = text.replace("\r\n", "\n").partition("\n\n")
     if not sep:
         _deny("PHASE_C_API_RESPONSE_HEADERS_MISSING")
     lines = [x for x in header.splitlines() if x]
@@ -163,12 +178,12 @@ def _parse_included_response(text: str) -> tuple[int, dict[str, str], Any]:
         if key in headers:
             _deny("PHASE_C_API_DUPLICATE_HEADER:" + key)
         headers[key] = v.strip()
-    body = body.strip()
-    if not body:
+    raw = body.strip()
+    if not raw:
         payload: Any = None
     else:
         try:
-            payload = json.loads(body)
+            payload = json.loads(raw)
         except Exception as exc:
             raise Denied("PHASE_C_API_JSON_INVALID") from exc
     return status, headers, payload
@@ -178,26 +193,37 @@ def _environment_path() -> str:
     return f"/repos/{CANONICAL_REPO}/environments/{quote(ENVIRONMENT_NAME, safe='')}"
 
 
-def _repo_secret_list_path() -> str:
-    return f"/repos/{CANONICAL_REPO}/actions/secrets?per_page=100"
+def _repo_secret_list_base() -> str:
+    return f"/repos/{CANONICAL_REPO}/actions/secrets"
 
 
-def _env_secret_list_path() -> str:
-    return _environment_path() + "/secrets?per_page=100"
+def _env_secret_list_base() -> str:
+    return _environment_path() + "/secrets"
+
+
+def _env_policy_list_base() -> str:
+    return _environment_path() + "/deployment-branch-policies"
+
+
+def _paged(base: str, page: int) -> str:
+    if not isinstance(page, int) or isinstance(page, bool) or not (1 <= page <= MAX_PAGES):
+        _deny("PHASE_C_API_PAGE_INVALID")
+    return f"{base}?per_page=100&page={page}"
 
 
 def _env_public_key_path() -> str:
     return _environment_path() + "/secrets/public-key"
 
 
-def _env_policy_list_path() -> str:
-    return _environment_path() + "/deployment-branch-policies?per_page=100"
-
-
 def _writer_secret_path(writer_key_id: str) -> str:
     if not _WRITER_ID.fullmatch(writer_key_id):
         _deny("PHASE_C_WRITER_KEY_ID_INVALID")
     return _environment_path() + "/secrets/" + writer_key_id
+
+
+def _is_paged_endpoint(endpoint: str, base: str) -> bool:
+    match = re.fullmatch(re.escape(base) + r"\?per_page=100&page=([1-9][0-9]{0,2})", endpoint)
+    return bool(match and int(match.group(1)) <= MAX_PAGES)
 
 
 @dataclass(frozen=True)
@@ -208,7 +234,7 @@ class ApiResult:
 
 
 class PhaseCAdminChannel:
-    """Exact method/endpoint allowlist. No arbitrary endpoint caller input."""
+    """Exact method/endpoint allowlist. No secret-value read endpoint exists."""
 
     def __init__(self) -> None:
         _assert_env_clean()
@@ -217,6 +243,11 @@ class PhaseCAdminChannel:
         _assert_memory_dir(EXPECTED_GH_CONFIG_DIR)
         if shutil.which("gh") is None:
             _deny("PHASE_C_GH_CLI_REQUIRED")
+        _assert_local_gh_config_safe()
+
+    @staticmethod
+    def environment_endpoint() -> str:
+        return _environment_path()
 
     @staticmethod
     def _allowed(method: str, endpoint: str) -> bool:
@@ -227,20 +258,25 @@ class PhaseCAdminChannel:
             ("GET", f"/repos/{CANONICAL_REPO}/git/ref/{FENCE_SHORT}"),
             ("GET", f"/repos/{CANONICAL_REPO}/rulesets/{RULESET_ID}"),
             ("GET", _environment_path()),
-            ("GET", _repo_secret_list_path()),
-            ("GET", _env_secret_list_path()),
             ("GET", _env_public_key_path()),
-            ("GET", _env_policy_list_path()),
             ("POST", f"/repos/{CANONICAL_REPO}/git/refs"),
             ("PUT", _environment_path()),
         }
         if (method, endpoint) in fixed:
             return True
-        return method == "PUT" and endpoint.startswith(_environment_path() + "/secrets/") and bool(
-            _WRITER_ID.fullmatch(endpoint.rsplit("/", 1)[-1])
-        )
+        if method == "GET" and any(
+            _is_paged_endpoint(endpoint, base)
+            for base in (_repo_secret_list_base(), _env_secret_list_base(), _env_policy_list_base())
+        ):
+            return True
+        if method == "PUT" and endpoint.startswith(_environment_path() + "/secrets/"):
+            return bool(_WRITER_ID.fullmatch(endpoint.rsplit("/", 1)[-1]))
+        return False
 
     def api(self, method: str, endpoint: str, *, payload: Any = None) -> ApiResult:
+        _assert_env_clean()
+        _assert_memory_dir(EXPECTED_GH_CONFIG_DIR)
+        _assert_local_gh_config_safe()
         if method not in {"GET", "POST", "PUT"} or not self._allowed(method, endpoint):
             _deny("PHASE_C_API_METHOD_OR_ENDPOINT_NOT_ALLOWLISTED")
         cmd = [
@@ -302,11 +338,10 @@ class PhaseCAdminChannel:
     def create_fence(self, target_sha: str) -> int:
         if not _HEX40.fullmatch(target_sha):
             _deny("PHASE_C_FENCE_TARGET_INVALID")
-        result = self.api(
+        return self.api(
             "POST", f"/repos/{CANONICAL_REPO}/git/refs",
             payload={"ref": FENCE_REF, "sha": target_sha},
-        )
-        return result.status
+        ).status
 
     def verify_ruleset(self) -> dict[str, Any]:
         result = self.api("GET", f"/repos/{CANONICAL_REPO}/rulesets/{RULESET_ID}")
@@ -327,8 +362,7 @@ class PhaseCAdminChannel:
         ref = cond.get("ref_name")
         if not isinstance(ref, dict) or set(ref) != {"include", "exclude"}:
             _deny("PHASE_C_RULESET_REF_CONDITION_INVALID")
-        includes = ref.get("include")
-        excludes = ref.get("exclude")
+        includes, excludes = ref.get("include"), ref.get("exclude")
         if not isinstance(includes, list) or len(includes) != 2 or set(includes) != {JOURNAL_INCLUDE, ACTIVATION_INCLUDE}:
             _deny("PHASE_C_RULESET_INCLUDE_DRIFT")
         if excludes != []:
@@ -346,12 +380,10 @@ class PhaseCAdminChannel:
             types.append(rule["type"])
         if set(types) != {"deletion", "update", "non_fast_forward"}:
             _deny("PHASE_C_RULESET_RULES_DRIFT")
-        return {
-            "id": RULESET_ID,
-            "updated_at": RULESET_UPDATED_AT,
-            "no_bypass": True,
-            "creation_rule_absent": True,
-        }
+        return {"id": RULESET_ID, "updated_at": RULESET_UPDATED_AT, "no_bypass": True, "creation_rule_absent": True}
+
+    def probe_environment(self) -> ApiResult:
+        return self.api("GET", _environment_path())
 
     def configure_locked_environment(self) -> int:
         payload = {
@@ -359,43 +391,57 @@ class PhaseCAdminChannel:
             "prevent_self_review": False,
             "reviewers": [],
             "can_admins_bypass": False,
-            "deployment_branch_policy": {
-                "protected_branches": False,
-                "custom_branch_policies": True,
-            },
+            "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
         }
         return self.api("PUT", _environment_path(), payload=payload).status
 
     def environment(self) -> Mapping[str, Any]:
-        result = self.api("GET", _environment_path())
+        result = self.probe_environment()
         if result.status != 200 or not isinstance(result.payload, dict):
             _deny("PHASE_C_ENVIRONMENT_READ_FAILED")
         return result.payload
 
+    def _paged_rows(self, base: str, field: str) -> list[Mapping[str, Any]]:
+        out: list[Mapping[str, Any]] = []
+        declared_total: Optional[int] = None
+        for page in range(1, MAX_PAGES + 1):
+            result = self.api("GET", _paged(base, page))
+            if result.status != 200 or not isinstance(result.payload, dict):
+                _deny("PHASE_C_PAGED_INVENTORY_FAILED")
+            rows = result.payload.get(field)
+            total = result.payload.get("total_count")
+            if not isinstance(rows, list) or not isinstance(total, int) or isinstance(total, bool) or total < 0:
+                _deny("PHASE_C_PAGED_INVENTORY_SCHEMA")
+            if declared_total is None:
+                declared_total = total
+            elif total != declared_total:
+                _deny("PHASE_C_PAGED_INVENTORY_TOTAL_DRIFT")
+            for row in rows:
+                if not isinstance(row, dict):
+                    _deny("PHASE_C_PAGED_INVENTORY_ENTRY_INVALID")
+                out.append(row)
+            if len(rows) < 100:
+                break
+        else:
+            _deny("PHASE_C_PAGED_INVENTORY_UNBOUNDED")
+        if declared_total is None or len(out) != declared_total:
+            _deny("PHASE_C_PAGED_INVENTORY_INCOMPLETE")
+        return out
+
     def policies(self) -> list[Mapping[str, Any]]:
-        result = self.api("GET", _env_policy_list_path())
-        if result.status != 200 or not isinstance(result.payload, dict):
-            _deny("PHASE_C_DEPLOYMENT_POLICY_LIST_FAILED")
-        rows = result.payload.get("branch_policies")
-        if not isinstance(rows, list):
-            _deny("PHASE_C_DEPLOYMENT_POLICY_LIST_INVALID")
-        return [x for x in rows if isinstance(x, dict)]
+        return self._paged_rows(_env_policy_list_base(), "branch_policies")
 
     def secret_names(self) -> tuple[set[str], set[str]]:
-        def names(endpoint: str) -> set[str]:
-            result = self.api("GET", endpoint)
-            if result.status != 200 or not isinstance(result.payload, dict):
-                _deny("PHASE_C_SECRET_INVENTORY_FAILED")
-            values = result.payload.get("secrets")
-            if not isinstance(values, list):
-                _deny("PHASE_C_SECRET_INVENTORY_INVALID")
-            out = set()
-            for row in values:
-                if not isinstance(row, dict) or not isinstance(row.get("name"), str):
-                    _deny("PHASE_C_SECRET_INVENTORY_ENTRY_INVALID")
-                out.add(row["name"])
+        def names(base: str) -> set[str]:
+            rows = self._paged_rows(base, "secrets")
+            out: set[str] = set()
+            for row in rows:
+                name = row.get("name")
+                if not isinstance(name, str) or not name or name in out:
+                    _deny("PHASE_C_SECRET_INVENTORY_NAME_INVALID_OR_DUPLICATE")
+                out.add(name)
             return out
-        return names(_repo_secret_list_path()), names(_env_secret_list_path())
+        return names(_repo_secret_list_base()), names(_env_secret_list_base())
 
     def public_key(self) -> tuple[str, str]:
         result = self.api("GET", _env_public_key_path())
@@ -407,15 +453,12 @@ class PhaseCAdminChannel:
         return key_id, key
 
     def put_encrypted_secret(self, writer_key_id: str, *, key_id: str, encrypted_value: str) -> int:
-        if not isinstance(key_id, str) or not key_id:
-            _deny("PHASE_C_SECRET_KEY_ID_INVALID")
-        if not isinstance(encrypted_value, str) or not encrypted_value:
-            _deny("PHASE_C_SECRET_CIPHERTEXT_INVALID")
-        result = self.api(
+        if not isinstance(key_id, str) or not key_id or not isinstance(encrypted_value, str) or not encrypted_value:
+            _deny("PHASE_C_SECRET_ENCRYPTED_PAYLOAD_INVALID")
+        return self.api(
             "PUT", _writer_secret_path(writer_key_id),
             payload={"encrypted_value": encrypted_value, "key_id": key_id},
-        )
-        return result.status
+        ).status
 
 
 def create_session_marker() -> str:
@@ -480,7 +523,7 @@ def cleanup_local_credentials(session_id: str) -> dict[str, Any]:
         _deny("PHASE_C_GH_CONFIG_DIR_NOT_PINNED")
     cfg = _assert_memory_dir(EXPECTED_GH_CONFIG_DIR)
     marker = _consume_session_marker(session_id)
-    # gh auth logout is local configuration removal only, not server-side revocation.
+    # Local configuration deletion only; this is not a server-side token revoke.
     logout = _run(["gh", "auth", "logout", "--hostname", "github.com"])
     if logout.returncode not in {0, 1}:
         _deny("PHASE_C_LOCAL_LOGOUT_FAILED")
@@ -508,15 +551,15 @@ def cleanup_local_credentials(session_id: str) -> dict[str, Any]:
 
 def selftest() -> None:
     assert EXPECTED_EFFECTIVE_OAUTH_SCOPES == {"repo", "read:org", "gist"}
-    assert PhaseCAdminChannel._allowed("GET", f"/repos/{CANONICAL_REPO}/rulesets/{RULESET_ID}")
+    assert PhaseCAdminChannel._allowed("GET", _paged(_repo_secret_list_base(), 1))
+    assert PhaseCAdminChannel._allowed("GET", _paged(_env_secret_list_base(), MAX_PAGES))
+    assert PhaseCAdminChannel._allowed("GET", _paged(_env_policy_list_base(), 1))
     assert PhaseCAdminChannel._allowed("POST", f"/repos/{CANONICAL_REPO}/git/refs")
     assert PhaseCAdminChannel._allowed("PUT", _environment_path())
-    assert PhaseCAdminChannel._allowed(
-        "PUT", _writer_secret_path("MULTIVERSE_R1_STAGE1_WRITER_KEY_" + "A" * 32)
-    )
+    assert PhaseCAdminChannel._allowed("PUT", _writer_secret_path(WRITER_PREFIX + "A" * 32))
     assert not PhaseCAdminChannel._allowed("DELETE", f"/repos/{CANONICAL_REPO}/git/refs")
     assert not PhaseCAdminChannel._allowed("PATCH", f"/repos/{CANONICAL_REPO}")
-    print("PHASE_C_ADMIN_CHANNEL_ENDPOINT_ALLOWLIST_SELFTEST_PASS")
+    print("PHASE_C_ADMIN_CHANNEL_ENDPOINT_AND_PAGINATION_SELFTEST_PASS")
     print("PRODUCTION_MUTATION_PERFORMED=false")
     print("RUNTIME_ACTIVATION_PERFORMED=false")
 
