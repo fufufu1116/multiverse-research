@@ -1,170 +1,171 @@
 {
-  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONING_CHANNEL_CONTRACT_v1",
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONING_CHANNEL_CONTRACT_v2",
   "status": "PREACTIVATION_REVIEW_ONLY",
   "canonical_repo": "fufufu1116/multiverse-research",
   "stage_id": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
   "prepared_from_canonical_main": "66e342fced4bfbd3b1124a49e185b175db359e86",
-  "purpose": "Freeze the exact nonsecret Phase-C security contract for one production writer key without generating, storing, retrieving, hashing, testing, or consuming production secret material during candidate review.",
-  "phase_order": [
-    "new_owner_gate_for_actions_runner_surface",
-    "independent_review_and_separate_canonical_integration_of_exact_phase_c_support_files_if_approved",
-    "fresh_reverify_phase_b_ruleset_after_support_integration",
-    "phase_c_one_time_writer_key_provisioning",
-    "phase_d_sequence0_and_runtime_branch",
-    "phase_e_activation_receipt_and_annotated_tag",
-    "phase_f_activation_tag_bound_loader_preflight_and_final_independent_activation_decision"
-  ],
+  "governing_review_block": 5384855283,
+  "purpose": "Freeze a nonsecret Phase-C contract that keeps the production writer secret unreadable until the later controlled Phase-E arm transition, while making the new hosted-runner network capability and exact GitHub credential ceilings explicit for Owner review.",
   "phase_b_binding": {
     "execution_receipt_comment": 5384690796,
     "acceptance_auditor_review": 5001848345,
     "ruleset_id": 21227261,
     "ruleset_updated_at": "2026-08-23T06:39:18.750Z",
-    "must_fresh_reverify_before_any_phase_c_mutation": true,
-    "required_semantics": {
-      "target": "tag",
-      "enforcement": "active",
-      "bypass_actors": [],
-      "includes": [
-        "refs/tags/multiverse-r1-stage1-ledger-v1-*",
-        "refs/tags/multiverse-r1-stage1-activation-v1"
-      ],
-      "excludes": [],
-      "rules_exact": ["deletion", "update", "non_fast_forward"],
-      "creation_rule_present": false
-    }
+    "must_fresh_reverify_immediately_before_phase_c_mutation": true,
+    "expected_current_semantics_include_no_creation_rule": true,
+    "drift_policy": "STOP_NO_REBIND"
   },
-  "reserved_nonsecret_identity": {
+  "fixed_identities": {
     "writer_key_id": "multiverse-r1-stage1-writer-key-v1",
-    "actions_environment": "multiverse-r1-stage1-writer-key-v1",
-    "actions_environment_secret": "MULTIVERSE_R1_STAGE1_WRITER_KEY_V1",
-    "future_workflow_path": ".github/workflows/multiverse-r1-stage1-writer-key-runtime-v1.yml",
-    "future_launcher_path": "tools/multiverse_r1_stage1_writer_key_runtime_launcher_v1.py",
-    "future_provisioner_path": "tools/multiverse_r1_stage1_writer_key_provisioner_v1.py",
-    "activation_tag_name": "multiverse-r1-stage1-activation-v1",
-    "activation_tag_ref": "refs/tags/multiverse-r1-stage1-activation-v1"
+    "environment": "multiverse-r1-stage1-writer-key-v1",
+    "environment_secret": "MULTIVERSE_R1_STAGE1_WRITER_KEY_V1",
+    "writer_secret_namespace_prefix": "MULTIVERSE_R1_STAGE1_WRITER_KEY_",
+    "workflow": ".github/workflows/multiverse-r1-stage1-writer-key-runtime-v1.yml",
+    "launcher": "tools/multiverse_r1_stage1_writer_key_runtime_launcher_v1.py",
+    "provisioner": "tools/multiverse_r1_stage1_writer_key_provisioner_v1.py",
+    "activation_tag": "multiverse-r1-stage1-activation-v1"
   },
-  "support_integration_contract": {
-    "new_owner_gate_required": true,
-    "implementation_files_do_not_exist_in_this_candidate": true,
-    "future_exact_workflow_launcher_provisioner_must_be_independently_reviewed_before_any_main_write": true,
-    "future_main_write_must_be_a_separately_reviewed_fail_closed_exact_transition": true,
-    "support_integration_must_complete_before_production_secret_generation": true,
-    "ruleset_must_be_fresh_reverified_after_support_integration_and_immediately_before_secret_mutation": true
+  "phase_c_environment_locked_state_contract": {
+    "deployment_branch_policy": {"protected_branches": false, "custom_branch_policies": true},
+    "deployment_policy_entries": [],
+    "intended_semantics": "NO_BRANCH_OR_TAG_REF_CAN_DEPLOY_OR_RECEIVE_ENVIRONMENT_SECRET",
+    "independent_review_must_confirm_zero_policy_entries_is_fail_closed_deny_all_on_current_GitHub": true,
+    "admin_bypass": false,
+    "admin_bypass_must_be_unconditionally_disabled_for_this_public_repository": true,
+    "if_admin_bypass_state_cannot_be_set_and_fresh_verified_by_the_approved_channel": "BLOCK_BEFORE_SECRET",
+    "secret_may_be_created_only_after_locked_state_fresh_verification": true,
+    "activation_tag_name_existing_early_does_not_authorize_reader_while_locked": true
+  },
+  "phase_e_environment_arm_contract": {
+    "pre_arm_fresh_requirements": [
+      "environment exact and still deny-all with zero deployment policies",
+      "admin bypass false",
+      "activation tag absent before controlled tag creation",
+      "Phase-D sequence-0 and Runtime branch accepted",
+      "activation receipt exact and independently accepted",
+      "canonical main and ruleset fresh barriers pass"
+    ],
+    "controlled_tag_creation_then_verify": true,
+    "arm_only_after_exact_tag_object_verification": true,
+    "arm_mutation": {
+      "operation": "create exactly one deployment branch-policy entry",
+      "type": "tag",
+      "name": "multiverse-r1-stage1-activation-v1"
+    },
+    "post_arm_fresh_requirements": [
+      "exactly one deployment policy total",
+      "policy type tag",
+      "policy name exact activation tag",
+      "zero branch policies",
+      "admin bypass false"
+    ],
+    "early_or_competing_tag_detected": "FAIL_CLOSED_NO_ARM",
+    "secret_reader_remains_closed_until_arm_success": true
+  },
+  "workflow_contract": {
+    "trigger": ["workflow_dispatch"],
+    "forbidden_triggers": ["schedule", "push", "pull_request", "pull_request_target", "repository_dispatch", "workflow_run"],
+    "dispatch_ref_after_arm": "multiverse-r1-stage1-activation-v1",
+    "required_github_ref": "refs/tags/multiverse-r1-stage1-activation-v1",
+    "runner": "ubuntu-24.04 GitHub-hosted",
+    "permissions": {"contents": "write"},
+    "all_other_github_token_permissions": "none",
+    "untrusted_pr_code": false,
+    "third_party_actions": false,
+    "any_GitHub_owned_action_if_later_needed": "must be full-commit-SHA pinned and separately reviewed",
+    "secret_reference_count": 1,
+    "secret_reference_location": "exact launcher/runtime step only",
+    "whole_activation_commit_scan_must_reject_any_other_reference_to_environment_or_reserved_writer_secret": true
+  },
+  "runner_network_scope": {
+    "platform_capability": "PUBLIC_INTERNET_AVAILABLE_BY_DEFAULT_ON_STANDARD_GITHUB_HOSTED_RUNNER",
+    "must_be_explicitly_presented_in_new_owner_gate": true,
+    "owner_approval_if_given_classifies_this_as_accepted_ambient_execution_capability": true,
+    "authorized_use_still_only": ["GitHub control plane needed for canonical reads and audited Runtime-branch CAS writes"],
+    "forbidden_use": ["public web retrieval", "Source discovery or collection", "provider contact", "live PRE", "bulk collection", "third party API/service", "arbitrary URL supplied by task or caller"],
+    "future_exact_implementation_must_pin_all_network_destinations_and_add_negative_tests": true
+  },
+  "iphone_phase_c_admin_channel_contract": {
+    "new_dedicated_channel_required": true,
+    "must_not_reuse_PR70_ruleset_operator_authority": true,
+    "execution_device": "iPhone browser Codespaces terminal",
+    "oauth": {
+      "host": "github.com",
+      "scope": ["repo"],
+      "exact_login": "fufufu1116",
+      "repo_admin_required": true,
+      "temporary_memory_backed_GH_CONFIG_DIR": true,
+      "zero_active_swap": true,
+      "strict_owner_mode_symlink_checks": true,
+      "mandatory_logout_memory_delete_codespace_delete_and_durable_cleanup_receipt": true
+    },
+    "future_wrapper_endpoint_operation_allowlist": [
+      "GET exact environment",
+      "GET exact environment deployment branch policies",
+      "GET repository Actions secret names without values",
+      "GET exact environment secret names without values",
+      "PUT/create or configure only exact environment into locked deny-all state",
+      "GET exact environment public key needed by encrypted secret upload",
+      "PUT exactly one new exact environment secret when absent",
+      "Phase-E separately reviewed operator: POST exactly one activation-tag deployment policy"
+    ],
+    "caller_may_not_supply_repo_environment_secret_name_endpoint_method_payload_or_tag": true,
+    "secret_delete_overwrite_rotation": false,
+    "arbitrary_environment_or_policy_mutation": false,
+    "ruleset_mutation": false,
+    "main_mutation": false
   },
   "provisioner_contract": {
-    "execution_location": "iPhone browser Codespaces terminal only after exact channel approval",
-    "production_mode_must_require_explicit_flag": true,
     "csprng_minimum_entropy_bits": 256,
-    "recommended_internal_representation": "64 lowercase hexadecimal characters generated by a cryptographically secure RNG; the exact UTF-8 bytes stored are the exact writer_auth_key bytes later hashed/consumed",
-    "owner_supplied_secret_input": false,
-    "secret_command_line_argument": false,
-    "secret_environment_input": false,
-    "secret_repo_file_input": false,
-    "secret_stdout_or_stderr": false,
-    "secret_log_or_trace": false,
-    "store_upload": "pipe the internally generated secret through stdin to the exact reviewed GitHub CLI Actions environment-secret write operation; do not write secret bytes to persistent disk",
-    "nonsecret_result_only": ["writer_key_id", "writer_key_sha256", "store_identity", "provisioning_status", "session_id"],
-    "failure_after_generation_before_confirmed_store": "fail closed and do not emit secret; no retry with the same secret; require explicit review of ambiguous store state before any new generation",
-    "overwrite_existing_secret": false,
-    "rotate_existing_secret": false
+    "secret_generated_internally": true,
+    "owner_secret_input": false,
+    "secret_cli_arg": false,
+    "secret_clipboard_chat_repo_file_log_comment_receipt_tag_state_artifact_cache": false,
+    "persistent_secret_file": false,
+    "upload": "stdin-only to exact reviewed encrypted Actions environment-secret write",
+    "allowed_egress": ["writer_key_id", "writer_key_sha256", "exact_store_identity", "session_id", "status"],
+    "ambiguous_store_result": "STOP_NO_SECRET_OUTPUT_NO_RETRY_NO_REGENERATION_UNTIL_SEPARATE_REVIEW"
   },
-  "inventory_contract": {
-    "fresh_before_generation": true,
-    "inspect_environment_secret_names": true,
-    "inspect_repository_actions_secret_names": true,
-    "deny_if_reserved_name_exists_anywhere_applicable": true,
-    "deny_on_duplicate_or_alias_writer_key_identity": true,
-    "deny_on_ambiguous_secret_scope_or_precedence": true,
-    "inventory_may_expose_secret_values": false,
-    "single_active_key_only": true
+  "single_active_inventory_contract": {
+    "fresh_scan_scopes": ["repository Actions secret names", "exact environment secret names"],
+    "values_must_never_be_read": true,
+    "reserved_prefix": "MULTIVERSE_R1_STAGE1_WRITER_KEY_",
+    "deny_before_csprng_if_any_name_starts_with_reserved_prefix": true,
+    "after_success_only_exact_reserved_name_may_exist_under_prefix": true,
+    "future_activation_commit_must_reference_no_other_secrets_context_entry": true,
+    "overwrite": false,
+    "rotation": false,
+    "delete_recreate_as_rotation": false,
+    "second_active_writer_key": false
   },
-  "environment_release_contract": {
-    "deployment_branch_and_tag_policy": "SELECTED_TAGS_ONLY",
-    "allowed_tag_exact": "multiverse-r1-stage1-activation-v1",
-    "allowed_branch_patterns": [],
-    "workflow_dispatch_must_target_ref": "multiverse-r1-stage1-activation-v1",
-    "required_github_ref": "refs/tags/multiverse-r1-stage1-activation-v1",
-    "activation_tag_does_not_exist_until_phase_e": true,
-    "environment_secret_must_not_be_available_to_reader_job_before_activation_tag_exists": true,
-    "administrator_bypass_of_environment_protection_must_be_disabled_if_platform_plan_visibility_supports_it": true,
-    "any_other_branch_or_tag_ref_must_fail_environment_policy_before_secret_access": true
+  "support_implementation_before_secret": {
+    "Owner_Gate_first": true,
+    "exact workflow_launcher_provisioner_admin_channel_candidates required": true,
+    "independent_Lab_PASS_required": true,
+    "independent_Auditor_PASS_required": true,
+    "separate canonical integration if required": true,
+    "then_fresh_ruleset_reverify": true
   },
-  "actions_reader_contract": {
-    "new_owner_gate_required_before_implementation_approval": true,
-    "workflow_trigger_exact": ["workflow_dispatch"],
-    "forbidden_triggers": ["schedule", "push", "pull_request", "pull_request_target", "repository_dispatch", "workflow_run"],
-    "environment_exact": "multiverse-r1-stage1-writer-key-v1",
-    "secret_exact": "MULTIVERSE_R1_STAGE1_WRITER_KEY_V1",
-    "runner_candidate": "ubuntu-24.04 GitHub-hosted runner",
-    "run_ref_must_be_exact_activation_tag": true,
-    "secret_mapped_only_to_exact_runtime_launcher_step": true,
-    "secret_not_mapped_job_wide": true,
-    "launcher_reads_secret_once_in_memory_and_removes_environment_entry": true,
-    "launcher_must_load_fresh_verified_activation_receipt_before_runtime_consumer_construction": true,
-    "launcher_must_compare_sha256_secret_bytes_to_activation_receipt_writer_key_sha256": true,
-    "launcher_must_require_activation_receipt_writer_key_id_match": true,
-    "launcher_must_not_print_serialize_artifact_upload_or_cache_secret": true,
-    "other_steps_must_not_receive_secret": true,
-    "external_network_or_service_use_beyond_required_github_control_plane": false,
-    "scheduler_or_always_on": false
-  },
-  "workflow_identity_hardening_required_for_future_implementation_review": {
-    "exact_workflow_path_and_blob_must_be_pinned": true,
-    "exact_launcher_path_and_blob_must_be_pinned": true,
-    "exact_provisioner_path_and_blob_must_be_pinned": true,
-    "exact_manual_trigger_only_must_be_machine_verified": true,
-    "workflow_dispatch_ref_must_be_exact_activation_tag": true,
-    "environment_deployment_policy_must_be_exact_activation_tag_only": true,
-    "environment_name_and_secret_name_literals_must_be_caller_independent": true,
-    "candidate_must_demonstrate_that_no_other_file_in_the_immutable_activation_commit_grants_the_environment_secret_to_an_unreviewed_step": true,
-    "canonical_main_and_activation_receipt_provenance_must_fail_closed_on_drift": true,
-    "workflow_permissions_must_be_minimized_and_explicit": true,
-    "untrusted_pr_code_must_never_execute_in_the_secret_reader_job": true,
-    "runtime_reader_must_not_run_before_phase_e_activation_tag_creation": true
-  },
-  "secret_egress_prohibitions": [
-    "chat",
-    "PR_or_issue_comment",
-    "Git_repository_file_or_blob",
-    "activation_receipt_or_tag_message",
-    "runtime_state_or_runtime_ledger",
-    "workflow_log",
-    "workflow_artifact",
-    "cache",
-    "shell_history_as_literal_secret",
-    "clipboard_copy_paste",
-    "command_line_argument"
+  "post_phase_c_order": [
+    "durable Phase-C nonsecret provisioning receipt and independent acceptance",
+    "Phase D sequence-0 and Runtime branch",
+    "Phase E activation receipt",
+    "Phase E controlled activation-tag creation and Fresh verification",
+    "Phase E environment arm by exact one-tag policy",
+    "Phase F exact-tag loader preflight",
+    "final independent activation decision"
   ],
-  "durable_receipt_contract_after_future_success": {
-    "must_contain_secret_bytes": false,
-    "must_bind": [
-      "writer_key_id",
-      "writer_key_sha256",
-      "exact_store_environment_and_secret_name",
-      "exact_environment_activation_tag_only_release_policy",
-      "approved_provisioner_identity",
-      "ruleset_id_and_updated_at_reverified_immediately_before_mutation",
-      "canonical_main_fresh_read",
-      "single_active_inventory_pass",
-      "owner_device_execution_attestation_if_owner_executes_iPhone_path",
-      "local_credential_cleanup_proof_if_temporary_OAuth_is_used"
-    ],
-    "phase_d_gate_remains_closed_until_receipt_is_durable_and_independently_accepted": true
-  },
   "review_boundary": {
-    "owner_gate_approved_now": false,
-    "actions_environment_created_or_modified": false,
-    "actions_secret_created_or_modified": false,
-    "workflow_created": false,
-    "canonical_main_updated_for_phase_c_support": false,
-    "production_writer_key_generated": false,
-    "production_writer_key_stored": false,
-    "production_writer_key_retrieved": false,
-    "production_writer_key_hashed_or_tested": false,
-    "runtime_branch_or_sequence0_created": false,
+    "Owner_Gate_approved_now": false,
+    "environment_created_or_modified": false,
+    "secret_created_or_modified": false,
+    "writer_key_generated_stored_retrieved_hashed_tested": false,
+    "workflow_or_tool_implementation_created": false,
+    "ruleset_or_main_mutated": false,
+    "Runtime_branch_or_sequence0_created": false,
     "activation_receipt_or_tag_created": false,
-    "runtime_state_written": false,
-    "task_enqueued_or_executed": false,
-    "runtime_activated": false
+    "environment_armed": false,
+    "task_or_Source_activity": false,
+    "Runtime_activated": false
   }
 }
