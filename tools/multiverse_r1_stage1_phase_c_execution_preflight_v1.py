@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Nonmutating live preflight and authenticated checkout binding for R1 Stage-1 Phase C.
+"""Nonmutating live preflight for R1 Stage-1 Phase C.
 
-This module performs no GitHub mutation and reads no secret value. The
-production provisioner imports ``verified_execution_checkout_head`` so its
-first mutation can only target a detached execution commit whose reviewed
-security-critical source bytes are independently proven equal to that commit's
-HEAD tree, without trusting mutable Git index suppression state.
+The production trust root is deliberately outside repository Python code.
+Before this module may execute on an approved production path, the separately
+reviewed literal iPhone/Codespaces operator sequence must create a fresh,
+memory-backed Git checkout directly from GitHub at the exact Owner-approved
+canonical main commit. Existing workspace project code must not be executed to
+construct that checkout.
+
+Once execution begins from that external bootstrap root, this module performs
+defense-in-depth authentication of the detached commit and the actual reviewed
+source bytes without trusting mutable Git index suppression state.
 """
 from __future__ import annotations
 
@@ -27,6 +32,10 @@ from multiverse_r1_stage1_writer_key_admin_channel_v1 import (
     PhaseCAdminChannel,
 )
 
+EXPECTED_EXECUTION_ROOT = pathlib.Path(
+    "/dev/shm/multiverse-r1-stage1-phase-c-execution"
+)
+EXPECTED_ORIGIN_URL = "https://github.com/fufufu1116/multiverse-research.git"
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 _HEX40 = re.compile(r"^[0-9a-f]{40}$")
 _SECURITY_CRITICAL_EXECUTION_PATHS = (
@@ -43,6 +52,7 @@ _PROHIBITED_GIT_ENV = (
     "GIT_COMMON_DIR",
     "GIT_NAMESPACE",
     "GIT_REPLACE_REF_BASE",
+    "GIT_CONFIG_COUNT",
 )
 
 
@@ -55,7 +65,14 @@ def _git_env() -> dict[str, str]:
     for key in _PROHIBITED_GIT_ENV:
         if env.get(key):
             _deny("PHASE_C_EXECUTION_GIT_CONTROL_ENV_PROHIBITED:" + key)
+    for key in env:
+        if key.startswith("GIT_CONFIG_KEY_") or key.startswith("GIT_CONFIG_VALUE_"):
+            _deny("PHASE_C_EXECUTION_GIT_CONTROL_ENV_PROHIBITED:" + key)
     env["GIT_NO_REPLACE_OBJECTS"] = "1"
+    env["GIT_CONFIG_NOSYSTEM"] = "1"
+    env["GIT_CONFIG_SYSTEM"] = "/dev/null"
+    env["GIT_CONFIG_GLOBAL"] = "/dev/null"
+    env["GIT_ATTR_NOSYSTEM"] = "1"
     return env
 
 
@@ -136,17 +153,56 @@ def _assert_no_index_suppression(root: pathlib.Path) -> None:
             _deny("PHASE_C_EXECUTION_SKIP_WORKTREE_PROHIBITED")
 
 
+def _assert_external_bootstrap_root() -> pathlib.Path:
+    """Require the exact fresh memory-backed execution root built before Python starts."""
+    try:
+        actual_root = ROOT.resolve(strict=True)
+        expected_root = EXPECTED_EXECUTION_ROOT.resolve(strict=True)
+    except Exception as exc:
+        raise Denied("PHASE_C_EXECUTION_BOOTSTRAP_ROOT_UNRESOLVED") from exc
+    if actual_root != expected_root:
+        _deny("PHASE_C_EXECUTION_ROOT_NOT_EXTERNAL_BOOTSTRAP")
+
+    dot_git = actual_root / ".git"
+    try:
+        st = os.lstat(dot_git)
+    except FileNotFoundError as exc:
+        raise Denied("PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_MISSING") from exc
+    if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_INVALID")
+
+    git_dir_proc = _run_git(["rev-parse", "--absolute-git-dir"], cwd=actual_root)
+    if git_dir_proc.returncode != 0 or not git_dir_proc.stdout.strip():
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_UNREADABLE")
+    try:
+        git_dir = pathlib.Path(git_dir_proc.stdout.strip()).resolve(strict=True)
+        expected_git_dir = dot_git.resolve(strict=True)
+    except Exception as exc:
+        raise Denied("PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_UNRESOLVED") from exc
+    if git_dir != expected_git_dir:
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_MISMATCH")
+
+    remotes = _run_git(["remote"], cwd=actual_root)
+    if remotes.returncode != 0 or [x for x in remotes.stdout.splitlines() if x] != ["origin"]:
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_REMOTE_SET_INVALID")
+    origin = _run_git(["config", "--local", "--get", "remote.origin.url"], cwd=actual_root)
+    if origin.returncode != 0 or origin.stdout.strip() != EXPECTED_ORIGIN_URL:
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_ORIGIN_MISMATCH")
+    return actual_root
+
+
 def verified_execution_checkout_head() -> str:
-    """Return an authenticated detached commit for the reviewed execution path."""
-    top = _run_git(["rev-parse", "--show-toplevel"])
+    """Authenticate the externally bootstrapped exact execution checkout."""
+    actual_root = _assert_external_bootstrap_root()
+
+    top = _run_git(["rev-parse", "--show-toplevel"], cwd=actual_root)
     if top.returncode != 0 or not top.stdout.strip():
         _deny("PHASE_C_EXECUTION_GIT_TOPLEVEL_UNAVAILABLE")
     try:
-        actual_root = pathlib.Path(top.stdout.strip()).resolve(strict=True)
-        expected_root = ROOT.resolve(strict=True)
+        top_root = pathlib.Path(top.stdout.strip()).resolve(strict=True)
     except Exception as exc:
         raise Denied("PHASE_C_EXECUTION_GIT_ROOT_UNRESOLVED") from exc
-    if actual_root != expected_root:
+    if top_root != actual_root:
         _deny("PHASE_C_EXECUTION_GIT_ROOT_MISMATCH")
 
     symbolic = _run_git(["symbolic-ref", "-q", "HEAD"], cwd=actual_root)
@@ -160,14 +216,12 @@ def verified_execution_checkout_head() -> str:
     if head_proc.returncode != 0 or not _HEX40.fullmatch(head):
         _deny("PHASE_C_EXECUTION_CHECKOUT_SHA_INVALID")
 
-    # Never use index-backed cleanliness as the authority proof. Reject known
-    # index suppression controls and independently hash the actual reviewed
-    # execution bytes against the exact detached HEAD tree blobs.
+    # Defense in depth after the pre-execution external bootstrap has already
+    # established the first trust anchor. These checks do not claim to create
+    # that anchor by self-verification.
     _assert_no_index_suppression(actual_root)
     _verify_exact_paths_against_head(actual_root, head, _SECURITY_CRITICAL_EXECUTION_PATHS)
 
-    # Secondary hygiene only: catches ordinary tracked/untracked dirt after the
-    # byte/tree authentication above. It is not the security root.
     status = _run_git(["status", "--porcelain=v1", "--untracked-files=all"], cwd=actual_root)
     if status.returncode != 0:
         _deny("PHASE_C_EXECUTION_WORKTREE_STATUS_FAILED")
@@ -206,6 +260,9 @@ def live_preflight() -> dict[str, Any]:
         "canonical_repo": CANONICAL_REPO,
         "execution_checkout_sha": checkout,
         "fresh_main_sha": main_sha,
+        "pre_execution_external_bootstrap_required": True,
+        "execution_root": str(EXPECTED_EXECUTION_ROOT),
+        "origin_url": EXPECTED_ORIGIN_URL,
         "detached_checkout": True,
         "reviewed_execution_bytes_match_head_tree": True,
         "index_suppression_absent": True,
@@ -227,9 +284,14 @@ def live_preflight() -> dict[str, Any]:
 
 def selftest() -> None:
     assert CANONICAL_REPO == "fufufu1116/multiverse-research"
+    assert EXPECTED_EXECUTION_ROOT == pathlib.Path(
+        "/dev/shm/multiverse-r1-stage1-phase-c-execution"
+    )
+    assert EXPECTED_ORIGIN_URL == "https://github.com/fufufu1116/multiverse-research.git"
     assert _HEX40.fullmatch("0" * 40)
     assert _git_blob_sha(b"") == "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
     print("PHASE_C_EXECUTION_PREFLIGHT_STATIC_SELFTEST_PASS")
+    print("PRE_EXECUTION_EXTERNAL_BOOTSTRAP_REQUIRED=true")
     print("INDEX_INDEPENDENT_REVIEWED_BYTE_BINDING=true")
     print("PRODUCTION_MUTATION_PERFORMED=false")
     print("RUNTIME_ACTIVATION_PERFORMED=false")
