@@ -65,7 +65,6 @@ def _adversarial_index_suppression_test() -> None:
         _verify_exact_paths_against_head(repo, head, ("tracked.py",))
         _assert_no_index_suppression(repo)
 
-        # Auditor reproduction: modified bytes + assume-unchanged makes status empty.
         tracked.write_text("reviewed = False\n", encoding="utf-8")
         assert _git(repo, "update-index", "--assume-unchanged", "tracked.py").returncode == 0
         status = _git(repo, "status", "--porcelain=v1", "--untracked-files=all")
@@ -79,7 +78,6 @@ def _adversarial_index_suppression_test() -> None:
             "PHASE_C_EXECUTION_ASSUME_UNCHANGED_PROHIBITED",
         )
 
-        # Equivalent skip-worktree suppression is also independently rejected.
         assert _git(repo, "update-index", "--no-assume-unchanged", "tracked.py").returncode == 0
         assert _git(repo, "checkout", "-q", "--", "tracked.py").returncode == 0
         assert _git(repo, "update-index", "--skip-worktree", "tracked.py").returncode == 0
@@ -117,6 +115,9 @@ def _structural_test() -> None:
         'EXPECTED_ORIGIN_URL = "https://github.com/fufufu1116/multiverse-research.git"',
         "actual_root = _assert_external_bootstrap_root()",
         "PHASE_C_EXECUTION_ROOT_NOT_EXTERNAL_BOOTSTRAP",
+        "PHASE_C_EXECUTION_BOOTSTRAP_ROOT_PERMISSIONS",
+        "PHASE_C_EXECUTION_BOOTSTRAP_ROOT_NOT_MEMORY_FILESYSTEM",
+        '["stat", "-f", "-c", "%T", str(actual_root)]',
         "PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_MISMATCH",
         "PHASE_C_EXECUTION_BOOTSTRAP_REMOTE_SET_INVALID",
         "PHASE_C_EXECUTION_BOOTSTRAP_ORIGIN_MISMATCH",
@@ -142,8 +143,6 @@ def _structural_test() -> None:
     ):
         assert required in fsrc
 
-    # Production binding must first demand the externally constructed fixed root;
-    # repo-internal byte/tree checks are defense in depth after that trust anchor.
     bootstrap_pos = fsrc.index("actual_root = _assert_external_bootstrap_root()")
     index_pos = fsrc.index("_assert_no_index_suppression(actual_root)")
     bytes_pos = fsrc.index("_verify_exact_paths_against_head(actual_root, head, _SECURITY_CRITICAL_EXECUTION_PATHS)")
@@ -185,6 +184,7 @@ def main() -> int:
     _adversarial_index_suppression_test()
     print("PHASE_C_EXACT_MAIN_PREFLIGHT_REMEDIATION_SELFTEST_PASS")
     print("PRE_EXECUTION_TRUST_ROOT_IS_EXTERNAL_BOOTSTRAP=true")
+    print("EXECUTION_ROOT_MEMORY_BACKED_REQUIRED=true")
     print("EXISTING_WORKSPACE_EXECUTION_ROOT_PROHIBITED=true")
     print("ASSUME_UNCHANGED_FALSE_CLEAN_REPRODUCED_AND_REJECTED=true")
     print("SKIP_WORKTREE_SUPPRESSION_REJECTED=true")
