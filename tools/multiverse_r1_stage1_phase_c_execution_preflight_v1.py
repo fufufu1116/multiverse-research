@@ -163,6 +163,21 @@ def _assert_external_bootstrap_root() -> pathlib.Path:
     if actual_root != expected_root:
         _deny("PHASE_C_EXECUTION_ROOT_NOT_EXTERNAL_BOOTSTRAP")
 
+    root_st = os.lstat(actual_root)
+    if stat.S_ISLNK(root_st.st_mode) or not stat.S_ISDIR(root_st.st_mode):
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_ROOT_IDENTITY")
+    if root_st.st_uid != os.geteuid() or stat.S_IMODE(root_st.st_mode) != 0o700:
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_ROOT_PERMISSIONS")
+    fs = subprocess.run(
+        ["stat", "-f", "-c", "%T", str(actual_root)],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=os.environ.copy(),
+    )
+    if fs.returncode != 0 or fs.stdout.strip() not in {"tmpfs", "ramfs"}:
+        _deny("PHASE_C_EXECUTION_BOOTSTRAP_ROOT_NOT_MEMORY_FILESYSTEM")
+
     dot_git = actual_root / ".git"
     try:
         st = os.lstat(dot_git)
@@ -262,6 +277,7 @@ def live_preflight() -> dict[str, Any]:
         "fresh_main_sha": main_sha,
         "pre_execution_external_bootstrap_required": True,
         "execution_root": str(EXPECTED_EXECUTION_ROOT),
+        "execution_root_memory_backed": True,
         "origin_url": EXPECTED_ORIGIN_URL,
         "detached_checkout": True,
         "reviewed_execution_bytes_match_head_tree": True,
@@ -292,6 +308,7 @@ def selftest() -> None:
     assert _git_blob_sha(b"") == "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
     print("PHASE_C_EXECUTION_PREFLIGHT_STATIC_SELFTEST_PASS")
     print("PRE_EXECUTION_EXTERNAL_BOOTSTRAP_REQUIRED=true")
+    print("EXECUTION_ROOT_MEMORY_BACKED_REQUIRED=true")
     print("INDEX_INDEPENDENT_REVIEWED_BYTE_BINDING=true")
     print("PRODUCTION_MUTATION_PERFORMED=false")
     print("RUNTIME_ACTIVATION_PERFORMED=false")
