@@ -1,0 +1,99 @@
+{
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_ACTIONS_ENV_OWNER_GATE_CANDIDATE_v1",
+  "status": "CANDIDATE_NONAUTHORIZING",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "stage_id": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
+  "prepared_from_canonical_main": "66e342fced4bfbd3b1124a49e185b175db359e86",
+  "governing_evidence": {
+    "existing_stage1_owner_gate_comment": 5367308652,
+    "phase_b_execution_receipt_comment": 5384690796,
+    "phase_b_execution_acceptance_auditor_review": 5001848345,
+    "phase_c_secret_store_lab_request_comment": 5384748087,
+    "phase_c_secret_store_lab_result_comment": 5384791472,
+    "phase_c_secret_store_lab_verdict": "MATERIAL_BLOCK_FOR_PRODUCTION_MUTATION_PENDING_NEW_OWNER_GATE_AND_EXACT_CHANNEL_REVIEW"
+  },
+  "why_new_owner_gate_is_requested": {
+    "reason": "The narrowest concrete GitHub-native secret-store candidate introduces a GitHub Actions workflow/runner execution identity that is not part of the currently reviewed Stage-1 production execution surface.",
+    "not_a_scope_widening_of_stage1_operations": true,
+    "new_execution_surface_requires_owner_scope_decision": true
+  },
+  "proposed_exact_new_surface": {
+    "platform": "GITHUB_ACTIONS",
+    "environment_name": "multiverse-r1-stage1-writer-key-v1",
+    "reserved_environment_secret_name": "MULTIVERSE_R1_STAGE1_WRITER_KEY_V1",
+    "workflow_path_reserved_for_future_review": ".github/workflows/multiverse-r1-stage1-writer-key-runtime-v1.yml",
+    "trigger_allowlist": ["workflow_dispatch"],
+    "trigger_denylist": ["schedule", "push", "pull_request", "pull_request_target", "repository_dispatch", "workflow_run"],
+    "runner_class_candidate": "github-hosted-ubuntu-24.04",
+    "reader_identity": "ONLY_THE_EXACT_INDEPENDENTLY_REVIEWED_JOB_AND_EXACT_RUNTIME_LAUNCH_STEP_ON_THE_FUTURE_APPROVED_WORKFLOW_HEAD",
+    "external_secret_manager": false,
+    "third_party_app_or_broker": false,
+    "scheduler_or_always_on_worker": false
+  },
+  "proposed_secret_lifecycle_ceiling": {
+    "secret_type": "single production HMAC writer secret",
+    "generation": "CSPRNG_ONLY",
+    "generation_location": "future independently reviewed iPhone Codespaces no-egress provisioner",
+    "store": "GitHub Actions environment secret at the exact environment/name above",
+    "secret_bytes_may_leave_store_or_provisioner_as_text": false,
+    "nonsecret_outputs_allowed": ["immutable_writer_key_id", "sha256_of_exact_writer_key_bytes", "durable_nonsecret_provisioning_receipt"],
+    "rotation_or_overwrite_authorized": false,
+    "second_active_writer_key_authorized": false,
+    "delete_and_recreate_as_implicit_rotation_authorized": false
+  },
+  "required_single_active_inventory": {
+    "before_generation": "Fresh inventory all applicable GitHub Actions secret scopes for the reserved identity and deny if any existing, duplicate, legacy alias, shadowing, or ambiguous writer-key secret exists.",
+    "environment_scope_must_be_absent_before_first_creation": true,
+    "repository_scope_same_name_must_be_absent": true,
+    "ambiguous_precedence_must_fail_closed": true
+  },
+  "required_provisioning_boundary": {
+    "owner_device": "iPhone browser Codespaces terminal",
+    "secret_ingress": "none from Owner; helper generates the secret internally",
+    "secret_store_transport": "stdin-only into the exact reviewed GitHub CLI secret-set operation or equivalent reviewed encrypted-upload boundary",
+    "secret_cli_argument": false,
+    "secret_clipboard_or_chat": false,
+    "secret_file_in_repo": false,
+    "secret_log_output": false,
+    "secret_pr_comment": false,
+    "secret_activation_receipt_or_tag": false,
+    "secret_runtime_state": false
+  },
+  "required_runtime_reader_boundary": {
+    "secret_reference_scope": "exact future approved Actions environment and exact reviewed job",
+    "mapping_scope": "secret is mapped only to the single exact launcher/runtime step, not job-wide unless independent review proves equivalently narrow containment",
+    "launcher_behavior": "consume secret only in memory, remove its environment entry as early as possible, verify exact SHA-256 commitment from the Fresh-verified activation receipt before constructing the production runtime CAS consumer, never print or serialize secret bytes",
+    "no_other_workflow_or_step_reader": true,
+    "main_and_activation_provenance_must_be_fresh_verified": true
+  },
+  "phase_c_mutation_preconditions_after_future_owner_approval": {
+    "new_owner_gate_recorded": true,
+    "exact_phase_c_candidate_independent_lab_pass": true,
+    "exact_phase_c_candidate_independent_auditor_pass": true,
+    "ruleset_id": 21227261,
+    "ruleset_updated_at": "2026-08-23T06:39:18.750Z",
+    "ruleset_full_semantics_and_no_bypass_must_be_fresh_reverified_by_approved_admin_read_channel_immediately_before_mutation": true,
+    "canonical_main_must_match_future_reviewed_precondition": true,
+    "runtime_branch_must_still_be_absent_before_phase_d": true
+  },
+  "owner_gate_scope_if_approved": {
+    "authorizes_preparation_and_independent_review_of_exact_nonsecret_implementation": true,
+    "may_conditionally_authorize_one_time_writer_key_provisioning_only_after_exact_phase_c_lab_and_auditor_pass_and_fresh_preconditions": true,
+    "does_not_authorize_runtime_branch_or_sequence0_by_itself": true,
+    "does_not_authorize_activation_receipt_or_tag_by_itself": true,
+    "does_not_authorize_runtime_activation_by_itself": true,
+    "does_not_authorize_source_collection_or_admission": true,
+    "does_not_authorize_external_provider_contact": true,
+    "does_not_authorize_scheduler_or_always_on": true,
+    "does_not_widen_worker_task_retry_window_or_permission_ceilings": true
+  },
+  "current_effect": {
+    "owner_approval_recorded": false,
+    "production_writer_key_generated_or_stored": false,
+    "actions_environment_created_or_modified": false,
+    "actions_workflow_created": false,
+    "runtime_branch_or_sequence0_created": false,
+    "activation_receipt_or_tag_created": false,
+    "runtime_activated": false
+  }
+}
