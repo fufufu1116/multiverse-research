@@ -1,5 +1,5 @@
 {
-  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_ACTIONS_ENV_OWNER_GATE_CANDIDATE_v3",
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_ACTIONS_ENV_OWNER_GATE_CANDIDATE_v4",
   "status": "CANDIDATE_NONAUTHORIZING",
   "canonical_repo": "fufufu1116/multiverse-research",
   "stage_id": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
@@ -11,7 +11,8 @@
     "phase_c_secret_store_lab_result_comment": 5384791472,
     "prior_owner_gate_candidate_lab_result_comment": 5384855283,
     "lock_then_arm_lab_result_comment": 5384933478,
-    "lock_then_arm_lab_verdict": "MATERIAL_BLOCK_ONE_REMAINING_SECRET_CREATE_ATOMICITY_ITEM"
+    "one_time_identity_lab_result_comment": 5385006936,
+    "one_time_identity_lab_verdict": "PASS_WITH_FIXES"
   },
   "why_new_owner_gate_is_requested": {
     "new_execution_surface": "GitHub Actions hosted runner plus Actions Environment secret reader plus dedicated Phase-C admin mutation channel",
@@ -45,8 +46,8 @@
     "writer_storage_nonce_is_independent_of_writer_key_bytes": true,
     "writer_key_id_and_secret_name": "MULTIVERSE_R1_STAGE1_WRITER_KEY_ + 32 uppercase hexadecimal CSPRNG nonce characters",
     "writer_key_id_must_not_be_emitted_or_persisted_before_confirmed_secret_create": true,
-    "blind_same_name_precreation_or_collision_bound": "at most 2^-128 assuming uncompromised CSPRNG and no pre-PUT disclosure of the generated identifier",
-    "owner_gate_must_explicitly_classify_this_probabilistic_uniqueness_model": true,
+    "blind_same_name_precreation_or_collision_risk": "for one independent blind guess probability is 2^-128; for q independent blind guesses before PUT, union-bound upper probability is min(1,q/2^128), assuming uncompromised CSPRNG and no pre-PUT disclosure of the generated identifier",
+    "owner_gate_must_explicitly_classify_this_probabilistic_uniqueness_model_and_q_dependent_bound": true,
     "this_candidate_does_not_claim_mathematical_or_API_atomic_create_only_semantics": true,
     "accepted_secret_write_http_status": 201,
     "http_204_update_or_any_non_201": "MATERIAL_INCIDENT_FAIL_CLOSED_NO_PHASE_PROGRESS",
@@ -60,6 +61,10 @@
     "any_concurrent_different_name_creation_under_prefix": "FAIL_CLOSED_NO_PROVISIONING_RECEIPT_ENVIRONMENT_REMAINS_LOCKED_SEPARATE_RECOVERY_REVIEW_REQUIRED",
     "any_204_same_name_update": "MATERIAL_INCIDENT_NO_PROVISIONING_RECEIPT_ENVIRONMENT_REMAINS_LOCKED_SEPARATE_RECOVERY_REVIEW_REQUIRED",
     "stored_secret_is_not_an_active_writer_key_until_durable_provisioning_receipt_is_independently_accepted": true,
+    "phase_e_immediately_pre_arm_fresh_scan_scopes": ["repository Actions secret names", "exact environment secret names"],
+    "phase_e_immediately_pre_arm_require_exactly_one_reserved_prefix_name": true,
+    "phase_e_immediately_pre_arm_exact_name_must_equal_independently_accepted_phase_c_receipt_writer_key_id": true,
+    "phase_e_immediately_pre_arm_inventory_mismatch": "FAIL_CLOSED_NO_ARM_SEPARATE_RECOVERY_REVIEW_REQUIRED",
     "second_accepted_active_writer_key": false,
     "automatic_delete_overwrite_rotation_or_recovery": false
   },
@@ -77,9 +82,11 @@
     "before_tag_creation_require": ["environment_still_deny_all", "admin_bypass_disabled", "activation_tag_absent", "fresh_canonical_and_activation_receipt_preconditions"],
     "tag_creation": "controlled separately reviewed Phase-E transition",
     "after_tag_creation_require": ["exact annotated activation tag object freshly verified", "tag target and receipt binding exact", "governing tag ruleset semantics freshly verified"],
-    "arm_operation": "only after exact tag verification add exactly one deployment TAG policy named multiverse-r1-stage1-activation-v1",
+    "immediately_before_arm_require": ["Fresh repository and exact-environment secret-name inventories", "exactly one reserved-prefix secret exists", "that exact secret name equals the independently accepted Phase-C provisioning receipt writer_key_id", "environment remains deny-all", "admin bypass remains disabled"],
+    "arm_operation": "only after exact tag verification and immediately-pre-arm single-secret inventory gate add exactly one deployment TAG policy named multiverse-r1-stage1-activation-v1",
     "post_arm_require": ["exactly one deployment policy exists", "policy type is tag", "policy name is exact activation tag", "no branch policy exists", "admin bypass remains disabled"],
-    "if_early_or_competing_tag_exists": "FAIL_CLOSED_NO_ARM"
+    "if_early_or_competing_tag_exists": "FAIL_CLOSED_NO_ARM",
+    "if_pre_arm_secret_inventory_mismatch": "FAIL_CLOSED_NO_ARM"
   },
   "future_reader_resolution": {
     "activation_receipt_writer_key_id_is_not_required_to_be_a_fixed_literal_by_current_canonical_loader": true,
@@ -87,7 +94,8 @@
     "nonsecret_preflight_job_must_fresh_load_activation_receipt_and_output_exact_writer_key_id": true,
     "secret_bearing_job_must_depend_on_successful_preflight_and_reference_exact_locked_then_armed_environment": true,
     "launcher_step_secret_expression_candidate": "secrets[needs.preflight.outputs.writer_key_id]",
-    "independent_implementation_review_must_prove_current_GitHub_expression_context_support_before_owner_execution": true,
+    "dynamic_secret_index_and_exact_environment_secret_release_timing_status": "IMPLEMENTATION_PROOF_REQUIRED",
+    "independent_implementation_review_must_prove_current_GitHub_expression_context_support_and_exact_environment_secret_release_timing_before_owner_execution": true,
     "launcher_must_require_secret_sha256_equals_activation_receipt_writer_key_sha256_before_runtime_CAS_construction": true,
     "no_caller_supplied_writer_key_id": true,
     "activation_environment_must_contain_exactly_one_reserved_prefix_secret_before_reader_use": true
@@ -137,7 +145,9 @@
     "Phase C create deny-all environment then one-time unpredictable-name writer-key provision",
     "durable Phase-C receipt and independent acceptance",
     "Phase D sequence-0 and Runtime branch",
-    "Phase E activation receipt then controlled activation tag then environment arm",
+    "Phase E activation receipt then controlled activation tag verification",
+    "Phase E Fresh single-writer-secret inventory gate bound to accepted Phase-C receipt",
+    "Phase E environment arm",
     "Phase F exact-tag workflow loader preflight and final independent activation decision"
   ],
   "current_effect": {
