@@ -111,15 +111,15 @@ def apply_once(
     """Future production path. Call only after later independent execution approval."""
     channel = channel_factory()
     scopes = channel.verify_identity_and_scope()
-    session_id = session_marker_factory()
 
     main_before = channel.fresh_main()
     ruleset = channel.verify_ruleset()
     if channel.fence() is not None:
         _deny("PHASE_C_PROVISION_FENCE_ALREADY_EXISTS")
 
-    # First production mutation. Only this exact 201 winner may ever reach
-    # Environment mutation, CSPRNG, or writer-secret PUT.
+    # First production mutation. Only this exact 201 winner may ever reach any
+    # Phase-C CSPRNG (including the local session marker), Environment mutation,
+    # or writer-secret PUT.
     fence_status = channel.create_fence(main_before)
     if fence_status != 201:
         _deny("PHASE_C_PROVISION_FENCE_NOT_ACQUIRED_201")
@@ -129,6 +129,11 @@ def apply_once(
     channel.verify_ruleset()
     if channel.fence() != main_before:
         _deny("PHASE_C_PROVISION_FENCE_TARGET_DRIFT")
+
+    # The bound local session marker also uses CSPRNG, so it is deliberately
+    # created only after the successful one-shot fence and post-fence Fresh
+    # barriers. A losing/delayed provisioner never reaches this draw.
+    session_id = session_marker_factory()
 
     # Any pre-existing exact Environment is ambiguous under this one-shot
     # creation path and requires separate recovery/review rather than update.
