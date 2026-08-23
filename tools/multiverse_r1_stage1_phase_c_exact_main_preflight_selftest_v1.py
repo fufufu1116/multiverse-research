@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
-"""Nonsecret structural tests for the Phase-C exact-main/preflight remediation."""
+"""Nonsecret structural/adversarial tests for Phase-C exact-main remediation."""
 from __future__ import annotations
 
 import ast
+import subprocess
+import tempfile
 from pathlib import Path
+
+from multiverse_r1_stage1_phase_c_execution_preflight_v1 import (
+    Denied,
+    _assert_no_index_suppression,
+    _verify_exact_paths_against_head,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = ROOT / "tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"
@@ -21,7 +29,71 @@ def _function(tree: ast.Module, name: str) -> ast.FunctionDef:
     raise AssertionError(name)
 
 
-def main() -> int:
+def _git(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", *args], cwd=root, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False,
+    )
+
+
+def _expect_denied(fn, expected: str) -> None:
+    try:
+        fn()
+    except Denied as exc:
+        assert str(exc) == expected, (str(exc), expected)
+    else:
+        raise AssertionError("expected Denied: " + expected)
+
+
+def _adversarial_index_suppression_test() -> None:
+    """Reproduce Auditor 5002962014's false-clean class and prove rejection."""
+    with tempfile.TemporaryDirectory(prefix="multiverse-phase-c-index-selftest-") as tmp:
+        repo = Path(tmp)
+        assert _git(repo, "init", "-q").returncode == 0
+        assert _git(repo, "config", "user.email", "phase-c-selftest@example.invalid").returncode == 0
+        assert _git(repo, "config", "user.name", "Phase C Selftest").returncode == 0
+        tracked = repo / "tracked.py"
+        tracked.write_text("reviewed = True\n", encoding="utf-8")
+        assert _git(repo, "add", "tracked.py").returncode == 0
+        assert _git(repo, "commit", "-q", "-m", "reviewed").returncode == 0
+        head = _git(repo, "rev-parse", "HEAD").stdout.strip()
+        assert len(head) == 40
+        assert _git(repo, "checkout", "-q", "--detach", head).returncode == 0
+
+        # Baseline direct HEAD-tree ↔ actual-byte proof succeeds.
+        _verify_exact_paths_against_head(repo, head, ("tracked.py",))
+        _assert_no_index_suppression(repo)
+
+        # Auditor reproduction: modified bytes + assume-unchanged makes status empty.
+        tracked.write_text("reviewed = False\n", encoding="utf-8")
+        assert _git(repo, "update-index", "--assume-unchanged", "tracked.py").returncode == 0
+        status = _git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+        assert status.returncode == 0 and not status.stdout.strip()
+        _expect_denied(
+            lambda: _verify_exact_paths_against_head(repo, head, ("tracked.py",)),
+            "PHASE_C_EXECUTION_REVIEWED_BYTES_MISMATCH",
+        )
+        _expect_denied(
+            lambda: _assert_no_index_suppression(repo),
+            "PHASE_C_EXECUTION_ASSUME_UNCHANGED_PROHIBITED",
+        )
+
+        # Equivalent skip-worktree suppression is also independently rejected.
+        assert _git(repo, "update-index", "--no-assume-unchanged", "tracked.py").returncode == 0
+        assert _git(repo, "checkout", "-q", "--", "tracked.py").returncode == 0
+        assert _git(repo, "update-index", "--skip-worktree", "tracked.py").returncode == 0
+        tracked.write_text("reviewed = 'skip-worktree-tamper'\n", encoding="utf-8")
+        _expect_denied(
+            lambda: _verify_exact_paths_against_head(repo, head, ("tracked.py",)),
+            "PHASE_C_EXECUTION_REVIEWED_BYTES_MISMATCH",
+        )
+        _expect_denied(
+            lambda: _assert_no_index_suppression(repo),
+            "PHASE_C_EXECUTION_SKIP_WORKTREE_PROHIBITED",
+        )
+
+
+def _structural_test() -> None:
     fsrc = _read(PREFLIGHT)
     psrc = _read(PROVISIONER)
     ftree = ast.parse(fsrc, filename=str(PREFLIGHT))
@@ -35,10 +107,17 @@ def main() -> int:
     assert apply.args.vararg is None and apply.args.kwarg is None
 
     for required in (
-        '["git", "symbolic-ref", "-q", "HEAD"]',
+        "_SECURITY_CRITICAL_EXECUTION_PATHS",
+        "_assert_no_index_suppression(actual_root)",
+        "_verify_exact_paths_against_head(actual_root, head, _SECURITY_CRITICAL_EXECUTION_PATHS)",
+        '["ls-tree", "-z", head, "--", relpath]',
+        "_git_blob_sha(data) != expected_blob",
+        "PHASE_C_EXECUTION_REVIEWED_BYTES_MISMATCH",
+        "PHASE_C_EXECUTION_ASSUME_UNCHANGED_PROHIBITED",
+        "PHASE_C_EXECUTION_SKIP_WORKTREE_PROHIBITED",
+        'env["GIT_NO_REPLACE_OBJECTS"] = "1"',
+        '["symbolic-ref", "-q", "HEAD"]',
         "PHASE_C_EXECUTION_CHECKOUT_MUST_BE_DETACHED",
-        '["git", "status", "--porcelain=v1", "--untracked-files=all"]',
-        "PHASE_C_EXECUTION_WORKTREE_NOT_CLEAN",
         "main_sha = channel.fresh_main()",
         "if main_sha != checkout:",
         "channel.verify_ruleset()",
@@ -47,6 +126,12 @@ def main() -> int:
         "from nacl.public import PublicKey, SealedBox",
     ):
         assert required in fsrc
+
+    # git status remains secondary hygiene, after index-independent byte proof.
+    index_pos = fsrc.index("_assert_no_index_suppression(actual_root)")
+    bytes_pos = fsrc.index("_verify_exact_paths_against_head(actual_root, head, _SECURITY_CRITICAL_EXECUTION_PATHS)")
+    status_pos = fsrc.index('["status", "--porcelain=v1", "--untracked-files=all"]')
+    assert index_pos < bytes_pos < status_pos
 
     for forbidden in (
         '"--method", "POST"', '"--method", "PUT"', "pip install", "apt-get", "curl ", "wget ",
@@ -68,9 +153,8 @@ def main() -> int:
     assert psrc.count("if channel.fresh_main() != execution_checkout:") == 2
     assert '"provision_fence_target_sha": execution_checkout' in psrc
     assert '"execution_checkout_sha": execution_checkout' in psrc
-    assert "main_before = channel.fresh_main()\n    if main_before != execution_checkout:" in psrc
 
-    for forbidden in ("expected_main=", "main_sha=", "canonical_main_sha=", "caller_main", "os.environ.get(\"EXPECTED_MAIN")"):
+    for forbidden in ("expected_main=", "main_sha=", "canonical_main_sha=", "caller_main", "os.environ.get(\"EXPECTED_MAIN\")"):
         assert forbidden not in psrc
 
     assert not any(isinstance(node, ast.While) for node in ast.walk(apply))
@@ -78,8 +162,14 @@ def main() -> int:
     assert "PHASE_C_MAIN_DRIFT_AFTER_FENCE" in psrc
     assert "PHASE_C_MAIN_DRIFT_AFTER_SECRET_STORE" in psrc
 
+
+def main() -> int:
+    _structural_test()
+    _adversarial_index_suppression_test()
     print("PHASE_C_EXACT_MAIN_PREFLIGHT_REMEDIATION_SELFTEST_PASS")
-    print("DETACHED_CLEAN_EXECUTION_CHECKOUT_REQUIRED=true")
+    print("ASSUME_UNCHANGED_FALSE_CLEAN_REPRODUCED_AND_REJECTED=true")
+    print("SKIP_WORKTREE_SUPPRESSION_REJECTED=true")
+    print("HEAD_TREE_ACTUAL_BYTES_DIRECTLY_VERIFIED=true")
     print("REMOTE_MAIN_MUST_EQUAL_EXECUTION_CHECKOUT_BEFORE_FENCE=true")
     print("LIVE_PREFLIGHT_NONMUTATING=true")
     print("PRODUCTION_MUTATION_PERFORMED=false")
