@@ -1,0 +1,49 @@
+name: Multiverse R1 Stage1 Writer-Key Runtime Preflight v1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: multiverse-r1-stage1-writer-key-runtime-v1
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: ${{ github.ref == 'refs/tags/multiverse-r1-stage1-activation-v1' }}
+    runs-on: ubuntu-24.04
+    outputs:
+      writer_key_id: ${{ steps.writer-id.outputs.writer_key_id }}
+    steps:
+      - name: Checkout exact activation commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Fresh verify activation and resolve nonsecret writer key ID
+        id: writer-id
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/multiverse_r1_stage1_writer_key_runtime_launcher_v1.py --preflight-id
+
+  runtime-loader-preflight:
+    needs: preflight
+    if: ${{ github.ref == 'refs/tags/multiverse-r1-stage1-activation-v1' && needs.preflight.result == 'success' }}
+    runs-on: ubuntu-24.04
+    environment: multiverse-r1-stage1-writer-key-v1
+    steps:
+      - name: Checkout exact activation commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Construct canonical CAS and perform read-only loader preflight
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MULTIVERSE_R1_STAGE1_WRITER_KEY_ID: ${{ needs.preflight.outputs.writer_key_id }}
+          MULTIVERSE_R1_STAGE1_WRITER_KEY_SECRET: ${{ secrets[needs.preflight.outputs.writer_key_id] }}
+        run: python tools/multiverse_r1_stage1_writer_key_runtime_launcher_v1.py --runtime-preflight
