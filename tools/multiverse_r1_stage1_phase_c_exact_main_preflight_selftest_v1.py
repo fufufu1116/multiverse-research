@@ -8,6 +8,8 @@ import tempfile
 from pathlib import Path
 
 from multiverse_r1_stage1_phase_c_execution_preflight_v1 import (
+    EXPECTED_EXECUTION_ROOT,
+    EXPECTED_ORIGIN_URL,
     Denied,
     _assert_no_index_suppression,
     _verify_exact_paths_against_head,
@@ -60,7 +62,6 @@ def _adversarial_index_suppression_test() -> None:
         assert len(head) == 40
         assert _git(repo, "checkout", "-q", "--detach", head).returncode == 0
 
-        # Baseline direct HEAD-tree ↔ actual-byte proof succeeds.
         _verify_exact_paths_against_head(repo, head, ("tracked.py",))
         _assert_no_index_suppression(repo)
 
@@ -99,14 +100,26 @@ def _structural_test() -> None:
     ftree = ast.parse(fsrc, filename=str(PREFLIGHT))
     ptree = ast.parse(psrc, filename=str(PROVISIONER))
 
+    bootstrap = _function(ftree, "_assert_external_bootstrap_root")
     binding = _function(ftree, "verified_execution_checkout_head")
     live = _function(ftree, "live_preflight")
     apply = _function(ptree, "apply_once")
-    assert not binding.args.args and not live.args.args and not apply.args.args
+    assert not bootstrap.args.args and not binding.args.args and not live.args.args and not apply.args.args
     assert not apply.args.posonlyargs and not apply.args.kwonlyargs
     assert apply.args.vararg is None and apply.args.kwarg is None
 
+    assert EXPECTED_EXECUTION_ROOT == Path("/dev/shm/multiverse-r1-stage1-phase-c-execution")
+    assert EXPECTED_ORIGIN_URL == "https://github.com/fufufu1116/multiverse-research.git"
+
     for required in (
+        'EXPECTED_EXECUTION_ROOT = pathlib.Path(',
+        '"/dev/shm/multiverse-r1-stage1-phase-c-execution"',
+        'EXPECTED_ORIGIN_URL = "https://github.com/fufufu1116/multiverse-research.git"',
+        "actual_root = _assert_external_bootstrap_root()",
+        "PHASE_C_EXECUTION_ROOT_NOT_EXTERNAL_BOOTSTRAP",
+        "PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_MISMATCH",
+        "PHASE_C_EXECUTION_BOOTSTRAP_REMOTE_SET_INVALID",
+        "PHASE_C_EXECUTION_BOOTSTRAP_ORIGIN_MISMATCH",
         "_SECURITY_CRITICAL_EXECUTION_PATHS",
         "_assert_no_index_suppression(actual_root)",
         "_verify_exact_paths_against_head(actual_root, head, _SECURITY_CRITICAL_EXECUTION_PATHS)",
@@ -116,6 +129,8 @@ def _structural_test() -> None:
         "PHASE_C_EXECUTION_ASSUME_UNCHANGED_PROHIBITED",
         "PHASE_C_EXECUTION_SKIP_WORKTREE_PROHIBITED",
         'env["GIT_NO_REPLACE_OBJECTS"] = "1"',
+        'env["GIT_CONFIG_NOSYSTEM"] = "1"',
+        'env["GIT_CONFIG_GLOBAL"] = "/dev/null"',
         '["symbolic-ref", "-q", "HEAD"]',
         "PHASE_C_EXECUTION_CHECKOUT_MUST_BE_DETACHED",
         "main_sha = channel.fresh_main()",
@@ -127,11 +142,13 @@ def _structural_test() -> None:
     ):
         assert required in fsrc
 
-    # git status remains secondary hygiene, after index-independent byte proof.
+    # Production binding must first demand the externally constructed fixed root;
+    # repo-internal byte/tree checks are defense in depth after that trust anchor.
+    bootstrap_pos = fsrc.index("actual_root = _assert_external_bootstrap_root()")
     index_pos = fsrc.index("_assert_no_index_suppression(actual_root)")
     bytes_pos = fsrc.index("_verify_exact_paths_against_head(actual_root, head, _SECURITY_CRITICAL_EXECUTION_PATHS)")
     status_pos = fsrc.index('["status", "--porcelain=v1", "--untracked-files=all"]')
-    assert index_pos < bytes_pos < status_pos
+    assert bootstrap_pos < index_pos < bytes_pos < status_pos
 
     for forbidden in (
         '"--method", "POST"', '"--method", "PUT"', "pip install", "apt-get", "curl ", "wget ",
@@ -167,6 +184,8 @@ def main() -> int:
     _structural_test()
     _adversarial_index_suppression_test()
     print("PHASE_C_EXACT_MAIN_PREFLIGHT_REMEDIATION_SELFTEST_PASS")
+    print("PRE_EXECUTION_TRUST_ROOT_IS_EXTERNAL_BOOTSTRAP=true")
+    print("EXISTING_WORKSPACE_EXECUTION_ROOT_PROHIBITED=true")
     print("ASSUME_UNCHANGED_FALSE_CLEAN_REPRODUCED_AND_REJECTED=true")
     print("SKIP_WORKTREE_SUPPRESSION_REJECTED=true")
     print("HEAD_TREE_ACTUAL_BYTES_DIRECTLY_VERIFIED=true")
