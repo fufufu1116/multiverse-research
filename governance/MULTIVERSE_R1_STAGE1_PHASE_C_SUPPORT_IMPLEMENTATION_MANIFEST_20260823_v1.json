@@ -1,11 +1,12 @@
 {
   "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_SUPPORT_IMPLEMENTATION_MANIFEST_v1",
-  "status": "DRAFT_REVIEW_ONLY_NONSECRET",
+  "status": "DRAFT_REVIEW_ONLY_NONSECRET_CALL_BOUNDARY_REMEDIATION",
   "canonical_repo": "fufufu1116/multiverse-research",
   "prepared_from_canonical_main": "66e342fced4bfbd3b1124a49e185b175db359e86",
   "stacked_owner_gate_head": "d3effe898ee59f56c34d316e057d11b09953b12b",
   "owner_gate_lab_pass_comment": 5386245576,
   "owner_gate_acceptance_receipt_comment": 5386269187,
+  "governing_auditor_material_block_review": 5002692966,
   "owner_gate_status": "OWNER_APPROVED_NONSECRET_SUPPORT_PREPARATION_AND_REVIEW_ONLY",
   "implementation_paths": {
     "iphone_admin_channel": "tools/multiverse_r1_stage1_writer_key_admin_channel_v1.py",
@@ -13,6 +14,24 @@
     "runtime_launcher": "tools/multiverse_r1_stage1_writer_key_runtime_launcher_v1.py",
     "runtime_workflow": ".github/workflows/multiverse-r1-stage1-writer-key-runtime-v1.yml",
     "nonsecret_selftest": "tools/multiverse_r1_stage1_writer_key_support_selftest_v1.py"
+  },
+  "auditor_call_boundary_remediation": {
+    "public_admin_mutation_primitive_present": false,
+    "public_admin_api_method_endpoint_payload_selector_present": false,
+    "public_admin_create_fence_present": false,
+    "public_admin_environment_mutator_present": false,
+    "public_admin_secret_put_present": false,
+    "admin_channel_role": "AUTHENTICATED_READ_ONLY_FRESHNESS_AND_CLEANUP_BOUNDARY",
+    "production_apply_signature": "apply_once()",
+    "production_apply_argument_count": 0,
+    "caller_supplied_channel_factory": false,
+    "caller_supplied_random_source": false,
+    "caller_supplied_session_marker_factory": false,
+    "caller_supplied_encryptor": false,
+    "caller_supplied_repo_environment_secret_name_writer_key_id_endpoint_method_payload_tag_or_fence_ref": false,
+    "mutation_transport_scope": "LEXICALLY_SCOPED_INSIDE_ZERO_ARGUMENT_APPLY_ONCE",
+    "mutation_endpoints_and_payload_shapes": "BUILT_ONLY_FROM_REVIEWED_LITERALS_AND_INTERNALLY_DERIVED_FRESH_OR_CSPRNG_VALUES",
+    "plaintext_secret_passed_to_caller_callback": false
   },
   "phase_c_admin_surface": {
     "device": "IPHONE_BROWSER_CODESPACES_TERMINAL",
@@ -22,8 +41,7 @@
     "proxy_custom_ca_debug_prohibited": true,
     "active_swap_prohibited": true,
     "secret_value_read_endpoint_present": false,
-    "http_methods_allowlisted": ["GET", "POST", "PUT"],
-    "delete_patch_methods_allowed": false,
+    "public_github_method": "GET_ONLY",
     "secret_and_policy_inventories_paginate_to_declared_total": true,
     "local_logout_semantics": "LOCAL_AUTH_CONFIGURATION_REMOVAL_ONLY_NOT_SERVER_SIDE_TOKEN_REVOCATION",
     "codespace_deletion_required_after_local_cleanup": true
@@ -50,7 +68,7 @@
     "first_production_mutation": true,
     "success_status": 201,
     "all_non_201_or_ambiguous_results": "STOP_BEFORE_SESSION_MARKER_CSPRNG_ENVIRONMENT_WRITER_CSPRNG_SECRET_PUT_NO_RETRY",
-    "all_phase_c_csprng_paths_require_successful_fence_201": true,
+    "all_phase_c_csprng_and_mutation_paths_require_successful_fence_201": true,
     "session_marker_csprng_after_post_fence_fresh_barriers": true,
     "fence_not_released_by_normal_path": true,
     "secret_put_attempts_per_fence_winner": 1,
@@ -68,7 +86,7 @@
     "stored_value_encoding": "URLSAFE_BASE64_ASCII_OF_32_CSPRNG_BYTES",
     "commitment": "SHA256_OF_EXACT_STORED_UTF8_BYTES",
     "local_encryption": "LIBSODIUM_SEALED_BOX_TO_EXACT_ENVIRONMENT_PUBLIC_KEY",
-    "secret_put_call_sites": 1,
+    "secret_put_call_sites_in_zero_argument_apply": 1,
     "secret_put_success_only": 201,
     "http_204": "MATERIAL_PROHIBITED_OVERWRITE_FAIL_CLOSED_NO_RETRY",
     "writer_secret_owner_input": false,
@@ -106,12 +124,15 @@
   },
   "nonsecret_selftest_claims": {
     "python_source_ast_parse": true,
+    "admin_public_mutation_methods_absent": true,
+    "admin_transport_is_get_only": true,
+    "production_apply_zero_argument_signature": true,
+    "production_apply_caller_injection_names_absent": true,
+    "mutation_transport_nested_not_module_or_admin_public_surface": true,
+    "fence_control_precedes_session_marker_environment_writer_csprng_and_secret_put_static_check": true,
+    "exactly_one_secret_put_status_call_static_check": true,
+    "secret_204_fatal_no_retry_source_check": true,
     "workflow_static_trigger_permission_ref_checks": true,
-    "exactly_one_secret_put_callsite_check": true,
-    "fence_control_dominates_session_marker_and_writer_csprng_static_check": true,
-    "second_provisioner_non_201_fence_stops_before_session_marker_csprng_writer_csprng_and_secret_put_fake_test": true,
-    "secret_204_exactly_one_attempt_no_retry_fake_test": true,
-    "successful_fake_path_nonsecret_commitment_only_test": true,
     "production_network_used": false,
     "production_secret_generated": false,
     "production_mutation_performed": false
@@ -125,8 +146,9 @@
     "gh_api_include_non_2xx_status_capture_for_404_201_204_paths": true,
     "github_token_contents_write_ceiling_can_complete_all_public_read_evidence_used_by_canonical_loader": true,
     "checkout_pinned_commit_behavior_at_exact_annotated_activation_tag_dispatch": true,
-    "fence_control_flow_dominates_all_real_secret_put_paths_and_no_hidden_library_transport_retry": true,
-    "local_credential_cleanup_and_codespace_deletion_receipt_binding": true
+    "no_hidden_library_or_transport_retry_on_fence_or_secret_put": true,
+    "local_credential_cleanup_and_codespace_deletion_receipt_binding": true,
+    "zero_argument_apply_exact_runtime_call_boundary_on_approved_codespaces_python": true
   },
   "explicitly_not_claimed": {
     "github_environment_secret_put_is_atomic_create_only": false,
@@ -134,6 +156,7 @@
     "out_of_band_same_target_admin_delete_recreate_is_detectable_by_current_state_only": false,
     "gh_auth_logout_revokes_server_token": false,
     "dynamic_secret_index_is_production_proven": false,
+    "python_same_process_arbitrary_code_execution_is_a_security_boundary": false,
     "runtime_activation_authorized": false
   },
   "current_effect": {
@@ -148,6 +171,6 @@
     "task_or_source_activity": false,
     "runtime_activated": false
   },
-  "next_gate": "INDEPENDENT_LAB_EXACT_IMPLEMENTATION_REVIEW_THEN_INDEPENDENT_AUDITOR_REVIEW",
+  "next_gate": "INDEPENDENT_LAB_CALL_BOUNDARY_MICRO_REVIEW_THEN_INDEPENDENT_AUDITOR_RE_REVIEW",
   "runtime": "OFF"
 }
