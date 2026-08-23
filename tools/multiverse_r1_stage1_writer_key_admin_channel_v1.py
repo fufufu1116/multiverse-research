@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""iPhone Codespaces administration boundary for R1 Stage-1 Phase C.
+"""Read-only iPhone Codespaces administration boundary for R1 Stage-1 Phase C.
 
-Candidate implementation only. The client is method/endpoint allowlisted,
-rejects ambient GitHub tokens/proxies/debug transport, requires an exact OAuth
-scope set, uses memory-backed local credential state, never reads secret values,
-and provides a bound local-cleanup proof. No CLI mode performs production
-provisioning; the separately reviewed provisioner is the only future caller.
+Candidate implementation only. This module exposes authentication/fresh-read
+and local-cleanup operations. It intentionally exposes no GitHub mutation API.
+All future Phase-C mutations are constructed inside the zero-argument
+provisioner production path from reviewed literals and internally derived data.
 """
 from __future__ import annotations
 
@@ -14,7 +13,6 @@ import json
 import os
 import pathlib
 import re
-import secrets
 import shutil
 import stat
 import subprocess
@@ -39,7 +37,6 @@ SESSION_STATE_DIR = "/dev/shm/multiverse-r1-stage1-phase-c-session-state"
 API_VERSION = "2022-11-28"
 MAX_PAGES = 100
 _HEX40 = re.compile(r"^[0-9a-f]{40}$")
-_WRITER_ID = re.compile(r"^MULTIVERSE_R1_STAGE1_WRITER_KEY_[0-9A-F]{32}$")
 _SESSION_ID = re.compile(r"^[0-9a-f]{32}$")
 
 
@@ -51,10 +48,9 @@ def _deny(code: str) -> None:
     raise Denied(code)
 
 
-def _run(cmd: list[str], *, input_text: Optional[str] = None) -> subprocess.CompletedProcess[str]:
+def _run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         cmd,
-        input=input_text,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -205,25 +201,14 @@ def _env_policy_list_base() -> str:
     return _environment_path() + "/deployment-branch-policies"
 
 
-def _paged(base: str, page: int) -> str:
-    if not isinstance(page, int) or isinstance(page, bool) or not (1 <= page <= MAX_PAGES):
-        _deny("PHASE_C_API_PAGE_INVALID")
-    return f"{base}?per_page=100&page={page}"
-
-
 def _env_public_key_path() -> str:
     return _environment_path() + "/secrets/public-key"
 
 
-def _writer_secret_path(writer_key_id: str) -> str:
-    if not _WRITER_ID.fullmatch(writer_key_id):
-        _deny("PHASE_C_WRITER_KEY_ID_INVALID")
-    return _environment_path() + "/secrets/" + writer_key_id
-
-
-def _is_paged_endpoint(endpoint: str, base: str) -> bool:
-    match = re.fullmatch(re.escape(base) + r"\?per_page=100&page=([1-9][0-9]{0,2})", endpoint)
-    return bool(match and int(match.group(1)) <= MAX_PAGES)
+def _paged(base: str, page: int) -> str:
+    if not isinstance(page, int) or isinstance(page, bool) or not (1 <= page <= MAX_PAGES):
+        _deny("PHASE_C_API_PAGE_INVALID")
+    return f"{base}?per_page=100&page={page}"
 
 
 @dataclass(frozen=True)
@@ -234,9 +219,22 @@ class ApiResult:
 
 
 class PhaseCAdminChannel:
-    """Exact method/endpoint allowlist. No secret-value read endpoint exists."""
+    """Read-only authenticated channel. No public GitHub mutation primitive exists."""
+
+    _FIXED_READ_ENDPOINTS = {
+        "user": "/user",
+        "repo": f"/repos/{CANONICAL_REPO}",
+        "main": f"/repos/{CANONICAL_REPO}/git/ref/heads/main",
+        "fence": f"/repos/{CANONICAL_REPO}/git/ref/{FENCE_SHORT}",
+        "ruleset": f"/repos/{CANONICAL_REPO}/rulesets/{RULESET_ID}",
+        "environment": _environment_path(),
+        "environment_public_key": _env_public_key_path(),
+    }
 
     def __init__(self) -> None:
+        self.assert_transport_ready()
+
+    def assert_transport_ready(self) -> None:
         _assert_env_clean()
         if os.environ.get("GH_CONFIG_DIR") != EXPECTED_GH_CONFIG_DIR:
             _deny("PHASE_C_GH_CONFIG_DIR_NOT_PINNED")
@@ -245,58 +243,40 @@ class PhaseCAdminChannel:
             _deny("PHASE_C_GH_CLI_REQUIRED")
         _assert_local_gh_config_safe()
 
-    @staticmethod
-    def environment_endpoint() -> str:
-        return _environment_path()
-
-    @staticmethod
-    def _allowed(method: str, endpoint: str) -> bool:
-        fixed = {
-            ("GET", "/user"),
-            ("GET", f"/repos/{CANONICAL_REPO}"),
-            ("GET", f"/repos/{CANONICAL_REPO}/git/ref/heads/main"),
-            ("GET", f"/repos/{CANONICAL_REPO}/git/ref/{FENCE_SHORT}"),
-            ("GET", f"/repos/{CANONICAL_REPO}/rulesets/{RULESET_ID}"),
-            ("GET", _environment_path()),
-            ("GET", _env_public_key_path()),
-            ("POST", f"/repos/{CANONICAL_REPO}/git/refs"),
-            ("PUT", _environment_path()),
-        }
-        if (method, endpoint) in fixed:
-            return True
-        if method == "GET" and any(
-            _is_paged_endpoint(endpoint, base)
-            for base in (_repo_secret_list_base(), _env_secret_list_base(), _env_policy_list_base())
-        ):
-            return True
-        if method == "PUT" and endpoint.startswith(_environment_path() + "/secrets/"):
-            return bool(_WRITER_ID.fullmatch(endpoint.rsplit("/", 1)[-1]))
-        return False
-
-    def api(self, method: str, endpoint: str, *, payload: Any = None) -> ApiResult:
-        _assert_env_clean()
-        _assert_memory_dir(EXPECTED_GH_CONFIG_DIR)
-        _assert_local_gh_config_safe()
-        if method not in {"GET", "POST", "PUT"} or not self._allowed(method, endpoint):
-            _deny("PHASE_C_API_METHOD_OR_ENDPOINT_NOT_ALLOWLISTED")
+    def _read_fixed(self, kind: str, *, page: Optional[int] = None) -> ApiResult:
+        self.assert_transport_ready()
+        if kind in self._FIXED_READ_ENDPOINTS:
+            if page is not None:
+                _deny("PHASE_C_READ_PAGE_NOT_ALLOWED_FOR_FIXED_ENDPOINT")
+            endpoint = self._FIXED_READ_ENDPOINTS[kind]
+        elif kind == "repository_secret_names":
+            if page is None:
+                _deny("PHASE_C_READ_PAGE_REQUIRED")
+            endpoint = _paged(_repo_secret_list_base(), page)
+        elif kind == "environment_secret_names":
+            if page is None:
+                _deny("PHASE_C_READ_PAGE_REQUIRED")
+            endpoint = _paged(_env_secret_list_base(), page)
+        elif kind == "environment_policies":
+            if page is None:
+                _deny("PHASE_C_READ_PAGE_REQUIRED")
+            endpoint = _paged(_env_policy_list_base(), page)
+        else:
+            _deny("PHASE_C_READ_KIND_NOT_ALLOWLISTED")
         cmd = [
             "gh", "api", "--hostname", "github.com", "--include",
             "-H", "Accept: application/vnd.github+json",
             "-H", f"X-GitHub-Api-Version: {API_VERSION}",
-            "--method", method, endpoint,
+            "--method", "GET", endpoint,
         ]
-        input_text = None
-        if payload is not None:
-            input_text = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-            cmd += ["--input", "-"]
-        proc = _run(cmd, input_text=input_text)
+        proc = _run(cmd)
         if not proc.stdout.strip():
             _deny("PHASE_C_GITHUB_API_NO_RESPONSE")
         status, headers, body = _parse_included_response(proc.stdout)
         return ApiResult(status=status, headers=headers, payload=body)
 
     def verify_identity_and_scope(self) -> list[str]:
-        result = self.api("GET", "/user")
+        result = self._read_fixed("user")
         if result.status != 200 or not isinstance(result.payload, dict):
             _deny("PHASE_C_USER_API_FAILED")
         if result.payload.get("login") != EXPECTED_LOGIN:
@@ -307,14 +287,14 @@ class PhaseCAdminChannel:
         scopes = {x.strip() for x in raw.split(",") if x.strip()}
         if scopes != EXPECTED_EFFECTIVE_OAUTH_SCOPES:
             _deny("PHASE_C_OAUTH_SCOPE_SET_NOT_EXACT")
-        repo = self.api("GET", f"/repos/{CANONICAL_REPO}")
+        repo = self._read_fixed("repo")
         permissions = repo.payload.get("permissions") if repo.status == 200 and isinstance(repo.payload, dict) else None
         if not isinstance(permissions, dict) or permissions.get("admin") is not True:
             _deny("PHASE_C_REPOSITORY_ADMIN_REQUIRED")
         return sorted(scopes)
 
     def fresh_main(self) -> str:
-        result = self.api("GET", f"/repos/{CANONICAL_REPO}/git/ref/heads/main")
+        result = self._read_fixed("main")
         if result.status != 200 or not isinstance(result.payload, dict):
             _deny("PHASE_C_MAIN_READ_FAILED")
         obj = result.payload.get("object")
@@ -324,7 +304,7 @@ class PhaseCAdminChannel:
         return sha
 
     def fence(self) -> Optional[str]:
-        result = self.api("GET", f"/repos/{CANONICAL_REPO}/git/ref/{FENCE_SHORT}")
+        result = self._read_fixed("fence")
         if result.status == 404:
             return None
         if result.status != 200 or not isinstance(result.payload, dict):
@@ -335,16 +315,8 @@ class PhaseCAdminChannel:
             _deny("PHASE_C_FENCE_SHA_INVALID")
         return sha
 
-    def create_fence(self, target_sha: str) -> int:
-        if not _HEX40.fullmatch(target_sha):
-            _deny("PHASE_C_FENCE_TARGET_INVALID")
-        return self.api(
-            "POST", f"/repos/{CANONICAL_REPO}/git/refs",
-            payload={"ref": FENCE_REF, "sha": target_sha},
-        ).status
-
     def verify_ruleset(self) -> dict[str, Any]:
-        result = self.api("GET", f"/repos/{CANONICAL_REPO}/rulesets/{RULESET_ID}")
+        result = self._read_fixed("ruleset")
         if result.status != 200 or not isinstance(result.payload, dict):
             _deny("PHASE_C_RULESET_READ_FAILED")
         detail = result.payload
@@ -383,17 +355,7 @@ class PhaseCAdminChannel:
         return {"id": RULESET_ID, "updated_at": RULESET_UPDATED_AT, "no_bypass": True, "creation_rule_absent": True}
 
     def probe_environment(self) -> ApiResult:
-        return self.api("GET", _environment_path())
-
-    def configure_locked_environment(self) -> int:
-        payload = {
-            "wait_timer": 0,
-            "prevent_self_review": False,
-            "reviewers": [],
-            "can_admins_bypass": False,
-            "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
-        }
-        return self.api("PUT", _environment_path(), payload=payload).status
+        return self._read_fixed("environment")
 
     def environment(self) -> Mapping[str, Any]:
         result = self.probe_environment()
@@ -401,11 +363,11 @@ class PhaseCAdminChannel:
             _deny("PHASE_C_ENVIRONMENT_READ_FAILED")
         return result.payload
 
-    def _paged_rows(self, base: str, field: str) -> list[Mapping[str, Any]]:
+    def _paged_rows(self, kind: str, field: str) -> list[Mapping[str, Any]]:
         out: list[Mapping[str, Any]] = []
         declared_total: Optional[int] = None
         for page in range(1, MAX_PAGES + 1):
-            result = self.api("GET", _paged(base, page))
+            result = self._read_fixed(kind, page=page)
             if result.status != 200 or not isinstance(result.payload, dict):
                 _deny("PHASE_C_PAGED_INVENTORY_FAILED")
             rows = result.payload.get(field)
@@ -429,11 +391,11 @@ class PhaseCAdminChannel:
         return out
 
     def policies(self) -> list[Mapping[str, Any]]:
-        return self._paged_rows(_env_policy_list_base(), "branch_policies")
+        return self._paged_rows("environment_policies", "branch_policies")
 
     def secret_names(self) -> tuple[set[str], set[str]]:
-        def names(base: str) -> set[str]:
-            rows = self._paged_rows(base, "secrets")
+        def names(kind: str) -> set[str]:
+            rows = self._paged_rows(kind, "secrets")
             out: set[str] = set()
             for row in rows:
                 name = row.get("name")
@@ -441,52 +403,16 @@ class PhaseCAdminChannel:
                     _deny("PHASE_C_SECRET_INVENTORY_NAME_INVALID_OR_DUPLICATE")
                 out.add(name)
             return out
-        return names(_repo_secret_list_base()), names(_env_secret_list_base())
+        return names("repository_secret_names"), names("environment_secret_names")
 
     def public_key(self) -> tuple[str, str]:
-        result = self.api("GET", _env_public_key_path())
+        result = self._read_fixed("environment_public_key")
         if result.status != 200 or not isinstance(result.payload, dict):
             _deny("PHASE_C_ENVIRONMENT_PUBLIC_KEY_FAILED")
         key_id, key = result.payload.get("key_id"), result.payload.get("key")
         if not isinstance(key_id, str) or not key_id or not isinstance(key, str) or not key:
             _deny("PHASE_C_ENVIRONMENT_PUBLIC_KEY_INVALID")
         return key_id, key
-
-    def put_encrypted_secret(self, writer_key_id: str, *, key_id: str, encrypted_value: str) -> int:
-        if not isinstance(key_id, str) or not key_id or not isinstance(encrypted_value, str) or not encrypted_value:
-            _deny("PHASE_C_SECRET_ENCRYPTED_PAYLOAD_INVALID")
-        return self.api(
-            "PUT", _writer_secret_path(writer_key_id),
-            payload={"encrypted_value": encrypted_value, "key_id": key_id},
-        ).status
-
-
-def create_session_marker() -> str:
-    root = _assert_memory_dir(SESSION_STATE_DIR, create=True)
-    session_id = secrets.token_hex(16)
-    path = root / (session_id + ".json")
-    payload = {
-        "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_ORIGIN_SESSION_MARKER_v1",
-        "session_id": session_id,
-        "codespace_name": os.environ.get("CODESPACE_NAME"),
-        "gh_config_dir": EXPECTED_GH_CONFIG_DIR,
-        "mode": "apply",
-        "runtime_activation_performed": False,
-    }
-    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
-    if hasattr(os, "O_NOFOLLOW"):
-        flags |= os.O_NOFOLLOW
-    fd = os.open(path, flags, 0o600)
-    with os.fdopen(fd, "w", encoding="utf-8") as handle:
-        json.dump(payload, handle, sort_keys=True, separators=(",", ":"))
-        handle.flush()
-        os.fsync(handle.fileno())
-    st = os.lstat(path)
-    if stat.S_ISLNK(st.st_mode) or not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
-        _deny("PHASE_C_SESSION_MARKER_IDENTITY")
-    if st.st_uid != os.geteuid() or stat.S_IMODE(st.st_mode) != 0o600:
-        _deny("PHASE_C_SESSION_MARKER_PERMISSIONS")
-    return session_id
 
 
 def _consume_session_marker(session_id: str) -> dict[str, Any]:
@@ -523,7 +449,6 @@ def cleanup_local_credentials(session_id: str) -> dict[str, Any]:
         _deny("PHASE_C_GH_CONFIG_DIR_NOT_PINNED")
     cfg = _assert_memory_dir(EXPECTED_GH_CONFIG_DIR)
     marker = _consume_session_marker(session_id)
-    # Local configuration deletion only; this is not a server-side token revoke.
     logout = _run(["gh", "auth", "logout", "--hostname", "github.com"])
     if logout.returncode not in {0, 1}:
         _deny("PHASE_C_LOCAL_LOGOUT_FAILED")
@@ -550,16 +475,11 @@ def cleanup_local_credentials(session_id: str) -> dict[str, Any]:
 
 
 def selftest() -> None:
+    forbidden = {"api", "create_fence", "configure_locked_environment", "put_encrypted_secret"}
+    assert not forbidden.intersection(set(dir(PhaseCAdminChannel)))
     assert EXPECTED_EFFECTIVE_OAUTH_SCOPES == {"repo", "read:org", "gist"}
-    assert PhaseCAdminChannel._allowed("GET", _paged(_repo_secret_list_base(), 1))
-    assert PhaseCAdminChannel._allowed("GET", _paged(_env_secret_list_base(), MAX_PAGES))
-    assert PhaseCAdminChannel._allowed("GET", _paged(_env_policy_list_base(), 1))
-    assert PhaseCAdminChannel._allowed("POST", f"/repos/{CANONICAL_REPO}/git/refs")
-    assert PhaseCAdminChannel._allowed("PUT", _environment_path())
-    assert PhaseCAdminChannel._allowed("PUT", _writer_secret_path(WRITER_PREFIX + "A" * 32))
-    assert not PhaseCAdminChannel._allowed("DELETE", f"/repos/{CANONICAL_REPO}/git/refs")
-    assert not PhaseCAdminChannel._allowed("PATCH", f"/repos/{CANONICAL_REPO}")
-    print("PHASE_C_ADMIN_CHANNEL_ENDPOINT_AND_PAGINATION_SELFTEST_PASS")
+    assert PhaseCAdminChannel._FIXED_READ_ENDPOINTS["fence"].endswith(FENCE_SHORT)
+    print("PHASE_C_ADMIN_CHANNEL_READ_ONLY_SURFACE_SELFTEST_PASS")
     print("PRODUCTION_MUTATION_PERFORMED=false")
     print("RUNTIME_ACTIVATION_PERFORMED=false")
 
