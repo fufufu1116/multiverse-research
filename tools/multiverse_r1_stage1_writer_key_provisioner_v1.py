@@ -4,7 +4,7 @@
 Default mode is non-mutating. ``--apply`` is present only for a separately
 reviewed future execution. The production call surface accepts no caller-supplied
 repository, Environment, secret name, writer-key ID, endpoint, method, payload,
-random source, session-marker factory, or encryptor.
+random source, session-marker factory, encryptor, or canonical-main SHA.
 """
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ import subprocess
 from typing import Any, Mapping
 from urllib.parse import quote
 
+from multiverse_r1_stage1_phase_c_execution_preflight_v1 import verified_execution_checkout_head
 from multiverse_r1_stage1_writer_key_admin_channel_v1 import (
     API_VERSION,
     CANONICAL_REPO,
@@ -85,6 +86,7 @@ def _dry_run_result() -> dict[str, Any]:
         "writer_key_id_entropy_bits": 128,
         "secret_put_attempt_ceiling": 1,
         "production_apply_argument_count": 0,
+        "canonical_main_binding_source": "DETACHED_CLEAN_REVIEWED_EXECUTION_CHECKOUT_HEAD",
         "production_secret_generated": False,
         "production_mutation_performed": False,
         "runtime_activation_performed": False,
@@ -93,10 +95,13 @@ def _dry_run_result() -> dict[str, Any]:
 
 def apply_once() -> dict[str, Any]:
     """Future production path. Zero caller-controlled production parameters."""
+    execution_checkout = verified_execution_checkout_head()
     channel = PhaseCAdminChannel()
     scopes = channel.verify_identity_and_scope()
 
     main_before = channel.fresh_main()
+    if main_before != execution_checkout:
+        _deny("PHASE_C_MAIN_NOT_EXACT_DETACHED_EXECUTION_CHECKOUT")
     ruleset = channel.verify_ruleset()
     if channel.fence() is not None:
         _deny("PHASE_C_PROVISION_FENCE_ALREADY_EXISTS")
@@ -169,20 +174,21 @@ def apply_once() -> dict[str, Any]:
             raise Denied("PHASE_C_SEALED_BOX_ENCRYPTION_FAILED") from exc
         return base64.b64encode(ciphertext).decode("ascii")
 
-    # First production mutation. Endpoint, ref, payload shape and target source
-    # are fixed inside this zero-argument function. Only exact HTTP 201 wins.
+    # First production mutation. Its target is the detached, clean reviewed
+    # checkout already proven equal to Fresh canonical main. A main change after
+    # any external preflight therefore cannot silently rebind authority here.
     fence_status = _invoke_exact(
         "POST",
         f"/repos/{CANONICAL_REPO}/git/refs",
-        {"ref": FENCE_REF, "sha": main_before},
+        {"ref": FENCE_REF, "sha": execution_checkout},
     )
     if fence_status != 201:
         _deny("PHASE_C_PROVISION_FENCE_NOT_ACQUIRED_201")
 
-    if channel.fresh_main() != main_before:
+    if channel.fresh_main() != execution_checkout:
         _deny("PHASE_C_MAIN_DRIFT_AFTER_FENCE")
     channel.verify_ruleset()
-    if channel.fence() != main_before:
+    if channel.fence() != execution_checkout:
         _deny("PHASE_C_PROVISION_FENCE_TARGET_DRIFT")
 
     # All Phase-C CSPRNG begins only after the fence and post-fence barriers.
@@ -236,19 +242,20 @@ def apply_once() -> dict[str, Any]:
         _deny("PHASE_C_SECRET_STORE_NOT_CONFIRMED_201_NO_RETRY")
 
     _assert_exact_single_reserved_inventory(channel, writer_key_id)
-    if channel.fresh_main() != main_before:
+    if channel.fresh_main() != execution_checkout:
         _deny("PHASE_C_MAIN_DRIFT_AFTER_SECRET_STORE")
-    if channel.fence() != main_before:
+    if channel.fence() != execution_checkout:
         _deny("PHASE_C_PROVISION_FENCE_DRIFT_AFTER_SECRET_STORE")
 
     return {
         "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONER_RESULT_v1",
         "status": "PHASE_C_WRITER_KEY_STORED_PENDING_MANDATORY_CLEANUP",
         "canonical_repo": CANONICAL_REPO,
-        "canonical_main": main_before,
+        "canonical_main": execution_checkout,
+        "execution_checkout_sha": execution_checkout,
         "environment": ENVIRONMENT_NAME,
         "provision_fence_ref": FENCE_REF,
-        "provision_fence_target_sha": main_before,
+        "provision_fence_target_sha": execution_checkout,
         "phase_c_session_id": session_id,
         "writer_key_id": writer_key_id,
         "writer_key_sha256": writer_key_sha256,
