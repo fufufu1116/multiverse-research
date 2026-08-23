@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""One-shot R1 Stage-1 Phase-C writer-key provisioner candidate.
+"""Zero-argument one-shot R1 Stage-1 Phase-C writer-key provisioner candidate.
 
-Default mode is non-mutating. ``--apply`` is intentionally present for later
-reviewed execution only; this candidate/PR does not authorize running it.
-The production secret is generated in memory and only its ID plus SHA-256 may
-leave this process after confirmed storage and Fresh inventory verification.
+Default mode is non-mutating. ``--apply`` is present only for a separately
+reviewed future execution. The production call surface accepts no caller-supplied
+repository, Environment, secret name, writer-key ID, endpoint, method, payload,
+random source, session-marker factory, or encryptor.
 """
 from __future__ import annotations
 
@@ -12,21 +12,31 @@ import argparse
 import base64
 import hashlib
 import json
+import os
 import secrets
-from typing import Any, Callable
+import stat
+import subprocess
+from pathlib import Path
+from typing import Any, Mapping
+from urllib.parse import quote
 
 from multiverse_r1_stage1_writer_key_admin_channel_v1 import (
+    API_VERSION,
     CANONICAL_REPO,
     ENVIRONMENT_NAME,
+    EXPECTED_GH_CONFIG_DIR,
     FENCE_REF,
+    SESSION_STATE_DIR,
     WRITER_PREFIX,
     Denied,
     PhaseCAdminChannel,
-    create_session_marker,
+    _assert_memory_dir,
+    _parse_included_response,
 )
 
 WRITER_ID_NONCE_BYTES = 16
 WRITER_KEY_ENTROPY_BYTES = 32
+_WRITER_ID_PATTERN_SUFFIX = "[0-9A-F]{32}"
 
 
 def _deny(code: str) -> None:
@@ -43,9 +53,7 @@ def _assert_zero_reserved_inventory(channel: PhaseCAdminChannel) -> None:
         _deny("PHASE_C_RESERVED_WRITER_SECRET_ALREADY_PRESENT")
 
 
-def _assert_exact_single_reserved_inventory(
-    channel: PhaseCAdminChannel, writer_key_id: str
-) -> None:
+def _assert_exact_single_reserved_inventory(channel: PhaseCAdminChannel, writer_key_id: str) -> None:
     repo_names, env_names = channel.secret_names()
     repo_matches = _reserved(repo_names)
     env_matches = _reserved(env_names)
@@ -67,7 +75,6 @@ def _assert_locked_environment(channel: PhaseCAdminChannel) -> None:
 
 
 def _sealed_box_encrypt(public_key_b64: str, plaintext: bytes) -> str:
-    """Encrypt exact stored bytes. No package installation or fallback path."""
     try:
         from nacl.public import PublicKey, SealedBox  # type: ignore
     except Exception as exc:
@@ -84,6 +91,34 @@ def _sealed_box_encrypt(public_key_b64: str, plaintext: bytes) -> str:
     return base64.b64encode(ciphertext).decode("ascii")
 
 
+def _create_session_marker_after_fence() -> str:
+    root = _assert_memory_dir(SESSION_STATE_DIR, create=True)
+    session_id = secrets.token_hex(16)
+    path = root / (session_id + ".json")
+    payload = {
+        "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_ORIGIN_SESSION_MARKER_v1",
+        "session_id": session_id,
+        "codespace_name": os.environ.get("CODESPACE_NAME"),
+        "gh_config_dir": EXPECTED_GH_CONFIG_DIR,
+        "mode": "apply",
+        "runtime_activation_performed": False,
+    }
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = os.open(path, flags, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, sort_keys=True, separators=(",", ":"))
+        handle.flush()
+        os.fsync(handle.fileno())
+    st = os.lstat(path)
+    if stat.S_ISLNK(st.st_mode) or not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
+        _deny("PHASE_C_SESSION_MARKER_IDENTITY")
+    if st.st_uid != os.geteuid() or stat.S_IMODE(st.st_mode) != 0o600:
+        _deny("PHASE_C_SESSION_MARKER_PERMISSIONS")
+    return session_id
+
+
 def _dry_run_result() -> dict[str, Any]:
     return {
         "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONER_RESULT_v1",
@@ -91,25 +126,20 @@ def _dry_run_result() -> dict[str, Any]:
         "canonical_repo": CANONICAL_REPO,
         "environment": ENVIRONMENT_NAME,
         "provision_fence_ref": FENCE_REF,
-        "writer_key_id_pattern": WRITER_PREFIX + "[0-9A-F]{32}",
+        "writer_key_id_pattern": WRITER_PREFIX + _WRITER_ID_PATTERN_SUFFIX,
         "writer_key_entropy_bits_minimum": 256,
         "writer_key_id_entropy_bits": 128,
         "secret_put_attempt_ceiling": 1,
+        "production_apply_argument_count": 0,
         "production_secret_generated": False,
         "production_mutation_performed": False,
         "runtime_activation_performed": False,
     }
 
 
-def apply_once(
-    *,
-    channel_factory: Callable[[], PhaseCAdminChannel] = PhaseCAdminChannel,
-    random_bytes: Callable[[int], bytes] = secrets.token_bytes,
-    session_marker_factory: Callable[[], str] = create_session_marker,
-    encryptor: Callable[[str, bytes], str] = _sealed_box_encrypt,
-) -> dict[str, Any]:
-    """Future production path. Call only after later independent execution approval."""
-    channel = channel_factory()
+def apply_once() -> dict[str, Any]:
+    """Future production path. Zero caller-controlled production parameters."""
+    channel = PhaseCAdminChannel()
     scopes = channel.verify_identity_and_scope()
 
     main_before = channel.fresh_main()
@@ -117,10 +147,38 @@ def apply_once(
     if channel.fence() is not None:
         _deny("PHASE_C_PROVISION_FENCE_ALREADY_EXISTS")
 
-    # First production mutation. Only this exact 201 winner may ever reach any
-    # Phase-C CSPRNG (including the local session marker), Environment mutation,
-    # or writer-secret PUT.
-    fence_status = channel.create_fence(main_before)
+    def _invoke_exact(method: str, endpoint: str, payload: Mapping[str, Any]) -> int:
+        """Lexically scoped transport; never exposed through the admin object."""
+        channel.assert_transport_ready()
+        body = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        cmd = [
+            "gh", "api", "--hostname", "github.com", "--include",
+            "-H", "Accept: application/vnd.github+json",
+            "-H", f"X-GitHub-Api-Version: {API_VERSION}",
+            "--method", method,
+            "--input", "-",
+            endpoint,
+        ]
+        proc = subprocess.run(
+            cmd,
+            input=body,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=os.environ.copy(),
+        )
+        if not proc.stdout.strip():
+            _deny("PHASE_C_MUTATION_API_NO_RESPONSE")
+        status, _headers, _payload = _parse_included_response(proc.stdout)
+        return status
+
+    # First production mutation. Endpoint, ref, payload shape and target source
+    # are fixed inside this zero-argument function. Only exact HTTP 201 wins.
+    fence_status = _invoke_exact(
+        "POST",
+        f"/repos/{CANONICAL_REPO}/git/refs",
+        {"ref": FENCE_REF, "sha": main_before},
+    )
     if fence_status != 201:
         _deny("PHASE_C_PROVISION_FENCE_NOT_ACQUIRED_201")
 
@@ -130,44 +188,51 @@ def apply_once(
     if channel.fence() != main_before:
         _deny("PHASE_C_PROVISION_FENCE_TARGET_DRIFT")
 
-    # The bound local session marker also uses CSPRNG, so it is deliberately
-    # created only after the successful one-shot fence and post-fence Fresh
-    # barriers. A losing/delayed provisioner never reaches this draw.
-    session_id = session_marker_factory()
+    # All Phase-C CSPRNG begins only after the fence and post-fence barriers.
+    session_id = _create_session_marker_after_fence()
 
-    # Any pre-existing exact Environment is ambiguous under this one-shot
-    # creation path and requires separate recovery/review rather than update.
     env_probe = channel.probe_environment()
     if env_probe.status != 404:
         _deny("PHASE_C_ENVIRONMENT_PREEXISTS_OR_AMBIGUOUS")
-    environment_status = channel.configure_locked_environment()
+    environment_status = _invoke_exact(
+        "PUT",
+        f"/repos/{CANONICAL_REPO}/environments/{quote(ENVIRONMENT_NAME, safe='')}",
+        {
+            "wait_timer": 0,
+            "prevent_self_review": False,
+            "reviewers": [],
+            "can_admins_bypass": False,
+            "deployment_branch_policy": {
+                "protected_branches": False,
+                "custom_branch_policies": True,
+            },
+        },
+    )
     if environment_status not in {200, 201}:
         _deny("PHASE_C_ENVIRONMENT_CREATE_FAILED")
     _assert_locked_environment(channel)
     _assert_zero_reserved_inventory(channel)
 
-    # Secret identity and material are independent draws generated only after
-    # fence acquisition and exact zero-prefix inventory.
-    id_nonce = random_bytes(WRITER_ID_NONCE_BYTES)
-    key_entropy = random_bytes(WRITER_KEY_ENTROPY_BYTES)
+    # Writer identity and key are internally generated independent CSPRNG draws.
+    id_nonce = secrets.token_bytes(WRITER_ID_NONCE_BYTES)
+    key_entropy = secrets.token_bytes(WRITER_KEY_ENTROPY_BYTES)
     if len(id_nonce) != WRITER_ID_NONCE_BYTES or len(key_entropy) != WRITER_KEY_ENTROPY_BYTES:
         _deny("PHASE_C_CSPRNG_LENGTH_INVALID")
     writer_key_id = WRITER_PREFIX + id_nonce.hex().upper()
 
-    # Actions secrets are strings. Store URL-safe Base64 of 256 random bits and
-    # commit to the exact UTF-8 bytes later received by the Runtime launcher.
     stored_text = base64.urlsafe_b64encode(key_entropy).decode("ascii")
     stored_bytes = stored_text.encode("utf-8")
     writer_key_sha256 = hashlib.sha256(stored_bytes).hexdigest()
 
     public_key_id, public_key_b64 = channel.public_key()
-    encrypted_value = encryptor(public_key_b64, stored_bytes)
+    encrypted_value = _sealed_box_encrypt(public_key_b64, stored_bytes)
 
-    # Exactly one call site and one attempt. 201 is the sole accepted result.
-    secret_status = channel.put_encrypted_secret(
-        writer_key_id,
-        key_id=public_key_id,
-        encrypted_value=encrypted_value,
+    # Sole secret PUT attempt. The caller never supplies the secret name, ID,
+    # endpoint, method, encrypted payload, key ID, or plaintext bytes.
+    secret_status = _invoke_exact(
+        "PUT",
+        f"/repos/{CANONICAL_REPO}/environments/{quote(ENVIRONMENT_NAME, safe='')}/secrets/{writer_key_id}",
+        {"encrypted_value": encrypted_value, "key_id": public_key_id},
     )
     if secret_status != 201:
         if secret_status == 204:
@@ -198,6 +263,7 @@ def apply_once(
         "secret_put_http_status": 201,
         "writer_secret_plaintext_printed": False,
         "writer_secret_persisted_locally": False,
+        "caller_supplied_production_parameter": False,
         "local_credential_cleanup_required": True,
         "codespace_deletion_required": True,
         "durable_phase_c_receipt_required": True,
@@ -217,8 +283,6 @@ def main() -> int:
     try:
         result = apply_once()
     except Denied as exc:
-        # Error codes contain no secret material. Cleanup remains a separately
-        # reviewed explicit operation; no automatic retry or recovery occurs.
         print(json.dumps({
             "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONER_RESULT_v1",
             "status": "DENIED_FAIL_CLOSED",
