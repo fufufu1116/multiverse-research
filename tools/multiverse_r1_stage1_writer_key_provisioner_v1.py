@@ -27,7 +27,6 @@ from multiverse_r1_stage1_writer_key_admin_channel_v1 import (
 
 WRITER_ID_NONCE_BYTES = 16
 WRITER_KEY_ENTROPY_BYTES = 32
-WRITER_ID_PREFIX = WRITER_PREFIX
 
 
 def _deny(code: str) -> None:
@@ -106,11 +105,13 @@ def apply_once(
     *,
     channel_factory: Callable[[], PhaseCAdminChannel] = PhaseCAdminChannel,
     random_bytes: Callable[[int], bytes] = secrets.token_bytes,
+    session_marker_factory: Callable[[], str] = create_session_marker,
+    encryptor: Callable[[str, bytes], str] = _sealed_box_encrypt,
 ) -> dict[str, Any]:
     """Future production path. Call only after later independent execution approval."""
     channel = channel_factory()
     scopes = channel.verify_identity_and_scope()
-    session_id = create_session_marker()
+    session_id = session_marker_factory()
 
     main_before = channel.fresh_main()
     ruleset = channel.verify_ruleset()
@@ -129,9 +130,9 @@ def apply_once(
     if channel.fence() != main_before:
         _deny("PHASE_C_PROVISION_FENCE_TARGET_DRIFT")
 
-    # The exact Environment must be absent before this winner creates the
-    # reviewed locked state. Any pre-existing state requires separate review.
-    env_probe = channel.api("GET", channel.environment_endpoint())
+    # Any pre-existing exact Environment is ambiguous under this one-shot
+    # creation path and requires separate recovery/review rather than update.
+    env_probe = channel.probe_environment()
     if env_probe.status != 404:
         _deny("PHASE_C_ENVIRONMENT_PREEXISTS_OR_AMBIGUOUS")
     environment_status = channel.configure_locked_environment()
@@ -140,27 +141,24 @@ def apply_once(
     _assert_locked_environment(channel)
     _assert_zero_reserved_inventory(channel)
 
-    # Secret identity and secret material are independent CSPRNG draws and are
-    # generated only after the permanent fence and zero-prefix inventory gate.
+    # Secret identity and material are independent draws generated only after
+    # fence acquisition and exact zero-prefix inventory.
     id_nonce = random_bytes(WRITER_ID_NONCE_BYTES)
     key_entropy = random_bytes(WRITER_KEY_ENTROPY_BYTES)
     if len(id_nonce) != WRITER_ID_NONCE_BYTES or len(key_entropy) != WRITER_KEY_ENTROPY_BYTES:
         _deny("PHASE_C_CSPRNG_LENGTH_INVALID")
     writer_key_id = WRITER_PREFIX + id_nonce.hex().upper()
 
-    # GitHub Actions secrets are string values. Preserve >=256 bits of entropy
-    # by storing URL-safe base64 text; the commitment covers the exact UTF-8
-    # bytes the Runtime launcher will later receive and pass to canonical CAS.
+    # Actions secrets are strings. Store URL-safe Base64 of 256 random bits and
+    # commit to the exact UTF-8 bytes later received by the Runtime launcher.
     stored_text = base64.urlsafe_b64encode(key_entropy).decode("ascii")
     stored_bytes = stored_text.encode("utf-8")
     writer_key_sha256 = hashlib.sha256(stored_bytes).hexdigest()
 
     public_key_id, public_key_b64 = channel.public_key()
-    encrypted_value = _sealed_box_encrypt(public_key_b64, stored_bytes)
+    encrypted_value = encryptor(public_key_b64, stored_bytes)
 
-    # Exactly one secret-write call site and one attempt. 201 is the sole
-    # accepted result; 204 means a prohibited overwrite already occurred and
-    # therefore fails closed with no receipt and no retry.
+    # Exactly one call site and one attempt. 201 is the sole accepted result.
     secret_status = channel.put_encrypted_secret(
         writer_key_id,
         key_id=public_key_id,
@@ -214,8 +212,8 @@ def main() -> int:
     try:
         result = apply_once()
     except Denied as exc:
-        # Error codes contain no secret material. The future approved operator
-        # must perform the separately reviewed cleanup path after any failure.
+        # Error codes contain no secret material. Cleanup remains a separately
+        # reviewed explicit operation; no automatic retry or recovery occurs.
         print(json.dumps({
             "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONER_RESULT_v1",
             "status": "DENIED_FAIL_CLOSED",
