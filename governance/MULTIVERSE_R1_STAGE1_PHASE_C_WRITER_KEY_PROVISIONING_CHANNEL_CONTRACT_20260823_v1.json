@@ -1,11 +1,11 @@
 {
-  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONING_CHANNEL_CONTRACT_v2",
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONING_CHANNEL_CONTRACT_v3",
   "status": "PREACTIVATION_REVIEW_ONLY",
   "canonical_repo": "fufufu1116/multiverse-research",
   "stage_id": "R1_LIMITED_INTERNAL_RUNTIME_STAGE1",
   "prepared_from_canonical_main": "66e342fced4bfbd3b1124a49e185b175db359e86",
-  "governing_review_block": 5384855283,
-  "purpose": "Freeze a nonsecret Phase-C contract that keeps the production writer secret unreadable until the later controlled Phase-E arm transition, while making the new hosted-runner network capability and exact GitHub credential ceilings explicit for Owner review.",
+  "governing_review_blocks": [5384855283, 5384933478],
+  "purpose": "Freeze a nonsecret Phase-C contract that keeps the writer secret unreadable until Phase E and replaces an unavailable atomic fixed-name create-only guarantee with an explicitly Owner-classified cryptographic one-time storage identity.",
   "phase_b_binding": {
     "execution_receipt_comment": 5384690796,
     "acceptance_auditor_review": 5001848345,
@@ -16,53 +16,115 @@
     "drift_policy": "STOP_NO_REBIND"
   },
   "fixed_identities": {
-    "writer_key_id": "multiverse-r1-stage1-writer-key-v1",
     "environment": "multiverse-r1-stage1-writer-key-v1",
-    "environment_secret": "MULTIVERSE_R1_STAGE1_WRITER_KEY_V1",
     "writer_secret_namespace_prefix": "MULTIVERSE_R1_STAGE1_WRITER_KEY_",
+    "writer_key_id_and_environment_secret_name_pattern": "MULTIVERSE_R1_STAGE1_WRITER_KEY_[0-9A-F]{32}",
+    "writer_key_id_is_generated_not_fixed": true,
     "workflow": ".github/workflows/multiverse-r1-stage1-writer-key-runtime-v1.yml",
     "launcher": "tools/multiverse_r1_stage1_writer_key_runtime_launcher_v1.py",
     "provisioner": "tools/multiverse_r1_stage1_writer_key_provisioner_v1.py",
     "activation_tag": "multiverse-r1-stage1-activation-v1"
   },
+  "secret_put_atomicity_contract": {
+    "github_endpoint_semantics": "PUT_CREATE_OR_UPDATE",
+    "documented_create_status": 201,
+    "documented_update_status": 204,
+    "conditional_create_only_primitive_relied_upon": false,
+    "absolute_API_atomic_no_overwrite_claim": false,
+    "replacement_invariant": "generated exact target name is a fresh unpredictable one-time identifier unknown outside the provisioner until confirmed creation",
+    "writer_storage_nonce_entropy_bits": 128,
+    "writer_storage_nonce_independent_from_writer_key": true,
+    "same_name_blind_precreation_or_random_collision_upper_bound": "2^-128 under uncompromised CSPRNG and no identifier disclosure before PUT",
+    "accepted_response": "HTTP_201_CREATED_ONLY",
+    "http_204_updated": "MATERIAL_INCIDENT_FAIL_CLOSED_AFTER_DETECTED_PROHIBITED_MUTATION_NO_RECEIPT_NO_PHASE_PROGRESS",
+    "any_other_or_ambiguous_response": "FAIL_CLOSED_NO_OUTPUT_NO_RETRY",
+    "owner_gate_must_explicitly_accept_probabilistic_uniqueness_residual": true,
+    "lab_must_decide_if_this_is_proportionate_before_owner_presentation": true
+  },
+  "writer_identity_generation_contract": {
+    "writer_key_bytes_entropy_bits_minimum": 256,
+    "writer_key_id_nonce_entropy_bits": 128,
+    "two_independent_csprng_draws_required": true,
+    "writer_key_id_format": "MULTIVERSE_R1_STAGE1_WRITER_KEY_ + 32 uppercase hex characters",
+    "writer_key_id_equals_environment_secret_name": true,
+    "writer_key_id_length": 64,
+    "writer_key_id_is_nonsecret_only_after_confirmed_201": true,
+    "do_not_print_persist_comment_or_transmit_writer_key_id_before_secret_create_confirmation": true,
+    "writer_key_sha256_is_computed_from_exact_secret_bytes_in_memory": true
+  },
   "phase_c_environment_locked_state_contract": {
     "deployment_branch_policy": {"protected_branches": false, "custom_branch_policies": true},
     "deployment_policy_entries": [],
-    "intended_semantics": "NO_BRANCH_OR_TAG_REF_CAN_DEPLOY_OR_RECEIVE_ENVIRONMENT_SECRET",
-    "independent_review_must_confirm_zero_policy_entries_is_fail_closed_deny_all_on_current_GitHub": true,
+    "semantics": "DENY_ALL_BRANCH_AND_TAG_REFS",
     "admin_bypass": false,
-    "admin_bypass_must_be_unconditionally_disabled_for_this_public_repository": true,
-    "if_admin_bypass_state_cannot_be_set_and_fresh_verified_by_the_approved_channel": "BLOCK_BEFORE_SECRET",
     "secret_may_be_created_only_after_locked_state_fresh_verification": true,
-    "activation_tag_name_existing_early_does_not_authorize_reader_while_locked": true
+    "activation_tag_existing_early_does_not_authorize_reader_while_locked": true
+  },
+  "single_active_inventory_contract": {
+    "fresh_scan_before_generation": ["repository Actions secret names", "exact environment secret names"],
+    "values_must_never_be_read": true,
+    "reserved_prefix": "MULTIVERSE_R1_STAGE1_WRITER_KEY_",
+    "before_generation_require_zero_prefix_names": true,
+    "generate_writer_key_id_only_after_zero_prefix_inventory": true,
+    "post_201_fresh_scan_require_exactly_one_prefix_name": true,
+    "post_201_exact_name_must_equal_generated_writer_key_id": true,
+    "concurrent_different_name_prefix_secret": "FAIL_CLOSED_NO_RECEIPT_ENVIRONMENT_STAYS_LOCKED_SEPARATE_RECOVERY_REVIEW",
+    "same_name_204_update": "MATERIAL_INCIDENT_NO_RECEIPT_ENVIRONMENT_STAYS_LOCKED_SEPARATE_RECOVERY_REVIEW",
+    "active_writer_key_definition": "writer key whose durable Phase-C provisioning receipt has been independently accepted",
+    "second_accepted_active_writer_key": false,
+    "automatic_secret_delete_overwrite_rotation_or_recovery": false
+  },
+  "provisioner_contract": {
+    "execution_device": "iPhone browser Codespaces terminal after exact channel approval",
+    "writer_key_csprng_bits_minimum": 256,
+    "writer_key_id_csprng_bits": 128,
+    "secret_generated_internally": true,
+    "owner_secret_input": false,
+    "secret_cli_arg": false,
+    "secret_clipboard_chat_repo_file_log_comment_receipt_tag_state_artifact_cache": false,
+    "persistent_secret_file": false,
+    "public_key_endpoint": "exact locked environment public key only",
+    "plaintext_to_ciphertext": "Libsodium sealed-box encryption in memory before GitHub PUT",
+    "plaintext_secret_never_in_url_cli_argument_or_json_payload": true,
+    "encrypted_payload_only_to_exact reviewed environment-secret PUT": true,
+    "must_capture_http_status": true,
+    "success_only_on_201": true,
+    "allowed_nonsecret_output_only_after_201_and_postwrite_inventory": ["writer_key_id", "writer_key_sha256", "exact_store_identity", "session_id", "status"],
+    "ambiguous_store_result": "STOP_NO_OUTPUT_NO_BLIND_RETRY_NO_REGENERATION_UNTIL_SEPARATE_REVIEW"
+  },
+  "iphone_phase_c_admin_channel_contract": {
+    "new_dedicated_channel_required": true,
+    "must_not_reuse_PR70_ruleset_operator_authority": true,
+    "oauth_host": "github.com",
+    "oauth_scope": ["repo"],
+    "exact_login": "fufufu1116",
+    "repo_admin_required": true,
+    "temporary_memory_backed_GH_CONFIG_DIR": true,
+    "zero_active_swap": true,
+    "strict_owner_mode_symlink_checks": true,
+    "mandatory_logout_memory_delete_codespace_delete_and_durable_cleanup_receipt": true,
+    "exact_future_endpoint_families": [
+      "Fresh read exact environment and deployment policies",
+      "Fresh list repository and exact-environment Actions secret names without values",
+      "create/configure only exact environment in locked deny-all state",
+      "GET exact environment public key",
+      "PUT encrypted secret only to internally generated exact writer_key_id name",
+      "Phase-E separately reviewed arm operator adds one exact activation-tag deployment policy"
+    ],
+    "caller_may_not_supply_repo_environment_secret_name_writer_key_id_endpoint_method_payload_or_tag": true,
+    "secret_delete_rotation_explicit_overwrite": false,
+    "ruleset_or_main_mutation": false
   },
   "phase_e_environment_arm_contract": {
-    "pre_arm_fresh_requirements": [
-      "environment exact and still deny-all with zero deployment policies",
-      "admin bypass false",
-      "activation tag absent before controlled tag creation",
-      "Phase-D sequence-0 and Runtime branch accepted",
-      "activation receipt exact and independently accepted",
-      "canonical main and ruleset fresh barriers pass"
-    ],
+    "pre_arm_fresh_requirements": ["environment exact and still deny-all", "admin bypass false", "activation tag absent before controlled creation", "Phase-D accepted", "activation receipt independently accepted", "canonical main and ruleset barriers pass"],
     "controlled_tag_creation_then_verify": true,
     "arm_only_after_exact_tag_object_verification": true,
-    "arm_mutation": {
-      "operation": "create exactly one deployment branch-policy entry",
-      "type": "tag",
-      "name": "multiverse-r1-stage1-activation-v1"
-    },
-    "post_arm_fresh_requirements": [
-      "exactly one deployment policy total",
-      "policy type tag",
-      "policy name exact activation tag",
-      "zero branch policies",
-      "admin bypass false"
-    ],
-    "early_or_competing_tag_detected": "FAIL_CLOSED_NO_ARM",
-    "secret_reader_remains_closed_until_arm_success": true
+    "arm_mutation": {"operation": "create exactly one deployment policy", "type": "tag", "name": "multiverse-r1-stage1-activation-v1"},
+    "post_arm_fresh_requirements": ["exactly one deployment policy total", "exact tag policy", "zero branch policies", "admin bypass false"],
+    "early_or_competing_tag": "FAIL_CLOSED_NO_ARM",
+    "reader_closed_until_arm_success": true
   },
-  "workflow_contract": {
+  "workflow_and_reader_contract": {
     "trigger": ["workflow_dispatch"],
     "forbidden_triggers": ["schedule", "push", "pull_request", "pull_request_target", "repository_dispatch", "workflow_run"],
     "dispatch_ref_after_arm": "multiverse-r1-stage1-activation-v1",
@@ -70,80 +132,39 @@
     "runner": "ubuntu-24.04 GitHub-hosted",
     "permissions": {"contents": "write"},
     "all_other_github_token_permissions": "none",
-    "untrusted_pr_code": false,
-    "third_party_actions": false,
-    "any_GitHub_owned_action_if_later_needed": "must be full-commit-SHA pinned and separately reviewed",
-    "secret_reference_count": 1,
+    "preflight_job_receives_no_environment_secret": true,
+    "preflight_job_fresh_loads_activation_receipt": true,
+    "preflight_output": "exact activation-receipt writer_key_id",
+    "secret_bearing_job_requires_successful_preflight": true,
+    "secret_bearing_job_environment": "multiverse-r1-stage1-writer-key-v1",
+    "launcher_step_dynamic_secret_reference_candidate": "secrets[needs.preflight.outputs.writer_key_id]",
+    "independent_implementation_test_of_dynamic_index_expression_required": true,
+    "caller_supplied_writer_key_id": false,
     "secret_reference_location": "exact launcher/runtime step only",
-    "whole_activation_commit_scan_must_reject_any_other_reference_to_environment_or_reserved_writer_secret": true
+    "launcher_hash_check": "SHA256(exact received secret bytes) must equal Fresh-verified activation receipt writer_key_sha256 before Runtime-CAS construction",
+    "whole_activation_commit_scan_must_reject_unreviewed_environment_or_secrets_context_usage": true,
+    "untrusted_pr_code": false
+  },
+  "canonical_runtime_compatibility_basis": {
+    "activation_loader_requires_writer_key_id_nonempty_not_fixed_literal": true,
+    "activation_loader_requires_writer_key_sha256_hex64": true,
+    "runtime_CAS_requires_transition writer_key_id equals verified activation anchor writer_key_id": true,
+    "runtime_CAS_requires_SHA256(writer_auth_key) equals verified activation anchor writer_key_sha256": true,
+    "no_current_canonical_runtime_schema_change_required_for_generated_writer_key_id": true
   },
   "runner_network_scope": {
     "platform_capability": "PUBLIC_INTERNET_AVAILABLE_BY_DEFAULT_ON_STANDARD_GITHUB_HOSTED_RUNNER",
     "must_be_explicitly_presented_in_new_owner_gate": true,
-    "owner_approval_if_given_classifies_this_as_accepted_ambient_execution_capability": true,
-    "authorized_use_still_only": ["GitHub control plane needed for canonical reads and audited Runtime-branch CAS writes"],
-    "forbidden_use": ["public web retrieval", "Source discovery or collection", "provider contact", "live PRE", "bulk collection", "third party API/service", "arbitrary URL supplied by task or caller"],
-    "future_exact_implementation_must_pin_all_network_destinations_and_add_negative_tests": true
-  },
-  "iphone_phase_c_admin_channel_contract": {
-    "new_dedicated_channel_required": true,
-    "must_not_reuse_PR70_ruleset_operator_authority": true,
-    "execution_device": "iPhone browser Codespaces terminal",
-    "oauth": {
-      "host": "github.com",
-      "scope": ["repo"],
-      "exact_login": "fufufu1116",
-      "repo_admin_required": true,
-      "temporary_memory_backed_GH_CONFIG_DIR": true,
-      "zero_active_swap": true,
-      "strict_owner_mode_symlink_checks": true,
-      "mandatory_logout_memory_delete_codespace_delete_and_durable_cleanup_receipt": true
-    },
-    "future_wrapper_endpoint_operation_allowlist": [
-      "GET exact environment",
-      "GET exact environment deployment branch policies",
-      "GET repository Actions secret names without values",
-      "GET exact environment secret names without values",
-      "PUT/create or configure only exact environment into locked deny-all state",
-      "GET exact environment public key needed by encrypted secret upload",
-      "PUT exactly one new exact environment secret when absent",
-      "Phase-E separately reviewed operator: POST exactly one activation-tag deployment policy"
-    ],
-    "caller_may_not_supply_repo_environment_secret_name_endpoint_method_payload_or_tag": true,
-    "secret_delete_overwrite_rotation": false,
-    "arbitrary_environment_or_policy_mutation": false,
-    "ruleset_mutation": false,
-    "main_mutation": false
-  },
-  "provisioner_contract": {
-    "csprng_minimum_entropy_bits": 256,
-    "secret_generated_internally": true,
-    "owner_secret_input": false,
-    "secret_cli_arg": false,
-    "secret_clipboard_chat_repo_file_log_comment_receipt_tag_state_artifact_cache": false,
-    "persistent_secret_file": false,
-    "upload": "stdin-only to exact reviewed encrypted Actions environment-secret write",
-    "allowed_egress": ["writer_key_id", "writer_key_sha256", "exact_store_identity", "session_id", "status"],
-    "ambiguous_store_result": "STOP_NO_SECRET_OUTPUT_NO_RETRY_NO_REGENERATION_UNTIL_SEPARATE_REVIEW"
-  },
-  "single_active_inventory_contract": {
-    "fresh_scan_scopes": ["repository Actions secret names", "exact environment secret names"],
-    "values_must_never_be_read": true,
-    "reserved_prefix": "MULTIVERSE_R1_STAGE1_WRITER_KEY_",
-    "deny_before_csprng_if_any_name_starts_with_reserved_prefix": true,
-    "after_success_only_exact_reserved_name_may_exist_under_prefix": true,
-    "future_activation_commit_must_reference_no_other_secrets_context_entry": true,
-    "overwrite": false,
-    "rotation": false,
-    "delete_recreate_as_rotation": false,
-    "second_active_writer_key": false
+    "authorized_use_only": ["GitHub control plane needed for canonical reads and audited Runtime-branch CAS writes"],
+    "forbidden_use": ["public web retrieval", "Source discovery or collection", "provider contact", "live PRE", "bulk collection", "third party API/service", "arbitrary caller/task URL"],
+    "future_exact_implementation_must_pin_GitHub_destinations_and_negative_test_non_GitHub_destinations": true
   },
   "support_implementation_before_secret": {
     "Owner_Gate_first": true,
-    "exact workflow_launcher_provisioner_admin_channel_candidates required": true,
+    "exact workflow_launcher_provisioner_admin_channel_candidates_required": true,
     "independent_Lab_PASS_required": true,
     "independent_Auditor_PASS_required": true,
-    "separate canonical integration if required": true,
+    "separate canonical integration_if_required": true,
     "then_fresh_ruleset_reverify": true
   },
   "post_phase_c_order": [
@@ -151,7 +172,7 @@
     "Phase D sequence-0 and Runtime branch",
     "Phase E activation receipt",
     "Phase E controlled activation-tag creation and Fresh verification",
-    "Phase E environment arm by exact one-tag policy",
+    "Phase E environment arm",
     "Phase F exact-tag loader preflight",
     "final independent activation decision"
   ],
