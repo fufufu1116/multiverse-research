@@ -4,30 +4,52 @@
   "canonical_repo": "fufufu1116/multiverse-research",
   "prepared_from_canonical_main": "ff07e5ee02fa84405eb2fc89cfdbff1d26267cc9",
   "governing_lab_material_block_comment": 5387100985,
+  "governing_auditor_material_block_review": 5002962014,
   "blocked_owner_gate_pr": 74,
   "blocked_owner_gate_head": "112dd5d2bf1e4f80abb8c1c40585b494de2bdf6d",
-  "purpose": "Close the exact-main authority-rebind TOCTOU inside the reviewed production path and add a reviewed zero-argument live nonmutating preflight tool. This candidate itself authorizes no production mutation or Owner presentation.",
+  "purpose": "Close the exact-main authority-rebind TOCTOU with index-independent reviewed-byte authentication and preserve the zero-argument live nonmutating preflight path. This candidate authorizes no production mutation or Owner presentation.",
   "exact_main_remediation": {
     "production_call_surface": "apply_once()",
     "production_arguments": 0,
     "caller_supplied_main_sha": false,
-    "binding_source": "DETACHED_CLEAN_GIT_CHECKOUT_COMMIT_CONTAINING_THE_REVIEWED_EXECUTION_CODE",
+    "binding_source": "DETACHED_HEAD_PLUS_DIRECT_ACTUAL_BYTE_TO_HEAD_TREE_BLOB_AUTHENTICATION",
     "binding_helper": "tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py::verified_execution_checkout_head",
+    "security_critical_execution_paths": [
+      "tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py",
+      "tools/multiverse_r1_stage1_writer_key_provisioner_v1.py",
+      "tools/multiverse_r1_stage1_writer_key_admin_channel_v1.py"
+    ],
     "binding_requirements": [
       "tool is executing from the repository Git toplevel",
       "HEAD is detached rather than attached to a moving local branch",
       "HEAD resolves to one exact 40-hex commit",
-      "tracked and untracked worktree state is completely clean"
+      "Git replacement-object interpretation is disabled for binding reads",
+      "Git worktree/index/object-directory override environment variables are prohibited",
+      "assume-unchanged tracked-index suppression is prohibited",
+      "skip-worktree tracked-index suppression is prohibited",
+      "each fixed security-critical actual file is a regular owner-controlled non-group/world-writable single-link file",
+      "each fixed security-critical actual file's Git blob SHA calculated directly from its bytes equals the blob SHA named by the exact detached HEAD tree",
+      "ordinary git status cleanliness is checked only after the index-independent byte/tree proof as secondary hygiene"
     ],
-    "authoritative_prefence_condition": "Fresh remote canonical main SHA must equal the detached clean execution checkout SHA inside apply_once() immediately before ruleset/fence checks",
+    "mutable_index_is_security_root": false,
+    "git_status_empty_is_sufficient_clean_proof": false,
+    "authoritative_prefence_condition": "Fresh remote canonical main SHA must equal the authenticated detached execution checkout SHA inside apply_once() before ruleset/fence checks",
     "mismatch": "DENY_BEFORE_PROVISION_FENCE_NO_PRODUCTION_MUTATION",
-    "fence_target": "exact detached execution checkout SHA, not a newly rebound dynamic main value",
-    "post_fence_main_condition": "Fresh remote canonical main must still equal the same detached execution checkout SHA",
-    "post_secret_main_condition": "Fresh remote canonical main must still equal the same detached execution checkout SHA",
+    "fence_target": "authenticated detached execution checkout SHA",
+    "post_fence_main_condition": "Fresh remote canonical main must still equal the same authenticated SHA",
+    "post_secret_main_condition": "Fresh remote canonical main must still equal the same authenticated SHA",
     "external_preflight_is_not_the_only_main_authority_check": true,
     "post_external_preflight_main_drift_to_different_sha_can_silently_rebind_apply": false,
     "owner_exact_main_literal_still_required_in_final_reviewed_operator_sequence": true,
     "owner_gate_must_not_be_presented_until_that_exact_sequence_is_frozen_and_independently_reviewed": true
+  },
+  "auditor_5002962014_remediation": {
+    "reproduced_defect_class": "tracked bytes modified while git update-index --assume-unchanged makes git status --porcelain empty",
+    "direct_blob_verification_independent_of_index_flags": true,
+    "assume_unchanged_rejected": true,
+    "skip_worktree_rejected": true,
+    "adversarial_disposable_repo_selftest_required": true,
+    "selftest_must_show_status_empty_and_direct_byte_proof_rejects_tamper": true
   },
   "live_nonmutating_preflight": {
     "tool": "tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py",
@@ -38,23 +60,20 @@
     "secret_generation": false,
     "network_install": false,
     "checks": [
-      "detached clean execution checkout",
+      "authenticated detached execution checkout",
       "approved Codespaces/admin transport boundary",
       "exact GitHub identity and OAuth effective scope set",
-      "Fresh remote main equals execution checkout",
+      "Fresh remote main equals authenticated execution checkout",
       "full exact ruleset semantics",
       "provision fence absent via parsed 404",
       "Environment absent via parsed 404",
       "PyNaCl PublicKey and SealedBox import available without install"
     ],
-    "proves_gh_api_include_non_2xx_capture": "fence and Environment expected-404 reads are parsed by the reviewed read-only admin channel",
     "failure": "DENY_NO_APPLY_NO_RETRY"
   },
   "operator_sequence_completion_boundary": {
-    "lab_blocker_acknowledged": true,
-    "exact_setup_browser_login_preflight_command_text_not_claimed_complete_by_this_remediation_manifest": true,
-    "reason": "the final literal Owner-approved canonical main SHA is only knowable after this remediation is independently reviewed and canonically integrated",
-    "required_next_step_after_canonical_integration": "update the still-DRAFT Phase-C execution Owner-Gate candidate with the new exact canonical main plus exact iPhone Codespaces setup, browser-login, detached-checkout, preauth, live-preflight, single-apply and cleanup commands; independently Lab/Auditor review that exact gate before Owner presentation",
+    "exact_setup_browser_login_preflight_command_text_not_claimed_complete_by_this_manifest": true,
+    "required_next_step_after_separate_canonical_integration": "update still-DRAFT PR #74 with the new exact canonical main plus exact iPhone Codespaces setup, browser-login, detached-checkout, preauth, live-preflight, single-apply and cleanup commands; independently Lab/Auditor review that exact gate before Owner presentation",
     "placeholder_or_operator_invented_security_critical_command_after_owner_approval_allowed": false,
     "owner_presentation_before_exact_command_review": false
   },
@@ -78,9 +97,10 @@
     "runtime_off": true
   },
   "review_questions": {
-    "detached_checkout_is_sufficient_non_caller_supplied_binding_under_reviewed_execution_threat_model": "INDEPENDENT_REVIEW_REQUIRED",
-    "apply_prefence_remote_main_equals_detached_checkout_closes_lab_exact_main_toctou": "INDEPENDENT_REVIEW_REQUIRED",
-    "preflight_tool_closes_live_nonmutating_preflight_tooling_gap": "INDEPENDENT_REVIEW_REQUIRED",
+    "direct_actual_byte_to_head_tree_blob_authentication_closes_auditor_5002962014": "INDEPENDENT_REVIEW_REQUIRED",
+    "index_suppression_controls_are_no_longer_authority_inputs": "INDEPENDENT_REVIEW_REQUIRED",
+    "apply_prefence_remote_main_equals_authenticated_checkout_closes_exact_main_toctou": "INDEPENDENT_REVIEW_REQUIRED",
+    "preflight_tool_remains_nonmutating_and_complete": "INDEPENDENT_REVIEW_REQUIRED",
     "final_exact_operator_sequence_may_be_frozen_after_canonical_remediation_integration_but_before_owner_presentation": "INDEPENDENT_REVIEW_REQUIRED"
   },
   "current_effect": {
@@ -96,6 +116,6 @@
     "activation_receipt_or_tag_created": false,
     "runtime_activated": false
   },
-  "next_gate": "INDEPENDENT_LAB_REVIEW_ONLY_THEN_INDEPENDENT_AUDITOR_IF_LAB_PERMITS",
+  "next_gate": "INDEPENDENT_LAB_MICRO_REVIEW_THEN_INDEPENDENT_AUDITOR_RE_REVIEW_IF_LAB_PERMITS",
   "runtime": "OFF"
 }
