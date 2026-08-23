@@ -13,6 +13,7 @@ from multiverse_r1_stage1_phase_c_guarded_execution_v1 import (
 LOGIN_COMMAND = [
     "gh", "auth", "login", "--hostname", "github.com",
     "--git-protocol", "https", "--web", "--scopes", "repo",
+    "--insecure-storage",
 ]
 
 def _deny(code: str) -> None:
@@ -54,8 +55,9 @@ def login_and_live_preflight() -> dict[str, Any]:
         _purge_preauth_credentials_best_effort()
         raise
     result = dict(result)
-    result["operator_login_command"] = "gh auth login --hostname github.com --git-protocol https --web --scopes repo"
+    result["operator_login_command"] = "gh auth login --hostname github.com --git-protocol https --web --scopes repo --insecure-storage"
     result["gh_config_dir"] = EXPECTED_GH_CONFIG_DIR
+    result["credential_storage_mode"] = "PLAINTEXT_GH_CONFIG_FORCED_IN_MEMORY_BACKED_GH_CONFIG_DIR"
     result["authorized_canonical_main"] = AUTHORIZED_CANONICAL_MAIN
     result["local_credentials_retained_for_single_guarded_apply"] = True
     return result
@@ -72,6 +74,7 @@ def selftest() -> None:
     assert LOGIN_COMMAND == [
         "gh", "auth", "login", "--hostname", "github.com",
         "--git-protocol", "https", "--web", "--scopes", "repo",
+        "--insecure-storage",
     ]
     assert AUTHORIZED_CANONICAL_MAIN == "ff07e5ee02fa84405eb2fc89cfdbff1d26267cc9"
     print("PHASE_C_FROZEN_OPERATOR_SELFTEST_PASS")
