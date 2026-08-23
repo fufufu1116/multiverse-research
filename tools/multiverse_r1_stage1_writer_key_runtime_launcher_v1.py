@@ -58,9 +58,8 @@ def _assert_activation_ref() -> str:
 
 
 def _fresh_activation_product(root: Path):
-    # The v1 immutable loader exposes the nonsecret writer-key identity. The
-    # secret-bearing path below additionally enters through the hardened v2
-    # sole production integration entrypoint before constructing Runtime CAS.
+    # v1 exposes the nonsecret key identity. The secret-bearing path below also
+    # enters through the hardened v2 sole production integration entrypoint.
     return ImmutableActivationReceiptLoader(root).load()
 
 
@@ -113,9 +112,8 @@ def runtime_loader_preflight() -> dict[str, Any]:
     if actual_sha256 != loaded.runtime.writer_key_sha256:
         _deny("WRITER_LAUNCHER_WRITER_SECRET_SHA256_MISMATCH")
 
-    # Hardened canonical production entrypoint. This independently Fresh
-    # re-verifies the immutable activation receipt and CAS constructor repeats
-    # the writer-key commitment check before retaining key bytes.
+    # Hardened canonical entrypoint independently re-verifies the immutable
+    # receipt; CAS construction repeats the key-commitment check.
     context = load_verified_stage1_context(root)
     ledger = context.build_runtime_ledger(writer_auth_key=writer_bytes)
     snapshot = ledger.load_snapshot()
@@ -150,8 +148,6 @@ def main() -> int:
     mode.add_argument("--selftest", action="store_true")
     args = parser.parse_args()
     try:
-        if args.preauth if False else False:  # unreachable guard against accidental mode growth
-            raise AssertionError
         if args.preflight_id:
             value = preflight_writer_identity()
         elif args.runtime_preflight:
