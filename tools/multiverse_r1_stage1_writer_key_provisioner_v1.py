@@ -16,7 +16,6 @@ import os
 import secrets
 import stat
 import subprocess
-from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import quote
 
@@ -74,51 +73,6 @@ def _assert_locked_environment(channel: PhaseCAdminChannel) -> None:
         _deny("PHASE_C_ENVIRONMENT_NOT_DENY_ALL_ZERO_POLICY")
 
 
-def _sealed_box_encrypt(public_key_b64: str, plaintext: bytes) -> str:
-    try:
-        from nacl.public import PublicKey, SealedBox  # type: ignore
-    except Exception as exc:
-        raise Denied("PHASE_C_PYNACL_REQUIRED_NO_NETWORK_INSTALL") from exc
-    try:
-        key_raw = base64.b64decode(public_key_b64, validate=True)
-        if len(key_raw) != 32:
-            _deny("PHASE_C_ENVIRONMENT_PUBLIC_KEY_LENGTH")
-        ciphertext = SealedBox(PublicKey(key_raw)).encrypt(plaintext)
-    except Denied:
-        raise
-    except Exception as exc:
-        raise Denied("PHASE_C_SEALED_BOX_ENCRYPTION_FAILED") from exc
-    return base64.b64encode(ciphertext).decode("ascii")
-
-
-def _create_session_marker_after_fence() -> str:
-    root = _assert_memory_dir(SESSION_STATE_DIR, create=True)
-    session_id = secrets.token_hex(16)
-    path = root / (session_id + ".json")
-    payload = {
-        "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_ORIGIN_SESSION_MARKER_v1",
-        "session_id": session_id,
-        "codespace_name": os.environ.get("CODESPACE_NAME"),
-        "gh_config_dir": EXPECTED_GH_CONFIG_DIR,
-        "mode": "apply",
-        "runtime_activation_performed": False,
-    }
-    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
-    if hasattr(os, "O_NOFOLLOW"):
-        flags |= os.O_NOFOLLOW
-    fd = os.open(path, flags, 0o600)
-    with os.fdopen(fd, "w", encoding="utf-8") as handle:
-        json.dump(payload, handle, sort_keys=True, separators=(",", ":"))
-        handle.flush()
-        os.fsync(handle.fileno())
-    st = os.lstat(path)
-    if stat.S_ISLNK(st.st_mode) or not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
-        _deny("PHASE_C_SESSION_MARKER_IDENTITY")
-    if st.st_uid != os.geteuid() or stat.S_IMODE(st.st_mode) != 0o600:
-        _deny("PHASE_C_SESSION_MARKER_PERMISSIONS")
-    return session_id
-
-
 def _dry_run_result() -> dict[str, Any]:
     return {
         "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_WRITER_KEY_PROVISIONER_RESULT_v1",
@@ -172,6 +126,49 @@ def apply_once() -> dict[str, Any]:
         status, _headers, _payload = _parse_included_response(proc.stdout)
         return status
 
+    def _create_session_marker() -> str:
+        root = _assert_memory_dir(SESSION_STATE_DIR, create=True)
+        session_id = secrets.token_hex(16)
+        path = root / (session_id + ".json")
+        payload = {
+            "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_ORIGIN_SESSION_MARKER_v1",
+            "session_id": session_id,
+            "codespace_name": os.environ.get("CODESPACE_NAME"),
+            "gh_config_dir": EXPECTED_GH_CONFIG_DIR,
+            "mode": "apply",
+            "runtime_activation_performed": False,
+        }
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
+        fd = os.open(path, flags, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, sort_keys=True, separators=(",", ":"))
+            handle.flush()
+            os.fsync(handle.fileno())
+        st = os.lstat(path)
+        if stat.S_ISLNK(st.st_mode) or not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
+            _deny("PHASE_C_SESSION_MARKER_IDENTITY")
+        if st.st_uid != os.geteuid() or stat.S_IMODE(st.st_mode) != 0o600:
+            _deny("PHASE_C_SESSION_MARKER_PERMISSIONS")
+        return session_id
+
+    def _encrypt_exact(public_key_b64: str, plaintext: bytes) -> str:
+        try:
+            from nacl.public import PublicKey, SealedBox  # type: ignore
+        except Exception as exc:
+            raise Denied("PHASE_C_PYNACL_REQUIRED_NO_NETWORK_INSTALL") from exc
+        try:
+            key_raw = base64.b64decode(public_key_b64, validate=True)
+            if len(key_raw) != 32:
+                _deny("PHASE_C_ENVIRONMENT_PUBLIC_KEY_LENGTH")
+            ciphertext = SealedBox(PublicKey(key_raw)).encrypt(plaintext)
+        except Denied:
+            raise
+        except Exception as exc:
+            raise Denied("PHASE_C_SEALED_BOX_ENCRYPTION_FAILED") from exc
+        return base64.b64encode(ciphertext).decode("ascii")
+
     # First production mutation. Endpoint, ref, payload shape and target source
     # are fixed inside this zero-argument function. Only exact HTTP 201 wins.
     fence_status = _invoke_exact(
@@ -189,7 +186,7 @@ def apply_once() -> dict[str, Any]:
         _deny("PHASE_C_PROVISION_FENCE_TARGET_DRIFT")
 
     # All Phase-C CSPRNG begins only after the fence and post-fence barriers.
-    session_id = _create_session_marker_after_fence()
+    session_id = _create_session_marker()
 
     env_probe = channel.probe_environment()
     if env_probe.status != 404:
@@ -213,7 +210,6 @@ def apply_once() -> dict[str, Any]:
     _assert_locked_environment(channel)
     _assert_zero_reserved_inventory(channel)
 
-    # Writer identity and key are internally generated independent CSPRNG draws.
     id_nonce = secrets.token_bytes(WRITER_ID_NONCE_BYTES)
     key_entropy = secrets.token_bytes(WRITER_KEY_ENTROPY_BYTES)
     if len(id_nonce) != WRITER_ID_NONCE_BYTES or len(key_entropy) != WRITER_KEY_ENTROPY_BYTES:
@@ -225,7 +221,7 @@ def apply_once() -> dict[str, Any]:
     writer_key_sha256 = hashlib.sha256(stored_bytes).hexdigest()
 
     public_key_id, public_key_b64 = channel.public_key()
-    encrypted_value = _sealed_box_encrypt(public_key_b64, stored_bytes)
+    encrypted_value = _encrypt_exact(public_key_b64, stored_bytes)
 
     # Sole secret PUT attempt. The caller never supplies the secret name, ID,
     # endpoint, method, encrypted payload, key ID, or plaintext bytes.
