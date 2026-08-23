@@ -42,8 +42,6 @@ def _syntax_and_call_boundary_test() -> None:
     ptree = ast.parse(psrc, filename=str(PROVISIONER))
     ast.parse(lsrc, filename=str(LAUNCHER))
 
-    # The authenticated admin object is read-only. No reviewed public mutation
-    # primitive remains available to an importer with the approved credential.
     admin_class = _class(atree, "PhaseCAdminChannel")
     public_methods = {
         node.name for node in admin_class.body
@@ -61,47 +59,42 @@ def _syntax_and_call_boundary_test() -> None:
     assert '"--method", "POST"' not in asrc
     assert '"--method", "PUT"' not in asrc
 
-    # Production apply accepts no caller-selected factories, entropy, encryptor,
-    # identity, endpoint, method or payload parameters.
     apply_node = _function(ptree, "apply_once")
     assert not apply_node.args.args
     assert not apply_node.args.posonlyargs
     assert not apply_node.args.kwonlyargs
     assert apply_node.args.vararg is None and apply_node.args.kwarg is None
+    assert "def apply_once()" in psrc
     for forbidden in (
         "channel_factory", "random_bytes", "session_marker_factory", "encryptor",
-        "Callable", "def apply_once(",
+        "Callable", "create_fence(", "configure_locked_environment(",
+        "put_encrypted_secret(",
     ):
-        if forbidden == "def apply_once(":
-            assert "def apply_once()" in psrc
-        else:
-            assert forbidden not in psrc
+        assert forbidden not in psrc
 
-    # Generic mutation transport exists only as a nested lexical helper inside
-    # the zero-argument apply_once function, never as a module/class call surface.
     top_level_functions = {node.name for node in ptree.body if isinstance(node, ast.FunctionDef)}
-    assert "_invoke_exact" not in top_level_functions
-    nested = [node for node in apply_node.body if isinstance(node, ast.FunctionDef)]
-    assert [node.name for node in nested] == ["_invoke_exact"]
+    for name in ("_invoke_exact", "_create_session_marker", "_encrypt_exact"):
+        assert name not in top_level_functions
+    nested = [node.name for node in apply_node.body if isinstance(node, ast.FunctionDef)]
+    assert nested == ["_invoke_exact", "_create_session_marker", "_encrypt_exact"]
 
     fence_pos = psrc.index("fence_status = _invoke_exact(")
-    marker_pos = psrc.index("session_id = _create_session_marker_after_fence()")
+    marker_pos = psrc.index("session_id = _create_session_marker()")
     env_pos = psrc.index("environment_status = _invoke_exact(")
     id_pos = psrc.index("secrets.token_bytes(WRITER_ID_NONCE_BYTES)")
     key_pos = psrc.index("secrets.token_bytes(WRITER_KEY_ENTROPY_BYTES)")
+    encrypt_pos = psrc.index("encrypted_value = _encrypt_exact(")
     secret_pos = psrc.index("secret_status = _invoke_exact(")
-    assert fence_pos < marker_pos < env_pos < id_pos < key_pos < secret_pos
+    assert fence_pos < marker_pos < env_pos < id_pos < key_pos < encrypt_pos < secret_pos
     assert psrc.count("secret_status = _invoke_exact(") == 1
     assert "if secret_status != 201:" in psrc
     assert "PHASE_C_PROHIBITED_SECRET_OVERWRITE_204_MATERIAL_INCIDENT" in psrc
     assert "PHASE_C_SECRET_STORE_NOT_CONFIRMED_201_NO_RETRY" in psrc
     assert not any(isinstance(node, ast.While) for node in ast.walk(apply_node))
 
-    # No package/network-install fallback exists in the secret-bearing path.
     for fragment in ("pip install", "apt-get", "curl ", "wget "):
         assert fragment not in psrc
 
-    # Runtime workflow/launcher boundaries retained from the prior PASS scope.
     assert "workflow_dispatch:" in wsrc
     for trigger in ("schedule:", "push:", "pull_request:", "pull_request_target:",
                     "repository_dispatch:", "workflow_run:"):
@@ -125,6 +118,7 @@ def main() -> int:
     print("PHASE_C_SUPPORT_IMPLEMENTATION_SELFTEST_PASS")
     print("ADMIN_CHANNEL_PUBLIC_MUTATION_PRIMITIVE_PRESENT=false")
     print("PRODUCTION_APPLY_CALLER_INJECTION_PARAMETERS=false")
+    print("PRODUCTION_CSPRNG_HELPERS_EXPORTED=false")
     print("PRODUCTION_MUTATION_PERFORMED=false")
     print("PRODUCTION_SECRET_GENERATED=false")
     print("RUNTIME_ACTIVATION_PERFORMED=false")
