@@ -22,13 +22,34 @@
     "environment_name": "multiverse-r1-stage1-writer-key-v1",
     "reserved_environment_secret_name": "MULTIVERSE_R1_STAGE1_WRITER_KEY_V1",
     "workflow_path_reserved_for_future_review": ".github/workflows/multiverse-r1-stage1-writer-key-runtime-v1.yml",
+    "launcher_path_reserved_for_future_review": "tools/multiverse_r1_stage1_writer_key_runtime_launcher_v1.py",
+    "provisioner_path_reserved_for_future_review": "tools/multiverse_r1_stage1_writer_key_provisioner_v1.py",
     "trigger_allowlist": ["workflow_dispatch"],
     "trigger_denylist": ["schedule", "push", "pull_request", "pull_request_target", "repository_dispatch", "workflow_run"],
     "runner_class_candidate": "github-hosted-ubuntu-24.04",
-    "reader_identity": "ONLY_THE_EXACT_INDEPENDENTLY_REVIEWED_JOB_AND_EXACT_RUNTIME_LAUNCH_STEP_ON_THE_FUTURE_APPROVED_WORKFLOW_HEAD",
+    "reader_identity": "ONLY_THE_EXACT_INDEPENDENTLY_REVIEWED_JOB_AND_LAUNCHER_AT_THE_IMMUTABLE_ACTIVATION_TAG_REF",
     "external_secret_manager": false,
     "third_party_app_or_broker": false,
     "scheduler_or_always_on_worker": false
+  },
+  "required_pre_phase_c_support_integration": {
+    "reason": "A workflow_dispatch reader must be an independently reviewed production artifact before it can be used; the new workflow/launcher/provisioner execution surface must not be introduced implicitly after writer-key provisioning.",
+    "new_owner_gate_must_be_recorded_first": true,
+    "exact_workflow_launcher_provisioner_candidate_must_receive_independent_lab_and_auditor_pass": true,
+    "any_required_canonical_main_integration_of_the_exact_support_files_requires_a_separate_reviewed_fail_closed_transition": true,
+    "support_integration_must_complete_before_production_writer_key_generation_or_storage": true,
+    "after_any_support_integration_the_phase_b_ruleset_must_be_fresh_reverified_again_immediately_before_phase_c_mutation": true
+  },
+  "environment_secret_release_policy": {
+    "deployment_policy": "SELECTED_TAGS_ONLY",
+    "allowed_tag_exact": "multiverse-r1-stage1-activation-v1",
+    "allowed_branches": [],
+    "workflow_dispatch_ref_must_equal_exact_activation_tag": true,
+    "github_ref_must_equal": "refs/tags/multiverse-r1-stage1-activation-v1",
+    "activation_tag_is_created_only_in_later_phase_e": true,
+    "secret_must_not_be_reader_accessible_before_phase_e_activation_tag_exists": true,
+    "administrator_protection_rule_bypass_must_be_disabled_if_supported_for_the_repository_plan_and_visibility": true,
+    "any_branch_or_other_tag_deployment_must_fail_before_secret_access": true
   },
   "proposed_secret_lifecycle_ceiling": {
     "secret_type": "single production HMAC writer secret",
@@ -60,7 +81,7 @@
     "secret_runtime_state": false
   },
   "required_runtime_reader_boundary": {
-    "secret_reference_scope": "exact future approved Actions environment and exact reviewed job",
+    "secret_reference_scope": "exact future approved Actions environment and exact reviewed job at the fixed activation tag",
     "mapping_scope": "secret is mapped only to the single exact launcher/runtime step, not job-wide unless independent review proves equivalently narrow containment",
     "launcher_behavior": "consume secret only in memory, remove its environment entry as early as possible, verify exact SHA-256 commitment from the Fresh-verified activation receipt before constructing the production runtime CAS consumer, never print or serialize secret bytes",
     "no_other_workflow_or_step_reader": true,
@@ -68,8 +89,9 @@
   },
   "phase_c_mutation_preconditions_after_future_owner_approval": {
     "new_owner_gate_recorded": true,
-    "exact_phase_c_candidate_independent_lab_pass": true,
-    "exact_phase_c_candidate_independent_auditor_pass": true,
+    "exact_phase_c_support_candidate_independent_lab_pass": true,
+    "exact_phase_c_support_candidate_independent_auditor_pass": true,
+    "required_support_integration_completed_and_fresh_verified": true,
     "ruleset_id": 21227261,
     "ruleset_updated_at": "2026-08-23T06:39:18.750Z",
     "ruleset_full_semantics_and_no_bypass_must_be_fresh_reverified_by_approved_admin_read_channel_immediately_before_mutation": true,
@@ -77,7 +99,8 @@
     "runtime_branch_must_still_be_absent_before_phase_d": true
   },
   "owner_gate_scope_if_approved": {
-    "authorizes_preparation_and_independent_review_of_exact_nonsecret_implementation": true,
+    "authorizes_preparation_and_independent_review_of_exact_nonsecret_actions_environment_workflow_launcher_provisioner_implementation": true,
+    "may_conditionally_authorize_a_separately_reviewed_exact_support_integration_into_canonical_main": true,
     "may_conditionally_authorize_one_time_writer_key_provisioning_only_after_exact_phase_c_lab_and_auditor_pass_and_fresh_preconditions": true,
     "does_not_authorize_runtime_branch_or_sequence0_by_itself": true,
     "does_not_authorize_activation_receipt_or_tag_by_itself": true,
@@ -92,6 +115,7 @@
     "production_writer_key_generated_or_stored": false,
     "actions_environment_created_or_modified": false,
     "actions_workflow_created": false,
+    "canonical_main_updated_for_phase_c_support": false,
     "runtime_branch_or_sequence0_created": false,
     "activation_receipt_or_tag_created": false,
     "runtime_activated": false
