@@ -14,7 +14,7 @@ test "$(command -v python)" = "$TRUSTED_PY" || { command printf '%s\n' 'PHASE_C_
 command printf '%s\n' 'PHASE_C_RECOVERY_TRUSTED_PYTHON_BINDING_PASS'
 test -n "$RECOVERY_ROOT" && test -d "$RECOVERY_ROOT" && test ! -L "$RECOVERY_ROOT" || { command printf '%s\n' 'PHASE_C_RECOVERY_CONTROL_ROOT_INVALID_STOP_DELETE_CODESPACE' >&2; exit 88; }
 test -f "$V2_PATH" && test ! -L "$V2_PATH" && test ! -x "$V2_PATH" || { command printf '%s\n' 'PHASE_C_RECOVERY_V2_GATE_FILE_INVALID_STOP_DELETE_CODESPACE' >&2; exit 88; }
-test "$(command git -C "$RECOVERY_ROOT" hash-object --no-filters -- "$V2_PATH")" = "$V2_BLOB" || { command printf '%s\n' 'PHASE_C_RECOVERY_V2_GATE_BLOB_MISMATCH_STOP_DELETE_CODESPACE' >&2; exit 88; }
+test "$(command env -i PATH="/usr/local/bin:/usr/bin:/bin" HOME="/dev/shm/multiverse-r1-stage1-phase-c-recovery-control-home" LANG="C" LC_ALL="C" GIT_CONFIG_NOSYSTEM="1" GIT_CONFIG_SYSTEM="/dev/null" GIT_CONFIG_GLOBAL="/dev/null" GIT_ATTR_NOSYSTEM="1" GIT_NO_REPLACE_OBJECTS="1" GIT_TERMINAL_PROMPT="0" git -C "$RECOVERY_ROOT" hash-object --no-filters -- "$V2_PATH")" = "$V2_BLOB" || { command printf '%s\n' 'PHASE_C_RECOVERY_V2_GATE_BLOB_MISMATCH_STOP_DELETE_CODESPACE' >&2; exit 88; }
 test ! -e "$STEP1_PATH" && test ! -L "$STEP1_PATH" || { command printf '%s\n' 'PHASE_C_RECOVERY_STEP1_PATH_PREEXISTS_STOP_DELETE_CODESPACE' >&2; exit 88; }
 "$TRUSTED_PY" -B - "$V2_PATH" "$STEP1_PATH" "$STEP1_SHA256" "$STEP1_BYTES" <<'PY'
 import hashlib,json,os,stat,sys
@@ -25,6 +25,7 @@ gate=json.loads(gate_bytes.decode("utf-8"))
 assert gate["schema_version"]=="MULTIVERSE_R1_STAGE1_PHASE_C_PRODUCTION_EXECUTION_OWNER_GATE_CANDIDATE_v2"
 src=gate["literal_sequence"]["step1_define_external_verifier_bootstrap_and_preauth"]
 marker="phase_c_bootstrap\nPHASE_C_BOOTSTRAP_RC=$?"
+assert src.count(marker)==1
 i=src.index(marker)
 tail='''phase_c_bootstrap
 PHASE_C_BOOTSTRAP_RC=$?
