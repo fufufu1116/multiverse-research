@@ -27,7 +27,7 @@ src=gate["literal_sequence"]["step1_define_external_verifier_bootstrap_and_preau
 marker="phase_c_bootstrap\nPHASE_C_BOOTSTRAP_RC=$?"
 assert src.count(marker)==1
 i=src.index(marker)
-tail='''phase_c_bootstrap
+tail=r'''phase_c_bootstrap
 PHASE_C_BOOTSTRAP_RC=$?
 if [ "$PHASE_C_BOOTSTRAP_RC" -ne 0 ]; then command printf '%s\n' "PHASE_C_EXTERNAL_BOOTSTRAP_FAILED_RC=$PHASE_C_BOOTSTRAP_RC" >&2; exit 90; fi
 command printf '%s\n' 'PHASE_C_EXTERNAL_BOOTSTRAP_PASS'
