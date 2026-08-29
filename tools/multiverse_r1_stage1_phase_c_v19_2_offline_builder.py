@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""v19.2 review-only OFFLINE builder. No network imports/calls. Emits bytes only."""
+"""v19.3 review-only OFFLINE builder. No network imports/calls. Emits bytes only."""
 import argparse,base64,hashlib,json,re
 STEP1_LEN=4687; STEP1_SHA='bbb4dfc09f669dcba4b8a223b641e9fa81b7ccebda3d72b216d97e3177184b74'; B64_LEN=6252; B64_SHA='f7c353761edf26a0ddeb25a129a7b152a16cf587bf5b620b6421863aa25418b2'
 INIT_LEN=4291; INIT_SHA='3f21f89884757dab2728d4be376f19a2bbe4aa3396162434e1822ce2b36375d2'; TEMPLATE_LEN=382; TEMPLATE_SHA='7346430c248d0e9f3eed92c7fda4cb1abc342fb7a7a803467afcbfc3f899f15e'; ASSEMBLE_LEN=293; ASSEMBLE_SHA='909df243fbf0e31adcbc2de8018796ee2a4aa5fb1fb8bce58c3872b5ef74f871'; SOURCE_LEN=1716; SOURCE_SHA='cb34865720b2973b1226b8afa81074098c246c1308d0797da29490df6f251ecd'
@@ -7,7 +7,13 @@ CH=('6e1ca4a34325f5cc8169f8a48100c1f0db46ed5ed2b3ebc3e03b6a3ace8494bd','2cb9655f
 def sha(x):return hashlib.sha256(x).hexdigest()
 def text(p):return open(p,'r',encoding='utf-8').read()
 def body(p):
- x=json.loads(text(p)); return x['body'] if isinstance(x,dict) and isinstance(x.get('body'),str) else text(p)
+ s=text(p)
+ try:
+  x=json.loads(s)
+ except json.JSONDecodeError:
+  return s
+ if isinstance(x,dict) and isinstance(x.get('body'),str): return x['body']
+ return s
 def cands(s):return re.findall(r'`([A-Za-z0-9+/=]{40,})`',s)
 def exact(s,n,h):
  c=cands(s)
