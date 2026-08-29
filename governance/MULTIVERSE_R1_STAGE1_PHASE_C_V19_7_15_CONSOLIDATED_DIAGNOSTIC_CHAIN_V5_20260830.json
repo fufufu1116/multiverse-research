@@ -1,0 +1,83 @@
+{
+  "authority": {
+    "apply": false,
+    "live_codespace": false,
+    "live_step3": false,
+    "main_mutation": false,
+    "merge": false,
+    "oauth": false,
+    "production_mutation": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "step4": false,
+    "workflow_dispatch": false,
+    "writer_key_secret": false
+  },
+  "canonical_main": "74ea95e59ac0654e1a0c1f811a178b3eef7b073c",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "chain": [
+    "fresh dedicated Codespace",
+    "exact frozen pre-OAuth loader",
+    "OAuth/device-code secrecy",
+    "post-OAuth clean-shell reentry",
+    "trusted Python",
+    "Step2.6",
+    "exact effective scopes/admin gate",
+    "unchanged NONMUTATING Step3",
+    "STOP/delete"
+  ],
+  "intermediate_success_creates_authority": false,
+  "pre_oauth": {
+    "action_blob": "2d7bf6010509febcfbaaaa5e9b89d53c0c347205",
+    "action_bytes": 5588,
+    "action_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_ACTION_V5_20260830.txt",
+    "action_sha256": "ee71fd11219b97c3b54443638291f59fc4f1db7c6916a344c5be17e48f5b69e4",
+    "builder_blob": "300702ae9aa1a23cb7239779dd4202adc89fa0a8",
+    "builder_bytes": 1558,
+    "builder_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_BUILDER_V5_20260830.py",
+    "builder_sha256": "b326e3320256c24988edc76c89cff37cb8f312fc987971a75a3f55b70a445ec4",
+    "core_manual_reconstruction_prohibited": true,
+    "direct_copy_source": "EXACT_REVIEWED_REPOSITORY_ARTIFACT_ONLY",
+    "exact_stderr_marker_only_required": true,
+    "exhaustive_strict_prefix_required": true,
+    "final_lf": false,
+    "harness_blob": "cc108d0f92e76f50d1f38e980a57c1260eaf1c3e",
+    "harness_bytes": 9327,
+    "harness_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_HARNESS_V5_20260830.py",
+    "harness_sha256": "6e6132fad6c525ceabe114546dc2074a43ab4ad9b1505e278930252dfc08a480",
+    "hash_failure_markers": {
+      "command_failure": "PHASE_C_V19_7_15_FAIL_RUNNER_SHA256_COMMAND",
+      "mismatch": "PHASE_C_V19_7_15_FAIL_RUNNER_SHA256_MISMATCH"
+    },
+    "internal_lf_count": 0,
+    "runner_prelaunch_marker": "PHASE_C_V19_7_15_FAIL_RUNNER_LAUNCH",
+    "runner_runtime_marker": "PHASE_C_V19_7_15_FAIL_RUNNER_RETURN",
+    "shell_lines": 1,
+    "source_bound_negative_fixtures": true
+  },
+  "readiness": {
+    "core_revised_requirements": 5465211734,
+    "independent_lab_fix_required": 5465194791,
+    "independent_lab_readiness_pass": 5465218420,
+    "requirements_blob": "66662a3f27b947ca6cb2c7f2645c62f19ba7c5e9",
+    "requirements_head": "3ba0746eeac2f769a89e69ac5dfeb040084518c3",
+    "requirements_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_IMPLEMENTATION_READINESS_FIX_20260830.md",
+    "requirements_tree": "be55473c801c7032700482361ee81c6c4605297b"
+  },
+  "root_cause_status": "INDETERMINATE",
+  "runtime": "OFF",
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_CONSOLIDATED_DIAGNOSTIC_CHAIN_v5",
+  "status": "DRAFT_REVIEW_ONLY_NONSECRET_NOT_AUTHORIZED",
+  "step3": {
+    "apply": false,
+    "blob": "c9459751e4b50c70fde1b94413b9c441dfbfccc4",
+    "bytes": 792,
+    "diagnostic_blob": "4f2718f448fc8367775be16bcbb3b06cb59f6047",
+    "immutable_fetch_commit": "84ec02fcaf79f86e0757ad356d62fb6f9d31e42d",
+    "nonmutating_only": true,
+    "path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_14_STEP3_DIAGNOSTIC_TRANSPORT_ACTION_20260830.txt",
+    "sha256": "1ddda0b2588793a409aa1f32dff73687bfaab8ac1d2a7bb5604e615bb1e4dfe9",
+    "step4": false,
+    "trusted_python_flags": "-I -S -B"
+  }
+}
