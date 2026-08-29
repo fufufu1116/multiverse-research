@@ -1,59 +1,142 @@
 #!/usr/bin/env python3
 import json
 import subprocess
-import sys
 
 TRUSTED_PYTHON = "/usr/local/python/current/bin/python"
 EXEC_ROOT = "/dev/shm/multiverse-r1-stage1-phase-c-execution"
 PREFLIGHT = "tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"
 
-ALLOWED_PREFIXES = (
-    "PHASE_C_EXECUTION_",
-    "PHASE_C_PREFLIGHT_",
-    "PHASE_C_CODESPACES_",
-    "PHASE_C_GH_",
-    "PHASE_C_MEMORY_",
-    "PHASE_C_ACTIVE_SWAP_",
-    "PHASE_C_PROXY_CA_OR_DEBUG_",
-    "PHASE_C_GITHUB_",
-    "PHASE_C_USER_",
-    "PHASE_C_OAUTH_",
-    "PHASE_C_REPOSITORY_",
-    "PHASE_C_MAIN_",
-    "PHASE_C_RULESET_",
-    "PHASE_C_FENCE_",
-    "PHASE_C_API_",
-)
+EXACT_REASON_CATEGORY = {
+    "PHASE_C_EXECUTION_BOOTSTRAP_ROOT_UNRESOLVED": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_ROOT_NOT_EXTERNAL_BOOTSTRAP": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_ROOT_IDENTITY": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_ROOT_PERMISSIONS": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_ROOT_NOT_MEMORY_FILESYSTEM": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_MISSING": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_INVALID": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_UNREADABLE": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_UNRESOLVED": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_GITDIR_MISMATCH": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_REMOTE_SET_INVALID": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_BOOTSTRAP_ORIGIN_MISMATCH": "EXEC_ROOT",
+    "PHASE_C_EXECUTION_GIT_TOPLEVEL_UNAVAILABLE": "CHECKOUT",
+    "PHASE_C_EXECUTION_GIT_ROOT_UNRESOLVED": "CHECKOUT",
+    "PHASE_C_EXECUTION_GIT_ROOT_MISMATCH": "CHECKOUT",
+    "PHASE_C_EXECUTION_CHECKOUT_MUST_BE_DETACHED": "CHECKOUT",
+    "PHASE_C_EXECUTION_HEAD_STATE_UNREADABLE": "CHECKOUT",
+    "PHASE_C_EXECUTION_CHECKOUT_SHA_INVALID": "CHECKOUT",
+    "PHASE_C_EXECUTION_INDEX_FLAGS_UNREADABLE": "CHECKOUT",
+    "PHASE_C_EXECUTION_ASSUME_UNCHANGED_PROHIBITED": "CHECKOUT",
+    "PHASE_C_EXECUTION_SKIP_WORKTREE_PROHIBITED": "CHECKOUT",
+    "PHASE_C_EXECUTION_REVIEWED_PATH_INVALID": "CHECKOUT",
+    "PHASE_C_EXECUTION_REVIEWED_FILE_MISSING": "CHECKOUT",
+    "PHASE_C_EXECUTION_REVIEWED_FILE_IDENTITY": "CHECKOUT",
+    "PHASE_C_EXECUTION_REVIEWED_FILE_PERMISSIONS": "CHECKOUT",
+    "PHASE_C_EXECUTION_HEAD_TREE_READ_FAILED": "CHECKOUT",
+    "PHASE_C_EXECUTION_HEAD_TREE_ENTRY_MISSING_OR_AMBIGUOUS": "CHECKOUT",
+    "PHASE_C_EXECUTION_HEAD_TREE_ENTRY_INVALID": "CHECKOUT",
+    "PHASE_C_EXECUTION_HEAD_TREE_BLOB_INVALID": "CHECKOUT",
+    "PHASE_C_EXECUTION_REVIEWED_FILE_CHANGED_DURING_HASH": "CHECKOUT",
+    "PHASE_C_EXECUTION_REVIEWED_BYTES_MISMATCH": "CHECKOUT",
+    "PHASE_C_EXECUTION_REVIEWED_FILE_MODE_MISMATCH": "CHECKOUT",
+    "PHASE_C_EXECUTION_WORKTREE_STATUS_FAILED": "CHECKOUT",
+    "PHASE_C_EXECUTION_WORKTREE_NOT_CLEAN": "CHECKOUT",
+    "PHASE_C_CODESPACES_REQUIRED": "AUTH_ENV",
+    "PHASE_C_CODESPACE_NAME_REQUIRED": "AUTH_ENV",
+    "PHASE_C_GH_HOST_OVERRIDE_PROHIBITED": "AUTH_ENV",
+    "PHASE_C_GH_CONFIG_DIR_NOT_PINNED": "AUTH_ENV",
+    "PHASE_C_GH_CLI_REQUIRED": "AUTH_ENV",
+    "PHASE_C_GH_CONFIG_QUERY_FAILED": "AUTH_ENV",
+    "PHASE_C_GH_HTTP_UNIX_SOCKET_PROHIBITED_OR_AMBIGUOUS": "AUTH_ENV",
+    "PHASE_C_MEMORY_DIR_MISSING": "AUTH_ENV",
+    "PHASE_C_MEMORY_DIR_IDENTITY": "AUTH_ENV",
+    "PHASE_C_MEMORY_DIR_PERMISSIONS": "AUTH_ENV",
+    "PHASE_C_MEMORY_DIR_NOT_MEMORY_FILESYSTEM": "AUTH_ENV",
+    "PHASE_C_ACTIVE_SWAP_PROHIBITED": "AUTH_ENV",
+    "PHASE_C_GITHUB_API_NO_RESPONSE": "GITHUB_API",
+    "PHASE_C_API_RESPONSE_HEADERS_MISSING": "GITHUB_API",
+    "PHASE_C_API_HTTP_STATUS_MISSING": "GITHUB_API",
+    "PHASE_C_API_HTTP_STATUS_INVALID": "GITHUB_API",
+    "PHASE_C_API_JSON_INVALID": "GITHUB_API",
+    "PHASE_C_USER_API_FAILED": "IDENTITY_SCOPE",
+    "PHASE_C_GITHUB_LOGIN_MISMATCH": "IDENTITY_SCOPE",
+    "PHASE_C_OAUTH_SCOPE_HEADER_MISSING": "IDENTITY_SCOPE",
+    "PHASE_C_OAUTH_SCOPE_SET_NOT_EXACT": "IDENTITY_SCOPE",
+    "PHASE_C_REPOSITORY_ADMIN_REQUIRED": "IDENTITY_SCOPE",
+    "PHASE_C_MAIN_READ_FAILED": "MAIN",
+    "PHASE_C_MAIN_SHA_INVALID": "MAIN",
+    "PHASE_C_PREFLIGHT_MAIN_NOT_EXACT_EXECUTION_CHECKOUT": "MAIN",
+    "PHASE_C_RULESET_READ_FAILED": "RULESET",
+    "PHASE_C_RULESET_BINDING_DRIFT": "RULESET",
+    "PHASE_C_RULESET_IDENTITY_OR_ENFORCEMENT_DRIFT": "RULESET",
+    "PHASE_C_RULESET_BYPASS_DRIFT": "RULESET",
+    "PHASE_C_RULESET_SOURCE_DRIFT": "RULESET",
+    "PHASE_C_RULESET_CONDITIONS_DRIFT": "RULESET",
+    "PHASE_C_RULESET_REF_CONDITION_INVALID": "RULESET",
+    "PHASE_C_RULESET_INCLUDE_DRIFT": "RULESET",
+    "PHASE_C_RULESET_EXCLUDE_DRIFT": "RULESET",
+    "PHASE_C_RULESET_RULES_DRIFT": "RULESET",
+    "PHASE_C_PREFLIGHT_PROVISION_FENCE_ALREADY_EXISTS": "FENCE",
+    "PHASE_C_FENCE_READ_FAILED": "FENCE",
+    "PHASE_C_FENCE_SHA_INVALID": "FENCE",
+    "PHASE_C_PREFLIGHT_ENVIRONMENT_NOT_ABSENT_404": "ENVIRONMENT",
+    "PHASE_C_PREFLIGHT_PYNACL_REQUIRED_NO_NETWORK_INSTALL": "PYNACL",
+    "PHASE_C_PREFLIGHT_PYNACL_IMPORT_INVALID": "PYNACL",
+}
+
+DYNAMIC_REASON_CATEGORY = {
+    "PHASE_C_ENVIRONMENT_TOKEN_PROHIBITED": "AUTH_ENV",
+    "PHASE_C_PROXY_CA_OR_DEBUG_PROHIBITED": "AUTH_ENV",
+    "PHASE_C_API_DUPLICATE_HEADER": "GITHUB_API",
+    "PHASE_C_EXECUTION_GIT_CONTROL_ENV_PROHIBITED": "CHECKOUT",
+}
 
 
 def emit(label: str) -> None:
     print(label, flush=True)
 
 
-def safe_reason(value: object) -> str:
-    if not isinstance(value, str):
+def safe_category(value: object) -> str:
+    if not isinstance(value, str) or len(value) > 220 or any(ch in value for ch in "\r\n\t"):
         return "UNCLASSIFIED"
-    if len(value) > 220 or any(ch in value for ch in "\r\n\t"):
+    category = EXACT_REASON_CATEGORY.get(value)
+    if category is not None:
+        return category
+    base, sep, suffix = value.partition(":")
+    if not sep:
         return "UNCLASSIFIED"
-    if value.startswith(ALLOWED_PREFIXES):
-        return value
-    return "UNCLASSIFIED"
+    category = DYNAMIC_REASON_CATEGORY.get(base)
+    if category is None:
+        return "UNCLASSIFIED"
+    if not suffix or len(suffix) > 80:
+        return "UNCLASSIFIED"
+    if not all(ch.isalnum() or ch in "_-" for ch in suffix):
+        return "UNCLASSIFIED"
+    return category
 
 
 def main() -> int:
     emit("PHASE_C_V19_7_13_DIAGNOSTIC_START")
-    cp = subprocess.run(
-        [TRUSTED_PYTHON, "-B", PREFLIGHT],
-        cwd=EXEC_ROOT,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    try:
+        cp = subprocess.run(
+            [TRUSTED_PYTHON, "-B", PREFLIGHT],
+            cwd=EXEC_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except Exception:
+        emit("PHASE_C_V19_7_13_DIAGNOSTIC:SUBPROCESS_BOUNDARY_FAILURE")
+        return 92
+
     if cp.returncode == 0:
         try:
             data = json.loads(cp.stdout)
         except Exception:
             emit("PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_ZERO_JSON_INVALID")
+            return 92
+        if not isinstance(data, dict):
+            emit("PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_ZERO_TYPE_INVALID")
             return 92
         if data.get("status") != "PHASE_C_NONMUTATING_PREFLIGHT_PASS":
             emit("PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_ZERO_STATUS_INVALID")
@@ -70,20 +153,26 @@ def main() -> int:
     try:
         data = json.loads(cp.stdout)
     except Exception:
-        emit(f"PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_NONZERO_RC_{cp.returncode}:NO_JSON")
+        emit("PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_NONZERO_NO_JSON")
         return 92
-
+    if not isinstance(data, dict):
+        emit("PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_NONZERO_TYPE_INVALID")
+        return 92
     if data.get("status") != "DENIED_FAIL_CLOSED":
-        emit(f"PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_NONZERO_RC_{cp.returncode}:STATUS_UNEXPECTED")
+        emit("PHASE_C_V19_7_13_DIAGNOSTIC:PREFLIGHT_NONZERO_STATUS_UNEXPECTED")
         return 92
     if data.get("production_mutation_performed") is not False or data.get("runtime_activation_performed") is not False:
         emit("PHASE_C_V19_7_13_DIAGNOSTIC:NONMUTATION_FLAGS_INVALID")
         return 92
 
-    reason = safe_reason(data.get("reason"))
-    emit(f"PHASE_C_V19_7_13_DIAGNOSTIC:DENIED:{reason}")
+    emit("PHASE_C_V19_7_13_DIAGNOSTIC:DENIED_CATEGORY:" + safe_category(data.get("reason")))
     return 92
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        _rc = main()
+    except BaseException:
+        emit("PHASE_C_V19_7_13_DIAGNOSTIC:TOPLEVEL_BOUNDARY_FAILURE")
+        _rc = 92
+    raise SystemExit(_rc)
