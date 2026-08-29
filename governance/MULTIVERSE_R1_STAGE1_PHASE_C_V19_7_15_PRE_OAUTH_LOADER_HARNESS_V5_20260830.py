@@ -142,30 +142,37 @@ def main():
                'test "$1" = "$RUNNER_SHA256" || fail PHASE_C_V19_7_15_FAIL_RUNNER_SHA256_MISMATCH',
                'set -- wrong; RUNNER_SHA256=expected; ', fix)
 
+        pre = exact_boundary('/bin/bash --noprofile --norc -n "$ROOT/$RUNNER" >/dev/null 2>&1 || fail PHASE_C_V19_7_15_FAIL_RUNNER_LAUNCH')
+        start = exact_boundary('mark PHASE_C_V19_7_15_RUNNER_START')
+        runfrag = exact_boundary('if /bin/bash --noprofile --norc "$ROOT/$RUNNER"; then exit 0; else fail PHASE_C_V19_7_15_FAIL_RUNNER_RETURN; fi')
+
         expect("PHASE_C_V19_7_15_FAIL_RUNNER_LAUNCH",
                '/bin/bash --noprofile --norc -n "$ROOT/$RUNNER" >/dev/null 2>&1 || fail PHASE_C_V19_7_15_FAIL_RUNNER_LAUNCH',
                'ROOT="$FIX"; RUNNER=missing; ', fix)
 
+        # Option-B handoff: after RUNNER_START the historical runner owns its reviewed
+        # interactive output channel. Synthetic child output is therefore preserved;
+        # RETURN only proves child nonzero -> loader nonzero, no retry/fallthrough.
         bad = fix / "bad.sh"
-        bad.write_text("exit 7\n")
+        count = fix / "count"
+        bad.write_text('printf "%s\\n" SYNTHETIC_RUNNER_STDOUT\nprintf "%s\\n" SYNTHETIC_RUNNER_STDERR >&2\nprintf x >>"$FIX/count"\nexit 7\n')
         bad.chmod(0o644)
-        expect("PHASE_C_V19_7_15_FAIL_RUNNER_RETURN",
-               'if /bin/bash --noprofile --norc "$ROOT/$RUNNER"; then exit 0; else fail PHASE_C_V19_7_15_FAIL_RUNNER_RETURN; fi',
-               'ROOT="$FIX"; RUNNER=bad.sh; ', fix)
+        p = run('set -u; '+FAIL+MARK+'ROOT="$FIX"; RUNNER=bad.sh; '+pre+'; '+start+'; '+runfrag, fix)
+        assert p.returncode != 0
+        assert p.stdout == "PHASE_C_V19_7_15_RUNNER_START\nSYNTHETIC_RUNNER_STDOUT\n"
+        assert p.stderr == "SYNTHETIC_RUNNER_STDERR\nPHASE_C_V19_7_15_FAIL_RUNNER_RETURN\n"
+        assert count.read_text() == "x"
 
         ok = fix / "ok.sh"
         ok.write_text("exit 0\n")
         ok.chmod(0o644)
-        pre = exact_boundary('/bin/bash --noprofile --norc -n "$ROOT/$RUNNER" >/dev/null 2>&1 || fail PHASE_C_V19_7_15_FAIL_RUNNER_LAUNCH')
-        start = exact_boundary('mark PHASE_C_V19_7_15_RUNNER_START')
-        runfrag = exact_boundary('if /bin/bash --noprofile --norc "$ROOT/$RUNNER"; then exit 0; else fail PHASE_C_V19_7_15_FAIL_RUNNER_RETURN; fi')
         p = run('set -u; '+FAIL+MARK+'ROOT="$FIX"; RUNNER=ok.sh; '+pre+'; '+start+'; '+runfrag, fix)
         assert p.returncode == 0
         assert p.stdout == "PHASE_C_V19_7_15_RUNNER_START\n"
         assert p.stderr == ""
 
     assert "--apply" not in t and "Step4" not in t
-    print("PHASE_C_V19_7_15_PRE_OAUTH_HARNESS_V5_PASS")
+    print("PHASE_C_V19_7_15_PRE_OAUTH_HARNESS_V5_OPTION_B_PASS")
 
 if __name__ == "__main__":
     main()
