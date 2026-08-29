@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import subprocess
 
 TRUSTED_PYTHON = "/usr/local/python/current/bin/python"
@@ -93,7 +94,11 @@ DYNAMIC_REASON_CATEGORY = {
 
 
 def emit(label: str) -> None:
-    print(label, flush=True)
+    try:
+        data = (label + "\n").encode("ascii", "strict")
+        os.write(1, data)
+    except BaseException:
+        pass
 
 
 def safe_category(value: object) -> str:
