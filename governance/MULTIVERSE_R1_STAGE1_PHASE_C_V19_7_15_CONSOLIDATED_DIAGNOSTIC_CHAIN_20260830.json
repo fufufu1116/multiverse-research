@@ -17,7 +17,7 @@
   "canonical_repo": "fufufu1116/multiverse-research",
   "incident": {
     "independent_lab_failure_review": 5464827540,
-    "lab_v19_7_15_fix_required": 5465048996,
+    "latest_lab_fix_required": 5465128789,
     "live_failure_closure": 5464801802,
     "owner_receipts_consumed": [
       5464746910,
@@ -49,7 +49,6 @@
     "builder_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_BUILDER_20260830.py",
     "current_loader_action_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_ACTION_20260830.txt",
     "direct_copy_source": "EXACT_FROZEN_ACTION_FILE_ONLY",
-    "fail_closed_nonzero": true,
     "failure_markers": [
       "PHASE_C_V19_7_15_FAIL_PLATFORM_CODESPACES",
       "PHASE_C_V19_7_15_FAIL_FRESH_PATHS",
@@ -60,21 +59,25 @@
       "PHASE_C_V19_7_15_FAIL_REPO_STATE",
       "PHASE_C_V19_7_15_FAIL_RUNNER_TRUST",
       "PHASE_C_V19_7_15_FAIL_RUNNER_SHA256",
-      "PHASE_C_V19_7_15_FAIL_RUNNER_LAUNCH"
+      "PHASE_C_V19_7_15_FAIL_RUNNER_LAUNCH",
+      "PHASE_C_V19_7_15_FAIL_RUNNER_RETURN"
     ],
+    "git_raw_stderr_suppressed": true,
     "harness_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_HARNESS_20260830.py",
     "historical_recovery_head": "19a14cfd019cceab199571b5d03d4dd0ba5bcd22",
     "historical_recovery_runner_blob": "bc2b638b0db7fa8a0c23f0988cd9946f9e24b590",
     "historical_recovery_runner_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh",
     "historical_recovery_runner_sha256": "f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2",
-    "no_retry_loop": true,
-    "runner_child_nonzero_maps_to_fixed_marker": true,
+    "prelaunch_raw_stderr_suppressed": true,
     "runner_start_marker": "PHASE_C_V19_7_15_RUNNER_START",
-    "synthetic_harness_executes_source_bound_shell_predicates": true,
-    "synthetic_harness_python_marker_simulation_only": false
+    "runtime_runner_return_marker": "PHASE_C_V19_7_15_FAIL_RUNNER_RETURN",
+    "sha256_failure_explicitly_classified": true,
+    "synthetic_harness_source_bound": true,
+    "synthetic_negative_stderr_exact_marker_only": true,
+    "system_probe_raw_stderr_suppressed": true
   },
   "runtime": "OFF",
-  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_CONSOLIDATED_DIAGNOSTIC_CHAIN_v2",
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_CONSOLIDATED_DIAGNOSTIC_CHAIN_v4",
   "status": "DRAFT_REVIEW_ONLY_NONSECRET_NOT_AUTHORIZED",
   "step3": {
     "action_blob": "c9459751e4b50c70fde1b94413b9c441dfbfccc4",
