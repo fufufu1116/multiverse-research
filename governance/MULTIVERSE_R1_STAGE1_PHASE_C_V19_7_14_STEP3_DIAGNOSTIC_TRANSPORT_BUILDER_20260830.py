@@ -44,7 +44,7 @@ def build(gd: bytes) -> bytes:
         'CODESPACES="$CODESPACES" CODESPACE_NAME="$CODESPACE_NAME" '
         'GH_CONFIG_DIR="$GH_CONFIG_DIR" '
         + TRUSTED_PYTHON
-        + " -Bc"
+        + " -I -S -Bc"
         + shlex.quote(payload)
         + " 2>/dev/null; }"
     )
