@@ -1,0 +1,97 @@
+{
+  "authority": {
+    "apply": false,
+    "live_codespace": false,
+    "live_step3": false,
+    "main_mutation": false,
+    "merge": false,
+    "oauth": false,
+    "production_mutation": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "step4": false,
+    "workflow_dispatch": false,
+    "writer_key_secret": false
+  },
+  "canonical_main": "74ea95e59ac0654e1a0c1f811a178b3eef7b073c",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "incident": {
+    "independent_lab_failure_review": 5464827540,
+    "live_failure_closure": 5464801802,
+    "owner_receipts_consumed": [
+      5464746910,
+      5464773712
+    ],
+    "root_cause_status": "INDETERMINATE"
+  },
+  "oauth_device_flow": {
+    "command": "GH_BROWSER='/bin/true' gh auth login --hostname github.com --git-protocol https --web --scopes 'repo,read:org,gist'",
+    "connected_ack": "GITHUB_DEVICE_CONNECTED_NO_CODE_SHARED",
+    "device_code_ack": "DEVICE_CODE_DISPLAYED_NO_CODE_SHARED",
+    "device_code_must_not_be_shared_to_core_chat": true,
+    "explicit_no_required": true,
+    "first_party_github_only": true,
+    "git_credential_prompt_required": true
+  },
+  "post_oauth": {
+    "clean_shell_reentry_required": true,
+    "effective_scopes_exact": [
+      "gist",
+      "read:org",
+      "repo"
+    ],
+    "repo_admin_required": true,
+    "step2_6_required": true,
+    "trusted_python": "/usr/local/python/current/bin/python"
+  },
+  "pre_oauth": {
+    "builder_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_BUILDER_20260830.py",
+    "current_loader_action_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_ACTION_20260830.txt",
+    "direct_copy_source": "EXACT_FROZEN_ACTION_FILE_ONLY",
+    "failure_markers": [
+      "PHASE_C_V19_7_15_FAIL_PLATFORM_CODESPACES",
+      "PHASE_C_V19_7_15_FAIL_FRESH_PATHS",
+      "PHASE_C_V19_7_15_FAIL_TMPFS_TRUST",
+      "PHASE_C_V19_7_15_FAIL_GIT_CONTROL",
+      "PHASE_C_V19_7_15_FAIL_CANONICAL_MAIN",
+      "PHASE_C_V19_7_15_FAIL_RECOVERY_HEAD",
+      "PHASE_C_V19_7_15_FAIL_REPO_STATE",
+      "PHASE_C_V19_7_15_FAIL_RUNNER_TRUST",
+      "PHASE_C_V19_7_15_FAIL_RUNNER_SHA256"
+    ],
+    "harness_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_PRE_OAUTH_LOADER_HARNESS_20260830.py",
+    "historical_recovery_head": "19a14cfd019cceab199571b5d03d4dd0ba5bcd22",
+    "historical_recovery_runner_blob": "bc2b638b0db7fa8a0c23f0988cd9946f9e24b590",
+    "historical_recovery_runner_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh",
+    "historical_recovery_runner_sha256": "f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2",
+    "pass_markers": [
+      "PHASE_C_V19_7_15_PASS_PLATFORM_CODESPACES",
+      "PHASE_C_V19_7_15_PASS_FRESH_PATHS",
+      "PHASE_C_V19_7_15_PASS_TMPFS_TRUST",
+      "PHASE_C_V19_7_15_PASS_GIT_CONTROL",
+      "PHASE_C_V19_7_15_PASS_CANONICAL_MAIN",
+      "PHASE_C_V19_7_15_PASS_RECOVERY_HEAD",
+      "PHASE_C_V19_7_15_PASS_REPO_STATE",
+      "PHASE_C_V19_7_15_PASS_RUNNER_TRUST",
+      "PHASE_C_V19_7_15_PASS_RUNNER_SHA256"
+    ],
+    "runner_start_marker": "PHASE_C_V19_7_15_RUNNER_START"
+  },
+  "runtime": "OFF",
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_15_CONSOLIDATED_DIAGNOSTIC_CHAIN_v1",
+  "status": "DRAFT_REVIEW_ONLY_NONSECRET_NOT_AUTHORIZED",
+  "step3": {
+    "action_blob": "c9459751e4b50c70fde1b94413b9c441dfbfccc4",
+    "action_bytes": 792,
+    "action_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_14_STEP3_DIAGNOSTIC_TRANSPORT_ACTION_20260830.txt",
+    "action_sha256": "1ddda0b2588793a409aa1f32dff73687bfaab8ac1d2a7bb5604e615bb1e4dfe9",
+    "apply": false,
+    "diagnostic_blob": "4f2718f448fc8367775be16bcbb3b06cb59f6047",
+    "exact_reviewed_head": "4ff69ca9a556a6c0928ae3ed576855945d746447",
+    "exact_reviewed_tree": "a901467827b62ba44bdd84c8c9b225e1fbe3a92c",
+    "immutable_fetch_commit": "84ec02fcaf79f86e0757ad356d62fb6f9d31e42d",
+    "nonmutating_only": true,
+    "step4": false,
+    "trusted_python_flags": "-I -S -B"
+  }
+}
