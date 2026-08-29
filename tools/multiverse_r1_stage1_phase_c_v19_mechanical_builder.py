@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Review-only v19 mechanical builder. Emits bytes only; never executes them."""
+"""Review-only v19.1 mechanical builder. Emits bytes only; never executes them."""
 import base64,hashlib,json,re,urllib.request
 INDEX=5420861580; PART_A=5420849129; PART_B=5420856829
 API='https://api.github.com/repos/fufufu1116/multiverse-research/issues/comments/{}'
@@ -11,11 +11,6 @@ def body(n):
  r=urllib.request.Request(API.format(n),headers={'Accept':'application/vnd.github+json','User-Agent':'multiverse-v19-builder'}); return json.load(urllib.request.urlopen(r,timeout=20))['body']
 def b64_candidates(text): return re.findall(r'`([A-Za-z0-9+/=]{40,})`',text)
 def find_exact(text,n,h):
- for s in b64_candidates(text):
-  try: x=base64.b64decode(s,validate=True)
-  except Exception: continue
-  if len(x)==n and sha(x)==h: return x.decode()
- # Also try every ordered concatenation of adjacent fenced base64 pieces; manifests split long actions.
  c=b64_candidates(text)
  for i in range(len(c)):
   z=''
@@ -47,17 +42,20 @@ command printf '%s\\n' 'PHASE_C_EXTERNAL_BOOTSTRAP_AND_PREAUTH_PASS'
  return x
 def main():
  a,b=body(PART_A),body(PART_B); init=find_exact(a,INIT_LEN,INIT_SHA); template=find_exact(a,TEMPLATE_LEN,TEMPLATE_SHA); assemble=find_exact(b,ASSEMBLE_LEN,ASSEMBLE_SHA); source=find_exact(b,SOURCE_LEN,SOURCE_SHA)
- sb=base64.b64encode(step1()).decode();
+ expected={'__CHUNK__':1,'__INDEX__':4,'__EXPECTED_LENGTH__':1,'__EXPECTED_SHA256__':1}
+ for k,n in expected.items():
+  if template.count(k)!=n: raise SystemExit('placeholder cardinality mismatch '+k)
+ sb=base64.b64encode(step1()).decode()
  if len(sb)!=B64_LEN or sha(sb.encode())!=B64_SHA: raise SystemExit('base64 invariant mismatch')
- actions=[init]
- chunks=[sb[i:i+512] for i in range(0,len(sb),512)]
+ actions=[init]; chunks=[sb[i:i+512] for i in range(0,len(sb),512)]
+ if len(chunks)!=13: raise SystemExit('chunk count mismatch')
  for n,c in enumerate(chunks):
   ln=108 if n==12 else 512
   if len(c)!=ln or sha(c.encode())!=CHUNK_HASHES[n]: raise SystemExit('chunk invariant mismatch')
-  act=template
-  for k,v in {'__CHUNK__':c,'__INDEX__':f'{n:02d}','__EXPECTED_LENGTH__':str(ln),'__EXPECTED_SHA256__':CHUNK_HASHES[n]}.items():
-   if act.count(k)!=1: raise SystemExit('placeholder mismatch '+k)
-   act=act.replace(k,v)
+  act=template.replace('__CHUNK__',c).replace('__INDEX__',f'{n:02d}').replace('__EXPECTED_LENGTH__',str(ln)).replace('__EXPECTED_SHA256__',CHUNK_HASHES[n])
+  if any(k in act for k in expected): raise SystemExit('unreplaced placeholder')
+  expected_len=453 if n==12 else 857
+  if len(act.encode())!=expected_len: raise SystemExit('concrete chunk action length mismatch')
   actions.append(act)
  actions += [assemble,source]
  out='; '.join('eval "$(printf %s '+base64.b64encode(x.encode()).decode()+' | base64 -d)" || exit $?' for x in actions)
