@@ -4,6 +4,7 @@ import hashlib
 import pathlib
 import subprocess
 import sys
+import tempfile
 from unittest import mock
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -15,6 +16,7 @@ EXPECTED_GD_BLOB = "4f2718f448fc8367775be16bcbb3b06cb59f6047"
 EXPECTED_FETCH_COMMIT = "84ec02fcaf79f86e0757ad356d62fb6f9d31e42d"
 EXPECTED_CURL = "/usr/bin/curl"
 EXPECTED_PYTHON = "/usr/local/python/current/bin/python"
+EXPECTED_PYTHON_FLAGS = "-I -S -Bc"
 
 
 class ExitCalled(BaseException):
@@ -38,7 +40,7 @@ def git_blob(data: bytes) -> str:
 
 def extract_payload(action: bytes) -> str:
     text = action.decode("ascii")
-    marker = EXPECTED_PYTHON + " -Bc'"
+    marker = EXPECTED_PYTHON + " " + EXPECTED_PYTHON_FLAGS + "'"
     start = text.index(marker) + len(marker)
     end = text.index("' 2>/dev/null; }", start)
     payload = text[start:end]
@@ -80,6 +82,59 @@ def run_payload(payload: str, fetch_result=None, fetch_exc=None, sha1_value=None
             p.stop()
 
 
+def check_actual_startup_boundary(action: bytes) -> None:
+    exact = (
+        b"/usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin "
+        b'CODESPACES="$CODESPACES" CODESPACE_NAME="$CODESPACE_NAME" '
+        b'GH_CONFIG_DIR="$GH_CONFIG_DIR" '
+        + EXPECTED_PYTHON.encode("ascii")
+        + b" "
+        + EXPECTED_PYTHON_FLAGS.encode("ascii")
+    )
+    assert exact in action
+
+    probe = (
+        "import sys,os,subprocess,hashlib;"
+        "assert sys.flags.isolated==1;"
+        "assert sys.flags.no_user_site==1;"
+        "assert sys.flags.ignore_environment==1;"
+        "assert getattr(sys.flags,'safe_path',False);"
+        "assert 'site' not in sys.modules;"
+        "cwd=os.getcwd();"
+        "assert cwd not in sys.path and '' not in sys.path;"
+        "assert not subprocess.__file__.startswith(cwd);"
+        "assert not hashlib.__file__.startswith(cwd);"
+        "print('TRUSTED_PYTHON_STARTUP_IMPORT_ISOLATION_PASS')"
+    )
+    with tempfile.TemporaryDirectory() as td:
+        hostile = pathlib.Path(td)
+        for name in ("subprocess.py", "hashlib.py", "sitecustomize.py", "usercustomize.py"):
+            (hostile / name).write_text("raise SystemExit(71)\n", encoding="utf-8")
+        cp = subprocess.run(
+            [
+                "/usr/bin/env",
+                "-i",
+                "PATH=/usr/local/bin:/usr/bin:/bin",
+                "CODESPACES=1",
+                "CODESPACE_NAME=v19-7-14-harness",
+                "GH_CONFIG_DIR=/dev/shm/v19-7-14-harness",
+                EXPECTED_PYTHON,
+                "-I",
+                "-S",
+                "-Bc",
+                probe,
+            ],
+            cwd=td,
+            env={"PYTHONPATH": td, "PYTHONUSERBASE": td, "HOME": td},
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+    assert cp.returncode == 0, cp.stderr
+    assert cp.stdout == b"TRUSTED_PYTHON_STARTUP_IMPORT_ISOLATION_PASS\n"
+    assert cp.stderr == b""
+
+
 def main() -> int:
     action = ACTION_PATH.read_bytes()
     gd = GD_PATH.read_bytes()
@@ -89,6 +144,7 @@ def main() -> int:
     assert git_blob(gd) == EXPECTED_GD_BLOB
     assert EXPECTED_CURL.encode() in action
     assert EXPECTED_PYTHON.encode() in action
+    assert (" " + EXPECTED_PYTHON_FLAGS).encode() in action
     assert EXPECTED_FETCH_COMMIT.encode() in action
     assert b"raw.githubusercontent.com" in action
     assert b"/usr/bin/env -i" in action
@@ -128,6 +184,7 @@ def main() -> int:
     assert gen2 == action
     assert gen1 == gen2
 
+    check_actual_startup_boundary(action)
     payload = extract_payload(action)
 
     exc, compiled = run_payload(payload, fetch_result=gd)
@@ -165,7 +222,7 @@ def main() -> int:
 
     fail_shape = (
         '{ exec /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin '
-        '/definitely/missing-v19-7-14-python -Bc"pass" 2>/dev/null; }'
+        '/definitely/missing-v19-7-14-python -I -S -Bc"pass" 2>/dev/null; }'
     )
     started = subprocess.run(
         ["/bin/bash", "-c", fail_shape],
@@ -183,6 +240,7 @@ def main() -> int:
     print(f"STRICT_PREFIXES_TESTED={len(action)-1}")
     print("STRICT_PREFIX_RESULT=ALL_FAIL_PARSE")
     print("DETERMINISTIC_SECOND_GENERATION=PASS")
+    print("TRUSTED_PYTHON_STARTUP_IMPORT_ISOLATION=PASS")
     print("FAULT_IDENTITY_BEFORE_EXECUTION=PASS")
     print("NO_LIVE_NETWORK_OR_PRODUCTION_MUTATION=TRUE")
     return 0
