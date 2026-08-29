@@ -36,15 +36,15 @@ phase_c_verify() (
   done
   test -z "$(git_clean -C "$EXEC_ROOT" status --porcelain=v1 --untracked-files=all)"
 )
-test -x '/usr/local/python/current/bin/python' || { command printf '%s\n' 'PHASE_C_POST_OAUTH_TRUSTED_PYTHON_BINARY_MISSING_STOP_DELETE_CODESPACE' >&2; return 93; }
-test "$(command -v python)" = '/usr/local/python/current/bin/python' || { command printf '%s\n' 'PHASE_C_POST_OAUTH_TRUSTED_PYTHON_RESOLUTION_MISMATCH_STOP_DELETE_CODESPACE' >&2; return 93; }
+test -x '/usr/local/python/current/bin/python' || { command printf '%s\n' 'PHASE_C_POST_OAUTH_TRUSTED_PYTHON_BINARY_MISSING_STOP_DELETE_CODESPACE' >&2; exit 93; }
+test "$(command -v python)" = '/usr/local/python/current/bin/python' || { command printf '%s\n' 'PHASE_C_POST_OAUTH_TRUSTED_PYTHON_RESOLUTION_MISMATCH_STOP_DELETE_CODESPACE' >&2; exit 93; }
 for p in "$HOME" "$GH_CONFIG_DIR" "$EXEC_ROOT"; do
-  test -d "$p" && test ! -L "$p" && test "$(command stat -c '%a' "$p")" = '700' && test "$(command stat -c '%u' "$p")" = "$(command id -u)" || { command printf '%s\n' 'PHASE_C_POST_OAUTH_MEMORY_ROOT_TRUST_FAILED_STOP_DELETE_CODESPACE' >&2; return 93; }
-  fs="$(command stat -f -c '%T' "$p")"; { test "$fs" = 'tmpfs' || test "$fs" = 'ramfs'; } || { command printf '%s\n' 'PHASE_C_POST_OAUTH_MEMORY_ROOT_NOT_RAMFS_STOP_DELETE_CODESPACE' >&2; return 93; }
+  test -d "$p" && test ! -L "$p" && test "$(command stat -c '%a' "$p")" = '700' && test "$(command stat -c '%u' "$p")" = "$(command id -u)" || { command printf '%s\n' 'PHASE_C_POST_OAUTH_MEMORY_ROOT_TRUST_FAILED_STOP_DELETE_CODESPACE' >&2; exit 93; }
+  fs="$(command stat -f -c '%T' "$p")"; { test "$fs" = 'tmpfs' || test "$fs" = 'ramfs'; } || { command printf '%s\n' 'PHASE_C_POST_OAUTH_MEMORY_ROOT_NOT_RAMFS_STOP_DELETE_CODESPACE' >&2; exit 93; }
 done
-test "$(command awk 'END{print NR}' /proc/swaps)" = '1' || { command printf '%s\n' 'PHASE_C_POST_OAUTH_SWAP_PRESENT_STOP_DELETE_CODESPACE' >&2; return 93; }
+test "$(command awk 'END{print NR}' /proc/swaps)" = '1' || { command printf '%s\n' 'PHASE_C_POST_OAUTH_SWAP_PRESENT_STOP_DELETE_CODESPACE' >&2; exit 93; }
 phase_c_verify
 rc=$?
-if [ "$rc" -ne 0 ]; then command printf '%s\n' "PHASE_C_POST_OAUTH_EXTERNAL_REVERIFY_FAILED_RC=$rc" >&2; unset rc; return 93; fi
+if [ "$rc" -ne 0 ]; then command printf '%s\n' "PHASE_C_POST_OAUTH_EXTERNAL_REVERIFY_FAILED_RC=$rc" >&2; unset rc; exit 93; fi
 unset rc
 command printf '%s\n' 'PHASE_C_POST_OAUTH_CLEAN_SHELL_REENTRY_PASS'
