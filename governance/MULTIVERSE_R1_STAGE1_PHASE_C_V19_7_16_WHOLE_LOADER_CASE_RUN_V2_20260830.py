@@ -11,8 +11,8 @@ RUNNER='governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RU
 RUNNER_BLOB='bc2b638b0db7fa8a0c23f0988cd9946f9e24b590'
 RUNNER_SHA='f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2'
 ACTION_BLOB='396c5f99c8837b4bc946a76effe1e19cd391b7d0'
-GIT_SHIM_BLOB='5c1f12ec12d7c174a9c009e6ef4a0f0ae5bf81c1'
-SHA_SHIM_BLOB='1e0ed6c5b747cd9da5de7eafca68b4a1c6df4b15'
+GIT_SHIM_BLOB='3e1f5c8ee175c996aa24ccd4fe10db4640c650cc'
+SHA_SHIM_BLOB='d6fbf5d85301446e1086295487b168189515e8b2'
 def blob(b): return hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
 def die(x): raise SystemExit(x)
 def git_bytes(*args):
