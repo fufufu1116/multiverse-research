@@ -1,0 +1,24 @@
+{
+  "schema":"MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EXACT_REVIEW_UNIT_V8",
+  "status":"FROZEN_NONCANONICAL_INDEPENDENT_LAB_EXACT_CANDIDATE_REVIEW_REQUIRED",
+  "source_v7":{"head":"a93cd40872d748bfd42592e1c47a46de7dfd732f","tree":"b57cbd08ac32eb57dd170bf09be089bab73bfba2","manifest":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EXACT_REVIEW_UNIT_MANIFEST_V7_20260830.json","manifest_blob":"2d9f711868dcde3d3ad7a3f5ec6d670a218acf31","lab_fix_required_comment":5467391578},
+  "canonical_main_at_freeze":{"main":"5c1403c1f5aabb80d29e8c868440aede8888ce61","tree":"3d47741b4863411e5c36cb4c28925ac455ab6441"},
+  "immutable_runner":{"commit":"19a14cfd019cceab199571b5d03d4dd0ba5bcd22","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh","blob":"bc2b638b0db7fa8a0c23f0988cd9946f9e24b590","bytes":5301,"sha256":"370c95f4fa7ec5e390d5fc994fa6954658001c5cfaf524aa96fac1c079be693c"},
+  "corrected_loader":{"mechanism":"mechanically generated from exact V6 source loader by V7 correction builder","builder_blob":"a21aee9a91bc23d17dbe1fa44e4794b315d17c0c","bytes":6382,"git_blob":"01c34b393ae272f9e026fc734560170c076e2fc2","sha256":"ce4b53b6b4ccd18fbaeb1c57108d0d2fff6b85deca1c43514648f4f523ba19be","diff_from_v6":"exactly one 64-byte ASCII runner SHA-256 literal","one_line_no_final_lf":true},
+  "v8_changed_member":{"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_POST_TRUST_HARNESS_V3_20260830.py","blob":"da0960cc0eea486fb6d411c6bf7401aceaadb6bb","role":"114/success post-trust harness with valid Python extraction anchors and reconciled frozen digests"},
+  "v8_post_trust_expected_digests":{"boundary_template_sha256":"6e5d69ada53d1a7903aa3aa25213540f18cc67ca794aebd219d07b14712a2817","fail_mark_sha256":"407b2274a6bacb29fb9f9418ce18864058767256b8292c5c914263aec13814cf","generated_script_sha256":"8ffd84b3004be6528a81015a3ddcc69ee3dffaaf2dc19b3d7d5a52e48893c0e0"},
+  "unchanged_v7_proof_members":[
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_RUNNER_SHA256_CORRECTION_BUILDER_V1_20260830.py","blob":"a21aee9a91bc23d17dbe1fa44e4794b315d17c0c"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_RUNNER_SHA256_CORRECTION_PROOF_V1_20260830.py","blob":"a555640e95e8ca2dafde9224971fb8acc493a6e8"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_MATRIX_EVIDENCE_V3_20260830.json","blob":"d417151cb89debd9ff9538112db607eb6a72d544"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_CASE_RUN_V3_20260830.py","blob":"1c78fd6b99546e0aa3d353b14e54bb4d16272ed7"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_HARNESS_V3_20260830.py","blob":"553855f30e7c6ac4c08ff894f8f0ad2771a5f2d1"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_EXACT_BYTE_AND_DEPENDENCY_PROOF_V3_20260830.py","blob":"259349ed7a05c4ef469a74e896aa0d8be4ed8dad"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EVIDENCE_GENERATOR_V2_20260830.py","blob":"eaf12bbefab35c290691ded40a7d2b11b20bdfe1"}
+  ],
+  "remediation_contract":{"blocker_A":"V7 post-trust harness Python SyntaxError","fix_A":"replace shell-quote-spliced FAIL_END literal with quote-safe mechanical region anchors: FAIL_START through literal ORIGIN boundary","blocker_B":"V7 fail/mark and generated-script expected digests stale","fix_B":"freeze independently measured exact corrected-loader extraction digests from Lab V7 result","all_other_v7_behavior_unchanged":true},
+  "required_independent_revalidation":["Python-parse and execute exact V8 post-trust harness","independently re-extract fail/mark region from exact mechanically corrected loader and confirm SHA-256 407b2274a6bacb29fb9f9418ce18864058767256b8292c5c914263aec13814cf","independently confirm boundary template SHA-256 6e5d69ada53d1a7903aa3aa25213540f18cc67ca794aebd219d07b14712a2817","independently construct generated script and confirm SHA-256 8ffd84b3004be6528a81015a3ddcc69ee3dffaaf2dc19b3d7d5a52e48893c0e0","execute success and nonzero-child 114 cases and verify child exactly once, no retry, transcript preservation and RETURN mapping","confirm corrected loader identity and one-literal SHA correction remain unchanged","confirm no regression in 103..112, immutable 113, 115, dependency collision, Step3, trust nonweakening, evidence-class separation and authority boundaries"],
+  "evidence_classes":{"103_112":"BYTE_IDENTICAL_COMPLETE_LOADER using mechanically generated corrected loader bytes","113_positive":"IMMUTABLE_RECOVERY_HEAD_STATIC_MECHANICAL","114_success":"GENERATED_POST_TRUST_BOUNDARY_EQUIVALENT","115":"SYNTHETIC_FALLBACK_EQUIVALENT","non_substitutable":true},
+  "authority":{"auditor":false,"live":false,"codespace":false,"oauth":false,"step4":false,"apply":false,"production_mutation":false,"merge":false,"workflow_dispatch":false,"runtime":false},
+  "runtime":"OFF"
+}
