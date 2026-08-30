@@ -1,13 +1,21 @@
-# v19.7.16 Whole-Loader Fixture Protocol v2
+# v19.7.16 Revision-C Integrated Fixture Protocol v3
 
 Status: REVIEW-ONLY / NONLIVE / NONCANONICAL.
 
-Independent Lab must execute the complete exact loader blob `396c5f99c8837b4bc946a76effe1e19cd391b7d0` from its first byte in an isolated Linux namespace. The loader bytes MUST NOT be edited, split, copied into fragments, or have fail()/gate control flow replaced.
+The exact production loader blob remains `396c5f99c8837b4bc946a76effe1e19cd391b7d0` and is never weakened or rebound for proof injectability.
 
-Scenario selection MUST NOT depend on an environment variable surviving the loader's `/usr/bin/env -i` boundaries. Instead, the isolated namespace supplies a scenario-specific filesystem image before loader entry. Each image controls only external observations made by the unchanged loader: Codespaces marker visibility, pre-existing paths, `/dev/shm` trust properties, Git command results/repository objects, sha256sum behavior, runner parseability, and a synthetic runner boundary. The selected scenario is therefore encoded in immutable fixture filesystem bytes/metadata, not runtime environment propagation.
+## 103..112 — BYTE_IDENTICAL_COMPLETE_LOADER
+Independent Lab must execute the unchanged complete exact loader from first byte in an isolated Linux namespace. Scenario selection must not depend on variables surviving `/usr/bin/env -i`. Frozen filesystem/tool fixtures may control only external observations made by the unchanged loader. For each case 103..112, record exact ordered PASS-prefix stdout, exact fixed stderr marker, outer status, zero child invocation, zero retry/fallthrough, and zero dynamic prehandoff leakage.
 
-For each 103..113 case, execute the unchanged complete loader and record exact stdout lines, stderr lines, outer status, child invocation count and retry count. For 114, synthetic child must run once, emit exactly `SYNTHETIC_CHILD_STDOUT` and `SYNTHETIC_CHILD_STDERR`, return nonzero, and outer loader must emit RUNNER_RETURN and return 114. For success, child runs once and returns zero. Fallback 115 must be tested through a review-only complete-source equivalent whose only difference is one unknown marker at a real fail callsite; this case must be explicitly identified as fallback synthetic evidence and must never be represented as byte-identical production loader execution.
+## 113 production-positive — immutable recovery-head static/mechanical proof
+Production-positive 113 dependency proof is not a synthetic complete-loader failure injection. It must use Git object access to exact recovery head `19a14cfd019cceab199571b5d03d4dd0ba5bcd22`, exact runner path `governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh`, exact blob `bc2b638b0db7fa8a0c23f0988cd9946f9e24b590`, exact SHA-256 `f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2`, and Bash `-n` over those immutable recovered bytes. Any negative 113 fixture is NON-BYTE-IDENTICAL control-flow evidence only and cannot substitute for production-positive proof.
 
-The exact expected transcript contract is frozen in `MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_MATRIX_EVIDENCE_V2_20260830.json`; the harness mechanically validates it. Independent Lab remains responsible for reproducing the cases rather than trusting Core-authored expected records.
+## 114 / harmless success — GENERATED_POST_TRUST_BOUNDARY_EQUIVALENT
+These cases begin only after immutable runner identity/trust has been independently proven. The fixture must mechanically extract the contiguous post-trust statement region from the exact frozen loader and mechanically extract every proof-relevant loader semantic dependency used by that region, including `fail()` marker-to-RC/termination semantics and `mark()` output semantics. Hand-authored reimplementation of those semantics is forbidden. Only child behavior may be substituted. Required checks: RUNNER_START once; child once; child stdout/stderr preserved; nonzero child -> exact RETURN marker and outer114; zero child -> no RETURN marker and outer0; no retry/fallthrough.
 
-No network, OAuth/device flow, production mutation, Step4, `--apply`, writer secret, merge, workflow dispatch, or Runtime operation is permitted by this protocol. Runtime OFF.
+## fallback115 — SYNTHETIC_FALLBACK_EQUIVALENT
+Fallback115 is separately frozen source-equivalent dispatcher evidence and must never be promoted to byte-identical production execution evidence.
+
+Evidence classes are non-interchangeable. The Revision-C integrated matrix contract is `MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_MATRIX_EVIDENCE_V2_20260830.json`; it contains only 103..112 byte-identical cases plus explicit references/classes for 113, 114/success, and fallback115.
+
+No network, OAuth/device flow, production mutation, Step4, `--apply`, writer secret, merge, workflow dispatch, or Runtime operation is permitted. Runtime OFF.
