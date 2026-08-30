@@ -4,7 +4,7 @@
   "cases":{
     "103":{"inject":"unset Codespaces inputs before exact loader entry"},
     "104":{"inject":"precreate exact ROOT path in scenario namespace"},
-    "105":{"inject":"make /dev/shm non-tmpfs or deny required mkdir/stat trust"},
+    "105":{"inject":"mount frozen stat shim at /usr/local/bin/stat; exact stat -f -c %T query returns reviewed non-tmpfs value ext2/ext3 while /dev/shm remains tmpfs"},
     "106":{"inject":"git clone shim returns nonzero"},
     "107":{"inject":"fixture repository origin/main resolves noncanonical commit/tree"},
     "108":{"inject":"fixture repository omits recovery head or checkout fails"},
