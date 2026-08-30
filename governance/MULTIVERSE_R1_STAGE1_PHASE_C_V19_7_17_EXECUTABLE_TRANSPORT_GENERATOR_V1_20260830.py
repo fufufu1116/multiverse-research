@@ -17,17 +17,21 @@ out=src.replace(anchor,b"tail=r\'\'\'phase_c_bootstrap",1)
 if len(out)!=5302 or hashlib.sha256(out).hexdigest()!="248dcde06d07902543d480462ebab732d034771820f407fe2cd05fcae54d119e":
     raise SystemExit(113)
 fd=os.memfd_create("mv-r1-stage1-phase-c-v19-7-17-runner", os.MFD_CLOEXEC|os.MFD_ALLOW_SEALING)
-os.write(fd,out)
+if os.write(fd,out)!=len(out):
+    raise SystemExit(113)
 os.lseek(fd,0,os.SEEK_SET)
-fcntl.fcntl(fd, fcntl.F_ADD_SEALS, fcntl.F_SEAL_SEAL|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_GROW|fcntl.F_SEAL_WRITE)
+required_seals=fcntl.F_SEAL_SEAL|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_GROW|fcntl.F_SEAL_WRITE
+fcntl.fcntl(fd,fcntl.F_ADD_SEALS,required_seals)
+if fcntl.fcntl(fd,fcntl.F_GET_SEALS)!=required_seals:
+    raise SystemExit(113)
 os.set_inheritable(fd,True)
 p=f"/proc/self/fd/{fd}"
-check=subprocess.run(["/usr/bin/git","hash-object","--no-filters","--stdin"],input=out,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,check=False)
-if check.returncode or check.stdout.strip()!=b"fe51117fd3fcaa41537b5f92c84841716af27f74":
-    raise SystemExit(113)
 with open(p,"rb",buffering=0) as r:
     snap=r.read()
 if len(snap)!=5302 or hashlib.sha256(snap).hexdigest()!="248dcde06d07902543d480462ebab732d034771820f407fe2cd05fcae54d119e":
+    raise SystemExit(113)
+check=subprocess.run(["/usr/bin/git","hash-object","--no-filters","--stdin"],input=snap,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,check=False)
+if check.returncode or check.stdout.strip()!=b"fe51117fd3fcaa41537b5f92c84841716af27f74":
     raise SystemExit(113)
 parse=subprocess.run(["/bin/bash","--noprofile","--norc","-n",p],pass_fds=(fd,),check=False)
 if parse.returncode:
