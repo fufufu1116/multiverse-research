@@ -1,0 +1,73 @@
+{
+  "schema":"MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_18_EXECUTABLE_TRANSPORT_V1",
+  "status":"FROZEN_NONCANONICAL_EXACT_EXECUTABLE_REMEDIATION_LAB_REVIEW_REQUIRED",
+  "root_cause_lab_pass_comment":5468147087,
+  "live_closure_comment":5468078746,
+  "base_review_unit":{
+    "branch":"agent/r1-stage1-phase-c-v19-7-17-executable-transport-v2",
+    "head":"a2ac487052e573093f705f32e59655f23e839725",
+    "tree":"aeff0dd450e3ffc57bf9a77c63db91a6645a9bb8",
+    "generator_blob":"bebf495c718555ec121eccba133eec86b165687a",
+    "generated_transport_bytes":7945,
+    "generated_transport_git_blob":"882ef767bfd816348f07e183258fcaa0490a6e6c",
+    "generated_transport_sha256":"67c3e1024795d8bf65024d309fd19e5903d0105f5e3b57e48764c028182c6d2d"
+  },
+  "quote_protection_filter":{
+    "path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_18_TRANSPORT_QUOTE_PROTECTION_FILTER_V1_20260830.py",
+    "bytes":1593,
+    "git_blob":"7cf11ffe4fe5bba1b4a4e376dfc3d7a6f5ebfc65",
+    "sha256":"9c4634e0aff1f640eff8d96ac608ed4f3b6c7c7a45298de014be7d1f187235a2",
+    "input_exact_identity":"7945 bytes / blob 882ef767bfd816348f07e183258fcaa0490a6e6c / sha256 67c3e1024795d8bf65024d309fd19e5903d0105f5e3b57e48764c028182c6d2d",
+    "transformation":"replace exactly the two root-cause focus fragments so each triple-single-quote run is represented by three standard outer-shell single-quote splices",
+    "output_bytes":7969,
+    "unrelated_byte_changes_prohibited":true
+  },
+  "post_outer_payload_harness":{
+    "path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_18_POST_OUTER_PAYLOAD_HARNESS_V1_20260830.py",
+    "bytes":4735,
+    "git_blob":"6eff3cb59193011829f8906aeab6994ce17c7661",
+    "sha256":"670120e720197e98b82b82d40133fa0913b77bc72564021bbd2589c207261c3a",
+    "required_success_marker":"V19_7_18_POST_OUTER_PAYLOAD_HARNESS_PASS",
+    "nested_shell_marker":"V19_7_18_NESTED_SHELL_QUOTE_BOUNDARY_PASS",
+    "required_runtime_boundary_payload":{
+      "bytes":1579,
+      "git_blob":"497047a1545df84c1f05b5a31b3390ac7b528373",
+      "sha256":"c411ca57fc04130fa11f45997d21dff70992fa684f803606524a4802f2a02275",
+      "compile_only":"PASS_REQUIRED"
+    }
+  },
+  "lab_required_derivations":[
+    "Fresh verify exact candidate branch head/tree and all artifact byte/blob/SHA identities.",
+    "Independently reconstruct the exact 7945-byte V19.7.17 V2 generated transport from reviewed inputs.",
+    "Run only the exact quote-protection filter on that exact 7945-byte input and independently record corrected 7969-byte transport Git blob SHA-1 and SHA-256.",
+    "Mechanically prove the corrected transport differs from the 7945-byte source only at the two Lab-established root-cause focus fragments and only by the required quote-splice protection bytes.",
+    "Require outer Bash parse rc=0 with zero stderr warnings.",
+    "Run the exact post-outer-payload harness against the corrected transport and require V19_7_18_POST_OUTER_PAYLOAD_HARNESS_PASS.",
+    "Independently capture the post-outer-shell inner bash -c argv without executing the inner live command and record its byte length / Git blob / SHA-256.",
+    "Extract exact Python stdin from that captured inner argument and require exact 1579 bytes / blob 497047a1545df84c1f05b5a31b3390ac7b528373 / SHA-256 c411ca57fc04130fa11f45997d21dff70992fa684f803606524a4802f2a02275.",
+    "Compile-only the exact post-outer-shell Python stdin and require PASS.",
+    "Require heredoc opener and terminator multiplicity exactly one and no parse warnings.",
+    "Require harmless nested-shell quote-boundary harness marker V19_7_18_NESTED_SHELL_QUOTE_BOUNDARY_PASS.",
+    "Mechanically confirm sealed-memfd same-object TOCTOU closure is byte-identical to V19.7.17 V2 except for the two shell-quote protection edits.",
+    "Confirm historical runner remains unchanged/not directly executed, transformed runner target remains 5302 / fe51117fd3fcaa41537b5f92c84841716af27f74 / 248dcde06d07902543d480462ebab732d034771820f407fe2cd05fcae54d119e, Step1 remains 4687 / bbb4dfc09f669dcba4b8a223b641e9fa81b7ccebda3d72b216d97e3177184b74 / literal backslash-n x6, source-trust-first/no-retry and device-code secrecy unchanged.",
+    "Do not execute corrected live transport, OAuth/device flow, production mutation, or Runtime during review."
+  ],
+  "authority":{
+    "auditor":false,
+    "owner_presentation":false,
+    "live":false,
+    "codespace":false,
+    "oauth":false,
+    "device_flow":false,
+    "step4":false,
+    "apply":false,
+    "production_mutation":false,
+    "main_mutation":false,
+    "ruleset_mutation":false,
+    "writer_secret":false,
+    "merge":false,
+    "workflow_dispatch":false,
+    "runtime":false
+  },
+  "runtime":"OFF"
+}
