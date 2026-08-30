@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+S="${MV_SCENARIO_FILE:-/review-fixture/SCENARIO}"
+scenario=$(cat "$S" 2>/dev/null || printf '%s' success)
+real=/usr/bin/git
+case "$*" in
+  *" clone "*|clone\ *)
+    [ "$scenario" = "106" ] && exit 1
+    exec "$real" "$@" ;;
+esac
+exec "$real" "$@"
