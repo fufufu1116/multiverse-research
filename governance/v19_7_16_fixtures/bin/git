@@ -1,11 +1,51 @@
 #!/bin/sh
 set -eu
-S="${MV_SCENARIO_FILE:-/review-fixture/SCENARIO}"
-scenario=$(cat "$S" 2>/dev/null || printf '%s' success)
-real=/usr/bin/git
-case "$*" in
-  *" clone "*|clone\ *)
-    [ "$scenario" = "106" ] && exit 1
-    exec "$real" "$@" ;;
+scenario=$(cat /review-fixture/SCENARIO)
+MAIN=5c1403c1f5aabb80d29e8c868440aede8888ce61
+TREE=3d47741b4863411e5c36cb4c28925ac455ab6441
+RECOVERY=19a14cfd019cceab199571b5d03d4dd0ba5bcd22
+RUNNER=governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh
+BLOB=bc2b638b0db7fa8a0c23f0988cd9946f9e24b590
+ORIGIN=https://github.com/fufufu1116/multiverse-research.git
+if [ "${1:-}" = clone ]; then
+ [ "$scenario" = 106 ] && exit 1
+ dest=${8:-}
+ [ -n "$dest" ] || exit 91
+ mkdir -p "$dest/governance"
+ cp /review-fixture/runner "$dest/$RUNNER"
+ chmod 644 "$dest/$RUNNER"
+ exit 0
+fi
+if [ "${1:-}" = -C ]; then
+ shift 2
+fi
+case "${1:-}" in
+ config)
+  if [ "${2:-}" = --local ] && [ "${3:-}" = --get ]; then printf '%s\n' "$ORIGIN"; fi
+  exit 0 ;;
+ rev-parse)
+  q=${3:-${2:-}}
+  case "$q" in
+   'refs/remotes/origin/main^{commit}') [ "$scenario" = 107 ] && printf '%040d\n' 0 || printf '%s\n' "$MAIN" ;;
+   "$MAIN"'^{tree}') printf '%s\n' "$TREE" ;;
+   'HEAD^{commit}') printf '%s\n' "$RECOVERY" ;;
+   *) exit 1 ;;
+  esac
+  exit 0 ;;
+ checkout)
+  [ "$scenario" = 108 ] && exit 1
+  exit 0 ;;
+ symbolic-ref)
+  [ "$scenario" = 109 ] && exit 0
+  exit 1 ;;
+ remote)
+  printf 'origin\n'; exit 0 ;;
+ status)
+  exit 0 ;;
+ ls-tree)
+  if [ "$scenario" = 110 ]; then bad=0000000000000000000000000000000000000000; printf '100644 blob %s\t%s\n' "$bad" "$RUNNER"; else printf '100644 blob %s\t%s\n' "$BLOB" "$RUNNER"; fi
+  exit 0 ;;
+ hash-object)
+  printf '%s\n' "$BLOB"; exit 0 ;;
+ *) exit 1 ;;
 esac
-exec "$real" "$@"
