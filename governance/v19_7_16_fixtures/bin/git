@@ -10,16 +10,14 @@ ORIGIN=https://github.com/fufufu1116/multiverse-research.git
 if [ "${1:-}" = clone ]; then
  [ "$scenario" = 106 ] && exit 1
  dest=''
- for arg do dest=$arg; done
+ for arg in "$@"; do dest=$arg; done
  [ -n "$dest" ] || exit 91
  mkdir -p "$dest/governance"
  cp /review-fixture/runner "$dest/$RUNNER"
  chmod 644 "$dest/$RUNNER"
  exit 0
 fi
-if [ "${1:-}" = -C ]; then
- shift 2
-fi
+if [ "${1:-}" = -C ]; then shift 2; fi
 case "${1:-}" in
  config)
   if [ "${2:-}" = --local ] && [ "${3:-}" = --get ]; then printf '%s\n' "$ORIGIN"; fi
@@ -33,20 +31,13 @@ case "${1:-}" in
    *) exit 1 ;;
   esac
   exit 0 ;;
- checkout)
-  [ "$scenario" = 108 ] && exit 1
-  exit 0 ;;
- symbolic-ref)
-  [ "$scenario" = 109 ] && exit 0
-  exit 1 ;;
- remote)
-  printf 'origin\n'; exit 0 ;;
- status)
-  exit 0 ;;
+ checkout) [ "$scenario" = 108 ] && exit 1; exit 0 ;;
+ symbolic-ref) [ "$scenario" = 109 ] && exit 0; exit 1 ;;
+ remote) printf 'origin\n'; exit 0 ;;
+ status) exit 0 ;;
  ls-tree)
   if [ "$scenario" = 110 ]; then bad=0000000000000000000000000000000000000000; printf '100644 blob %s\t%s\n' "$bad" "$RUNNER"; else printf '100644 blob %s\t%s\n' "$BLOB" "$RUNNER"; fi
   exit 0 ;;
- hash-object)
-  printf '%s\n' "$BLOB"; exit 0 ;;
+ hash-object) printf '%s\n' "$BLOB"; exit 0 ;;
  *) exit 1 ;;
 esac
