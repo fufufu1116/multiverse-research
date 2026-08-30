@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-scenario=$(cat /review-fixture/SCENARIO 2>/dev/null || printf '%s' success)
-[ "$scenario" = "111" ] && exit 1
-if [ "$scenario" = "112" ]; then printf '%064d  %s\n' 0 "${2:-${1:-fixture}}"; exit 0; fi
-exec /usr/bin/sha256sum "$@"
+scenario=$(cat /review-fixture/SCENARIO)
+[ "$scenario" = 111 ] && exit 1
+[ "$scenario" = 112 ] || exit 92
+printf '%064d  %s\n' 0 "${2:-${1:-fixture}}"
