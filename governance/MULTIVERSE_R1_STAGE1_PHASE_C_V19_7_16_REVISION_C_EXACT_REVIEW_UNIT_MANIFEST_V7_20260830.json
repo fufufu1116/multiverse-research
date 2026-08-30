@@ -1,0 +1,17 @@
+{
+  "schema":"MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EXACT_REVIEW_UNIT_V7",
+  "status":"FROZEN_NONCANONICAL_INDEPENDENT_LAB_EXACT_CANDIDATE_REVIEW_REQUIRED",
+  "source_v6":{"head":"9786e87dbc2534f10e3343e2644ec089d88a302b","tree":"44e0384ed4082aaa70eaf4a8cc9f7e0f074231a7","manifest":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EXACT_REVIEW_UNIT_MANIFEST_V6_20260830.json","manifest_blob":"0355c3ad7759eca3a5f77f243172d77af918885d","lab_pass_comment":5467221709,"auditor_pass_comment":5467254076},
+  "consumed_live_attempt":{"owner_receipt":5467268721,"closure_comment":5467319479,"observed_outer_status":112,"observed_marker":"PHASE_C_V19_7_15_FAIL_RUNNER_SHA256_MISMATCH","oauth_reached":false,"reusable":false},
+  "canonical_main_at_freeze":{"main":"5c1403c1f5aabb80d29e8c868440aede8888ce61","tree":"3d47741b4863411e5c36cb4c28925ac455ab6441"},
+  "immutable_runner":{"commit":"19a14cfd019cceab199571b5d03d4dd0ba5bcd22","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh","blob":"bc2b638b0db7fa8a0c23f0988cd9946f9e24b590","correct_sha256":"370c95f4fa7ec5e390d5fc994fa6954658001c5cfaf524aa96fac1c079be693c","stale_v6_sha256":"f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2"},
+  "source_loader":{"head":"9786e87dbc2534f10e3343e2644ec089d88a302b","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_PRE_OAUTH_LOADER_ACTION_V2_20260830.txt","blob":"396c5f99c8837b4bc946a76effe1e19cd391b7d0"},
+  "v7_members":[
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_RUNNER_SHA256_CORRECTION_BUILDER_V1_20260830.py","blob":"a21aee9a91bc23d17dbe1fa44e4794b315d17c0c"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_RUNNER_SHA256_CORRECTION_PROOF_V1_20260830.py","blob":"a555640e95e8ca2dafde9224971fb8acc493a6e8"}
+  ],
+  "correction_contract":{"mechanism":"mechanically derive corrected loader from exact V6 source loader and immutable runner object","allowed_byte_change":"exactly one 64-byte ASCII SHA-256 literal: stale runner SHA256 -> correct immutable-runner SHA256","length_change":0,"newlines_change":0,"all_other_bytes_must_match_source":true,"bash_parse_required":true,"source_action_blob_required":"396c5f99c8837b4bc946a76effe1e19cd391b7d0","runner_blob_required":"bc2b638b0db7fa8a0c23f0988cd9946f9e24b590","runner_sha256_required":"370c95f4fa7ec5e390d5fc994fa6954658001c5cfaf524aa96fac1c079be693c"},
+  "required_independent_revalidation":["independently recompute SHA-256 of immutable runner blob bytes","independently verify source V6 action blob and stale constant multiplicity","independently run correction builder/proof and record generated corrected-loader Git blob/SHA-256/byte length","verify generated loader differs from V6 source in exactly the single SHA-256 literal and nowhere else","re-run all proof areas materially affected by loader-byte change, including exact transport, 103..115 mapping, closed-world cases, immutable 113, 114/success generation, dependency collision, Step3 binding, trust nonweakening and authority boundaries"],
+  "authority":{"auditor":false,"live":false,"codespace":false,"oauth":false,"step4":false,"apply":false,"production_mutation":false,"merge":false,"workflow_dispatch":false,"runtime":false},
+  "runtime":"OFF"
+}
