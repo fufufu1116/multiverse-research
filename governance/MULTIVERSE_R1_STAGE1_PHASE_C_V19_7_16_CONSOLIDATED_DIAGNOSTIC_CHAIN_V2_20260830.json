@@ -1,0 +1,59 @@
+{
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_CONSOLIDATED_DIAGNOSTIC_CHAIN_V2",
+  "status": "FROZEN_CANDIDATE_NONCANONICAL_NO_LIVE_AUTHORITY",
+  "revision_b_readiness_comment": 5465663034,
+  "prior_lab_fix_required_comment": 5466388631,
+  "canonical_main": {
+    "commit": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "tree": "3d47741b4863411e5c36cb4c28925ac455ab6441"
+  },
+  "outer_loader": {
+    "path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_PRE_OAUTH_LOADER_ACTION_V2_20260830.txt",
+    "exit_namespace": "103..114",
+    "fallback": 115,
+    "runner_nonzero_outer_status": 114
+  },
+  "historical_runner_dependency": {
+    "model": "immutable_recovery_head",
+    "commit": "19a14cfd019cceab199571b5d03d4dd0ba5bcd22",
+    "path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh",
+    "blob": "bc2b638b0db7fa8a0c23f0988cd9946f9e24b590",
+    "sha256": "f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2",
+    "candidate_branch_path_equality_asserted": false
+  },
+  "step3_dependency": {
+    "commit": "4ff69ca9a556a6c0928ae3ed576855945d746447",
+    "path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_14_STEP3_DIAGNOSTIC_TRANSPORT_ACTION_20260830.txt",
+    "blob": "c9459751e4b50c70fde1b94413b9c441dfbfccc4",
+    "unchanged": true,
+    "nonmutating": true
+  },
+  "sequence": [
+    "fresh dedicated Codespace only after future fresh Owner one-shot approval",
+    "exact v19.7.16 loader",
+    "RUNNER_START",
+    "historical runner-owned OAuth/device-code secrecy boundary",
+    "post-OAuth clean shell",
+    "trusted Python",
+    "Step2.6",
+    "exact scopes/admin",
+    "unchanged NONMUTATING Step3",
+    "STOP/delete"
+  ],
+  "authority": {
+    "auditor": false,
+    "live": false,
+    "codespace": false,
+    "oauth": false,
+    "step4": false,
+    "apply": false,
+    "production_mutation": false,
+    "main_mutation": false,
+    "ruleset_mutation": false,
+    "writer_secret": false,
+    "merge": false,
+    "workflow_dispatch": false,
+    "runtime": false
+  },
+  "runtime": "OFF"
+}
