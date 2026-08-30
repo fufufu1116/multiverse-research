@@ -1,0 +1,14 @@
+{
+  "schema":"MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_17_STEP1_RECONSTRUCTION_REMEDIATION_V1",
+  "status":"FROZEN_NONCANONICAL_EXACT_TRANSFORMATION_CANDIDATE_LAB_REVIEW_REQUIRED",
+  "source_runner":{"commit":"19a14cfd019cceab199571b5d03d4dd0ba5bcd22","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh","blob":"bc2b638b0db7fa8a0c23f0988cd9946f9e24b590","bytes":5301,"sha256":"370c95f4fa7ec5e390d5fc994fa6954658001c5cfaf524aa96fac1c079be693c"},
+  "source_v2_gate":{"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRODUCTION_EXECUTION_OWNER_GATE_CANDIDATE_20260824_v1.json","blob":"67f158cf1d79846879d4f2238625863336372e24"},
+  "root_cause_lab_pass_comment":5467602738,
+  "live_failure_closure_comment":5467540586,
+  "transformation":{"type":"SINGLE_ASCII_BYTE_INSERTION","unique_source_anchor":"tail='''phase_c_bootstrap","exact_result_anchor":"tail=r'''phase_c_bootstrap","inserted_byte_hex":"72","inserted_byte_ascii":"r","required_source_anchor_count":1,"all_other_source_bytes_unchanged":true},
+  "reconstructed_step1_before_fix":{"bytes":4681,"sha256":"e56796a4dcbeb0ef27a465471720babd47bfd973650971601d5d5a7a0fe463cf"},
+  "reconstructed_step1_after_fix":{"bytes":4687,"sha256":"bbb4dfc09f669dcba4b8a223b641e9fa81b7ccebda3d72b216d97e3177184b74","shell_backslash_n_sequences_preserved":6},
+  "required_lab_derivations":["derive transformed runner bytes independently from source runner blob and exact one-byte insertion","record transformed runner byte length, Git blob SHA-1, and SHA-256","prove exactly one byte inserted and no other source byte changed","Bash-parse transformed runner","execute only the reconstruction heredoc against exact V2 gate bytes in a static/non-live harness and require reconstructed Step1 4687 bytes and SHA-256 bbb4dfc09f669dcba4b8a223b641e9fa81b7ccebda3d72b216d97e3177184b74","prove generated Step1 Bash parses","verify no OAuth/device-flow/live/production/Runtime action occurs in review"],
+  "authority":{"auditor":false,"owner_presentation":false,"live":false,"codespace":false,"oauth":false,"device_flow":false,"step4":false,"apply":false,"production_mutation":false,"merge":false,"workflow_dispatch":false,"runtime":false},
+  "runtime":"OFF"
+}
