@@ -9,7 +9,8 @@ BLOB=bc2b638b0db7fa8a0c23f0988cd9946f9e24b590
 ORIGIN=https://github.com/fufufu1116/multiverse-research.git
 if [ "${1:-}" = clone ]; then
  [ "$scenario" = 106 ] && exit 1
- dest=${8:-}
+ dest=''
+ for arg do dest=$arg; done
  [ -n "$dest" ] || exit 91
  mkdir -p "$dest/governance"
  cp /review-fixture/runner "$dest/$RUNNER"
