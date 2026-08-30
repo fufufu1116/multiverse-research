@@ -1,0 +1,54 @@
+{
+  "schema":"MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EXACT_REVIEW_UNIT_V3",
+  "status":"FROZEN_NONCANONICAL_INDEPENDENT_LAB_EXACT_CANDIDATE_REVIEW_REQUIRED",
+  "supersedes_review_unit_documents":[
+    "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_EXACT_REVIEW_UNIT_MANIFEST_V2_20260830.json",
+    "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EXACT_REVIEW_UNIT_V2_20260830.md"
+  ],
+  "lab_fix_required_comment":5466990049,
+  "revision_c_readiness_pass_comment":5466720150,
+  "canonical":{"main":"5c1403c1f5aabb80d29e8c868440aede8888ce61","tree":"3d47741b4863411e5c36cb4c28925ac455ab6441"},
+  "immutable_dependencies":{
+    "runner":{"commit":"19a14cfd019cceab199571b5d03d4dd0ba5bcd22","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh","blob":"bc2b638b0db7fa8a0c23f0988cd9946f9e24b590","sha256":"f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2"},
+    "step3_transport":{"commit":"4ff69ca9a556a6c0928ae3ed576855945d746447","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_14_STEP3_DIAGNOSTIC_TRANSPORT_ACTION_20260830.txt","blob":"c9459751e4b50c70fde1b94413b9c441dfbfccc4"},
+    "step3_diagnostic":{"commit":"84ec02fcaf79f86e0757ad356d62fb6f9d31e42d","path":"g/d","blob":"4f2718f448fc8367775be16bcbb3b06cb59f6047"}
+  },
+  "members":[
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_EXECUTABLE_V2_IMPLEMENTATION_PLAN_20260830.md","blob":"863cb4750dcb666659411907793e8b96006ede08","purpose":"implementation invariants/history"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_HOST_VISIBLE_EXIT_CODE_OBSERVABILITY_REQUIREMENTS_20260830.md","blob":"0928311ea09c2217790845e8104d82f560b4b4f1","purpose":"Revision B continuing requirements"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_REQUIREMENTS_CANDIDATE_20260830.md","blob":"ebae7d444e8ddc38b9184d89cd74198a04205f48","purpose":"Revision C requirements"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_READINESS_FREEZE_20260830.md","blob":"dff79c1e521a04d3cd795a6adc3dc477e6fc5835","purpose":"Revision C readiness freeze"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_PRE_OAUTH_LOADER_ACTION_V2_20260830.txt","blob":"396c5f99c8837b4bc946a76effe1e19cd391b7d0","purpose":"exact production loader"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_PRE_OAUTH_LOADER_BUILDER_V2_20260830.py","blob":"7b80aef96f1a3c5a9b7917b273f15e15c0147277","purpose":"deterministic loader builder"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_B_PROOF_SPEC_V2_20260830.md","blob":"d17578b427ccac2b9c31c7ea2e578327c89a2e94","purpose":"continuing proof contract interpreted through Revision C"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_EXACT_BYTE_AND_DEPENDENCY_PROOF_V2_20260830.py","blob":"39844973089d111c172a12052eec8dee6d8cca2e","purpose":"transport, strict-prefix, collision and immutable dependency proof"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_CASE_RUN_V2_20260830.py","blob":"f86e373b3c45d63955097e04ddf4bee85fb0b8a7","purpose":"103..112 byte-identical complete-loader executor only"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_HARNESS_V2_20260830.py","blob":"14472d0d705de855334a36698131ae013baebae8","evidence_class":"BYTE_IDENTICAL_COMPLETE_LOADER","purpose":"103..112 transcript verifier only"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_FIXTURE_PROTOCOL_V2_20260830.md","blob":"52b67acdfa17782902ab7f7855dddd363d82b81e","purpose":"Revision-C integrated fixture protocol"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_MATRIX_EVIDENCE_V2_20260830.json","blob":"d1d785374474dd368ce85600c1904c96274df83d","purpose":"class-separated evidence contract"},
+    {"path":"governance/v19_7_16_fixtures/README.md","blob":"6875123425c9fb35fee40b1cf65c331b9690002e","evidence_class":"BYTE_IDENTICAL_COMPLETE_LOADER","purpose":"103..112 fixture inventory rules"},
+    {"path":"governance/v19_7_16_fixtures/SCENARIO_MATRIX.json","blob":"a120274ba06e89f50662718815701df1c1aef2ce","evidence_class":"BYTE_IDENTICAL_COMPLETE_LOADER","purpose":"103..112 external-observation scenarios"},
+    {"path":"governance/v19_7_16_fixtures/bin/git","blob":"da8154d68db30c1ba2bccc99d5bd8edbe101bf43","evidence_class":"BYTE_IDENTICAL_COMPLETE_LOADER","purpose":"frozen loader-visible git shim input"},
+    {"path":"governance/v19_7_16_fixtures/bin/sha256sum","blob":"e3b498231c984b9a1d10a4a57cdc0f5329275363","evidence_class":"BYTE_IDENTICAL_COMPLETE_LOADER","purpose":"frozen loader-visible sha256sum shim input"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_EVIDENCE_GENERATOR_V1_20260830.py","blob":"7c50b8a55617c333f09bc787a2ea5153f764aabd","purpose":"immutable recovery-head production-positive 113 proof and source-boundary generator"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_C_POST_TRUST_HARNESS_V1_20260830.py","blob":"d23c88e1c46896a68de8596c07e35f12412b04d4","evidence_class":"GENERATED_POST_TRUST_BOUNDARY_EQUIVALENT","purpose":"114/success with fail/mark mechanically extracted from exact loader"},
+    {"path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_CONSOLIDATED_DIAGNOSTIC_CHAIN_V2_20260830.json","blob":"aefa1663593893e87d4ce65768f61fce6672d297","purpose":"consolidated diagnostic chain"}
+  ],
+  "evidence_classes":{
+    "103_112":"BYTE_IDENTICAL_COMPLETE_LOADER",
+    "113_positive":"IMMUTABLE_RECOVERY_HEAD_STATIC_MECHANICAL",
+    "114_success":"GENERATED_POST_TRUST_BOUNDARY_EQUIVALENT",
+    "115":"SYNTHETIC_FALLBACK_EQUIVALENT",
+    "non_substitutable":true
+  },
+  "fail_closed_rules":[
+    "Every listed local member path must resolve to exactly the listed Git blob at the exact candidate head.",
+    "No unlisted local artifact may supply proof-relevant semantics for 103..115.",
+    "No mutable external fixture may satisfy the unit.",
+    "Candidate-branch runner bytes may not substitute for immutable recovery-head production-positive 113 proof.",
+    "114/success proof-relevant fail() and mark() semantics must be mechanically extracted from exact loader bytes; hand-authored semantic reimplementation is forbidden.",
+    "Evidence classes are non-interchangeable and may not be promoted."
+  ],
+  "authority":{"auditor":false,"live":false,"codespace":false,"oauth":false,"step4":false,"apply":false,"production_mutation":false,"merge":false,"workflow_dispatch":false,"runtime":false},
+  "runtime":"OFF"
+}
