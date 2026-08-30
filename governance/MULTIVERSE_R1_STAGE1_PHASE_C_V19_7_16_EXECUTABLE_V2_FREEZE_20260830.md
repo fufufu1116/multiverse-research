@@ -12,6 +12,7 @@ Exact review-unit artifacts:
 - governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_REVISION_B_PROOF_SPEC_V2_20260830.md
 - governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_HARNESS_V2_20260830.py
 - governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_CASE_RUN_V2_20260830.py
+- governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_FIXTURE_PROTOCOL_V2_20260830.md
 - governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_WHOLE_LOADER_MATRIX_EVIDENCE_V2_20260830.json
 - governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_EXACT_BYTE_AND_DEPENDENCY_PROOF_V2_20260830.py
 - governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_16_CONSOLIDATED_DIAGNOSTIC_CHAIN_V2_20260830.json
@@ -27,7 +28,7 @@ Frozen semantic bindings:
 - historical runner SHA-256 f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2
 - unchanged Step3 blob c9459751e4b50c70fde1b94413b9c441dfbfccc4
 
-The matrix JSON is an exact transcript contract, not a claim that Core independently executed the matrix. Independent Lab must reproduce/validate complete-loader behavior and may reject the evidence architecture if it does not mechanically demonstrate Revision B. No direct fail()/isolated gate fragment may substitute.
+The fixture protocol explicitly forbids scenario selection through environment propagation across env -i. Scenario selection is encoded in an isolated scenario-specific filesystem image while the complete exact loader bytes remain unchanged. The matrix JSON freezes exact transcript assertions but is not a Core execution claim. Independent Lab must independently reproduce/validate complete-loader behavior. Fallback 115 is explicitly synthetic complete-source-equivalent evidence, not falsely represented as byte-identical production-loader execution.
 
 The candidate-branch historical-runner copy is not dependency truth. Immutable recovery-head object/blob is dependency truth.
 
