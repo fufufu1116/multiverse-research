@@ -11,7 +11,7 @@ RUNNER='governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RU
 RUNNER_BLOB='bc2b638b0db7fa8a0c23f0988cd9946f9e24b590'
 RUNNER_SHA='f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2'
 ACTION_BLOB='396c5f99c8837b4bc946a76effe1e19cd391b7d0'
-GIT_SHIM_BLOB='3e1f5c8ee175c996aa24ccd4fe10db4640c650cc'
+GIT_SHIM_BLOB='d50661c0658ce4f62cbe49192e878e45e913fece'
 SHA_SHIM_BLOB='d6fbf5d85301446e1086295487b168189515e8b2'
 def blob(b): return hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
 def die(x): raise SystemExit(x)
@@ -40,12 +40,9 @@ with tempfile.TemporaryDirectory() as td:
  (fixture/'sha256sum').write_bytes(sha_shim); os.chmod(fixture/'sha256sum',0o755)
  hostshm=t/'hostshm'; hostshm.mkdir()
  cmd=[bwrap,'--unshare-all','--die-with-parent','--ro-bind','/','/','--ro-bind',str(fixture),'/review-fixture']
- if code==105:
-  cmd += ['--bind',str(hostshm),'/dev/shm']
- else:
-  cmd += ['--tmpfs','/dev/shm']
- if code==104:
-  cmd += ['--dir','/dev/shm/multiverse-r1-stage1-phase-c-recovery-control']
+ if code==105: cmd += ['--bind',str(hostshm),'/dev/shm']
+ else: cmd += ['--tmpfs','/dev/shm']
+ if code==104: cmd += ['--dir','/dev/shm/multiverse-r1-stage1-phase-c-recovery-control']
  cmd += ['--ro-bind',str(fixture/'git'),'/usr/local/bin/git']
  if code in (111,112): cmd += ['--ro-bind',str(fixture/'sha256sum'),'/usr/bin/sha256sum']
  if code==103: cs=''; name=''
