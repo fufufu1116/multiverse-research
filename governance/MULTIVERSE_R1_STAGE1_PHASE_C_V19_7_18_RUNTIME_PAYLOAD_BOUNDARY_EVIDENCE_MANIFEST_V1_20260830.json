@@ -1,0 +1,71 @@
+{
+  "schema":"MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_18_RUNTIME_PAYLOAD_BOUNDARY_EVIDENCE_V1",
+  "status":"FROZEN_NONCANONICAL_ROOT_CAUSE_EVIDENCE_LAB_REVIEW_REQUIRED",
+  "supersedes_core_delimiter_diagnosis":true,
+  "prior_lab_fix_required_comment":5468095121,
+  "live_closure_comment":5468078746,
+  "source_review_unit":{
+    "branch":"agent/r1-stage1-phase-c-v19-7-17-executable-transport-v2",
+    "head":"a2ac487052e573093f705f32e59655f23e839725",
+    "tree":"aeff0dd450e3ffc57bf9a77c63db91a6645a9bb8",
+    "generator_blob":"bebf495c718555ec121eccba133eec86b165687a",
+    "generated_transport_bytes":7945,
+    "generated_transport_git_blob":"882ef767bfd816348f07e183258fcaa0490a6e6c",
+    "generated_transport_sha256":"67c3e1024795d8bf65024d309fd19e5903d0105f5e3b57e48764c028182c6d2d"
+  },
+  "accepted_from_lab_fix_required":{
+    "heredoc_opener_quote_splice_is_not_established_as_defect":true,
+    "raw_generator_embedded_python_compile_only":"PASS",
+    "runtime_boundary_still_requires_post_outer_shell_evidence":true
+  },
+  "new_root_cause_hypothesis":{
+    "class":"UNSPLICED_SINGLE_QUOTES_INSIDE_EMBEDDED_PYTHON_WITHIN_OUTER_SINGLE_QUOTED_BASH_C_ARGUMENT",
+    "focus_source_fragments":[
+      "anchor=b\"tail='''phase_c_bootstrap\"",
+      "out=src.replace(anchor,b\"tail=r'''phase_c_bootstrap\",1)"
+    ],
+    "mechanism_to_verify":"The generator-emitted embedded Python contains literal single-quote bytes in these Python bytes-literal contents. Those bytes occur inside the outer loader's already-single-quoted /bin/bash -c argument. Unlike the reviewed heredoc opener, these payload single quotes are not themselves represented with outer-shell quote-splice protection. Outer-shell lexical processing may therefore consume/reinterpret them before the inner Bash receives its -c argument, changing the exact Python stdin bytes even though the generator-side payload compile-only check passes.",
+    "live_consistency_only_not_yet_proof":{
+      "syntax_error_file":"<stdin>",
+      "syntax_error_line":7,
+      "syntax_error_message_contains":"unterminated string literal",
+      "reported_line_prefix":"anchor=b\"tail=phase_c_bootstrap",
+      "runner_start_seen":true,
+      "runner_return_failure_seen":true,
+      "step1_reached":false,
+      "oauth_reached":false,
+      "device_flow_reached":false
+    }
+  },
+  "independent_lab_required_derivation":[
+    "Fresh verify source head/tree/generator blob and exact 7945-byte transport identity.",
+    "Using a non-live lexical-equivalent capture method, derive the exact argv element that the outer shell passes as the inner /bin/bash -c argument. The method may replace only the outer executable target with a harmless argv sink; it must not execute the inner live command.",
+    "Record exact inner bash -c argument byte length, Git blob SHA-1 and SHA-256.",
+    "From that captured inner argument, mechanically identify the exact quoted heredoc delimiter word, opener/terminator multiplicity, and exact bytes that would be delivered on stdin to /usr/bin/python3 at the reviewed boundary.",
+    "Record exact Python-stdin byte length, Git blob SHA-1 and SHA-256.",
+    "Compile-only check those exact post-outer-shell Python stdin bytes, not the generator-side pre-shell payload.",
+    "If compile fails, record exact SyntaxError line number, offset, message and source text and compare them to the live observation without silently normalizing discrepancies.",
+    "Mechanically diff the generator-side intended embedded Python bytes against the captured post-outer-shell Python stdin bytes and determine whether the literal triple-single-quote fragments are altered by the outer shell lexical layer.",
+    "PASS this root-cause unit only if the post-outer-shell bytes independently reproduce or exactly explain the live line-7 unterminated-string failure. Otherwise return FIX_REQUIRED with the observed exact inner/payload identities and discrepancy.",
+    "Do not construct or execute a live remediation during this review."
+  ],
+  "next_step_if_pass":"Core may construct the smallest exact source correction plus mandatory post-outer-shell payload compile check and harmless nested-shell boundary harness, then submit that separate executable candidate back to Independent Lab.",
+  "authority":{
+    "auditor":false,
+    "owner_presentation":false,
+    "live":false,
+    "codespace":false,
+    "oauth":false,
+    "device_flow":false,
+    "step4":false,
+    "apply":false,
+    "production_mutation":false,
+    "main_mutation":false,
+    "ruleset_mutation":false,
+    "writer_secret":false,
+    "merge":false,
+    "workflow_dispatch":false,
+    "runtime":false
+  },
+  "runtime":"OFF"
+}
