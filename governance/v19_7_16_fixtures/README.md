@@ -1,13 +1,13 @@
-# v19.7.16 Revision-C frozen review fixtures
+# v19.7.16 Revision C frozen review fixtures — V4
 
-NONLIVE / NONCANONICAL. These files are review inputs only.
+NONLIVE / NONCANONICAL / evidence class `BYTE_IDENTICAL_COMPLETE_LOADER` for 103..112 only.
 
-`bin/git`, `bin/sha256sum`, and `SCENARIO_MATRIX.json` are frozen fixture objects for `BYTE_IDENTICAL_COMPLETE_LOADER` cases 103..112 only. A Lab-created scenario directory MUST copy only frozen objects plus a one-line `SCENARIO` selector and a `MANIFEST.sha256` covering every file. The case-run maps `git` to `/usr/local/bin/git` and `sha256sum` to `/usr/bin/sha256sum`, matching loader-visible paths.
+Independent Lab does not author a SCENARIO_ROOT, MANIFEST.sha256, repo-seed, redirect, or other proof-relevant input. The frozen case-run accepts only the target code 103..112. It mechanically materializes a temporary read-only fixture from: this candidate's exact frozen shim bytes; the requested numeric case; and the immutable recovery-head runner object after exact blob/SHA-256 verification.
 
-Revision-C evidence classes are strict and non-substitutable:
-- 103..112: `BYTE_IDENTICAL_COMPLETE_LOADER` using these fixtures.
-- production-positive 113: immutable recovery-head static/mechanical proof only; these fixture objects do not satisfy it.
-- 114/success: `GENERATED_POST_TRUST_BOUNDARY_EQUIVALENT` only, generated from exact loader boundary plus mechanically extracted proof-relevant loader dependencies. These fixture objects do not satisfy it.
-- fallback115: `SYNTHETIC_FALLBACK_EQUIVALENT` only.
+Network is unavailable inside `bwrap --unshare-all`. The exact loader's HTTPS clone observation is intercepted only by the frozen Git shim at the loader-visible `/usr/local/bin/git`. The shim deterministically supplies the clone/repository observations needed to pass prior gates and force 106..110. It does not delegate the clone to network Git. Cases 111/112 additionally bind the frozen SHA shim to the loader's absolute `/usr/bin/sha256sum`. Case 105 deterministically binds a non-tmpfs host directory at `/dev/shm`; 104 precreates the exact ROOT; 103 removes Codespaces inputs.
 
-No network/live/OAuth/Runtime authority. Runtime OFF.
+The case-run obtains the runner only from immutable recovery head `19a14cfd019cceab199571b5d03d4dd0ba5bcd22`, path `governance/MULTIVERSE_R1_STAGE1_PHASE_C_PRE_OAUTH_CONTINUITY_RECOVERY_RUNNER_20260827_v1.sh`, verifies blob `bc2b638b0db7fa8a0c23f0988cd9946f9e24b590` and SHA-256 `f4d91bb6fc73fbc236c49f0b364788ef8e7461850ff1bba1dd058d471e5468c2`, then materializes those exact bytes for the byte-identical loader trust gates. Candidate-branch runner bytes are not authority.
+
+113 is not a fixture case: it is immutable-object static/mechanical production-positive proof. 114/success use only `GENERATED_POST_TRUST_BOUNDARY_EQUIVALENT`. 115 uses only `SYNTHETIC_FALLBACK_EQUIVALENT`. Evidence classes are non-interchangeable.
+
+No network/live/OAuth/Step4/--apply/production mutation/merge/workflow/Runtime authority. Runtime OFF.
