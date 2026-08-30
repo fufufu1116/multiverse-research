@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+if [ "${1:-}" = "-f" ] && [ "${2:-}" = "-c" ] && [ "${3:-}" = "%T" ]; then
+  printf '%s\n' 'ext2/ext3'
+  exit 0
+fi
+exec /usr/bin/stat "$@"
