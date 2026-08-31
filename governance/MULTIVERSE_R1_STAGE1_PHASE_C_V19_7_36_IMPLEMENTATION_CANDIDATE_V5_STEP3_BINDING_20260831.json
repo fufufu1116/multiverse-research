@@ -1,0 +1,11 @@
+{
+  "version":"V19.7.36-v5",
+  "authority":"NONMUTATING_STEP3_BINDING_ONLY",
+  "canonical_repo":"fufufu1116/multiverse-research",
+  "canonical_main":"5c1403c1f5aabb80d29e8c868440aede8888ce61",
+  "canonical_tree":"3d47741b4863411e5c36cb4c28925ac455ab6441",
+  "post_oauth_required":true,
+  "allowed_control_plane_hosts":["api.github.com"],
+  "allowed_operations":["GET identity","GET scopes","GET ruleset","GET main ref/tree","GET fence absence","GET environment absence","NONMUTATING Step3 proof"],
+  "forbidden":["Step4","--apply","POST/PUT/PATCH/DELETE production","main mutation","ruleset mutation","secret read/write","merge","workflow dispatch","Runtime activation"]
+}
