@@ -1,0 +1,7 @@
+exec /usr/bin/env -i PATH='/usr/local/bin:/usr/bin:/bin:/usr/local/python/current/bin' HOME='/dev/shm/multiverse-r1-stage1-phase-c-home' TERM='xterm-256color' LANG='C' LC_ALL='C' CODESPACES="${CODESPACES:-}" CODESPACE_NAME="${CODESPACE_NAME:-}" /usr/local/python/current/bin/python -I -S -B -c 'import hashlib,os,stat,sys; p="/dev/shm/multiverse-r1-stage1-phase-c-v19-7-30-review/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_32_OBSERVABLE_READINESS_WRAPPER_V2_20260831.py"; fd=os.open(p,os.O_RDONLY|getattr(os,"O_NOFOLLOW",0)); st=os.fstat(fd); (stat.S_ISREG(st.st_mode) and st.st_nlink==1 and st.st_uid==os.getuid()) or sys.exit(92); c=[]; n=0
+while True:
+ b=os.read(fd,1048576)
+ if not b: break
+ c.append(b); n+=len(b)
+ n<=1048576 or sys.exit(92)
+os.close(fd); d=b"".join(c); hashlib.sha1(b"blob "+str(len(d)).encode()+b"\0"+d).hexdigest()=="3b3517348d589695318caa816595f987e1b79f95" or sys.exit(92); sys.argv=["-c"]; exec(compile(d,"<v19.7.32-wrapper-exact-same-memory>","exec"),{"__name__":"__main__"})'
