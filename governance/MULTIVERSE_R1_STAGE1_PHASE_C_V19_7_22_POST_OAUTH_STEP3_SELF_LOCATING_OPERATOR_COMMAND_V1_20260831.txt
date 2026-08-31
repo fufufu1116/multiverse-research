@@ -1,0 +1,1 @@
+set -- /dev/shm/mv-v19-7-22-live.*/repo; test "$#" -eq 1 && test -d "$1/.git" && test "$(git -C "$1" rev-parse HEAD)" = "380cae13c9c198f9051e6d323e4ecce64147015a" && test "$(git -C "$1" rev-parse HEAD^{tree})" = "9bae13bbb0ae43c2b7823bbb0cc442eb58095a8f" && bash "$1/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_20_POST_OAUTH_STEP3_ACTION_V1_20260831.txt"
