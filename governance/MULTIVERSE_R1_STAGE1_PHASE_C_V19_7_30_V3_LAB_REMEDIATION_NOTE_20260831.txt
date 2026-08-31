@@ -1,0 +1,14 @@
+V19.7.30 v3 Lab remediation freeze note
+
+Exact candidate head before this note: 7b9fc6d00043d63c57e524ecc57cbbd9a7202785
+Prior Lab v2 result: 5474988651 FIX_REQUIRED
+
+Material fixes now present in candidate tree:
+- redirect precontact issue remains closed via direct HTTPSConnection to exact files.pythonhosted.org with 3xx fail-closed and no redirect following.
+- post-OAuth expected wheel set is independently fixed to exact PyNaCl 1.6.2, pycparser 2.23, and CPython-version-specific cffi 2.1.1 SHA-256 values; mutable manifest must equal this exact set.
+- post-OAuth exact verified dependency SITE is explicitly carried into the actual canonical preflight process via reviewed PYTHONPATH under trusted Python -B.
+- exact V19.7.29 bytes are once-opened and identity checked, then compiled from those same in-memory bytes only to reuse reviewed current-main rebootstrap semantics; its historical Step3 action is not invoked.
+- after current-main rebootstrap, the canonical nonmutating preflight is executed directly from the exact execution root with the verified tmpfs SITE available at its import boundary.
+- no Step4, --apply, production mutation, main/ruleset mutation, writer secret, merge, workflow dispatch, or Runtime activation is authorized or executed.
+
+Runtime OFF.
