@@ -5,8 +5,8 @@ SHELL ["/bin/bash","-o","pipefail","-c"]
 
 RUN install -d -o root -g root -m 0555 /opt/multiverse/v36 /opt/multiverse/v36/empty-config /opt/multiverse/v36/pydeps
 COPY .devcontainer/v19_7_36_requirements.txt /opt/multiverse/v36/requirements.txt
-COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V4_RUNTIME_20260831.py /opt/multiverse/v36/runtime.py
-COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V4_ROOT_ANCHOR_PRODUCER_20260831.go /tmp/mv-v36-anchor.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V4_RUNTIME_V2_20260831.py /opt/multiverse/v36/runtime.py
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V4_ROOT_ANCHOR_PRODUCER_V2_20260831.go /tmp/mv-v36-anchor.go
 
 RUN set -eu; \
     test -x /usr/bin/python3; \
