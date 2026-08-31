@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """V19.7.30 post-OAuth review candidate. NONCANONICAL; NONMUTATING Step3 only."""
-import hashlib, json, os, pathlib, stat, subprocess, sys
+import hashlib, io, json, os, pathlib, stat, subprocess, sys, zipfile
 PY="/usr/local/python/current/bin/python"
-ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-pydeps"); SITE=ROOT/"site"; MAN=ROOT/"MANIFEST.sha256"
+ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-pydeps"); MAN=ROOT/"MANIFEST.sha256"; SITE_REAUTH=ROOT/"site-post-oauth-reauth"
 GH_CONFIG_DIR="/dev/shm/multiverse-r1-stage1-phase-c-gh-auth"
 EXEC_ROOT="/dev/shm/multiverse-r1-stage1-phase-c-execution"
 PREFLIGHT="tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"
@@ -24,7 +24,27 @@ def read_once(p):
    a.append(b)
   return b"".join(a)
  finally: os.close(fd)
+def rebuild_site_from_verified_wheels(expected):
+ if os.path.lexists(SITE_REAUTH): die("REAUTH_SITE_PREEXISTS")
+ SITE_REAUTH.mkdir(mode=0o700)
+ if subprocess.check_output(["stat","-f","-c","%T",str(SITE_REAUTH)],text=True).strip() not in {"tmpfs","ramfs"}: die("REAUTH_SITE_FS")
+ for n,h in expected.items():
+  data=read_once(str(ROOT/"wheels"/n))
+  if hashlib.sha256(data).hexdigest()!=h: die("WHEEL_REAUTH")
+  with zipfile.ZipFile(io.BytesIO(data)) as z:
+   for i in z.infolist():
+    q=pathlib.PurePosixPath(i.filename); mode=(i.external_attr>>16)&0o170000
+    if q.is_absolute() or ".." in q.parts or mode==stat.S_IFLNK: die("WHEEL_MEMBER")
+    if i.is_dir():
+     (SITE_REAUTH/pathlib.Path(*q.parts)).mkdir(parents=True,exist_ok=True,mode=0o700); continue
+    out=SITE_REAUTH/pathlib.Path(*q.parts); out.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+    if os.path.lexists(out): die("WHEEL_MEMBER_COLLISION")
+    payload=z.read(i)
+    fd=os.open(out,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    try: os.write(fd,payload)
+    finally: os.close(fd)
 def main():
+ os.umask(0o077)
  if os.environ.get("CODESPACES")!="true" or not os.environ.get("CODESPACE_NAME") or sys.executable!=PY or len(sys.argv)!=2 or sys.version_info[:2] not in CFFI: die("ENTRY")
  if os.environ.get("GH_CONFIG_DIR")!=GH_CONFIG_DIR: die("GH_CONFIG_DIR")
  if subprocess.check_output(["stat","-f","-c","%T",str(ROOT)],text=True).strip() not in {"tmpfs","ramfs"}: die("PYDEPS_FS")
@@ -37,11 +57,9 @@ def main():
   got[n]=h
  expected={"pynacl.whl":PYNACL,"pycparser.whl":PYCPARSER,"cffi.whl":CFFI[sys.version_info[:2]]}
  if got!=expected: die("MANIFEST")
- for n,h in expected.items():
-  p=ROOT/"wheels"/n
-  if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()!=h: die("WHEEL_REAUTH")
+ rebuild_site_from_verified_wheels(expected)
  code='import sys; p=sys.argv[1]; sys.path[:]=[p]+[x for x in sys.path if x!=p and "site-packages" not in x and ".local" not in x]; from nacl.public import PrivateKey,SealedBox; import nacl; assert nacl.__version__=="1.6.2"; k=PrivateKey.generate(); m=b"post-oauth"; assert SealedBox(k).decrypt(SealedBox(k.public_key).encrypt(m))==m'
- if subprocess.run([PY,"-I","-B","-c",code,str(SITE)],env={"PATH":"/usr/local/bin:/usr/bin:/bin","PYTHONNOUSERSITE":"1"}).returncode: die("PYNACL_REAUTH")
+ if subprocess.run([PY,"-I","-B","-c",code,str(SITE_REAUTH)],env={"PATH":"/usr/local/bin:/usr/bin:/bin","PYTHONNOUSERSITE":"1"}).returncode: die("PYNACL_REAUTH")
  repo=os.path.realpath(sys.argv[1]); v29=read_once(os.path.join(repo,V29))
  if len(v29)!=V29_BYTES or blob(v29)!=V29_BLOB or hashlib.sha256(v29).hexdigest()!=V29_SHA: die("V19_7_29_IDENTITY")
  ns={"__name__":"_multiverse_v19_7_29_same_memory_"}
@@ -50,7 +68,7 @@ def main():
  if not callable(rebootstrap): die("V19_7_29_REBOOTSTRAP_ENTRY")
  print("PHASE_C_V19_7_30_POST_OAUTH_DEPENDENCY_REAUTH_PASS",flush=True)
  rebootstrap()
- env={"PATH":"/usr/local/bin:/usr/bin:/bin","LANG":"C","LC_ALL":"C","CODESPACES":os.environ["CODESPACES"],"CODESPACE_NAME":os.environ["CODESPACE_NAME"],"GH_CONFIG_DIR":GH_CONFIG_DIR,"PYTHONPATH":str(SITE),"PYTHONNOUSERSITE":"1"}
+ env={"PATH":"/usr/local/bin:/usr/bin:/bin","LANG":"C","LC_ALL":"C","CODESPACES":os.environ["CODESPACES"],"CODESPACE_NAME":os.environ["CODESPACE_NAME"],"GH_CONFIG_DIR":GH_CONFIG_DIR,"PYTHONPATH":str(SITE_REAUTH),"PYTHONNOUSERSITE":"1"}
  cp=subprocess.run([PY,"-B",PREFLIGHT],cwd=EXEC_ROOT,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
  if cp.returncode!=0:
   try:
