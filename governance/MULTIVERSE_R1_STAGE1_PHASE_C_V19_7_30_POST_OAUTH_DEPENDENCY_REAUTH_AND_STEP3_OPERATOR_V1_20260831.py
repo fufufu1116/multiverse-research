@@ -50,6 +50,36 @@ def sealed_memfd(name,data):
   if h.digest()!=hashlib.sha256(data).digest(): die("MEMFD_READBACK")
   os.lseek(fd,0,os.SEEK_SET); return fd
  except BaseException: os.close(fd); raise
+def trusted_chain(path,allow_missing_leaf=False):
+ root=pathlib.Path(os.path.realpath("/usr/local/python/current")); p=pathlib.Path(path)
+ if allow_missing_leaf and not p.exists(): target=p.parent.resolve(strict=True)
+ else: target=p.resolve(strict=True)
+ try: rel=target.relative_to(root)
+ except ValueError: die("STDLIB_OUTSIDE_TRUST_ROOT")
+ cur=root
+ for part in ((),*[(x,) for x in rel.parts]):
+  if part: cur=cur/part[0]
+  st=os.lstat(cur)
+  if st.st_uid!=0 or stat.S_IMODE(st.st_mode)&0o022: die("STDLIB_WRITABLE_OR_UNOWNED")
+ if allow_missing_leaf and not p.exists():
+  if p.parent.resolve(strict=True)!=target: die("STDLIB_PATH_STATE")
+def trusted_stdlib_paths():
+ f=sys.flags
+ if not (f.isolated and f.no_site and f.ignore_environment and f.no_user_site and getattr(f,"safe_path",False)): die("PYTHON_ISOLATION_REQUIRED")
+ trust=os.path.realpath("/usr/local/python/current"); pyreal=os.path.realpath(PY)
+ if not pyreal.startswith(trust+os.sep): die("PYTHON_TRUST_ROOT")
+ trusted_chain(pyreal)
+ mm=f"python{sys.version_info.major}.{sys.version_info.minor}"; compact=f"python{sys.version_info.major}{sys.version_info.minor}.zip"
+ std=os.path.join(trust,"lib",mm); dyn=os.path.join(std,"lib-dynload"); z=os.path.join(trust,"lib",compact)
+ trusted_chain(std); trusted_chain(dyn); trusted_chain(z,allow_missing_leaf=True)
+ allowed={os.path.realpath(std),os.path.realpath(dyn),os.path.realpath(z) if os.path.exists(z) else os.path.abspath(z)}; out=[]
+ for p in sys.path:
+  if not p: die("STDLIB_EMPTY_PATH")
+  rp=os.path.realpath(p) if os.path.exists(p) else os.path.abspath(p)
+  if rp not in allowed: die("STDLIB_PATH_UNEXPECTED")
+  trusted_chain(p,allow_missing_leaf=not os.path.exists(p)); out.append(p)
+ if not out: die("STDLIB_PATH_EMPTY")
+ return out
 def exact_wheels(expected):
  out={}
  for n,h in expected.items():
@@ -87,15 +117,16 @@ class ExactSodiumFinder:
  def __init__(self,fd): self.fd=fd
  def find_spec(self,fullname,path=None,target=None):
   return extension_spec(fullname,self.fd) if fullname=="nacl._sodium" else None
-def load_sealed_dependencies(wheels):
+def load_sealed_dependencies(wheels,stdlib):
  for k in list(sys.modules):
   if k=="_cffi_backend" or k=="nacl" or k.startswith("nacl.") or k=="cffi" or k.startswith("cffi.") or k=="pycparser" or k.startswith("pycparser."): sys.modules.pop(k,None)
  wheel_fds={}; ext_fds={}; old_path=list(sys.path); finder=None
  try:
+  if old_path!=stdlib: die("STDLIB_PATH_DRIFT")
   for n,data in wheels.items(): wheel_fds[n]=sealed_memfd("multiverse-v19-7-30-"+n,data)
   for fullname,data in extension_bytes(wheels).items(): ext_fds[fullname]=sealed_memfd("multiverse-v19-7-30-"+fullname.replace(".","-"),data)
   zpaths=[f"/proc/self/fd/{wheel_fds[n]}" for n in ("pynacl.whl","cffi.whl","pycparser.whl")]
-  sys.path[:]=zpaths+[p for p in old_path if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches()
+  sys.path[:]=zpaths+stdlib; importlib.invalidate_caches()
   load_extension("_cffi_backend",ext_fds["_cffi_backend"])
   finder=ExactSodiumFinder(ext_fds["nacl._sodium"]); sys.meta_path.insert(0,finder)
   nacl=importlib.import_module("nacl"); public=importlib.import_module("nacl.public")
@@ -110,7 +141,7 @@ def load_sealed_dependencies(wheels):
    if name=="_cffi_backend" or name=="nacl" or name.startswith("nacl.") or name=="cffi" or name.startswith("cffi.") or name=="pycparser" or name.startswith("pycparser."):
     origin=getattr(mod,"__file__",None)
     if origin is not None and not str(origin).startswith(allowed): die("DEPENDENCY_ORIGIN")
-  sys.path[:]=[p for p in old_path if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches(); return wheel_fds,ext_fds
+  sys.path[:]=stdlib; importlib.invalidate_caches(); return wheel_fds,ext_fds
  except BaseException:
   if finder in sys.meta_path: sys.meta_path.remove(finder)
   sys.path[:]=old_path
@@ -122,28 +153,22 @@ def exact_exec_module(name,rel,expected_blob,expected_bytes):
  path=EXEC_ROOT/rel; data=read_once(str(path))
  if len(data)!=expected_bytes or blob(data)!=expected_blob: die("CANONICAL_MODULE_EXACT_IDENTITY")
  mod=types.ModuleType(name); mod.__file__=str(path); mod.__package__=name.rpartition(".")[0]; sys.modules[name]=mod; exec(compile(data,"<canonical-main:"+rel+">","exec"),mod.__dict__,mod.__dict__); return mod
-def sanitized_nonrepo_path(old):
- out=[]; root=os.path.realpath(EXEC_ROOT)
- for p in old:
-  if not p or "site-packages" in p or ".local" in p: continue
-  try: rp=os.path.realpath(p)
-  except Exception: continue
-  if rp==root or rp.startswith(root+os.sep): continue
-  out.append(p)
- return out
-def same_process_canonical_preflight():
- old=list(sys.path); sys.path[:]=sanitized_nonrepo_path(old); importlib.invalidate_caches()
+def same_process_canonical_preflight(stdlib):
+ old=list(sys.path)
+ if old!=stdlib: die("STDLIB_PATH_DRIFT")
+ sys.path[:]=stdlib; importlib.invalidate_caches()
  try:
   exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN,ADMIN_BLOB,ADMIN_BYTES)
   pre=exact_exec_module("_multiverse_phase_c_canonical_preflight",PREFLIGHT,PREFLIGHT_BLOB,PREFLIGHT_BYTES); fn=getattr(pre,"live_preflight",None)
   if not callable(fn): die("PREFLIGHT_ENTRY")
   d=fn()
- finally: sys.path[:]=old; importlib.invalidate_caches()
+ finally: sys.path[:]=stdlib; importlib.invalidate_caches()
  if not isinstance(d,dict) or d.get("status")!="PHASE_C_NONMUTATING_PREFLIGHT_PASS" or d.get("execution_checkout_sha")!=CANONICAL_MAIN or d.get("fresh_main_sha")!=CANONICAL_MAIN or d.get("production_mutation_performed") is not False or d.get("runtime_activation_performed") is not False: die("STEP3_RESULT")
  return d
 def main():
  os.umask(0o077); sys.dont_write_bytecode=True
  if os.environ.get("CODESPACES")!="true" or not os.environ.get("CODESPACE_NAME") or sys.executable!=PY or len(sys.argv)!=2 or sys.version_info[:2] not in CFFI: die("ENTRY")
+ stdlib=trusted_stdlib_paths()
  if os.environ.get("GH_CONFIG_DIR")!=GH_CONFIG_DIR: die("GH_CONFIG_DIR")
  if subprocess.check_output(["stat","-f","-c","%T",str(ROOT)],text=True).strip() not in {"tmpfs","ramfs"}: die("PYDEPS_FS")
  st=os.lstat(ROOT)
@@ -155,13 +180,13 @@ def main():
   got[n]=h
  expected={"pynacl.whl":PYNACL,"pycparser.whl":PYCPARSER,"cffi.whl":CFFI[sys.version_info[:2]]}
  if got!=expected: die("MANIFEST")
- wheels=exact_wheels(expected); wheel_fds,ext_fds=load_sealed_dependencies(wheels)
+ wheels=exact_wheels(expected); wheel_fds,ext_fds=load_sealed_dependencies(wheels,stdlib)
  try:
   repo=os.path.realpath(sys.argv[1]); v29=read_once(os.path.join(repo,V29))
   if len(v29)!=V29_BYTES or blob(v29)!=V29_BLOB or hashlib.sha256(v29).hexdigest()!=V29_SHA: die("V19_7_29_IDENTITY")
   ns={"__name__":"_multiverse_v19_7_29_same_memory_"}; exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns); rebootstrap=ns.get("rebootstrap_current_main")
   if not callable(rebootstrap): die("V19_7_29_REBOOTSTRAP_ENTRY")
-  print("PHASE_C_V19_7_30_POST_OAUTH_SEALED_MEMFD_DEPENDENCY_PASS",flush=True); rebootstrap(); same_process_canonical_preflight()
+  print("PHASE_C_V19_7_30_POST_OAUTH_SEALED_MEMFD_DEPENDENCY_PASS",flush=True); rebootstrap(); same_process_canonical_preflight(stdlib)
  finally:
   for fd in list(wheel_fds.values())+list(ext_fds.values()):
    try: os.close(fd)
