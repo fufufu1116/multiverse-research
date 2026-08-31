@@ -9,6 +9,8 @@ RC_FAIL = 92
 ORIGIN = 'https://github.com/fufufu1116/multiverse-research.git'
 CURRENT_MAIN = '5c1403c1f5aabb80d29e8c868440aede8888ce61'
 CURRENT_TREE = '3d47741b4863411e5c36cb4c28925ac455ab6441'
+STALE_MAIN = '74ea95e59ac0654e1a0c1f811a178b3eef7b073c'
+STALE_TREE = '3d47741b4863411e5c36cb4c28925ac455ab6441'
 SHM = '/dev/shm'
 EXEC_NAME = 'multiverse-r1-stage1-phase-c-execution'
 STALE_NAME = 'multiverse-r1-stage1-phase-c-execution-v19-7-29-stale'
@@ -92,6 +94,21 @@ def rebootstrap_current_main() -> None:
                 raise RuntimeError('FRESH_ROOT_STATE')
     finally:
         os.close(pfd)
+
+    stale_root = os.path.join(SHM, STALE_NAME)
+    if require_ok(clean_git(['rev-parse', '--verify', 'HEAD^{commit}'], stale_root)) != STALE_MAIN:
+        raise RuntimeError('STALE_HEAD_MISMATCH')
+    if require_ok(clean_git(['rev-parse', '--verify', 'HEAD^{tree}'], stale_root)) != STALE_TREE:
+        raise RuntimeError('STALE_TREE_MISMATCH')
+    stale_symbolic = clean_git(['symbolic-ref', '-q', 'HEAD'], stale_root)
+    if stale_symbolic.returncode != 1:
+        raise RuntimeError('STALE_NOT_DETACHED')
+    if require_ok(clean_git(['remote'], stale_root)) != 'origin':
+        raise RuntimeError('STALE_REMOTE_SET')
+    if require_ok(clean_git(['config', '--local', '--get', 'remote.origin.url'], stale_root)) != ORIGIN:
+        raise RuntimeError('STALE_ORIGIN_MISMATCH')
+    if require_ok(clean_git(['status', '--porcelain=v1', '--untracked-files=all'], stale_root)):
+        raise RuntimeError('STALE_WORKTREE_DIRTY')
 
     exec_root = os.path.join(SHM, EXEC_NAME)
     template = os.path.join(SHM, TEMPLATE_NAME)
