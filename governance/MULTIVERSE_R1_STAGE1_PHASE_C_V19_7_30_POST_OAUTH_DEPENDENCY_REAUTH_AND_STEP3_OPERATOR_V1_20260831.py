@@ -24,6 +24,36 @@ def read_once(p):
    a.append(b)
   return b"".join(a)
  finally: os.close(fd)
+def write_all(fd,payload):
+ view=memoryview(payload); done=0
+ while done<len(view):
+  n=os.write(fd,view[done:])
+  if n<=0: die("REAUTH_SITE_SHORT_WRITE")
+  done+=n
+ if done!=len(view): die("REAUTH_SITE_SHORT_WRITE")
+def tree_digest(root):
+ root=pathlib.Path(root); rows=[]
+ for base,dirs,files in os.walk(root,topdown=True,followlinks=False):
+  dirs.sort(); files.sort(); bp=pathlib.Path(base)
+  bst=os.lstat(bp)
+  if not stat.S_ISDIR(bst.st_mode) or bst.st_uid!=os.geteuid() or stat.S_IMODE(bst.st_mode)&0o022: die("REAUTH_SITE_DIR_STATE")
+  rel_dir=bp.relative_to(root).as_posix(); rows.append(("D",rel_dir,stat.S_IMODE(bst.st_mode),0,""))
+  for name in files:
+   p=bp/name; st=os.lstat(p)
+   if stat.S_ISLNK(st.st_mode) or not stat.S_ISREG(st.st_mode) or st.st_nlink!=1 or st.st_uid!=os.geteuid() or stat.S_IMODE(st.st_mode)&0o022: die("REAUTH_SITE_FILE_STATE")
+   data=read_once(str(p))
+   st2=os.lstat(p)
+   if (st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns)!=(st2.st_dev,st2.st_ino,st2.st_size,st2.st_mtime_ns): die("REAUTH_SITE_CHANGED_DURING_DIGEST")
+   rows.append(("F",p.relative_to(root).as_posix(),stat.S_IMODE(st.st_mode),len(data),hashlib.sha256(data).hexdigest()))
+ enc=json.dumps(rows,separators=(",",":"),ensure_ascii=True).encode("ascii")
+ return hashlib.sha256(enc).hexdigest()
+def seal_tree(root):
+ root=pathlib.Path(root)
+ for base,dirs,files in os.walk(root,topdown=False,followlinks=False):
+  bp=pathlib.Path(base)
+  for name in files: os.chmod(bp/name,0o400,follow_symlinks=False)
+  for name in dirs: os.chmod(bp/name,0o500,follow_symlinks=False)
+  os.chmod(bp,0o500,follow_symlinks=False)
 def rebuild_site_from_verified_wheels(expected):
  if os.path.lexists(SITE_REAUTH): die("REAUTH_SITE_PREEXISTS")
  SITE_REAUTH.mkdir(mode=0o700)
@@ -41,8 +71,14 @@ def rebuild_site_from_verified_wheels(expected):
     if os.path.lexists(out): die("WHEEL_MEMBER_COLLISION")
     payload=z.read(i)
     fd=os.open(out,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
-    try: os.write(fd,payload)
+    try:
+     write_all(fd,payload); os.fsync(fd)
+     st=os.fstat(fd)
+     if st.st_size!=len(payload): die("REAUTH_SITE_WRITE_SIZE")
     finally: os.close(fd)
+    if hashlib.sha256(read_once(str(out))).digest()!=hashlib.sha256(payload).digest(): die("REAUTH_SITE_WRITE_HASH")
+ seal_tree(SITE_REAUTH)
+ return tree_digest(SITE_REAUTH)
 def main():
  os.umask(0o077)
  if os.environ.get("CODESPACES")!="true" or not os.environ.get("CODESPACE_NAME") or sys.executable!=PY or len(sys.argv)!=2 or sys.version_info[:2] not in CFFI: die("ENTRY")
@@ -57,19 +93,29 @@ def main():
   got[n]=h
  expected={"pynacl.whl":PYNACL,"pycparser.whl":PYCPARSER,"cffi.whl":CFFI[sys.version_info[:2]]}
  if got!=expected: die("MANIFEST")
- rebuild_site_from_verified_wheels(expected)
- code='import sys; p=sys.argv[1]; sys.path[:]=[p]+[x for x in sys.path if x!=p and "site-packages" not in x and ".local" not in x]; from nacl.public import PrivateKey,SealedBox; import nacl; assert nacl.__version__=="1.6.2"; k=PrivateKey.generate(); m=b"post-oauth"; assert SealedBox(k).decrypt(SealedBox(k.public_key).encrypt(m))==m'
- if subprocess.run([PY,"-I","-B","-c",code,str(SITE_REAUTH)],env={"PATH":"/usr/local/bin:/usr/bin:/bin","PYTHONNOUSERSITE":"1"}).returncode: die("PYNACL_REAUTH")
- repo=os.path.realpath(sys.argv[1]); v29=read_once(os.path.join(repo,V29))
- if len(v29)!=V29_BYTES or blob(v29)!=V29_BLOB or hashlib.sha256(v29).hexdigest()!=V29_SHA: die("V19_7_29_IDENTITY")
- ns={"__name__":"_multiverse_v19_7_29_same_memory_"}
- exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns)
- rebootstrap=ns.get("rebootstrap_current_main")
- if not callable(rebootstrap): die("V19_7_29_REBOOTSTRAP_ENTRY")
- print("PHASE_C_V19_7_30_POST_OAUTH_DEPENDENCY_REAUTH_PASS",flush=True)
- rebootstrap()
- env={"PATH":"/usr/local/bin:/usr/bin:/bin","LANG":"C","LC_ALL":"C","CODESPACES":os.environ["CODESPACES"],"CODESPACE_NAME":os.environ["CODESPACE_NAME"],"GH_CONFIG_DIR":GH_CONFIG_DIR,"PYTHONPATH":str(SITE_REAUTH),"PYTHONNOUSERSITE":"1"}
- cp=subprocess.run([PY,"-B",PREFLIGHT],cwd=EXEC_ROOT,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ frozen_site_digest=rebuild_site_from_verified_wheels(expected)
+ site_fd=os.open(SITE_REAUTH,os.O_RDONLY|getattr(os,"O_DIRECTORY",0)|getattr(os,"O_NOFOLLOW",0))
+ try:
+  site_st=os.fstat(site_fd); path_st=os.lstat(SITE_REAUTH)
+  if not stat.S_ISDIR(site_st.st_mode) or site_st.st_uid!=os.geteuid() or (site_st.st_dev,site_st.st_ino)!=(path_st.st_dev,path_st.st_ino): die("REAUTH_SITE_ROOT_BINDING")
+  if tree_digest(SITE_REAUTH)!=frozen_site_digest: die("REAUTH_SITE_TREE_DRIFT_BEFORE_ROUNDTRIP")
+  fd_site=f"/proc/self/fd/{site_fd}"
+  code='import sys; p=sys.argv[1]; sys.path[:]=[p]+[x for x in sys.path if x!=p and "site-packages" not in x and ".local" not in x]; from nacl.public import PrivateKey,SealedBox; import nacl; assert nacl.__version__=="1.6.2"; k=PrivateKey.generate(); m=b"post-oauth"; assert SealedBox(k).decrypt(SealedBox(k.public_key).encrypt(m))==m'
+  if subprocess.run([PY,"-I","-B","-c",code,fd_site],env={"PATH":"/usr/local/bin:/usr/bin:/bin","PYTHONNOUSERSITE":"1"},pass_fds=(site_fd,)).returncode: die("PYNACL_REAUTH")
+  repo=os.path.realpath(sys.argv[1]); v29=read_once(os.path.join(repo,V29))
+  if len(v29)!=V29_BYTES or blob(v29)!=V29_BLOB or hashlib.sha256(v29).hexdigest()!=V29_SHA: die("V19_7_29_IDENTITY")
+  ns={"__name__":"_multiverse_v19_7_29_same_memory_"}
+  exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns)
+  rebootstrap=ns.get("rebootstrap_current_main")
+  if not callable(rebootstrap): die("V19_7_29_REBOOTSTRAP_ENTRY")
+  print("PHASE_C_V19_7_30_POST_OAUTH_DEPENDENCY_REAUTH_PASS",flush=True)
+  rebootstrap()
+  path_st2=os.lstat(SITE_REAUTH); site_st2=os.fstat(site_fd)
+  if (site_st2.st_dev,site_st2.st_ino)!=(site_st.st_dev,site_st.st_ino) or (path_st2.st_dev,path_st2.st_ino)!=(site_st.st_dev,site_st.st_ino): die("REAUTH_SITE_ROOT_DRIFT_BEFORE_PREFLIGHT")
+  if tree_digest(SITE_REAUTH)!=frozen_site_digest: die("REAUTH_SITE_TREE_DRIFT_BEFORE_PREFLIGHT")
+  env={"PATH":"/usr/local/bin:/usr/bin:/bin","LANG":"C","LC_ALL":"C","CODESPACES":os.environ["CODESPACES"],"CODESPACE_NAME":os.environ["CODESPACE_NAME"],"GH_CONFIG_DIR":GH_CONFIG_DIR,"PYTHONPATH":fd_site,"PYTHONNOUSERSITE":"1"}
+  cp=subprocess.run([PY,"-B",PREFLIGHT],cwd=EXEC_ROOT,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,pass_fds=(site_fd,))
+ finally: os.close(site_fd)
  if cp.returncode!=0:
   try:
    d=json.loads(cp.stdout); reason=d.get("reason","UNCLASSIFIED") if isinstance(d,dict) else "UNCLASSIFIED"
