@@ -1,13 +1,7 @@
 {
-  "name": "MULTIVERSE V19.7.36 v6 root-anchor Codespace",
+  "name": "MULTIVERSE V19.7.36 v7 capability-anchor Codespace",
   "build": {"dockerfile": "Dockerfile", "context": ".."},
   "remoteUser": "codespace",
   "overrideCommand": false,
-  "runArgs": [
-    "--security-opt=no-new-privileges",
-    "--cap-drop=ALL",
-    "--cap-add=CHOWN",
-    "--cap-add=SETUID",
-    "--cap-add=SETGID"
-  ]
+  "runArgs": ["--security-opt=no-new-privileges","--cap-drop=ALL","--cap-add=CHOWN","--cap-add=SETUID","--cap-add=SETGID"]
 }
