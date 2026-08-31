@@ -5,10 +5,8 @@ PY="/usr/local/python/current/bin/python"
 ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-pydeps"); MAN=ROOT/"MANIFEST.sha256"
 GH_CONFIG_DIR="/dev/shm/multiverse-r1-stage1-phase-c-gh-auth"
 EXEC_ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-execution")
-PREFLIGHT="tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"
-ADMIN="tools/multiverse_r1_stage1_writer_key_admin_channel_v1.py"
-PYNACL="22de65bb9010a725b0dac248f353bb072969c94fa8d6b1f34b87d7953cf7bbe4"
-PYCPARSER="e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934"
+PREFLIGHT="tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"; ADMIN="tools/multiverse_r1_stage1_writer_key_admin_channel_v1.py"
+PYNACL="22de65bb9010a725b0dac248f353bb072969c94fa8d6b1f34b87d7953cf7bbe4"; PYCPARSER="e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934"
 CFFI={(3,11):"34e261f78cb6ceaaa36f42f2613f4380d94d9c759a9c73c769ee6e0247364632",(3,12):"c1453022f490d2459a11819d83ad1d586e9ff65a12ac3e705ffebd46d3685dcf",(3,13):"a931079504ecc49efed7744c476a5c343a92fabf66dec2db95edb1b2fdc770e2",(3,14):"b0431303acaea1089ad4b3e9ce4e6518193def1118d4073ca848635ee4ea2e96"}
 V29="governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_29_POST_OAUTH_CURRENT_MAIN_REBOOTSTRAP_STEP3_OPERATOR_V3_20260831.py"; V29_BYTES=8227; V29_BLOB="61e302d9ef3f70b82301dec0b0fdffb3a677adef"; V29_SHA="aaf6acfb863228c174fcfb10678f346d3297a740918a79becc6aad0cb485aac0"
 def die(x): print("PHASE_C_V19_7_30_POST_OAUTH_DENIED:"+x,flush=True); raise SystemExit(92)
@@ -38,11 +36,9 @@ def sealed_memfd(name,data):
  if any(not hasattr(fcntl,x) for x in names): die("MEMFD_SEALING_UNAVAILABLE")
  fd=os.memfd_create(name,getattr(os,"MFD_CLOEXEC",0)|os.MFD_ALLOW_SEALING)
  try:
-  write_all(fd,data); os.fsync(fd)
-  st=os.fstat(fd)
+  write_all(fd,data); os.fsync(fd); st=os.fstat(fd)
   if not stat.S_ISREG(st.st_mode) or st.st_size!=len(data): die("MEMFD_SIZE")
-  expected=fcntl.F_SEAL_SEAL|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_GROW|fcntl.F_SEAL_WRITE
-  fcntl.fcntl(fd,fcntl.F_ADD_SEALS,expected)
+  expected=fcntl.F_SEAL_SEAL|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_GROW|fcntl.F_SEAL_WRITE; fcntl.fcntl(fd,fcntl.F_ADD_SEALS,expected)
   if fcntl.fcntl(fd,fcntl.F_GET_SEALS)&expected!=expected: die("MEMFD_SEALS")
   os.lseek(fd,0,os.SEEK_SET); h=hashlib.sha256()
   while True:
@@ -51,8 +47,7 @@ def sealed_memfd(name,data):
    h.update(b)
   if h.digest()!=hashlib.sha256(data).digest(): die("MEMFD_READBACK")
   os.lseek(fd,0,os.SEEK_SET); return fd
- except BaseException:
-  os.close(fd); raise
+ except BaseException: os.close(fd); raise
 def exact_wheels(expected):
  out={}
  for n,h in expected.items():
@@ -80,37 +75,43 @@ def extension_bytes(wheels):
    elif sos: die("UNEXPECTED_EXTENSION_SET")
  if set(found)!={"nacl._sodium","_cffi_backend"}: die("EXTENSION_SET")
  return found
-def load_extension(fullname,fd):
- path=f"/proc/self/fd/{fd}"; loader=importlib.machinery.ExtensionFileLoader(fullname,path)
- spec=importlib.util.spec_from_file_location(fullname,path,loader=loader)
+def extension_spec(fullname,fd):
+ path=f"/proc/self/fd/{fd}"; loader=importlib.machinery.ExtensionFileLoader(fullname,path); spec=importlib.util.spec_from_file_location(fullname,path,loader=loader)
  if spec is None: die("EXTENSION_SPEC")
- mod=importlib.util.module_from_spec(spec); sys.modules[fullname]=mod; loader.exec_module(mod); return mod
+ return spec
+def load_extension(fullname,fd):
+ spec=extension_spec(fullname,fd); mod=importlib.util.module_from_spec(spec); sys.modules[fullname]=mod; spec.loader.exec_module(mod); return mod
+class ExactSodiumFinder:
+ def __init__(self,fd): self.fd=fd
+ def find_spec(self,fullname,path=None,target=None):
+  return extension_spec(fullname,self.fd) if fullname=="nacl._sodium" else None
 def load_sealed_dependencies(wheels):
  for k in list(sys.modules):
-  if k in {"_cffi_backend","_sodium"} or k=="nacl" or k.startswith("nacl.") or k=="cffi" or k.startswith("cffi.") or k=="pycparser" or k.startswith("pycparser."): sys.modules.pop(k,None)
- wheel_fds={}; ext_fds={}; old=list(sys.path)
+  if k=="_cffi_backend" or k=="nacl" or k.startswith("nacl.") or k=="cffi" or k.startswith("cffi.") or k=="pycparser" or k.startswith("pycparser."): sys.modules.pop(k,None)
+ wheel_fds={}; ext_fds={}; old_path=list(sys.path); finder=None
  try:
   for n,data in wheels.items(): wheel_fds[n]=sealed_memfd("multiverse-v19-7-30-"+n,data)
-  ext=extension_bytes(wheels)
-  for fullname,data in ext.items(): ext_fds[fullname]=sealed_memfd("multiverse-v19-7-30-"+fullname.replace(".","-"),data)
+  for fullname,data in extension_bytes(wheels).items(): ext_fds[fullname]=sealed_memfd("multiverse-v19-7-30-"+fullname.replace(".","-"),data)
   zpaths=[f"/proc/self/fd/{wheel_fds[n]}" for n in ("pynacl.whl","cffi.whl","pycparser.whl")]
-  sys.path[:]=zpaths+[p for p in old if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches()
+  sys.path[:]=zpaths+[p for p in old_path if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches()
   load_extension("_cffi_backend",ext_fds["_cffi_backend"])
-  sodium=load_extension("_sodium",ext_fds["nacl._sodium"]); sys.modules["nacl._sodium"]=sodium
+  finder=ExactSodiumFinder(ext_fds["nacl._sodium"]); sys.meta_path.insert(0,finder)
   nacl=importlib.import_module("nacl"); public=importlib.import_module("nacl.public")
+  if finder in sys.meta_path: sys.meta_path.remove(finder)
+  if "nacl._sodium" not in sys.modules: die("SODIUM_EXTENSION_NOT_LOADED")
   PrivateKey=public.PrivateKey; SealedBox=public.SealedBox
   if getattr(nacl,"__version__",None)!="1.6.2": die("PYNACL_VERSION")
   k=PrivateKey.generate(); m=b"multiverse-v19.7.30-sealed-memfd"; c=SealedBox(k.public_key).encrypt(m)
   if SealedBox(k).decrypt(c)!=m: die("PYNACL_ROUNDTRIP")
   allowed=tuple(zpaths+[f"/proc/self/fd/{fd}" for fd in ext_fds.values()])
   for name,mod in list(sys.modules.items()):
-   if name in {"_cffi_backend","_sodium"} or name=="nacl" or name.startswith("nacl.") or name=="cffi" or name.startswith("cffi.") or name=="pycparser" or name.startswith("pycparser."):
+   if name=="_cffi_backend" or name=="nacl" or name.startswith("nacl.") or name=="cffi" or name.startswith("cffi.") or name=="pycparser" or name.startswith("pycparser."):
     origin=getattr(mod,"__file__",None)
     if origin is not None and not str(origin).startswith(allowed): die("DEPENDENCY_ORIGIN")
-  sys.path[:]=[p for p in old if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches()
-  return wheel_fds,ext_fds
+  sys.path[:]=[p for p in old_path if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches(); return wheel_fds,ext_fds
  except BaseException:
-  sys.path[:]=old
+  if finder in sys.meta_path: sys.meta_path.remove(finder)
+  sys.path[:]=old_path
   for fd in list(wheel_fds.values())+list(ext_fds.values()):
    try: os.close(fd)
    except OSError: pass
@@ -127,14 +128,11 @@ def git_head_blob(root,rel):
 def exact_exec_module(name,rel):
  path=EXEC_ROOT/rel; data=read_once(str(path))
  if blob(data)!=git_head_blob(EXEC_ROOT,rel): die("CANONICAL_MODULE_BLOB")
- mod=types.ModuleType(name); mod.__file__=str(path); mod.__package__=name.rpartition(".")[0]; sys.modules[name]=mod
- exec(compile(data,str(path),"exec"),mod.__dict__,mod.__dict__); return mod
+ mod=types.ModuleType(name); mod.__file__=str(path); mod.__package__=name.rpartition(".")[0]; sys.modules[name]=mod; exec(compile(data,str(path),"exec"),mod.__dict__,mod.__dict__); return mod
 def same_process_canonical_preflight():
  tools=str(EXEC_ROOT/"tools"); old=list(sys.path); sys.path[:]=[tools]+[p for p in old if p and "site-packages" not in p and ".local" not in p and p!=tools]
  try:
-  exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN)
-  pre=exact_exec_module("_multiverse_phase_c_canonical_preflight",PREFLIGHT)
-  fn=getattr(pre,"live_preflight",None)
+  exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN); pre=exact_exec_module("_multiverse_phase_c_canonical_preflight",PREFLIGHT); fn=getattr(pre,"live_preflight",None)
   if not callable(fn): die("PREFLIGHT_ENTRY")
   d=fn()
  finally: sys.path[:]=old
@@ -158,8 +156,7 @@ def main():
  try:
   repo=os.path.realpath(sys.argv[1]); v29=read_once(os.path.join(repo,V29))
   if len(v29)!=V29_BYTES or blob(v29)!=V29_BLOB or hashlib.sha256(v29).hexdigest()!=V29_SHA: die("V19_7_29_IDENTITY")
-  ns={"__name__":"_multiverse_v19_7_29_same_memory_"}; exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns)
-  rebootstrap=ns.get("rebootstrap_current_main")
+  ns={"__name__":"_multiverse_v19_7_29_same_memory_"}; exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns); rebootstrap=ns.get("rebootstrap_current_main")
   if not callable(rebootstrap): die("V19_7_29_REBOOTSTRAP_ENTRY")
   print("PHASE_C_V19_7_30_POST_OAUTH_SEALED_MEMFD_DEPENDENCY_PASS",flush=True); rebootstrap(); same_process_canonical_preflight()
  finally:
