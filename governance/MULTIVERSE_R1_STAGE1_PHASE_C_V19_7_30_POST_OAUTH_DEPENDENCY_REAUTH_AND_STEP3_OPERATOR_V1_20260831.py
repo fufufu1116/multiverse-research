@@ -33,10 +33,9 @@ def write_all(fd,payload):
   done+=n
  if done!=len(view): die("MEMFD_SHORT_WRITE")
 def sealed_memfd(name,data):
- need=("memfd_create","MFD_ALLOW_SEALING")
- if any(not hasattr(os,x) for x in need): die("MEMFD_SEALING_UNAVAILABLE")
- seals=("F_ADD_SEALS","F_GET_SEALS","F_SEAL_SEAL","F_SEAL_SHRINK","F_SEAL_GROW","F_SEAL_WRITE")
- if any(not hasattr(fcntl,x) for x in seals): die("MEMFD_SEALING_UNAVAILABLE")
+ if not hasattr(os,"memfd_create") or not hasattr(os,"MFD_ALLOW_SEALING"): die("MEMFD_SEALING_UNAVAILABLE")
+ names=("F_ADD_SEALS","F_GET_SEALS","F_SEAL_SEAL","F_SEAL_SHRINK","F_SEAL_GROW","F_SEAL_WRITE")
+ if any(not hasattr(fcntl,x) for x in names): die("MEMFD_SEALING_UNAVAILABLE")
  fd=os.memfd_create(name,getattr(os,"MFD_CLOEXEC",0)|os.MFD_ALLOW_SEALING)
  try:
   write_all(fd,data); os.fsync(fd)
@@ -45,15 +44,13 @@ def sealed_memfd(name,data):
   expected=fcntl.F_SEAL_SEAL|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_GROW|fcntl.F_SEAL_WRITE
   fcntl.fcntl(fd,fcntl.F_ADD_SEALS,expected)
   if fcntl.fcntl(fd,fcntl.F_GET_SEALS)&expected!=expected: die("MEMFD_SEALS")
-  os.lseek(fd,0,os.SEEK_SET)
-  h=hashlib.sha256()
+  os.lseek(fd,0,os.SEEK_SET); h=hashlib.sha256()
   while True:
    b=os.read(fd,1048576)
    if not b: break
    h.update(b)
   if h.digest()!=hashlib.sha256(data).digest(): die("MEMFD_READBACK")
-  os.lseek(fd,0,os.SEEK_SET)
-  return fd
+  os.lseek(fd,0,os.SEEK_SET); return fd
  except BaseException:
   os.close(fd); raise
 def exact_wheels(expected):
@@ -74,59 +71,53 @@ def extension_bytes(wheels):
    sos=[i for i in z.infolist() if not i.is_dir() and i.filename.endswith(".so")]
    if n=="pynacl.whl":
     cand=[i for i in sos if pathlib.PurePosixPath(i.filename).name.startswith("_sodium")]
-    if len(cand)!=1: die("PYNACL_EXTENSION_SET")
+    if len(cand)!=1 or len(sos)!=1: die("PYNACL_EXTENSION_SET")
     found["nacl._sodium"]=z.read(cand[0])
-    if len(sos)!=1: die("PYNACL_EXTENSION_SET")
    elif n=="cffi.whl":
     cand=[i for i in sos if pathlib.PurePosixPath(i.filename).name.startswith("_cffi_backend")]
-    if len(cand)!=1: die("CFFI_EXTENSION_SET")
+    if len(cand)!=1 or len(sos)!=1: die("CFFI_EXTENSION_SET")
     found["_cffi_backend"]=z.read(cand[0])
-    if len(sos)!=1: die("CFFI_EXTENSION_SET")
    elif sos: die("UNEXPECTED_EXTENSION_SET")
  if set(found)!={"nacl._sodium","_cffi_backend"}: die("EXTENSION_SET")
  return found
 def load_extension(fullname,fd):
- path=f"/proc/self/fd/{fd}"
- loader=importlib.machinery.ExtensionFileLoader(fullname,path)
+ path=f"/proc/self/fd/{fd}"; loader=importlib.machinery.ExtensionFileLoader(fullname,path)
  spec=importlib.util.spec_from_file_location(fullname,path,loader=loader)
  if spec is None: die("EXTENSION_SPEC")
- mod=importlib.util.module_from_spec(spec); sys.modules[fullname]=mod
- loader.exec_module(mod)
- return mod
+ mod=importlib.util.module_from_spec(spec); sys.modules[fullname]=mod; loader.exec_module(mod); return mod
 def load_sealed_dependencies(wheels):
  for k in list(sys.modules):
-  if k=="_cffi_backend" or k=="nacl" or k.startswith("nacl.") or k=="cffi" or k.startswith("cffi.") or k=="pycparser" or k.startswith("pycparser."): sys.modules.pop(k,None)
- wheel_fds={}; ext_fds={}
+  if k in {"_cffi_backend","_sodium"} or k=="nacl" or k.startswith("nacl.") or k=="cffi" or k.startswith("cffi.") or k=="pycparser" or k.startswith("pycparser."): sys.modules.pop(k,None)
+ wheel_fds={}; ext_fds={}; old=list(sys.path)
  try:
   for n,data in wheels.items(): wheel_fds[n]=sealed_memfd("multiverse-v19-7-30-"+n,data)
   ext=extension_bytes(wheels)
   for fullname,data in ext.items(): ext_fds[fullname]=sealed_memfd("multiverse-v19-7-30-"+fullname.replace(".","-"),data)
   zpaths=[f"/proc/self/fd/{wheel_fds[n]}" for n in ("pynacl.whl","cffi.whl","pycparser.whl")]
-  old=list(sys.path); sys.path[:]=zpaths+[p for p in old if p and "site-packages" not in p and ".local" not in p]
-  importlib.invalidate_caches()
-  nacl=importlib.import_module("nacl")
+  sys.path[:]=zpaths+[p for p in old if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches()
   load_extension("_cffi_backend",ext_fds["_cffi_backend"])
-  load_extension("nacl._sodium",ext_fds["nacl._sodium"])
-  public=importlib.import_module("nacl.public")
+  sodium=load_extension("_sodium",ext_fds["nacl._sodium"]); sys.modules["nacl._sodium"]=sodium
+  nacl=importlib.import_module("nacl"); public=importlib.import_module("nacl.public")
   PrivateKey=public.PrivateKey; SealedBox=public.SealedBox
   if getattr(nacl,"__version__",None)!="1.6.2": die("PYNACL_VERSION")
   k=PrivateKey.generate(); m=b"multiverse-v19.7.30-sealed-memfd"; c=SealedBox(k.public_key).encrypt(m)
   if SealedBox(k).decrypt(c)!=m: die("PYNACL_ROUNDTRIP")
   allowed=tuple(zpaths+[f"/proc/self/fd/{fd}" for fd in ext_fds.values()])
   for name,mod in list(sys.modules.items()):
-   if name=="_cffi_backend" or name=="nacl" or name.startswith("nacl.") or name=="cffi" or name.startswith("cffi.") or name=="pycparser" or name.startswith("pycparser."):
+   if name in {"_cffi_backend","_sodium"} or name=="nacl" or name.startswith("nacl.") or name=="cffi" or name.startswith("cffi.") or name=="pycparser" or name.startswith("pycparser."):
     origin=getattr(mod,"__file__",None)
     if origin is not None and not str(origin).startswith(allowed): die("DEPENDENCY_ORIGIN")
-  sys.path[:]=[p for p in old if p and "site-packages" not in p and ".local" not in p]
-  importlib.invalidate_caches()
+  sys.path[:]=[p for p in old if p and "site-packages" not in p and ".local" not in p]; importlib.invalidate_caches()
   return wheel_fds,ext_fds
  except BaseException:
+  sys.path[:]=old
   for fd in list(wheel_fds.values())+list(ext_fds.values()):
    try: os.close(fd)
    except OSError: pass
   raise
 def git_head_blob(root,rel):
- cp=subprocess.run(["git","ls-tree","-z","HEAD","--",rel],cwd=str(root),env={"PATH":"/usr/local/bin:/usr/bin:/bin","GIT_NO_REPLACE_OBJECTS":"1","GIT_CONFIG_NOSYSTEM":"1","GIT_CONFIG_SYSTEM":"/dev/null","GIT_CONFIG_GLOBAL":"/dev/null","GIT_ATTR_NOSYSTEM":"1"},stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ env={"PATH":"/usr/local/bin:/usr/bin:/bin","GIT_NO_REPLACE_OBJECTS":"1","GIT_CONFIG_NOSYSTEM":"1","GIT_CONFIG_SYSTEM":"/dev/null","GIT_CONFIG_GLOBAL":"/dev/null","GIT_ATTR_NOSYSTEM":"1"}
+ cp=subprocess.run(["git","ls-tree","-z","HEAD","--",rel],cwd=str(root),env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
  if cp.returncode!=0: die("HEAD_BLOB_READ")
  rows=[x for x in cp.stdout.split(b"\0") if x]
  if len(rows)!=1 or b"\t" not in rows[0]: die("HEAD_BLOB_ENTRY")
@@ -137,12 +128,11 @@ def exact_exec_module(name,rel):
  path=EXEC_ROOT/rel; data=read_once(str(path))
  if blob(data)!=git_head_blob(EXEC_ROOT,rel): die("CANONICAL_MODULE_BLOB")
  mod=types.ModuleType(name); mod.__file__=str(path); mod.__package__=name.rpartition(".")[0]; sys.modules[name]=mod
- exec(compile(data,str(path),"exec"),mod.__dict__,mod.__dict__)
- return mod
+ exec(compile(data,str(path),"exec"),mod.__dict__,mod.__dict__); return mod
 def same_process_canonical_preflight():
  tools=str(EXEC_ROOT/"tools"); old=list(sys.path); sys.path[:]=[tools]+[p for p in old if p and "site-packages" not in p and ".local" not in p and p!=tools]
  try:
-  admin=exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN)
+  exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN)
   pre=exact_exec_module("_multiverse_phase_c_canonical_preflight",PREFLIGHT)
   fn=getattr(pre,"live_preflight",None)
   if not callable(fn): die("PREFLIGHT_ENTRY")
@@ -164,24 +154,19 @@ def main():
   got[n]=h
  expected={"pynacl.whl":PYNACL,"pycparser.whl":PYCPARSER,"cffi.whl":CFFI[sys.version_info[:2]]}
  if got!=expected: die("MANIFEST")
- wheels=exact_wheels(expected)
- wheel_fds,ext_fds=load_sealed_dependencies(wheels)
+ wheels=exact_wheels(expected); wheel_fds,ext_fds=load_sealed_dependencies(wheels)
  try:
   repo=os.path.realpath(sys.argv[1]); v29=read_once(os.path.join(repo,V29))
   if len(v29)!=V29_BYTES or blob(v29)!=V29_BLOB or hashlib.sha256(v29).hexdigest()!=V29_SHA: die("V19_7_29_IDENTITY")
   ns={"__name__":"_multiverse_v19_7_29_same_memory_"}; exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns)
   rebootstrap=ns.get("rebootstrap_current_main")
   if not callable(rebootstrap): die("V19_7_29_REBOOTSTRAP_ENTRY")
-  print("PHASE_C_V19_7_30_POST_OAUTH_SEALED_MEMFD_DEPENDENCY_PASS",flush=True)
-  rebootstrap()
-  d=same_process_canonical_preflight()
+  print("PHASE_C_V19_7_30_POST_OAUTH_SEALED_MEMFD_DEPENDENCY_PASS",flush=True); rebootstrap(); same_process_canonical_preflight()
  finally:
   for fd in list(wheel_fds.values())+list(ext_fds.values()):
    try: os.close(fd)
    except OSError: pass
- print("PHASE_C_V19_7_30_STEP3_PREFLIGHT_PASS",flush=True)
- print("PRODUCTION_MUTATION_PERFORMED=false",flush=True); print("RUNTIME_ACTIVATION_PERFORMED=false",flush=True)
- return 0
+ print("PHASE_C_V19_7_30_STEP3_PREFLIGHT_PASS",flush=True); print("PRODUCTION_MUTATION_PERFORMED=false",flush=True); print("RUNTIME_ACTIVATION_PERFORMED=false",flush=True); return 0
 if __name__=="__main__":
  try: raise SystemExit(main())
  except SystemExit: raise
