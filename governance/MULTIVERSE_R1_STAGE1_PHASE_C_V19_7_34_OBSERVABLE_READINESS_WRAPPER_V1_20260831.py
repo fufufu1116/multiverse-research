@@ -3,7 +3,7 @@ import hashlib, os, stat, subprocess, sys
 PY='/usr/local/python/current/bin/python'
 ROOT='/dev/shm/multiverse-r1-stage1-phase-c-v19-7-34-review'
 TARGET=ROOT+'/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_34_PRE_OAUTH_SEALED_DEPENDENCY_READINESS_V1_20260831.py'
-TARGET_BLOB='22a7e2f2416b57adb1e199b17e118dfcde8b01b9'
+TARGET_BLOB='f2a988edc65495d80a805643a1f84e860e93b609'
 RESULT_DIR='/dev/shm/multiverse-r1-stage1-phase-c-v19-7-34-readiness-result'
 FALLBACK_DIR='/dev/shm/multiverse-r1-stage1-phase-c-v19-7-34-readiness-receipt-failure'
 RESULT_NAME='result.txt'
