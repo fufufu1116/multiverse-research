@@ -1,0 +1,1 @@
+set -- /dev/shm/mv-v19-7-23-live.*/repo; test "$#" -eq 1 && test -d "$1/.git" && test "$(git -C "$1" hash-object "$1/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_20_POST_OAUTH_STEP3_ACTION_V1_20260831.txt")" = "3bdd412c9da095c8c4077d8a53b8d6ac7fcb4d1b" && bash "$1/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_20_POST_OAUTH_STEP3_ACTION_V1_20260831.txt"
