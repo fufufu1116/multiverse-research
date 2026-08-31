@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """V19.7.30 post-OAuth review candidate. NONCANONICAL; NONMUTATING Step3 only."""
-import hashlib, io, json, os, pathlib, stat, subprocess, sys, zipfile
+import fcntl, hashlib, importlib, importlib.machinery, importlib.util, io, json, os, pathlib, stat, subprocess, sys, types, zipfile
 PY="/usr/local/python/current/bin/python"
-ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-pydeps"); MAN=ROOT/"MANIFEST.sha256"; SITE_REAUTH=ROOT/"site-post-oauth-reauth"
+ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-pydeps"); MAN=ROOT/"MANIFEST.sha256"
 GH_CONFIG_DIR="/dev/shm/multiverse-r1-stage1-phase-c-gh-auth"
-EXEC_ROOT="/dev/shm/multiverse-r1-stage1-phase-c-execution"
+EXEC_ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-execution")
 PREFLIGHT="tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"
+ADMIN="tools/multiverse_r1_stage1_writer_key_admin_channel_v1.py"
 PYNACL="22de65bb9010a725b0dac248f353bb072969c94fa8d6b1f34b87d7953cf7bbe4"
 PYCPARSER="e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934"
 CFFI={(3,11):"34e261f78cb6ceaaa36f42f2613f4380d94d9c759a9c73c769ee6e0247364632",(3,12):"c1453022f490d2459a11819d83ad1d586e9ff65a12ac3e705ffebd46d3685dcf",(3,13):"a931079504ecc49efed7744c476a5c343a92fabf66dec2db95edb1b2fdc770e2",(3,14):"b0431303acaea1089ad4b3e9ce4e6518193def1118d4073ca848635ee4ea2e96"}
@@ -28,36 +29,35 @@ def write_all(fd,payload):
  view=memoryview(payload); done=0
  while done<len(view):
   n=os.write(fd,view[done:])
-  if n<=0: die("REAUTH_SITE_SHORT_WRITE")
+  if n<=0: die("MEMFD_SHORT_WRITE")
   done+=n
- if done!=len(view): die("REAUTH_SITE_SHORT_WRITE")
-def tree_digest(root):
- root=pathlib.Path(root); rows=[]
- for base,dirs,files in os.walk(root,topdown=True,followlinks=False):
-  dirs.sort(); files.sort(); bp=pathlib.Path(base)
-  bst=os.lstat(bp)
-  if not stat.S_ISDIR(bst.st_mode) or bst.st_uid!=os.geteuid() or stat.S_IMODE(bst.st_mode)&0o022: die("REAUTH_SITE_DIR_STATE")
-  rel_dir=bp.relative_to(root).as_posix(); rows.append(("D",rel_dir,stat.S_IMODE(bst.st_mode),0,""))
-  for name in files:
-   p=bp/name; st=os.lstat(p)
-   if stat.S_ISLNK(st.st_mode) or not stat.S_ISREG(st.st_mode) or st.st_nlink!=1 or st.st_uid!=os.geteuid() or stat.S_IMODE(st.st_mode)&0o022: die("REAUTH_SITE_FILE_STATE")
-   data=read_once(str(p))
-   st2=os.lstat(p)
-   if (st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns)!=(st2.st_dev,st2.st_ino,st2.st_size,st2.st_mtime_ns): die("REAUTH_SITE_CHANGED_DURING_DIGEST")
-   rows.append(("F",p.relative_to(root).as_posix(),stat.S_IMODE(st.st_mode),len(data),hashlib.sha256(data).hexdigest()))
- enc=json.dumps(rows,separators=(",",":"),ensure_ascii=True).encode("ascii")
- return hashlib.sha256(enc).hexdigest()
-def seal_tree(root):
- root=pathlib.Path(root)
- for base,dirs,files in os.walk(root,topdown=False,followlinks=False):
-  bp=pathlib.Path(base)
-  for name in files: os.chmod(bp/name,0o400,follow_symlinks=False)
-  for name in dirs: os.chmod(bp/name,0o500,follow_symlinks=False)
-  os.chmod(bp,0o500,follow_symlinks=False)
-def rebuild_site_from_verified_wheels(expected):
- if os.path.lexists(SITE_REAUTH): die("REAUTH_SITE_PREEXISTS")
- SITE_REAUTH.mkdir(mode=0o700)
- if subprocess.check_output(["stat","-f","-c","%T",str(SITE_REAUTH)],text=True).strip() not in {"tmpfs","ramfs"}: die("REAUTH_SITE_FS")
+ if done!=len(view): die("MEMFD_SHORT_WRITE")
+def sealed_memfd(name,data):
+ need=("memfd_create","MFD_ALLOW_SEALING")
+ if any(not hasattr(os,x) for x in need): die("MEMFD_SEALING_UNAVAILABLE")
+ seals=("F_ADD_SEALS","F_GET_SEALS","F_SEAL_SEAL","F_SEAL_SHRINK","F_SEAL_GROW","F_SEAL_WRITE")
+ if any(not hasattr(fcntl,x) for x in seals): die("MEMFD_SEALING_UNAVAILABLE")
+ fd=os.memfd_create(name,getattr(os,"MFD_CLOEXEC",0)|os.MFD_ALLOW_SEALING)
+ try:
+  write_all(fd,data); os.fsync(fd)
+  st=os.fstat(fd)
+  if not stat.S_ISREG(st.st_mode) or st.st_size!=len(data): die("MEMFD_SIZE")
+  expected=fcntl.F_SEAL_SEAL|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_GROW|fcntl.F_SEAL_WRITE
+  fcntl.fcntl(fd,fcntl.F_ADD_SEALS,expected)
+  if fcntl.fcntl(fd,fcntl.F_GET_SEALS)&expected!=expected: die("MEMFD_SEALS")
+  os.lseek(fd,0,os.SEEK_SET)
+  h=hashlib.sha256()
+  while True:
+   b=os.read(fd,1048576)
+   if not b: break
+   h.update(b)
+  if h.digest()!=hashlib.sha256(data).digest(): die("MEMFD_READBACK")
+  os.lseek(fd,0,os.SEEK_SET)
+  return fd
+ except BaseException:
+  os.close(fd); raise
+def exact_wheels(expected):
+ out={}
  for n,h in expected.items():
   data=read_once(str(ROOT/"wheels"/n))
   if hashlib.sha256(data).hexdigest()!=h: die("WHEEL_REAUTH")
@@ -65,22 +65,93 @@ def rebuild_site_from_verified_wheels(expected):
    for i in z.infolist():
     q=pathlib.PurePosixPath(i.filename); mode=(i.external_attr>>16)&0o170000
     if q.is_absolute() or ".." in q.parts or mode==stat.S_IFLNK: die("WHEEL_MEMBER")
-    if i.is_dir():
-     (SITE_REAUTH/pathlib.Path(*q.parts)).mkdir(parents=True,exist_ok=True,mode=0o700); continue
-    out=SITE_REAUTH/pathlib.Path(*q.parts); out.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
-    if os.path.lexists(out): die("WHEEL_MEMBER_COLLISION")
-    payload=z.read(i)
-    fd=os.open(out,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
-    try:
-     write_all(fd,payload); os.fsync(fd)
-     st=os.fstat(fd)
-     if st.st_size!=len(payload): die("REAUTH_SITE_WRITE_SIZE")
-    finally: os.close(fd)
-    if hashlib.sha256(read_once(str(out))).digest()!=hashlib.sha256(payload).digest(): die("REAUTH_SITE_WRITE_HASH")
- seal_tree(SITE_REAUTH)
- return tree_digest(SITE_REAUTH)
+  out[n]=data
+ return out
+def extension_bytes(wheels):
+ found={}
+ for n,data in wheels.items():
+  with zipfile.ZipFile(io.BytesIO(data)) as z:
+   sos=[i for i in z.infolist() if not i.is_dir() and i.filename.endswith(".so")]
+   if n=="pynacl.whl":
+    cand=[i for i in sos if pathlib.PurePosixPath(i.filename).name.startswith("_sodium")]
+    if len(cand)!=1: die("PYNACL_EXTENSION_SET")
+    found["nacl._sodium"]=z.read(cand[0])
+    if len(sos)!=1: die("PYNACL_EXTENSION_SET")
+   elif n=="cffi.whl":
+    cand=[i for i in sos if pathlib.PurePosixPath(i.filename).name.startswith("_cffi_backend")]
+    if len(cand)!=1: die("CFFI_EXTENSION_SET")
+    found["_cffi_backend"]=z.read(cand[0])
+    if len(sos)!=1: die("CFFI_EXTENSION_SET")
+   elif sos: die("UNEXPECTED_EXTENSION_SET")
+ if set(found)!={"nacl._sodium","_cffi_backend"}: die("EXTENSION_SET")
+ return found
+def load_extension(fullname,fd):
+ path=f"/proc/self/fd/{fd}"
+ loader=importlib.machinery.ExtensionFileLoader(fullname,path)
+ spec=importlib.util.spec_from_file_location(fullname,path,loader=loader)
+ if spec is None: die("EXTENSION_SPEC")
+ mod=importlib.util.module_from_spec(spec); sys.modules[fullname]=mod
+ loader.exec_module(mod)
+ return mod
+def load_sealed_dependencies(wheels):
+ for k in list(sys.modules):
+  if k=="_cffi_backend" or k=="nacl" or k.startswith("nacl.") or k=="cffi" or k.startswith("cffi.") or k=="pycparser" or k.startswith("pycparser."): sys.modules.pop(k,None)
+ wheel_fds={}; ext_fds={}
+ try:
+  for n,data in wheels.items(): wheel_fds[n]=sealed_memfd("multiverse-v19-7-30-"+n,data)
+  ext=extension_bytes(wheels)
+  for fullname,data in ext.items(): ext_fds[fullname]=sealed_memfd("multiverse-v19-7-30-"+fullname.replace(".","-"),data)
+  zpaths=[f"/proc/self/fd/{wheel_fds[n]}" for n in ("pynacl.whl","cffi.whl","pycparser.whl")]
+  old=list(sys.path); sys.path[:]=zpaths+[p for p in old if p and "site-packages" not in p and ".local" not in p]
+  importlib.invalidate_caches()
+  nacl=importlib.import_module("nacl")
+  load_extension("_cffi_backend",ext_fds["_cffi_backend"])
+  load_extension("nacl._sodium",ext_fds["nacl._sodium"])
+  public=importlib.import_module("nacl.public")
+  PrivateKey=public.PrivateKey; SealedBox=public.SealedBox
+  if getattr(nacl,"__version__",None)!="1.6.2": die("PYNACL_VERSION")
+  k=PrivateKey.generate(); m=b"multiverse-v19.7.30-sealed-memfd"; c=SealedBox(k.public_key).encrypt(m)
+  if SealedBox(k).decrypt(c)!=m: die("PYNACL_ROUNDTRIP")
+  allowed=tuple(zpaths+[f"/proc/self/fd/{fd}" for fd in ext_fds.values()])
+  for name,mod in list(sys.modules.items()):
+   if name=="_cffi_backend" or name=="nacl" or name.startswith("nacl.") or name=="cffi" or name.startswith("cffi.") or name=="pycparser" or name.startswith("pycparser."):
+    origin=getattr(mod,"__file__",None)
+    if origin is not None and not str(origin).startswith(allowed): die("DEPENDENCY_ORIGIN")
+  sys.path[:]=[p for p in old if p and "site-packages" not in p and ".local" not in p]
+  importlib.invalidate_caches()
+  return wheel_fds,ext_fds
+ except BaseException:
+  for fd in list(wheel_fds.values())+list(ext_fds.values()):
+   try: os.close(fd)
+   except OSError: pass
+  raise
+def git_head_blob(root,rel):
+ cp=subprocess.run(["git","ls-tree","-z","HEAD","--",rel],cwd=str(root),env={"PATH":"/usr/local/bin:/usr/bin:/bin","GIT_NO_REPLACE_OBJECTS":"1","GIT_CONFIG_NOSYSTEM":"1","GIT_CONFIG_SYSTEM":"/dev/null","GIT_CONFIG_GLOBAL":"/dev/null","GIT_ATTR_NOSYSTEM":"1"},stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ if cp.returncode!=0: die("HEAD_BLOB_READ")
+ rows=[x for x in cp.stdout.split(b"\0") if x]
+ if len(rows)!=1 or b"\t" not in rows[0]: die("HEAD_BLOB_ENTRY")
+ meta,path=rows[0].split(b"\t",1); parts=meta.split()
+ if len(parts)!=3 or parts[1]!=b"blob" or path.decode()!=rel: die("HEAD_BLOB_ENTRY")
+ return parts[2].decode()
+def exact_exec_module(name,rel):
+ path=EXEC_ROOT/rel; data=read_once(str(path))
+ if blob(data)!=git_head_blob(EXEC_ROOT,rel): die("CANONICAL_MODULE_BLOB")
+ mod=types.ModuleType(name); mod.__file__=str(path); mod.__package__=name.rpartition(".")[0]; sys.modules[name]=mod
+ exec(compile(data,str(path),"exec"),mod.__dict__,mod.__dict__)
+ return mod
+def same_process_canonical_preflight():
+ tools=str(EXEC_ROOT/"tools"); old=list(sys.path); sys.path[:]=[tools]+[p for p in old if p and "site-packages" not in p and ".local" not in p and p!=tools]
+ try:
+  admin=exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN)
+  pre=exact_exec_module("_multiverse_phase_c_canonical_preflight",PREFLIGHT)
+  fn=getattr(pre,"live_preflight",None)
+  if not callable(fn): die("PREFLIGHT_ENTRY")
+  d=fn()
+ finally: sys.path[:]=old
+ if not isinstance(d,dict) or d.get("status")!="PHASE_C_NONMUTATING_PREFLIGHT_PASS" or d.get("production_mutation_performed") is not False or d.get("runtime_activation_performed") is not False: die("STEP3_RESULT")
+ return d
 def main():
- os.umask(0o077)
+ os.umask(0o077); sys.dont_write_bytecode=True
  if os.environ.get("CODESPACES")!="true" or not os.environ.get("CODESPACE_NAME") or sys.executable!=PY or len(sys.argv)!=2 or sys.version_info[:2] not in CFFI: die("ENTRY")
  if os.environ.get("GH_CONFIG_DIR")!=GH_CONFIG_DIR: die("GH_CONFIG_DIR")
  if subprocess.check_output(["stat","-f","-c","%T",str(ROOT)],text=True).strip() not in {"tmpfs","ramfs"}: die("PYDEPS_FS")
@@ -93,38 +164,21 @@ def main():
   got[n]=h
  expected={"pynacl.whl":PYNACL,"pycparser.whl":PYCPARSER,"cffi.whl":CFFI[sys.version_info[:2]]}
  if got!=expected: die("MANIFEST")
- frozen_site_digest=rebuild_site_from_verified_wheels(expected)
- site_fd=os.open(SITE_REAUTH,os.O_RDONLY|getattr(os,"O_DIRECTORY",0)|getattr(os,"O_NOFOLLOW",0))
+ wheels=exact_wheels(expected)
+ wheel_fds,ext_fds=load_sealed_dependencies(wheels)
  try:
-  site_st=os.fstat(site_fd); path_st=os.lstat(SITE_REAUTH)
-  if not stat.S_ISDIR(site_st.st_mode) or site_st.st_uid!=os.geteuid() or (site_st.st_dev,site_st.st_ino)!=(path_st.st_dev,path_st.st_ino): die("REAUTH_SITE_ROOT_BINDING")
-  if tree_digest(SITE_REAUTH)!=frozen_site_digest: die("REAUTH_SITE_TREE_DRIFT_BEFORE_ROUNDTRIP")
-  fd_site=f"/proc/self/fd/{site_fd}"
-  code='import sys; p=sys.argv[1]; sys.path[:]=[p]+[x for x in sys.path if x!=p and "site-packages" not in x and ".local" not in x]; from nacl.public import PrivateKey,SealedBox; import nacl; assert nacl.__version__=="1.6.2"; k=PrivateKey.generate(); m=b"post-oauth"; assert SealedBox(k).decrypt(SealedBox(k.public_key).encrypt(m))==m'
-  if subprocess.run([PY,"-I","-B","-c",code,fd_site],env={"PATH":"/usr/local/bin:/usr/bin:/bin","PYTHONNOUSERSITE":"1"},pass_fds=(site_fd,)).returncode: die("PYNACL_REAUTH")
   repo=os.path.realpath(sys.argv[1]); v29=read_once(os.path.join(repo,V29))
   if len(v29)!=V29_BYTES or blob(v29)!=V29_BLOB or hashlib.sha256(v29).hexdigest()!=V29_SHA: die("V19_7_29_IDENTITY")
-  ns={"__name__":"_multiverse_v19_7_29_same_memory_"}
-  exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns)
+  ns={"__name__":"_multiverse_v19_7_29_same_memory_"}; exec(compile(v29,"<v19.7.29-same-memory>","exec"),ns,ns)
   rebootstrap=ns.get("rebootstrap_current_main")
   if not callable(rebootstrap): die("V19_7_29_REBOOTSTRAP_ENTRY")
-  print("PHASE_C_V19_7_30_POST_OAUTH_DEPENDENCY_REAUTH_PASS",flush=True)
+  print("PHASE_C_V19_7_30_POST_OAUTH_SEALED_MEMFD_DEPENDENCY_PASS",flush=True)
   rebootstrap()
-  path_st2=os.lstat(SITE_REAUTH); site_st2=os.fstat(site_fd)
-  if (site_st2.st_dev,site_st2.st_ino)!=(site_st.st_dev,site_st.st_ino) or (path_st2.st_dev,path_st2.st_ino)!=(site_st.st_dev,site_st.st_ino): die("REAUTH_SITE_ROOT_DRIFT_BEFORE_PREFLIGHT")
-  if tree_digest(SITE_REAUTH)!=frozen_site_digest: die("REAUTH_SITE_TREE_DRIFT_BEFORE_PREFLIGHT")
-  env={"PATH":"/usr/local/bin:/usr/bin:/bin","LANG":"C","LC_ALL":"C","CODESPACES":os.environ["CODESPACES"],"CODESPACE_NAME":os.environ["CODESPACE_NAME"],"GH_CONFIG_DIR":GH_CONFIG_DIR,"PYTHONPATH":fd_site,"PYTHONNOUSERSITE":"1"}
-  cp=subprocess.run([PY,"-B",PREFLIGHT],cwd=EXEC_ROOT,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,pass_fds=(site_fd,))
- finally: os.close(site_fd)
- if cp.returncode!=0:
-  try:
-   d=json.loads(cp.stdout); reason=d.get("reason","UNCLASSIFIED") if isinstance(d,dict) else "UNCLASSIFIED"
-  except Exception: reason="UNCLASSIFIED"
-  print("PHASE_C_V19_7_30_STEP3_PREFLIGHT_DENIED:"+str(reason)[:220].replace("\n","_").replace("\r","_"),flush=True)
-  return 92
- try: d=json.loads(cp.stdout)
- except Exception: die("STEP3_JSON")
- if not isinstance(d,dict) or d.get("status")!="PHASE_C_NONMUTATING_PREFLIGHT_PASS" or d.get("production_mutation_performed") is not False or d.get("runtime_activation_performed") is not False: die("STEP3_RESULT")
+  d=same_process_canonical_preflight()
+ finally:
+  for fd in list(wheel_fds.values())+list(ext_fds.values()):
+   try: os.close(fd)
+   except OSError: pass
  print("PHASE_C_V19_7_30_STEP3_PREFLIGHT_PASS",flush=True)
  print("PRODUCTION_MUTATION_PERFORMED=false",flush=True); print("RUNTIME_ACTIVATION_PERFORMED=false",flush=True)
  return 0
