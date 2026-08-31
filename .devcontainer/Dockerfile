@@ -9,13 +9,12 @@ COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V4_ROOT_ANCHOR_PRODUCER_20260831.go /tmp/mv-v36-anchor.go
 
 RUN set -eu; \
-    PY="$(command -v python3)"; \
-    cp -L "$PY" /opt/multiverse/v36/python; \
-    "$PY" -m pip install --no-cache-dir --only-binary=:all: --require-hashes --target /opt/multiverse/v36/pydeps -r /opt/multiverse/v36/requirements.txt; \
+    test -x /usr/bin/python3; \
+    /usr/bin/python3 -m pip install --no-cache-dir --only-binary=:all: --require-hashes --target /opt/multiverse/v36/pydeps -r /opt/multiverse/v36/requirements.txt; \
     CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-anchor-producer /tmp/mv-v36-anchor.go; \
     rm -f /tmp/mv-v36-anchor.go; \
     chown -R root:root /opt/multiverse/v36 /usr/local/sbin/multiverse-v36-anchor-producer; \
-    chmod 0555 /usr/local/sbin/multiverse-v36-anchor-producer /opt/multiverse/v36/python; \
+    chmod 0555 /usr/local/sbin/multiverse-v36-anchor-producer; \
     chmod 0444 /opt/multiverse/v36/runtime.py /opt/multiverse/v36/requirements.txt; \
     chmod -R go-w /opt/multiverse/v36/pydeps; \
     chmod 0555 /opt/multiverse/v36/pydeps /opt/multiverse/v36/empty-config /opt/multiverse/v36; \
