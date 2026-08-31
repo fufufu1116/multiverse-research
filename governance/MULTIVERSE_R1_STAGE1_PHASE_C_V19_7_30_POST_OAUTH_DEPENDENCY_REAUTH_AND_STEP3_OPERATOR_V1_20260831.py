@@ -5,7 +5,9 @@ PY="/usr/local/python/current/bin/python"
 ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-pydeps"); MAN=ROOT/"MANIFEST.sha256"
 GH_CONFIG_DIR="/dev/shm/multiverse-r1-stage1-phase-c-gh-auth"
 EXEC_ROOT=pathlib.Path("/dev/shm/multiverse-r1-stage1-phase-c-execution")
-PREFLIGHT="tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"; ADMIN="tools/multiverse_r1_stage1_writer_key_admin_channel_v1.py"
+CANONICAL_MAIN="5c1403c1f5aabb80d29e8c868440aede8888ce61"; CANONICAL_TREE="3d47741b4863411e5c36cb4c28925ac455ab6441"
+PREFLIGHT="tools/multiverse_r1_stage1_phase_c_execution_preflight_v1.py"; PREFLIGHT_BLOB="0232c66bcf40cc1f61ce5bcc855604f73fce665a"; PREFLIGHT_BYTES=13902
+ADMIN="tools/multiverse_r1_stage1_writer_key_admin_channel_v1.py"; ADMIN_BLOB="ec05a014964211c15e48c3a2c327648a13f64dcf"; ADMIN_BYTES=20970
 PYNACL="22de65bb9010a725b0dac248f353bb072969c94fa8d6b1f34b87d7953cf7bbe4"; PYCPARSER="e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934"
 CFFI={(3,11):"34e261f78cb6ceaaa36f42f2613f4380d94d9c759a9c73c769ee6e0247364632",(3,12):"c1453022f490d2459a11819d83ad1d586e9ff65a12ac3e705ffebd46d3685dcf",(3,13):"a931079504ecc49efed7744c476a5c343a92fabf66dec2db95edb1b2fdc770e2",(3,14):"b0431303acaea1089ad4b3e9ce4e6518193def1118d4073ca848635ee4ea2e96"}
 V29="governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_29_POST_OAUTH_CURRENT_MAIN_REBOOTSTRAP_STEP3_OPERATOR_V3_20260831.py"; V29_BYTES=8227; V29_BLOB="61e302d9ef3f70b82301dec0b0fdffb3a677adef"; V29_SHA="aaf6acfb863228c174fcfb10678f346d3297a740918a79becc6aad0cb485aac0"
@@ -116,27 +118,28 @@ def load_sealed_dependencies(wheels):
    try: os.close(fd)
    except OSError: pass
   raise
-def git_head_blob(root,rel):
- env={"PATH":"/usr/local/bin:/usr/bin:/bin","GIT_NO_REPLACE_OBJECTS":"1","GIT_CONFIG_NOSYSTEM":"1","GIT_CONFIG_SYSTEM":"/dev/null","GIT_CONFIG_GLOBAL":"/dev/null","GIT_ATTR_NOSYSTEM":"1"}
- cp=subprocess.run(["git","ls-tree","-z","HEAD","--",rel],cwd=str(root),env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
- if cp.returncode!=0: die("HEAD_BLOB_READ")
- rows=[x for x in cp.stdout.split(b"\0") if x]
- if len(rows)!=1 or b"\t" not in rows[0]: die("HEAD_BLOB_ENTRY")
- meta,path=rows[0].split(b"\t",1); parts=meta.split()
- if len(parts)!=3 or parts[1]!=b"blob" or path.decode()!=rel: die("HEAD_BLOB_ENTRY")
- return parts[2].decode()
-def exact_exec_module(name,rel):
+def exact_exec_module(name,rel,expected_blob,expected_bytes):
  path=EXEC_ROOT/rel; data=read_once(str(path))
- if blob(data)!=git_head_blob(EXEC_ROOT,rel): die("CANONICAL_MODULE_BLOB")
- mod=types.ModuleType(name); mod.__file__=str(path); mod.__package__=name.rpartition(".")[0]; sys.modules[name]=mod; exec(compile(data,str(path),"exec"),mod.__dict__,mod.__dict__); return mod
+ if len(data)!=expected_bytes or blob(data)!=expected_blob: die("CANONICAL_MODULE_EXACT_IDENTITY")
+ mod=types.ModuleType(name); mod.__file__=str(path); mod.__package__=name.rpartition(".")[0]; sys.modules[name]=mod; exec(compile(data,"<canonical-main:"+rel+">","exec"),mod.__dict__,mod.__dict__); return mod
+def sanitized_nonrepo_path(old):
+ out=[]; root=os.path.realpath(EXEC_ROOT)
+ for p in old:
+  if not p or "site-packages" in p or ".local" in p: continue
+  try: rp=os.path.realpath(p)
+  except Exception: continue
+  if rp==root or rp.startswith(root+os.sep): continue
+  out.append(p)
+ return out
 def same_process_canonical_preflight():
- tools=str(EXEC_ROOT/"tools"); old=list(sys.path); sys.path[:]=[tools]+[p for p in old if p and "site-packages" not in p and ".local" not in p and p!=tools]
+ old=list(sys.path); sys.path[:]=sanitized_nonrepo_path(old); importlib.invalidate_caches()
  try:
-  exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN); pre=exact_exec_module("_multiverse_phase_c_canonical_preflight",PREFLIGHT); fn=getattr(pre,"live_preflight",None)
+  exact_exec_module("multiverse_r1_stage1_writer_key_admin_channel_v1",ADMIN,ADMIN_BLOB,ADMIN_BYTES)
+  pre=exact_exec_module("_multiverse_phase_c_canonical_preflight",PREFLIGHT,PREFLIGHT_BLOB,PREFLIGHT_BYTES); fn=getattr(pre,"live_preflight",None)
   if not callable(fn): die("PREFLIGHT_ENTRY")
   d=fn()
- finally: sys.path[:]=old
- if not isinstance(d,dict) or d.get("status")!="PHASE_C_NONMUTATING_PREFLIGHT_PASS" or d.get("production_mutation_performed") is not False or d.get("runtime_activation_performed") is not False: die("STEP3_RESULT")
+ finally: sys.path[:]=old; importlib.invalidate_caches()
+ if not isinstance(d,dict) or d.get("status")!="PHASE_C_NONMUTATING_PREFLIGHT_PASS" or d.get("execution_checkout_sha")!=CANONICAL_MAIN or d.get("fresh_main_sha")!=CANONICAL_MAIN or d.get("production_mutation_performed") is not False or d.get("runtime_activation_performed") is not False: die("STEP3_RESULT")
  return d
 def main():
  os.umask(0o077); sys.dont_write_bytecode=True
