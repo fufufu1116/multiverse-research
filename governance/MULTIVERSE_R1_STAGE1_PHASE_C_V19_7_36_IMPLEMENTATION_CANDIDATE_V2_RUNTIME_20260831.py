@@ -5,15 +5,15 @@ RC=92; FDENV='MULTIVERSE_V19_7_36_BOOTSTRAP_ATTEST_FD'; MAIN='5c1403c1f5aabb80d2
 FORBID={'PYTHONPATH','PYTHONHOME','PYTHONSTARTUP','PYTHONINSPECT','LD_PRELOAD','LD_LIBRARY_PATH','LD_AUDIT','LD_DEBUG','GIT_CONFIG','GIT_CONFIG_GLOBAL','GIT_CONFIG_SYSTEM','GIT_CONFIG_COUNT','GIT_DIR','GIT_WORK_TREE','GIT_COMMON_DIR','GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES','GIT_INDEX_FILE','GIT_CEILING_DIRECTORIES','GIT_EXEC_PATH','GIT_SSH','GIT_SSH_COMMAND','GIT_ASKPASS','SSH_ASKPASS','GIT_EDITOR','GIT_PAGER','PAGER','EDITOR','VISUAL','BROWSER','GH_TOKEN','GITHUB_TOKEN','GH_ENTERPRISE_TOKEN','GITHUB_ENTERPRISE_TOKEN','GH_CONFIG_DIR','GH_HOST','GH_REPO','GH_BROWSER','GH_PAGER','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','http_proxy','https_proxy','all_proxy','no_proxy','SSL_CERT_FILE','SSL_CERT_DIR','REQUESTS_CA_BUNDLE','CURL_CA_BUNDLE','GIT_SSL_CAINFO','GIT_SSL_CAPATH','GIT_SSL_NO_VERIFY','GIT_PROXY_COMMAND','CURL_HOME','NETRC'}
 def clean(s): return ''.join(c if c.isalnum() else '_' for c in s)[:80].upper()
 def receipt(s):
- try: R.mkdir(mode=0o700)
- except FileExistsError: pass
- except OSError: return
+ try:R.mkdir(mode=0o700)
+ except FileExistsError:pass
+ except OSError:return
  try:
   st=os.lstat(R)
   if not stat.S_ISDIR(st.st_mode) or st.st_uid!=os.geteuid() or stat.S_IMODE(st.st_mode)!=0o700:return
   fd=os.open(R/s,os.O_WRONLY|os.O_CREAT|os.O_EXCL|getattr(os,'O_NOFOLLOW',0),0o400);os.close(fd)
- except OSError: pass
-def deny(x): receipt('DENIED_'+x);print('PHASE_C_V19_7_36_V2_DENIED:'+x,flush=True);raise SystemExit(RC)
+ except OSError:pass
+def deny(x):receipt('DENIED_'+x);print('PHASE_C_V19_7_36_V2_DENIED:'+x,flush=True);raise SystemExit(RC)
 def readfd(fd,limit=4<<20):
  os.lseek(fd,0,0);o=[];n=0
  while 1:
@@ -25,7 +25,7 @@ def readfd(fd,limit=4<<20):
  return b''.join(o)
 def sealed(fd):
  need=fcntl.F_SEAL_SEAL|fcntl.F_SEAL_SHRINK|fcntl.F_SEAL_GROW|fcntl.F_SEAL_WRITE
- try: got=fcntl.fcntl(fd,fcntl.F_GET_SEALS)
+ try:got=fcntl.fcntl(fd,fcntl.F_GET_SEALS)
  except OSError:deny('ATTEST_NOT_SEALABLE')
  if not stat.S_ISREG(os.fstat(fd).st_mode) or got&need!=need:deny('ATTEST_NOT_SEALED')
 def attest():
@@ -86,11 +86,11 @@ def matrix(a):
  if not pathlib.Path('/dev/shm').is_dir():deny('MATRIX04_SHM')
  if not pathlib.Path('/proc/self/fd').is_dir():deny('MATRIX05_PROC')
  memfdprobe()
- rows=[(1,'Codespaces'),(2,'Linux/x86_64/Python ABI'),(3,'zero swap'),(4,'/dev/shm'),(5,'/proc/self/fd'),(6,'memfd/seals'),(7,'bootstrap inventory B/C'),(8,'sanitized env'),(9,'import authority -I -S -B'),(10,'pinned dependency probe REQUIRED BEFORE OAUTH'),(11,'git trust attested execution disabled'),(12,'canonical main/tree bound'),(13,'ADMIN/PREFLIGHT/Step3 exact-bind REQUIRED'),(14,'gh trust attested credential checks POST_OAUTH_ONLY'),(15,'receipt pre-Python+runtime'),(16,'no-preexisting-root bootstrap requirement')]
- for n,t in rows:print(f'PHASE_C_V19_7_36_V2_MATRIX_{n:02d}:PASS:{t}',flush=True)
+ rows={1:('PASS','Codespaces class'),2:('PASS','Linux/x86_64/runtime ABI gate'),3:('PASS','zero swap'),4:('PASS','/dev/shm'),5:('PASS','/proc/self/fd'),6:('PASS','memfd/seals/full-write/readback'),7:('PASS','bootstrap inventory sealed attestation'),8:('PASS','sanitized allowlist environment'),9:('PASS','import authority -I -S -B'),10:('BLOCKED','pinned dependency roundtrip successor hook required'),11:('BLOCKED','git actual execution intentionally disabled'),12:('PASS','canonical main/tree exact binding'),13:('BLOCKED','ADMIN/PREFLIGHT/Step3 exact byte bindings required'),14:('POST_OAUTH_ONLY','gh credential-dependent proof; executable trust pre-bound'),15:('PARTIAL','runtime receipt present; pre-Python receipt owned by outer bootstrap'),16:('PARTIAL','outer bootstrap must enforce fresh receipt/root nonexistence')}
+ for n,(s,t) in rows.items():print(f'PHASE_C_V19_7_36_V2_MATRIX_{n:02d}:{s}:{t}',flush=True)
+ if any(s in {'BLOCKED','PARTIAL'} for s,_ in rows.values()):deny('PRE_OAUTH_MATRIX_INCOMPLETE')
 def main():
  a=attest();isolation();subprocesses(a);matrix(a)
- print('PHASE_C_V19_7_36_V2_PRE_OAUTH_IMPLEMENTATION_PASS',flush=True);print('OAUTH_STARTED=false',flush=True);print('PRODUCTION_MUTATION_PERFORMED=false',flush=True);print('RUNTIME_ACTIVATION_PERFORMED=false',flush=True)
  deny('REVIEW_FREEZE_NO_LIVE_AUTHORITY')
 if __name__=='__main__':
  try:main()
