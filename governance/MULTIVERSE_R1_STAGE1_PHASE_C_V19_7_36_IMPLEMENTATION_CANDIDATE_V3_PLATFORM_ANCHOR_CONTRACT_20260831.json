@@ -1,0 +1,46 @@
+{
+  "version": "V19.7.36-v3",
+  "status": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+  "canonical_tree": "3d47741b4863411e5c36cb4c28925ac455ab6441",
+  "root_of_trust": {
+    "class": "A_OR_C_EXTERNAL_TO_PAYLOAD",
+    "requirement": "The first security-relevant bytes must arrive from an already-running trusted platform object or inherited exact-object fd. A pasted shell payload, pathname verify-then-reopen sequence, or verifier that first establishes its own executable trust is forbidden.",
+    "interactive_raw_paste_authority": false,
+    "self_attestation_authority": false
+  },
+  "required_inherited_objects": {
+    "entry_fd": "already-open exact entry bytes; same-object read/eval only",
+    "python_fd": "already-open Python executable object whose loader/runtime closure is externally attested",
+    "attestation_fd": "sealed immutable exact-byte attestation created outside the Python payload"
+  },
+  "python_actual_use": {
+    "executable": "same opened object via inherited fd",
+    "elf_loader": "Class B/C externally attested and session-UID immutable for entire use interval",
+    "transitive_libraries": "complete exact inventory; each Class B/C or fd-bound equivalent",
+    "stdlib": "exact manifest plus Class B/C immutable roots or once-open exact-byte importer",
+    "lib_dynload": "exact native-extension inventory; Class B/C or sealed-fd loading",
+    "startup_imports": "all filesystem bytes reachable before custom verifier included in the external attestation"
+  },
+  "subprocess_actual_use": {
+    "git": ["executable", "elf_loader", "transitive_libraries", "loader_authority", "exec_path_helpers", "config", "credential_helpers", "ssh_askpass", "pagers_editors", "ca_tls", "proxy_netrc", "environment", "cwd_repo_discovery", "network_protocol", "preexec_drift_barrier"],
+    "gh": ["executable", "elf_loader", "transitive_libraries", "loader_authority", "extensions", "browser_children", "config", "credentials", "ca_tls", "proxy_netrc", "environment", "cwd_repo_discovery", "network_protocol", "post_auth_drift_barrier"],
+    "browser": ["executable", "loader_and_libraries", "environment", "profile_config", "network_destination_policy"]
+  },
+  "ambient_environment": {
+    "policy": "env-i allowlist from the outermost trusted entry onward",
+    "deny_families": ["PYTHON*", "LD_*", "GIT_* authority including inline config/repo/exec-path/SSH", "GH_*", "GITHUB_* tokens", "pager/editor/browser", "HTTP(S)/ALL/NO proxy upper+lowercase", "SSL/CURL/REQUESTS/GIT CA overrides", "NETRC/CURL_HOME", "credential and askpass variables"]
+  },
+  "pre_oauth_matrix": {
+    "rows": 16,
+    "rule": "No row may be printed PASS unless its evidence has actually been mechanically proven. BLOCKED/PARTIAL are terminal rc92 before OAuth.",
+    "oauth_started_before_complete_matrix": false
+  },
+  "receipts": {
+    "pre_python": "must be emitted by the trusted outer entry before any Python invocation using exclusive non-following creation semantics or an equivalent fd-bound mechanism",
+    "runtime": "stage-specific denial receipt plus exact rc",
+    "preexisting_root": "forbidden"
+  },
+  "runtime": "OFF",
+  "prohibited": ["Live", "OAuth", "Step3", "Step4", "--apply", "production mutation", "main mutation", "ruleset mutation", "merge", "workflow dispatch", "Runtime activation"]
+}
