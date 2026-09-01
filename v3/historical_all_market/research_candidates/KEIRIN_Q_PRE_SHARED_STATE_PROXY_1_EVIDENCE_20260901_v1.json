@@ -1,0 +1,159 @@
+{
+  "record": "KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS_PROXY_FALSIFIED_AS_SIMPLE_RECOVERY_CONTROL",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "primary_classification": "PROXY_DOES_NOT_IMPROVE_C1",
+  "materiality_label": "NO_OR_NEGATIVE_ORACLE_VALUE_RECOVERY",
+  "scientific_meaning": "Within the fixed Synthetic W1 simulator and already-fixed seed blocks, the single PRE-only line-mean score control with coefficient 0.16 does not recover the shared-state value demonstrated by C1_ORACLE. It materially worsens expected ordered-top3 log loss relative to frozen C1 in every block. This falsifies this exact simple PRE proxy construction as an adequate recovery mechanism on these fixtures. It does not falsify the existence of other lawful PRE-observable proxies, and it does not justify coefficient tuning or creating a new proxy without a new boundary classification.",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "limited_synthetic_authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_core_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_harness_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "frozen_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "owner_scope_gate": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PRE_SHARED_STATE_PROXY_1_20260901_v1.json",
+    "blob": "7159ea9d4e66eb8ffd6b3b7ed335e6e8036f223c",
+    "status": "OWNER_EXPLICITLY_APPROVED_EXACT_SYNTHETIC_DIAGNOSTIC_CONTROL_ONLY",
+    "authorized_control": "C1_PRE_LINE_MEAN_PROXY_DIAGNOSTIC_ONLY",
+    "authorization_auto_expansion": false
+  },
+  "design_and_prespec": {
+    "design_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_DESIGN_20260901_v1.json",
+    "design_blob": "8372a0f783214d3f32264e3c00997647c0636d06",
+    "prespec_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_PRESPEC_20260901_v1.json",
+    "prespec_blob": "afbad1d1be1e1c4a36b3b48e629bd4f5e7785837",
+    "prespec_commit": "925e37856d4d003c2fe00156bc2c6aea874042fc",
+    "fixed_before_execution": true,
+    "world": "W1",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "coefficient": 0.16,
+    "material_recovery_threshold": 0.25,
+    "new_seed_selection": false,
+    "result_adaptive_condition_selection": false,
+    "coefficient_sweep": false,
+    "post_result_retuning": false
+  },
+  "implementation_and_execution": {
+    "harness_path": "tools/keirin_q_pre_shared_state_proxy_1_v1.py",
+    "harness_blob": "bd41a0d8aab3dfaf049cb5589092132d43342555",
+    "implementation_commit": "1d08d39c6cdf3f4582c9b8d58bc19892218a853a",
+    "workflow_path": ".github/workflows/keirin-q-pre-shared-state-proxy-1-v1-ci.yml",
+    "workflow_commit": "f4c138d13d6cc32a7a5637b42fe56f43b7a40fbc",
+    "workflow_run_id": 33470656271,
+    "workflow_job_id": 99739575086,
+    "executed_head": "f4c138d13d6cc32a7a5637b42fe56f43b7a40fbc",
+    "conclusion": "success",
+    "workflow_permissions": "contents:read"
+  },
+  "reference_oracle_evidence": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_ORACLE_SHARED_STATE_1_EVIDENCE_20260901_v1.json",
+    "blob": "6350cfc1312325289fdf57d92c4ef89c7b6d51d3",
+    "C1_ORACLE_minus_C1": -0.016232235048840415,
+    "oracle_rerun": false
+  },
+  "aggregate_expected_ordered_top3_log_loss": {
+    "C1": 4.688863790585787,
+    "N1": 4.6877246961344206,
+    "C1_PRE_LINE_MEAN_PROXY": 4.71288958756397
+  },
+  "aggregate_deltas_lower_is_better": {
+    "N1_minus_C1": -0.0011390944513660628,
+    "C1_PRE_LINE_MEAN_PROXY_minus_C1": 0.024025796978182967,
+    "N1_minus_C1_PRE_LINE_MEAN_PROXY": -0.02516489142954903
+  },
+  "proxy_recovery_fraction": 0.0,
+  "block_results": {
+    "20261001": {
+      "C1_PRE_LINE_MEAN_PROXY_minus_C1": 0.024719913823203044,
+      "N1_minus_C1_PRE_LINE_MEAN_PROXY": -0.025300221719705362,
+      "proxy_recovery_fraction": 0.0,
+      "classification": "PROXY_DOES_NOT_IMPROVE_C1"
+    },
+    "20262001": {
+      "C1_PRE_LINE_MEAN_PROXY_minus_C1": 0.018182052655213,
+      "N1_minus_C1_PRE_LINE_MEAN_PROXY": -0.019790392476478402,
+      "proxy_recovery_fraction": 0.0,
+      "classification": "PROXY_DOES_NOT_IMPROVE_C1"
+    },
+    "20263001": {
+      "C1_PRE_LINE_MEAN_PROXY_minus_C1": 0.028807599135389772,
+      "N1_minus_C1_PRE_LINE_MEAN_PROXY": -0.029786351812830958,
+      "proxy_recovery_fraction": 0.0,
+      "classification": "PROXY_DOES_NOT_IMPROVE_C1"
+    },
+    "20264001": {
+      "C1_PRE_LINE_MEAN_PROXY_minus_C1": 0.024393622298943818,
+      "N1_minus_C1_PRE_LINE_MEAN_PROXY": -0.02578259970916541,
+      "proxy_recovery_fraction": 0.0,
+      "classification": "PROXY_DOES_NOT_IMPROVE_C1"
+    }
+  },
+  "block_stability": {
+    "proxy_improves_C1_blocks": 0,
+    "proxy_worsens_C1_blocks": 4,
+    "total_blocks": 4
+  },
+  "chain_decomposition_aggregate": {
+    "C1": {"rank1": 1.681970257142863, "rank2": 1.5737595083904456, "rank3": 1.4331340250524722, "total": 4.688863790585787},
+    "N1": {"rank1": 1.681970257142863, "rank2": 1.5732104816785675, "rank3": 1.4325439573129912, "total": 4.6877246961344206},
+    "C1_PRE_LINE_MEAN_PROXY": {"rank1": 1.6898346544002552, "rank2": 1.5817202700399893, "rank3": 1.4413346631237234, "total": 4.71288958756397}
+  },
+  "mechanical_and_leakage_checks": {
+    "proxy_source_boundary_pass": true,
+    "PRE_latent_skill_absent": true,
+    "max_line_mean_score_sanity_diff": 0.0,
+    "max_nonoracle_C1_reproduction_diff": 0.0,
+    "max_nonoracle_N1_reproduction_diff": 0.0,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 1.1102230246251565e-16,
+    "max_chain_decomposition_residual": 5.329070518200751e-15,
+    "prior_W1_N1_minus_C1_reproduction_error": 0.0,
+    "models_or_frozen_coefficients_changed": false,
+    "new_seed_selection": false,
+    "result_adaptive_condition_selection": false,
+    "post_result_retuning": false
+  },
+  "supported": [
+    "The exact prior W1 N1-minus-C1 baseline was reproduced with zero reported aggregate error.",
+    "The PRE-only line-mean score control does not need latent_skill or truth-distribution access and passed its source boundary checks.",
+    "The fixed 0.16 line-mean score proxy worsened C1 expected log loss in every fixed block and at every chain stage in the aggregate.",
+    "This exact simple PRE line-mean score construction recovered none of the already-observed oracle improvement under the prespecified clamped recovery metric.",
+    "The result strengthens the distinction between existence of useful hidden shared state in the simulator and successful estimation of that state from a naive PRE aggregate."
+  ],
+  "not_supported": [
+    "This does not show that no lawful PRE-observable shared-state proxy can work.",
+    "This does not identify an optimal coefficient, because coefficient fitting or sweeping was prohibited and not performed.",
+    "This does not select N1, C1, or any proxy as a formal model.",
+    "This does not establish any real-keirin shared state, predictive edge, causal effect, ROI, bankroll value, or deployment readiness.",
+    "The reused Synthetic seed blocks are not untouched or independent validation.",
+    "This result does not authorize a leave-one-out, residualized, learned, tuned, or otherwise different proxy control."
+  ],
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "real_or_untouched_validation": false,
+    "real_live_input_collection": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false,
+    "real_world_edge_or_roi_evidence": false,
+    "scientific_segment_c_scoring_count": 0,
+    "authorization_auto_expanded": false
+  },
+  "post_result_decision": "Q-PRE-SHARED-STATE-PROXY-1 is complete. Do not tune coefficient 0.16, add seed blocks, add result-aware slices, or create another proxy control under this approval. Synthesis and closure are permitted; any materially different PRE proxy is a new Research/Candidate scientific boundary requiring fresh classification and, if execution exceeds existing authority, a separate governed gate."
+}
