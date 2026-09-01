@@ -1,0 +1,53 @@
+name: Keirin Reality PRE Tactical Propensity V0 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_truth_generator_scaffold_v1.py'
+      - 'v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_selftest_v0.py'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_REALITY_PRE_TACTICAL_PROPENSITY_REGISTRY_20260901_v1.json'
+      - '.github/workflows/keirin-reality-pre-tactical-propensity-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  pre-tactical-propensity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile foundation
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_v0.py \
+            v3/historical_all_market/new_lineage/reality_truth_generator_scaffold_v1.py \
+            v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_selftest_v0.py
+      - name: Validate registry
+        run: python -m json.tool v3/historical_all_market/research_candidates/KEIRIN_REALITY_PRE_TACTICAL_PROPENSITY_REGISTRY_20260901_v1.json >/dev/null
+      - name: Reject candidate coupling
+        run: |
+          ! grep -E -i 'q_peer|top3_architecture|c0_c1|\bPEER\b|\bN1\b' \
+            v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_v0.py \
+            v3/historical_all_market/new_lineage/reality_truth_generator_scaffold_v1.py
+      - name: Reject economic coupling
+        run: |
+          ! grep -E -i 'payout|bankroll|\bROI\b' \
+            v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_v0.py \
+            v3/historical_all_market/new_lineage/reality_truth_generator_scaffold_v1.py
+      - name: Confirm no network-capable imports
+        run: |
+          ! grep -E -i '^\s*(import|from)\s+(requests|urllib|httpx|aiohttp|socket)' \
+            v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_v0.py \
+            v3/historical_all_market/new_lineage/reality_truth_generator_scaffold_v1.py
+      - name: Run mechanical selftest
+        run: python v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_selftest_v0.py
+      - name: Terminal boundary
+        run: echo 'ORDINAL_PRE_TACTICAL_EVIDENCE_ONLY_NO_EVENT_RATE_OR_FINISH_EXECUTION'
