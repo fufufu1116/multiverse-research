@@ -1,0 +1,45 @@
+name: MULTIVERSE V19.7.36 Pre-Lab Exact Image Build
+
+on:
+  push:
+    branches:
+      - agent/r1-stage1-phase-c-v19-7-30-pynacl-readiness-frontload-v1
+
+permissions:
+  contents: read
+
+jobs:
+  exact-final-tree-image-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact event commit without third-party actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin https://github.com/fufufu1116/multiverse-research.git
+          git -c protocol.version=2 fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          printf 'PRELAB_EXACT_HEAD=%s\n' "$(git rev-parse HEAD)"
+          printf 'PRELAB_EXACT_TREE=%s\n' "$(git rev-parse HEAD^{tree})"
+
+      - name: Run mandatory mechanical gate and exact Docker build
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          export MULTIVERSE_PRELAB_DOCKER_TAG="multiverse-v7r3-proof:${GITHUB_SHA}"
+          python3 governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py
+          docker image inspect "${MULTIVERSE_PRELAB_DOCKER_TAG}" >/dev/null
+          docker run --rm --entrypoint /bin/cat "${MULTIVERSE_PRELAB_DOCKER_TAG}" /opt/multiverse/v36/image-identity-v7r3.json > /tmp/image-identity-v7r3.json
+          test -s /tmp/image-identity-v7r3.json
+          printf 'PRELAB_DOCKERFILE_BLOB=%s\n' "$(git hash-object .devcontainer/Dockerfile)"
+          printf 'PRELAB_DEVCONTAINER_BLOB=%s\n' "$(git hash-object .devcontainer/devcontainer.json)"
+          printf 'PRELAB_BASE_IMAGE_DIGEST=%s\n' "$(sed -n '1s/^FROM .*@//p' .devcontainer/Dockerfile)"
+          printf 'PRELAB_IMAGE_IDENTITY_SHA256=%s\n' "$(sha256sum /tmp/image-identity-v7r3.json | awk '{print $1}')"
+          printf 'PRELAB_FINAL_TREE_DOCKER_BUILD_PASS=true\n'
+          printf 'SECURITY_AUTHORITY_GRANTED=false\n'
+          printf 'RUNTIME=OFF\n'
