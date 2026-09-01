@@ -1,0 +1,64 @@
+{
+  "record": "KEIRIN_OWNER_APPROVAL_ONE_TIME_REALITY_CALIBRATION_CAPTURE_20260901_v1",
+  "status": "OWNER_EXPLICITLY_APPROVED_NARROW_ONE_TIME_REALITY_CALIBRATION_CAPTURE",
+  "owner_direction": "Execute the one-time hobby-purpose calibration batch now; obtain needed information from sites without bulk or prohibited collection, then use only burned calibration summaries to constrain Synthetic reality worlds.",
+  "approved_scope": {
+    "purpose": "BURNED_REALITY_CALIBRATION_ONLY",
+    "capture_mode": "MANUAL_OR_EQUIVALENTLY_NARROW_PUBLIC_PRE_CAPTURE",
+    "race_date": "2026-09-01",
+    "no_result_or_payout": true,
+    "no_bulk_crawler": true,
+    "no_access_control_bypass": true,
+    "no_external_contact": true,
+    "no_payment": true,
+    "no_model_selection": true,
+    "no_real_validation": true,
+    "no_economics": true,
+    "public_repo_storage_rule": "DO_NOT_STORE_RAW_RIDER_TABLES_OR_SOURCE_PAYLOADS; STORE ONLY DERIVED_CALIBRATION_SUMMARIES_AND_PROVENANCE REFERENCES"
+  },
+  "selection_rule_frozen_before_capture_completion": {
+    "decision_reference_jst": "2026-09-01T15:00:00+09:00",
+    "race_must_start_after_reference": true,
+    "required_field_size": 7,
+    "targets": [
+      {
+        "venue": "宇都宮",
+        "grade": "FI",
+        "class_band": "A1_A2",
+        "rule": "earliest future seven-rider men's A-class race after reference time"
+      },
+      {
+        "venue": "宇都宮",
+        "grade": "FI",
+        "class_band": "S",
+        "rule": "earliest future seven-rider men's S-class race after reference time"
+      },
+      {
+        "venue": "岐阜",
+        "grade": "FII",
+        "class_band": "A1_A2",
+        "rule": "earliest future seven-rider men's A1/A2 race after reference time"
+      },
+      {
+        "venue": "いわき平",
+        "grade": "FII",
+        "class_band": "A3",
+        "rule": "earliest future seven-rider men's A3 race after reference time"
+      }
+    ],
+    "deterministic_missing_rule": "If the earliest race has fewer than seven active riders, move to the next future race in the same venue/class band with exactly seven active riders; do not inspect model predictions or outcomes."
+  },
+  "allowed_capture_fields": [
+    "race/meeting/grade/class/stage/start-time metadata",
+    "venue/bank stable master facts",
+    "rider identity and class",
+    "competition score",
+    "win/quinella/trio rates when shown",
+    "S/H/B",
+    "nige/makuri/sashi/mark counts when shown",
+    "style label when shown"
+  ],
+  "line_policy": "Do not capture or infer a line unless a genuinely pre-race timestamped source is available without post-race reconstruction. Absence remains UNKNOWN.",
+  "evidence_use": "All captured real PRE observations are permanently BURNED for calibration and may not be used as untouched/final validation or model-selection evidence.",
+  "automatic_next_step": false
+}
