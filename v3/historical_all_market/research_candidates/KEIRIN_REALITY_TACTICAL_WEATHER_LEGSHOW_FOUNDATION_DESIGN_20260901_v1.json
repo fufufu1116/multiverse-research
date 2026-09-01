@@ -1,0 +1,119 @@
+{
+  "record": "KEIRIN_REALITY_TACTICAL_WEATHER_LEGSHOW_FOUNDATION_DESIGN_20260901_v1",
+  "status": "FOUNDATION_DESIGN_ONLY_NO_TRUTH_EXECUTION",
+  "classification": "REALITY_FOUNDATION_NOT_MODEL_VALIDATION_NOT_CANONICAL",
+  "owner_gate": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_REALITY_TACTICAL_WEATHER_LEGSHOW_FOUNDATION_20260901_v1.json",
+  "purpose": "Define auditable tactical state types and source-time transport contracts for weather/wind and line observations without inventing transition probabilities or promoting expected lines to observed lines.",
+  "official_support": {
+    "line_roles_and_tactics": {
+      "source": "https://keirin.jp/pc/static/beginner/basics/lines.html",
+      "supported_concepts": [
+        "line cooperation",
+        "self-powered front rider followed by chasing riders",
+        "bante support",
+        "blocking",
+        "gap creation",
+        "switching",
+        "competition for bante position"
+      ]
+    },
+    "legshow_and_environment": {
+      "source": "https://keirin.jp/pc/static/beginner/basics/phases.html",
+      "supported_concepts": [
+        "rider introduction/leg-show occurs before the race",
+        "riders use it to show intended line formation/ordering",
+        "wind direction, wind speed and track circumference are decision-relevant"
+      ]
+    },
+    "weather_observation": {
+      "source": "https://www.data.jma.go.jp/risk/obsdl/",
+      "source_class": "OFFICIAL_JMA_OBSERVATION",
+      "notes": [
+        "JMA publishes time-indexed historical meteorological observations including wind direction/speed where station elements are available.",
+        "JMA notes published historical data can be corrected later.",
+        "JMA explicitly requests avoiding excessive automated access; no bulk crawler is authorized here."
+      ]
+    }
+  },
+  "tactical_state_contract": {
+    "states": [
+      "PRE_START_LINE_INTENT",
+      "INITIAL_POSITION_ACQUISITION",
+      "LINE_MAINTENANCE",
+      "INITIATIVE_ATTACK",
+      "INITIATIVE_CONFLICT",
+      "BANTE_FOLLOWING",
+      "BLOCK_OR_POSITION_DEFENSE",
+      "POSITION_COMPETITION",
+      "LINE_FRAGMENTATION",
+      "SWITCHING",
+      "REATTACHMENT",
+      "SOLO_TRANSITION",
+      "FINAL_SPRINT_OR_OVERTAKE",
+      "TERMINAL_FINISH"
+    ],
+    "rule": "The state vocabulary is reality-supported at the concept level, but transition probabilities, utility effects and event frequencies remain UNKNOWN/ASSUMPTION_RANGE. No candidate may define them.",
+    "minimum_transition_invariants": [
+      "TERMINAL_FINISH is absorbing",
+      "PRE_START_LINE_INTENT cannot transition directly to TERMINAL_FINISH",
+      "SWITCHING requires a prior in-race state",
+      "REATTACHMENT requires prior fragmentation/solo/switching context",
+      "No transition has an implicit numeric probability in v0"
+    ]
+  },
+  "line_observation_contract": {
+    "classes": [
+      "PRE_EVENT_EXPECTED_LINE",
+      "LEGSHOW_OBSERVED_LINE",
+      "NONE_OR_UNAVAILABLE"
+    ],
+    "hard_prohibition": "POST_RACE_RECONSTRUCTED_LINE may never be admitted as PRE.",
+    "expected_line": {
+      "meaning": "A pre-race provider/public prediction or declared expected formation available before cutoff.",
+      "may_be_used_as": "EXPECTED_LINE_INPUT_ONLY",
+      "may_not_be_upgraded_to": "LEGSHOW_OBSERVED_LINE"
+    },
+    "legshow_observed_line": {
+      "meaning": "Formation/order actually observed during official pre-race rider introduction/leg-show.",
+      "admission_requirements": [
+        "observation_timestamp <= decision_timestamp",
+        "source provenance retained",
+        "observation type explicitly LEGSHOW_OBSERVED_LINE",
+        "active/withdrawn rider reconciliation",
+        "line membership/position consistency"
+      ],
+      "current_transport_status": "CONCEPT_SUPPORTED_BUT_STABLE_STRUCTURED_PUBLIC_TRANSPORT_UNRESOLVED"
+    }
+  },
+  "weather_transport_contract": {
+    "required_fields": [
+      "venue_id",
+      "observation_station_id",
+      "observation_timestamp",
+      "decision_timestamp",
+      "wind_speed_mps",
+      "wind_direction",
+      "temperature_c",
+      "precipitation_mm_optional",
+      "source_url",
+      "source_class",
+      "capture_timestamp",
+      "provenance_sha"
+    ],
+    "hard_rules": [
+      "observation_timestamp <= decision_timestamp for decision-time use",
+      "source station/location mapping must be explicit",
+      "missing wind direction/speed stays missing; no silent engineering Gaussian substitution",
+      "historical JMA corrections do not erase the need to preserve capture/provenance semantics",
+      "indoor/no-wind venue facts may override outdoor weather only when venue geometry is officially bound"
+    ],
+    "current_status": "FOUNDATION_TRANSPORT_SCHEMA_SOURCEABLE_WITH_JMA; VENUE_TO_STATION_MAPPING_AND_CAPTURE_POLICY_NOT_YET_FROZEN"
+  },
+  "anti_affinity_boundary": [
+    "No tactical transition coefficient may be chosen from PEER/N1/C1/C0 performance.",
+    "No line observation class may be relabeled after outcomes are known.",
+    "No weather value may be post-hoc selected because it improves model performance.",
+    "No truth-world execution under this foundation gate."
+  ],
+  "next_boundary": "TACTICAL_STATE_AND_TRANSPORT_MECHANICAL_IMPLEMENTATION_CI_ONLY"
+}
