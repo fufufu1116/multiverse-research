@@ -313,8 +313,8 @@ func findFreeze(cs []comment, id int64, identity string) (freezeReceipt, error) 
 	}
 	return chosen, nil
 }
-func parseApproval(c comment, s sessionReceipt, issued time.Time) (approvalReceipt, bool) {
-	if !ownerBound(c) || c.CreatedAt.Before(issued) {
+func parseApproval(c comment, s sessionReceipt, issued, approvalDeadline time.Time) (approvalReceipt, bool) {
+	if !ownerBound(c) || c.CreatedAt.Before(issued) || c.CreatedAt.After(approvalDeadline) {
 		return approvalReceipt{}, false
 	}
 	b, ok := linePayload(c.Body, approvalPrefix)
@@ -328,11 +328,11 @@ func parseApproval(c comment, s sessionReceipt, issued time.Time) (approvalRecei
 	ok = a.Version == "V19.7.36-v7r6" && a.CodespaceName == s.CodespaceName && a.Challenge == s.Challenge && a.CandidateHead == s.CandidateHead && a.CandidateTree == s.CandidateTree && a.ImageIdentitySHA256 == s.ImageIdentitySHA256 && a.CandidateFreezeComment == s.CandidateFreezeComment && a.ExactPhrase == "APPROVE V19.7.36 v7r6 ONE-SHOT LIVE" && a.OneShot && a.Runtime == "OFF"
 	return a, ok
 }
-func selectReceipt(cs []comment, name, challenge, identity string, issued time.Time) (sessionReceipt, error) {
+func selectReceipt(cs []comment, name, challenge, identity string, issued, approvalDeadline time.Time) (sessionReceipt, error) {
 	matches := 0
 	var got sessionReceipt
 	for _, c := range cs {
-		if !evidenceBound(c) {
+		if !evidenceBound(c) || c.CreatedAt.Before(issued) || c.CreatedAt.After(approvalDeadline) {
 			continue
 		}
 		b, ok := linePayload(c.Body, receiptPrefix)
@@ -353,7 +353,7 @@ func selectReceipt(cs []comment, name, challenge, identity string, issued time.T
 		approvalCount := 0
 		var approvalID int64
 		for _, a := range cs {
-			if _, ok := parseApproval(a, s, issued); ok && !a.CreatedAt.After(c.CreatedAt) {
+			if _, ok := parseApproval(a, s, issued, approvalDeadline); ok && !a.CreatedAt.After(c.CreatedAt) {
 				approvalCount++
 				approvalID = a.ID
 			}
@@ -372,22 +372,33 @@ func selectReceipt(cs []comment, name, challenge, identity string, issued time.T
 	}
 	return sessionReceipt{}, errors.New("missing")
 }
-func waitReceipt(cl *http.Client, b *apiBudget, name, challenge, identity string, issued time.Time) (sessionReceipt, error) {
+func waitReceipt(cl *http.Client, b *apiBudget, name, challenge, identity string, issued, operationalDeadline time.Time) (sessionReceipt, error) {
+	approvalDeadline := issued.Add(approvalWindow)
 	state, cursor, e := fullComments(cl, b)
 	if e != nil {
 		return sessionReceipt{}, e
 	}
-	deadline := time.Now().Add(approvalWindow)
 	for {
-		if s, e := selectReceipt(snapshot(state), name, challenge, identity, issued); e == nil {
+		if !time.Now().Before(operationalDeadline) {
+			return sessionReceipt{}, errors.New("timeout")
+		}
+		if s, e := selectReceipt(snapshot(state), name, challenge, identity, issued, approvalDeadline); e == nil {
 			return s, nil
 		} else if e.Error() == "ambiguous" {
 			return sessionReceipt{}, e
 		}
-		if !time.Now().Before(deadline) {
+		remaining := time.Until(operationalDeadline)
+		if remaining <= 0 {
 			return sessionReceipt{}, errors.New("timeout")
 		}
-		time.Sleep(pollInterval)
+		sleepFor := pollInterval
+		if remaining < sleepFor {
+			sleepFor = remaining
+		}
+		time.Sleep(sleepFor)
+		if !time.Now().Before(operationalDeadline) {
+			return sessionReceipt{}, errors.New("timeout")
+		}
 		cursor, e = deltaComments(cl, b, state, cursor)
 		if e != nil {
 			return sessionReceipt{}, e
@@ -422,8 +433,9 @@ func selftest() {
 	f := freezeReceipt{"V19.7.36-v7r6", head, tree, image, "FREEZE V19.7.36 v7r6 CANDIDATE", "OFF"}
 	a := approvalReceipt{"V19.7.36-v7r6", "cs1", challenge, head, tree, image, 1, "APPROVE V19.7.36 v7r6 ONE-SHOT LIVE", true, "OFF"}
 	s := sessionReceipt{"V19.7.36-v7r6", "cs1", challenge, head, tree, image, 1, 2, true, "OFF"}
+	approvalDeadline := t.Add(approvalWindow)
 	base := []comment{mkComment(1, t, freezePrefix, f, false), mkComment(2, t.Add(time.Second), approvalPrefix, a, true), mkComment(3, t.Add(2*time.Second), receiptPrefix, s, false)}
-	if _, e := selectReceipt(base, "cs1", challenge, image, t); e != nil {
+	if _, e := selectReceipt(base, "cs1", challenge, image, t, approvalDeadline); e != nil {
 		panic("positive")
 	}
 	tests := [][]comment{}
@@ -480,16 +492,28 @@ func selftest() {
 	x = append(x, mkComment(5, t, freezePrefix, f, false))
 	add(x)
 	for i, z := range tests {
-		if _, e := selectReceipt(z, "cs1", challenge, image, t); e == nil {
+		if _, e := selectReceipt(z, "cs1", challenge, image, t, approvalDeadline); e == nil {
 			panic(fmt.Sprintf("negative-%d", i))
 		}
 	}
-	req := projectedRequests(6, 17, 1)
-	if req != 24 || req >= apiHardBudget || req >= 60 {
+	boundary := []comment{base[0], mkComment(2, approvalDeadline, approvalPrefix, a, true), mkComment(3, approvalDeadline, receiptPrefix, s, false)}
+	if _, e := selectReceipt(boundary, "cs1", challenge, image, t, approvalDeadline); e != nil {
+		panic("approval-window-final-instant-rejected")
+	}
+	lateApproval := []comment{base[0], mkComment(2, approvalDeadline.Add(time.Nanosecond), approvalPrefix, a, true), mkComment(3, approvalDeadline.Add(time.Nanosecond), receiptPrefix, s, false)}
+	if _, e := selectReceipt(lateApproval, "cs1", challenge, image, t, approvalDeadline); e == nil {
+		panic("approval-window-late-approval-accepted")
+	}
+	lateSession := []comment{base[0], mkComment(2, approvalDeadline, approvalPrefix, a, true), mkComment(3, approvalDeadline.Add(time.Nanosecond), receiptPrefix, s, false)}
+	if _, e := selectReceipt(lateSession, "cs1", challenge, image, t, approvalDeadline); e == nil {
+		panic("approval-window-late-session-accepted")
+	}
+	req := projectedRequests(7, 17, 1)
+	if req != 25 || req >= apiHardBudget || req >= 60 {
 		panic(fmt.Sprintf("minute-8-9-rate-budget:%d", req))
 	}
-	req = projectedRequests(6, 20, 1)
-	if req != 27 || req >= apiHardBudget || req >= 60 {
+	req = projectedRequests(7, 20, 1)
+	if req != 28 || req >= apiHardBudget || req >= 60 {
 		panic(fmt.Sprintf("ten-minute-rate-budget:%d", req))
 	}
 	var b apiBudget
@@ -561,7 +585,8 @@ func selftest() {
 	fmt.Println("PHASE_C_V19_7_36_V7R6_SESSION_GATE_NEGATIVE_SELFTEST_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R6_PAGINATION_RACE_SELFTEST_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R6_RATE_HEADERS_FAIL_CLOSED_SELFTEST_PASS")
-	fmt.Printf("PHASE_C_V19_7_36_V7R6_RATE_BUDGET_SELFTEST_PASS minute_8_5_requests=24 ten_minute_requests=27 hard_budget=%d reserve=%d\n", apiHardBudget, apiReserveRemaining)
+	fmt.Println("PHASE_C_V19_7_36_V7R6_STRICT_APPROVAL_WINDOW_SELFTEST_PASS")
+	fmt.Printf("PHASE_C_V19_7_36_V7R6_RATE_BUDGET_SELFTEST_PASS minute_8_5_requests=25 ten_minute_requests=28 hard_budget=%d reserve=%d\n", apiHardBudget, apiReserveRemaining)
 }
 func main() {
 	if len(os.Args) == 2 && os.Args[1] == "build-selftest" {
@@ -593,9 +618,10 @@ func main() {
 	if e != nil {
 		die("GITHUB_SERVER_TIME")
 	}
+	operationalDeadline := time.Now().Add(approvalWindow)
 	fmt.Printf("PHASE_C_V19_7_36_V7R6_SESSION_CHALLENGE codespace=%s challenge=%s image_identity_sha256=%s\n", name, challenge, identity)
 	fmt.Println("PHASE_C_V19_7_36_V7R6_WAITING_FOR_EXTERNAL_SESSION_BINDING")
-	s, e := waitReceipt(cl, budget, name, challenge, identity, issued)
+	s, e := waitReceipt(cl, budget, name, challenge, identity, issued, operationalDeadline)
 	if e != nil {
 		die("SESSION_RECEIPT:" + e.Error())
 	}
