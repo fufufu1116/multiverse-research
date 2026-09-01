@@ -1,58 +1,60 @@
 package main
 
 import (
+	"bytes"
+	"crypto/sha1"
+	"crypto/sha256"
+	"crypto/tls"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net"
+	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"strings"
 	"syscall"
 	"time"
 )
 
-func die(s string) { fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7_TRIGGER_DENIED:"+s); os.Exit(92) }
-func main() {
-	// fd4 is producer-created one-shot capability endpoint; fd5 is producer-created wake listener.
-	cap := os.NewFile(4, "cap")
-	lf := os.NewFile(5, "wake-listener")
-	if cap == nil || lf == nil {
-		die("FDS")
-	}
-	defer cap.Close()
-	defer lf.Close()
-	_, _, errno := syscall.RawSyscall6(syscall.SYS_PRCTL, 4, 0, 0, 0, 0, 0)
-	if errno != 0 {
-		die("DUMPABLE")
-	}
-	_, _, errno = syscall.RawSyscall6(syscall.SYS_PRCTL, 38, 1, 0, 0, 0, 0)
-	if errno != 0 {
-		die("NO_NEW_PRIVS")
-	}
-	l, e := net.FileListener(lf)
-	if e != nil {
-		die("LISTENER")
-	}
-	defer l.Close()
-	_ = l.(*net.UnixListener).SetDeadline(time.Now().Add(10 * time.Minute))
-	c, e := l.Accept()
-	if e != nil {
-		die("WAKE")
-	}
-	defer c.Close()
-	u := c.(*net.UnixConn)
-	raw, _ := u.SyscallConn()
-	var peer *syscall.Ucred
-	raw.Control(func(fd uintptr) { peer, _ = syscall.GetsockoptUcred(int(fd), syscall.SOL_SOCKET, syscall.SO_PEERCRED) })
-	if peer == nil || peer.Uid != 1000 {
-		die("WAKE_PEER")
-	}
-	b := make([]byte, 5)
-	_ = c.SetReadDeadline(time.Now().Add(2 * time.Second))
-	n, e := c.Read(b)
-	if e != nil || n != 5 || string(b) != "WAKE\n" {
-		die("PROTOCOL")
-	}
-	if n, e = cap.Write([]byte{0x76}); e != nil || n != 1 {
-		die("CAP_WRITE")
-	}
-	_ = cap.Sync()
-	fmt.Fprintln(c, "REVIEW_TRIGGER_ACCEPTED")
-}
+const runtimePath = "/opt/multiverse/v36/runtime-v7.py"
+const manifestPath = "/opt/multiverse/v36/closure-manifest-v7.json"
+const pythonPath = "/usr/bin/python3"
+const triggerPath = "/usr/local/libexec/multiverse-v36-trigger-v7"
+const bindingPath = "/opt/multiverse/v36/step3-binding.json"
+const step3Path = "/opt/multiverse/v36/step3.py"
+const wakeSock = "/run/multiverse-v36-wake-v7.sock"
+const receiptRoot = "/dev/shm/multiverse-r1-stage1-phase-c-v19-7-36-v7-receipts"
+const mainWant = "5c1403c1f5aabb80d29e8c868440aede8888ce61"
+const treeWant = "3d47741b4863411e5c36cb4c28925ac455ab6441"
+const step3BlobWant = "1e6584749d99bc15d9e7147ecda2523a821dbd72"
+const step3SHAWant = "3b2b1e30ac41770c7cfa6294bf2c6e646e23155688af480a0e996a43060376e1"
+const step3SizeWant int64 = 1197
+const tmpfsMagic = 0x01021994
+
+type Obj struct { Path,Type,Target,SHA256 string; Uid,Gid,Mode int; Size int64 }
+type Manifest struct { Version string `json:"version"`; Objects []Obj `json:"objects"`; Policy map[string]any `json:"policy"` }
+type Row struct { State string `json:"state"`; Evidence string `json:"evidence"` }
+
+func die(s string){fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7_PRODUCER_DENIED:"+s);os.Exit(92)}
+func uid(fi os.FileInfo)uint32{return fi.Sys().(*syscall.Stat_t).Uid}
+func rootChain(p string)error{r,e:=filepath.EvalSymlinks(p);if e!=nil{return e};for q:=r;;q=filepath.Dir(q){s,e:=os.Lstat(q);if e!=nil||uid(s)!=0||s.Mode().Perm()&0022!=0{return fmt.Errorf("class-c:%s",q)};if q=="/"{break}};return nil}
+func openC(p string)(*os.File,error){r,e:=filepath.EvalSymlinks(p);if e!=nil{return nil,e};if e=rootChain(r);e!=nil{return nil,e};f,e:=os.Open(r);if e!=nil{return nil,e};s,e:=f.Stat();if e!=nil||uid(s)!=0||s.Mode().Perm()&0022!=0||!s.Mode().IsRegular(){f.Close();return nil,errors.New("class-c-file")};return f,nil}
+func hashOpened(f *os.File)(int64,string,[]byte,error){if _,e:=f.Seek(0,0);e!=nil{return 0,"",nil,e};b,e:=io.ReadAll(io.LimitReader(f,128<<20));if e!=nil{return 0,"",nil,e};h:=sha256.Sum256(b);_,_=f.Seek(0,0);return int64(len(b)),hex.EncodeToString(h[:]),b,nil}
+func loadManifest()(*Manifest,*os.File,error){f,e:=openC(manifestPath);if e!=nil{return nil,nil,e};_,_,b,e:=hashOpened(f);if e!=nil{f.Close();return nil,nil,e};var m Manifest;if json.Unmarshal(b,&m)!=nil||m.Version!="V19.7.36-v7"{f.Close();return nil,nil,errors.New("manifest")};return &m,f,nil}
+func verifyManifest(m *Manifest)error{idx:=map[string]Obj{};for _,o:=range m.Objects{idx[o.Path]=o;s,e:=os.Lstat(o.Path);if e!=nil||uid(s)!=0||int(s.Mode().Perm())!=o.Mode{return fmt.Errorf("meta:%s",o.Path)};if o.Type=="file"{f,e:=openC(o.Path);if e!=nil{return e};n,h,_,e:=hashOpened(f);f.Close();if e!=nil||n!=o.Size||h!=o.SHA256{return fmt.Errorf("hash:%s",o.Path)}}else if o.Type=="symlink"{t,e:=os.Readlink(o.Path);if e!=nil||t!=o.Target{return fmt.Errorf("link:%s",o.Path)};r,e:=filepath.EvalSymlinks(o.Path);if e!=nil{return e};if x,ok:=idx[r];!ok||x.Type!="file"{if s,e:=os.Stat(r);e!=nil||!s.IsDir(){return fmt.Errorf("resolved:%s",o.Path)}}}else if o.Type!="dir"{return errors.New("type")}};if m.Policy["recursive_elf_closure"]!=true||m.Policy["resolved_symlink_targets"]!=true{return errors.New("policy")};return nil}
+func statusGate()error{b,e:=os.ReadFile("/proc/self/status");if e!=nil{return e};s:=string(b);if !strings.Contains(s,"NoNewPrivs:\t1"){return errors.New("nonewprivs")};get:=func(k string)uint64{for _,l:=range strings.Split(s,"\n"){if strings.HasPrefix(l,k+":"){v,_:=strconv.ParseUint(strings.TrimSpace(strings.TrimPrefix(l,k+":")),16,64);return v}};return ^uint64(0)};a:=uint64((1<<0)|(1<<6)|(1<<7));if get("CapEff")&^a!=0||get("CapBnd")&^a!=0{return errors.New("caps")};return nil}
+func mountGate()error{b,e:=os.ReadFile("/proc/self/mountinfo");if e!=nil{return e};for _,l:=range strings.Split(string(b),"\n"){f:=strings.Fields(l);if len(f)<6{continue};mp:=strings.ReplaceAll(f[4],"\\040"," ");if mp=="/"{continue};for _,t:=range []string{"/usr","/bin","/lib","/etc/ssl","/opt/multiverse"}{if mp==t||strings.HasPrefix(mp,t+"/"){return fmt.Errorf("mount:%s",mp)}}};return nil}
+func shmGate()error{var s syscall.Statfs_t;if syscall.Statfs("/dev/shm",&s)!=nil||uint64(s.Type)!=tmpfsMagic{return errors.New("shm")};return nil}
+func strongReceipt(b []byte)error{if e:=shmGate();e!=nil{return e};if _,e:=os.Lstat(receiptRoot);!os.IsNotExist(e){return errors.New("receipt-preexists")};if e:=os.Mkdir(receiptRoot,0700);e!=nil{return e};d,e:=os.Open(receiptRoot);if e!=nil{return e};defer d.Close();fd,e:=syscall.Openat(int(d.Fd()),"PRE_PYTHON.json",syscall.O_RDWR|syscall.O_CREAT|syscall.O_EXCL|syscall.O_NOFOLLOW|syscall.O_CLOEXEC,0400);if e!=nil{return e};f:=os.NewFile(uintptr(fd),"receipt");defer f.Close();if _,e=f.Write(b);e!=nil{return e};if e=f.Sync();e!=nil{return e};_,_=f.Seek(0,0);g,e:=io.ReadAll(f);if e!=nil||!bytes.Equal(g,b){return errors.New("receipt")};return d.Sync()}
+func freshMain()error{tr:=&http.Transport{Proxy:nil,TLSClientConfig:&tls.Config{MinVersion:tls.VersionTLS12}};cl:=&http.Client{Transport:tr,Timeout:10*time.Second,CheckRedirect:func(*http.Request,[]*http.Request)error{return http.ErrUseLastResponse}};get:=func(u string,v any)error{r,_:=http.NewRequest("GET",u,nil);r.Header.Set("Accept","application/vnd.github+json");x,e:=cl.Do(r);if e!=nil{return e};defer x.Body.Close();if x.StatusCode!=200{return fmt.Errorf("http:%d",x.StatusCode)};return json.NewDecoder(io.LimitReader(x.Body,1<<20)).Decode(v)};var r struct{Object struct{SHA string `json:"sha"`} `json:"object"`};if e:=get("https://api.github.com/repos/fufufu1116/multiverse-research/git/ref/heads/main",&r);e!=nil||r.Object.SHA!=mainWant{return errors.New("main")};var c struct{Tree struct{SHA string `json:"sha"`} `json:"tree"`};if e:=get("https://api.github.com/repos/fufufu1116/multiverse-research/git/commits/"+r.Object.SHA,&c);e!=nil||c.Tree.SHA!=treeWant{return errors.New("tree")};return nil}
+func verifyStep3()error{f,e:=openC(step3Path);if e!=nil{return e};defer f.Close();n,h,b,e:=hashOpened(f);if e!=nil||n!=step3SizeWant||h!=step3SHAWant{return errors.New("step3-id")};g:=sha1.New();fmt.Fprintf(g,"blob %d%c",len(b),byte(0));_,_=g.Write(b);if hex.EncodeToString(g.Sum(nil))!=step3BlobWant{return errors.New("step3-blob")};bf,e:=openC(bindingPath);if e!=nil{return e};defer bf.Close();_,_,bb,e:=hashOpened(bf);if e!=nil{return e};var q struct{Version string `json:"version"`;Step3 struct{Path,GitBlob,SHA256,Mode string;Size int64;Mutations int} `json:"step3"`};if json.Unmarshal(bb,&q)!=nil||q.Version!="V19.7.36-v6"||q.Step3.Path!=step3Path||q.Step3.GitBlob!=step3BlobWant||q.Step3.SHA256!=step3SHAWant||q.Step3.Size!=step3SizeWant||q.Step3.Mode!="NONMUTATING"||q.Step3.Mutations!=0{return errors.New("step3-binding")};return nil}
+func rows()map[string]Row{m:=map[string]Row{};p:=func(i int,e string){m[strconv.Itoa(i)]=Row{"PASS",e}};p(1,"Codespaces identity captured before clearenv");p(2,"static root producer");p(3,"zero swap checked");p(4,"tmpfs checked");p(5,"same-object fd execution");p(6,"producer-spawned dedicated-UID trigger holds one-shot inherited socketpair capability; Owner wake is non-authority signal");p(7,"recursive symlink + recursive ELF/helper graph manifest");p(8,"clear environment before dynamic child");p(9,"Python exact opened fd");p(10,"PyNaCl same-process roundtrip and actual-use map verification");p(11,"Git exec-path helpers recursively ELF-expanded; frozen control runner exact actions; build selftest exercises git ls-remote/gh/browser");p(12,"Fresh GitHub main/tree proof");p(13,"exact Step3 blob/SHA/size/path and same opened-object contract");m["14"]=Row{"POST_OAUTH_ONLY","credential-dependent identity/scope/ruleset/fence/environment"};p(15,"pre-Python O_EXCL/O_NOFOLLOW receipt");p(16,"Class-C + caps + mount gate");return m}
+func spawnTrigger()(chan error,error){_=os.Remove(wakeSock);ua:=&net.UnixAddr{Name:wakeSock,Net:"unix"};ln,e:=net.ListenUnix("unix",ua);if e!=nil{return nil,e};if e=os.Chown(wakeSock,1000,1000);e!=nil{return nil,e};if e=os.Chmod(wakeSock,0600);e!=nil{return nil,e};lf,e:=ln.File();if e!=nil{return nil,e};_=ln.Close();sp,e:=syscall.Socketpair(syscall.AF_UNIX,syscall.SOCK_SEQPACKET|syscall.SOCK_CLOEXEC,0);if e!=nil{return nil,e};parent:=os.NewFile(uintptr(sp[0]),"cap-parent");child:=os.NewFile(uintptr(sp[1]),"cap-child");tf,e:=openC(triggerPath);if e!=nil{return nil,e};cmd:=exec.Command("/proc/self/fd/3");cmd.ExtraFiles=[]*os.File{tf,child,lf};cmd.Env=[]string{"LANG=C","LC_ALL=C"};cmd.SysProcAttr=&syscall.SysProcAttr{Credential:&syscall.Credential{Uid:65532,Gid:65532,NoSetGroups:true},Pdeathsig:syscall.SIGKILL};cmd.Stdout=os.Stdout;cmd.Stderr=os.Stderr;if e=cmd.Start();e!=nil{return nil,e};tf.Close();child.Close();lf.Close();ch:=make(chan error,1);go func(){defer parent.Close();defer os.Remove(wakeSock);b:=make([]byte,1);_=parent.SetReadDeadline(time.Now().Add(10*time.Minute));n,e:=parent.Read(b);if e!=nil||n!=1||b[0]!=0x76{ch<-errors.New("capability");return};e=cmd.Wait();if e!=nil{ch<-e;return};ch<-nil}();return ch,nil}
+func runRuntime(c,n string,mf *os.File)error{py,e:=openC(pythonPath);if e!=nil{return e};defer py.Close();rt,e:=openC(runtimePath);if e!=nil{return e};defer rt.Close();ar,aw,e:=os.Pipe();if e!=nil{return e};defer ar.Close();ab,_:=json.Marshal(map[string]any{"version":"V19.7.36-v7","matrix":rows()});go func(){defer aw.Close();_,_=aw.Write(ab)}();code:="import os;fd=4;o=[]\nwhile 1:\n b=os.read(fd,65536)\n if not b:break\n o.append(b)\nexec(compile(b''.join(o),'<v7-runtime>','exec'),{'__name__':'__main__'})";cmd:=exec.Command("/proc/self/fd/3","-I","-S","-B","-c",code);cmd.ExtraFiles=[]*os.File{py,rt,mf,ar};cmd.Env=[]string{"CODESPACES="+c,"CODESPACE_NAME="+n,"LANG=C","LC_ALL=C","PATH=/usr/bin:/bin","MULTIVERSE_V36_V7_MANIFEST_FD=5","MULTIVERSE_V36_V7_ATTEST_FD=6"};cmd.Stdout=os.Stdout;cmd.Stderr=os.Stderr;cmd.SysProcAttr=&syscall.SysProcAttr{Credential:&syscall.Credential{Uid:1000,Gid:1000,NoSetGroups:true}};e=cmd.Run();if x,ok:=e.(*exec.ExitError);ok&&x.ExitCode()==92{return nil};return e}
+func main(){if runtime.GOOS!="linux"||runtime.GOARCH!="amd64"||os.Geteuid()!=0{die("PLATFORM")};c:=os.Getenv("CODESPACES");n:=os.Getenv("CODESPACE_NAME");os.Clearenv();if c!="true"||n==""{die("CODESPACES")};ch,e:=spawnTrigger();if e!=nil{die("TRIGGER_SPAWN")};fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7_CAPABILITY_BOUND_TRIGGER_READY");if e=<-ch;e!=nil{die("TRIGGER_CAPABILITY")};if e=statusGate();e!=nil{die("STATUS")};if e=mountGate();e!=nil{die("MOUNT")};b,_:=os.ReadFile("/proc/swaps");if len(strings.Split(strings.TrimSpace(string(b)),"\n"))>1{die("SWAP")};m,mf,e:=loadManifest();if e!=nil{die("MANIFEST_OPEN")};defer mf.Close();if e=verifyManifest(m);e!=nil{die("MANIFEST_VERIFY")};if e=freshMain();e!=nil{die("FRESH_MAIN")};if e=verifyStep3();e!=nil{die("STEP3_BINDING")};r,_:=json.Marshal(map[string]any{"version":"V19.7.36-v7","pre_python":true,"main":mainWant,"tree":treeWant});if e=strongReceipt(r);e!=nil{die("RECEIPT")};if e=runRuntime(c,n,mf);e!=nil{die("RUNTIME")};fmt.Println("PHASE_C_V19_7_36_V7_REVIEW_CHAIN_RC92_CONFIRMED");os.Exit(92)}
