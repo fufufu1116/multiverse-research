@@ -1,0 +1,180 @@
+{
+  "record": "KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS_PROSPECTIVE_SYNTHETIC_PASS",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "primary_decision": "PASS",
+  "scientific_meaning": "On four newly prespecified Synthetic W1 seed blocks that were not used in the prior cause-decomposition evidence, the single target-rider-excluded same-line peer PRE mean candidate had lower aggregate expected ordered-top3 log loss than frozen C1 and was better than C1 in three of four prespecified blocks. This satisfies the exact prospective PASS rule and supports advancing this exact peer representation as a Synthetic Research/Candidate hypothesis only. One block showed a small adverse delta, so the evidence does not support universal benefit even inside W1. This is not real-world validation, model promotion, or economic evidence.",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "limited_synthetic_authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "synthetic_boundary_closure_blob": "3aa8a51cb12da4d7838bcb527807fe98622a43ae",
+    "digital_twin_design_blob": "62c20fdf87f988e3a0b79e543d4ab4d448234e84",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_core_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_harness_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "frozen_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "scope_and_prespec": {
+    "owner_gate_path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PEER_PRE_PROSPECTIVE_1_20260901_v1.json",
+    "owner_gate_blob": "8f06c99ba2f69474f62a52ca3ea6f5ed60870bc4",
+    "owner_gate_commit": "bdb69bb50bb14c31d400aec591401cfa5b35bb89",
+    "prespec_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_PRESPEC_20260901_v1.json",
+    "prespec_blob": "f5c2a276a7c06a4ac82906f1a26602139565ab0b",
+    "prespec_commit": "21153a3671a3ce05b8cb54e27a5b49af2a12728d",
+    "fixed_before_execution": true,
+    "new_seed_scope_decision": "CLEARLY_WITHIN_OWNER_APPROVED_PROSPECTIVE_SYNTHETIC_W1_FALSIFICATION_SCOPE",
+    "prior_PEER_result_role": "HYPOTHESIS_GENERATING_RETROSPECTIVE_DIAGNOSTIC_ONLY_NOT_MODEL_SELECTION_EVIDENCE",
+    "feature_tournament": false
+  },
+  "candidate_definition": {
+    "id": "C1_PEER_LOO_MEAN_PROSPECTIVE",
+    "role": "SINGLE_PROSPECTIVE_RESEARCH_CANDIDATE_FEATURE_TEST",
+    "base": "exact frozen C1 runner utilities and exact C1 Plackett-Luce generator",
+    "feature": "For each non-singleton target rider, arithmetic mean PRE score of same-line peers excluding the target rider; singleton feature exactly 0.0",
+    "normalization": "divide by line_size - 1",
+    "coefficient": 0.16,
+    "coefficient_source": "canonical W1 shared-state coefficient, fixed before execution",
+    "coefficient_fitted": false,
+    "coefficient_swept": false,
+    "residualized": false,
+    "measurement_error_shrinkage_applied": false,
+    "latent_truth_access": false,
+    "truth_distribution_access_by_candidate": false,
+    "formal_model_adoption": false,
+    "promotion_or_freeze": false
+  },
+  "prospective_fixtures": {
+    "world": "W1",
+    "block_seed_bases": [20265001, 20266001, 20267001, 20268001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "seed_formula": "block_seed_base + case",
+    "race_index_formula": "case % 32",
+    "repository_search_before_prespec_found_seed_references": false,
+    "seed_selection_result_adaptive": false,
+    "post_result_seed_extension": false,
+    "untouched_validation_claim": false,
+    "real_validation_claim": false
+  },
+  "implementation_and_execution": {
+    "harness_path": "tools/keirin_q_peer_pre_prospective_1_v1.py",
+    "harness_blob": "364401c49afc873219feed91959d231a4e9f1b5d",
+    "harness_commit": "52b803c5dadb21ca5eb53f0e68ed32821adc5789",
+    "workflow_path": ".github/workflows/keirin-q-peer-pre-prospective-1-v1-ci.yml",
+    "workflow_blob": "e7de53d500b4a681daf4717d8c7bd6fa5f80243c",
+    "executed_head": "7c5e82fc29609117337a2cf9ee970e3d0fecf7be",
+    "workflow_run_id": 33472126581,
+    "workflow_job_id": 99743841388,
+    "conclusion": "success",
+    "workflow_permissions": "contents:read"
+  },
+  "prespecified_decision_rule": {
+    "PASS": "candidate_minus_C1 < -1e-12 aggregate and candidate better than C1 in at least 3 of 4 blocks",
+    "FAIL": "candidate_minus_C1 > +1e-12 aggregate and candidate worse than C1 in at least 3 of 4 blocks",
+    "INCONCLUSIVE": "all other valid outcomes",
+    "N1_win_required": false,
+    "observed_decision": "PASS"
+  },
+  "aggregate_expected_ordered_top3_log_loss": {
+    "C0": 4.72428113344275,
+    "C1": 4.7235532339829245,
+    "N1": 4.723398385822838,
+    "C1_PEER_LOO_MEAN_PROSPECTIVE": 4.718169884388771
+  },
+  "aggregate_deltas_lower_is_better": {
+    "candidate_minus_C1": -0.0053833495941537635,
+    "candidate_minus_N1": -0.00522850143406739,
+    "candidate_minus_C0": -0.006111249053978973,
+    "N1_minus_C1": -0.0001548481600863738,
+    "C1_minus_C0": -0.0007278994598252098
+  },
+  "aggregate_chain_cross_entropy": {
+    "C1": {"rank1": 1.6911765279393611, "rank2": 1.5869153392677393, "rank3": 1.445461366775825, "total": 4.7235532339829245},
+    "N1": {"rank1": 1.6911765279393614, "rank2": 1.5870633304263335, "rank3": 1.4451585274571483, "total": 4.723398385822838},
+    "C1_PEER_LOO_MEAN_PROSPECTIVE": {"rank1": 1.688712536270768, "rank2": 1.5855052535626346, "rank3": 1.4439520945553768, "total": 4.718169884388771}
+  },
+  "candidate_minus_C1_chain_components": {
+    "rank1": -0.002463991668593124,
+    "rank2": -0.0014100857051047356,
+    "rank3": -0.0015092722204481812,
+    "total": -0.0053833495941537635
+  },
+  "block_results": {
+    "20265001": {"candidate_minus_C1": -0.0040218103518370185, "candidate_minus_N1": -0.0026777083786369005, "N1_minus_C1": -0.001344101973200118},
+    "20266001": {"candidate_minus_C1": -0.005650492541036556, "candidate_minus_N1": -0.006382321127119006, "N1_minus_C1": 0.0007318285860824503},
+    "20267001": {"candidate_minus_C1": -0.011918780531795292, "candidate_minus_N1": -0.01200597972513684, "N1_minus_C1": 0.00008719919334154724},
+    "20268001": {"candidate_minus_C1": 0.000057685048081346224, "candidate_minus_N1": 0.00015200349462052287, "N1_minus_C1": -0.00009431844653917665}
+  },
+  "block_stability": {
+    "candidate_better_than_C1_blocks": 3,
+    "candidate_worse_than_C1_blocks": 1,
+    "candidate_tie_C1_blocks": 0,
+    "total_blocks": 4,
+    "universal_benefit_supported": false
+  },
+  "mechanical_and_leakage_checks": {
+    "candidate_source_boundary_pass": true,
+    "PRE_latent_truth_absent": true,
+    "max_peer_mean_sanity_diff": 0.0,
+    "singleton_feature_zero_by_definition": true,
+    "total_singleton_rider_observations": 340,
+    "total_non_singleton_rider_observations": 3244,
+    "max_non_diagnostic_C0_reproduction_diff": 0.0,
+    "max_non_diagnostic_C1_reproduction_diff": 0.0,
+    "max_non_diagnostic_N1_reproduction_diff": 0.0,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 2.220446049250313e-16,
+    "max_chain_decomposition_residual": 4.440892098500626e-15,
+    "models_or_frozen_coefficients_changed": false,
+    "post_result_retuning": false,
+    "post_hoc_slice": false,
+    "post_result_seed_extension": false,
+    "seed_selection_result_adaptive": false
+  },
+  "supported": [
+    "The target-excluded peer PRE hypothesis prospectively reproduced on new Synthetic W1 fixtures under the fixed one-candidate protocol.",
+    "The candidate had lower aggregate expected ordered-top3 log loss than C1 and satisfied the prespecified 3-of-4 block stability condition.",
+    "The aggregate improvement versus C1 appeared across rank1, rank2 and rank3 chain components rather than at one chain stage only.",
+    "The prior cause-decomposition finding that useful peer signal may exist is no longer supported solely by the retrospective decomposition; a separate prospective Synthetic test now points in the same direction.",
+    "The result is compatible with the earlier mechanism picture that same-line peer PRE observations can carry information about the simulator's shared line state while avoiding own-score reinjection."
+  ],
+  "not_supported": [
+    "The candidate did not improve C1 in every prospective block; one block showed a small adverse delta.",
+    "This does not establish that the candidate is superior to N1, C1 or C0 in real keirin, even though its aggregate Synthetic loss was lower on this one prospective W1 protocol.",
+    "This does not establish a real-keirin shared state, causal mechanism, population frequency, predictive edge, ROI, bankroll value or deployment readiness.",
+    "These new Synthetic fixtures are prospective for this question but are not real or protected untouched validation.",
+    "No coefficient, normalization, residualization, shrinkage, second feature, world, or seed extension is authorized by this result.",
+    "No model is selected, frozen, promoted or accepted."
+  ],
+  "post_result_decision": {
+    "candidate_status": "MAY_ADVANCE_AS_SYNTHETIC_RESEARCH_CANDIDATE_HYPOTHESIS_ONLY",
+    "no_rescue_or_optimization": true,
+    "real_world_validation_auto_authorized": false,
+    "feature_expansion_auto_authorized": false,
+    "coefficient_search_auto_authorized": false,
+    "economics_auto_authorized": false,
+    "next_boundary": "A separate independently governed step is required before independent validation/audit, real-data testing, feature expansion, coefficient work, promotion or economics."
+  },
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "real_or_untouched_validation": false,
+    "real_live_input_collection": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false,
+    "real_world_edge_or_roi_evidence": false,
+    "scientific_segment_c_scoring_count": 0,
+    "authorization_auto_expanded": false
+  }
+}
