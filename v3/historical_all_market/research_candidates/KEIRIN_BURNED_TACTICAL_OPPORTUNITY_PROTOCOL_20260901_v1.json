@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+  "status": "PRESPECIFIED_BEFORE_EXPANSION_ANNOTATION",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_PROTOCOL_NOT_TRUTH_ADMISSION",
+  "purpose": "Define event-conditioned opportunity denominators before inspecting the expansion sample, so positive events cannot determine their own denominator after the fact.",
+  "scope": {
+    "race_regime": "STANDARD_ORIGINAL_LINE_MENS_FII",
+    "primary_events_for_numeric_pilot": [
+      "BANTE_FOLLOW",
+      "INITIATIVE_CONFLICT"
+    ],
+    "still_unidentified_absolute_rates": [
+      "INITIATIVE_ATTACK",
+      "LINE_FRAGMENT",
+      "SWITCH",
+      "REATTACH",
+      "SOLO_TRANSITION",
+      "BLOCK_OR_POSITION_DEFENSE",
+      "POSITION_COMPETITION",
+      "FINAL_SPRINT_OR_OVERTAKE"
+    ]
+  },
+  "two_pass_annotation": {
+    "pass_a": "Identify every qualifying INITIATIVE_ATTACK opportunity anchor without using candidate-model output, odds, finish order, payout, or prediction performance.",
+    "pass_b": "For each frozen attack anchor, label the linked BANTE_FOLLOW and INITIATIVE_CONFLICT opportunities using the fixed windows below.",
+    "reason": "The attack anchor defines the eligible denominator; downstream labels cannot create or delete their own opportunities."
+  },
+  "qualifying_attack_anchor": {
+    "definition": "A visually observable line leader or solo rider makes a sustained forward move intended to take or materially challenge the occupied forward race position, visible across at least two ordered observations or one continuous segment if later reviewed in video.",
+    "exclude": [
+      "mere wheel overlap with no sustained forward movement",
+      "final sprint/overtake after the field has entered the terminal sprint phase",
+      "camera cut or occlusion that prevents actor continuity",
+      "movement inferred only from commentary without visual support"
+    ],
+    "anchor_timestamp": "First clearly observable frame/instant of the sustained forward move.",
+    "actor_requirement": "Car number when visually identifiable; otherwise UNKNOWN_ACTOR and the anchor remains unusable for BANTE_FOLLOW if the expected direct follower cannot be identified."
+  },
+  "bante_follow_opportunity": {
+    "eligibility": "A qualifying attack anchor by a rider who has an identifiable direct expected follower immediately before the attack.",
+    "window_seconds": 6,
+    "present": "Within 6 seconds of the attack anchor, the direct expected follower visibly maintains or re-establishes immediate attachment behind the attacking leader without an intervening rival occupying that direct following position for the remainder of the observable window.",
+    "absent": "The direct expected follower is clearly observable and fails to maintain/re-establish the direct following position within 6 seconds while another rider or a visible gap separates the pair.",
+    "unknown": "Follower identity, continuity, or the relevant 6-second window is not sufficiently visible to distinguish PRESENT from ABSENT.",
+    "denominator": "Only PRESENT plus ABSENT opportunities. UNKNOWN is reported separately and excluded from the numeric denominator."
+  },
+  "initiative_conflict_opportunity": {
+    "eligibility": "A qualifying attack anchor where the forward path reaches an already occupied/defended forward position during the 6-second window.",
+    "window_seconds": 6,
+    "present": "Within 6 seconds, the attacker and incumbent are visibly side-by-side, resisting, overlapping longitudinally with active position contest, or the incumbent visibly holds/defends while the attacker continues the challenge.",
+    "absent": "The attacker reaches the occupied forward position and passes/takes it without a visually sustained contest meeting the PRESENT definition.",
+    "unknown": "Camera angle, occlusion, or identity continuity prevents a confident PRESENT/ABSENT distinction.",
+    "denominator": "Only PRESENT plus ABSENT eligible opportunities. UNKNOWN is reported separately and excluded from the numeric denominator."
+  },
+  "phase_rule": {
+    "terminal_sprint_exclusion": "Do not create new initiative-attack anchors from pure final-sprint overtakes after the race has clearly transitioned to terminal sprint/overtake behavior.",
+    "phase_labels": [
+      "EARLY_FORMATION",
+      "MID_RACE",
+      "LATE_PRE_SPRINT",
+      "TERMINAL_SPRINT"
+    ]
+  },
+  "visual_sampling": {
+    "expansion_review_cadence_seconds": 1,
+    "cadence_purpose": "Human review aid only; no automated tactical inference.",
+    "minimum_visibility": "If the 1-second sample is insufficient, label UNKNOWN rather than infer absence."
+  },
+  "numeric_reporting": {
+    "estimator": "PRESENT / (PRESENT + ABSENT)",
+    "interval": "Wilson 95 percent interval",
+    "minimum_claim": "PILOT_DIAGNOSTIC_RANGE_ONLY",
+    "truth_admission": false,
+    "small_sample_rule": "Never convert a small-sample pilot estimate into a single Reality truth coefficient.",
+    "no_cross_event_substitution": "A BANTE_FOLLOW conditional rate cannot stand in for line cohesion, fragmentation, switching, or finish effect."
+  },
+  "burn_and_firewall": {
+    "all_reviewed_races_burned_forever": true,
+    "untouched_validation": "PROHIBITED",
+    "candidate_model_predictions_visible_to_annotator": false,
+    "odds_or_market_used_for_sampling": false,
+    "finish_order_or_payout_used_for_labels": false,
+    "finish_effect_estimation": "PROHIBITED"
+  },
+  "terminal_rule": "After this protocol, the expansion sample may be reviewed for conditional BANTE_FOLLOW and INITIATIVE_CONFLICT pilot diagnostics only. No absolute tactic rate, causal finish effect, model selection, finish-truth generation, or real predictive claim is authorized."
+}
