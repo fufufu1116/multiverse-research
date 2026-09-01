@@ -1,0 +1,68 @@
+{
+  "record": "KEIRIN_REALITY_REPEATED_EXPECTED_LINE_EVIDENCE_20260901_v1",
+  "status": "PASS_REPEATED_POINT_IN_TIME_EXPECTED_LINE_FOUNDATION",
+  "classification": "REALITY_FOUNDATION_ONLY_NOT_LEGSHOW_NOT_TRUTH_EXECUTION_NOT_MODEL_VALIDATION",
+  "design": "v3/historical_all_market/research_candidates/KEIRIN_REALITY_REPEATED_EXPECTED_LINE_SNAPSHOT_DESIGN_20260901_v1.json",
+  "earlier_capture": "v3/historical_all_market/research_candidates/KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v1.json",
+  "expanded_capture": "v3/historical_all_market/research_candidates/KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v2.json",
+  "implementation": "v3/historical_all_market/new_lineage/reality_repeated_expected_line_v0.py",
+  "selftest": "v3/historical_all_market/new_lineage/reality_repeated_expected_line_selftest_v0.py",
+  "fresh_start": {
+    "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head": "cf3b76b9f313313420af048bd9d0121c5b4c07fc"
+  },
+  "expanded_prospective_capture": {
+    "capture_timestamp_jst": "2026-09-01T16:27:01+09:00",
+    "races": 10,
+    "venues": ["松戸","いわき平"],
+    "all_decision_cutoffs_after_capture": true,
+    "scope": "MEN 7-rider FII A1/A2/A3 within admitted reality slice",
+    "shape_support_counts": {"3-2-2":5,"4-2-1":2,"3-3-1":2,"4-3":1},
+    "new_support": "4-3 two-line seven-rider expected partition",
+    "frequency_estimate": false
+  },
+  "repeated_real_overlap": {
+    "earlier_capture_timestamp_jst": "2026-09-01T16:16:47+09:00",
+    "later_capture_timestamp_jst": "2026-09-01T16:27:01+09:00",
+    "interval_seconds": 614,
+    "shared_races": ["20260901_MATSUDO_7R","20260901_MATSUDO_9R","20260901_IWAKITAIRA_7R"],
+    "provider_expected_partition_changed": 0,
+    "provider_expected_partition_unchanged": 3,
+    "interpretation": "Transport demonstrates repeatable point-in-time snapshots and unchanged short-interval examples only. It does not estimate a population line-stability rate."
+  },
+  "mechanical_contract": {
+    "same_race_snapshots_chronologically_ordered": true,
+    "capture_after_decision_rejected": true,
+    "incomplete_or_duplicate_partition_rejected": true,
+    "group_presentation_order_ignored_but_within_line_order_preserved": true,
+    "changed_partition_or_within_line_order_detectable": true,
+    "latest_snapshot_by_cutoff_selectable": true,
+    "active_field_drift_requires_new_program_snapshot": true,
+    "numerical_line_change_rate_not_encoded": true,
+    "candidate_model_coupling_absent": true,
+    "network_capable_imports_absent": true
+  },
+  "github_actions": {
+    "executed_head": "dc774777678945c5041e145d0f9975288e0b448b",
+    "run_id": 33482474796,
+    "job_id": 99774953692,
+    "conclusion": "success"
+  },
+  "protected_boundary": {
+    "legshow_observed_line_admission": false,
+    "line_change_probability_estimation": false,
+    "tactical_numeric_calibration": false,
+    "truth_world_execution": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "result_payout_access": false,
+    "economics": false,
+    "environment_required": false,
+    "Core_main_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "CONTINUE_PROSPECTIVE_REPEATED_LINE_AND_RIDER_CAPTURE_OR_SEPARATE_LEGSHOW_TACTICAL_NUMERIC_GATE",
+    "automatic_transition": false,
+    "fail_closed": true
+  }
+}
