@@ -1,0 +1,115 @@
+{
+  "record": "KEIRIN_Q_MISMATCH_1_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "question": "Does fixed N1 retain synthetic advantage over fixed C1 when W2 contains PRE-only conditional line dependence whose relation kernel is deliberately not isomorphic to N1's same-line/follower/ordered-chain basis?",
+  "hypotheses_to_distinguish": [
+    "GENERIC_RELATIONAL_VALUE",
+    "MATCHED_SIMULATOR_AFFINITY",
+    "NO_STABLE_RELATIONAL_ADVANTAGE"
+  ],
+  "scope_proof": {
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "authorized_class": "Digital Twin W0-W4 synthetic stress and failure diagnostics only; C0/C1/N1 comparison only inside those synthetic worlds",
+    "digital_twin_design_blob": "62c20fdf87f988e3a0b79e543d4ab4d448234e84",
+    "design_anti_circularity": "Do not create one synthetic world whose data-generating mechanism equals the candidate model under test; test across multiple plausible worlds with different dependence assumptions.",
+    "W2_design_boundary": "Explicit P(second|first) and P(third|first,second) relation effects.",
+    "boundary_closure_blob": "3aa8a51cb12da4d7838bcb527807fe98622a43ae",
+    "closure_rule": "Routine same-scope seed replication stops unless a qualitatively new prespecified falsification question exists.",
+    "scope_classification": "CLEARLY_WITHIN_EXISTING_W2_SYNTHETIC_STRESS_FAILURE_DIAGNOSTIC",
+    "why_not_scope_expansion": [
+      "All variants remain W2 conditional line-dependence worlds.",
+      "No W5/W6 market worlds or new domain are introduced.",
+      "No model or coefficient changes are made.",
+      "No new real/live/protected data are used.",
+      "No economics, promotion, freeze, or owner-policy change is performed."
+    ]
+  },
+  "fixed_sources": {
+    "base_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "models": {
+    "C0": "UNCHANGED_FIXED",
+    "C1": "UNCHANGED_FIXED",
+    "N1": "UNCHANGED_FIXED",
+    "retuning": false
+  },
+  "paired_fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "race_index_formula": "case % 32",
+    "total_cases": 512,
+    "reason": "Reuse already-declared synthetic blocks for paired mechanism diagnosis; no new seed hunting.",
+    "new_seed_selection": false,
+    "untouched_validation_claim": false
+  },
+  "truth_kernels": {
+    "MATCHED_W2_REFERENCE": {
+      "role": "reference_only",
+      "implementation": "canonical digital_twin_v1 world_joint_distribution(race,'W2')"
+    },
+    "REVERSE_DIRECTION": {
+      "role": "primary_mismatch",
+      "P2": "same-line +0.30; immediate predecessor relation +0.28 where candidate_position + 1 == first_position",
+      "P3": "same-line-to-first +0.17; same-line-to-second +0.14; reverse ordered chain +0.30 where first_position > second_position > candidate_position",
+      "purpose": "Keep positive conditional line dependence but reverse the adjacency/chain direction encoded by N1."
+    },
+    "SPARSE_HEAD_TAIL": {
+      "role": "primary_mismatch",
+      "P2": "only same-line head-to-tail transition gets +0.58 where first_position==0 and candidate_position==line_size-1 and line_size>=3",
+      "P3": "only 3-rider same-line head-tail-middle ordering gets +0.61 where first_position==0, second_position==2, candidate_position==1",
+      "purpose": "Keep conditional line dependence but concentrate it on a sparse non-follower/non-chain ordering not directly encoded by N1."
+    },
+    "SIGN_INVERTED_COUNTEREXAMPLE": {
+      "role": "failure_boundary_only_not_primary_classification",
+      "P2": "same-line -0.30; canonical follower -0.28",
+      "P3": "same-line-to-first -0.17; same-line-to-second -0.14; canonical ordered chain -0.30",
+      "purpose": "Explicit counterexample showing the expected boundary when N1's fixed positive direction is wrong."
+    }
+  },
+  "primary_metric": "mean expected ordered-top3 log loss; lower is better",
+  "primary_ablation": "N1_minus_C1_expected_log_loss",
+  "secondary_context": "N1_minus_C0_expected_log_loss",
+  "stability_rule": {
+    "stable_N1_advantage_for_a_kernel": "aggregate N1-C1 delta across all 512 paired cases < 0 AND at least 3 of 4 block-level N1-C1 deltas < 0",
+    "no_magnitude_threshold": true
+  },
+  "decision_rule_hierarchical": [
+    "If MATCHED_W2_REFERENCE does not satisfy stable_N1_advantage_for_a_kernel => NO_STABLE_RELATIONAL_ADVANTAGE.",
+    "Else if both REVERSE_DIRECTION and SPARSE_HEAD_TAIL satisfy stable_N1_advantage_for_a_kernel => GENERIC_RELATIONAL_VALUE.",
+    "Else => MATCHED_SIMULATOR_AFFINITY.",
+    "SIGN_INVERTED_COUNTEREXAMPLE is recorded as a failure-boundary diagnostic and does not enter the three-way primary classification."
+  ],
+  "mechanical_requirements": {
+    "prior_gate_evidence_commit": "e4ebcd6788be0f54a22a4c0e32cead8f61244ceb",
+    "prior_gate_status": "PASS_ALL_SIX_GATES",
+    "probability_support_match_required": true,
+    "unit_mass_tolerance": 1e-10,
+    "C1_N1_rank1_shared_P1_invariant_required": true
+  },
+  "stop_rules": [
+    "No coefficient/model rescue after results.",
+    "No additional kernels or slices after seeing results in this experiment.",
+    "No seed extension merely to change classification.",
+    "Any mechanical/probability invariant failure invalidates interpretation and stops the experiment.",
+    "No real-world, protected, economic, or promotion inference."
+  ],
+  "protected_boundary": {
+    "pr15_metrics": "DO_NOT_ACCESS",
+    "result_payout": "DO_NOT_ACCESS",
+    "econ_holdout1000": "SEALED_DO_NOT_ACCESS",
+    "dev2000_c_rescue": "PROHIBITED",
+    "same_lineage_b_c_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count_must_remain": 0,
+    "real_live_data": "PROHIBITED",
+    "economics": "PROHIBITED",
+    "promotion": "PROHIBITED"
+  }
+}
