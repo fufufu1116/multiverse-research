@@ -1,0 +1,26 @@
+{
+  "record": "KEIRIN_FIXED_S0_RETROSPECTIVE_125R_PARSE_CHECKPOINT_20260902_v1",
+  "status": "PARSE_EXPANSION_PASS_NOT_MODEL_PROMOTION",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_read_parent_head": "8fef0da289115a8eb1f2807307efa8af011fb178",
+  "local_offline_parse": {
+    "input_html_files": 134,
+    "successful_races": 125,
+    "pre_rows": 910,
+    "rejected_files": 9,
+    "parser": "tools/keirin_kdreams_retrospective_pre_parser_v2.py",
+    "result_access": false,
+    "payout_access": false,
+    "network_access": false
+  },
+  "new_since_119r_checkpoint": 6,
+  "governance": {
+    "fixed_s0_beta_unchanged": true,
+    "feature_set_unchanged": true,
+    "rejections_retained_fail_closed": true,
+    "no_payout": true,
+    "no_economics": true,
+    "no_model_promotion": true
+  },
+  "next": "Continue acquisition toward 150R, then 200R. Outcome evaluation must remain separate from PRE parsing and preserve the fixed-S0 no-retuning rule."
+}
