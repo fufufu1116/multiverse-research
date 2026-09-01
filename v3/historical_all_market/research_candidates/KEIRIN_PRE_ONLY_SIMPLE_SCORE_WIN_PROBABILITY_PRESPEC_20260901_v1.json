@@ -1,0 +1,66 @@
+{
+  "record": "KEIRIN_PRE_ONLY_SIMPLE_SCORE_WIN_PROBABILITY_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_PRESPEC_NO_OUTCOME_FIT_YET",
+  "purpose": "Define a reproducible PRE-only baseline that can produce rider win weights for future races without inventing probabilities or using market/result/payout information.",
+  "scope": "cheap real baseline S0 only; not production and not model promotion",
+  "input_features_v1": [
+    "competition_score",
+    "class",
+    "style",
+    "nige",
+    "makuri",
+    "sashi",
+    "mark",
+    "B",
+    "S"
+  ],
+  "explicitly_excluded": [
+    "RESULT",
+    "PAYOUT",
+    "closing_odds",
+    "late_market_movement",
+    "post_race_line_reconstruction",
+    "commentary_only_tactical_inference",
+    "protected_holdout data",
+    "DEV2000 C rescue data"
+  ],
+  "line_feature_policy": "NO_LINE in S0. Line-aware information belongs to separate C1 baseline and must fail closed when point-in-time line snapshot is unavailable.",
+  "missingness_policy": "Do not impute from post-race sources. Missing PRE fields must be represented explicitly and the race may be scored only under a prespecified missingness transform learned from training data.",
+  "training_design": {
+    "required_before_numeric_coefficients": true,
+    "chronological_only": true,
+    "target": "winner indicator from separately authorized development outcomes",
+    "sample_membership": "must be frozen before outcome access",
+    "minimum_development_races": 200,
+    "preferred_development_races": 500,
+    "validation": "forward chronological split under Strict Temporal Backtester",
+    "no_same_lineage_rescue_tuning": true,
+    "untouched_final_validation": "must remain untouched"
+  },
+  "model_form_candidates": [
+    {
+      "name": "S0_LOGIT_SOFTMAX",
+      "description": "standardize numeric PRE features using training-only statistics; one-hot categorical class/style; fit multinomial/conditional-logit style rider utilities; convert per-race utilities with softmax to winner probabilities"
+    },
+    {
+      "name": "S0_SCORE_ONLY_SOFTMAX",
+      "description": "competition_score-only softmax baseline with one training-fitted scale parameter; retained as the cheapest sanity baseline"
+    }
+  ],
+  "selection_rule": "Compare S0_SCORE_ONLY_SOFTMAX and S0_LOGIT_SOFTMAX on forward development evaluation using log loss, Brier, calibration, ranking, sample size and temporal stability. Do not choose by ROI or hit rate.",
+  "probability_contract": {
+    "winner_probabilities": "strictly positive and sum to 1 within race",
+    "ordered_top3": "derive using the already-audited Plackett-Luce transformation only after winner probabilities pass invariants",
+    "fair_decimal_odds": "1 / ordered_ticket_probability for diagnostic price only",
+    "shadow_band": "must not be created until probability model coefficients and any safety margin rule are locked before the target race"
+  },
+  "current_20260902_rule": "No numeric win probabilities, fair odds, expected value, or ticket thresholds may be claimed for 2026-09-02 races unless a coefficient-bearing model has first been trained and locked without those races' outcomes.",
+  "example_numbers_policy": "Any previously discussed ticket combinations or odds numbers were illustrative only and must never seed coefficients, ticket candidates, thresholds, priors, or evaluation expectations.",
+  "hard_boundaries": [
+    "NO_REAL_MONEY_WAGERING",
+    "NO_RESULT_OR_PAYOUT_AS_FEATURE",
+    "NO_ROI_OR_ECONOMIC_PROMOTION",
+    "NO_PROTECTED_HOLDOUT_OPENING",
+    "NO_PRODUCTION_MUTATION"
+  ]
+}
