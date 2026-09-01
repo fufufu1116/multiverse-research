@@ -1,0 +1,32 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T2_INTERACTION_STRESS_CASESET_20260901_v1",
+  "status": "SYNTHETIC_INTERACTION_STRESS_ONLY_NOT_REALITY_TRUTH",
+  "world_tier": "T2",
+  "purpose": "Stress the frozen tactical protocol with overlapping attacks, line-role changes, fragmentation, switching, reattachment, and phase-boundary complexity.",
+  "cases": [
+    {"id":"T2-001","scenario":"two different line leaders independently begin sustained attacks on the same occupied forward position 0.8s apart; both actor continuities clear","expected":{"attack_anchor_count":2,"both_conflict":"PRESENT"}},
+    {"id":"T2-002","scenario":"leader A attacks; A's direct follower abandons A and switches behind independently attacking leader B inside 6s","expected":{"A_bante_follow":"ABSENT","B_bante_follow":"PRESENT_IF_B_DIRECT_EXPECTED_FOLLOWER_WAS_THAT_RIDER_IMMEDIATELY_PRE_ATTACK"}},
+    {"id":"T2-003","scenario":"a line fragments 3s before attack; former second rider is no longer directly behind at anchor; leader attacks solo","expected":{"bante_follow":"INELIGIBLE"}},
+    {"id":"T2-004","scenario":"new rider switches into direct following position immediately before attack and remains identifiable; leader then attacks","expected":{"bante_follow":"PRESENT_IF_NEW_RIDER_IS_DIRECT_EXPECTED_FOLLOWER_AT_ANCHOR"}},
+    {"id":"T2-005","scenario":"attacker reaches incumbent; incumbent visibly moves laterally to hold position while attacker remains longitudinally overlapped","expected":{"initiative_conflict":"PRESENT"}},
+    {"id":"T2-006","scenario":"attacker reaches occupied forward position; incumbent yields immediately and attacker takes position with no sustained contest","expected":{"initiative_conflict":"ABSENT"}},
+    {"id":"T2-007","scenario":"attacker reaches occupied position; contest begins but camera cuts before PRESENT/ABSENT can be distinguished","expected":{"initiative_conflict":"UNKNOWN"}},
+    {"id":"T2-008","scenario":"rider was a line leader at anchor, then becomes detached and effectively solo 2s later while continuing same attack","expected":{"attack_anchor_count":1,"bante_eligibility_based_on":"IMMEDIATELY_BEFORE_ATTACK"}},
+    {"id":"T2-009","scenario":"rider is solo immediately before attack after earlier line fragmentation","expected":{"bante_follow":"INELIGIBLE"}},
+    {"id":"T2-010","scenario":"direct follower is separated by rival at 2s, regains direct position at 4s, rival re-enters at 5.5s and remains through 6s","expected":{"bante_follow":"ABSENT"}},
+    {"id":"T2-011","scenario":"direct follower is separated at 2s, regains direct position at 4s, and remains direct through 6s","expected":{"bante_follow":"PRESENT"}},
+    {"id":"T2-012","scenario":"same attacker completes a sustained attack, settles behind a new leader, then 9s later begins another sustained forward challenge","expected":{"attack_anchor_count":"PROTOCOL_GAP_ATTACK_EPISODE_RESET"}},
+    {"id":"T2-013","scenario":"same attacker accelerates twice without any visible end to the original sustained forward challenge","expected":{"attack_anchor_count":1}},
+    {"id":"T2-014","scenario":"three incumbents compress ahead; attacker visibly challenges occupied forward group, exact incumbent identity changes during contest","expected":{"initiative_conflict":"PRESENT"}},
+    {"id":"T2-015","scenario":"clear forward move begins exactly as race behavior may be transitioning into terminal sprint, but available view cannot establish whether terminal sprint has clearly begun","expected":{"attack_anchor":"PROTOCOL_GAP_PHASE_BOUNDARY_NOT_ESTABLISHED"}},
+    {"id":"T2-016","scenario":"rider moves laterally around an obstruction but does not make sustained forward progress toward a materially forward position","expected":{"attack_anchor":false,"reason":"NO_SUSTAINED_FORWARD_MOVE"}}
+  ],
+  "firewall": {
+    "synthetic_only": true,
+    "reality_prevalence_inference": false,
+    "finish_effect": false,
+    "market_or_wagering_use": false,
+    "protocol_mutation": false
+  },
+  "next_gate": "Separate determinate protocol behavior from semantic gaps; do not fill gaps by tuning from synthetic desired outputs."
+}
