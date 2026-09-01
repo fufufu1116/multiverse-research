@@ -31,6 +31,7 @@ def main():
         for line in z:
             q=line.rstrip().split(None,5)
             if len(q)==6 and q[5].startswith('/') and os.path.isfile(q[5]):paths.add(os.path.realpath(q[5]))
+    paths.discard(os.path.realpath(__file__))
     if not paths:die('NO_ACTUAL_USE_PATHS')
     for p in sorted(paths):
         e=idx.get(p)
