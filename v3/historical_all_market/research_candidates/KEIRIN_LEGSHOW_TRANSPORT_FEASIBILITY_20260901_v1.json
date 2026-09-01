@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_LEGSHOW_TRANSPORT_FEASIBILITY_20260901_v1",
+  "status": "PARTIAL_FEASIBILITY_PUBLIC_LIVE_EXISTS_STRUCTURED_POINT_IN_TIME_TRANSPORT_NOT_YET_PROVEN",
+  "classification": "RESEARCH_CANDIDATE_TRANSPORT_DESIGN_ONLY_NOT_LEGSHOW_ADMISSION",
+  "evidence": {
+    "official_legshow_semantics": "KEIRIN/CTC guidance states the pre-race rider introduction/leg-show is an information-gathering phase in which riders display intended line formation and order.",
+    "public_live_support": [
+      "Matsudo Keirin states that all races on meeting days are live streamed on YouTube and NicoNico.",
+      "Yokkaichi Keirin states its live service runs from the first-race leg-show through the final race.",
+      "Ito Onsen Keirin live-stream help explicitly states rider introductions/leg-show are included in the live broadcast."
+    ],
+    "current_limit": "The inspected public text surfaces do not expose a stable structured machine-readable LEGSHOW_OBSERVED_LINE snapshot with publication timestamp and exact rider order. Video availability alone is not sufficient for automatic admission."
+  },
+  "admission_requirements": {
+    "source_is_public_and_permitted_for_the_specific_capture_method": true,
+    "capture_timestamp_before_decision_cutoff": true,
+    "video_or_observation_time_bound_to_race": true,
+    "active_field_bound_to_same_program_snapshot": true,
+    "line_groups_and_within_line_order_explicitly_annotated": true,
+    "expected_line_and_legshow_observed_line_stored_separately": true,
+    "ambiguous_or_occluded_rider_order_can_be_UNKNOWN": true,
+    "source_url_and_provenance_hash_required": true,
+    "no_post_race_reconstruction": true,
+    "no_result_or_payout_use": true
+  },
+  "recommended_transport_options": [
+    {
+      "name": "OFFICIAL_STRUCTURED_PRE_RACE_FEED",
+      "priority": 1,
+      "status": "NOT_FOUND_IN_CURRENT_PUBLIC_INSPECTION",
+      "reason": "Best provenance and reproducibility if it exists."
+    },
+    {
+      "name": "PUBLIC_LIVE_HUMAN_ANNOTATION",
+      "priority": 2,
+      "status": "FEASIBLE_IN_PRINCIPLE_NOT_ADMITTED",
+      "reason": "Can preserve leg-show semantics if the capture is made before cutoff and annotation is explicit, but requires a separate owner/evidence gate and reproducibility controls."
+    },
+    {
+      "name": "PUBLIC_LIVE_AUTOMATED_VIDEO_INFERENCE",
+      "priority": 3,
+      "status": "NOT_AUTHORIZED_NOT_RECOMMENDED_AT_FOUNDATION_GATE",
+      "reason": "Adds computer-vision error, rights/access complexity and reproducibility burden before simpler transport is proven."
+    }
+  ],
+  "scientific_rule": "A public live stream establishes observability, not a calibrated line snapshot. LEGSHOW_OBSERVED_LINE remains blocked until a prespecified capture-and-annotation protocol is executed prospectively and independently verified.",
+  "protected_boundary": {
+    "legshow_observed_admitted": false,
+    "video_based_tactical_event_fitting": false,
+    "result_payout_access": false,
+    "finish_truth_execution": false,
+    "model_comparison": false,
+    "economics": false
+  }
+}
