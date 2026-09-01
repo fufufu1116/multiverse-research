@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_REGIME_MISMATCH_REMEDIATION_20260901_v1",
+  "status": "PRESPECIFIED_REPLACEMENT_BEFORE_REPLACEMENT_TACTICAL_REVIEW",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_PROTOCOL_REMEDIATION",
+  "created_jst": "2026-09-01T18:27:00+09:00",
+  "fresh_research_head_before_write": "aed53395cb033300bb1050ca3a91c8323eb93fdb",
+  "parent_prespec": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_PRESPEC_20260901_v1",
+  "trigger": "Objective regime screening of the prespecified 2026-08-07 R1-R6 batch found R5 and R6 explicitly labeled GIRLS KEIRIN / L1, so they do not satisfy STANDARD_ORIGINAL_LINE_MENS_FII. No tactical label from R5/R6 is used for replacement selection.",
+  "objective_screen": [
+    {"race_no": 1, "status": "ELIGIBLE_MENS_FII", "race_class": "A3_CHALLENGE_GENERAL"},
+    {"race_no": 2, "status": "ELIGIBLE_MENS_FII", "race_class": "A3_CHALLENGE_GENERAL"},
+    {"race_no": 3, "status": "ELIGIBLE_MENS_FII", "race_class": "A3_CHALLENGE_SEMIFINAL"},
+    {"race_no": 4, "status": "ELIGIBLE_MENS_FII", "race_class": "A3_CHALLENGE_SEMIFINAL"},
+    {"race_no": 5, "status": "BURNED_BUT_REGIME_INELIGIBLE", "race_class": "GIRLS_QUALIFYING_2_L1"},
+    {"race_no": 6, "status": "BURNED_BUT_REGIME_INELIGIBLE", "race_class": "GIRLS_QUALIFYING_2_L1"}
+  ],
+  "source_frame_manifest_sha256": "280855e8b848c63bd2cf8f9de0b3ffa8ef455fa614c83a1caa615dea67191022",
+  "frames_artifact_sha256": "82e0eee54cba4250d554aa03af32118091dd3eae27ba8315017ff3329acc8a53",
+  "workflow_run_id": 33491943427,
+  "burn_status": {
+    "R1": "BURNED_ELIGIBLE_PENDING_TACTICAL_REVIEW",
+    "R2": "BURNED_ELIGIBLE_PENDING_TACTICAL_REVIEW",
+    "R3": "BURNED_ELIGIBLE_PENDING_TACTICAL_REVIEW",
+    "R4": "BURNED_ELIGIBLE_PENDING_TACTICAL_REVIEW",
+    "R5": "BURNED_BUT_REGIME_INELIGIBLE_FOR_MENS_CALIBRATION",
+    "R6": "BURNED_BUT_REGIME_INELIGIBLE_FOR_MENS_CALIBRATION"
+  },
+  "replacement_rule": "Use exactly the next two sequential day-2 races after R6: R7 and R8. Fetch both only after this remediation exists. Perform objective regime screening before any tactical annotation. If either replacement is ineligible, stop and issue another prespecified remediation before fetching later races.",
+  "replacement_races_prespecified_before_review": [
+    {"race_no": 7, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-07-01-00.mp4"},
+    {"race_no": 8, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-08-01-00.mp4"}
+  ],
+  "eligible_batch_target_if_replacements_pass": [1,2,3,4,7,8],
+  "protocol_unchanged": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+  "review_cadence_seconds": 1,
+  "forbidden": [
+    "using tactical content from R5/R6 to choose replacements",
+    "using outcomes, odds, payout, or model performance to choose replacements",
+    "retuning the six-second opportunity windows",
+    "silently discarding R5/R6 from burn history",
+    "promoting any conditional pilot rate to Reality truth"
+  ],
+  "terminal_rule": "R5/R6 remain permanently burned as regime-ineligible source inspections. R7/R8 may be fetched and objectively screened only after this record exists; tactical review of the eligible six-race batch begins only after replacement eligibility is resolved."
+}
