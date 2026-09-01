@@ -1,0 +1,45 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T1_OBSERVATION_STRESS_CASESET_20260901_v1",
+  "status": "SYNTHETIC_OBSERVATION_STRESS_ONLY_NOT_REALITY_TRUTH",
+  "world_tier": "T1",
+  "purpose": "Hold latent tactical events fixed while degrading observation quality, to test whether the protocol fails closed into UNKNOWN or no-anchor rather than inventing labels.",
+  "separation_firewall": {
+    "synthetic_is_real_race_evidence": false,
+    "synthetic_may_define_reality_rates": false,
+    "synthetic_may_replace_real_duplicate_annotation": false,
+    "finish_or_wagering_use": false
+  },
+  "cases": [
+    {"id":"T1-001","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"attack and identities clear; follower occluded for seconds 2-5","expected_protocol":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-002","latent":{"attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"observation":"attack clear; follower disappears immediately after anchor and reappears after window","expected_protocol":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-003","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"ABSENT"},"observation":"attack and follower clear; camera angle cannot establish whether forward path reached occupied position","expected_protocol":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"INELIGIBLE_OR_NOT_ESTABLISHED"}},
+    {"id":"T1-004","latent":{"attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"observation":"attack starts before camera cut; actor continuity lost across cut","expected_protocol":{"attack_anchor":false,"reason":"ACTOR_CONTINUITY_NOT_VISUALLY_ESTABLISHED"}},
+    {"id":"T1-005","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"only commentary describes attack; visual sequence does not show sustained forward movement","expected_protocol":{"attack_anchor":false,"reason":"COMMENTARY_ONLY_INFERENCE"}},
+    {"id":"T1-006","latent":{"attack":false},"observation":"two frames show wheel overlap but no longitudinal progression","expected_protocol":{"attack_anchor":false,"reason":"MOMENTARY_WHEEL_OVERLAP"}},
+    {"id":"T1-007","latent":{"attack":true,"phase":"TERMINAL_SPRINT"},"observation":"clear final sprint overtake","expected_protocol":{"attack_anchor":false,"reason":"TERMINAL_SPRINT_EXCLUSION"}},
+    {"id":"T1-008","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"attack clear, direct follower number unreadable but same rider continuity visible","expected_protocol":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-009","latent":{"attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"observation":"attacker clear; two plausible direct followers immediately before attack due occlusion","expected_protocol":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-010","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"occupied position clear; contest partly hidden but incumbent visibly holds while challenge continues","expected_protocol":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-011","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"ABSENT"},"observation":"occupied position reached; pass occurs through camera obstruction with no visibility of contest","expected_protocol":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"UNKNOWN"}},
+    {"id":"T1-012","latent":{"attack":true,"bante_follow":"ABSENT","initiative_conflict":"ABSENT"},"observation":"occupied position reached and visible continuously; clear take with no sustained contest; follower gap clear","expected_protocol":{"attack_anchor":true,"bante_follow":"ABSENT","initiative_conflict":"ABSENT"}},
+    {"id":"T1-013","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"follower reattachment occurs at 5.8s and remains direct","expected_protocol":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-014","latent":{"attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"observation":"follower reattachment first visible at 6.2s","expected_protocol":{"attack_anchor":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-015","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"reattachment exact timing only known within interval 5.7-6.3s","expected_protocol":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-016","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"intervening rival briefly occupies direct following position then leaves; expected follower reattaches by 4s and remains direct to window end","expected_protocol":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-017","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"expected follower reconnects at 3s but rival again takes direct position at 5s and remains through window","expected_protocol":{"attack_anchor":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-018","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"attack is visible across exactly two ordered one-second observations","expected_protocol":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-019","latent":{"attack":true},"observation":"only one isolated frame suggests forward movement; no continuous segment","expected_protocol":{"attack_anchor":false,"reason":"SUSTAINED_FORWARD_MOVE_NOT_ESTABLISHED"}},
+    {"id":"T1-020","latent":{"attacks":2},"observation":"two attacks by different riders separated by 12s; both visually independent","expected_protocol":{"attack_anchor_count":2}},
+    {"id":"T1-021","latent":{"attacks":1},"observation":"same rider accelerates again 2s after initial anchor without ending first sustained move","expected_protocol":{"attack_anchor_count":1,"reason":"SECOND_ACCELERATION_IS_CONTINUATION"}},
+    {"id":"T1-022","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"line role before attack is hidden; rider may be leader or internal line rider","expected_protocol":{"attack_anchor":false,"reason":"LINE_LEADER_OR_SOLO_STATUS_NOT_ESTABLISHED"}},
+    {"id":"T1-023","latent":{"attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"observation":"line leader status and attack clear; counterparty identity uncertain but occupied defense and contest visible","expected_protocol":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-024","latent":{"attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"observation":"attack clear; direct follower and contest both hidden for most of six-second window","expected_protocol":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"UNKNOWN"}}
+  ],
+  "evaluation_questions": [
+    "Does uncertainty about downstream labels leave the Pass A anchor unchanged when attack qualification itself is visible?",
+    "Does uncertainty about actor continuity or leader/solo status prevent anchor creation rather than create an UNKNOWN tactical label on a non-established anchor?",
+    "Are 6-second boundary cases handled without rounding hidden uncertainty into PRESENT or ABSENT?",
+    "Does visible incumbent defense suffice for PRESENT conflict even if exact counterparty number is uncertain?"
+  ],
+  "next_gate": "Review T1 expected outputs against frozen protocol; any ambiguous semantic not settled by protocol becomes a protocol-clarification candidate, not a guessed answer."
+}
