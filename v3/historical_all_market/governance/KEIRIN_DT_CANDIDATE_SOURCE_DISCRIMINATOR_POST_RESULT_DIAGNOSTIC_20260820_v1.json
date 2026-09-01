@@ -1,0 +1,57 @@
+{
+  "record": "KEIRIN_DT_CANDIDATE_SOURCE_DISCRIMINATOR_POST_RESULT_DIAGNOSTIC_20260820_v1",
+  "status": "POST_RESULT_ENGINEERING_DIAGNOSTIC_NOT_PREREGISTERED_VALIDATION",
+  "parent_receipt": "KEIRIN_DT_CANDIDATE_SOURCE_DISCRIMINATOR_LOCAL_RUNTIME_RECEIPT_20260820_v1",
+  "scale_neutral_numeric_erratum": {
+    "issue": "After within-race z-scoring, score_mean and score_std are mathematically fixed at approximately 0 and 1. Tiny floating-point residual patterns can be exploited by tree models and therefore are not meaningful scale-neutral realism information.",
+    "original_locked_result_preserved": true,
+    "correction_semantics": "Post-result diagnostic only. Remove score_mean and score_std from SCALE_NEUTRAL_VIEW because they are deterministic normalization identities; retain score_range and all non-score features.",
+    "corrected_scale_neutral": {
+      "CURRENT_TWIN": {
+        "HistGradientBoostingClassifier": {"roc_auc": 1.0, "balanced_accuracy": 1.0},
+        "LogisticRegression": {"roc_auc": 1.0, "balanced_accuracy": 1.0}
+      },
+      "EMPIRICAL_ADAPTER_TWIN": {
+        "HistGradientBoostingClassifier": {"roc_auc": 0.8210089756434501, "balanced_accuracy": 0.7316439246263808},
+        "LogisticRegression": {"roc_auc": 0.4936177471088498, "balanced_accuracy": 0.49740090968161144}
+      }
+    },
+    "conclusion_change": "NONE_MATERIAL. The exact numeric HGB separability is lower than the original scale-neutral locked output, but the new Twin remains materially distinguishable nonlinearly while being dramatically improved versus the current Twin."
+  },
+  "fixed_hgb_group_diagnostic_on_empirical_adapter": {
+    "AUDIT_REALISM_VIEW": {
+      "band_class_only_auc": 0.6194975683137282,
+      "style_only_auc": 0.5524553086081989,
+      "score_only_auc": 0.6090794635133064,
+      "tactical_means_only_auc": 0.7571623810808515,
+      "tactical_zero_fractions_only_auc": 0.6451378307390985,
+      "tactical_all_auc": 0.7674768346997978,
+      "non_score_all_auc": 0.8317688549098784,
+      "all_locked_features_auc": 0.8813069421803732
+    },
+    "single_feature_observation": "No single tactical feature alone produced high separability; the strongest single diagnostic was zero_nige at AUC about 0.565. The large multifeature AUC is therefore primarily a joint/dependence signature rather than one bad marginal center."
+  },
+  "largest_race_level_spearman_mismatches_real_candidate_vs_empirical_twin": [
+    {"pair": ["mean_makuri", "mean_sashi"], "real": 0.24762953401431953, "twin": -0.16160638443727626, "abs_gap": 0.4092359184515958},
+    {"pair": ["mean_S", "mean_sashi"], "real": 0.3321478667925459, "twin": -0.050128529609742394, "abs_gap": 0.3822763964022883},
+    {"pair": ["mean_sashi", "zero_S"], "real": -0.3458556910538612, "twin": 0.033727976727027195, "abs_gap": 0.3795836677808884},
+    {"pair": ["mean_nige", "mean_sashi"], "real": 0.1038340631450658, "twin": -0.24402065193993144, "abs_gap": 0.3478547150849972},
+    {"pair": ["mean_sashi", "zero_makuri"], "real": -0.1787893332398837, "twin": 0.16655255674242656, "abs_gap": 0.34534188998231025},
+    {"pair": ["mean_B", "mean_nige"], "real": 0.8484309969499488, "twin": 0.5174563432274435, "abs_gap": 0.33097465372250534},
+    {"pair": ["classfrac_S2", "mean_nige"], "real": -0.3086421750778924, "twin": 0.018510609774074743, "abs_gap": 0.32715278485196714},
+    {"pair": ["band_S", "mean_nige"], "real": -0.2799152633954655, "twin": 0.014914663503571296, "abs_gap": 0.2948299268990368}
+  ],
+  "engineering_diagnosis": {
+    "current_v1_strength": "Marginal and linear first-order resemblance improved sharply.",
+    "current_v1_weakness": "Independent or insufficiently conditional tactical sampling fails to reproduce multivariate tactical dependence and some band/style/class-conditioned joint structure.",
+    "recommended_v2_focus": [
+      "band_x_style conditional tactical distributions",
+      "joint tactical dependence rather than independent field draws",
+      "score/tactical dependence where supportable as derived candidate constraints",
+      "race-level aggregate correlation and shape constraints",
+      "do not tune line/bank/wind/H from this source because they remain unavailable or unmeasured"
+    ]
+  },
+  "scientific_boundary": "All findings are in-source staged-candidate engineering diagnostics. They do not admit the source, establish population truth, establish real-world equivalence, or justify model promotion.",
+  "next_gate": "PREREGISTER_V2_JOINT_DEPENDENCE_CALIBRATION_BEFORE_IMPLEMENTATION_OR_V2_DISCRIMINATOR_EVALUATION"
+}

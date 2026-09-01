@@ -1,0 +1,90 @@
+{
+  "record": "KEIRIN_DT_PRE_REALISM_MULTIWORLD_EXACT_HEAD_CI_RECEIPT_20260820_v1",
+  "status": "EXACT_HEAD_GITHUB_ACTIONS_PASS_SYNTHETIC_ENGINEERING_ONLY",
+  "executed_head": "95f5792b283e2c4b2b6fba5b7fb14ae32cb3aa19",
+  "workflow_run_id": 32355924683,
+  "job_id": 96384967870,
+  "executed_at_jst_window": "2026-08-20T18:50:31+09:00/2026-08-20T18:51:11+09:00",
+  "exact_checkout_verified": true,
+  "terminals": {
+    "v1_adapter_selftest": "DIGITAL_TWIN_EMPIRICAL_PRE_ADAPTER_SELFTEST_PASS",
+    "v1_locked_stress": "REALITY_SCALED_LOCKED_STRESS_EXECUTION_PASS",
+    "v1_reconstructed_receipt_numeric_match": "RECONSTRUCTED_RECEIPT_NUMERIC_MATCH_PASS",
+    "v2_adapter_selftest": "DIGITAL_TWIN_EMPIRICAL_PRE_ADAPTER_V2_SELFTEST_PASS",
+    "pre_realism_multiworld_locked_stress": "PRE_REALISM_MULTIWORLD_LOCKED_STRESS_PASS"
+  },
+  "execution_lock": {
+    "seed": 20260820,
+    "races_per_truth_scenario_per_pre_world": 240,
+    "pre_worlds": ["R0_CURRENT_SYNTHETIC", "R1_EMPIRICAL_MARGINAL", "R2_EMPIRICAL_JOINT"],
+    "truth_scenarios": 10,
+    "scenario_world_cells": 30,
+    "scenario_race_evaluations": 7200
+  },
+  "winner_counts": {"C0": 23, "C1": 1, "N1": 6},
+  "robustness": {
+    "C0": {"mean_excess_log_loss": 0.004254391346885929, "worst_case_excess_log_loss": 0.0389532555418759, "zero_regret_cell_count": 23},
+    "C1": {"mean_excess_log_loss": 0.01699868289178153, "worst_case_excess_log_loss": 0.053112291355155605, "zero_regret_cell_count": 1},
+    "N1": {"mean_excess_log_loss": 0.015936285477147618, "worst_case_excess_log_loss": 0.058623268442525855, "zero_regret_cell_count": 6}
+  },
+  "cell_winners": {
+    "R0_CURRENT_SYNTHETIC": {
+      "W0_NULL_CONTEXT": "C0",
+      "W0_CONTEXT_MODERATE": "C0",
+      "W1_STATIC_LINE_WEAK": "C0",
+      "W1_STATIC_LINE_STRONG": "C0",
+      "W2_CONDITIONAL_LINE_WEAK": "C0",
+      "W2_CONDITIONAL_LINE_STRONG": "N1",
+      "W3_DISRUPTION_LOW": "C0",
+      "W3_DISRUPTION_HIGH": "C0",
+      "W4_HEAVY_TAIL_MODERATE": "C0",
+      "W4_HEAVY_TAIL_SEVERE": "C0"
+    },
+    "R1_EMPIRICAL_MARGINAL": {
+      "W0_NULL_CONTEXT": "C0",
+      "W0_CONTEXT_MODERATE": "C0",
+      "W1_STATIC_LINE_WEAK": "C0",
+      "W1_STATIC_LINE_STRONG": "C0",
+      "W2_CONDITIONAL_LINE_WEAK": "C0",
+      "W2_CONDITIONAL_LINE_STRONG": "N1",
+      "W3_DISRUPTION_LOW": "N1",
+      "W3_DISRUPTION_HIGH": "C0",
+      "W4_HEAVY_TAIL_MODERATE": "C0",
+      "W4_HEAVY_TAIL_SEVERE": "C0"
+    },
+    "R2_EMPIRICAL_JOINT": {
+      "W0_NULL_CONTEXT": "C0",
+      "W0_CONTEXT_MODERATE": "C0",
+      "W1_STATIC_LINE_WEAK": "C0",
+      "W1_STATIC_LINE_STRONG": "C1",
+      "W2_CONDITIONAL_LINE_WEAK": "N1",
+      "W2_CONDITIONAL_LINE_STRONG": "N1",
+      "W3_DISRUPTION_LOW": "N1",
+      "W3_DISRUPTION_HIGH": "C0",
+      "W4_HEAVY_TAIL_MODERATE": "C0",
+      "W4_HEAVY_TAIL_SEVERE": "C0"
+    }
+  },
+  "interpretation": {
+    "engineering_only": true,
+    "most_robust_fixed_proxy_on_this_locked_synthetic_grid": "C0",
+    "N1_behavior": "locally wins several strong conditional-line/disruption cells but has larger mean and worst-case regret than C0",
+    "C1_behavior": "wins one R2 static-line-strong cell and is otherwise not robustly preferred",
+    "model_selection_or_promotion": "PROHIBITED",
+    "pre_world_selection": "PROHIBITED_FROM_SAME_SOURCE_DISCRIMINATOR",
+    "same_source_v2_tuning": "CLOSED",
+    "next_realism_information": "INDEPENDENT_PROSPECTIVE_OFFICIAL_PRE_OR_INDEPENDENT_TIME_SOURCE_SENSOR"
+  },
+  "not_evidence_of": ["REAL_KEIRIN_EDGE", "REAL_ROI", "REAL_WORLD_EQUIVALENCE", "POPULATION_FREQUENCY_TRUTH", "SOURCE_ADMISSION", "MODEL_PROMOTION"],
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "INDEPENDENT_LAB_REVIEW_OF_CURRENT_PR_HEAD_AND_EXTERNAL_REALISM_CALIBRATION_FROM_INDEPENDENT_PRE_SENSOR"
+}
