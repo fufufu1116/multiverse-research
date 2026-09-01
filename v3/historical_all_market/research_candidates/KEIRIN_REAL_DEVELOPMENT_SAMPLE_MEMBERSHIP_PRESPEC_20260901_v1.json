@@ -1,0 +1,100 @@
+{
+  "record": "KEIRIN_REAL_DEVELOPMENT_SAMPLE_MEMBERSHIP_PRESPEC_20260901_v1",
+  "status": "PRESPECIFIED_BEFORE_PRE_MARKET_OUTCOME_COLLECTION",
+  "classification": "REAL_EVIDENCE_DEVELOPMENT_SAMPLE_MEMBERSHIP_ONLY_NOT_MODEL_PROMOTION_NOT_UNTOUCHED_VALIDATION",
+  "as_of_jst": "2026-09-01T23:30:00+09:00",
+  "fresh_binding": {
+    "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+    "head_before_write": "42be770a2d1cd787b3282364baa5dd420ba54ddd"
+  },
+  "purpose": "Freeze the first prospective real-development race universe before any target outcomes are observed or used, so market-only and simple PRE baselines can later be compared on one strict temporal evaluation surface.",
+  "public_schedule_basis": {
+    "official_source": "KEIRIN.JP 2026-09-02 voting/schedule listings observed before the target date",
+    "target_date_jst": "2026-09-02",
+    "scheduled_venues_observed": ["西武園", "松戸", "伊東", "大垣", "防府", "高知", "熊本"],
+    "note": "The universe is frozen from the official tomorrow listing; race results, payout pages, and post-race pages were not used to choose venues."
+  },
+  "membership_rule": {
+    "venue_selection": "ALL_TARGET_DATE_VENUES_LISTED_ABOVE",
+    "race_selection": "ALL_STANDARD_MENS_KEIRIN_RACES_AT_SELECTED_VENUES",
+    "race_numbers": "ALL_PUBLISHED_RACE_NUMBERS_WITHIN_EACH_SELECTED_MEETING",
+    "girls_or_nonstandard_regime": "BURNED_BUT_REGIME_INELIGIBLE_FOR_MENS_BASELINE_AND_RETAINED_IN_MEMBERSHIP_LOG",
+    "cancellation_or_missing_pre": "RETAIN_MEMBERSHIP_AND_MARK_FAIL_closed_reason; DO_NOT_REPLACE_WITH_ANOTHER_RACE",
+    "no_result_based_replacement": true
+  },
+  "collection_order": [
+    "LOCK_MEMBERSHIP",
+    "CAPTURE_RACE_CARD_AND_PRE_FEATURES_WITH_SOURCE_TIMESTAMP",
+    "CAPTURE_TIMESTAMPED_MARKET_SNAPSHOT_AT_PREDECLARED_DECISION_CUTOFF_WHERE_AVAILABLE",
+    "HASH_AND_LOCK_PRE_AND_MARKET_INPUTS",
+    "ONLY_AFTER_RACE_COMPLETION_ATTACH_OUTCOME_LABELS",
+    "RUN_MARKET_ONLY_AND_SIMPLE_SCORE_BASELINES",
+    "REPORT_PROBABILITY_QUALITY_BEFORE_ANY_ECONOMICS"
+  ],
+  "decision_time_rule": {
+    "preferred_cutoff": "3_MINUTES_BEFORE_OFFICIAL_START_IF_TIMESTAMP_PROVEN",
+    "fallback": "EARLIER_TIMESTAMP_PROVEN_SNAPSHOT_ONLY",
+    "no_timestamp_proof": "MARKET_BASELINE_INELIGIBLE_FOR_THAT_RACE",
+    "post_start_snapshot": "PROHIBITED"
+  },
+  "allowed_initial_features": [
+    "race_id",
+    "event_id",
+    "venue",
+    "grade",
+    "race_no",
+    "scheduled_start",
+    "decision_timestamp",
+    "car_no",
+    "rider_id_or_stable_pseudonym",
+    "class_grade",
+    "competition_score",
+    "style",
+    "S",
+    "B",
+    "nige",
+    "makuri",
+    "sashi",
+    "mark",
+    "line_fields_only_if_point_in_time_proven",
+    "bank_length_m",
+    "timestamped_market_quotes"
+  ],
+  "initial_model_order": [
+    "M0_MARKET_ONLY",
+    "S0_SIMPLE_SCORE",
+    "C0_PLACKETT_LUCE",
+    "C1_LINE_AWARE_SIMPLE_ONLY_IF_LINE_PROVENANCE_PASSES",
+    "TABULAR_ONLY_AFTER_BASELINES_ARE_LOCKED"
+  ],
+  "initial_metrics": [
+    "ordered_top3_log_loss_where_full_support_available",
+    "first_place_log_loss",
+    "Brier_score",
+    "calibration_diagnostic",
+    "ranking_quality",
+    "sample_size",
+    "venue_and_regime_stability"
+  ],
+  "sample_size_rule": {
+    "day1_is_pilot_development_only": true,
+    "minimum_target_before_signal_claim": 200,
+    "preferred_target_before_signal_claim": 500,
+    "day1_may_not_support_edge_claim": true
+  },
+  "hard_firewalls": [
+    "NO_ECON_HOLDOUT1000",
+    "NO_CURRENT_DEV2000_C_REUSE",
+    "NO_RESULT_OR_PAYOUT_IN_FEATURES",
+    "NO_POST_RACE_LINE_RECONSTRUCTION",
+    "NO_SAME_LINEAGE_RESCUE_TUNING",
+    "NO_UNTOUCHED_FINAL_VALIDATION",
+    "NO_MODEL_PROMOTION",
+    "NO_ROI_OR_REAL_EDGE_CLAIM_FROM_THIS_PILOT",
+    "NO_REAL_MONEY_WAGERING",
+    "NO_EXTERNAL_PROVIDER_CONTACT",
+    "NO_PAID_DATA_ACQUISITION",
+    "NO_BULK_ACCESS_BYPASS"
+  ],
+  "terminal_rule": "This file freezes membership only. It authorizes no protected-data opening, workflow dispatch, production mutation, economic evaluation, or real-world superiority claim."
+}
