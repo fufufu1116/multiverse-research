@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_ALL_MARKET_SHADOW_EV_EVALUATOR_PRESPEC_20260902_v1",
+  "status": "RESEARCH_CANDIDATE_SHADOW_ONLY",
+  "purpose": "Evaluate all supported car-based ticket markets from one coherent ordered-top3 probability object against timestamped observed decimal odds.",
+  "probability_source_of_truth": "ordered_top3_probability_object",
+  "supported_markets": ["3rentan", "3renhuku", "2shatan", "2shahuku", "wide"],
+  "derivation_contract": "v3/historical_all_market/new_lineage/probability_object_contract_v1.py",
+  "principle": "Do not train separate sporting outcome models per ticket market. Derive every ticket-event probability from the same ordered top3 distribution, then compare each derived probability with its own market price.",
+  "required_inputs": {
+    "probability_object": ["race_id", "model_version", "model_hash", "prediction_timestamp", "ordered_top3 full support"],
+    "market_observation": ["race_id", "market", "ticket", "decimal_odds", "observed_at", "source_or_observer", "result_known=false"]
+  },
+  "derived_fields": {
+    "model_probability": "P(ticket event) derived from ordered_top3",
+    "fair_decimal_odds": "1 / model_probability",
+    "expected_return_multiple": "model_probability * observed_decimal_odds",
+    "shadow_ev_per_unit": "model_probability * observed_decimal_odds - 1"
+  },
+  "candidate_rule": "A ticket may be labeled SHADOW_POSITIVE_EV_CANDIDATE only when shadow_ev_per_unit > 0 under a probability object and market observation both frozen before result knowledge. This label is research evidence, not a real-money execution instruction.",
+  "market_specific_notes": {
+    "3rentan": "exact ordered top3 event",
+    "3renhuku": "unordered top3 set",
+    "2shatan": "ordered first-second pair",
+    "2shahuku": "unordered first-second pair",
+    "wide": "unordered pair both finishing within top3; overlapping events are expected"
+  },
+  "anti_hindsight": [
+    "No odds replacement after result knowledge.",
+    "No probability/model/threshold changes after late odds are observed for that card.",
+    "No dropping losing tickets or adding winning tickets after outcome.",
+    "Missing odds remain missing; do not reconstruct from payout/result."
+  ],
+  "evaluation_order": [
+    "probability quality first: log loss / Brier / calibration / temporal stability",
+    "then shadow market comparison on prespecified development data",
+    "then, only with separate governance clearance, bankroll/risk and real-money execution research"
+  ],
+  "not_authorized_by_this_record": ["REAL_MONEY_EXECUTION", "AUTOMATED_BET_PLACEMENT", "MODEL_PROMOTION", "PROFITABILITY_CLAIM"],
+  "owner_direction_note": "Owner stated intended eventual usage spans 3rentan, 3renhuku, 2shatan, 2shahuku and wide where expected value is favorable. This prespec translates that intent into a coherent shadow-research interface without narrowing to 3rentan."
+}
