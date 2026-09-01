@@ -1,0 +1,29 @@
+{
+  "record": "KEIRIN_LIVE_PRE_SMOKE_20260820_PROVENANCE_ERRATUM_v1",
+  "status": "IMMUTABLE_PROVENANCE_ERRATUM_BEFORE_TARGET_RACECARD_COLLECTION",
+  "applies_to": "KEIRIN_LIVE_PRE_SMOKE_20260820_PREREG_v1",
+  "correction_type": "PRE_PREREG_DISCLOSURE_SCOPE_METADATA_CORRECTION",
+  "original_prereg_preserved": true,
+  "correction": {
+    "original_event_detail_scope_omitted": "aggregate pre-event stats were exposed/visible on the event detail before preregistration",
+    "corrected_disclosure": "Before preregistration, the official event detail exposed event title/date/grade/night format/7-rider program structure, a scheduled participant list, and aggregate pre-event stats.",
+    "selection_used_participant_strength_or_stats": false,
+    "selection_used_target_race_allocation": false,
+    "selection_used_line_forecast": false,
+    "selection_used_odds": false,
+    "selection_used_result": false,
+    "selection_used_payout": false
+  },
+  "scientific_scope": "Mechanical/schema PRE-only live smoke; not a population sample, bank comparison, causal test, edge/ROI test, or model-promotion gate.",
+  "authoritative_chronology": "GIT_COMMIT_ANCESTRY_AND_COMMIT_TIMESTAMPS",
+  "firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "PR3_CONSUMED_HOLDOUT_REUSE": "PROHIBITED",
+    "DEV2000_C_RESCUE": "PROHIBITED",
+    "SAME_LINEAGE_B_C_RESCUE_TUNING": "PROHIBITED",
+    "RESULT_PAYOUT_ACCESS": "UNAUTHORIZED",
+    "UNTOUCHED_VALIDATION_OPENED": false,
+    "MODEL_PROMOTION": "PROHIBITED"
+  },
+  "claim": "This erratum corrects only the disclosure record. It does not change event/race selection, model parameters, scientific claims, or authorization scope."
+}
