@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_S0_POST_117R_NEGATIVE_MICROBATCH_2R_20260902_v1",
+  "status": "NEGATIVE_MICROBATCH_RECORDED_NO_RETUNING",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "input_html": 3,
+  "successful_races": 2,
+  "rejected_races": 1,
+  "rejected_reason": "FAIL_CLOSED:pre_rows=0",
+  "model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "locked_beta": 0.22260435254784533,
+    "refit": false,
+    "feature_change": false
+  },
+  "metrics": {
+    "winner_log_loss": 2.6442205227995768,
+    "uniform_winner_log_loss": 1.9459101490553132,
+    "winner_brier": 0.15016593108890408,
+    "uniform_winner_brier": 0.12244897959183676,
+    "ordered_top3_log_loss": 5.8139094768579715,
+    "uniform_ordered_top3_log_loss": 5.3471075307174685
+  },
+  "interpretation": [
+    "This two-race post-117 checkpoint microbatch was worse than uniform on all three reported metrics.",
+    "The batch is too small for regime conclusions but is retained as negative evidence and must not be excluded or used for coefficient rescue.",
+    "The controlling 200-race regime-stability prespec remains unchanged."
+  ],
+  "decision": {
+    "current_successful_races": 119,
+    "retune": "NO",
+    "next": "CONTINUE_UNCHANGED_TO_150_THEN_200"
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "VENUE_SPECIFIC_RESCUE",
+    "MODEL_PROMOTION"
+  ]
+}
