@@ -1,0 +1,124 @@
+{
+  "record": "KEIRIN_Q_REL_STRENGTH_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "primary_hypothesis_classification": "STATIC_OR_ZERO_CONDITIONAL_ADVANTAGE",
+  "classification_meaning": "Fixed N1 already had stable lower expected ordered-top3 log loss than fixed C1 at relation_strength=0.0, exactly the existing W1 endpoint. Therefore the observed N1-vs-C1 advantage cannot be attributed solely to explicit W2 conditional line-relation truth. The advantage then increased smoothly across the fixed relation-strength grid through the W2 endpoint.",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584"
+  },
+  "prespecification": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_REL_STRENGTH_1_PRESPEC_20260901_v1.json",
+    "blob": "4749c24fca9f16499afa7125e48f34904cb71c5a",
+    "commit": "030b5b916c4499f5a492bb10b4a663ecd01dbe65",
+    "fixed_before_execution": true,
+    "grid": [0.0, 0.125, 0.25, 0.5, 0.75, 1.0],
+    "new_seed_selection": false,
+    "new_kernel_addition": false,
+    "post_result_grid_refinement": false,
+    "post_result_retuning": false
+  },
+  "harness": {
+    "path": "tools/keirin_q_rel_strength_1_v1.py",
+    "blob": "c14c8cec4cebfe7b5f9bc25d937aa470348128f4",
+    "implementation_commit": "610f4f9034f4c0199408cc77b24f939b066c3c90"
+  },
+  "execution": {
+    "workflow_run_id": 33469022840,
+    "workflow_job_id": 99734776751,
+    "executed_head": "9104e995d0c074f0276bcd45a49af52a0304641e",
+    "conclusion": "success",
+    "workflow_permissions": "contents:read",
+    "endpoint_identity": {
+      "max_lambda0_vs_W1_truth_diff": 0.0,
+      "max_lambda1_vs_W2_truth_diff": 0.0
+    }
+  },
+  "fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "untouched_validation_claim": false
+  },
+  "aggregate_N1_minus_C1_expected_log_loss": {
+    "0.0": -0.0011390944513580692,
+    "0.125": -0.0022058548797119215,
+    "0.25": -0.0033023159384093503,
+    "0.5": -0.005584866275100353,
+    "0.75": -0.007987068530165509,
+    "1.0": -0.010507982351292355
+  },
+  "aggregate_C1_minus_C0_expected_log_loss": {
+    "0.0": -0.0003617854971844636,
+    "0.125": -0.00038709836510264495,
+    "0.25": -0.00041315450989554137,
+    "0.5": -0.0004674295660791472,
+    "0.75": -0.0005244457884421294,
+    "1.0": -0.0005839890656638147
+  },
+  "N1_minus_C1_by_block": {
+    "20261001": {"0.0": -0.0005803078965032071, "0.125": -0.0016264140545736439, "0.25": -0.0027029217056346866, "0.5": -0.00494790873887041, "0.75": -0.007316012363276059, "1.0": -0.009806604332961655},
+    "20262001": {"0.0": -0.0016083398212654032, "0.125": -0.0027405780179670103, "0.25": -0.0039039280465260617, "0.5": -0.006324265683355534, "0.75": -0.008869106248852177, "1.0": -0.011536745806851378},
+    "20263001": {"0.0": -0.0009787526774411859, "0.125": -0.0020236241404285593, "0.25": -0.0030974579531459767, "0.5": -0.005332565542150114, "0.75": -0.007684549314072697, "1.0": -0.010152770610321937},
+    "20264001": {"0.0": -0.0013889774102207042, "0.125": -0.0024328033058793608, "0.25": -0.0035049560483289, "0.5": -0.005734725136023577, "0.75": -0.00807860619446199, "1.0": -0.010535808655032675}
+  },
+  "stable_N1_advantage_by_relation_strength": {
+    "0.0": true,
+    "0.125": true,
+    "0.25": true,
+    "0.5": true,
+    "0.75": true,
+    "1.0": true
+  },
+  "onset_grid_lambda": 0.0,
+  "nonmonotonic_stability_pattern": false,
+  "mechanical_execution_checks": {
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 2.220446049250313e-16,
+    "max_C1_N1_rank1_marginal_difference": 5.551115123125783e-16,
+    "models_changed": false,
+    "coefficients_changed": false,
+    "post_result_retuning": false,
+    "post_hoc_grid_refinement": false
+  },
+  "interpretation": {
+    "supported": [
+      "N1's Synthetic advantage over C1 is already stable at the W1 endpoint where explicit conditional relation_strength is zero.",
+      "Increasing the existing conditional relation_strength from 0.0 to 1.0 monotonically increased the magnitude of N1's aggregate advantage on this fixed grid and fixed fixture set.",
+      "The Q-MISMATCH-1 GENERIC_RELATIONAL_VALUE result therefore requires qualification: it shows robustness to relation-kernel mismatch, but by itself does not isolate explicit conditional relation truth as the sole source of N1's advantage.",
+      "A source-independent diagnostic of the W1 lambda=0 advantage is now more informative than additional seeds, finer relation-strength grid points, or more relation kernels."
+    ],
+    "not_supported": [
+      "No real-keirin predictive edge, ROI, causal effect, deployment readiness, model selection, freeze or promotion is established.",
+      "No real-world relation-strength threshold is estimated.",
+      "The reused Synthetic seed blocks are not untouched validation."
+    ]
+  },
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  },
+  "candidate_next_guidance": {
+    "additional_seed_only_replication": "DO_NOT_PRIORITIZE",
+    "finer_relation_strength_grid": "DO_NOT_RUN_POST_HOC",
+    "additional_relation_kernel_slicing": "STOP_BY_DEFAULT",
+    "next_question": "Prespecify a source-independent exact chain-rule loss decomposition at the W1 and W2 endpoints to determine whether the lambda=0 N1 advantage arises at rank-2, rank-3, or both, without changing any model or coefficient.",
+    "owner_action_now": "NONE"
+  }
+}
