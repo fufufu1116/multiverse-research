@@ -1,0 +1,77 @@
+{
+  "record": "KEIRIN_TACTICAL_EVENT_EVIDENCE_REQUIREMENTS_20260901_v1",
+  "status": "DESIGN_FIXED_FAIL_CLOSED_BEFORE_ABSOLUTE_TACTICAL_RATES_OR_FINISH_TRUTH",
+  "classification": "RESEARCH_CANDIDATE_DESIGN_ONLY_NOT_DATA_ADMISSION_NOT_VALIDATION",
+  "purpose": "Define the evidence needed before any on-track tactical event probability or causal finish effect may be numerically calibrated.",
+  "event_taxonomy": [
+    "INITIATIVE_ATTACK",
+    "INITIATIVE_CONFLICT",
+    "BANTE_FOLLOW",
+    "BLOCK_OR_POSITION_DEFENSE",
+    "POSITION_COMPETITION",
+    "LINE_FRAGMENT",
+    "SWITCH",
+    "REATTACH",
+    "SOLO_TRANSITION",
+    "FINAL_SPRINT_OR_OVERTAKE"
+  ],
+  "required_separation": {
+    "pre_event_expected_line": "Provider forecast/expected partition before race; never promoted to observed leg-show or on-track state.",
+    "legshow_observed_line": "Direct pre-race observed line/order only after transport and timing provenance are independently proven.",
+    "on_track_tactical_events": "Race-process annotations governed by a separately authorized outcome-aware burned calibration gate if such evidence is ever opened.",
+    "finish_outcome": "Must remain separate from tactical-rate calibration unless a later prespecified causal design explicitly admits it."
+  },
+  "minimum_annotation_contract": {
+    "race_sample_prespecified_before_annotation": true,
+    "race_regime_and_active_field_bound": true,
+    "event_definition_operational_and_reproducible": true,
+    "event_timestamp_or_race_phase_required": true,
+    "actor_and_counterparty_when_applicable": true,
+    "line_state_before_and_after_event_required_when_applicable": true,
+    "ambiguous_event_label_available": true,
+    "candidate_model_predictions_hidden_from_annotator": true,
+    "feature_or_model_performance_not_used_for_sampling": true,
+    "source_and_capture_provenance_required": true
+  },
+  "quality_requirements": {
+    "preferred": "Independent double annotation or mechanically checkable operational definitions for a prespecified subset.",
+    "agreement": "Disagreement rate or inter-annotator agreement must be reported before rate fitting.",
+    "ambiguity": "Ambiguous events remain unknown; forced labels prohibited.",
+    "missingness": "Unobservable segments are explicit missing data, not negative events."
+  },
+  "numeric_rate_admission_rules": [
+    "Rates must be conditioned on an explicit eligible-event denominator; raw event counts alone are insufficient.",
+    "Sampling weights and race inclusion must be fixed without candidate-model performance.",
+    "Expected-Line short-window revision diagnostics cannot be substituted for on-track line-cohesion or fragmentation rates.",
+    "Successful finishing-technique counts cannot be substituted for unconditional tactic-use rates.",
+    "Any outcome-aware calibration sample becomes BURNED and cannot serve as untouched validation.",
+    "Small-sample estimates must be represented with uncertainty/ranges rather than a single truth coefficient.",
+    "Absolute rates are not admitted until the evidence gate explicitly changes each named tactical quantity from UNIDENTIFIED."
+  ],
+  "finish_effect_admission_rules": [
+    "Tactical event frequency evidence does not by itself identify causal finish effects.",
+    "Finish effects require a separately prespecified design and may not be estimated from the same sample merely because event annotations exist.",
+    "Candidate architectures and coefficients must remain hidden from truth-mechanism calibration.",
+    "No real predictive superiority claim follows from a calibrated truth generator without independent validation."
+  ],
+  "currently_admitted": [
+    "PRE class-conditioned numeric envelopes",
+    "PRE style-conditioned support envelopes",
+    "PRE ordinal tactical evidence from ST/BK and successful technique history",
+    "provider Expected Line snapshots with point-in-time provenance",
+    "candidate-independent physics sensitivity ranges",
+    "ordinal tactical world families without event probabilities"
+  ],
+  "currently_unidentified": [
+    "line_cohesion_probability",
+    "initiative_conflict_probability",
+    "position_competition_probability",
+    "block_or_position_defense_probability",
+    "line_fragmentation_probability",
+    "switching_probability",
+    "reattachment_probability",
+    "solo_transition_probability",
+    "finish_effect_sizes"
+  ],
+  "terminal_rule": "Until a separate evidence-admission gate is explicitly opened and satisfied, the Reality truth generator may construct actors and admissible action families but must fail closed before stochastic tactical event-rate execution or finish-order generation."
+}
