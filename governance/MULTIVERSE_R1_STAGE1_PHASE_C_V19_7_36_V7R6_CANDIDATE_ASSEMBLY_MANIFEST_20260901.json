@@ -2,11 +2,12 @@
   "version": "V19.7.36-v7r6",
   "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
   "runtime": "OFF",
-  "purpose": "Close Auditor v7r5 anonymous REST polling rate-budget blocker, Independent Lab v7r6 pagination-watermark/rate-header blockers, Auditor v7r6 strict 600-second approval-window blocker, and the final Auditor mechanical-evidence blocker for the operational post-sleep/post-deadline wait path without weakening Owner provenance, duplicate detection, replay protection, exact image/Python/Step3 closure, or fail-closed behavior.",
+  "purpose": "Close Auditor v7r5 anonymous REST polling rate-budget blocker, Independent Lab v7r6 pagination-watermark/rate-header blockers, Auditor v7r6 strict 600-second approval-window blocker, the final Auditor mechanical-evidence blocker for the operational post-sleep/post-deadline wait path, and the PRE-LIVE iPhone Codespaces runtime-output observability gap without weakening Owner provenance, duplicate detection, replay protection, exact image/Python/Step3 closure, downstream OAuth terminal semantics, or fail-closed behavior.",
   "required": [
     {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
     {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
     {"role":"external_session_gate","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-session-gate-v7r6"},
+    {"role":"iphone_status_channel_addon","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_ADDON_20260901.go","type":"go-addon","composed_into":"/usr/local/sbin/multiverse-v36-session-gate-v7r6"},
     {"role":"rate_budget_history_selftest","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py","type":"python"},
     {"role":"post_sleep_post_deadline_wait_path_selftest","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_POST_SLEEP_POST_DEADLINE_WAIT_PATH_SELFTEST_20260901.py","type":"python"},
     {"role":"pre_lab_mechanical_gate","path":"governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py","type":"python"}
@@ -25,6 +26,21 @@
     "error_policy": "HTTP 403 rate-limit, HTTP 429, hard-budget exhaustion, reserve exhaustion, missing/malformed/inconsistent rate headers, approval-window timeout, transport/status/parse failures all fail closed; no blind retry loop",
     "mechanical_scenario": "deterministic 601-comment initial corpus (600 filler + freeze, seven pages), late Owner approval/session at minute 8.5, strict approval/session acceptance at exactly +600s and rejection immediately after +600s, updated-comment replacement, full/multi-page pagination-edit races, missing/malformed rate headers, full 10-minute budget, plus deterministic behavioral execution of the exact waitReceipt control path with a shortened test-only poll interval and fake HTTP transport proving near-deadline remaining-time sleep and a delta fetch that begins before but completes after the operational deadline cannot lead to evidence selection; all normal request counts remain below hard budget 40 and external 60/hour ceiling"
   },
+  "iphone_observability_remediation": {
+    "incident_receipt": 5490096621,
+    "closure_receipt": 5490286408,
+    "status_path": "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r6-session-status.txt",
+    "operator_contract": "Owner opens a fixed read-only status file in the same Codespaces persisted-share area as creation.log; no terminal command is required to obtain the challenge/waiting markers",
+    "capture_whitelist": ["PHASE_C_V19_7_36_V7R6_SESSION_CHALLENGE", "PHASE_C_V19_7_36_V7R6_WAITING_FOR_EXTERNAL_SESSION_BINDING"],
+    "ready_marker": "PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_READY",
+    "persistence_boundary": "Only the structurally validated challenge line and exact waiting marker are copied into the status file; OAuth output, device code, login output, downstream Step3 output, stdout bodies, stderr, and secrets are never selected for persistence",
+    "stdout_semantics": "stdout is mirrored only through the pre-binding challenge/waiting boundary and is restored to the original descriptor immediately after the exact waiting marker, before any external binding can pass and before the producer/OAuth interactive chain can execute",
+    "stale_file_policy": "status file creation is O_EXCL; an existing path or unsafe/missing Codespaces persisted-share parent fails closed before challenge/session progression",
+    "file_mode": "root-owned 0444 after creation; opened writer descriptor is retained only through the waiting marker then closed",
+    "command_free_owner_observation": true,
+    "production_mutation": false,
+    "runtime_activation": false
+  },
   "external_authority": {
     "candidate_freeze_prefix": "MULTIVERSE_V7R6_CANDIDATE_FREEZE ",
     "session_binding_prefix": "MULTIVERSE_V7R6_SESSION_BINDING ",
@@ -40,7 +56,7 @@
     "connector_can_issue_owner_approval": false
   },
   "negative_build_selftest": [
-    "edited_freeze","edited_owner_approval","edited_session_binding","connector_origin_owner_approval","duplicate_owner_approval","wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping","approval_at_600_seconds_accepted","approval_after_600_seconds_rejected","session_after_600_seconds_rejected","post_sleep_post_deadline_wait_path_times_out_before_selection","remaining_time_sleep_bounded_near_deadline","delta_begins_before_deadline_and_completes_after_deadline_without_selection","minute_8_5_rate_budget","ten_minute_rate_budget","hard_api_budget_enforced","rate_remaining_reserve_enforced","601_comment_history_late_receipt_observable","updated_comment_delta_replaces_snapshot","full_pagination_edit_race_refetched","multi_page_delta_edit_race_refetched","missing_rate_headers_fail_closed","malformed_rate_headers_fail_closed","inconsistent_rate_headers_fail_closed"
+    "edited_freeze","edited_owner_approval","edited_session_binding","connector_origin_owner_approval","duplicate_owner_approval","wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping","approval_at_600_seconds_accepted","approval_after_600_seconds_rejected","session_after_600_seconds_rejected","post_sleep_post_deadline_wait_path_times_out_before_selection","remaining_time_sleep_bounded_near_deadline","delta_begins_before_deadline_and_completes_after_deadline_without_selection","minute_8_5_rate_budget","ten_minute_rate_budget","hard_api_budget_enforced","rate_remaining_reserve_enforced","601_comment_history_late_receipt_observable","updated_comment_delta_replaces_snapshot","full_pagination_edit_race_refetched","multi_page_delta_edit_race_refetched","missing_rate_headers_fail_closed","malformed_rate_headers_fail_closed","inconsistent_rate_headers_fail_closed","iphone_status_rejects_extra_fields","iphone_status_rejects_device_code_output","iphone_status_requires_exact_waiting_marker","iphone_status_file_exclusive_create","stdout_restore_before_post_binding_interactive_chain"
   ],
-  "unchanged_security": {"python_build_actual_use_gate":true,"step3_same_object":true,"pre_oauth_fail_closed":true,"production_mutation":false,"runtime_activation":false}
+  "unchanged_security": {"python_build_actual_use_gate":true,"step3_same_object":true,"pre_oauth_fail_closed":true,"oauth_interactive_stdout_restored_before_producer":true,"production_mutation":false,"runtime_activation":false}
 }
