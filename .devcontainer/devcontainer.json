@@ -1,7 +1,10 @@
 {
-  "name": "MULTIVERSE V19.7.36 v7r2 review-only Codespace",
+  "name": "MULTIVERSE V19.7.36 v7r7 attach-ready review-only Codespace",
   "build": {"dockerfile": "Dockerfile", "context": ".."},
+  "containerUser": "root",
   "remoteUser": "codespace",
-  "overrideCommand": false,
-  "runArgs": ["--security-opt=no-new-privileges","--cap-drop=ALL","--cap-add=CHOWN","--cap-add=SETUID","--cap-add=SETGID"]
+  "overrideCommand": true,
+  "postAttachCommand": ["/usr/local/bin/multiverse-v36-ui-ready-v7r7"],
+  "customizations": {"codespaces": {"openFiles": ["MULTIVERSE_PRELIVE_START_HERE.md"]}},
+  "runArgs": ["--cap-drop=ALL","--cap-add=CHOWN","--cap-add=SETUID","--cap-add=SETGID"]
 }
