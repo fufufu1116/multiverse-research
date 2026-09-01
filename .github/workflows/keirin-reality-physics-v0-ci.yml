@@ -1,0 +1,77 @@
+name: Keirin Reality Physics V0 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_physics_core_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_physics_selftest_v0.py'
+      - '.github/workflows/keirin-reality-physics-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  reality-physics-v0:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile physics foundation
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/new_lineage/reality_physics_core_v0.py \
+            v3/historical_all_market/new_lineage/reality_physics_selftest_v0.py
+
+      - name: Reject candidate-model coupling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('v3/historical_all_market/new_lineage/reality_physics_core_v0.py')
+          s = p.read_text()
+          forbidden = [
+              'top3_architecture_core',
+              'C1_PEER',
+              'same_line_coef',
+              'follower_coef',
+              'chain_coef',
+              'latent_skill',
+              'RESULT',
+              'PAYOUT',
+          ]
+          hits = [x for x in forbidden if x in s]
+          if hits:
+              raise SystemExit(f'forbidden coupling tokens: {hits}')
+          print('PASS_NO_CANDIDATE_OR_PROTECTED_COUPLING')
+          PY
+
+      - name: Run source-independent mechanical selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python reality_physics_selftest_v0.py
+
+      - name: Confirm no network-capable imports
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s = Path('v3/historical_all_market/new_lineage/reality_physics_core_v0.py').read_text()
+          forbidden = ['requests', 'urllib', 'httpx', 'aiohttp', 'socket', 'selenium', 'playwright']
+          hits = [x for x in forbidden if x in s]
+          if hits:
+              raise SystemExit(f'network-capable imports/tokens: {hits}')
+          print('PASS_NO_NETWORK_CAPABLE_IMPORTS')
+          PY
+
+      - name: Terminal boundary
+        run: |
+          echo 'PHYSICS_FOUNDATION_ONLY=TRUE'
+          echo 'MODEL_COMPARISON=FALSE'
+          echo 'RESULT_PAYOUT_ACCESS=FALSE'
+          echo 'ECONOMICS=FALSE'
+          echo 'RUNTIME_CORE_MUTATION=FALSE'
