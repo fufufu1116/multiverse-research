@@ -1,0 +1,29 @@
+{
+  "version": "V19.7.36-v7r3-review-packet",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "prior_lab_fix_comment": 5487478223,
+  "freeze_binding": "Supplied externally by the final Core review request after the last candidate write and exact-head CI build; this file intentionally contains no self-referential head/tree value.",
+  "prior_material_blockers": [
+    "REAL_FINAL_TREE_DOCKER_BUILD_PROVEN: NO",
+    "EXTERNAL_CODESPACE_CREATION_TRIGGER_BOUNDARY_SOUND: NO"
+  ],
+  "v7r3_corrections": {
+    "mechanical_build": "A push-only branch workflow executes the mandatory pre-Lab gate on exact GITHUB_SHA, performs the exact no-cache Docker build, extracts the image-identity object and emits nonsecret head/tree/blob/base-digest/image-identity PASS evidence. No workflow_dispatch is present.",
+    "external_owner_trigger": "Root ENTRYPOINT is now a separately reviewed external session gate. Generic CODESPACES identity grants no authority. A fresh per-container 128-bit nonsecret challenge plus exact CODESPACE_NAME and local image-identity SHA-256 must be bound by an external PR #74 session receipt to a prior Owner Approval Receipt. Both receipts must originate as repository owner fufufu1116 via performed_via_github_app.slug=chatgpt-codex-connector. Receipt is exact candidate head/tree/image bound, one-shot, Runtime OFF, and challenge changes on restart. Candidate/same-UID code has no pre-OAuth receipt-minting primitive."
+  },
+  "review_focus": [
+    "Exact final-tree workflow run succeeded for the frozen head/tree and logs contain all required build PASS/receipt markers.",
+    "Workflow is push-only, has contents:read permission, performs no production mutation, no workflow dispatch and grants no runtime authority.",
+    "Dockerfile builds external session gate and exact image identity, then uses the session gate as root ENTRYPOINT.",
+    "Session gate challenge is generated with crypto/rand, is per container start, and old receipts cannot authorize a new challenge.",
+    "Session receipt requires exact codespace name, challenge, candidate head/tree, image identity SHA-256, one-shot Owner Approval Receipt and Runtime OFF.",
+    "Approval/session receipt origin check requires repository-owner login plus ChatGPT Codex Connector app provenance and cannot be self-issued by candidate/same-UID code before OAuth.",
+    "A different Codespace name or restarted container cannot replay the receipt.",
+    "Only after external receipt verification does root session gate fd-bound execute the reviewed root producer.",
+    "Existing v7r2 Python build actual-use, Step3 same-object, GET-only control runner and fail-closed constraints remain intact.",
+    "No Live, Codespace creation, OAuth, Step3 execution, Step4, apply, production mutation or Runtime activation occurred."
+  ],
+  "owner_future_interaction_if_independently_accepted": "After future Lab PASS + Auditor PASS + Owner approval only: create one fresh Codespace, report one nonsecret codespace/challenge/image-identity line to Core, then wait. No startup payload, token, capability, OAuth device code or secret is pasted into chat.",
+  "security_authority_granted": false
+}
