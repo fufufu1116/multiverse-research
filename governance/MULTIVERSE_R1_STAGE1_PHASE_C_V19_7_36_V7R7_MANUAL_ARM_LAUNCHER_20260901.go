@@ -29,6 +29,7 @@ const prCapAmbientClearAll = 4
 const linuxCapabilityVersion3 = 0x20080522
 const capSetpcap = 8
 const allowedCapabilities uint64 = (1 << 0) | (1 << 6) | (1 << 7)
+const legacyMechanicalRootNormalizeMarker = "Setresuid(0, 0, 0) semantics via AllThreadsSyscall"
 
 type capUserHeader struct {
 	Version uint32
