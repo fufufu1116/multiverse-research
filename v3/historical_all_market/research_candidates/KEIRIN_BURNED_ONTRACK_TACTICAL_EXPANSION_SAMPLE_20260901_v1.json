@@ -1,0 +1,48 @@
+{
+  "record": "KEIRIN_BURNED_ONTRACK_TACTICAL_EXPANSION_SAMPLE_20260901_v1",
+  "status": "PRESPECIFIED_SOURCE_BOUND_UNSEEN_EXPANSION_SAMPLE",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_ONLY_NEVER_VALIDATION",
+  "prespecification_time_utc": "2026-09-01T08:00:00Z",
+  "venue": "IWAKI_TAIRA",
+  "event_date": "2026-08-06",
+  "meeting": "福島民友杯・リンカイ！颯来杯",
+  "meeting_grade": "FII",
+  "regime": "STANDARD_ORIGINAL_LINE_MENS_FII",
+  "selection_rule": "The next six sequential races immediately after the already-burned R1-R3 pilot: R4 through R9, with no selection by outcome, odds, candidate performance, tactical content, or replay appearance.",
+  "races": [
+    {"race_no": 4, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-04-01-00.mp4"},
+    {"race_no": 5, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-05-01-00.mp4"},
+    {"race_no": 6, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-06-01-00.mp4"},
+    {"race_no": 7, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-07-01-00.mp4"},
+    {"race_no": 8, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-08-01-00.mp4"},
+    {"race_no": 9, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-09-01-00.mp4"}
+  ],
+  "external_source_verification": {
+    "venue_calendar": "https://tairakeirin.com/?calMonth=08&calYear=2026",
+    "verified_claim": "The venue calendar lists the Aug 6-8 meeting and replay/digest entries for races 1-12.",
+    "race4_pre_event_page": "https://keirin.kdreams.jp/iwakitaira/racedetail/1320260806010004/?pageType=yoso",
+    "verified_claim_2": "Race 4 is shown as F2, 2026-08-06, A-class Challenge preliminary with pre-event lineup information."
+  },
+  "review_protocol": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+  "review_cadence_seconds": 1,
+  "annotation_order": [
+    "PASS_A_FREEZE_QUALIFYING_ATTACK_ANCHORS",
+    "PASS_B_LABEL_BANTE_FOLLOW_OPPORTUNITIES",
+    "PASS_B_LABEL_INITIATIVE_CONFLICT_OPPORTUNITIES"
+  ],
+  "permanent_exclusions": [
+    "UNTOUCHED_VALIDATION",
+    "MODEL_SELECTION",
+    "REAL_PREDICTIVE_SUPERIORITY_CLAIM",
+    "ECONOMICS",
+    "FINISH_EFFECT_ESTIMATION"
+  ],
+  "forbidden_inputs_during_annotation": [
+    "candidate_model_predictions",
+    "candidate performance metrics",
+    "odds/market selection criteria",
+    "finish order as an annotation target",
+    "payout"
+  ],
+  "terminal_rule": "This sample is irrevocably BURNED once any replay is inspected. It may support only the prespecified conditional tactical pilot diagnostics and remains excluded from independent validation forever."
+}
