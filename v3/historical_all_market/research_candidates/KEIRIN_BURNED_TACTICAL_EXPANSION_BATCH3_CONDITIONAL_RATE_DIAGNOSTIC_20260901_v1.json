@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_CONDITIONAL_RATE_DIAGNOSTIC_20260901_v1",
+  "status": "BATCH3_PASS_B_COMPLETE_AND_POOLED_DIAGNOSTIC_RECORDED",
+  "classification": "PILOT_DIAGNOSTIC_RANGE_ONLY_NOT_REALITY_TRUTH",
+  "as_of_jst": "2026-09-01T21:41:00+09:00",
+  "fresh_binding_before_write": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "968eb363173128429e6d12206341756a35912336"
+  },
+  "governed_inputs": {
+    "opportunity_protocol": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+      "blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d"
+    },
+    "batch3_pass_a_freeze": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_PASS_A_ANCHOR_FREEZE_20260901_v1.json",
+      "commit_sha": "968eb363173128429e6d12206341756a35912336",
+      "blob_sha": "efa98e5a36ef354695d1e900bda28251ba0bb7c8",
+      "frozen_attack_anchor_count": 1
+    }
+  },
+  "batch3_pass_b": {
+    "race_set": ["20260808_IWAKITAIRA_1R","20260808_IWAKITAIRA_2R","20260808_IWAKITAIRA_3R","20260808_IWAKITAIRA_5R","20260808_IWAKITAIRA_6R","20260808_IWAKITAIRA_7R"],
+    "frozen_anchor_ids": ["B3-E07A1"],
+    "bante_follow": {
+      "present": 1,
+      "absent": 0,
+      "unknown": 0,
+      "numeric_denominator": 1,
+      "estimate": 1.0,
+      "wilson_95": [0.20654931437723745, 1.0],
+      "linked_annotation_ids": ["B3-A02"],
+      "linked_opportunity_ids": ["O-B3-E07A1-BF"]
+    },
+    "initiative_conflict": {
+      "present": 1,
+      "absent": 0,
+      "unknown": 0,
+      "numeric_denominator": 1,
+      "estimate": 1.0,
+      "wilson_95": [0.20654931437723745, 1.0],
+      "linked_annotation_ids": ["B3-A03"],
+      "linked_opportunity_ids": ["O-B3-E07A1-IC"]
+    }
+  },
+  "pooled_initial_batch2_batch3": {
+    "bante_follow": {
+      "present": 6,
+      "absent": 6,
+      "unknown": 0,
+      "numeric_denominator": 12,
+      "estimate": 0.5,
+      "wilson_95": [0.2537815976337061, 0.7462184023662939]
+    },
+    "initiative_conflict": {
+      "present": 11,
+      "absent": 0,
+      "unknown": 0,
+      "numeric_denominator": 11,
+      "estimate": 1.0,
+      "wilson_95": [0.7411670330319684, 1.0]
+    }
+  },
+  "private_sheet_write_receipt": {
+    "spreadsheet_id": "1B8RRXlJGfR6dNmyh-USuyHrtbzvqy7MJ22nvdnf3_54",
+    "annotations_verified_range": "Annotations!A40:T42",
+    "denominators_verified_range": "Denominators!A24:N25",
+    "sample_queue_verified_range": "Sample_Queue!A13:N19",
+    "attack_annotation_id": "B3-A01",
+    "bante_annotation_id": "B3-A02",
+    "conflict_annotation_id": "B3-A03"
+  },
+  "statistical_cautions": [
+    "Wilson intervals here are pilot diagnostics only and do not account for race, meeting, venue, or repeated-opportunity clustering.",
+    "Attack opportunities are not guaranteed independent Bernoulli trials; future analysis must consider race and meeting clustering and regime/venue stratification.",
+    "A one-opportunity Batch3 estimate of 1.0 is not a truth coefficient and must not be used as a point parameter for the Reality World."
+  ],
+  "firewalls_confirmed": {
+    "candidate_outputs_hidden": true,
+    "finish_order_used": false,
+    "payout_used": false,
+    "odds_or_market_used": false,
+    "model_selection_used": false,
+    "untouched_validation_used": false,
+    "finish_effect_estimation_used": false,
+    "economics_or_roi_used": false
+  },
+  "not_authorized": [
+    "REALITY_TRUTH_COEFFICIENT_PROMOTION",
+    "FINISH_TRUTH_EXECUTION",
+    "MODEL_SELECTION_OR_PROMOTION",
+    "UNTOUCHED_VALIDATION",
+    "REAL_PREDICTIVE_SUPERIORITY_CLAIM",
+    "PAYOUT_OR_ROI_ANALYSIS",
+    "CORE_INTEGRATION"
+  ],
+  "next_scientific_priority": "Before any Reality truth admission, obtain independent duplicate annotation with disagreement review/agreement measurement and/or expand the same frozen protocol to a separately prespecified venue/meeting."
+}
