@@ -1,0 +1,42 @@
+{
+  "record": "KEIRIN_REALITY_PHYSICS_RANGE_MISSING_DIMENSION_CI_CLOSURE_20260901_v1",
+  "status": "PASS_ALL_FOUNDATION_MECHANICAL_GATES",
+  "classification": "REALITY_CALIBRATION_FOUNDATION_ONLY_NOT_MODEL_VALIDATION",
+  "parent_evidence": "v3/historical_all_market/research_candidates/KEIRIN_REALITY_PHYSICS_RANGE_MISSING_DIMENSION_EVIDENCE_20260901_v1.json",
+  "executed_head": "83b1cb98a7ccb3eca8044408329eb2229129be32",
+  "github_actions": {
+    "run_id": 33479602123,
+    "job_id": 99766049728,
+    "conclusion": "success",
+    "passed_steps": [
+      "Compile range foundation",
+      "Reject candidate-model coupling",
+      "Validate registry JSON",
+      "Run range selftest",
+      "Confirm no network-capable imports",
+      "Terminal boundary"
+    ]
+  },
+  "mechanical_contract": {
+    "out_of_range_CdA_rejected": true,
+    "out_of_range_peak_power_rejected": true,
+    "invalid_drivetrain_efficiency_rejected": true,
+    "role_incompatible_drafting_multiplier_rejected": true,
+    "unsupported_track_length_rejected": true,
+    "reference_only_Crr_rejected_as_runtime_truth": true,
+    "candidate_model_coupling_absent": true,
+    "network_capable_imports_absent": true
+  },
+  "interpretation": "The physics parameter registry is mechanically enforceable as a sensitivity-bound contract. This does not select a truth generator, estimate Japanese-keirin population distributions, or validate any prediction model.",
+  "protected_boundary": {
+    "truth_world_execution": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "RESULT_PAYOUT_access": false,
+    "economics": false,
+    "Core_main_Runtime_change": false
+  },
+  "next_material_boundary": "REALITY_TACTICAL_TRANSITION_AND_WEATHER_LEGSHOW_TRANSPORT_FOUNDATION_GATE",
+  "automatic_transition": false,
+  "fail_closed": true
+}
