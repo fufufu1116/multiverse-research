@@ -1,0 +1,123 @@
+{
+  "record": "KEIRIN_REALITY_PHYSICS_FOUNDATION_V0_EVIDENCE_20260901_v1",
+  "status": "PASS_PHYSICS_FOUNDATION_IMPLEMENTED_AND_MECHANICALLY_VERIFIED_NO_MODEL_EVIDENCE",
+  "classification": "REALITY_FOUNDATION_ENGINEERING_ONLY_NOT_VALIDATION_NOT_MODEL_SELECTION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "owner_approvals": [
+    "KEIRIN_OWNER_APPROVAL_REALITY_ADDITIONAL_DIMENSION_TRUTH_SENSITIVITY_DESIGN_20260901_v1",
+    "KEIRIN_OWNER_APPROVAL_REALITY_PHYSICS_FOUNDATION_IMPLEMENTATION_20260901_v1"
+  ],
+  "inputs": {
+    "reality_calibration_archive_observations": 248,
+    "world_family_design_blob": "aa987394414f81771aa92ba3b0cb603259499f41",
+    "archive_expansion_evidence_blob": "06a8bf5f54d409f4b7ff5e2721f82f644dc59672",
+    "physics_tactics_design_blob": "c9fa7c3128534c6fe5eebf29dca366beb9f1b148",
+    "truth_sensitivity_design_blob": "a9e3f939c7c253d54552b17072c26ca940ecc4d0",
+    "physics_core_blob": "662968822bdfffbda822a8a1748c04c4226fec1f"
+  },
+  "implemented_foundation": [
+    "official 333/335/400/500m active track-length support class",
+    "track geometry object with optional home-straight/cant/indoor provenance fields",
+    "explicit environment object with air density and relative air speed",
+    "explicit rider mass/CdA/Crr/drivetrain-efficiency inputs",
+    "explicit drafting drag multiplier with provenance",
+    "aerodynamic drag force",
+    "rolling resistance force",
+    "centripetal force reference",
+    "ideal bank angle reference",
+    "short-horizon mechanical power breakdown"
+  ],
+  "not_implemented_or_not_claimed": [
+    "No race winner/outcome truth generator",
+    "No full CFD",
+    "No general-purpose rigid-body game engine",
+    "No Japanese-keirin-specific calibrated CdA/Crr/power/drafting distributions",
+    "No tactical transition probabilities",
+    "No C0/C1/N1/PEER coupling",
+    "No W1 coefficient 0.16 inheritance",
+    "No W2 same-line/follower/chain truth inheritance",
+    "No real predictive evidence"
+  ],
+  "official_reality_support": {
+    "bank_record_source": "https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+    "bank_record_as_of": "2026-04-23",
+    "active_track_length_classes_m": [333,335,400,500],
+    "maebashi_official_context_source": "https://keirin.jp/pc/dfw/portal/guest/column/tenbo/2020/20200916_tomohito.html",
+    "maebashi_structural_example": {
+      "track_length_m": 335,
+      "max_cant_deg": 36.0,
+      "home_straight_m": 46.7,
+      "indoor_no_wind": true
+    }
+  },
+  "physics_literature_support": [
+    "https://doi.org/10.1007/s12283-024-00451-x",
+    "https://link.springer.com/article/10.1007/s12283-018-0283-0",
+    "https://pubmed.ncbi.nlm.nih.gov/17218899/",
+    "https://link.springer.com/article/10.1007/s12283-017-0234-1"
+  ],
+  "ci": {
+    "workflow": ".github/workflows/keirin-reality-physics-v0-ci.yml",
+    "run_id": 33478817785,
+    "job_id": 99763667289,
+    "head_sha": "f614484403a09fd972705575c7acd15b193854c8",
+    "conclusion": "success",
+    "passed_steps": [
+      "Compile physics foundation",
+      "Reject candidate-model coupling",
+      "Run source-independent mechanical selftest",
+      "Confirm no network-capable imports",
+      "Terminal boundary"
+    ]
+  },
+  "mechanical_invariants_verified": [
+    "aerodynamic drag scales with relative-air-speed squared under fixed parameters",
+    "aerodynamic power scales with speed cubed when rolling and acceleration are removed",
+    "drafting multiplier modifies aerodynamic drag directly without line-membership inference",
+    "centripetal requirement increases with speed and decreases with curve radius",
+    "ideal no-lateral-friction bank reference angle increases with speed and decreases with radius",
+    "positive acceleration increases mechanical power demand",
+    "invalid physical inputs fail closed"
+  ],
+  "truth_sensitivity_family": [
+    "R0_PHYSICS_ONLY_WEAK_COOPERATION_CONTROL",
+    "R1_DIRECTIONAL_DRAFTING_AND_ROLE_ASYMMETRY",
+    "R2_TACTICAL_BANTE_DEFENSE_AND_POSITION_CONFLICT",
+    "R3_HIGH_DISRUPTION_MUTABLE_LINE",
+    "R4_TRACK_GEOMETRY_ENVIRONMENT_INTERACTION",
+    "R5_LONGITUDINAL_FORM_FATIGUE_UNCERTAINTY"
+  ],
+  "scientific_interpretation": [
+    "A lightweight physics-informed layer is feasible and mechanically testable without coupling to the candidate architectures.",
+    "The foundation improves reality constraints but does not make the simulator reality-calibrated by itself.",
+    "Drafting and bank mechanics should be represented as directional/geometry-dependent physical interactions rather than a symmetric shared line-mean utility by default.",
+    "Physics alone cannot determine Japanese-keirin tactical states; a separately uncertain tactical state machine remains necessary.",
+    "Candidate models remain unopened against the Reality family."
+  ],
+  "protected_boundary": {
+    "RESULT_PAYOUT_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "protected_or_untouched_validation": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "economics": false,
+    "external_provider_contact": false,
+    "automated_bulk_site_mirroring": false,
+    "access_control_bypass": false,
+    "Core_Phase_C_main_ruleset_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "REALITY_PHYSICS_PARAMETER_RANGE_AND_MISSING_DIMENSION_CALIBRATION_GATE",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "priority_missing_dimensions": [
+      "Japanese-keirin-appropriate physical parameter ranges rather than point truth",
+      "333/335m race-level PRE calibration observations",
+      "decision-time weather/wind transport",
+      "mutable line provenance transport",
+      "longitudinal repeated-rider state",
+      "tactical transition assumption ranges"
+    ]
+  }
+}
