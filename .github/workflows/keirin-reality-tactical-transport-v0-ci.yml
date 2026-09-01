@@ -1,0 +1,41 @@
+name: Keirin Reality Tactical Transport V0 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_tactical_transport_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_tactical_transport_selftest_v0.py'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_REALITY_TACTICAL_WEATHER_LEGSHOW_FOUNDATION_DESIGN_20260901_v1.json'
+      - '.github/workflows/keirin-reality-tactical-transport-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  tactical-transport-v0:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile foundation
+        run: |
+          python -m py_compile v3/historical_all_market/new_lineage/reality_tactical_transport_v0.py
+          python -m py_compile v3/historical_all_market/new_lineage/reality_tactical_transport_selftest_v0.py
+      - name: Reject candidate-model coupling
+        run: |
+          ! grep -En 'import .*top3|from .*top3|C0|C1|N1|PEER|RESULT|PAYOUT|ECON_HOLDOUT' v3/historical_all_market/new_lineage/reality_tactical_transport_v0.py
+      - name: Validate design JSON
+        run: python -m json.tool v3/historical_all_market/research_candidates/KEIRIN_REALITY_TACTICAL_WEATHER_LEGSHOW_FOUNDATION_DESIGN_20260901_v1.json >/dev/null
+      - name: Run mechanical selftest
+        run: python v3/historical_all_market/new_lineage/reality_tactical_transport_selftest_v0.py
+      - name: Confirm no network-capable imports
+        run: |
+          ! grep -En '(^| )(requests|urllib|httpx|aiohttp|socket|selenium|playwright)( |\.|$)' v3/historical_all_market/new_lineage/reality_tactical_transport_v0.py
+      - name: Terminal boundary
+        run: echo 'FOUNDATION ONLY — NO TRUTH EXECUTION, MODEL COMPARISON, RESULT/PAYOUT OR ECONOMICS'
