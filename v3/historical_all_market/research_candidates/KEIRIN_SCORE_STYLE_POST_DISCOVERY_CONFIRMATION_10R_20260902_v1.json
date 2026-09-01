@@ -1,0 +1,68 @@
+{
+  "record": "KEIRIN_SCORE_STYLE_POST_DISCOVERY_CONFIRMATION_10R_20260902_v1",
+  "status": "POST_DISCOVERY_CONFIRMATION_STYLE_NOT_REPLICATED",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "design": {
+    "discovery_sample_races": 61,
+    "confirmation_html_opened_after_discovery": 11,
+    "confirmation_successful_races": 10,
+    "confirmation_rejected_races": 1,
+    "rejected_reason": "FAIL_CLOSED:top3_not_in_pre_active_cars",
+    "models_refit_on_confirmation": false,
+    "thresholds_or_features_changed_after_confirmation": false,
+    "result_used_as_feature": false,
+    "payout_used": false
+  },
+  "locked_models": {
+    "S0_SCORE": {
+      "training_sample": "initial 61 successful races only",
+      "fitted_beta": 0.22260435254784533,
+      "feature": "competition_score"
+    },
+    "SCORE_STYLE": {
+      "training_sample": "initial 61 successful races only",
+      "features": ["competition_score","style"],
+      "ridge_lambda": 1.0,
+      "standardized_score_coefficient": 2.27028957,
+      "style_escape_coefficient": 0.92679922,
+      "style_ryo_coefficient": 0.94124510,
+      "baseline_style": "追"
+    }
+  },
+  "confirmation_result": {
+    "races": 10,
+    "uniform": {
+      "winner_log_loss": 2.131546623697312,
+      "winner_brier": 0.1051461325270849,
+      "ordered_top3_log_loss": 5.991520941807046
+    },
+    "S0_SCORE": {
+      "winner_log_loss": 1.478745120924897,
+      "winner_brier": 0.08778418558957292,
+      "ordered_top3_log_loss": 4.014366430044638
+    },
+    "SCORE_STYLE": {
+      "winner_log_loss": 1.8011410498486522,
+      "winner_brier": 0.10442163105626076,
+      "ordered_top3_log_loss": 4.43656747610058
+    }
+  },
+  "interpretation": [
+    "SCORE_STYLE improved over S0_SCORE inside the earlier 61-race exploratory ablation but did not replicate on the subsequent confirmation batch.",
+    "S0_SCORE remained substantially better than uniform on all three proper-scoring-rule metrics in this 10-race confirmation batch.",
+    "The style extension must not be promoted from the earlier exploratory result.",
+    "This confirmation illustrates why post-discovery untouched development evidence is required before feature adoption."
+  ],
+  "decision": {
+    "SCORE_STYLE": "NO_PROMOTION_NOT_REPLICATED",
+    "S0_SCORE": "REMAINS_BASELINE_CANDIDATE_CONTINUE_SCALING",
+    "next": "expand S0 evaluation toward 200 races and prespec the next parsimonious candidate without tuning to this confirmation batch"
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "S0_PROMOTED_TO_PRODUCTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
