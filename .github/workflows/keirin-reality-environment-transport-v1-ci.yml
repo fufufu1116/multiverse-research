@@ -1,0 +1,66 @@
+name: Keirin Reality Environment Transport V1 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_environment_transport_v1.py'
+      - 'v3/historical_all_market/new_lineage/reality_environment_transport_selftest_v1.py'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_REALITY_ENVIRONMENT_RELEVANCE_POLICY_20260901_v1.json'
+      - '.github/workflows/keirin-reality-environment-transport-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  environment-transport-v1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Compile foundation
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/new_lineage/reality_environment_transport_v1.py \
+            v3/historical_all_market/new_lineage/reality_environment_transport_selftest_v1.py
+
+      - name: Validate policy JSON
+        run: |
+          python - <<'PY'
+          import json
+          p='v3/historical_all_market/research_candidates/KEIRIN_REALITY_ENVIRONMENT_RELEVANCE_POLICY_20260901_v1.json'
+          with open(p, encoding='utf-8') as f: d=json.load(f)
+          assert d['core_rules']['no_weather_baseline_is_mandatory'] is True
+          assert d['core_rules']['weather_forecast_for_truth_or_PRE_prediction'] == 'PROHIBITED'
+          assert d['relevance_hierarchy']['wind']['predictive_necessity'] == 'UNESTABLISHED'
+          PY
+
+      - name: Reject candidate-model coupling
+        run: |
+          ! grep -E 'top3_architecture|C0|C1|N1|PEER|RESULT|PAYOUT|ECON_HOLDOUT' v3/historical_all_market/new_lineage/reality_environment_transport_v1.py
+
+      - name: Run environment selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python reality_environment_transport_selftest_v1.py
+
+      - name: Confirm no network-capable imports
+        run: |
+          ! grep -E '(^| )(requests|urllib|httpx|aiohttp|socket|selenium|playwright)( |\.|$)' v3/historical_all_market/new_lineage/reality_environment_transport_v1.py
+
+      - name: Terminal boundary
+        run: |
+          echo 'NO FORECAST RELIANCE'
+          echo 'NO WEATHER REQUIRED BY DEFAULT'
+          echo 'NO TRUTH WORLD EXECUTION'
+          echo 'NO MODEL COMPARISON'
+          echo 'NO RESULT/PAYOUT/ECONOMICS'
