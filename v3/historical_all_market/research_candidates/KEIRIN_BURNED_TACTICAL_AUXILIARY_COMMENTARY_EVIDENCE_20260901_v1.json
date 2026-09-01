@@ -1,0 +1,75 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_AUXILIARY_COMMENTARY_EVIDENCE_20260901_v1",
+  "status": "PASS_AUXILIARY_ASR_CORROBORATION_NOT_PRIMARY_ANNOTATION_NOT_RATE_EVIDENCE",
+  "classification": "BURNED_RESEARCH_AUXILIARY_ONLY_NOT_VALIDATION_NOT_TRUTH_RATE",
+  "pilot_sample": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_ONTRACK_TACTICAL_PILOT_SAMPLE_20260901_v1.json",
+  "workflow": {
+    "run_id": 33487186307,
+    "job_id": 99789909475,
+    "head": "515bf579745b22f43463f746cc8035f754dcf412",
+    "conclusion": "success",
+    "method": "faster-whisper base / ja / CPU int8 on the three prespecified official replay MP4s",
+    "artifact_id": 9792248863,
+    "artifact_sha256": "51bed1f54c1aa98a90c8bca644dbbb4df323b946a1de33f5d66fe6548b6515d0",
+    "retention_days": 3
+  },
+  "quality": {
+    "r1": "No usable pre-outcome ASR segment retained.",
+    "r2": "ASR is noisy but narrates car 4 driving the pace/front and car 2 immediately behind during the late phase; used only as weak cross-modal corroboration of direct sparse-frame observations.",
+    "r3": "ASR is noisy but clearly narrates car 3 pressing/taking the front against a resisting rider and later describes a marker closely following car 3; used only as cross-modal corroboration.",
+    "name_transcription_reliability": "LOW",
+    "car_number_and_tactical_phrase_reliability": "MIXED",
+    "negative_event_inference_from_silence": false
+  },
+  "corroborated_direct_frame_annotations": [
+    {
+      "annotation_id": "A-P02",
+      "race_id": "20260806_IWAKITAIRA_2R",
+      "event": "INITIATIVE_ATTACK",
+      "primary_evidence": "direct sparse frame sequence",
+      "commentary_support": "late-race narration is consistent with car 4 taking/maintaining the front",
+      "commentary_role": "AUXILIARY_ONLY"
+    },
+    {
+      "annotation_id": "A-P03",
+      "race_id": "20260806_IWAKITAIRA_2R",
+      "event": "BANTE_FOLLOW",
+      "primary_evidence": "direct sparse frame sequence",
+      "commentary_support": "narration is consistent with car 2 behind car 4 in the late phase",
+      "commentary_role": "AUXILIARY_ONLY"
+    },
+    {
+      "annotation_id": "A-P04",
+      "race_id": "20260806_IWAKITAIRA_3R",
+      "event": "INITIATIVE_ATTACK",
+      "primary_evidence": "direct sparse frame sequence",
+      "commentary_support": "narration explicitly describes car 3 pressing forward and taking the front",
+      "commentary_role": "AUXILIARY_ONLY"
+    },
+    {
+      "annotation_id": "A-P05",
+      "race_id": "20260806_IWAKITAIRA_3R",
+      "event": "INITIATIVE_CONFLICT",
+      "primary_evidence": "direct sparse frame sequence",
+      "commentary_support": "narration describes a push-back/resistance followed by car 3 pressing through",
+      "commentary_role": "AUXILIARY_ONLY"
+    },
+    {
+      "annotation_id": "A-P06",
+      "race_id": "20260806_IWAKITAIRA_3R",
+      "event": "BANTE_FOLLOW",
+      "primary_evidence": "direct sparse frame sequence",
+      "commentary_support": "narration describes a marker continuing tightly behind car 3",
+      "commentary_role": "AUXILIARY_ONLY"
+    }
+  ],
+  "not_admitted": [
+    "ASR-derived ABSENT labels",
+    "ASR-derived eligible denominators",
+    "tactical event rates",
+    "finish order",
+    "payout or odds",
+    "causal finish effects",
+    "model selection"
+  ]
+}
