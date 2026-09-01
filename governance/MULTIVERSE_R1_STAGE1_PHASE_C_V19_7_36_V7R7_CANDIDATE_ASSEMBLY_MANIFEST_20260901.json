@@ -2,13 +2,13 @@
   "version": "V19.7.36-v7r7",
   "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
   "runtime": "OFF",
-  "purpose": "Move the strict 600-second external-session challenge window from container creation to an explicit post-attach one-shot manual arm boundary, while preserving the independently reviewed v7r6 external-session gate control logic and deterministically adapting only its external evidence schema to v7r7, together with Owner provenance, strict deadline, rate/pagination controls, exact image closure, downstream OAuth secrecy boundary, NONMUTATING Step3, and fail-closed behavior.",
+  "purpose": "Move the strict 600-second external-session challenge window from container creation to an explicit post-attach one-shot manual arm boundary, preserve the independently reviewed v7r6 external-session control logic, deterministically adapt its external evidence schema to v7r7, and enforce exact fail-closed evidence object shape before the existing typed value/provenance/deadline/binding checks, together with exact image closure, downstream OAuth secrecy, NONMUTATING Step3, and fail-closed behavior.",
   "required": [
     {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
     {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
     {"role":"prelive_start_surface","path":"MULTIVERSE_PRELIVE_START_HERE.md","type":"markdown"},
     {"role":"external_session_gate_inherited","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go","type":"go","required_git_blob":"f2c3f1023a453bfe5ee43c7d978de9728c5a2dc8","adapted_target":"/usr/local/sbin/multiverse-v36-session-gate-v7r7"},
-    {"role":"evidence_schema_adapter","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py","type":"python","scope":"exact-counted evidence literals only"},
+    {"role":"evidence_contract_adapter","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py","type":"python","scope":"exact-counted successor literals plus narrowly bounded strict exact-key object-shape decoding over the exact inherited blob"},
     {"role":"attach_ready_status_addon","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_ATTACH_READY_STATUS_ADDON_20260901.go","type":"go-addon","composed_into":"/usr/local/sbin/multiverse-v36-session-gate-v7r7"},
     {"role":"manual_arm_launcher","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go","type":"go","build_target":"/usr/local/bin/multiverse-v36-arm-v7r7"},
     {"role":"ui_ready_writer","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go","type":"go","build_target":"/usr/local/bin/multiverse-v36-ui-ready-v7r7"},
@@ -33,7 +33,7 @@
     "container_capability_boundary": ["CHOWN","SETUID","SETGID"],
     "launcher_privilege_use": "Normalize the fixed launcher to root, immediately set NoNewPrivs, require the narrowed capability bounding/effective sets, validate exact UI-ready/control/image bindings, create a root-owned one-shot lock, open the fixed root-owned 0555 session gate by descriptor, close unrelated descriptors, and exec only that gate.",
     "challenge_start_semantics": "The v7r7 adapted gate generates the challenge only after manual arm reaches the inherited control logic and obtains trusted GitHub server time. The 600-second window is therefore not consumed by Codespace creation or UI attachment.",
-    "failure_policy": "Any stale/ambiguous ready file, wrong owner/mode/content, image mismatch, preexisting session status, repeated arm lock, unsafe gate class, privilege/capability mismatch, evidence-adapter mismatch, or downstream gate error fails closed without retry authority."
+    "failure_policy": "Any stale/ambiguous ready file, wrong owner/mode/content, image mismatch, preexisting session status, repeated arm lock, unsafe gate class, privilege/capability mismatch, evidence-contract mismatch, strict evidence object-shape mismatch, or downstream gate error fails closed without retry authority."
   },
   "inherited_v7r6_security": {
     "external_session_gate_source_unchanged": true,
@@ -53,10 +53,10 @@
     "runtime_activation": false
   },
   "evidence_schema_adapter": {
-    "architecture": "build-time deterministic literal adapter over one exact inherited gate blob",
+    "architecture": "build-time deterministic exact-source evidence-contract transformer over one exact inherited gate blob",
     "accepted_inherited_git_blob": "f2c3f1023a453bfe5ee43c7d978de9728c5a2dc8",
-    "control_logic_rewrite_allowed": false,
-    "replacement_counts_fail_closed": true,
+    "general_control_logic_rewrite_allowed": false,
+    "successor_literal_replacement_counts_fail_closed": true,
     "successor_freeze_prefix": "MULTIVERSE_V7R7_CANDIDATE_FREEZE ",
     "successor_session_prefix": "MULTIVERSE_V7R7_SESSION_BINDING ",
     "successor_owner_approval_prefix": "MULTIVERSE_V7R7_OWNER_APPROVAL_RECEIPT ",
@@ -65,6 +65,33 @@
     "successor_owner_approval_phrase": "APPROVE V19.7.36 v7r7 ONE-SHOT LIVE",
     "legacy_evidence_literals_forbidden_in_adapted_source": true,
     "successor_schema_selftest_required": true
+  },
+  "strict_evidence_object_shape": {
+    "auditor_finding": 5493053344,
+    "applies_to": ["freeze","session_binding","owner_approval"],
+    "relevant_prefix_lines_required_exactly_one": true,
+    "exact_top_level_key_set_required": true,
+    "exact_key_case_required": true,
+    "unknown_keys_rejected": true,
+    "duplicate_json_members_rejected": true,
+    "missing_keys_rejected": true,
+    "malformed_json_or_typed_value_rejected": true,
+    "trailing_json_or_extra_object_rejected": true,
+    "typed_value_checks_preserved_after_shape_validation": true,
+    "owner_connector_provenance_preserved": true,
+    "deadline_head_tree_image_challenge_freeze_one_shot_bindings_preserved": true,
+    "negative_selftests_required": [
+      "unknown_key",
+      "alternate_case_key",
+      "duplicate_json_key",
+      "duplicate_same_prefix_line",
+      "missing_key",
+      "malformed_value",
+      "trailing_object",
+      "provenance_mismatch"
+    ],
+    "canonical_positive_successor_schema_required": true,
+    "automatic_retry_or_replacement_authority": false
   },
   "image_identity": {
     "version": "V19.7.36-v7r7-image-identity",
@@ -92,9 +119,12 @@
     "duplicate_arm_lock_rejected",
     "only_manual_arm_launcher_retains_setuid_or_setgid_in_hardened_search_boundary",
     "manual_arm_setuid_transition_proven_in_exact_image",
-    "v7r7_evidence_schema_adapter_exact_inherited_blob_required",
-    "v7r7_evidence_schema_adapter_counted_literal_scope_only",
-    "v7r7_evidence_schema_adapter_selftest_passes",
+    "v7r7_evidence_adapter_exact_inherited_blob_required",
+    "v7r7_successor_literal_counts_fail_closed",
+    "v7r7_strict_evidence_prefix_line_uniqueness",
+    "v7r7_strict_evidence_exact_keys_and_case",
+    "v7r7_strict_evidence_unknown_duplicate_missing_malformed_trailing_rejected",
+    "v7r7_strict_evidence_object_shape_selftest_passes",
     "v7r7_gate_composed_successor_schema_selftest_passes",
     "inherited_rate_budget_history_selftest_passes",
     "inherited_post_sleep_post_deadline_wait_path_selftest_passes",
