@@ -1,0 +1,140 @@
+{
+  "record": "REALITY_SOURCE_TRANSPORT_REGISTRY_v0",
+  "status": "RESEARCH_FOUNDATION_SOURCE_REGISTRY_NOT_COLLECTOR_NOT_VALIDATION",
+  "as_of_jst": "2026-09-01",
+  "purpose": "Map reality-calibration fields to official/public source surfaces, decision-time semantics, provenance requirements, and authorization limits without implementing automated bulk collection.",
+  "global_rights_boundary": {
+    "official_site_policy_url": "https://keirin.jp/sp/dfw/portal/guest/policy/index.html",
+    "classification": "OFFICIAL_PUBLIC_VIEW_ONLY_UNLESS_SEPARATE_PERMISSION_OR_LAWFUL_BASIS",
+    "rule": "Public visibility does not itself authorize bulk harvesting, redistribution, or model-training reuse. Manual research/semantic verification and narrowly scoped lawful private-use captures may be evaluated separately; no bypass behavior is permitted."
+  },
+  "sources": [
+    {
+      "id": "KEIRIN_GUIDE_LINES",
+      "url": "https://keirin.jp/pc/static/beginner/basics/lines.html",
+      "source_class": "OFFICIAL_RULE",
+      "transport_status": "SOURCEABLE_NOW_MANUAL_STATIC",
+      "supports": [
+        "line cooperation exists",
+        "line formation is associated with registration locality/relationships",
+        "self-powered front and chasing roles are asymmetric",
+        "blocking, switching and competition for position exist",
+        "multiple line-count and line-shape patterns exist"
+      ],
+      "not_supported": [
+        "exact line-shape frequencies",
+        "exact line-effect coefficients",
+        "symmetric arithmetic-mean line uplift"
+      ]
+    },
+    {
+      "id": "KEIRIN_GUIDE_PHASES",
+      "url": "https://keirin.jp/pc/static/beginner/basics/phases.html",
+      "source_class": "OFFICIAL_RULE",
+      "transport_status": "SOURCEABLE_NOW_MANUAL_STATIC",
+      "supports": [
+        "rider introduction/leg-show occurs before start",
+        "riders display line formation/order there",
+        "line observation is decision-relevant pre-start information",
+        "wind direction/speed and bank circumference are race-context considerations"
+      ],
+      "structured_legshow_line_feed_status": "UNRESOLVED"
+    },
+    {
+      "id": "KEIRIN_GUIDE_RACECARD",
+      "url": "https://www.keirin.jp/pc/static/beginner/basics/racecard.html",
+      "source_class": "OFFICIAL_RULE",
+      "transport_status": "SOURCEABLE_NOW_MANUAL_STATIC",
+      "supports": [
+        "competition_score is based on recent four-month performance",
+        "style semantics 逃/両/追",
+        "決まり手 semantics 逃/捲/差/マ",
+        "B/H/S semantics",
+        "win/quinella/trio rates are recent historical statistics",
+        "recent-result state includes absence/crash/withdrawal/disqualification notation"
+      ]
+    },
+    {
+      "id": "KEIRIN_2026_PROGRAM_MASTER",
+      "url": "https://www.keirin.jp/pc/dfw/portal/guest/data/prize/2026/2026.html",
+      "source_class": "OFFICIAL_PROGRAM",
+      "transport_status": "SOURCEABLE_NOW_MANUAL_STATIC",
+      "supports": [
+        "grade/program family enumeration",
+        "FI/FII seven-rider program families",
+        "GIII seven- and nine-rider program families",
+        "KEIRIN ADVANCE program families",
+        "class/program distinctions"
+      ],
+      "use_rule": "Program-family facts may calibrate eligibility/schema. Per-race regime identity still requires a race-specific program/source binding."
+    },
+    {
+      "id": "KEIRIN_BANK_RECORD_MASTER",
+      "url": "https://keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+      "source_class": "OFFICIAL_MASTER",
+      "transport_status": "SOURCEABLE_NOW_MANUAL_STATIC",
+      "supports": [
+        "venue-to-bank-circumference mapping includes 333/335/400/500m tracks"
+      ],
+      "not_supported": [
+        "full venue geometry such as home-straight length or cant for every venue"
+      ]
+    },
+    {
+      "id": "KEIRIN_RACER_PROFILE_CURRENT",
+      "url_template": "https://www.keirin.jp/pc/racerprofile?snum={rider_number}",
+      "source_class": "OFFICIAL_PUBLIC_VIEW_ONLY",
+      "transport_status": "PROSPECTIVE_POINT_IN_TIME_SNAPSHOT_CANDIDATE",
+      "observed_surface": [
+        "page update timestamp",
+        "recent four-month wins/places/out-of-place/withdrawal/disqualification counts",
+        "win/quinella/trio rates",
+        "home/back counts",
+        "competition score",
+        "decision-style distribution",
+        "home bank and some rider profile attributes"
+      ],
+      "hard_limit": "Current/latest profile values may not be backfilled into historical races. Historical replay requires a snapshot captured before that race's decision cutoff or a separately authorized historical feed."
+    },
+    {
+      "id": "KEIRIN_RACE_SCHEDULE",
+      "url_template": "https://www.keirin.jp/pc/raceschedule?scym={MM}&scyy={YYYY}",
+      "source_class": "OFFICIAL_PROGRAM",
+      "transport_status": "SOURCEABLE_NOW_MANUAL_CURRENT_SCHEDULE",
+      "supports": [
+        "meeting dates and venues"
+      ],
+      "use_rule": "Schedule existence alone is not sufficient to infer per-race regime, class, stage, field size or active riders."
+    }
+  ],
+  "field_transport_matrix": [
+    {"field":"race_grade/program_family/field_size eligibility","status":"GREEN_STATIC_OFFICIAL","source_ids":["KEIRIN_2026_PROGRAM_MASTER"]},
+    {"field":"venue bank circumference","status":"GREEN_STATIC_OFFICIAL","source_ids":["KEIRIN_BANK_RECORD_MASTER"]},
+    {"field":"rider identity/profile current state","status":"YELLOW_PROSPECTIVE_SNAPSHOT_ONLY","source_ids":["KEIRIN_RACER_PROFILE_CURRENT"]},
+    {"field":"competition_score/win_rate/quinella_rate/trio_rate/H/B/current maneuver summaries","status":"YELLOW_PROSPECTIVE_SNAPSHOT_ONLY","source_ids":["KEIRIN_RACER_PROFILE_CURRENT","KEIRIN_GUIDE_RACECARD"]},
+    {"field":"historical point-in-time rider PRE statistics","status":"RED_NO_PROVEN_ARCHIVE_TRANSPORT","source_ids":[]},
+    {"field":"PRE_EVENT_EXPECTED_LINE structured snapshot","status":"RED_TRANSPORT_UNPROVEN","source_ids":[]},
+    {"field":"LEGSHOW_OBSERVED_LINE structured snapshot","status":"RED_TRANSPORT_UNPROVEN","source_ids":["KEIRIN_GUIDE_PHASES"]},
+    {"field":"line-shape frequency / formation probabilities","status":"RED_UNCALIBRATED","source_ids":["KEIRIN_GUIDE_LINES"]},
+    {"field":"weather/wind point-in-time observation","status":"RED_SOURCE_AND_TIMESTAMP_TRANSPORT_NOT_YET_BOUND","source_ids":["KEIRIN_GUIDE_PHASES"]},
+    {"field":"home straight/cant full venue master","status":"RED_MASTER_INCOMPLETE_IN_CURRENT_REVIEW","source_ids":[]},
+    {"field":"tactical/line effect sizes","status":"RED_UNCALIBRATED","source_ids":[]}
+  ],
+  "collection_policy_v0": {
+    "manual_static_official_research": "ALLOWED_FOR_FOUNDATION_REVIEW",
+    "narrow_prospective_public_snapshot_capture": "DESIGN_CANDIDATE_REQUIRES_SEPARATE_CAPTURE_PROTOCOL_BEFORE_USE_AS_EMPIRICAL_CALIBRATION",
+    "automated_bulk_collection": "NOT_AUTHORIZED",
+    "historical_backfill_from_current_profiles": "PROHIBITED",
+    "post_race_line_reconstruction_as_PRE": "PROHIBITED",
+    "access_control_bypass": "PROHIBITED",
+    "external_provider_contact": "NOT_AUTHORIZED_BY_THIS_REGISTRY"
+  },
+  "truth_generator_readiness": "NOT_READY",
+  "truth_generator_blockers": [
+    "historical/prospective point-in-time rider PRE transport not yet admitted for empirical calibration",
+    "line snapshot transport unresolved",
+    "line formation frequencies/effect sizes unresolved",
+    "race dynamics effect sizes unresolved",
+    "weather/environment point-in-time source binding unresolved"
+  ]
+}
