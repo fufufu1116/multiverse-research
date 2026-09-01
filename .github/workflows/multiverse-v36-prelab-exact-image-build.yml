@@ -34,12 +34,14 @@ jobs:
         run: |
           set -euo pipefail
           export MULTIVERSE_PRELAB_DOCKER_TAG="multiverse-v7r7-proof:${GITHUB_SHA}"
+          python3 governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py --selftest governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go
           python3 governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py
           docker image inspect "${MULTIVERSE_PRELAB_DOCKER_TAG}" >/dev/null
           docker run --rm --entrypoint /bin/cat "${MULTIVERSE_PRELAB_DOCKER_TAG}" /opt/multiverse/v36/image-identity-v7r3.json > /tmp/image-identity-v7r3.json
           test -s /tmp/image-identity-v7r3.json
           printf 'PRELAB_DOCKERFILE_BLOB=%s\n' "$(git hash-object .devcontainer/Dockerfile)"
           printf 'PRELAB_DEVCONTAINER_BLOB=%s\n' "$(git hash-object .devcontainer/devcontainer.json)"
+          printf 'PRELAB_EVIDENCE_ADAPTER_BLOB=%s\n' "$(git hash-object governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py)"
           printf 'PRELAB_BASE_IMAGE_DIGEST=%s\n' "$(sed -n '1s/^FROM .*@//p' .devcontainer/Dockerfile)"
           printf 'PRELAB_IMAGE_IDENTITY_SHA256=%s\n' "$(sha256sum /tmp/image-identity-v7r3.json | awk '{print $1}')"
           printf 'PRELAB_FINAL_TREE_DOCKER_BUILD_PASS=true\n'
