@@ -1,0 +1,17 @@
+{
+  "record": "KEIRIN_ALL_MARKET_PROBABILITY_DERIVATION_SELFTEST_20260902_v1",
+  "status": "PASS",
+  "test": "4-car positive-weight full ordered-top3 distribution",
+  "ordered_top3_support": 24,
+  "mass_checks": {
+    "ordered_top3": 1.0,
+    "3rentan": 1.0,
+    "3renhuku": 1.0,
+    "2shatan": 1.0,
+    "2shahuku": 1.0,
+    "wide": 3.0
+  },
+  "interpretation": "All supported car-based ticket markets preserve the expected probability-mass identities when derived from one coherent ordered-top3 probability object. Wide mass is 3 because each top3 outcome contains three overlapping unordered pairs.",
+  "real_money_execution": false,
+  "profitability_claim": false
+}
