@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_S0_RETROSPECTIVE_20R_EXECUTION_REPORT_20260901_v1",
+  "status": "INITIAL_SIGNAL_ONLY_NOT_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "source": {
+    "type": "saved KDreams racedetail HTML",
+    "pre_region": "直近4ヶ月の成績 / 競走得点 table",
+    "outcome_region": "dedicated 着順 / 車番 / 選手名 result table",
+    "payout_used": false,
+    "result_used_as_feature": false
+  },
+  "batch": {
+    "html_attempted_initial": 20,
+    "initial_successful_races": 17,
+    "initial_rejected_races": 3,
+    "rejection_policy": "FAIL_CLOSED_NO_MANUAL_REPAIR",
+    "rejection_reasons": [
+      "duplicate finishing position / ordered-label ambiguity",
+      "outcome top3 not subset of parsed PRE active cars"
+    ],
+    "replacement_html_added": 3,
+    "final_successful_races": 20,
+    "meetings": {
+      "3120260304": 1,
+      "4520260304": 6,
+      "7520260305": 10,
+      "8120260306": 3
+    }
+  },
+  "model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score_only",
+    "formula": "P(win=i)=exp(beta*(score_i-race_mean_score))/sum_j exp(beta*(score_j-race_mean_score))",
+    "fitted_beta": 0.2255423496746253,
+    "train_races": 17,
+    "evaluation_races": 3,
+    "split": "meeting-held-out; latest-start meeting 8120260306 held out",
+    "same_meeting_cross_split": false
+  },
+  "evaluation": {
+    "held_out_meeting": "8120260306",
+    "held_out_venue": "小倉",
+    "winner_log_loss": 1.5791425080039134,
+    "uniform_winner_log_loss": 1.9459101490553132,
+    "winner_brier": 0.11512449780282923,
+    "uniform_winner_brier": 0.12244897959183676,
+    "ordered_top3_log_loss_via_plackett_luce": 4.119476163183816,
+    "uniform_ordered_top3_log_loss": 5.3471075307174685,
+    "held_out_examples": [
+      {"race_no": 4, "actual_top3": [7,1,2], "winner_probability": 0.2027327332751852, "actual_ordered_top3_probability": 0.057568842392858234},
+      {"race_no": 3, "actual_top3": [7,2,1], "winner_probability": 0.23916571919042615, "actual_ordered_top3_probability": 0.032962337321532524},
+      {"race_no": 2, "actual_top3": [2,4,3], "winner_probability": 0.1806918490274085, "actual_ordered_top3_probability": 0.0022625448968801695}
+    ]
+  },
+  "interpretation": [
+    "All three reported proper-scoring-rule metrics improved over uniform in this tiny held-out pilot.",
+    "The evaluation set contains only three races and is far too small for model promotion, edge claims, or economic conclusions.",
+    "This result justifies scaling the same fail-closed retrospective pipeline to a materially larger chronological development sample."
+  ],
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
