@@ -1,0 +1,50 @@
+{
+  "record": "KEIRIN_DT_PRE_REALISM_MULTIWORLD_STRESS_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_R0_R1_R2_COMBINED_STRESS_RESULT",
+  "locked_at_jst": "2026-08-20T18:27:00+09:00",
+  "purpose": "Treat PRE realism itself as an uncertainty axis instead of selecting whichever synthetic generator looks best on the same staged source, and test fixed C0/C1/N1 architecture robustness across all retained PRE worlds.",
+  "pre_worlds": {
+    "R0_CURRENT_SYNTHETIC": "digital_twin_v1 current generator; hand-authored PRE priors",
+    "R1_EMPIRICAL_MARGINAL": "digital_twin_empirical_pre_adapter_v1; staged-candidate marginal/linear calibration",
+    "R2_EMPIRICAL_JOINT": "digital_twin_empirical_pre_adapter_v2; one-shot staged-candidate class/style joint-dependence calibration"
+  },
+  "world_selection_rule": "NO_R0_R1_R2_WORLD_MAY_BE_DROPPED_OR_WEIGHTED_BY_THIS_SAME_SOURCE_DISCRIMINATOR_RESULT",
+  "execution_lock": {
+    "seed": 20260820,
+    "races_per_truth_scenario_per_pre_world": 240,
+    "truth_scenarios": 10,
+    "pre_world_count": 3,
+    "total_scenario_world_cells": 30,
+    "total_scenario_race_evaluations": 7200,
+    "bank_cycle": [333,400,500],
+    "wind_cycle_mps": [0.0,1.5,3.0,5.0]
+  },
+  "models": ["C0", "C1", "N1"],
+  "model_coefficients": "EXISTING_FIXED_PROXY_COEFFICIENTS_UNCHANGED",
+  "truth_grid": "EXISTING_ASSUMPTION_GRID_10_SCENARIOS_UNCHANGED",
+  "metrics": {
+    "primary": "expected ordered-top3 log loss",
+    "also": ["KL regret to exact synthetic truth", "ordered-top3 joint Brier"],
+    "robustness": [
+      "winner_count_across_30_pre_world_x_truth_scenario_cells",
+      "mean_excess_log_loss_vs_best_model_in_each_cell",
+      "worst_case_excess_log_loss_vs_best_model_in_any_cell"
+    ]
+  },
+  "interpretation": {
+    "preferred_engineering_property": "small regret and stability across R0/R1/R2 rather than dominance in one hand-picked PRE world",
+    "no_model_promotion": true,
+    "no_real_edge_claim": true,
+    "no_pre_world_reality_truth_claim": true
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "source_admission": "NOT_GRANTED"
+  },
+  "next_gate": "IMPLEMENT_FIXED_R0_R1_R2_RUNNER_SELFTEST_EXECUTE_ONCE_THEN_LAB_REVIEW"
+}

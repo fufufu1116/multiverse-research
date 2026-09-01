@@ -1,0 +1,60 @@
+{
+  "record": "KEIRIN_DT_EMPIRICAL_GENERATOR_PARAMS_v1",
+  "status": "DERIVED_SENSOR_ONLY_GENERATOR_PARAMS_NOT_REALITY_TRUTH",
+  "source_envelope": "KEIRIN_DT_EMPIRICAL_ENVELOPE_COMPACT_v1",
+  "band_probs": {
+    "S": 0.248213125,
+    "A12": 0.521767381,
+    "A3": 0.230019493
+  },
+  "class_probs": {
+    "S": {"S1": 0.285340314, "S2": 0.714659686},
+    "A12": {"A1": 0.503824942, "A2": 0.496175058},
+    "A3": {"A3": 1.0}
+  },
+  "style_probs": {
+    "S": {"逃": 0.298429319, "両": 0.25355273, "追": 0.448017951},
+    "A12": {"逃": 0.280732966, "両": 0.207080591, "追": 0.512186444},
+    "A3": {"逃": 0.261501211, "両": 0.179983858, "追": 0.558514931}
+  },
+  "score_hierarchy": {
+    "S": {"race_mean_mu": 100.564637248, "race_mean_sd": 3.610608315, "log_race_sd_mu": 1.282343912, "log_race_sd_sd": 0.315349898},
+    "A12": {"race_mean_mu": 85.598924865, "race_mean_sd": 3.320959427, "log_race_sd_mu": 1.20891952, "log_race_sd_sd": 0.338153736},
+    "A3": {"race_mean_mu": 70.827043987, "race_mean_sd": 1.886631869, "log_race_sd_mu": 1.187173973, "log_race_sd_sd": 0.312123867}
+  },
+  "tactical_zero_inflated_beta": {
+    "逃": {
+      "B": {"p0": 0.011976048, "alpha": 2.246370556, "beta": 3.09468463},
+      "S": {"p0": 0.178975383, "alpha": 1.063728525, "beta": 3.607172172},
+      "nige": {"p0": 0.092149035, "alpha": 1.416751562, "beta": 4.886086619},
+      "makuri": {"p0": 0.137059215, "alpha": 1.729682458, "beta": 9.906262459},
+      "sashi": {"p0": 0.493013972, "alpha": 2.530099128, "beta": 28.020531722},
+      "mark": {"p0": 0.711576846, "alpha": 3.476294669, "beta": 57.66003637}
+    },
+    "両": {
+      "B": {"p0": 0.29321663, "alpha": 1.400349143, "beta": 7.054902003},
+      "S": {"p0": 0.273085339, "alpha": 1.009026721, "beta": 4.798522615},
+      "nige": {"p0": 0.556673961, "alpha": 1.88707086, "beta": 16.958224029},
+      "makuri": {"p0": 0.360612691, "alpha": 1.635553936, "beta": 12.216167682},
+      "sashi": {"p0": 0.168052516, "alpha": 1.655541274, "beta": 10.427978446},
+      "mark": {"p0": 0.439387309, "alpha": 1.956614619, "beta": 21.283837909}
+    },
+    "追": {
+      "B": {"p0": 0.927719684, "alpha": 3.375281097, "beta": 59.130838216},
+      "S": {"p0": 0.315905338, "alpha": 1.073328207, "beta": 5.806881973},
+      "nige": {"p0": 0.986974867, "alpha": 5.327627853, "beta": 112.969234007},
+      "makuri": {"p0": 0.864978903, "alpha": 3.59864275, "beta": 65.288336565},
+      "sashi": {"p0": 0.131718951, "alpha": 1.896381071, "beta": 10.635835082},
+      "mark": {"p0": 0.221977619, "alpha": 2.268064394, "beta": 19.248334182}
+    }
+  },
+  "line_style_coupling": "CURRENT_SYNTHETIC_POSITION_STRUCTURE_REWEIGHTED_TO_MATCH_SENSOR_STYLE_MARGINAL; COUPLING_ITSELF_IS_ASSUMPTION",
+  "unmeasured": [
+    "H",
+    "LINE_SHAPE_FREQUENCY",
+    "BANK_FREQUENCY_PER_RACE",
+    "WIND_DISTRIBUTION",
+    "RACE_REGIME_FREQUENCY"
+  ],
+  "use_boundary": "SYNTHETIC_PRE_ENGINEERING_ONLY"
+}

@@ -1,0 +1,105 @@
+{
+  "record": "KEIRIN_DT_EMPIRICAL_ENVELOPE_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_AGGREGATE_ENVELOPE_COMPUTATION",
+  "locked_at_jst": "2026-08-20T17:54:00+09:00",
+  "base_main": "819afb723c8f14000757b2e53b6664d71ab01227",
+  "purpose": "Use already-held historical PRE-only data to build a fail-closed candidate empirical envelope for Digital Twin realism, without promoting the source to admitted real-world truth and without training/promoting a sporting model.",
+  "owner_direction": "Prioritize a reality-calibrated virtual keirin world and large simulation now; use future real PRE as calibration sensors rather than blocking research waiting for live races.",
+  "pre_prereg_disclosure": {
+    "already_observed_before_lock": [
+      "PRE_STRUCTURED and PRE_PROVENANCE each contain 2000 records",
+      "collection report says PASS_COMPLETE and result_accessed=false, payout_accessed=false, market_odds_used=false, external_prediction_fields_used=false",
+      "PRE_STRUCTURED sha256 is 4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+      "PRE_PROVENANCE sha256 is 86627fe4151074f2d20db637a7f5468e24ae3c6e878a82a33fde7b3218261b27",
+      "DEV2000_UNIVERSE sha256 is eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+      "provenance source is KDreams historical race-detail pages",
+      "source records are labeled STAGED_UNPROVEN_HISTORICAL_PRE, availability proof NOT_YET_PROVEN_FOR_HISTORICAL_REPLAY, training_eligibility=false",
+      "universe date range observed as 2026-03-01 through 2026-04-10 and 32 venue codes",
+      "schema sample exposed class, score, style, B, H/S-like S, nige, makuri, sashi, mark and historical PRE rates/counts"
+    ],
+    "aggregate_distributions_or_correlations_computed_before_lock": false,
+    "real_vs_twin_discriminator_computed_before_lock": false
+  },
+  "source_classification": {
+    "raw_source": "STAGED_THIRD_PARTY_HISTORICAL_PRE_CANDIDATE",
+    "scientific_admission": "NOT_ADMITTED_AS_REALITY_TRUTH",
+    "training_eligibility": false,
+    "population_representativeness": "NOT_PROVEN",
+    "raw_redistribution": "PROHIBITED_THIS_PR",
+    "github_storage": "HASHES_DERIVED_AGGREGATES_CODE_ONLY_NO_RAW_RIDER_ROWS"
+  },
+  "planned_metrics": {
+    "integrity": [
+      "record_count",
+      "unique_race_id_count",
+      "date_range",
+      "venue_code_count",
+      "active_field_size_distribution",
+      "source_domain_distribution",
+      "status_and_training_eligibility_distribution"
+    ],
+    "categorical": [
+      "inferred_race_band_distribution_from_class_set",
+      "class_distribution_overall_and_within_inferred_band",
+      "style_distribution_overall_and_within_inferred_band",
+      "race_level_style_count_pattern_distribution"
+    ],
+    "numeric": {
+      "fields": [
+        "score", "gear", "B", "S", "nige", "makuri", "sashi", "mark",
+        "win_rate", "quinella_rate", "trio_rate", "wins", "seconds", "thirds", "outs"
+      ],
+      "summaries": ["count", "missing_rate", "mean", "std", "p05", "p25", "p50", "p75", "p95", "min", "max"],
+      "conditional_summaries": ["inferred_race_band", "style"]
+    },
+    "dependence": [
+      "spearman_core_numeric_matrix",
+      "race_level_score_mean_std_range_distribution",
+      "race_level_tactical_sum_distribution"
+    ],
+    "stability": {
+      "partition": "deterministic_sha256_race_id_mod_5",
+      "compare": "five-fold aggregate spread; large drift prevents single-point calibration"
+    }
+  },
+  "digital_twin_use": {
+    "allowed": [
+      "candidate ranges for observable PRE marginals",
+      "candidate conditional distributions",
+      "candidate dependence constraints",
+      "candidate race-level joint-shape constraints",
+      "falsification of obviously unrealistic synthetic PRE"
+    ],
+    "not_allowed": [
+      "claim that KDreams-derived frequencies are the keirin population truth",
+      "direct sporting model training from these rows",
+      "model promotion",
+      "synthetic-to-real evidence promotion",
+      "line-shape calibration because line membership is not present in this artifact",
+      "bank/wind effect calibration from this artifact",
+      "RESULT/PAYOUT reconstruction or access"
+    ]
+  },
+  "planned_generator_strategy": {
+    "primary": "DERIVED_AGGREGATE_CONSTRAINTS_PLUS_SYNTHETIC_GENERATION",
+    "optional_private_engineering_control": "RACE_LEVEL_BOOTSTRAP_WITH_IDENTITIES_STRIPPED_MAY_BE_USED_LOCALLY_ONLY_IF_NEEDED_FOR_DISCRIMINATOR_DIAGNOSTICS; NEVER_COMMIT_RAW_ROWS",
+    "anti_circularity": "Candidate models C0/C1/N1 do not define the PRE generator calibration targets."
+  },
+  "realism_test_plan": {
+    "stage_1": "marginal_and_conditional_summary_distance",
+    "stage_2": "race_level_joint_summary_distance",
+    "stage_3": "real-vs-twin discriminator only against this staged candidate source, explicitly labeled CANDIDATE_SOURCE_DISCRIMINATOR",
+    "success_semantics": "Passing means harder to distinguish from the staged PRE candidate distribution, not proof of real-world equivalence."
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_gate": "COMPUTE_AGGREGATE_ENVELOPE_AND_BUILD_FAIL_CLOSED_DT_CALIBRATION_ADAPTER_THEN_LAB_REVIEW"
+}
