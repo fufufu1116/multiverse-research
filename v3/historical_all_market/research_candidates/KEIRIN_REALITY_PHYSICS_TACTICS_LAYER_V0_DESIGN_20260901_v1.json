@@ -1,0 +1,169 @@
+{
+  "record": "KEIRIN_REALITY_PHYSICS_TACTICS_LAYER_V0_DESIGN_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_DESIGN_ONLY_NO_PHYSICS_EXECUTION_NO_MODEL_COMPARISON",
+  "classification": "REALITY_FOUNDATION_PHYSICS_INFORMED_NOT_CANONICAL_NOT_PROMOTED",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "owner_direction": "Internal physics-engine-like components may be fused when useful, while preserving reality calibration and anti-circularity boundaries.",
+  "design_goal": "Add a source-supported physics-informed constraint layer to the Reality-Calibrated family without pretending that physics alone determines Japanese keirin tactics or outcomes.",
+  "hard_boundary": {
+    "no_C0_C1_N1_PEER_evaluation": true,
+    "no_candidate_performance_used_to_choose_physics": true,
+    "no_RESULT_PAYOUT": true,
+    "no_economics": true,
+    "no_real_money": true,
+    "no_bulk_site_mirroring": true,
+    "no_access_control_bypass": true,
+    "no_Core_main_Runtime_change": true
+  },
+  "architecture": {
+    "layer_1_physics": {
+      "purpose": "Constrain what motions/energy costs are physically plausible at rider and pack level.",
+      "candidate_state": [
+        "track_distance_s_m",
+        "lateral_track_coordinate",
+        "speed_mps",
+        "acceleration_mps2",
+        "relative_air_speed_mps",
+        "bank_angle_deg_at_position",
+        "drafting_exposure_state",
+        "effective_power_or_effort_state",
+        "remaining_short_horizon_effort_reserve_proxy"
+      ],
+      "force_or_cost_terms": [
+        {
+          "term": "aerodynamic_drag",
+          "canonical_form_family": "0.5 * air_density * CdA * relative_air_speed^2",
+          "status": "PHYSICS_SUPPORTED_BUT_RIDER_SPECIFIC_PARAMETERS_UNCALIBRATED"
+        },
+        {
+          "term": "rolling_resistance",
+          "canonical_form_family": "Crr * normal_force",
+          "status": "PHYSICS_SUPPORTED_PARAMETER_RANGE_UNCALIBRATED"
+        },
+        {
+          "term": "drivetrain_loss",
+          "status": "PHYSICS_SUPPORTED_PARAMETER_RANGE_UNCALIBRATED"
+        },
+        {
+          "term": "banked_curve_and_centripetal_requirements",
+          "status": "PHYSICS_SUPPORTED_TRACK_GEOMETRY_REQUIRED"
+        },
+        {
+          "term": "lateral_or_tyre_scrub_cost",
+          "status": "PHYSICS_SUPPORTED_AS_POSSIBLE_TERM_BUT_REAL_KEIRIN_CALIBRATION_UNRESOLVED"
+        },
+        {
+          "term": "drafting_drag_reduction",
+          "status": "REAL_PHYSICS_SUPPORTED_NONLINEAR_POSITION_DEPENDENT_RANGE_REQUIRED"
+        }
+      ],
+      "explicit_non_assumptions": [
+        "No single universal CdA is asserted for all riders.",
+        "No single fixed drafting percentage is asserted.",
+        "No track-length-only deterministic winner effect is asserted.",
+        "No physics coefficient may be selected because PEER, N1, C1 or C0 benefits."
+      ]
+    },
+    "layer_2_tactical_state_machine": {
+      "purpose": "Represent Japanese-keirin-specific strategic interactions that cannot be derived from mechanics alone.",
+      "states_or_events_to_support": [
+        "pre_start_line_intent",
+        "initial_position_acquisition",
+        "line_formation_or_maintenance",
+        "initiative_attack",
+        "initiative_conflict",
+        "bante_following",
+        "blocking_or_position_defense",
+        "competition_for_position",
+        "line_fragmentation",
+        "switching",
+        "reattachment",
+        "solo_or_singleton_transition",
+        "final_sprint_or_overtake"
+      ],
+      "rule": "Transition probabilities/effects remain UNKNOWN or ASSUMPTION_RANGE unless source-supported; candidate architecture may not define the truth transition family."
+    },
+    "layer_3_uncertainty_and_human_variation": {
+      "purpose": "Prevent deterministic pseudo-physics from becoming a false reality claim.",
+      "unknowns_to_vary": [
+        "rider_power/effort capability",
+        "rider CdA and posture",
+        "drafting geometry",
+        "reaction/decision timing",
+        "tactical intent",
+        "line cooperation strength",
+        "fatigue/form state",
+        "weather/wind where applicable",
+        "micro-positioning and stochastic disturbance"
+      ],
+      "rule": "Use source-supported ranges or broad sensitivity families; do not invent precise point truth merely to make a simulator run."
+    }
+  },
+  "official_track_geometry_support": {
+    "source": "https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+    "as_of": "2026-04-23",
+    "observed_active_track_length_support_m": [333,335,400,500],
+    "examples": {
+      "333": ["松戸","小田原","伊東温泉","富山","奈良","防府"],
+      "335": ["前橋"],
+      "400": ["いわき平","静岡","岐阜","松山"],
+      "500": ["宇都宮","大宮","高知"]
+    },
+    "maebashi_geometry_anchor": {
+      "source": "https://keirin.jp/pc/dfw/portal/guest/column/tenbo/2020/20200916_tomohito.html",
+      "track_length_m": 335,
+      "max_cant_deg": 36.0,
+      "home_straight_equivalent_m": 46.7,
+      "indoor_no_wind_context": true,
+      "role": "STRUCTURAL_EXAMPLE_NOT_POPULATION_EFFECT_ESTIMATE"
+    }
+  },
+  "physics_literature_anchors": [
+    {
+      "topic": "velodrome power model with straights/arcs/transitions/banking and dissipative forces",
+      "source": "https://doi.org/10.1007/s12283-024-00451-x",
+      "role": "PHYSICS_FORM_FAMILY_SUPPORT"
+    },
+    {
+      "topic": "track cycling mathematical model including banking/tyre effects",
+      "source": "https://link.springer.com/article/10.1007/s12283-018-0283-0",
+      "role": "PHYSICS_FORM_FAMILY_SUPPORT"
+    },
+    {
+      "topic": "competitive cyclist drafting interaction measured in field protocols",
+      "source": "https://pubmed.ncbi.nlm.nih.gov/17218899/",
+      "role": "DRAFTING_EXISTS_AND_IS_RIDER_INTERACTION_DEPENDENT"
+    },
+    {
+      "topic": "cycling aerodynamics review including multi-rider drafting",
+      "source": "https://link.springer.com/article/10.1007/s12283-017-0234-1",
+      "role": "AERODYNAMIC_MECHANISM_SUPPORT"
+    }
+  ],
+  "anti_affinity_contract": [
+    "Physics equations and uncertainty ranges must be frozen independently of candidate results.",
+    "Matched truth/candidate controls, if later used, must be labeled ENGINEERING or ORACLE_LIKE and excluded from reality claims.",
+    "The physics layer may constrain feasible motion/energy but may not silently encode PEER same-line arithmetic-mean truth or N1 same/follower/chain truth.",
+    "Tactical transition families must include multiple plausible alternatives before any candidate evaluation.",
+    "A fresh seed does not cure truth-model affinity."
+  ],
+  "implementation_strategy": {
+    "recommended": "LIGHTWEIGHT_CUSTOM_PHYSICS_INFORMED_ENGINE",
+    "not_required_initially": "full CFD or general-purpose rigid-body game engine",
+    "reason": "The research need is controlled sensitivity over force/cost relationships and tactical states, not photorealistic bicycle dynamics.",
+    "future_optional_modules": [
+      "higher-fidelity drafting lookup table from literature/CFD-derived ranges",
+      "track-coordinate geometry module",
+      "rider energy/power envelope module",
+      "multi-rider interaction/contact-avoidance module"
+    ]
+  },
+  "current_stop_boundary": {
+    "physics_engine_implementation": "STOP_UNTIL_SEPARATE_IMPLEMENTATION_GATE",
+    "physics_execution": "STOP",
+    "model_comparison": "STOP",
+    "truth_parameter_fitting": "STOP",
+    "next_step": "USE_THIS_LAYER_AS_ONE_COMPONENT_OF_REALITY_TRUTH_SENSITIVITY_FAMILY_V0_DESIGN"
+  }
+}
