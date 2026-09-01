@@ -1,0 +1,31 @@
+{
+  "record": "KEIRIN_OWNER_APPROVAL_EXPANDED_REALITY_CALIBRATION_BATCH_20260901_v1",
+  "status": "OWNER_EXPLICITLY_APPROVED_EXPANDED_REALITY_CALIBRATION_RESEARCH_CAPTURE",
+  "owner_direction": "現実データは母数があった方がいいだろうから 取れるならたくさん取って研究に使えるようにしておきな",
+  "scope": "EXPANDED_BURNED_REALITY_CALIBRATION_ONLY",
+  "interpretation": {
+    "authorized": [
+      "increase the number of narrowly captured pre-race public research samples",
+      "preserve reusable normalized research facts and provenance",
+      "derive calibration distributions/ranges/support sets from the expanded batch"
+    ],
+    "not_authorized": [
+      "access-control/rate-limit/CAPTCHA/WAF bypass",
+      "automated high-volume bulk mirroring",
+      "redistribution of source pages or raw copied tables in the public repository",
+      "RESULT/PAYOUT use",
+      "post-race target outcome use",
+      "economics or wagering",
+      "external provider contact or payment",
+      "model selection or promotion from this burned calibration batch"
+    ]
+  },
+  "capture_cap_v1": {
+    "target_races": 12,
+    "expected_rider_rows_if_all_seven_rider": 84,
+    "selection_basis": "prespecified coverage across FI/FII, S/A1-A2/A3, multiple race stages, and 400m/500m venues; no outcome/model-based selection",
+    "stop_rule": "stop once 12 admissible races are captured or today's lawful pre-cutoff surfaces no longer support the prespecified sample"
+  },
+  "storage_rule": "Keep reusable normalized facts privately where possible and public GitHub limited to derived/calibration evidence, provenance, hashes and non-identifying summaries; do not mirror source tables.",
+  "evidence_role": "BURNED_REALITY_CALIBRATION_ONLY_NOT_VALIDATION"
+}
