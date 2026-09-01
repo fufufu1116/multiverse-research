@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v2",
+  "status": "NONAUTHORIZING_RESEARCH_CANDIDATE_SYNTHESIS_NEW_PROXY_BOUNDARY_REACHED",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "authority": "NONE_BEYOND_SYNTHESIS_AND_CLOSURE_OF_ALREADY_AUTHORIZED_SYNTHETIC_DIAGNOSTICS",
+  "supersedes_for_candidate_synthesis_only": "v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v1.json",
+  "prior_synthesis_blob": "0e8672f77f05b856b909b3bf5b5b7a37b002100e",
+  "fresh_campaign_binding": {
+    "main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "limited_synthetic_authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "note": "Evidence binding only; future CURRENT must be Fresh Read again."
+  },
+  "new_stage": {
+    "stage": "OWNER_APPROVED_PRE_ONLY_SHARED_STATE_PROXY_FALSIFICATION",
+    "evidence_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_EVIDENCE_20260901_v1.json",
+    "evidence_blob": "869f50ec460d0ae41920b960060ea1bbad508d01",
+    "classification": "PROXY_DOES_NOT_IMPROVE_C1",
+    "materiality": "NO_OR_NEGATIVE_ORACLE_VALUE_RECOVERY",
+    "contribution": "A single fixed PRE-only line-mean score proxy at coefficient 0.16 worsened C1 in all four fixed W1 blocks and recovered none of the oracle improvement under the prespecified metric."
+  },
+  "updated_integrated_mechanism_conclusion": {
+    "label": "HIDDEN_SHARED_STATE_VALUE_ESTABLISHED_IN_SIMULATOR_BUT_NAIVE_PRE_LINE_MEAN_SCORE_PROXY_FAILS",
+    "statement": "The current Synthetic evidence strongly supports that the canonical W1 hidden shared line state is valuable and explains the prior N1 advantage when omitted from C1. However, simply averaging already-observed rider scores within line and adding that aggregate to C1 does not estimate the useful hidden component; it worsens predictions. Therefore hidden-state existence/value and recoverability from a naive observable aggregate must remain separate scientific claims.",
+    "relationship_to_prior_label": "The prior OMITTED_SHARED_LATENT_STATE_PROXY_PLUS_EXPLICIT_CONDITIONAL_RELATION_AMPLIFICATION mechanism remains supported as an explanation of simulator behavior. The new result narrows the recovery claim: naive PRE line-mean score is not an adequate estimator of that hidden shared state."
+  },
+  "key_numeric_extension": {
+    "W1_C1_loss": 4.688863790585787,
+    "W1_N1_loss": 4.6877246961344206,
+    "W1_C1_ORACLE_loss": 4.672631555536946,
+    "W1_C1_PRE_LINE_MEAN_PROXY_loss": 4.71288958756397,
+    "proxy_minus_C1": 0.024025796978182967,
+    "N1_minus_proxy": -0.02516489142954903,
+    "oracle_improvement_vs_C1": -0.016232235048840415,
+    "proxy_recovery_fraction": 0.0,
+    "proxy_worsened_C1_blocks": "4_of_4"
+  },
+  "what_is_now_falsified_or_weakened_within_fixed_synthetic_scope": [
+    {
+      "claim": "The useful hidden W1 shared state can be adequately recovered by the exact simple PRE line-mean score proxy with coefficient 0.16.",
+      "status": "FALSIFIED_ON_FIXED_SYNTHETIC_FIXTURES",
+      "basis": "Proxy worsened C1 in all four blocks and aggregate recovery fraction was 0.0."
+    },
+    {
+      "claim": "The oracle result alone implies an obvious deployable PRE feature.",
+      "status": "FALSIFIED_AS_AN_INFERENCE",
+      "basis": "The first prespecified lawful PRE aggregate tested failed strongly despite the oracle hidden-state value."
+    }
+  ],
+  "still_open": [
+    "Whether any other lawful PRE-observable estimator can recover analogous shared-state information without leakage.",
+    "Whether the failure is driven by double-counting individual score information, measurement noise, estimator bias, or another synthetic mechanism.",
+    "Whether any analogous shared state exists in real keirin.",
+    "Whether any architecture or feature has real-world predictive or economic value."
+  ],
+  "stop_and_boundary_rule": {
+    "coefficient_retuning_of_current_proxy": "STOP_PROHIBITED_BY_EXACT_OWNER_GATE",
+    "new_seed_or_posthoc_slice": "STOP",
+    "automatic_second_proxy": "STOP_NEW_SCIENTIFIC_BOUNDARY",
+    "same_result_repetition": "STOP_BY_DEFAULT_DIMINISHING_VALUE",
+    "allowed_without_new_scientific_scope": [
+      "synthesis",
+      "closure",
+      "mechanical checks",
+      "portable evidence packaging"
+    ]
+  },
+  "next_boundary_if_owner_later_wants_more": {
+    "category": "DIFFERENT_PRE_ONLY_SHARED_STATE_ESTIMATOR_OR_MECHANISM_DIAGNOSTIC",
+    "examples_are_nonauthorizing": [
+      "leave-one-out peer-line score aggregate",
+      "residualized peer information excluding own score contribution",
+      "prespecified measurement-error diagnostic"
+    ],
+    "execution_authority": "NOT_GRANTED_BY_Q_PRE_SHARED_STATE_PROXY_1_APPROVAL; MUST_FRESH_CLASSIFY_AND_GATE_IF NEEDED"
+  },
+  "protected_boundary": {
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "real_or_untouched_validation": false,
+    "real_live_input_collection": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false,
+    "real_world_edge_or_roi_evidence": false,
+    "scientific_segment_c_scoring_count": 0,
+    "authorization_auto_expanded": false
+  },
+  "owner_action_now": "NONE_UNLESS_OWNER_WANTS_TO_OPEN_THE_NEXT_DIFFERENT_PRE_PROXY_OR_MECHANISM_BOUNDARY"
+}
