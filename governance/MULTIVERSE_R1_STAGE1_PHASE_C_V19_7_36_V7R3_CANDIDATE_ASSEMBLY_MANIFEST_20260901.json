@@ -1,0 +1,65 @@
+{
+  "version": "V19.7.36-v7r3",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "purpose": "Close v7r2 missing exact Docker-build evidence and external Owner-trigger proof without weakening Lab/Auditor/Owner gates.",
+  "required": [
+    {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
+    {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
+    {"role":"dependency_lock","path":".devcontainer/v19_7_36_requirements.txt","type":"text"},
+    {"role":"prelab_ci_build_proof","path":".github/workflows/multiverse-v36-prelab-exact-image-build.yml","type":"yaml"},
+    {"role":"external_session_gate","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_EXTERNAL_SESSION_GATE_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-session-gate-v7r3"},
+    {"role":"image_identity_builder","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py","type":"python","build_output":"/opt/multiverse/v36/image-identity-v7r3.json"},
+    {"role":"root_anchor_producer","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-anchor-v7r2"},
+    {"role":"control_plane_runner","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-control-v7r2"},
+    {"role":"runtime_verifier","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py","type":"python","container_target":"/opt/multiverse/v36/runtime-v7.py"},
+    {"role":"recursive_closure_manifest_builder","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py","type":"python"},
+    {"role":"python_actual_use_build_gate","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py","type":"python"},
+    {"role":"step3_binding","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json","type":"json"},
+    {"role":"step3_nonmutating_payload","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py","type":"python"},
+    {"role":"pre_lab_mechanical_gate","path":"governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py","type":"python"}
+  ],
+  "docker_build_evidence": {
+    "required": true,
+    "producer": ".github/workflows/multiverse-v36-prelab-exact-image-build.yml",
+    "trigger": "push on authoritative candidate branch; no workflow_dispatch",
+    "checkout": "exact GITHUB_SHA fetched directly without third-party checkout action",
+    "mandatory_markers": [
+      "PRE_LAB_MECHANICAL_GATE_PASS",
+      "REAL_DOCKER_IMAGE_BUILD_PASS",
+      "PHASE_C_V19_7_36_V7R2_PYTHON_BUILD_ACTUAL_USE_PASS",
+      "PHASE_C_V19_7_36_V7R2_CONTROL_BUILD_SELFTEST_PASS",
+      "PRELAB_FINAL_TREE_DOCKER_BUILD_PASS=true",
+      "SECURITY_AUTHORITY_GRANTED=false",
+      "RUNTIME=OFF"
+    ],
+    "receipt_fields": ["exact head","exact tree","Dockerfile blob","devcontainer blob","pinned base image digest","image-identity SHA-256"]
+  },
+  "external_owner_trigger": {
+    "class": "SEPARATELY_REVIEWED_CLASS_A_C_EXTERNAL_SESSION_BINDING",
+    "generic_codespaces_environment_is_authority": false,
+    "candidate_or_same_uid_can_self_issue": false,
+    "pre_oauth_github_mutation_by_candidate": false,
+    "flow": [
+      "After future Independent Lab PASS, Independent Auditor PASS, Owner Presentation and exact Owner approval, Core writes an external Owner Approval Receipt to PR #74.",
+      "Owner creates exactly one fresh dedicated Codespace from the frozen candidate only after that approval.",
+      "Root image ENTRYPOINT starts the reviewed external session gate automatically and generates a fresh 128-bit nonsecret per-container challenge, reports CODESPACE_NAME, challenge and local image-identity SHA-256, then waits fail-closed.",
+      "Owner reports only those nonsecret session identifiers to Core; no token, secret, capability fd, OAuth device code or security payload is copied.",
+      "Core Fresh Reads authority/binding and writes one session-binding receipt to PR #74 through the external ChatGPT GitHub connector.",
+      "Session gate accepts exactly one receipt authored as repository owner fufufu1116 and performed_via_github_app.slug=chatgpt-codex-connector, bound to exact codespace name, fresh challenge, candidate head/tree, image-identity SHA-256, one-shot Owner Approval Receipt and Runtime OFF.",
+      "The challenge changes on every container start, so an old session receipt cannot authorize a restarted/rebuilt container; a different Codespace name cannot replay the receipt.",
+      "Only after external receipt verification does the root gate same-object execute the root producer; otherwise it exits 92."
+    ],
+    "owner_burden": "one fresh Codespace creation plus one nonsecret session-identifier acknowledgement; no authoritative startup payload paste",
+    "receipt_prefix": "MULTIVERSE_V7R3_SESSION_BINDING ",
+    "approval_prefix": "MULTIVERSE_V7R3_OWNER_APPROVAL_RECEIPT "
+  },
+  "unchanged_security": {
+    "python_build_actual_use_gate": true,
+    "step3_same_object": true,
+    "step3_get_only_mutations_zero": true,
+    "row14_post_oauth_only": true,
+    "production_mutation": false,
+    "runtime_activation": false
+  }
+}
