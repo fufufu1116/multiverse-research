@@ -1,0 +1,85 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_DUPLICATE_ANNOTATION_AGREEMENT_PRESPEC_20260901_v1",
+  "status": "PRESPECIFIED_BEFORE_INDEPENDENT_DUPLICATE_ANNOTATION",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_RELIABILITY_PROTOCOL_NOT_TRUTH_ADMISSION",
+  "as_of_jst": "2026-09-01T22:00:00+09:00",
+  "fresh_binding_before_write": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "dda3bff3f08cc9749f8ecb637aca62bd507b4222"
+  },
+  "governed_inputs": {
+    "opportunity_protocol": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+    "batch3_pass_a_freeze": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_PASS_A_ANCHOR_FREEZE_20260901_v1.json",
+    "batch3_conditional_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_CONDITIONAL_RATE_DIAGNOSTIC_20260901_v1.json"
+  },
+  "purpose": "Measure annotation reliability without allowing the original annotations or pooled rates to influence the duplicate annotator.",
+  "independence_firewall": {
+    "duplicate_annotator_must_not_view": [
+      "existing Pass A attack anchors for Initial, Batch2, or Batch3",
+      "existing Pass B BANTE_FOLLOW or INITIATIVE_CONFLICT labels",
+      "existing pooled conditional-rate counts or estimates",
+      "candidate-model outputs",
+      "finish order",
+      "payout or odds"
+    ],
+    "duplicate_annotator_may_view": [
+      "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+      "the already-burned source replays or frame artifacts",
+      "objective regime eligibility records that contain no tactical labels or outcome information"
+    ],
+    "required_order": [
+      "DUPLICATE_PASS_A_FREEZE",
+      "LOCK_DUPLICATE_PASS_A",
+      "DUPLICATE_PASS_B_LABELING",
+      "LOCK_DUPLICATE_PASS_B",
+      "ONLY_THEN_UNBLIND_FOR_AGREEMENT_COMPARISON"
+    ]
+  },
+  "duplicate_sample": {
+    "scope": "All already-burned men's races used by the Initial pilot, Batch2, and Batch3 tactical conditional-rate work, including races with zero original anchors.",
+    "reason": "Including zero-anchor races is required to measure anchor-discovery disagreement rather than comparing only previously positive events.",
+    "no_new_validation_claim": true
+  },
+  "anchor_matching_prespec": {
+    "race_id_must_match": true,
+    "attacker_car_must_match_exactly": true,
+    "timestamp_tolerance_seconds": 1.0,
+    "one_to_one_matching": true,
+    "matching_rule": "Within each race and attacker car, match anchors by minimum absolute timestamp difference subject to the 1.0-second tolerance. Each anchor may be matched once only.",
+    "unmatched_original_anchor": "ANCHOR_DISCOVERY_DISAGREEMENT",
+    "unmatched_duplicate_anchor": "ANCHOR_DISCOVERY_DISAGREEMENT",
+    "retiming_beyond_tolerance": "ANCHOR_TIMING_DISAGREEMENT"
+  },
+  "agreement_metrics_prespecified": {
+    "race_level_anchor_count_exact_agreement": true,
+    "anchor_level_precision_recall_f1": true,
+    "matched_anchor_timestamp_absolute_difference_seconds": true,
+    "bante_follow_eligibility_raw_agreement": true,
+    "initiative_conflict_eligibility_raw_agreement": true,
+    "bante_follow_label_raw_agreement_on_jointly_eligible_matched_anchors": true,
+    "initiative_conflict_label_raw_agreement_on_jointly_eligible_matched_anchors": true,
+    "cohens_kappa": "Report only where the jointly eligible compared label set has at least two observed categories across the two annotators; otherwise report NOT_IDENTIFIABLE rather than force a kappa value.",
+    "unknown_handling": "UNKNOWN remains a distinct annotation outcome for reliability comparison and is never silently converted to ABSENT.",
+    "ineligible_handling": "Eligibility disagreement is measured separately; an ineligible opportunity is not coerced into PRESENT/ABSENT/UNKNOWN."
+  },
+  "adjudication_rule": {
+    "before_unblinding": "No adjudication or protocol amendment is permitted before the duplicate Pass A and Pass B records are locked.",
+    "after_unblinding": "Disagreements may be reviewed qualitatively, but adjudicated labels must be stored separately from both original and duplicate raw labels.",
+    "no_retroactive_tuning": "Do not alter historical raw labels merely to improve agreement statistics."
+  },
+  "decision_thresholds": {
+    "truth_admission": "NONE_PREAUTHORIZED",
+    "protocol_revision_trigger": "Any material anchor-discovery disagreement, systematic eligibility disagreement, or repeated label disagreement requires protocol clarification before further Reality-truth consideration.",
+    "small_sample_rule": "Even perfect agreement on a small burned sample does not establish tactic prevalence, causal finish effect, or a Reality truth coefficient."
+  },
+  "permanent_prohibitions": [
+    "REALITY_TRUTH_COEFFICIENT_PROMOTION",
+    "FINISH_EFFECT_ESTIMATION",
+    "MODEL_SELECTION_OR_PROMOTION",
+    "UNTOUCHED_VALIDATION",
+    "REAL_PREDICTIVE_SUPERIORITY_CLAIM",
+    "PAYOUT_OR_ROI_ANALYSIS",
+    "CORE_RUNTIME_ACTIVATION"
+  ],
+  "terminal_rule": "This record freezes the reliability-comparison method before an independent duplicate annotator sees any hidden original tactical labels."
+}
