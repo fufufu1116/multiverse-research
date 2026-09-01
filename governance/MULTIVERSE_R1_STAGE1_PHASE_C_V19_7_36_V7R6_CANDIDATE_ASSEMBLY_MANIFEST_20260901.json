@@ -7,6 +7,7 @@
     {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
     {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
     {"role":"external_session_gate","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-session-gate-v7r6"},
+    {"role":"rate_budget_history_selftest","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py","type":"python"},
     {"role":"pre_lab_mechanical_gate","path":"governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py","type":"python"}
   ],
   "api_budget_remediation": {
@@ -18,7 +19,7 @@
     "initial_history": "one paginated full snapshot only",
     "subsequent_polling": "GitHub issue-comments since cursor with 2-second overlap; merges both newly-created and edited comments by comment ID",
     "error_policy": "HTTP 403 rate-limit, HTTP 429, hard-budget exhaustion, reserve exhaustion, malformed rate headers, transport/status/parse failures all fail closed; no blind retry loop",
-    "mechanical_scenario": "6-page current-size history + Owner approval at minute 8.5 => 24 normal requests; full 10-minute one-page-delta wait => 27; both below hard budget 40 and external 60/hour ceiling"
+    "mechanical_scenario": "deterministic 601-comment initial corpus (600 filler + freeze, seven pages), late Owner approval/session at minute 8.5, updated-comment replacement, and full 10-minute budget; all remain below hard budget 40 and external 60/hour ceiling"
   },
   "external_authority": {
     "candidate_freeze_prefix": "MULTIVERSE_V7R6_CANDIDATE_FREEZE ",
@@ -35,7 +36,7 @@
     "connector_can_issue_owner_approval": false
   },
   "negative_build_selftest": [
-    "edited_freeze","edited_owner_approval","edited_session_binding","connector_origin_owner_approval","duplicate_owner_approval","wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping","minute_8_5_rate_budget","ten_minute_rate_budget","hard_api_budget_enforced","rate_remaining_reserve_enforced"
+    "edited_freeze","edited_owner_approval","edited_session_binding","connector_origin_owner_approval","duplicate_owner_approval","wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping","minute_8_5_rate_budget","ten_minute_rate_budget","hard_api_budget_enforced","rate_remaining_reserve_enforced","601_comment_history_late_receipt_observable","updated_comment_delta_replaces_snapshot"
   ],
   "unchanged_security": {"python_build_actual_use_gate":true,"step3_same_object":true,"pre_oauth_fail_closed":true,"production_mutation":false,"runtime_activation":false}
 }
