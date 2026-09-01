@@ -1,0 +1,20 @@
+{
+  "record": "KEIRIN_20260902_PRE_SOURCE_MANIFEST_v1",
+  "status": "PRE_RESULT_PROSPECTIVE_SOURCE_MANIFEST",
+  "date_jst": "2026-09-02",
+  "created_before_outcomes": true,
+  "meetings": [
+    {"venue":"松山","grade":"F1","racecard_url":"https://keirin.kdreams.jp/matsuyama/racecard/75202608310300/","first_race_start":"10:45","first_race_close":"10:40"},
+    {"venue":"宇都宮","grade":"F1","racecard_url":"https://keirin.kdreams.jp/utsunomiya/racecard/24202608310300/","first_race_start":"15:45","first_race_close":"15:40"},
+    {"venue":"松阪","grade":"F2","racecard_url":"https://keirin.kdreams.jp/matsusaka/racecard/47202608310300/","first_race_start":"08:30","first_race_close":"08:25"},
+    {"venue":"西武園","grade":"F2","racecard_url":"https://keirin.kdreams.jp/seibuen/racecard/26202608310300/","first_race_start":"10:58","first_race_close":"10:53"},
+    {"venue":"松戸","grade":"F2","racecard_url":"https://keirin.kdreams.jp/matsudo/racecard/31202609010200/","first_race_start":"15:59","first_race_close":"15:54"},
+    {"venue":"弥彦","grade":"F2","racecard_url":"https://keirin.kdreams.jp/yahiko/racecard/21202609020100/","first_confirmed_race_in_source":"2R","first_confirmed_start":"21:13","first_confirmed_close":"21:08"},
+    {"venue":"伊東","grade":"F2","racecard_url":"https://keirin.kdreams.jp/ito/racecard/37202609020100/","first_race_start":"20:41","first_race_close":"20:36"},
+    {"venue":"玉野","grade":"F2","racecard_url":"https://keirin.kdreams.jp/tamano/racecard/61202609020100/","first_race_start":"20:57","first_race_close":"20:52"}
+  ],
+  "allowed_pre_fields_candidate": ["car_no","rider_name_or_pseudonym","class","style","competition_score_if_source_timestamp_semantics_are_admitted","B","S","nige","makuri","sashi","mark","line_snapshot_if PRE_INTERFACE compliant","race_stage","bank_length"],
+  "excluded_from_multiverse_features_by_default": ["third_party_prediction_marks","third_party_recommended_tickets","post_race_result","payout","closing_price_observed_after_result"],
+  "note": "Third-party marks and prose may be preserved as contextual source metadata but are not MULTIVERSE probabilities or model features unless separately prespecified and admitted.",
+  "next_gate": "Extract timestamp-safe PRE rows, freeze a reproducible Simple Score probability construction, then emit shadow decision cards before late-odds observation."
+}
