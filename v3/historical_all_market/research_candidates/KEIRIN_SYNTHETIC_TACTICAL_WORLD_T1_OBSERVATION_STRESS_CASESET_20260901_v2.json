@@ -1,0 +1,50 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T1_OBSERVATION_STRESS_CASESET_20260901_v2",
+  "status": "SYNTHETIC_OBSERVATION_STRESS_ONLY_NOT_REALITY_TRUTH",
+  "supersedes": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T1_OBSERVATION_STRESS_CASESET_20260901_v1",
+  "corrections_from_v1": [
+    "T1-008 BANTE_FOLLOW corrected UNKNOWN to PRESENT because direct-follower identity/continuity is visually preserved despite unreadable car number.",
+    "T1-017 latent BANTE_FOLLOW corrected PRESENT to ABSENT because a rival occupies direct following position through the end of the six-second window.",
+    "T1-003 quarantines conflict eligibility as NOT_ESTABLISHED without inventing a protocol label."
+  ],
+  "world_tier": "T1",
+  "purpose": "Stress fail-closed behavior under degraded observation while preserving a separate latent synthetic truth.",
+  "cases": [
+    {"id":"T1-001","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-002","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-003","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict_eligibility":"NOT_ESTABLISHED","initiative_conflict_label":null},"note":"non-authoritative gap handling"},
+    {"id":"T1-004","expected":{"attack_anchor":false,"reason":"ACTOR_CONTINUITY_NOT_VISUALLY_ESTABLISHED"}},
+    {"id":"T1-005","expected":{"attack_anchor":false,"reason":"COMMENTARY_ONLY_INFERENCE"}},
+    {"id":"T1-006","expected":{"attack_anchor":false,"reason":"MOMENTARY_WHEEL_OVERLAP"}},
+    {"id":"T1-007","expected":{"attack_anchor":false,"reason":"TERMINAL_SPRINT_EXCLUSION"}},
+    {"id":"T1-008","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-009","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-010","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-011","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"UNKNOWN"}},
+    {"id":"T1-012","expected":{"attack_anchor":true,"bante_follow":"ABSENT","initiative_conflict":"ABSENT"}},
+    {"id":"T1-013","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-014","expected":{"attack_anchor":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-015","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"}},
+    {"id":"T1-016","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-017","latent_protocol_truth":{"bante_follow":"ABSENT"},"expected":{"attack_anchor":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-018","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-019","expected":{"attack_anchor":false,"reason":"SUSTAINED_FORWARD_MOVE_NOT_ESTABLISHED"}},
+    {"id":"T1-020","expected":{"attack_anchor_count":2}},
+    {"id":"T1-021","expected":{"attack_anchor_count":1,"reason":"SECOND_ACCELERATION_IS_CONTINUATION"}},
+    {"id":"T1-022","expected":{"attack_anchor":false,"reason":"LINE_LEADER_OR_SOLO_STATUS_NOT_ESTABLISHED"}},
+    {"id":"T1-023","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"}},
+    {"id":"T1-024","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"UNKNOWN"}}
+  ],
+  "determinate_case_gate": {
+    "cases_with_protocol_determinate_expected_output": 23,
+    "cases_quarantined_for_protocol_gap": 1,
+    "quarantined_case": "T1-003"
+  },
+  "firewall": {
+    "protocol_amended": false,
+    "reality_rate_inferred": false,
+    "real_duplicate_annotation_replaced": false,
+    "finish_or_market_claim": false
+  },
+  "next_gate": "Require all 23 determinate cases to conform; keep T1-003 outside numeric scoring. Then escalate to T2 interaction complexity."
+}
