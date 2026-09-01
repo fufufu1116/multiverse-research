@@ -1,0 +1,48 @@
+name: keirin-reality-source-transport-gate-v0-ci
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/REALITY_SOURCE_TRANSPORT_REGISTRY_v0.json'
+      - 'v3/historical_all_market/new_lineage/reality_source_transport_gate_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_source_transport_gate_selftest_v0.py'
+      - '.github/workflows/keirin-reality-source-transport-gate-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  transport-gate-selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+
+      - name: Verify canonical main has not drifted
+        shell: bash
+        run: |
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "5c1403c1f5aabb80d29e8c868440aede8888ce61"
+
+      - name: Validate source registry JSON
+        run: python -m json.tool v3/historical_all_market/new_lineage/REALITY_SOURCE_TRANSPORT_REGISTRY_v0.json >/dev/null
+
+      - name: Compile transport gate
+        run: python -m py_compile v3/historical_all_market/new_lineage/reality_source_transport_gate_v0.py v3/historical_all_market/new_lineage/reality_source_transport_gate_selftest_v0.py
+
+      - name: Reject network-capable collector imports
+        shell: bash
+        run: |
+          ! grep -En '(^|[[:space:]])(requests|httpx|aiohttp|urllib\.request|selenium|playwright|scrapy)([[:space:].]|$)' v3/historical_all_market/new_lineage/reality_source_transport_gate_v0.py
+
+      - name: Execute transport gate selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python reality_source_transport_gate_selftest_v0.py
+
+      - name: Protected boundary terminal
+        shell: bash
+        run: |
+          grep -q 'automated_bulk_collection_authorized() -> bool' v3/historical_all_market/new_lineage/reality_source_transport_gate_v0.py
+          grep -q 'truth_generator_ready() -> bool' v3/historical_all_market/new_lineage/reality_source_transport_gate_v0.py
+          grep -q 'return False' v3/historical_all_market/new_lineage/reality_source_transport_gate_v0.py
