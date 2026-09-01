@@ -1,0 +1,179 @@
+{
+  "record": "REALITY_CALIBRATED_FOUNDATION_SCHEMA_v0",
+  "status": "RESEARCH_FOUNDATION_IMPLEMENTATION_NOT_GENERATOR_NOT_VALIDATION",
+  "world_family": "REALITY_CALIBRATED_WORLD_FAMILY",
+  "purpose": "Machine-readable acceptance contract for reality-calibrated PRE foundations. It defines structures and fail-closed invariants only; it does not define truth mechanics, feature coefficients, empirical frequencies, or model winners.",
+  "enums": {
+    "race_regime": [
+      "STANDARD_ORIGINAL_LINE_KEIRIN",
+      "INTERNATIONAL_FIXED_PACER",
+      "UNKNOWN_OR_OTHER"
+    ],
+    "line_observation_type": [
+      "PRE_EVENT_EXPECTED_LINE",
+      "LEGSHOW_OBSERVED_LINE",
+      "NONE_OR_UNAVAILABLE"
+    ],
+    "source_class": [
+      "OFFICIAL_RULE",
+      "OFFICIAL_PROGRAM",
+      "OFFICIAL_MASTER",
+      "PRE_EMPIRICAL_AUTHORIZED",
+      "BURNED_OUTCOME_AWARE",
+      "EXTERNAL_AGGREGATE",
+      "ASSUMPTION_RANGE",
+      "ENGINEERING_FIXTURE"
+    ],
+    "race_grade": ["FI", "FII", "GIII", "GII", "GI", "GP", "OTHER"],
+    "sex_scope": ["MEN", "WOMEN", "OTHER_OR_UNKNOWN"]
+  },
+  "structures": {
+    "program_regime_snapshot": {
+      "required": [
+        "race_id",
+        "event_datetime",
+        "prediction_timestamp",
+        "decision_timestamp",
+        "decision_cutoff_rule_id",
+        "venue_id",
+        "race_grade",
+        "race_class_band",
+        "race_stage",
+        "race_regime",
+        "field_size",
+        "sex_scope",
+        "program_source",
+        "program_source_class",
+        "program_source_timestamp",
+        "program_provenance_sha"
+      ]
+    },
+    "venue_environment_snapshot": {
+      "required": [
+        "venue_id",
+        "bank_length_m",
+        "venue_source",
+        "venue_source_class",
+        "venue_provenance_sha"
+      ],
+      "optional": [
+        "home_straight_m",
+        "bank_cant_deg",
+        "weather",
+        "temperature_c",
+        "wind_speed_mps",
+        "wind_direction",
+        "environment_source",
+        "environment_source_class",
+        "environment_observation_timestamp",
+        "environment_provenance_sha"
+      ]
+    },
+    "rider_identity_snapshot": {
+      "required": [
+        "rider_id",
+        "car_no",
+        "class_at_cutoff",
+        "active_status_at_cutoff",
+        "identity_source",
+        "identity_source_class",
+        "identity_snapshot_timestamp",
+        "identity_provenance_sha"
+      ],
+      "optional": ["registration_region_or_official_affiliation"]
+    },
+    "rider_pre_history_snapshot": {
+      "required": [
+        "rider_id",
+        "snapshot_timestamp",
+        "source",
+        "source_class",
+        "provenance_sha"
+      ],
+      "optional_numeric": [
+        "competition_score",
+        "win_rate",
+        "quinella_rate",
+        "trio_rate",
+        "S",
+        "H",
+        "B",
+        "nige",
+        "makuri",
+        "sashi",
+        "mark"
+      ]
+    },
+    "line_member_snapshot": {
+      "required": [
+        "rider_id",
+        "car_no",
+        "line_group_id",
+        "line_position",
+        "line_size",
+        "is_singleton"
+      ]
+    },
+    "line_snapshot": {
+      "required": [
+        "race_id",
+        "line_observation_type",
+        "line_source",
+        "line_source_class",
+        "line_snapshot_timestamp",
+        "line_raw_provenance_sha",
+        "num_lines",
+        "members"
+      ]
+    },
+    "race_pre_snapshot": {
+      "required": [
+        "program",
+        "venue_environment",
+        "riders",
+        "rider_history"
+      ],
+      "optional": ["line_snapshot"]
+    }
+  },
+  "hard_invariants": [
+    "prediction_timestamp <= decision_timestamp < event_datetime",
+    "program_source_timestamp <= decision_timestamp",
+    "identity_snapshot_timestamp <= decision_timestamp for every rider",
+    "rider PRE history snapshot_timestamp <= decision_timestamp",
+    "environment_observation_timestamp <= decision_timestamp when environment observations are present",
+    "line_snapshot_timestamp <= decision_timestamp",
+    "POST_RACE_RECONSTRUCTED_LINE is never accepted as PRE",
+    "UNKNOWN_OR_OTHER regime fails closed for line-dependent actionable use",
+    "field_size equals number of unique active riders",
+    "car_no and rider_id are unique within race",
+    "rider history rider_ids must exactly match active rider identities",
+    "line members must exactly match active riders when a line snapshot is present for STANDARD_ORIGINAL_LINE_KEIRIN",
+    "each line member appears exactly once",
+    "line positions are unique contiguous integers from zero within each line",
+    "line_size equals actual membership count",
+    "is_singleton equals line_size == 1",
+    "num_lines equals number of distinct line_group_id values",
+    "expected and leg-show-observed line states are distinct information objects and may not be silently merged",
+    "material reality parameters not source-supported remain absent/unknown rather than receiving engineering defaults"
+  ],
+  "first_narrow_slice_contract": {
+    "status": "FOUNDATION_SUPPORT_ONLY_NOT_GENERATOR_EXECUTION",
+    "race_regime": "STANDARD_ORIGINAL_LINE_KEIRIN",
+    "sex_scope": "MEN",
+    "field_size": 7,
+    "grade_scope": ["FI", "FII"],
+    "note": "The schema is multi-regime, but the first possible future generator slice remains deliberately narrow and separately gated."
+  },
+  "explicit_non_goals": [
+    "truth outcome generation",
+    "latent ability generation",
+    "line effect coefficient selection",
+    "line-shape frequency calibration",
+    "competition-score transition calibration",
+    "candidate evaluation",
+    "real-data collection",
+    "model promotion",
+    "economics"
+  ]
+}
