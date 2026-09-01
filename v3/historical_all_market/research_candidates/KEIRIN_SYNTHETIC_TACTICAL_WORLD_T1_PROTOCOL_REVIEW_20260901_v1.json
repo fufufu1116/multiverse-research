@@ -1,0 +1,47 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T1_PROTOCOL_REVIEW_20260901_v1",
+  "status": "COMPLETED_WITH_TWO_CASESET_DEFECTS_AND_ONE_PROTOCOL_GAP",
+  "classification": "SYNTHETIC_PROTOCOL_STRESS_ONLY_NOT_REALITY_TRUTH",
+  "bindings": {
+    "protocol_blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d",
+    "t1_caseset_blob_sha": "63a5e34b7c324e2525a25f54b5160227fec41030"
+  },
+  "summary": {
+    "cases_total": 24,
+    "cases_without_material_issue": 21,
+    "authored_caseset_defects": 2,
+    "protocol_semantic_gap_candidates": 1,
+    "reality_claim_authorized": false
+  },
+  "authored_caseset_defects": [
+    {
+      "case_id": "T1-008",
+      "problem": "Expected BANTE_FOLLOW was UNKNOWN solely because the follower car number is unreadable even though the same direct follower continuity is visually preserved.",
+      "protocol_basis": "Eligibility requires an identifiable direct expected follower; it does not require that follower's car number be readable if identity/continuity is otherwise visually established.",
+      "correction": "BANTE_FOLLOW=PRESENT"
+    },
+    {
+      "case_id": "T1-017",
+      "problem": "Latent BANTE_FOLLOW was authored as PRESENT while an intervening rival occupies the direct following position from 5s through the end of the 6s window.",
+      "protocol_basis": "PRESENT requires re-established immediate attachment without an intervening rival occupying that direct following position for the remainder of the observable window.",
+      "correction": "Latent protocol truth should be BANTE_FOLLOW=ABSENT; expected observed output ABSENT is already consistent."
+    }
+  ],
+  "protocol_semantic_gap_candidate": {
+    "case_id": "T1-003",
+    "question": "How should INITIATIVE_CONFLICT eligibility be represented when a qualifying attack is visible but the camera cannot establish whether the forward path reaches an already occupied/defended position?",
+    "current_protocol": "Defines eligibility, then PRESENT/ABSENT/UNKNOWN labels for eligible opportunities, but does not explicitly define an UNKNOWN or NOT_ESTABLISHED eligibility state.",
+    "safe_current_handling": "Do not force PRESENT, ABSENT, or numeric denominator membership. Record conflict eligibility as NOT_ESTABLISHED_FOR_SYNTHETIC_REVIEW until the protocol is clarified.",
+    "protocol_mutation_performed": false,
+    "reason_no_mutation": "The independent duplicate-annotation sequence remains blinded and unlocked; no live protocol amendment is made during that process."
+  },
+  "positive_findings": [
+    "Downstream uncertainty does not delete a clearly established attack anchor.",
+    "Failure to establish attacker continuity or line-leader/solo status prevents anchor creation.",
+    "A timing interval crossing the 6s boundary correctly falls to UNKNOWN instead of being rounded.",
+    "Visible incumbent defense can establish PRESENT conflict without requiring a readable counterparty car number.",
+    "One isolated frame is insufficient to establish a sustained attack.",
+    "A second acceleration inside one uninterrupted sustained attack remains one anchor."
+  ],
+  "next_action": "Create corrected T1 v2. Keep the eligibility-gap handling explicitly non-authoritative. Then build T2 with camera cuts, identity swaps, line fragmentation, and simultaneous conflicts while preserving the reality firewall."
+}
