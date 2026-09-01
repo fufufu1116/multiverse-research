@@ -1,0 +1,77 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH4_PRESPEC_20260901_v1",
+  "status": "PRESPECIFIED_SEPARATE_VENUE_MEETING_BEFORE_TACTICAL_INSPECTION",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_ONLY_NEVER_VALIDATION",
+  "as_of_jst": "2026-09-01T22:04:00+09:00",
+  "fresh_binding_before_write": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "f8d6bb8134e219dc2830bea4d74ddc3621589787"
+  },
+  "purpose": "Test venue/meeting portability of the same burned tactical opportunity protocol without using prior pooled rates to select tactical content.",
+  "venue": "BEPPU",
+  "event_date": "2026-08-18",
+  "meeting_window": ["2026-08-16","2026-08-17","2026-08-18"],
+  "meeting": "CTCは3分前杯",
+  "meeting_grade": "FII_MORNING",
+  "target_regime": "STANDARD_ORIGINAL_LINE_MENS_FII",
+  "external_schedule_basis_only": {
+    "keirin_jp_schedule": "https://www.keirin.jp/pc/raceschedule",
+    "beppu_official_site": "https://beppu-keirin.net/",
+    "beppu_official_schedule": "https://beppu-keirin.net/races/",
+    "verified_only_for_prespec": "Official schedule sources identify a Beppu FII morning meeting held 2026-08-16 through 2026-08-18. No tactical replay content, finish order, payout, odds, or candidate-model output was inspected to choose the meeting or race numbers."
+  },
+  "selection_rule": "Use final-day races R1 through R6 in sequential order, fixed before tactical inspection. Perform objective regime screening before tactical annotation. Any regime-ineligible race remains permanently burned once inspected for regime and may be replaced only by the next sequential race after R6 under a separately committed remediation written before reviewing the replacement tactically.",
+  "initial_races": [1,2,3,4,5,6],
+  "source_binding_status": "NOT_YET_BOUND_TO_OFFICIAL_REPLAY_ARTIFACTS",
+  "source_acquisition_firewall": {
+    "allowed_before_replay_binding": [
+      "official meeting dates",
+      "official venue identity",
+      "official grade/session classification",
+      "objective race-header regime screening after source binding"
+    ],
+    "forbidden_before_pass_a": [
+      "finish order",
+      "payout",
+      "odds",
+      "result pages used for tactical inference",
+      "candidate-model outputs",
+      "existing tactical labels from another source"
+    ],
+    "tactical_review_authorized_now": false,
+    "reason": "Official replay sources and immutable source manifests must be bound first; Pass A cannot begin from an unbound source."
+  },
+  "review_protocol": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+  "review_cadence_seconds": 1,
+  "annotation_order": [
+    "SOURCE_BINDING_AND_HASHING",
+    "REGIME_SCREEN_ONLY",
+    "PASS_A_FREEZE_ALL_QUALIFYING_ATTACK_ANCHORS",
+    "PASS_B_LABEL_ONLY_FROZEN_ANCHORS"
+  ],
+  "comparison_plan": {
+    "primary_use": "Separate-venue burned calibration diagnostic only.",
+    "report_separately_before_pooling": true,
+    "pooling_rule": "Do not pool with Iwaki Taira until Batch4 Pass A and Pass B are locked and venue-specific counts/ranges are reported first.",
+    "heterogeneity_note": "Venue/meeting differences must remain visible; a pooled rate may not erase a materially different venue-specific diagnostic."
+  },
+  "forbidden": [
+    "sampling by tactical content",
+    "sampling by outcome or payout",
+    "sampling by candidate model performance",
+    "changing the six-second opportunity windows",
+    "using finish order as an annotation target",
+    "using prior pooled estimates to reinterpret ambiguous frames",
+    "promoting any diagnostic to Reality truth",
+    "workflow dispatch",
+    "runtime activation"
+  ],
+  "permanent_exclusions": [
+    "UNTOUCHED_VALIDATION",
+    "MODEL_SELECTION",
+    "REAL_PREDICTIVE_SUPERIORITY_CLAIM",
+    "ECONOMICS",
+    "FINISH_EFFECT_ESTIMATION"
+  ],
+  "terminal_rule": "Batch4 is now fixed to Beppu final day 2026-08-18 R1-R6 before tactical inspection. No Pass A review may begin until official replay sources are bound with provenance and hashes under a later research-only record."
+}
