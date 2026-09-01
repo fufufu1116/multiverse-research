@@ -2,7 +2,7 @@
   "version": "V19.7.36-v7r7",
   "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
   "runtime": "OFF",
-  "purpose": "Move the strict 600-second external-session challenge window from container creation to an explicit post-attach one-shot manual arm boundary, preserve the independently reviewed v7r6 external-session control logic, deterministically adapt its external evidence schema to v7r7, enforce exact fail-closed evidence object shape before the existing typed value/provenance/deadline/binding checks, and make the launcher itself establish the exact Linux capability boundary even when a live Codespaces runtime exposes a broader bounding set than devcontainer runArgs requested, together with exact image closure, downstream OAuth secrecy, NONMUTATING Step3, and fail-closed behavior.",
+  "purpose": "Move the strict 600-second external-session challenge window from container creation to an explicit post-attach one-shot manual arm boundary, preserve the independently reviewed v7r6 external-session control logic, deterministically adapt its external evidence schema to v7r7, enforce exact fail-closed evidence object shape before the existing typed value/provenance/deadline/binding checks, and make the launcher itself establish the exact Linux capability boundary on one locked OS thread even when live Codespaces exposes a broader bounding set than devcontainer runArgs requested, together with exact image closure, downstream OAuth secrecy, NONMUTATING Step3, and fail-closed behavior.",
   "required": [
     {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
     {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
@@ -31,12 +31,13 @@
     "one_shot_lock": "/run/multiverse-v36-v7r7-arm.lock",
     "launcher_mode": "root-owned 4555 setuid; all other setuid/setgid files in the hardened search boundary are removed",
     "container_capability_boundary": ["CHOWN","SETUID","SETGID"],
-    "launcher_privilege_use": "Normalize the fixed launcher to root, explicitly drop every live bounding-set capability except CHOWN/SETGID/SETUID, clear ambient and inheritable capabilities, reduce effective/permitted sets to exactly CHOWN/SETGID/SETUID, verify the exact capability state, set NoNewPrivs, verify the exact state again, validate exact UI-ready/control/image bindings, create a root-owned one-shot lock, open the fixed root-owned 0555 session gate by descriptor, close unrelated descriptors, and exec only that gate.",
+    "launcher_privilege_use": "Lock the executing goroutine to one OS thread before privilege work, record and repeatedly verify the same Linux TID, normalize that fixed thread to root, explicitly drop every live bounding-set capability except CHOWN/SETGID/SETUID, clear ambient and inheritable capabilities, reduce effective/permitted sets to exactly CHOWN/SETGID/SETUID, verify capability and NoNewPrivs state from /proc/thread-self/status, validate exact UI-ready/control/image bindings, create a root-owned one-shot lock, open the fixed root-owned 0555 session gate by descriptor, reverify the same TID and exact capability state immediately before syscall.Exec, and exec only that gate without unlocking the OS thread.",
     "challenge_start_semantics": "The v7r7 adapted gate generates the challenge only after manual arm reaches the inherited control logic and obtains trusted GitHub server time. The 600-second window is therefore not consumed by Codespace creation, UI attachment, or a pre-gate launcher rejection.",
-    "failure_policy": "Any inability to establish the exact capability boundary, stale/ambiguous ready file, wrong owner/mode/content, image mismatch, preexisting session status, repeated arm lock, unsafe gate class, privilege/capability mismatch, evidence-contract mismatch, strict evidence object-shape mismatch, or downstream gate error fails closed without retry authority."
+    "failure_policy": "Any thread drift, inability to establish the exact capability boundary, stale/ambiguous ready file, wrong owner/mode/content, image mismatch, preexisting session status, repeated arm lock, unsafe gate class, privilege/capability mismatch, evidence-contract mismatch, strict evidence object-shape mismatch, or downstream gate error fails closed without retry authority."
   },
   "live_codespaces_capability_boundary_remediation": {
     "incident_comment": 5496242432,
+    "independent_lab_thread_invariant_finding": 5496449028,
     "observed_pre_arm_cap_prm": "0000000000000000",
     "observed_pre_arm_cap_eff": "0000000000000000",
     "observed_pre_arm_cap_bnd": "000001ffffffffff",
@@ -46,9 +47,13 @@
     "launcher_self_narrows_bounding_set": true,
     "launcher_self_narrows_effective_and_permitted_sets": true,
     "launcher_clears_inheritable_and_ambient_sets": true,
+    "launcher_locks_os_thread_before_privilege_operations": true,
+    "launcher_never_unlocks_os_thread_before_exec": true,
+    "capability_and_nonewprivs_status_source": "/proc/thread-self/status",
+    "locked_tid_reverified_before_exec": true,
     "post_narrow_exact_capability_mask_hex": "00000000000000c1",
     "broad_capability_exact_image_selftest_required": true,
-    "pre_gate_capability_failure_starts_challenge": false,
+    "pre_gate_capability_or_thread_failure_starts_challenge": false,
     "automatic_retry_authority": false
   },
   "inherited_v7r6_security": {
@@ -138,6 +143,10 @@
     "manual_arm_self_narrows_broad_live_capability_boundary",
     "manual_arm_post_narrow_exact_capability_mask_c1",
     "manual_arm_inheritable_and_ambient_capabilities_zero",
+    "manual_arm_locks_single_os_thread_before_privilege_operations",
+    "manual_arm_uses_proc_thread_self_for_thread_credential_state",
+    "manual_arm_same_tid_reverified_before_gate_exec",
+    "manual_arm_never_unlocks_os_thread_before_exec",
     "v7r7_evidence_adapter_exact_inherited_blob_required",
     "v7r7_successor_literal_counts_fail_closed",
     "v7r7_strict_evidence_prefix_line_uniqueness",
