@@ -1,0 +1,64 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_PRESPEC_20260901_v1",
+  "status": "PRESPECIFIED_BEFORE_TACTICAL_FRAME_INSPECTION",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_ONLY_NEVER_VALIDATION",
+  "created_jst": "2026-09-01T18:16:27+09:00",
+  "fresh_binding": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_before_prespec_sha": "96b5416dccabd86db4f5ac301222e860444d2209"
+  },
+  "purpose": "Increase the BURNED conditional tactical calibration sample under the unchanged opportunity protocol without selecting races by tactical content, outcome, odds, model performance, or finish behavior.",
+  "unchanged_protocol": {
+    "record": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+    "blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d",
+    "window_seconds": 6,
+    "review_cadence_seconds": 1,
+    "primary_numeric_events": ["BANTE_FOLLOW", "INITIATIVE_CONFLICT"]
+  },
+  "source_scope": {
+    "venue": "IWAKI_TAIRA",
+    "meeting": "福島民友杯・リンカイ！磐城平颯来杯",
+    "meeting_grade": "FII",
+    "meeting_dates": ["2026-08-06", "2026-08-07", "2026-08-08"],
+    "batch_date": "2026-08-07",
+    "day": 2,
+    "official_digest_page": "https://tairakeirin.com/digest/",
+    "official_calendar_page": "https://tairakeirin.com/?calMonth=08&calYear=2026",
+    "source_verification": "Official venue pages expose 2日目 (08月07日) replay links for races 1 through 12 and identify the Aug 6-8 meeting as the same FII event."
+  },
+  "selection_rule": "Take the first six sequential replay races of day 2, R1 through R6, before any tactical frame inspection. Do not skip a race based on visible tactics, expected informativeness, result, odds, candidate behavior, or replay appearance.",
+  "prespecified_races": [
+    {"race_no": 1, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-01-01-00.mp4"},
+    {"race_no": 2, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-02-01-00.mp4"},
+    {"race_no": 3, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-03-01-00.mp4"},
+    {"race_no": 4, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-04-01-00.mp4"},
+    {"race_no": 5, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-05-01-00.mp4"},
+    {"race_no": 6, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260807-13-01-06-01-00.mp4"}
+  ],
+  "regime_screen": {
+    "target_regime": "STANDARD_ORIGINAL_LINE_MENS_FII",
+    "screening_allowed_before_tactical_annotation": true,
+    "rule": "Use only objective race/regime header evidence. Any inspected race that is not target-regime remains permanently BURNED but is excluded from the men's numeric denominator.",
+    "replacement_rule": "Do not automatically fetch or inspect replacement races. If any R1-R6 race is regime-ineligible, stop after the objective screen and write a new prespecified remediation before inspecting later races."
+  },
+  "annotation_order": [
+    "OBJECTIVE_REGIME_SCREEN",
+    "PASS_A_FREEZE_ALL_QUALIFYING_ATTACK_ANCHORS_IN_ELIGIBLE_RACES",
+    "PASS_B_LABEL_BANTE_FOLLOW_OPPORTUNITIES",
+    "PASS_B_LABEL_INITIATIVE_CONFLICT_OPPORTUNITIES",
+    "WRITE_DENOMINATOR_ROWS_BEFORE_AGGREGATE_RATE_REPORT"
+  ],
+  "firewall": {
+    "all_fetched_or_inspected_races_burned_forever": true,
+    "candidate_model_predictions_visible_to_annotator": false,
+    "odds_or_market_used_for_sampling": false,
+    "finish_order_used_for_labels": false,
+    "payout_used_for_labels": false,
+    "untouched_validation": "PROHIBITED",
+    "model_selection": "PROHIBITED",
+    "finish_effect_estimation": "PROHIBITED",
+    "economics": "PROHIBITED",
+    "truth_admission": false
+  },
+  "terminal_rule": "This batch may only extend the prespecified conditional tactical pilot diagnostics. No pilot rate may become a simulator truth coefficient, model-selection criterion, finish-effect estimate, or real predictive claim at this gate."
+}
