@@ -1,0 +1,110 @@
+{
+  "record": "KEIRIN_REALITY_NUMERIC_CALIBRATION_SCAFFOLD_EVIDENCE_20260901_v1",
+  "status": "PASS_PARTIAL_NUMERIC_CALIBRATION_AND_NONOUTCOME_TRUTH_SCAFFOLD_FAIL_CLOSED_AT_TACTICAL_RATE_GATE",
+  "classification": "REALITY_CALIBRATION_FOUNDATION_ONLY_NOT_TRUTH_EXECUTION_NOT_MODEL_VALIDATION",
+  "owner_gate": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_REALITY_NUMERIC_CALIBRATION_START_20260901_v1.json",
+  "numeric_registry": "v3/historical_all_market/research_candidates/KEIRIN_REALITY_NUMERIC_CALIBRATION_REGISTRY_20260901_v1.json",
+  "third_expected_line_capture": "v3/historical_all_market/research_candidates/KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v3.json",
+  "implementation": [
+    "v3/historical_all_market/new_lineage/reality_numeric_calibration_v0.py",
+    "v3/historical_all_market/new_lineage/reality_truth_generator_scaffold_v0.py"
+  ],
+  "selftest": "v3/historical_all_market/new_lineage/reality_numeric_calibration_selftest_v0.py",
+  "fresh_start": {
+    "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head": "d267402bd189b8c74fdd697515a40548a43400f0"
+  },
+  "private_calibration_archive": {
+    "title": "keirin_reality_calibration_archive_20260901_v3.xlsx",
+    "combined_observations": 248,
+    "race_pre_rows": 84,
+    "official_roster_rows": 164,
+    "use": "BURNED_REALITY_CALIBRATION_ONLY",
+    "public_raw_row_database_created": false
+  },
+  "numeric_calibration_now_admitted": {
+    "competition_score_class_envelopes": ["S1","S2","A1","A2","A3"],
+    "race_pre_style_support": ["逃","両","追"],
+    "roster_rate_support_by_class": true,
+    "representation": "OBSERVED_ENVELOPES_AND_SENSITIVITY_COORDINATES_NOT_POPULATION_EXACT_DISTRIBUTIONS",
+    "joint_distribution_fitted": false,
+    "causal_effects_fitted": false
+  },
+  "representative_score_medians": {
+    "S1": 106.69,
+    "S2": 98.78,
+    "A1": 90.0,
+    "A2": 82.1,
+    "A3": 72.24
+  },
+  "expected_line_transport": {
+    "v3_capture_timestamp_jst": "2026-09-01T16:44:04+09:00",
+    "v3_races": 10,
+    "v2_to_v3_interval_seconds": 1023,
+    "v2_to_v3_changed": 0,
+    "v2_to_v3_unchanged": 10,
+    "combined_short_window_observations_v1_to_v3": 13,
+    "combined_short_window_changes": 0,
+    "population_stability_rate_claim": false,
+    "interpretation": "Evidence supports repeatable point-in-time provider Expected Line transport and a low-revision scenario. It does not identify on-track tactical transition rates."
+  },
+  "line_topology_support": {
+    "support_seen": ["3-2-2","4-2-1","3-3-1","4-3"],
+    "old_engineering_whitelist_exhaustive": false,
+    "truth_sampling_weights_calibrated": false,
+    "population_frequency_claim": false
+  },
+  "tactical_numeric_status": {
+    "all_transition_probabilities": "UNIDENTIFIED",
+    "all_finish_effect_sizes": "UNIDENTIFIED",
+    "numeric_default_insertion": "PROHIBITED",
+    "reason": "PRE/expected-line calibration does not identify on-track tactical event frequencies or causal finish effects."
+  },
+  "truth_generator_scaffold": {
+    "rider_prototype_generation_from_calibrated_envelopes": true,
+    "arbitrary_valid_line_partition_validation": true,
+    "ordinal_tactical_world_selection": true,
+    "environment_none_baseline": true,
+    "observed_wind_sensitivity_capability": true,
+    "finish_order_execution": false,
+    "finish_order_call_fails_closed": true
+  },
+  "github_actions": {
+    "executed_head": "ec1be18a786cd9b42d6654563d799f18075858d7",
+    "run_id": 33484185382,
+    "job_id": 99780340926,
+    "conclusion": "success",
+    "checks": [
+      "compile scaffold",
+      "validate JSON inputs",
+      "reject candidate coupling",
+      "reject economic coupling",
+      "reject network-capable imports",
+      "mechanical selftest",
+      "terminal no-finish/no-tactical-rate boundary"
+    ]
+  },
+  "private_expected_line_archive": {
+    "title": "KEIRIN Expected Line Prospective Archive 2026-09-01",
+    "v3_rows_appended": 10,
+    "line_columns_text_typed": true,
+    "readback_verified": true,
+    "shared": false
+  },
+  "protected_boundary": {
+    "LEGSHOW_observed_line_admission": false,
+    "tactical_probability_fitting": false,
+    "finish_truth_execution": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "RESULT_PAYOUT_access": false,
+    "economics": false,
+    "Core_main_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "TACTICAL_NUMERIC_EVIDENCE_OR_LEGSHOW_TRANSPORT_BEFORE_FINISH_TRUTH_EXECUTION_GATE",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "note": "Continue PRE/rider/Expected-Line snapshots independently. Do not execute finish order or assign tactical rates until independent on-track tactical evidence or a separately authorized outcome-aware burned calibration source is prespecified and admitted."
+  }
+}
