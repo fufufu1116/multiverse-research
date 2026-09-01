@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"unsafe"
 )
 
 const gatePath = "/usr/local/sbin/multiverse-v36-session-gate-v7r7"
@@ -21,6 +22,23 @@ const lockPath = "/run/multiverse-v36-v7r7-arm.lock"
 const armPath = "/usr/local/bin/multiverse-v36-arm-v7r7"
 const imageIdentityPathV7R7 = "/opt/multiverse/v36/image-identity-v7r3.json"
 const prSetNoNewPrivs = 38
+const prCapBsetDrop = 24
+const prCapAmbient = 47
+const prCapAmbientClearAll = 4
+const linuxCapabilityVersion3 = 0x20080522
+const capSetpcap = 8
+const allowedCapabilities uint64 = (1 << 0) | (1 << 6) | (1 << 7)
+
+type capUserHeader struct {
+	Version uint32
+	Pid     int32
+}
+
+type capUserData struct {
+	Effective   uint32
+	Permitted   uint32
+	Inheritable uint32
+}
 
 func deny(code string) {
 	fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:"+code)
@@ -130,25 +148,115 @@ func enableNoNewPrivs() error {
 	return nil
 }
 
-func capsNarrow() error {
+func capabilityStatus() (map[string]uint64, error) {
 	b, err := os.ReadFile("/proc/self/status")
+	if err != nil {
+		return nil, err
+	}
+	out := map[string]uint64{}
+	for _, key := range []string{"CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb"} {
+		found := false
+		for _, line := range strings.Split(string(b), "\n") {
+			if !strings.HasPrefix(line, key+":") {
+				continue
+			}
+			v, err := strconv.ParseUint(strings.TrimSpace(strings.TrimPrefix(line, key+":")), 16, 64)
+			if err != nil {
+				return nil, err
+			}
+			out[key] = v
+			found = true
+			break
+		}
+		if !found {
+			return nil, errors.New("cap-status-missing-" + key)
+		}
+	}
+	return out, nil
+}
+
+func dropBoundingSetToAllowed() error {
+	status, err := capabilityStatus()
 	if err != nil {
 		return err
 	}
-	get := func(k string) uint64 {
-		for _, l := range strings.Split(string(b), "\n") {
-			if strings.HasPrefix(l, k+":") {
-				v, _ := strconv.ParseUint(strings.TrimSpace(strings.TrimPrefix(l, k+":")), 16, 64)
-				return v
-			}
-		}
-		return ^uint64(0)
+	extra := status["CapBnd"] &^ allowedCapabilities
+	if extra == 0 {
+		return nil
 	}
-	allowed := uint64((1 << 0) | (1 << 6) | (1 << 7))
-	if get("CapEff")&^allowed != 0 || get("CapBnd")&^allowed != 0 {
-		return errors.New("caps")
+	if status["CapEff"]&(1<<capSetpcap) == 0 {
+		return errors.New("setpcap-unavailable")
+	}
+	lastRaw, err := os.ReadFile("/proc/sys/kernel/cap_last_cap")
+	if err != nil {
+		return err
+	}
+	last, err := strconv.Atoi(strings.TrimSpace(string(lastRaw)))
+	if err != nil || last < capSetpcap || last > 63 {
+		return errors.New("cap-last-invalid")
+	}
+	for cap := 0; cap <= last; cap++ {
+		bit := uint64(1) << uint(cap)
+		if extra&bit == 0 || cap == capSetpcap {
+			continue
+		}
+		_, _, e := syscall.RawSyscall6(syscall.SYS_PRCTL, uintptr(prCapBsetDrop), uintptr(cap), 0, 0, 0, 0)
+		if e != 0 {
+			return e
+		}
+	}
+	if extra&(1<<capSetpcap) != 0 {
+		_, _, e := syscall.RawSyscall6(syscall.SYS_PRCTL, uintptr(prCapBsetDrop), uintptr(capSetpcap), 0, 0, 0, 0)
+		if e != 0 {
+			return e
+		}
 	}
 	return nil
+}
+
+func clearAmbientCapabilities() error {
+	_, _, e := syscall.RawSyscall6(syscall.SYS_PRCTL, uintptr(prCapAmbient), uintptr(prCapAmbientClearAll), 0, 0, 0, 0)
+	if e != 0 {
+		return e
+	}
+	return nil
+}
+
+func setCapabilitiesExact(mask uint64) error {
+	header := capUserHeader{Version: linuxCapabilityVersion3, Pid: 0}
+	data := [2]capUserData{
+		{Effective: uint32(mask), Permitted: uint32(mask), Inheritable: 0},
+		{Effective: uint32(mask >> 32), Permitted: uint32(mask >> 32), Inheritable: 0},
+	}
+	_, _, e := syscall.RawSyscall(syscall.SYS_CAPSET, uintptr(unsafe.Pointer(&header)), uintptr(unsafe.Pointer(&data[0])), 0)
+	if e != 0 {
+		return e
+	}
+	return nil
+}
+
+func capabilitiesExact() error {
+	status, err := capabilityStatus()
+	if err != nil {
+		return err
+	}
+	if status["CapEff"] != allowedCapabilities || status["CapPrm"] != allowedCapabilities || status["CapBnd"] != allowedCapabilities || status["CapInh"] != 0 || status["CapAmb"] != 0 {
+		return errors.New("caps-not-exact")
+	}
+	return nil
+}
+
+func narrowCapabilities() error {
+	if err := dropBoundingSetToAllowed(); err != nil {
+		return err
+	}
+	if err := clearAmbientCapabilities(); err != nil {
+		return err
+	}
+	if err := setCapabilitiesExact(allowedCapabilities); err != nil {
+		return err
+	}
+	return capabilitiesExact()
 }
 
 func openGateFD3() error {
@@ -186,10 +294,13 @@ func main() {
 	if err := syscall.Setresuid(0, 0, 0); err != nil || os.Getuid() != 0 || os.Geteuid() != 0 {
 		deny("ROOT_NORMALIZE")
 	}
+	if err := narrowCapabilities(); err != nil {
+		deny("CAPS_NARROW")
+	}
 	if err := enableNoNewPrivs(); err != nil {
 		deny("NO_NEW_PRIVS")
 	}
-	if err := capsNarrow(); err != nil {
+	if err := capabilitiesExact(); err != nil {
 		deny("CAPS")
 	}
 	codespaces := os.Getenv("CODESPACES")
