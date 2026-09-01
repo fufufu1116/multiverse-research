@@ -10,7 +10,8 @@ COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go /tmp/control.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py /tmp/manifest.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py /tmp/python-actual-use-selftest.py
-COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go /tmp/session-gate.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go /tmp/session-gate-v7r6.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py /tmp/evidence-schema-adapter.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_ATTACH_READY_STATUS_ADDON_20260901.go /tmp/session-status-addon-v7r7.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go /tmp/manual-arm-v7r7.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go /tmp/ui-ready-v7r7.go
@@ -18,7 +19,9 @@ COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py /tmp/rate-budget-history-selftest.py
 RUN set -eu; \
  /usr/bin/python3 -m pip install --no-cache-dir --only-binary=:all: --require-hashes --target /opt/multiverse/v36/pydeps -r /opt/multiverse/v36/requirements.txt; \
- /usr/bin/python3 -m py_compile /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3.py /tmp/manifest.py /tmp/python-actual-use-selftest.py /tmp/image-identity-builder.py /tmp/rate-budget-history-selftest.py; \
+ /usr/bin/python3 -m py_compile /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3.py /tmp/manifest.py /tmp/python-actual-use-selftest.py /tmp/image-identity-builder.py /tmp/rate-budget-history-selftest.py /tmp/evidence-schema-adapter.py; \
+ /usr/bin/python3 /tmp/evidence-schema-adapter.py --selftest /tmp/session-gate-v7r6.go; \
+ /usr/bin/python3 /tmp/evidence-schema-adapter.py /tmp/session-gate-v7r6.go /tmp/session-gate.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-anchor-v7r2 /tmp/producer.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-control-v7r2 /tmp/control.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-session-gate-v7r7 /tmp/session-gate.go /tmp/session-status-addon-v7r7.go; \
@@ -26,7 +29,7 @@ RUN set -eu; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/bin/multiverse-v36-ui-ready-v7r7 /tmp/ui-ready-v7r7.go; \
  /usr/local/sbin/multiverse-v36-session-gate-v7r7 build-selftest; \
  /usr/bin/python3 /tmp/rate-budget-history-selftest.py; \
- rm -f /tmp/producer.go /tmp/control.go /tmp/session-gate.go /tmp/session-status-addon-v7r7.go /tmp/manual-arm-v7r7.go /tmp/ui-ready-v7r7.go; \
+ rm -f /tmp/producer.go /tmp/control.go /tmp/session-gate-v7r6.go /tmp/session-gate.go /tmp/evidence-schema-adapter.py /tmp/session-status-addon-v7r7.go /tmp/manual-arm-v7r7.go /tmp/ui-ready-v7r7.go; \
  chown -R root:root /opt/multiverse/v36 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/sbin/multiverse-v36-session-gate-v7r7 /usr/local/bin/multiverse-v36-arm-v7r7 /usr/local/bin/multiverse-v36-ui-ready-v7r7; \
  chmod 0555 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/sbin/multiverse-v36-session-gate-v7r7 /usr/local/bin/multiverse-v36-ui-ready-v7r7; \
  chmod 0444 /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3-binding.json /opt/multiverse/v36/step3.py /opt/multiverse/v36/requirements.txt; \
