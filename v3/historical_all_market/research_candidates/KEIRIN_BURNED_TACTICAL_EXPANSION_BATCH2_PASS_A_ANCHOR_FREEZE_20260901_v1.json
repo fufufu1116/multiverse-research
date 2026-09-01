@@ -1,0 +1,130 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_PASS_A_ANCHOR_FREEZE_20260901_v1",
+  "status": "PASS_A_COMPLETE_ATTACK_ANCHORS_FROZEN_BEFORE_DOWNSTREAM_LABELING",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_PASS_A_NOT_TRUTH_ADMISSION",
+  "as_of_jst": "2026-09-01T18:45:00+09:00",
+  "fresh_binding_before_write": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "7133f011ee7554bc14509eba15093e86696a4d90"
+  },
+  "governed_inputs": {
+    "opportunity_protocol": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+      "blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d"
+    },
+    "batch2_prespec": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_PRESPEC_20260901_v1.json",
+      "blob_sha": "37cd1ddfcc0f417d843987208e4779a215f0717f"
+    },
+    "batch2_regime_remediation": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_REGIME_MISMATCH_REMEDIATION_20260901_v1.json",
+      "blob_sha": "09778d02533ba35d55d5bfca61a90571919b4308"
+    }
+  },
+  "source_artifacts": {
+    "day2_r1_r6": {
+      "workflow_run_id": 33491943427,
+      "workflow_head_sha": "aed53395cb033300bb1050ca3a91c8323eb93fdb",
+      "frames_artifact_id": 9794158857,
+      "frames_artifact_sha256": "82e0eee54cba4250d554aa03af32118091dd3eae27ba8315017ff3329acc8a53",
+      "manifest_artifact_id": 9794156987,
+      "manifest_artifact_sha256": "280855e8b848c63bd2cf8f9de0b3ffa8ef455fa614c83a1caa615dea67191022"
+    },
+    "day2_r7_r8_replacements": {
+      "workflow_run_id": 33492407950,
+      "workflow_head_sha": "7133f011ee7554bc14509eba15093e86696a4d90",
+      "frames_artifact_id": 9794302434,
+      "frames_artifact_sha256": "660974e1ff9081909a06ee18a5bfc03b6b8e89927c303c9646c8cdca3069c2b2",
+      "manifest_artifact_id": 9794301662,
+      "manifest_artifact_sha256": "1e56174aafb4d8667bb4d5b2618a217c8a183910a93cb46f40b99118c7c96da2"
+    }
+  },
+  "sample_accounting": {
+    "event_date": "2026-08-07",
+    "venue": "IWAKI_TAIRA",
+    "meeting_grade": "FII",
+    "initial_prespecified_races": [1, 2, 3, 4, 5, 6],
+    "burned_regime_ineligible_races": [5, 6],
+    "prespecified_sequential_replacements": [7, 8],
+    "mens_pass_a_races": [1, 2, 3, 4, 7, 8],
+    "race_regime": "STANDARD_ORIGINAL_LINE_MENS_FII"
+  },
+  "pass_a_method": {
+    "review_cadence_seconds": 1,
+    "review_scope": "Full replay frame sequence for each eligible race before any Batch2 downstream BANTE_FOLLOW or INITIATIVE_CONFLICT outcome was entered.",
+    "anchor_definition": "Exact definition inherited unchanged from KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.",
+    "terminal_sprint_exclusion": true,
+    "candidate_outputs_hidden": true,
+    "odds_or_market_used_for_anchor_selection": false,
+    "finish_order_or_payout_used_for_anchor_selection": false
+  },
+  "frozen_attack_anchors": [
+    {
+      "attack_anchor_id": "B2-E01A1",
+      "race_id": "20260807_IWAKITAIRA_1R",
+      "race_no": 1,
+      "event_time_seconds": 38.0,
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "3",
+      "visual_basis": "At 37s car 3 is still behind the occupied forward positions; at 38s it has advanced past the immediately forward rider and at 39s it reaches/passes the prior front contest. Sustained forward movement is visible across ordered one-second observations.",
+      "pass_b_follower_candidate_before_attack": "2",
+      "pass_b_follower_identity_status": "IDENTIFIABLE_FROM_PRE_ATTACK_VISUAL_ORDER",
+      "downstream_outcomes_at_freeze": "NOT_YET_LABELED"
+    },
+    {
+      "attack_anchor_id": "B2-E03A1",
+      "race_id": "20260807_IWAKITAIRA_3R",
+      "race_no": 3,
+      "event_time_seconds": 39.0,
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "3",
+      "visual_basis": "At 38s car 3 remains in the rear group; from 39s through subsequent frames it makes a sustained outside forward move and passes multiple occupied positions before terminal sprint.",
+      "pass_b_follower_candidate_before_attack": "6",
+      "pass_b_follower_identity_status": "IDENTIFIABLE_FROM_PRE_ATTACK_VISUAL_ORDER",
+      "downstream_outcomes_at_freeze": "NOT_YET_LABELED"
+    },
+    {
+      "attack_anchor_id": "B2-E07A1",
+      "race_id": "20260807_IWAKITAIRA_7R",
+      "race_no": 7,
+      "event_time_seconds": 46.0,
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "5",
+      "visual_basis": "At 45s car 5 remains in the line behind the occupied forward group; at 46s it moves outward and forward and continues the challenge through subsequent ordered frames.",
+      "pass_b_follower_candidate_before_attack": "2",
+      "pass_b_follower_identity_status": "IDENTIFIABLE_FROM_PRE_ATTACK_VISUAL_ORDER",
+      "downstream_outcomes_at_freeze": "NOT_YET_LABELED"
+    },
+    {
+      "attack_anchor_id": "B2-E08A1",
+      "race_id": "20260807_IWAKITAIRA_8R",
+      "race_no": 8,
+      "event_time_seconds": 46.0,
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "1",
+      "visual_basis": "At 45s car 1 remains behind the leading pair; at 46s it begins a sustained outside forward move, continuing at 47-50s toward occupied positions.",
+      "pass_b_follower_candidate_before_attack": "2",
+      "pass_b_follower_identity_status": "IDENTIFIABLE_FROM_PRE_ATTACK_VISUAL_ORDER",
+      "downstream_outcomes_at_freeze": "NOT_YET_LABELED"
+    }
+  ],
+  "zero_anchor_races": [
+    {
+      "race_id": "20260807_IWAKITAIRA_2R",
+      "race_no": 2,
+      "reason": "Full pre-terminal review did not resolve a qualifying sustained initiative-attack anchor under the frozen definition. Late position changes near the terminal sprint boundary were not promoted into anchors."
+    },
+    {
+      "race_id": "20260807_IWAKITAIRA_4R",
+      "race_no": 4,
+      "reason": "Full pre-terminal review did not resolve a qualifying sustained initiative-attack anchor under the frozen definition. Rear/mid-pack reshuffling without a material forward challenge was not promoted into an attack."
+    }
+  ],
+  "explicit_nonanchors": [
+    "No anchor is created merely to ensure one event per race.",
+    "No second R8 anchor is created from later terminal-sprint/continuation behavior after B2-E08A1.",
+    "No late R2 sprint movement is used as a new initiative anchor after transition to terminal sprint behavior."
+  ],
+  "pass_a_count": 4,
+  "terminal_rule": "The four attack anchors above are frozen before Batch2 BANTE_FOLLOW or INITIATIVE_CONFLICT PRESENT/ABSENT/UNKNOWN labeling. Pass B may not add, delete, retime, or substitute Batch2 attack anchors in response to downstream outcomes."
+}
