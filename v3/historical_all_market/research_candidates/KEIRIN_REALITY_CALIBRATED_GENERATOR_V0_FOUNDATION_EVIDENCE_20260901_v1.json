@@ -1,0 +1,115 @@
+{
+  "record": "KEIRIN_REALITY_CALIBRATED_GENERATOR_V0_FOUNDATION_EVIDENCE_20260901_v1",
+  "status": "PASS_FOUNDATION_IMPLEMENTATION_AND_MECHANICAL_FAIL_CLOSED_CHECKS",
+  "classification": "RESEARCH_CANDIDATE_FOUNDATION_NOT_CANONICAL_NOT_GENERATOR_NOT_VALIDATION",
+  "evidence_class": "REALITY_CALIBRATION_FOUNDATION_ONLY_NOT_MODEL_VALIDATION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "fresh_binding_at_start": {
+    "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head": "653c1fb69756311354258de6f23015a108c6e869",
+    "reality_design_blob": "aa987394414f81771aa92ba3b0cb603259499f41",
+    "source_transport_blob": "cdbc2c9c4f45678ed7bafce23a1a6b2868886432"
+  },
+  "owner_gate": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_REALITY_CALIBRATED_GENERATOR_V0_FOUNDATION_20260901_v1.json",
+    "commit": "5cacf9e5eb07fd9a84995a7c43743a3dad5fb6f8",
+    "scope": "FOUNDATION_ONLY"
+  },
+  "implementation": {
+    "schema": {
+      "path": "v3/historical_all_market/new_lineage/REALITY_CALIBRATED_FOUNDATION_SCHEMA_v0.json",
+      "blob": "7ea0c19dc911e638e9502cb4be81be95a59f008e",
+      "commit": "d322193d1f24ba02d9d0b8a7efd8302e2f0f2e1c"
+    },
+    "foundation_module": {
+      "path": "v3/historical_all_market/new_lineage/reality_calibrated_foundation_v0.py",
+      "commit": "d03567f5f6e9213399b81224424558522b81396c",
+      "role": "DATA_STRUCTURES_AND_FAIL_CLOSED_VALIDATORS_ONLY"
+    },
+    "selftest": {
+      "path": "v3/historical_all_market/new_lineage/reality_calibrated_foundation_selftest_v0.py",
+      "commit": "5290492833f97ed14baf798e8dadd3f4244e40a2"
+    },
+    "workflow": {
+      "path": ".github/workflows/keirin-reality-calibrated-foundation-v0-ci.yml",
+      "commit": "09617d5ff9038d0ace360e86978ed3bc36c327e1",
+      "permissions": "contents:read"
+    }
+  },
+  "implemented_contracts": [
+    "program/race-grade/race-stage/race-regime/field-size source and timestamp contract",
+    "venue geometry and decision-time environment observation contract",
+    "persistent rider identity contract",
+    "point-in-time rider PRE history contract for competition_score/rates/S/H/B/nige/makuri/sashi/mark",
+    "mutable line lifecycle contract distinguishing PRE_EVENT_EXPECTED_LINE and LEGSHOW_OBSERVED_LINE",
+    "line membership/position/size/singleton/num_lines integrity checks",
+    "decision-cutoff ordering and timezone-aware timestamp checks",
+    "fail closed on unknown regime for actionable line use",
+    "fail closed on international fixed-pacer misuse of original-line semantics",
+    "fail closed on post-race reconstructed line label",
+    "no inferred engineering defaults for missing reality parameters"
+  ],
+  "explicitly_not_implemented": [
+    "truth outcome generator",
+    "latent ability generator",
+    "random reality parameter generator",
+    "line formation probability model",
+    "competition-score transition model",
+    "race dynamics effect sizes",
+    "C0/C1/N1/PEER comparison in reality family",
+    "real or live data collector",
+    "protected or untouched validation",
+    "feature search",
+    "coefficient search",
+    "economics"
+  ],
+  "mechanical_ci": {
+    "run_id": 33474553999,
+    "job_id": 99750992875,
+    "executed_head": "09617d5ff9038d0ace360e86978ed3bc36c327e1",
+    "conclusion": "success",
+    "passed_steps": [
+      "checkout exact branch head",
+      "canonical main no drift",
+      "engineering digital_twin/top3/comparison blobs untouched",
+      "machine-readable schema JSON valid",
+      "foundation modules compile",
+      "network/generator-capable imports and generator calls absent",
+      "foundation mechanical selftest",
+      "protected boundary terminal"
+    ]
+  },
+  "selftest_negative_cases_passed": [
+    "future rider-history snapshot rejected",
+    "future line snapshot rejected",
+    "POST_RACE_RECONSTRUCTED_LINE rejected",
+    "UNKNOWN_OR_OTHER actionable line rejected",
+    "INTERNATIONAL_FIXED_PACER with original-line snapshot rejected",
+    "non-contiguous line position rejected",
+    "missing actionable line rejected when required"
+  ],
+  "scientific_interpretation": "The project now has a source-independent reality-calibration admission foundation that can represent provenance-bearing pre-race program, rider, history, venue/environment and mutable-line snapshots and reject key decision-time/regime violations. It does not yet simulate a race, generate truth, estimate any real parameter, or validate any predictive model.",
+  "owner_help_needed_now": "NONE_FOR_FOUNDATION_CODE. A future real-source transport gate may require Owner action only if lawful source/provider access, a manual point-in-time sample, external contact, payment, or permission boundary becomes necessary.",
+  "protected_boundary": {
+    "real_live_input_collection": false,
+    "truth_generator_execution": false,
+    "model_comparison": false,
+    "RESULT_PAYOUT_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "DEV2000_C_rescue": false,
+    "same_lineage_B_C_rescue": false,
+    "protected_or_untouched_validation": false,
+    "feature_or_coefficient_search": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "Core_Phase_C_main_ruleset_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "REALITY_CALIBRATED_TRUTH_GENERATOR_OR_REAL_SOURCE_TRANSPORT_GATE",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "note": "Do not invent line frequencies, score dynamics, tactical effect sizes or other material reality parameters. Before implementing a truth generator, first decide which parameters are sourceable from official/master information, which require authorized point-in-time empirical evidence, and which must remain assumption ranges. Real-source collection remains separately governed."
+  }
+}
