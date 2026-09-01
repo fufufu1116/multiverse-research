@@ -32,6 +32,8 @@ def main():
  for needle in ['multiverse-v36-session-gate-v7r6','build-selftest','MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go','python-actual-use-selftest.py']:
   if needle not in d:fail('DOCKER_V7R6_WIRING',needle)
  gate=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go').decode()
+ builder=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py').decode()
+ if 'multiverse-v36-session-gate-v7r6' not in builder or 'V19.7.36-v7r6-image-identity' not in builder:fail('IMAGE_IDENTITY_V7R6_WIRING','stale-session-gate-or-version')
  for needle in ['apiHardBudget = 40','apiReserveRemaining = 8','q.Set("since"','cursorOverlap = 2 * time.Second','rate-limited','minute_8_5_requests=24','ten_minute_requests=27']:
   if needle not in gate:fail('RATE_BUDGET_REMEDIATION_WIRING',needle)
  bnd=json.loads(data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json'))['step3'];pb=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py')
