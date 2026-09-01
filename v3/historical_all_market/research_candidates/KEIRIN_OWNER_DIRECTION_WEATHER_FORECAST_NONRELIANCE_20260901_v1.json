@@ -1,0 +1,25 @@
+{
+  "record": "KEIRIN_OWNER_DIRECTION_WEATHER_FORECAST_NONRELIANCE_20260901_v1",
+  "status": "OWNER_DIRECTION_ACCEPTED",
+  "scope": "REALITY_CALIBRATION_FOUNDATION_ONLY",
+  "direction": [
+    "Do not rely on weather forecasts for race prediction or Reality truth.",
+    "Before treating wind/weather as a model input, determine whether it is materially necessary at all.",
+    "Proceed with a fail-closed environment relevance policy rather than assuming weather is required."
+  ],
+  "interpretation": {
+    "forecast_as_truth": false,
+    "forecast_as_required_PRE": false,
+    "weather_required_by_default": false,
+    "observed_wind_may_be_optional_context": true,
+    "predictive_necessity_currently_established": false
+  },
+  "protected_boundary": {
+    "model_comparison": false,
+    "feature_selection": false,
+    "truth_world_execution": false,
+    "RESULT_PAYOUT_access": false,
+    "economics": false,
+    "Core_main_Runtime_change": false
+  }
+}
