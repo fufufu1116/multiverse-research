@@ -1,0 +1,72 @@
+{
+  "record": "KEIRIN_S0_RETROSPECTIVE_100R_FIXED_SIGNAL_CHECK_20260902_v1",
+  "status": "DEVELOPMENT_SIGNAL_REPLICATED_NOT_EDGE_OR_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "pipeline": {
+    "html_attempted": 109,
+    "successful_races": 100,
+    "rejected_races": 9,
+    "parser": "tools/keirin_kdreams_retrospective_pre_outcome_parser_v3.py",
+    "rejection_policy": "FAIL_CLOSED_NO_MANUAL_REPAIR",
+    "result_used_as_feature": false,
+    "payout_used": false
+  },
+  "model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score",
+    "locked_beta": 0.22260435254784533,
+    "beta_training_sample": "initial 61 successful races",
+    "post_discovery_refit": false,
+    "post_discovery_feature_change": false
+  },
+  "evidence_partition": {
+    "initial_discovery_and_development_races": 61,
+    "post_discovery_fixed_model_confirmation_races": 39,
+    "note": "The 39 confirmation races were opened after the 61-race model/feature discovery point; the locked S0 beta was not refit for their reported metrics."
+  },
+  "post_discovery_fixed_model_confirmation_39r": {
+    "winner_log_loss": 1.7572420507248518,
+    "uniform_winner_log_loss": 2.0088885426818637,
+    "winner_brier": 0.10969381932826335,
+    "uniform_winner_brier": 0.11661207692953728,
+    "ordered_top3_log_loss": 4.76380466904763,
+    "uniform_ordered_top3_log_loss": 5.565336364948803
+  },
+  "all_100r_fixed_s0_descriptive_metrics": {
+    "winner_log_loss": 1.7188648100514985,
+    "uniform_winner_log_loss": 1.9870814774915404,
+    "winner_brier": 0.11032170926500379,
+    "uniform_winner_brier": 0.1186740205341396,
+    "ordered_top3_log_loss": 4.80709145660615,
+    "uniform_ordered_top3_log_loss": 5.489269716123499,
+    "interpretation_caveat": "These 100-race descriptive metrics include the 61 races used to fit/discover S0; the 39-race fixed-model confirmation is the cleaner replication evidence."
+  },
+  "feature_extension_status": {
+    "SCORE_STYLE": "NO_PROMOTION_NOT_REPLICATED_ON_FIRST_POST_DISCOVERY_CONFIRMATION",
+    "FULL_PRE_FEATURE_MODEL": "NO_PROMOTION_WORSE_THAN_S0_IN_61R_EXPLORATORY_ABLATION"
+  },
+  "all_market_probability_policy": {
+    "sporting_source_of_truth": "one ordered-top3 probability object",
+    "derived_markets": ["3rentan","3renhuku","2shatan","2shahuku","wide"],
+    "market_specific_sporting_models": false
+  },
+  "interpretation": [
+    "The competition-score-only S0 signal remained better than uniform on winner log loss, winner Brier, and ordered-top3 log loss across 39 post-discovery races without refitting.",
+    "This materially strengthens the case for S0 as a real baseline candidate, but it does not establish market mispricing, positive expected value, profitability, or production readiness.",
+    "The failed style extension is retained as negative evidence against feature proliferation.",
+    "Next work should scale fixed-model and chronological evaluation toward 200 races and separately introduce market-price evidence only under the existing timestamp/provenance firewall."
+  ],
+  "decision": {
+    "S0_SCORE": "CONTINUE_AS_REAL_BASELINE_CANDIDATE",
+    "next_probability_gate": "200_RACE_SCALE_WITH_TEMPORAL_AND_REGIME_STABILITY",
+    "next_market_gate": "TIMESTAMP_PROVEN_ODDS_COMPARISON_AFTER_PROBABILITY_OBJECT_LOCK"
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "MARKET_MISPRICING_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
