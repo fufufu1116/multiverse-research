@@ -5,7 +5,7 @@ import ast,hashlib,json,os,pathlib,py_compile,re,shutil,subprocess,sys,tempfile
 ROOT=pathlib.Path(__file__).resolve().parents[1];RC=92
 EXPECTED={
 '.devcontainer/Dockerfile':'dockerfile','.devcontainer/devcontainer.json':'json','.devcontainer/v19_7_36_requirements.txt':'text','.github/workflows/multiverse-v36-prelab-exact-image-build.yml':'text',
-'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_CANDIDATE_ASSEMBLY_MANIFEST_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py':'python'}
+'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_CANDIDATE_ASSEMBLY_MANIFEST_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_POST_SLEEP_POST_DEADLINE_WAIT_PATH_SELFTEST_20260901.py':'python'}
 def fail(c,m):print(f'PRE_LAB_MECHANICAL_GATE_DENIED:{c}:{m}',file=sys.stderr);raise SystemExit(RC)
 def data(r):return (ROOT/r).read_bytes()
 def gitblob(b):h=hashlib.sha1();h.update(f'blob {len(b)}\0'.encode());h.update(b);return h.hexdigest()
@@ -41,6 +41,10 @@ def main():
  for needle in ['range(1,601)','LATE_SECONDS=510','full_used==28','updated_at > since']:
   if needle not in hist:fail('RATE_BUDGET_HISTORY_SELFTEST_WIRING',needle)
  run([sys.executable,'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py'])
+ waittest=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_POST_SLEEP_POST_DEADLINE_WAIT_PATH_SELFTEST_20260901.py').decode()
+ for needle in ['const pollInterval = 30 * time.Second','const pollInterval = 200 * time.Millisecond','waitReceipt(cl, b, name, challenge, identity, issued, deadline)','deltaStarted.Before(deadline)','deltaFinished.Before(deadline)','tr.calls != 1','elapsed >= 150*time.Millisecond','PHASE_C_V19_7_36_V7R6_POST_SLEEP_POST_DEADLINE_WAIT_PATH_SELFTEST_PASS']:
+  if needle not in waittest:fail('WAIT_PATH_SELFTEST_WIRING',needle)
+ run([sys.executable,'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_POST_SLEEP_POST_DEADLINE_WAIT_PATH_SELFTEST_20260901.py'])
  bnd=json.loads(data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json'))['step3'];pb=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py')
  if bnd['git_blob']!=gitblob(pb) or bnd['sha256']!=hashlib.sha256(pb).hexdigest() or bnd['size']!=len(pb) or bnd.get('mode')!='NONMUTATING' or bnd.get('mutations')!=0:fail('STEP3_BINDING','mismatch')
  a=json.loads(data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_CANDIDATE_ASSEMBLY_MANIFEST_20260901.json'))
@@ -48,6 +52,10 @@ def main():
  rb=a.get('api_budget_remediation',{})
  if rb.get('hard_process_budget_requests')!=40 or rb.get('rate_limit_remaining_reserve')!=8 or rb.get('poll_interval_seconds')!=30 or rb.get('approval_window_seconds')!=600:fail('ASSEMBLY_RATE_BUDGET','mismatch')
  if 'trusted evidence upper bound is exactly GitHub server issuance time + 600 seconds' not in rb.get('approval_window_semantics',''):fail('ASSEMBLY_APPROVAL_WINDOW','semantics')
+ if 'deterministic behavioral execution of the exact waitReceipt control path' not in rb.get('mechanical_scenario',''):fail('ASSEMBLY_WAIT_PATH','scenario')
+ neg=a.get('negative_build_selftest',[])
+ for required in ['post_sleep_post_deadline_wait_path_times_out_before_selection','remaining_time_sleep_bounded_near_deadline','delta_begins_before_deadline_and_completes_after_deadline_without_selection']:
+  if required not in neg:fail('ASSEMBLY_WAIT_PATH',required)
  with tempfile.TemporaryDirectory(prefix='multiverse-prelab-') as td:
   for r,w in EXPECTED.items():
    p=ROOT/r
