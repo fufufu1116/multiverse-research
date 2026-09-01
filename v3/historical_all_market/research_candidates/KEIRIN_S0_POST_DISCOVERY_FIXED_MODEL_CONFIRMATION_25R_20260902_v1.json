@@ -1,0 +1,63 @@
+{
+  "record": "KEIRIN_S0_POST_DISCOVERY_FIXED_MODEL_CONFIRMATION_25R_20260902_v1",
+  "status": "POST_DISCOVERY_FIXED_MODEL_SIGNAL_REPLICATED_ACROSS_25R_NOT_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "locked_model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "training_sample": "initial 61 successful races only",
+    "feature": "competition_score",
+    "fitted_beta": 0.22260435254784533,
+    "refit_on_confirmation": false,
+    "threshold_or_feature_change_on_confirmation": false
+  },
+  "new_batch_3": {
+    "successful_races": 5,
+    "venue": "伊東",
+    "race_date": "2026-03-05",
+    "winner_log_loss": 1.640451857156613,
+    "uniform_winner_log_loss": 1.9150800130898618,
+    "winner_brier": 0.1145930141145749,
+    "uniform_winner_brier": 0.1257369614512472,
+    "ordered_top3_log_loss": 4.463456094492285,
+    "uniform_ordered_top3_log_loss": 5.235184373130385,
+    "refit_on_batch": false
+  },
+  "combined_post_discovery_confirmation": {
+    "successful_races": 25,
+    "winner_log_loss": 1.6554975546283648,
+    "uniform_winner_log_loss": 2.0441564431127315,
+    "winner_brier": 0.10330236900292095,
+    "uniform_winner_brier": 0.11334341143864954,
+    "ordered_top3_log_loss": 4.517140840317222,
+    "uniform_ordered_top3_log_loss": 5.687544512118351
+  },
+  "cumulative_research_races": {
+    "initial_discovery_development": 61,
+    "post_discovery_fixed_model_confirmation": 25,
+    "total_successful_races": 86
+  },
+  "interpretation": [
+    "The S0 model remained better than uniform on all three reported proper-scoring-rule metrics in the newly added five-race batch without refitting.",
+    "The combined post-discovery confirmation is now 25 successful races and remains directionally consistent with the earlier 20-race confirmation.",
+    "This new batch is Ito-only and therefore should not be used to infer that venue effects are resolved; it only shows that earlier Ito underperformance is not a deterministic venue-wide rule.",
+    "The sample remains development evidence and is not sufficient for production promotion, profitability, or real-edge claims."
+  ],
+  "decision": {
+    "S0_SCORE": "CONTINUE_FIXED_MODEL_SCALING_TOWARD_200_RACES",
+    "SCORE_STYLE": "NO_PROMOTION_NOT_REPLICATED",
+    "next": "continue frozen S0 confirmation toward 100-plus then 200 races; investigate regime heterogeneity only with prespecified comparisons"
+  },
+  "data_boundaries": {
+    "result_used_as_feature": false,
+    "payout_used": false,
+    "same_lineage_rescue_tuning": false,
+    "real_money_execution": false
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
