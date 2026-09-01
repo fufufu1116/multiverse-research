@@ -1,0 +1,60 @@
+name: Keirin Reality On-Track Tactical Annotation V0 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_ontrack_tactical_annotation_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_ontrack_tactical_annotation_selftest_v0.py'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_BURNED_ONTRACK_TACTICAL_PILOT_SAMPLE_20260901_v1.json'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_ONTRACK_TACTICAL_ANNOTATION_SCHEMA_20260901_v1.json'
+      - '.github/workflows/keirin-reality-ontrack-tactical-annotation-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  ontrack-tactical-annotation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile annotation mechanics
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/new_lineage/reality_ontrack_tactical_annotation_v0.py \
+            v3/historical_all_market/new_lineage/reality_ontrack_tactical_annotation_selftest_v0.py
+      - name: Validate JSON contracts
+        run: |
+          python -m json.tool v3/historical_all_market/research_candidates/KEIRIN_BURNED_ONTRACK_TACTICAL_PILOT_SAMPLE_20260901_v1.json >/dev/null
+          python -m json.tool v3/historical_all_market/research_candidates/KEIRIN_ONTRACK_TACTICAL_ANNOTATION_SCHEMA_20260901_v1.json >/dev/null
+      - name: Reject candidate coupling
+        run: |
+          ! grep -E -i 'q_peer|top3_architecture|c0_c1|\\bPEER\\b|\\bN1\\b' \
+            v3/historical_all_market/new_lineage/reality_ontrack_tactical_annotation_v0.py
+      - name: Confirm no network-capable imports
+        run: |
+          ! grep -E -i '^\\s*(import|from)\\s+(requests|urllib|httpx|aiohttp|socket)' \
+            v3/historical_all_market/new_lineage/reality_ontrack_tactical_annotation_v0.py
+      - name: Verify pilot remains source-bound and unannotated
+        run: |
+          python - <<'PY'
+          import json
+          p='v3/historical_all_market/research_candidates/KEIRIN_BURNED_ONTRACK_TACTICAL_PILOT_SAMPLE_20260901_v1.json'
+          d=json.load(open(p))
+          assert d['status']=='PRESPECIFIED_SOURCE_BOUND_ANNOTATION_PENDING'
+          assert len(d['races'])==3
+          assert all(r['burn_status']=='BURNED_PERMANENTLY' for r in d['races'])
+          assert all(r['annotation_status']=='PENDING_FRAME_REVIEW' for r in d['races'])
+          assert d['annotation_firewall']['payout_admitted'] is False
+          assert d['annotation_firewall']['finish_order_as_target_admitted'] is False
+          PY
+      - name: Run mechanical selftest
+        run: python v3/historical_all_market/new_lineage/reality_ontrack_tactical_annotation_selftest_v0.py
+      - name: Terminal boundary
+        run: echo 'BURNED_PILOT_SOURCE_BOUND_NO_TACTICAL_TRUTH_RATE_NO_FINISH_EXECUTION'
