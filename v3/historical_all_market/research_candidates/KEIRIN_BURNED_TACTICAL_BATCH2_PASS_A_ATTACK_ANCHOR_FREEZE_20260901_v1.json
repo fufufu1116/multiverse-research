@@ -1,0 +1,161 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_BATCH2_PASS_A_ATTACK_ANCHOR_FREEZE_20260901_v1",
+  "status": "FROZEN_BEFORE_PASS_B_DOWNSTREAM_LABELING",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_PASS_A_NOT_TRUTH_ADMISSION",
+  "as_of_jst": "2026-09-01T18:45:00+09:00",
+  "fresh_binding_before_freeze": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "7133f011ee7554bc14509eba15093e86696a4d90"
+  },
+  "protocol": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+    "blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d",
+    "pass_a_rule": "Freeze every qualifying visually observable INITIATIVE_ATTACK anchor before inspecting/recording linked BANTE_FOLLOW or INITIATIVE_CONFLICT outcomes.",
+    "terminal_sprint_rule": "Pure final-sprint/overtake behavior after the field has clearly transitioned to terminal sprint is not a new attack anchor."
+  },
+  "sample": {
+    "venue": "IWAKI_TAIRA",
+    "event_date": "2026-08-07",
+    "meeting_grade": "FII",
+    "target_regime": "STANDARD_ORIGINAL_LINE_MENS_FII",
+    "initial_prespecified_races": [1,2,3,4,5,6],
+    "burned_regime_ineligible_races": [5,6],
+    "prespecified_replacements": [7,8],
+    "numeric_pass_a_races": [1,2,3,4,7,8]
+  },
+  "source_artifacts": {
+    "r1_r6": {
+      "workflow_run_id": 33491943427,
+      "workflow_head_sha": "aed53395cb033300bb1050ca3a91c8323eb93fdb",
+      "frames_artifact_id": 9794158857,
+      "frames_artifact_sha256": "82e0eee54cba4250d554aa03af32118091dd3eae27ba8315017ff3329acc8a53",
+      "manifest_artifact_id": 9794156987,
+      "manifest_artifact_sha256": "280855e8b848c63bd2cf8f9de0b3ffa8ef455fa614c83a1caa615dea67191022",
+      "mp4_sha256": {
+        "R1": "c8d6f5689fbe1074264180a799819d4dd93d0f1f36a4d50a5f7ba10194c89f95",
+        "R2": "b05bfc627191ad879946dc1a8e359ef2df013c1074af84de2b4c4d0ab6417934",
+        "R3": "741ab147293962acc3ee145229e89338939e4527d6c5ce8a19b1d6b4ab33b027",
+        "R4": "b12c0ec1af09f5a74821acf6927f81df2590233d63cc087bab15af610956654f"
+      }
+    },
+    "r7_r8_replacements": {
+      "workflow_run_id": 33492407950,
+      "workflow_head_sha": "7133f011ee7554bc14509eba15093e86696a4d90",
+      "frames_artifact_id": 9794302434,
+      "frames_artifact_sha256": "660974e1ff9081909a06ee18a5bfc03b6b8e89927c303c9646c8cdca3069c2b2",
+      "manifest_artifact_id": 9794301662,
+      "manifest_artifact_sha256": "1e56174aafb4d8667bb4d5b2618a217c8a183910a93cb46f40b99118c7c96da2",
+      "mp4_sha256": {
+        "R7": "cf35e2f824ac1527613cf1e9556059396d720291f29ab2bfe81348e116d54774",
+        "R8": "4e702921deb6418092d1354cdd1099ea08729c0fd0df8cdef20717215353bcad"
+      }
+    }
+  },
+  "expected_line_context_research_only": {
+    "R1": [[3,1,6],[5,4,2]],
+    "R2": [[7,1,5],[3],[4,6,2]],
+    "R3": [[7,5,1],[2,4],[3,6]],
+    "R4": [[1,5,3,4],[7,2,6]],
+    "R7": [[1,3,7],[5,2,4,6]],
+    "R8": [[1,4,6],[2,5],[7,3]],
+    "line_class": "PRE_EVENT_EXPECTED_LINE_ONLY_NOT_LEGSHOW_OBSERVED",
+    "source": "KDreams/Aokei pre-event lineup pages; used only to identify expected leaders/direct followers, never promoted to observed line."
+  },
+  "frozen_attack_anchors": [
+    {
+      "anchor_id": "B2-A01",
+      "race": "20260807_IWAKITAIRA_1R",
+      "attacker_car": 5,
+      "anchor_second": 8,
+      "phase": "MID_RACE",
+      "evidence_window_seconds": [7,10],
+      "basis": "Expected leader 5 begins a sustained outside advance from the 5-4-2 line and materially challenges the occupied 3-1-6 forward position."
+    },
+    {
+      "anchor_id": "B2-A02",
+      "race": "20260807_IWAKITAIRA_1R",
+      "attacker_car": 3,
+      "anchor_second": 38,
+      "phase": "LATE_PRE_SPRINT",
+      "evidence_window_seconds": [36,40],
+      "basis": "Expected leader 3 advances from behind the established 5-4-2 order and reaches the forward contest near the one-lap marker."
+    },
+    {
+      "anchor_id": "B2-A03",
+      "race": "20260807_IWAKITAIRA_2R",
+      "attacker_car": 4,
+      "anchor_second": 25,
+      "phase": "MID_RACE",
+      "evidence_window_seconds": [24,31],
+      "basis": "Expected leader 4 makes a sustained outside forward move from the rear 4-6-2 line toward the occupied 7-led forward position."
+    },
+    {
+      "anchor_id": "B2-A04",
+      "race": "20260807_IWAKITAIRA_3R",
+      "attacker_car": 2,
+      "anchor_second": 8,
+      "phase": "MID_RACE",
+      "evidence_window_seconds": [8,13],
+      "basis": "Expected leader 2 advances outside from the 2-4 line and materially challenges the 7-led forward order."
+    },
+    {
+      "anchor_id": "B2-A05",
+      "race": "20260807_IWAKITAIRA_3R",
+      "attacker_car": 3,
+      "anchor_second": 38,
+      "phase": "LATE_PRE_SPRINT",
+      "evidence_window_seconds": [38,46],
+      "basis": "Expected leader 3 makes a sustained forward move from the rear 3-6 line and closes into the occupied forward position before terminal sprint."
+    },
+    {
+      "anchor_id": "B2-A06",
+      "race": "20260807_IWAKITAIRA_4R",
+      "attacker_car": 7,
+      "anchor_second": 3,
+      "phase": "MID_RACE",
+      "evidence_window_seconds": [2,9],
+      "basis": "Expected leader 7 launches from the rear 7-2-6 line while two laps remain and advances past the 1-led line toward the front."
+    },
+    {
+      "anchor_id": "B2-A07",
+      "race": "20260807_IWAKITAIRA_4R",
+      "attacker_car": 1,
+      "anchor_second": 10,
+      "phase": "MID_RACE",
+      "evidence_window_seconds": [9,15],
+      "basis": "Expected leader 1 counter-advances and draws alongside the now-forward 7 position in a sustained challenge."
+    },
+    {
+      "anchor_id": "B2-A08",
+      "race": "20260807_IWAKITAIRA_7R",
+      "attacker_car": 5,
+      "anchor_second": 48,
+      "phase": "LATE_PRE_SPRINT",
+      "evidence_window_seconds": [47,54],
+      "basis": "Expected leader 5 advances from the rear four-rider line toward the occupied 1-led forward line after the one-lap marker but before terminal sprint."
+    },
+    {
+      "anchor_id": "B2-A09",
+      "race": "20260807_IWAKITAIRA_8R",
+      "attacker_car": 1,
+      "anchor_second": 13,
+      "phase": "MID_RACE",
+      "evidence_window_seconds": [13,20],
+      "basis": "Expected leader 1 makes a sustained outside challenge from behind the 7-3 line and remains in active forward contest across multiple observations."
+    }
+  ],
+  "anchor_count": 9,
+  "excluded_near_finish_movements": {
+    "rule": "No new anchors were created from pure final-sprint/overtake movements after the terminal transition.",
+    "notable_example": "R4 late acceleration near the finish was not counted as a new INITIATIVE_ATTACK anchor."
+  },
+  "firewall": {
+    "linked_bante_follow_labels_recorded_at_freeze": false,
+    "linked_initiative_conflict_labels_recorded_at_freeze": false,
+    "finish_order_used_for_anchor_selection": false,
+    "payout_used": false,
+    "candidate_model_output_used": false,
+    "truth_admission": false
+  },
+  "terminal_rule": "Only these nine frozen anchors may define Batch2 downstream conditional opportunities. Pass B may label linked BANTE_FOLLOW and INITIATIVE_CONFLICT under the unchanged six-second protocol; it may not create, remove, or move anchors based on downstream outcomes."
+}
