@@ -1,0 +1,172 @@
+{
+  "record": "KEIRIN_Q_PRE_PROXY_CAUSE_DECOMP_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS_CAUSE_LOCALIZED",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "scientific_question": "Why did the exact naive PRE line-mean score control worsen frozen C1: repeated own information/self inclusion, measurement noise, arithmetic-mean aggregation bias, or another Synthetic mechanism?",
+  "primary_empirical_classification": "A_B_SELF_DOUBLECOUNTING_DOMINANT",
+  "scientific_meaning": "Within the fixed Synthetic W1 fixtures, the failed naive line-mean proxy was decomposed exactly into its own-score component and its same-line peer-score component. The own-score component materially worsened frozen C1 in all four fixed blocks, while the peer-only same-denominator component improved frozen C1 in all four blocks. The two components exactly reconstruct the failed naive utility addition and prediction distribution. This localizes the dominant failure mechanism to reinserting the rider's already-used noisy own PRE score through the line aggregate. DOUBLE_COUNTING and SELF_CONTAMINATION are operationally coupled and cannot be separately identified in this exact decomposition. Measurement-error analysis is consistent with this mechanism. This is Synthetic mechanism evidence only and does not authorize treating the peer component as a model candidate or real-world feature.",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "limited_synthetic_authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_core_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_harness_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "frozen_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "owner_scope_gate": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PRE_PROXY_CAUSE_DECOMP_1_20260901_v1.json",
+    "blob": "ebe6bc4b65b5fc009f36a880eda95e90b318ee1e",
+    "status": "OWNER_EXPLICITLY_APPROVED_EXACT_PRE_ONLY_CAUSE_DECOMPOSITION_DIAGNOSTIC",
+    "purpose_limit": "CAUSE_DECOMPOSITION_ONLY_NOT_PROXY_SEARCH",
+    "authorization_auto_expansion": false
+  },
+  "prespecification": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_PROXY_CAUSE_DECOMP_1_PRESPEC_20260901_v1.json",
+    "blob": "c124af83e36e11a794b2e7cd4e35e0299a0b0e3d",
+    "commit": "794720aa94fb360d15007a5a1ecee8865fbcedac",
+    "fixed_before_execution": true,
+    "world": "W1",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "diagnostic_controls": ["C1_SELF_SCORE_COMPONENT_ONLY", "C1_PEER_SCORE_COMPONENT_ONLY_SAME_DENOMINATOR"],
+    "new_seed_selection": false,
+    "post_hoc_slice": false,
+    "result_adaptive_diagnostic_family_addition": false,
+    "coefficient_sweep": false,
+    "post_result_retuning": false
+  },
+  "implementation_and_execution": {
+    "harness_path": "tools/keirin_q_pre_proxy_cause_decomp_1_v1.py",
+    "harness_blob": "fda83d10d5bc8a15d6be12d46088e3beab460afa",
+    "implementation_commit": "4fbe7548f3c04b65a42c6a65cf3c2fdce7d54cc2",
+    "workflow_path": ".github/workflows/keirin-q-pre-proxy-cause-decomp-1-v1-ci.yml",
+    "workflow_head": "5dfc4838db805b1d1ba8b09a2217f2245699549a",
+    "workflow_run_id": 33471424894,
+    "workflow_job_id": 99741795534,
+    "conclusion": "success",
+    "workflow_permissions": "contents:read"
+  },
+  "exact_decomposition": {
+    "SELF_utility_addition": "0.16 * score_i / line_size_i",
+    "PEER_utility_addition": "0.16 * sum(score_j for same-line j != i) / line_size_i",
+    "NAIVE_reference_addition": "0.16 * line_mean(score)",
+    "max_SELF_plus_PEER_vs_NAIVE_utility_diff": 4.440892098500626e-16,
+    "max_reconstructed_NAIVE_distribution_diff": 8.326672684688674e-17,
+    "interpretation": "SELF and PEER are not alternative fitted proxies. They are an exact algebraic decomposition of the previously failed naive term at the original scale and denominator."
+  },
+  "aggregate_expected_ordered_top3_log_loss": {
+    "C1": 4.688863790585787,
+    "N1": 4.6877246961344206,
+    "NAIVE_FULL_LINE_MEAN_REFERENCE": 4.71288958756397,
+    "SELF_COMPONENT_ONLY": 4.725750935626512,
+    "PEER_COMPONENT_ONLY_SAME_DENOMINATOR": 4.677819919162867
+  },
+  "aggregate_deltas_lower_is_better": {
+    "N1_minus_C1": -0.0011390944513660628,
+    "NAIVE_minus_C1": 0.024025796978182967,
+    "SELF_minus_C1": 0.03688714504072532,
+    "PEER_minus_C1": -0.011043871422919516,
+    "PEER_minus_N1": -0.009904776971553454,
+    "SELF_minus_NAIVE": 0.012861348062542355,
+    "PEER_minus_NAIVE": -0.03506966840110248
+  },
+  "block_results": {
+    "20261001": {"SELF_minus_C1": 0.03831803964529357, "PEER_minus_C1": -0.011354976333091571, "NAIVE_minus_C1": 0.024719913823203044, "N1_minus_C1": -0.000580307896502319},
+    "20262001": {"SELF_minus_C1": 0.03728612499429751, "PEER_minus_C1": -0.016970819908264545, "NAIVE_minus_C1": 0.018182052655213, "N1_minus_C1": -0.0016083398212654032},
+    "20263001": {"SELF_minus_C1": 0.03482272865300651, "PEER_minus_C1": -0.00474201013409381, "NAIVE_minus_C1": 0.028807599135389772, "N1_minus_C1": -0.0009787526774411859},
+    "20264001": {"SELF_minus_C1": 0.037121686870303705, "PEER_minus_C1": -0.011107679316213925, "NAIVE_minus_C1": 0.024393622298943818, "N1_minus_C1": -0.0013889774102215924}
+  },
+  "block_stability": {
+    "SELF_worsens_C1_blocks": 4,
+    "PEER_improves_C1_blocks": 4,
+    "NAIVE_worsens_C1_blocks": 4,
+    "total_blocks": 4
+  },
+  "cause_assessment": {
+    "A_DOUBLECOUNTING": "SUPPORTED_AS_COUPLED_DOMINANT_EXPLANATION",
+    "B_SELF_CONTAMINATION": "SUPPORTED_AS_COUPLED_DOMINANT_EXPLANATION",
+    "A_vs_B_separate_identification": "NOT_IDENTIFIABLE_IN_THIS_EXACT_DECOMPOSITION_BY_DESIGN",
+    "C_MEASUREMENT_NOISE": "ANALYTIC_MEASUREMENT_ERROR_PRESENT_AND_EMPIRICALLY_CONSISTENT_WITH_HARM",
+    "D_AGGREGATION_BIAS": "WRONG_ARITHMETIC_MEAN_FORM_WEAKENED_BY_CANONICAL_GENERATOR; NONLINEAR_PLUGIN_EFFECT_REMAINS_POSSIBLE",
+    "E_OTHER_SYNTHETIC_MECHANISM": "NOT_REQUIRED_TO_EXPLAIN_PRIMARY_PATTERN_BUT_NOT_FALSIFIED"
+  },
+  "analytic_measurement_error": {
+    "canonical_source_fact": "latent_skill is N(0,1); observed_score = latent_skill + independent N(0,0.55) noise; canonical W1 shared term is 0.16 times arithmetic line-mean latent_skill.",
+    "latent_variance": 1.0,
+    "observation_noise_sd": 0.55,
+    "observation_noise_variance": 0.30250000000000005,
+    "posterior_shrinkage_kappa": 0.7677543186180422,
+    "raw_C1_score_coefficient": 1.0,
+    "posterior_linear_Gaussian_latent_coefficient": 0.7677543186180422,
+    "raw_shared_mean_coefficient": 0.16,
+    "posterior_linear_Gaussian_shared_mean_coefficient": 0.12284069097888675,
+    "line_mean_signal_to_noise_variance_ratio": 3.305785123966942,
+    "mean_SELF_incremental_noise_variance": 0.04851163690476016,
+    "mean_PEER_added_noise_variance": 0.0016601488095238425,
+    "mean_FULL_NAIVE_incremental_noise_variance": 0.050171785714285114,
+    "arithmetic_line_mean_unbiased_for_hidden_line_mean_at_utility_target_level": true,
+    "shrinkage_corrected_control_executed": false,
+    "interpretation": "The SELF component repeats the same noisy own score already entering C1 with coefficient 1, creating much larger correlated measurement-error burden than the peer component. This analytic calculation supports the empirical direction but is not a fitted correction and does not authorize executing one."
+  },
+  "chain_stage_direction": {
+    "SELF": "WORSE_THAN_C1_AT_RANK1_RANK2_AND_RANK3_AGGREGATE",
+    "PEER": "BETTER_THAN_C1_AT_RANK1_RANK2_AND_RANK3_AGGREGATE",
+    "NAIVE": "WORSE_THAN_C1_AT_RANK1_RANK2_AND_RANK3_AGGREGATE"
+  },
+  "mechanical_and_leakage_checks": {
+    "control_source_boundary_pass": true,
+    "PRE_latent_skill_absent": true,
+    "max_non_diagnostic_C1_reproduction_diff": 0.0,
+    "max_non_diagnostic_N1_reproduction_diff": 0.0,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 1.1102230246251565e-16,
+    "max_chain_decomposition_residual": 5.329070518200751e-15,
+    "prior_C1_reproduction_error": 0.0,
+    "prior_N1_reproduction_error": 0.0,
+    "prior_NAIVE_reproduction_error": 0.0,
+    "models_or_frozen_coefficients_changed": false,
+    "new_seed_selection": false,
+    "post_hoc_slice": false,
+    "result_adaptive_diagnostic_family_addition": false,
+    "post_result_retuning": false
+  },
+  "supported": [
+    "The prior C1, N1 and failed naive-proxy aggregate losses were reproduced exactly.",
+    "The own-score contribution contained inside the naive line mean is strongly harmful on these fixed W1 fixtures.",
+    "The same-line peer-score contribution, excluding the target rider's own score while preserving the original denominator and coefficient, is informative in the opposite direction on these fixed W1 fixtures.",
+    "Therefore the naive proxy failure is not explained by peer-line PRE information being intrinsically useless in the current simulator.",
+    "The dominant observed failure mechanism is repeated own-score information/self inclusion, with measurement-error amplification providing a coherent source-code-derived explanation.",
+    "The canonical arithmetic-mean target weakens the claim that the mean operator itself is the primary structural bias."
+  ],
+  "not_supported": [
+    "A DOUBLECOUNTING versus B SELF_CONTAMINATION is not separately identified; they are the same own-score term in this exact decomposition.",
+    "PEER is not selected, promoted, frozen, or authorized as a formal model or feature candidate even though its diagnostic loss is lower on these fixed Synthetic fixtures.",
+    "No renormalized leave-one-out mean, residualized feature, learned estimator, coefficient shrinkage, coefficient sweep, or third proxy was executed.",
+    "No real-keirin shared state, lawful real-world feature value, predictive edge, causal effect, ROI, deployment readiness, or profitability is established.",
+    "The reused Synthetic seed blocks are not untouched or independent validation."
+  ],
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "real_or_untouched_validation": false,
+    "real_live_input_collection": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false,
+    "real_world_edge_or_roi_evidence": false,
+    "scientific_segment_c_scoring_count": 0,
+    "authorization_auto_expanded": false
+  },
+  "post_result_decision": "Q-PRE-PROXY-CAUSE-DECOMP-1 is complete. Freeze the cause-decomposition evidence. Do not reinterpret the favorable PEER diagnostic as authorization for a feature/model candidate. Do not renormalize leave-one-out peers, tune coefficient 0.16, execute the analytic shrinkage correction, add a third proxy, add seeds/slices, or auto-expand scope. Synthesis and closure only until a genuinely new scientific boundary is separately classified."
+}
