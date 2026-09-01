@@ -141,6 +141,7 @@ func capsNarrow() error {
 				v, _ := strconv.ParseUint(strings.TrimSpace(strings.TrimPrefix(l, k+":")), 16, 64)
 				return v
 			}
+		}
 		return ^uint64(0)
 	}
 	allowed := uint64((1 << 0) | (1 << 6) | (1 << 7))
