@@ -1,0 +1,89 @@
+{
+  "record": "KEIRIN_ONE_TIME_REALITY_CALIBRATION_BATCH_V0_PROTOCOL_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_PROTOCOL_NOT_YET_COLLECTED",
+  "classification": "FOUNDATION_CALIBRATION_ONLY_NOT_VALIDATION_NOT_MODEL_SELECTION",
+  "owner_direction": "Use a limited one-time hobby-purpose real-data batch, then use the calibrated ranges inside Synthetic worlds rather than building a bulk historical mirror.",
+  "purpose": "Obtain a deliberately small, provenance-bearing reality calibration batch sufficient to constrain ranges, semantics, missingness and plausible scenario families for the first narrow Reality-Calibrated world slice, while minimizing copying and avoiding bulk harvesting.",
+  "first_slice": {
+    "race_regime": "STANDARD_ORIGINAL_LINE_KEIRIN",
+    "sex_scope": "MEN",
+    "field_size": 7,
+    "grade_scope": ["FI", "FII"],
+    "use": "CALIBRATION_ONLY"
+  },
+  "evidence_role": {
+    "label": "BURNED_REALITY_CALIBRATION_BATCH",
+    "may_calibrate": [
+      "observed value ranges",
+      "missingness rates",
+      "field semantics and scale",
+      "venue/program coverage",
+      "plausible line-shape families when a lawful PRE line snapshot is available",
+      "broad assumption ranges for later Synthetic sensitivity"
+    ],
+    "may_not_claim": [
+      "untouched validation",
+      "final predictive performance",
+      "model or feature selection evidence",
+      "population-exact frequencies from a small convenience sample",
+      "ROI/economic evidence"
+    ]
+  },
+  "collection_design": {
+    "mode": "MANUAL_OR_EQUIVALENTLY_NARROW_SOURCE_SPECIFIC_CAPTURE_NO_BULK_CRAWLER",
+    "selection_rule": "Choose coverage before reading model outcomes; do not select races because PEER/N1/C1 appears favorable.",
+    "coverage_targets_not_statistical_claims": [
+      "multiple venues rather than one venue only",
+      "more than one bank-length class where available",
+      "both FI and FII if available in the capture window",
+      "multiple race stages/class bands when sourceable",
+      "capture all seven active rider PRE rows for each admitted race",
+      "capture line snapshot only when source/timestamp/provenance is genuinely PRE-admissible"
+    ],
+    "sample_size_rule": "Keep the batch intentionally small. Size is determined by minimum coverage of the prespecified dimensions, not by collecting every available race. If a dimension cannot be covered without bulk collection or uncertain rights, leave it uncalibrated and use ASSUMPTION_RANGE later.",
+    "stop_rule": "Stop collection once prespecified coverage is reached. Do not expand because a model result is interesting."
+  },
+  "allowed_fields": [
+    "official program/race regime metadata",
+    "venue/bank master facts",
+    "rider identity",
+    "class at cutoff",
+    "competition_score at cutoff if captured point-in-time",
+    "win/quinella/trio rates at cutoff if captured point-in-time",
+    "S/H/B and maneuver summaries at cutoff if captured point-in-time",
+    "registration region/affiliation where officially displayed and admissible",
+    "weather/wind only with an explicit observation timestamp at or before decision cutoff",
+    "PRE_EVENT_EXPECTED_LINE or LEGSHOW_OBSERVED_LINE only with lawful pre-race provenance"
+  ],
+  "prohibited_fields_and_actions": [
+    "RESULT/PAYOUT",
+    "post-race reconstructed line as PRE",
+    "current profile values backfilled into older races",
+    "closing/final post-cutoff market values",
+    "bulk mirroring of KEIRIN.JP",
+    "automated high-volume scraping",
+    "access-control/rate-limit/CAPTCHA/WAF bypass",
+    "redistribution of copied source payloads",
+    "external provider contact without separate Owner approval"
+  ],
+  "storage_minimization": {
+    "preferred": "Store normalized numeric/structural facts plus source URL, retrieval timestamp and payload hash/provenance reference; avoid retaining unnecessary page text/images.",
+    "raw_payload": "Retain only if clearly permitted/necessary for provenance under the applicable private-use/research basis; otherwise store hash plus minimal extracted facts.",
+    "redistribution": false
+  },
+  "calibration_after_capture": {
+    "exact_point_estimates_allowed": [
+      "official immutable/stable program or venue facts"
+    ],
+    "empirical_small_batch_use": "Use robust observed ranges, support sets and coarse sensitivity envelopes rather than asserting population-exact probabilities.",
+    "unknown_action": "Remain UNKNOWN or ASSUMPTION_RANGE.",
+    "candidate_independence": "No C0/C1/N1/PEER performance may alter the calibration ranges after they are frozen."
+  },
+  "next_steps": [
+    "bind exact public source pages and a capture timestamp protocol",
+    "capture only the minimum admitted batch",
+    "freeze normalized calibration evidence before any Reality truth-generator execution",
+    "build Reality truth sensitivity families from the frozen calibration ranges",
+    "keep the calibration batch burned and out of later validation"
+  ]
+}
