@@ -34,7 +34,7 @@ def main():
  gate=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go').decode()
  builder=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py').decode()
  if 'multiverse-v36-session-gate-v7r6' not in builder or 'V19.7.36-v7r6-image-identity' not in builder:fail('IMAGE_IDENTITY_V7R6_WIRING','stale-session-gate-or-version')
- for needle in ['apiHardBudget = 40','apiReserveRemaining = 8','q.Set("since"','cursorOverlap = 2 * time.Second','rate-limited','minute_8_5_requests=24','ten_minute_requests=27','scanStart','scanSince(cursor)','rate-remaining-missing','rate-limit-missing','rate-reset-missing','PAGINATION_RACE_SELFTEST_PASS','RATE_HEADERS_FAIL_CLOSED_SELFTEST_PASS']:
+ for needle in ['apiHardBudget = 40','apiReserveRemaining = 8','q.Set("since"','cursorOverlap = 2 * time.Second','rate-limited','minute_8_5_requests=25','ten_minute_requests=28','scanStart','scanSince(cursor)','rate-remaining-missing','rate-limit-missing','rate-reset-missing','approvalDeadline := issued.Add(approvalWindow)','c.CreatedAt.After(approvalDeadline)','operationalDeadline','PAGINATION_RACE_SELFTEST_PASS','RATE_HEADERS_FAIL_CLOSED_SELFTEST_PASS','STRICT_APPROVAL_WINDOW_SELFTEST_PASS']:
   if needle not in gate:fail('RATE_BUDGET_REMEDIATION_WIRING',needle)
  if 'watermark = d' in gate or 'if d.After(watermark)' in gate:fail('PAGINATION_WATERMARK_REGRESSION','final-page-watermark-present')
  hist=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py').decode()
@@ -47,6 +47,7 @@ def main():
  if a.get('version')!='V19.7.36-v7r6' or a.get('authority')!='REVIEW_ONLY_NO_LIVE_AUTHORITY' or a.get('runtime')!='OFF':fail('ASSEMBLY_MANIFEST','authority')
  rb=a.get('api_budget_remediation',{})
  if rb.get('hard_process_budget_requests')!=40 or rb.get('rate_limit_remaining_reserve')!=8 or rb.get('poll_interval_seconds')!=30 or rb.get('approval_window_seconds')!=600:fail('ASSEMBLY_RATE_BUDGET','mismatch')
+ if 'trusted evidence upper bound is exactly GitHub server issuance time + 600 seconds' not in rb.get('approval_window_semantics',''):fail('ASSEMBLY_APPROVAL_WINDOW','semantics')
  with tempfile.TemporaryDirectory(prefix='multiverse-prelab-') as td:
   for r,w in EXPECTED.items():
    p=ROOT/r
