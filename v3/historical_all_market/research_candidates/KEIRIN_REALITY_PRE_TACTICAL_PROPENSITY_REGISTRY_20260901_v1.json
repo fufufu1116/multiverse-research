@@ -1,0 +1,92 @@
+{
+  "record": "KEIRIN_REALITY_PRE_TACTICAL_PROPENSITY_REGISTRY_20260901_v1",
+  "status": "PASS_PRE_OBSERVABLE_ORDINAL_TACTICAL_PROPENSITY_CALIBRATION_NOT_EVENT_RATE",
+  "classification": "BURNED_PRE_CALIBRATION_ONLY_NOT_ON_TRACK_EVENT_RATE_NOT_VALIDATION",
+  "sources": {
+    "private_archive_title": "keirin_reality_calibration_archive_20260901_v3.xlsx",
+    "private_archive_rows": 164,
+    "official_semantics_url": "https://keirin.jp/pc/static/beginner/basics/racecard.html",
+    "official_line_role_url": "https://keirin.jp/pc/static/beginner/basics/lines.html"
+  },
+  "semantics": {
+    "ST": "Start count: evidence about tendency to take a forward position immediately after start; not a transition probability.",
+    "BK": "Back-stretch lead count at half-lap-to-go; evidence about late-race front exposure; not a transition probability.",
+    "nige_makuri_sashi_mark": "Counts only when finishing 1st/2nd; evidence about successful technique mix, not unconditional tactic frequency.",
+    "style": "逃/両/追 is preferred strategy type, not a deterministic action."
+  },
+  "ordinal_band_rule": {
+    "VERY_LOW": "x <= q05",
+    "LOW": "q05 < x <= q25",
+    "MID": "q25 < x < q75",
+    "HIGH": "q75 <= x < q95",
+    "VERY_HIGH": "x >= q95",
+    "ties": "Boundary ties follow the explicit inequalities above; no probabilistic meaning."
+  },
+  "class_conditional_thresholds": {
+    "A1": {
+      "n": 43,
+      "ST": {"q05": 0.0, "q25": 1.0, "median": 3.0, "q75": 7.5, "q95": 10.0},
+      "BK": {"q05": 0.0, "q25": 0.0, "median": 1.0, "q75": 7.0, "q95": 16.8},
+      "nige": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 2.0, "q95": 7.8},
+      "makuri": {"q05": 0.0, "q25": 0.0, "median": 1.0, "q75": 4.0, "q95": 8.0},
+      "sashi": {"q05": 0.0, "q25": 1.0, "median": 3.0, "q75": 5.0, "q95": 7.9},
+      "mark": {"q05": 0.0, "q25": 0.0, "median": 1.0, "q75": 3.0, "q95": 6.0}
+    },
+    "A2": {
+      "n": 41,
+      "ST": {"q05": 0.0, "q25": 0.0, "median": 2.0, "q75": 4.0, "q95": 12.0},
+      "BK": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 7.0, "q95": 17.0},
+      "nige": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 2.0, "q95": 9.0},
+      "makuri": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 1.0, "q95": 6.0},
+      "sashi": {"q05": 0.0, "q25": 1.0, "median": 2.0, "q75": 3.0, "q95": 8.0},
+      "mark": {"q05": 0.0, "q25": 0.0, "median": 1.0, "q75": 3.0, "q95": 6.0}
+    },
+    "A3": {
+      "n": 45,
+      "ST": {"q05": 0.0, "q25": 1.0, "median": 2.0, "q75": 6.0, "q95": 19.4},
+      "BK": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 2.0, "q95": 8.8},
+      "nige": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 1.0, "q95": 6.6},
+      "makuri": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 2.0, "q95": 6.6},
+      "sashi": {"q05": 0.0, "q25": 1.0, "median": 1.0, "q75": 3.0, "q95": 7.0},
+      "mark": {"q05": 0.0, "q25": 0.0, "median": 1.0, "q75": 2.0, "q95": 5.0}
+    },
+    "S1": {
+      "n": 15,
+      "ST": {"q05": 0.0, "q25": 0.5, "median": 2.0, "q75": 5.0, "q95": 10.3},
+      "BK": {"q05": 0.0, "q25": 0.0, "median": 3.0, "q75": 5.0, "q95": 10.3},
+      "nige": {"q05": 0.0, "q25": 0.0, "median": 0.0, "q75": 1.5, "q95": 4.0},
+      "makuri": {"q05": 0.0, "q25": 0.5, "median": 2.0, "q75": 5.0, "q95": 8.6},
+      "sashi": {"q05": 0.7, "q25": 1.5, "median": 5.0, "q75": 5.0, "q95": 8.6},
+      "mark": {"q05": 0.0, "q25": 0.0, "median": 1.0, "q75": 2.5, "q95": 4.3}
+    },
+    "S2": {
+      "n": 20,
+      "ST": {"q05": 0.95, "q25": 2.0, "median": 3.5, "q75": 6.25, "q95": 16.1},
+      "BK": {"q05": 0.0, "q25": 0.0, "median": 3.0, "q75": 13.0, "q95": 18.25},
+      "nige": {"q05": 0.0, "q25": 0.0, "median": 1.5, "q75": 4.0, "q95": 8.1},
+      "makuri": {"q05": 0.0, "q25": 0.0, "median": 1.5, "q75": 3.25, "q95": 5.1},
+      "sashi": {"q05": 0.0, "q25": 0.75, "median": 2.0, "q75": 3.0, "q95": 4.2},
+      "mark": {"q05": 0.0, "q25": 0.0, "median": 1.0, "q75": 2.25, "q95": 5.0}
+    }
+  },
+  "derived_profile_rules": {
+    "early_position_evidence": "ordinal band of ST within class",
+    "late_front_exposure_evidence": "ordinal band of BK within class",
+    "successful_finish_technique_mix": "normalize nige/makuri/sashi/mark by their sum when positive; otherwise NO_SUCCESSFUL_TECHNIQUE_SIGNAL",
+    "self_powered_vs_following_lean": "compare (nige+makuri) with (sashi+mark); SELF_POWERED_LEAN / FOLLOWING_LEAN / BALANCED / NO_SIGNAL",
+    "probability_conversion": "PROHIBITED",
+    "finish_effect_conversion": "PROHIBITED"
+  },
+  "allowed_use": [
+    "order or constrain non-outcome tactical scenario compatibility",
+    "generate ordinal rider behavior profiles inside Reality foundation worlds",
+    "stress-test tactical scenarios without assigning empirical event probabilities"
+  ],
+  "prohibited_use": [
+    "claiming line cohesion, switching, blocking or fragmentation probabilities",
+    "causal finish effects",
+    "finish-order truth execution",
+    "model selection or validation",
+    "economics"
+  ]
+}
