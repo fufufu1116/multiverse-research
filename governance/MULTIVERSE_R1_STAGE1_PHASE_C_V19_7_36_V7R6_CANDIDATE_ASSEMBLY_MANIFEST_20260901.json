@@ -2,7 +2,7 @@
   "version": "V19.7.36-v7r6",
   "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
   "runtime": "OFF",
-  "purpose": "Close Auditor v7r5 anonymous REST polling rate-budget blocker and Independent Lab v7r6 pagination-watermark/rate-header blockers without weakening Owner provenance, duplicate detection, replay protection, exact image/Python/Step3 closure, or fail-closed behavior.",
+  "purpose": "Close Auditor v7r5 anonymous REST polling rate-budget blocker, Independent Lab v7r6 pagination-watermark/rate-header blockers, and Auditor v7r6 strict 600-second approval-window blocker without weakening Owner provenance, duplicate detection, replay protection, exact image/Python/Step3 closure, or fail-closed behavior.",
   "required": [
     {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
     {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
@@ -16,12 +16,13 @@
     "rate_limit_remaining_reserve": 8,
     "poll_interval_seconds": 30,
     "approval_window_seconds": 600,
+    "approval_window_semantics": "trusted evidence upper bound is exactly GitHub server issuance time + 600 seconds; Owner approval and session-binding created_at may equal that bound but may not exceed it; operational waiting begins immediately after the trusted issuance read and cannot select evidence after its local 600-second deadline",
     "initial_history": "one paginated full snapshot only; the next incremental cursor is pinned to the trusted GitHub server Date from page 1 of the scan, never the final-page Date",
     "subsequent_polling": "GitHub issue-comments since scan-start cursor with 2-second overlap; each multi-page delta keeps the page-1 server Date as the next cursor and merges both newly-created and edited comments by comment ID",
     "pagination_race_policy": "an edit occurring after an early page was read but before later pages complete must remain after the next since lower bound and therefore be re-fetched on the next cycle; deterministic full-scan and multi-page-delta race selftests enforce this",
     "rate_header_policy": "every successful anonymous GitHub API response used by the gate requires parseable X-RateLimit-Remaining, X-RateLimit-Limit, and X-RateLimit-Reset; missing, malformed, negative, or internally inconsistent values fail closed before response evidence is consumed",
-    "error_policy": "HTTP 403 rate-limit, HTTP 429, hard-budget exhaustion, reserve exhaustion, missing/malformed/inconsistent rate headers, transport/status/parse failures all fail closed; no blind retry loop",
-    "mechanical_scenario": "deterministic 601-comment initial corpus (600 filler + freeze, seven pages), late Owner approval/session at minute 8.5, updated-comment replacement, full/multi-page pagination-edit races, missing/malformed rate headers, and full 10-minute budget; all normal request counts remain below hard budget 40 and external 60/hour ceiling"
+    "error_policy": "HTTP 403 rate-limit, HTTP 429, hard-budget exhaustion, reserve exhaustion, missing/malformed/inconsistent rate headers, approval-window timeout, transport/status/parse failures all fail closed; no blind retry loop",
+    "mechanical_scenario": "deterministic 601-comment initial corpus (600 filler + freeze, seven pages), late Owner approval/session at minute 8.5, strict approval/session acceptance at exactly +600s and rejection immediately after +600s, updated-comment replacement, full/multi-page pagination-edit races, missing/malformed rate headers, and full 10-minute budget; all normal request counts remain below hard budget 40 and external 60/hour ceiling"
   },
   "external_authority": {
     "candidate_freeze_prefix": "MULTIVERSE_V7R6_CANDIDATE_FREEZE ",
@@ -32,13 +33,13 @@
     "owner_approval_binding": "current CodespaceName + fresh 128-bit challenge + exact image identity + exact candidate head/tree + exact freeze comment + exact phrase + one-shot + Runtime OFF",
     "approval_uniqueness": "all structurally matching Owner-only approvals in the maintained snapshot are counted without prefiltering by referenced ID; exactly one must exist and its ID must equal the session receipt OwnerApprovalComment",
     "edit_detection": "incremental since polling uses a scan-start lower-bound cursor with overlap, includes updated comments, and replaces prior snapshots by ID, so edits during pagination and later edits are re-evaluated and fail closed when required",
-    "freshness": "Owner approval must be created at or after trusted GitHub server challenge time and no later than the unedited session-binding receipt",
+    "freshness": "Owner approval and connector session-binding must both be created at or after trusted GitHub server challenge time and at or before trusted issuance + 600 seconds; Owner approval must also be no later than the unedited session-binding receipt",
     "same_uid_can_issue": false,
     "candidate_can_issue": false,
     "connector_can_issue_owner_approval": false
   },
   "negative_build_selftest": [
-    "edited_freeze","edited_owner_approval","edited_session_binding","connector_origin_owner_approval","duplicate_owner_approval","wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping","minute_8_5_rate_budget","ten_minute_rate_budget","hard_api_budget_enforced","rate_remaining_reserve_enforced","601_comment_history_late_receipt_observable","updated_comment_delta_replaces_snapshot","full_pagination_edit_race_refetched","multi_page_delta_edit_race_refetched","missing_rate_headers_fail_closed","malformed_rate_headers_fail_closed","inconsistent_rate_headers_fail_closed"
+    "edited_freeze","edited_owner_approval","edited_session_binding","connector_origin_owner_approval","duplicate_owner_approval","wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping","approval_at_600_seconds_accepted","approval_after_600_seconds_rejected","session_after_600_seconds_rejected","minute_8_5_rate_budget","ten_minute_rate_budget","hard_api_budget_enforced","rate_remaining_reserve_enforced","601_comment_history_late_receipt_observable","updated_comment_delta_replaces_snapshot","full_pagination_edit_race_refetched","multi_page_delta_edit_race_refetched","missing_rate_headers_fail_closed","malformed_rate_headers_fail_closed","inconsistent_rate_headers_fail_closed"
   ],
   "unchanged_security": {"python_build_actual_use_gate":true,"step3_same_object":true,"pre_oauth_fail_closed":true,"production_mutation":false,"runtime_activation":false}
 }
