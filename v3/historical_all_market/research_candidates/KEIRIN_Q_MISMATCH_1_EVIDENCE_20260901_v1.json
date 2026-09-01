@@ -1,0 +1,187 @@
+{
+  "record": "KEIRIN_Q_MISMATCH_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "question": "Does fixed N1 retain synthetic advantage over fixed C1 when W2 contains PRE-only conditional line dependence whose relation kernel is deliberately not isomorphic to N1's same-line/follower/ordered-chain basis?",
+  "primary_hypothesis_classification": "GENERIC_RELATIONAL_VALUE",
+  "classification_meaning": "Inside the prespecified Synthetic W2 diagnostics, fixed N1 retained stable advantage over fixed C1 in both primary non-isomorphic relation-kernel mismatch families without retuning. This is Synthetic construct-robustness evidence only, not real-keirin validation or promotion evidence.",
+  "fresh_relevant_state_at_final_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "digital_twin_design_blob": "62c20fdf87f988e3a0b79e543d4ab4d448234e84",
+    "boundary_closure_blob": "3aa8a51cb12da4d7838bcb527807fe98622a43ae"
+  },
+  "prespecification": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_MISMATCH_1_PRESPEC_20260901_v1.json",
+    "blob": "76e552ace90a99193f2a0e5b9ef416e9373f4ee6",
+    "commit": "865f89cd6c77f9bc33efe935a763d209833434e0",
+    "fixed_before_successful_execution": true,
+    "primary_mismatch_kernels": ["REVERSE_DIRECTION", "SPARSE_HEAD_TAIL"],
+    "sign_inverted_counterexample_enters_primary_classification": false,
+    "post_result_kernel_addition": false,
+    "post_result_retuning": false,
+    "new_seed_selection": false
+  },
+  "mechanical_gate_dependency": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANICAL_INVARIANCE_GATE_EVIDENCE_20260901_v1.json",
+    "blob": "25f1a6aa3265b122ed04ae7ff16ff7d8232c22b3",
+    "commit": "e4ebcd6788be0f54a22a4c0e32cead8f61244ceb",
+    "status": "PASS_ALL_SIX_GATES"
+  },
+  "fixed_scientific_sources": {
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7",
+    "batch4_reference_blob": "6bd86411861501a6bed2f7b9fdc12e27caa0dd34"
+  },
+  "final_harness": {
+    "path": "tools/keirin_q_mismatch_1_v1.py",
+    "blob": "ed0953aa42e86d3280d216a1cea77976459bf42e",
+    "repair_commit": "159657949bcbf04e110180102fb4395e95690887",
+    "repair_scope": "Python output boolean literals only; lowercase false changed to Python False. No seeds, kernels, coefficients, model code, metrics, thresholds, stability rule, or hypothesis decision rule changed."
+  },
+  "execution_history": [
+    {
+      "run_id": 33468466471,
+      "head": "698dabc4ea080c88a4645929364929dcb9277014",
+      "conclusion": "failure",
+      "classification": "IMPLEMENTATION_SERIALIZATION_FAILURE_NO_SCIENTIFIC_RESULT_EMITTED",
+      "failure": "NameError from Python lowercase false while constructing final result object after experiment calculations.",
+      "scientific_prespec_changed_after_failure": false
+    },
+    {
+      "run_id": 33468623083,
+      "head": "159657949bcbf04e110180102fb4395e95690887",
+      "conclusion": "failure",
+      "classification": "EXPECTED_STALE_WORKFLOW_BLOB_PIN_FAIL_CLOSED",
+      "experiment_execution_step_ran": false,
+      "note": "Code-only repair changed harness blob before CI workflow pin was rebound; fresh-source gate failed and experiment was skipped."
+    },
+    {
+      "run_id": 33468649563,
+      "job_id": 99733669570,
+      "head": "494638168ab68f8f01825debf2e1ecbc66a1c60d",
+      "conclusion": "success",
+      "classification": "FINAL_VALID_PRESPECIFIED_EXECUTION",
+      "workflow_permissions": "contents:read"
+    }
+  ],
+  "paired_fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "race_index_formula": "case % 32",
+    "new_seed_selection": false,
+    "untouched_validation_claim": false
+  },
+  "aggregate_results": {
+    "MATCHED_W2_REFERENCE": {
+      "N1_minus_C1_expected_log_loss": -0.010507982351291467,
+      "N1_minus_C0_expected_log_loss": -0.01109197141695617,
+      "C1_minus_C0_expected_log_loss": -0.0005839890656647029,
+      "N1_better_than_C1_blocks": 4,
+      "N1_worse_than_C1_blocks": 0,
+      "stable_N1_advantage": true
+    },
+    "REVERSE_DIRECTION": {
+      "N1_minus_C1_expected_log_loss": -0.008580367893195273,
+      "N1_minus_C0_expected_log_loss": -0.008952745109085392,
+      "C1_minus_C0_expected_log_loss": -0.0003723772158901184,
+      "N1_better_than_C1_blocks": 4,
+      "N1_worse_than_C1_blocks": 0,
+      "stable_N1_advantage": true
+    },
+    "SPARSE_HEAD_TAIL": {
+      "N1_minus_C1_expected_log_loss": -0.001841153034535914,
+      "N1_minus_C0_expected_log_loss": -0.002180426153492121,
+      "C1_minus_C0_expected_log_loss": -0.00033927311895620704,
+      "N1_better_than_C1_blocks": 4,
+      "N1_worse_than_C1_blocks": 0,
+      "stable_N1_advantage": true
+    },
+    "SIGN_INVERTED_COUNTEREXAMPLE": {
+      "N1_minus_C1_expected_log_loss": 0.006363058503957575,
+      "N1_minus_C0_expected_log_loss": 0.006176063245261432,
+      "C1_minus_C0_expected_log_loss": -0.0001869952586961432,
+      "N1_better_than_C1_blocks": 0,
+      "N1_worse_than_C1_blocks": 4,
+      "stable_N1_advantage": false,
+      "enters_primary_classification": false
+    }
+  },
+  "N1_minus_C1_by_block": {
+    "20261001": {
+      "MATCHED_W2_REFERENCE": -0.009806604332961655,
+      "REVERSE_DIRECTION": -0.007871836601586857,
+      "SPARSE_HEAD_TAIL": -0.0013640744462941612,
+      "SIGN_INVERTED_COUNTEREXAMPLE": 0.00674008461326725
+    },
+    "20262001": {
+      "MATCHED_W2_REFERENCE": -0.011536745806851378,
+      "REVERSE_DIRECTION": -0.009245476973987365,
+      "SPARSE_HEAD_TAIL": -0.002308392449289265,
+      "SIGN_INVERTED_COUNTEREXAMPLE": 0.006363913776899821
+    },
+    "20263001": {
+      "MATCHED_W2_REFERENCE": -0.010152770610321937,
+      "REVERSE_DIRECTION": -0.008320082726261724,
+      "SPARSE_HEAD_TAIL": -0.001588875074206797,
+      "SIGN_INVERTED_COUNTEREXAMPLE": 0.006372595462156738
+    },
+    "20264001": {
+      "MATCHED_W2_REFERENCE": -0.010535808655032675,
+      "REVERSE_DIRECTION": -0.008884075270945146,
+      "SPARSE_HEAD_TAIL": -0.0021032701683525445,
+      "SIGN_INVERTED_COUNTEREXAMPLE": 0.005975640163509155
+    }
+  },
+  "mechanical_execution_checks": {
+    "max_matched_W2_reference_delta_error": 0.0,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 2.220446049250313e-16,
+    "max_C1_N1_rank1_marginal_difference": 5.551115123125783e-16,
+    "models_changed": false,
+    "coefficients_changed": false,
+    "post_result_retuning": false,
+    "post_hoc_kernel_addition": false
+  },
+  "interpretation": {
+    "supported": [
+      "Within this prespecified Synthetic W2 diagnostic, N1's advantage over C1 is not limited to the exact canonical matched same-line/follower/ordered-chain truth kernel.",
+      "N1 retained lower expected ordered-top3 log loss than C1 in all four blocks for both prespecified primary mismatch kernels.",
+      "The smaller advantage in SPARSE_HEAD_TAIL relative to matched W2 indicates robustness is not equally strong under every relation misspecification.",
+      "The sign-inverted counterexample made N1 worse than C1 in all four blocks, demonstrating a clear Synthetic failure boundary and ruling out an interpretation that N1 mechanically wins under arbitrary line dependence."
+    ],
+    "not_supported": [
+      "No real-keirin predictive edge, ROI, causal effect, deployment readiness, or economic value is established.",
+      "No model selection, freeze, promotion, or formal adoption is authorized.",
+      "These seed blocks are reused post-hoc Synthetic diagnostics, not untouched validation.",
+      "This result does not authorize protected data, real/live input, economics, or any scope expansion."
+    ]
+  },
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  },
+  "candidate_next_guidance": {
+    "additional_seed_only_replication": "DO_NOT_PRIORITIZE",
+    "additional_post_hoc_kernel_slicing": "STOP_BY_DEFAULT",
+    "promotion": "NOT_AUTHORIZED",
+    "recommended_use": "Portable Research/Candidate evidence for later independent validation/audit and future Core compatibility review at a safe checkpoint."
+  }
+}
