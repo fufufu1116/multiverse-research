@@ -1,0 +1,250 @@
+{
+  "branch_at_start": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "caveats": [
+    "151R is retrospective development evidence, not untouched final validation.",
+    "The fixed S0 coefficient was not refit for this checkpoint.",
+    "Meeting-level small samples are descriptive only and do not justify venue-specific rules.",
+    "Negative meeting results remain included; no same-lineage rescue tuning is authorized.",
+    "Economics, ROI, payout, and real-money wagering are out of scope."
+  ],
+  "fixed_model": {
+    "beta": 0.22260435254784533,
+    "features": [
+      "competition_score"
+    ],
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "odds_used": false,
+    "payout_used": false,
+    "result_used_as_feature": false,
+    "retrained_on_151r": false
+  },
+  "input_html_files": 167,
+  "interpretation": {
+    "meeting_ordered_top3_worse": [
+      "2026-03-05 松戸"
+    ],
+    "meeting_winner_metric_worse": [
+      "2026-03-03 静岡",
+      "2026-03-05 小田原",
+      "2026-03-05 熊本",
+      "2026-03-06 伊東",
+      "2026-03-06 宇都宮"
+    ],
+    "next_checkpoint": "200R",
+    "no_posthoc_rescue": true,
+    "overall_signal_vs_uniform": "BETTER_ON_ALL_THREE_METRICS",
+    "promotion_allowed": false,
+    "winner_metric_instability_exists": true
+  },
+  "meeting_checks": {
+    "2026-03-03 久留米": {
+      "ordered_top3_log_loss": 4.815477659122938,
+      "races": 9,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.10515398853653929,
+      "winner_log_loss": 1.6196808548885917
+    },
+    "2026-03-03 大垣": {
+      "ordered_top3_log_loss": 5.66300738267031,
+      "races": 8,
+      "uniform_ordered_top3_log_loss": 6.062459537388611,
+      "uniform_winner_brier": 0.10305207152305366,
+      "uniform_winner_log_loss": 2.1510873943440583,
+      "winner_brier": 0.08726325605187649,
+      "winner_log_loss": 1.751596860981817
+    },
+    "2026-03-03 小松島": {
+      "ordered_top3_log_loss": 4.3122487592840715,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.267162418155266,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.10439819908491058,
+      "winner_log_loss": 1.6017959101866073
+    },
+    "2026-03-03 岸和田": {
+      "ordered_top3_log_loss": 4.0910830298304095,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.267162418155265,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.9238886233657049,
+      "winner_brier": 0.10391963653399976,
+      "winner_log_loss": 1.4630031539911539
+    },
+    "2026-03-03 静岡": {
+      "ordered_top3_log_loss": 4.721405210730517,
+      "races": 3,
+      "uniform_ordered_top3_log_loss": 5.3471075307174685,
+      "uniform_winner_brier": 0.12244897959183676,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.13920640856697267,
+      "winner_log_loss": 2.2169460749142513
+    },
+    "2026-03-04 宇都宮": {
+      "ordered_top3_log_loss": 3.7300567968072705,
+      "races": 3,
+      "uniform_ordered_top3_log_loss": 5.3471075307174685,
+      "uniform_winner_brier": 0.12244897959183676,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.05865504722091569,
+      "winner_log_loss": 0.7310810571391834
+    },
+    "2026-03-04 西武園": {
+      "ordered_top3_log_loss": 3.851455143323911,
+      "races": 4,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.07160994732350206,
+      "winner_log_loss": 0.9875067500432878
+    },
+    "2026-03-05 伊東": {
+      "ordered_top3_log_loss": 5.0194045344353655,
+      "races": 10,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.12023952324286391,
+      "winner_log_loss": 1.8621739734664305
+    },
+    "2026-03-05 小田原": {
+      "ordered_top3_log_loss": 5.235425802250561,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.347108418165266,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.12966515711688086,
+      "winner_log_loss": 2.0598092648222837
+    },
+    "2026-03-05 松山": {
+      "ordered_top3_log_loss": 3.448191658503483,
+      "races": 11,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.09081776995292647,
+      "winner_log_loss": 1.3669814705086087
+    },
+    "2026-03-05 松戸": {
+      "ordered_top3_log_loss": 5.538663339324318,
+      "races": 6,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.11874340439620147,
+      "winner_log_loss": 1.9234193548638003
+    },
+    "2026-03-05 熊本": {
+      "ordered_top3_log_loss": 4.811480939352345,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.267107530717468,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.12609012393492542,
+      "winner_log_loss": 1.9314256613409434
+    },
+    "2026-03-05 西武園": {
+      "ordered_top3_log_loss": 4.377120126307119,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.347107418165466,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.0681467839040867,
+      "winner_log_loss": 0.936576277132249
+    },
+    "2026-03-05 豊橋": {
+      "ordered_top3_log_loss": 4.783222635871879,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.267162419157468,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.11914568505537724,
+      "winner_log_loss": 1.7833938248823533
+    },
+    "2026-03-06 伊東": {
+      "ordered_top3_log_loss": 5.304687272777047,
+      "races": 9,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.12334392952519972,
+      "winner_log_loss": 1.9698068434535036
+    },
+    "2026-03-06 宇都宮": {
+      "ordered_top3_log_loss": 4.768492801987758,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.267108510717468,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.1263025793750321,
+      "winner_log_loss": 1.9595889814376806
+    },
+    "2026-03-06 小倉": {
+      "ordered_top3_log_loss": 4.124276595749,-
+      "races": 3,
+      "uniform_ordered_top3_log_loss": 5.3471075307174685,
+      "uniform_winner_brier": 0.12244897959183676,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.11278401599613708,
+      "winner_log_loss": 1.5804390534408272
+    },
+    "2026-03-06 松山": {
+      "ordered_top3_log_loss": 4.160921577202252,
+      "races": 10,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.10053282422315966,
+      "winner_log_loss": 1.586615025545999
+    },
+    "2026-03-06 松戸": {
+      "ordered_top3_log_loss": 4.4083275141104155,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.094163009346913,
+      "winner_log_loss": 1.1959650817916594
+    },
+    "2026-03-06 西武園": {
+      "ordered_top3_log_loss": 4.751828285894034,
+      "races": 12,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "uniform_winner_brier": 0.12244897959183677,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.09388432003457757,
+      "winner_log_loss": 1.4010841778218565
+    },
+    "2026-03-06 豊橋": {
+      "ordered_top3_log_loss": 4.916381863632999,
+      "races": 7,
+      "uniform_ordered_top3_log_loss": 5.267162418155266,
+      "uniform_winner_brier": 0.12479753806284422,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.11775101697286255,
+      "winner_log_loss": 1.756499241171445
+    }
+  },
+  "overall": {
+    "ordered_top3_log_loss": 4.750517710061645,
+    "races": 151,
+    "uniform_ordered_top3_log_loss": 5.468035922970238,
+    "uniform_winner_brier": 0.1192479766618448,
+    "uniform_winner_log_loss": 1.9809836508198886,
+    "winner_brier": 0.10570630090241065,
+    "winner_log_loss": 1.651894636960911
+  },
+  "parser": "KEIRIN_KDREAMS_RETROSPECTIVE_PRE_OUTCOME_PARSER_v3_semantics",
+  "record": "KEIRIN_S0_RETROSPECTIVE_151R_FIXED_SIGNAL_AND_REGIME_CHECK_20260902_v1",
+  "rejected_files": 16,
+  "reject_reason_counts": {
+    "dup_finish": 3,
+    "pre_rows": 6,
+    "top3_not_active": 7
+  },
+  "starting_head": "fa85f9d37dfda97f115856526eb66593ee42510a",
+  "status": "DEVELOPMENT_ONLY_NOT_MODEL_PROMOTION_EVIDENCE",
+  "successful_pre_outcome_races": 151
+}
