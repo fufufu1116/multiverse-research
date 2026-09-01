@@ -1,0 +1,147 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_PASS_B_AND_POOLED_DIAGNOSTIC_20260901_v1_EVIDENCE",
+  "status": "COMPLETE_BATCH2_PASS_B_AND_POOLED_DIAGNOSTIC_NOT_TRUTH_ADMISSION",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_EVIDENCE_NOT_CANONICAL_NOT_PROMOTED",
+  "as_of_jst": "2026-09-01T18:45:00+09:00",
+  "fresh_binding_before_write": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "fea44c226a5e34a5493571dbfeab701f2826c389"
+  },
+  "governed_inputs": {
+    "opportunity_protocol": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+      "blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d"
+    },
+    "prior_conditional_rate_pilot": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_CONDITIONAL_RATE_PILOT_20260901_v1_EVIDENCE.json",
+      "blob_sha": "540429b5a68e4bb2b84e7962b63a67698764884b"
+    },
+    "batch2_pass_a_freeze": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH2_PASS_A_ANCHOR_FREEZE_20260901_v1.json",
+      "blob_sha": "60f9e2b57fb215cc40d22c9f3b1e354db71ff21d",
+      "attack_anchor_count": 4
+    }
+  },
+  "source_artifacts": {
+    "day2_r1_r6": {
+      "workflow_run_id": 33491943427,
+      "workflow_head_sha": "aed53395cb033300bb1050ca3a91c8323eb93fdb",
+      "frames_artifact_id": 9794158857,
+      "frames_artifact_sha256": "82e0eee54cba4250d554aa03af32118091dd3eae27ba8315017ff3329acc8a53",
+      "manifest_artifact_id": 9794156987,
+      "manifest_artifact_sha256": "280855e8b848c63bd2cf8f9de0b3ffa8ef455fa614c83a1caa615dea67191022"
+    },
+    "day2_r7_r8_replacements": {
+      "workflow_run_id": 33492407950,
+      "workflow_head_sha": "7133f011ee7554bc14509eba15093e86696a4d90",
+      "frames_artifact_id": 9794302434,
+      "frames_artifact_sha256": "660974e1ff9081909a06ee18a5bfc03b6b8e89927c303c9646c8cdca3069c2b2",
+      "manifest_artifact_id": 9794301662,
+      "manifest_artifact_sha256": "1e56174aafb4d8667bb4d5b2618a217c8a183910a93cb46f40b99118c7c96da2"
+    }
+  },
+  "private_ledger_readback": {
+    "spreadsheet_title": "KEIRIN Burned Tactical Annotation Pilot 2026-09-01",
+    "spreadsheet_id": "1B8RRXlJGfR6dNmyh-USuyHrtbzvqy7MJ22nvdnf3_54",
+    "sample_queue_range": "Sample_Queue!A5:N12",
+    "annotation_range": "Annotations!A29:S39",
+    "annotation_row_count": 11,
+    "annotation_snapshot_sha256": "6d49aea76a9a00982455f5764d46f8922c9ad44bff49f9c8a44b4453559b28fe",
+    "denominator_range": "Denominators!A16:L23",
+    "denominator_row_count_including_ineligible_audit_row": 8,
+    "denominator_snapshot_sha256": "a2868cef49939d2c2461a05ff8416e6f7db372ddd40305322e23ab1ab60cea9b",
+    "readback_verified": true
+  },
+  "sample_accounting": {
+    "event_date": "2026-08-07",
+    "venue": "IWAKI_TAIRA",
+    "meeting_grade": "FII",
+    "initial_prespecified_races": [1, 2, 3, 4, 5, 6],
+    "burned_regime_ineligible_races": [5, 6],
+    "prespecified_sequential_replacements": [7, 8],
+    "mens_reviewed_races": [1, 2, 3, 4, 7, 8],
+    "frozen_attack_anchor_races": [1, 3, 7, 8],
+    "zero_anchor_races": [2, 4],
+    "frozen_attack_anchor_count": 4,
+    "important_unit_note": "Conditional numeric units are eligible attack-conditioned opportunities, not independent races. No absolute INITIATIVE_ATTACK rate is estimated at this gate."
+  },
+  "pass_b_results": {
+    "BANTE_FOLLOW_given_qualifying_attack_with_identifiable_direct_follower": {
+      "present": 0,
+      "absent": 4,
+      "unknown": 0,
+      "numeric_denominator": 4,
+      "estimate": 0.0,
+      "wilson_95": [0.0, 0.4898908364545973],
+      "claim_class": "PILOT_DIAGNOSTIC_RANGE_ONLY"
+    },
+    "INITIATIVE_CONFLICT_given_qualifying_attack_reaches_occupied_forward_position": {
+      "eligible_present": 3,
+      "eligible_absent": 0,
+      "eligible_unknown": 0,
+      "numeric_denominator": 3,
+      "ineligible_attack_count": 1,
+      "ineligible_attack_id": "B2-E08A1",
+      "ineligibility_reason": "The attack did not reach an already occupied/defended forward position within the fixed six-second window.",
+      "estimate": 1.0,
+      "wilson_95": [0.4385029682449546, 1.0],
+      "claim_class": "PILOT_DIAGNOSTIC_RANGE_ONLY"
+    }
+  },
+  "pooled_with_prior_day_under_unchanged_protocol": {
+    "BANTE_FOLLOW_given_qualifying_attack_with_identifiable_direct_follower": {
+      "prior": {"present": 5, "absent": 2, "denominator": 7, "estimate": 0.7142857142857143},
+      "batch2": {"present": 0, "absent": 4, "denominator": 4, "estimate": 0.0},
+      "pooled": {"present": 5, "absent": 6, "denominator": 11, "estimate": 0.45454545454545453, "wilson_95": [0.21271271622459764, 0.719908462590678]},
+      "interpretation": "The point estimate moved materially after one additional prespecified batch. This instability is direct evidence against admitting a single fixed Reality truth coefficient from the current sample."
+    },
+    "INITIATIVE_CONFLICT_given_qualifying_attack_reaches_occupied_forward_position": {
+      "prior": {"present": 7, "absent": 0, "denominator": 7, "estimate": 1.0},
+      "batch2": {"present": 3, "absent": 0, "denominator": 3, "estimate": 1.0},
+      "pooled": {"present": 10, "absent": 0, "denominator": 10, "estimate": 1.0, "wilson_95": [0.7224672001371107, 1.0]},
+      "interpretation": "This remains a highly conditioned diagnostic: only attacks that reach an already occupied/defended forward position are eligible. It is not a universal conflict probability."
+    }
+  },
+  "batch2_anchor_level_accounting": [
+    {"attack_id": "B2-E01A1", "race": "1R", "bante_follow": "ABSENT", "initiative_conflict": "PRESENT"},
+    {"attack_id": "B2-E03A1", "race": "3R", "bante_follow": "ABSENT", "initiative_conflict": "PRESENT"},
+    {"attack_id": "B2-E07A1", "race": "7R", "bante_follow": "ABSENT", "initiative_conflict": "PRESENT"},
+    {"attack_id": "B2-E08A1", "race": "8R", "bante_follow": "ABSENT", "initiative_conflict": "INELIGIBLE_NOT_IN_NUMERIC_DENOMINATOR"}
+  ],
+  "interpretation_limits": [
+    "All rates are conditional tactical process diagnostics, not unconditional tactic frequencies.",
+    "The pooled BANTE_FOLLOW estimate changed from 5/7 to 5/11 after Batch2, demonstrating material small-sample and batch sensitivity.",
+    "The pooled 10/10 conflict result must not be described as a 100 percent real-keirin conflict rate because eligibility already conditions on reaching an occupied/defended forward position.",
+    "R2 and R4 had zero frozen attack anchors under the unchanged protocol; zero-anchor races were retained rather than forcing events.",
+    "R5 and R6 remain permanently burned but were excluded solely for objective girls-regime mismatch.",
+    "One annotator performed the current human frame review. No independent duplicate annotation or agreement statistic exists yet.",
+    "The sample remains one venue and one meeting across two days; opportunities within races and meeting are not statistically independent.",
+    "No absolute INITIATIVE_ATTACK frequency is identified because an all-race or time-at-risk denominator remains undefined.",
+    "No causal effect on finish order is estimated or authorized."
+  ],
+  "firewall_assertions": {
+    "all_reviewed_races_burned_forever": true,
+    "untouched_validation": "PROHIBITED",
+    "candidate_model_predictions_visible_to_annotator": false,
+    "odds_or_market_used_for_sampling": false,
+    "finish_order_or_payout_used_for_labels": false,
+    "model_selection": "PROHIBITED",
+    "finish_effect_estimation": "PROHIBITED",
+    "economics": "PROHIBITED",
+    "real_predictive_superiority_claim": "PROHIBITED",
+    "truth_admission": false
+  },
+  "next_scientific_boundary": {
+    "allowed_under_current_burned_calibration_scope": [
+      "prespecify and review additional BURNED batches under the unchanged protocol",
+      "stratify diagnostics by predeclared regime and race phase when sample size supports it",
+      "design an independent duplicate-annotation agreement gate without fabricating independence"
+    ],
+    "not_allowed_without_separate_gate": [
+      "convert pooled diagnostics into simulator truth coefficients",
+      "use these diagnostics for candidate model selection",
+      "open untouched or real predictive validation",
+      "estimate finish effects, payout, ROI, bankroll, or economics"
+    ]
+  }
+}
