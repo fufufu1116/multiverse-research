@@ -1,0 +1,57 @@
+name: Keirin Reality Repeated Expected Line V0 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_repeated_expected_line_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_repeated_expected_line_selftest_v0.py'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_REALITY_REPEATED_EXPECTED_LINE_SNAPSHOT_DESIGN_20260901_v1.json'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v2.json'
+      - '.github/workflows/keirin-reality-repeated-expected-line-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  repeated-expected-line:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile foundation
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/new_lineage/reality_repeated_expected_line_v0.py \
+            v3/historical_all_market/new_lineage/reality_repeated_expected_line_selftest_v0.py
+      - name: Validate JSON evidence inputs
+        run: |
+          python - <<'PY'
+          import json
+          for p in [
+            'v3/historical_all_market/research_candidates/KEIRIN_REALITY_REPEATED_EXPECTED_LINE_SNAPSHOT_DESIGN_20260901_v1.json',
+            'v3/historical_all_market/research_candidates/KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v2.json',
+          ]:
+              with open(p, encoding='utf-8') as f:
+                  json.load(f)
+          print('PASS JSON')
+          PY
+      - name: Reject candidate-model coupling
+        run: |
+          ! grep -Eiq 'top3_architecture|C0|C1|N1|PEER|candidate_model' v3/historical_all_market/new_lineage/reality_repeated_expected_line_v0.py
+      - name: Reject outcome or economic coupling
+        run: |
+          ! grep -Eiq 'RESULT|PAYOUT|ECON|ROI|bankroll|odds' v3/historical_all_market/new_lineage/reality_repeated_expected_line_v0.py
+      - name: Run mechanical selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python reality_repeated_expected_line_selftest_v0.py
+      - name: Confirm no network-capable imports
+        run: |
+          ! grep -Eiq 'requests|urllib|httpx|aiohttp|socket|selenium|playwright' v3/historical_all_market/new_lineage/reality_repeated_expected_line_v0.py
+      - name: Terminal boundary
+        run: echo 'FOUNDATION ONLY - NO TACTICAL RATE FITTING - NO TRUTH WORLD EXECUTION'
