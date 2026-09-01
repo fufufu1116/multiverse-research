@@ -1,0 +1,24 @@
+{
+  "version": "V19.7.36-v7r4",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "purpose": "Close v7r3 wrong-candidate and Owner-approval replay blockers with external immutable candidate-freeze evidence plus fresh challenge-bound one-shot approval.",
+  "required": [
+    {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
+    {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
+    {"role":"external_session_gate","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R4_EXTERNAL_SESSION_GATE_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-session-gate-v7r4"},
+    {"role":"pre_lab_mechanical_gate","path":"governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py","type":"python"}
+  ],
+  "external_authority": {
+    "candidate_freeze_prefix": "MULTIVERSE_V7R4_CANDIDATE_FREEZE ",
+    "session_binding_prefix": "MULTIVERSE_V7R4_SESSION_BINDING ",
+    "owner_approval_prefix": "MULTIVERSE_V7R4_OWNER_APPROVAL_RECEIPT ",
+    "candidate_freeze": "exact head/tree are externally mapped to the immutable image identity by exactly one owner+ChatGPT-app-bound GitHub freeze receipt; duplicate mappings fail closed",
+    "owner_approval": "approval is bound to current CodespaceName, fresh 128-bit challenge, exact image identity, exact candidate head/tree and freeze comment; approval must be created after trusted GitHub server challenge time and before the session receipt",
+    "replay": "a prior approval cannot match a fresh challenge; duplicate approvals, duplicate session receipts, duplicate freeze mappings, stale approval, wrong head/tree, wrong Codespace or wrong image fail closed",
+    "same_uid_can_issue": false,
+    "candidate_can_issue": false
+  },
+  "negative_build_selftest": ["wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping"],
+  "unchanged_security": {"python_build_actual_use_gate":true,"step3_same_object":true,"pre_oauth_fail_closed":true,"production_mutation":false,"runtime_activation":false}
+}
