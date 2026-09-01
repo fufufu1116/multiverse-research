@@ -1,0 +1,43 @@
+{
+  "record": "KEIRIN_EXTERNAL_REVIEW_TECHNIQUE_VERIFICATION_NOTE_20260901_v1",
+  "status": "PUBLIC_LITERATURE_VERIFICATION_NOTE_NOT_METHOD_ADOPTION",
+  "purpose": "Check whether selected external-review proposals are scientifically plausible research candidates before any Keirin-specific adoption.",
+  "verified_public_literature": [
+    {
+      "topic": "CONFORMAL_PREDICTION",
+      "source": "Angelopoulos and Bates, A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification, arXiv:2107.07511",
+      "finding": "Conformal methods provide prediction sets/intervals with formal coverage properties under their stated assumptions and can wrap black-box predictors; extensions exist for structured outputs, shift, and time-series settings.",
+      "keirin_classification": "VERIFY_BEFORE_ADOPTION"
+    },
+    {
+      "topic": "ADAPTIVE_CONFORMAL_UNDER_SHIFT",
+      "source": "Gibbs and Candes, Adaptive Conformal Inference Under Distribution Shift, arXiv:2106.00170",
+      "finding": "Adaptive conformal methods explicitly address changing distributions in online settings, so chronological drift is a material design consideration rather than something ordinary exchangeable conformal can ignore.",
+      "keirin_classification": "VERIFY_BEFORE_ADOPTION"
+    },
+    {
+      "topic": "TIME_SERIES_CONFORMAL",
+      "source": "Zaffran et al., Adaptive Conformal Predictions for Time Series, arXiv:2202.07282",
+      "finding": "Time-series dependence complicates ordinary exchangeability assumptions and motivates adaptive procedures; validity/efficiency must be assessed for the actual temporal process.",
+      "keirin_classification": "VERIFY_BEFORE_ADOPTION"
+    },
+    {
+      "topic": "GRAPH_NETWORKS",
+      "source": "Battaglia et al., Relational inductive biases, deep learning, and graph networks, arXiv:1806.01261",
+      "finding": "Graph networks are a principled way to encode entities and relationships. Rider-as-node and line/position relation-as-edge is therefore structurally plausible, but the paper does not establish predictive superiority for Keirin.",
+      "keirin_classification": "GNN_PROTOTYPE_ONLY_NO_A_PRIORI_PREFERENCE"
+    }
+  ],
+  "decisions": {
+    "conformal": "retain as uncertainty research candidate; do not adopt until ordered-top3 probability-object compatibility and temporal-validity assumptions are tested",
+    "GNN": "retain as representation prototype; compare on the same strict temporal evaluator against market, score, tabular, C0, C1, and N1",
+    "causal_ML_double_ML": "not verified in this note; remains VERIFY_BEFORE_ADOPTION",
+    "multi_agent_RL_offline_RL": "not verified in this note; remains VERIFY_BEFORE_ADOPTION"
+  },
+  "anti_overclaim": [
+    "literature plausibility is not Keirin signal evidence",
+    "method sophistication is not a promotion criterion",
+    "GNN relational fit does not imply GNN beats tabular",
+    "conformal coverage claims depend on method assumptions and temporal setting"
+  ]
+}
