@@ -1,0 +1,62 @@
+{
+  "record": "KEIRIN_PARALLEL_MECHANICAL_INVARIANCE_GATE_MANIFEST_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "fresh_read_base_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "authorization": {
+    "path": "governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json",
+    "blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "allowed_class_used": "source-independent synthetic regression checks only",
+    "scope_expansion": false
+  },
+  "pinned_sources": {
+    "vnext_state_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "c0_c1_n1_comparison_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "frozen_pre_holdout_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7",
+    "mechanism_affinity_audit_blob": "a77597268c24fb4f807014853c723de7a4af36d1"
+  },
+  "gates_in_order": [
+    "CAR_ID_PERMUTATION_EQUIVARIANCE",
+    "LINE_GROUP_ID_PERMUTATION_INVARIANCE",
+    "CONTAINER_ORDER_INVARIANCE",
+    "PRE_LATENT_BARRIER_REGRESSION",
+    "TRUTH_PREDICTION_CODE_PATH_SEPARATION",
+    "NO_ADAPTIVE_SEED_CONDITION_SELECTION_EVIDENCE"
+  ],
+  "material_block_rule": "ANY_FAILURE_IN_GATES_1_TO_5_STOPS_INTERPRETATION_OF_LATER_SYNTHETIC_MODEL_COMPARISON_AND_PRIORITIZES_FAILURE_DIAGNOSIS",
+  "fixtures": {
+    "purpose": "mechanical regression fixtures only; not model validation",
+    "count": 24,
+    "formula": "for i=0..23: seed=20260821+i; race_index=i%32",
+    "selected_from_results": false,
+    "may_be_called_untouched_validation": false
+  },
+  "tolerance": 1e-12,
+  "gate_definitions": {
+    "1_car_id_permutation_equivariance": "A bijective renumbering of car IDs while preserving all semantic PRE fields must only relabel ordered-top3 keys; probabilities must not change.",
+    "2_line_group_id_permutation_invariance": "Renaming line-group identifiers while preserving partition membership, positions and sizes must not change model probabilities or synthetic truth.",
+    "3_container_order_invariance": "Reordering rider containers without semantic changes must not change model probabilities or synthetic truth.",
+    "4_pre_latent_barrier_regression": "PRE objects must not expose or serialize latent_skill.",
+    "5_truth_prediction_code_path_separation": "Prediction functions C0/C1/N1 must not call truth generation/scoring functions; architecture core must not import Digital Twin truth code.",
+    "6_no_adaptive_seed_condition_selection_evidence": "Current comparison harness must use fixed CASE_COUNT/WORLDS and deterministic seed/race-index formulas with runtime result-adaptive sampling/retuning disabled."
+  },
+  "protected_boundary": {
+    "pr15_metrics": "DO_NOT_ACCESS",
+    "result_payout": "DO_NOT_ACCESS",
+    "econ_holdout1000": "SEALED_DO_NOT_ACCESS",
+    "dev2000_c_rescue": "PROHIBITED",
+    "same_lineage_b_c_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count_must_remain": 0,
+    "real_live_data": "PROHIBITED",
+    "economics": "PROHIBITED",
+    "model_promotion": "PROHIBITED"
+  },
+  "next_if_all_green": "FULLY_PRESPECIFY_Q_MISMATCH_1_WITHOUT_EXECUTING_RELATION_KERNEL_VARIANTS_UNLESS_FRESH_GOVERNANCE_CLEARLY_PROVES_EXISTING_W0_W4_SCOPE_COVERS_THE_EXACT_VARIANTS",
+  "fail_closed": true
+}
