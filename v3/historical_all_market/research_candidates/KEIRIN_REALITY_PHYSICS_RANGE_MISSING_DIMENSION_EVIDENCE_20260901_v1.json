@@ -1,0 +1,131 @@
+{
+  "record": "KEIRIN_REALITY_PHYSICS_RANGE_MISSING_DIMENSION_EVIDENCE_20260901_v1",
+  "status": "PASS_FOUNDATION_RANGE_CALIBRATION_WITH_PARTIAL_MISSING_DIMENSION_PROGRESS",
+  "classification": "REALITY_CALIBRATION_FOUNDATION_ONLY_NOT_MODEL_VALIDATION",
+  "owner_gate": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_REALITY_PHYSICS_PARAMETER_RANGE_MISSING_DIMENSION_20260901_v1.json",
+  "range_registry": "v3/historical_all_market/research_candidates/KEIRIN_REALITY_PHYSICS_PARAMETER_RANGE_REGISTRY_20260901_v0.json",
+  "range_validator": "v3/historical_all_market/new_lineage/reality_physics_ranges_v0.py",
+  "fresh_bindings": {
+    "canonical_main_at_start": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_at_start": "72a9b9102b6c28a7b5b6dbd7ead41af49d84435d"
+  },
+  "physics_range_findings": {
+    "CdA_m2": {
+      "foundation_support": [0.19, 0.31],
+      "interpretation": "Broad literature support spanning track/TT/sprint postures; not a Japanese-keirin population distribution.",
+      "sources": [
+        "https://link.springer.com/article/10.1007/s12283-026-00541-y",
+        "https://link.springer.com/article/10.1007/s12283-019-0304-7"
+      ]
+    },
+    "drafting": {
+      "leader_drag_multiplier": [0.95, 1.00],
+      "second_rider_drag_multiplier": [0.55, 0.70],
+      "third_or_later_drag_multiplier": [0.45, 0.65],
+      "interpretation": "Position/spacing/posture dependent sensitivity support. Explicitly replaces any temptation to encode a universal symmetric same-line bonus.",
+      "sources": [
+        "https://link.springer.com/article/10.1007/s12283-017-0234-1",
+        "https://pubmed.ncbi.nlm.nih.gov/17218899/",
+        "https://pubmed.ncbi.nlm.nih.gov/24149940/"
+      ]
+    },
+    "peak_power_W": {
+      "broad_elite_support": [775, 2025],
+      "interpretation": "Support envelope only. Class/rider/form-conditioned Japanese-keirin power state remains uncalibrated.",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/31598998/",
+        "https://pubmed.ncbi.nlm.nih.gov/32516483/",
+        "https://pubmed.ncbi.nlm.nih.gov/38369850/"
+      ]
+    },
+    "drivetrain_efficiency": {
+      "support": [0.97, 0.99],
+      "interpretation": "Cycling chain-drive literature sensitivity support only.",
+      "source": "https://link.springer.com/article/10.1007/s12283-023-00439-z"
+    },
+    "rolling_resistance": {
+      "reference_only": 0.002,
+      "runtime_range_admitted": false,
+      "interpretation": "A common modeling reference exists, but track model literature emphasizes tyre/slip/camber dependence. Fail closed rather than inventing a keirin range.",
+      "sources": [
+        "https://link.springer.com/article/10.1007/s12283-025-00495-7",
+        "https://link.springer.com/article/10.1007/s12283-018-0283-0"
+      ]
+    }
+  },
+  "missing_dimension_progress": {
+    "333m_race_level_PRE": {
+      "status": "SOURCE_BINDING_ADDED_PROSPECTIVELY",
+      "venue": "松戸",
+      "track_length_m": 333,
+      "capture_session_jst": "2026-09-01T15:49:19+09:00..2026-09-01T15:52:18+09:00",
+      "private_archive_race_index_updated": true,
+      "selected_races": [
+        {
+          "race": "1R",
+          "class": "A3",
+          "stage": "チャレンジ予選",
+          "decision_cutoff_jst": "2026-09-01T16:04:00+09:00",
+          "source": "https://keirin.kdreams.jp/matsudo/racedetail/3120260901010001/"
+        },
+        {
+          "race": "7R",
+          "class": "A1_A2",
+          "stage": "A級特予選",
+          "decision_cutoff_jst": "2026-09-01T18:24:00+09:00",
+          "source": "https://keirin.kdreams.jp/matsudo/racedetail/3120260901010007/"
+        },
+        {
+          "race": "9R",
+          "class": "A1_A2",
+          "stage": "A級特予選",
+          "decision_cutoff_jst": "2026-09-01T19:16:00+09:00",
+          "source": "https://keirin.kdreams.jp/matsudo/racedetail/3120260901010009/"
+        }
+      ],
+      "selection_note": "The initially fixed 5R was Girls L1 and therefore outside the already frozen narrow MEN FI/FII reality slice. It was not used as male calibration evidence; the next eligible male race 7R was used instead."
+    },
+    "335m_race_level_PRE": {
+      "status": "NOT_AVAILABLE_FOR_PROSPECTIVE_CAPTURE_TODAY",
+      "venue": "前橋",
+      "official_geometry_available": true,
+      "official_geometry": {"track_length_m":335,"max_cant_deg":36.0,"mitori_straight_m":46.7,"indoor_no_wind":true},
+      "source": "https://keirin.jp/pc/dfw/portal/guest/column/tenbo/2020/20200916_tomohito.html",
+      "note": "No Maebashi race card was available for 2026-09-01 in the checked public schedule. No post-hoc historical result was substituted."
+    },
+    "weather_wind_transport": {
+      "status": "STRUCTURAL_RELEVANCE_CONFIRMED_TRANSPORT_UNRESOLVED",
+      "official_support": "KEIRIN guide explicitly notes wind direction and wind speed as rider decision factors.",
+      "source": "https://keirin.jp/pc/static/beginner/basics/phases.html",
+      "rule": "Do not substitute a generic engineering wind distribution. A venue/time-bound observation or explicit proxy contract is still required."
+    },
+    "mutable_line_transport": {
+      "status": "EXPECTED_LINE_PUBLIC_PROVIDER_AVAILABLE_LEGSHOW_OBSERVED_LINE_STILL_UNRESOLVED",
+      "official_support": "Official guide says riders show intended line formation during rider introduction/leg-show before start.",
+      "official_source": "https://keirin.jp/pc/static/beginner/basics/phases.html",
+      "provider_observation": "KDreams race pages expose provider-supplied line predictions before cutoff; these are PRE_EVENT_EXPECTED_LINE candidates, not LEGSHOW_OBSERVED_LINE truth.",
+      "rule": "Expected and observed line states remain distinct. No provider prediction may be silently upgraded to observed line."
+    },
+    "longitudinal_rider_state": {
+      "status": "PROSPECTIVE_SNAPSHOT_PATH_PLAUSIBLE_HISTORICAL_BACKFILL_PROHIBITED",
+      "official_observation": "KEIRIN rider profile pages expose timestamped current rolling statistics (example observed update 2026-09-01 07:00).",
+      "source_example": "https://www.keirin.jp/pc/racerprofile?snum=014206",
+      "rule": "Repeated future snapshots can support longitudinal transition calibration. Current/latest values cannot be backfilled into old decision points."
+    }
+  },
+  "protected_boundary": {
+    "RESULT_PAYOUT_access": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "truth_world_execution": false,
+    "economics": false,
+    "automated_bulk_site_mirroring": false,
+    "access_control_bypass": false,
+    "Core_main_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "REALITY_RANGE_CI_PASS_THEN_TACTICAL_TRANSITION_AND_WEATHER_LINE_TRANSPORT_GATE",
+    "automatic_transition": false,
+    "fail_closed": true
+  }
+}
