@@ -1,0 +1,100 @@
+{
+  "record": "KEIRIN_S0_RETROSPECTIVE_24R_CROSS_MEETING_STABILITY_REPORT_20260902_v1",
+  "status": "INITIAL_CROSS_MEETING_STABILITY_CHECK_NOT_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "source_pipeline": "saved KDreams racedetail HTML -> strict v3 PRE/outcome parser -> score-only softmax",
+  "input_html_files_local": 28,
+  "successful_races": 24,
+  "rejected_races": 4,
+  "rejection_policy": "FAIL_CLOSED_NO_MANUAL_REPAIR",
+  "rejection_reasons": {
+    "top3_not_in_pre_active_cars": 2,
+    "duplicate_finish_position": 1,
+    "too_few_pre_rows": 1
+  },
+  "successful_meeting_distribution": {
+    "2026-03-05_松戸": 1,
+    "2026-03-06_伊東": 3,
+    "2026-03-06_小倉": 3,
+    "2026-03-06_松山": 10,
+    "2026-03-06_豊橋": 7
+  },
+  "model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score_only",
+    "formula": "P(win=i)=exp(beta*(score_i-race_mean_score))/sum_j exp(beta*(score_j-race_mean_score))"
+  },
+  "leave_one_meeting_out_checks": [
+    {
+      "held_out": "2026-03-06_伊東",
+      "train_races": 21,
+      "evaluation_races": 3,
+      "fitted_beta": 0.2331,
+      "winner_log_loss": 2.1743166855126552,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.15361499787538643,
+      "uniform_winner_brier": 0.12244897959183676,
+      "ordered_top3_log_loss": 6.297025202882609,
+      "uniform_ordered_top3_log_loss": 5.3471075307174685,
+      "result_vs_uniform": "WORSE"
+    },
+    {
+      "held_out": "2026-03-06_小倉",
+      "train_races": 21,
+      "evaluation_races": 3,
+      "fitted_beta": 0.1904,
+      "winner_log_loss": 1.5995511208843995,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.11376561944842921,
+      "uniform_winner_brier": 0.12244897959183676,
+      "ordered_top3_log_loss": 4.193414936216288,
+      "uniform_ordered_top3_log_loss": 5.3471075307174685,
+      "result_vs_uniform": "BETTER"
+    },
+    {
+      "held_out": "2026-03-06_松山",
+      "train_races": 14,
+      "evaluation_races": 10,
+      "fitted_beta": 0.1855,
+      "winner_log_loss": 1.8177668741909296,
+      "uniform_winner_log_loss": 2.1736679702049426,
+      "winner_brier": 0.09266802501249477,
+      "uniform_winner_brier": 0.10088734567901234,
+      "ordered_top3_log_loss": 5.004132785808647,
+      "uniform_ordered_top3_log_loss": 6.141483246449736,
+      "result_vs_uniform": "BETTER"
+    },
+    {
+      "held_out": "2026-03-06_豊橋",
+      "train_races": 17,
+      "evaluation_races": 7,
+      "fitted_beta": 0.1949,
+      "winner_log_loss": 1.7577587660336147,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.12056036074298385,
+      "uniform_winner_brier": 0.12479753806284422,
+      "ordered_top3_log_loss": 4.905192281434181,
+      "uniform_ordered_top3_log_loss": 5.267162418155266,
+      "result_vs_uniform": "BETTER"
+    }
+  ],
+  "interpretation": [
+    "S0 improved over uniform in three of four leave-one-meeting-out checks, but degraded materially on the Ito holdout.",
+    "This is direct evidence that score-only signal is not yet stable across meetings/venues and that regime or venue dependence must be tested before any promotion or economic use.",
+    "The fitted beta varied from 0.1855 to 0.2331, which is directionally consistent but not yet precise enough for production-style probability claims.",
+    "Scale to materially more meetings and races before judging reproducible real signal."
+  ],
+  "next_actions": [
+    "expand toward 50 then 200 successful races",
+    "preserve whole-meeting holdouts",
+    "add calibration and temporal stability summaries",
+    "compare S0 against richer PRE-only baseline only after larger S0 benchmark exists"
+  ],
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
