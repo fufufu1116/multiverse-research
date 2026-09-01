@@ -1,0 +1,73 @@
+{
+  "record": "KEIRIN_S0_POST_DISCOVERY_FIXED_MODEL_CONFIRMATION_20R_20260902_v1",
+  "status": "POST_DISCOVERY_FIXED_MODEL_SIGNAL_REPLICATED_NOT_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "locked_model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "training_sample": "initial 61 successful races only",
+    "feature": "competition_score",
+    "fitted_beta": 0.22260435254784533,
+    "refit_on_confirmation": false,
+    "threshold_or_feature_change_on_confirmation": false
+  },
+  "confirmation_batches": [
+    {
+      "label": "post_discovery_batch_1",
+      "html_opened": 11,
+      "successful_races": 10,
+      "rejected_races": 1,
+      "winner_log_loss": 1.478745120924897,
+      "uniform_winner_log_loss": 2.131546623697312,
+      "winner_brier": 0.08778418558957292,
+      "uniform_winner_brier": 0.1051461325270849,
+      "ordered_top3_log_loss": 4.014366430044638,
+      "uniform_ordered_top3_log_loss": 5.991520941807046
+    },
+    {
+      "label": "post_discovery_batch_2",
+      "html_opened": 10,
+      "successful_races": 10,
+      "rejected_races": 0,
+      "winner_log_loss": 1.8397728370677093,
+      "uniform_winner_log_loss": 2.0213044775395845,
+      "winner_brier": 0.11317522986044197,
+      "uniform_winner_brier": 0.11534391534391535,
+      "ordered_top3_log_loss": 5.046757623502275,
+      "uniform_ordered_top3_log_loss": 5.60974815192364
+    }
+  ],
+  "combined_confirmation": {
+    "successful_races": 20,
+    "winner_log_loss": 1.6592589789963028,
+    "uniform_winner_log_loss": 2.076425550618449,
+    "winner_brier": 0.10047970772500744,
+    "uniform_winner_brier": 0.11024502393550013,
+    "ordered_top3_log_loss": 4.530562026773456,
+    "uniform_ordered_top3_log_loss": 5.800634546865342,
+    "diagnostic_confirmation_only_refit_beta": 0.25891273658831004
+  },
+  "data_boundaries": {
+    "result_used_as_feature": false,
+    "payout_used": false,
+    "same_lineage_rescue_tuning": false,
+    "real_money_execution": false
+  },
+  "interpretation": [
+    "The S0 model locked on the initial 61-race discovery/development sample remained better than uniform on all three reported proper-scoring-rule metrics in each subsequent confirmation batch.",
+    "The combined 20-race post-discovery confirmation therefore supports continued investigation of a reproducible competition-score signal.",
+    "The sample remains development evidence and is not sufficient for production promotion, profitability, or real-edge claims.",
+    "The confirmation-only optimal beta is reported only as a stability diagnostic and must not replace the locked beta for these confirmation results."
+  ],
+  "decision": {
+    "S0_SCORE": "CONTINUE_AS_REAL_BASELINE_CANDIDATE",
+    "SCORE_STYLE": "NO_PROMOTION_FROM_PRIOR_EXPLORATORY_ABLATION",
+    "next": "scale fixed-model confirmation and chronological development toward 200 races; then compare parsimonious prespecified candidates against S0"
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
