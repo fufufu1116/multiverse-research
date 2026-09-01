@@ -7,12 +7,12 @@ EXPECTED={
 '.devcontainer/Dockerfile':'dockerfile','.devcontainer/devcontainer.json':'json','.devcontainer/v19_7_36_requirements.txt':'text',
 'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go':'go',
 'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go':'go',
-'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_TTY_CAPABILITY_TRIGGER_20260901.go':'go',
 'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py':'python',
 'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py':'python',
 'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py':'python',
 'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json':'json',
-'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py':'python'}
+'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py':'python',
+'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R2_CANDIDATE_ASSEMBLY_MANIFEST_20260901.json':'json'}
 def fail(c,m):print(f'PRE_LAB_MECHANICAL_GATE_DENIED:{c}:{m}',file=sys.stderr);raise SystemExit(RC)
 def data(r):return (ROOT/r).read_bytes()
 def kind(r,b):
@@ -66,11 +66,13 @@ def main():
  q=json.loads(data('.devcontainer/devcontainer.json'))
  if q.get('build',{}).get('dockerfile')!='Dockerfile' or q.get('build',{}).get('context')!='..':fail('DEVCONTAINER_BUILD_MAPPING','unexpected')
  d=data('.devcontainer/Dockerfile').decode()
- for needle in ['multiverse-v36-anchor-v7r2','multiverse-v36-control-v7r2','multiverse-v36-trigger-v7r2','PYTHON_BUILD_ACTUAL_USE','python-actual-use-selftest.py']:
-  if needle not in d and needle!='PYTHON_BUILD_ACTUAL_USE':fail('DOCKER_V7R2_WIRING',needle)
+ for needle in ['multiverse-v36-anchor-v7r2','multiverse-v36-control-v7r2','python-actual-use-selftest.py']:
+  if needle not in d:fail('DOCKER_V7R2_WIRING',needle)
+ if 'multiverse-v36-trigger-v7r2' in d or 'wake-v7' in d:fail('SAME_UID_WAKE_REGRESSION','in-container-wake-artifact')
+ a=json.loads(data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R2_CANDIDATE_ASSEMBLY_MANIFEST_20260901.json'))
+ if a.get('owner_in_container_manual_trigger_required') is not False:fail('OWNER_TRIGGER_CONTRACT','must-be-external-codespace-creation')
  if shutil.which('docker'):
-  run(['docker','build','--no-cache','-f','.devcontainer/Dockerfile','.'])
-  print('REAL_DOCKER_IMAGE_BUILD_PASS')
+  run(['docker','build','--no-cache','-f','.devcontainer/Dockerfile','.']);print('REAL_DOCKER_IMAGE_BUILD_PASS')
  else:fail('DOCKER_TOOL_UNAVAILABLE','mandatory-final-tree-build-not-run')
  print('PRE_LAB_MECHANICAL_GATE_PASS');print('SECURITY_AUTHORITY_GRANTED=false')
 if __name__=='__main__':main()
