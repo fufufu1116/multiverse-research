@@ -1,0 +1,68 @@
+{
+  "record": "KEIRIN_STRICT_TEMPORAL_BACKTESTER_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_DESIGN_ONLY_NO_PROTECTED_DATA_OPEN",
+  "purpose": "Define one leakage-resistant evaluation bench on which all real-data baselines and later candidate architectures must be compared.",
+  "inherited_constitution": {
+    "chronological_split_only": true,
+    "random_split_prohibited": true,
+    "available_at_rule": "available_at <= prediction_timestamp",
+    "availability_violation": "FAIL_CLOSED",
+    "post_features_prohibited": true,
+    "raw_provenance_required": true,
+    "feature_freeze_before_validation": true,
+    "holdout_single_use": true,
+    "holdout_feedback_prohibited": true,
+    "hash_triplet_required": ["dataset_sha256","code_commit_sha","config_sha256"],
+    "no_bet_is_valid_output": true
+  },
+  "temporal_contract": {
+    "prediction_timestamp_required": true,
+    "feature_available_at_required": true,
+    "decision_timestamp_enforcement": "reject any feature whose timestamp proof exceeds prediction timestamp",
+    "result_after_feature_firewall": true,
+    "historical_publisher_semantics_required": true,
+    "mutable_line_provenance_required": true,
+    "PRE_AVAILABLE_separate_from_DECISION_AVAILABLE": true
+  },
+  "split_candidate": {
+    "order": ["TRAIN","CALIBRATION","DEVELOPMENT_EVALUATION","UNTOUCHED_FINAL_ONLY_AFTER_SEPARATE_GATE"],
+    "chronological": true,
+    "same_race_cross_split": "PROHIBITED",
+    "same_event_or_series_contamination": "DETECT_AND_FAIL_OR_PURGE",
+    "duplicate_record_contamination": "DETECT_AND_FAIL_OR_PURGE",
+    "overlapping_time_series_features": "AUDIT_FOR_SHARED_FUTURE_INFORMATION",
+    "purge_embargo": "APPLY_WHEN_FEATURE_LOOKBACK_OR_LABEL_CONSTRUCTION_CAN_OVERLAP_SPLIT_BOUNDARIES; WINDOW_MUST_BE_PRESPECIFIED_FROM_FEATURE_SEMANTICS_NOT_RESULTS"
+  },
+  "point_in_time_reconstruction": {
+    "race_card_profile": "use only historically published values demonstrably available before decision cutoff",
+    "line_structure": "use timestamped/preserved PRE structure only; do not reconstruct from post-race narrative",
+    "historical_recent_form": "prior completed races only",
+    "weather": "observed-before-cutoff only; forecast is not truth",
+    "market": "only timestamp-proven odds snapshots at or before the model's declared decision cutoff",
+    "RESULT": "never a feature",
+    "PAYOUT": "never a feature"
+  },
+  "evaluation_outputs_before_economics": [
+    "log_loss",
+    "Brier_score",
+    "calibration_curve_and_error",
+    "rank_quality_prespecified_metric",
+    "predictive_entropy_or_declared_uncertainty_summary",
+    "effective_sample_size_and_race_count",
+    "temporal_subperiod_stability",
+    "venue_regime_class_stability",
+    "missingness_and_NO_BET_rate"
+  ],
+  "candidate_comparison_rule": "All candidate models receive the same eligible race universe, cutoff semantics, split object, scoring code, and missingness policy. Architecture-specific exclusions require predeclared reasons and separate reporting.",
+  "promotion_rule": "No model promotion is authorized here. Any future promotion criterion must be prespecified before untouched final evaluation and may not be based on ROI alone.",
+  "implementation_readiness_checks": [
+    "schema can express available_at for every feature",
+    "all dataset rows bind to race_id and prediction_timestamp",
+    "cutoff violations are machine-detectable",
+    "duplicate and series identifiers are available or conservatively constructed",
+    "split manifest is immutable and content-addressed",
+    "scoring does not import settlement or payout modules"
+  ],
+  "hard_boundaries": ["NO_PROTECTED_DATA_OPEN","NO_ECON_HOLDOUT1000","NO_DEV2000_C_RESCUE","NO_RESULT_PAYOUT_FEATURES","NO_WORKFLOW_DISPATCH","NO_MODEL_PROMOTION","NO_REAL_MONEY_WAGERING"],
+  "next_gate": "Build a source-safe schema/harness against non-protected toy or synthetic rows first; bind real point-in-time source availability separately before any real backtest execution."
+}
