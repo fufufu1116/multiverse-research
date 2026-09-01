@@ -1,0 +1,32 @@
+{
+  "record": "KEIRIN_SHADOW_CARD_PROBABILITY_READINESS_GATE_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_GATE",
+  "purpose": "Prevent arbitrary odds bands from being presented as expected-value thresholds before a reproducible pre-race probability source exists.",
+  "finding": "The legacy Stage1 engine transforms already-existing per-car winner probabilities into ticket probabilities via a Plackett-Luce construction; it does not generate current-race winner probabilities from PRE fields.",
+  "allowed_now": [
+    "freeze 2026-09-02 race membership",
+    "freeze PRE source URLs and cutoff times",
+    "capture PRE-only rider/race fields",
+    "preserve owner-observed late odds with observation timestamp",
+    "produce ordinal candidate rankings only if their formula is prespecified and clearly labeled non-probabilistic"
+  ],
+  "not_allowed_until_probability_source_ready": [
+    "claim a combo has high expected value",
+    "publish a break-even odds threshold as model-derived",
+    "publish a buy range derived from an uncalibrated arbitrary score transform",
+    "silently reuse third-party prediction marks as MULTIVERSE probabilities"
+  ],
+  "probability_readiness_requirements": [
+    "PRE-only reproducible scoring formula or trained model",
+    "parameter fitting only on authorized chronological training data",
+    "probability mass validation through probability_object_contract_v1",
+    "development calibration evidence",
+    "frozen model/version/hash before late-odds observation"
+  ],
+  "first_practical_card_after_gate": {
+    "fields": ["race_id","combo","model_probability","fair_odds=1/p_before_market_adjustments","predeclared acceptable_odds_rule","card_lock_time","model_hash"],
+    "late_input": ["owner_observed_odds","observation_time"],
+    "decision": "SHADOW_BUY/SHADOW_PASS/SHADOW_UNRESOLVED"
+  },
+  "hard_rule": "No fabricated probability or odds band merely to make the workflow look complete."
+}
