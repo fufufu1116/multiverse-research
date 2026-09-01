@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_S0_S1_RETROSPECTIVE_61R_ABLATION_REPORT_20260902_v1",
+  "status": "EXPLORATORY_DEVELOPMENT_ONLY_NOT_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "source_pipeline": {
+    "input_html": 67,
+    "successful_races": 61,
+    "rejected_races": 6,
+    "parser": "tools/keirin_kdreams_retrospective_pre_outcome_parser_v3.py",
+    "rejection_policy": "FAIL_CLOSED_NO_MANUAL_REPAIR",
+    "result_used_as_feature": false,
+    "payout_used": false
+  },
+  "meeting_distribution": [
+    {"meeting_id":"24202603040300","venue":"宇都宮","races":7},
+    {"meeting_id":"26202603040300","venue":"西武園","races":12},
+    {"meeting_id":"31202603040200","venue":"松戸","races":1},
+    {"meeting_id":"31202603040300","venue":"松戸","races":7},
+    {"meeting_id":"37202603040300","venue":"伊東","races":9},
+    {"meeting_id":"45202603040300","venue":"豊橋","races":7},
+    {"meeting_id":"75202603050200","venue":"松山","races":10},
+    {"meeting_id":"81202603060100","venue":"小倉","races":3},
+    {"meeting_id":"87202603040200","venue":"熊本","races":5}
+  ],
+  "evaluation_protocol": {
+    "split": "leave-one-meeting-out",
+    "same_meeting_cross_split": false,
+    "ridge_lambda_for_multifeature_candidates": 1.0,
+    "ridge_lambda_tuned_on_this_sample": false,
+    "probability_family": "race-conditional softmax winner probabilities then Plackett-Luce ordered top3",
+    "purpose": "feature-group discovery only; any apparent improvement requires confirmation on new development evidence"
+  },
+  "uniform_reference": {
+    "winner_log_loss": 1.973139255484612,
+    "winner_brier": 0.11999231234691811,
+    "ordered_top3_log_loss": 5.440636940645028
+  },
+  "models": {
+    "S0_SCORE": {"features":["competition_score"],"winner_log_loss":1.7225021458522412,"winner_brier":0.11253892746734227,"ordered_top3_log_loss":4.861263219081727},
+    "SCORE_CLASS": {"features":["competition_score","class"],"winner_log_loss":1.745356132557867,"winner_brier":0.11245587886708057,"ordered_top3_log_loss":4.880491287527391},
+    "SCORE_STYLE": {"features":["competition_score","style"],"winner_log_loss":1.6660051310694257,"winner_brier":0.10788596154993167,"ordered_top3_log_loss":4.83236983082706},
+    "SCORE_SB": {"features":["competition_score","S","B"],"winner_log_loss":1.7514308983246503,"winner_brier":0.1127502736868442,"ordered_top3_log_loss":4.861492166672511},
+    "SCORE_FINISH_STYLE_COUNTS": {"features":["competition_score","nige","makuri","sashi","mark"],"winner_log_loss":1.745990317892739,"winner_brier":0.11198716541074241,"ordered_top3_log_loss":4.884160732557041},
+    "SCORE_ALL_NUMERIC": {"features":["competition_score","S","B","nige","makuri","sashi","mark"],"winner_log_loss":1.807645630869348,"winner_brier":0.11474652358513836,"ordered_top3_log_loss":4.961758267860354},
+    "SCORE_FULL": {"features":["competition_score","class","style","S","B","nige","makuri","sashi","mark"],"winner_log_loss":1.7954063011317407,"winner_brier":0.1134010766043441,"ordered_top3_log_loss":5.012711262534992}
+  },
+  "exploratory_findings": [
+    "S0_SCORE remains better than uniform on all three pooled proper-scoring-rule metrics across 61 leave-one-meeting-out races.",
+    "Adding all available PRE features degrades pooled performance relative to S0_SCORE.",
+    "The smallest tested extension, SCORE_STYLE, improves pooled winner log loss, Brier, and ordered-top3 log loss relative to S0_SCORE.",
+    "SCORE_STYLE is not uniformly better by meeting; some meetings worsen. It is therefore a candidate hypothesis only, not an adopted model.",
+    "Feature abundance is not evidence of usefulness; subsequent work should remain parsimonious and temporally evaluated."
+  ],
+  "next_gate": {
+    "primary": "confirm SCORE_STYLE versus S0_SCORE on additional non-overlapping retrospective development meetings before any model adoption",
+    "secondary": "expand toward 200 races and investigate venue/regime heterogeneity without outcome-aware exclusions",
+    "all_market_output": "only after probability model lock; derive 3rentan, 3renhuku, 2shatan, 2shahuku, wide from one ordered-top3 probability object"
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "SCORE_STYLE_PROMOTED",
+    "VENUE_EFFECT_CAUSALLY_ESTABLISHED",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
