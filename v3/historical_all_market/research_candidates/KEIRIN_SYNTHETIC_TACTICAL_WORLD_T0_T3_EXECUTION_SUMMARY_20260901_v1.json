@@ -1,0 +1,30 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T0_T3_EXECUTION_SUMMARY_20260901_v1",
+  "status": "SYNTHETIC_PROTOCOL_STRESS_RESULT_NOT_REALITY_TRUTH",
+  "scope": "T0 through T3 synthetic tactical protocol stress only",
+  "results": {
+    "T0": {"cases":24,"initial_case_spec_errors_found":2,"corrected_case_spec_errors":2,"post_correction_determinate_conformance":"24/24"},
+    "T1": {"cases":24,"case_spec_errors_found_and_corrected":2,"protocol_gap_quarantined":1,"determinate_cases":"23/23 semantically mapped to frozen protocol"},
+    "T2": {"cases":16,"protocol_determinate":14,"protocol_gaps_quarantined":2,"gap_names":["ATTACK_EPISODE_RESET_CRITERION","TERMINAL_SPRINT_PHASE_BOUNDARY_UNCERTAINTY"]},
+    "T3": {"cases":20,"designed_with_known_gaps_excluded":true,"new_protocol_gap_found":0,"determinate_expected_outputs":"20/20 mapped to frozen protocol"}
+  },
+  "known_protocol_questions": [
+    "How to represent INITIATIVE_CONFLICT when occupied-position eligibility itself cannot be established from observation.",
+    "What observable reset criterion permits the same rider to create a later independent INITIATIVE_ATTACK anchor after a completed prior attack.",
+    "What fail-closed rule applies when the terminal-sprint phase boundary itself is observationally uncertain."
+  ],
+  "important_result": "The synthetic lane is useful as a protocol falsification harness: it already exposed case-design mistakes and three semantic gaps without requiring those gaps to be guessed or silently repaired.",
+  "not_claimed": [
+    "No synthetic case frequency is a real-world tactic probability.",
+    "No finish effect or predictive superiority is established.",
+    "No wagering, ROI, payout, or market claim is authorized.",
+    "No synthetic case substitutes for the blocked independent real-video duplicate annotation.",
+    "No frozen tactical protocol was amended during this execution."
+  ],
+  "next_research_steps": [
+    "Prespec an independent protocol-clarification review for the three quarantined semantic gaps without opening original tactical labels.",
+    "Build a candidate-independent dynamic world generator whose transition parameters remain ordinal/ranged until reality-calibrated.",
+    "Use public technical/rule/track information and point-in-time historical structured data for reality constraints; keep synthetic truth and reality evidence separate.",
+    "Keep real-video duplicate annotation as a later reliability check rather than blocking the synthetic world lane."
+  ]
+}
