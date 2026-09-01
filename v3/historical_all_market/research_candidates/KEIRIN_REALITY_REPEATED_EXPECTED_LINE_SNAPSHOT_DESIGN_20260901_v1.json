@@ -1,0 +1,21 @@
+{
+  "record": "KEIRIN_REALITY_REPEATED_EXPECTED_LINE_SNAPSHOT_DESIGN_20260901_v1",
+  "status": "PRESPEC_FOUNDATION_ONLY",
+  "purpose": "Represent repeated point-in-time provider expected-line snapshots for the same race so mutable pre-event line information can be detected without post-race reconstruction.",
+  "principles": [
+    "Only PRE_EVENT_EXPECTED_LINE is admitted at this gate.",
+    "Every snapshot must have capture_timestamp <= decision_cutoff.",
+    "Snapshots for the same race are ordered by capture timestamp.",
+    "A changed partition or changed within-line order is represented as an observed provider-forecast change, not as a tactical truth event.",
+    "An unchanged pair is transport/stability support only and is not a population stability-rate estimate.",
+    "LEGSHOW_OBSERVED_LINE remains a separate protected admission class.",
+    "No result, payout, odds, candidate performance, or economic information is used.",
+    "No numerical tactical probability or line-change probability is estimated here."
+  ],
+  "real_overlap_available": {
+    "earlier_capture": "KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v1",
+    "later_capture": "KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v2",
+    "shared_races": ["20260901_MATSUDO_7R","20260901_MATSUDO_9R","20260901_IWAKITAIRA_7R"]
+  },
+  "next_boundary": "MECHANICAL_REPEATED_SNAPSHOT_REGISTRY_AND_CI_ONLY"
+}
