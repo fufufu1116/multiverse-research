@@ -1,0 +1,189 @@
+{
+  "record": "KEIRIN_Q_ORACLE_SHARED_STATE_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS_STRONG_SYNTHETIC_SUPPORT",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "primary_hypothesis_classification": "ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT",
+  "hypothesis_under_test": "LATENT_SHARED_PROXY_DOMINANT",
+  "scientific_meaning": "Within the current Synthetic W1 simulator, giving the diagnostic C1_ORACLE the exact shared latent line-state component used by W1 not only removes N1's prior advantage over frozen C1, but makes C1_ORACLE substantially better than N1 in every one of the four already-fixed seed blocks. This strongly supports the explanation that N1's prior W1 advantage primarily came from indirectly proxying omitted shared latent line state. This statement is strictly about the current simulator and is not evidence that real keirin contains the same hidden state or that any model has real-world predictive edge.",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "limited_synthetic_authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_core_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_harness_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "frozen_coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "owner_scope_gate": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_ORACLE_SHARED_STATE_1_20260901_v1.json",
+    "blob": "f9a3578aadb722fad2b78f709f2f96f4b44580ad",
+    "status": "OWNER_EXPLICITLY_APPROVED_EXACT_SYNTHETIC_DIAGNOSTIC_ONLY",
+    "authorized_control": "C1_ORACLE_DIAGNOSTIC_ONLY_NOT_FORMAL_MODEL_CANDIDATE",
+    "authorization_auto_expansion": false
+  },
+  "prespecification": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_ORACLE_SHARED_STATE_1_PRESPEC_20260901_v1.json",
+    "blob": "321948b23bf975387f13bb16bd039688bc7cd787",
+    "commit": "cf2ef0f8c7b6c488923de6cd94a6d611e168de74",
+    "fixed_before_execution": true,
+    "world": "W1",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "result_adaptive_condition_selection": false,
+    "post_hoc_seed_or_condition_addition": false,
+    "primary_baseline_N1_minus_C1_expected_log_loss": -0.001139094451357625,
+    "interpretation_thresholds_fixed_before_result": true
+  },
+  "oracle_control_definition": {
+    "id": "C1_ORACLE",
+    "role": "DIAGNOSTIC_CONTROL_ONLY_NOT_A_FORMAL_MODEL_CANDIDATE",
+    "base": "exact frozen C1 runner utilities and exact C1 PL generator",
+    "only_added_information": "0.16 times the true line-average latent_skill for each rider's synthetic line",
+    "coefficient_source": "canonical W1 truth construction",
+    "oracle_coefficient_fitted": false,
+    "normal_PRE_mutated": false,
+    "normal_C1_or_N1_source_mutated": false,
+    "latent_truth_permitted_only_inside_oracle_boundary": true
+  },
+  "implementation_and_execution_history": {
+    "initial_harness_blob": "004a968dec43c2aa33b88f91121ce7a887414d14",
+    "initial_workflow_run_id": 33469960582,
+    "initial_workflow_job_id": 99737527621,
+    "initial_executed_head": "5b5eac1a912f5da58a94010853f8a2a785ceab0d",
+    "initial_conclusion": "failure",
+    "initial_failure_class": "MECHANICAL_IMPLEMENTATION_FAILURE_FAIL_CLOSED_NO_SCIENTIFIC_RESULT_ACCEPTED",
+    "initial_failure_detail": "Python result-record literals used JSON-style false rather than Python False, raising NameError before a valid result record was emitted.",
+    "scientific_parameters_or_prespec_changed_after_initial_failure": false,
+    "remediation": "Correct Python boolean literals only; no seed, model, coefficient, world, oracle definition, metric, threshold, or interpretation rule change.",
+    "remediation_commit": "0dd68b61a09aa5b72db6cb324a36cda5e195eaf8",
+    "final_harness_blob": "934d42df488552ab3e792c3b202b5cb57d6490e5",
+    "successful_workflow_run_id": 33470071199,
+    "successful_workflow_job_id": 99737852202,
+    "successful_executed_head": "26753f6dd6bc1b0a5837ec23e5856ae5488ec5b0",
+    "successful_conclusion": "success",
+    "workflow_permissions": "contents:read"
+  },
+  "aggregate_expected_ordered_top3_log_loss": {
+    "C1": 4.688863790585787,
+    "N1": 4.6877246961344206,
+    "C1_ORACLE": 4.672631555536946
+  },
+  "aggregate_deltas_lower_is_better": {
+    "N1_minus_C1": {
+      "rank1": 0.0,
+      "rank2": -0.0005490267118781755,
+      "rank3": -0.0005900677394810039,
+      "total": -0.0011390944513660628
+    },
+    "C1_ORACLE_minus_C1": {
+      "rank1": -0.0060706108210222265,
+      "rank2": -0.005458861884391597,
+      "rank3": -0.004702762343420153,
+      "total": -0.016232235048840415
+    },
+    "N1_minus_C1_ORACLE": {
+      "rank1": 0.0060706108210222265,
+      "rank2": 0.0049098351725134215,
+      "rank3": 0.004112694603939149,
+      "total": 0.015093140597474353
+    }
+  },
+  "primary_result": {
+    "prior_N1_advantage_over_C1": -0.0011390944513660628,
+    "N1_minus_C1_ORACLE_after_oracle_shared_state": 0.015093140597474353,
+    "residual_advantage_ratio": 0.0,
+    "prespecified_classification": "ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT",
+    "interpretation": "The N1 advantage disappears and reverses strongly once C1 receives the exact omitted shared latent W1 line state. This is stronger than the prespecified majority-erased threshold and supports LATENT_SHARED_PROXY_DOMINANT inside the current Synthetic simulator."
+  },
+  "block_results": {
+    "20261001": {
+      "N1_minus_C1": -0.000580307896502319,
+      "C1_ORACLE_minus_C1": -0.01276236609478687,
+      "N1_minus_C1_ORACLE": 0.012182058198284551,
+      "residual_advantage_ratio": 0.0,
+      "classification": "ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT"
+    },
+    "20262001": {
+      "N1_minus_C1": -0.0016083398212654032,
+      "C1_ORACLE_minus_C1": -0.018326337173082408,
+      "N1_minus_C1_ORACLE": 0.016717997351817004,
+      "residual_advantage_ratio": 0.0,
+      "classification": "ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT"
+    },
+    "20263001": {
+      "N1_minus_C1": -0.0009787526774411859,
+      "C1_ORACLE_minus_C1": -0.01451875529877622,
+      "N1_minus_C1_ORACLE": 0.013540002621335034,
+      "residual_advantage_ratio": 0.0,
+      "classification": "ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT"
+    },
+    "20264001": {
+      "N1_minus_C1": -0.0013889774102215924,
+      "C1_ORACLE_minus_C1": -0.019321481628690407,
+      "N1_minus_C1_ORACLE": 0.017932504218468814,
+      "residual_advantage_ratio": 0.0,
+      "classification": "ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT"
+    }
+  },
+  "block_stability": {
+    "oracle_beats_or_ties_N1_blocks": 4,
+    "majority_erased_blocks": 4,
+    "total_blocks": 4
+  },
+  "mechanical_and_leakage_checks": {
+    "max_oracle_component_vs_canonical_W1_shared_component_diff": 2.7755575615628914e-16,
+    "max_nonoracle_C1_reproduction_diff": 0.0,
+    "max_nonoracle_N1_reproduction_diff": 0.0,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 1.1102230246251565e-16,
+    "max_chain_decomposition_residual": 4.440892098500626e-15,
+    "prior_W1_N1_minus_C1_reproduction_error": 8.43769498715119e-15,
+    "PRE_latent_skill_absent": true,
+    "oracle_nonoracle_source_boundary_check": true,
+    "canonical_scientific_source_mutation": false,
+    "models_or_frozen_coefficients_changed": false,
+    "post_result_retuning": false,
+    "result_adaptive_condition_selection": false,
+    "new_seed_selection": false
+  },
+  "supported": [
+    "The prior W1 N1-vs-C1 advantage is reproduced before adding the oracle control.",
+    "The exact canonical W1 shared latent line-state component is highly informative under the current simulator: C1_ORACLE improves substantially over C1.",
+    "Giving C1 this exact shared latent state removes and reverses N1's prior W1 advantage in all four fixed blocks.",
+    "Together with the preceding W1 component ablation, the result strongly supports omitted shared latent line-state proxy recovery as the dominant source of N1's W1 advantage inside this simulator.",
+    "The earlier relation-strength and mismatch experiments remain compatible with a two-part mechanism: omitted shared-state proxy value at W1 plus additional explicit conditional-relation amplification in W2-like worlds."
+  ],
+  "not_supported": [
+    "No real-keirin latent shared state is established.",
+    "No real-world predictive edge, causal effect, frequency, ROI, bankroll, deployment readiness, or profitability is established.",
+    "C1_ORACLE is not a usable real model because it intentionally receives simulator-hidden truth unavailable to ordinary PRE.",
+    "No C1, N1, or oracle control is selected, frozen, promoted, or accepted.",
+    "The reused Synthetic seed blocks are not untouched or independent validation.",
+    "This result does not authorize exposing latent truth to normal PRE or model-facing interfaces.",
+    "This result does not authorize any new oracle control, new model, new real-data validation, protected-data access, or further scientific scope expansion."
+  ],
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "real_or_untouched_validation": false,
+    "real_live_input_collection": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false,
+    "real_world_edge_or_roi_evidence": false,
+    "scientific_segment_c_scoring_count": 0,
+    "authorization_auto_expanded": false
+  },
+  "post_result_decision": "Q-ORACLE-SHARED-STATE-1 is complete. Do not retune, add seed blocks, add result-aware slices, promote C1_ORACLE, or auto-expand scope. Prefer synthesis/closure of the current mechanistic evidence. Any genuinely new oracle or real-data question requires a fresh boundary classification and, if outside current authority, a separate governed gate."
+}
