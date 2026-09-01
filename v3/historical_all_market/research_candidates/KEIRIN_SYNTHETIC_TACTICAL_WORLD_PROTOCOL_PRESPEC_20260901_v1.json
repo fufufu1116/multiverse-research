@@ -1,0 +1,108 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_PROTOCOL_PRESPEC_20260901_v1",
+  "status": "PRESPECIFIED_SYNTHETIC_WORLD_RESEARCH_LANE_READY",
+  "classification": "SYNTHETIC_MECHANISM_AND_ANNOTATION_PROTOCOL_TEST_ONLY_NOT_REALITY_EVIDENCE",
+  "created_jst": "2026-09-01T22:55:00+09:00",
+  "fresh_research_head_before_write": "dcca1714ee570110e5c5a0da88a1136090995f76",
+  "purpose": "Continue tactical mechanism research while real replay access is blocked by generating candidate-independent synthetic race-process worlds with known latent tactical truth. This lane tests protocol observability, ambiguity, and annotation reliability; it does not replace real duplicate annotation.",
+  "reality_firewall": {
+    "synthetic_world_may_replace_real_duplicate_annotation": false,
+    "synthetic_outputs_are_real_race_evidence": false,
+    "synthetic_rates_may_be_promoted_to_reality_truth": false,
+    "synthetic_finish_effect_claims": false,
+    "model_selection_or_promotion": false,
+    "untouched_validation": false,
+    "real_predictive_superiority_claim": false,
+    "payout_roi_economics": false
+  },
+  "public_mechanism_basis": [
+    {
+      "source": "KEIRIN.JP beginner guide: lines",
+      "url": "https://keirin.jp/pc/static/beginner/basics/lines.html",
+      "admitted_mechanisms": ["LINE_FORMATION", "SELF_POWERED_LINE_LEADER", "DIRECT_FOLLOWER_BANTE", "BLOCK_OR_POSITION_DEFENSE", "SWITCH"]
+    },
+    {
+      "source": "KEIRIN.JP beginner guide: strategies",
+      "url": "https://keirin.jp/pc/static/beginner/basics/strategies.html",
+      "admitted_mechanisms": ["OSAE_SENKO", "TSUPPARI_SENKO", "KAMASHI_SENKO", "MAKURI", "PURSUIT_AND_LATE_OVERTAKE"]
+    }
+  ],
+  "state_space": [
+    "PRE_RACE_LINE_INTENT",
+    "INITIAL_POSITIONING",
+    "LINE_MAINTENANCE",
+    "INITIATIVE_ATTACK",
+    "INITIATIVE_CONFLICT",
+    "BANTE_FOLLOW",
+    "BLOCK_OR_POSITION_DEFENSE",
+    "POSITION_COMPETITION",
+    "LINE_FRAGMENT",
+    "SWITCH",
+    "REATTACH",
+    "SOLO_TRANSITION",
+    "FINAL_SPRINT_OR_OVERTAKE",
+    "FINISH"
+  ],
+  "world_levels": {
+    "T0": "DETERMINISTIC_CLEAR_GEOMETRY",
+    "T1": "CLEAR_TACTICS_WITH_TIMING_AND_SPEED_VARIATION",
+    "T2": "TACTICAL_INTERACTION_WITH_FRAGMENT_SWITCH_REATTACH_AND_PARTIAL_OCCLUSION",
+    "T3": "ADVERSARIAL_AMBIGUITY_NEAR_PROTOCOL_BOUNDARIES"
+  },
+  "generator_contract": {
+    "candidate_independent_truth": true,
+    "truth_generated_before_observation_rendering": true,
+    "observer_layer_cannot_modify_truth": true,
+    "race_process_representation": "ordered one-second observations plus optional interpolated sub-second geometry",
+    "rider_fields": ["car_no", "line_id", "line_role", "distance_along_track", "lateral_lane", "speed", "visibility"],
+    "truth_event_fields": ["event_type", "actor_car_no", "counterparty_car_no_or_null", "start_time_seconds", "end_time_seconds", "eligibility", "truth_label"],
+    "unknown_generation": "UNKNOWN arises only from observer visibility/identity insufficiency, never from hidden truth being absent.",
+    "finish_generation_authorized": false
+  },
+  "scenario_families": [
+    "CLEAN_INITIATIVE_ATTACK_WITH_ATTACHED_BANTE",
+    "INITIATIVE_ATTACK_WITH_BANTE_GAP",
+    "ATTACK_REATTACH_WITHIN_SIX_SECONDS",
+    "ATTACK_REATTACH_AFTER_SIX_SECONDS",
+    "CLEAN_FORWARD_TAKE_WITHOUT_CONFLICT",
+    "OCCUPIED_FORWARD_POSITION_WITH_ACTIVE_CONFLICT",
+    "BLOCK_OR_POSITION_DEFENSE_DURING_ATTACK",
+    "LINE_FRAGMENT_THEN_SWITCH",
+    "SOLO_ATTACK",
+    "TERMINAL_SPRINT_OVERTAKE_EXCLUSION",
+    "MOMENTARY_WHEEL_OVERLAP_EXCLUSION",
+    "ACTOR_CONTINUITY_UNKNOWN",
+    "FOLLOWER_IDENTITY_UNKNOWN",
+    "CONFLICT_VISIBILITY_UNKNOWN",
+    "MULTIPLE_ATTACKS_IN_ONE_RACE",
+    "ZERO_QUALIFYING_ATTACK_RACE"
+  ],
+  "frozen_opportunity_rules": {
+    "attack_requires_sustained_forward_move": true,
+    "attack_minimum_ordered_observations": 2,
+    "bante_window_seconds": 6,
+    "conflict_window_seconds": 6,
+    "unknown_is_distinct_from_absent": true,
+    "terminal_sprint_only_attack_excluded": true,
+    "commentary_only_inference_excluded": true
+  },
+  "evaluation_plan": {
+    "phase_1": "Generate balanced deterministic T0 truth cases covering every scenario family and protocol boundary.",
+    "phase_2": "Render observer-visible event streams without exposing latent truth to annotator.",
+    "phase_3": "Run Pass A then lock, Pass B then lock, then compare against synthetic latent truth.",
+    "phase_4": "Measure anchor precision recall F1, timestamp error, eligibility agreement, label agreement, UNKNOWN handling, and boundary failure modes.",
+    "phase_5": "Only after T0 protocol conformance, expand to T1-T3 uncertainty worlds. No synthetic prevalence estimate is transferred to Reality World."
+  },
+  "initial_balanced_suite": {
+    "minimum_cases_per_scenario_family": 4,
+    "scenario_family_count": 16,
+    "minimum_total_worlds": 64,
+    "sampling_note": "Balanced diagnostic design intentionally does not estimate real-world prevalence."
+  },
+  "parallel_real_source_lane": {
+    "real_duplicate_status": "FAIL_CLOSED_SOURCE_VISUAL_ACCESS_BLOCKER_BEFORE_DUPLICATE_PASS_A",
+    "continue_search_for_official_or_official-derived_replay_frames": true,
+    "synthetic_lane_does_not_unblind_original_annotations": true
+  },
+  "terminal_rule": "Synthetic worlds may validate whether the tactical protocol can recover known generated mechanisms and expose ambiguity. They may not be used as evidence that those mechanisms occur at any particular rate in real keirin, may not unblock the real duplicate agreement comparison, and may not authorize Reality World finish generation."
+}
