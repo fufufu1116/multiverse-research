@@ -1,0 +1,274 @@
+{
+  "record": "KEIRIN_REALITY_CALIBRATED_WORLD_FAMILY_V0_DESIGN_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_DESIGN_ONLY_NO_GENERATOR_EXECUTION",
+  "classification": "FOUNDATION_DESIGN_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "REALITY_CALIBRATION_FOUNDATION_ONLY_NOT_MODEL_VALIDATION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "world_family_contract_commit": "01e3937e2cca1ae9ad3e112478dc132991bc79d2",
+  "world_family_contract_path": "v3/historical_all_market/research_candidates/KEIRIN_WORLD_FAMILY_SEPARATION_CONTRACT_20260901_v1.json",
+  "root_reality_audit_blob": "ec888fc21a15f3474fbf327c3cec1ade89171d13",
+  "official_source_matrix_blob": "f82313b3abd5bd4bd71a9ceb99b891208680de0a",
+  "design_goal": "Define the minimum evidence-bearing structure required before any simulator may be called reality-calibrated Japanese keirin. This file does not implement a generator, choose a model winner, fit coefficients, consume real outcomes, or authorize validation.",
+  "core_principle": "REALISTIC means source-supported structural/statistical constraints with provenance and uncertainty, not visual plausibility or candidate recoverability.",
+  "initial_scope_policy": {
+    "family_scope": "MULTI_REGIME_SCHEMA_WITH_NARROW_IMPLEMENTATION_SLICES",
+    "reason": "Japanese keirin contains materially different grade, field-size and rule regimes. A single universal generator should not be assumed.",
+    "first_possible_implementation_slice_candidate": {
+      "status": "DESIGN_CANDIDATE_REQUIRES_FUTURE_GATE",
+      "race_regime": "STANDARD_ORIGINAL_LINE_KEIRIN",
+      "sex_scope": "MEN",
+      "field_size": 7,
+      "grade_scope": ["FI", "FII"],
+      "class_scope": ["S", "A1_A2", "A3"],
+      "note": "This is a deliberately narrow candidate slice because current official programs support seven-rider FI/FII structures. It is not claimed to represent all keirin and is not authorized for execution by this design."
+    },
+    "explicitly_separate_future_slices": [
+      "NINE_RIDER_ORIGINAL_LINE_PROGRAMS",
+      "GIII_GII_GI_GP_GRADE_SPECIFIC_PROGRAMS",
+      "KEIRIN_ADVANCE_MENS_INTERNATIONAL_FIXED_PACER",
+      "GIRLS_KEIRIN_INTERNATIONAL_FIXED_PACER",
+      "ROOKIE_OR_OTHER_SPECIAL_PROGRAMS"
+    ]
+  },
+  "layer_contracts": {
+    "A_PROGRAM_AND_REGIME": {
+      "required_fields": [
+        "race_id",
+        "event_date_time",
+        "venue_id",
+        "race_grade",
+        "race_class_band",
+        "race_stage",
+        "race_regime",
+        "field_size",
+        "program_source",
+        "program_source_timestamp",
+        "program_provenance_sha"
+      ],
+      "allowed_source_classes": ["OFFICIAL_RULE", "OFFICIAL_PROGRAM"],
+      "must_not_infer_from": ["sex alone", "class alone", "venue habit", "engineering default"],
+      "unknown_action": "FAIL_CLOSED_FOR_REGIME_DEPENDENT_MECHANICS"
+    },
+    "B_VENUE_AND_ENVIRONMENT": {
+      "required_or_candidate_fields": [
+        "bank_length_m",
+        "home_straight_m",
+        "bank_cant_deg",
+        "weather",
+        "temperature_c",
+        "wind_speed_mps",
+        "wind_direction",
+        "environment_observation_timestamp"
+      ],
+      "official_structural_support": [
+        "Japanese track lengths include approximately 333/335/400/500m classes",
+        "bank/wind context is decision-relevant in official guidance"
+      ],
+      "calibration_rule": "Venue geometry may use OFFICIAL_MASTER. Weather/wind must use decision-time observations or explicit ASSUMPTION_RANGE; never silently reuse engineering Gaussian priors as reality distributions."
+    },
+    "C_PERSISTENT_RIDER_IDENTITY": {
+      "required_fields": [
+        "rider_id",
+        "class_at_cutoff",
+        "registration_region_or_official_affiliation_if_admissible",
+        "active_status_at_cutoff"
+      ],
+      "required_property": "The same rider persists through time; races must not create independent anonymous replacement riders when making reality claims.",
+      "not_yet_calibrated": [
+        "latent ability process",
+        "age/decline process",
+        "injury/return process",
+        "fatigue process"
+      ]
+    },
+    "D_LONGITUDINAL_PRE_HISTORY": {
+      "required_point_in_time_fields_or_candidate_fields": [
+        "competition_score",
+        "win_rate",
+        "quinella_rate",
+        "trio_rate",
+        "S",
+        "H",
+        "B",
+        "nige",
+        "makuri",
+        "sashi",
+        "mark"
+      ],
+      "semantics": "These are historical PRE statistics, not direct latent ability sensors.",
+      "hard_rule": "Every historical value must be the value available before that race's decision cutoff. Current/latest profile values may not be backfilled into historical races.",
+      "synthetic_score_rule": "latent_skill + iid Gaussian noise may remain in ENGINEERING worlds but is prohibited from being labeled a reality model of official competition score."
+    },
+    "E_LINE_LIFECYCLE": {
+      "states": [
+        "PRE_EVENT_EXPECTED_LINE",
+        "LEGSHOW_OBSERVED_LINE",
+        "NONE_OR_UNAVAILABLE"
+      ],
+      "prohibited_state_as_PRE": "POST_RACE_RECONSTRUCTED_LINE",
+      "required_fields": [
+        "line_group_id",
+        "line_position",
+        "line_size",
+        "is_singleton",
+        "num_lines",
+        "line_source",
+        "line_snapshot_timestamp",
+        "line_observation_type",
+        "line_raw_provenance_sha"
+      ],
+      "hard_rules": [
+        "line_snapshot_timestamp <= decision_timestamp",
+        "withdrawn/inactive riders must be reconciled before actionable line state",
+        "expected and leg-show-observed line states may not be silently mixed",
+        "line-dependent model must fail closed when regime or line provenance is unproven"
+      ]
+    },
+    "F_ENDOGENOUS_LINE_FORMATION": {
+      "reality_supported_concepts": [
+        "line cooperation exists in original-line keirin",
+        "front/self-powered and chasing/bante roles are asymmetric",
+        "locality/relationships and rider style can matter to line formation",
+        "blocking, switching, competition for position and line disruption exist"
+      ],
+      "current_engineering_gap": "Current digital_twin_v1 randomly shuffles line membership and then samples style conditional on line position.",
+      "reality_design_requirement": "Reality-calibrated line formation must condition on persistent rider/context information rather than random car-number membership alone.",
+      "parameters_intentionally_left_unknown": [
+        "regional affinity weights",
+        "relationship affinity weights",
+        "style-to-role probabilities",
+        "line-shape frequencies",
+        "line revision probabilities"
+      ]
+    },
+    "G_RACE_DYNAMICS": {
+      "minimum_concepts_to_represent_or_sensitivity_test": [
+        "initiative conflict",
+        "front-versus-bante directional interaction",
+        "line survival/fragmentation",
+        "switching/reattachment",
+        "competition for position",
+        "bank x rider/style interaction",
+        "race-day stochastic shock"
+      ],
+      "anti_affinity_rule": "No candidate architecture may define the only truth mechanism. Reality-oriented conclusions require multiple plausible truth mechanisms or source-supported ranges that are chosen before candidate evaluation.",
+      "W1_rule": "Symmetric arithmetic mean line uplift and coefficient 0.16 may be retained only as an ENGINEERING fixture; they are not default reality mechanics.",
+      "W2_rule": "same-line/follower/chain truth may remain an ENGINEERING recoverability fixture; its predicate family is not default reality truth."
+    },
+    "H_OUTCOME_AND_PROBABILITY_OBJECT": {
+      "required_output": "ORDERED_TOP3_JOINT",
+      "existing_probability_contract_reusable": true,
+      "PL_role": "VALID_NULL_CONTROL_OR_COMPONENT_NOT_ASSUMED_COMPLETE_REAL_GENERATOR",
+      "reality_truth_generator_status": "UNSELECTED",
+      "rule": "Do not select the reality truth generator because C0/C1/N1/PEER performs best against it."
+    }
+  },
+  "calibration_target_registry_v0": [
+    {
+      "target": "race grade/class/stage/field-size eligibility",
+      "status": "SOURCEABLE_NOW",
+      "source_class": ["OFFICIAL_RULE", "OFFICIAL_PROGRAM"],
+      "point_estimate_allowed": true
+    },
+    {
+      "target": "bank geometry master data",
+      "status": "SOURCEABLE_NOW",
+      "source_class": ["OFFICIAL_MASTER"],
+      "point_estimate_allowed": true
+    },
+    {
+      "target": "race-regime identity",
+      "status": "SOURCEABLE_NOW_FOR_PROSPECTIVE_PROGRAMS",
+      "source_class": ["OFFICIAL_PROGRAM", "OFFICIAL_RULE"],
+      "point_estimate_allowed": true
+    },
+    {
+      "target": "decision-time line snapshot transport",
+      "status": "UNRESOLVED_TRANSPORT",
+      "source_class": ["PRE_EMPIRICAL_AUTHORIZED"],
+      "point_estimate_allowed": false
+    },
+    {
+      "target": "historical competition score/rates/S/H/B/maneuver counts",
+      "status": "POINT_IN_TIME_RECONSTRUCTION_NOT_YET_PROVEN",
+      "source_class": ["PRE_EMPIRICAL_AUTHORIZED"],
+      "point_estimate_allowed": false
+    },
+    {
+      "target": "line-shape and line-formation frequencies",
+      "status": "UNCALIBRATED",
+      "source_class": ["PRE_EMPIRICAL_AUTHORIZED", "EXTERNAL_AGGREGATE", "ASSUMPTION_RANGE"],
+      "point_estimate_allowed": false
+    },
+    {
+      "target": "competition-score longitudinal transition model",
+      "status": "UNCALIBRATED",
+      "source_class": ["PRE_EMPIRICAL_AUTHORIZED", "BURNED_OUTCOME_AWARE", "ASSUMPTION_RANGE"],
+      "point_estimate_allowed": false
+    },
+    {
+      "target": "line effect / tactical interaction effect sizes",
+      "status": "UNCALIBRATED",
+      "source_class": ["BURNED_OUTCOME_AWARE", "EXTERNAL_AGGREGATE", "ASSUMPTION_RANGE"],
+      "point_estimate_allowed": false
+    },
+    {
+      "target": "injury/fatigue/form persistence process",
+      "status": "UNCALIBRATED",
+      "source_class": ["PRE_EMPIRICAL_AUTHORIZED", "BURNED_OUTCOME_AWARE", "ASSUMPTION_RANGE"],
+      "point_estimate_allowed": false
+    }
+  ],
+  "official_source_anchors": [
+    {
+      "topic": "line formation and roles",
+      "url": "https://keirin.jp/pc/static/beginner/basics/lines.html"
+    },
+    {
+      "topic": "rider introduction / leg-show line observation before start",
+      "url": "https://keirin.jp/pc/static/beginner/basics/phases.html"
+    },
+    {
+      "topic": "race-card competition score and historical-stat semantics",
+      "url": "https://www.keirin.jp/pc/static/beginner/basics/racecard.html"
+    },
+    {
+      "topic": "2026 program and field-size/grade structures",
+      "url": "https://www.keirin.jp/pc/dfw/portal/guest/data/prize/2026/2026.html"
+    },
+    {
+      "topic": "bank lengths",
+      "url": "https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html"
+    },
+    {
+      "topic": "2026 men's KEIRIN ADVANCE international fixed-pacer regime",
+      "url": "https://keirin.jp/pc/dfw/portal/guest/news/2025khn/07/news20250715_02a.html"
+    }
+  ],
+  "anti_circularity_protocol": [
+    "All reality calibration targets and source classes must be frozen before any candidate is evaluated in the reality family.",
+    "Candidate performance may not determine truth-side coefficients, line frequencies, noise scales, or mechanism selection.",
+    "Matched/mechanism-recovery controls must be labeled ORACLE_LIKE or ENGINEERING and excluded from reality evidence.",
+    "Reality sensitivity must include materially different plausible mechanism families when exact truth is unknown.",
+    "Fresh Synthetic seeds do not cure world-specification affinity and must not be treated as doing so."
+  ],
+  "implementation_exit_criteria": [
+    "World-family separation contract remains intact.",
+    "No material reality parameter is silently inherited from W0-W4 engineering priors.",
+    "A machine-readable program/regime schema is specified.",
+    "Persistent rider identity and longitudinal PRE-stat semantics are specified.",
+    "Line lifecycle and decision-cutoff provenance contract is specified.",
+    "All unknown material parameters remain UNKNOWN or ASSUMPTION_RANGE rather than invented point estimates.",
+    "A separate Owner/governance gate authorizes implementation/execution of the first reality-calibrated generator slice."
+  ],
+  "current_stop_boundary": {
+    "generator_code_implementation": "STOP_AT_DESIGN_BOUNDARY",
+    "generator_execution": "STOP",
+    "C0_C1_N1_PEER_comparison_in_reality_family": "STOP",
+    "real_or_protected_data_open": "STOP",
+    "feature_search": "STOP",
+    "coefficient_search": "STOP",
+    "economics": "STOP",
+    "next_material_boundary": "REALITY_CALIBRATED_GENERATOR_V0_IMPLEMENTATION_GATE"
+  }
+}
