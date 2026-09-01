@@ -1,0 +1,43 @@
+{
+  "record": "KEIRIN_REAL_BASELINE_COMPARISON_MATRIX_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_PRESPEC_NO_REAL_BACKTEST_EXECUTED",
+  "objective": "Ask the cheapest scientifically useful real-data question first: can any pre-race model reproducibly improve probability quality over the market and simple structural controls under one strict temporal evaluator?",
+  "shared_evaluator": "KEIRIN_STRICT_TEMPORAL_BACKTESTER_PRESPEC_20260901_v1",
+  "eligible_feature_source": "Only PRE/decision-available fields with timestamp/provenance proof; RESULT and PAYOUT are excluded.",
+  "baseline_candidates": [
+    {"id":"M0","name":"MARKET_ONLY","description":"Normalize timestamp-proven market implied probabilities available at the declared cutoff; serves as the first external competitor, not as ground truth.","priority":"HIGHEST"},
+    {"id":"S0","name":"SIMPLE_SCORE","description":"Basic pre-race competition score/profile variables only; no tactical labels, no market residual tuning.","priority":"HIGHEST"},
+    {"id":"T0_TAB","name":"TABULAR_SIMPLE","description":"Simple GBDT-family candidate such as LightGBM/CatBoost/XGBoost using a frozen PRE feature subset; algorithm choice must be verified and prespecified before execution.","priority":"HIGH"},
+    {"id":"C0","name":"PLACKETT_LUCE_STRUCTURAL_CONTROL","description":"Existing structural null/control; not presumed final top3 generator.","priority":"HIGH"},
+    {"id":"C1","name":"LINE_AWARE_SIMPLE","description":"Existing line-augmented simple candidate using only PRE line structure with provenance.","priority":"HIGH"},
+    {"id":"N1","name":"CONDITIONAL_TOP3","description":"Existing conditional top3 architecture candidate; same evaluation bench, no synthetic success credit.","priority":"MEDIUM"},
+    {"id":"G1","name":"GNN_PROTOTYPE","description":"Rider=node and line/position/relationship=edge representation candidate; architecture hypothesis only, not preferred a priori.","priority":"VERIFY_BEFORE_ADOPTION"}
+  ],
+  "fair_comparison_contract": {
+    "same_race_universe": true,
+    "same_prediction_cutoff": true,
+    "same_temporal_split": true,
+    "same_probability_object_contract": true,
+    "same_scoring_implementation": true,
+    "same_missingness_policy": true,
+    "same_calibration_window": true,
+    "no_model_specific_posthoc_sample_filter": true
+  },
+  "primary_metrics": ["log_loss","Brier_score","calibration","ranking_quality","uncertainty","sample_size","temporal_stability","regime_stability"],
+  "market_comparison": {
+    "primary_question": "Does a candidate improve proper-scoring probability quality relative to the market-only baseline out of sample under identical cutoff semantics?",
+    "secondary_question": "Where candidate and market disagree, is the disagreement temporally and regime stable?",
+    "not_authorized": ["ROI_promotion","real_money_wagering","late_odds_as_insider_inference"]
+  },
+  "prespecified_failure_conditions": [
+    "candidate cannot emit valid normalized probability object",
+    "candidate needs post-result information",
+    "candidate requires architecture-specific race exclusions not declared before scoring",
+    "apparent gain vanishes across temporal blocks or is dominated by a tiny subgroup without predeclared support",
+    "calibration materially worsens despite rank improvement"
+  ],
+  "sample_size_rule": "Report race count and effective evaluation support for every metric and subgroup. Do not treat a small positive difference as reproducible signal without uncertainty and stability evidence.",
+  "tactical_feature_rule": "BANTE_FOLLOW/INITIATIVE_CONFLICT are excluded from real baseline inputs until independent duplicate annotation reliability is completed and separately admitted.",
+  "hard_boundaries": ["NO_UNTOUCHED_FINAL_OPEN","NO_PROTECTED_RESULT_PAYOUT","NO_ROI_SELECTION","NO_MODEL_PROMOTION","NO_WORKFLOW_DISPATCH","NO_REAL_MONEY_WAGERING"],
+  "next_gate": "Implement non-protected harness contracts for M0/S0/C0 first; verify real PRE and market point-in-time source availability before any real scoring execution."
+}
