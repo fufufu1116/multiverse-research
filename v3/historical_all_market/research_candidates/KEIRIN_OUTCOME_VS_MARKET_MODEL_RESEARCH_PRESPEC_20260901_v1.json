@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_OUTCOME_VS_MARKET_MODEL_RESEARCH_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_PRESPEC_NOT_EDGE_CLAIM",
+  "purpose": "Separate estimation of race outcome probabilities from estimation of market price formation so disagreement can be studied without treating either side as truth by default.",
+  "objects": {
+    "OUTCOME_MODEL": {
+      "target": "probability distribution over race outcome object under the existing probability object contract",
+      "inputs": "PRE/decision-available non-result features only",
+      "must_not_use": ["RESULT","PAYOUT","future_odds_after_cutoff"]
+    },
+    "MARKET_MODEL": {
+      "target": "distribution or trajectory of timestamped market-implied probabilities/odds conditional on information available up to each declared market timestamp",
+      "inputs": "timestamp-proven market snapshots plus permitted PRE structure",
+      "causal_language_prohibited_without_evidence": ["insider_money","smart_money","informed_flow"]
+    }
+  },
+  "neutral_market_terms": ["MARKET_FLOW","ODDS_DYNAMICS","LATE_MARKET_MOVEMENT"],
+  "primary_research_quantities": [
+    "outcome_probability_minus_market_implied_probability_at_fixed_cutoff",
+    "calibrated_probability_gap_by_time_block",
+    "gap_by_venue_class_regime_line_structure",
+    "odds_trajectory_stability",
+    "market_calibration_vs_realized_outcomes",
+    "candidate_calibration_vs_realized_outcomes"
+  ],
+  "mispricing_hypotheses_for_future_prespec": [
+    "line_correlation_mispricing",
+    "popular_leader_follower_combination_bias",
+    "tactical_conflict_regime_mispricing",
+    "race_structure_dependent_mispricing",
+    "favorite_longshot_style_bias",
+    "liquidity_dependent_distortion",
+    "late_odds_dynamics"
+  ],
+  "anti_hindsight_rule": "No hypothesis may be promoted as real edge if defined after inspecting the same outcome/market residuals used to support it. Exploratory findings remain exploratory and require a separately prespecified replication set.",
+  "market_baseline_rule": "The market is the first competitor, not an oracle. Market-only probability quality must be measured under the same temporal split and cutoff contract as outcome models.",
+  "economics_boundary": "Expected value, turnover, liquidity, self-impact, variance, drawdown, and risk-of-ruin research are downstream and require separate authorization after probability-quality evidence.",
+  "hard_boundaries": ["NO_RESULT_PAYOUT_FEATURES","NO_LATE_ODDS_CAUSAL_STORY","NO_ROI_PROMOTION","NO_REAL_MONEY_WAGERING","NO_UNTOUCHED_FINAL_OPEN","NO_WORKFLOW_DISPATCH"],
+  "next_gate": "Inventory timestamp-proven historical market snapshots and their publisher semantics without opening protected or settlement-only sources."
+}
