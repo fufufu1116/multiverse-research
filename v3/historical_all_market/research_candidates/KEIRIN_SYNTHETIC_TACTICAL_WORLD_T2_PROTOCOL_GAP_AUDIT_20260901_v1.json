@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T2_PROTOCOL_GAP_AUDIT_20260901_v1",
+  "status": "SYNTHETIC_PROTOCOL_STRESS_AUDIT_NOT_PROTOCOL_AMENDMENT",
+  "binding_protocol_blob": "67e9de2b9c533e00db02d9992d00a93fda99574d",
+  "binding_t2_blob": "65a653afe2bcf9c8e443651071b02fbea173cd2b",
+  "summary": {
+    "total_cases": 16,
+    "protocol_determinate": 14,
+    "protocol_gap_quarantined": 2,
+    "gap_cases": ["T2-012", "T2-015"]
+  },
+  "determinate_findings": [
+    "Overlapping attacks by different line leaders may create separate anchors when each independently satisfies the attack definition.",
+    "BANTE_FOLLOW eligibility is evaluated from the direct expected follower immediately before each attack, not from earlier line membership.",
+    "A rider who is solo immediately before attack has no BANTE_FOLLOW opportunity.",
+    "Visible incumbent defense during a sustained challenge is sufficient for INITIATIVE_CONFLICT PRESENT even when exact incumbent identity changes.",
+    "A clear take of an occupied position without sustained contest is INITIATIVE_CONFLICT ABSENT.",
+    "Insufficient visibility of the contest window yields INITIATIVE_CONFLICT UNKNOWN rather than ABSENT.",
+    "Follower reconnection does not count PRESENT if a rival again occupies the direct following position for the remainder of the observable six-second window.",
+    "A second acceleration inside one uninterrupted sustained attack is not a second anchor."
+  ],
+  "gaps": [
+    {
+      "case": "T2-012",
+      "gap": "ATTACK_EPISODE_RESET_CRITERION",
+      "problem": "The protocol defines a qualifying sustained forward move and its first timestamp but does not define when a completed attack episode has reset enough for the same rider to generate a later independent attack anchor.",
+      "action": "QUARANTINE_FROM_NUMERIC_PROTOCOL_SCORING_UNTIL_INDEPENDENT_CLARIFICATION"
+    },
+    {
+      "case": "T2-015",
+      "gap": "TERMINAL_SPRINT_PHASE_BOUNDARY_UNCERTAINTY",
+      "problem": "The protocol excludes attacks after the race has clearly transitioned to terminal sprint, but does not state the fail-closed treatment when the available observation cannot establish whether that transition has already occurred.",
+      "action": "QUARANTINE_FROM_NUMERIC_PROTOCOL_SCORING_UNTIL_INDEPENDENT_CLARIFICATION"
+    }
+  ],
+  "firewall": {
+    "protocol_changed": false,
+    "original_duplicate_annotation_opened": false,
+    "reality_rate_inferred": false,
+    "finish_effect_inferred": false,
+    "market_or_wagering_claim": false
+  },
+  "next_gate": "Proceed to T3 only with determinate semantics. Carry the two gaps as explicit unresolved research questions; do not tune answers from desired synthetic behavior."
+}
