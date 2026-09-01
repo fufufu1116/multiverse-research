@@ -1,0 +1,73 @@
+name: keirin-reality-calibrated-foundation-v0-ci
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - v3/historical_all_market/new_lineage/REALITY_CALIBRATED_FOUNDATION_SCHEMA_v0.json
+      - v3/historical_all_market/new_lineage/reality_calibrated_foundation_v0.py
+      - v3/historical_all_market/new_lineage/reality_calibrated_foundation_selftest_v0.py
+      - v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_REALITY_CALIBRATED_GENERATOR_V0_FOUNDATION_20260901_v1.json
+      - .github/workflows/keirin-reality-calibrated-foundation-v0-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  foundation-selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify canonical main has not drifted
+        shell: bash
+        run: |
+          set -euo pipefail
+          observed="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$observed" = "5c1403c1f5aabb80d29e8c868440aede8888ce61"
+          echo "OBSERVED_ORIGIN_MAIN=$observed"
+
+      - name: Verify engineering scientific sources are untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object v3/historical_all_market/new_lineage/digital_twin_v1.py)" = "1f1574400e43648e60af43d059965d021d8bbad8"
+          test "$(git hash-object v3/historical_all_market/new_lineage/top3_architecture_core_v1.py)" = "4e2a819dce69240792d927cceba434f53932b829"
+          test "$(git hash-object tools/keirin_synthetic_c0_c1_n1_comparison_v1.py)" = "9531715a8f346aec370bf1be24017a8ff577506b"
+
+      - name: Validate machine-readable schema
+        run: python -m json.tool v3/historical_all_market/new_lineage/REALITY_CALIBRATED_FOUNDATION_SCHEMA_v0.json >/dev/null
+
+      - name: Compile foundation modules
+        run: |
+          python -m py_compile v3/historical_all_market/new_lineage/reality_calibrated_foundation_v0.py
+          python -m py_compile v3/historical_all_market/new_lineage/reality_calibrated_foundation_selftest_v0.py
+
+      - name: Reject network or generator-capable foundation imports
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=v3/historical_all_market/new_lineage/reality_calibrated_foundation_v0.py
+          ! grep -Eq '(^|[[:space:]])import[[:space:]]+(requests|urllib|socket|httpx|subprocess|random)([[:space:]]|$)' "$file"
+          ! grep -Eq 'from[[:space:]]+(requests|urllib|socket|httpx|subprocess|random)' "$file"
+          ! grep -Fq 'world_joint_distribution(' "$file"
+          ! grep -Fq 'pl_top3_from_runner_utilities(' "$file"
+          ! grep -Fq 'conditional_top3_from_context_logits(' "$file"
+
+      - name: Execute foundation mechanical selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python reality_calibrated_foundation_selftest_v0.py
+
+      - name: Protected boundary terminal
+        run: |
+          echo 'FOUNDATION_ONLY=TRUE'
+          echo 'REAL_DATA_COLLECTION=FALSE'
+          echo 'TRUTH_GENERATOR=FALSE'
+          echo 'MODEL_COMPARISON=FALSE'
+          echo 'RESULT_PAYOUT_ACCESS=FALSE'
+          echo 'ECONOMICS=FALSE'
