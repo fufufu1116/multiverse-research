@@ -1,0 +1,52 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T0_PROTOCOL_CONFORMANCE_20260901_v1",
+  "status": "COMPLETED_WITH_CASESET_DEFECTS_FOUND",
+  "classification": "SYNTHETIC_PROTOCOL_CONFORMANCE_ONLY_NOT_REALITY_TRUTH",
+  "bindings": {
+    "research_head_before_review": "7f448e6561cbe6531c1e4a2e130ccdbc52b1d7ff",
+    "protocol_path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+    "protocol_blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d",
+    "t0_caseset_path": "v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_TACTICAL_WORLD_T0_CASESET_20260901_v1.json",
+    "t0_caseset_blob_sha": "9ff8c7109ff29359abb28a78c1b026cec26122da"
+  },
+  "method": "Compare each synthetic ground-truth definition against the frozen tactical opportunity protocol. This is specification conformance, not annotation of real races and not estimation of real-world rates.",
+  "summary": {
+    "cases_total": 24,
+    "cases_conformant": 22,
+    "cases_with_material_definition_defect": 2,
+    "case_level_conformance_rate": 0.9166666666666666,
+    "reality_claim_authorized": false
+  },
+  "material_defects": [
+    {
+      "case_id": "T0-003",
+      "field": "initiative_conflict",
+      "caseset_value": "ABSENT",
+      "mechanism": "line leader attacks into open forward space; follower remains attached",
+      "protocol_conflict": "INITIATIVE_CONFLICT eligibility requires the forward path to reach an already occupied/defended forward position. Open forward space is not an eligible conflict opportunity.",
+      "required_correction": "INELIGIBLE"
+    },
+    {
+      "case_id": "T0-004",
+      "fields": ["bante_follow", "initiative_conflict"],
+      "caseset_values": {"bante_follow":"ABSENT", "initiative_conflict":"ABSENT"},
+      "mechanism": "solo leader takes open forward space without contest",
+      "protocol_conflict": "A solo rider has no identifiable direct expected follower, so BANTE_FOLLOW is INELIGIBLE. Open forward space also fails INITIATIVE_CONFLICT eligibility.",
+      "required_correction": {"bante_follow":"INELIGIBLE", "initiative_conflict":"INELIGIBLE"}
+    }
+  ],
+  "checks_passed": [
+    "Downstream Pass B labels do not create or delete Pass A anchors.",
+    "UNKNOWN is represented separately from PRESENT and ABSENT.",
+    "INELIGIBLE is represented separately from UNKNOWN.",
+    "Six-second BANTE recovery boundary is represented on both sides of the cutoff.",
+    "Terminal sprint, momentary overlap, commentary-only inference, continuity failure, zero-anchor, multi-anchor, and non-independent continuation cases are present.",
+    "Direct expected follower semantics are explicitly tested in three-rider line cases."
+  ],
+  "cautions": [
+    "The 22/24 conformance score measures the authored test cases against the protocol; it is not annotator accuracy and not a real-world performance metric.",
+    "Case frequencies are intentionally constructed and cannot be used as tactical prevalence.",
+    "No finish order, payout, odds, ROI, model selection, or Reality transition truth is authorized from this result."
+  ],
+  "next_action": "Create corrected T0 v2 with the two defects repaired, re-run conformance to require 24/24 before escalating to T1 observation ambiguity."
+}
