@@ -1,0 +1,70 @@
+{
+  "record": "KEIRIN_S0_200R_REGIME_STABILITY_PRESPEC_20260902_v1",
+  "status": "PRESPECIFIED_BEFORE_200R_COMPLETION",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "locked_model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score",
+    "beta": 0.22260435254784533,
+    "refit_before_200r_report": false,
+    "new_features_before_200r_report": false
+  },
+  "primary_metrics": [
+    "winner_log_loss",
+    "winner_brier",
+    "ordered_top3_log_loss"
+  ],
+  "reference_baseline": "uniform_within_race",
+  "prespecified_regime_slices": [
+    {
+      "dimension": "venue",
+      "rule": "exact parsed venue name",
+      "minimum_races_for_numeric_reporting": 10
+    },
+    {
+      "dimension": "race_date",
+      "rule": "exact race date; report date blocks only when >=10 successful races",
+      "minimum_races_for_numeric_reporting": 10
+    },
+    {
+      "dimension": "active_car_count",
+      "rule": "number of admitted PRE riders in race",
+      "minimum_races_for_numeric_reporting": 10
+    },
+    {
+      "dimension": "competition_score_spread",
+      "rule": "max competition_score minus min competition_score within race; bucket boundaries frozen from the first 110-race descriptive corpus using tertiles and then held fixed for later races",
+      "minimum_races_for_numeric_reporting": 10
+    },
+    {
+      "dimension": "class_mix",
+      "rule": "set of parsed rider class labels present in race; no post-hoc merging except exact identical sets",
+      "minimum_races_for_numeric_reporting": 10
+    }
+  ],
+  "reporting_rules": [
+    "Report model and uniform metrics side by side for every eligible prespecified slice.",
+    "UNKNOWN or insufficient-n slices are not collapsed into favorable neighboring slices.",
+    "A slice failure is retained as negative evidence and cannot be removed from aggregate reporting.",
+    "No venue-specific, date-specific, class-specific, or score-spread-specific coefficient may be fitted from this 200R stability report.",
+    "No feature is promoted from exploratory ablation before a separately prespecified post-discovery confirmation batch."
+  ],
+  "decision_logic": {
+    "continue_baseline": "aggregate fixed-S0 remains better than uniform on all three primary metrics and no evidence of catastrophic calibration failure is hidden by aggregation",
+    "regime_warning": "one or more adequately sized slices are materially worse than uniform on a primary probability metric",
+    "do_not_auto_repair": true
+  },
+  "market_boundary": {
+    "market_odds_not_used_to_fit_s0": true,
+    "market_mispricing_not_inferred_from_probability_skill_alone": true,
+    "all_market_ticket probabilities remain downstream transforms of one ordered-top3 probability object"
+  },
+  "hard_boundaries": [
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT_AS_FEATURE",
+    "NO_PROTECTED_HOLDOUT_OPENING",
+    "NO_DEV2000_C_RESCUE",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_MODEL_PROMOTION_FROM_THIS_PRESPEC_ALONE"
+  ]
+}
