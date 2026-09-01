@@ -1,0 +1,61 @@
+{
+  "record": "KEIRIN_BATCH2_YAHOO_SENSOR_LOG_20260820_v1",
+  "status": "SENSOR_ONLY_NO_NUMERIC_TRUTH_PROMOTION",
+  "purpose": "Use Yahoo community observations as discovery and contradiction sensors while preventing user-generated claims from becoming calibration truth without primary corroboration.",
+  "observations": [
+    {
+      "source": "Yahoo!知恵袋",
+      "url": "https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q1154192991",
+      "sensor_claim": "Users report that bank length, straight length, line resolution, and changing wind can alter perceived race difficulty and upset tendency.",
+      "classification": "SENSOR_ONLY",
+      "numeric_use": "PROHIBITED",
+      "primary_followup": ["official bank geometry", "official/public PRE weather fields if available"]
+    },
+    {
+      "source": "Yahoo!知恵袋",
+      "url": "https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q12287476827",
+      "sensor_claim": "A recent user discussion again points to wind exposure and bank-specific geometry as possible sources of predictability differences.",
+      "classification": "SENSOR_ONLY",
+      "numeric_use": "PROHIBITED",
+      "primary_followup": ["official bank length/geometry", "pre-race wind availability"]
+    },
+    {
+      "source": "Yahoo!知恵袋",
+      "url": "https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q12101301947",
+      "sensor_claim": "Users describe tactical timing as differing across 333/400/500m banks.",
+      "classification": "SENSOR_ONLY",
+      "numeric_use": "PROHIBITED",
+      "primary_followup": ["official rules/glossary", "future preregistered tactical research if needed"]
+    }
+  ],
+  "primary_corroboration_already_available": {
+    "bank_length_domain": {
+      "status": "VERIFIED_REALITY",
+      "official_source": "KEIRIN.JP glossary and official bank record",
+      "domain": [333.3, 335, 400, 500]
+    },
+    "racecard_class_style_score_fields": {
+      "status": "VERIFIED_REALITY_PRE_FIELD_SEMANTICS",
+      "official_source": "KEIRIN.JP racecard guide"
+    },
+    "pre_lineup_prediction_service": {
+      "status": "VERIFIED_SERVICE_EXISTENCE_ONLY",
+      "official_source": "KEIRIN.JP guide/FAQ mentions 並び予想",
+      "semantic_limit": "A lineup prediction is PRE information, not verified executed line truth."
+    }
+  },
+  "not_promoted_from_yahoo": [
+    "BANK_WIND_EFFECT_SIZE",
+    "LINE_EFFECT_SIZE",
+    "LINE_BREAK_RATE",
+    "HEAVY_TAIL_SHOCK",
+    "MARKET_STRENGTH_BIAS",
+    "global bank-specific upset frequency",
+    "global line-resolution frequency"
+  ],
+  "scientific_firewall": {
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "bulk_scraping_or_bypass": "PROHIBITED"
+  }
+}

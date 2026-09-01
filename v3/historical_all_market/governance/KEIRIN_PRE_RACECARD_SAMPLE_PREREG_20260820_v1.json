@@ -1,0 +1,143 @@
+{
+  "record": "KEIRIN_PRE_RACECARD_SAMPLE_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_TARGET_RACECARD_COLLECTION_AMENDED_PRE_COLLECTION_AFTER_LAB_BLOCK",
+  "original_locked_at_jst": "2026-08-20T11:36+09:00",
+  "amended_at_jst": "2026-08-20T12:36+09:00",
+  "amendment_reason": "Lab found the original event targets were not fully determined by the written selection rule: 500m skipped earlier Utsunomiya F2 and 400m had an unresolved same-day tie. No target racecard collection occurred before this amendment.",
+  "parent_batch": "KEIRIN_REALITY_CALIBRATION_BATCH2_PREREG_v1",
+  "purpose": "Collect a small, provenance-preserving public PRE sample before outcomes are available, without claiming population representativeness.",
+  "source_policy": {
+    "primary": "KEIRIN.JP official schedule and official PRE/racecard surfaces",
+    "yahoo": "SENSOR_ONLY_DISCOVERY_CONTRADICTION_NOT_SAMPLE_TRUTH",
+    "result_or_payout": "PROHIBITED",
+    "bulk_scraping_or_bypass": "PROHIBITED",
+    "collection_mode": "SMALL_NORMALLY_ACCESSIBLE_PUBLIC_PRE_ONLY"
+  },
+  "sampling_frame": {
+    "window": "2026-08-21_through_2026-08-31",
+    "event_eligibility_rule": {
+      "official_schedule_grade": "F2",
+      "time_band_policy": "INCLUDE_ALL_OFFICIAL_F2_SCHEDULE_ENTRIES_REGARDLESS_OF_DAY_NIGHT_MORNING_MIDNIGHT_OR_OTHER_TIME_BAND_ICON",
+      "girls_mixed_event_policy": "DO_NOT_EXCLUDE_EVENT_ONLY_BECAUSE_GIRLS_RACES_MAY_BE_PRESENT; APPLY_MALE_FILTER_AT_RACE_SELECTION_STAGE",
+      "special_event_policy": "EVENT_SELECTION_USES_GRADE_AND_BANK_ONLY; RACE_SELECTION_LATER_EXCLUDES_NONSTANDARD_OR_NON_ORIGINAL_LINE_RACES",
+      "racecard_content_used_for_event_selection": false,
+      "result_or_payout_used_for_event_selection": false
+    },
+    "selection_algorithm": {
+      "target_bank_lengths_m": [333, 400, 500],
+      "group_candidates_by": "bank_length_m",
+      "sort_key": ["start_date_ascending", "venue_unicode_codepoint_ascending"],
+      "select": "FIRST_CANDIDATE_PER_TARGET_BANK_AFTER_SORT",
+      "tie_break_is_racecard_independent": true,
+      "bank_335_policy": "NO_F2_CANDIDATE_IN_WINDOW_SO_UNMEASURED_IN_THIS_SMALL_SAMPLE"
+    },
+    "official_f2_candidate_inventory": [
+      {"venue":"大垣","start_date":"2026-08-21","grade":"F2","bank_length_m":400},
+      {"venue":"松山","start_date":"2026-08-21","grade":"F2","bank_length_m":400},
+      {"venue":"武雄","start_date":"2026-08-21","grade":"F2","bank_length_m":400},
+      {"venue":"立川","start_date":"2026-08-22","grade":"F2","bank_length_m":400},
+      {"venue":"和歌山","start_date":"2026-08-23","grade":"F2","bank_length_m":400},
+      {"venue":"青森","start_date":"2026-08-24","grade":"F2","bank_length_m":400},
+      {"venue":"宇都宮","start_date":"2026-08-24","grade":"F2","bank_length_m":500},
+      {"venue":"熊本","start_date":"2026-08-24","grade":"F2","bank_length_m":400},
+      {"venue":"松阪","start_date":"2026-08-25","grade":"F2","bank_length_m":400},
+      {"venue":"高知","start_date":"2026-08-25","grade":"F2","bank_length_m":500},
+      {"venue":"伊東温泉","official_schedule_venue_label":"伊東","start_date":"2026-08-27","grade":"F2","bank_length_m":333},
+      {"venue":"岸和田","start_date":"2026-08-27","grade":"F2","bank_length_m":400},
+      {"venue":"小松島","start_date":"2026-08-27","grade":"F2","bank_length_m":400},
+      {"venue":"四日市","start_date":"2026-08-29","grade":"F2","bank_length_m":400},
+      {"venue":"いわき平","start_date":"2026-08-30","grade":"F2","bank_length_m":400},
+      {"venue":"静岡","start_date":"2026-08-30","grade":"F2","bank_length_m":400},
+      {"venue":"岐阜","start_date":"2026-08-30","grade":"F2","bank_length_m":400},
+      {"venue":"和歌山","start_date":"2026-08-30","grade":"F2","bank_length_m":400}
+    ],
+    "events": [
+      {
+        "venue": "伊東温泉",
+        "official_schedule_venue_label": "伊東",
+        "start_date": "2026-08-27",
+        "grade": "F2",
+        "bank_length_m": 333,
+        "official_schedule_title": "前検コメはウィンチケット杯"
+      },
+      {
+        "venue": "大垣",
+        "start_date": "2026-08-21",
+        "grade": "F2",
+        "bank_length_m": 400,
+        "official_schedule_title": "Ｋドリームス杯サテライト姫路賞"
+      },
+      {
+        "venue": "宇都宮",
+        "start_date": "2026-08-24",
+        "grade": "F2",
+        "bank_length_m": 500,
+        "official_schedule_title": "オッズパーク杯"
+      }
+    ],
+    "race_selection": {
+      "day": "FIRST_DAY_ONLY",
+      "order": "RACE_NUMBER_ASCENDING",
+      "take_first_eligible_per_event": 3,
+      "target_races_max": 9,
+      "replacement_across_event_or_date": false,
+      "eligible_race": {
+        "sex_category": "MALE_ONLY",
+        "race_regime": "STANDARD_ORIGINAL_LINE_KEIRIN",
+        "field_size": 7,
+        "official_pre_racecard_available_before_race": true,
+        "exclude_l_grade_or_girls": true,
+        "exclude_special_9_or_other_exceptional_format": true
+      }
+    },
+    "replacement_rule": "If fewer than three eligible races exist in an event, use all eligible races from that event and do not replace them with races from another event or another date.",
+    "population_claim": false
+  },
+  "admissible_fields": {
+    "CLASS": {
+      "status": "VERIFIED_OFFICIAL_PRE_FIELD",
+      "use": "WITHIN_BAND_CLASS_SAMPLE_ANCHOR"
+    },
+    "STYLE": {
+      "status": "VERIFIED_OFFICIAL_PRE_FIELD",
+      "values": ["逃", "両", "追"],
+      "use": "STYLE_SAMPLE_AND_STYLE_BY_PRE_LINE_POSITION_IF_LINE_FORECAST_AVAILABLE"
+    },
+    "COMPETITION_SCORE": {
+      "status": "VERIFIED_OFFICIAL_PRE_FIELD",
+      "note": "Past-performance-derived but visible before the target race; this Batch does not use it as an outcome or payout field."
+    },
+    "PRE_LINE_FORECAST": {
+      "status": "OFFICIAL_SERVICE_PRE_INFORMATION_CANDIDATE",
+      "semantic_guard": "Treat as pre-race lineup forecast/prediction, not as verified executed line truth.",
+      "derived_target_name": "PRE_LINE_FORECAST_SHAPE_FREQUENCY",
+      "if_unavailable": "Do not infer line membership from prefecture, style, score, commentary, or later results. Leave line-derived targets unmeasured."
+    }
+  },
+  "planned_outputs": [
+    "sample race inventory with retrieval timestamps and source locators",
+    "within-sample class counts",
+    "within-sample style counts",
+    "PRE line-forecast shape counts only if the official PRE line forecast is directly available",
+    "style-by-PRE-line-position counts only if that forecast is directly available"
+  ],
+  "claim_limits": [
+    "MAX_9_PREREGISTERED_RACES_ONLY",
+    "SAMPLE_ONLY_NOT_POPULATION_FREQUENCY",
+    "NO_BANK_SPECIFIC_POPULATION_FREQUENCY_FROM_THIS_SAMPLE",
+    "PRE_LINE_FORECAST_IS_NOT_EXECUTED_LINE_TRUTH",
+    "NO_LINE_BREAK_RATE",
+    "NO_CAUSAL_EFFECT_SIZE",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_EDGE_OR_ROI_CLAIM",
+    "BANK_335_UNMEASURED_IN_THIS_SMALL_SAMPLE"
+  ],
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "scientific_segment_c_scoring_count": 0,
+    "new_untouched_validation_opened": false,
+    "RESULT_PAYOUT_access": "UNAUTHORIZED"
+  }
+}
