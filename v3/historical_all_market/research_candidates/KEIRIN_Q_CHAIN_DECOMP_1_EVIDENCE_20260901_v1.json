@@ -1,0 +1,128 @@
+{
+  "record": "KEIRIN_Q_CHAIN_DECOMP_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "question": "At the exact existing W1 and W2 endpoints, which ordered-top3 chain stage accounts for fixed N1's expected-log-loss advantage or disadvantage versus fixed C1?",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584"
+  },
+  "prespecification": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_CHAIN_DECOMP_1_PRESPEC_20260901_v1.json",
+    "blob": "8636d709e94794c3b121d90784cf4975866a22f8",
+    "commit": "a2eb5dbf467161c6a40ab7d631c18c8092787bab",
+    "fixed_before_execution": true,
+    "worlds": ["W1", "W2"],
+    "new_seed_selection": false,
+    "new_kernel_addition": false,
+    "new_world_addition": false,
+    "post_hoc_subgroup_slicing": false,
+    "post_result_retuning": false
+  },
+  "harness": {
+    "path": "tools/keirin_q_chain_decomp_1_v1.py",
+    "blob": "f10d9875c6b840f8d6461ae661b291e6452830f9",
+    "implementation_commit": "c4b22f65ec9169006f257b00829268e6e712d086"
+  },
+  "execution": {
+    "workflow_run_id": 33469224844,
+    "workflow_job_id": 99735367380,
+    "executed_head": "5702d295aef9c1f8e60c32e53b49cae042a4f141",
+    "conclusion": "success",
+    "workflow_permissions": "contents:read"
+  },
+  "fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "untouched_validation_claim": false
+  },
+  "aggregate_results": {
+    "W1": {
+      "signed_source_classification": "W1_GAIN_BOTH_RANK2_AND_RANK3",
+      "N1_minus_C1": {
+        "rank1": 0.0,
+        "rank2": -0.0005490267118783976,
+        "rank3": -0.0005900677394807818,
+        "total": -0.001139094451357181
+      },
+      "fraction_of_total_gain_by_absolute_component": {
+        "rank2": 0.481985244654819,
+        "rank3": 0.518014755345181
+      }
+    },
+    "W2": {
+      "signed_source_classification": "W2_GAIN_BOTH_RANK2_AND_RANK3",
+      "N1_minus_C1": {
+        "rank1": 0.0,
+        "rank2": -0.008092957577588322,
+        "rank3": -0.002415024773702923,
+        "total": -0.010507982351291467
+      },
+      "fraction_of_total_gain_by_absolute_component": {
+        "rank2": 0.770171924900003,
+        "rank3": 0.229828075099997
+      }
+    }
+  },
+  "W1_N1_minus_C1_by_block": {
+    "20261001": {"rank1": 2.220446049250313e-16, "rank2": -0.00002289157992185764, "rank3": -0.0005574163165824597, "total": -0.000580307896502319},
+    "20262001": {"rank1": 0.0, "rank2": -0.0008871583126990323, "rank3": -0.0007211815085665929, "total": -0.0016083398212654032},
+    "20263001": {"rank1": 0.0, "rank2": -0.0004852325206206043, "rank3": -0.0004935201568243563, "total": -0.0009787526774411859},
+    "20264001": {"rank1": 0.0, "rank2": -0.0008008244342725401, "rank3": -0.0005881529759490522, "total": -0.0013889774102215924}
+  },
+  "W2_N1_minus_C1_by_block": {
+    "20261001": {"rank1": 0.0, "rank2": -0.007358058799685541, "rank3": -0.0024485455332772244, "total": -0.009806604332961655},
+    "20262001": {"rank1": 0.0, "rank2": -0.008801622200749648, "rank3": -0.0027351236061026185, "total": -0.01153674580685049},
+    "20263001": {"rank1": 0.0, "rank2": -0.008030847774793015, "rank3": -0.0021219228355247033, "total": -0.010152770610321049},
+    "20264001": {"rank1": 0.0, "rank2": -0.008181301535123975, "rank3": -0.0023545071199073675, "total": -0.010535808655031786}
+  },
+  "mechanical_execution_checks": {
+    "max_C1_N1_rank1_marginal_difference": 5.551115123125783e-16,
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 1.1102230246251565e-16,
+    "max_decomposition_residual": 4.440892098500626e-15,
+    "models_changed": false,
+    "coefficients_changed": false,
+    "post_result_retuning": false,
+    "post_hoc_subgroup_slicing": false
+  },
+  "interpretation": {
+    "supported": [
+      "C1 and N1 have effectively identical rank-1 marginals, so the observed Synthetic differences arise entirely after conditioning on earlier finishers.",
+      "At W1, where explicit truth relation_strength is zero, N1's small total gain is split across both rank-2 and rank-3 conditional stages.",
+      "At W2, both conditional stages improve, but rank-2 contributes about 77 percent of the absolute N1-vs-C1 total gain.",
+      "Q-REL-STRENGTH-1 therefore cannot be explained by a rank-1/base-utility difference between C1 and N1."
+    ],
+    "not_supported": [
+      "This decomposition does not by itself prove why W1 conditional gains arise.",
+      "It does not prove explicit real-keirin conditional line dependence, predictive edge, ROI, causal effect, deployment readiness, model selection, freeze or promotion.",
+      "The reused Synthetic seed blocks are not untouched validation."
+    ]
+  },
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  },
+  "candidate_next_guidance": {
+    "additional_seed_only_replication": "DO_NOT_PRIORITIZE",
+    "post_hoc_subgroup_slicing": "STOP_BY_DEFAULT",
+    "next": "Use existing W0/W1 code and existing evidence to diagnose the lambda=0 mechanism. Treat any intervention that changes canonical W1 truth construction as a separate scope question before execution.",
+    "owner_action_now": "NONE"
+  }
+}
