@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 )
 
 const iphoneStatusDir = "/workspaces/.codespaces/.persistedshare"
@@ -57,73 +59,11 @@ func iphoneSafeStatusLine(line string) bool {
 	return iphoneCodespaceName(name) && iphoneHex(challenge, 32) && iphoneHex(identity, 64)
 }
 
-func iphoneSelftest() {
-	good := iphoneChallengePrefix + "codespace=studious-halibut challenge=" + strings.Repeat("a", 32) + " image_identity_sha256=" + strings.Repeat("b", 64)
-	if !iphoneSafeStatusLine(good) || !iphoneSafeStatusLine(iphoneWaitingLine) {
-		panic("iphone-observability-positive")
-	}
-	bad := []string{
-		good + " device_code=SHOULD_NEVER_PERSIST",
-		iphoneChallengePrefix + "codespace=bad/name challenge=" + strings.Repeat("a", 32) + " image_identity_sha256=" + strings.Repeat("b", 64),
-		iphoneChallengePrefix + "codespace=studious-halibut challenge=" + strings.Repeat("a", 31) + " image_identity_sha256=" + strings.Repeat("b", 64),
-		"device code 1234-5678",
-		"Logged in to github.com",
-	}
-	for i, line := range bad {
-		if iphoneSafeStatusLine(line) {
-			panic(fmt.Sprintf("iphone-observability-negative-%d", i))
-		}
-	}
-	fmt.Println("PHASE_C_V19_7_36_V7R6_IPHONE_OBSERVABILITY_SELFTEST_PASS")
-}
-
-func iphoneOpenStatus() (*os.File, error) {
-	for _, p := range []string{"/workspaces", "/workspaces/.codespaces", iphoneStatusDir} {
-		st, err := os.Lstat(p)
-		if err != nil {
-			return nil, fmt.Errorf("status-parent:%s:%w", p, err)
-		}
-		if !st.IsDir() || st.Mode()&os.ModeSymlink != 0 {
-			return nil, fmt.Errorf("status-parent-class:%s", p)
-		}
-	}
-	f, err := os.OpenFile(iphoneStatusPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0444)
-	if err != nil {
-		return nil, err
-	}
-	if err := os.Chown(iphoneStatusPath, 0, 0); err != nil {
-		f.Close()
-		return nil, err
-	}
-	if err := os.Chmod(iphoneStatusPath, 0444); err != nil {
-		f.Close()
-		return nil, err
-	}
-	if _, err := fmt.Fprintln(f, iphoneReadyLine); err != nil {
-		f.Close()
-		return nil, err
-	}
-	if err := f.Sync(); err != nil {
-		f.Close()
-		return nil, err
-	}
-	return f, nil
-}
-
-func iphoneFatal(original *os.File, status *os.File, msg string) {
-	if original != nil {
-		fmt.Fprintln(original, "PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_DENIED:"+msg)
-	} else {
-		fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_DENIED:"+msg)
-	}
-	if status != nil {
-		status.Close()
-	}
-	os.Exit(92)
-}
-
-func iphoneMirrorUntilWaiting(r, w *os.File, originalFD int, status *os.File) {
+func iphoneMirrorUntilWaiting(r, w *os.File, originalFD int, status *os.File, done chan<- struct{}) {
 	defer r.Close()
+	if done != nil {
+		defer close(done)
+	}
 	original := os.NewFile(uintptr(originalFD), "multiverse-original-stdout")
 	if original == nil {
 		iphoneFatal(nil, status, "ORIGINAL_STDOUT")
@@ -181,6 +121,145 @@ func iphoneMirrorUntilWaiting(r, w *os.File, originalFD int, status *os.File) {
 	}
 }
 
+func iphoneSelftest() {
+	good := iphoneChallengePrefix + "codespace=studious-halibut challenge=" + strings.Repeat("a", 32) + " image_identity_sha256=" + strings.Repeat("b", 64)
+	if !iphoneSafeStatusLine(good) || !iphoneSafeStatusLine(iphoneWaitingLine) {
+		panic("iphone-observability-positive")
+	}
+	bad := []string{
+		good + " device_code=SHOULD_NEVER_PERSIST",
+		iphoneChallengePrefix + "codespace=bad/name challenge=" + strings.Repeat("a", 32) + " image_identity_sha256=" + strings.Repeat("b", 64),
+		iphoneChallengePrefix + "codespace=studious-halibut challenge=" + strings.Repeat("a", 31) + " image_identity_sha256=" + strings.Repeat("b", 64),
+		"device code 1234-5678",
+		"Logged in to github.com",
+	}
+	for i, line := range bad {
+		if iphoneSafeStatusLine(line) {
+			panic(fmt.Sprintf("iphone-observability-negative-%d", i))
+		}
+	}
+
+	td, err := os.MkdirTemp("", "multiverse-iphone-observability-")
+	if err != nil {
+		panic("iphone-observability-tempdir")
+	}
+	defer os.RemoveAll(td)
+	exclusivePath := filepath.Join(td, "exclusive-status.txt")
+	f, err := os.OpenFile(exclusivePath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0444)
+	if err != nil {
+		panic("iphone-observability-exclusive-create")
+	}
+	f.Close()
+	if second, err := os.OpenFile(exclusivePath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0444); err == nil {
+		second.Close()
+		panic("iphone-observability-exclusive-recreate-accepted")
+	}
+
+	statusPath := filepath.Join(td, "behavior-status.txt")
+	status, err := os.OpenFile(statusPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		panic("iphone-observability-behavior-status")
+	}
+	if _, err := fmt.Fprintln(status, iphoneReadyLine); err != nil {
+		panic("iphone-observability-behavior-ready")
+	}
+	oldStdout, err := syscall.Dup(int(os.Stdout.Fd()))
+	if err != nil {
+		panic("iphone-observability-behavior-old-stdout")
+	}
+	defer syscall.Close(oldStdout)
+	captureR, captureW, err := os.Pipe()
+	if err != nil {
+		panic("iphone-observability-behavior-capture-pipe")
+	}
+	sourceR, sourceW, err := os.Pipe()
+	if err != nil {
+		panic("iphone-observability-behavior-source-pipe")
+	}
+	if err := syscall.Dup2(int(sourceW.Fd()), int(os.Stdout.Fd())); err != nil {
+		panic("iphone-observability-behavior-redirect")
+	}
+	done := make(chan struct{})
+	go iphoneMirrorUntilWaiting(sourceR, sourceW, int(captureW.Fd()), status, done)
+	fmt.Println(good)
+	fmt.Println(iphoneWaitingLine)
+	select {
+	case <-done:
+	case <-time.After(2 * time.Second):
+		panic("iphone-observability-behavior-timeout")
+	}
+	const downstream = "DEVICE_CODE_SHOULD_REMAIN_TERMINAL_ONLY_AFTER_RESTORE"
+	fmt.Println(downstream)
+	if err := syscall.Dup2(oldStdout, int(os.Stdout.Fd())); err != nil {
+		panic("iphone-observability-behavior-final-restore")
+	}
+	captureW.Close()
+	captured, err := io.ReadAll(captureR)
+	captureR.Close()
+	if err != nil {
+		panic("iphone-observability-behavior-capture-read")
+	}
+	statusBytes, err := os.ReadFile(statusPath)
+	if err != nil {
+		panic("iphone-observability-behavior-status-read")
+	}
+	captureText := string(captured)
+	statusText := string(statusBytes)
+	if !strings.Contains(captureText, good) || !strings.Contains(captureText, iphoneWaitingLine) || !strings.Contains(captureText, downstream) {
+		panic("iphone-observability-behavior-original-stream")
+	}
+	if !strings.Contains(statusText, iphoneReadyLine) || !strings.Contains(statusText, good) || !strings.Contains(statusText, iphoneWaitingLine) || strings.Contains(statusText, downstream) {
+		panic("iphone-observability-behavior-persistence-boundary")
+	}
+	fmt.Println("PHASE_C_V19_7_36_V7R6_IPHONE_OBSERVABILITY_SELFTEST_PASS")
+	fmt.Println("PHASE_C_V19_7_36_V7R6_IPHONE_OBSERVABILITY_BEHAVIOR_SELFTEST_PASS")
+}
+
+func iphoneOpenStatus() (*os.File, error) {
+	for _, p := range []string{"/workspaces", "/workspaces/.codespaces", iphoneStatusDir} {
+		st, err := os.Lstat(p)
+		if err != nil {
+			return nil, fmt.Errorf("status-parent:%s:%w", p, err)
+		}
+		if !st.IsDir() || st.Mode()&os.ModeSymlink != 0 {
+			return nil, fmt.Errorf("status-parent-class:%s", p)
+		}
+	}
+	f, err := os.OpenFile(iphoneStatusPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0444)
+	if err != nil {
+		return nil, err
+	}
+	if err := os.Chown(iphoneStatusPath, 0, 0); err != nil {
+		f.Close()
+		return nil, err
+	}
+	if err := os.Chmod(iphoneStatusPath, 0444); err != nil {
+		f.Close()
+		return nil, err
+	}
+	if _, err := fmt.Fprintln(f, iphoneReadyLine); err != nil {
+		f.Close()
+		return nil, err
+	}
+	if err := f.Sync(); err != nil {
+		f.Close()
+		return nil, err
+	}
+	return f, nil
+}
+
+func iphoneFatal(original *os.File, status *os.File, msg string) {
+	if original != nil {
+		fmt.Fprintln(original, "PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_DENIED:"+msg)
+	} else {
+		fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_DENIED:"+msg)
+	}
+	if status != nil {
+		status.Close()
+	}
+	os.Exit(92)
+}
+
 func iphoneInstallStatusChannel() error {
 	status, err := iphoneOpenStatus()
 	if err != nil {
@@ -204,7 +283,7 @@ func iphoneInstallStatusChannel() error {
 		status.Close()
 		return err
 	}
-	go iphoneMirrorUntilWaiting(r, w, originalFD, status)
+	go iphoneMirrorUntilWaiting(r, w, originalFD, status, nil)
 	return nil
 }
 
