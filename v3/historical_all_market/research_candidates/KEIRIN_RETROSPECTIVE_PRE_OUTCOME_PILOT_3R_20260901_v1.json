@@ -1,0 +1,60 @@
+{
+  "record": "KEIRIN_RETROSPECTIVE_PRE_OUTCOME_PILOT_3R_20260901_v1",
+  "status": "PIPELINE_PILOT_PASS_NOT_MODEL_TRAINING_EVIDENCE",
+  "pre_parser_receipt": {
+    "record": "KEIRIN_KDREAMS_RETROSPECTIVE_PRE_PARSE_RECEIPT_v2",
+    "status": "PASS",
+    "input_html_files": 3,
+    "successful_races": 3,
+    "pre_rows": 20,
+    "rejected_files": 0,
+    "failure_examples": [],
+    "result_access": false,
+    "payout_access": false,
+    "network_access": false
+  },
+  "outcomes": [
+    {
+      "race_id": "3120260304020001",
+      "race_date": "2026-03-05",
+      "venue": "松戸",
+      "race_no": 1,
+      "finish_1": 1,
+      "finish_2": 5,
+      "finish_3": 6,
+      "source_url": "https://keirin.kdreams.jp/matsudo/raceresult/31202603040200/",
+      "evidence_role": "RETROSPECTIVE_OUTCOME_LABEL_ONLY"
+    },
+    {
+      "race_id": "8120260306010003",
+      "race_date": "2026-03-06",
+      "venue": "小倉",
+      "race_no": 3,
+      "finish_1": 7,
+      "finish_2": 2,
+      "finish_3": 1,
+      "source_url": "https://keirin.kdreams.jp/kokura/raceresult/81202603060100/",
+      "evidence_role": "RETROSPECTIVE_OUTCOME_LABEL_ONLY"
+    },
+    {
+      "race_id": "8120260306010004",
+      "race_date": "2026-03-06",
+      "venue": "小倉",
+      "race_no": 4,
+      "finish_1": 7,
+      "finish_2": 1,
+      "finish_3": 2,
+      "source_url": "https://keirin.kdreams.jp/kokura/raceresult/81202603060100/",
+      "evidence_role": "RETROSPECTIVE_OUTCOME_LABEL_ONLY"
+    }
+  ],
+  "checks": {
+    "race_id_join_count": 3,
+    "pre_rows": 20,
+    "missing_outcome_labels": 0,
+    "payout_fields_included": false,
+    "result_used_as_feature": false,
+    "economic_metrics_computed": false
+  },
+  "note": "Pilot proves transport and PRE/RESULT separation only. Three races are far too small for model-quality claims."
+}
