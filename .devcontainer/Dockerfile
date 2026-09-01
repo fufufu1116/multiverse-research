@@ -11,9 +11,10 @@ COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py /tmp/manifest.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py /tmp/python-actual-use-selftest.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_EXTERNAL_SESSION_GATE_20260901.go /tmp/session-gate.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py /tmp/image-identity-builder.py
 RUN set -eu; \
  /usr/bin/python3 -m pip install --no-cache-dir --only-binary=:all: --require-hashes --target /opt/multiverse/v36/pydeps -r /opt/multiverse/v36/requirements.txt; \
- /usr/bin/python3 -m py_compile /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3.py /tmp/manifest.py /tmp/python-actual-use-selftest.py; \
+ /usr/bin/python3 -m py_compile /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3.py /tmp/manifest.py /tmp/python-actual-use-selftest.py /tmp/image-identity-builder.py; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-anchor-v7r2 /tmp/producer.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-control-v7r2 /tmp/control.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-session-gate-v7r3 /tmp/session-gate.go; \
@@ -28,20 +29,7 @@ RUN set -eu; \
  exec 3</usr/bin/python3; /proc/self/fd/3 -I -S -B /tmp/python-actual-use-selftest.py; exec 3<&-; \
  /usr/local/sbin/multiverse-v36-control-v7r2 build-selftest; \
  test "$(stat -c '%u %a' /opt/multiverse/v36/closure-manifest-v7.json)" = '0 444'; \
- /usr/bin/python3 - <<'PY'
-import hashlib,json,os
-paths=['/usr/local/sbin/multiverse-v36-session-gate-v7r3','/usr/local/sbin/multiverse-v36-anchor-v7r2','/usr/local/sbin/multiverse-v36-control-v7r2','/opt/multiverse/v36/runtime-v7.py','/opt/multiverse/v36/step3-binding.json','/opt/multiverse/v36/step3.py','/opt/multiverse/v36/closure-manifest-v7.json']
-out=[]
-for p in paths:
- h=hashlib.sha256();n=0
- with open(p,'rb',buffering=0) as f:
-  for b in iter(lambda:f.read(1<<20),b''): n+=len(b);h.update(b)
- out.append({'path':p,'size':n,'sha256':h.hexdigest()})
-b=json.dumps({'version':'V19.7.36-v7r3-image-identity','objects':out},sort_keys=True,separators=(',',':')).encode()
-p='/opt/multiverse/v36/image-identity-v7r3.json'
-with open(p,'wb') as f:f.write(b)
-os.chown(p,0,0);os.chmod(p,0o444)
-print('PHASE_C_V19_7_36_V7R3_IMAGE_IDENTITY_SHA256='+hashlib.sha256(b).hexdigest())
-PY
-RUN rm -f /tmp/manifest.py /tmp/python-actual-use-selftest.py && test "$(stat -c '%u %a' /opt/multiverse/v36/image-identity-v7r3.json)" = '0 444'
+ /usr/bin/python3 /tmp/image-identity-builder.py; \
+ test "$(stat -c '%u %a' /opt/multiverse/v36/image-identity-v7r3.json)" = '0 444'; \
+ rm -f /tmp/manifest.py /tmp/python-actual-use-selftest.py /tmp/image-identity-builder.py
 ENTRYPOINT ["/usr/local/sbin/multiverse-v36-session-gate-v7r3"]
