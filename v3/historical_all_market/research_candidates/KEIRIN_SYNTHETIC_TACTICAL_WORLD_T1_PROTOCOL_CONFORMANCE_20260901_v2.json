@@ -1,0 +1,32 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T1_PROTOCOL_CONFORMANCE_20260901_v2",
+  "status": "PASS_DETERMINATE_CASES_WITH_ONE_QUARANTINED_PROTOCOL_GAP",
+  "classification": "SYNTHETIC_PROTOCOL_STRESS_ONLY_NOT_REALITY_TRUTH",
+  "bindings": {
+    "protocol_blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d",
+    "t1_v2_caseset_blob_sha": "96d5cd0454350f07a315bb0143799f25a3a727bd"
+  },
+  "summary": {
+    "cases_total": 24,
+    "protocol_determinate_cases": 23,
+    "determinate_cases_conformant": 23,
+    "determinate_case_conformance_rate": 1.0,
+    "quarantined_protocol_gap_cases": 1,
+    "quarantined_case_ids": ["T1-003"]
+  },
+  "key_result": "Under synthetic observation degradation, the frozen protocol consistently fails closed to UNKNOWN or no anchor in all 23 cases where the protocol provides a determinate rule. One eligibility-state representation gap remains explicitly quarantined.",
+  "gap": {
+    "topic": "INITIATIVE_CONFLICT eligibility not established by available view",
+    "current_safe_representation": "NOT_ESTABLISHED_FOR_SYNTHETIC_REVIEW_ONLY",
+    "protocol_amendment": false
+  },
+  "not_authorized": [
+    "real-world rate inference",
+    "real-world accuracy claim",
+    "finish prediction claim",
+    "model promotion",
+    "market/odds/payout/ROI claim",
+    "replacement of real duplicate annotation"
+  ],
+  "next_gate": "T2 interaction-complexity stress: simultaneous line changes, fragmentation, reattachment, overlapping attacks, and contested-position ambiguity."
+}
