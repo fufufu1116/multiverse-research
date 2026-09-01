@@ -1,0 +1,28 @@
+{
+  "version": "V19.7.36-v7r2-review-packet",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "expected_head": "044ec25c3e943dbaf30e4d4f5ab94c4189f200b8",
+  "expected_tree": "f7de42637264dc2a2dab9a4461e39c740888b91a",
+  "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+  "canonical_tree": "3d47741b4863411e5c36cb4c28925ac455ab6441",
+  "prior_lab_fix": 5487063524,
+  "material_blockers_targeted": [
+    "build-time Python actual-use proof",
+    "Step3 exact same-object POST_OAUTH_ONLY implementation",
+    "same-UID Owner wake impersonation"
+  ],
+  "mechanical_core_evidence": {
+    "producer_go_build_local": "PASS",
+    "control_runner_go_build_local": "PASS",
+    "python_actual_use_script_py_compile_local": "PASS",
+    "docker_equivalent_build_in_core_environment": "NOT_AVAILABLE_NO_CLAIM",
+    "workflow_run_at_freeze": "NONE"
+  },
+  "security_changes": {
+    "owner_trigger": "No in-container UID1000 wake channel. Future Owner Gate action is creation of the fresh dedicated Codespace; root ENTRYPOINT auto-start is the only reviewed trigger.",
+    "step3": "Producer once-opens and authenticates Step3 and retains that exact fd; POST_OAUTH_ONLY same-object runner uses isolated Python plus private socketpair to frozen control runner step3-preflight.",
+    "python_build_gate": "Docker build runs exact fd-bound isolated Python, imports PyNaCl 1.6.2, performs SealedBox roundtrip, enumerates sys.modules and /proc/self/maps, and requires exact manifest identity."
+  },
+  "prohibited": ["Live","Codespace creation now","OAuth","Step3 execution now","Step4","--apply","production mutation","main/ruleset mutation","writer secret/key","merge","workflow dispatch","Runtime activation"],
+  "runtime": "OFF"
+}
