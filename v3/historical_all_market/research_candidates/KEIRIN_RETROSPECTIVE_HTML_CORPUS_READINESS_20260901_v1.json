@@ -1,0 +1,25 @@
+{
+  "record": "KEIRIN_RETROSPECTIVE_HTML_CORPUS_READINESS_20260901_v1",
+  "status": "READY_FOR_OFFLINE_PARSER_PILOT",
+  "observed_date": "2026-09-01",
+  "owner_confirmed_semantics": "historical race pages retain historical pre-race rider information; do not treat current-profile values as the source of truth for historical race features",
+  "drive_inventory": {
+    "mime_type": "text/html",
+    "metadata_query_returned_at_least": 100,
+    "note": "search was capped at 100 results; this is a lower bound, not a corpus total"
+  },
+  "verified_sample": {
+    "source_type": "saved KDreams race-detail HTML",
+    "example": "Matsudo 2026-03-05 race 1",
+    "contains": ["canonical race-detail URL", "race date", "race metadata", "pre-race rider table", "result/odds page content"],
+    "scientific_use": "PRE fields and outcome labels must be extracted into separate outputs; payout/settlement/economic fields excluded"
+  },
+  "parser_candidate": "tools/keirin_kdreams_retrospective_html_parser_v1.py",
+  "next_gate": [
+    "materialize a bounded pilot set of saved HTML files",
+    "run parser offline",
+    "inspect parse receipt and reject ambiguous pages fail-closed",
+    "if pilot passes, expand to >=200 races and build chronological S0 train/calibration/development split"
+  ],
+  "prohibited": ["payout as feature", "result as feature", "ROI/model promotion from parser success", "protected holdout opening", "real-money wagering"]
+}
