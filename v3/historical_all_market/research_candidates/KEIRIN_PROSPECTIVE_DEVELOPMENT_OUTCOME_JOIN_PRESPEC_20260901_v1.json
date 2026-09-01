@@ -1,0 +1,56 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_DEVELOPMENT_OUTCOME_JOIN_PRESPEC_20260901_v1",
+  "status": "PRESPEC_BEFORE_20260902_OUTCOMES",
+  "purpose": "Define a clean future development-label lineage for S0 and later baselines without repurposing old DEV2000 result objects.",
+  "sample_role": "DEVELOPMENT_ONLY_BURN_AFTER_USE",
+  "minimum_target_races": 200,
+  "preferred_target_races": 500,
+  "sequence": [
+    "1_FREEZE_RACE_MEMBERSHIP_BEFORE_RESULTS",
+    "2_FREEZE_PRE_ROWS_AND_PROVENANCE",
+    "3_FREEZE_ANY_MARKET_OBSERVATIONS_OR_MARK_MISSING",
+    "4_HASH_LOCK_PRE_AND_MARKET_ARTIFACTS",
+    "5_ONLY_THEN_ATTACH_OUTCOME_LABELS",
+    "6_TRAIN_EVALUATE_CHRONOLOGICALLY",
+    "7_BURN_SAMPLE_FOR_FINAL_VALIDATION"
+  ],
+  "outcome_label_contract": {
+    "allowed_target_fields": [
+      "race_id",
+      "winner_car_no",
+      "ordered_top3_finish_for_probability_scoring_if_separately_collected"
+    ],
+    "forbidden_as_features": [
+      "winner_car_no",
+      "finish_order",
+      "payout",
+      "refund",
+      "post_race_commentary",
+      "post_race_line_reconstruction"
+    ],
+    "payout_required": false,
+    "economics_required": false
+  },
+  "join_gate": {
+    "pre_locked": true,
+    "market_locked_or_explicitly_missing": true,
+    "membership_locked": true,
+    "model_spec_locked_before_scoring": true,
+    "result_source_provenance_required": true
+  },
+  "training_split": {
+    "method": "chronological",
+    "no_random_future_to_past_leakage": true,
+    "same_event_split_crossing": "FAIL_CLOSED",
+    "calibration_separate_from_training": true
+  },
+  "promotion_rule": "Development performance cannot itself establish final real-world edge. Untouched final validation remains separate and unopened.",
+  "20260902_role": "FIRST_PROSPECTIVE_PILOT_AND_POTENTIAL_EARLY_DEVELOPMENT_ROWS; not enough alone for coefficient promotion.",
+  "hard_boundaries": [
+    "NO_DEV2000_C_RESCUE",
+    "NO_ECON_HOLDOUT1000",
+    "NO_PAYOUT_FEATURE",
+    "NO_REAL_MONEY_WAGERING",
+    "NO_PRODUCTION_MUTATION"
+  ]
+}
