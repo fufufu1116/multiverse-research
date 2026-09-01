@@ -1,0 +1,34 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_MARKET_SNAPSHOT_CONTAMINATION_FIREWALL_20260901_v1",
+  "status": "PRESPECIFIED_BEFORE_20260902_OUTCOMES",
+  "purpose": "Prevent post-race result visibility from contaminating prospective market snapshot evidence when collection occurs late or after race completion.",
+  "core_rule": "A market observation is admissible only from a source artifact whose own provenance establishes that the quoted prices existed at or before the race decision cutoff. Retrieval time may be later; price timestamp may not be.",
+  "admissible_market_evidence": [
+    "immutable or archived snapshot with source timestamp <= decision cutoff",
+    "previously captured bytes with capture timestamp <= decision cutoff and hash/provenance",
+    "provider history endpoint that explicitly identifies the historical quote timestamp <= decision cutoff without requiring result-derived reconstruction"
+  ],
+  "inadmissible_market_evidence": [
+    "current page after race when the page does not prove the displayed odds are the pre-race snapshot",
+    "final odds reconstructed from result or payout pages",
+    "screenshots or pages where result and price provenance cannot be separated",
+    "any price inferred using payout, finish order, or post-race information"
+  ],
+  "late_retrieval_rule": {
+    "if_valid_historical_snapshot_exists": "MARKET_PRICE_MAY_BE_ADMITTED_WITH_ORIGINAL_PRE_CUTOFF_TIMESTAMP; any visible result must be quarantined from feature/model work until the outcome-label stage",
+    "if_no_valid_historical_snapshot_exists": "MARKET_BASELINE_MISSING_FOR_THAT_RACE; DO_NOT_BACKFILL_FROM_POST_RACE_PAGE; DO_NOT_REPLACE_RACE"
+  },
+  "outcome_firewall": {
+    "before_market_lock": "Do not intentionally open result, payout, finish-order, replay-result overlay, or result-bearing market page.",
+    "accidental_result_exposure": "Record contamination incident. Do not use the exposed outcome to alter membership, PRE features, market snapshot choice, model parameters, thresholds, or exclusions.",
+    "outcome_label_stage": "Outcome may be joined only after PRE and market evidence for the race are locked or explicitly marked missing."
+  },
+  "market_snapshot_target": {
+    "primary": "latest source-verifiable snapshot at or before T-3 minutes",
+    "fallback": "latest earlier source-verifiable pre-cutoff snapshot",
+    "no_snapshot": "MISSING; never post-race reconstructed"
+  },
+  "membership_rule": "A missing market snapshot does not authorize replacing the prespecified race with another race.",
+  "research_use_only": true,
+  "not_authorized": ["real-money wagering", "ROI promotion", "RESULT/PAYOUT features", "protected holdout opening", "production mutation"]
+}
