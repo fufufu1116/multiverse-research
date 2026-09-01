@@ -1,0 +1,58 @@
+{
+  "record": "KEIRIN_REAL_EVIDENCE_INPUT_CONTRACT_DRAFT_20260901_v1",
+  "status": "SOURCE_INDEPENDENT_RESEARCH_DRAFT_NOT_PROVIDER_ADMISSION",
+  "purpose": "Bridge the existing PRE interface, feature registry, market snapshots, and strict temporal evaluator without admitting any protected or unauthorized source.",
+  "inherits": {
+    "PRE_interface_blob": "60a2efb456c196a56ef4f20104918e6f855d0a69",
+    "feature_registry_blob": "f161a519d18949d7adaf655366f9d27b364add42",
+    "data_constitution_blob": "a7a892257fd5d373fc865d13f70f1159c728bfe2",
+    "probability_object_contract_blob": "11195377028cdb2cd56e6549f5521f5fb7b53b78"
+  },
+  "race_record_required": [
+    "race_id",
+    "event_id",
+    "prediction_timestamp",
+    "decision_timestamp",
+    "decision_cutoff_rule_id",
+    "race_regime",
+    "active_car_nos",
+    "riders",
+    "feature_values"
+  ],
+  "feature_value_required": ["feature_name","value","available_at","source_family","raw_provenance_sha"],
+  "market_snapshot_optional": {
+    "required_if_present": ["market_id","snapshot_timestamp","quote_type","complete_support_flag","raw_provenance_sha","quotes"],
+    "snapshot_timestamp_rule": "snapshot_timestamp <= decision_timestamp",
+    "incomplete_support_rule": "MARKET_ONLY_BASELINE_FAILS_CLOSED_UNLESS_A_SEPARATE_PRESPEC_DEFINES_A_NONBIASING_PARTIAL_MARKET_METHOD",
+    "late_snapshot_rule": "NEVER_BACKFILL_TO_EARLIER_DECISION_CUTOFF"
+  },
+  "line_structure": {
+    "allowed": "PRE line snapshot satisfying existing PRE_INTERFACE_SCHEMA_DRAFT_v1",
+    "required_for": ["C1","N1","GNN_line_edge_candidate"],
+    "post_race_reconstruction": "PROHIBITED",
+    "missing_or_unknown": "line-dependent candidate abstains/fails closed; non-line baselines may remain eligible if their own inputs are valid"
+  },
+  "result_boundary": {
+    "observed_outcome": "may enter evaluator only as label after feature object and prediction object are frozen",
+    "RESULT_as_feature": false,
+    "PAYOUT_as_feature": false,
+    "settlement_module_import": false
+  },
+  "source_rights": {
+    "provider_admission_by_this_draft": false,
+    "public_visibility_is_bulk_reuse_permission": false,
+    "access_control_bypass": false,
+    "external_provider_contact": false
+  },
+  "minimum_machine_checks": [
+    "all timestamps timezone-aware",
+    "available_at <= prediction_timestamp for every feature",
+    "decision_timestamp <= race start cutoff defined by rule id",
+    "line snapshot timestamp <= decision timestamp",
+    "market snapshot timestamp <= decision timestamp",
+    "raw provenance SHA present for each admitted source object",
+    "same race cannot appear twice in one evaluation manifest",
+    "same event split contamination detected before scoring"
+  ],
+  "next_gate": "Create toy fixtures and adapter tests only. Real source binding requires a separate source-availability and rights/provenance record."
+}
