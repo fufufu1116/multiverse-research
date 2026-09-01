@@ -1,0 +1,69 @@
+{
+  "record": "KEIRIN_REAL_SIGNAL_CHEAP_DEVELOPMENT_SAMPLE_PRESPEC_20260901_v1",
+  "status": "PRESPECIFIED_SAMPLE_DESIGN_NO_REAL_OUTCOMES_OPENED",
+  "purpose": "Determine whether any reproducible real-world probability signal exists beyond a timestamped market-only baseline using the cheapest scientifically valid development sample.",
+  "sample_design": {
+    "classification": "DEVELOPMENT_ONLY_BURN_AFTER_USE",
+    "target_regime": "STANDARD_ORIGINAL_LINE_MENS_FI_FII_WHEN_OBJECTIVELY_IDENTIFIABLE",
+    "selection_rule": "chronological contiguous races from one or more predeclared meetings; no outcome-aware inclusion/exclusion",
+    "minimum_target_races": 200,
+    "preferred_target_races": 500,
+    "meeting_boundary_policy": "keep complete selected meeting-days where feasible to reduce cherry-picking",
+    "sample_membership_freeze_before_outcomes": true,
+    "replacement_rule": "only objective source-unavailability or regime-ineligibility; replacement must be next chronological eligible race and recorded before outcome scoring"
+  },
+  "required_pre_inputs": [
+    "race_id",
+    "prediction_timestamp",
+    "decision_timestamp",
+    "active_car_nos",
+    "rider_id_or_stable_identity",
+    "score_or_equivalent_pre_published_strength",
+    "line_group_and_line_position_when_point_in_time_available",
+    "source_timestamp_and_provenance"
+  ],
+  "market_inputs": {
+    "M0_required": true,
+    "preferred": "complete timestamp-proven 3-rentan quote surface at one fixed pre-race cutoff",
+    "fallback": "a different complete sold-market probability surface may be used only if frozen before outcomes and all models are compared on the same races/market",
+    "late_market_movement": "separate research feature; not required for first M0 baseline"
+  },
+  "baseline_order": [
+    "M0_MARKET_ONLY",
+    "S0_SIMPLE_SCORE",
+    "C0_PLACKETT_LUCE",
+    "C1_LINE_AWARE_SIMPLE",
+    "TABULAR_GBDT_CANDIDATE",
+    "N1_CONDITIONAL_TOP3",
+    "GNN_PROTOTYPE_ONLY_IF_EARLIER_BASELINES_JUSTIFY_COMPLEXITY"
+  ],
+  "primary_metrics_before_economics": [
+    "ordered_top3_log_loss",
+    "ordered_top3_brier",
+    "first_place_brier",
+    "calibration",
+    "ranking_quality",
+    "sample_size",
+    "temporal_stability",
+    "regime_stability"
+  ],
+  "signal_decision_rule": {
+    "no_single_metric_win": true,
+    "market_comparator_required": true,
+    "repeatability_required": true,
+    "small_sample_positive_result": "CANDIDATE_SIGNAL_ONLY",
+    "negative_or_unstable_result": "DO_NOT_ESCALATE_COMPLEXITY_WITHOUT_NEW_MECHANISTIC_REASON"
+  },
+  "firewalls": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "CURRENT_DEV2000_C": "NO_ACCESS_FOR_NEW_LINEAGE",
+    "RESULT_PAYOUT_AS_FEATURE": false,
+    "payout_required": false,
+    "economics_first": false,
+    "real_money": false,
+    "model_promotion": false,
+    "untouched_final_validation": false,
+    "same_lineage_rescue_tuning": false
+  },
+  "terminal_rule": "Do not score outcomes until sample membership, PRE inputs, market cutoff, provenance and hashes are frozen under an authority that explicitly permits development outcome attachment."
+}
