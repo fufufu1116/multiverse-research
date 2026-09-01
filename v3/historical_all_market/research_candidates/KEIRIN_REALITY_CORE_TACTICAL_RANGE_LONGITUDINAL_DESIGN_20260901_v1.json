@@ -1,0 +1,72 @@
+{
+  "record": "KEIRIN_REALITY_CORE_TACTICAL_RANGE_LONGITUDINAL_DESIGN_20260901_v1",
+  "status": "PRESPEC_FOUNDATION_NO_TRUTH_EXECUTION",
+  "principles": [
+    "No tactical event probability is estimated or encoded at this gate.",
+    "No effect coefficient on finish probability is encoded.",
+    "Tactical uncertainty is represented first as ordinal scenario bands, not false-precision percentages.",
+    "Expected-line provider snapshots are admissible only as PRE_EVENT_EXPECTED_LINE and never as observed leg-show truth.",
+    "Reality line topology must accept any structurally valid field partition; old Engineering templates are not exhaustive.",
+    "Rider state is persistent across time and every usable state must be point-in-time reconstructible before decision cutoff.",
+    "Environment remains optional and omitted from the required baseline."
+  ],
+  "ordinal_levels": ["LOW","MEDIUM","HIGH"],
+  "tactical_dimensions": [
+    "line_cohesion",
+    "initiative_conflict",
+    "position_competition",
+    "block_or_position_defense",
+    "line_fragmentation",
+    "switching",
+    "reattachment",
+    "solo_transition"
+  ],
+  "scenario_family": {
+    "T0_STABLE_LINE": {
+      "line_cohesion": "HIGH",
+      "initiative_conflict": "LOW",
+      "position_competition": "LOW",
+      "block_or_position_defense": "MEDIUM",
+      "line_fragmentation": "LOW",
+      "switching": "LOW",
+      "reattachment": "MEDIUM",
+      "solo_transition": "LOW"
+    },
+    "T1_BALANCED_TACTICAL": {
+      "line_cohesion": "MEDIUM",
+      "initiative_conflict": "MEDIUM",
+      "position_competition": "MEDIUM",
+      "block_or_position_defense": "MEDIUM",
+      "line_fragmentation": "MEDIUM",
+      "switching": "MEDIUM",
+      "reattachment": "MEDIUM",
+      "solo_transition": "MEDIUM"
+    },
+    "T2_DISRUPTIVE": {
+      "line_cohesion": "LOW",
+      "initiative_conflict": "HIGH",
+      "position_competition": "HIGH",
+      "block_or_position_defense": "HIGH",
+      "line_fragmentation": "HIGH",
+      "switching": "HIGH",
+      "reattachment": "LOW",
+      "solo_transition": "HIGH"
+    },
+    "T3_CONFLICT_WITH_RECOVERY": {
+      "line_cohesion": "MEDIUM",
+      "initiative_conflict": "HIGH",
+      "position_competition": "HIGH",
+      "block_or_position_defense": "MEDIUM",
+      "line_fragmentation": "HIGH",
+      "switching": "HIGH",
+      "reattachment": "HIGH",
+      "solo_transition": "MEDIUM"
+    }
+  },
+  "numeric_probability_mapping": null,
+  "effect_size_mapping": null,
+  "future_admission_rule": "Any numerical probability/rate/effect mapping requires separate governed calibration evidence independent of candidate performance.",
+  "line_topology_rule": "A reality expected-line snapshot may contain any internally consistent partition of the active field; no whitelist of [3,2,2]/[3,3,1]/[2,2,2,1] is allowed.",
+  "longitudinal_rule": "For each rider, store repeated timestamped PRE snapshots and select only the latest observation that was both observed and captured by the decision cutoff. Never backfill today's profile into an older race.",
+  "next_boundary": "MECHANICAL_IMPLEMENTATION_AND_CI_ONLY"
+}
