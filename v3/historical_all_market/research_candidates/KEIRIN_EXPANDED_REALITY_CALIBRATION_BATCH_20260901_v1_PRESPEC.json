@@ -1,0 +1,29 @@
+{
+  "record": "KEIRIN_EXPANDED_REALITY_CALIBRATION_BATCH_20260901_v1_PRESPEC",
+  "status": "PRESPECIFIED_BEFORE_READING_REMAINING_TARGET_RACECARDS",
+  "classification": "BURNED_REALITY_CALIBRATION_ONLY",
+  "capture_date_jst": "2026-09-01",
+  "target_races_in_order": [
+    {"venue":"宇都宮","grade":"FI","race":"1R","intended_band":"A1_A2","intended_stage":"GENERAL"},
+    {"venue":"宇都宮","grade":"FI","race":"3R","intended_band":"A1_A2","intended_stage":"SEMIFINAL"},
+    {"venue":"宇都宮","grade":"FI","race":"5R","intended_band":"A1_A2","intended_stage":"SEMIFINAL"},
+    {"venue":"宇都宮","grade":"FI","race":"8R","intended_band":"S","intended_stage":"SELECTION"},
+    {"venue":"宇都宮","grade":"FI","race":"10R","intended_band":"S","intended_stage":"SEMIFINAL"},
+    {"venue":"宇都宮","grade":"FI","race":"12R","intended_band":"S","intended_stage":"SEMIFINAL"},
+    {"venue":"岐阜","grade":"FII","race":"1R","intended_band":"A1_A2","intended_stage":"GENERAL"},
+    {"venue":"岐阜","grade":"FII","race":"4R","intended_band":"A1_A2","intended_stage":"SPECIAL_SELECTION"},
+    {"venue":"岐阜","grade":"FII","race":"7R","intended_band":"A1_A2","intended_stage":"FINAL"},
+    {"venue":"いわき平","grade":"FII","race":"3R","intended_band":"A3","intended_stage":"GENERAL"},
+    {"venue":"いわき平","grade":"FII","race":"5R","intended_band":"A3","intended_stage":"SELECTION"},
+    {"venue":"いわき平","grade":"FII","race":"7R","intended_band":"A3","intended_stage":"FINAL"}
+  ],
+  "admission_rule": "Race must remain pre-cutoff at capture and have seven active riders. If not, replace only by the next seven-rider race in the same venue and intended class band; no model/outcome-based replacement.",
+  "fields_to_preserve_privately": [
+    "venue","grade","race_no","race_class","stage","event_time","decision_cutoff","bank_circumference_m",
+    "pseudonymous_rider_key","car_no","class","style","competition_score","nige","makuri","sashi","mark","B","S",
+    "source_url","capture_timestamp"
+  ],
+  "public_repo_storage": "derived summaries/provenance only; no copied full rider table",
+  "excluded": ["target RESULT/PAYOUT","odds","post-race reconstruction","model predictions","line snapshot unless separately transport-admitted"],
+  "stop_rule": "12 admitted races maximum for v1 expanded batch"
+}
