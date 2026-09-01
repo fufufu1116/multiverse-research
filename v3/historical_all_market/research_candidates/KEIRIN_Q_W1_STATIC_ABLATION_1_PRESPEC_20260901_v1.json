@@ -1,0 +1,96 @@
+{
+  "record": "KEIRIN_Q_W1_STATIC_ABLATION_1_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "question": "Which already-existing static W1 utility component explains fixed N1's stable Synthetic advantage over fixed C1 when explicit conditional relation_strength is zero: the shared latent line-strength term, the PRE-observable position/line-size structural terms, both independently, or only their combination?",
+  "rationale": "Q-REL-STRENGTH-1 found N1 advantage already at exact W1 relation_strength=0. Q-CHAIN-DECOMP-1 localized that advantage entirely to rank-2 and rank-3 conditional stages. This experiment performs a fixed source-independent component ablation of the existing W1 static utility only, with relation_strength fixed at zero in every condition.",
+  "scope_basis": {
+    "authorization_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "allowed_class": "Digital Twin W0-W4 synthetic stress and failure diagnostics; C0/C1/N1 comparison only inside those synthetic worlds",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "design_basis": "W0 is context-free/no-line control and W1 is static-line-advantage world; this ablation varies only additive static W1 components between those existing endpoints and leaves the conditional relation kernel at zero.",
+    "new_relation_kernel": false,
+    "relation_strength_all_conditions": 0.0,
+    "new_seed": false,
+    "new_model": false,
+    "real_or_protected_input": false,
+    "fail_closed": true
+  },
+  "dependencies": {
+    "mechanical_gate_blob": "25f1a6aa3265b122ed04ae7ff16ff7d8232c22b3",
+    "q_mismatch_evidence_blob": "369ee681a5b296767a717beb72fe8d528b138aeb",
+    "q_rel_strength_evidence_blob": "5252aa71b64487a382f4b75b418257062d6f0a5e",
+    "q_chain_decomp_evidence_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_CHAIN_DECOMP_1_EVIDENCE_20260901_v1.json"
+  },
+  "fixed_scientific_sources": {
+    "base_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "race_index_formula": "case % 32",
+    "paired_across_all_conditions": true,
+    "new_seed_selection": false,
+    "untouched_validation_claim": false
+  },
+  "conditions": {
+    "W0_BASE_ONLY": "Exact canonical W0 truth: _static_utilities(race,use_line=False), relation_strength=0.0.",
+    "W1_OBSERVED_STRUCTURE_ONLY": "Existing W1 base utility plus existing line_position bonus plus existing line_size bonus; omit only the existing 0.16*latent line_strength term; relation_strength=0.0.",
+    "W1_LATENT_SHARED_ONLY": "Existing W1 base utility plus only existing 0.16*latent line_strength term; omit position and size bonuses; relation_strength=0.0.",
+    "W1_FULL": "Exact canonical W1 truth: _static_utilities(race,use_line=True), relation_strength=0.0."
+  },
+  "existing_component_values": {
+    "latent_line_strength_coefficient": 0.16,
+    "position_bonus": {"0": 0.04, "1": 0.10, "2": 0.05},
+    "size_bonus_per_extra_member": 0.025
+  },
+  "models": ["C1", "N1"],
+  "model_or_coefficient_change": false,
+  "primary_metric": "expected ordered-top3 log loss under exact Synthetic truth distribution",
+  "primary_delta": "N1_minus_C1; negative means N1 better",
+  "stable_advantage_rule": "For a condition, stable N1 advantage iff aggregate N1_minus_C1 < 0 and N1_minus_C1 < 0 in at least 3 of 4 fixed blocks.",
+  "prespecified_primary_classification_rule": {
+    "NO_STABLE_W1_GAIN": "W1_FULL is not stable.",
+    "LATENT_SHARED_PROXY_DOMINANT": "W1_FULL stable; W1_LATENT_SHARED_ONLY stable; W1_OBSERVED_STRUCTURE_ONLY not stable.",
+    "OBSERVED_STRUCTURE_PROXY_DOMINANT": "W1_FULL stable; W1_OBSERVED_STRUCTURE_ONLY stable; W1_LATENT_SHARED_ONLY not stable.",
+    "BOTH_COMPONENTS_INDEPENDENTLY_SUPPORT_GAIN": "W1_FULL stable; both component-only conditions stable.",
+    "INTERACTION_ONLY_W1_GAIN": "W1_FULL stable; neither component-only condition stable.",
+    "MIXED_OR_NONMONOTONIC_COMPONENT_PATTERN": "Any other stable/not-stable pattern; report raw deltas without adding conditions."
+  },
+  "secondary_outputs_prespecified": [
+    "N1_minus_C1 aggregate and by block for every condition",
+    "rank-2 and rank-3 N1-minus-C1 chain contributions for every condition",
+    "exact endpoint identity W0_BASE_ONLY vs canonical W0 and W1_FULL vs canonical W1",
+    "probability mass and shared-rank1 invariants"
+  ],
+  "stopping_rule": "Execute these four conditions only. Do not split position and size further, add coefficient grids, seeds, topology/rider slices, relation kernels, models, or retuning after seeing results. Any further intervention requires a separate prespecification and scope check.",
+  "interpretation_limits": [
+    "This is Synthetic mechanism diagnosis only and does not establish a real-world causal mechanism.",
+    "The latent shared term is simulator-internal truth and never becomes a prediction feature.",
+    "No model selection, freeze, promotion, real-world edge, ROI or untouched-validation claim is authorized."
+  ],
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  }
+}
