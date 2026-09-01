@@ -37,8 +37,9 @@ def kind(r,b):
  return'text'
 def run(cmd,env=None):
  p=subprocess.run(cmd,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,env=env)
- sys.stdout.write(p.stdout)
- if p.returncode:fail('BUILD_OR_SYNTAX',f'{cmd[0]}:{p.stderr[-1200:]}')
+ sys.stdout.write(p.stdout);sys.stdout.flush()
+ sys.stderr.write(p.stderr);sys.stderr.flush()
+ if p.returncode:fail('BUILD_OR_SYNTAX',f'{cmd[0]}:rc={p.returncode}')
 def gitblob(b):h=hashlib.sha1();h.update(f'blob {len(b)}\0'.encode());h.update(b);return h.hexdigest()
 def binding():
  q=json.loads(data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json'));s=q['step3'];b=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py')
@@ -81,7 +82,7 @@ def main():
   if needle not in wf:fail('WORKFLOW_CONTRACT',needle)
  if 'workflow_dispatch' in wf:fail('WORKFLOW_DISPATCH_PROHIBITED','present')
  if shutil.which('docker'):
-  cmd=['docker','build','--no-cache']
+  cmd=['docker','build','--progress=plain','--no-cache']
   tag=os.environ.get('MULTIVERSE_PRELAB_DOCKER_TAG','').strip()
   if tag:cmd+=['-t',tag]
   cmd+=['-f','.devcontainer/Dockerfile','.']
