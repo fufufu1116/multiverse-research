@@ -11,7 +11,7 @@ import (
 )
 
 const iphoneStatusDir = "/workspaces/.codespaces/.persistedshare"
-const iphoneStatusPath = iphoneStatusDir + "/multiverse-v36-v7r6-session-status.txt"
+const iphoneStatusPath = "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r6-session-status.txt"
 const iphoneReadyLine = "PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_READY"
 const iphoneChallengePrefix = "PHASE_C_V19_7_36_V7R6_SESSION_CHALLENGE "
 const iphoneWaitingLine = "PHASE_C_V19_7_36_V7R6_WAITING_FOR_EXTERNAL_SESSION_BINDING"
