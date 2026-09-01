@@ -1,0 +1,64 @@
+{
+  "record": "KEIRIN_REAL_DEVELOPMENT_SAMPLE_SOURCE_READINESS_20260901_v1",
+  "status": "PROSPECTIVE_SOURCE_READINESS_PARTIAL_BEFORE_TARGET_DATE",
+  "classification": "PUBLIC_SOURCE_LOCATOR_AND_READINESS_ONLY_NOT_OUTCOME_NOT_MARKET_RESULT",
+  "as_of_jst": "2026-09-01T23:30:00+09:00",
+  "target_date_jst": "2026-09-02",
+  "membership_prespec": "v3/historical_all_market/research_candidates/KEIRIN_REAL_DEVELOPMENT_SAMPLE_MEMBERSHIP_PRESPEC_20260901_v1.json",
+  "official_schedule_confirmation": {
+    "source_family": "KEIRIN.JP",
+    "venues": ["西武園", "松戸", "伊東", "大垣", "防府", "高知", "熊本"],
+    "selection_used_results": false
+  },
+  "pre_source_readiness": [
+    {
+      "venue": "西武園",
+      "status": "DIRECT_RACECARD_PAGE_VERIFIED",
+      "source_family": "KDreams public racecard",
+      "source_locator": "https://keirin.kdreams.jp/seibuen/racecard/26202608310300/",
+      "observed_target_date": "2026-09-02",
+      "observed_race_count_indication": "11 races listed on meeting racecard navigation",
+      "result_or_payout_used": false
+    },
+    {
+      "venue": "松戸",
+      "status": "DIRECT_RACECARD_PAGE_VERIFIED",
+      "source_family": "KDreams public racecard",
+      "source_locator": "https://keirin.kdreams.jp/matsudo/racecard/31202609010200/",
+      "observed_target_date": "2026-09-02",
+      "result_or_payout_used": false
+    },
+    {
+      "venue": "伊東",
+      "status": "DIRECT_RACE_DETAIL_PAGE_VERIFIED",
+      "source_family": "KDreams public racedetail",
+      "source_locator_example": "https://keirin.kdreams.jp/ito/racedetail/3720260902010003/",
+      "observed_target_date": "2026-09-02",
+      "observed_meeting": "FII CTCは3分前杯",
+      "observed_race_count": 7,
+      "result_or_payout_used": false
+    },
+    {"venue":"大垣","status":"SCHEDULE_CONFIRMED_DIRECT_RACECARD_LOCATOR_NOT_YET_VERIFIED"},
+    {"venue":"防府","status":"SCHEDULE_CONFIRMED_DIRECT_RACECARD_LOCATOR_NOT_YET_VERIFIED"},
+    {"venue":"高知","status":"SCHEDULE_CONFIRMED_DIRECT_RACECARD_LOCATOR_NOT_YET_VERIFIED"},
+    {"venue":"熊本","status":"SCHEDULE_CONFIRMED_DIRECT_RACECARD_LOCATOR_NOT_YET_VERIFIED"}
+  ],
+  "market_snapshot_readiness": {
+    "status": "NOT_YET_DECISION_TIME_PROVEN",
+    "rule": "Do not use an early or crawler-cached quote as the final M0 market baseline. Capture only a timestamp-proven pre-start snapshot under the frozen decision-time rule.",
+    "preferred_cutoff": "3 minutes before official start if timestamp-proven",
+    "fallback": "earlier timestamp-proven snapshot",
+    "post_start": "PROHIBITED"
+  },
+  "important_observation": "Public PRE pages are available prospectively for at least three frozen venues before target-date racing. This demonstrates that a prospective point-in-time real-development collection path is feasible without opening protected DEV2000/holdout data.",
+  "firewalls": [
+    "NO_RESULT_PAGE_USE_FOR_MEMBERSHIP_OR_FEATURES",
+    "NO_PAYOUT_USE",
+    "NO_PROTECTED_DATA_OPEN",
+    "NO_EXTERNAL_PROVIDER_CONTACT",
+    "NO_PAID_ACQUISITION",
+    "NO_BULK_ACCESS_BYPASS",
+    "NO_REAL_MONEY_WAGERING"
+  ],
+  "next_gate": "Verify remaining venue PRE locators and capture source timestamps/immutable normalized PRE records before each race; market baseline remains ineligible until a timestamp-proven pre-start quote is captured."
+}
