@@ -1,0 +1,95 @@
+{
+  "record": "KEIRIN_REALITY_PRE_TACTICAL_PROPENSITY_EVIDENCE_20260901_v1",
+  "status": "PASS_PRE_OBSERVABLE_ORDINAL_TACTICAL_FOUNDATION_FAIL_CLOSED_BEFORE_EVENT_RATES_AND_FINISH_TRUTH",
+  "classification": "REALITY_FOUNDATION_ONLY_NOT_ON_TRACK_RATE_CALIBRATION_NOT_TRUTH_EXECUTION_NOT_VALIDATION",
+  "owner_gate": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_PRE_OBSERVABLE_TACTICAL_PROPENSITY_FOUNDATION_20260901_v1.json",
+  "registry": "v3/historical_all_market/research_candidates/KEIRIN_REALITY_PRE_TACTICAL_PROPENSITY_REGISTRY_20260901_v1.json",
+  "implementation": [
+    "v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_v0.py",
+    "v3/historical_all_market/new_lineage/reality_truth_generator_scaffold_v1.py"
+  ],
+  "selftest": "v3/historical_all_market/new_lineage/reality_pre_tactical_propensity_selftest_v0.py",
+  "tactical_event_requirements": "v3/historical_all_market/research_candidates/KEIRIN_TACTICAL_EVENT_EVIDENCE_REQUIREMENTS_20260901_v1.json",
+  "fresh_start": {
+    "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head": "55173230212b085298b7c8eb9daa8a59da967845"
+  },
+  "evidence_basis": {
+    "private_calibration_archive_observations": 248,
+    "private_official_roster_rows_used_for_class_thresholds": 164,
+    "race_pre_rows_available": 84,
+    "official_semantics": [
+      "S is a historical count associated with taking the forward position immediately after the start.",
+      "B is a historical count associated with being the leader at the back stretch with half a lap remaining.",
+      "nige/makuri/sashi/mark are successful finishing-technique counts conditioned on finishing first or second.",
+      "style 逃/両/追 describes preferred strategy type rather than deterministic behavior."
+    ],
+    "scientific_limit": "These PRE observables support ordinal behavioral evidence but do not identify unconditional on-track tactical-event probabilities or causal finish effects."
+  },
+  "ordinal_profile": {
+    "class_conditioned": true,
+    "classes": ["S1","S2","A1","A2","A3"],
+    "features": ["ST","BK","nige","makuri","sashi","mark"],
+    "bands": ["VERY_LOW","LOW","MID","HIGH","VERY_HIGH"],
+    "successful_technique_mix_supported_when_nonzero": true,
+    "self_powered_vs_following_lean_supported": true,
+    "probability_conversion": false,
+    "finish_effect_conversion": false
+  },
+  "truth_scaffold_progress": {
+    "rider_numeric_prototype": true,
+    "pre_tactical_evidence_profile": true,
+    "expected_line_role_attachment": true,
+    "supported_action_family_generation_without_rates": true,
+    "actor_partition_consistency_check": true,
+    "stochastic_tactical_event_execution": false,
+    "finish_order_execution": false
+  },
+  "expected_line_v4": {
+    "artifact": "v3/historical_all_market/research_candidates/KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v4.json",
+    "capture_timestamp_jst": "2026-09-01T17:06:01+09:00",
+    "races": 10,
+    "all_pre_cutoff": true,
+    "v3_to_v4_interval_seconds": 1317,
+    "v3_to_v4_changed": 0,
+    "v3_to_v4_unchanged": 10,
+    "cumulative_pair_windows_v1_to_v4": 23,
+    "cumulative_changes": 0,
+    "population_revision_rate_claim": false,
+    "on_track_line_stability_claim": false,
+    "private_archive_readback_verified": true
+  },
+  "github_actions": {
+    "executed_head": "cb1c7ce13fa49ce77c675cec6401f43a2aba8c5a",
+    "run_id": 33485295937,
+    "job_id": 99783837104,
+    "conclusion": "success",
+    "checks": [
+      "compile PRE tactical foundation",
+      "validate tactical registry",
+      "reject candidate coupling",
+      "reject economic coupling",
+      "reject network-capable imports",
+      "mechanical selftest",
+      "terminal ordinal-only no-event-rate/no-finish boundary"
+    ]
+  },
+  "protected_boundary": {
+    "RESULT_PAYOUT_access": false,
+    "race_video_or_outcome_aware_tactical_rate_fitting": false,
+    "LEGSHOW_observed_line_admission": false,
+    "absolute_tactical_event_probability_fitting": false,
+    "causal_finish_effect_fitting": false,
+    "finish_truth_execution": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "economics": false,
+    "Core_main_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "INDEPENDENT_ON_TRACK_TACTICAL_EVENT_EVIDENCE_OR_PROVEN_LEGSHOW_TRANSPORT_REQUIRED_BEFORE_ABSOLUTE_EVENT_RATES_OR_FINISH_TRUTH",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "note": "PRE evidence may continue to constrain compatible actor behaviors and stress worlds. It must not be converted into unconditional event probabilities. A separately authorized, prespecified, burned on-track annotation source or proven LEGSHOW transport is required before the next scientific boundary can be crossed."
+  }
+}
