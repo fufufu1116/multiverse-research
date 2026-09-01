@@ -1,0 +1,69 @@
+{
+  "record": "KEIRIN_REALITY_ENVIRONMENT_RELEVANCE_POLICY_20260901_v1",
+  "status": "FOUNDATION_POLICY_FROZEN",
+  "classification": "ENVIRONMENT_OPTIONAL_UNTIL_NECESSITY_DEMONSTRATED",
+  "owner_direction": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_DIRECTION_WEATHER_FORECAST_NONRELIANCE_20260901_v1.json",
+  "core_rules": {
+    "no_weather_baseline_is_mandatory": true,
+    "weather_forecast_for_truth_or_PRE_prediction": "PROHIBITED",
+    "forecast_model_output_as_reality_observation": "PROHIBITED",
+    "observed_wind_required_by_default": false,
+    "precipitation_required_by_default": false,
+    "temperature_required_by_default": false,
+    "environment_feature_selection_from_candidate_performance": "PROHIBITED"
+  },
+  "relevance_hierarchy": {
+    "wind": {
+      "physical_relevance": "SUPPORTED",
+      "predictive_necessity": "UNESTABLISHED",
+      "default_role": "OPTIONAL_PHYSICS_CONTEXT_SENSITIVITY_ONLY",
+      "reason": "KEIRIN official guidance identifies wind direction/speed as rider decision factors and cycling physics makes relative air speed directly affect aerodynamic drag. This does not establish incremental forecast value for race prediction."
+    },
+    "precipitation": {
+      "physical_or_operational_relevance": "PLAUSIBLE_BUT_NOT_CALIBRATED",
+      "predictive_necessity": "UNESTABLISHED",
+      "default_role": "EXCLUDED_FROM_BASELINE"
+    },
+    "temperature": {
+      "physical_relevance": "SECOND_ORDER_PLAUSIBLE",
+      "predictive_necessity": "UNESTABLISHED",
+      "default_role": "EXCLUDED_FROM_BASELINE"
+    },
+    "generic_weather_label": {
+      "predictive_necessity": "UNESTABLISHED",
+      "default_role": "DO_NOT_USE_AS_COARSE_PROXY"
+    }
+  },
+  "admission_ladder": [
+    "L0_NO_ENVIRONMENT: mandatory baseline; no wind/weather inputs.",
+    "L1_OBSERVED_WIND_PHYSICS_SENSITIVITY: outdoor venue only; observed, decision-available, provenance-bound wind may perturb physics in sensitivity worlds; no claim of predictive necessity.",
+    "L2_ENVIRONMENT_PREDICTIVE_ABLATION: future separately governed test only; compare predeclared no-environment vs observed-environment variants without tuning. Not authorized by this policy.",
+    "L3_OPERATIONAL_USE: prohibited until independent validation establishes stable material value and source-time transport reliability."
+  ],
+  "decision_time_rules": {
+    "observation_timestamp_must_be_at_or_before_decision": true,
+    "capture_timestamp_must_be_at_or_before_decision": true,
+    "forecast_valid_time_does_not_make_forecast_an_observation": true,
+    "current_or_later_weather_cannot_backfill_old_decisions": true,
+    "observation_age_limit": "MUST_BE_PRESPECIFIED_PER_TEST; NO UNIVERSAL ARBITRARY DEFAULT"
+  },
+  "venue_rules": {
+    "indoor_or_wind_shielded_venue": "OUTDOOR_WIND_NOT_REQUIRED; venue-specific evidence governs",
+    "outdoor_venue": "wind remains optional unless a later ablation demonstrates material predictive necessity",
+    "venue_station_mapping": "must carry explicit provenance; proximity alone does not prove representativeness"
+  },
+  "scientific_boundary": {
+    "what_is_established": [
+      "Wind can affect cycling physics and KEIRIN tactics.",
+      "Weather forecasts have nonzero error and are not observations.",
+      "Observed environment can be represented safely with point-in-time provenance."
+    ],
+    "what_is_not_established": [
+      "Wind materially improves race prediction beyond rider/line/tactical information.",
+      "Precipitation materially improves race prediction.",
+      "Temperature materially improves race prediction.",
+      "Any forecast product is accurate enough to be a required race input."
+    ]
+  },
+  "next_boundary": "OBSERVED_ENVIRONMENT_TRANSPORT_MECHANICAL_AMENDMENT_ONLY_THEN_FAIL_CLOSED"
+}
