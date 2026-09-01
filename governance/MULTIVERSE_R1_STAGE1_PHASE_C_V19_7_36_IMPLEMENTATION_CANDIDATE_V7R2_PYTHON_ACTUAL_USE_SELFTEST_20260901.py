@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import hashlib,json,os,stat,sys
 MF='/opt/multiverse/v36/closure-manifest-v7.json'
+SELF=os.path.realpath(__file__)
 def die(x):
     print('PHASE_C_V19_7_36_V7R2_PYTHON_BUILD_DENIED:'+x,file=sys.stderr,flush=True);raise SystemExit(92)
 def hfile(p):
@@ -31,7 +32,7 @@ def main():
         for line in z:
             q=line.rstrip().split(None,5)
             if len(q)==6 and q[5].startswith('/') and os.path.isfile(q[5]):paths.add(os.path.realpath(q[5]))
-    paths.discard(os.path.realpath(__file__))
+    paths.discard(SELF)
     if not paths:die('NO_ACTUAL_USE_PATHS')
     for p in sorted(paths):
         e=idx.get(p)
