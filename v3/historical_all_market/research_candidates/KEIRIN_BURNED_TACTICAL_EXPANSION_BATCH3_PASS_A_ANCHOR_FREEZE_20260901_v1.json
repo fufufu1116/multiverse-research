@@ -1,0 +1,110 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_PASS_A_ANCHOR_FREEZE_20260901_v1",
+  "status": "PASS_A_COMPLETE_ATTACK_ANCHORS_FROZEN_BEFORE_BATCH3_DOWNSTREAM_LABELING",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_PASS_A_NOT_TRUTH_ADMISSION",
+  "as_of_jst": "2026-09-01T21:37:00+09:00",
+  "fresh_binding_before_write": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "3a8d28e6871e12c814f869082e9251b14e7fb353"
+  },
+  "governed_inputs": {
+    "opportunity_protocol": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+      "blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d"
+    },
+    "batch3_prespec": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_PRESPEC_20260901_v1.json",
+      "blob_sha": "bc1f973aa762eefe37411eea24c61d1c25376271"
+    },
+    "batch3_regime_remediation": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_REGIME_MISMATCH_REMEDIATION_20260901_v1.json",
+      "blob_sha": "6d0695193240fff35aa6630f5d86b19a7bba5f24"
+    }
+  },
+  "source_artifacts": {
+    "final_day_r1_r6": {
+      "workflow_run_id": 33495822101,
+      "workflow_head_sha": "293f5f3a32b294e8488e0a1c601c30ddf8cc9be7",
+      "frames_artifact_id": 9795682169,
+      "frames_artifact_sha256": "3b60bcce6e96b40177de16e27e48432528384eba25c94f2d75e892d003a46675",
+      "manifest_artifact_id": 9795680707,
+      "manifest_artifact_sha256": "d04369841d44aa9d29bff4cb9033f240b5144fca1bef85fba6c36c2f89937984"
+    },
+    "final_day_r7_replacement": {
+      "workflow_run_id": 33496867701,
+      "workflow_head_sha": "3a8d28e6871e12c814f869082e9251b14e7fb353",
+      "frames_artifact_id": 9796108082,
+      "frames_artifact_sha256": "4b4bbcf65210c2502c13ad4ca80a409ea9b6ce8c64d9a3dcdfda3734ab2d5c77",
+      "manifest_artifact_id": 9796106958,
+      "manifest_artifact_sha256": "5ffdf07ae023d74b53344eb9043613f4999d49a31c0d15a9ea14c5f5c5607472"
+    }
+  },
+  "sample_accounting": {
+    "event_date": "2026-08-08",
+    "venue": "IWAKI_TAIRA",
+    "meeting_grade": "FII",
+    "initial_prespecified_races": [1, 2, 3, 4, 5, 6],
+    "burned_regime_ineligible_races": [4],
+    "prespecified_sequential_replacements": [7],
+    "mens_pass_a_races": [1, 2, 3, 5, 6, 7],
+    "race_regime": "STANDARD_ORIGINAL_LINE_MENS_FII"
+  },
+  "pass_a_method": {
+    "review_cadence_seconds": 1,
+    "review_scope": "Full replay 1-second frame sequence for each eligible race was reviewed before any Batch3 BANTE_FOLLOW or INITIATIVE_CONFLICT outcome was entered.",
+    "anchor_definition": "Inherited unchanged from KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.",
+    "fail_closed_role_adjudication": "A visible forward move was not admitted unless the pre-anchor visual state itself resolved the actor as a line leader or solo rider. Historical post-event race pages, finish order, payout, odds, and downstream follow/conflict labels were not used to create anchors.",
+    "terminal_sprint_exclusion": true,
+    "candidate_outputs_hidden": true,
+    "finish_order_or_payout_used_for_anchor_selection": false,
+    "odds_or_market_used_for_anchor_selection": false
+  },
+  "frozen_attack_anchors": [
+    {
+      "attack_anchor_id": "B3-E07A1",
+      "race_id": "20260808_IWAKITAIRA_7R",
+      "race_no": 7,
+      "event_time_seconds": 41.0,
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "7",
+      "visual_basis": "At 40s car 7 is visibly at the head of a coherent outside line with car 2 immediately behind. At 41s car 7 begins a sustained forward/outside move toward the occupied forward group, continuing across ordered frames 42s and later.",
+      "pass_b_follower_candidate_before_attack": "2",
+      "pass_b_follower_identity_status": "IDENTIFIABLE_FROM_PRE_ATTACK_VISUAL_ORDER",
+      "downstream_outcomes_at_freeze": "NOT_YET_LABELED"
+    }
+  ],
+  "zero_anchor_or_fail_closed_races": [
+    {
+      "race_id": "20260808_IWAKITAIRA_1R",
+      "race_no": 1,
+      "reason": "A sustained forward move by car 1 was visible around 30s, but the pre-anchor 1-second visual state did not independently resolve line-leader/solo status without relying on non-point-in-time lineage information. Candidate therefore not admitted."
+    },
+    {
+      "race_id": "20260808_IWAKITAIRA_2R",
+      "race_no": 2,
+      "reason": "Full pre-terminal review did not resolve a qualifying sustained initiative-attack anchor under the frozen definition."
+    },
+    {
+      "race_id": "20260808_IWAKITAIRA_3R",
+      "race_no": 3,
+      "reason": "A sustained forward move by car 5 was visible around 34s, but the pre-anchor visual state did not independently resolve line-leader/solo status to the fail-closed threshold. Candidate therefore not admitted."
+    },
+    {
+      "race_id": "20260808_IWAKITAIRA_5R",
+      "race_no": 5,
+      "reason": "A forward challenge by car 3 was visible around 34s, but pre-anchor visual line-role resolution was not sufficiently independent of later formation to satisfy the fail-closed role requirement. Candidate therefore not admitted."
+    },
+    {
+      "race_id": "20260808_IWAKITAIRA_6R",
+      "race_no": 6,
+      "reason": "A sustained outside move by car 7 was visible around 34s, but the pre-anchor visual state did not independently establish solo/line-leader status to the required threshold. Candidate therefore not admitted."
+    }
+  ],
+  "explicit_nonanchors": [
+    "No anchor is created merely to preserve an expected event count.",
+    "Ambiguous potential attacks remain non-anchors rather than being promoted using downstream BANTE_FOLLOW or INITIATIVE_CONFLICT behavior.",
+    "No new anchor is created from terminal-sprint overtaking."
+  ],
+  "pass_a_count": 1,
+  "terminal_rule": "The single Batch3 attack anchor above is frozen before Batch3 BANTE_FOLLOW or INITIATIVE_CONFLICT PRESENT/ABSENT/UNKNOWN labeling. Pass B may not add, delete, retime, or substitute Batch3 attack anchors in response to downstream outcomes."
+}
