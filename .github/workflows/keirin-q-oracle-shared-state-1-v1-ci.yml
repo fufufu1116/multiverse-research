@@ -1,0 +1,172 @@
+name: Keirin Q-ORACLE-SHARED-STATE-1 v1 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - '.github/workflows/keirin-q-oracle-shared-state-1-v1-ci.yml'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_ORACLE_SHARED_STATE_1_20260901_v1.json'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_Q_ORACLE_SHARED_STATE_1_PRESPEC_20260901_v1.json'
+      - 'tools/keirin_q_oracle_shared_state_1_v1.py'
+
+permissions:
+  contents: read
+
+env:
+  BASE_MAIN: 5c1403c1f5aabb80d29e8c868440aede8888ce61
+  VNEXT_BLOB: afe746287c7e911d214202abdf2de076f63ab30c
+  KEIRIN_STATE_BLOB: 962d9c75b0611d52bd264a8b88bb1fe259cb8aeb
+  AUTH_RECEIPT_BLOB: 4c2e5364ad229a5dd413a19d0cf970c478692584
+  DIGITAL_TWIN_BLOB: 1f1574400e43648e60af43d059965d021d8bbad8
+  TOP3_CORE_BLOB: 4e2a819dce69240792d927cceba434f53932b829
+  COMPARISON_BLOB: 9531715a8f346aec370bf1be24017a8ff577506b
+  COEFF_RECEIPT_BLOB: f531d72929c846da1c932451873c94bb9b526ae7
+  PRIOR_W1_EVIDENCE_BLOB: e4a6e59e10e2592ee266c4d17e84d219991fd61b
+  OWNER_APPROVAL_BLOB: f9a3578aadb722fad2b78f709f2f96f4b44580ad
+  PRESPEC_BLOB: 321948b23bf975387f13bb16bd039688bc7cd787
+  HARNESS_BLOB: 004a968dec43c2aa33b88f91121ce7a887414d14
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  q-oracle-shared-state-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fresh governance and exact-source checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          echo "OBSERVED_ORIGIN_MAIN=$(git rev-parse origin/main)"
+          echo "EXECUTED_HEAD=$(git rev-parse HEAD)"
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN"
+          git merge-base --is-ancestor "$BASE_MAIN" HEAD
+          test "$(git rev-parse "origin/main:multiverse_vnext/VNEXT_CURRENT_STATE_v0.json")" = "$VNEXT_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json")" = "$KEIRIN_STATE_BLOB"
+          test "$(git rev-parse "origin/main:governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json")" = "$AUTH_RECEIPT_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/new_lineage/digital_twin_v1.py")" = "$DIGITAL_TWIN_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/new_lineage/top3_architecture_core_v1.py")" = "$TOP3_CORE_BLOB"
+          test "$(git rev-parse "origin/main:tools/keirin_synthetic_c0_c1_n1_comparison_v1.py")" = "$COMPARISON_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json")" = "$COEFF_RECEIPT_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_Q_W1_STATIC_ABLATION_1_EVIDENCE_20260901_v1.json")" = "$PRIOR_W1_EVIDENCE_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_ORACLE_SHARED_STATE_1_20260901_v1.json")" = "$OWNER_APPROVAL_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_Q_ORACLE_SHARED_STATE_1_PRESPEC_20260901_v1.json")" = "$PRESPEC_BLOB"
+          test "$(git rev-parse "HEAD:tools/keirin_q_oracle_shared_state_1_v1.py")" = "$HARNESS_BLOB"
+
+      - name: Verify exact Owner scope gate and no auto expansion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          p='v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_ORACLE_SHARED_STATE_1_20260901_v1.json'
+          g=json.load(open(p, encoding='utf-8'))
+          assert g['status']=='OWNER_EXPLICITLY_APPROVED_EXACT_SYNTHETIC_DIAGNOSTIC_ONLY'
+          assert g['approval']=='APPROVE Q-ORACLE-SHARED-STATE-1 — SYNTHETIC DIAGNOSTIC ONLY'
+          assert g['authorized_control']['id']=='C1_ORACLE'
+          assert g['authorized_control']['role']=='DIAGNOSTIC_CONTROL_ONLY_NOT_A_FORMAL_MODEL_CANDIDATE'
+          assert g['authorized_control']['normal_PRE_interface_mutation'] is False
+          assert g['authorized_control']['normal_model_facing_interface_mutation'] is False
+          assert g['authorization_expansion_rule'].startswith('Completion of this exact diagnostic does not automatically')
+          for key, value in g['hard_conditions'].items():
+              if key=='synthetic_diagnostic_only' or key=='C1_ORACLE_is_not_formal_model_candidate':
+                  assert value is True
+              else:
+                  assert value is False, (key, value)
+          print('KEIRIN_Q_ORACLE_OWNER_SCOPE_GATE_PASS')
+          PY
+
+      - name: Verify canonical scientific sources untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only "$BASE_MAIN"...HEAD > /tmp/changed.txt
+          ! grep -Eq '^(multiverse_vnext/|v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json$|v3/historical_all_market/new_lineage/|governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json$)' /tmp/changed.txt
+
+      - name: Reject network-capable oracle harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          HARNESS=tools/keirin_q_oracle_shared_state_1_v1.py
+          ! grep -Eq '(^|[[:space:]])(requests|urllib|socket|subprocess|selenium|playwright)([[:space:].]|$)' "$HARNESS"
+          ! grep -Eq 'https?://' "$HARNESS"
+
+      - name: Execute fully prespecified Q-ORACLE-SHARED-STATE-1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/keirin_q_oracle_shared_state_1_v1.py | tee /tmp/qoracle.log
+          grep -Fx 'KEIRIN_Q_ORACLE_SHARED_STATE_1_EXECUTION_PASS' /tmp/qoracle.log
+          head -n 1 /tmp/qoracle.log > /tmp/result.json
+          python - <<'PY'
+          import json, math
+          r=json.load(open('/tmp/result.json', encoding='utf-8'))
+          assert r['status']=='PASS_EXECUTION_AND_MECHANICAL_INVARIANTS'
+          assert r['classification']=='RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED'
+          assert r['evidence_class']=='SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          assert r['world']=='W1'
+          assert r['block_seed_bases']==[20261001,20262001,20263001,20264001]
+          assert r['cases_per_block']==128 and r['total_cases']==512
+          assert r['primary_hypothesis_classification'] in {
+              'ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT',
+              'ADVANTAGE_MAJORITY_ERASED_STRONG_SUPPORT',
+              'PARTIAL_SHRINK_MIXED_MECHANISM',
+              'LITTLE_CHANGE_CLEAR_RESIDUAL_WEAKENS_DOMINANT_PROXY',
+          }
+          assert r['oracle_control']['id']=='C1_ORACLE'
+          assert r['oracle_control']['formal_model_candidate'] is False
+          assert r['oracle_control']['oracle_coefficient_fitted'] is False
+          assert r['oracle_control']['normal_PRE_mutated'] is False
+          assert r['oracle_control']['normal_C1_or_N1_code_mutated'] is False
+          m=r['mechanical_checks']
+          assert m['max_oracle_component_vs_canonical_W1_shared_component_diff'] <= 1e-12
+          assert m['max_nonoracle_C1_reproduction_diff'] <= 1e-12
+          assert m['max_nonoracle_N1_reproduction_diff'] <= 1e-12
+          assert m['max_prediction_probability_mass_error'] <= 1e-10
+          assert m['max_truth_probability_mass_error'] <= 1e-10
+          assert m['max_chain_decomposition_residual'] <= 1e-12
+          assert m['prior_W1_N1_minus_C1_reproduction_error'] <= 1e-12
+          assert m['oracle_nonoracle_source_boundary_check'] is True
+          assert m['PRE_latent_skill_absent'] is True
+          assert r['new_seed_selection'] is False
+          assert r['result_adaptive_condition_selection'] is False
+          assert r['post_result_retuning'] is False
+          assert r['models_or_frozen_coefficients_changed'] is False
+          assert r['authorization_auto_expanded'] is False
+          for key in (
+              'protected_or_quarantined_input_access','pr15_metrics_access','result_payout_access',
+              'econ_holdout1000_access','dev2000_c_rescue','same_lineage_b_c_rescue_tuning',
+              'real_or_untouched_validation','real_live_input_collection','economics_bankroll_roi',
+              'model_promotion_or_freeze','external_provider_contact',
+              'core_phase_c_main_ruleset_runtime_production_authority_change','real_world_edge_or_roi_evidence'
+          ):
+              assert r[key] is False, (key, r[key])
+          assert r['scientific_segment_c_scoring_count']==0
+          print('KEIRIN_Q_ORACLE_SHARED_STATE_1_RESULT_CONTRACT_PASS')
+          PY
+
+      - name: Protected and oracle-boundary terminal
+        shell: bash
+        run: |
+          echo 'EVIDENCE_CLASS=SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          echo 'RESEARCH_CANDIDATE_ONLY=true'
+          echo 'C1_ORACLE_DIAGNOSTIC_CONTROL_ONLY=true'
+          echo 'ORACLE_DATA_TO_NORMAL_PRE=false'
+          echo 'PR15_METRICS_ACCESSED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'ECON_HOLDOUT1000_ACCESSED=false'
+          echo 'SCIENTIFIC_SEGMENT_C_SCORING_COUNT=0'
+          echo 'REAL_LIVE_INPUT=false'
+          echo 'ECONOMICS=false'
+          echo 'MODEL_PROMOTION=false'
+          echo 'AUTHORIZATION_AUTO_EXPANDED=false'
+
+      - name: Verify clean worktree
+        run: test -z "$(git status --porcelain)"
