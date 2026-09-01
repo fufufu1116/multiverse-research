@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_PRESPEC_20260901_v1",
+  "status": "PRESPECIFIED_SOURCE_BOUND_UNSEEN_BATCH3_SAMPLE",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_ONLY_NEVER_VALIDATION",
+  "prespecification_jst": "2026-09-01T18:45:00+09:00",
+  "fresh_research_head_before_write": "7419eb1e6afb69e24e243a83638e07a63bd94357",
+  "venue": "IWAKI_TAIRA",
+  "event_date": "2026-08-08",
+  "meeting": "福島民友杯・リンカイ！磐城平颯来杯",
+  "meeting_grade": "FII",
+  "target_regime": "STANDARD_ORIGINAL_LINE_MENS_FII",
+  "selection_rule": "Use final-day races R1 through R6 in sequential order, fixed before tactical inspection. Perform objective regime screening before tactical annotation. Any regime-ineligible race remains permanently burned and may be replaced only by the next sequential race after R6 under a separately committed remediation written before reviewing the replacement.",
+  "initial_races": [
+    {"race_no":1,"official_replay_mp4":"https://wm.st.keirin.jp/wm-keirin13/20260808-13-01-01-01-00.mp4"},
+    {"race_no":2,"official_replay_mp4":"https://wm.st.keirin.jp/wm-keirin13/20260808-13-01-02-01-00.mp4"},
+    {"race_no":3,"official_replay_mp4":"https://wm.st.keirin.jp/wm-keirin13/20260808-13-01-03-01-00.mp4"},
+    {"race_no":4,"official_replay_mp4":"https://wm.st.keirin.jp/wm-keirin13/20260808-13-01-04-01-00.mp4"},
+    {"race_no":5,"official_replay_mp4":"https://wm.st.keirin.jp/wm-keirin13/20260808-13-01-05-01-00.mp4"},
+    {"race_no":6,"official_replay_mp4":"https://wm.st.keirin.jp/wm-keirin13/20260808-13-01-06-01-00.mp4"}
+  ],
+  "official_source_verification": {
+    "digest_page": "https://tairakeirin.com/digest/",
+    "verified_claim": "Official Iwaki Taira digest lists this meeting as Aug 6 through Aug 8 and exposes races 1 through 12 for final day Aug 8.",
+    "meeting_event_page": "https://tairakeirin.com/8-6%EF%BD%9E8-%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E6%83%85%E5%A0%B1%E3%80%90%E3%83%93%E3%82%A2%E3%82%AC%E3%83%BC%E3%83%87%E3%83%B3open%E3%80%91/",
+    "verified_claim_2": "Official venue page identifies the Aug 6-8 meeting as FII."
+  },
+  "review_protocol": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+  "review_cadence_seconds": 1,
+  "annotation_order": ["REGIME_SCREEN_ONLY","PASS_A_FREEZE_ALL_QUALIFYING_ATTACK_ANCHORS","PASS_B_LABEL_ONLY_FROZEN_ANCHORS"],
+  "forbidden": [
+    "sampling by tactical content",
+    "sampling by outcome or payout",
+    "sampling by candidate model performance",
+    "changing the six-second opportunity windows",
+    "using finish order as an annotation target",
+    "promoting any diagnostic to Reality truth"
+  ],
+  "permanent_exclusions": ["UNTOUCHED_VALIDATION","MODEL_SELECTION","REAL_PREDICTIVE_SUPERIORITY_CLAIM","ECONOMICS","FINISH_EFFECT_ESTIMATION"],
+  "terminal_rule": "Once any replay is inspected, that race is permanently BURNED. Regime screening precedes tactical annotation, and Pass A must be committed before Pass B."
+}
