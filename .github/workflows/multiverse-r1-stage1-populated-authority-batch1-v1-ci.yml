@@ -1,0 +1,80 @@
+name: Multiverse R1 Stage1 Populated Authority Batch1 v1 CI
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/multiverse-r1-stage1-populated-authority-batch1-v1-ci.yml"
+      - "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json"
+      - "governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_POPULATED_BATCH1_CONTRACT_20260822_v1.json"
+permissions:
+  contents: read
+jobs:
+  exact-envelope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify base and scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          test "$BASE_SHA" = "741b4dcd1035ce9959eed9bef143d206301c6bcc"
+          test "$(git rev-list --count "$BASE_SHA..$HEAD_SHA")" = "3"
+          git diff --name-only "$BASE_SHA...$HEAD_SHA" | sort > /tmp/a
+          printf '%s\n' \
+            '.github/workflows/multiverse-r1-stage1-populated-authority-batch1-v1-ci.yml' \
+            'governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_POPULATED_BATCH1_CONTRACT_20260822_v1.json' \
+            'governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json' | sort > /tmp/e
+          diff -u /tmp/e /tmp/a
+      - name: Validate exact authority
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          cj=lambda v: json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False)
+          h=lambda v: hashlib.sha256(cj(v).encode()).hexdigest()
+          m=json.loads(Path("governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json").read_text())
+          c=json.loads(Path("governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_POPULATED_BATCH1_CONTRACT_20260822_v1.json").read_text())
+          assert c["canonical_base_main"]=="741b4dcd1035ce9959eed9bef143d206301c6bcc"
+          assert c["owner_gate"]["approval_comment"]==5374516958
+          assert c["owner_gate"]["future_population_classification"]=="WITHIN_EXISTING_GATE"
+          assert m["schema_version"]=="MULTIVERSE_R1_STAGE1_CANONICAL_AUTHORITY_MANIFEST_v2"
+          assert m["policy_digest"]=="30695c878c200aaa5f592fa13b1e8b119f5f3caa65cefa571daf9b76386c033d"==h(m["policy"])
+          assert m["revocation_generation"]==2 and m["safe_mode_generation"]==2
+          assert m["safe_mode_active"] is False
+          assert m["valid_grant_refs"]==["grant-r1-stage1-keirin-jp-no-admission-batch1-v1"] and len(m["bundles"])==1
+          p=m["policy"]
+          assert (p["max_concurrent_workers"],p["max_tasks_per_invocation"],p["retry_budget_per_task"],p["max_terminal_tasks"],p["runtime_window_days"])==(1,10,2,25,7)
+          for k in ["auto_resume_authorized","scheduler_authorized","always_on_worker_authorized","network_or_public_web_authorized","source_collection_authorized","source_admission_or_promotion_authorized","real_or_live_pre_authorized","external_contact_authorized","runtime_writes_to_canonical_main_or_governance_authorized","on_demand_permission_minting_authorized"]: assert p[k] is False
+          e=c["exact_envelope"]["value"]
+          assert e["candidate_id"]=="KEIRIN.JP" and e["docs_hash"]=="ad5fe081e362069f30515f13612100f9961419e5"
+          assert e["worker_id"]=="stage1-worker-1" and e["requested_final_state"]=="REVIEWED_NO_ADMISSION"
+          assert h(e)=="68bda72f9bc81efc7a0538752f12b762f61acafd465c8d75991a67b6bb764c7e"==c["exact_envelope"]["canonical_json_sha256"]
+          assert c["exact_envelope"]["task_id"]=="task-3d41c6e18c00bbd6"
+          b=m["bundles"][0]
+          assert b["envelope_digest"]==h(e)
+          assert b["enqueue_actor_instance"]=="stage1-router-1" and b["worker_actor_instance"]=="stage1-worker-1"
+          assert b["decision_payload_digest"]==h({"enqueue":b["enqueue_decision"],"operations":b["operation_decisions"]})
+          ds=[b["enqueue_decision"],*b["operation_decisions"].values()]
+          assert len({d["authorization_decision_id"] for d in ds})==6
+          for d in ds:
+              assert d["decision"]=="ALLOW" and d["permission_class_requested"]=="P1_REVERSIBLE_INTERNAL_WRITE"
+              assert d["grant_ref"]=="grant-r1-stage1-keirin-jp-no-admission-batch1-v1" and d["owner_gate_ref"] is None
+              assert d["revocation_generation_seen"]==2 and d["safe_mode_generation_seen"]==2
+              assert d["issued_at"]=="2026-08-22T00:25:24+00:00" and d["expires_at"]=="2026-08-29T00:25:24+00:00"
+          assert hashlib.sha256(Path("governance/MULTIVERSE_R1_STAGE1_PRODUCTION_AUTHORITY_ROOT_20260822_v1.json").read_bytes()).hexdigest()=="61ed1bf6e86d9ddf4def138e7daa73153d50f926b6bd884a6222dee339d44bc4"
+          assert c["protected_boundaries"]["runtime_activation_performed"] is False
+          print("POPULATED_AUTHORITY_ONE_EXACT_ENVELOPE_PASS")
+          print("RUNTIME_ACTIVATION_PERFORMED=false")
+          PY
+      - name: Reject activation surfaces
+        run: |
+          set -euo pipefail
+          f=".github/workflows/multiverse-r1-stage1-populated-authority-batch1-v1-ci.yml"
+          ! grep -Eq '^[[:space:]]*(schedule|workflow_dispatch|push):' "$f"
+          ! grep -Eq 'contents:[[:space:]]*write' "$f"
