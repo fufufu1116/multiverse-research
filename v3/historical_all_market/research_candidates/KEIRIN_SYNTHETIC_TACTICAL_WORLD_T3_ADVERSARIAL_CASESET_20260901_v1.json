@@ -1,0 +1,36 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T3_ADVERSARIAL_CASESET_20260901_v1",
+  "status": "SYNTHETIC_ADVERSARIAL_STRESS_ONLY_NOT_REALITY_TRUTH",
+  "world_tier": "T3",
+  "purpose": "Attack the tactical annotation protocol with adversarial but determinate observation patterns without using unresolved T1/T2 semantics.",
+  "cases": [
+    {"id":"T3-001","scenario":"leader clearly attacks occupied position; follower visible at 0-1s and 5-6s, hidden in between, direct at both visible endpoints with no evidence of intervening rival","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"},"stress":"missing interval cannot be filled by interpolation"},
+    {"id":"T3-002","scenario":"leader attacks; follower clearly separated by rival at 1s and remains separated at every visible observation through 6s","expected":{"attack_anchor":true,"bante_follow":"ABSENT"}},
+    {"id":"T3-003","scenario":"leader attacks; expected follower clearly regains direct position at exactly 6.0s and remains direct at window endpoint","expected":{"attack_anchor":true,"bante_follow":"PRESENT"},"stress":"inclusive six-second boundary"},
+    {"id":"T3-004","scenario":"leader attacks; expected follower first regains direct position at 6.01s","expected":{"attack_anchor":true,"bante_follow":"ABSENT"}},
+    {"id":"T3-005","scenario":"attacker reaches occupied position; one ordered observation shows overlap and incumbent active hold, next view is occluded","expected":{"initiative_conflict":"PRESENT"},"stress":"positive evidence is already sufficient"},
+    {"id":"T3-006","scenario":"attacker reaches occupied position; all six seconds continuously show clean take and no sustained contest","expected":{"initiative_conflict":"ABSENT"}},
+    {"id":"T3-007","scenario":"attacker reaches occupied position; decisive pass interval is fully occluded","expected":{"initiative_conflict":"UNKNOWN"}},
+    {"id":"T3-008","scenario":"line leader makes lateral lane change with equal longitudinal position and no material forward challenge","expected":{"attack_anchor":false,"reason":"NO_SUSTAINED_FORWARD_MOVE"}},
+    {"id":"T3-009","scenario":"line leader advances for two ordered observations toward materially forward occupied position, then aborts","expected":{"attack_anchor":true},"stress":"downstream failure cannot delete qualifying Pass A anchor"},
+    {"id":"T3-010","scenario":"line leader visibly attacks but direct follower identity is ambiguous between two riders immediately before anchor","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN"}},
+    {"id":"T3-011","scenario":"solo rider attacks occupied position and is visibly contested","expected":{"attack_anchor":true,"bante_follow":"INELIGIBLE","initiative_conflict":"PRESENT"}},
+    {"id":"T3-012","scenario":"line leader attacks open forward position with clear follower attachment","expected":{"attack_anchor":true,"bante_follow":"PRESENT","initiative_conflict":"INELIGIBLE"}},
+    {"id":"T3-013","scenario":"apparent attack is visible only after a camera cut; pre-cut and post-cut actor cannot be proven same","expected":{"attack_anchor":false,"reason":"ACTOR_CONTINUITY_NOT_ESTABLISHED"}},
+    {"id":"T3-014","scenario":"commentator calls an attack while visible rider only holds relative position","expected":{"attack_anchor":false,"reason":"COMMENTARY_ONLY_INFERENCE"}},
+    {"id":"T3-015","scenario":"two different leaders attack at same timestamp from opposite sides of occupied group; both continuities and sustained moves clear","expected":{"attack_anchor_count":2,"initiative_conflict_for_each":"PRESENT"}},
+    {"id":"T3-016","scenario":"three-rider line: direct follower drops; third rider remains close but never becomes direct expected follower before anchor","expected":{"attack_anchor":true,"bante_follow":"ABSENT"}},
+    {"id":"T3-017","scenario":"expected follower is direct at anchor, rival intervenes for 2s, follower restores direct position by 5s and remains through 6s","expected":{"attack_anchor":true,"bante_follow":"PRESENT"}},
+    {"id":"T3-018","scenario":"expected follower appears to restore position but car identity continuity is lost during occlusion","expected":{"attack_anchor":true,"bante_follow":"UNKNOWN"}},
+    {"id":"T3-019","scenario":"attacker challenges occupied group; exact defender number uncertain, but continuous lateral hold and longitudinal overlap are visible","expected":{"initiative_conflict":"PRESENT"}},
+    {"id":"T3-020","scenario":"race has many formation changes and switches but no line leader or solo rider makes sustained forward challenge","expected":{"attack_anchor_count":0}}
+  ],
+  "excluded_unresolved_semantics": ["ATTACK_EPISODE_RESET_CRITERION", "TERMINAL_SPRINT_PHASE_BOUNDARY_UNCERTAINTY", "CONFLICT_ELIGIBILITY_NOT_ESTABLISHED"],
+  "firewall": {
+    "synthetic_only": true,
+    "reality_prevalence_inference": false,
+    "protocol_amendment": false,
+    "finish_or_market_claim": false
+  },
+  "next_gate": "Audit T3 expected outputs against the frozen protocol. Any new semantic gap is quarantined rather than guessed."
+}
