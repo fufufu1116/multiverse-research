@@ -38,10 +38,44 @@ jobs:
           export MULTIVERSE_PRELAB_DOCKER_TAG="multiverse-v7r7-proof:${GITHUB_SHA}"
           python3 governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py --selftest governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go
           python3 governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go')
+          s = p.read_text(encoding='utf-8')
+          required = [
+              'runtime.LockOSThread()',
+              'const threadStatusPath = "/proc/thread-self/status"',
+              'syscall.AllThreadsSyscall(syscall.SYS_SETRESUID',
+              'syscall.AllThreadsSyscall6(syscall.SYS_PRCTL',
+              'syscall.AllThreadsSyscall(syscall.SYS_CAPSET',
+              'deny("CAPS_PRE_EXEC")',
+              'syscall.Exec("/proc/self/fd/3"',
+          ]
+          for token in required:
+              if token not in s:
+                  raise SystemExit('PRELAB_THREAD_PIN_STATIC_MISSING:' + token)
+          if '/proc/self/status' in s:
+              raise SystemExit('PRELAB_THREAD_PIN_STATIC_FORBIDS_PROC_SELF_STATUS')
+          order = [
+              'runtime.LockOSThread()',
+              'normalizeRootAllThreads()',
+              'narrowCapabilities()',
+              'enableNoNewPrivs()',
+              'capabilitiesExact()',
+              'deny("CAPS_PRE_EXEC")',
+              'syscall.Exec("/proc/self/fd/3"',
+          ]
+          positions = [s.index(x) for x in order]
+          if positions != sorted(positions):
+              raise SystemExit('PRELAB_THREAD_PIN_STATIC_ORDER')
+          print('PRELAB_THREAD_PIN_ALLTHREAD_STATIC_INVARIANT_PASS=true')
+          PY
+
           docker image inspect "${MULTIVERSE_PRELAB_DOCKER_TAG}" >/dev/null
 
           set +e
-          broad_cap_output="$(docker run --rm --user codespace --cap-add=ALL -e CODESPACES=false -e CODESPACE_NAME=mechanical-broad-cap-test --entrypoint /usr/local/bin/multiverse-v36-arm-v7r7 "${MULTIVERSE_PRELAB_DOCKER_TAG}" 2>&1)"
+          broad_cap_output="$(docker run --rm --user codespace --cap-add=ALL -e GOMAXPROCS=8 -e CODESPACES=false -e CODESPACE_NAME=mechanical-broad-cap-test --entrypoint /usr/local/bin/multiverse-v36-arm-v7r7 "${MULTIVERSE_PRELAB_DOCKER_TAG}" 2>&1)"
           broad_cap_rc=$?
           set -e
           printf '%s\n' "${broad_cap_output}"
@@ -49,7 +83,9 @@ jobs:
           grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:CODESPACES' <<<"${broad_cap_output}"
           if grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:CAPS' <<<"${broad_cap_output}"; then exit 92; fi
           if grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:CAPS_NARROW' <<<"${broad_cap_output}"; then exit 92; fi
+          if grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:NO_NEW_PRIVS' <<<"${broad_cap_output}"; then exit 92; fi
           printf 'PRELAB_BROAD_CAP_BOUNDARY_SELF_NARROW_PASS=true\n'
+          printf 'PRELAB_GOMAXPROCS8_THREAD_PIN_BEHAVIOR_PASS=true\n'
 
           docker run --rm --entrypoint /bin/cat "${MULTIVERSE_PRELAB_DOCKER_TAG}" /opt/multiverse/v36/image-identity-v7r3.json > /tmp/image-identity-v7r3.json
           test -s /tmp/image-identity-v7r3.json
