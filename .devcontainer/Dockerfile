@@ -8,7 +8,6 @@ COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py /opt/multiverse/v36/step3.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go /tmp/producer.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go /tmp/control.go
-COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_TTY_CAPABILITY_TRIGGER_20260901.go /tmp/trigger.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py /tmp/manifest.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py /tmp/python-actual-use-selftest.py
 RUN set -eu; \
@@ -16,10 +15,9 @@ RUN set -eu; \
  /usr/bin/python3 -m py_compile /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3.py /tmp/manifest.py /tmp/python-actual-use-selftest.py; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-anchor-v7r2 /tmp/producer.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/sbin/multiverse-v36-control-v7r2 /tmp/control.go; \
- CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/libexec/multiverse-v36-trigger-v7r2 /tmp/trigger.go; \
- rm -f /tmp/producer.go /tmp/control.go /tmp/trigger.go; \
- chown -R root:root /opt/multiverse/v36 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/libexec/multiverse-v36-trigger-v7r2; \
- chmod 0555 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/libexec/multiverse-v36-trigger-v7r2; \
+ rm -f /tmp/producer.go /tmp/control.go; \
+ chown -R root:root /opt/multiverse/v36 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2; \
+ chmod 0555 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2; \
  chmod 0444 /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3-binding.json /opt/multiverse/v36/step3.py /opt/multiverse/v36/requirements.txt; \
  chmod -R go-w /opt/multiverse/v36/pydeps; chmod 0555 /opt/multiverse/v36/pydeps /opt/multiverse/v36/empty-config /opt/multiverse/v36; \
  rm -f /etc/sudoers.d/*; find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -type f -perm /6000 -exec chmod a-s {} + 2>/dev/null || true; \
@@ -28,6 +26,5 @@ RUN set -eu; \
  exec 3</usr/bin/python3; /proc/self/fd/3 -I -S -B /tmp/python-actual-use-selftest.py; exec 3<&-; \
  /usr/local/sbin/multiverse-v36-control-v7r2 build-selftest; \
  test "$(stat -c '%u %a' /opt/multiverse/v36/closure-manifest-v7.json)" = '0 444'; \
- test "$(stat -c '%u %a' /usr/local/libexec/multiverse-v36-trigger-v7r2)" = '0 555'; \
  rm -f /tmp/manifest.py /tmp/python-actual-use-selftest.py
 ENTRYPOINT ["/usr/local/sbin/multiverse-v36-anchor-v7r2"]
