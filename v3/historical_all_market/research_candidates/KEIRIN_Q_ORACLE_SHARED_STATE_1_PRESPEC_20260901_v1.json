@@ -1,0 +1,109 @@
+{
+  "record": "KEIRIN_Q_ORACLE_SHARED_STATE_1_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "owner_scope_gate": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_ORACLE_SHARED_STATE_1_20260901_v1.json",
+    "blob": "f9a3578aadb722fad2b78f709f2f96f4b44580ad",
+    "status_required": "OWNER_EXPLICITLY_APPROVED_EXACT_SYNTHETIC_DIAGNOSTIC_ONLY"
+  },
+  "question": "If the exact Simulator-internal shared latent line-state component omitted from frozen C1 is supplied only to a diagnostic C1_ORACLE control, does fixed N1's W1 Synthetic expected-log-loss advantage over frozen C1 disappear or materially shrink?",
+  "hypothesis_under_test": "LATENT_SHARED_PROXY_DOMINANT",
+  "scientific_success_rule": "No model ranking is required. Falsifying LATENT_SHARED_PROXY_DOMINANT is a successful scientific outcome.",
+  "fixed_fixtures": {
+    "world": "W1",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "result_adaptive_condition_selection": false,
+    "post_hoc_seed_or_condition_addition": false
+  },
+  "fixed_models": {
+    "C1": "Frozen C1 exactly as defined by KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1",
+    "N1": "Frozen N1 exactly as defined by KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1",
+    "C1_ORACLE": {
+      "role": "DIAGNOSTIC_CONTROL_ONLY_NOT_MODEL_CANDIDATE",
+      "base": "Exact frozen C1 runner utilities",
+      "only_added_information": "For each rider, add exactly 0.16 times the mean latent_skill of riders sharing that rider's synthetic line_id, matching the canonical W1 shared-latent utility component.",
+      "generator": "The same exact Plackett-Luce ordered-top3 generator as C1",
+      "no_retuning": true,
+      "no_learned_or_fitted_oracle_coefficient": true,
+      "oracle_coefficient_source": "Canonical digital_twin_v1 W1 truth construction, not fitted from results",
+      "normal_PRE_mutation": false,
+      "normal_C1_or_N1_code_mutation": false
+    }
+  },
+  "oracle_information_sufficiency_contract": {
+    "required_exact_component": "0.16 * line-average latent_skill",
+    "runtime_check": "For every rider in every case, independently reconstruct the canonical W1 shared-latent component as canonical_W1_static_utility minus canonical_W0_base_utility minus canonical position bonus minus canonical size bonus and require max absolute difference <= 1e-12.",
+    "failure_action": "FAIL_CLOSED_NO_SCIENTIFIC_INTERPRETATION"
+  },
+  "oracle_nonoracle_separation_contract": {
+    "PRE_must_not_contain_latent_skill": true,
+    "C1_and_N1_must_be_computed_from_PRE_only": true,
+    "C1_and_N1_predictions_must_match_existing_comparison_harness_predictions": true,
+    "latent_skill_access_permitted_only_in_oracle_boundary_and_oracle_sufficiency_assertion": true,
+    "oracle_values_must_never_be_inserted_into_PRE": true,
+    "canonical_model_source_files_must_not_be_modified": true,
+    "failure_action": "FAIL_CLOSED"
+  },
+  "primary_metric": "Mean exact expected ordered-top3 log loss under canonical W1 truth; lower is better.",
+  "primary_baseline": {
+    "metric": "N1_minus_C1_expected_log_loss",
+    "expected_from_prior_fixed_evidence": -0.001139094451357625,
+    "source_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_W1_STATIC_ABLATION_1_EVIDENCE_20260901_v1.json",
+    "source_blob": "e4a6e59e10e2592ee266c4d17e84d219991fd61b",
+    "runtime_reproduction_tolerance": 1e-12
+  },
+  "primary_effect": {
+    "metric": "N1_minus_C1_ORACLE_expected_log_loss",
+    "residual_advantage_ratio_definition": "If N1_minus_C1_ORACLE < 0, residual_ratio = abs(N1_minus_C1_ORACLE) / abs(prior N1_minus_C1 baseline); otherwise residual_ratio = 0 because N1 advantage has disappeared or reversed."
+  },
+  "prespecified_interpretation_thresholds": {
+    "ADVANTAGE_DISAPPEARS_OR_REVERSES_STRONG_SUPPORT": "N1_minus_C1_ORACLE >= 0",
+    "ADVANTAGE_MAJORITY_ERASED_STRONG_SUPPORT": "N1_minus_C1_ORACLE < 0 and residual_advantage_ratio <= 0.25",
+    "PARTIAL_SHRINK_MIXED_MECHANISM": "0.25 < residual_advantage_ratio <= 0.75",
+    "LITTLE_CHANGE_CLEAR_RESIDUAL_WEAKENS_DOMINANT_PROXY": "residual_advantage_ratio > 0.75"
+  },
+  "secondary_diagnostics_prespecified": {
+    "chain_rule_decomposition": "Decompose C1, N1 and C1_ORACLE cross-entropy into rank1, rank2|rank1 and rank3|rank1,rank2 terms. This is exhaustive and additive, not subgroup slicing.",
+    "block_stability": "Report the same effect for each of the four already-fixed seed blocks. Do not add blocks after seeing results.",
+    "oracle_improvement_over_C1": "Report C1_ORACLE_minus_C1 to verify the oracle information has measurable W1 utility under this fixed simulator.",
+    "no_posthoc_slices": true
+  },
+  "mechanical_pass_criteria": [
+    "canonical W1 truth probability mass valid",
+    "C1/N1/C1_ORACLE probability objects valid and unit mass",
+    "frozen C1 and N1 coefficients unchanged",
+    "C1 and N1 non-oracle predictions exactly match existing harness outputs within 1e-12",
+    "PRE has no latent_skill",
+    "oracle shared-state component matches canonical W1 truth component within 1e-12",
+    "chain decomposition residual <= 1e-12",
+    "prior W1 N1-minus-C1 aggregate reproduced within 1e-12",
+    "no protected/quarantined/real/economic access",
+    "scientific Segment C scoring count remains 0"
+  ],
+  "forbidden": [
+    "retuning C1 or N1",
+    "treating C1_ORACLE as a formal model candidate",
+    "new seed selection",
+    "result-adaptive condition selection",
+    "real/live data",
+    "PR15 metrics",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000",
+    "DEV2000 C rescue",
+    "same-lineage B/C rescue",
+    "real/untouched validation",
+    "economics/bankroll/ROI",
+    "model promotion/freeze",
+    "external provider contact",
+    "Core Phase C/main/ruleset/Runtime/production authority changes",
+    "Synthetic-to-real-world edge claim"
+  ],
+  "post_result_rule": "Record the result regardless of direction. Do not retune, add conditions, add seeds, promote a model, or auto-expand authorization after the result."
+}
