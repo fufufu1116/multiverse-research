@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_Q_REL_STRENGTH_1_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "question": "At what prespecified strength of the already-existing W2 conditional line-relation mechanism does fixed N1 acquire a stable Synthetic expected-log-loss advantage over fixed C1, holding races, PRE, models, coefficients, scoring and seed blocks fixed?",
+  "rationale": "Q-MISMATCH-1 supported GENERIC_RELATIONAL_VALUE under two non-isomorphic W2 relation kernels. The next shortest falsification is not more seeds or more kernels, but mapping the failure/onset boundary along the existing digital_twin_v1 relation_strength parameter that already defines W1 at 0.0 and W2 at 1.0.",
+  "scope_basis": {
+    "limited_synthetic_authorization_path": "governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json",
+    "authorization_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "allowed_class": "Digital Twin W0-W4 synthetic stress and failure diagnostics; C0/C1/N1 comparison only inside those synthetic worlds",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "existing_parameter": "_joint_from_utilities(..., relation_strength)",
+    "existing_endpoints": {
+      "W1": {"use_line_static_utilities": true, "relation_strength": 0.0},
+      "W2": {"use_line_static_utilities": true, "relation_strength": 1.0}
+    },
+    "scope_interpretation": "The experiment only interpolates the already-existing relation_strength parameter between the existing W1 and W2 endpoints. It does not add W5/W6, a new relation kernel, a new model, real/live data, economics, or protected information.",
+    "fail_closed": true
+  },
+  "dependency_evidence": {
+    "mechanical_gate": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANICAL_INVARIANCE_GATE_EVIDENCE_20260901_v1.json",
+      "blob": "25f1a6aa3265b122ed04ae7ff16ff7d8232c22b3",
+      "status": "PASS_ALL_SIX_GATES"
+    },
+    "q_mismatch_1": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_MISMATCH_1_EVIDENCE_20260901_v1.json",
+      "blob": "369ee681a5b296767a717beb72fe8d528b138aeb",
+      "classification": "GENERIC_RELATIONAL_VALUE"
+    }
+  },
+  "fixed_scientific_sources": {
+    "base_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "race_index_formula": "case % 32",
+    "paired_across_all_relation_strengths": true,
+    "new_seed_selection": false,
+    "selected_from_results": false,
+    "untouched_validation_claim": false
+  },
+  "relation_strength_grid": [0.0, 0.125, 0.25, 0.5, 0.75, 1.0],
+  "truth_definition": "For every fixed race, use digital_twin_v1._static_utilities(race, use_line=True) and digital_twin_v1._joint_from_utilities(race, stable_util, relation_strength=lambda). No other truth mechanism changes.",
+  "models": ["C0", "C1", "N1"],
+  "model_or_coefficient_change": false,
+  "primary_metric": "expected ordered-top3 log loss under exact Synthetic truth distribution",
+  "primary_delta": "N1_minus_C1; negative means N1 better",
+  "stable_advantage_rule": "For a fixed lambda, stable N1 advantage iff aggregate N1_minus_C1 < 0 and N1_minus_C1 < 0 in at least 3 of 4 fixed blocks.",
+  "prespecified_classification_rule": {
+    "NO_STABLE_RELATIONAL_ADVANTAGE": "lambda=1.0 is not stable by the fixed rule.",
+    "STATIC_OR_ZERO_CONDITIONAL_ADVANTAGE": "lambda=0.0 is already stable; no positive conditional-strength onset is required to observe N1 advantage in this Synthetic fixture set.",
+    "INTERIOR_RELATIONAL_ONSET": "lambda=0.0 is not stable, lambda=1.0 is stable, and at least one prespecified interior lambda is stable. Report the minimum prespecified positive lambda that is stable as onset_grid_lambda.",
+    "ONLY_FULL_W2_STABLE": "lambda=0.0 is not stable, lambda=1.0 is stable, and no prespecified interior lambda is stable.",
+    "NONMONOTONIC_STABILITY_PATTERN": "If the stable/not-stable Boolean sequence over ascending lambda changes from true back to false at any higher lambda, report this flag in addition to the primary class and do not smooth, refit or add grid points."
+  },
+  "secondary_outputs_prespecified": [
+    "N1_minus_C1 for every lambda and block",
+    "aggregate N1_minus_C1 for every lambda",
+    "C1_minus_C0 and N1_minus_C0 for every lambda",
+    "stable/not-stable Boolean for every lambda",
+    "onset_grid_lambda when defined",
+    "maximum probability-mass error",
+    "maximum C1/N1 rank-1 marginal difference"
+  ],
+  "stopping_rule": "Execute this one fixed grid only. Do not add intermediate grid points, seeds, kernels, slices, models, thresholds or retuning after seeing results. Any finer boundary localization requires a separately prespecified experiment and is not automatically authorized by this record.",
+  "interpretation_limits": [
+    "Synthetic engineering/falsification evidence only.",
+    "No real-keirin predictive edge, ROI, deployment readiness, causal claim, model selection, freeze or promotion.",
+    "Reused post-hoc Synthetic seed blocks are not untouched validation.",
+    "A low onset_grid_lambda does not estimate a real-world relation-effect threshold or frequency."
+  ],
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  }
+}
