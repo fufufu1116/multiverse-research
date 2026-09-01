@@ -1,0 +1,83 @@
+{
+  "version": "V19.7.36-v7r7",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "purpose": "Move the strict 600-second external-session challenge window from container creation to an explicit post-attach one-shot manual arm boundary, while preserving the independently reviewed v7r6 external-session gate, Owner provenance, strict deadline, rate/pagination controls, exact image closure, downstream OAuth secrecy boundary, NONMUTATING Step3, and fail-closed behavior.",
+  "required": [
+    {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
+    {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
+    {"role":"prelive_start_surface","path":"MULTIVERSE_PRELIVE_START_HERE.md","type":"markdown"},
+    {"role":"external_session_gate_inherited","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go","type":"go","composed_target":"/usr/local/sbin/multiverse-v36-session-gate-v7r7"},
+    {"role":"attach_ready_status_addon","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_ATTACH_READY_STATUS_ADDON_20260901.go","type":"go-addon","composed_into":"/usr/local/sbin/multiverse-v36-session-gate-v7r7"},
+    {"role":"manual_arm_launcher","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go","type":"go","build_target":"/usr/local/bin/multiverse-v36-arm-v7r7"},
+    {"role":"ui_ready_writer","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go","type":"go","build_target":"/usr/local/bin/multiverse-v36-ui-ready-v7r7"},
+    {"role":"image_identity_builder","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py","type":"python"},
+    {"role":"pre_lab_mechanical_gate","path":"governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py","type":"python"}
+  ],
+  "attach_ready_manual_arm_remediation": {
+    "incident_class": "The prior v7r6 container ENTRYPOINT started the trusted-server-time/challenge path before the Owner could reliably attach and observe it on iPhone.",
+    "container_creation_starts_challenge": false,
+    "post_attach_starts_challenge": false,
+    "manual_arm_starts_gate": true,
+    "manual_arm_command": "/usr/local/bin/multiverse-v36-arm-v7r7",
+    "ui_ready_writer": "/usr/local/bin/multiverse-v36-ui-ready-v7r7",
+    "ui_ready_path": "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-ui-ready.txt",
+    "session_status_path": "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-session-status.txt",
+    "control_path": "/workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md",
+    "pre_arm_timer_state": "NOT_STARTED",
+    "pre_arm_next_action": "RETURN_TO_CORE_BEFORE_ARM",
+    "pre_arm_image_identity_binding": true,
+    "one_shot_lock": "/run/multiverse-v36-v7r7-arm.lock",
+    "launcher_mode": "root-owned 4555 setuid; all other setuid/setgid files in the hardened search boundary are removed",
+    "container_capability_boundary": ["CHOWN","SETUID","SETGID"],
+    "launcher_privilege_use": "Normalize the fixed launcher to root, immediately set NoNewPrivs, require the narrowed capability bounding/effective sets, validate exact UI-ready/control/image bindings, create a root-owned one-shot lock, open the fixed root-owned 0555 session gate by descriptor, close unrelated descriptors, and exec only that gate.",
+    "challenge_start_semantics": "The inherited v7r6 gate generates the challenge only after manual arm reaches the gate and obtains trusted GitHub server time. The 600-second window is therefore not consumed by Codespace creation or UI attachment.",
+    "failure_policy": "Any stale/ambiguous ready file, wrong owner/mode/content, image mismatch, preexisting session status, repeated arm lock, unsafe gate class, privilege/capability mismatch, or downstream gate error fails closed without retry authority."
+  },
+  "inherited_v7r6_security": {
+    "external_session_gate_source_unchanged": true,
+    "approval_window_seconds": 600,
+    "api_hard_budget_requests": 40,
+    "rate_limit_remaining_reserve": 8,
+    "poll_interval_seconds": 30,
+    "owner_approval_first_party_only": true,
+    "connector_owner_approval_rejected": true,
+    "freeze_session_approval_schema_remains_v7r6": true,
+    "python_build_actual_use_gate": true,
+    "step3_same_object": true,
+    "step3_mode": "NONMUTATING",
+    "production_mutation": false,
+    "runtime_activation": false
+  },
+  "image_identity": {
+    "version": "V19.7.36-v7r7-image-identity",
+    "includes": [
+      "/usr/local/sbin/multiverse-v36-session-gate-v7r7",
+      "/usr/local/bin/multiverse-v36-arm-v7r7",
+      "/usr/local/bin/multiverse-v36-ui-ready-v7r7",
+      "/usr/local/sbin/multiverse-v36-anchor-v7r2",
+      "/usr/local/sbin/multiverse-v36-control-v7r2",
+      "/opt/multiverse/v36/runtime-v7.py",
+      "/opt/multiverse/v36/step3-binding.json",
+      "/opt/multiverse/v36/step3.py",
+      "/opt/multiverse/v36/closure-manifest-v7.json"
+    ]
+  },
+  "negative_mechanical_requirements": [
+    "no_session_gate_entrypoint",
+    "post_attach_writer_only_no_arm",
+    "post_attach_no_challenge_generation",
+    "pre_arm_timer_not_started",
+    "pre_arm_image_identity_exactly_bound",
+    "ready_symlink_or_stale_content_rejected",
+    "control_wrong_owner_mode_or_content_rejected",
+    "session_status_preexists_rejected",
+    "duplicate_arm_lock_rejected",
+    "only_manual_arm_launcher_retains_setuid_or_setgid_in_hardened_search_boundary",
+    "manual_arm_setuid_transition_proven_in_exact_image",
+    "v7r7_gate_composed_selftest_passes",
+    "inherited_rate_budget_history_selftest_passes",
+    "inherited_post_sleep_post_deadline_wait_path_selftest_passes",
+    "exact_final_tree_docker_build_passes"
+  ]
+}
