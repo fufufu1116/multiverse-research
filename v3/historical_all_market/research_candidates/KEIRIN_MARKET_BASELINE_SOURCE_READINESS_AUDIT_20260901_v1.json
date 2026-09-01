@@ -1,0 +1,37 @@
+{
+  "record": "KEIRIN_MARKET_BASELINE_SOURCE_READINESS_AUDIT_20260901_v1",
+  "status": "MARKET_SOURCE_EXISTS_BUT_NOT_ADMITTED_FOR_NEW_LINEAGE",
+  "existing_drive_artifacts_metadata_only": {
+    "folder": "MULTIVERSE_ALL_MARKET_STAGE0_PRICE_RECOVERY_v2/PRICE_ONLY",
+    "catalog": "DEV2000_ALL_MARKET_PRICE_CATALOGS_v2.jsonl",
+    "catalog_size_bytes": 12252761,
+    "raw_preflight": "DEV2000_PRICE_RAW_PREFLIGHT_v2.csv",
+    "market_coverage_summary": "DEV2000_PRICE_MARKET_COVERAGE_v2.csv",
+    "active_car_distribution": "DEV2000_PRICE_ACTIVE_CAR_DISTRIBUTION_v2.csv"
+  },
+  "access_action_taken": "METADATA_AND_FOLDER_LISTING_ONLY",
+  "catalog_bytes_opened": false,
+  "reason_not_admitted": [
+    "Existing DEV2000 lineage is not authorized for new-lineage rescue or tuning.",
+    "CURRENT DEV2000 C remains prohibited for new-lineage scoring.",
+    "A market-only baseline must not silently inherit burned/old-lineage membership or evaluation feedback.",
+    "Point-in-time market snapshot semantics and exact cutoff need to be rebound for the new Real Evidence Lane."
+  ],
+  "M0_readiness": {
+    "algorithm": "READY_IN_RESEARCH_BACKTESTER",
+    "required_input": "complete timestamp-proven market quote surface at a fixed pre-race cutoff",
+    "existing_old_catalog_reuse": "NOT_AUTHORIZED",
+    "new_nonprotected_sample_market_capture": "REQUIRED",
+    "outcomes_required_to_build_implied_probabilities": false,
+    "outcomes_required_to_score_probability_quality": true
+  },
+  "scientific_next_step": "For a new prespecified development sample, capture market snapshots before outcomes under rights-safe minimal collection, freeze hashes/cutoffs, then attach outcomes only under explicit development-scoring authority. Do not use old DEV2000 price catalog as a shortcut.",
+  "firewall": {
+    "ROI": false,
+    "economics": false,
+    "real_money": false,
+    "RESULT_PAYOUT_feature_use": false,
+    "old_lineage_rescue": false,
+    "untouched_final": false
+  }
+}
