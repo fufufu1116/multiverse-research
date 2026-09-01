@@ -1,0 +1,116 @@
+{
+  "record": "KEIRIN_REALITY_CALIBRATION_ARCHIVE_EXPANSION_20260901_v2_EVIDENCE",
+  "status": "PASS_PRIVATE_REUSABLE_CALIBRATION_ARCHIVE_EXPANDED_TO_248_OBSERVATIONS",
+  "classification": "BURNED_REALITY_CALIBRATION_ONLY_NOT_VALIDATION_NOT_MODEL_SELECTION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "bindings": {
+    "canonical_main_fresh_before_expansion": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "prior_expanded_84row_evidence_commit": "8780f27d47c70c004f2e5b6dea2b8e9e144d9797"
+  },
+  "archive": {
+    "version": "keirin_reality_calibration_archive_20260901_v3.xlsx",
+    "sha256": "1c0f4ec221de74c109284045da0b9e84b626b805bf7826267534b0595bf8db03",
+    "private_drive_copy": {
+      "status": "PRESENT_AND_METADATA_VERIFIED",
+      "shared": false,
+      "drive_file_id_sha256": "506134b277ead33057a65e1ab31c820d0d863047ddbd83e346b07c782c2f3739"
+    },
+    "public_repo_contains_row_level_archive": false,
+    "rider_names_retained_in_archive": false
+  },
+  "observation_inventory": {
+    "total_observation_rows": 248,
+    "note": "Observation rows are not asserted to be 248 unique riders; the archive contains calibration observations from different source surfaces/snapshots.",
+    "race_level_pre_rows": 84,
+    "race_level_pre_races": 12,
+    "official_roster_rows": 164,
+    "official_roster_sources": [
+      {
+        "venue": "岐阜",
+        "grade": "FII",
+        "rows": 49,
+        "source": "https://ctc.gr.jp/schedule/detail.php?id=4320260830",
+        "role": "PRELIMINARY_OFFICIAL_ROSTER_CALIBRATION"
+      },
+      {
+        "venue": "静岡",
+        "grade": "FII",
+        "rows": 45,
+        "source": "https://ctc.gr.jp/schedule/detail.php?id=3820260830",
+        "role": "PRELIMINARY_OFFICIAL_ROSTER_CALIBRATION"
+      },
+      {
+        "venue": "松山",
+        "grade": "FI",
+        "rows": 70,
+        "source": "https://ctc.gr.jp/schedule/detail.php?id=7520260831",
+        "source_update_jst": "2026-08-06T08:50:00+09:00",
+        "class_rows": {"S1": 15, "S2": 20, "A1": 18, "A2": 17},
+        "role": "PRELIMINARY_OFFICIAL_ROSTER_CALIBRATION"
+      }
+    ]
+  },
+  "coverage_after_expansion": {
+    "grades": ["FI", "FII"],
+    "mens_classes": ["S1", "S2", "A1", "A2", "A3"],
+    "race_pre_venues": ["宇都宮", "岐阜", "いわき平"],
+    "roster_venues": ["岐阜", "静岡", "松山"],
+    "race_bank_support_m": [400, 500],
+    "district_support_in_matsuyama_roster": ["北日本", "関東", "南関東", "中部", "近畿", "中国・四国", "九州"],
+    "matsuyama_competition_score_support": {"n":70,"min":73.37,"median":95.43,"max":113.88}
+  },
+  "storage_and_rights_boundary": {
+    "collection_mode": "SOURCE_SPECIFIC_MANUAL_EQUIVALENT_PUBLIC_RESEARCH_CAPTURE",
+    "automated_bulk_site_mirroring": false,
+    "access_control_bypass": false,
+    "raw_web_pages_archived_in_public_repo": false,
+    "normalized_private_archive_reusable_for_foundation_research": true,
+    "redistribution": false,
+    "source_update_and_snapshot_semantics_must_be_preserved": true
+  },
+  "allowed_future_use": [
+    "Reality Synthetic support/range calibration",
+    "class/grade-conditioned score-scale design",
+    "age/cohort/district/prefecture support diagnostics",
+    "ST/BK and maneuver-count support diagnostics",
+    "win/quinella/trio-rate support diagnostics for roster snapshots",
+    "missingness and source-version diagnostics",
+    "assumption-range design",
+    "transport reproducibility checks"
+  ],
+  "prohibited_future_use": [
+    "untouched/final validation",
+    "model or feature selection evidence",
+    "population-exact frequency claims",
+    "causal/tactical effect fitting from this convenience archive alone",
+    "ROI/economics",
+    "RESULT/PAYOUT reconstruction",
+    "current-profile backfill into historical decision points"
+  ],
+  "protected_boundary": {
+    "RESULT_PAYOUT_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "DEV2000_C_rescue": false,
+    "same_lineage_B_C_rescue": false,
+    "protected_or_untouched_validation": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "economics": false,
+    "external_provider_contact": false,
+    "payment": false,
+    "Core_Phase_C_main_ruleset_Runtime_change": false
+  },
+  "scientific_interpretation": [
+    "The archive now covers all men's S1/S2/A1/A2/A3 class labels in the current narrow FI/FII reality-calibration scope.",
+    "The Matsuyama FI preliminary roster materially increases S-class calibration support and spans all seven major district groupings present on the official source page.",
+    "Roster snapshots remain preliminary point-in-time source observations, not race-decision-cutoff PRE unless separately bound to a decision timestamp.",
+    "Increasing observation count improves support/range coverage but does not by itself authorize population-exact probabilities or a unique truth generator."
+  ],
+  "next_material_boundary": {
+    "name": "REALITY_CALIBRATION_ADDITIONAL_DIMENSION_OR_TRUTH_SENSITIVITY_DESIGN_GATE",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "note": "Further data collection should add missing dimensions such as additional venue/bank regimes, dates, mutable line provenance or weather transports rather than volume-only duplication. Model competition and truth coefficient fitting remain closed."
+  }
+}
