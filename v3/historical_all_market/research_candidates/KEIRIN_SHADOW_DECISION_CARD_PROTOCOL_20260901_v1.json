@@ -1,0 +1,46 @@
+{
+  "record": "KEIRIN_SHADOW_DECISION_CARD_PROTOCOL_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_PRESPEC_NO_REAL_MONEY_EXECUTION",
+  "purpose": "Allow prospective real-market evaluation when automated late-odds capture is difficult by freezing model-side candidate tickets and acceptable odds bands before the decision moment, then accepting a human-observed late odds value as market evidence.",
+  "principle": "The research object is the frozen pre-race decision card, not an actual wager.",
+  "pre_race_lock_required": [
+    "race_id and venue",
+    "ordered ticket/combo",
+    "model probability or model score used to rank the combo",
+    "predeclared acceptable odds interval or minimum odds threshold",
+    "decision rule such as SHADOW_BUY / SHADOW_PASS",
+    "all PRE feature provenance and timestamps",
+    "card creation timestamp and immutable hash/commit provenance"
+  ],
+  "late_market_observation": {
+    "allowed_observer": "OWNER_MANUAL_OBSERVATION_OR_OTHER_SEPARATELY_ADMITTED_SOURCE",
+    "required_fields": ["race_id", "combo", "observed_odds", "observation_time_or_relative_marker", "observer/source", "whether result was known at observation"],
+    "preferred_timing": "as close to betting close as practical while still pre-result",
+    "not_required": "exact T-3 capture for every race",
+    "rule": "Use the observed value only to apply the already-frozen odds-band rule; do not alter model probability, combo selection, threshold, or feature set after seeing the odds."
+  },
+  "shadow_decision": {
+    "inside_band": "SHADOW_BUY",
+    "outside_band": "SHADOW_PASS",
+    "missing_or_uncertain_observation": "SHADOW_UNRESOLVED",
+    "meaning": "counterfactual research decision only; no actual-money execution is required or authorized"
+  },
+  "example_schema_only_not_real_prediction": [
+    {"venue":"EXAMPLE", "race":4, "combo":"1-5-7", "acceptable_odds":"5.0-8.0", "manual_late_odds":6.3, "research_decision":"SHADOW_BUY"},
+    {"venue":"EXAMPLE", "race":4, "combo":"7-4-1", "acceptable_odds":"18.0-25.0", "manual_late_odds":11.0, "research_decision":"SHADOW_PASS"}
+  ],
+  "anti_hindsight": [
+    "combo and odds band must be locked before late-odds observation",
+    "no changing odds band after seeing late odds",
+    "no dropping losing shadow decisions after outcome",
+    "no adding winning combos after outcome",
+    "outcome joins only after the decision card and late-market observation are locked or marked unresolved"
+  ],
+  "evaluation": {
+    "probability_first": ["log_loss", "Brier", "calibration", "ranking", "sample_size", "temporal_stability"],
+    "shadow_market_diagnostics": ["band_hit_rate", "SHADOW_BUY_count", "SHADOW_PASS_count", "unresolved_rate", "late_odds_distribution"],
+    "economics": "NOT_AUTHORIZED_BY_THIS_PROTOCOL; no ROI/model promotion or real-money betting claim"
+  },
+  "compatibility": "This protocol complements, not replaces, source-timestamped multi-snapshot market collection. Automated snapshots remain valuable when safely available.",
+  "hard_boundaries": ["NO_REAL_MONEY_WAGERING", "NO_RESULT_OR_PAYOUT_AS_FEATURE", "NO_PROTECTED_HOLDOUT_OPENING", "NO_PRODUCTION_MUTATION"]
+}
