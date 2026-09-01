@@ -5,7 +5,7 @@ import ast,hashlib,json,os,pathlib,py_compile,re,shutil,subprocess,sys,tempfile
 ROOT=pathlib.Path(__file__).resolve().parents[1];RC=92
 EXPECTED={
 '.devcontainer/Dockerfile':'dockerfile','.devcontainer/devcontainer.json':'json','.devcontainer/v19_7_36_requirements.txt':'text','.github/workflows/multiverse-v36-prelab-exact-image-build.yml':'text',
-'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_CANDIDATE_ASSEMBLY_MANIFEST_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_POST_SLEEP_POST_DEADLINE_WAIT_PATH_SELFTEST_20260901.py':'python'}
+'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_ADDON_20260901.go':'go-addon','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go':'go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_CANDIDATE_ASSEMBLY_MANIFEST_20260901.json':'json','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py':'python','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_POST_SLEEP_POST_DEADLINE_WAIT_PATH_SELFTEST_20260901.py':'python'}
 def fail(c,m):print(f'PRE_LAB_MECHANICAL_GATE_DENIED:{c}:{m}',file=sys.stderr);raise SystemExit(RC)
 def data(r):return (ROOT/r).read_bytes()
 def gitblob(b):h=hashlib.sha1();h.update(f'blob {len(b)}\0'.encode());h.update(b);return h.hexdigest()
@@ -17,7 +17,7 @@ def check_kind(r,w):
  try:
   if w=='json':json.loads(b)
   elif w=='python':ast.parse(b.decode(),filename=r)
-  elif w=='go' and not s.startswith(b'package main'):fail('GO_CONTENT_TYPE',r)
+  elif w.startswith('go') and not s.startswith(b'package main'):fail('GO_CONTENT_TYPE',r)
   elif w=='dockerfile' and not re.search(br'(?m)^FROM\s+',b):fail('DOCKERFILE_CONTENT_TYPE',r)
  except Exception as e:fail('PARSE',f'{r}:{type(e).__name__}')
 def main():
@@ -29,14 +29,17 @@ def main():
  for n,l in enumerate(d.splitlines(),1):
   m=re.match(r'^\s*(COPY|ADD)\s+(?:--\S+\s+)*([^\s]+)',l)
   if m and not m.group(2).startswith(('http://','https://','--from=')) and not (ROOT/m.group(2)).is_file():fail('DOCKER_COPY_SOURCE_MISSING',f'{n}:{m.group(2)}')
- for needle in ['multiverse-v36-session-gate-v7r6','build-selftest','MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go','python-actual-use-selftest.py','V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py','rate-budget-history-selftest.py']:
+ for needle in ['multiverse-v36-session-gate-v7r6','build-selftest','MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go','MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_ADDON_20260901.go','session-status-addon.go','/tmp/session-gate.go /tmp/session-status-addon.go','python-actual-use-selftest.py','V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py','rate-budget-history-selftest.py']:
   if needle not in d:fail('DOCKER_V7R6_WIRING',needle)
  gate=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go').decode()
+ addon=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_ADDON_20260901.go').decode()
  builder=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py').decode()
  if 'multiverse-v36-session-gate-v7r6' not in builder or 'V19.7.36-v7r6-image-identity' not in builder:fail('IMAGE_IDENTITY_V7R6_WIRING','stale-session-gate-or-version')
  for needle in ['apiHardBudget = 40','apiReserveRemaining = 8','q.Set("since"','cursorOverlap = 2 * time.Second','rate-limited','minute_8_5_requests=25','ten_minute_requests=28','scanStart','scanSince(cursor)','rate-remaining-missing','rate-limit-missing','rate-reset-missing','approvalDeadline := issued.Add(approvalWindow)','c.CreatedAt.After(approvalDeadline)','operationalDeadline','PAGINATION_RACE_SELFTEST_PASS','RATE_HEADERS_FAIL_CLOSED_SELFTEST_PASS','STRICT_APPROVAL_WINDOW_SELFTEST_PASS']:
   if needle not in gate:fail('RATE_BUDGET_REMEDIATION_WIRING',needle)
  if 'watermark = d' in gate or 'if d.After(watermark)' in gate:fail('PAGINATION_WATERMARK_REGRESSION','final-page-watermark-present')
+ for needle in ['/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r6-session-status.txt','PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_READY','PHASE_C_V19_7_36_V7R6_IPHONE_OBSERVABILITY_SELFTEST_PASS','os.O_EXCL','iphoneSafeStatusLine','device code 1234-5678','syscall.Dup2(originalFD, int(os.Stdout.Fd()))','trimmed == iphoneWaitingLine','status.Close()']:
+  if needle not in addon:fail('IPHONE_OBSERVABILITY_WIRING',needle)
  hist=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py').decode()
  for needle in ['range(1,601)','LATE_SECONDS=510','full_used==28','updated_at > since']:
   if needle not in hist:fail('RATE_BUDGET_HISTORY_SELFTEST_WIRING',needle)
@@ -53,9 +56,12 @@ def main():
  if rb.get('hard_process_budget_requests')!=40 or rb.get('rate_limit_remaining_reserve')!=8 or rb.get('poll_interval_seconds')!=30 or rb.get('approval_window_seconds')!=600:fail('ASSEMBLY_RATE_BUDGET','mismatch')
  if 'trusted evidence upper bound is exactly GitHub server issuance time + 600 seconds' not in rb.get('approval_window_semantics',''):fail('ASSEMBLY_APPROVAL_WINDOW','semantics')
  if 'deterministic behavioral execution of the exact waitReceipt control path' not in rb.get('mechanical_scenario',''):fail('ASSEMBLY_WAIT_PATH','scenario')
+ obs=a.get('iphone_observability_remediation',{})
+ if obs.get('status_path')!='/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r6-session-status.txt' or obs.get('command_free_owner_observation') is not True or obs.get('production_mutation') is not False or obs.get('runtime_activation') is not False:fail('ASSEMBLY_IPHONE_OBSERVABILITY','contract')
+ if 'OAuth output, device code' not in obs.get('persistence_boundary','') or 'restored to the original descriptor immediately after the exact waiting marker' not in obs.get('stdout_semantics',''):fail('ASSEMBLY_IPHONE_OBSERVABILITY','boundary')
  neg=a.get('negative_build_selftest',[])
- for required in ['post_sleep_post_deadline_wait_path_times_out_before_selection','remaining_time_sleep_bounded_near_deadline','delta_begins_before_deadline_and_completes_after_deadline_without_selection']:
-  if required not in neg:fail('ASSEMBLY_WAIT_PATH',required)
+ for required in ['post_sleep_post_deadline_wait_path_times_out_before_selection','remaining_time_sleep_bounded_near_deadline','delta_begins_before_deadline_and_completes_after_deadline_without_selection','iphone_status_rejects_extra_fields','iphone_status_rejects_device_code_output','iphone_status_requires_exact_waiting_marker','iphone_status_file_exclusive_create','stdout_restore_before_post_binding_interactive_chain']:
+  if required not in neg:fail('ASSEMBLY_NEGATIVE',required)
  with tempfile.TemporaryDirectory(prefix='multiverse-prelab-') as td:
   for r,w in EXPECTED.items():
    p=ROOT/r
@@ -63,6 +69,10 @@ def main():
    elif w=='go':
     if not shutil.which('go'):fail('GO_TOOL_UNAVAILABLE',r)
     e=dict(os.environ);e['CGO_ENABLED']='0';run(['go','build','-trimpath','-buildvcs=false','-o',str(pathlib.Path(td)/p.stem),str(p)],e)
+  e=dict(os.environ);e['CGO_ENABLED']='0'
+  composed=str(pathlib.Path(td)/'session-gate-composed')
+  run(['go','build','-trimpath','-buildvcs=false','-o',composed,'governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go','governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_IPHONE_STATUS_CHANNEL_ADDON_20260901.go'],e)
+  run([composed,'build-selftest'],e)
  wf=data('.github/workflows/multiverse-v36-prelab-exact-image-build.yml').decode()
  if 'workflow_dispatch' in wf:fail('WORKFLOW_DISPATCH_PROHIBITED','present')
  if not shutil.which('docker'):fail('DOCKER_TOOL_UNAVAILABLE','mandatory-final-tree-build-not-run')
