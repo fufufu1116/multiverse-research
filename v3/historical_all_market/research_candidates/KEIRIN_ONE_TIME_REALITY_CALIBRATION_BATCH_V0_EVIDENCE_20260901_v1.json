@@ -1,0 +1,223 @@
+{
+  "record": "KEIRIN_ONE_TIME_REALITY_CALIBRATION_BATCH_V0_EVIDENCE_20260901_v1",
+  "status": "PASS_MINIMAL_BURNED_CALIBRATION_BATCH_WITH_DECLARED_TRANSPORT_GAPS",
+  "classification": "BURNED_REALITY_CALIBRATION_ONLY_NOT_VALIDATION_NOT_MODEL_SELECTION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "bindings": {
+    "canonical_main_at_capture_start": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_at_capture_start": "eab77bb35b59635cb0ab7836b4c6cc5a1b4d34cc",
+    "one_time_batch_protocol_commit": "5d3b129130a6884e36c1837c1f2a5e9458e70466",
+    "owner_capture_gate_commit": "4e3da43b7e510706bbb1491ac01a72f823ebe774"
+  },
+  "capture_session": {
+    "date_jst": "2026-09-01",
+    "capture_window_observed_jst": {
+      "opened": "2026-09-01T14:52:59+09:00",
+      "all_four_target_racecards_accessed_by": "2026-09-01T14:55:49+09:00"
+    },
+    "earliest_target_vote_cutoff_jst": "2026-09-01T15:48:00+09:00",
+    "point_in_time_condition": "PASS_ALL_TARGET_RACECARDS_ACCESSED_BEFORE_EARLIEST_TARGET_CUTOFF",
+    "mode": "NARROW_MANUAL_EQUIVALENT_PUBLIC_PRE_CAPTURE_NO_BULK_CRAWLER",
+    "raw_source_payloads_saved_to_repo": false,
+    "raw_rider_rows_saved_to_repo": false,
+    "result_or_payout_access_used_for_calibration": false,
+    "model_predictions_used_for_selection": false
+  },
+  "prespecified_selection_resolution": [
+    {
+      "slot": "FI_A1_A2",
+      "venue": "宇都宮",
+      "meeting_grade": "FI",
+      "race": "1R",
+      "race_class": "A級一般",
+      "field_size": 7,
+      "start_time_jst": "15:53",
+      "bank_circumference_m": 500,
+      "selection_rule_result": "EARLIEST_FUTURE_SEVEN_RIDER_A_CLASS_TARGET"
+    },
+    {
+      "slot": "FI_S",
+      "venue": "宇都宮",
+      "meeting_grade": "FI",
+      "race": "8R",
+      "race_class": "S級選抜",
+      "field_size": 7,
+      "start_time_jst": "18:42",
+      "bank_circumference_m": 500,
+      "selection_rule_result": "6R_AND_7R_HAD_FEWER_THAN_SEVEN_ACTIVE_RIDERS_SO_DETERMINISTICALLY_MOVED_TO_NEXT_SEVEN_RIDER_S_RACE"
+    },
+    {
+      "slot": "FII_A1_A2",
+      "venue": "岐阜",
+      "meeting_grade": "FII",
+      "race": "1R",
+      "race_class": "A級一般",
+      "field_size": 7,
+      "start_time_jst": "20:57",
+      "bank_circumference_m": 400,
+      "selection_rule_result": "EARLIEST_FUTURE_SEVEN_RIDER_A1_A2_TARGET"
+    },
+    {
+      "slot": "FII_A3",
+      "venue": "いわき平",
+      "meeting_grade": "FII",
+      "race": "3R",
+      "race_class": "A級チャレンジ一般",
+      "field_size": 7,
+      "start_time_jst": "21:37",
+      "bank_circumference_m": 400,
+      "selection_rule_result": "1R_AND_2R_HAD_SIX_ACTIVE_RIDERS_SO_DETERMINISTICALLY_MOVED_TO_3R"
+    }
+  ],
+  "source_provenance": {
+    "official_meeting_schedule": "https://ctc.gr.jp/schedule/",
+    "official_current_event_roster_examples": [
+      "https://ctc.gr.jp/schedule/detail.php?id=1320260830",
+      "https://ctc.gr.jp/schedule/detail.php?id=4320260830"
+    ],
+    "official_bank_master": "https://keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+    "race_specific_pre_card_surfaces": [
+      "https://keirin.tokyo-sports.co.jp/list/race/20260831_34276",
+      "https://keirin.tokyo-sports.co.jp/list/race/20260831_34255",
+      "https://keirin.tokyo-sports.co.jp/list/race/20260831_34974",
+      "https://keirin.tokyo-sports.co.jp/list/race/20260831_34915"
+    ],
+    "source_use_note": "Public race-card surfaces were accessed narrowly before the target cutoffs. Only derived aggregate facts and URLs are retained in this public Research/Candidate artifact; source tables and rider-level rows are not reproduced."
+  },
+  "admitted_sample": {
+    "races": 4,
+    "rider_rows_for_score_style_SB": 28,
+    "rider_rows_for_maneuver_counts": 27,
+    "venues": 3,
+    "meeting_grades": ["FI", "FII"],
+    "class_bands": ["S", "A1_A2", "A3"],
+    "bank_circumference_support_m": [400, 500]
+  },
+  "derived_calibration_summary": {
+    "competition_score": {
+      "role": "OBSERVED_SMALL_BATCH_RANGE_ONLY_NOT_POPULATION_DISTRIBUTION",
+      "overall": {
+        "n": 28,
+        "min": 65.25,
+        "q1": 74.36,
+        "median": 81.0,
+        "q3": 89.918,
+        "max": 102.81
+      },
+      "by_class_band": {
+        "S": {
+          "n": 7,
+          "min": 93.84,
+          "q1": 95.42,
+          "median": 96.47,
+          "q3": 100.02,
+          "max": 102.81
+        },
+        "A1_A2": {
+          "n": 14,
+          "min": 75.67,
+          "q1": 79.865,
+          "median": 81.0,
+          "q3": 83.115,
+          "max": 88.61
+        },
+        "A3": {
+          "n": 7,
+          "min": 65.25,
+          "q1": 65.99,
+          "median": 68.55,
+          "q3": 69.325,
+          "max": 70.43
+        }
+      },
+      "foundation_implication": "Reality worlds must condition competition-score scale on race/class context; do not silently reuse the engineering latent_skill_plus_iid_noise score as an official-score model."
+    },
+    "style_label_support": {
+      "n": 28,
+      "observed_support": ["逃", "両", "追"],
+      "sample_counts_not_population_frequencies": {
+        "逃": 10,
+        "両": 3,
+        "追": 15
+      }
+    },
+    "B_count_support": {
+      "n": 28,
+      "min": 0,
+      "median": 0.0,
+      "max": 11,
+      "nonzero_rows": 12,
+      "interpretation": "SMALL_BATCH_SUPPORT_ONLY"
+    },
+    "S_count_support": {
+      "n": 28,
+      "min": 0,
+      "median": 1.0,
+      "max": 8,
+      "nonzero_rows": 16,
+      "interpretation": "SMALL_BATCH_SUPPORT_ONLY"
+    },
+    "maneuver_count_support": {
+      "n": 27,
+      "nige": {"min": 0, "median": 0.0, "max": 6, "nonzero_rows": 9},
+      "makuri": {"min": 0, "median": 0.0, "max": 6, "nonzero_rows": 10},
+      "sashi": {"min": 0, "median": 2.0, "max": 7, "nonzero_rows": 22},
+      "mark": {"min": 0, "median": 0.0, "max": 5, "nonzero_rows": 12},
+      "interpretation": "SMALL_BATCH_SUPPORT_ONLY_ONE_ROW_NOT_UNIFORMLY_ADMITTED"
+    }
+  },
+  "transport_missingness_and_exclusions": {
+    "competition_score": "0_OF_28_MISSING",
+    "style_label": "0_OF_28_MISSING",
+    "B": "0_OF_28_MISSING",
+    "S": "0_OF_28_MISSING",
+    "nige_makuri_sashi_mark": "1_OF_28_NOT_UNIFORMLY_ADMITTED_ACROSS_SELECTED_CAPTURE_SURFACES",
+    "H": "NOT_UNIFORMLY_ADMITTED_IN_THIS_BATCH",
+    "win_quinella_trio_rates": "NOT_UNIFORMLY_ADMITTED_IN_THIS_BATCH",
+    "line_snapshot": "NOT_COLLECTED_TRANSPORT_UNRESOLVED_BY_DESIGN",
+    "weather_wind": "NOT_COLLECTED_NO_FROZEN_TIMESTAMPED_SOURCE_BINDING",
+    "home_straight_and_cant": "NOT_USED_AS_CALIBRATION_POINT_ESTIMATES_IN_V0",
+    "rider_level_raw_rows": "INTENTIONALLY_NOT_RETAINED_IN_PUBLIC_REPOSITORY"
+  },
+  "calibration_freeze": {
+    "allowed_for_future_reality_synthetic_design": [
+      "observed score support/ranges by class band",
+      "style support set",
+      "B/S support ranges",
+      "maneuver-count support ranges with declared one-row missingness",
+      "bank circumference support of 400m and 500m for this batch",
+      "missingness/transport limitations themselves"
+    ],
+    "not_allowed": [
+      "population-exact frequencies",
+      "line-shape probabilities",
+      "line effect coefficients",
+      "tactical effect coefficients",
+      "model feature/architecture selection",
+      "untouched validation",
+      "ROI/economics"
+    ],
+    "permanent_evidence_role": "BURNED_REALITY_CALIBRATION_BATCH"
+  },
+  "protected_boundary": {
+    "RESULT_PAYOUT_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "DEV2000_C_rescue": false,
+    "same_lineage_B_C_rescue": false,
+    "protected_or_untouched_validation": false,
+    "bulk_collection": false,
+    "external_provider_contact": false,
+    "payment": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "economics": false,
+    "Core_Phase_C_main_ruleset_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "REALITY_TRUTH_SENSITIVITY_FAMILY_V0_DESIGN_GATE",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "note": "The minimal batch constrains support and class-conditioned score scale but does not identify line formation probabilities, tactical effect sizes, longitudinal transitions, or a unique truth generator. A future truth family must use multiple prespecified plausible mechanisms/ranges and must not be chosen to favor C0/C1/N1/PEER."
+  }
+}
