@@ -1,0 +1,44 @@
+{
+  "record":"KEIRIN_RETROSPECTIVE_PRE_OUTCOME_FAST_TRACK_PRESPEC_20260901_v1",
+  "status":"RESEARCH_CANDIDATE_PRESPEC_SOURCE_SEMANTICS_PILOT_REQUIRED",
+  "purpose":"Accelerate S0 development without waiting days by using public historical race pages that preserve race-specific pre-race fields and final outcome labels, while preventing post-race leakage into PRE features.",
+  "source_candidate":"public historical KDreams race-detail pages",
+  "observed_capability_2026_09_01":[
+    "historical pages expose race date, venue, race number, scheduled start and betting close",
+    "historical pages expose rider identity, class, style, competition score, S, B, nige, makuri, sashi, mark and recent-rate fields",
+    "result view exposes final finish order on the same race-specific page",
+    "same-meeting next-day pages expose prior-day race result in a historical-results section, consistent with race-local historical context"
+  ],
+  "critical_semantics_gate":"Do not assume every displayed field is frozen as-of race time merely because the page is historical. First run a source-semantics pilot across repeated riders/days and reject any PRE field that appears to be dynamically recomputed using post-race/future information.",
+  "pilot_design":{
+    "minimum_races":6,
+    "minimum_meetings":2,
+    "minimum_venues":2,
+    "checks":[
+      "race identity/date/venue/race number internally consistent",
+      "PRE table values are race-specific and stable across result/odds pageType variants for the same race",
+      "same rider on consecutive meeting days does not show impossible future-day information in the earlier day's PRE section",
+      "previous-race history on day N includes only races before day N",
+      "result fields are parsed only into labels, never into PRE feature namespace"
+    ]
+  },
+  "admitted_pre_fields_if_pilot_passes":["competition_score","class","style","S","B","nige","makuri","sashi","mark"],
+  "quarantine_by_default":["journalist marks","predicted lineup","comments","weather","final odds","popularity","payout","post-race split/time","winning method from target race"],
+  "outcome_labels_allowed":["winner_car","ordered_top3"],
+  "development_sampling":{
+    "target":"200 to 500 races quickly from contiguous historical dates before 2026-09-02",
+    "ordering":"chronological only",
+    "membership":"freeze date/venue/race inclusion before model fitting on the sample",
+    "selection":"no outcome-aware inclusion/exclusion",
+    "same_meeting_leakage":"preserve chronological order; day2/day3 may use only information genuinely available before that day's race",
+    "burn_after_use":true
+  },
+  "training_and_evaluation":{
+    "train_calibration_eval":"chronological split",
+    "metrics_first":["log_loss","Brier","calibration","ranking","sample_size","temporal_stability"],
+    "economics":"not authorized in this prespec",
+    "promotion":"not authorized"
+  },
+  "hard_prohibitions":["RESULT_AS_FEATURE","PAYOUT_AS_FEATURE","POST_RACE_PRE_RECONSTRUCTION","OUTCOME_AWARE_SAMPLE_SELECTION","PROTECTED_DEV2000_REUSE","ECON_HOLDOUT1000_OPENING","REAL_MONEY_WAGERING"],
+  "relationship_to_20260902":"Historical fast-track may supply the initial S0 coefficients before 2026-09-02 scoring only if the semantics pilot passes and coefficient fitting is locked before any 2026-09-02 target outcomes are observed. Otherwise 2026-09-02 remains prospective data collection only."
+}
