@@ -1,0 +1,95 @@
+{
+  "record": "KEIRIN_PARALLEL_MECHANICAL_INVARIANCE_GATE_EVIDENCE_20260901_v1",
+  "status": "PASS_ALL_SIX_GATES",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584"
+  },
+  "execution": {
+    "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+    "executed_head": "fa233174cc297f03fea5f1cdbd028e114f8b522c",
+    "workflow_run_id": 33468151319,
+    "workflow_job_id": 99732198618,
+    "workflow_conclusion": "success",
+    "permissions": "contents:read"
+  },
+  "pinned_sources": {
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7",
+    "manifest_blob": "9707a08c447d603e11fdaa681e60ae6f6ba35f60",
+    "harness_blob": "1e9a710b4b70ac7b8a51c3edde5231a6bbfaabf8",
+    "mechanism_affinity_audit_blob": "a77597268c24fb4f807014853c723de7a4af36d1"
+  },
+  "fixtures": {
+    "count": 24,
+    "rule": "seed=20260821+i,race_index=i%32 for i=0..23",
+    "purpose": "mechanical regression only",
+    "selected_from_results": false,
+    "untouched_validation_claim": false,
+    "tolerance": 1e-12
+  },
+  "results": {
+    "1_car_id_permutation_equivariance": {
+      "status": "PASS",
+      "max_abs_probability_diff": {"C0": 0.0, "C1": 0.0, "N1": 0.0}
+    },
+    "2_line_group_id_permutation_invariance": {
+      "status": "PASS",
+      "max_abs_prediction_diff": {"C0": 0.0, "C1": 0.0, "N1": 0.0},
+      "max_abs_truth_diff": {"W0": 0.0, "W1": 0.0, "W2": 0.0, "W3": 0.0, "W4": 0.0}
+    },
+    "3_container_order_invariance": {
+      "status": "PASS",
+      "max_abs_prediction_diff": {"C0": 0.0, "C1": 0.0, "N1": 0.0},
+      "max_abs_truth_diff": {"W0": 0.0, "W1": 0.0, "W2": 0.0, "W3": 0.0, "W4": 0.0}
+    },
+    "4_pre_latent_barrier_regression": {
+      "status": "PASS",
+      "cases_checked": 24,
+      "latent_skill_exposed": false
+    },
+    "5_truth_prediction_code_path_separation": {
+      "status": "PASS",
+      "prediction_functions_checked": ["_c0", "_c1", "_c1_utilities", "_n1"],
+      "forbidden_call_hits": [],
+      "architecture_forbidden_truth_import_hits": []
+    },
+    "6_no_adaptive_seed_condition_selection_evidence": {
+      "status": "PASS",
+      "classification": "RUNTIME_NONADAPTIVITY_PASS_NOT_UNTOUCHED_VALIDATION",
+      "comparison_case_count": 128,
+      "comparison_worlds": ["W0", "W1", "W2", "W3", "W4"],
+      "seed_formula": "20260821 + case",
+      "race_index_formula": "case % 32",
+      "runtime_result_adaptive_sampling_or_retuning": false
+    }
+  },
+  "interpretation": {
+    "material_failure_in_gates_1_to_5": false,
+    "downstream_synthetic_model_comparison_interpretability_gate": "GREEN",
+    "what_this_supports": "No detected identity-label, line-ID, container-order, PRE-latent, truth-prediction path, or runtime adaptive-selection defect in the tested source-independent mechanical gates.",
+    "what_this_does_not_support": "No claim about real-keirin predictive performance, ROI, model superiority, independent validation, or authorization to expand the Digital Twin truth-kernel scope."
+  },
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_or_coefficient_change": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  },
+  "next": "FULLY_PRESPECIFY_Q_MISMATCH_1_AND_SEPARATELY_PROVE_SCOPE_BEFORE_ANY_RELATION_KERNEL_VARIANT_EXECUTION"
+}
