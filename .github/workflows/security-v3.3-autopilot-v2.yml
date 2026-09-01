@@ -1,0 +1,43 @@
+name: Multiverse Security v3.3 Autopilot v2 Zero Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - automation/security-v3.3-v2
+
+permissions:
+  contents: read
+
+jobs:
+  zero-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check pytest cryptography google-genai
+      - name: Syntax preflight
+        run: python -m compileall -q oracle_candidate automation/security_v3_3_v2 candidate/security_v3_3
+      - name: Run immutable-oracle repair loop
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-3.6-flash
+          AUTOPILOT_OUTPUT_DIR: autopilot_v2_output
+          MAX_REPAIRS: "8"
+        run: |
+          mkdir -p autopilot_v2_output
+          python -m automation.security_v3_3_v2.orchestrator
+      - name: End-of-run protected manifest verification
+        if: always()
+        run: python oracle_candidate/immutable_validator.py --verify-manifest WORKFLOW_END
+      - name: Upload all evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multiverse-security-v3.3-autopilot-v2-zero-audit
+          path: autopilot_v2_output
+          if-no-files-found: warn
