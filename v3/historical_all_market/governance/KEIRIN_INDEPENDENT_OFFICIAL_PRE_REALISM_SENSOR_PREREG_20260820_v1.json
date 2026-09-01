@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_PREREG_20260820_v1",
+  "status": "PREREGISTERED_BEFORE_OFFICIAL_PRIMARY_PRE_DISCOVERY_AND_EXTRACTION",
+  "locked_at_jst": "2026-08-20T18:57:00+09:00",
+  "base_main_sha": "819afb723c8f14000757b2e53b6664d71ab01227",
+  "purpose": "Collect a small prospective first-party PRE-only sensor from official public Keirin sources to challenge the staged KDreams-derived Digital Twin realism envelope without using outcomes or further same-source tuning.",
+  "independence_rule": {
+    "staged_kdreams_rows": "PROHIBITED_FOR_THIS_SENSOR",
+    "source_family": "FIRST_PARTY_OFFICIAL_ONLY",
+    "prospective_only": true,
+    "result_or_payout_access": "PROHIBITED",
+    "post_race_backfill": "PROHIBITED",
+    "third_party_completion": "PROHIBITED",
+    "external_provider_contact": "PROHIBITED"
+  },
+  "window_jst": {
+    "start": "2026-08-20T19:15:00+09:00",
+    "end": "2026-08-22T23:59:59+09:00"
+  },
+  "selection": {
+    "event_scope": "Japanese Keirin first-party official public PRE pages/files only",
+    "eligible_field_sizes": [7],
+    "max_races": 30,
+    "max_venues": 10,
+    "ordering": "scheduled_start_jst ascending, then venue_code/name ascending, then race_number ascending",
+    "admit_only_if": [
+      "official first-party source identity is established",
+      "capture timestamp precedes scheduled start",
+      "race-level PRE fields are directly available without inference",
+      "no authentication, CAPTCHA/WAF bypass, rate-limit evasion, or restricted-access workaround is required"
+    ],
+    "missing_policy": "UNMEASURED_NOT_NEGATIVE_NOT_RESULT_INFERRED"
+  },
+  "target_fields": {
+    "required_for_race_admission": ["race_date", "venue", "race_number", "scheduled_start", "field_size"],
+    "optional_direct_PRE": ["rider_class", "competition_score", "style", "H", "B", "S", "nige", "makuri", "sashi", "mark", "line_or_prediction_if_first_party_explicit"],
+    "forbidden_inference": "Do not infer any missing field from rider identity, prior result, third-party page, odds, payout, or post-race information."
+  },
+  "analysis_plan": {
+    "primary_use": "OUT_OF_SAMPLE_REALISM_SENSOR_ONLY",
+    "compare_against": ["R0_CURRENT_SYNTHETIC", "R1_EMPIRICAL_MARGINAL", "R2_EMPIRICAL_JOINT"],
+    "planned_checks": [
+      "field availability/coverage",
+      "race-band/class/style/score/tactical marginal distance when directly available",
+      "multivariate dependence distance when sample size is sufficient",
+      "locked discriminator evaluation using the already-defined feature families without generator retuning"
+    ],
+    "selection_or_tuning_from_this_batch": "PROHIBITED_BEFORE_SENSOR_RECEIPT_IS_FROZEN",
+    "same_source_kdreams_v3_tuning": "PROHIBITED"
+  },
+  "interpretation": {
+    "success_means": "The official prospective PRE sensor is compatible with one or more pre-existing Twin worlds within measured fields.",
+    "failure_means": "The pre-existing Twin worlds are falsified or incomplete on measured PRE dimensions and require a new preregistered revision after the sensor receipt is frozen.",
+    "never_means": ["REAL_KEIRIN_EDGE", "REAL_ROI", "REAL_WORLD_EQUIVALENCE", "MODEL_PROMOTION"]
+  },
+  "scientific_firewall": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "DEV2000_C_new_lineage_rescue": "PROHIBITED",
+    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
+    "PR3_consumed_holdout_reuse": "PROHIBITED",
+    "RESULT_PAYOUT_access": "UNAUTHORIZED",
+    "new_untouched_validation_opened": false,
+    "model_promotion": "PROHIBITED",
+    "real_money_wagering": "OUT_OF_SCOPE"
+  },
+  "next_step": "Discover only first-party official prospective PRE sources inside the locked window and write append-only capture receipts."
+}

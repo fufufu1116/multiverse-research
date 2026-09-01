@@ -1,0 +1,31 @@
+{
+  "record": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_CAPTURE_02_20260820_v1",
+  "status": "ZERO_RACES_ADMITTED_SECOND_OFFICIAL_RACEPROGRAM_ROUTE_DISCOVERED",
+  "captured_at_jst": "2026-08-20T19:02:32+09:00",
+  "parent_prereg": "KEIRIN_INDEPENDENT_OFFICIAL_PRE_REALISM_SENSOR_PREREG_20260820_v1",
+  "admitted_race_count": 0,
+  "new_discovery": {
+    "venue": "大垣",
+    "venue_code": "44",
+    "venue_official_schedule": "https://www.ogakikeirin.com/schedule/2026/08",
+    "official_event_window": "2026-08-21/2026-08-23",
+    "central_official_raceprogram": "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=44&KST=20260821",
+    "transport_result": "WEB_CACHE_MISS",
+    "race_level_pre_admitted": false,
+    "reason": "The first-party venue page exposes the exact central official raceprogram route, but the available normal fetch transport did not return the race-level PRE body. Link discovery is not field admission."
+  },
+  "known_official_raceprogram_routes": [
+    "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=44&KST=20260821",
+    "https://keirin.jp/pc/dfw/dataplaza/guest/raceprogram?KCD=75&KST=20260821"
+  ],
+  "policy_observed": {
+    "first_party_only": true,
+    "normal_public_fetch_only": true,
+    "bypass": false,
+    "third_party_completion": false,
+    "result_or_payout_access": false,
+    "post_race_backfill": false,
+    "external_contact": false
+  },
+  "meaning": "Official route coverage improved while scientific sample count remains zero. Continue append-only attempts inside the locked prospective window."
+}
