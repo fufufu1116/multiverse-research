@@ -1,0 +1,68 @@
+{
+  "version": "V19.7.36-v7r7-status-fsuid-remediation-v1",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "incident_comment": 5497183368,
+  "predecessor_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-cap-thread-pinning-remediation-v1",
+  "predecessor_head": "2863fae1470eb7b9ea7a84c9f0b0878170ae5bc2",
+  "predecessor_tree": "f52ed44d78a14d80b65631cad46d82fd1ec29c6f",
+  "predecessor_image_identity_sha256": "9974008ea37357b9346807c26bcddc540cf254683512c71f91c00b0e1b70dc27",
+  "live_failure": {
+    "codespace": "miniature-spork-gx59qvqqxgxg3959r",
+    "marker": "PHASE_C_V19_7_36_V7R7_STATUS_CHANNEL_DENIED",
+    "operation": "create persisted session-status file",
+    "errno_class": "permission denied",
+    "arm_start_marker_seen": true,
+    "arm_lock_consumed": true,
+    "trusted_server_time_acquired": false,
+    "challenge_started": false,
+    "oauth_started": false,
+    "production_mutation": false,
+    "runtime_activation": false
+  },
+  "root_cause": {
+    "post_narrow_capability_mask_hex": "00000000000000c1",
+    "capabilities": ["CHOWN", "SETGID", "SETUID"],
+    "dac_override_present": false,
+    "persistedshare_and_control_are_owner_writable_not_post_narrow_root_writable": true,
+    "status_addon_attempted_post_narrow_root_filesystem_open": true
+  },
+  "remediation": {
+    "expand_capability_ceiling": false,
+    "add_dac_override": false,
+    "lock_gate_init_os_thread_before_fsuid_transition": true,
+    "filesystem_identity_source": "/proc/thread-self/status Uid field 4",
+    "temporarily_set_fsuid_to_original_owner_uid": true,
+    "open_scope": [
+      "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-session-status.txt",
+      "/workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md"
+    ],
+    "restore_fsuid_root_immediately_after_open": true,
+    "verify_fsuid_each_transition": true,
+    "status_path_create_flags": ["O_WRONLY", "O_CREAT", "O_EXCL", "O_NOFOLLOW", "O_CLOEXEC"],
+    "control_path_open_truncates_only_after_fstat_class_check": true,
+    "post_open_owner_mode": "root:root 0444",
+    "status_and_control_writes_use_preopened_descriptors": true,
+    "trusted_time_and_challenge_remain_downstream": true
+  },
+  "mechanical_requirements": [
+    "status addon source contains runtime.LockOSThread",
+    "status addon uses SYS_SETFSUID",
+    "status addon verifies fsuid via /proc/thread-self/status",
+    "status addon restores fsuid 0 before owner/mode sealing",
+    "no DAC_OVERRIDE authority is added",
+    "Docker live-class test uses user-owned 0755 persistedshare and user-owned 0644 control path",
+    "setuid manual arm executes from non-root user under broad bounding capabilities",
+    "STATUS_CHANNEL_DENIED must be absent in live-class test",
+    "status and control must become root-owned 0444",
+    "ARMED and STARTING_TRUSTED_GITHUB_SERVER_TIME markers must be persisted",
+    "network is disabled in live-class test so no external approval flow can complete",
+    "SECURITY_AUTHORITY_GRANTED=false",
+    "RUNTIME=OFF"
+  ],
+  "retry_policy": {
+    "consumed_live_codespace_retry_authorized": false,
+    "automatic_retry_authorized": false,
+    "new_live_attempt_requires_new_freeze_lab_auditor_owner_gate": true
+  }
+}
