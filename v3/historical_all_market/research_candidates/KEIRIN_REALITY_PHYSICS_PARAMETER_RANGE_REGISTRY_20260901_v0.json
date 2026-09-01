@@ -1,0 +1,82 @@
+{
+  "record": "KEIRIN_REALITY_PHYSICS_PARAMETER_RANGE_REGISTRY_20260901_v0",
+  "status": "FOUNDATION_RANGE_REGISTRY_FROZEN_NO_TRUTH_EXECUTION",
+  "classification": "LITERATURE_BOUNDED_SENSITIVITY_NOT_JAPANESE_KEIRIN_POINT_TRUTH",
+  "owner_gate": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_REALITY_PHYSICS_PARAMETER_RANGE_MISSING_DIMENSION_20260901_v1.json",
+  "principle": "Use externally supported form/range information to constrain sensitivity worlds. Do not promote cycling literature values to exact Japanese-keirin rider truth and do not tune ranges from candidate performance.",
+  "parameter_registry": {
+    "CdA_m2": {
+      "admitted_sensitivity_support": [0.19, 0.31],
+      "status": "LITERATURE_BOUNDED_BROAD_SUPPORT_NOT_KEIRIN_CALIBRATED",
+      "anchors": [
+        {"source": "https://link.springer.com/article/10.1007/s12283-026-00541-y", "observations": "track example fitted seated 0.192 and standing 0.253 m^2; cited reference 0.21 and 0.27 m^2"},
+        {"source": "https://link.springer.com/article/10.1007/s12283-019-0304-7", "observations": "sprint-low 0.234 and sprint-regular 0.308 m^2"}
+      ],
+      "rule": "Posture/anthropometry/position dependent. No single CdA may be assigned to all riders."
+    },
+    "drafting_drag_multiplier": {
+      "leader": [0.95, 1.00],
+      "second_rider": [0.55, 0.70],
+      "third_or_later_paceline": [0.45, 0.65],
+      "status": "LITERATURE_BOUNDED_ROLE_POSITION_RANGE_NOT_KEIRIN_FIXED_EFFECT",
+      "anchors": [
+        {"source": "https://link.springer.com/article/10.1007/s12283-017-0234-1", "observations": "review: leader typically <=5% drag reduction; second ~30-45%; subsequent ~35-55%"},
+        {"source": "https://pubmed.ncbi.nlm.nih.gov/17218899/", "observations": "competitive male cyclists showed leader/drafter interaction and large individual variation"},
+        {"source": "https://pubmed.ncbi.nlm.nih.gov/24149940/", "observations": "second and subsequent positions up to ~40% drag reduction in team-pursuit CFD"}
+      ],
+      "rule": "Spacing, lateral position, posture, leader/drafter geometry and wind can materially alter the benefit. Multiplier is a sensitivity range, not a line bonus."
+    },
+    "peak_mechanical_power_W": {
+      "admitted_broad_elite_support": [775, 2025],
+      "status": "ELITE_CYCLING_SUPPORT_ONLY_NOT_KEIRIN_RIDER_PRIOR",
+      "anchors": [
+        {"source": "https://pubmed.ncbi.nlm.nih.gov/31598998/", "observations": "35 elite cyclists, PPO range 775-2025 W"},
+        {"source": "https://pubmed.ncbi.nlm.nih.gov/32516483/", "observations": "elite track sprint cohorts around 1537±307 and 1541±389 W"},
+        {"source": "https://pubmed.ncbi.nlm.nih.gov/38369850/", "observations": "world-class/elite male sprint cyclists Pmax 1894±351 W"}
+      ],
+      "rule": "Do not assign this broad support uniformly to Japanese keirin classes. Rider/class/form conditioning remains unresolved."
+    },
+    "drivetrain_efficiency": {
+      "admitted_sensitivity_support": [0.97, 0.99],
+      "status": "CYCLING_CHAIN_DRIVE_LITERATURE_RANGE_NOT_KEIRIN_SPECIFIC",
+      "anchors": [
+        {"source": "https://link.springer.com/article/10.1007/s12283-023-00439-z", "observations": "solo bicycle literature summarized mean chain-drive efficiencies in 97-99% range; up to 98.6% in cited steady-state tests"}
+      ],
+      "rule": "Fixed-gear keirin drivetrain may differ; keep as sensitivity support until equipment-specific evidence exists."
+    },
+    "rolling_resistance_coefficient": {
+      "reference_value_only": 0.002,
+      "admitted_runtime_range": null,
+      "status": "REFERENCE_ONLY_RANGE_NOT_YET_JUSTIFIED",
+      "anchors": [
+        {"source": "https://link.springer.com/article/10.1007/s12283-025-00495-7", "observations": "example cycling power model uses Crr=0.002"},
+        {"source": "https://link.springer.com/article/10.1007/s12283-018-0283-0", "observations": "track model states rolling resistance depends on tyre characteristics and instantaneous slip/camber; careful measurement required"}
+      ],
+      "rule": "Do not execute a Japanese-keirin Crr point truth from the 0.002 reference alone."
+    },
+    "track_length_m": {
+      "official_active_support": [333, 335, 400, 500],
+      "status": "OFFICIAL_STRUCTURAL_FACT",
+      "source": "https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html"
+    },
+    "maebashi_335_geometry": {
+      "track_length_m": 335,
+      "max_cant_deg": 36.0,
+      "mitori_straight_m": 46.7,
+      "indoor_no_wind": true,
+      "status": "OFFICIAL_STRUCTURAL_EXAMPLE",
+      "source": "https://keirin.jp/pc/dfw/portal/guest/column/tenbo/2020/20200916_tomohito.html"
+    }
+  },
+  "explicit_non_admissions": [
+    "No CdA distribution probabilities",
+    "No exact Japanese-keirin power distribution",
+    "No fixed drafting percentage by line position",
+    "No rolling-resistance runtime range yet",
+    "No tactical effect coefficient",
+    "No fatigue persistence coefficient",
+    "No weather/wind probability distribution",
+    "No candidate-dependent range narrowing"
+  ],
+  "next_boundary": "PARAMETER_RANGE_MECHANICAL_VALIDATOR_AND_MISSING_DIMENSION_EVIDENCE_ONLY"
+}
