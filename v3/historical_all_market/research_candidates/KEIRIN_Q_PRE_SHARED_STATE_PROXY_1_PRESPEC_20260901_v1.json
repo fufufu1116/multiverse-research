@@ -1,0 +1,113 @@
+{
+  "record": "KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "owner_scope_gate": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PRE_SHARED_STATE_PROXY_1_20260901_v1.json",
+    "status_required": "OWNER_EXPLICITLY_APPROVED_EXACT_SYNTHETIC_DIAGNOSTIC_CONTROL_ONLY"
+  },
+  "design_binding": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_DESIGN_20260901_v1.json",
+    "blob": "8372a0f783214d3f32264e3c00997647c0636d06"
+  },
+  "question": "Can a single PRE-observable line-mean score proxy recover a material fraction of the W1 shared-state value without access to latent_skill, while preserving frozen C1 and N1 unchanged?",
+  "scientific_success_rule": "Any valid direction is a scientific result. No model or proxy is required to win.",
+  "fixed_fixtures": {
+    "world": "W1",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "result_adaptive_condition_selection": false,
+    "post_hoc_seed_or_condition_addition": false
+  },
+  "fixed_models_and_control": {
+    "C1": "Frozen C1 from KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1",
+    "N1": "Frozen N1 from KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1",
+    "C1_PRE_LINE_MEAN_PROXY": {
+      "role": "DIAGNOSTIC_CONTROL_ONLY_NOT_FORMAL_MODEL_CANDIDATE",
+      "base": "Exact frozen C1 runner utilities",
+      "added_feature": "For each rider, mean PRE score over riders with identical PRE line_group_id",
+      "coefficient": 0.16,
+      "utility_addition": "0.16 * line_mean_PRE_score",
+      "generator": "Same exact Plackett-Luce ordered-top3 generator as C1",
+      "coefficient_fitting": false,
+      "coefficient_sweep": false,
+      "latent_skill_access": false,
+      "truth_distribution_access_by_control": false,
+      "normal_PRE_mutation": false,
+      "normal_C1_or_N1_source_mutation": false
+    }
+  },
+  "reference_evidence_fixed_before_execution": {
+    "oracle_evidence_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_ORACLE_SHARED_STATE_1_EVIDENCE_20260901_v1.json",
+    "oracle_evidence_blob": "6350cfc1312325289fdf57d92c4ef89c7b6d51d3",
+    "prior_W1_N1_minus_C1": -0.0011390944513660628,
+    "prior_W1_C1_ORACLE_minus_C1": -0.016232235048840415,
+    "mechanism_synthesis_path": "v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v1.json",
+    "mechanism_synthesis_blob": "0e8672f77f05b856b909b3bf5b5b7a37b002100e"
+  },
+  "primary_metric": "Mean exact expected ordered-top3 log loss under canonical W1 truth; lower is better.",
+  "primary_deltas": [
+    "N1_minus_C1",
+    "C1_PRE_LINE_MEAN_PROXY_minus_C1",
+    "N1_minus_C1_PRE_LINE_MEAN_PROXY"
+  ],
+  "proxy_recovery_fraction": {
+    "definition": "Clamp to [0,1] ((C1_loss - proxy_loss) / (C1_loss - prior_C1_ORACLE_loss_reference_equivalent_gain)), implemented using the frozen oracle improvement magnitude abs(prior_W1_C1_ORACLE_minus_C1).",
+    "formula": "clamp_0_1((C1_loss - proxy_loss) / abs(prior_W1_C1_ORACLE_minus_C1))",
+    "material_fraction_threshold": 0.25,
+    "threshold_fixed_before_execution": true,
+    "used_for_tuning": false
+  },
+  "prespecified_primary_classification": {
+    "PROXY_BEATS_OR_TIES_N1": "proxy_loss <= N1_loss + 1e-12",
+    "PROXY_IMPROVES_C1_BUT_N1_REMAINS_BETTER": "proxy_loss < C1_loss - 1e-12 and proxy_loss > N1_loss + 1e-12",
+    "PROXY_DOES_NOT_IMPROVE_C1": "proxy_loss >= C1_loss - 1e-12"
+  },
+  "prespecified_materiality_label": {
+    "MATERIAL_ORACLE_VALUE_RECOVERY": "proxy_recovery_fraction >= 0.25",
+    "LIMITED_ORACLE_VALUE_RECOVERY": "0 < proxy_recovery_fraction < 0.25",
+    "NO_OR_NEGATIVE_ORACLE_VALUE_RECOVERY": "proxy_recovery_fraction == 0"
+  },
+  "secondary_diagnostics": {
+    "block_stability": "Report all four already-fixed blocks; add no blocks after seeing results.",
+    "chain_rule_decomposition": "Report rank1, rank2|rank1, rank3|rank1,rank2 expected cross-entropy for C1, N1 and proxy control.",
+    "line_mean_score_sanity": "Require each proxy line mean to equal direct PRE-only group mean within 1e-12.",
+    "no_posthoc_slices": true
+  },
+  "mechanical_and_leakage_pass_criteria": [
+    "PRE contains no latent_skill",
+    "proxy function source contains no latent_skill reference and no world_joint_distribution/truth call",
+    "proxy depends only on PRE rider score and line_group_id plus frozen C1 utilities",
+    "C1 and N1 predictions reproduce existing non-oracle paths exactly within 1e-12",
+    "frozen C1/N1 parameters unchanged",
+    "all prediction and truth probability objects valid and unit mass",
+    "chain decomposition residual <= 1e-12",
+    "prior W1 N1-minus-C1 aggregate reproduced within numerical tolerance 2e-14",
+    "no protected/quarantined/real/economic access",
+    "scientific Segment C scoring count remains 0"
+  ],
+  "forbidden": [
+    "latent_skill access by proxy control",
+    "truth-distribution access by proxy control",
+    "coefficient fitting or sweep",
+    "retuning C1 or N1",
+    "new seeds or result-adaptive conditions",
+    "PR15 metrics",
+    "RESULT/PAYOUT",
+    "ECON_HOLDOUT1000",
+    "DEV2000 C rescue",
+    "same-lineage B/C rescue",
+    "real/live or untouched validation",
+    "economics/bankroll/ROI",
+    "model promotion/freeze",
+    "external provider contact",
+    "Core Phase C/main/ruleset/Runtime/production authority changes",
+    "Synthetic-to-real-world edge claim"
+  ],
+  "post_result_rule": "Record the result regardless of direction. Do not tune 0.16, create another proxy, add seeds/conditions, promote a model, or auto-expand authorization after the result."
+}
