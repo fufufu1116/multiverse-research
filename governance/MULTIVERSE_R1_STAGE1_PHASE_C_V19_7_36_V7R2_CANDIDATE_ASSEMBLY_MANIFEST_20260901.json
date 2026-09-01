@@ -8,7 +8,6 @@
     {"role":"dependency_lock","path":".devcontainer/v19_7_36_requirements.txt","type":"text"},
     {"role":"root_anchor_producer","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_ROOT_ANCHOR_PRODUCER_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-anchor-v7r2"},
     {"role":"control_plane_runner","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_CONTROL_PLANE_RUNNER_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-control-v7r2"},
-    {"role":"owner_tty_capability_trigger","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_TTY_CAPABILITY_TRIGGER_20260901.go","type":"go","build_target":"/usr/local/libexec/multiverse-v36-trigger-v7r2"},
     {"role":"runtime_verifier","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py","type":"python","container_target":"/opt/multiverse/v36/runtime-v7.py"},
     {"role":"recursive_closure_manifest_builder","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_RECURSIVE_CLOSURE_MANIFEST_20260901.py","type":"python"},
     {"role":"python_actual_use_build_gate","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R2_PYTHON_ACTUAL_USE_SELFTEST_20260901.py","type":"python"},
@@ -19,8 +18,9 @@
   "blocker_closure_contract": {
     "python_build_actual_use": "Docker build must run fd-bound isolated Python, import/probe PyNaCl, enumerate imported modules and /proc/self/maps, and require exact manifest identity for every actual file.",
     "step3_same_object": "Producer once-opens and authenticates exact Step3 bytes and retains that object; reviewed POST_OAUTH_ONLY runner consumes the same fd and a private socketpair to the frozen step3-preflight control service without pathname reopen.",
-    "owner_trigger": "No UID1000-owned public wake socket or public literal. Producer creates a private one-shot socketpair, passes child endpoint only to a dedicated-UID non-dumpable/no-new-privs reviewed trigger, and Owner performs only one newline on inherited platform TTY. legacy_tiocsti must be root-controlled and disabled."
+    "owner_trigger": "Owner trigger is the externally governed act of creating the fresh dedicated Codespace after a future Owner Gate. The root ENTRYPOINT auto-starts. There is no UID1000-accessible in-container wake socket, literal, secret, capability, or trigger executable, so arbitrary same-UID code cannot impersonate a second Owner wake action."
   },
+  "owner_in_container_manual_trigger_required": false,
   "pre_lab_gate": "governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py",
   "mechanical_pass_grants_authority": false,
   "runtime": "OFF"
