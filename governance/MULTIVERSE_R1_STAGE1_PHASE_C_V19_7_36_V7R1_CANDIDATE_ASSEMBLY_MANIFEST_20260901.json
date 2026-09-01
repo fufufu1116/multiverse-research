@@ -1,0 +1,27 @@
+{
+  "version": "V19.7.36-v7r1",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "purpose": "Prevent role/path/content/dependency/build-target assembly swaps before Independent Lab.",
+  "required": [
+    {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json","consumed_by":"Codespaces devcontainer"},
+    {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile","consumed_by":"Codespaces image builder"},
+    {"role":"dependency_lock","path":".devcontainer/v19_7_36_requirements.txt","type":"text","consumed_by":"Dockerfile pip --require-hashes"},
+    {"role":"root_anchor_producer","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_ROOT_ANCHOR_PRODUCER_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-anchor-v7"},
+    {"role":"control_plane_runner","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_CONTROL_PLANE_RUNNER_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-control-v7"},
+    {"role":"capability_trigger","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_CAPABILITY_TRIGGER_20260901.go","type":"go","build_target":"/usr/local/libexec/multiverse-v36-trigger-v7"},
+    {"role":"owner_wake_client","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_OWNER_WAKE_CLIENT_20260901.go","type":"go","build_target":"/usr/local/bin/multiverse-v36-wake-v7"},
+    {"role":"runtime_verifier","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RUNTIME_20260901.py","type":"python","container_target":"/opt/multiverse/v36/runtime-v7.py"},
+    {"role":"recursive_closure_manifest_builder","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7_RECURSIVE_CLOSURE_MANIFEST_20260901.py","type":"python","build_stage_target":"/tmp/manifest.py"},
+    {"role":"step3_binding","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_BINDING_20260901.json","type":"json","container_target":"/opt/multiverse/v36/step3-binding.json"},
+    {"role":"step3_nonmutating_payload","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V6_STEP3_NONMUTATING_PAYLOAD_20260901.py","type":"python","container_target":"/opt/multiverse/v36/step3.py"}
+  ],
+  "pre_lab_gate": "governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py",
+  "rules": [
+    "Every required path must exist exactly once in the final tree.",
+    "Filename extension/content type/declared role must agree.",
+    "Every local Docker COPY/ADD source must exist in the final tree.",
+    "Step3 binding must match actual payload Git blob, SHA-256, byte size and NONMUTATING contract.",
+    "All Python sources must compile and all Go sources must build before Lab submission.",
+    "Mechanical PASS grants no security, audit, Live, OAuth or Runtime authority."
+  ]
+}
