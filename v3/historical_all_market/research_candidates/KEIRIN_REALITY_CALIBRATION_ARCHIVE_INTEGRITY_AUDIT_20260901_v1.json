@@ -1,0 +1,58 @@
+{
+  "record": "KEIRIN_REALITY_CALIBRATION_ARCHIVE_INTEGRITY_AUDIT_20260901_v1",
+  "status": "FAIL_CLOSED_PARTIAL_ARCHIVE_DRIFT_FOUND",
+  "source": {
+    "title": "KEIRIN Reality Calibration Archive 2026-09-01 v1",
+    "spreadsheet_id": "15y4xQs0aDghTNdm6VCT-cvsgqgf1ShDUjTy2CLumyyc",
+    "classification_from_readme": "BURNED_REALITY_CALIBRATION_ONLY"
+  },
+  "readme_claims": {
+    "rows": 84,
+    "races": 12,
+    "venues": 3,
+    "outcome": "UNUSED_AND_UNCOLLECTED",
+    "canonical_rows_sha256": "d01e0fc9573f81f9ce424990a937a8007433e2c6947c2c61b1b4603d8485de3d"
+  },
+  "summary_claims": {
+    "rider_rows": 84,
+    "races": 12,
+    "venues": 3,
+    "competition_score_min": 65.25,
+    "competition_score_median": 85.43,
+    "competition_score_max": 110.77,
+    "competition_score_mean": 86.862857,
+    "style_counts": {"追":38,"逃":28,"両":18}
+  },
+  "race_index_observed": {
+    "rows_after_header": 15,
+    "original_documented_venues": ["宇都宮","岐阜","いわき平"],
+    "additional_index_only_venue": "松戸",
+    "additional_index_rows": 3,
+    "additional_rows_evidence_role": "BURNED_REALITY_DIMENSION_CALIBRATION"
+  },
+  "cross_sheet_check": {
+    "PRE_Rows_search_for_松戸_matches": 0,
+    "Roster_Rows_search_for_松戸_matches": 0,
+    "interpretation": "Race_Index was extended without corresponding PRE/Roster rows and without README/Summary/hash refresh, or the extension is intentionally index-only but not documented as such. Either way, the current workbook is not a single internally self-consistent 15-race table."
+  },
+  "point_in_time_check_on_documented_12_race_core": {
+    "capture_session_end_jst": "2026-09-01T15:07:08+09:00",
+    "earliest_decision_cutoff_jst": "2026-09-01T15:48:00+09:00",
+    "all_12_documented_core_races_capture_before_cutoff": true
+  },
+  "scientific_action": {
+    "use_entire_workbook_as_15_race_calibration_input": false,
+    "use_hash_bound_84_row_core_for_transport_and_dimension_calibration": "CANDIDATE_ONLY_IF_ROWS_MATCH_CANONICAL_HASH_ON_BYTE_OR_CANONICAL_ROW_SERIALIZATION_CHECK",
+    "use_for_model_selection": false,
+    "use_for_outcome_scoring": false,
+    "use_for_roi_or_economics": false,
+    "repair_required_before_15_race_use": [
+      "document whether Matsudo rows are intentionally index-only",
+      "if part of archive, add corresponding PRE/Roster rows",
+      "refresh README/Summary counts",
+      "recompute canonical row hash",
+      "preserve prior 84-row hash identity as historical provenance"
+    ]
+  },
+  "important_result": "Real Evidence Lane already detected a concrete archive-consistency failure before any predictive scoring. This validates strict source/integrity gates as a necessary precursor to real backtesting."
+}
