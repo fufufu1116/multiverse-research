@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -139,6 +140,40 @@ func v7r7MirrorUntilWaiting(r, w *os.File, originalFD int, secure, ui *os.File, 
 	}
 }
 
+func v7r7CurrentFSUID() (uint32, error) {
+	b, err := os.ReadFile("/proc/thread-self/status")
+	if err != nil {
+		return 0, err
+	}
+	for _, line := range strings.Split(string(b), "\n") {
+		if !strings.HasPrefix(line, "Uid:") {
+			continue
+		}
+		fields := strings.Fields(strings.TrimSpace(strings.TrimPrefix(line, "Uid:")))
+		if len(fields) != 4 {
+			return 0, fmt.Errorf("fsuid-shape")
+		}
+		n, err := strconv.ParseUint(fields[3], 10, 32)
+		if err != nil {
+			return 0, err
+		}
+		return uint32(n), nil
+	}
+	return 0, fmt.Errorf("fsuid-missing")
+}
+
+func v7r7SetFSUIDExact(uid uint32) error {
+	_, _, _ = syscall.RawSyscall(syscall.SYS_SETFSUID, uintptr(uid), 0, 0)
+	got, err := v7r7CurrentFSUID()
+	if err != nil {
+		return err
+	}
+	if got != uid {
+		return fmt.Errorf("fsuid-mismatch:%d", got)
+	}
+	return nil
+}
+
 func v7r7OpenChannels(ruid uint32) (*os.File, *os.File, error) {
 	for _, p := range []string{"/workspaces", "/workspaces/.codespaces", "/workspaces/.codespaces/.persistedshare"} {
 		st, err := os.Lstat(p)
@@ -146,25 +181,52 @@ func v7r7OpenChannels(ruid uint32) (*os.File, *os.File, error) {
 			return nil, nil, fmt.Errorf("secure-parent:%s", p)
 		}
 	}
-	secure, err := os.OpenFile(v7r7SecureStatusPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0444)
-	if err != nil {
-		return nil, nil, err
+	if fsuid, err := v7r7CurrentFSUID(); err != nil || fsuid != 0 {
+		return nil, nil, fmt.Errorf("fsuid-root-precondition")
 	}
-	if err := secure.Chown(0, 0); err != nil || secure.Chmod(0444) != nil {
+	if err := v7r7SetFSUIDExact(ruid); err != nil {
+		return nil, nil, fmt.Errorf("fsuid-owner-enter")
+	}
+	secureFD, secureErr := syscall.Open(v7r7SecureStatusPath, syscall.O_WRONLY|syscall.O_CREAT|syscall.O_EXCL|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0600)
+	if secureErr != nil {
+		_ = v7r7SetFSUIDExact(0)
+		return nil, nil, secureErr
+	}
+	uiFD, uiErr := syscall.Open(v7r7UIControlPath, syscall.O_WRONLY|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0)
+	if uiErr != nil {
+		_ = syscall.Close(secureFD)
+		_ = syscall.Unlink(v7r7SecureStatusPath)
+		_ = v7r7SetFSUIDExact(0)
+		return nil, nil, uiErr
+	}
+	if err := v7r7SetFSUIDExact(0); err != nil {
+		_ = syscall.Close(uiFD)
+		_ = syscall.Close(secureFD)
+		return nil, nil, fmt.Errorf("fsuid-root-restore")
+	}
+	secure := os.NewFile(uintptr(secureFD), "v7r7-secure-status")
+	ui := os.NewFile(uintptr(uiFD), "v7r7-ui-control")
+	var secureStat syscall.Stat_t
+	if err := syscall.Fstat(secureFD, &secureStat); err != nil || secureStat.Uid != ruid || secureStat.Mode&syscall.S_IFMT != syscall.S_IFREG {
+		ui.Close()
 		secure.Close()
-		return nil, nil, fmt.Errorf("secure-owner-mode")
+		return nil, nil, fmt.Errorf("secure-class")
 	}
-	fd, err := syscall.Open(v7r7UIControlPath, syscall.O_WRONLY|syscall.O_TRUNC|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0)
-	if err != nil {
-		secure.Close()
-		return nil, nil, err
-	}
-	ui := os.NewFile(uintptr(fd), "v7r7-ui-control")
-	var st syscall.Stat_t
-	if err := syscall.Fstat(fd, &st); err != nil || st.Uid != ruid || st.Mode&syscall.S_IFMT != syscall.S_IFREG || uint32(st.Mode)&0777 != 0644 {
+	var uiStat syscall.Stat_t
+	if err := syscall.Fstat(uiFD, &uiStat); err != nil || uiStat.Uid != ruid || uiStat.Mode&syscall.S_IFMT != syscall.S_IFREG || uint32(uiStat.Mode)&0777 != 0644 {
 		ui.Close()
 		secure.Close()
 		return nil, nil, fmt.Errorf("ui-control-class")
+	}
+	if err := syscall.Ftruncate(uiFD, 0); err != nil {
+		ui.Close()
+		secure.Close()
+		return nil, nil, fmt.Errorf("ui-control-truncate")
+	}
+	if err := secure.Chown(0, 0); err != nil || secure.Chmod(0444) != nil {
+		ui.Close()
+		secure.Close()
+		return nil, nil, fmt.Errorf("secure-owner-mode")
 	}
 	if err := ui.Chown(0, 0); err != nil || ui.Chmod(0444) != nil {
 		ui.Close()
@@ -245,6 +307,7 @@ func init() {
 	if os.Getenv("CODESPACES") != "true" || os.Geteuid() != 0 {
 		return
 	}
+	runtime.LockOSThread()
 	if err := v7r7Install(); err != nil {
 		fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R7_STATUS_CHANNEL_DENIED:"+err.Error())
 		os.Exit(92)
