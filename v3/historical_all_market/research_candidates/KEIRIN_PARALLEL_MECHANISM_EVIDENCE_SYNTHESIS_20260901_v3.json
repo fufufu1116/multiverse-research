@@ -1,0 +1,135 @@
+{
+  "record": "KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v3",
+  "status": "NONAUTHORIZING_RESEARCH_CANDIDATE_SYNTHESIS_CAUSE_DECOMPOSITION_COMPLETE_NEW_FEATURE_BOUNDARY_REACHED",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "authority": "NONE_BEYOND_SYNTHESIS_AND_CLOSURE_OF_ALREADY_AUTHORIZED_SYNTHETIC_DIAGNOSTICS",
+  "supersedes_for_candidate_synthesis_only": "v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v2.json",
+  "prior_synthesis_blob": "6edb7b259ac0673f5f3c76e1b9bc38109c0cd6c7",
+  "fresh_campaign_binding": {
+    "main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "limited_synthetic_authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "note": "Evidence binding only; future CURRENT must be Fresh Read again."
+  },
+  "new_stage": {
+    "stage": "OWNER_APPROVED_PRE_PROXY_FAILURE_CAUSE_DECOMPOSITION",
+    "evidence_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_PROXY_CAUSE_DECOMP_1_EVIDENCE_20260901_v1.json",
+    "evidence_blob": "457abc7389c18ee7b9ffda54a8e3f8370fd28525",
+    "classification": "A_B_SELF_DOUBLECOUNTING_DOMINANT",
+    "contribution": "The failed naive line-mean score term was exactly decomposed. The target rider's own-score contribution worsened C1 in all four fixed W1 blocks, while the same-line peer contribution excluding own score improved C1 in all four blocks. The failed full naive term is therefore dominated by own-score reinjection rather than absence of useful peer information."
+  },
+  "updated_integrated_mechanism_conclusion": {
+    "label": "SELF_REINJECTION_DOMINANT_WITH_PEER_SIGNAL_PRESENT_SYNTHETIC_ONLY",
+    "statement": "The current Synthetic evidence supports a coherent sequence. Canonical W1 contains useful hidden line-shared state; supplying the exact hidden state to C1 strongly improves it and reverses N1's prior W1 advantage. A naive PRE line-mean score aggregate fails because it mixes same-line peer information with the target rider's own already-used noisy score. Exact cause decomposition shows the own-score reinjection is strongly harmful, while the peer-only same-denominator component is informative in the opposite direction. Thus naive-proxy failure should not be interpreted as evidence that peer-line PRE information lacks signal. Measurement-error analysis is consistent with the own-score reinjection harm. None of this establishes a deployable feature or real-world mechanism.",
+    "relationship_to_prior_synthesis": "v2 established hidden shared-state value but failure of the naive full line mean. v3 localizes that failure to own-score reinjection/double counting and shows that peer information was not the failing component."
+  },
+  "key_numeric_extension": {
+    "W1_C1_loss": 4.688863790585787,
+    "W1_N1_loss": 4.6877246961344206,
+    "W1_C1_ORACLE_loss": 4.672631555536946,
+    "W1_NAIVE_FULL_LINE_MEAN_loss": 4.71288958756397,
+    "W1_SELF_COMPONENT_ONLY_loss": 4.725750935626512,
+    "W1_PEER_COMPONENT_ONLY_SAME_DENOMINATOR_loss": 4.677819919162867,
+    "SELF_minus_C1": 0.03688714504072532,
+    "PEER_minus_C1": -0.011043871422919516,
+    "PEER_minus_N1": -0.009904776971553454,
+    "NAIVE_minus_C1": 0.024025796978182967,
+    "SELF_harm_blocks": "4_of_4",
+    "PEER_improvement_blocks": "4_of_4",
+    "NAIVE_harm_blocks": "4_of_4"
+  },
+  "cause_status": {
+    "A_DOUBLECOUNTING": {
+      "status": "SUPPORTED_AS_COUPLED_DOMINANT_EXPLANATION",
+      "plain_meaning": "C1 already uses the rider's own score, and the naive line mean feeds part of that same score in again."
+    },
+    "B_SELF_CONTAMINATION": {
+      "status": "SUPPORTED_AS_COUPLED_DOMINANT_EXPLANATION",
+      "plain_meaning": "Including the target rider in its own shared-state estimate creates the same harmful own-score reinjection term.",
+      "separate_from_A": "NOT_IDENTIFIABLE_IN_THIS_EXACT_DECOMPOSITION"
+    },
+    "C_MEASUREMENT_NOISE": {
+      "status": "ANALYTICALLY_PRESENT_AND_EMPIRICALLY_CONSISTENT_WITH_HARM",
+      "plain_meaning": "Observed score is noisy. Reusing the same noisy own score adds much more correlated noise than adding peer scores.",
+      "posterior_shrinkage_kappa": 0.7677543186180422,
+      "mean_SELF_incremental_noise_variance": 0.04851163690476016,
+      "mean_PEER_added_noise_variance": 0.0016601488095238425
+    },
+    "D_AGGREGATION_BIAS": {
+      "status": "ARITHMETIC_MEAN_AS_PRIMARY_WRONG_FORM_WEAKENED",
+      "plain_meaning": "The simulator's hidden W1 target is itself an arithmetic line mean, so the mean operator alone is not the leading explanation. Nonlinear prediction effects remain possible."
+    },
+    "E_OTHER_SYNTHETIC_MECHANISM": {
+      "status": "NOT_REQUIRED_FOR_PRIMARY_EXPLANATION_BUT_NOT_FALSIFIED"
+    }
+  },
+  "critical_scope_interpretation": {
+    "peer_diagnostic_result": "PEER-only same-denominator control has lower Synthetic W1 expected log loss than C1 and N1 on the fixed reused fixtures.",
+    "must_not_be_called_model_win": true,
+    "reason": "PEER was authorized only as an algebraic cause-decomposition component after the naive-proxy failure. Converting the favorable post-result component into a feature/model candidate would be result-driven scope expansion and would violate the Owner's cause-decomposition-only direction.",
+    "peer_feature_candidate_authorized": false,
+    "renormalized_leave_one_out_authorized": false,
+    "shrinkage_corrected_control_authorized": false,
+    "coefficient_search_authorized": false
+  },
+  "what_is_now_falsified_or_weakened_within_fixed_synthetic_scope": [
+    {
+      "claim": "Naive PRE line-mean score failed because same-line peer PRE information is intrinsically useless.",
+      "status": "FALSIFIED_ON_FIXED_SYNTHETIC_FIXTURES",
+      "basis": "The peer-only exact decomposition component improved C1 in all four fixed blocks."
+    },
+    {
+      "claim": "The target rider's own-score inclusion is harmless within the naive line mean.",
+      "status": "STRONGLY_FALSIFIED_ON_FIXED_SYNTHETIC_FIXTURES",
+      "basis": "The SELF-only component worsened C1 strongly in all four blocks."
+    },
+    {
+      "claim": "Arithmetic averaging itself is obviously the principal source of failure.",
+      "status": "WEAKENED",
+      "basis": "Canonical W1 hidden state is itself an arithmetic mean of latent skill; the empirical decomposition instead localizes harm to the own-score contribution."
+    }
+  ],
+  "still_open": [
+    "Whether the favorable peer diagnostic survives a separately authorized prospective feature-candidate protocol rather than retrospective cause decomposition.",
+    "Whether renormalizing peer information, residualizing it against own score, or applying measurement-error shrinkage would help; none was executed or authorized here.",
+    "Whether any analogous peer/shared-state mechanism exists in real keirin.",
+    "Whether any lawful real-world PRE feature, architecture, or model has predictive superiority.",
+    "Whether any model has economic, bankroll, ROI, deployment, or wagering value."
+  ],
+  "stop_and_boundary_rule": {
+    "convert_PEER_diagnostic_to_feature_candidate": "STOP_NEW_SCIENTIFIC_BOUNDARY",
+    "renormalized_leave_one_out_peer_mean": "STOP_NEW_SCIENTIFIC_BOUNDARY",
+    "measurement_error_shrinkage_execution": "STOP_NEW_SCIENTIFIC_BOUNDARY",
+    "coefficient_tuning_or_sweep": "STOP",
+    "third_proxy_or_estimator": "STOP",
+    "new_seed_or_posthoc_slice": "STOP",
+    "same_result_repetition": "STOP_BY_DEFAULT_DIMINISHING_VALUE",
+    "allowed_without_new_scientific_scope": ["synthesis", "closure", "mechanical checks", "portable evidence packaging"]
+  },
+  "next_scientific_boundary": {
+    "status": "FAIL_CLOSED_NO_AUTOMATIC_EXECUTION",
+    "minimal_question_if_owner_later_wants_more": "Should a peer-only PRE shared-state representation be opened as a prospective, independently prespecified Research/Candidate feature question rather than a post-result diagnostic component?",
+    "why_boundary": "The current favorable PEER result was discovered inside a cause-decomposition experiment. Treating it as a candidate feature or optimizing its normalization/coefficient after observing the result would change the scientific purpose and create selection bias unless opened under a new prospective gate.",
+    "owner_action_now": "NONE_UNLESS_OWNER_WANTS_TO_OPEN_THAT_NEW_PROSPECTIVE_BOUNDARY"
+  },
+  "protected_boundary": {
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "real_or_untouched_validation": false,
+    "real_live_input_collection": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false,
+    "real_world_edge_or_roi_evidence": false,
+    "scientific_segment_c_scoring_count": 0,
+    "authorization_auto_expanded": false
+  }
+}
