@@ -1,0 +1,52 @@
+{
+  "record": "KEIRIN_S0_RETROSPECTIVE_110R_DESCRIPTIVE_REGIME_CHECK_20260902_v1",
+  "status": "DESCRIPTIVE_EXTENSION_SIGNAL_PRESENT_WITH_REGIME_HETEROGENEITY",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "pipeline": {
+    "local_html_files": 119,
+    "successful_unique_races": 110,
+    "rejected_files": 9,
+    "parser_semantics": "same v3 fail-closed PRE/outcome separation; no manual repair",
+    "result_used_as_feature": false,
+    "payout_used": false
+  },
+  "model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score",
+    "locked_beta": 0.22260435254784533,
+    "beta_training_sample": "initial 61 successful races",
+    "refit_for_110r_check": false
+  },
+  "all_110r_descriptive_metrics": {
+    "winner_log_loss": 1.6963498704878885,
+    "uniform_winner_log_loss": 1.9819372596352738,
+    "winner_brier": 0.10926351379783787,
+    "uniform_winner_brier": 0.11916665235117635,
+    "ordered_top3_log_loss": 4.810011700964814,
+    "uniform_ordered_top3_log_loss": 5.471258464832639
+  },
+  "regime_notes": {
+    "venues_with_all_three_metrics_better_than_uniform": ["小倉", "松山", "松戸", "西武園", "豊橋"],
+    "venues_with_mixed_or_worse_winner_metrics": ["伊東", "宇都宮", "小田原", "熊本"],
+    "important_caveat": "Venue is only a coarse regime label. These differences may be caused by date, class mix, meeting composition, rider-field strength, bank conditions, or other PRE structure. Do not tune venue-specific coefficients from this check."
+  },
+  "interpretation": [
+    "The locked competition-score-only S0 remains descriptively better than uniform over the 110-race local corpus on winner log loss, winner Brier, and ordered-top3 log loss.",
+    "Performance is heterogeneous across coarse venue slices; the signal is not uniformly strong in every regime.",
+    "The previously certified 39-race post-discovery fixed-model confirmation remains the cleaner replication evidence; this 110-race extension is descriptive because the additional local-race provenance relative to the 100R checkpoint is not being retroactively labeled untouched.",
+    "Next work should scale toward 200 races and prespec regime-stability reporting before any new feature tuning."
+  ],
+  "decision": {
+    "S0_SCORE": "CONTINUE_FIXED_BASELINE",
+    "feature_extension": "HOLD",
+    "next": "200_RACE_FIXED_S0_PLUS_PRESPECIFIED_REGIME_STABILITY"
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "MARKET_MISPRICING_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "VENUE_SPECIFIC_TUNING_FROM_THIS_REPORT",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
