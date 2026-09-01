@@ -24,7 +24,6 @@ import (
 const runtimePath = "/opt/multiverse/v36/runtime-v7.py"
 const manifestPath = "/opt/multiverse/v36/closure-manifest-v7.json"
 const pythonPath = "/usr/bin/python3"
-const triggerPath = "/usr/local/libexec/multiverse-v36-trigger-v7r2"
 const controlPath = "/usr/local/sbin/multiverse-v36-control-v7r2"
 const bindingPath = "/opt/multiverse/v36/step3-binding.json"
 const step3Path = "/opt/multiverse/v36/step3.py"
@@ -151,16 +150,9 @@ func runStep3PostOAuth(step3 *os.File, ghConfig string) error {
 	pc := exec.Command("/proc/self/fd/3", "-I", "-S", "-B", "-c", loader); pc.ExtraFiles = []*os.File{py, step3, parent}; pc.Env = []string{"LANG=C", "LC_ALL=C", "MULTIVERSE_V36_V6_STEP3_MODE=NONMUTATING", "MULTIVERSE_V36_V6_CONTROL_FD=5"}; pc.Stdout = os.Stdout; pc.Stderr = os.Stderr
 	if e = pc.Run(); e != nil { return e }; parent.Close(); return cc.Wait()
 }
-func spawnOwnerTrigger() (chan error, error) {
-	sp, e := syscall.Socketpair(syscall.AF_UNIX, syscall.SOCK_SEQPACKET|syscall.SOCK_CLOEXEC, 0); if e != nil { return nil, e }; parent := os.NewFile(uintptr(sp[0]), "cap-parent"); child := os.NewFile(uintptr(sp[1]), "cap-child"); tf, e := openC(triggerPath); if e != nil { return nil, e }
-	cmd := exec.Command("/proc/self/fd/3"); cmd.ExtraFiles = []*os.File{tf, child}; cmd.Env = []string{"LANG=C", "LC_ALL=C"}; cmd.Stdin = os.Stdin; cmd.Stdout = os.Stdout; cmd.Stderr = os.Stderr; cmd.SysProcAttr = &syscall.SysProcAttr{Credential: &syscall.Credential{Uid: 65532, Gid: 65532, NoSetGroups: true}, Pdeathsig: syscall.SIGKILL}
-	if e = cmd.Start(); e != nil { return nil, e }; tf.Close(); child.Close(); ch := make(chan error, 1)
-	go func() { defer parent.Close(); b := make([]byte, 1); _ = parent.SetReadDeadline(time.Now().Add(10 * time.Minute)); n, e := parent.Read(b); if e != nil || n != 1 || b[0] != 0x72 { ch <- errors.New("capability"); return }; ch <- cmd.Wait() }()
-	return ch, nil
-}
 func rows() map[string]Row {
 	m := map[string]Row{}; p := func(i int, e string) { m[strconv.Itoa(i)] = Row{"PASS", e} }
-	p(1, "Codespaces identity captured before clearenv"); p(2, "root producer"); p(3, "zero swap checked"); p(4, "tmpfs checked"); p(5, "same-object fd execution"); p(6, "private producer socketpair plus dedicated-UID TTY trigger; no public wake socket"); p(7, "recursive symlink and ELF/helper graph"); p(8, "clear environment before child chain"); p(9, "Python exact opened fd"); p(10, "PyNaCl build actual-use plus runtime recheck"); p(11, "Git helper closure and frozen control runner"); p(12, "Fresh GitHub main/tree proof"); p(13, "Step3 exact once-open retained fd and POST_OAUTH_ONLY same-object runner implemented"); m["14"] = Row{"POST_OAUTH_ONLY", "credential-dependent checks"}; p(15, "strong receipt"); p(16, "Class-C caps mount gate"); return m
+	p(1, "Codespaces identity captured before clearenv"); p(2, "root producer"); p(3, "zero swap checked"); p(4, "tmpfs checked"); p(5, "same-object fd execution"); p(6, "Owner trigger is external Codespaces creation only; root entrypoint auto-starts and no same-UID in-container wake channel exists"); p(7, "recursive symlink and ELF/helper graph"); p(8, "clear environment before child chain"); p(9, "Python exact opened fd"); p(10, "PyNaCl build actual-use plus runtime recheck"); p(11, "Git helper closure and frozen control runner"); p(12, "Fresh GitHub main/tree proof"); p(13, "Step3 exact once-open retained fd and POST_OAUTH_ONLY same-object runner implemented"); m["14"] = Row{"POST_OAUTH_ONLY", "credential-dependent checks"}; p(15, "strong receipt"); p(16, "Class-C caps mount gate"); return m
 }
 func runRuntime(c, n string, mf *os.File) error {
 	py, e := openC(pythonPath); if e != nil { return e }; defer py.Close(); rt, e := openC(runtimePath); if e != nil { return e }; defer rt.Close(); ar, aw, e := os.Pipe(); if e != nil { return e }; defer ar.Close(); ab, _ := json.Marshal(map[string]any{"version": "V19.7.36-v7", "matrix": rows()}); go func() { defer aw.Close(); _, _ = aw.Write(ab) }()
@@ -172,7 +164,7 @@ func main() {
 	if runtime.GOOS != "linux" || runtime.GOARCH != "amd64" || os.Geteuid() != 0 { die("PLATFORM") }
 	c := os.Getenv("CODESPACES"); n := os.Getenv("CODESPACE_NAME"); os.Clearenv(); if c != "true" || n == "" { die("CODESPACES") }
 	if e := statusGate(); e != nil { die("STATUS") }; if e := mountGate(); e != nil { die("MOUNT") }
-	step3, e := verifyAndRetainStep3(); if e != nil { die("STEP3_BINDING") }; defer step3.Close(); ch, e := spawnOwnerTrigger(); if e != nil { die("TRIGGER_SPAWN") }; if e = <-ch; e != nil { die("TRIGGER_CAPABILITY") }
+	step3, e := verifyAndRetainStep3(); if e != nil { die("STEP3_BINDING") }; defer step3.Close()
 	b, _ := os.ReadFile("/proc/swaps"); if len(strings.Split(strings.TrimSpace(string(b)), "\n")) > 1 { die("SWAP") }
 	m, mf, e := loadManifest(); if e != nil { die("MANIFEST_OPEN") }; defer mf.Close(); if e = verifyManifest(m); e != nil { die("MANIFEST_VERIFY") }; if e = freshMain(); e != nil { die("FRESH_MAIN") }
 	r, _ := json.Marshal(map[string]any{"version": "V19.7.36-v7r2", "pre_python": true, "main": mainWant, "tree": treeWant, "step3_fd_retained": true}); if e = strongReceipt(r); e != nil { die("RECEIPT") }; if e = runRuntime(c, n, mf); e != nil { die("RUNTIME") }
