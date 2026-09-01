@@ -1,0 +1,104 @@
+{
+  "record": "KEIRIN_ONTRACK_TACTICAL_ANNOTATION_SCHEMA_20260901_v1",
+  "status": "SCHEMA_FIXED_FOR_BURNED_PILOT_ANNOTATION",
+  "classification": "RESEARCH_CALIBRATION_SCHEMA_ONLY_NOT_EVENT_RATE_NOT_VALIDATION",
+  "event_types": {
+    "INITIATIVE_ATTACK": {
+      "positive_rule": "A rider makes a clearly observable sustained acceleration or advance intended to take or materially improve the front/controlling position relative to the current formation.",
+      "exclude": ["minor speed matching without position intent", "final metres sprint already classified as FINAL_SPRINT_OR_OVERTAKE"],
+      "eligible_denominator": "observable rider-phase opportunity in which the rider can materially advance position"
+    },
+    "INITIATIVE_CONFLICT": {
+      "positive_rule": "Two or more riders or groups simultaneously contest control/initiative such that neither simply follows the other and the conflict persists beyond a momentary overlap.",
+      "exclude": ["ordinary single-file following", "brief wheel overlap without contest"],
+      "eligible_denominator": "observable phase with at least two plausible initiative actors or groups"
+    },
+    "BANTE_FOLLOW": {
+      "positive_rule": "A rider in the following role visibly maintains the wheel/position directly behind the line leader through a material acceleration or tactical change.",
+      "exclude": ["rider is not in a following role", "mere same-group membership without observable following challenge"],
+      "eligible_denominator": "observable material leader acceleration/change while a defined follower is attached"
+    },
+    "BLOCK_OR_POSITION_DEFENSE": {
+      "positive_rule": "A rider visibly changes lateral/longitudinal position to defend a wheel or impede a competing rider's attempt to take that tactical position.",
+      "exclude": ["ordinary curve line choice", "incidental drift without an identifiable positional contest"],
+      "eligible_denominator": "observable attempted overtake/position incursion where defensive action is possible"
+    },
+    "POSITION_COMPETITION": {
+      "positive_rule": "Two riders visibly contest the same tactical wheel/slot for a sustained interval, including side-by-side or repeated positional pressure.",
+      "exclude": ["ordinary pass with no contested slot", "uncertain camera angle"],
+      "eligible_denominator": "observable approach to an occupied tactical slot by another rider"
+    },
+    "LINE_FRAGMENT": {
+      "positive_rule": "A previously identifiable line or group loses ordered wheel continuity by a material gap, displaced rider, or split that persists beyond a brief elastic gap.",
+      "exclude": ["momentary small gap immediately closed", "group was not previously identifiable"],
+      "eligible_denominator": "observable identifiable line/group exposed to material pace or positional stress"
+    },
+    "SWITCH": {
+      "positive_rule": "A rider abandons the prior wheel/group and intentionally attaches to or targets a different rider/group after the prior relationship is lost or strategically left.",
+      "exclude": ["initial formation before a prior attachment exists", "mere overtaking without new attachment"],
+      "eligible_denominator": "observable rider who has lost or left a prior attachment and has an alternative attachment opportunity"
+    },
+    "REATTACH": {
+      "positive_rule": "A rider that was visibly detached from its relevant line/group closes the material gap and restores ordered following continuity.",
+      "exclude": ["never materially detached", "joins a different group, which is SWITCH"],
+      "eligible_denominator": "observable detached rider with a recoverable gap to the prior group"
+    },
+    "SOLO_TRANSITION": {
+      "positive_rule": "A rider previously in an identifiable line/group becomes tactically independent with no sustained wheel relationship to that group or another group.",
+      "exclude": ["rider was already solo in the initial observed formation", "temporary gap followed immediately by reattachment"],
+      "eligible_denominator": "observable rider currently attached to a group with a plausible detachment transition"
+    },
+    "FINAL_SPRINT_OR_OVERTAKE": {
+      "positive_rule": "In the final race phase a rider makes an observable maximal/near-maximal finishing acceleration or passes a rider for finishing position.",
+      "exclude": ["earlier initiative move", "position changes caused only by an incident or non-competitive slowing"],
+      "eligible_denominator": "observable rider entering the final sprint phase"
+    }
+  },
+  "phases": [
+    "START_TO_FORMATION_SETTLE",
+    "MID_RACE_FORMATION",
+    "BELL_APPROACH",
+    "FINAL_LAP_HOME_TO_BACK",
+    "FINAL_BACK_TO_FINISH"
+  ],
+  "visibility": ["CLEAR", "PARTIAL", "UNOBSERVABLE"],
+  "labels": ["PRESENT", "ABSENT", "UNKNOWN"],
+  "line_state_format": {
+    "description": "Ordered groups of car numbers as directly observed on track at that moment, not reconstructed from finish.",
+    "examples": ["7-4-1 | 2-5 | 6-3", "UNKNOWN"],
+    "rule": "UNKNOWN is mandatory when camera coverage or identity is insufficient."
+  },
+  "required_annotation_fields": [
+    "annotation_id",
+    "race_id",
+    "annotator_id",
+    "source_url",
+    "event_type",
+    "phase",
+    "event_time_seconds_or_unknown",
+    "actor_car_or_unknown",
+    "counterparty_car_or_none_or_unknown",
+    "before_line_state",
+    "after_line_state",
+    "visibility",
+    "label",
+    "provenance_sha256",
+    "candidate_outputs_hidden",
+    "finish_order_recorded",
+    "payout_recorded"
+  ],
+  "denominator_contract": {
+    "rule": "Every event-rate numerator must have an explicit eligible and observable opportunity denominator using the event-specific eligible_denominator rule.",
+    "unobservable": "UNOBSERVABLE opportunities are missing data and are excluded from both positive and negative counts.",
+    "unknown": "UNKNOWN labels are not negatives.",
+    "raw_race_count_denominator_prohibited": true
+  },
+  "quality_contract": {
+    "double_annotation_preferred": true,
+    "agreement_report_required_before_rate_admission": true,
+    "forced_resolution_of_ambiguity": false,
+    "candidate_model_outputs_visible": false,
+    "result_or_payout_fields_in_annotation_record": false
+  },
+  "rate_status": "BLOCKED_UNTIL_ACTUAL_ANNOTATIONS_AND_DENOMINATORS_EXIST"
+}
