@@ -21,6 +21,7 @@ const sessionPath = "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7
 const lockPath = "/run/multiverse-v36-v7r7-arm.lock"
 const armPath = "/usr/local/bin/multiverse-v36-arm-v7r7"
 const imageIdentityPathV7R7 = "/opt/multiverse/v36/image-identity-v7r3.json"
+const threadStatusPath = "/proc/thread-self/status"
 const prSetNoNewPrivs = 38
 const prCapBsetDrop = 24
 const prCapAmbient = 47
@@ -136,20 +137,35 @@ func rootDir(path string) error {
 	return nil
 }
 
-func enableNoNewPrivs() error {
-	_, _, e := syscall.RawSyscall6(syscall.SYS_PRCTL, uintptr(prSetNoNewPrivs), 1, 0, 0, 0, 0)
+func readThreadStatus() ([]byte, error) {
+	return os.ReadFile(threadStatusPath)
+}
+
+func normalizeRootAllThreads() error {
+	_, _, e := syscall.AllThreadsSyscall(syscall.SYS_SETRESUID, 0, 0, 0)
 	if e != 0 {
 		return e
 	}
-	b, err := os.ReadFile("/proc/self/status")
+	if os.Getuid() != 0 || os.Geteuid() != 0 {
+		return errors.New("root-normalize-current-thread")
+	}
+	return nil
+}
+
+func enableNoNewPrivs() error {
+	_, _, e := syscall.AllThreadsSyscall6(syscall.SYS_PRCTL, uintptr(prSetNoNewPrivs), 1, 0, 0, 0, 0)
+	if e != 0 {
+		return e
+	}
+	b, err := readThreadStatus()
 	if err != nil || !strings.Contains(string(b), "NoNewPrivs:\t1") {
-		return errors.New("nnp-not-set")
+		return errors.New("nnp-not-set-on-exec-thread")
 	}
 	return nil
 }
 
 func capabilityStatus() (map[string]uint64, error) {
-	b, err := os.ReadFile("/proc/self/status")
+	b, err := readThreadStatus()
 	if err != nil {
 		return nil, err
 	}
@@ -200,13 +216,13 @@ func dropBoundingSetToAllowed() error {
 		if extra&bit == 0 || cap == capSetpcap {
 			continue
 		}
-		_, _, e := syscall.RawSyscall6(syscall.SYS_PRCTL, uintptr(prCapBsetDrop), uintptr(cap), 0, 0, 0, 0)
+		_, _, e := syscall.AllThreadsSyscall6(syscall.SYS_PRCTL, uintptr(prCapBsetDrop), uintptr(cap), 0, 0, 0, 0)
 		if e != 0 {
 			return e
 		}
 	}
 	if extra&(1<<capSetpcap) != 0 {
-		_, _, e := syscall.RawSyscall6(syscall.SYS_PRCTL, uintptr(prCapBsetDrop), uintptr(capSetpcap), 0, 0, 0, 0)
+		_, _, e := syscall.AllThreadsSyscall6(syscall.SYS_PRCTL, uintptr(prCapBsetDrop), uintptr(capSetpcap), 0, 0, 0, 0)
 		if e != 0 {
 			return e
 		}
@@ -215,7 +231,7 @@ func dropBoundingSetToAllowed() error {
 }
 
 func clearAmbientCapabilities() error {
-	_, _, e := syscall.RawSyscall6(syscall.SYS_PRCTL, uintptr(prCapAmbient), uintptr(prCapAmbientClearAll), 0, 0, 0, 0)
+	_, _, e := syscall.AllThreadsSyscall6(syscall.SYS_PRCTL, uintptr(prCapAmbient), uintptr(prCapAmbientClearAll), 0, 0, 0, 0)
 	if e != 0 {
 		return e
 	}
@@ -228,7 +244,7 @@ func setCapabilitiesExact(mask uint64) error {
 		{Effective: uint32(mask), Permitted: uint32(mask), Inheritable: 0},
 		{Effective: uint32(mask >> 32), Permitted: uint32(mask >> 32), Inheritable: 0},
 	}
-	_, _, e := syscall.RawSyscall(syscall.SYS_CAPSET, uintptr(unsafe.Pointer(&header)), uintptr(unsafe.Pointer(&data[0])), 0)
+	_, _, e := syscall.AllThreadsSyscall(syscall.SYS_CAPSET, uintptr(unsafe.Pointer(&header)), uintptr(unsafe.Pointer(&data[0])), 0)
 	if e != 0 {
 		return e
 	}
@@ -241,7 +257,7 @@ func capabilitiesExact() error {
 		return err
 	}
 	if status["CapEff"] != allowedCapabilities || status["CapPrm"] != allowedCapabilities || status["CapBnd"] != allowedCapabilities || status["CapInh"] != 0 || status["CapAmb"] != 0 {
-		return errors.New("caps-not-exact")
+		return errors.New("caps-not-exact-on-exec-thread")
 	}
 	return nil
 }
@@ -287,11 +303,12 @@ func main() {
 	if runtime.GOOS != "linux" || runtime.GOARCH != "amd64" || len(os.Args) != 1 {
 		deny("PLATFORM_OR_ARGS")
 	}
+	runtime.LockOSThread()
 	ruid := os.Getuid()
 	if ruid == 0 || os.Geteuid() != 0 {
 		deny("SETUID_BOUNDARY")
 	}
-	if err := syscall.Setresuid(0, 0, 0); err != nil || os.Getuid() != 0 || os.Geteuid() != 0 {
+	if err := normalizeRootAllThreads(); err != nil {
 		deny("ROOT_NORMALIZE")
 	}
 	if err := narrowCapabilities(); err != nil {
@@ -343,6 +360,9 @@ func main() {
 	}
 	for fd := 4; fd < 1024; fd++ {
 		_ = syscall.Close(fd)
+	}
+	if err := capabilitiesExact(); err != nil {
+		deny("CAPS_PRE_EXEC")
 	}
 	env := []string{"CODESPACES=true", "CODESPACE_NAME=" + name, "MULTIVERSE_V7R7_ARM_RUID=" + strconv.Itoa(ruid), "LANG=C", "LC_ALL=C"}
 	fmt.Printf("PHASE_C_V19_7_36_V7R7_ARM_START codespace=%s image_identity_sha256=%s timer_starts_inside_session_gate_after_trusted_server_time runtime=OFF\n", name, identity)
