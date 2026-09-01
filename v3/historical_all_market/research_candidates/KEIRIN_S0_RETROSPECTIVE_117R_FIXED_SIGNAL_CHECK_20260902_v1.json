@@ -1,0 +1,59 @@
+{
+  "record": "KEIRIN_S0_RETROSPECTIVE_117R_FIXED_SIGNAL_CHECK_20260902_v1",
+  "status": "DEVELOPMENT_SIGNAL_REPLICATED_NOT_EDGE_OR_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "pipeline": {
+    "html_attempted": 126,
+    "successful_races": 117,
+    "rejected_races": 9,
+    "parser": "tools/keirin_kdreams_retrospective_pre_outcome_parser_v3.py",
+    "rejection_policy": "FAIL_CLOSED_NO_MANUAL_REPAIR",
+    "result_used_as_feature": false,
+    "payout_used": false
+  },
+  "model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score",
+    "locked_beta": 0.22260435254784533,
+    "beta_training_sample": "initial 61 successful races",
+    "post_discovery_refit": false,
+    "post_discovery_feature_change": false
+  },
+  "post_110_checkpoint_fresh_batch_7r": {
+    "successful_races": 7,
+    "winner_log_loss": 0.8776100245129574,
+    "uniform_winner_log_loss": 1.9459101490553132,
+    "winner_brier": 0.060332699746384166,
+    "uniform_winner_brier": 0.12244897959183676,
+    "ordered_top3_log_loss": 3.7994272805310656,
+    "uniform_ordered_top3_log_loss": 5.347107530717468,
+    "note": "These seven HTML artifacts were opened only after the 110-race checkpoint and evaluated with the locked S0 beta without refit."
+  },
+  "all_117r_fixed_s0_descriptive_metrics": {
+    "winner_log_loss": 1.6473654352586191,
+    "uniform_winner_log_loss": 1.9797817914809153,
+    "winner_brier": 0.10633602919646887,
+    "uniform_winner_brier": 0.11936303090403627,
+    "ordered_top3_log_loss": 4.749549385212365,
+    "uniform_ordered_top3_log_loss": 5.463830631167619,
+    "interpretation_caveat": "These 117-race descriptive metrics include the initial 61 discovery/development races; post-discovery fixed-model batches remain the cleaner replication evidence."
+  },
+  "interpretation": [
+    "The locked competition-score-only S0 remained better than uniform on all three reported proper-scoring-rule metrics in the newly opened seven-race batch.",
+    "The result adds replication evidence but is small and does not establish profitability, market mispricing, or production readiness.",
+    "The 200-race regime-stability prespec remains controlling; no venue-specific coefficient rescue or post hoc feature change is authorized."
+  ],
+  "decision": {
+    "S0_SCORE": "CONTINUE_AS_REAL_BASELINE_CANDIDATE",
+    "next_probability_gate": "SCALE_TOWARD_150_THEN_200_RACES_WITH_LOCKED_BETA",
+    "feature_changes_before_200r": "NONE"
+  },
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "MARKET_MISPRICING_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
