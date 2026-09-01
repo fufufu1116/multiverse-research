@@ -1,0 +1,40 @@
+name: Keirin Burned Tactical Frame Pilot V0
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - '.github/workflows/keirin-burned-tactical-frame-pilot-v0.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  frame-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+      - name: Download prespecified burned official replay sample
+        run: |
+          mkdir -p /tmp/keirin-pilot
+          curl --fail --location --retry 2 --output /tmp/keirin-pilot/r1.mp4 https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-01-01-00.mp4
+          curl --fail --location --retry 2 --output /tmp/keirin-pilot/r2.mp4 https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-02-01-00.mp4
+          curl --fail --location --retry 2 --output /tmp/keirin-pilot/r3.mp4 https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-03-01-00.mp4
+      - name: Extract sparse review frames with timestamps
+        run: |
+          mkdir -p /tmp/keirin-frames/r1 /tmp/keirin-frames/r2 /tmp/keirin-frames/r3
+          for r in r1 r2 r3; do
+            ffmpeg -hide_banner -loglevel error -i /tmp/keirin-pilot/${r}.mp4 -vf "fps=1/3,scale=960:-2,drawtext=text='%{pts\\:hms}':x=20:y=20:fontsize=30:fontcolor=white:box=1:boxcolor=black@0.65" -q:v 3 /tmp/keirin-frames/${r}/${r}_%03d.jpg
+          done
+          find /tmp/keirin-frames -type f -name '*.jpg' | sort
+      - name: Upload sparse frame artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: burned-tactical-frames-pilot-v0
+          path: /tmp/keirin-frames
+          retention-days: 3
+      - name: Terminal boundary
+        run: echo 'SPARSE_FRAMES_FOR_HUMAN_REVIEW_ONLY_NO_AUTOMATED_TACTICAL_INFERENCE'
