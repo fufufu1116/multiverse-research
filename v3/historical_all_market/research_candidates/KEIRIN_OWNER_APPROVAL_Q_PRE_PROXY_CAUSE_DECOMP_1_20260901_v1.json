@@ -1,0 +1,66 @@
+{
+  "record": "KEIRIN_OWNER_APPROVAL_Q_PRE_PROXY_CAUSE_DECOMP_1_20260901_v1",
+  "status": "OWNER_EXPLICITLY_APPROVED_EXACT_PRE_ONLY_CAUSE_DECOMPOSITION_DIAGNOSTIC",
+  "classification": "RESEARCH_CANDIDATE_SCOPE_GATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class_limit": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "owner_approval_source": "Owner instruction in active MULTIVERSE LIVE conversation on 2026-09-01 JST",
+  "approval": "APPROVE NEXT PRE-ONLY MECHANISM DIAGNOSTIC — CAUSE DECOMPOSITION ONLY",
+  "purpose": "Decompose why the already-falsified naive PRE line-mean score control worsened frozen C1, without turning the diagnostic into new-proxy search.",
+  "causes_under_test": {
+    "A": "DOUBLE_COUNTING",
+    "B": "SELF_CONTAMINATION",
+    "C": "MEASUREMENT_NOISE",
+    "D": "AGGREGATION_BIAS",
+    "E": "OTHER_SYNTHETIC_MECHANISM"
+  },
+  "authorized_execution_family": {
+    "world": "W1",
+    "fixed_block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "new_seed_selection": false,
+    "diagnostic_controls_only": [
+      "C1_SELF_SCORE_COMPONENT_ONLY",
+      "C1_PEER_SCORE_COMPONENT_ONLY_SAME_DENOMINATOR"
+    ],
+    "analytic_measurement_error_diagnostic": "Use only canonical simulator source constants latent_skill~N(0,1), observed_score=latent_skill+N(0,0.55), W1 coefficient 0.16, and PRE line_size. Do not use per-race latent_skill or truth values inside any diagnostic control.",
+    "full_naive_proxy_reference": "Reproduce the already-authorized C1_PRE_LINE_MEAN_PROXY exactly as a reference, not as a new model candidate."
+  },
+  "control_boundaries": {
+    "C1_SELF_SCORE_COMPONENT_ONLY": "Add exactly 0.16 * score_i / line_size_i to exact frozen C1 utility. This is the rider's own-score contribution to the prior naive mean and tests repeated own-information/self inclusion only.",
+    "C1_PEER_SCORE_COMPONENT_ONLY_SAME_DENOMINATOR": "Add exactly 0.16 * sum(score_j for same-line peers j!=i) / line_size_i to exact frozen C1 utility. This excludes the target rider's own score while preserving the exact denominator and scale decomposition of the prior naive mean.",
+    "exact_additivity_required": "SELF contribution + PEER contribution must equal the prior naive 0.16*line_mean(score) utility addition to numerical tolerance before any scientific result is accepted.",
+    "formal_model_candidate": false,
+    "coefficient_fitting_or_sweep": false,
+    "normal_C0_C1_N1_mutation": false,
+    "PRE_only": true,
+    "latent_skill_access_by_controls": false,
+    "truth_distribution_access_by_controls": false
+  },
+  "hard_conditions": {
+    "synthetic_diagnostic_only": true,
+    "cause_decomposition_only_not_proxy_search": true,
+    "retuning_existing_models": false,
+    "coefficient_search": false,
+    "new_seed_addition": false,
+    "post_hoc_slice": false,
+    "result_adaptive_diagnostic_family_addition": false,
+    "real_live_data": false,
+    "protected_data": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue": false,
+    "real_or_untouched_validation": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false,
+    "synthetic_as_real_world_edge_evidence": false
+  },
+  "result_recording_rule": "Record every prespecified control and analytic diagnostic regardless of direction. A falsified explanation is scientific success.",
+  "authorization_expansion_rule": "Completion does not authorize coefficient changes, a renormalized leave-one-out proxy, residualized feature, learned estimator, third proxy, new seed, new world, real-data test, promotion, economics, or protected-data access.",
+  "post_diagnostic_rule": "After cause decomposition, proceed only with synthesis/closure/mechanical evidence packaging until a genuinely new scientific boundary is separately classified."
+}
