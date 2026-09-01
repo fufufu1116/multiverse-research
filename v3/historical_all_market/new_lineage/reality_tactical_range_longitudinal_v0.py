@@ -1,7 +1,7 @@
 """Reality tactical-range + longitudinal rider foundation v0.
 
 Foundation only. This module deliberately contains no fitted tactical probabilities,
-no finish-effect coefficients, no candidate-model calls, no RESULT/PAYOUT access,
+no finish-effect coefficients, no candidate-model calls, no outcome/economic data access,
 and no network access.
 """
 from __future__ import annotations
