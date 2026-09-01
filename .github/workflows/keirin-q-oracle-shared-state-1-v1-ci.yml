@@ -25,7 +25,7 @@ env:
   PRIOR_W1_EVIDENCE_BLOB: e4a6e59e10e2592ee266c4d17e84d219991fd61b
   OWNER_APPROVAL_BLOB: f9a3578aadb722fad2b78f709f2f96f4b44580ad
   PRESPEC_BLOB: 321948b23bf975387f13bb16bd039688bc7cd787
-  HARNESS_BLOB: 004a968dec43c2aa33b88f91121ce7a887414d14
+  HARNESS_BLOB: 934d42df488552ab3e792c3b202b5cb57d6490e5
   PYTHONDONTWRITEBYTECODE: '1'
 
 jobs:
@@ -106,7 +106,7 @@ jobs:
           grep -Fx 'KEIRIN_Q_ORACLE_SHARED_STATE_1_EXECUTION_PASS' /tmp/qoracle.log
           head -n 1 /tmp/qoracle.log > /tmp/result.json
           python - <<'PY'
-          import json, math
+          import json
           r=json.load(open('/tmp/result.json', encoding='utf-8'))
           assert r['status']=='PASS_EXECUTION_AND_MECHANICAL_INVARIANTS'
           assert r['classification']=='RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED'
