@@ -1,0 +1,99 @@
+{
+  "record": "KEIRIN_EXPANDED_REALITY_CALIBRATION_BATCH_20260901_v1_EVIDENCE",
+  "status": "PASS_EXPANDED_BURNED_REALITY_CALIBRATION_WITH_PRIVATE_REUSABLE_ARCHIVE",
+  "classification": "BURNED_REALITY_CALIBRATION_ONLY_NOT_VALIDATION_NOT_MODEL_SELECTION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "bindings": {
+    "canonical_main_at_start": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "owner_gate_commit": "2971f3519f324f9c7455b221b7610f218e49d5ee",
+    "prespec_commit": "0d81221862aef1e0e9a61eebc073bf17c41f0acc"
+  },
+  "capture": {
+    "date_jst": "2026-09-01",
+    "capture_session_end_jst": "2026-09-01T15:07:08+09:00",
+    "races": 12,
+    "normalized_rider_rows": 84,
+    "venues": ["宇都宮", "岐阜", "いわき平"],
+    "grades": ["FI", "FII"],
+    "classes": ["S1", "S2", "A1", "A2", "A3"],
+    "stages": ["GENERAL", "SEMIFINAL", "SELECTION", "SPECIAL_SELECTION", "FINAL"],
+    "bank_circumference_support_m": [400, 500],
+    "all_target_rows_pre_cutoff": true,
+    "target_result_or_payout_used": false,
+    "model_predictions_used_for_selection": false,
+    "line_snapshot_collected": false
+  },
+  "race_sources": [
+    {"venue":"宇都宮","race":"1R","cutoff":"15:48","url":"https://keirin.tokyo-sports.co.jp/list/race/20260831_34276"},
+    {"venue":"宇都宮","race":"3R","cutoff":"16:36","url":"https://keirin.tokyo-sports.co.jp/list/race/20260831_34268"},
+    {"venue":"宇都宮","race":"5R","cutoff":"17:24","url":"https://keirin.tokyo-sports.co.jp/list/race/20260831_34261"},
+    {"venue":"宇都宮","race":"8R","cutoff":"18:37","url":"https://keirin.tokyo-sports.co.jp/list/race/20260831_34255"},
+    {"venue":"宇都宮","race":"10R","cutoff":"19:29","url":"https://keirin.tokyo-sports.co.jp/list/race/20260831_34247"},
+    {"venue":"宇都宮","race":"12R","cutoff":"20:25","url":"https://keirin.tokyo-sports.co.jp/list/race/20260831_34243"},
+    {"venue":"岐阜","race":"1R","cutoff":"20:52","url":"https://keirin.kdreams.jp/gifu/racedetail/4320260830030001/"},
+    {"venue":"岐阜","race":"4R","cutoff":"22:04","url":"https://keirin.kdreams.jp/gifu/racedetail/4320260830030004/"},
+    {"venue":"岐阜","race":"7R","cutoff":"23:25","url":"https://keirin.kdreams.jp/gifu/racedetail/4320260830030007/"},
+    {"venue":"いわき平","race":"3R","cutoff":"21:32","url":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030003/"},
+    {"venue":"いわき平","race":"5R","cutoff":"22:22","url":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030005/"},
+    {"venue":"いわき平","race":"7R","cutoff":"23:16","url":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030007/"}
+  ],
+  "integrity": {
+    "canonical_normalized_rows_sha256": "d01e0fc9573f81f9ce424990a937a8007433e2c6947c2c61b1b4603d8485de3d",
+    "private_archive": {
+      "status": "PRESENT_AND_READBACK_VERIFIED",
+      "kind": "PRIVATE_OWNER_GOOGLE_DRIVE_NATIVE_SHEET",
+      "title": "KEIRIN Reality Calibration Archive 2026-09-01 v1",
+      "drive_file_id_sha256": "d37f87ded323de65ee88a30955d70337bfc188605daef6eb52b443e4309ab3b5",
+      "shared": false,
+      "tabs": ["PRE_Rows", "Race_Index", "Summary", "README"],
+      "pre_rows_readback": "85_ROWS_INCLUDING_HEADER",
+      "summary_integrity_hash_readback_matches": true
+    },
+    "public_repo_contains_raw_rider_table": false
+  },
+  "derived_calibration": {
+    "competition_score_all": {"n":84,"min":65.25,"q1":79.435,"median":85.43,"q3":95.2425,"max":110.77,"mean":86.862857},
+    "competition_score_by_class": {
+      "S1":{"n":8,"min":96.47,"median":106.23,"max":110.77,"mean":105.18125},
+      "S2":{"n":13,"min":92.6,"median":99.38,"max":106.9,"mean":100.11},
+      "A1":{"n":22,"min":81.42,"median":90.995,"max":96.4,"mean":90.470455},
+      "A2":{"n":20,"min":75.67,"median":82.105,"max":88.8,"mean":82.0565},
+      "A3":{"n":21,"min":65.25,"median":72.35,"max":80.78,"mean":72.481905}
+    },
+    "style_counts": {"追":38,"逃":28,"両":18},
+    "support_ranges": {
+      "B":{"min":0,"median":0,"q3":6,"max":23},
+      "S":{"min":0,"median":2,"q3":4.25,"max":13},
+      "nige":{"min":0,"median":0,"q3":2,"max":15},
+      "makuri":{"min":0,"median":0,"q3":2.25,"max":10},
+      "sashi":{"min":0,"q1":1,"median":2,"q3":4,"max":11},
+      "mark":{"min":0,"median":1,"q3":2,"max":8}
+    }
+  },
+  "scientific_interpretation": [
+    "The expanded batch improves support/range calibration and confirms material class-conditioned competition-score scale differences.",
+    "It remains a convenience calibration sample and does not identify population-exact probabilities or causal/tactical effect sizes.",
+    "The Engineering latent_skill_plus_iid_noise score must not be silently interpreted as the official competition-score process.",
+    "No line effect, line-shape frequency, truth outcome mechanism, candidate feature or model winner is inferred from this batch."
+  ],
+  "allowed_future_use": [
+    "Reality Synthetic score/support/missingness calibration",
+    "assumption-range design",
+    "transport reproducibility checks",
+    "Reality world foundation diagnostics"
+  ],
+  "prohibited_future_use": [
+    "untouched/final validation",
+    "model or feature selection evidence",
+    "population-exact frequency claims",
+    "ROI/economics",
+    "target RESULT/PAYOUT reconstruction"
+  ],
+  "next_material_boundary": {
+    "name": "REALITY_TRUTH_SENSITIVITY_FAMILY_V0_DESIGN_GATE",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "note": "Do not collect simply for volume after the prespecified 12-race cap. A larger future batch should add missing coverage dimensions, dates, venues or transports under a new prespec. Do not start model competition or truth coefficient fitting automatically."
+  }
+}
