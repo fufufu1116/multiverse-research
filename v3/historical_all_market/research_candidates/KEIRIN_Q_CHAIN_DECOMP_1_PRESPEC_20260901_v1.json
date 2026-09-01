@@ -1,0 +1,94 @@
+{
+  "record": "KEIRIN_Q_CHAIN_DECOMP_1_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "question": "At the exact existing W1 and W2 endpoints, which ordered-top3 chain stage accounts for fixed N1's expected-log-loss advantage or disadvantage versus fixed C1: rank 1, rank 2 conditional on rank 1, rank 3 conditional on ranks 1-2, or a signed combination?",
+  "rationale": "Q-REL-STRENGTH-1 found stable N1 advantage already at W1/relation_strength=0.0. The next diagnostic must explain that result without adding seeds, kernels, models or post-hoc slices. Exact chain-rule decomposition of the same joint cross-entropy is additive, exhaustive and does not alter any scientific object.",
+  "scope_basis": {
+    "authorization_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584",
+    "allowed_class": "Digital Twin W0-W4 synthetic stress and failure diagnostics; C0/C1/N1 comparison only inside those synthetic worlds",
+    "worlds": ["W1", "W2"],
+    "new_world": false,
+    "new_kernel": false,
+    "new_model": false,
+    "new_seed": false,
+    "fail_closed": true
+  },
+  "dependency_evidence": {
+    "mechanical_gate_blob": "25f1a6aa3265b122ed04ae7ff16ff7d8232c22b3",
+    "q_mismatch_evidence_blob": "369ee681a5b296767a717beb72fe8d528b138aeb",
+    "q_rel_strength_evidence_blob": "5252aa71b64487a382f4b75b418257062d6f0a5e"
+  },
+  "fixed_scientific_sources": {
+    "base_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "digital_twin_blob": "1f1574400e43648e60af43d059965d021d8bbad8",
+    "top3_architecture_blob": "4e2a819dce69240792d927cceba434f53932b829",
+    "comparison_blob": "9531715a8f346aec370bf1be24017a8ff577506b",
+    "coefficient_receipt_blob": "f531d72929c846da1c932451873c94bb9b526ae7"
+  },
+  "fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "race_index_formula": "case % 32",
+    "paired_across_W1_W2_and_models": true,
+    "new_seed_selection": false,
+    "untouched_validation_claim": false
+  },
+  "models": ["C1", "N1"],
+  "truth_worlds": ["W1", "W2"],
+  "decomposition_definition": {
+    "rank1": "-E_P log Q(first)",
+    "rank2": "-E_P log Q(second | first)",
+    "rank3": "-E_P log Q(third | first,second)",
+    "identity": "rank1 + rank2 + rank3 equals expected ordered-top3 joint log loss exactly up to floating tolerance",
+    "delta": "N1 minus C1 at each rank; negative means N1 contributes lower cross-entropy at that rank"
+  },
+  "invariants": [
+    "C1 and N1 rank-1 marginal predictions must remain equal within 1e-12.",
+    "Rank-1 N1-minus-C1 expected cross-entropy delta must therefore be zero within 1e-12 for W1 and W2.",
+    "Per-model decomposed total must match direct joint expected log loss within 1e-12.",
+    "No probability mass error may exceed 1e-10."
+  ],
+  "prespecified_W1_classification_rule": {
+    "W1_NO_N1_GAIN": "Total W1 N1-minus-C1 >= 0.",
+    "W1_GAIN_RANK2_ONLY": "Total < 0, rank2 < 0 and rank3 >= 0.",
+    "W1_GAIN_RANK3_ONLY": "Total < 0, rank3 < 0 and rank2 >= 0.",
+    "W1_GAIN_BOTH_RANK2_AND_RANK3": "Total < 0, rank2 < 0 and rank3 < 0.",
+    "W1_GAIN_WITH_OFFSETTING_MIX": "Total < 0 but neither of the prior signed patterns applies because of numerical/tie edge conditions. Report raw deltas and do not alter thresholds."
+  },
+  "prespecified_W2_classification_rule": "Apply the same signed rank2/rank3 classification vocabulary with W2_ prefix.",
+  "primary_outputs": [
+    "W1 and W2 aggregate joint N1-minus-C1",
+    "W1 and W2 aggregate rank1/rank2/rank3 N1-minus-C1 contributions",
+    "the same contributions by fixed seed block",
+    "W1 signed source classification",
+    "W2 signed source classification",
+    "exact decomposition residuals"
+  ],
+  "stopping_rule": "Run this exact W1/W2 chain decomposition only. Do not add relation-event subgroups, rider slices, topology slices, new worlds, new seeds, model ablations or coefficient changes after seeing results. Any such follow-up requires separate prespecification and scope check.",
+  "interpretation_limits": [
+    "The decomposition identifies where Synthetic predictive cross-entropy differences arise, not why real keirin behaves that way.",
+    "A W1 rank2/rank3 gain may reflect conditional information recovery under synthetic hidden-state misspecification and is not by itself proof of explicit real-world conditional line dependence.",
+    "No model selection, freeze, promotion, real-world edge, ROI or untouched-validation claim is authorized."
+  ],
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  }
+}
