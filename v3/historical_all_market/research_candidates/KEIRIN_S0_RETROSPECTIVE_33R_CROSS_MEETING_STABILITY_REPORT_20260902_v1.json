@@ -1,0 +1,104 @@
+{
+  "record": "KEIRIN_S0_RETROSPECTIVE_33R_CROSS_MEETING_STABILITY_REPORT_20260902_v1",
+  "status": "INITIAL_CROSS_MEETING_STABILITY_CHECK_NOT_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "source_pipeline": "saved KDreams racedetail HTML -> strict v3 PRE/outcome parser -> S0 score-only softmax",
+  "input_html_files_local": 39,
+  "successful_races": 33,
+  "rejected_races": 6,
+  "rejection_policy": "FAIL_CLOSED_NO_MANUAL_REPAIR",
+  "successful_meeting_distribution": {
+    "2026-03-05_松戸": 1,
+    "2026-03-06_伊東": 9,
+    "2026-03-06_小倉": 3,
+    "2026-03-06_松山": 10,
+    "2026-03-06_松戸": 3,
+    "2026-03-06_豊橋": 7
+  },
+  "leave_one_meeting_out_checks": [
+    {
+      "held_out": "2026-03-06_伊東",
+      "train_races": 24,
+      "evaluation_races": 9,
+      "fitted_beta": 0.2523,
+      "winner_log_loss": 2.014962592139563,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.1356702709833626,
+      "uniform_winner_brier": 0.12244897959183677,
+      "ordered_top3_log_loss": 5.432490705807368,
+      "uniform_ordered_top3_log_loss": 5.347107530717468,
+      "result_vs_uniform": "WORSE"
+    },
+    {
+      "held_out": "2026-03-06_小倉",
+      "train_races": 30,
+      "evaluation_races": 3,
+      "fitted_beta": 0.2001,
+      "winner_log_loss": 1.5928193676849538,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.11406948746109569,
+      "uniform_winner_brier": 0.12244897959183676,
+      "ordered_top3_log_loss": 4.1693172200135935,
+      "uniform_ordered_top3_log_loss": 5.3471075307174685,
+      "result_vs_uniform": "BETTER"
+    },
+    {
+      "held_out": "2026-03-06_松山",
+      "train_races": 23,
+      "evaluation_races": 10,
+      "fitted_beta": 0.2025,
+      "winner_log_loss": 1.8137785287611259,
+      "uniform_winner_log_loss": 2.1736679702049426,
+      "winner_brier": 0.09302231008402839,
+      "uniform_winner_brier": 0.10088734567901234,
+      "ordered_top3_log_loss": 4.975483566355935,
+      "uniform_ordered_top3_log_loss": 6.141483246449736,
+      "result_vs_uniform": "BETTER"
+    },
+    {
+      "held_out": "2026-03-06_松戸",
+      "train_races": 30,
+      "evaluation_races": 3,
+      "fitted_beta": 0.1897,
+      "winner_log_loss": 1.395026021570514,
+      "uniform_winner_log_loss": 1.9459101490553132,
+      "winner_brier": 0.09981219415425714,
+      "uniform_winner_brier": 0.12244897959183676,
+      "ordered_top3_log_loss": 4.470771898037184,
+      "uniform_ordered_top3_log_loss": 5.3471075307174685,
+      "result_vs_uniform": "BETTER"
+    },
+    {
+      "held_out": "2026-03-06_豊橋",
+      "train_races": 26,
+      "evaluation_races": 7,
+      "fitted_beta": 0.2043,
+      "winner_log_loss": 1.7567838542849545,
+      "uniform_winner_log_loss": 1.923888623365705,
+      "winner_brier": 0.12075897612407029,
+      "uniform_winner_brier": 0.12479753806284422,
+      "ordered_top3_log_loss": 4.90745505829925,
+      "uniform_ordered_top3_log_loss": 5.267162418155266,
+      "result_vs_uniform": "BETTER"
+    }
+  ],
+  "interpretation": [
+    "Four of five multi-race leave-one-meeting-out checks beat uniform on winner log loss and Brier; Ito remained worse after expanding its holdout from 3 to 9 races.",
+    "Ito also remained worse on ordered-top3 log loss, so this is not only a winner-marginal issue.",
+    "The repeated Ito degradation is candidate evidence for venue/regime dependence, not proof of a venue effect.",
+    "Do not tune a venue-specific rule to this development evidence before prespecifying the test on additional meetings."
+  ],
+  "next_actions": [
+    "continue expansion toward 50 successful races",
+    "add additional dates/meetings so venue and date are not confounded",
+    "prespecify a venue/regime interaction test before any richer model tuning",
+    "retain all-market probability derivation from one ordered-top3 object"
+  ],
+  "prohibited_inference": [
+    "REAL_EDGE_ESTABLISHED",
+    "ROI_ESTABLISHED",
+    "PROFITABILITY_ESTABLISHED",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_WAGERING_RECOMMENDATION"
+  ]
+}
