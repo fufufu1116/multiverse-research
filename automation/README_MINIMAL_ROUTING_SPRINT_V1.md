@@ -145,7 +145,8 @@ This candidate branch adds only:
 
 - a deterministic task router/state machine;
 - a machine-readable task-manifest schema;
-- unit tests for PASS/FIX/risk/retry/head/verdict behavior;
+- a read-only GitHub Fresh-Read manifest builder;
+- unit tests for PASS/FIX/risk/retry/head/verdict/Fresh-drift behavior;
 - this design note.
 
 No Stable/main replacement, no Runtime activation, no production mutation, no workflow dispatch, no external provider contact, and no new framework.
@@ -155,7 +156,7 @@ No Stable/main replacement, no Runtime activation, no production mutation, no wo
 - M1: remove one Owner AI-to-AI copy/paste — already demonstrated in the current Critical Path by direct Core routing.
 - M2: deterministic Lab PASS/FIX routing contract — implemented in this candidate router.
 - M3: deterministic Auditor PASS/FIX routing contract — implemented in this candidate router.
-- M4: Fresh Read + exact manifest adapter — next candidate increment.
+- M4: Fresh Read + exact manifest adapter — implemented as a GET-only `api.github.com` builder that rejects target-head drift.
 - M5: one low-risk candidate completes the loop without Owner routing — requires an approved execution hook/adapter after review; do not fake this milestone with chat-only claims.
 
 ## Safety
