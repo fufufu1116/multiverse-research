@@ -1,0 +1,58 @@
+name: Keirin Reality Physics Ranges V0 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_physics_ranges_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_physics_ranges_selftest_v0.py'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_REALITY_PHYSICS_PARAMETER_RANGE_REGISTRY_20260901_v0.json'
+      - '.github/workflows/keirin-reality-physics-ranges-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  range-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile range foundation
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/new_lineage/reality_physics_ranges_v0.py \
+            v3/historical_all_market/new_lineage/reality_physics_ranges_selftest_v0.py
+      - name: Reject candidate-model coupling
+        run: |
+          ! grep -E -n 'top3_architecture_core|keirin_synthetic_c0_c1_n1|C0|C1|N1|PEER' \
+            v3/historical_all_market/new_lineage/reality_physics_ranges_v0.py
+      - name: Validate registry JSON
+        run: |
+          python - <<'PY'
+          import json
+          p='v3/historical_all_market/research_candidates/KEIRIN_REALITY_PHYSICS_PARAMETER_RANGE_REGISTRY_20260901_v0.json'
+          d=json.load(open(p))
+          assert d['status']=='FOUNDATION_RANGE_REGISTRY_FROZEN_NO_TRUTH_EXECUTION'
+          assert d['parameter_registry']['rolling_resistance_coefficient']['admitted_runtime_range'] is None
+          assert d['parameter_registry']['track_length_m']['official_active_support']==[333,335,400,500]
+          print('PASS_REGISTRY_JSON')
+          PY
+      - name: Run range selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python reality_physics_ranges_selftest_v0.py
+      - name: Confirm no network-capable imports
+        run: |
+          ! grep -E -n 'requests|urllib|httpx|aiohttp|socket|selenium|playwright' \
+            v3/historical_all_market/new_lineage/reality_physics_ranges_v0.py \
+            v3/historical_all_market/new_lineage/reality_physics_ranges_selftest_v0.py
+      - name: Terminal boundary
+        run: |
+          echo 'RANGE_CONTRACT_ONLY_NO_TRUTH_EXECUTION_NO_MODEL_COMPARISON_NO_REAL_VALIDATION'
