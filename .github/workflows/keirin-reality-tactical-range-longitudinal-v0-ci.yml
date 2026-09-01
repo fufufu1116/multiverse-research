@@ -1,0 +1,48 @@
+name: Keirin Reality Tactical Range Longitudinal V0 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - 'v3/historical_all_market/new_lineage/reality_tactical_range_longitudinal_v0.py'
+      - 'v3/historical_all_market/new_lineage/reality_tactical_range_longitudinal_selftest_v0.py'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_REALITY_CORE_TACTICAL_RANGE_LONGITUDINAL_DESIGN_20260901_v1.json'
+      - '.github/workflows/keirin-reality-tactical-range-longitudinal-v0-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  tactical-range-longitudinal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile foundation
+        run: |
+          python -m py_compile \
+            v3/historical_all_market/new_lineage/reality_tactical_range_longitudinal_v0.py \
+            v3/historical_all_market/new_lineage/reality_tactical_range_longitudinal_selftest_v0.py
+      - name: Validate design JSON
+        run: python -m json.tool v3/historical_all_market/research_candidates/KEIRIN_REALITY_CORE_TACTICAL_RANGE_LONGITUDINAL_DESIGN_20260901_v1.json >/dev/null
+      - name: Reject candidate-model coupling
+        run: |
+          ! grep -E 'top3_architecture_core|keirin_q_peer|C0|C1|N1|PEER' v3/historical_all_market/new_lineage/reality_tactical_range_longitudinal_v0.py
+      - name: Reject outcome/economic coupling
+        run: |
+          ! grep -E 'RESULT|PAYOUT|ECON_HOLDOUT|ROI|bankroll|wager' v3/historical_all_market/new_lineage/reality_tactical_range_longitudinal_v0.py
+      - name: Run mechanical selftest
+        working-directory: v3/historical_all_market/new_lineage
+        run: python reality_tactical_range_longitudinal_selftest_v0.py
+      - name: Confirm no network-capable imports
+        run: |
+          ! grep -E '^import (requests|urllib|httpx|aiohttp)|^from (requests|urllib|httpx|aiohttp)' v3/historical_all_market/new_lineage/reality_tactical_range_longitudinal_v0.py
+      - name: Terminal boundary
+        run: echo 'FOUNDATION ONLY — no truth execution, no tactical fitting, no model comparison'
