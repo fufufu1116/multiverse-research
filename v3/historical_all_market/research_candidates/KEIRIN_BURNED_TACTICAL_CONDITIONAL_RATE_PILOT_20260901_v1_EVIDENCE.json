@@ -1,0 +1,185 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_CONDITIONAL_RATE_PILOT_20260901_v1_EVIDENCE",
+  "status": "COMPLETE_BURNED_CONDITIONAL_RATE_PILOT_DIAGNOSTIC_NOT_TRUTH_ADMISSION",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_EVIDENCE_NOT_CANONICAL_NOT_PROMOTED",
+  "as_of_jst": "2026-09-01T18:16:27+09:00",
+  "fresh_binding_before_write": {
+    "canonical_main_sha": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head_sha": "959472c3f5c451b1422fb11cf214d3feffa88a01"
+  },
+  "governed_inputs": {
+    "opportunity_protocol": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1.json",
+      "blob_sha": "67e9de2b9c533e00db02d9992d00a93fda99574d"
+    },
+    "expansion_sample_prespec": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_ONTRACK_TACTICAL_EXPANSION_SAMPLE_20260901_v1.json",
+      "blob_sha": "a6a26e9dd09d796ceba61bb352a178f5f534acf1"
+    },
+    "regime_mismatch_remediation": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_TACTICAL_EXPANSION_REGIME_MISMATCH_REMEDIATION_20260901_v1.json",
+      "blob_sha": "a9091d4d2a120d28c9cac01fcc80c8668245db44"
+    }
+  },
+  "source_artifact_provenance": {
+    "r4_r9_expansion": {
+      "workflow_run_id": 33489075474,
+      "workflow_head_sha": "42615f4bc7b1746927e8359711416eb45fab62b0",
+      "frames_artifact_id": 9793030834,
+      "frames_artifact_sha256": "8313fa31544223025fd72ac71b95eeccb00db576abc36fe6c099be913e796691",
+      "manifest_artifact_id": 9793029797,
+      "manifest_artifact_sha256": "803a1018ab1d5ff24e049a703698c904e2d88cd699c53ac38593543331f82a4a"
+    },
+    "r10_r11_replacements": {
+      "workflow_run_id": 33489607130,
+      "workflow_head_sha": "959472c3f5c451b1422fb11cf214d3feffa88a01",
+      "frames_artifact_id": 9793206494,
+      "frames_artifact_sha256": "037ff1185e777aba12936a197bbb6538405158c1c04bbc92d01108ae246fdc53",
+      "manifest_artifact_id": 9793205471,
+      "manifest_artifact_sha256": "beb6d22d72e58192f2d52c6e98bf19053005b98c3bf1c95d8595ad9e6e022d76"
+    }
+  },
+  "sample_accounting": {
+    "initial_prespecified_expansion_races": [4, 5, 6, 7, 8, 9],
+    "burned_regime_ineligible_races": [5, 6],
+    "prespecified_sequential_replacements": [10, 11],
+    "mens_numeric_pilot_races": [4, 7, 8, 9, 10, 11],
+    "race_regime": "STANDARD_ORIGINAL_LINE_MENS_FII",
+    "venue": "IWAKI_TAIRA",
+    "event_date": "2026-08-06",
+    "qualifying_attack_anchor_count": 7,
+    "important_unit_note": "The numeric unit is an eligible attack-conditioned opportunity, not an independent race. Race 8 contributes two qualifying attack anchors."
+  },
+  "annotation_ledger": {
+    "storage": "PRIVATE_EXTERNAL_RESEARCH_LEDGER",
+    "public_uri_recorded": false,
+    "candidate_outputs_hidden": true,
+    "finish_order_recorded_for_these_labels": false,
+    "payout_recorded_for_these_labels": false,
+    "review_cadence_seconds": 1,
+    "linked_expansion_annotation_ids": [
+      "A-E08", "A-E09", "A-E10",
+      "A-E11", "A-E12", "A-E13",
+      "A-E14", "A-E15", "A-E16",
+      "A-E17", "A-E18", "A-E19",
+      "A-E20", "A-E21", "A-E22",
+      "A-E23", "A-E24", "A-E25",
+      "A-E26", "A-E27", "A-E28"
+    ],
+    "denominator_snapshot": {
+      "row_count": 14,
+      "canonicalization": "JSON array of the 14 ordered Denominators rows A2:L15, UTF-8, ensure_ascii=false, separators comma-colon",
+      "sha256": "34ef148afed8c70c2629f8b80e1b29af81db08c6c6798cc0167d7185d4e8386d"
+    }
+  },
+  "attack_anchors": [
+    {
+      "attack_annotation_id": "A-E08",
+      "race": "20260806_IWAKITAIRA_4R",
+      "phase": "MID_RACE",
+      "attacker_car": "2",
+      "bante_follow": {"annotation_id": "A-E09", "follower_car": "5", "event_present": true},
+      "initiative_conflict": {"annotation_id": "A-E10", "incumbent_car": "4", "event_present": true}
+    },
+    {
+      "attack_annotation_id": "A-E11",
+      "race": "20260806_IWAKITAIRA_7R",
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "5",
+      "bante_follow": {"annotation_id": "A-E12", "follower_car": "1", "event_present": true},
+      "initiative_conflict": {"annotation_id": "A-E13", "incumbent_car": "7", "event_present": true}
+    },
+    {
+      "attack_annotation_id": "A-E14",
+      "race": "20260806_IWAKITAIRA_8R",
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "4",
+      "bante_follow": {"annotation_id": "A-E15", "follower_car": "2", "event_present": true},
+      "initiative_conflict": {"annotation_id": "A-E16", "incumbent_car": "6", "event_present": true}
+    },
+    {
+      "attack_annotation_id": "A-E17",
+      "race": "20260806_IWAKITAIRA_8R",
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "7",
+      "bante_follow": {"annotation_id": "A-E18", "follower_car": "3", "event_present": true},
+      "initiative_conflict": {"annotation_id": "A-E19", "incumbent_car": "6", "event_present": true}
+    },
+    {
+      "attack_annotation_id": "A-E20",
+      "race": "20260806_IWAKITAIRA_9R",
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "4",
+      "bante_follow": {"annotation_id": "A-E21", "follower_car": "7", "event_present": true},
+      "initiative_conflict": {"annotation_id": "A-E22", "incumbent_car": "3", "event_present": true}
+    },
+    {
+      "attack_annotation_id": "A-E23",
+      "race": "20260806_IWAKITAIRA_10R",
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "2",
+      "bante_follow": {"annotation_id": "A-E24", "follower_car": "7", "event_present": false},
+      "initiative_conflict": {"annotation_id": "A-E25", "incumbent_car": "5", "event_present": true}
+    },
+    {
+      "attack_annotation_id": "A-E26",
+      "race": "20260806_IWAKITAIRA_11R",
+      "phase": "LATE_PRE_SPRINT",
+      "attacker_car": "4",
+      "bante_follow": {"annotation_id": "A-E27", "follower_car": "3", "event_present": false},
+      "initiative_conflict": {"annotation_id": "A-E28", "incumbent_car": "2", "event_present": true}
+    }
+  ],
+  "conditional_rate_results": {
+    "BANTE_FOLLOW_given_qualifying_attack_with_identifiable_direct_follower": {
+      "present": 5,
+      "absent": 2,
+      "unknown": 0,
+      "numeric_denominator": 7,
+      "estimate": 0.7142857142857143,
+      "wilson_95": [0.35893445183261935, 0.9177810759959433],
+      "claim_class": "PILOT_DIAGNOSTIC_RANGE_ONLY"
+    },
+    "INITIATIVE_CONFLICT_given_qualifying_attack_reaches_occupied_forward_position": {
+      "present": 7,
+      "absent": 0,
+      "unknown": 0,
+      "numeric_denominator": 7,
+      "estimate": 1.0,
+      "wilson_95": [0.6456695649333126, 1.0],
+      "claim_class": "PILOT_DIAGNOSTIC_RANGE_ONLY"
+    }
+  },
+  "interpretation_limits": [
+    "These are conditional pilot diagnostics, not unconditional tactic frequencies.",
+    "The 7/7 initiative-conflict result is conditioned on the attacker reaching an already occupied/defended forward position and must not be interpreted as a universal 100 percent conflict rate.",
+    "The 5/7 BANTE_FOLLOW estimate must not be used as a single Reality truth coefficient.",
+    "No cross-event substitution is allowed: the BANTE_FOLLOW rate does not identify line cohesion, fragmentation, switching, reattachment, or finish effects.",
+    "The sample is one meeting, one venue, one day, one men's FII regime and is too small for broad Reality calibration.",
+    "One annotator performed the current 1-second frame review; independent duplicate annotation/agreement testing has not yet been completed.",
+    "Attack opportunities within the same race are not guaranteed statistically independent.",
+    "No absolute INITIATIVE_ATTACK rate has been identified because an all-race/time-at-risk denominator was not defined at this gate."
+  ],
+  "firewall_assertions": {
+    "all_reviewed_races_burned_forever": true,
+    "untouched_validation": "PROHIBITED",
+    "model_selection": "PROHIBITED",
+    "finish_effect_estimation": "PROHIBITED",
+    "economics": "PROHIBITED",
+    "real_predictive_superiority_claim": "PROHIBITED",
+    "truth_admission": false
+  },
+  "next_scientific_boundary": {
+    "allowed": [
+      "increase BURNED calibration sample under an unchanged prespecified opportunity protocol",
+      "add independent duplicate annotation and agreement measurement",
+      "report uncertainty and regime stratification"
+    ],
+    "not_allowed_without_separate_gate": [
+      "convert either pilot estimate into a simulator truth coefficient",
+      "use these rates for candidate model selection",
+      "open untouched or real predictive validation",
+      "estimate payout, ROI, bankroll, or finish effects"
+    ]
+  }
+}
