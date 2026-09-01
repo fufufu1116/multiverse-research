@@ -101,14 +101,32 @@ func (b *apiBudget) before() error {
 	return nil
 }
 func rateState(h http.Header) error {
-	if r := strings.TrimSpace(h.Get("X-RateLimit-Remaining")); r != "" {
-		n, e := strconv.Atoi(r)
-		if e != nil {
-			return errors.New("rate-remaining-invalid")
-		}
-		if n <= apiReserveRemaining {
-			return errors.New("rate-budget-reserve")
-		}
+	r := strings.TrimSpace(h.Get("X-RateLimit-Remaining"))
+	if r == "" {
+		return errors.New("rate-remaining-missing")
+	}
+	n, e := strconv.Atoi(r)
+	if e != nil || n < 0 {
+		return errors.New("rate-remaining-invalid")
+	}
+	l := strings.TrimSpace(h.Get("X-RateLimit-Limit"))
+	if l == "" {
+		return errors.New("rate-limit-missing")
+	}
+	limit, e := strconv.Atoi(l)
+	if e != nil || limit <= 0 || n > limit {
+		return errors.New("rate-limit-invalid")
+	}
+	reset := strings.TrimSpace(h.Get("X-RateLimit-Reset"))
+	if reset == "" {
+		return errors.New("rate-reset-missing")
+	}
+	resetUnix, e := strconv.ParseInt(reset, 10, 64)
+	if e != nil || resetUnix <= 0 {
+		return errors.New("rate-reset-invalid")
+	}
+	if n <= apiReserveRemaining {
+		return errors.New("rate-budget-reserve")
 	}
 	return nil
 }
@@ -179,46 +197,57 @@ func snapshot(dst map[int64]comment) []comment {
 	}
 	return out
 }
+func scanSince(cursor time.Time) time.Time {
+	return cursor.Add(-cursorOverlap)
+}
 func fullComments(cl *http.Client, b *apiBudget) (map[int64]comment, time.Time, error) {
 	out := make(map[int64]comment, 600)
-	var watermark time.Time
-	for p := 1; p <= 100; p++ {
-		z, h, e := getCommentsPage(cl, b, p, nil)
+	z, h, e := getCommentsPage(cl, b, 1, nil)
+	if e != nil {
+		return nil, time.Time{}, e
+	}
+	scanStart, e := headerDate(h)
+	if e != nil {
+		return nil, time.Time{}, e
+	}
+	merge(out, z)
+	if len(z) < 100 {
+		return out, scanStart, nil
+	}
+	for p := 2; p <= 100; p++ {
+		z, _, e = getCommentsPage(cl, b, p, nil)
 		if e != nil {
 			return nil, time.Time{}, e
 		}
 		merge(out, z)
-		d, e := headerDate(h)
-		if e != nil {
-			return nil, time.Time{}, e
-		}
-		if d.After(watermark) {
-			watermark = d
-		}
 		if len(z) < 100 {
-			return out, watermark, nil
+			return out, scanStart, nil
 		}
 	}
 	return nil, time.Time{}, errors.New("comment-pagination-limit")
 }
 func deltaComments(cl *http.Client, b *apiBudget, state map[int64]comment, cursor time.Time) (time.Time, error) {
-	since := cursor.Add(-cursorOverlap)
-	watermark := cursor
-	for p := 1; p <= 100; p++ {
-		z, h, e := getCommentsPage(cl, b, p, &since)
+	since := scanSince(cursor)
+	z, h, e := getCommentsPage(cl, b, 1, &since)
+	if e != nil {
+		return cursor, e
+	}
+	scanStart, e := headerDate(h)
+	if e != nil {
+		return cursor, e
+	}
+	merge(state, z)
+	if len(z) < 100 {
+		return scanStart, nil
+	}
+	for p := 2; p <= 100; p++ {
+		z, _, e = getCommentsPage(cl, b, p, &since)
 		if e != nil {
 			return cursor, e
 		}
 		merge(state, z)
-		d, e := headerDate(h)
-		if e != nil {
-			return cursor, e
-		}
-		if d.After(watermark) {
-			watermark = d
-		}
 		if len(z) < 100 {
-			return watermark, nil
+			return scanStart, nil
 		}
 	}
 	return cursor, errors.New("comment-pagination-limit")
@@ -472,12 +501,66 @@ func selftest() {
 	if e := b.before(); e == nil {
 		panic("budget-not-enforced")
 	}
-	h := http.Header{}
-	h.Set("X-RateLimit-Remaining", strconv.Itoa(apiReserveRemaining))
+	validHeaders := func(remaining string) http.Header {
+		h := http.Header{}
+		h.Set("X-RateLimit-Remaining", remaining)
+		h.Set("X-RateLimit-Limit", "60")
+		h.Set("X-RateLimit-Reset", "2000003600")
+		return h
+	}
+	if e := rateState(validHeaders("59")); e != nil {
+		panic("rate-valid-rejected")
+	}
+	if e := rateState(http.Header{}); e == nil {
+		panic("rate-missing-not-rejected")
+	}
+	h := validHeaders("bad")
+	if e := rateState(h); e == nil {
+		panic("rate-malformed-not-rejected")
+	}
+	h = validHeaders("61")
+	if e := rateState(h); e == nil {
+		panic("rate-inconsistent-not-rejected")
+	}
+	h = validHeaders(strconv.Itoa(apiReserveRemaining))
 	if e := rateState(h); e == nil {
 		panic("rate-reserve-not-enforced")
 	}
+	fullStart := t.Add(10 * time.Second)
+	fullFinal := fullStart.Add(10 * time.Second)
+	fullEdit := fullStart.Add(5 * time.Second)
+	if !fullEdit.After(scanSince(fullStart)) || fullEdit.After(scanSince(fullFinal)) {
+		panic("full-pagination-race-setup")
+	}
+	state := map[int64]comment{1: base[0]}
+	edited := base[0]
+	edited.UpdatedAt = fullEdit
+	if !edited.UpdatedAt.After(scanSince(fullStart)) {
+		panic("full-pagination-edit-not-refetched")
+	}
+	merge(state, []comment{edited})
+	if evidenceBound(state[1]) {
+		panic("full-pagination-edit-not-invalidated")
+	}
+	deltaStart := t.Add(30 * time.Second)
+	deltaFinal := deltaStart.Add(10 * time.Second)
+	deltaEdit := deltaStart.Add(5 * time.Second)
+	if !deltaEdit.After(scanSince(deltaStart)) || deltaEdit.After(scanSince(deltaFinal)) {
+		panic("delta-pagination-race-setup")
+	}
+	state = map[int64]comment{1: base[0]}
+	edited = base[0]
+	edited.UpdatedAt = deltaEdit
+	if !edited.UpdatedAt.After(scanSince(deltaStart)) {
+		panic("delta-pagination-edit-not-refetched")
+	}
+	merge(state, []comment{edited})
+	if evidenceBound(state[1]) {
+		panic("delta-pagination-edit-not-invalidated")
+	}
 	fmt.Println("PHASE_C_V19_7_36_V7R6_SESSION_GATE_NEGATIVE_SELFTEST_PASS")
+	fmt.Println("PHASE_C_V19_7_36_V7R6_PAGINATION_RACE_SELFTEST_PASS")
+	fmt.Println("PHASE_C_V19_7_36_V7R6_RATE_HEADERS_FAIL_CLOSED_SELFTEST_PASS")
 	fmt.Printf("PHASE_C_V19_7_36_V7R6_RATE_BUDGET_SELFTEST_PASS minute_8_5_requests=24 ten_minute_requests=27 hard_budget=%d reserve=%d\n", apiHardBudget, apiReserveRemaining)
 }
 func main() {
