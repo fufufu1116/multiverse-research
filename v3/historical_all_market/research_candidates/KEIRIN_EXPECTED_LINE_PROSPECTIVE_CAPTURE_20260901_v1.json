@@ -1,0 +1,76 @@
+{
+  "record": "KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v1",
+  "status": "PROSPECTIVE_PRE_EVENT_EXPECTED_LINE_CAPTURE_ONLY",
+  "classification": "PROVIDER_EXPECTED_LINE_NOT_LEGSHOW_OBSERVED_NOT_RESULT",
+  "capture_timestamp_jst": "2026-09-01T16:16:47+09:00",
+  "provider": "Rakuten KDreams / line provider shown on race pages",
+  "rules": [
+    "all selected races had decision cutoffs after capture timestamp",
+    "no provider expected line is upgraded to LEGSHOW_OBSERVED_LINE",
+    "no result or payout is used as evidence",
+    "line-shape support only; frequencies are not estimated from this convenience sample"
+  ],
+  "captures": [
+    {
+      "race_id": "20260901_MATSUDO_7R",
+      "venue": "松戸",
+      "grade": "FII",
+      "class_band": "A1_A2",
+      "stage": "A級特予選",
+      "decision_cutoff_jst": "2026-09-01T18:24:00+09:00",
+      "source": "https://keirin.kdreams.jp/matsudo/racedetail/3120260901010007/",
+      "expected_groups": [[7,4,1],[2,5],[6,3]],
+      "shape_sorted": [3,2,2]
+    },
+    {
+      "race_id": "20260901_MATSUDO_9R",
+      "venue": "松戸",
+      "grade": "FII",
+      "class_band": "A1_A2",
+      "stage": "A級特予選",
+      "decision_cutoff_jst": "2026-09-01T19:16:00+09:00",
+      "source": "https://keirin.kdreams.jp/matsudo/racedetail/3120260901010009/",
+      "expected_groups": [[4,1],[5,7,2],[6,3]],
+      "shape_sorted": [3,2,2]
+    },
+    {
+      "race_id": "20260901_UTSUNOMIYA_8R",
+      "venue": "宇都宮",
+      "grade": "FI",
+      "class_band": "S",
+      "stage": "S級選抜",
+      "decision_cutoff_jst": "2026-09-01T18:37:00+09:00",
+      "source": "https://keirin.kdreams.jp/utsunomiya/racedetail/2420260831020008/",
+      "expected_groups": [[1,4,6],[2],[7,5,3]],
+      "shape_sorted": [3,3,1]
+    },
+    {
+      "race_id": "20260901_UTSUNOMIYA_9R",
+      "venue": "宇都宮",
+      "grade": "FI",
+      "class_band": "S",
+      "stage": "S級選抜",
+      "decision_cutoff_jst": "2026-09-01T19:03:00+09:00",
+      "source": "https://keirin.kdreams.jp/utsunomiya/racedetail/2420260831020009/",
+      "expected_groups": [[6,1],[2,4],[5,3,7]],
+      "shape_sorted": [3,2,2]
+    },
+    {
+      "race_id": "20260901_IWAKITAIRA_7R",
+      "venue": "いわき平",
+      "grade": "FII",
+      "class_band": "A3",
+      "stage": "チャレンジ決勝",
+      "decision_cutoff_jst": "2026-09-01T23:16:00+09:00",
+      "source": "https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030007/",
+      "expected_groups": [[5,1,2,7],[3],[4,6]],
+      "shape_sorted": [4,2,1]
+    }
+  ],
+  "findings": {
+    "observed_expected_line_shape_support": [[3,2,2],[3,3,1],[4,2,1]],
+    "four_rider_line_support_present": true,
+    "old_engineering_three_template_set_is_not_admissible_as_reality_exhaustive_support": true,
+    "frequency_claim": false
+  }
+}
