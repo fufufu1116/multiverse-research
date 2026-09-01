@@ -1,0 +1,132 @@
+{
+  "record": "KEIRIN_Q_W1_STATIC_ABLATION_1_EVIDENCE_20260901_v1",
+  "status": "PASS_EXECUTION_AND_MECHANICAL_INVARIANTS",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "primary_hypothesis_classification": "LATENT_SHARED_PROXY_DOMINANT",
+  "classification_meaning": "Inside this fixed Synthetic W0-to-W1 static-component diagnostic, N1's W1 advantage over C1 was reproduced by the existing shared latent line-strength component alone and was not reproduced by the PRE-observable position/line-size structural components alone. This supports the mechanism interpretation that N1 conditional line context is acting as a proxy for omitted shared latent line state in W1, while remaining Synthetic-only evidence.",
+  "fresh_relevant_state_at_execution": {
+    "observed_origin_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "vnext_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "keirin_state_blob": "962d9c75b0611d52bd264a8b88bb1fe259cb8aeb",
+    "authorization_receipt_blob": "4c2e5364ad229a5dd413a19d0cf970c478692584"
+  },
+  "prespecification": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_Q_W1_STATIC_ABLATION_1_PRESPEC_20260901_v1.json",
+    "blob": "ed5bca902cddb05edf408dfde3630ca6ec757d8a",
+    "commit": "457f2a6f2b3b4a1468a273caf0878ef1dd453808",
+    "fixed_before_execution": true,
+    "conditions": ["W0_BASE_ONLY", "W1_OBSERVED_STRUCTURE_ONLY", "W1_LATENT_SHARED_ONLY", "W1_FULL"],
+    "new_seed_selection": false,
+    "new_relation_kernel": false,
+    "relation_strength_all_conditions": 0.0,
+    "post_hoc_condition_addition": false,
+    "post_result_retuning": false
+  },
+  "harness": {
+    "path": "tools/keirin_q_w1_static_ablation_1_v1.py",
+    "blob": "6f782facb9734b68f0a2f7787347295d5ae37bda",
+    "implementation_commit": "ff902a935ddaf52fa49e3e4aa1370411733b5e8d"
+  },
+  "execution": {
+    "workflow_run_id": 33469501324,
+    "workflow_job_id": 99736182421,
+    "executed_head": "b94926ce55b03ec7330835a7d2ef7c423dee256a",
+    "conclusion": "success",
+    "workflow_permissions": "contents:read",
+    "max_W0_BASE_ONLY_vs_canonical_W0_truth_diff": 0.0,
+    "max_W1_FULL_vs_canonical_W1_truth_diff": 0.0
+  },
+  "fixtures": {
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "untouched_validation_claim": false
+  },
+  "aggregate_results": {
+    "W0_BASE_ONLY": {
+      "N1_minus_C1": {"rank1": 0.0, "rank2": 0.0006526846121922558, "rank3": 0.00005923102235838584, "total": 0.0007119156345491984},
+      "N1_better_blocks": 0,
+      "N1_worse_blocks": 4,
+      "stable_N1_advantage": false
+    },
+    "W1_OBSERVED_STRUCTURE_ONLY": {
+      "N1_minus_C1": {"rank1": -5.551115123125783e-17, "rank2": 0.0003952903832559751, "rank3": -0.00004036747110769401, "total": 0.00035492291214667127},
+      "N1_better_blocks": 0,
+      "N1_worse_blocks": 4,
+      "stable_N1_advantage": false
+    },
+    "W1_LATENT_SHARED_ONLY": {
+      "N1_minus_C1": {"rank1": 5.551115123125783e-17, "rank2": -0.00029270576619588873, "rank3": -0.0004960559041611856, "total": -0.000788761670358129},
+      "N1_better_blocks": 4,
+      "N1_worse_blocks": 0,
+      "stable_N1_advantage": true
+    },
+    "W1_FULL": {
+      "N1_minus_C1": {"rank1": 5.551115123125783e-17, "rank2": -0.0005490267118785086, "rank3": -0.0005900677394806153, "total": -0.001139094451357625},
+      "N1_better_blocks": 4,
+      "N1_worse_blocks": 0,
+      "stable_N1_advantage": true
+    }
+  },
+  "block_total_N1_minus_C1": {
+    "20261001": {"W0_BASE_ONLY": 0.0011096481303232153, "W1_OBSERVED_STRUCTURE_ONLY": 0.0007179198802296227, "W1_LATENT_SHARED_ONLY": -0.00019078464931876482, "W1_FULL": -0.000580307896502319},
+    "20262001": {"W0_BASE_ONLY": 0.0005350573751430332, "W1_OBSERVED_STRUCTURE_ONLY": 0.00013723653697805815, "W1_LATENT_SHARED_ONLY": -0.0012109289720241279, "W1_FULL": -0.0016083398212654032},
+    "20263001": {"W0_BASE_ONLY": 0.0008351777672208627, "W1_OBSERVED_STRUCTURE_ONLY": 0.0004915521019510649, "W1_LATENT_SHARED_ONLY": -0.0006485351240659298, "W1_FULL": -0.0009787526774411859},
+    "20264001": {"W0_BASE_ONLY": 0.0003677792655096823, "W1_OBSERVED_STRUCTURE_ONLY": 0.00007298312942793928, "W1_LATENT_SHARED_ONLY": -0.0011047979360236937, "W1_FULL": -0.0013889774102215924}
+  },
+  "mechanism_diagnosis": {
+    "source_code_fact": "Canonical W1 adds 0.16 times line-average latent_skill plus position and size bonuses to each rider's base utility, while relation_strength remains zero.",
+    "prediction_code_fact": "Frozen C1 has line_mean_coef=0.0 and size_coef=0.0 and only a partial position term; frozen N1 shares C1's rank-1 base but adds same-line/follower/chain conditional terms at rank 2 and rank 3.",
+    "experimental_result": "Removing the latent shared line-strength term while retaining position and size eliminates N1's W1 advantage and makes N1 worse in all four blocks. Retaining only the latent shared line-strength term is sufficient to produce N1 advantage in all four blocks.",
+    "supported_interpretation": "Within this simulator, observing an earlier finisher's identity and line context lets N1 partially proxy an omitted shared latent line state that C1 does not encode in its static utility. Explicit W2 conditional relation effects then amplify, rather than originate, the entire relational advantage.",
+    "causal_scope_limit": "This mechanism statement is about the current Synthetic simulator construction only. It does not establish that real keirin contains the same hidden shared state or that N1 will recover it in real data."
+  },
+  "mechanical_execution_checks": {
+    "max_prediction_probability_mass_error": 2.220446049250313e-16,
+    "max_truth_probability_mass_error": 2.220446049250313e-16,
+    "max_decomposition_residual": 4.440892098500626e-15,
+    "max_C1_N1_rank1_marginal_difference": 5.551115123125783e-16,
+    "models_changed": false,
+    "coefficients_changed": false,
+    "post_result_retuning": false,
+    "post_hoc_condition_addition": false
+  },
+  "interpretation": {
+    "supported": [
+      "The W1 lambda=0 N1 advantage is not caused by C1/N1 rank-1 differences.",
+      "The PRE-observable W1 position/size terms alone do not generate an N1 advantage on these fixed Synthetic fixtures.",
+      "The existing shared latent line-strength term alone is sufficient to generate a stable N1 advantage on these fixed Synthetic fixtures.",
+      "The canonical W0 null remains a falsification counterweight: without line-static shared structure N1 is worse than C1.",
+      "Q-MISMATCH-1's robustness result and Q-REL-STRENGTH-1's monotone amplification are consistent with a two-part picture: proxy recovery of omitted shared line state at W1 plus additional explicit conditional relation value as relation_strength increases."
+    ],
+    "not_supported": [
+      "No real-keirin hidden shared line state, predictive edge, ROI, causal effect, deployment readiness, model selection, freeze or promotion is established.",
+      "The reused Synthetic seed blocks are not untouched validation.",
+      "This result does not authorize exposing simulator latent truth to prediction models or adding an oracle model/control."
+    ]
+  },
+  "protected_boundary": {
+    "protected_or_quarantined_input_access": false,
+    "pr15_metrics_access": false,
+    "result_payout_access": false,
+    "econ_holdout1000_access": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue_tuning": false,
+    "scientific_segment_c_scoring_count": 0,
+    "real_live_input_collection": false,
+    "economics": false,
+    "model_promotion": false,
+    "external_provider_contact": false,
+    "real_money_wagering": false
+  },
+  "next_scope_boundary": {
+    "status": "OWNER_CORE_DECISION_REQUIRED_BEFORE_ORACLE_CONTROL",
+    "exact_experiment": "Q-ORACLE-SHARED-STATE-1: add a diagnostic C1 oracle control that receives the simulator's latent line-strength term (or an equivalent exact oracle static utility) while keeping N1 fixed, then test whether N1's W1 conditional advantage disappears.",
+    "why_boundary": "The current limited authorization permits C0/C1/N1 comparison only and the Digital Twin design says latent simulator truth must not be revealed to prediction models unless an experimental protocol explicitly defines an oracle control. Adding C1_ORACLE would therefore add a model/control and expose simulator latent truth to a predictor, which is not clearly authorized by the current limited receipt.",
+    "minimal_decision": "Authorize or decline this one Synthetic oracle-control diagnostic only. No real/protected data, economics, promotion, new seeds or external contact would be involved.",
+    "default_without_decision": "FAIL_CLOSED_STOP_HERE"
+  }
+}
