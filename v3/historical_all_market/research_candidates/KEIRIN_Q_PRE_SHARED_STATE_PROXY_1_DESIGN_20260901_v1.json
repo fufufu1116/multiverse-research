@@ -1,0 +1,78 @@
+{
+  "record": "KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_DESIGN_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_DESIGN_ONLY_NO_EXECUTION_AUTHORITY_CLAIMED",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class_if_future_execution_is_authorized": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "design_purpose": "Prepare the next falsifiable Synthetic question at the newly reached scientific boundary without executing a new control or extending Q-ORACLE authorization.",
+  "dependency": {
+    "mechanism_synthesis_path": "v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v1.json",
+    "mechanism_synthesis_blob": "0e8672f77f05b856b909b3bf5b5b7a37b002100e",
+    "oracle_evidence_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_ORACLE_SHARED_STATE_1_EVIDENCE_20260901_v1.json",
+    "oracle_evidence_blob": "6350cfc1312325289fdf57d92c4ef89c7b6d51d3",
+    "current_supported_synthetic_mechanism": "OMITTED_SHARED_LATENT_STATE_PROXY_PLUS_EXPLICIT_CONDITIONAL_RELATION_AMPLIFICATION"
+  },
+  "proposed_exact_question": "Can a single PRE-observable line-mean score proxy recover a material fraction of the W1 shared-state value without access to latent_skill, while preserving frozen C1 and N1 unchanged?",
+  "proposed_control": {
+    "id": "C1_PRE_LINE_MEAN_PROXY",
+    "role": "DIAGNOSTIC_CONTROL_ONLY_NOT_A_FORMAL_MODEL_CANDIDATE",
+    "base": "exact frozen C1 runner utilities",
+    "added_feature": "For each rider, compute mean(score) over all riders sharing that rider's PRE line_group_id using PRE only, then add exactly 0.16 times that line mean score to the rider utility before the same PL top3 generator.",
+    "coefficient": 0.16,
+    "coefficient_rule": "Fixed mechanistic transfer from the canonical W1 shared-state coefficient before execution; no fitting, search, CAL use, result-adaptive tuning, or rescue tuning.",
+    "PRE_only": true,
+    "latent_skill_access": false,
+    "truth_distribution_access_by_control": false,
+    "normal_C1_or_N1_mutation": false,
+    "formal_model_candidate": false
+  },
+  "proposed_fixed_fixtures": {
+    "world": "W1",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "new_world": false,
+    "post_result_condition_addition": false
+  },
+  "proposed_primary_metrics": {
+    "baseline_1": "N1_minus_C1 expected ordered-top3 log loss",
+    "baseline_2": "C1_ORACLE_minus_C1 from already-frozen oracle evidence; oracle is reference evidence only and need not be rerun",
+    "effect": "N1_minus_C1_PRE_LINE_MEAN_PROXY expected ordered-top3 log loss",
+    "proxy_recovery_fraction": "Clamp to [0,1] the fraction of the already-observed C1-to-oracle log-loss improvement recovered by C1_PRE_LINE_MEAN_PROXY relative to frozen C1; report without using it for tuning."
+  },
+  "proposed_interpretation_without_model_winner_requirement": {
+    "proxy_beats_or_ties_N1": "A simple PRE aggregate is sufficient to recover at least the fixed N1 W1 advantage on these Synthetic fixtures; prioritize parsimonious PRE-level shared-state representation over architectural winner claims.",
+    "proxy_improves_C1_but_N1_remains_better": "Observable line aggregation recovers part of the hidden-state value but does not fully explain N1's conditional advantage; treat as mixed representation/architecture mechanism.",
+    "proxy_changes_little_or_worsens_C1": "The oracle mechanism exists in the simulator, but this simple PRE line-mean estimator is insufficient; do not tune the coefficient after seeing the result. A different proxy would be a new Research/Candidate question.",
+    "any_direction": "Scientific success is valid falsification/diagnosis, not making N1 or the proxy win."
+  },
+  "required_future_execution_guards_if_separately_authorized": [
+    "Fresh Read canonical main, VNEXT state, CURRENT_STATE_KEIRIN, limited-synthetic receipt, this design, mechanism synthesis, oracle evidence and fixed source blobs immediately before execution.",
+    "Fail closed on relevant drift.",
+    "Keep latent_skill absent from PRE and prohibit any direct latent/truth access in C1_PRE_LINE_MEAN_PROXY.",
+    "Require C1 and N1 predictions to reproduce existing non-oracle paths exactly.",
+    "No coefficient fitting, coefficient sweep, seed addition, result-aware subgroup selection, retuning, rescue, promotion, economics or real-data access.",
+    "Record any outcome and do not automatically create a second proxy after the result."
+  ],
+  "execution_boundary": {
+    "execution_authorized_by_this_artifact": false,
+    "Q_ORACLE_owner_approval_reused_for_execution": false,
+    "current_limited_synthetic_receipt_assumed_to_authorize_new_control": false,
+    "required_action_before_execution": "Fresh scope classification. If the new diagnostic control is outside current C0/C1/N1 authority, obtain a separate governed Owner gate before execution."
+  },
+  "protected_boundary": {
+    "real_live_input": false,
+    "pr15_metrics": false,
+    "result_payout": false,
+    "econ_holdout1000": false,
+    "dev2000_c_rescue": false,
+    "same_lineage_b_c_rescue": false,
+    "real_or_untouched_validation": false,
+    "economics_bankroll_roi": false,
+    "model_promotion_or_freeze": false,
+    "external_provider_contact": false,
+    "core_phase_c_main_ruleset_runtime_production_authority_change": false
+  }
+}
