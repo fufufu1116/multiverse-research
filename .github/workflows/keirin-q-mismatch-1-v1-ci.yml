@@ -1,0 +1,138 @@
+name: Keirin Q-MISMATCH-1 v1 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - '.github/workflows/keirin-q-mismatch-1-v1-ci.yml'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_Q_MISMATCH_1_PRESPEC_20260901_v1.json'
+      - 'tools/keirin_q_mismatch_1_v1.py'
+
+permissions:
+  contents: read
+
+env:
+  BASE_MAIN: 5c1403c1f5aabb80d29e8c868440aede8888ce61
+  VNEXT_BLOB: afe746287c7e911d214202abdf2de076f63ab30c
+  KEIRIN_STATE_BLOB: 962d9c75b0611d52bd264a8b88bb1fe259cb8aeb
+  AUTH_RECEIPT_BLOB: 4c2e5364ad229a5dd413a19d0cf970c478692584
+  DIGITAL_TWIN_BLOB: 1f1574400e43648e60af43d059965d021d8bbad8
+  TOP3_CORE_BLOB: 4e2a819dce69240792d927cceba434f53932b829
+  COMPARISON_BLOB: 9531715a8f346aec370bf1be24017a8ff577506b
+  COEFF_RECEIPT_BLOB: f531d72929c846da1c932451873c94bb9b526ae7
+  DT_DESIGN_BLOB: 62c20fdf87f988e3a0b79e543d4ab4d448234e84
+  BOUNDARY_CLOSURE_BLOB: 3aa8a51cb12da4d7838bcb527807fe98622a43ae
+  BATCH4_BLOB: 6bd86411861501a6bed2f7b9fdc12e27caa0dd34
+  MECH_EVIDENCE_BLOB: 25f1a6aa3265b122ed04ae7ff16ff7d8232c22b3
+  Q_PRESPEC_BLOB: 76e552ace90a99193f2a0e5b9ef416e9373f4ee6
+  Q_HARNESS_BLOB: 68cdc84c989e77c0ee4fc45cc369feede2b81edb
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  q-mismatch-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fresh relevant governance and fixed-source checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          echo "OBSERVED_ORIGIN_MAIN=$(git rev-parse origin/main)"
+          echo "EXECUTED_HEAD=$(git rev-parse HEAD)"
+          git merge-base --is-ancestor "$BASE_MAIN" HEAD
+          test "$(git rev-parse "origin/main:multiverse_vnext/VNEXT_CURRENT_STATE_v0.json")" = "$VNEXT_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json")" = "$KEIRIN_STATE_BLOB"
+          test "$(git rev-parse "origin/main:governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json")" = "$AUTH_RECEIPT_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/new_lineage/digital_twin_v1.py")" = "$DIGITAL_TWIN_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/new_lineage/top3_architecture_core_v1.py")" = "$TOP3_CORE_BLOB"
+          test "$(git rev-parse "origin/main:tools/keirin_synthetic_c0_c1_n1_comparison_v1.py")" = "$COMPARISON_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json")" = "$COEFF_RECEIPT_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/KEIRIN_DIGITAL_TWIN_MULTIWORLD_DESIGN_v1.md")" = "$DT_DESIGN_BLOB"
+          test "$(git rev-parse "origin/main:governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json")" = "$BOUNDARY_CLOSURE_BLOB"
+          test "$(git rev-parse "origin/main:governance/KEIRIN_LIMITED_SYNTHETIC_BATCH4_REPLICATION_MANIFEST_20260821_v1.json")" = "$BATCH4_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANICAL_INVARIANCE_GATE_EVIDENCE_20260901_v1.json")" = "$MECH_EVIDENCE_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_Q_MISMATCH_1_PRESPEC_20260901_v1.json")" = "$Q_PRESPEC_BLOB"
+          test "$(git rev-parse "HEAD:tools/keirin_q_mismatch_1_v1.py")" = "$Q_HARNESS_BLOB"
+
+      - name: Verify isolated Research Candidate branch surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only "$BASE_MAIN"...HEAD | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          .github/workflows/keirin-parallel-mechanical-invariance-gate-v1-ci.yml
+          .github/workflows/keirin-q-mismatch-1-v1-ci.yml
+          governance/KEIRIN_PARALLEL_MECHANICAL_INVARIANCE_GATE_MANIFEST_20260901_v1.json
+          tools/keirin_parallel_mechanical_invariance_gate_v1.py
+          tools/keirin_q_mismatch_1_v1.py
+          v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANICAL_INVARIANCE_GATE_EVIDENCE_20260901_v1.json
+          v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANISM_AFFINITY_AUDIT_20260901_v1.md
+          v3/historical_all_market/research_candidates/KEIRIN_Q_MISMATCH_1_PRESPEC_20260901_v1.json
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+
+      - name: Reject network-capable experiment harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          HARNESS=tools/keirin_q_mismatch_1_v1.py
+          ! grep -Eq '(^|[[:space:]])(requests|urllib|socket|subprocess|selenium|playwright)([[:space:].]|$)' "$HARNESS"
+          ! grep -Eq 'https?://' "$HARNESS"
+
+      - name: Execute fully prespecified Q-MISMATCH-1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/keirin_q_mismatch_1_v1.py | tee /tmp/qmismatch.log
+          grep -Fx 'KEIRIN_Q_MISMATCH_1_EXECUTION_PASS' /tmp/qmismatch.log
+          head -n 1 /tmp/qmismatch.log > /tmp/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/result.json', encoding='utf-8'))
+          assert r['status']=='PASS_EXECUTION_AND_MECHANICAL_INVARIANTS'
+          assert r['classification']=='RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED'
+          assert r['evidence_class']=='SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          assert r['primary_hypothesis_classification'] in {
+              'GENERIC_RELATIONAL_VALUE',
+              'MATCHED_SIMULATOR_AFFINITY',
+              'NO_STABLE_RELATIONAL_ADVANTAGE',
+          }
+          assert r['total_cases']==512
+          assert r['new_seed_selection'] is False
+          assert r['models_changed'] is False and r['coefficients_changed'] is False
+          assert r['post_result_retuning'] is False and r['post_hoc_kernel_addition'] is False
+          assert r['sign_inverted_counterexample_enters_primary_classification'] is False
+          assert r['max_matched_W2_reference_delta_error'] <= 1e-12
+          assert r['max_prediction_probability_mass_error'] <= 1e-10
+          assert r['max_truth_probability_mass_error'] <= 1e-10
+          assert r['max_C1_N1_rank1_marginal_difference'] <= 1e-12
+          for key in ('protected_or_quarantined_input_access','pr15_metrics_access','result_payout_access','econ_holdout1000_access','dev2000_c_rescue','real_live_input_collection','economics','model_promotion','external_provider_contact','real_money_wagering','real_world_edge_or_roi_evidence'):
+              assert r[key] is False, (key, r[key])
+          assert r['scientific_segment_c_scoring_count']==0
+          print('KEIRIN_Q_MISMATCH_1_RESULT_CONTRACT_PASS')
+          PY
+
+      - name: Protected-boundary terminal
+        shell: bash
+        run: |
+          echo 'EVIDENCE_CLASS=SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          echo 'RESEARCH_CANDIDATE_ONLY=true'
+          echo 'PR15_METRICS_ACCESSED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'ECON_HOLDOUT1000_ACCESSED=false'
+          echo 'SCIENTIFIC_SEGMENT_C_SCORING_COUNT=0'
+          echo 'REAL_LIVE_INPUT=false'
+          echo 'ECONOMICS=false'
+          echo 'MODEL_PROMOTION=false'
+
+      - name: Verify clean worktree
+        run: test -z "$(git status --porcelain)"
