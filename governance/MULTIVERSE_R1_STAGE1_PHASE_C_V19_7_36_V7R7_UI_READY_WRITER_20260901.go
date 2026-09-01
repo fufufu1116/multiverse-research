@@ -11,6 +11,7 @@ import (
 )
 
 const uiControlPath = "/workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md"
+const uiControlTempPath = "/workspaces/multiverse-research/.MULTIVERSE_PRELIVE_START_HERE.md.v7r7.tmp"
 const uiReadyPath = "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-ui-ready.txt"
 const uiSessionPath = "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-session-status.txt"
 const armLockPath = "/run/multiverse-v36-v7r7-arm.lock"
@@ -76,7 +77,7 @@ func controlReady(name, identity string) string {
 		"Reviewed arm command (do not run yet): `" + armCommand + "`\n"
 }
 
-func existingReadyExact(path, want string, uid uint32) error {
+func existingExact(path, want string, uid uint32, mode uint32) error {
 	fd, err := syscall.Open(path, syscall.O_RDONLY|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0)
 	if err != nil {
 		return err
@@ -87,18 +88,22 @@ func existingReadyExact(path, want string, uid uint32) error {
 	if err := syscall.Fstat(fd, &st); err != nil {
 		return err
 	}
-	if st.Uid != uid || st.Mode&syscall.S_IFMT != syscall.S_IFREG || uint32(st.Mode)&0777 != 0444 {
-		return fmt.Errorf("ready-class")
+	if st.Uid != uid || st.Mode&syscall.S_IFMT != syscall.S_IFREG || uint32(st.Mode)&0777 != mode {
+		return fmt.Errorf("exact-class")
 	}
 	b, err := io.ReadAll(io.LimitReader(f, 1<<20))
 	if err != nil || string(b) != want {
-		return fmt.Errorf("ready-content")
+		return fmt.Errorf("exact-content")
 	}
 	return nil
 }
 
-func writeNoFollow(path, body string, uid uint32) error {
-	fd, err := syscall.Open(path, syscall.O_WRONLY|syscall.O_TRUNC|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0)
+func existingReadyExact(path, want string, uid uint32) error {
+	return existingExact(path, want, uid, 0444)
+}
+
+func controlTargetClass(path string, uid uint32) error {
+	fd, err := syscall.Open(path, syscall.O_RDONLY|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0)
 	if err != nil {
 		return err
 	}
@@ -108,13 +113,66 @@ func writeNoFollow(path, body string, uid uint32) error {
 	if err := syscall.Fstat(fd, &st); err != nil {
 		return err
 	}
-	if st.Uid != uid || st.Mode&syscall.S_IFMT != syscall.S_IFREG || uint32(st.Mode)&0777 != 0644 {
+	mode := uint32(st.Mode) & 0777
+	if st.Uid != uid || st.Mode&syscall.S_IFMT != syscall.S_IFREG || (mode != 0644 && mode != 0666) {
 		return fmt.Errorf("control-class")
 	}
-	if _, err := io.WriteString(f, body); err != nil {
+	return nil
+}
+
+func writeAtomicControl(path, tempPath, body string, uid uint32) error {
+	if err := controlTargetClass(path, uid); err != nil {
 		return err
 	}
-	return f.Sync()
+	if _, err := os.Lstat(tempPath); err == nil {
+		return fmt.Errorf("control-temp-preexists")
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+	fd, err := syscall.Open(tempPath, syscall.O_WRONLY|syscall.O_CREAT|syscall.O_EXCL|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0600)
+	if err != nil {
+		return err
+	}
+	f := os.NewFile(uintptr(fd), tempPath)
+	cleanup := true
+	defer func() {
+		if cleanup {
+			_ = os.Remove(tempPath)
+		}
+	}()
+	var st syscall.Stat_t
+	if err := syscall.Fstat(fd, &st); err != nil {
+		_ = f.Close()
+		return err
+	}
+	if st.Uid != uid || st.Mode&syscall.S_IFMT != syscall.S_IFREG || uint32(st.Mode)&0777 != 0600 {
+		_ = f.Close()
+		return fmt.Errorf("control-temp-class")
+	}
+	if _, err := io.WriteString(f, body); err != nil {
+		_ = f.Close()
+		return err
+	}
+	if err := f.Sync(); err != nil {
+		_ = f.Close()
+		return err
+	}
+	if err := f.Chmod(0644); err != nil {
+		_ = f.Close()
+		return err
+	}
+	if err := f.Sync(); err != nil {
+		_ = f.Close()
+		return err
+	}
+	if err := f.Close(); err != nil {
+		return err
+	}
+	if err := os.Rename(tempPath, path); err != nil {
+		return err
+	}
+	cleanup = false
+	return existingExact(path, body, uid, 0644)
 }
 
 func main() {
@@ -172,7 +230,7 @@ func main() {
 			os.Exit(92)
 		}
 	}
-	if err := writeNoFollow(uiControlPath, controlReady(name, identity), uint32(os.Geteuid())); err != nil {
+	if err := writeAtomicControl(uiControlPath, uiControlTempPath, controlReady(name, identity), uint32(os.Geteuid())); err != nil {
 		fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R7_UI_READY_DENIED:CONTROL_WRITE:"+strings.ReplaceAll(err.Error(), "\n", "_"))
 		os.Exit(92)
 	}
