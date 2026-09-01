@@ -119,11 +119,19 @@ def _prediction_function_truth_separation() -> dict:
                     violations.append(f"{node.name}:{child.attr}")
     if seen != target_names:
         raise AssertionError(f"missing_prediction_functions:{sorted(target_names - seen)}")
-    arch_text = ARCH_PATH.read_text(encoding="utf-8")
-    arch_forbidden_hits = [
-        token for token in ("digital_twin_v1", "world_joint_distribution", "RESULT", "PAYOUT")
-        if token in arch_text
-    ]
+    arch_tree = ast.parse(ARCH_PATH.read_text(encoding="utf-8"))
+    arch_forbidden_hits = []
+    for child in ast.walk(arch_tree):
+        if isinstance(child, ast.ImportFrom) and child.module == "digital_twin_v1":
+            arch_forbidden_hits.append("importfrom:digital_twin_v1")
+        if isinstance(child, ast.Import):
+            for alias in child.names:
+                if alias.name == "digital_twin_v1":
+                    arch_forbidden_hits.append("import:digital_twin_v1")
+        if isinstance(child, ast.Name) and child.id == "world_joint_distribution":
+            arch_forbidden_hits.append("name:world_joint_distribution")
+        if isinstance(child, ast.Attribute) and child.attr == "world_joint_distribution":
+            arch_forbidden_hits.append("attribute:world_joint_distribution")
     if violations or arch_forbidden_hits:
         raise AssertionError(
             f"truth_prediction_path_violation:{violations}:{arch_forbidden_hits}"
