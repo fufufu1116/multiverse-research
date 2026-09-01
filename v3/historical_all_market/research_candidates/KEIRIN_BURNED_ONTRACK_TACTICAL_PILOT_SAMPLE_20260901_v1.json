@@ -1,0 +1,65 @@
+{
+  "record": "KEIRIN_BURNED_ONTRACK_TACTICAL_PILOT_SAMPLE_20260901_v1",
+  "status": "PRESPECIFIED_SOURCE_BOUND_ANNOTATION_PENDING",
+  "classification": "BURNED_RESEARCH_CALIBRATION_ONLY_NOT_VALIDATION_NOT_MODEL_SELECTION",
+  "owner_gate": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_BURNED_ONTRACK_TACTICAL_ANNOTATION_20260901_v1.json",
+  "selection_rule": "Use the first three races of day 1 from the latest complete official Iwaki venue digest event surfaced during source inspection. Selection is fixed before tactical annotation and is independent of candidate performance, odds, payout, or finish order.",
+  "source_page": "https://tairakeirin.com/digest/",
+  "source_evidence": {
+    "venue": "いわき平",
+    "meeting": "福島民友杯・リンカイ！磐城平颯来杯",
+    "meeting_dates": "2026-08-06_to_2026-08-08",
+    "official_page_exposes_direct_replay_links": true,
+    "video_content_type": "video/mp4",
+    "browser_text_layer_can_resolve_urls_but_cannot_decode_frames": true
+  },
+  "races": [
+    {
+      "sample_id": "PILOT-01",
+      "race_id": "20260806_IWAKITAIRA_1R",
+      "date": "2026-08-06",
+      "grade": "FII",
+      "stage": "チャレンジ予選",
+      "active_field_size": 7,
+      "video_url": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-01-01-00.mp4",
+      "burn_status": "BURNED_PERMANENTLY",
+      "annotation_status": "PENDING_FRAME_REVIEW"
+    },
+    {
+      "sample_id": "PILOT-02",
+      "race_id": "20260806_IWAKITAIRA_2R",
+      "date": "2026-08-06",
+      "grade": "FII",
+      "stage": "チャレンジ予選",
+      "active_field_size": 7,
+      "video_url": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-02-01-00.mp4",
+      "burn_status": "BURNED_PERMANENTLY",
+      "annotation_status": "PENDING_FRAME_REVIEW"
+    },
+    {
+      "sample_id": "PILOT-03",
+      "race_id": "20260806_IWAKITAIRA_3R",
+      "date": "2026-08-06",
+      "grade": "FII",
+      "stage": "チャレンジ予選",
+      "active_field_size": 7,
+      "video_url": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-03-01-00.mp4",
+      "burn_status": "BURNED_PERMANENTLY",
+      "annotation_status": "PENDING_FRAME_REVIEW"
+    }
+  ],
+  "annotation_firewall": {
+    "candidate_predictions_visible_to_annotator": false,
+    "model_performance_used_for_sampling": false,
+    "payout_admitted": false,
+    "finish_order_as_target_admitted": false,
+    "causal_finish_effect_fitting": false,
+    "post_race_line_reconstruction_as_pre": false
+  },
+  "data_handling": {
+    "public_raw_video_republication": false,
+    "private_annotation_archive": "KEIRIN Burned Tactical Annotation Pilot 2026-09-01",
+    "source_urls_and_annotation_provenance_retained": true
+  },
+  "terminal_rule": "No tactical event probability is admitted from this manifest alone. Actual race-process annotations plus explicit eligible denominators and quality checks are required."
+}
