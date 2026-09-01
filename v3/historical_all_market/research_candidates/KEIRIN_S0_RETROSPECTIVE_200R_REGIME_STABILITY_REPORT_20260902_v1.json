@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_S0_RETROSPECTIVE_200R_REGIME_STABILITY_REPORT_20260902_v1",
+  "status": "DEVELOPMENT_SIGNAL_REPLICATED_WITH_REGIME_HETEROGENEITY_NOT_EDGE_OR_PROMOTION_EVIDENCE",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_ONLY",
+  "prespec": "KEIRIN_S0_200R_REGIME_STABILITY_PRESPEC_20260902_v1",
+  "fresh_binding_before_write": {
+    "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+    "head": "6e30218ace07bd65d18af4e9b9e99e0ee764785c",
+    "tree": "2dbaf7e05b8087e4b1afe043b06b57a38677ab34"
+  },
+  "corpus": {
+    "html_attempted": 221,
+    "successful_races": 200,
+    "pre_rider_rows": 1438,
+    "rejected_races": 21,
+    "parser_policy": "FAIL_CLOSED_NO_MANUAL_REPAIR",
+    "reject_breakdown": {
+      "pre_rows": 10,
+      "top3_not_active": 8,
+      "dup_finish": 3
+    },
+    "result_used_as_feature": false,
+    "payout_used": false
+  },
+  "locked_model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score",
+    "beta": 0.22260435254784533,
+    "post_lock_refit": false,
+    "post_lock_feature_change": false
+  },
+  "aggregate_200r_metrics": {
+    "winner_log_loss": 1.6932,
+    "uniform_winner_log_loss": 1.9678,
+    "winner_brier": 0.1097,
+    "uniform_winner_brier": 0.1205,
+    "ordered_top3_log_loss": 4.8383,
+    "uniform_ordered_top3_log_loss": 5.4216,
+    "fixed_s0_better_on_all_three_primary_metrics": true
+  },
+  "prespecified_regime_assessment": {
+    "venue": {
+      "status": "HETEROGENEITY_OBSERVED",
+      "adequately_sized_slices_materially_worse_on_both_winner_metrics": 0,
+      "notable_negative_evidence": "ITO_19R_WINNER_BRIER_WORSE_THAN_UNIFORM_WHILE_WINNER_LOG_LOSS_REMAINS_BETTER"
+    },
+    "race_date": {
+      "status": "NO_ELIGIBLE_DATE_BLOCK_WORSE_THAN_UNIFORM_ON_BOTH_WINNER_LOG_LOSS_AND_BRIER",
+      "minimum_n": 10
+    },
+    "active_car_count": {
+      "status": "EVALUATED_UNDER_PRESPEC_NO_COEFFICIENT_TUNING"
+    },
+    "competition_score_spread": {
+      "status": "NOT_IDENTIFIABLE",
+      "reason": "FIRST_110R_TERTILE_NUMERIC_BOUNDARIES_NOT_RECOVERABLE_FROM_LOCKED_ARTIFACT_WITHOUT_POSTHOC_RECONSTRUCTION",
+      "posthoc_boundary_creation_performed": false
+    },
+    "class_mix": {
+      "status": "PARTIALLY_IDENTIFIABLE_WITHOUT_POSTHOC_REPAIR",
+      "observed_large_exact_or_coarse_safe_groups": {
+        "A_ONLY_RACES": 136,
+        "S_ONLY_RACES": 61,
+        "OTHER_OR_AMBIGUOUS_RACES": 3
+      },
+      "direction": "A_ONLY_AND_S_ONLY_BOTH_BETTER_THAN_UNIFORM_ON_ALL_THREE_PRIMARY_METRICS",
+      "ambiguous_rows_repaired": false
+    }
+  },
+  "decision": {
+    "continue_fixed_s0_as_real_baseline_candidate": true,
+    "broad_stability_candidate": "PASS_WITH_REGIME_WARNING",
+    "heterogeneity_observed": true,
+    "feature_extension": "HOLD",
+    "venue_specific_refit": "PROHIBITED_FROM_THIS_REPORT",
+    "model_promotion": false,
+    "real_edge_claim": false,
+    "market_mispricing_claim": false,
+    "roi_or_profitability_claim": false,
+    "real_money_recommendation": false,
+    "next_gate": "NEW_TEMPORAL_PERIOD_FIXED_S0_CONFIRMATION_THEN_CALIBRATION_AND_TIMESTAMP_PROVEN_MARKET_COMPARISON"
+  },
+  "interpretation": [
+    "The fixed score-only S0 probability signal remains better than uniform at 200 retrospective development races on all three prespecified aggregate probability metrics.",
+    "This is evidence for continuing S0 as a baseline candidate, not evidence of a real market edge, profitability, or production readiness.",
+    "Regime heterogeneity is retained as negative evidence; no favorable post-hoc repair or venue-specific coefficient fitting is allowed from this report.",
+    "The competition-score-spread slice is intentionally NOT_IDENTIFIABLE because reconstructing missing first-110R tertile boundaries after observing 200R would violate the prespec.",
+    "The next high-value test is temporal replication on a genuinely later period with the model frozen, followed by calibration assessment and only then timestamp-proven market comparison."
+  ],
+  "hard_boundaries_preserved": [
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT_AS_FEATURE",
+    "NO_PROTECTED_HOLDOUT_OPENING",
+    "NO_DEV2000_C_RESCUE",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_MODEL_PROMOTION_FROM_THIS_REPORT_ALONE"
+  ]
+}
