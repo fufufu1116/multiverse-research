@@ -1,0 +1,75 @@
+{
+  "record": "KEIRIN_REALITY_TACTICAL_WEATHER_LEGSHOW_FOUNDATION_EVIDENCE_20260901_v1",
+  "status": "PASS_TACTICAL_AND_TRANSPORT_FOUNDATION_MECHANICAL_GATES",
+  "classification": "REALITY_FOUNDATION_ONLY_NOT_TRUTH_EXECUTION_NOT_MODEL_VALIDATION",
+  "owner_gate": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_REALITY_TACTICAL_WEATHER_LEGSHOW_FOUNDATION_20260901_v1.json",
+  "design": "v3/historical_all_market/research_candidates/KEIRIN_REALITY_TACTICAL_WEATHER_LEGSHOW_FOUNDATION_DESIGN_20260901_v1.json",
+  "implementation": "v3/historical_all_market/new_lineage/reality_tactical_transport_v0.py",
+  "selftest": "v3/historical_all_market/new_lineage/reality_tactical_transport_selftest_v0.py",
+  "fresh_start": {
+    "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "research_head": "ac24e843167050431ff8fe7befa319c170cd726a"
+  },
+  "official_reality_support": {
+    "tactical_states": {
+      "source": "https://keirin.jp/pc/static/beginner/basics/lines.html",
+      "supported": ["line cooperation", "bante role", "blocking", "gap creation", "switching", "competition for bante position"],
+      "boundary": "Concept support only; no transition probability/effect size admitted."
+    },
+    "legshow": {
+      "source": "https://keirin.jp/pc/static/beginner/basics/phases.html",
+      "supported": "Rider introduction/leg-show is a pre-race information phase where riders show intended line formation/order.",
+      "transport_status": "STABLE_STRUCTURED_PUBLIC_LEGSHOW_OBSERVED_LINE_TRANSPORT_UNRESOLVED"
+    },
+    "weather_wind": {
+      "source": "https://www.data.jma.go.jp/risk/obsdl/",
+      "supported": "Official JMA time-indexed meteorological observations can provide weather/wind source data where station elements are available.",
+      "transport_status": "SOURCE_CLASS_ESTABLISHED_BUT_VENUE_STATION_MAPPING_POLICY_NOT_FROZEN",
+      "source_caution": "JMA notes historical observations may later be corrected and asks users to avoid excessive automated access."
+    }
+  },
+  "mechanical_contract": {
+    "terminal_finish_absorbing": true,
+    "direct_prestart_to_finish_rejected": true,
+    "fragmentation_switching_reattachment_states_separate": true,
+    "no_transition_probabilities_encoded": true,
+    "expected_line_and_legshow_observed_line_distinct": true,
+    "post_race_reconstructed_line_rejected_as_PRE": true,
+    "line_snapshot_after_cutoff_rejected": true,
+    "line_membership_position_consistency_required": true,
+    "weather_observation_after_cutoff_rejected": true,
+    "weather_station_mapping_provenance_required": true,
+    "wind_speed_direction_pair_consistency_required": true,
+    "candidate_model_coupling_absent": true,
+    "network_capable_imports_absent": true
+  },
+  "github_actions": {
+    "executed_head": "18c5f23ed1f2063fa0f9072f0ed4250d9b1c14a9",
+    "run_id": 33480632988,
+    "job_id": 99769234262,
+    "conclusion": "success"
+  },
+  "scientific_interpretation": [
+    "The Reality family can now represent tactical concepts as explicit states rather than burying them in a symmetric scalar line bonus.",
+    "This state vocabulary does not establish how often any transition occurs or its effect on winning probability.",
+    "Expected/provider line predictions remain lower-evidence PRE_EVENT_EXPECTED_LINE and cannot be upgraded to LEGSHOW_OBSERVED_LINE.",
+    "Official JMA weather observations are a viable provenance source class, but race-venue-to-station mapping and capture cadence must be frozen before weather is admitted broadly.",
+    "The foundation does not reopen C0/C1/N1/PEER competition or truth-world execution."
+  ],
+  "protected_boundary": {
+    "truth_world_execution": false,
+    "tactical_probability_fitting": false,
+    "model_comparison": false,
+    "feature_or_coefficient_search": false,
+    "RESULT_PAYOUT_access": false,
+    "economics": false,
+    "automated_bulk_collection": false,
+    "Core_main_Runtime_change": false
+  },
+  "next_material_boundary": {
+    "name": "REALITY_VENUE_WEATHER_MAPPING_PLUS_EXPECTED_LINE_PROSPECTIVE_CAPTURE_AND_TACTICAL_RANGE_DESIGN_GATE",
+    "automatic_transition": false,
+    "fail_closed": true,
+    "note": "Before tactical truth execution, freeze venue-to-weather-station mappings, obtain repeated prospective weather snapshots and expected-line snapshots, and design broad tactical transition ranges independently of candidate performance. LEGSHOW observed-line transport remains a separate unresolved sub-boundary."
+  }
+}
