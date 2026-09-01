@@ -1,0 +1,37 @@
+{
+  "record": "KEIRIN_ALL_BETTYPE_PROBABILITY_PROJECTION_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_PROBABILITY_PROJECTION_ONLY",
+  "principle": "ONE_SPORTING_PROBABILITY_SOURCE_MULTIPLE_MARKET_PROJECTIONS",
+  "source_probability_object": "ordered_top3_distribution",
+  "markets": {
+    "3rentan": "P(i,j,k) for exact ordered top3",
+    "3renhuku": "sum of the six ordered permutations of an unordered top3 set {i,j,k}",
+    "2shatan": "sum over all third-place riders k not in {i,j} of P(i,j,k)",
+    "2shahuku": "P(i ahead of j in top2) + P(j ahead of i in top2), each marginalized over third place",
+    "wide": "probability both selected riders appear anywhere in top3, marginalized over all positions and third rider"
+  },
+  "required_validation": [
+    "ordered_top3 probabilities nonnegative",
+    "ordered_top3 total mass equals 1 within tolerance",
+    "derived market probabilities remain within [0,1]",
+    "marginal identities agree across market projections",
+    "no independently fitted probability table may silently replace the ordered_top3 source of truth"
+  ],
+  "market_price_comparison_gate": {
+    "required_before_expected_value_label": [
+      "probability model frozen with version/hash",
+      "development calibration evidence",
+      "timestamp-proven market odds for the matching bet type",
+      "odds observed before decision cutoff",
+      "market-specific quote provenance"
+    ],
+    "fair_decimal_odds": "1 / model_probability",
+    "candidate_only_rule": "Market odds may be compared with frozen model probability only after the probability-readiness gate is satisfied."
+  },
+  "important": [
+    "The system should search all supported bet types rather than privileging 3rentan.",
+    "A combination can be unattractive in one market and attractive in another because market prices differ.",
+    "No late-odds movement is interpreted as insider/smart money by default.",
+    "Current document does not itself authorize real-money execution or establish profitability."
+  ]
+}
