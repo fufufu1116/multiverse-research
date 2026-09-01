@@ -1,0 +1,49 @@
+{
+  "record": "KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v2",
+  "status": "PROSPECTIVE_PRE_EVENT_EXPECTED_LINE_CAPTURE_EXPANDED",
+  "classification": "PROVIDER_EXPECTED_LINE_NOT_LEGSHOW_OBSERVED_NOT_RESULT",
+  "extends": "KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v1",
+  "capture_timestamp_jst": "2026-09-01T16:27:01+09:00",
+  "selection_rule": "All then-upcoming MEN 7-rider races from Matsudo 7R-11R and IwakitaIra 3R-7R within the admitted FI/FII reality slice; no result-driven inclusion.",
+  "provider": "AOIKEI via Rakuten KDreams",
+  "rules": [
+    "Every included decision cutoff is after capture timestamp.",
+    "Expected line is stored only as PRE_EVENT_EXPECTED_LINE.",
+    "No LEGSHOW_OBSERVED_LINE claim is made.",
+    "No result, payout, odds, or candidate performance is used.",
+    "Shape presence is support evidence only; no population frequency is estimated."
+  ],
+  "captures": [
+    {"race_id":"20260901_MATSUDO_7R","venue":"松戸","grade":"FII","class_band":"A1_A2","stage":"A級特予選","decision_cutoff_jst":"2026-09-01T18:24:00+09:00","source":"https://keirin.kdreams.jp/matsudo/racedetail/3120260901010007/","expected_groups":[[7,4,1],[2,5],[6,3]],"shape_sorted":[3,2,2],"provenance_sha256":"0317da3abe4c0451e9e4cb1c8e8a4642645bc5ca55e3450287c0228a12da6cba"},
+    {"race_id":"20260901_MATSUDO_8R","venue":"松戸","grade":"FII","class_band":"A1_A2","stage":"A級特予選","decision_cutoff_jst":"2026-09-01T18:50:00+09:00","source":"https://keirin.kdreams.jp/matsudo/racedetail/3120260901010008/","expected_groups":[[1,7,5,3],[2,4],[6]],"shape_sorted":[4,2,1],"provenance_sha256":"3b70d9eb86050ccbc53d9be82602d1336a2b48fb9627a88944ab52f4671509ff"},
+    {"race_id":"20260901_MATSUDO_9R","venue":"松戸","grade":"FII","class_band":"A1_A2","stage":"A級特予選","decision_cutoff_jst":"2026-09-01T19:16:00+09:00","source":"https://keirin.kdreams.jp/matsudo/racedetail/3120260901010009/","expected_groups":[[4,1],[5,7,2],[6,3]],"shape_sorted":[3,2,2],"provenance_sha256":"1dfd46bdb5b60a3fa613111987f88b18543dc2178d3e9403b46a222edba14671"},
+    {"race_id":"20260901_MATSUDO_10R","venue":"松戸","grade":"FII","class_band":"A1_A2","stage":"A級特予選","decision_cutoff_jst":"2026-09-01T19:42:00+09:00","source":"https://keirin.kdreams.jp/matsudo/racedetail/3120260901010010/","expected_groups":[[3,4,7],[1,6],[5,2]],"shape_sorted":[3,2,2],"provenance_sha256":"1a5af90505e102bcc5e21a40bddf168779b0c6f9d1c7c10d90cbf70269467f40"},
+    {"race_id":"20260901_MATSUDO_11R","venue":"松戸","grade":"FII","class_band":"A1","stage":"A級初日特選","decision_cutoff_jst":"2026-09-01T20:10:00+09:00","source":"https://keirin.kdreams.jp/matsudo/racedetail/3120260901010011/","expected_groups":[[2,7],[6,3,4],[5,1]],"shape_sorted":[3,2,2],"provenance_sha256":"5c49f82ede81a77407d1be6b913b493157a1a36156d34345d09a0b4c57bfe76f"},
+    {"race_id":"20260901_IWAKITAIRA_3R","venue":"いわき平","grade":"FII","class_band":"A3","stage":"チャレンジ一般","decision_cutoff_jst":"2026-09-01T21:32:00+09:00","source":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030003/","expected_groups":[[4,1,5],[2,3,6],[7]],"shape_sorted":[3,3,1],"provenance_sha256":"754d73118265fc42c11dcfb89b36e2f9d6ae4e298d7812d126dfde5a03a02f96"},
+    {"race_id":"20260901_IWAKITAIRA_4R","venue":"いわき平","grade":"FII","class_band":"A3","stage":"チャレンジ選抜","decision_cutoff_jst":"2026-09-01T21:56:00+09:00","source":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030004/","expected_groups":[[5,1,4,7],[3,2,6]],"shape_sorted":[4,3],"provenance_sha256":"46718b1688fc93546f8e23043d27b66a2f693e5920c20aff19a3c76496bd49b4"},
+    {"race_id":"20260901_IWAKITAIRA_5R","venue":"いわき平","grade":"FII","class_band":"A3","stage":"チャレンジ選抜","decision_cutoff_jst":"2026-09-01T22:22:00+09:00","source":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030005/","expected_groups":[[1,2,4],[3,6,5],[7]],"shape_sorted":[3,3,1],"provenance_sha256":"99c43ec4c78c591ff4adbc1dc53a06ee1dc39c0a67404df707da004c84029e1c"},
+    {"race_id":"20260901_IWAKITAIRA_6R","venue":"いわき平","grade":"FII","class_band":"A3","stage":"チャレンジ選抜","decision_cutoff_jst":"2026-09-01T22:49:00+09:00","source":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030006/","expected_groups":[[2,1],[4,3,6],[5,7]],"shape_sorted":[3,2,2],"provenance_sha256":"a64c19919ff12136943dfb39e16149da18cbd4130de5ab2dfa8cd49c8b133557"},
+    {"race_id":"20260901_IWAKITAIRA_7R","venue":"いわき平","grade":"FII","class_band":"A3","stage":"チャレンジ決勝","decision_cutoff_jst":"2026-09-01T23:16:00+09:00","source":"https://keirin.kdreams.jp/iwakitaira/racedetail/1320260830030007/","expected_groups":[[5,1,2,7],[3],[4,6]],"shape_sorted":[4,2,1],"provenance_sha256":"3f72bde97fea0c3f51b0240580f9efe99c44e2f065fe945b876110e896121360"}
+  ],
+  "batch_shape_support_counts": {
+    "3-2-2": 5,
+    "4-2-1": 2,
+    "3-3-1": 2,
+    "4-3": 1
+  },
+  "combined_findings": {
+    "new_shape_support_vs_v1": [4,3],
+    "four_rider_line_support_reconfirmed": true,
+    "two_line_seven_rider_partition_support_present": true,
+    "reality_topology_whitelist_prohibited": true,
+    "frequency_claim": false
+  },
+  "protected_boundary": {
+    "legshow_observed_admission": false,
+    "tactical_numeric_calibration": false,
+    "truth_world_execution": false,
+    "model_comparison": false,
+    "result_payout_use": false,
+    "economics": false
+  }
+}
