@@ -1,0 +1,27 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_REGIME_MISMATCH_REMEDIATION_20260901_v1",
+  "status": "PRESPECIFIED_REPLACEMENT_BEFORE_REVIEW_OF_REPLACEMENT_RACES",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_PROTOCOL_REMEDIATION",
+  "trigger": "During initial source-header inspection of the prespecified R4-R9 expansion sample, R5 and R6 were visibly labeled GIRLS KEIRIN and therefore do not satisfy the predeclared STANDARD_ORIGINAL_LINE_MENS_FII calibration regime.",
+  "important_nonselection": "R5 and R6 are excluded from the men's conditional-rate denominator solely for objective regime mismatch, not for their tactical content, outcomes, odds, or model behavior.",
+  "burn_status": {
+    "R5": "BURNED_BUT_REGIME_INELIGIBLE_FOR_MENS_CALIBRATION",
+    "R6": "BURNED_BUT_REGIME_INELIGIBLE_FOR_MENS_CALIBRATION"
+  },
+  "replacement_rule": "Use the next sequential races after the original R9 endpoint that satisfy the same men's original-line meeting regime. Inspect R10 then R11 only; if either is objectively not eligible, stop and issue another prespecified remediation before inspecting any further race.",
+  "replacement_races_prespecified_before_review": [
+    {"race_no": 10, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-10-01-00.mp4"},
+    {"race_no": 11, "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-11-01-00.mp4"}
+  ],
+  "eligible_expansion_target_if_replacements_pass": [4,7,8,9,10,11],
+  "protocol_unchanged": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+  "review_cadence_seconds": 1,
+  "forbidden": [
+    "using R5/R6 tactical content to choose replacements",
+    "using outcomes or payout to choose replacements",
+    "using candidate model performance to choose replacements",
+    "retuning the six-second event window",
+    "promoting any pilot rate to Reality truth"
+  ],
+  "terminal_rule": "R5/R6 remain burned evidence of a protocol regime-screening failure and are not silently discarded. R10/R11 may be reviewed only after this remediation record exists."
+}
