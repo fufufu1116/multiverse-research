@@ -8,6 +8,7 @@ on:
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-attach-ready-manual-arm-remediation-v1
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-live-attach-identity-repro-remediation-v1
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-codespaces-cap-boundary-remediation-v1
+      - agent/r1-stage1-phase-c-v19-7-36-v7r7-cap-thread-pinning-remediation-v1
 
 permissions:
   contents: read
@@ -36,6 +37,14 @@ jobs:
         run: |
           set -euo pipefail
           export MULTIVERSE_PRELAB_DOCKER_TAG="multiverse-v7r7-proof:${GITHUB_SHA}"
+          launcher='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go'
+          grep -F 'runtime.LockOSThread()' "${launcher}"
+          grep -F 'lockedTID := syscall.Gettid()' "${launcher}"
+          grep -F 'os.ReadFile("/proc/thread-self/status")' "${launcher}"
+          test "$(grep -Fc 'sameThread(lockedTID)' "${launcher}")" -ge 4
+          if grep -F '/proc/self/status' "${launcher}"; then exit 92; fi
+          printf 'PRELAB_CAP_THREAD_PIN_SOURCE_GATE_PASS=true\n'
+
           python3 governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py --selftest governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go
           python3 governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py
           docker image inspect "${MULTIVERSE_PRELAB_DOCKER_TAG}" >/dev/null
@@ -47,6 +56,7 @@ jobs:
           printf '%s\n' "${broad_cap_output}"
           test "${broad_cap_rc}" -eq 92
           grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:CODESPACES' <<<"${broad_cap_output}"
+          if grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:THREAD_DRIFT' <<<"${broad_cap_output}"; then exit 92; fi
           if grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:CAPS' <<<"${broad_cap_output}"; then exit 92; fi
           if grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:CAPS_NARROW' <<<"${broad_cap_output}"; then exit 92; fi
           printf 'PRELAB_BROAD_CAP_BOUNDARY_SELF_NARROW_PASS=true\n'
