@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -17,6 +19,7 @@ const readyPath = "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-u
 const sessionPath = "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-session-status.txt"
 const lockPath = "/run/multiverse-v36-v7r7-arm.lock"
 const armPath = "/usr/local/bin/multiverse-v36-arm-v7r7"
+const imageIdentityPathV7R7 = "/opt/multiverse/v36/image-identity-v7r3.json"
 const prSetNoNewPrivs = 38
 
 func deny(code string) {
@@ -37,9 +40,32 @@ func validName(s string) bool {
 	return true
 }
 
-func expectedReady(name string) string {
+func imageIdentitySHA256() (string, error) {
+	fd, err := syscall.Open(imageIdentityPathV7R7, syscall.O_RDONLY|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0)
+	if err != nil {
+		return "", err
+	}
+	f := os.NewFile(uintptr(fd), imageIdentityPathV7R7)
+	defer f.Close()
+	var st syscall.Stat_t
+	if err := syscall.Fstat(fd, &st); err != nil {
+		return "", err
+	}
+	if st.Uid != 0 || st.Mode&syscall.S_IFMT != syscall.S_IFREG || uint32(st.Mode)&0777 != 0444 || st.Size <= 0 || st.Size > 1<<20 {
+		return "", errors.New("identity-class")
+	}
+	b, err := io.ReadAll(io.LimitReader(f, (1<<20)+1))
+	if err != nil || len(b) == 0 || len(b) > 1<<20 {
+		return "", errors.New("identity-read")
+	}
+	h := sha256.Sum256(b)
+	return hex.EncodeToString(h[:]), nil
+}
+
+func expectedReady(name, identity string) string {
 	return "PHASE_C_V19_7_36_V7R7_UI_READY\n" +
 		"codespace=" + name + "\n" +
+		"image_identity_sha256=" + identity + "\n" +
 		"timer_state=NOT_STARTED\n" +
 		"arm_state=NOT_STARTED\n" +
 		"arm_command=" + armPath + "\n" +
@@ -47,15 +73,16 @@ func expectedReady(name string) string {
 		"runtime=OFF\n"
 }
 
-func expectedControl(name string) string {
+func expectedControl(name, identity string) string {
 	return "# MULTIVERSE PRE-LIVE CONTROL — V19.7.36 v7r7\n\n" +
 		"`PHASE_C_V19_7_36_V7R7_UI_READY`\n\n" +
 		"- codespace=`" + name + "`\n" +
+		"- image_identity_sha256=`" + identity + "`\n" +
 		"- timer_state=`NOT_STARTED`\n" +
 		"- arm_state=`NOT_STARTED`\n" +
 		"- next_action=`RETURN_TO_CORE_BEFORE_ARM`\n" +
 		"- runtime=`OFF`\n\n" +
-		"The strict 600-second challenge window has not started. Do not run the arm command until Core Fresh-rebinds this Codespace and explicitly says to arm.\n\n" +
+		"The strict 600-second challenge window has not started. Do not run the arm command until Core Fresh-rebinds this Codespace and exact image identity and explicitly says to arm.\n\n" +
 		"Reviewed arm command (do not run yet): `" + armPath + "`\n"
 }
 
@@ -114,7 +141,6 @@ func capsNarrow() error {
 				v, _ := strconv.ParseUint(strings.TrimSpace(strings.TrimPrefix(l, k+":")), 16, 64)
 				return v
 			}
-		}
 		return ^uint64(0)
 	}
 	allowed := uint64((1 << 0) | (1 << 6) | (1 << 7))
@@ -174,10 +200,14 @@ func main() {
 	if !validName(name) {
 		deny("CODESPACE_NAME")
 	}
-	if err := openedExact(readyPath, expectedReady(name), uint32(ruid), 0444); err != nil {
+	identity, err := imageIdentitySHA256()
+	if err != nil {
+		deny("IMAGE_IDENTITY")
+	}
+	if err := openedExact(readyPath, expectedReady(name, identity), uint32(ruid), 0444); err != nil {
 		deny("READY_BINDING")
 	}
-	if err := openedExact(controlPath, expectedControl(name), uint32(ruid), 0644); err != nil {
+	if err := openedExact(controlPath, expectedControl(name, identity), uint32(ruid), 0644); err != nil {
 		deny("CONTROL_BINDING")
 	}
 	if _, err := os.Lstat(sessionPath); err == nil {
@@ -193,7 +223,7 @@ func main() {
 		deny("ARM_LOCK")
 	}
 	lock := os.NewFile(uintptr(lockFD), "arm-lock")
-	if _, err := fmt.Fprintf(lock, "codespace=%s\noriginal_uid=%d\nruntime=OFF\n", name, ruid); err != nil || lock.Sync() != nil || lock.Close() != nil {
+	if _, err := fmt.Fprintf(lock, "codespace=%s\nimage_identity_sha256=%s\noriginal_uid=%d\nruntime=OFF\n", name, identity, ruid); err != nil || lock.Sync() != nil || lock.Close() != nil {
 		deny("ARM_LOCK_WRITE")
 	}
 	if err := openGateFD3(); err != nil {
@@ -203,7 +233,7 @@ func main() {
 		_ = syscall.Close(fd)
 	}
 	env := []string{"CODESPACES=true", "CODESPACE_NAME=" + name, "MULTIVERSE_V7R7_ARM_RUID=" + strconv.Itoa(ruid), "LANG=C", "LC_ALL=C"}
-	fmt.Printf("PHASE_C_V19_7_36_V7R7_ARM_START codespace=%s timer_starts_inside_session_gate_after_trusted_server_time runtime=OFF\n", name)
+	fmt.Printf("PHASE_C_V19_7_36_V7R7_ARM_START codespace=%s image_identity_sha256=%s timer_starts_inside_session_gate_after_trusted_server_time runtime=OFF\n", name, identity)
 	if err := syscall.Exec("/proc/self/fd/3", []string{gatePath}, env); err != nil {
 		deny("EXEC_GATE")
 	}
