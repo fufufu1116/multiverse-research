@@ -1,0 +1,177 @@
+name: Keirin Q-PEER-PRE-PROSPECTIVE-1 v1 CI
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - '.github/workflows/keirin-q-peer-pre-prospective-1-v1-ci.yml'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PEER_PRE_PROSPECTIVE_1_20260901_v1.json'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_PRESPEC_20260901_v1.json'
+      - 'tools/keirin_q_peer_pre_prospective_1_v1.py'
+
+permissions:
+  contents: read
+
+env:
+  BASE_MAIN_ANCESTOR: 5c1403c1f5aabb80d29e8c868440aede8888ce61
+  VNEXT_BLOB: afe746287c7e911d214202abdf2de076f63ab30c
+  KEIRIN_STATE_BLOB: 962d9c75b0611d52bd264a8b88bb1fe259cb8aeb
+  AUTH_RECEIPT_BLOB: 4c2e5364ad229a5dd413a19d0cf970c478692584
+  BOUNDARY_CLOSURE_BLOB: 3aa8a51cb12da4d7838bcb527807fe98622a43ae
+  DT_DESIGN_BLOB: 62c20fdf87f988e3a0b79e543d4ab4d448234e84
+  DIGITAL_TWIN_BLOB: 1f1574400e43648e60af43d059965d021d8bbad8
+  TOP3_CORE_BLOB: 4e2a819dce69240792d927cceba434f53932b829
+  COMPARISON_BLOB: 9531715a8f346aec370bf1be24017a8ff577506b
+  COEFF_RECEIPT_BLOB: f531d72929c846da1c932451873c94bb9b526ae7
+  CAUSE_EVIDENCE_BLOB: 457abc7389c18ee7b9ffda54a8e3f8370fd28525
+  SYNTHESIS_V3_BLOB: c213c175af7edfbb62ecce8d5035ee580c7b459a
+  OWNER_APPROVAL_BLOB: 8f06c99ba2f69474f62a52ca3ea6f5ed60870bc4
+  PRESPEC_BLOB: f5c2a276a7c06a4ac82906f1a26602139565ab0b
+  HARNESS_BLOB: 364401c49afc873219feed91959d231a4e9f1b5d
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  q-peer-pre-prospective-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact research head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fresh governance and exact-source checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          echo "OBSERVED_ORIGIN_MAIN=$(git rev-parse origin/main)"
+          echo "EXECUTED_HEAD=$(git rev-parse HEAD)"
+          git merge-base --is-ancestor "$BASE_MAIN_ANCESTOR" origin/main
+          git merge-base --is-ancestor "$BASE_MAIN_ANCESTOR" HEAD
+          test "$(git rev-parse "origin/main:multiverse_vnext/VNEXT_CURRENT_STATE_v0.json")" = "$VNEXT_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json")" = "$KEIRIN_STATE_BLOB"
+          test "$(git rev-parse "origin/main:governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json")" = "$AUTH_RECEIPT_BLOB"
+          test "$(git rev-parse "origin/main:governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json")" = "$BOUNDARY_CLOSURE_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/KEIRIN_DIGITAL_TWIN_MULTIWORLD_DESIGN_v1.md")" = "$DT_DESIGN_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/new_lineage/digital_twin_v1.py")" = "$DIGITAL_TWIN_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/new_lineage/top3_architecture_core_v1.py")" = "$TOP3_CORE_BLOB"
+          test "$(git rev-parse "origin/main:tools/keirin_synthetic_c0_c1_n1_comparison_v1.py")" = "$COMPARISON_BLOB"
+          test "$(git rev-parse "origin/main:v3/historical_all_market/governance/KEIRIN_FROZEN_PRE_HOLDOUT_COEFFICIENT_RECEIPT_v1.json")" = "$COEFF_RECEIPT_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_PROXY_CAUSE_DECOMP_1_EVIDENCE_20260901_v1.json")" = "$CAUSE_EVIDENCE_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v3.json")" = "$SYNTHESIS_V3_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PEER_PRE_PROSPECTIVE_1_20260901_v1.json")" = "$OWNER_APPROVAL_BLOB"
+          test "$(git rev-parse "HEAD:v3/historical_all_market/research_candidates/KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_PRESPEC_20260901_v1.json")" = "$PRESPEC_BLOB"
+          test "$(git rev-parse "HEAD:tools/keirin_q_peer_pre_prospective_1_v1.py")" = "$HARNESS_BLOB"
+
+      - name: Verify prospective Owner gate and prespec
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          g=json.load(open('v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PEER_PRE_PROSPECTIVE_1_20260901_v1.json', encoding='utf-8'))
+          p=json.load(open('v3/historical_all_market/research_candidates/KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_PRESPEC_20260901_v1.json', encoding='utf-8'))
+          assert g['status']=='OWNER_EXPLICITLY_APPROVED_PROSPECTIVE_SYNTHETIC_RESEARCH_CANDIDATE_FEATURE_TEST'
+          assert g['approval']=='APPROVE Q-PEER-PRE-PROSPECTIVE-1 — PROSPECTIVE RESEARCH/CANDIDATE FEATURE TEST'
+          assert g['fresh_scope_classification']['new_seed_scope_decision']=='CLEARLY_WITHIN_OWNER_APPROVED_PROSPECTIVE_SYNTHETIC_W1_FALSIFICATION_SCOPE'
+          c=g['single_authorized_candidate']
+          assert c['id']=='C1_PEER_LOO_MEAN_PROSPECTIVE'
+          assert c['coefficient']==0.16 and c['PRE_only'] is True
+          assert c['latent_skill_access'] is False and c['truth_distribution_access_by_candidate'] is False
+          assert p['status']=='RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION'
+          assert p['fixed_fixtures']['block_seed_bases']==[20265001,20266001,20267001,20268001]
+          assert p['fixed_fixtures']['total_cases']==512
+          assert p['fixed_candidate']['normalization']=='arithmetic mean over exactly line_size_i - 1 peers; no original-line-size denominator; singleton zero'
+          assert p['fixed_candidate']['coefficient']==0.16
+          assert p['decision_rule']['beating_N1_is_not_required'] is True
+          for key, value in p['no_rescue_rule'].items():
+              assert value is False, (key, value)
+          print('KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_GATE_PRESPEC_PASS')
+          PY
+
+      - name: Verify canonical scientific sources untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only "$BASE_MAIN_ANCESTOR"...HEAD > /tmp/changed.txt
+          ! grep -Eq '^(multiverse_vnext/|v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json$|v3/historical_all_market/new_lineage/|governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json$|governance/KEIRIN_SYNTHETIC_BOUNDARY_CLOSURE_20260821_v1.json$)' /tmp/changed.txt
+
+      - name: Reject network-capable candidate harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          HARNESS=tools/keirin_q_peer_pre_prospective_1_v1.py
+          ! grep -Eq '(^|[[:space:]])(requests|urllib|socket|subprocess|selenium|playwright)([[:space:].]|$)' "$HARNESS"
+          ! grep -Eq 'https?://' "$HARNESS"
+
+      - name: Execute fully prespecified prospective test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/keirin_q_peer_pre_prospective_1_v1.py | tee /tmp/qpeer.log
+          grep -Fx 'KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_EXECUTION_PASS' /tmp/qpeer.log
+          head -n 1 /tmp/qpeer.log > /tmp/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/result.json', encoding='utf-8'))
+          assert r['status']=='PASS_EXECUTION_AND_MECHANICAL_INVARIANTS'
+          assert r['classification']=='RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED'
+          assert r['evidence_class']=='SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          assert r['world']=='W1' and r['total_cases']==512
+          assert r['block_seed_bases']==[20265001,20266001,20267001,20268001]
+          assert r['primary_decision'] in {'PASS','FAIL','INCONCLUSIVE'}
+          c=r['candidate_definition']
+          assert c['id']=='C1_PEER_LOO_MEAN_PROSPECTIVE'
+          assert c['PRE_only'] is True and c['target_excluded'] is True
+          assert c['coefficient']==0.16 and c['coefficient_fitted'] is False and c['coefficient_swept'] is False
+          assert c['residualized'] is False and c['measurement_error_shrinkage_applied'] is False
+          assert c['latent_truth_access'] is False and c['truth_distribution_access_by_candidate'] is False
+          m=r['mechanical_checks']
+          assert m['candidate_source_boundary_pass'] is True and m['PRE_latent_truth_absent'] is True
+          assert m['max_peer_mean_sanity_diff'] <= 1e-12
+          assert m['singleton_feature_zero_by_definition'] is True
+          assert m['max_non_diagnostic_C0_reproduction_diff'] <= 1e-12
+          assert m['max_non_diagnostic_C1_reproduction_diff'] <= 1e-12
+          assert m['max_non_diagnostic_N1_reproduction_diff'] <= 1e-12
+          assert m['max_prediction_probability_mass_error'] <= 1e-10
+          assert m['max_truth_probability_mass_error'] <= 1e-10
+          assert m['max_chain_decomposition_residual'] <= 1e-12
+          pi=r['prospective_integrity']
+          assert pi['prior_PEER_effect_used_for_coefficient'] is False
+          assert pi['prior_PEER_effect_used_for_normalization'] is False
+          assert pi['prior_PEER_effect_used_for_seed_selection'] is False
+          assert pi['feature_tournament'] is False
+          assert pi['new_seed_selection'] is True and pi['seed_selection_result_adaptive'] is False
+          assert pi['post_result_seed_extension'] is False and pi['post_hoc_slice'] is False
+          assert pi['post_result_retuning'] is False and pi['models_or_frozen_coefficients_changed'] is False
+          assert pi['authorization_auto_expanded'] is False
+          for key in ('protected_or_quarantined_input_access','pr15_metrics_access','result_payout_access','econ_holdout1000_access','dev2000_c_rescue','same_lineage_b_c_rescue_tuning','real_or_untouched_validation','real_live_input_collection','economics_bankroll_roi','model_promotion_or_freeze','external_provider_contact','core_phase_c_main_ruleset_runtime_production_authority_change','real_world_edge_or_roi_evidence'):
+              assert r[key] is False, (key, r[key])
+          assert r['scientific_segment_c_scoring_count']==0
+          print('KEIRIN_Q_PEER_PRE_PROSPECTIVE_1_RESULT_CONTRACT_PASS')
+          PY
+
+      - name: Protected boundary terminal
+        shell: bash
+        run: |
+          echo 'EVIDENCE_CLASS=SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY'
+          echo 'RESEARCH_CANDIDATE_ONLY=true'
+          echo 'PROSPECTIVE_SYNTHETIC_FIXTURES=true'
+          echo 'UNTOUCHED_VALIDATION=false'
+          echo 'FEATURE_TOURNAMENT=false'
+          echo 'COEFFICIENT_SEARCH=false'
+          echo 'LATENT_TRUTH_TO_CANDIDATE=false'
+          echo 'PR15_METRICS_ACCESSED=false'
+          echo 'RESULT_PAYOUT_ACCESSED=false'
+          echo 'ECON_HOLDOUT1000_ACCESSED=false'
+          echo 'SCIENTIFIC_SEGMENT_C_SCORING_COUNT=0'
+          echo 'REAL_LIVE_INPUT=false'
+          echo 'ECONOMICS=false'
+          echo 'MODEL_PROMOTION=false'
+          echo 'AUTHORIZATION_AUTO_EXPANDED=false'
+
+      - name: Verify clean worktree
+        run: test -z "$(git status --porcelain)"
