@@ -1,0 +1,68 @@
+name: Keirin Burned Tactical Transcript Pilot V0
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - '.github/workflows/keirin-burned-tactical-transcript-pilot-v0.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  transcript-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install speech-to-text dependency
+        run: pip install --quiet faster-whisper
+      - name: Download prespecified burned official replay sample
+        run: |
+          mkdir -p /tmp/keirin-pilot
+          curl --fail --location --retry 2 --output /tmp/keirin-pilot/r1.mp4 https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-01-01-00.mp4
+          curl --fail --location --retry 2 --output /tmp/keirin-pilot/r2.mp4 https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-02-01-00.mp4
+          curl --fail --location --retry 2 --output /tmp/keirin-pilot/r3.mp4 https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-03-01-00.mp4
+      - name: Transcribe commentary as auxiliary evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from faster_whisper import WhisperModel
+
+          model = WhisperModel('base', device='cpu', compute_type='int8')
+          stop_terms = ('ゴール', '1着', '勝ちました', '制しました', '優勝')
+          out = {}
+          for race in ('r1','r2','r3'):
+              segments, info = model.transcribe(
+                  f'/tmp/keirin-pilot/{race}.mp4',
+                  language='ja',
+                  beam_size=5,
+                  vad_filter=True,
+              )
+              kept=[]
+              for seg in segments:
+                  text=seg.text.strip()
+                  if any(term in text for term in stop_terms):
+                      break
+                  kept.append({'start':round(seg.start,2),'end':round(seg.end,2),'text':text})
+              out[race]={'language':info.language,'segments':kept}
+          Path('/tmp/keirin-pilot/transcript.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          print('TRANSCRIPT_JSON_BEGIN')
+          print(Path('/tmp/keirin-pilot/transcript.json').read_text(encoding='utf-8'))
+          print('TRANSCRIPT_JSON_END')
+          PY
+      - name: Upload auxiliary transcript artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: burned-tactical-transcript-pilot-v0
+          path: /tmp/keirin-pilot/transcript.json
+          retention-days: 3
+      - name: Terminal boundary
+        run: echo 'AUXILIARY_TRANSCRIPT_ONLY_NO_EVENT_RATE_NO_FINISH_TARGET'
