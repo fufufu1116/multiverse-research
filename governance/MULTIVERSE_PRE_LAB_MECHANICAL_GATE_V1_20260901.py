@@ -34,8 +34,9 @@ def main():
  gate=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go').decode()
  builder=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py').decode()
  if 'multiverse-v36-session-gate-v7r6' not in builder or 'V19.7.36-v7r6-image-identity' not in builder:fail('IMAGE_IDENTITY_V7R6_WIRING','stale-session-gate-or-version')
- for needle in ['apiHardBudget = 40','apiReserveRemaining = 8','q.Set("since"','cursorOverlap = 2 * time.Second','rate-limited','minute_8_5_requests=24','ten_minute_requests=27']:
+ for needle in ['apiHardBudget = 40','apiReserveRemaining = 8','q.Set("since"','cursorOverlap = 2 * time.Second','rate-limited','minute_8_5_requests=24','ten_minute_requests=27','scanStart','scanSince(cursor)','rate-remaining-missing','rate-limit-missing','rate-reset-missing','PAGINATION_RACE_SELFTEST_PASS','RATE_HEADERS_FAIL_CLOSED_SELFTEST_PASS']:
   if needle not in gate:fail('RATE_BUDGET_REMEDIATION_WIRING',needle)
+ if 'watermark = d' in gate or 'if d.After(watermark)' in gate:fail('PAGINATION_WATERMARK_REGRESSION','final-page-watermark-present')
  hist=data('governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py').decode()
  for needle in ['range(1,601)','LATE_SECONDS=510','full_used==28','updated_at > since']:
   if needle not in hist:fail('RATE_BUDGET_HISTORY_SELFTEST_WIRING',needle)
