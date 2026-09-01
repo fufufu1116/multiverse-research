@@ -1,0 +1,24 @@
+{
+  "record": "KEIRIN_BURNED_TACTICAL_EXPANSION_BATCH3_REGIME_MISMATCH_REMEDIATION_20260901_v1",
+  "status": "PRESPECIFIED_REPLACEMENT_BEFORE_REVIEW_OF_REPLACEMENT_RACE",
+  "classification": "RESEARCH_CANDIDATE_BURNED_CALIBRATION_PROTOCOL_REMEDIATION",
+  "trigger": "Objective header-only regime screen of the prespecified final-day R1-R6 source sample showed R4 explicitly labeled GIRLS KEIRIN. R1, R2, R3, R5 and R6 were labeled A-class men's races.",
+  "important_nonselection": "R4 is excluded from the men's conditional-rate denominator solely for objective regime mismatch before tactical annotation, not for tactical content, outcomes, odds, or model behavior.",
+  "burn_status": {"R4":"BURNED_BUT_REGIME_INELIGIBLE_FOR_MENS_CALIBRATION"},
+  "eligible_initial_races_after_screen": [1,2,3,5,6],
+  "replacement_rule": "Use only the next sequential race after R6, namely R7. The replacement is fixed by this committed record before any R7 tactical review. If R7 is objectively not a men's original-line race, stop and issue another committed remediation before moving farther.",
+  "replacement_race_prespecified_before_review": {
+    "race_no": 7,
+    "official_replay_mp4": "https://wm.st.keirin.jp/wm-keirin13/20260808-13-01-07-01-00.mp4"
+  },
+  "target_mens_batch_if_r7_passes": [1,2,3,5,6,7],
+  "protocol_unchanged": "KEIRIN_BURNED_TACTICAL_OPPORTUNITY_PROTOCOL_20260901_v1",
+  "review_cadence_seconds": 1,
+  "forbidden": [
+    "using R4 tactical content to choose replacement",
+    "using outcomes, payout, odds, or candidate model performance to choose replacement",
+    "changing the six-second windows",
+    "promoting any resulting rate to Reality truth"
+  ],
+  "terminal_rule": "R4 remains permanently burned. R7 may be inspected only after this remediation exists; regime screening of R7 must precede tactical Pass A."
+}
