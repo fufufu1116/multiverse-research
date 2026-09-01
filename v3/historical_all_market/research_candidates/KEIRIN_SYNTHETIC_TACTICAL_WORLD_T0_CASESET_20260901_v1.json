@@ -1,0 +1,50 @@
+{
+  "record": "KEIRIN_SYNTHETIC_TACTICAL_WORLD_T0_CASESET_20260901_v1",
+  "status": "SYNTHETIC_MECHANISM_TEST_ONLY_NOT_REALITY_TRUTH",
+  "world_tier": "T0",
+  "purpose": "Exercise tactical-state and annotation logic against candidate-independent synthetic ground truth before any reality calibration.",
+  "separation_firewall": {
+    "synthetic_is_real_race_evidence": false,
+    "synthetic_may_replace_duplicate_real_video_annotation": false,
+    "synthetic_may_define_reality_transition_rates": false,
+    "synthetic_may_support_finish_or_wagering_claims": false,
+    "candidate_outputs_used_to_generate_truth": false
+  },
+  "observation_model": "T0 is fully observable: actor identity, line role, timing, and continuity are intentionally unambiguous unless the case explicitly tests UNKNOWN.",
+  "cases": [
+    {"id":"T0-001","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"mechanism":"line leader attacks occupied forward position; direct follower stays attached"},
+    {"id":"T0-002","truth":{"qualifying_attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"mechanism":"line leader attacks; direct follower gaps and does not recover within 6s"},
+    {"id":"T0-003","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"ABSENT"},"mechanism":"line leader attacks into open forward space; follower remains attached"},
+    {"id":"T0-004","truth":{"qualifying_attack":true,"bante_follow":"ABSENT","initiative_conflict":"ABSENT"},"mechanism":"solo leader takes open forward space without contest"},
+    {"id":"T0-005","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"mechanism":"follower gaps briefly then re-establishes direct attachment inside 6s during contested move"},
+    {"id":"T0-006","truth":{"qualifying_attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"mechanism":"follower reattaches only after 6s cutoff"},
+    {"id":"T0-007","truth":{"qualifying_attack":true,"bante_follow":"INELIGIBLE","initiative_conflict":"PRESENT"},"mechanism":"solo rider attacks occupied forward position"},
+    {"id":"T0-008","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"INELIGIBLE"},"mechanism":"line leader advances materially into unoccupied forward position"},
+    {"id":"T0-009","truth":{"qualifying_attack":false,"exclusion":"MOMENTARY_WHEEL_OVERLAP"},"mechanism":"brief wheel overlap without sustained forward attack"},
+    {"id":"T0-010","truth":{"qualifying_attack":false,"exclusion":"PURE_TERMINAL_SPRINT_OVERTAKE"},"mechanism":"final sprint overtake only"},
+    {"id":"T0-011","truth":{"qualifying_attack":false,"exclusion":"UNKNOWN_ACTOR_CONTINUITY"},"mechanism":"apparent move but actor continuity intentionally unresolvable"},
+    {"id":"T0-012","truth":{"qualifying_attack":false,"exclusion":"COMMENTARY_ONLY_INFERENCE"},"mechanism":"attack described but no observable sustained movement"},
+    {"id":"T0-013","truth":{"qualifying_attack":false,"exclusion":"NO_SUSTAINED_FORWARD_MOVE"},"mechanism":"leader feints and returns without material forward challenge"},
+    {"id":"T0-014","truth":{"qualifying_attack":true,"bante_follow":"UNKNOWN","initiative_conflict":"PRESENT"},"mechanism":"attack visible and contested; follower visibility intentionally insufficient"},
+    {"id":"T0-015","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"UNKNOWN"},"mechanism":"follower visible; occupied-position contest visibility intentionally insufficient"},
+    {"id":"T0-016","truth":{"qualifying_attack":true,"bante_follow":"UNKNOWN","initiative_conflict":"UNKNOWN"},"mechanism":"attack qualification visible but both six-second downstream windows partly occluded"},
+    {"id":"T0-017","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"mechanism":"incumbent actively blocks while attacker sustains longitudinal overlap"},
+    {"id":"T0-018","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"mechanism":"line fragments during attack; direct follower switches path and reattaches inside 6s"},
+    {"id":"T0-019","truth":{"qualifying_attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"mechanism":"intervening rider enters between attacker and expected follower; no direct recovery"},
+    {"id":"T0-020","truth":{"qualifying_attack":false,"exclusion":"ZERO_ATTACK_RACE"},"mechanism":"race contains positioning changes but no qualifying initiative attack"},
+    {"id":"T0-021","truth":{"qualifying_attacks":2,"anchors":[{"attacker":1,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},{"attacker":4,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"}]},"mechanism":"two temporally distinct independent attacks in one race"},
+    {"id":"T0-022","truth":{"qualifying_attacks":1,"exclusion_for_second_move":"NOT_INDEPENDENT_CONTINUATION"},"mechanism":"one sustained attack contains a second acceleration that must not become another anchor"},
+    {"id":"T0-023","truth":{"qualifying_attack":true,"bante_follow":"PRESENT","initiative_conflict":"PRESENT"},"mechanism":"three-rider line leader attacks, second rider follows, third rider drops; BANTE concerns direct expected follower only"},
+    {"id":"T0-024","truth":{"qualifying_attack":true,"bante_follow":"ABSENT","initiative_conflict":"PRESENT"},"mechanism":"three-rider line: direct follower drops but third rider advances; third rider must not substitute for direct follower"}
+  ],
+  "required_checks": [
+    "Pass A attack discovery is evaluated without downstream labels changing anchors.",
+    "Pass B uses only frozen synthetic Pass A anchors.",
+    "UNKNOWN remains distinct from ABSENT and PRESENT.",
+    "INELIGIBLE remains distinct from UNKNOWN.",
+    "Six-second boundary behavior is tested explicitly.",
+    "Zero-anchor and multi-anchor races are represented.",
+    "Direct-follower semantics are tested separately from any-line-following behavior."
+  ],
+  "next_gate": "Run protocol-conformance scoring on this T0 set, then add T1 observation ambiguity. Do not infer reality prevalence from T0 case frequencies."
+}
