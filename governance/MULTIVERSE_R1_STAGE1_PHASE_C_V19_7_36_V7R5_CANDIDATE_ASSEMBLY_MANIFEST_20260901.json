@@ -1,0 +1,30 @@
+{
+  "version": "V19.7.36-v7r5",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "purpose": "Close v7r4 editable-freeze, Owner-provenance, and duplicate-approval blockers while preserving exact image/Python/Step3 closure.",
+  "required": [
+    {"role":"devcontainer_descriptor","path":".devcontainer/devcontainer.json","type":"json"},
+    {"role":"container_build_recipe","path":".devcontainer/Dockerfile","type":"dockerfile"},
+    {"role":"external_session_gate","path":"governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R5_EXTERNAL_SESSION_GATE_20260901.go","type":"go","build_target":"/usr/local/sbin/multiverse-v36-session-gate-v7r5"},
+    {"role":"pre_lab_mechanical_gate","path":"governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py","type":"python"}
+  ],
+  "external_authority": {
+    "candidate_freeze_prefix": "MULTIVERSE_V7R5_CANDIDATE_FREEZE ",
+    "session_binding_prefix": "MULTIVERSE_V7R5_SESSION_BINDING ",
+    "owner_approval_prefix": "MULTIVERSE_V7R5_OWNER_APPROVAL_RECEIPT ",
+    "freeze_provenance": "owner-attributed chatgpt-codex-connector evidence only; never Owner authority; created_at must equal updated_at and exactly one mapping may exist for the local immutable image identity",
+    "owner_approval_provenance": "first-party Owner-authored GitHub issue comment only: exact owner login and performed_via_github_app must be null; created_at must equal updated_at; connector-origin approval is rejected",
+    "owner_approval_binding": "current CodespaceName + fresh 128-bit challenge + exact image identity + exact candidate head/tree + exact freeze comment + exact phrase + one-shot + Runtime OFF",
+    "approval_uniqueness": "all structurally matching Owner-only approvals are counted without prefiltering by referenced ID; exactly one must exist and its ID must equal the session receipt OwnerApprovalComment",
+    "freshness": "Owner approval must be created at or after trusted GitHub server challenge time and no later than the unedited session-binding receipt",
+    "same_uid_can_issue": false,
+    "candidate_can_issue": false,
+    "connector_can_issue_owner_approval": false
+  },
+  "negative_build_selftest": [
+    "edited_freeze","edited_owner_approval","edited_session_binding","connector_origin_owner_approval","duplicate_owner_approval","wrong_head","wrong_tree","stale_approval","replayed_approval_wrong_challenge","wrong_codespace","wrong_image","duplicate_session_receipt","duplicate_freeze_mapping"
+  ],
+  "owner_burden_note": "If this design is independently accepted, the future one-shot Owner approval must be authored through first-party GitHub UI rather than synthesized by Core/connector. No such approval is requested or authorized by this review-only candidate.",
+  "unchanged_security": {"python_build_actual_use_gate":true,"step3_same_object":true,"pre_oauth_fail_closed":true,"production_mutation":false,"runtime_activation":false}
+}
