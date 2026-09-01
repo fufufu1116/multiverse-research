@@ -1,0 +1,134 @@
+{
+  "record": "KEIRIN_Q_PRE_PROXY_CAUSE_DECOMP_1_PRESPEC_20260901_v1",
+  "status": "RESEARCH_CANDIDATE_FULLY_PRESPECIFIED_BEFORE_EXECUTION",
+  "classification": "RESEARCH_CANDIDATE_NOT_CANONICAL_NOT_ACCEPTED_NOT_PROMOTED",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-parallel-mechanism-affinity-audit-20260901-v1",
+  "owner_scope_gate": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_APPROVAL_Q_PRE_PROXY_CAUSE_DECOMP_1_20260901_v1.json",
+    "blob": "ebe6bc4b65b5fc009f36a880eda95e90b318ee1e",
+    "status_required": "OWNER_EXPLICITLY_APPROVED_EXACT_PRE_ONLY_CAUSE_DECOMPOSITION_DIAGNOSTIC"
+  },
+  "question": "Why did the exact naive PRE line-mean score control worsen frozen C1 in Q-PRE-SHARED-STATE-PROXY-1: repeated own information/self inclusion, observable measurement error, simple aggregation form, or another Synthetic mechanism?",
+  "scientific_success_rule": "Any valid directional diagnosis, including failure to identify one cause, is a scientific result. No diagnostic control is a model candidate and no better proxy is sought.",
+  "fixed_fixtures": {
+    "world": "W1",
+    "block_seed_bases": [20261001, 20262001, 20263001, 20264001],
+    "cases_per_block": 128,
+    "total_cases": 512,
+    "new_seed_selection": false,
+    "post_hoc_slice": false,
+    "result_adaptive_condition_addition": false
+  },
+  "fixed_reference": {
+    "prior_evidence_path": "v3/historical_all_market/research_candidates/KEIRIN_Q_PRE_SHARED_STATE_PROXY_1_EVIDENCE_20260901_v1.json",
+    "prior_evidence_blob": "869f50ec460d0ae41920b960060ea1bbad508d01",
+    "prior_C1_loss": 4.688863790585787,
+    "prior_N1_loss": 4.6877246961344206,
+    "prior_naive_proxy_loss": 4.71288958756397,
+    "prior_naive_proxy_minus_C1": 0.024025796978182967,
+    "prior_oracle_minus_C1": -0.016232235048840415,
+    "mechanism_synthesis_v2_path": "v3/historical_all_market/research_candidates/KEIRIN_PARALLEL_MECHANISM_EVIDENCE_SYNTHESIS_20260901_v2.json",
+    "mechanism_synthesis_v2_blob": "6edb7b259ac0673f5f3c76e1b9bc38109c0cd6c7"
+  },
+  "diagnostic_controls": {
+    "C1_SELF_SCORE_COMPONENT_ONLY": {
+      "role": "CAUSE_DECOMPOSITION_CONTROL_ONLY",
+      "utility_addition": "0.16 * score_i / line_size_i",
+      "meaning": "Exact own-score contribution contained inside the failed naive 0.16*line_mean(score) term. Tests repeated own-information and self-inclusion burden without peers.",
+      "coefficient": 0.16,
+      "PRE_fields": ["score", "line_size"],
+      "latent_skill_access": false,
+      "truth_access": false,
+      "formal_model_candidate": false
+    },
+    "C1_PEER_SCORE_COMPONENT_ONLY_SAME_DENOMINATOR": {
+      "role": "CAUSE_DECOMPOSITION_CONTROL_ONLY",
+      "utility_addition": "0.16 * sum(score_j for same-line j != i) / line_size_i",
+      "meaning": "Own-score-excluded peer contribution using the same original denominator. Tests whether peer observable information itself harms or helps without changing the scale decomposition.",
+      "coefficient": 0.16,
+      "PRE_fields": ["score", "line_group_id", "line_size"],
+      "latent_skill_access": false,
+      "truth_access": false,
+      "formal_model_candidate": false
+    }
+  },
+  "exact_decomposition_identity": "For every rider and case, SELF utility addition + PEER utility addition must equal 0.16 * full line mean PRE score within 1e-12. The PL distribution generated from C1 plus both components must reproduce the prior naive proxy distribution within 1e-12.",
+  "primary_metric": "Mean exact expected ordered-top3 log loss under canonical W1 truth; lower is better.",
+  "reported_deltas": [
+    "SELF_minus_C1",
+    "PEER_minus_C1",
+    "NAIVE_minus_C1",
+    "N1_minus_C1",
+    "SELF_minus_NAIVE",
+    "PEER_minus_NAIVE"
+  ],
+  "sign_tolerance": 1e-12,
+  "prespecified_empirical_classification": {
+    "A_B_SELF_DOUBLE_COUNTING_DOMINANT": "SELF_minus_C1 > 1e-12 AND PEER_minus_C1 <= 1e-12",
+    "A_B_PLUS_C_OR_E_MIXED": "SELF_minus_C1 > 1e-12 AND PEER_minus_C1 > 1e-12",
+    "C_OR_D_PEER_FAILURE_WITHOUT_SELF_HARM": "SELF_minus_C1 <= 1e-12 AND PEER_minus_C1 > 1e-12",
+    "E_NONLINEAR_COMBINATION": "SELF_minus_C1 <= 1e-12 AND PEER_minus_C1 <= 1e-12 AND NAIVE_minus_C1 > 1e-12",
+    "NO_DEGRADATION_REPRODUCED_OR_OTHER": "otherwise"
+  },
+  "cause_mapping_rules": {
+    "A_DOUBLECOUNTING": "Supported together with B, not separately identifiable, if SELF component harms C1 while PEER component does not. If both harm, A may contribute but is insufficient alone.",
+    "B_SELF_CONTAMINATION": "Operationally coupled to A in this exact decomposition because self inclusion is precisely the repeated own-score term. Do not claim A versus B separation beyond this.",
+    "C_MEASUREMENT_NOISE": "Assess with the prespecified analytic Gaussian measurement-error calculation plus empirical SELF/PEER direction. Analytic support is mechanism evidence, not permission to shrink or retune coefficients.",
+    "D_AGGREGATION_BIAS": "Canonical W1 hidden term is an arithmetic mean of latent_skill and observed score equals latent_skill plus zero-mean homoskedastic noise. Therefore arithmetic mean is structurally unbiased for the hidden line mean at the utility-target level; D as wrong mean form is weakened a priori. Nonlinear plug-in effects after PL remain possible and are not labeled away.",
+    "E_OTHER_SYNTHETIC_MECHANISM": "Retain if empirical component pattern is inconsistent with A/B plus the prespecified measurement-error mechanism, or if nonlinear/representation effects remain unresolved."
+  },
+  "analytic_measurement_error_diagnostic": {
+    "source_constants": {
+      "latent_variance": 1.0,
+      "observation_noise_sd": 0.55,
+      "observation_noise_variance": 0.3025,
+      "W1_shared_line_coefficient": 0.16
+    },
+    "fixed_formulas": {
+      "posterior_shrinkage_kappa": "1 / (1 + 0.3025)",
+      "posterior_shared_mean_coefficient_if_linear_Gaussian": "0.16 * kappa",
+      "self_component_incremental_noise_variance_for_line_size_n": "0.3025 * (2*0.16/n + (0.16/n)^2)",
+      "peer_component_added_noise_variance_for_line_size_n": "0.3025 * (0.16^2) * (n-1)/(n^2)",
+      "full_naive_incremental_noise_variance_for_line_size_n": "0.3025 * (2*0.16/n + 0.16^2/n)",
+      "line_mean_signal_to_noise_variance_ratio": "1 / 0.3025"
+    },
+    "interpretation": "Because C1 uses raw observed score at coefficient 1 while the simulator's linear-Gaussian posterior shrinkage is kappa<1, adding an unshrunk positive score aggregate can amplify measurement error. This is an analytic diagnostic only; do not execute a shrinkage-corrected model under this approval."
+  },
+  "secondary_diagnostics": {
+    "chain_rule_decomposition": "Report rank1/rank2/rank3 cross-entropy for C1, N1, SELF, PEER, and reproduced NAIVE reference.",
+    "block_stability": "Report all four fixed blocks; add none.",
+    "line_size_distribution": "Report PRE line sizes only as a mechanical input to the fixed noise formulas; do not post-hoc slice losses by line size.",
+    "no_posthoc_slices": true
+  },
+  "mechanical_pass_criteria": [
+    "PRE contains no latent_skill",
+    "diagnostic control functions contain no latent_skill/world_joint_distribution/_line_strengths/_static_utilities reference",
+    "C1 and N1 reproduce frozen non-diagnostic paths exactly within 1e-12",
+    "NAIVE reference reproduces prior naive proxy aggregate within 2e-14",
+    "SELF+PEER utility additions reproduce NAIVE utility addition within 1e-12",
+    "C1 plus SELF+PEER PL distribution reproduces NAIVE distribution within 1e-12",
+    "all probability objects valid and unit mass",
+    "chain decomposition residual <= 1e-12",
+    "no coefficient fitting/sweep/retuning",
+    "no protected/quarantined/real/economic access",
+    "scientific Segment C scoring count remains 0"
+  ],
+  "forbidden": [
+    "renormalized leave-one-out mean using denominator line_size-1",
+    "residualized or learned proxy",
+    "third diagnostic proxy added after results",
+    "coefficient fitting/sweep/shrinkage execution",
+    "retuning C0/C1/N1",
+    "new seeds or post-hoc slices",
+    "PR15 metrics, RESULT/PAYOUT, ECON_HOLDOUT1000, DEV2000 C rescue, same-lineage B/C rescue",
+    "real/live or untouched validation",
+    "economics/bankroll/ROI",
+    "model promotion/freeze",
+    "external provider contact",
+    "Core Phase C/main/ruleset/Runtime/production authority changes",
+    "Synthetic-to-real-world edge claim"
+  ],
+  "post_result_rule": "Record every result. Do not turn a favorable diagnostic component into a model candidate, do not alter 0.16, do not execute shrinkage correction, do not add a third proxy, and do not auto-expand authorization."
+}
