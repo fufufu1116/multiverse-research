@@ -1,0 +1,59 @@
+{
+  "record": "KEIRIN_S0_POST_200R_NEW_PERIOD_CONFIRMATION_PRESPEC_20260902_v1",
+  "status": "PRESPECIFIED_BEFORE_NEW_PERIOD_OUTCOME_EVALUATION",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_CONFIRMATION_ONLY",
+  "parent_evidence": "KEIRIN_S0_RETROSPECTIVE_200R_REGIME_STABILITY_REPORT_20260902_v1",
+  "locked_model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score",
+    "beta": 0.22260435254784533,
+    "refit": false,
+    "feature_change": false,
+    "venue_specific_adjustment": false,
+    "date_specific_adjustment": false,
+    "class_specific_adjustment": false
+  },
+  "confirmation_target": {
+    "priority": "GENUINELY_LATER_RACE_DATES_THAN_CURRENT_200R_CORPUS_WHERE_LAWFUL_SAVED_OR_PUBLIC_HISTORICAL_PRE_AND_OUTCOME_PAGES_ARE_AVAILABLE",
+    "selection_rule": "acquire in source/storage chronological order without outcome-conditioned inclusion",
+    "minimum_successful_races": 50,
+    "preferred_successful_races": 100,
+    "no_same_evidence_feature_tuning": true
+  },
+  "parser_and_temporal_rules": {
+    "PRE_and_RESULT_tables_separated": true,
+    "RESULT_target_only_never_feature": true,
+    "PAYOUT_excluded": true,
+    "ambiguous_rows": "FAIL_CLOSED",
+    "manual_repair": false,
+    "post_race_information_reconstructed_into_PRE": false
+  },
+  "primary_metrics": [
+    "winner_log_loss",
+    "winner_brier",
+    "ordered_top3_log_loss"
+  ],
+  "reference_baseline": "uniform_within_race",
+  "decision_logic": {
+    "replication_pass": "fixed S0 better than uniform on all three aggregate primary metrics on the new-period confirmation batch",
+    "mixed": "fixed S0 better on some but not all primary metrics; retain negative evidence and do not tune on the same batch",
+    "fail": "fixed S0 fails to beat uniform on winner log loss and winner Brier or exhibits material calibration deterioration",
+    "no_auto_repair": true
+  },
+  "after_replication_only": [
+    "CALIBRATION_RELIABILITY_BINS",
+    "TEMPORAL_BLOCK_STABILITY",
+    "RANKING_METRICS",
+    "TIMESTAMP_PROVEN_MARKET_ONLY_COMPARISON"
+  ],
+  "hard_boundaries": [
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT_AS_FEATURE",
+    "NO_PROTECTED_HOLDOUT_OPENING",
+    "NO_DEV2000_C_RESCUE",
+    "NO_POSTHOC_S0_REFIT_ON_CONFIRMATION_BATCH",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM_FROM_PROBABILITY_SKILL_ALONE",
+    "NO_MODEL_PROMOTION_FROM_THIS_PRESPEC_ALONE"
+  ]
+}
