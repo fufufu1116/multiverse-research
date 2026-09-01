@@ -1,0 +1,64 @@
+name: Keirin Burned Tactical Replacement Frames V1
+
+on:
+  push:
+    branches:
+      - research/keirin-parallel-mechanism-affinity-audit-20260901-v1
+    paths:
+      - '.github/workflows/keirin-burned-tactical-replacement-frames-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  replacement-frames:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact research commit
+        uses: actions/checkout@v4
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Download prespecified R10-R11 official replay sample
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/keirin-replacement/video
+          for r in 10 11; do
+            curl --fail --location --retry 2 --output /tmp/keirin-replacement/video/r${r}.mp4 "https://wm.st.keirin.jp/wm-keirin13/20260806-13-01-${r}-01-00.mp4"
+          done
+      - name: Record source hashes and durations
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          out=[]
+          for p in sorted(Path('/tmp/keirin-replacement/video').glob('*.mp4')):
+              h=hashlib.sha256(p.read_bytes()).hexdigest()
+              dur=subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',str(p)], text=True).strip()
+              out.append({'file':p.name,'sha256':h,'duration_seconds':round(float(dur),3),'bytes':p.stat().st_size})
+          Path('/tmp/keirin-replacement/source_manifest.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Extract one-second human-review frames
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/keirin-replacement/frames
+          for r in 10 11; do
+            mkdir -p /tmp/keirin-replacement/frames/r${r}
+            ffmpeg -hide_banner -loglevel error -i /tmp/keirin-replacement/video/r${r}.mp4 -vf "fps=1,scale=960:-2,drawtext=text='%{pts\\:hms}':x=20:y=20:fontsize=30:fontcolor=white:box=1:boxcolor=black@0.65" -q:v 3 /tmp/keirin-replacement/frames/r${r}/r${r}_%03d.jpg
+          done
+      - name: Upload source manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: burned-tactical-replacement-source-manifest-v1
+          path: /tmp/keirin-replacement/source_manifest.json
+          retention-days: 14
+      - name: Upload one-second frame artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: burned-tactical-replacement-frames-v1
+          path: /tmp/keirin-replacement/frames
+          retention-days: 7
+      - name: Terminal boundary
+        run: echo 'REPLACEMENT_HUMAN_REVIEW_ONLY_NO_AUTOMATED_TACTICAL_INFERENCE_NO_FINISH_TARGET'
