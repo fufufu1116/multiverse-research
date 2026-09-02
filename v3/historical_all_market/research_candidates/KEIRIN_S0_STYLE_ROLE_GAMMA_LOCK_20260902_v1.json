@@ -1,0 +1,36 @@
+{
+  "record":"KEIRIN_S0_STYLE_ROLE_GAMMA_LOCK_20260902_v1",
+  "status":"GAMMA_LOCKED_BEFORE_EVALUATION_HOLDOUT_TARGET_ACCESS",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "prespec_commit":"5ffc7dd6bc74feafe85d98cd490775048218a12a",
+    "fitset_selection_lock_commit":"7258b54af45baabf6a20db4570989c3978b7c28d",
+    "fitset_receipt_commit":"1105c0801ecdf5b98de340e8ecf6a905a3bb942b"
+  },
+  "baseline":{
+    "beta":0.22260435254784533,
+    "stage1":"beta * competition_score",
+    "stage2":"beta * competition_score",
+    "stage3":"beta * competition_score"
+  },
+  "candidate":{
+    "gamma":0.06535649876903948,
+    "role_scalar":{"逃":-1.0,"両":0.0,"追":1.0},
+    "stage1":"beta * competition_score",
+    "stage2":"beta * competition_score + gamma * role_scalar",
+    "stage3":"beta * competition_score + gamma * role_scalar",
+    "stage1_exactly_untouched":true,
+    "free_parameters":1
+  },
+  "fit_evidence_warning":"FIT SET WAS MIXED: L2 WORSENED, L3 IMPROVED, ORDERED TOP3 IMPROVED ONLY SLIGHTLY. HOLDOUT DECIDES; NO RESCUE TUNING.",
+  "evaluation_gate":{
+    "gamma_frozen":true,
+    "holdout_targets_opened_before_this_lock":false,
+    "holdout_dates":"STRICTLY_AFTER_2026-06-30",
+    "minimum_successful_races":50,
+    "selection":"whole accessible meeting/day blocks in chronological source order",
+    "required_point_estimates":["candidate ordered_top3_log_loss < untouched S0","candidate L2 < untouched S0","candidate L3 < untouched S0"],
+    "wider_replication_uncertainty_rule":"95pct race-cluster bootstrap upper bound for candidate-minus-S0 ordered_top3_log_loss < 0"
+  },
+  "hard_boundaries":["GAMMA_FROZEN_NO_REFIT","NO_CHANGE_TO_BASELINE_BETA","NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_FIT_EVAL_OVERLAP","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION","NO_MODEL_PROMOTION"]
+}
