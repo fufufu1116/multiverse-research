@@ -1,0 +1,16 @@
+{
+  "record":"KEIRIN_AOMORI_PRE_RACECARD_TRANSPORT_CHECK_20260902_v1",
+  "status":"OFFICIAL_CLEAN_RACECARD_ENDPOINT_EXISTS_BUT_CURRENT_PDF_NOT_PUBLISHED_AT_CHECK_TIME",
+  "scope":"PRE_EVENT_TRANSPORT_AUDIT_ONLY_NO_RESULT_OR_FORECAST_AUTHORITY",
+  "retrieval_date_jst":"2026-09-02",
+  "page_source":"https://aomorikeirin.com/race_information/",
+  "racecard_pdf_url":"https://aomorikeirin.com/wp-content/themes/aomorikeirin/dist/pdf/runTable.pdf",
+  "page_structure_audit":{"racecard_link_separate_from_prediction_links":true,"prediction_links_opened":false,"odds_links_opened":false,"result_links_opened":false},
+  "pdf_visual_audit":{"pages":1,"observed_message":"現在、このページは公開されておりません。","race_rows_present":false,"forecast_content_present_in_observed_page":false,"result_content_present_in_observed_page":false},
+  "decision":"DO_NOT_TREAT_RACECARD_PDF_AS_LIVE_PRE_SOURCE_YET; retry only before race cutoff and record timestamp. If content appears mixed with forbidden forecast/result material, fail closed.",
+  "line_transport_effect":"NONE; official Aomori legshow live path remains the objective line-observation candidate.",
+  "pre_parser_effect":"NONE; KDreams PRE-only live HTML transport remains separately pending.",
+  "result_access_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_PREDICTION_PDF_OPEN","NO_RESULT_OPEN","NO_ODDS_OPEN","NO_POST_RACE_PRE_RECONSTRUCTION","NO_UNKNOWN_TO_ZERO","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT"]
+}
