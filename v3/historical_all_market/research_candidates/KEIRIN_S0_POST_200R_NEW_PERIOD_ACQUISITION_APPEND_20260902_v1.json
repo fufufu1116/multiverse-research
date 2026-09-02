@@ -1,0 +1,17 @@
+{
+  "record": "KEIRIN_S0_POST_200R_NEW_PERIOD_ACQUISITION_APPEND_20260902_v1",
+  "status": "LOCKED_BEFORE_APPENDED_BLOCK_OUTCOME_EVALUATION",
+  "parent_manifest_commit": "4f59927e8b3fb0b8ddc71a065eafaa2bdeb39fd3",
+  "reason": "Initial locked blocks yielded fewer than 50 safely joinable PRE+RESULT races because inaccessible or ambiguous races were fail-closed; continuation is required by the parent manifest.",
+  "selection_basis": "next accessible whole same-date later-period meeting block; selected for source accessibility and chronological continuity, not observed model performance",
+  "appended_block": {
+    "venue": "小田原",
+    "venue_code": "36",
+    "race_date": "2026-06-22",
+    "selection": "ALL_RACES_IN_RACE_NUMBER_ORDER",
+    "expected_races": 12
+  },
+  "fixed_model": {"name":"S0_SCORE_ONLY_SOFTMAX","feature":"competition_score","beta":0.22260435254784533,"refit":false,"feature_change":false},
+  "stop_rule": "Evaluate the complete appended whole-day block; confirmation aggregate uses every safely joinable race from all locked blocks and does not stop early after a favorable metric crossing.",
+  "hard_boundaries":["NO_RESULT_AS_FEATURE","NO_PAYOUT_AS_FEATURE","NO_POSTHOC_REFIT","NO_OUTCOME_CONDITIONED_INCLUSION","AMBIGUOUS_FAIL_CLOSED","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"]
+}
