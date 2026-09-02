@@ -1,0 +1,85 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_B_COUNT_FITSET_RECEIPT_20260902_v1",
+  "status": "FIT_COMPLETED_FROZEN_CANDIDATE_NOT_PROMOTED",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "ad6a933ed958334c3b480344273b08f69cfff7b8",
+    "fitset_selection_lock_commit": "ecf86f935f08b75ab6819f65f9846c70519e4c12",
+    "beta": 0.22260435254784533
+  },
+  "population": {
+    "race_date": "2026-07-14",
+    "attempted_races": 56,
+    "successful_races": 50,
+    "fail_closed_races": 6,
+    "included_blocks_in_locked_order": [
+      {"venue":"函館","attempted":12,"successful":9,"meeting_identity":"1120260714"},
+      {"venue":"宇都宮","attempted":12,"successful":12,"meeting_identity":"2420260713"},
+      {"venue":"京王閣","attempted":9,"successful":8,"meeting_identity":"2720260713"},
+      {"venue":"岸和田","attempted":11,"successful":9,"meeting_identity":"5620260713"},
+      {"venue":"玉野","attempted":12,"successful":12,"meeting_identity":"6120260714"}
+    ],
+    "fail_closed": [
+      {"race":"函館 2026-07-14 R2","reason":"KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS"},
+      {"race":"函館 2026-07-14 R3","reason":"KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS"},
+      {"race":"函館 2026-07-14 R12","reason":"PRE_COMPETITION_SCORE_0_00_ACTIVE_RIDER"},
+      {"race":"京王閣 2026-07-14 R3","reason":"PRE_COMPETITION_SCORE_0_00_ACTIVE_RIDER"},
+      {"race":"岸和田 2026-07-14 R5","reason":"PRE_COMPETITION_SCORE_0_00_ACTIVE_RIDER"},
+      {"race":"岸和田 2026-07-14 R6","reason":"KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS"}
+    ],
+    "stop_rule_application": "CLOSED_AT_END_OF_TAMANO_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_EXACTLY_50",
+    "later_locked_blocks_unopened": ["広島","佐世保","熊本"]
+  },
+  "model": {
+    "baseline_stage1_stage2_stage3": "beta * competition_score",
+    "candidate_stage1": "beta * competition_score",
+    "candidate_stage2_stage3": "beta * competition_score + gamma * B after actual prior finisher removal",
+    "B_transformation": "RAW_B_COUNT_UNCHANGED",
+    "only_fitted_parameter": "gamma"
+  },
+  "optimization": {
+    "objective": "MEAN_ORDERED_TOP3_LOG_LOSS_EQUIVALENT_TO_L2_PLUS_L3_WITH_L1_INVARIANT",
+    "solver_check": "CONVEX_ONE_DIMENSIONAL_SCORE_EQUATION_ROOT",
+    "gamma": 0.0817874186543189,
+    "mean_gradient_at_solution": -1.3322676295501878e-17
+  },
+  "fit_metrics": {
+    "untouched_s0": {
+      "L1": 1.5275710415567931,
+      "L2": 1.615718273550983,
+      "L3": 1.7101122876518786,
+      "ordered_top3_log_loss": 4.853401602759655
+    },
+    "candidate": {
+      "L1": 1.5275710415567931,
+      "L2": 1.5157774262819501,
+      "L3": 1.6878345904842802,
+      "ordered_top3_log_loss": 4.731183058323023
+    },
+    "candidate_minus_s0": {
+      "L1": 0.0,
+      "L2": -0.09994084726903285,
+      "L3": -0.02227769716759842,
+      "ordered_top3_log_loss": -0.12221854443663194
+    }
+  },
+  "invariance_checks": {
+    "stage1_formula_identical": true,
+    "winner_probability_difference": 0.0,
+    "baseline_beta_unchanged": true,
+    "gamma2_gamma3_split_used": false,
+    "post_fit_sign_flip_used": false,
+    "B_transformation_changed": false
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score","B"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_post_result_repair": false,
+    "source": "KDreams public retrospective race detail/result pages"
+  },
+  "interpretation": "Fit-set improvement is descriptive only. Gamma must be locked before any independent evaluation target extraction and no same-fit rescue tuning is permitted."
+}
