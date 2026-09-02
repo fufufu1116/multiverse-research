@@ -1,0 +1,91 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v1",
+  "status": "LOCKED_PRE_EVENT_RESULT_BLIND_MEETING_DAY_LEVEL_RACE_IDS_PENDING_SAFE_CAPTURE",
+  "scope": "RESEARCH_CANDIDATE_PROSPECTIVE_TRANSPORT_AND_FUTURE_AFFINITY_ELIGIBILITY_NO_MODEL_PROMOTION",
+  "lock_timestamp_jst": "2026-09-02T21:43:19+09:00",
+  "lock_parent_head": "c12de095bcb2f50003832deaa6fa2461718ee451",
+  "selection_timestamp_relation": "LOCKED_ON_2026-09-02_BEFORE_SELECTED_2026-09-03_MEETINGS_BEGIN",
+  "official_schedule_evidence": [
+    {
+      "organization": "JKA / KEIRIN.JP",
+      "title": "KEIRIN.JP top page / grade race listing",
+      "url": "https://www.keirin.jp/pc/top",
+      "observed_claim": "Aomori G3 Michinoku Kinen Zenchodori-hai is scheduled 2026-09-03 through 2026-09-06.",
+      "status": "CURRENT",
+      "retrieval_date_jst": "2026-09-02",
+      "confidence": "HIGH"
+    },
+    {
+      "organization": "JKA / KEIRIN.JP",
+      "title": "KEIRIN.JP rider profile scheduled appearance corroboration",
+      "url": "https://www.keirin.jp/pc/racerprofile?snum=013589",
+      "observed_claim": "Takeo F1 is listed as scheduled 2026-09-03 through 2026-09-05.",
+      "status": "CURRENT",
+      "retrieval_date_jst": "2026-09-02",
+      "confidence": "HIGH_FOR_MEETING_DATE_EXISTENCE"
+    },
+    {
+      "organization": "JKA / KEIRIN.JP",
+      "title": "September 2026 race schedule",
+      "url": "https://www.keirin.jp/pc/raceschedule?scym=09&scyy=2026",
+      "observed_claim": "September schedule page shows Aomori and Takeo activity on day 3.",
+      "status": "CURRENT",
+      "retrieval_date_jst": "2026-09-02",
+      "confidence": "HIGH"
+    }
+  ],
+  "selected_blocks": [
+    {
+      "race_date": "2026-09-03",
+      "venue": "青森",
+      "meeting_grade": "G3",
+      "meeting_name": "みちのく記念　善知鳥杯争奪戦",
+      "meeting_dates": "2026-09-03/2026-09-06",
+      "membership_rule": "ALL_OFFICIAL_DAY1_RACES_WHOSE_RACE_IDS_AND_PRE_PAGES_CAN_BE_CAPTURED_BEFORE_EACH_RACE_CUTOFF; no outcome-conditioned inclusion or race cherry-picking",
+      "race_ids": "PENDING_PRE_ONLY_CAPTURE"
+    },
+    {
+      "race_date": "2026-09-03",
+      "venue": "武雄",
+      "meeting_grade": "F1",
+      "meeting_name": "OFFICIAL_MEETING_NAME_NOT_YET_CAPTURED",
+      "meeting_dates": "2026-09-03/2026-09-05",
+      "membership_rule": "ALL_OFFICIAL_DAY1_RACES_WHOSE_RACE_IDS_AND_PRE_PAGES_CAN_BE_CAPTURED_BEFORE_EACH_RACE_CUTOFF; no outcome-conditioned inclusion or race cherry-picking",
+      "race_ids": "PENDING_PRE_ONLY_CAPTURE"
+    }
+  ],
+  "population_freeze_rules": [
+    "Venue/day blocks are frozen now; do not remove races later because of results, model errors, difficult line structure, venue behavior, or missing desired signal.",
+    "Transport/source failures remain in the manifest as failures/UNKNOWN and are not silently dropped.",
+    "Exact race IDs and active fields may be appended only from PRE-event source capture before the applicable race cutoff.",
+    "If an exact race has already started or a PRE timestamp cannot be proven, mark that race TIMING_UNSAFE and do not reconstruct PRE after the event.",
+    "No RESULT, PAYOUT, odds, human forecast, marks/comments/tips, or provider narabiyoso may be used to define membership.",
+    "This lock does not authorize outcome extraction, model fitting, threshold selection, feature admission, or promotion."
+  ],
+  "parser_binding": {
+    "path": "tools/keirin_kdreams_pre_only_parser_v1.py",
+    "selftest": "KEIRIN_PRE_ONLY_PARSER_SELFTEST_20260902_v1.json",
+    "live_future_html_transport_status": "PENDING_NOT_YET_PROVEN"
+  },
+  "intended_research_use": {
+    "bank_lane": "PRE transport and source-support audit; predictive RESULT evaluation requires a separate prespecified gate.",
+    "line_lane": "prospective line-observation transport may target the same frozen blocks, but line labels require the separate blinded duplicate-annotation prespec.",
+    "protected_holdout": false
+  },
+  "result_access_authorized_now": false,
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "RESULT_TARGET_ONLY_NEVER_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_IN_OUTCOME_MODEL",
+    "NO_HUMAN_FORECAST_AS_TRUTH",
+    "NO_NARABIYOSO",
+    "NO_POST_RACE_PRE_RECONSTRUCTION",
+    "UNKNOWN_NOT_ZERO",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_S0_MUTATION",
+    "NO_MODEL_PROMOTION",
+    "NO_RUNTIME_OR_MAIN_MUTATION",
+    "NO_REAL_MONEY_EXECUTION"
+  ]
+}
