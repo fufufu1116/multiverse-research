@@ -42,6 +42,7 @@ jobs:
           export MULTIVERSE_PRELAB_DOCKER_TAG="multiverse-v7r7-proof:${GITHUB_SHA}"
           launcher='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go'
           status_addon='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_ATTACH_READY_STATUS_ADDON_20260901.go'
+          adapter='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py'
           grep -F 'runtime.LockOSThread()' "${launcher}"
           grep -F 'lockedTID := syscall.Gettid()' "${launcher}"
           grep -F 'os.ReadFile("/proc/thread-self/status")' "${launcher}"
@@ -56,7 +57,10 @@ jobs:
           grep -F 'v7r7SetFSUIDExact(0)' "${status_addon}"
           grep -F 'v7r7SecureStatusDir = "/run/multiverse-v36-v7r7"' "${status_addon}"
           grep -F 'v7r7FailedClosedLine = "gate_state=FAILED_CLOSED"' "${status_addon}"
-          grep -F 'if werr := v7r7WriteSecure(secure, v7r7FailedClosedLine); werr != nil' "${status_addon}"
+          grep -F 'func v7r7TerminalFailClosedSync()' "${status_addon}"
+          grep -F 'v7r7BindSecureStatus(secure)' "${status_addon}"
+          grep -F 'PHASE_C_V19_7_36_V7R7_STATUS_TERMINAL_SYNC_SELFTEST_PASS' "${status_addon}"
+          grep -F 'v7r7TerminalFailClosedSync()' "${adapter}"
           grep -F 'ui_mirror=NONAUTHORITATIVE_STATIC' "${status_addon}"
           grep -F 'syscall.Openat' "${status_addon}"
           grep -F 'syscall.Renameat' "${status_addon}"
@@ -66,7 +70,7 @@ jobs:
           printf 'PRELAB_STATUS_FDPATH_SOURCE_GATE_PASS=true\n'
           printf 'PRELAB_STATUS_TERMINAL_FAIL_CLOSED_SOURCE_GATE_PASS=true\n'
 
-          python3 governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py --selftest governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go
+          python3 "${adapter}" --selftest governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go
           python3 governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py
           docker image inspect "${MULTIVERSE_PRELAB_DOCKER_TAG}" >/dev/null
 
@@ -150,6 +154,7 @@ jobs:
             grep -Fx "timer_state=STARTING_TRUSTED_GITHUB_SERVER_TIME" "${status}"
             grep -Fx "runtime=OFF" "${status}"
             grep -Fx "gate_state=FAILED_CLOSED" "${status}"
+            test "$(grep -Fxc "gate_state=FAILED_CLOSED" "${status}")" -eq 1
           '
           printf 'PRELAB_STATUS_ROOT_AUTHORITY_PASS=true\n'
           printf 'PRELAB_STATUS_TERMINAL_FAIL_CLOSED_PASS=true\n'
