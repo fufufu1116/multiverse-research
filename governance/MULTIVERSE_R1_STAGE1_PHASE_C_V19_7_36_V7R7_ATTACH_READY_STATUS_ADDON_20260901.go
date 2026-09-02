@@ -110,17 +110,17 @@ func v7r7Fatal(original *os.File, code string) {
 	os.Exit(92)
 }
 
-func v7r7PromoteWaitingSecureAt(secure *os.File, pendingPath, authoritativePath string) error {
+func v7r7PromoteWaitingSecureAt(secure *os.File, pendingPath, authoritativePath string, expectedUID uint32) error {
 	v7r7SecureStatusMu.Lock()
 	defer v7r7SecureStatusMu.Unlock()
 	if secure == nil || v7r7SecureStatusCurrent != secure || v7r7SecureStatusTerminal { return fmt.Errorf("secure-promote-state") }
 
 	var currentStat syscall.Stat_t
-	if err := syscall.Fstat(int(secure.Fd()), &currentStat); err != nil || currentStat.Uid != 0 || currentStat.Mode&syscall.S_IFMT != syscall.S_IFREG || currentStat.Mode&0777 != 0400 {
+	if err := syscall.Fstat(int(secure.Fd()), &currentStat); err != nil || currentStat.Uid != expectedUID || currentStat.Mode&syscall.S_IFMT != syscall.S_IFREG || currentStat.Mode&0777 != 0400 {
 		return fmt.Errorf("secure-promote-fd-class")
 	}
 	var pendingStat syscall.Stat_t
-	if err := syscall.Lstat(pendingPath, &pendingStat); err != nil || pendingStat.Uid != 0 || pendingStat.Mode&syscall.S_IFMT != syscall.S_IFREG || pendingStat.Mode&0777 != 0400 {
+	if err := syscall.Lstat(pendingPath, &pendingStat); err != nil || pendingStat.Uid != expectedUID || pendingStat.Mode&syscall.S_IFMT != syscall.S_IFREG || pendingStat.Mode&0777 != 0400 {
 		return fmt.Errorf("secure-promote-pending-class")
 	}
 	if currentStat.Dev != pendingStat.Dev || currentStat.Ino != pendingStat.Ino {
@@ -143,7 +143,7 @@ func v7r7PromoteWaitingSecureAt(secure *os.File, pendingPath, authoritativePath 
 }
 
 func v7r7PromoteWaitingSecure(secure *os.File) error {
-	return v7r7PromoteWaitingSecureAt(secure, v7r7SecureStatusPendingPath, v7r7SecureStatusPath)
+	return v7r7PromoteWaitingSecureAt(secure, v7r7SecureStatusPendingPath, v7r7SecureStatusPath, 0)
 }
 
 func v7r7MirrorUntilWaiting(r, w *os.File, originalFD int, secure *os.File, promote func(*os.File) error, done chan<- struct{}) {
@@ -367,7 +367,7 @@ func v7r7Selftest() {
 	sourceR, sourceW, _ := os.Pipe()
 	_ = syscall.Dup2(int(sourceW.Fd()), int(os.Stdout.Fd()))
 	done := make(chan struct{})
-	promote := func(f *os.File) error { return v7r7PromoteWaitingSecureAt(f, pending, authoritative) }
+	promote := func(f *os.File) error { return v7r7PromoteWaitingSecureAt(f, pending, authoritative, uint32(os.Geteuid())) }
 	go v7r7MirrorUntilWaiting(sourceR, sourceW, int(captureW.Fd()), secure, promote, done)
 	fmt.Println(good)
 	fmt.Println(v7r7WaitingLine)
