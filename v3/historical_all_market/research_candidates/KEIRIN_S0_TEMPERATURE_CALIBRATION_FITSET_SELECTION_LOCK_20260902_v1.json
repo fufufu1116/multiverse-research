@@ -1,0 +1,22 @@
+{
+  "record": "KEIRIN_S0_TEMPERATURE_CALIBRATION_FITSET_SELECTION_LOCK_20260902_v1",
+  "status": "LOCKED_BEFORE_OUTCOME_EXTRACTION_FOR_FITSET",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "binding_prespec_commit": "7c9056be88e7b4ff166470ff192b45b024f8cb25",
+  "selection_basis": "KDreams 2026-06-28 public開催一覧, same-date source listing order, whole meeting/day blocks",
+  "race_date": "2026-06-28",
+  "blocks_in_locked_order": [
+    {"order":1,"venue":"取手","meeting":"水戸黄門賞","day":"2日目","attempt_all_races":12,"racecard_id":"23202606270200"},
+    {"order":2,"venue":"小倉","meeting":"ＬＯＶＥ　ＦＭ杯×ウィンチケ杯","day":"最終日","attempt_all_races":12,"racecard_id":"81202606260300"},
+    {"order":3,"venue":"広島","meeting":"オッズパーク杯","day":"最終日","attempt_all_races":7,"racecard_id":"62202606260300"},
+    {"order":4,"venue":"岐阜","meeting":"チャリロト杯","day":"2日目","attempt_all_races":7,"racecard_id":"43202606270200"},
+    {"order":5,"venue":"伊東","meeting":"リンカイ！　伊東泉カップ","day":"初日","attempt_all_races":7,"racecard_id":"37202606280100"},
+    {"order":6,"venue":"玉野","meeting":"前検日コメならウィンチケット杯","day":"初日","attempt_all_races":7,"racecard_id":"61202606280100"},
+    {"order":7,"venue":"佐世保","meeting":"第６回ヒラマサカップ","day":"初日","attempt_all_races":7,"racecard_id":"85202606280100"}
+  ],
+  "total_attempted_if_all_blocks_processed": 59,
+  "stop_rule": "Do not stop mid-block. Process the locked blocks in order until >=50 successful races; because the locked same-date sequence totals 59 attempted, any started block is completed. Unneeded later locked blocks may remain unopened only if >=50 successful was reached at the end of the immediately prior block.",
+  "fit_use": "FIT_T_ONLY_AFTER_FAIL_CLOSED_FILTERING",
+  "holdout_boundary": "Calibration evaluation holdout must be strictly after the end of the fit set and must remain unopened until T is locked.",
+  "hard_boundaries": ["NO_101R_FIT","NO_FIT_EVAL_OVERLAP","NO_FEATURE_ADDITION","NO_PL_CHANGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","FAIL_CLOSED_ON_AMBIGUITY","NO_MODEL_PROMOTION"]
+}
