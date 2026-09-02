@@ -1,0 +1,48 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_B_COUNT_EVALSET_SELECTION_LOCK_20260902_v1",
+  "status": "LOCKED_BEFORE_EVALUATION_TARGET_EXTRACTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "ad6a933ed958334c3b480344273b08f69cfff7b8",
+    "fitset_selection_lock_commit": "ecf86f935f08b75ab6819f65f9846c70519e4c12",
+    "fitset_receipt_commit": "586a644933e227a93d5ce769d900e88640bf19e9",
+    "gamma_lock_commit": "86482b6599471877df16998cfe6424aab16a607d",
+    "beta": 0.22260435254784533,
+    "gamma": 0.0817874186543189
+  },
+  "selection_basis": "KDreams 2026-07-17 public racecard daily listing order; whole meeting/day blocks; no evaluation RESULT-target-conditioned inclusion",
+  "daily_listing_url": "https://keirin.kdreams.jp/racecard/2026/07/17/",
+  "race_date": "2026-07-17",
+  "eligibility_rule": "STRICTLY_AFTER_2026-07-16_AND_EXCLUDE_ALL_B_COUNT_FIT_MEETING_IDENTITIES",
+  "excluded_fit_meeting_identities": ["1120260714","2420260713","2720260713","5620260713","6120260714"],
+  "blocks_in_locked_order": [
+    {"order":1,"venue":"いわき平","attempt_all_races":9,"racecard_id":"13202607160200","meeting_identity":"1320260716","meeting_end":"2026-07-18"},
+    {"order":2,"venue":"弥彦","attempt_all_races":11,"racecard_id":"21202607170100","meeting_identity":"2120260717","meeting_end":"2026-07-19"},
+    {"order":3,"venue":"取手","attempt_all_races":7,"racecard_id":"23202607150300","meeting_identity":"2320260715","meeting_end":"2026-07-17"},
+    {"order":4,"venue":"西武園","attempt_all_races":11,"racecard_id":"26202607160200","meeting_identity":"2620260716","meeting_end":"2026-07-18"},
+    {"order":5,"venue":"松阪","attempt_all_races":12,"racecard_id":"47202607160200","meeting_identity":"4720260716","meeting_end":"2026-07-18"},
+    {"order":6,"venue":"奈良","attempt_all_races":9,"racecard_id":"53202607160200","meeting_identity":"5320260716","meeting_end":"2026-07-18"},
+    {"order":7,"venue":"高知","attempt_all_races":12,"racecard_id":"74202607170100","meeting_identity":"7420260717","meeting_end":"2026-07-20"}
+  ],
+  "total_attempted_if_all_locked_blocks_processed": 71,
+  "stop_rule": "Process locked blocks in order. Never stop mid-block. Close at first block boundary where successful_races >= 50; later locked blocks remain unopened.",
+  "evaluation_use": "EVALUATE_FROZEN_GAMMA_ONLY",
+  "minimum_successful_races": 50,
+  "target_extraction_started_before_lock": false,
+  "eligible_features": ["competition_score","B"],
+  "frozen_parameters": {"beta":0.22260435254784533,"gamma":0.0817874186543189},
+  "bootstrap": {"unit":"race","replicates":20000,"seed":20260902,"interval":"percentile_95pct"},
+  "hard_boundaries": [
+    "NO_GAMMA_REFIT",
+    "NO_CHANGE_TO_BASELINE_BETA",
+    "NO_GAMMA2_GAMMA3_SPLIT",
+    "NO_B_TRANSFORMATION_CHANGE",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "FAIL_CLOSED_ON_COMPETITION_SCORE_0_00_OR_BAD_B_OR_SCRATCH_OR_CANCELLATION_OR_AMBIGUITY",
+    "NO_SAME_HOLDOUT_RESCUE_TUNING",
+    "NO_MODEL_PROMOTION"
+  ]
+}
