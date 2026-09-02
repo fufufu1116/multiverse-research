@@ -1,0 +1,45 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_S_COUNT_GAMMA_LOCK_20260902_v1",
+  "status": "GAMMA_LOCKED_BEFORE_INDEPENDENT_EVALUATION_TARGET_EXTRACTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "7f10d0f7c9cd13470e51c504b20cc0ba91fdd615",
+    "fitset_selection_lock_commit": "354ade361aae7c2393ec9af15bc7b7152662695c",
+    "fitset_receipt_commit": "45cfc7d2934a9a581789c171129ad00e9bc2d34d"
+  },
+  "frozen_parameters": {
+    "beta": 0.22260435254784533,
+    "gamma": 0.02629565071288781
+  },
+  "model": {
+    "stage1": "beta * competition_score",
+    "stage2": "beta * competition_score + gamma * S after actual stage1 winner removal",
+    "stage3": "beta * competition_score + gamma * S after actual stage1 and stage2 removals",
+    "S_transformation": "RAW_S_COUNT_UNCHANGED"
+  },
+  "fit_population": {
+    "race_date": "2026-07-18",
+    "successful_races": 56,
+    "attempted_races": 62,
+    "included_meeting_identities": ["1320260716", "2120260717", "2620260716", "3820260718", "4320260718", "4720260716"],
+    "included_venues": ["いわき平", "弥彦", "西武園", "静岡", "岐阜", "松阪"],
+    "later_locked_blocks_unopened": ["奈良", "高知"]
+  },
+  "evaluation_constraints": {
+    "earliest_eligible_race_date": "2026-07-19",
+    "exclude_all_fit_meeting_identities": true,
+    "no_gamma_refit": true,
+    "no_gamma_sign_flip": true,
+    "no_gamma2_gamma3_split": true,
+    "no_S_transformation_change": true,
+    "no_beta_change": true,
+    "no_same_holdout_rescue_tuning": true
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score", "S"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "human_forecast_used": false
+  }
+}
