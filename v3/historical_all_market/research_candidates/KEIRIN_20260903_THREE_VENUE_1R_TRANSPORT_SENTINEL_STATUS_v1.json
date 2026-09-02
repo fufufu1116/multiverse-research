@@ -1,0 +1,16 @@
+{
+  "record":"KEIRIN_20260903_THREE_VENUE_1R_TRANSPORT_SENTINEL_STATUS_v1",
+  "status":"THREE_OF_THREE_PRE_EVENT_SENTINEL_WITNESSES_FROZEN_TRANSPORT_PASS_IDENTITY_NOT_FULL_PASS_NO_RESULT_AUTHORITY",
+  "scope":"PRE_ONLY_TRANSPORT_STATUS_NO_MODEL_OR_RESULT_AUTHORITY",
+  "sentinel_lock":"KEIRIN_20260903_THREE_VENUE_1R_TRANSPORT_SENTINEL_LOCK_v1.json",
+  "fallback_transport_prespec":"KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
+  "sentinels":[
+    {"venue":"富山","circumference_m":333,"race_id":"4620260903010001","witness":"KEIRIN_TOYAMA_1R_PRE_SEARCH_SURFACE_PILOT_20260903_v1.json","pre_rows":7,"transport_status":"PRE_EVENT_WITNESS_FROZEN","identity_status":"7_OF_7_EXACT_OFFICIAL_IDENTITY_CANDIDATES_BUT_OFFICIAL_SAME_RACE_ASSIGNMENT_UNVERIFIED_FAIL_CLOSED","identity_gate":"KEIRIN_TOYAMA_1R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json"},
+    {"venue":"青森","circumference_m":400,"race_id":"1220260903010001","witness":"KEIRIN_AOMORI_1R_PRE_ALLOWLIST_WITNESS_20260903_v1.json","pre_rows":9,"transport_status":"PRE_EVENT_WITNESS_FROZEN","identity_status":"FULL_RIDER_IDENTITY_GATE_NOT_YET_EXECUTED"},
+    {"venue":"武雄","circumference_m":400,"race_id":"8420260903010001","witness":"KEIRIN_TAKEO_1R_PRE_ALLOWLIST_WITNESS_20260903_v1.json","pre_rows":7,"transport_status":"PRE_EVENT_WITNESS_FROZEN","identity_status":"FULL_RIDER_IDENTITY_GATE_NOT_YET_EXECUTED"}
+  ],
+  "mechanical_summary":{"sentinels_selected":3,"sentinels_pre_witness_frozen_before_race":3,"transport_coverage_rate":1.0,"total_pre_rows":23,"circumference_levels":[333,400],"result_or_payout_observed":false,"predictive_subset":false},
+  "decision":{"pre_transport_sentinel":"PASS_FOR_PRE_EVENT_WITNESS_FEASIBILITY","raw_source_immutability":"PARTIAL_ONLY_CURRENT_ENVIRONMENT_BLOCKS_RAW_BYTES","rider_identity":"NOT_FULL_PASS","bank_affinity_result":"NOT_ESTABLISHED","line_role_affinity_result":"NOT_ESTABLISHED","result_access":"CLOSED"},
+  "next":["Preserve the 31-race population unchanged.","Continue pre-cutoff snapshots under the frozen fallback rule where feasible.","Run official rider identity gates without weakening same-event/race corroboration.","Do not open RESULT until a separate predictive result prespec and all required source/identity gates pass."],
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_LINE_AS_TRUTH","NO_POST_RACE_PRE_RECONSTRUCTION","NO_MEMBERSHIP_CHANGE","NO_MODEL_FIT","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
