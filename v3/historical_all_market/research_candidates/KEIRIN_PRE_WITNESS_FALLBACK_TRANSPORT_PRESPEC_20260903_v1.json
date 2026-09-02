@@ -1,0 +1,16 @@
+{
+  "record":"KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1",
+  "status":"PREOUTCOME_FROZEN_FALLBACK_TRANSPORT_PRESPEC_RESEARCH_ONLY",
+  "scope":"RESEARCH_PRE_TRANSPORT_ONLY_NO_MODEL_PROMOTION",
+  "freeze_timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "reason":"Direct raw KDreams HTML persistence is blocked in the current execution environment, while public PRE race-card surfaces are available before race start. Preserve prospective evidence without post-race reconstruction or outcome-driven source choice.",
+  "preoutcome_calibration_binding":{"race":"2026-09-03 Toyama 1R","kdreams_pilot":"KEIRIN_TOYAMA_1R_PRE_SEARCH_SURFACE_PILOT_20260903_v1.json","oddspark_field_crosscheck":"KEIRIN_ODDSPARK_PRE_FIELD_MAPPING_CROSSCHECK_20260903_v1.json","riders_crosschecked":7,"outcomes_seen":false},
+  "fallback_primary_surface":{"provider":"OddsPark public race card","allowlist":["race date","venue","race number","scheduled start","car number","rider name","prefecture source display","period","class","style","competition score","nige","makuri","sashi","mark count","S","H","B"],"forbidden":["prediction marks","human comments","line/formation forecast","AI predictions","numeric odds","popularity","result","payout"]},
+  "competition_score_compatibility_rule":{"source_display":"OddsPark three-decimal score when present","research_compatible_kdreams_display":"truncate toward zero to exactly two decimal places; never round","preoutcome_evidence":"Toyama 1R all 7 riders: truncation-to-2 reproduces the independently captured KDreams two-decimal score display","no_postoutcome_change":true},
+  "tactical_field_rule":{"source_sequence_after_rates":["nige","makuri","sashi","mark_count","S","H","B"],"compatibility":"nige/makuri/sashi/mark_count/S/B matched Toyama 1R KDreams allowlist values; H is additional and excluded from legacy S0 feature compatibility unless separately prespecified"},
+  "race_snapshot_acceptance":["Race membership must already be frozen independently of outcomes.","PRE snapshot artifact must be committed before that race's frozen capture cutoff/start boundary.","Snapshot must contain source URL, retrieval session timestamp, exact race ID, strict allowlist values and a deterministic content hash.","No result/payout values may be observed or included.","Any human forecast/market content co-surfaced by the page is firewalled and omitted.","Missing/ambiguous rows fail closed; never repair after race.","Source precision/transformation is fixed by this prespec and cannot be changed after outcomes."],
+  "authority":{"transport_evidence":"ALLOW_RESEARCH_WITNESS_AFTER_RACE_SNAPSHOT_ACCEPTANCE","S0_or_model_feature_admission":"NO_AUTOMATIC_AUTHORITY","rider_specific_affinity_result":"STILL_REQUIRES_RIDER_IDENTITY_GATE_AND_SEPARATE_PREDICTIVE_RESULT_PRESPEC","model_promotion":"FORBIDDEN"},
+  "current_toyama_snapshot":"KEIRIN_TOYAMA_DAY1_PRE_ALLOWLIST_WITNESS_SNAPSHOT_20260903_v1.json",
+  "result_access_authorized_by_this_prespec":false,
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_LINE_AS_REALITY_TRUTH","NO_POST_RACE_PRE_RECONSTRUCTION","NO_SOURCE_TRANSFORM_RETUNING_AFTER_OUTCOME","NO_S0_BETA_CHANGE","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
