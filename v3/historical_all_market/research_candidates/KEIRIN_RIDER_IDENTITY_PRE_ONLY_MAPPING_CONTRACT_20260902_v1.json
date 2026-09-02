@@ -1,0 +1,19 @@
+{
+  "record":"KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v1",
+  "status":"PRESPECIFIED_MAPPING_CONTRACT_NO_RESULT_ACCESS_OR_MODEL_AUTHORITY",
+  "scope":"RESEARCH_DATA_IDENTITY_ONLY",
+  "parent_source_audit":"KEIRIN_RIDER_IDENTITY_SOURCE_AUDIT_20260902_v1.json",
+  "purpose":"Create a deterministic, result-blind rider identity mapping layer from retrospective PRE race-card names to official KEIRIN.JP registration numbers before rider-level affinity research.",
+  "input":{"historical_pre_identity":"rider_name_raw from bound retrospective PRE parser","official_identity_source":"KEIRIN.JP rider search/profile keyed by registration number","result_or_payout_allowed":false},
+  "normalization_v1":["Unicode NFKC normalization","trim leading/trailing whitespace","collapse internal ASCII/full-width whitespace to one separator","preserve kanji characters exactly after NFKC","do not phonetic-guess or manually substitute characters"],
+  "candidate_resolution_order":["exact normalized full-name search","if exactly one active/current official profile exact normalized full-name match exists, record as CANDIDATE_MATCH not final historical truth","verify historical PRE prefecture/class only if those fields are present in the same PRE artifact and comparison semantics are valid","if more than one candidate, zero candidates, contradictory evidence, or suspected renamed rider: FAIL_CLOSED"],
+  "important_current_profile_limit":"Current active/profile status cannot prove historical participation by itself. Registration-number mapping is accepted only when the historical PRE identity and official identity evidence are non-ambiguous under the frozen rules; time-varying profile fields are never backfilled as historical features.",
+  "required_output_fields":["mapping_version","historical_pre_source_url","historical_pre_source_hash_if_available","race_date","rider_name_raw","rider_name_normalized","official_registration_number","official_profile_url","official_profile_name","mapping_status","mapping_evidence","retrieval_timestamp_jst"],
+  "allowed_mapping_status":["EXACT_SINGLE_MATCH","FAIL_CLOSED_NO_MATCH","FAIL_CLOSED_MULTIPLE_MATCH","FAIL_CLOSED_CONTRADICTION","FAIL_CLOSED_NAME_CHANGE_OR_IDENTITY_UNCERTAIN"],
+  "population_lock_rule":"The complete mapping table for a proposed fit/evaluation population must be generated from PRE-only identities and frozen by content hash before any target RESULT is opened.",
+  "missingness_rule":"Unmapped rider causes the race to fail closed for rider-specific affinity models; do not encode unmapped identity as zero, average rider, venue-only substitute, or anonymous reusable bucket unless separately prespecified before RESULT.",
+  "audit_metrics":["races_attempted","races_all_riders_mapped","races_fail_closed_identity","riders_unique","registration_numbers_unique","duplicate_normalized_names","multiple_match_count","no_match_count","contradiction_count","mapping_rate_by_date","mapping_rate_by_venue","mapping_rate_by_class"],
+  "no_feature_admission":["current_home_bank","current_preferred_circumference","current_preferred_velodrome","current_class","current_score","current_style"],
+  "next_gate":"RUN_PRE_ONLY_MAPPING_READINESS_ON_A_PROPOSED_POST_FIREWALL_POPULATION_ONLY_AFTER_FRESH_BURNED_LEDGER_REFRESH; RESULT_REMAINS_CLOSED",
+  "hard_boundaries":["NO_RESULT_FOR_IDENTITY_RESOLUTION","NO_MANUAL_NAME_GUESS","NO_CURRENT_PROFILE_BACKFILL","NO_UNKNOWN_TO_ZERO","NO_PAYOUT","NO_ODDS","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION"]
+}
