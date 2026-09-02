@@ -1,0 +1,50 @@
+{
+  "schema_version": "MULTIVERSE_AUTOMATION_ORCHESTRATOR_MVP_V2_REMEDIATION_EVIDENCE_v1",
+  "status": "CANDIDATE_SELF_REMEDIATION_NOT_INDEPENDENT_PASS",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "target_pr": 82,
+  "candidate_branch": "agent/automation-orchestrator-mvp-20260902-v1",
+  "supersedes_review_head": "0e434f1451b58ef25f659816c0cffa474cd3f5cf",
+  "supersession_reason": [
+    "v1 demo candidate_head was bound to precursor Sprint head rather than exact MVP review head",
+    "v1 did not prove replay-safe behavior for crash after worker return before orchestrator checkpoint",
+    "v1 allowed caller widening of transient/diff/execution candidate-local ceilings",
+    "v1 execution-time check occurred after worker return rather than hard timeout"
+  ],
+  "v2_remediation": {
+    "exact_candidate_head_binding": true,
+    "binding_verifier_required": true,
+    "implementation_head_binding_required": true,
+    "lab_audit_reviewed_head_binding_required": true,
+    "nonempty_review_evidence_required": true,
+    "stable_operation_key": true,
+    "worker_replay_safe_contract_required": true,
+    "durable_fixture_operation_dedupe": true,
+    "post_worker_precheckpoint_crash_injection": true,
+    "child_process_hard_timeout": true,
+    "parent_heartbeat_during_role_execution": true,
+    "all_candidate_local_budget_widening_denied": true,
+    "bounded_owner_gate_summary": true
+  },
+  "frozen_limits": {
+    "semantic_retry_budget_max": 2,
+    "transient_retry_budget_max": 3,
+    "diff_budget_lines_max": 500,
+    "execution_budget_seconds_max": 300,
+    "heartbeat_timeout_seconds_max": 300,
+    "cost_budget_microusd_exact": 0,
+    "identical_failure_fingerprint_consecutive_limit": 2
+  },
+  "local_constructed_v2_pretest": {
+    "unit_failure_injection_tests": 10,
+    "result": "PASS",
+    "exact_github_head_evidence": false,
+    "interpretation": "implementer-side pretest only; cannot substitute for exact-head Independent Lab re-execution"
+  },
+  "exact_head_gate": "python automation/mechanical_gate_orchestrator_mvp_v2.py --expected-head <FRESH_PR82_HEAD> --canonical-main <FRESH_MAIN>",
+  "independent_lab_required": true,
+  "independent_auditor_required_after_lab_pass": true,
+  "owner_copy_paste_required": false,
+  "production_authority_granted": false,
+  "runtime": "OFF"
+}
