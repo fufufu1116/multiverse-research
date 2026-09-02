@@ -1,0 +1,22 @@
+{
+  "record":"KEIRIN_BANK_AFFINITY_PROSPECTIVE_ACQUISITION_CALENDAR_20260903_v1",
+  "status":"SIX_VENUE_BALANCED_CIRCUMFERENCE_ACQUISITION_PRESELECTED_PREOUTCOME_RESULT_CLOSED",
+  "scope":"RESEARCH_ACQUISITION_DESIGN_ONLY_NO_MODEL_FIT_OR_RESULT_AUTHORITY",
+  "freeze_timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "bindings":["KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v2.json","KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260904_v1.json","KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260910_v1.json","reality_knowledge/KEIRIN_SELECTED_BANK_PHYSICS_PROSPECTIVE_REGISTRY_20260903_v1.json"],
+  "blocks":[
+    {"date":"2026-09-03","venue":"富山","circumference_m":333,"phase":"P0_TRANSPORT_AND_SUPPORT","result_access":false},
+    {"date":"2026-09-03","venue":"青森","circumference_m":400,"phase":"P0_TRANSPORT_AND_SUPPORT","result_access":false},
+    {"date":"2026-09-03","venue":"武雄","circumference_m":400,"phase":"P0_TRANSPORT_AND_SUPPORT","result_access":false},
+    {"date":"2026-09-04","venue":"防府","circumference_m":333,"phase":"P1_INDEPENDENT_TRANSPORT_AND_SUPPORT","result_access":false},
+    {"date":"2026-09-04","venue":"豊橋","circumference_m":400,"phase":"P1_INDEPENDENT_TRANSPORT_AND_SUPPORT","result_access":false},
+    {"date":"2026-09-10","venue":"奈良","circumference_m":333.33,"phase":"P2_LATER_INDEPENDENT_TRANSPORT_AND_SUPPORT","result_access":false}
+  ],
+  "balance":{"distinct_333m_venues":3,"distinct_400m_venues":3,"total_distinct_venues":6,"all_selected_before_any_sep3_outcome":true},
+  "analysis_assignment":{"fit_population":"NOT_ASSIGNED","evaluation_population":"NOT_ASSIGNED","reason":"Do not choose fit/eval allocation until clean PRE/identity/support metrics are frozen; allocation itself must be prespecified before RESULT. No block may be assigned based on observed outcome performance."},
+  "support_gates_before_any_predictive_prespec":["PRE capture completeness/missingness by race and venue","official rider registration-number mapping rate and fail-closed reasons","rider recurrence/support across circumference levels","class/grade and rider-frequency distribution","bank effective-source status","venue-circumference confounding assessment","no current profile preference backfill"],
+  "interpretation":"The acquisition calendar solves a design weakness (single 333m venue) but is not evidence of a predictive bank-affinity effect.",
+  "bank_affinity_result":"EVIDENCE_PENDING_NOT_ESTABLISHED",
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_ACCESS","NO_POST_RESULT_BLOCK_REALLOCATION","NO_SOURCE_RESCUE_AFTER_OUTCOME","NO_ODDS_OR_HUMAN_FORECAST_FEATURE","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
