@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_LEGSHOW_MULTI_VENUE_TRANSPORT_READINESS_20260903_v1",
+  "status": "ONE_VENUE_EXPLICIT_LEGSHOW_PASS_SECOND_VENUE_LEGSHOW_CONTENT_NOT_YET_VERIFIED_TRANSPORT_GATE_BLOCKED",
+  "scope": "PRE_EVENT_SOURCE_TRANSPORT_READINESS_ONLY_NO_LINE_LABEL_OR_RESULT_AUTHORITY",
+  "binding_prespec": "KEIRIN_LEGSHOW_PROSPECTIVE_BLINDED_LINE_ANNOTATION_PRESPEC_20260902_v1.json",
+  "purpose": "Check before any Sep3 outcome whether the required >=20-race, >=2-venue objective rider-introduction/legshow transport pilot can be executed without substituting provider-predicted line information.",
+  "source_checks": [
+    {
+      "venue": "青森",
+      "race_date": "2026-09-03",
+      "organizer_source": "https://aomorikeirin.com/live/",
+      "organizer_status": "CURRENT_DAY1_LIVE_PAGE",
+      "explicit_legshow_statement": "ライブ配信は開催当日の1R脚見せ-最終Rまでのサービス",
+      "objective_pre_line_transport_status": "PASS_SOURCE_PATH_EXISTS",
+      "frozen_day1_races": 12,
+      "important_limit": "Actual segment capture and duplicate annotation have not yet been executed."
+    },
+    {
+      "venue": "富山",
+      "race_date": "2026-09-03",
+      "organizer_source": "https://www.toyama-keirin.com/information?p=8",
+      "organizer_status": "CURRENT_MEETING_NOTICE_VERIFIES_YOUTUBE_AND_OTHER_BROADCAST_PATHS",
+      "explicit_legshow_statement": null,
+      "objective_pre_line_transport_status": "PARTIAL_LIVE_EXISTS_LEGSHOW_CONTENT_NOT_VERIFIED",
+      "frozen_day1_races": 7,
+      "important_limit": "Do not infer that the broadcast contains rider-introduction/legshow formation merely because an official YouTube live feed exists."
+    },
+    {
+      "venue": "武雄",
+      "race_date": "2026-09-03",
+      "organizer_evidence": [
+        "https://www.keirin.city.takeo.lg.jp/news/archives/88",
+        "organizer publication history also states official live broadcasts from 1R in prior meetings"
+      ],
+      "organizer_status": "OFFICIAL_LIVE_SERVICE_EXISTENCE_SUPPORTED_CURRENT_EXACT_SEP3_LEGSHOW_SEMANTICS_NOT_VERIFIED",
+      "explicit_legshow_statement": null,
+      "objective_pre_line_transport_status": "PARTIAL_LIVE_EXISTS_ORGANIZER_SERVICE_LEGSHOW_CONTENT_NOT_VERIFIED",
+      "frozen_day1_races": 12,
+      "important_limit": "KDreams/provider race pages expose a live-video path but provider expected-line content is forbidden and does not prove objective legshow capture."
+    }
+  ],
+  "pilot_gate": {
+    "prespecified_minimum_races": 20,
+    "prespecified_minimum_venues": 2,
+    "aomori_explicit_eligible_races": 12,
+    "second_explicit_eligible_venue_confirmed": false,
+    "minimum_gate_pass_now": false,
+    "reason": "Only Aomori has an explicit current organizer statement that live coverage starts at 1R legshow. Toyama and Takeo have live-broadcast evidence but legshow/rider-introduction formation content is not yet positively verified."
+  },
+  "decision": "KEEP_LINE_ROLE_SOURCE_TRANSPORT_BLOCKED_FOR_MULTI_VENUE_PILOT; DO_NOT_WEAKEN_TWO_VENUE_GATE",
+  "next": [
+    "Before the relevant race cutoff, inspect organizer live feed only for whether an objective rider-introduction/legshow segment exists; do not open result/payout/odds/forecast surfaces.",
+    "If a second venue is positively verified, freeze exact race/segment capture receipt before labeling and retain all transport failures.",
+    "Run independent duplicate annotation only after source eligibility is frozen."
+  ],
+  "current_line_affinity_result": "EVIDENCE_PENDING_NOT_ESTABLISHED",
+  "result_access_authorized": false,
+  "feature_admission": false,
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "NO_PROVIDER_NARABIYOSO_AS_TRUTH",
+    "NO_HUMAN_FORECAST_OR_MARKS",
+    "NO_RESULT_OR_PAYOUT_DURING_CAPTURE",
+    "NO_POST_RACE_RECONSTRUCTION",
+    "NO_UNKNOWN_TO_ZERO",
+    "NO_GATE_WEAKENING_TO_FORCE_PASS",
+    "NO_MODEL_FIT",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_REAL_MONEY_EXECUTION"
+  ]
+}
