@@ -1,0 +1,185 @@
+{
+  "artifact": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ATTACH_HELPER_RECOVERY_20260902_v3",
+  "version": "v3",
+  "date_jst": "2026-09-02",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "pr": 74,
+  "supersedes_governance_only": {
+    "artifact": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ATTACH_HELPER_RECOVERY_20260902_v2",
+    "head": "070feefe16412242d8023d65cdda4d868bcf465a",
+    "auditor_fix_required_comment": 5506313038,
+    "core_fix_routing_comment": 5506337596,
+    "reason": "v2 did not freeze or attest the ambient interactive-shell environment for a later manual helper invocation; TLS certificate trust, Go debug/resolver behavior, and related network semantics could therefore differ from reviewed postAttach execution even though proxy and bearer-token paths were independently excluded by helper source."
+  },
+  "source_reviewed_candidate": {
+    "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-prearm-github-time-preflight-remediation-v1",
+    "head": "c5d214f2e4ddb314dff35adbe076e69b6a73af97",
+    "tree": "2ec1c33b7a25a864ca8157f428fcbc8f24c06de1",
+    "reviewed_image_identity_sha256": "e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+    "actions_run": 33591523672,
+    "actions_job": 100126327651,
+    "helper_source_blob": "518b106c618439d11b421bb6a7c831a50cb80806"
+  },
+  "live_target": {
+    "codespace": "ideal-succotash-wv967q77v6xph5w54",
+    "local_head_observed": "c5d214f2e4ddb314dff35adbe076e69b6a73af97",
+    "codespaces_env_observed": true,
+    "helper_path": "/usr/local/bin/multiverse-v36-ui-ready-v7r7",
+    "helper_observed_uid_gid_mode": "0:0:0555",
+    "image_identity_sha256_observed": "e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+    "ready_observed_before_any_manual_helper": "ABSENT",
+    "manual_arm_observed": false,
+    "oauth_observed": false,
+    "source_live_evidence_comments": [5505635742, 5505722446, 5505786848]
+  },
+  "bounded_recovery_candidate": {
+    "purpose": "Allow one separately reviewed manual invocation of the already-reviewed non-arm UI READY helper in the already-created exact Codespace, but execute it with a mechanically sanitized process environment instead of inheriting the interactive shell environment.",
+    "exact_command": "/usr/bin/env -i CODESPACES=true CODESPACE_NAME=ideal-succotash-wv967q77v6xph5w54 /usr/local/bin/multiverse-v36-ui-ready-v7r7",
+    "invocation_program": "/usr/bin/env",
+    "invocation_program_arguments": [
+      "-i",
+      "CODESPACES=true",
+      "CODESPACE_NAME=ideal-succotash-wv967q77v6xph5w54",
+      "/usr/local/bin/multiverse-v36-ui-ready-v7r7"
+    ],
+    "helper_arguments": [],
+    "run_as": "codespace",
+    "sudo": false,
+    "shell_wrapper": false,
+    "interactive_shell_environment_inherited_by_helper": false,
+    "sanitized_environment_exact": {
+      "CODESPACES": "true",
+      "CODESPACE_NAME": "ideal-succotash-wv967q77v6xph5w54"
+    },
+    "all_other_environment_variables_removed_before_helper_exec": true,
+    "explicitly_removed_by_exact_empty_environment_semantics_includes": [
+      "SSL_CERT_FILE",
+      "SSL_CERT_DIR",
+      "GODEBUG",
+      "HTTP_PROXY",
+      "HTTPS_PROXY",
+      "ALL_PROXY",
+      "NO_PROXY",
+      "REQUEST_METHOD",
+      "RES_OPTIONS",
+      "LOCALDOMAIN",
+      "HOSTALIASES",
+      "GITHUB_TOKEN",
+      "GH_TOKEN"
+    ],
+    "network_behavior": "UNCHANGED_HELPER_HTTP_TRANSPORT_PROXY_NIL_TLS_MIN_1_2_DIRECT_CREDENTIALLESS_PUBLIC_GITHUB_PREFLIGHT; PROCESS_ENVIRONMENT_SANITIZED_TO_EXACT_TWO_VARIABLE_ALLOWLIST",
+    "helper_source_or_binary_change": false,
+    "image_change": false,
+    "devcontainer_change": false,
+    "manual_arm_launcher_change": false,
+    "session_gate_change": false,
+    "status_lifecycle_change": false,
+    "oauth_or_token_authority_added": false,
+    "timer_behavior": "NOT_STARTED_BY_HELPER",
+    "challenge_behavior": "NOT_STARTED_BY_HELPER",
+    "runtime": "OFF"
+  },
+  "invocation_environment_review_target": {
+    "reason_for_new_review": "The exact /usr/bin/env -i invocation form changes v2's no-wrapper/no-env-override operator contract and must therefore be reviewed as a new governance/execution-form target even though the helper binary and image are unchanged.",
+    "environment_semantics": "env -i starts the helper with an initially empty environment and then sets only the two explicit assignments before exec.",
+    "no_ambient_tls_trust_override": true,
+    "no_ambient_go_debug_override": true,
+    "no_ambient_proxy_or_credential_variable": true,
+    "helper_source_still_independently_enforces_proxy_nil": true,
+    "helper_source_still_adds_no_authorization_header": true,
+    "absolute_helper_path": true,
+    "path_lookup_for_helper": false,
+    "absolute_env_program_path": true
+  },
+  "mandatory_fresh_preconditions_before_any_later_manual_helper_authorization": {
+    "core_fresh_rebind_candidate_main_pr_receipts": true,
+    "target_codespace_name_exact": "ideal-succotash-wv967q77v6xph5w54",
+    "local_head_exact": "c5d214f2e4ddb314dff35adbe076e69b6a73af97",
+    "CODESPACES_current_shell_value_must_equal_true_before_invocation": true,
+    "CODESPACE_NAME_current_shell_value_must_equal_exact_target_before_invocation": true,
+    "image_identity_sha256_exact": "e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+    "helper_uid_gid_mode_exact": "0:0:0555",
+    "env_program_path_exact": "/usr/bin/env",
+    "env_program_must_be_root_owned_regular_executable_non_group_world_writable": true,
+    "ready_must_be_absent_before_first_and_only_manual_invocation": true,
+    "arm_lock_must_be_absent": true,
+    "authoritative_session_status_must_be_absent": true,
+    "runtime_must_be_off": true,
+    "exact_command_must_be_used_without_prefix_suffix_alias_function_redirection_pipe_or_additional_assignment": true
+  },
+  "one_shot_semantics": {
+    "manual_helper_invocations_authorized_by_future_owner_gate_max": 1,
+    "authority_consumed_on_first_invocation_regardless_of_result": true,
+    "retry_without_new_review": false,
+    "success_does_not_authorize_arm": true,
+    "success_definition": "SUCCESS_ONLY_IF_EXACT_HELPER_PASS_AND_EXACT_READY_PLUS_EXACT_CONTROL_PAIR_ALL_VERIFY",
+    "success_required_evidence": [
+      "PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_PASS",
+      "prearm_github_preflight=PASS",
+      "exact READY file exists and binds the same Codespace name and image identity",
+      "exact CONTROL file contains PHASE_C_V19_7_36_V7R7_UI_READY and binds the same Codespace name and image identity",
+      "timer_state=NOT_STARTED",
+      "arm_state=NOT_STARTED",
+      "next_action=RETURN_TO_CORE_BEFORE_ARM",
+      "runtime=OFF"
+    ],
+    "failure_definition": "ANY_INVOCATION_WITHOUT_THE_COMPLETE_SUCCESS_DEFINITION_IS_A_CONSUMED_FAILURE",
+    "failure_state_invariant": "READY MAY BE ABSENT OR PRESENT; CONTROL MAY REMAIN PLACEHOLDER OR OTHERWISE FAIL EXACT SUCCESS VERIFICATION. NO STRONGER FILE-ABSENCE CLAIM IS MADE.",
+    "failure_mechanical_ceiling": "UNCHANGED_ARM_LAUNCHER_REQUIRES_EXACT_READY_AND_EXACT_CONTROL_PAIR; PARTIAL_STATE_DOES_NOT_GRANT_ARM_AUTHORITY",
+    "failure_required_actions": [
+      "do not invoke helper again",
+      "do not run manual arm",
+      "do not begin OAuth or device authorization",
+      "do not continue session or Runtime path",
+      "perform only read-only classification of READY and CONTROL state if Core requests it",
+      "mark this Codespace permanently nonreusable for helper, arm, OAuth, session and Runtime under this recovery chain"
+    ],
+    "failure_cleanup_or_retirement_mutation_authorized": false,
+    "after_success": "RETURN_TO_CORE_FOR_FRESH_REBIND_OF_EXACT_READY_AND_EXACT_CONTROL_PAIR_AND_SEPARATE_MANUAL_ARM_GOVERNANCE",
+    "after_failure": "RETURN_TO_CORE_WITH_CONSUMED_FAILURE; CODESPACE_EVIDENCE_ONLY_NONREUSABLE; NO_RETRY"
+  },
+  "root_cause_and_equivalence_ceilings": {
+    "postAttach_nonexecution_vs_unretained_output_vs_failed_preflight": "UNPROVEN",
+    "current_real_positive_github_preflight": "UNPROVEN",
+    "docker_actions_prove_current_real_codespaces_positive_preflight": false,
+    "sanitized_manual_invocation_is_not_claimed_equivalent_until_independent_lab_and_auditor_pass": true
+  },
+  "independent_review_required": {
+    "lab": true,
+    "auditor_after_lab_pass": true,
+    "new_owner_gate_after_auditor_pass": true,
+    "specific_attack_points": [
+      "whether /usr/bin/env -i with only exact CODESPACES and CODESPACE_NAME removes ambient TLS certificate-trust, Go debug/resolver, proxy and credential environment influence before helper exec",
+      "whether absolute /usr/bin/env plus absolute helper path adds any unreviewed executable/path-lookup surface",
+      "whether root-owned executable-class Fresh precondition for /usr/bin/env is sufficient in the exact reviewed image and non-root Codespace",
+      "whether helper source with Proxy:nil and TLS minimum 1.2 remains credentialless/direct under the sanitized environment",
+      "whether exact fresh preconditions and no-prefix/suffix rule prevent alias/function/wrapper/environment injection",
+      "whether v2 complete success pair, partial-state arm block, consumed failure, no retry and permanent nonreuse semantics remain sound",
+      "whether helper still cannot start challenge, timer, arm, OAuth, session gate, production or Runtime",
+      "whether postAttach root cause and current positive real-Codespaces preflight remain explicitly unproven",
+      "whether any token, proxy, credential, capability, root, production, main/ruleset, workflow, secret or Runtime authority is added"
+    ]
+  },
+  "retired_nonauthority": {
+    "v1_governance_failure_state_claims": "RETIRED",
+    "v2_manual_interactive_environment_equivalence_claim": "RETIRED_UNPROVEN"
+  },
+  "live_authority_now": {
+    "manual_ui_ready_helper": false,
+    "manual_arm": false,
+    "manual_arm_retry": false,
+    "new_codespace": false,
+    "oauth": false,
+    "device_authorization": false,
+    "step3": false,
+    "step4_or_apply": false,
+    "production_mutation": false,
+    "main_or_ruleset_mutation": false,
+    "merge": false,
+    "workflow_dispatch": false,
+    "secret_or_writer_key_operation": false,
+    "runtime_activation": false
+  }
+}
