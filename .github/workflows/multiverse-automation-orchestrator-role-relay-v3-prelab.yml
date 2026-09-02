@@ -1,0 +1,61 @@
+name: MULTIVERSE Automation Orchestrator Role Relay v3 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-orchestrator-mvp-v3-durable-role-relay-20260903-v1
+    paths:
+      - 'automation/orchestrator_role_relay_v3.py'
+      - 'automation/test_orchestrator_role_relay_v3.py'
+      - 'automation/test_orchestrator_role_relay_v3_integration.py'
+      - 'automation/mechanical_gate_orchestrator_role_relay_v3.py'
+      - 'automation/README_ORCHESTRATOR_ROLE_RELAY_V3.md'
+      - '.github/workflows/multiverse-automation-orchestrator-role-relay-v3-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind exact head and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test -n "${FRESH_MAIN}"
+          echo "RELAY_V3_EXACT_HEAD=${EXACT_HEAD}" >> "${GITHUB_ENV}"
+          echo "RELAY_V3_FRESH_MAIN=${FRESH_MAIN}" >> "${GITHUB_ENV}"
+          echo "RELAY_V3_EXACT_HEAD=${EXACT_HEAD}"
+          echo "RELAY_V3_FRESH_MAIN=${FRESH_MAIN}"
+
+      - name: Exact-head v3 mechanical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/mechanical_gate_orchestrator_role_relay_v3.py \
+            --expected-head "${RELAY_V3_EXACT_HEAD}" \
+            --canonical-main "${RELAY_V3_FRESH_MAIN}"
+
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "RELAY_V3_WORKFLOW_DISPATCH_USED=false"
+          echo "RELAY_V3_CONTENTS_WRITE_PERMISSION=false"
+          echo "RELAY_V3_SECRETS_USED=false"
+          echo "RELAY_V3_LIVE_PROVIDER_CONTACT=false"
+          echo "RELAY_V3_PROVIDER_SPEND=false"
+          echo "RELAY_V3_PRODUCTION_AUTHORITY_GRANTED=false"
+          echo "RELAY_V3_CORE_ADOPTION_AUTHORITY=false"
+          echo "RELAY_V3_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "RELAY_V3_RUNTIME=OFF"
