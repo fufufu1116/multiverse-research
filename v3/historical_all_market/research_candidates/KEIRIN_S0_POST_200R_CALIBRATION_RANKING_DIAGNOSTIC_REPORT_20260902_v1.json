@@ -1,0 +1,27 @@
+{
+  "record":"KEIRIN_S0_POST_200R_CALIBRATION_RANKING_DIAGNOSTIC_REPORT_20260902_v1",
+  "status":"DIAGNOSTIC_SIGNAL_WITH_CALIBRATION_HETEROGENEITY_NO_RECALIBRATION",
+  "scope":"DESCRIPTIVE_FIXED_MODEL_DIAGNOSTIC_NO_TUNING",
+  "parent_prespec_commit":"b16e46f6d16b0a0708f87804e37439e263d2ee09",
+  "population":{"races":55,"car_level_binary_records":383,"same_as_replication_report":true},
+  "locked_model":{"name":"S0_SCORE_ONLY_SOFTMAX","beta":0.22260435254784533,"refit":false,"recalibration":false},
+  "calibration_bins":[
+    {"range":"[0.00,0.10)","n":164,"mean_p":0.059645589033437516,"empirical_win_rate":0.07317073170731707,"absolute_gap":0.013525142673879553},
+    {"range":"[0.10,0.15)","n":74,"mean_p":0.12388470482210669,"empirical_win_rate":0.17567567567567569,"absolute_gap":0.051790970853569},
+    {"range":"[0.15,0.20)","n":50,"mean_p":0.17296598338051555,"empirical_win_rate":0.24,"absolute_gap":0.06703401661948444},
+    {"range":"[0.20,0.25)","n":44,"mean_p":0.22423143226301542,"empirical_win_rate":0.11363636363636363,"absolute_gap":0.11059506862665179},
+    {"range":"[0.25,0.30)","n":17,"mean_p":0.2649527232211367,"empirical_win_rate":0.058823529411764705,"absolute_gap":0.206129193809372,"interpretive_flag":"INSUFFICIENT_N_FOR_PRIMARY_FLAG"},
+    {"range":"[0.30,0.40)","n":24,"mean_p":0.3406958700455987,"empirical_win_rate":0.3333333333333333,"absolute_gap":0.007362536712265388},
+    {"range":"[0.40,1.00]","n":10,"mean_p":0.48552758772282034,"empirical_win_rate":0.4,"absolute_gap":0.08552758772282032,"interpretive_flag":"INSUFFICIENT_N_FOR_PRIMARY_FLAG"}
+  ],
+  "calibration_summary":{"weighted_ECE_absolute_gap":0.04909846513135548,"max_absolute_gap_among_bins_n_ge_20":0.11059506862665179,"warning":"NON_MONOTONE_RELIABILITY_PATTERN_AND_MATERIAL_LOCAL_GAP_OBSERVED","no_posthoc_merge":true},
+  "ranking":{"top1_winner_hit_rate":0.23636363636363636,"top2_winner_coverage":0.38181818181818183,"mean_winner_probability_rank":3.2818181818181817,"mean_reciprocal_winner_rank":0.4585714285714285,"hit_rate_not_promotion_metric":true},
+  "temporal_block_note":"Previously reported fixed blocks remain unchanged: Kurume 2026-06-23 is negative on winner log loss and Brier; favorable blocks are not merged to hide it.",
+  "interpretation":{
+    "replication_pass_retroactively_overturned":false,
+    "reason":"Parent prespec supplied no predeclared numeric threshold for material calibration deterioration; diagnostic therefore records a calibration warning rather than inventing a posthoc fail threshold.",
+    "same_55R_recalibration_allowed":false,
+    "next_need":"separate future-period data for calibration-method selection or recalibration confirmation"
+  },
+  "hard_boundaries":["NO_RECALIBRATION_ON_SAME_55R","NO_REFIT","NO_FEATURE_CHANGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION_FROM_THIS_DIAGNOSTIC"]
+}
