@@ -1,0 +1,130 @@
+{
+  "record": "OFFICIAL_SOURCE_REGISTRY_DEEP_AUDIT_DELTA_20260902_v1",
+  "status": "RESEARCH_CANDIDATE_REALITY_KNOWLEDGE_DELTA_NO_MODEL_AUTHORITY",
+  "retrieval_date_jst": "2026-09-02",
+  "base_registry": "OFFICIAL_SOURCE_REGISTRY_20260902_v1",
+  "verification_rule": "VERIFIED only when substantive body text was retrieved; iframe/index-only evidence is not sufficient.",
+  "fresh_read_head_before_audit": "5abe9ebdbedb47269fcaeb859b9389d5e2ff4c0b",
+  "upgrades": [
+    {
+      "source_id": "JKA_JUDGING",
+      "organization": "公益財団法人JKA",
+      "title": "競輪の審判の要領",
+      "url": "https://www.keirin-autorace.or.jp/documents/www/regulation/keirin/yoryo_shinpan.pdf",
+      "verification_status": "VERIFIED_BODY_READ_PDF_WITH_VISUAL_PAGE_CHECK",
+      "historical_current": "CURRENT",
+      "effective_or_revision_date": "LAST_AMENDED_2025-11-18",
+      "exact_evidence_locations": [
+        "PDF printed p.70: 競技規則第11条 states riders must not engage in runaway/excessive restraint and must race with intent to win and full effort; classified as 不適正走行（敢闘義務違反行為）.",
+        "PDF printed p.99: 競技規則第14条第2項斜行・蛇行 section contains 本規定を適用しない基準〔免責事由〕 with unavoidable-interference/avoidance conditions.",
+        "PDF printed p.108: 競技規則第70条(4) and current judging criteria explicitly define 周回誤認 disqualification conditions; the same page begins 競技規則第73条 race-non-establishment conditions.",
+        "PDF early chapter, printed p.4 area: 計測員 measures 風向、風速、気温等 as a formal judging-operation role."
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source_id": "KEIRINJP_REGISTERED_BICYCLE_BODY",
+      "organization": "JKA / KEIRIN.JP",
+      "title": "登録自転車一覧表",
+      "url": "https://www.keirin.jp/pc/dfw/portal/guest/data/bicycle/bicycle.html",
+      "verification_status": "VERIFIED_BODY_READ",
+      "historical_current": "CURRENT_LIST_SNAPSHOT",
+      "effective_or_revision_date": "PAGE_STATES_2025-11-07_CURRENT",
+      "exact_evidence_locations": [
+        "Body heading and date at page lines 2-5.",
+        "Rows explicitly separate steel frames, carbon frames, and carbon frames for 250 competition only, with registered brand/manufacturer listings."
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source_id": "KEIRINJP_CERTIFIED_PARTS_BODY",
+      "organization": "JKA / KEIRIN.JP",
+      "title": "認定部品製造業者一覧表",
+      "url": "https://keirin.jp/pc/dfw/portal/guest/data/buhin/buhin.html",
+      "verification_status": "VERIFIED_BODY_READ",
+      "historical_current": "CURRENT_LIST_SNAPSHOT",
+      "effective_or_revision_date": "DIRECT_BODY_RETRIEVAL_STATES_2026-05-11_CURRENT",
+      "exact_evidence_locations": [
+        "Body heading/date at page lines 2-5.",
+        "Certified categories include hanger parts, headset parts, crank, sprocket, hub, seatpost, handlebar/stem, pedals, toe clips, straps, chain adjusters, chains, saddles, spokes, rims, wheels and tires, with manufacturer rows."
+      ],
+      "confidence": "HIGH_FOR_DIRECT_BODY; EFFECTIVE_DATE_SHOULD_BE_RECHECKED_IF_USED_OPERATIONALLY"
+    },
+    {
+      "source_id": "KEIRINJP_RACECARD_GUIDE_EXTENDED_FIELDS",
+      "organization": "JKA / KEIRIN.JP",
+      "title": "出走表を見る｜競輪ガイド",
+      "url": "https://www.keirin.jp/pc/static/beginner/basics/racecard.html",
+      "verification_status": "VERIFIED_BODY_READ",
+      "historical_current": "CURRENT_GUIDE",
+      "effective_or_revision_date": "UNKNOWN",
+      "exact_evidence_locations": [
+        "Racecard guide defines 脚質 as 逃/両/追.",
+        "競走得点 displayed on racecard is described as based on the most recent four months.",
+        "決まり手 fields 逃/捲/差/マ are defined as historical 1st/2nd-place methods.",
+        "B is final-half-lap back-stretch lead count; H is one-lap-remaining home-stretch lead count; S is count of quickly taking position behind the pacer after the start.",
+        "勝率/2連対率/3連対率 and recent results are explicitly described as racecard information."
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source_id": "BICYCLE_RACING_LAW_ENFORCEMENT_RULE_TIE_DETAILS",
+      "organization": "Government ministerial rule hosted by JKA",
+      "title": "自転車競技法施行規則",
+      "url": "https://keirin-autorace.or.jp/regulation/hourei/sekoukisoku.html",
+      "verification_status": "VERIFIED_BODY_READ",
+      "historical_current": "CURRENT",
+      "effective_or_revision_date": "LAST_AMENDED_2025-05-23_METI_ORDINANCE_NO_44",
+      "exact_evidence_locations": [
+        "Art.19 enumerates current legal voting-system categories/subtypes.",
+        "Art.20 defines winning combinations for single/place, exacta-like, trifecta, quinella-like, wide and trio-like systems.",
+        "Art.21 contains explicit tie-ranking handling for wide and three-winner systems."
+      ],
+      "confidence": "HIGH"
+    }
+  ],
+  "new_reality_findings": [
+    {
+      "finding_id": "OFFICIAL_ENVIRONMENT_MEASUREMENT_EXISTS_IN_RACE_OPERATION",
+      "claim": "Wind direction, wind speed and temperature are formal measured states in current JKA judging operations.",
+      "model_implication": "REALITY-SUPPORTED but prediction-time public availability remains unresolved; do not auto-admit weather features."
+    },
+    {
+      "finding_id": "OFFICIAL_PRE_TACTICAL_HISTORY_IS_RICHER_THAN_CURRENT_S0",
+      "claim": "Current official racecard documentation defines H/B/S and 逃/捲/差/マ historical tactical-positioning summaries in addition to style and competition score.",
+      "model_implication": "MISSING/UNKNOWN_IMPORTANCE in S0; separate historical point-in-time provenance and low-DOF prespec required before any experiment."
+    },
+    {
+      "finding_id": "EQUIPMENT_REGISTRATION_HAS_FORMAL_CURRENT_CATEGORIES",
+      "claim": "Current KEIRIN.JP publishes registered frame categories and certified component-manufacturer categories.",
+      "model_implication": "Reality existence is resolved, but rider-level historical equipment identity/change timestamp is still unresolved for feature use."
+    }
+  ],
+  "resolved_from_v1_unresolved": [
+    "CURRENT_KANTO_DUTY_WORDING",
+    "CURRENT_LAP_MISCOUNT_HANDLING",
+    "REGISTERED_BICYCLE_DETAIL_BODY",
+    "CERTIFIED_PARTS_DETAIL_BODY"
+  ],
+  "not_resolved_by_this_delta": [
+    "COMPETITION_SCORE_FORMULA_MAPPING",
+    "CURRENT_NATIONWIDE_BANK_GEOMETRY_REGISTRY",
+    "HOME_BANK_HISTORICAL_PIT_SOURCE",
+    "OBJECTIVE_LINE_SOURCE",
+    "JMA_POINT_IN_TIME_PUBLICATION_CONTRACT",
+    "GEAR_BICYCLE_HISTORICAL_COMPLETENESS",
+    "DMM_SUPPORT_31167_BODY",
+    "BET_TYPE_CONSUMER_LABEL_ENUMERATION",
+    "TIE_SETTLEMENT_ALL_MARKETS",
+    "DIGITAL_TWIN_EXACT_CURRENT_SCHEMA"
+  ],
+  "hard_boundaries": [
+    "NO_MODEL_CHANGE",
+    "NO_FEATURE_ADMISSION",
+    "NO_BETA_CHANGE",
+    "NO_CALIBRATION_FIT",
+    "NO_PROTECTED_HOLDOUT_ACCESS",
+    "NO_RESULT_OR_PAYOUT_AS_FEATURE",
+    "NO_PRODUCTION_OR_MAIN_MUTATION"
+  ]
+}
