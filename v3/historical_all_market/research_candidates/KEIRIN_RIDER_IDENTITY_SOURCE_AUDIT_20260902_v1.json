@@ -1,0 +1,64 @@
+{
+  "record":"KEIRIN_RIDER_IDENTITY_SOURCE_AUDIT_20260902_v1",
+  "status":"CURRENT_OFFICIAL_REGISTRATION_NUMBER_INTERFACE_VERIFIED_HISTORICAL_ATTRIBUTE_BACKFILL_PROHIBITED",
+  "scope":"RESEARCH_SOURCE_AUDIT_ONLY_NO_FEATURE_OR_MODEL_ADMISSION",
+  "retrieval_date_jst":"2026-09-02",
+  "creation_parent_head":"4f488c6d91f03bad793d81b898881a7dd7c15ce5",
+  "purpose":"Establish a defensible rider identity key and separate identity from time-varying/current profile attributes before Rider×Bank or Rider×Line/Role research.",
+  "official_sources":[
+    {
+      "organization":"JKA / KEIRIN.JP",
+      "title":"選手検索",
+      "url":"https://keirin.jp/sp/racersearch",
+      "historical_current":"CURRENT_SERVICE",
+      "verification":"BODY_READ_2026_09_02",
+      "verified_search_fields":["氏名","登録番号","卒業期","府県","級班","地区","年齢","ホームバンク","ホーム競技場（練習地）","脚質"],
+      "confidence":"HIGH_FOR_CURRENT_INTERFACE_EXISTENCE"
+    },
+    {
+      "organization":"JKA / KEIRIN.JP",
+      "title":"選手プロフィール",
+      "url_pattern":"https://www.keirin.jp/pc/racerprofile?snum=<registration_number>",
+      "historical_current":"CURRENT_PROFILE_SNAPSHOT",
+      "verification":"MULTIPLE_CURRENT_BODY_EXAMPLES_READ_2026_09_02",
+      "verified_fields":["氏名","フリガナ","府県","生年月日","年齢","性別","登録番号","期別","級班","級班所属日","脚質","今期得点","級班履歴","ホームバンク","ホーム競技場（練習地）","得意な周長","得意な競輪場"],
+      "confidence":"HIGH_FOR_CURRENT_PROFILE_FIELDS"
+    }
+  ],
+  "identity_conclusion":{
+    "registration_number":"OFFICIAL_STABLE_IDENTITY_KEY_CANDIDATE_FOR_MAPPING",
+    "important_limit":"This audit verifies an official registration-number keyed interface, but does not independently prove every lifetime uniqueness/name-change semantic. Ambiguous mapping must fail closed.",
+    "rider_name":"DISPLAY_AND_MAPPING_EVIDENCE_ONLY_NOT_SUFFICIENT_AS_CANONICAL_KEY_WHEN_COLLISION_OR_NAME_CHANGE_IS_POSSIBLE"
+  },
+  "current_parser_gap":{
+    "parser":"tools/keirin_kdreams_retrospective_pre_outcome_parser_v3.py",
+    "parser_blob":"d0c3da166b6f9590d7894f1bbe2ba438c05c4390",
+    "currently_extracted_identity":"rider_name_raw",
+    "registration_number_extracted":false,
+    "implication":"Rider-level affinity must not begin RESULT evaluation until a PRE-only name/profile-to-registration-number mapping contract is frozen and audited."
+  },
+  "pre_only_mapping_gate":[
+    "Map historical PRE rider_name_raw to official registration-number candidates without looking at target RESULT.",
+    "Require exact or separately prespecified normalization rules for Japanese spacing/character variants.",
+    "Use registration prefecture/class/period data only as mapping evidence when timing semantics are safe; do not import current score or current class as historical model features.",
+    "Duplicate-name, ambiguous, unmatched, or contradictory identity mappings fail closed.",
+    "Store mapping provenance: historical PRE source identity, official profile URL, retrieval timestamp, registration number, normalized name, and mapping rule/version.",
+    "Freeze the mapping table/hash before any Rider×Bank or Rider×Line/Role RESULT extraction."
+  ],
+  "profile_attribute_classification":{
+    "home_bank":"CURRENT_OFFICIAL_PROFILE_ATTRIBUTE; HISTORICAL_POINT_IN_TIME_FEATURE_BLOCKED_UNTIL SNAPSHOT/CHANGE SEMANTICS VERIFIED",
+    "home_training_venue":"CURRENT_OFFICIAL_PROFILE_ATTRIBUTE; HISTORICAL_POINT_IN_TIME_FEATURE_BLOCKED",
+    "preferred_circumference":"SELF_REPORTED_OR_PROFILE_ATTRIBUTE_NOT_OBSERVED_PERFORMANCE_GROUND_TRUTH; HISTORICAL_BACKFILL_PROHIBITED",
+    "preferred_velodrome":"SELF_REPORTED_OR_PROFILE_ATTRIBUTE_NOT_OBSERVED_PERFORMANCE_GROUND_TRUTH; HISTORICAL_BACKFILL_PROHIBITED",
+    "current_class_score_style":"CURRENT_PROFILE_VALUES_NOT_LICENSE_TO_BACKFILL_TARGET_DATE_PRE_STATE"
+  },
+  "research_use":{
+    "registration_number":"ALLOW_AS_IDENTITY_JOIN_KEY_AFTER_MAPPING_GATE_PASS",
+    "current_profile_preference_fields":"DESCRIPTIVE_OR_SOURCE_RESEARCH_ONLY_UNTIL_HISTORICAL_POINT_IN_TIME_PROVEN",
+    "home_bank_effect":"BLOCKED_FOR_HISTORICAL_AFFINITY_MODEL_UNTIL_EFFECTIVE_DATE_OR_ARCHIVED_PRE_SNAPSHOT_SOURCE",
+    "pair_affinity":"REQUIRES_BOTH_RIDERS_MAPPED_TO_REGISTRATION_NUMBER_WITHOUT_AMBIGUITY"
+  },
+  "decision":"IDENTITY_SOURCE_PARTIAL_PASS_MAPPING_IMPLEMENTATION_REQUIRED_BEFORE_AFFINITY_RESULT_WORK",
+  "next":"CREATE_PRE_ONLY_IDENTITY_MAPPING_CONTRACT_AND_RIDER_BANK_READINESS_AUDIT; DO_NOT_OPEN_NEW_RESULT_TARGETS",
+  "hard_boundaries":["NO_CURRENT_PROFILE_BACKFILL_TO_HISTORICAL_RACE","NO_NAME_COLLISION_GUESS","NO_UNKNOWN_TO_ZERO","NO_RESULT_AS_MAPPING_EVIDENCE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_MODEL_CHANGE","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION"]
+}
