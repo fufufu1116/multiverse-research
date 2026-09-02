@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_S0_CONDITIONAL_SCORE_SCALE_FITSET_RECEIPT_20260902_v1",
+  "status": "FIT_SET_CLOSED_ALPHA_FIT_COMPLETE_NOT_EVALUATED",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "d161aa79849dba05dab82bf74ee0a32fc3da3770",
+    "fitset_selection_lock_commit": "35a85b1d8947779e1df53027de665fce01370034"
+  },
+  "population": {
+    "race_date": "2026-07-02",
+    "attempted_races": 56,
+    "successful_races": 54,
+    "fail_closed_races": 2,
+    "included_blocks_in_locked_order": [
+      {"venue":"函館","attempted":7,"successful":7,"meeting_identity":"1120260701","meeting_end":"2026-07-03"},
+      {"venue":"弥彦","attempted":11,"successful":10,"meeting_identity":"2120260702","meeting_end":"2026-07-04"},
+      {"venue":"大宮","attempted":12,"successful":11,"meeting_identity":"2520260701","meeting_end":"2026-07-03"},
+      {"venue":"松戸","attempted":7,"successful":7,"meeting_identity":"3120260701","meeting_end":"2026-07-03"},
+      {"venue":"平塚","attempted":12,"successful":12,"meeting_identity":"3520260630","meeting_end":"2026-07-02"},
+      {"venue":"豊橋","attempted":7,"successful":7,"meeting_identity":"4520260630","meeting_end":"2026-07-02"}
+    ],
+    "fail_closed": [
+      {"race":"弥彦 2026-07-02 R4","reason":"PRE_COMPETITION_SCORE_0_00"},
+      {"race":"大宮 2026-07-02 R6","reason":"RACE_CANCELLED_NO_VALID_ORDERED_TOP3_TARGET"}
+    ],
+    "stop_rule_application": "CLOSED_AT_END_OF_TOYOHASHI_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_54_GE_50",
+    "later_locked_fit_blocks_unopened": ["松阪","奈良","小松島"],
+    "field_size_distribution": {"6":3,"7":51},
+    "latest_meeting_end_among_included_fit_blocks": "2026-07-04"
+  },
+  "model": {
+    "baseline_beta": 0.22260435254784533,
+    "baseline": "stage1=beta*score; stage2=beta*score; stage3=beta*score",
+    "candidate": "stage1=beta*score; stage2=alpha*beta*score; stage3=alpha*beta*score",
+    "new_feature_added": false,
+    "human_lineup_forecast_used": false
+  },
+  "fit": {
+    "objective": "MINIMIZE_MEAN_ORDERED_TOP3_LOG_LOSS_ON_FIT_SET_ONLY",
+    "parameterization": "optimize log(alpha), alpha>0",
+    "numerical_logalpha_bounds": [-6.0,6.0],
+    "bounds_changed_after_result": false,
+    "optimizer": "SCIPY_BOUNDED_SCALAR_MINIMIZATION",
+    "optimizer_success": true,
+    "interior_solution": true,
+    "alpha": 0.6365671401165879,
+    "stagewise_mean_log_loss": {
+      "L1": {"untouched_s0":1.777662039175215,"candidate":1.777662039175215,"difference":0.0},
+      "L2": {"untouched_s0":1.7215783731187764,"candidate":1.6774788766373654,"difference":-0.044099496481411},
+      "L3": {"untouched_s0":1.4810135623477037,"candidate":1.4654526568021904,"difference":-0.01556090554551326},
+      "ordered_top3": {"untouched_s0":4.980253974641695,"candidate":4.920593572614771,"difference":-0.05966040202692358}
+    },
+    "interpretation": "FIT_SET_POINT_ESTIMATES_IMPROVE_FOR_L2_L3_AND_ORDERED_TOP3; THIS_IS_FIT_EVIDENCE_ONLY_AND_DOES_NOT_ESTABLISH_ADVANCEMENT"
+  },
+  "block_slices": {
+    "函館":{"n":7,"dL2":0.09275891096721334,"dL3":-0.11247632505782712,"dTop3":-0.01971741409061334},
+    "弥彦":{"n":10,"dL2":0.049888303714733295,"dL3":0.07047980733994086,"dTop3":0.12036811105467393},
+    "大宮":{"n":11,"dL2":-0.07096132014196144,"dL3":-0.0682328775435419,"dTop3":-0.13919419768550334},
+    "松戸":{"n":7,"dL2":-0.002170012391562226,"dL3":-0.0898493636940727,"dTop3":-0.09201937608563515},
+    "平塚":{"n":12,"dL2":-0.11143211023935407,"dL3":0.02972109271747647,"dTop3":-0.0817110175218776},
+    "豊橋":{"n":7,"dL2":-0.19951689087161473,"dL3":0.037871618876792246,"dTop3":-0.16164527199482315}
+  },
+  "evaluation_gate": {
+    "alpha_must_be_locked_before_holdout_target_access": true,
+    "evaluation_start": "STRICTLY_AFTER_2026-07-04",
+    "minimum_successful_races": 50,
+    "exclude_fit_meeting_identities": ["1120260701","2120260702","2520260701","3120260701","3520260630","4520260630"],
+    "whole_meeting_day_blocks_chronological_source_order": true,
+    "no_refit_on_evaluation": true
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_repair": false
+  },
+  "hard_boundaries": ["NO_ALPHA_REFIT_ON_EVAL","NO_CHANGE_TO_BASELINE_BETA","NO_ALPHA2_ALPHA3_SPLIT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_FIT_EVAL_OVERLAP","NO_SAME_MEETING_CROSS_SPLIT","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION_FROM_FIT"]
+}
