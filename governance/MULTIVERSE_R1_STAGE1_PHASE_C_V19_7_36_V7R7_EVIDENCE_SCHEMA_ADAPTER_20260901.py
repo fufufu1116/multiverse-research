@@ -2,9 +2,9 @@
 """Deterministic review-only v7r7 evidence-contract adapter for the exact inherited v7r6 gate.
 
 The adapter accepts exactly one reviewed inherited source blob. It first performs the exact-counted
-v7r6->v7r7 external evidence literal substitutions, then injects a narrowly bounded strict evidence
-object-shape decoder before the existing typed value/provenance/deadline/binding checks. General gate
-control logic is not rewritten.
+v7r6->v7r7 external evidence literal substitutions, then injects narrowly bounded strict evidence
+object-shape decoding plus a synchronous terminal-status hook before the existing typed
+value/provenance/deadline/binding checks. General gate control logic is otherwise not rewritten.
 """
 from __future__ import annotations
 
@@ -206,6 +206,19 @@ func strictEvidencePayload(body, prefix string, exactKeys []string) ([]byte, boo
         1,
         "STRICT_SELFTEST_MARKER_ANCHOR",
     )
+
+    die_anchor = r'''func die(s string) {
+	fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R6_SESSION_GATE_DENIED:"+s)
+	os.Exit(92)
+}
+'''
+    die_sync = r'''func die(s string) {
+	v7r7TerminalFailClosedSync()
+	fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R6_SESSION_GATE_DENIED:"+s)
+	os.Exit(92)
+}
+'''
+    text = replace_exact(text, die_anchor, die_sync, 1, "SYNC_TERMINAL_DIE_ANCHOR")
     return text
 
 
@@ -252,6 +265,7 @@ def adapt_bytes(raw: bytes) -> bytes:
         "strictEvidencePayload(c.Body, receiptPrefix, sessionExactKeys)",
         "strictEvidencePayload(c.Body, approvalPrefix, approvalExactKeys)",
         "PHASE_C_V19_7_36_V7R7_STRICT_EVIDENCE_OBJECT_SHAPE_SELFTEST_PASS",
+        "v7r7TerminalFailClosedSync()",
     )
     for needle in required_logic:
         if needle not in text:
@@ -294,13 +308,14 @@ def selftest(src: pathlib.Path) -> None:
         'strictReject("malformed-value", z)',
         'strictReject("trailing-object", z)',
         'strictReject("provenance-mismatch", z)',
+        'v7r7TerminalFailClosedSync()',
     )
     for needle in successor_checks:
         if needle not in out:
             deny("SUCCESSOR_SELFTEST_WIRING", needle)
     print(
         "PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_SELFTEST_PASS "
-        f"inherited_git_blob={EXPECTED_INHERITED_GIT_BLOB} successor_version={SUCCESSOR_VERSION} strict_object_shape=true runtime=OFF"
+        f"inherited_git_blob={EXPECTED_INHERITED_GIT_BLOB} successor_version={SUCCESSOR_VERSION} strict_object_shape=true synchronous_terminalization=true runtime=OFF"
     )
     print("SECURITY_AUTHORITY_GRANTED=false")
     print("RUNTIME=OFF")
@@ -322,7 +337,7 @@ def main() -> None:
     dst.write_bytes(adapted)
     print(
         "PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_PASS "
-        f"inherited_git_blob={EXPECTED_INHERITED_GIT_BLOB} successor_version={SUCCESSOR_VERSION} strict_object_shape=true runtime=OFF"
+        f"inherited_git_blob={EXPECTED_INHERITED_GIT_BLOB} successor_version={SUCCESSOR_VERSION} strict_object_shape=true synchronous_terminalization=true runtime=OFF"
     )
 
 
