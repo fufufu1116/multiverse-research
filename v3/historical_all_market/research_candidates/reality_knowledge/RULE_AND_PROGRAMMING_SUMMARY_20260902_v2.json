@@ -1,0 +1,95 @@
+{
+  "record":"RULE_AND_PROGRAMMING_SUMMARY_20260902_v2",
+  "status":"RESEARCH_CANDIDATE_REALITY_KNOWLEDGE_ONLY_NO_MODEL_AUTHORITY",
+  "retrieval_date_jst":"2026-09-02",
+  "supersedes_for_current_summary":"RULE_AND_PROGRAMMING_SUMMARY_20260902_v1",
+  "fresh_read_head_before_write":"c301a3b10b028c594a9c2d794fcfc83880aa5608",
+  "current_rule_system":{
+    "venue_rule_uniformity":{
+      "claim":"Competition rules/judging are not venue-specific; KEIRIN.JP states that all velodromes judge under the common competition rules.",
+      "source":"https://www.keirin.jp/pc/dfw/portal/guest/guide/question/nyumon.html",
+      "evidence_location":"Q&A 競輪場ごとにルールは違うのでしょうか",
+      "confidence":"HIGH",
+      "science_consequence":"Do not encode venue difference as rule difference. Investigate physical bank/environment/program composition instead."
+    },
+    "judging_authority":{
+      "claim":"Violation decisions are deliberated by multiple judges under the competition rules and finally decided by the chief judge.",
+      "source":"https://www.keirin.jp/pc/dfw/portal/guest/guide/question/nyumon.html",
+      "evidence_location":"Q&A 判定は誰が決めているのですか",
+      "confidence":"HIGH"
+    },
+    "duty_to_compete":{
+      "claim":"Current JKA judging manual treats runaway/excessive restraint and failure to race with intent/full effort under inappropriate riding / 敢闘義務違反行為.",
+      "source":"https://www.keirin-autorace.or.jp/documents/www/regulation/keirin/yoryo_shinpan.pdf",
+      "revision":"last amended 2025-11-18",
+      "evidence_location":"printed p.70 around competition rule Art.11",
+      "confidence":"HIGH"
+    },
+    "interference_and_exemptions":{
+      "claim":"Current judging criteria define pressure/pushing, slalom, middle-splitting, track-line/yellow-line infringements and section-specific exemption grounds.",
+      "source":"https://www.keirin-autorace.or.jp/documents/www/regulation/keirin/yoryo_shinpan.pdf",
+      "revision":"last amended 2025-11-18",
+      "confidence":"HIGH",
+      "warning":"Do not create one generic exemption label without mapping the specific rule section."
+    },
+    "lap_miscount_and_race_nonestablishment":{
+      "claim":"Current criteria explicitly define lap-miscount DQ conditions and race-non-establishment cases including erroneous/missing lap notification and other uncontrollable interference/weather states.",
+      "source":"https://www.keirin-autorace.or.jp/documents/www/regulation/keirin/yoryo_shinpan.pdf",
+      "revision":"last amended 2025-11-18",
+      "evidence_location":"printed p.108 area, competition rule Art.70(4) and Art.73",
+      "confidence":"HIGH"
+    }
+  },
+  "race_generation_lifecycle":[
+    {
+      "phase":"ASSIGNMENT_AND_ENTRY",
+      "facts":["Rider participation begins from formal assignment/invitation and application processes.","The resulting race population is selected rather than IID."],
+      "sources":["JKA_PROGRAM_FORMATION","JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"]
+    },
+    {
+      "phase":"PRE_PROGRAM_INFORMATION",
+      "facts":["Program officials examine ability, riding style, technical skill, recent competition results and other information.","Program records include class, age, registered prefecture, bicycle name, gear ratio, recent average competition score and recent results."],
+      "sources":["JKA_PROGRAM_FORMATION"]
+    },
+    {
+      "phase":"INITIAL_PROGRAM_FORMATION",
+      "facts":["Race allocation considers ability, style, regional balance and other factors.","Rider-number allocation considers ability/style/results.","Official KEIRIN.JP Q&A also explains that special-selection races seed higher competition-score riders."],
+      "sources":["JKA_PROGRAM_FORMATION","KEIRINJP_QA"]
+    },
+    {
+      "phase":"ELIGIBILITY_AND_EQUIPMENT_GATE",
+      "facts":["Health/eligibility and bicycle inspection are formal gates.","Participation may be stopped and bicycle/gear changes are operational state."],
+      "sources":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES","JKA_PROGRAM_FORMATION"]
+    },
+    {
+      "phase":"RACE_AND_JUDGING",
+      "facts":["Formal judging determines finish/winner and rule violations.","Reality includes tie, DQ, abandonment and race-non-establishment states, not only a unique ordered finish.","Wind direction, wind speed and temperature are formal measured operational states."],
+      "sources":["JKA_JUDGING","JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"]
+    },
+    {
+      "phase":"POST_RACE_ADVANCEMENT",
+      "facts":["Later-day membership is path-dependent on earlier results and advancement rules.","Tie, abandonment and race-not-established cases have special handling.","Replacement/substitution can occur under formal rules."],
+      "sources":["JKA_PROGRAM_FORMATION"]
+    },
+    {
+      "phase":"MARKET_SETTLEMENT",
+      "facts":["Winning combinations, invalid votes/refunds and settlement are formal market rules separate from sporting probability generation."],
+      "sources":["BICYCLE_RACING_LAW","BICYCLE_RACING_LAW_ENFORCEMENT_RULE"]
+    }
+  ],
+  "scientific_consequences":[
+    "PROGRAM_SELECTION_EFFECTS_ARE_CAUSALLY_UPSTREAM_OF_OBSERVED_RACE_SAMPLES",
+    "RACE_STAGE_AND_MEETING_DAY_ARE_REAL_PATH_DEPENDENT_CONTEXT",
+    "VENUE_DIFFERENCE_IS_NOT_RULE_DIFFERENCE_BY_DEFAULT",
+    "SCRATCH_REPLACEMENT_AND_ELIGIBILITY_REQUIRE_TIMESTAMPED_ENTRANT_STATE",
+    "UNIQUE_ORDERED_TOP3_IS_A_MODELING_BENCHMARK_NOT_THE_COMPLETE_REAL_RESULT_SPACE",
+    "HUMAN_NARABI_FORECAST_MUST_NOT_BE_PROMOTED_TO_OBJECTIVE_LINE_TRUTH",
+    "PAYOUT_SETTLEMENT_MUST_REMAIN_OUTSIDE_SPORTING_FEATURES"
+  ],
+  "historical_material_policy":{
+    "KEIRINJP_2005_ALLSTAR_QA":"HISTORICAL_EVENT_FORMAT_ONLY",
+    "old_bank_feature_pages":"HISTORICAL_PHYSICAL_EVIDENCE_ONLY_UNLESS_CURRENTLY_CORROBORATED",
+    "warning":"Historical official content remains valuable for change tracking but cannot override current JKA rules."
+  },
+  "hard_boundaries":["NO_MODEL_CHANGE","NO_FEATURE_AUTO_ADMISSION","NO_SAME_DATA_RESCUE_TUNING","NO_PROTECTED_HOLDOUT_ACCESS","NO_PAYOUT_OR_RESULT_LEAKAGE","NO_PRODUCTION_OR_MAIN_MUTATION"]
+}
