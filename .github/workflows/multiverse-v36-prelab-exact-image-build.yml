@@ -13,6 +13,7 @@ on:
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-status-fdpath-remediation-v1
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-status-terminal-remediation-v1
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-status-terminal-lifecycle-remediation-v1
+      - agent/r1-stage1-phase-c-v19-7-36-v7r7-prearm-github-time-preflight-remediation-v1
 
 permissions:
   contents: read
@@ -44,6 +45,8 @@ jobs:
           launcher='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go'
           status_addon='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_ATTACH_READY_STATUS_ADDON_20260901.go'
           adapter='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py'
+          ui_ready='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go'
+
           grep -F 'runtime.LockOSThread()' "${launcher}"
           grep -F 'lockedTID := syscall.Gettid()' "${launcher}"
           grep -F 'os.ReadFile("/proc/thread-self/status")' "${launcher}"
@@ -85,9 +88,32 @@ jobs:
           printf 'PRELAB_STATUS_FATAL_LIFECYCLE_SOURCE_GATE_PASS=true\n'
           printf 'PRELAB_TERMINAL_INVALIDATION_NO_UNLINK_DEPENDENCY_PASS=true\n'
 
+          grep -F 'githubAPIBase = "https://api.github.com"' "${ui_ready}"
+          grep -F 'prearmMinRateBeforeComments = 55' "${ui_ready}"
+          grep -F 'prearmMinRateAfterComments = 54' "${ui_ready}"
+          grep -F 'Proxy: nil' "${ui_ready}"
+          grep -F 'TLSClientConfig: &tls.Config{MinVersion: tls.VersionTLS12}' "${ui_ready}"
+          grep -F 'base+"/rate_limit"' "${ui_ready}"
+          grep -F 'base+"/repos/fufufu1116/multiverse-research/issues/74/comments?per_page=1&page=1"' "${ui_ready}"
+          grep -F 'if _, err := os.Lstat(uiReadyPath); err == nil {' "${ui_ready}"
+          grep -F 'if err := githubPreflight(); err != nil {' "${ui_ready}"
+          grep -F 'PHASE_C_V19_7_36_V7R7_UI_READY_DENIED:PREARM_GITHUB_' "${ui_ready}"
+          grep -F 'PHASE_C_V19_7_36_V7R7_PREARM_GITHUB_PREFLIGHT_SELFTEST_PASS' "${ui_ready}"
+          if grep -F 'Authorization' "${ui_ready}"; then exit 92; fi
+          if grep -F 'GITHUB_TOKEN' "${ui_ready}"; then exit 92; fi
+          printf 'PRELAB_PREARM_GITHUB_PREFLIGHT_SOURCE_GATE_PASS=true\n'
+
           python3 "${adapter}" --selftest governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go
           python3 governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py
           docker image inspect "${MULTIVERSE_PRELAB_DOCKER_TAG}" >/dev/null
+
+          preflight_selftest_output="$(docker run --rm --entrypoint /usr/local/bin/multiverse-v36-ui-ready-v7r7 "${MULTIVERSE_PRELAB_DOCKER_TAG}" build-selftest 2>&1)"
+          printf '%s\n' "${preflight_selftest_output}"
+          grep -Fx 'PHASE_C_V19_7_36_V7R7_PREARM_GITHUB_PREFLIGHT_SELFTEST_PASS' <<<"${preflight_selftest_output}"
+          grep -Fx 'PREARM_RATE_MIN_BEFORE_COMMENTS=55 PREARM_RATE_MIN_AFTER_COMMENTS=54' <<<"${preflight_selftest_output}"
+          grep -Fx 'SECURITY_AUTHORITY_GRANTED=false' <<<"${preflight_selftest_output}"
+          grep -Fx 'RUNTIME=OFF' <<<"${preflight_selftest_output}"
+          printf 'PRELAB_PREARM_GITHUB_PREFLIGHT_SELFTEST_PASS=true\n'
 
           set +e
           broad_cap_output="$(docker run --rm --user codespace --cap-add=ALL -e CODESPACES=false -e CODESPACE_NAME=mechanical-broad-cap-test --entrypoint /usr/local/bin/multiverse-v36-arm-v7r7 "${MULTIVERSE_PRELAB_DOCKER_TAG}" 2>&1)"
@@ -101,16 +127,20 @@ jobs:
           if grep -F 'PHASE_C_V19_7_36_V7R7_ARM_LAUNCHER_DENIED:CAPS_NARROW' <<<"${broad_cap_output}"; then exit 92; fi
           printf 'PRELAB_BROAD_CAP_BOUNDARY_SELF_NARROW_PASS=true\n'
 
+          preflight_volume="multiverse-v7r7-preflight-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           status_volume="multiverse-v7r7-workspaces-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           runtime_volume="multiverse-v7r7-run-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          docker volume create "${preflight_volume}" >/dev/null
           docker volume create "${status_volume}" >/dev/null
           docker volume create "${runtime_volume}" >/dev/null
           cleanup_status_volumes() {
+            docker volume rm -f "${preflight_volume}" >/dev/null 2>&1 || true
             docker volume rm -f "${status_volume}" >/dev/null 2>&1 || true
             docker volume rm -f "${runtime_volume}" >/dev/null 2>&1 || true
           }
           trap cleanup_status_volumes EXIT
-          docker run --rm -v "${status_volume}:/workspaces" --entrypoint /bin/bash "${MULTIVERSE_PRELAB_DOCKER_TAG}" -lc '
+
+          docker run --rm -v "${preflight_volume}:/workspaces" --entrypoint /bin/bash "${MULTIVERSE_PRELAB_DOCKER_TAG}" -lc '
             set -euo pipefail
             uid="$(id -u codespace)"; gid="$(id -g codespace)"
             mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
@@ -121,10 +151,62 @@ jobs:
             chmod 0644 /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
           '
           set +e
+          prearm_none_output="$(docker run --rm --user codespace --network=none -v "${preflight_volume}:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=mechanical-prearm-none --entrypoint /usr/local/bin/multiverse-v36-ui-ready-v7r7 "${MULTIVERSE_PRELAB_DOCKER_TAG}" 2>&1)"
+          prearm_none_rc=$?
+          set -e
+          printf '%s\n' "${prearm_none_output}"
+          test "${prearm_none_rc}" -eq 92
+          grep -Fx 'PHASE_C_V19_7_36_V7R7_UI_READY_DENIED:PREARM_GITHUB_RATE_NETWORK' <<<"${prearm_none_output}"
+          docker run --rm -v "${preflight_volume}:/workspaces" --entrypoint /bin/bash "${MULTIVERSE_PRELAB_DOCKER_TAG}" -lc '
+            set -euo pipefail
+            test ! -e /workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-ui-ready.txt
+            test ! -e /run/multiverse-v36-v7r7-arm.lock
+          '
+          printf 'PRELAB_PREARM_NETWORK_NONE_FAILS_BEFORE_READY_PASS=true\n'
+
+          docker run --rm -v "${status_volume}:/workspaces" --entrypoint /bin/bash "${MULTIVERSE_PRELAB_DOCKER_TAG}" -lc '
+            set -euo pipefail
+            uid="$(id -u codespace)"; gid="$(id -g codespace)"
+            name=mechanical-status-fdpath
+            identity="$(sha256sum /opt/multiverse/v36/image-identity-v7r3.json | cut -d" " -f1)"
+            ready=/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-ui-ready.txt
+            control=/workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
+            mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
+            chown -R "${uid}:${gid}" /workspaces/.codespaces /workspaces/multiverse-research
+            chmod 0755 /workspaces /workspaces/.codespaces /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
+            printf "%s\n" \
+              "PHASE_C_V19_7_36_V7R7_UI_READY" \
+              "codespace=${name}" \
+              "image_identity_sha256=${identity}" \
+              "timer_state=NOT_STARTED" \
+              "arm_state=NOT_STARTED" \
+              "arm_command=/usr/local/bin/multiverse-v36-arm-v7r7" \
+              "next_action=RETURN_TO_CORE_BEFORE_ARM" \
+              "runtime=OFF" > "${ready}"
+            chown "${uid}:${gid}" "${ready}"
+            chmod 0444 "${ready}"
+            printf "%s\n" \
+              "# MULTIVERSE PRE-LIVE CONTROL — V19.7.36 v7r7" \
+              "" \
+              "\`PHASE_C_V19_7_36_V7R7_UI_READY\`" \
+              "" \
+              "- codespace=\`${name}\`" \
+              "- image_identity_sha256=\`${identity}\`" \
+              "- timer_state=\`NOT_STARTED\`" \
+              "- arm_state=\`NOT_STARTED\`" \
+              "- next_action=\`RETURN_TO_CORE_BEFORE_ARM\`" \
+              "- runtime=\`OFF\`" \
+              "" \
+              "The strict 600-second challenge window has not started. Do not run the arm command until Core Fresh-rebinds this Codespace and exact image identity and explicitly says to arm." \
+              "" \
+              "Reviewed arm command (do not run yet): \`/usr/local/bin/multiverse-v36-arm-v7r7\`" > "${control}"
+            chown "${uid}:${gid}" "${control}"
+            chmod 0644 "${control}"
+          '
+          set +e
           status_output="$(docker run --rm --user codespace --cap-add=ALL --network=none -v "${status_volume}:/workspaces" -v "${runtime_volume}:/run/multiverse-v36-v7r7" -e CODESPACES=true -e CODESPACE_NAME=mechanical-status-fdpath --entrypoint /bin/bash "${MULTIVERSE_PRELAB_DOCKER_TAG}" -lc '
             set -euo pipefail
             control=/workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
-            /usr/local/bin/multiverse-v36-ui-ready-v7r7
             exec 9>>"${control}"
             set +e
             /usr/local/bin/multiverse-v36-arm-v7r7
@@ -190,6 +272,7 @@ jobs:
           printf 'PRELAB_DOCKERFILE_BLOB=%s\n' "$(git hash-object .devcontainer/Dockerfile)"
           printf 'PRELAB_DEVCONTAINER_BLOB=%s\n' "$(git hash-object .devcontainer/devcontainer.json)"
           printf 'PRELAB_EVIDENCE_ADAPTER_BLOB=%s\n' "$(git hash-object governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py)"
+          printf 'PRELAB_UI_READY_BLOB=%s\n' "$(git hash-object governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go)"
           printf 'PRELAB_BASE_IMAGE_DIGEST=%s\n' "$(sed -n '1s/^FROM .*@//p' .devcontainer/Dockerfile)"
           printf 'PRELAB_IMAGE_IDENTITY_SHA256=%s\n' "$(sha256sum /tmp/image-identity-v7r3.json | awk '{print $1}')"
           printf 'PRELAB_FINAL_TREE_DOCKER_BUILD_PASS=true\n'
