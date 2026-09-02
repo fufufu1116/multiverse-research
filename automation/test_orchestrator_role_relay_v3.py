@@ -73,6 +73,70 @@ class RelayV3Tests(unittest.TestCase):
         finally:
             s.close()
 
+    def test_concurrent_identical_enqueue_replay_serializes_and_converges(self):
+        t = task()
+        op = operation_key(t["task_id"], "IMPLEMENT", 0)
+        selected = threading.Event()
+        release = threading.Event()
+        errors = []
+
+        def first():
+            store = RelayStore(self.relay_db)
+            try:
+                def trace(sql):
+                    if sql.startswith("SELECT * FROM jobs WHERE operation_key="):
+                        selected.set()
+                        release.wait(2)
+                store.conn.set_trace_callback(trace)
+                store.enqueue(role="IMPLEMENT", task=t, operation_key_value=op,
+                              semantic_attempt=1, transient_attempt=1)
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                store.close()
+
+        def second():
+            store = RelayStore(self.relay_db)
+            try:
+                store.enqueue(role="IMPLEMENT", task=t, operation_key_value=op,
+                              semantic_attempt=1, transient_attempt=2)
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                store.close()
+
+        th1 = threading.Thread(target=first)
+        th1.start()
+        self.assertTrue(selected.wait(2))
+        th2 = threading.Thread(target=second)
+        th2.start()
+        time.sleep(0.1)
+        self.assertTrue(th2.is_alive(), "second enqueue must wait behind first writer transaction")
+        release.set()
+        th1.join(2)
+        th2.join(2)
+        self.assertFalse(th1.is_alive())
+        self.assertFalse(th2.is_alive())
+        self.assertEqual(errors, [])
+        check = RelayStore(self.relay_db)
+        try:
+            row = check.conn.execute("SELECT count(*) FROM jobs WHERE operation_key=?", (op,)).fetchone()
+            self.assertEqual(row[0], 1)
+            self.assertEqual(check.job(op)["status"], "QUEUED")
+        finally:
+            check.close()
+
+    def test_conflicting_enqueue_replay_still_fails_closed(self):
+        op = self.enqueue()
+        conflicting = task(head="c"*40)
+        store = RelayStore(self.relay_db)
+        try:
+            with self.assertRaises(OrchestratorError):
+                store.enqueue(role="IMPLEMENT", task=conflicting, operation_key_value=op,
+                              semantic_attempt=1, transient_attempt=2)
+        finally:
+            store.close()
+
     def test_lease_expiry_requeues_without_new_operation(self):
         op = self.enqueue()
         s = RelayStore(self.relay_db)
