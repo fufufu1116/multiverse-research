@@ -1,0 +1,97 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_B_COUNT_CONDITIONAL_PL_PRESPEC_20260902_v1",
+  "status": "PRESPEC_LOCKED_BEFORE_NEW_FIT_TARGET_EXTRACTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "candidate": "S0_OBJECTIVE_B_COUNT_CONDITIONAL_PL_V1",
+  "independence_statement": "This is a new objective PRE-field lineage. Its functional form is fixed without using the venue-level or race-level outcomes from the closed 2026-07-11 tactical-profile evaluation to tune B, gamma sign, interaction form, venue exceptions, field-size exceptions, or inclusion rules.",
+  "baseline": {
+    "name": "S0",
+    "beta": 0.22260435254784533,
+    "stage1": "beta * competition_score",
+    "stage2": "beta * competition_score",
+    "stage3": "beta * competition_score"
+  },
+  "feature": {
+    "name": "B",
+    "source": "KDreams PRE rider table / 直近4ヶ月の成績",
+    "role": "OBJECTIVE_PRE_FIELD_ONLY",
+    "transformation": "RAW_B_COUNT_UNCHANGED",
+    "validity": "B must be explicitly present, numeric, integer-like and >= 0; missing or malformed B is FAIL-CLOSED",
+    "no_semantic_reinterpretation": true
+  },
+  "candidate_model": {
+    "stage1": "beta * competition_score",
+    "stage2": "beta * competition_score + gamma * B after actual stage1 winner removal",
+    "stage3": "beta * competition_score + gamma * B after actual stage1 and stage2 removals",
+    "free_parameters": ["gamma"],
+    "gamma2_gamma3_split_forbidden": true,
+    "post_fit_sign_flip_forbidden": true,
+    "B_transformation_change_forbidden": true,
+    "beta_change_forbidden": true,
+    "stage1_change_forbidden": true
+  },
+  "fit": {
+    "earliest_race_date": "2026-07-14",
+    "chronology_rule": "STRICTLY_AFTER_ALL_MEETINGS_USED_BY_THE_CLOSED_2026-07-11_TACTICAL_PROFILE_EVALUATION",
+    "selection_rule": "Before reading any new RESULT target, lock KDreams public daily-listing source order for whole meeting/day blocks. Process whole blocks in locked order and close at the first block boundary where successful races >= 50.",
+    "minimum_successful_races": 50,
+    "objective": "MINIMIZE_MEAN_ORDERED_TOP3_LOG_LOSS_EQUIVALENT_TO_L2_PLUS_L3_BECAUSE_L1_IS_GAMMA_INVARIANT",
+    "only_parameter_fit": "gamma",
+    "same_fit_rescue_tuning_forbidden": true
+  },
+  "evaluation": {
+    "selection_must_be_locked_before_target_extraction": true,
+    "race_date_rule": "STRICTLY_AFTER_LATEST_MEETING_END_AMONG_INCLUDED_FIT_MEETINGS",
+    "exclude_all_fit_meeting_identities": true,
+    "minimum_successful_races": 50,
+    "whole_meeting_day_blocks": true,
+    "no_gamma_refit": true,
+    "bootstrap": {
+      "unit": "race",
+      "replicates": 20000,
+      "seed": 20260902,
+      "interval": "percentile_95pct"
+    },
+    "advance_only_if": [
+      "candidate_ordered_top3_log_loss < untouched_S0",
+      "candidate_L2 < untouched_S0",
+      "candidate_L3 < untouched_S0",
+      "winner_log_loss_brier_ranking_and_probabilities_are_exactly_invariant",
+      "ordered_top3_candidate_minus_S0_bootstrap_95pct_CI_upper < 0"
+    ],
+    "otherwise_at_best": "PROMISING_NO_ADVANCE_TO_WIDER_REPLICATION"
+  },
+  "fail_closed": [
+    "competition_score == 0.00",
+    "competition_score missing or malformed",
+    "B missing malformed or negative",
+    "PRE scratch or inactive rider ambiguity",
+    "race cancellation",
+    "ambiguous ordered result",
+    "dead heat makes ordered top3 non-unique",
+    "PRE_RESULT active-rider mismatch",
+    "other material ambiguity"
+  ],
+  "source_boundary": {
+    "PRE_features": ["competition_score", "B"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_post_result_repair_forbidden": true
+  },
+  "hard_boundaries": [
+    "NO_SAME_LINEAGE_RESCUE_TUNING",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_DEV2000_C_RESCUE",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"
+  ],
+  "prior_closed_lineage_binding": "38c42ba7c38feb0b3eb5ddbae2d06b021b21afa1"
+}
