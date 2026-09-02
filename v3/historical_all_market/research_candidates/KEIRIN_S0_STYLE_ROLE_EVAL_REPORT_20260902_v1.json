@@ -1,0 +1,84 @@
+{
+  "record":"KEIRIN_S0_STYLE_ROLE_EVAL_REPORT_20260902_v1",
+  "status":"STYLE_ROLE_CHALLENGER_NO_ADVANCE",
+  "scope":"RESEARCH_CANDIDATE_EVALUATION_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "prespec_commit":"5ffc7dd6bc74feafe85d98cd490775048218a12a",
+    "fitset_receipt_commit":"1105c0801ecdf5b98de340e8ecf6a905a3bb942b",
+    "gamma_lock_commit":"09a2503dfbc3b958a57e13480af96c2775a572de",
+    "evalset_selection_lock_commit":"df7351b8f41993604ef1332789ef2864b223648a"
+  },
+  "models":{
+    "untouched_s0":{"beta":0.22260435254784533,"stage1":"beta*competition_score","stage2":"beta*competition_score","stage3":"beta*competition_score"},
+    "candidate":{"gamma":0.06535649876903948,"role_scalar":{"逃":-1.0,"両":0.0,"追":1.0},"stage1":"beta*competition_score","stage2":"beta*competition_score+gamma*role_scalar","stage3":"beta*competition_score+gamma*role_scalar"}
+  },
+  "population":{
+    "race_date":"2026-07-01",
+    "attempted_races":52,
+    "successful_races":51,
+    "fail_closed_races":1,
+    "included_blocks_in_locked_order":[
+      {"venue":"函館","attempted":7,"successful":7},
+      {"venue":"大宮","attempted":12,"successful":12},
+      {"venue":"松戸","attempted":7,"successful":7},
+      {"venue":"平塚","attempted":12,"successful":12},
+      {"venue":"豊橋","attempted":7,"successful":7},
+      {"venue":"松阪","attempted":7,"successful":6}
+    ],
+    "fail_closed":[{"race":"松阪 2026-07-01 R3","reason":"PRE_RACE_SCRATCH_PRESENT"}],
+    "stop_rule_application":"CLOSED_AT_END_OF_MATSUSAKA_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_51_GE_50",
+    "later_locked_blocks_unopened":["奈良","高知","武雄"],
+    "field_size_distribution":{"6":2,"7":49}
+  },
+  "invariance_checks":{
+    "winner_log_loss":{"untouched_s0":1.5841971481472703,"candidate":1.5841971481472703,"difference":0.0,"pass":true},
+    "winner_brier":{"untouched_s0":0.10636927526659401,"candidate":0.10636927526659401,"difference":0.0,"pass":true},
+    "winner_ranking":{"top1_hit_rate":0.43137254901960786,"top2_coverage":0.6078431372549019,"mean_winner_rank":2.392156862745098,"candidate_identical":true,"pass":true}
+  },
+  "primary_metrics":{
+    "L2":{"untouched_s0":1.6502666067561886,"candidate":1.651965139844143,"candidate_minus_s0":0.0016985330879544,"candidate_better":false},
+    "L3":{"untouched_s0":1.8073147601281405,"candidate":1.8127427165880896,"candidate_minus_s0":0.0054279564599491,"candidate_better":false},
+    "ordered_top3_log_loss":{"untouched_s0":5.0417785150315995,"candidate":5.0489050045795025,"candidate_minus_s0":0.0071264895479030,"candidate_better":false}
+  },
+  "race_cluster_bootstrap":{
+    "unit":"race","replicates":20000,"seed":20260902,"interval":"percentile_95pct",
+    "differences_candidate_minus_s0":{
+      "ordered_top3_log_loss":{"observed":0.0071264895479029745,"bootstrap_mean":0.0070790133355389615,"ci95":[-0.013174906890192089,0.02657515300253036]},
+      "L2":{"observed":0.0016985330879539969,"bootstrap_mean":0.0016379359913956122,"ci95":[-0.013299335346585563,0.016996081517805166]},
+      "L3":{"observed":0.005427956459948986,"bootstrap_mean":0.005441077344143358,"ci95":[-0.007997602269087975,0.01880925385770432]}
+    }
+  },
+  "venue_slices":{
+    "函館":{"n":7,"dL2":0.008250886607881076,"dL3":0.013995882997637226,"dTop3":0.022246769605518475},
+    "大宮":{"n":12,"dL2":0.0076067140858229005,"dL3":-0.010217620008095415,"dTop3":-0.0026109059222725697},
+    "松戸":{"n":7,"dL2":0.0005115104743427087,"dL3":-0.00895472206001172,"dTop3":-0.008443211585668995},
+    "平塚":{"n":12,"dL2":-0.010924171730226861,"dL3":0.005072772856740654,"dTop3":-0.005851398873486217},
+    "豊橋":{"n":7,"dL2":-0.015699644616171175,"dL3":0.03496858427222704,"dTop3":0.019268939656055726},
+    "松阪":{"n":6,"dL2":0.029165901992688852,"dL3":0.009749288134114594,"dTop3":0.038915190126803445}
+  },
+  "advancement_decision":{
+    "required_point_estimates_all_better":false,
+    "ordered_top3_better":false,
+    "L2_better":false,
+    "L3_better":false,
+    "winner_invariance_contract_pass":true,
+    "wider_replication_bootstrap_rule_pass":false,
+    "decision":"NO_ADVANCE",
+    "reason":"The frozen one-dimensional style-role scalar worsened L2, L3, and ordered-top3 point estimates on the independent holdout. The ordered-top3 bootstrap interval also crosses zero. Same-holdout rescue tuning is prohibited."
+  },
+  "source_boundary":{
+    "PRE_features":["competition_score","style"],
+    "RESULT_target_only":true,
+    "PAYOUT_used":false,
+    "odds_used":false,
+    "KDreams_narabiyoso_used":false,
+    "tips_marks_comments_used":false,
+    "manual_repair":false
+  },
+  "interpretation":[
+    "This is a clean negative result for the one-dimensional objective style-role representation, not evidence that all tactical structure is useless.",
+    "Stage-1 winner skill remained exactly unchanged by construction; the failure is localized to the attempted conditional placement representation.",
+    "The next structural candidate, if any, must be a new lineage with a separately prespecified future fit/evaluation split and must not rescue-tune gamma or the style mapping on this holdout."
+  ],
+  "hard_boundaries":["NO_SAME_HOLDOUT_RESCUE_TUNING","NO_CHANGE_TO_BASELINE_BETA","NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION"]
+}
