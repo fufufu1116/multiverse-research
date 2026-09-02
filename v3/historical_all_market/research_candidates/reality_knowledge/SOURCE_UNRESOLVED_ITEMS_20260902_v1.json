@@ -1,0 +1,139 @@
+{
+  "record": "SOURCE_UNRESOLVED_ITEMS_20260902_v1",
+  "status": "OPEN_REALITY_KNOWLEDGE_GAPS_FAIL_CLOSED",
+  "retrieval_date_jst": "2026-09-02",
+  "rule": "No unresolved item may be converted to ABSENT, zero, an objective feature, or current rule by inference.",
+  "items": [
+    {
+      "item_id": "CURRENT_KANTO_DUTY_WORDING",
+      "topic": "敢闘義務",
+      "status": "UNRESOLVED_CURRENT_PRIMARY_WORDING",
+      "what_is_known": "Historical KEIRIN.JP materials discuss related concepts, but exact current primary wording was not isolated in the current JKA documents read in this audit.",
+      "next_source_action": "Search current competition rules/judging appendices and any referenced 自転車競走競技規則 body.",
+      "blocking": "RULE_KB_DETAIL_ONLY"
+    },
+    {
+      "item_id": "CURRENT_LAP_MISCOUNT_HANDLING",
+      "topic": "周回誤認",
+      "status": "UNRESOLVED_CURRENT_PRIMARY_RULE",
+      "what_is_known": "Current judging documentation contains lap officials/bell/monitoring structure, but the exact current rule under this label was not isolated.",
+      "next_source_action": "Trace current 自転車競走競技規則 and judging rule references.",
+      "blocking": "RULE_KB_DETAIL_ONLY"
+    },
+    {
+      "item_id": "GENERIC_EXEMPTION_TAXONOMY",
+      "topic": "免責",
+      "status": "PARTIALLY_RESOLVED",
+      "what_is_known": "Current judging criteria explicitly contain 免責事由 for specific infringement sections, including unavoidable avoidance of sudden slowdown/fall/interference.",
+      "next_source_action": "Do not create one global exemption category until all relevant current judging sections are mapped.",
+      "blocking": "TACTICAL_JUDGEMENT_ONTOLOGY"
+    },
+    {
+      "item_id": "CURRENT_NATIONWIDE_BANK_GEOMETRY_REGISTRY",
+      "topic": "straight length / maximum cant / detailed curve geometry / enclosure",
+      "status": "UNRESOLVED_CURRENT_MACHINE_READABLE_COVERAGE",
+      "what_is_known": "Current KEIRIN.JP bank-record table provides circumference and records; venue structures are regulated; historical official venue pages can contain detailed geometry.",
+      "next_source_action": "Verify current official venue-by-venue pages or regulator facility records and version by effective date before feature use.",
+      "blocking": "BANK_GEOMETRY_FEATURE"
+    },
+    {
+      "item_id": "COMPETITION_SCORE_FORMULA_MAPPING",
+      "topic": "public competition_score vs regulatory evaluation/average score",
+      "status": "UNRESOLVED_ONE_TO_ONE_GOVERNANCE_MAPPING",
+      "what_is_known": "KEIRIN.JP says displayed competition score is a recent-four-month strength score; JKA business rules contain competition/evaluation score calculations.",
+      "next_source_action": "Locate authoritative documentation explicitly linking the public racecard displayed score definition/version to regulatory computation and update timing.",
+      "blocking": "PROVENANCE_QUALITY_NOT_CURRENT_S0_EXECUTION"
+    },
+    {
+      "item_id": "HOME_BANK_HISTORICAL_PIT_SOURCE",
+      "topic": "home bank / home velodrome",
+      "status": "SEARCHABLE_CURRENT_ATTRIBUTE_BUT_HISTORICAL_PIT_UNRESOLVED",
+      "what_is_known": "KEIRIN.JP rider search exposes home bank/home velodrome filters.",
+      "next_source_action": "Audit historical snapshots/change semantics and whether target-date values can be reproduced without present-day backfill.",
+      "blocking": "HOME_BANK_FEATURE"
+    },
+    {
+      "item_id": "OBJECTIVE_LINE_SOURCE",
+      "topic": "line structure / leader-follower / line position",
+      "status": "UNRESOLVED_OBJECTIVE_PRE_SOURCE",
+      "what_is_known": "Prior KDreams narabi material was classified as human forecast rather than objective official line truth.",
+      "next_source_action": "Search JKA/organizer timing-safe objective declaration or other non-prediction source; otherwise keep unavailable and consider human forecast only as external benchmark.",
+      "blocking": "OBJECTIVE_LINE_FEATURE"
+    },
+    {
+      "item_id": "JMA_POINT_IN_TIME_PUBLICATION_CONTRACT",
+      "topic": "weather observation publication lag/version",
+      "status": "UNRESOLVED_FOR_MODEL_USE",
+      "what_is_known": "JMA provides objective observations and warns historical values can later be corrected.",
+      "next_source_action": "Freeze product, observation timestamp, publication/access timestamp, revision policy and venue-to-station mapping.",
+      "blocking": "WEATHER_FEATURE"
+    },
+    {
+      "item_id": "GEAR_BICYCLE_HISTORICAL_COMPLETENESS",
+      "topic": "gear ratio / bicycle identity",
+      "status": "UNRESOLVED_HISTORICAL_COVERAGE_AND_CHANGE_TIMESTAMP",
+      "what_is_known": "Program formation rules formally record gear ratio and bicycle name and record changes; bicycle inspection is mandatory.",
+      "next_source_action": "Audit archived racecard coverage and exact time/version of pre-race changes before point-in-time use.",
+      "blocking": "GEAR_EQUIPMENT_FEATURE"
+    },
+    {
+      "item_id": "REGISTERED_BICYCLE_DETAIL_BODY",
+      "topic": "registered bicycle list",
+      "status": "OFFICIAL_INDEX_FOUND_BODY_NOT_OBTAINED",
+      "what_is_known": "KEIRIN.JP data room links the registered bicycle list.",
+      "next_source_action": "Resolve nested iframe/document body and capture manufacturer/model/effective dates if available.",
+      "blocking": "EQUIPMENT_KB_DETAIL"
+    },
+    {
+      "item_id": "CERTIFIED_PARTS_DETAIL_BODY",
+      "topic": "certified components/manufacturers",
+      "status": "OFFICIAL_INDEX_FOUND_BODY_NOT_OBTAINED",
+      "what_is_known": "KEIRIN.JP data room links the certified parts manufacturer list.",
+      "next_source_action": "Resolve nested iframe/document body and identify part categories/effective dates.",
+      "blocking": "EQUIPMENT_KB_DETAIL"
+    },
+    {
+      "item_id": "DMM_SUPPORT_31167_BODY",
+      "topic": "DMM support seed",
+      "status": "UNVERIFIED_BODY_NOT_OBTAINED",
+      "what_is_known": "Only a tag-manager iframe was retrieved.",
+      "next_source_action": "Use alternative legal/public retrieval route if the article becomes necessary; do not cite its claims meanwhile.",
+      "blocking": "NONE_WHILE_PRIMARY_SOURCES_EXIST"
+    },
+    {
+      "item_id": "BET_TYPE_CONSUMER_LABEL_ENUMERATION",
+      "topic": "7 consumer bet labels vs legal voting-system taxonomy vs older materials",
+      "status": "PARTIALLY_RESOLVED_TAXONOMY_NEEDS_CROSSWALK",
+      "what_is_known": "Current law/enforcement rule defines legal categories and subtypes; older consumer materials may enumerate differently.",
+      "next_source_action": "Create current legal-to-KEIRIN.JP consumer-label crosswalk rather than treating historical counts as contradiction.",
+      "blocking": "MARKET_SETTLEMENT_DOCUMENTATION_ONLY"
+    },
+    {
+      "item_id": "TIE_SETTLEMENT_ALL_MARKETS",
+      "topic": "dead-heat settlement by every currently sold market",
+      "status": "UNRESOLVED_COMPLETE_CROSSWALK",
+      "what_is_known": "Tie is an official race state; legal winner-combination rules and payout framework are current, but a complete consumer-market dead-heat settlement table was not extracted here.",
+      "next_source_action": "Trace current implementing rules/organizer settlement rules market by market.",
+      "blocking": "MARKET_SETTLEMENT_ENGINE_NOT_OUTCOME_MODEL"
+    },
+    {
+      "item_id": "DIGITAL_TWIN_EXACT_CURRENT_SCHEMA",
+      "topic": "single authoritative current Digital Twin object/schema",
+      "status": "REALITY_UNKNOWN",
+      "what_is_known": "Audited repo contains S0 contracts, PRE source manifest, PL ticket projection code and synthetic/tactical research lanes; no single artifact was assumed to be the promoted authoritative Digital Twin.",
+      "next_source_action": "When a Twin schema is designated canonical, repeat field-by-field Reality mapping against this KB.",
+      "blocking": "TWIN_GAP_PRECISION_ONLY"
+    }
+  ],
+  "closed_by_this_audit": [
+    "PROGRAM_SELECTION_EFFECT_EXISTS_OFFICIALLY",
+    "RACE_STAGE_ADVANCEMENT_IS_PATH_DEPENDENT",
+    "SCRATCH_AND_REPLACEMENT_ARE_FORMAL_STATES",
+    "PHOTO_FINISH_AND_TIES_ARE_FORMAL_RESULT_INTEGRITY_STATES",
+    "GEAR_AND_BICYCLE_ARE_FORMAL_PRE_RACE_OPERATIONAL_STATE",
+    "CURRENT_BANK_CIRCUMFERENCE_IS_OFFICIALLY_AVAILABLE",
+    "WEATHER_HAS_AN_OFFICIAL_EXTERNAL_OBSERVATION_SOURCE",
+    "MARKET_INVALIDATION_REFUND_RULES_ARE_LEGALLY_SEPARATE_FROM_OUTCOME_MODEL"
+  ],
+  "hard_boundaries": ["FAIL_CLOSED_ON_UNRESOLVED", "NO_UNKNOWN_TO_ZERO", "NO_UNVERIFIED_SOURCE_TO_REALITY_TRUTH", "NO_FEATURE_AUTO_ADMISSION"]
+}
