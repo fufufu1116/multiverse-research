@@ -1,0 +1,16 @@
+{
+  "record":"KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260910_v1",
+  "status":"LOCKED_BEFORE_20260903_OUTCOMES_SECOND_INDEPENDENT_333M_VENUE_FUTURE_BLOCK",
+  "scope":"RESEARCH_DESIGN_EXTENSION_ONLY_NO_RESULT_OR_MODEL_AUTHORITY",
+  "lock_timestamp_jst":"2026-09-02T21:53:51+09:00",
+  "scientific_reason":"Preselect an independent second 333m venue before any 2026-09-03 prospective-block outcomes are viewed, reducing the single-333-venue confound without outcome-driven venue selection.",
+  "selected_future_block":{"race_date":"2026-09-10","venue":"奈良","meeting_grade":"G3","meeting_dates":"2026-09-10/2026-09-13","meeting_name":"OFFICIAL_MEETING_NAME_NOT_REQUIRED_FOR_BLOCK_LOCK_AND_NOT_YET_BOUND_HERE","membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT_BEFORE_EACH_RACE_CUTOFF; transport failures retained; no outcome-conditioned inclusion","race_ids":"PENDING_PRE_ONLY_CAPTURE"},
+  "official_schedule_evidence":{"organization":"JKA / KEIRIN.JP","evidence_type":"multiple current rider scheduled-appearance records","observed":"奈良 G3 09/10–09/13","retrieval_date_jst":"2026-09-02","confidence":"HIGH"},
+  "official_bank_evidence":{"organization":"奈良県","title":"競輪事業について / 競輪事業の概要","url":"https://www.pref.nara.jp/secure/332301/%E8%AD%B0%E9%A1%8C1%E8%B3%87%E6%96%99.pdf","published":"2026","verified_field":{"circumference_m":333},"confidence":"HIGH"},
+  "relationship_to_20260903_lock":{"parent_population":"KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v2.json","333m_venues_after_preselection":["富山","奈良"],"400m_venues_already_locked":["青森","武雄"],"minimum_multi_venue_circumference_structure":"2 independent venue identities at 333m and 2 at 400m are now preselected before first prospective outcomes; this improves design but does not by itself prove adequate sample size, balance, or causal identification."},
+  "future_evaluation_rule":"No generalized circumference-affinity outcome test is authorized merely by this lock. Before RESULT, freeze exact feature formula, population assembly, adjustment variables, missingness rules, cluster bootstrap, time split and advance criterion in a separate predictive prespec.",
+  "result_access_authorized":false,
+  "feature_admission":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_20260903_RESULT_DRIVEN_VENUE_SELECTION","NO_RESULT_ACCESS_FROM_THIS_LOCK","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_POST_RACE_PRE_RECONSTRUCTION","NO_VENUE_DUMMY_RESCUE","NO_PROTECTED_HOLDOUT","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
