@@ -1,0 +1,42 @@
+{
+  "record":"KEIRIN_S0_TEMPERATURE_CALIBRATION_T_LOCK_20260902_v1",
+  "status":"T_LOCKED_BEFORE_EVALUATION_HOLDOUT_OUTCOME_ACCESS",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "temperature_prespec_commit":"7c9056be88e7b4ff166470ff192b45b024f8cb25",
+    "fitset_selection_lock_commit":"476e25030ef8098ab60699998423b0194c6f7190",
+    "fitset_receipt_commit":"4226fe9172a22dae4432ff798418b43f3107fe74"
+  },
+  "baseline":{"name":"S0_SCORE_ONLY_SOFTMAX","beta":0.22260435254784533,"feature":"competition_score"},
+  "challenger":{"name":"S0_TEMPERATURE_SCALING_ONLY","formula":"softmax(beta * competition_score / T)","T":0.8898924490271425,"effective_beta_equivalent":0.2501474788230906,"free_parameters":1,"ranking_change":false,"feature_change":false,"PL_structure_change":false},
+  "fit":{
+    "date":"2026-06-28",
+    "successful_races":50,
+    "attempted_races":52,
+    "objective":"MINIMIZE_MEAN_WINNER_NEGATIVE_LOG_PROBABILITY_ON_FIT_SET_ONLY",
+    "parameterization":"optimize log(T), T>0",
+    "optimizer":"bounded scalar minimization",
+    "logT_bounds":[-6,6],
+    "interior_solution":true,
+    "optimizer_success":true,
+    "winner_log_loss":{"untouched_S0_T1":1.6841383566059165,"fitted_T":1.6810965682397099,"difference_fitted_minus_S0":-0.0030417883662066},
+    "winner_brier":{"untouched_S0_T1":0.10727823326687114,"fitted_T":0.1073554754114697,"difference_fitted_minus_S0":0.00007724214459856,"better":false},
+    "ranking_top1_hit_rate":{"untouched_S0_T1":0.38,"fitted_T":0.38,"unchanged":true}
+  },
+  "interpretation":{
+    "fit_objective_result":"WINNER_LOG_LOSS_IMPROVES_SLIGHTLY_IN_SAMPLE",
+    "temperature_direction":"T_BELOW_1_MODEST_SHARPENING_NOT_FLATTENING",
+    "brier_result":"SLIGHTLY_WORSE_IN_SAMPLE",
+    "calibration_claim":"NOT_RESOLVED; FIT-SET METRICS ARE HETEROGENEOUS",
+    "promotion":false,
+    "edge_or_profitability_claim":false
+  },
+  "evaluation_gate":{
+    "T_frozen":true,
+    "holdout_outcomes_opened_before_this_lock":false,
+    "holdout_requirement":"STRICTLY_AFTER_2026-06-28; >=50 successful races; whole accessible meeting/day blocks in chronological source order",
+    "compare":["UNTOUCHED_S0","FROZEN_TEMPERATURE_CHALLENGER","UNIFORM"],
+    "required_for_advancement":["challenger winner_log_loss < untouched_S0 winner_log_loss","challenger winner_brier < untouched_S0 winner_brier","challenger ordered_top3_log_loss < untouched_S0 ordered_top3_log_loss"]
+  },
+  "hard_boundaries":["NO_REFIT_T_ON_EVAL","NO_USE_OF_101R_TO_FIT_T","NO_FIT_EVAL_OVERLAP","NO_FEATURE_ADDITION","NO_PL_CHANGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION","NO_MODEL_PROMOTION_FROM_FIT"]
+}
