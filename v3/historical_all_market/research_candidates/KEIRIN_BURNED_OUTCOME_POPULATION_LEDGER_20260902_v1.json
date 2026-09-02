@@ -1,0 +1,23 @@
+{
+  "record":"KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260902_v1",
+  "status":"CONSERVATIVE_RESEARCH_CONTAMINATION_FIREWALL_NO_NEW_RESULT_EXTRACTION",
+  "purpose":"Prevent new Rider×Bank and Rider×Line/Role research from reusing outcome-viewed or adjacent pre-cutoff periods for rescue tuning.",
+  "rule":"Any population whose RESULT was viewed for fit/evaluation/diagnostic selection is burned for tuning in new affinity work. For simplicity and safety, all target dates on or before the latest confirmed outcome-viewed date are sacrificed for new affinity fit/eval, even if some individual races were unopened.",
+  "known_outcome_exposure_sequence":[
+    {"lineage":"FIXED_S0_DEVELOPMENT_AND_TEMPORAL_REPLICATION","state":"BURNED_FOR_TUNING_BASELINE_EVIDENCE_ONLY","pointers":["KEIRIN_S0_RETROSPECTIVE_200R_REGIME_STABILITY_REPORT_20260902_v1.json","KEIRIN_S0_POST_200R_NEW_PERIOD_CONFIRMATION_REPORT_20260902_v1.json","KEIRIN_S0_SECOND_FUTURE_PERIOD_101R_GATE_REPORT_20260902_v1.json"],"latest_explicit_period_end":"2026-06-27"},
+    {"lineage":"S0_TEMPERATURE_CALIBRATION","state":"EVALUATED_NO_ADVANCE_BURNED","evaluation_date":"2026-06-29","pointer":"KEIRIN_S0_TEMPERATURE_CALIBRATION_EVAL_REPORT_20260902_v1.json"},
+    {"lineage":"S0_OBJECTIVE_STYLE_ROLE_CONDITIONAL_PL","state":"CLOSED_NO_ADVANCE_BURNED","evaluation_date":"2026-07-01","pointer":"KEIRIN_S0_STYLE_ROLE_EVAL_REPORT_20260902_v1.json"},
+    {"lineage":"S0_CONDITIONAL_SCORE_SCALE","state":"PROMISING_NO_ADVANCE_BURNED","evaluation_date":"2026-07-05","pointer":"KEIRIN_S0_CONDITIONAL_SCORE_SCALE_EVAL_REPORT_20260902_v1.json"},
+    {"lineage":"S0_OBJECTIVE_TACTICAL_PROFILE_CONDITIONAL_PL","state":"PROMISING_NO_ADVANCE_BURNED","evaluation_date":"2026-07-11","pointer":"KEIRIN_S0_OBJECTIVE_TACTICAL_PROFILE_EVAL_REPORT_20260902_v1.json"},
+    {"lineage":"S0_OBJECTIVE_B_COUNT_CONDITIONAL_PL","state":"NO_ADVANCE_BURNED","evaluation_date":"2026-07-17","pointer":"KEIRIN_S0_OBJECTIVE_B_COUNT_EVAL_REPORT_20260902_v1.json"},
+    {"lineage":"S0_OBJECTIVE_S_COUNT_CONDITIONAL_PL","state":"NO_ADVANCE_BURNED","evaluation_period":["2026-07-19","2026-07-20"],"pointer":"KEIRIN_S0_OBJECTIVE_S_COUNT_EVAL_REPORT_20260902_v1.json"},
+    {"lineage":"S0_OBJECTIVE_SHORT_BANK_X_STYLE_CONDITIONAL_PL","state":"CLOSED_NO_ADVANCE_BURNED","fit_date":"2026-07-22","evaluation_date":"2026-07-23","pointers":["KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_FITSET_RECEIPT_20260902_v1.json","KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_EVALSET_RECEIPT_20260902_v1.json","KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_POSTEVAL_DISPOSITION_20260902_v1.json"]}
+  ],
+  "latest_confirmed_outcome_viewed_target_date":"2026-07-23",
+  "conservative_new_affinity_date_firewall":{"dates_on_or_before":"2026-07-23","classification":"NOT_ELIGIBLE_FOR_NEW_RIDER_BANK_OR_RIDER_LINE_ROLE_FIT_OR_EVAL","first_possible_date":"2026-07-24","important":"2026-07-24 is only a date floor, not an authorized population. Fresh Read plus PRE-only membership/source locks must still occur before any RESULT extraction."},
+  "future_refresh_rule":"Immediately before any new affinity target extraction, Fresh Read the branch and extend this ledger if any newer outcome-viewed artifact exists. If a newer exposure exists, move the conservative date firewall strictly after it before locking the new population.",
+  "permitted_reuse_of_burned_data":["provenance","audit","reproducibility","failure analysis","diagnostic interpretation without tuning"],
+  "forbidden_reuse":["parameter tuning","feature definition selection","threshold selection","sign flip rescue","transformation rescue","venue rescue","field-size rescue","candidate selection based on observed outcome improvement"],
+  "next":"Bank lane may perform source/version and PRE-only support audit after 2026-07-23; Line/Role lane remains blocked until an objective timing-safe PRE line source is verified.",
+  "hard_boundaries":["NO_NEW_RESULT_EXTRACTION_FROM_THIS_LEDGER","NO_SAME_HOLDOUT_RESCUE","NO_PROTECTED_HOLDOUT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
