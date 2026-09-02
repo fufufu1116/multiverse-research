@@ -1,0 +1,60 @@
+{
+  "record": "KEIRIN_PRE_ONLY_PARSER_SELFTEST_20260902_v1",
+  "status": "PASS_SYNTHETIC_POISON_AND_FAILCLOSED_SELFTEST_REAL_LIVE_CARD_NOT_YET_CAPTURED",
+  "scope": "RESEARCH_BRANCH_ONLY_PRE_EVENT_TRANSPORT_SAFETY_NO_MODEL_AUTHORITY",
+  "parser_path": "tools/keirin_kdreams_pre_only_parser_v1.py",
+  "tested_against": {
+    "fixture_type": "synthetic KDreams-shaped racedetail HTML",
+    "valid_pre_rows": 7,
+    "poison_postevent_sections_present": true,
+    "poison_classes": [
+      "RESULT_TABLE",
+      "PAYOUT_TEXT",
+      "ODDS_TEXT",
+      "FORECAST_TEXT",
+      "COMMENT_TEXT",
+      "NARABIYOSO_TEXT"
+    ],
+    "real_live_card_html_tested": false
+  },
+  "tests": {
+    "valid_7_rows": "PASS",
+    "postevent_poison_excluded_from_output": "PASS",
+    "changing_result_poison_does_not_change_PRE_output": "PASS",
+    "missing_PRE_table": "PASS_FAIL_CLOSED",
+    "duplicate_car_no": "PASS_FAIL_CLOSED",
+    "zero_competition_score": "PASS_FAIL_CLOSED",
+    "fewer_than_5_PRE_rows": "PASS_FAIL_CLOSED",
+    "forbidden_output_keys_absent": "PASS",
+    "cli_receipt_and_csv_path": "PASS"
+  },
+  "output_contract": {
+    "evidence_role": "PROSPECTIVE_PRE_ONLY",
+    "result_table_required": false,
+    "result_fields_emitted": false,
+    "payout_fields_emitted": false,
+    "odds_fields_emitted": false,
+    "forecast_fields_emitted": false,
+    "narabiyoso_fields_emitted": false,
+    "postrace_pre_reconstruction": false,
+    "network_access": false
+  },
+  "limitations": [
+    "This selftest proves parser boundary behavior on synthetic HTML shaped to the currently known PRE table contract; it is not proof that a live future KDreams page is transport-accessible or unchanged.",
+    "A real pre-event saved HTML sample must be captured and separately audited before claiming live transport readiness.",
+    "No RESULT access is authorized by this receipt."
+  ],
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_IN_OUTCOME_MODEL",
+    "NO_FORECAST_MARKS_COMMENTS_TIPS",
+    "NO_NARABIYOSO",
+    "NO_POST_RACE_PRE_RECONSTRUCTION",
+    "UNKNOWN_NOT_ZERO",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION"
+  ]
+}
