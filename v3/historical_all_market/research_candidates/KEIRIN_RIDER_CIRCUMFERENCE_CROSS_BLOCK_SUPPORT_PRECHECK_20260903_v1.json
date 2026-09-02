@@ -1,0 +1,22 @@
+{
+  "record":"KEIRIN_RIDER_CIRCUMFERENCE_CROSS_BLOCK_SUPPORT_PRECHECK_20260903_v1",
+  "status":"PREOUTCOME_CONFIRMED_CROSS_CIRCUMFERENCE_RIDER_RECURRENCE_LOWER_BOUND_6_NO_RESULT_AUTHORITY",
+  "scope":"PRE_ONLY_SUPPORT_AND_IDENTIFIABILITY_PRECHECK",
+  "freeze_timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "purpose":"Determine before outcomes whether the prospectively selected bank calendar contains repeated riders across circumference levels, a prerequisite for separating rider-specific circumference response from pure venue/rider-mix differences.",
+  "source_blocks":{"takeo":{"date":"2026-09-03","circumference_m":400,"meeting":"オッズパーク杯","sources":["https://keirin.kdreams.jp/takeo/assen/8420260903/","current 2026-09-03 Takeo racecards"]},"nara":{"date":"2026-09-10","circumference_m":333.33,"meeting":"７６周年記念平安賞ｉｎ奈良","source":"https://keirin.kdreams.jp/nara/assen/5320260910/"}},
+  "confirmed_name_period_matches":[
+    {"rider":"川口 公太朗","period":98,"takeo_pre":"2026-09-03 Takeo S-class roster/racecard","nara_pre":"2026-09-10 Nara S1 assignment","transition":"400m_TO_333.33m"},
+    {"rider":"小林 弘和","period":91,"takeo_pre":"2026-09-03 Takeo 11R","nara_pre":"2026-09-10 Nara S2 assignment","transition":"400m_TO_333.33m"},
+    {"rider":"長井 妙樹","period":96,"takeo_pre":"2026-09-03 Takeo 11R","nara_pre":"2026-09-10 Nara S2 assignment","transition":"400m_TO_333.33m"},
+    {"rider":"佐々木 堅次","period":113,"takeo_pre":"2026-09-03 Takeo 11R","nara_pre":"2026-09-10 Nara S2 assignment","transition":"400m_TO_333.33m"},
+    {"rider":"植原 琢也","period":113,"takeo_pre":"2026-09-03 Takeo 11R","nara_pre":"2026-09-10 Nara S2 assignment","transition":"400m_TO_333.33m"},
+    {"rider":"桐山 敬太郎","period":88,"takeo_pre":"2026-09-03 Takeo 10R","nara_pre":"2026-09-10 Nara S2 assignment","transition":"400m_TO_333.33m"}
+  ],
+  "support_summary":{"confirmed_cross_circumference_riders_lower_bound":6,"exhaustive_roster_intersection_completed":false,"identity_status":"NAME_PLUS_PERIOD_PRE_MATCH_ONLY; official registration-number mapping still required under frozen identity contract","result_values_observed":false},
+  "design_implication":"The prospective calendar has real within-rider cross-circumference support, so Rider×Circumference is not structurally impossible. This does not estimate an effect. Opponent strength, class/race stage, venue, timing, and repeated-rider selection must still be controlled/prespecified, and official identity plus clean PRE gates must pass.",
+  "allowed_next":"Complete exhaustive PRE roster intersection and official registration-number mapping; quantify support counts before assigning fit/eval or opening outcomes.",
+  "bank_affinity_result":"EVIDENCE_PENDING_NOT_ESTABLISHED",
+  "result_access_authorized":false,
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_ODDS_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_NAME_ONLY_FINAL_IDENTITY","NO_EFFECT_ESTIMATE_FROM_SUPPORT_COUNT","NO_POST_OUTCOME_RIDER_SELECTION","NO_MODEL_FIT","NO_S0_MUTATION","NO_MODEL_PROMOTION"]
+}
