@@ -1,0 +1,85 @@
+{
+  "record":"KEIRIN_S0_CONDITIONAL_SCORE_SCALE_PRESPEC_20260902_v1",
+  "status":"PRESPECIFIED_BEFORE_NEW_FIT_PERIOD_OUTCOME_ACQUISITION",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "style_role_no_advance_commit":"23ef75db40b745e61bbd0d17198cc2ea32ecf694",
+    "baseline_beta":0.22260435254784533
+  },
+  "scientific_question":"Before adding new features, does standard PL fail because competition_score should have a different concentration after the winner has been removed?",
+  "baseline":{
+    "name":"S0_SCORE_ONLY_STANDARD_PL",
+    "feature":"competition_score",
+    "beta":0.22260435254784533,
+    "stage1_logits":"beta * competition_score",
+    "stage2_logits":"beta * competition_score after actual stage1 removal",
+    "stage3_logits":"beta * competition_score after actual stage1 and stage2 removal"
+  },
+  "candidate":{
+    "name":"S0_CONDITIONAL_SCORE_SCALE_SEQUENTIAL_PL_V1",
+    "free_parameters":1,
+    "alpha":"FIT_ON_FIT_SET_ONLY; alpha > 0",
+    "stage1_logits":"beta * competition_score",
+    "stage2_logits":"alpha * beta * competition_score after actual stage1 removal",
+    "stage3_logits":"alpha * beta * competition_score after actual stage1 and stage2 removal",
+    "stage1_exactly_untouched":true,
+    "single_consistent_ordered_probability_object":true,
+    "new_feature_added":false,
+    "human_lineup_forecast_used":false
+  },
+  "fit_objective":{
+    "objective":"MINIMIZE_MEAN_ORDERED_TOP3_LOG_LOSS_ON_FIT_SET_ONLY",
+    "equivalence_note":"Because stage1 is invariant to alpha, optimization is equivalent to minimizing mean L2+L3 on the fit set.",
+    "parameterization":"optimize log(alpha), alpha>0",
+    "no_feature_selection":true,
+    "no_stage_specific_separate_alpha2_alpha3":true,
+    "no_posthoc_bounds_change":true
+  },
+  "data_split":{
+    "all_evidence_through_2026_07_01":"DESIGN_ONLY_MUST_NOT_BE_USED_TO_FIT_ALPHA",
+    "fit_set":{
+      "race_dates":"STRICTLY_AFTER_2026-07-01",
+      "minimum_successful_races":50,
+      "selection":"whole accessible meeting/day blocks in chronological KDreams source order",
+      "purpose":"FIT_ALPHA_ONLY"
+    },
+    "evaluation_holdout":{
+      "race_dates":"STRICTLY_AFTER_END_OF_FIT_SET_AND_AFTER_END_OF_EVERY_MEETING_CONTRIBUTING_TO_FIT_SET",
+      "minimum_successful_races":50,
+      "selection":"whole accessible meeting/day blocks in chronological KDreams source order excluding all fit-set meeting identities",
+      "purpose":"EVALUATE_FROZEN_ALPHA_ONLY"
+    },
+    "same_race_or_same_day_cross_split":false,
+    "same_meeting_identity_cross_split":false,
+    "ambiguous":"FAIL_CLOSED",
+    "manual_repair":false
+  },
+  "evaluation":{
+    "compare":["UNTOUCHED_S0_STANDARD_PL","FROZEN_CONDITIONAL_SCORE_SCALE","UNIFORM"],
+    "primary":["ordered_top3_log_loss","L2","L3"],
+    "invariance_checks":["winner_log_loss exactly equal to untouched S0 within numerical tolerance","winner_brier exactly equal to untouched S0 within numerical tolerance","winner ranking exactly preserved"],
+    "uncertainty":"RACE_LEVEL_CLUSTER_BOOTSTRAP_20000_SEED_20260902",
+    "slices":["meeting/day block","venue","field size where sample sufficient"],
+    "negative_blocks_hidden":false
+  },
+  "advancement_rule":{
+    "required_point_estimates_on_evaluation_holdout":["candidate ordered_top3_log_loss < untouched S0 ordered_top3_log_loss","candidate L2 < untouched S0 L2","candidate L3 < untouched S0 L3"],
+    "required_contract_checks":["winner probability invariance passes","baseline beta unchanged","frozen alpha not refit on evaluation","no RESULT/PAYOUT/odds/human forecast used as feature"],
+    "uncertainty_for_wider_replication":"95pct race-cluster bootstrap CI for candidate-minus-S0 ordered_top3_log_loss must have upper bound < 0; otherwise at most PROMISING_NO_ADVANCE_TO_WIDER_REPLICATION",
+    "no_auto_model_promotion":true
+  },
+  "failure_interpretation":{
+    "top3_or_one_stage_not_better":"ONE_PARAMETER_CONDITIONAL_SCORE_RESCALING_IS_INSUFFICIENT_OR_UNSTABLE; DO_NOT RESCUE_TUNE ON SAME HOLDOUT",
+    "winner_metric_changes":"IMPLEMENTATION_OR_CONTRACT_FAILURE",
+    "eval_failure_next_direction":"Only after this structural test, consider a new lineage using a prespecified objective tactical-profile scalar or bank interaction."
+  },
+  "source_boundary":{
+    "eligible_PRE":["competition_score"],
+    "RESULT_target_only":true,
+    "PAYOUT_excluded":true,
+    "odds_excluded":true,
+    "KDreams_narabiyoso_excluded":true,
+    "tips_marks_comments_excluded":true
+  },
+  "hard_boundaries":["NO_CHANGE_TO_BASELINE_BETA","NO_ALPHA2_ALPHA3_SPLIT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_FIT_EVAL_OVERLAP","NO_SAME_MEETING_CROSS_SPLIT","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION_FROM_THIS_CANDIDATE"]
+}
