@@ -1,0 +1,17 @@
+{
+  "record":"KEIRIN_PROSPECTIVE_PRE_CAPTURE_SCHEDULE_20260903_v1",
+  "status":"FROZEN_PRE_EVENT_CAPTURE_DEADLINES_FOR_31_LOCKED_RACES",
+  "scope":"RESEARCH_TRANSPORT_SCHEDULE_NO_RESULT_AUTHORITY",
+  "created_jst":"2026-09-02T23:27:05+09:00",
+  "parent_race_id_freeze":"KEIRIN_PROSPECTIVE_PRE_ONLY_EXACT_RACE_ID_FREEZE_20260903_v1.json",
+  "deadline_semantics":"Each listed time is the KDreams displayed投票締切 for that race. PRE source capture must complete before the listed deadline; if timing safety is uncertain, fail closed earlier rather than capture later.",
+  "blocks":[
+    {"venue":"富山","venue_slug":"toyama","race_date":"2026-09-03","race_id_prefix":"46202609030100","race_numbers":[1,2,3,4,5,6,7],"cutoff_jst":["08:25","08:45","09:06","09:27","09:48","10:09","10:30"]},
+    {"venue":"青森","venue_slug":"aomori","race_date":"2026-09-03","race_id_prefix":"12202609030100","race_numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"cutoff_jst":["10:53","11:21","11:49","12:17","12:45","13:13","13:41","14:11","14:41","15:11","15:43","16:20"]},
+    {"venue":"武雄","venue_slug":"takeo","race_date":"2026-09-03","race_id_prefix":"84202609030100","race_numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"cutoff_jst":["15:50","16:13","16:37","17:01","17:25","17:49","18:13","18:38","19:04","19:30","19:57","20:25"]}
+  ],
+  "url_rule":"https://keirin.kdreams.jp/<venue_slug>/racedetail/<race_id>/ only; do not add pageType=result/odds/yoso and do not navigate raceresult.",
+  "on_capture_failure":"Record explicit transport failure. Do not replace the race, extend membership, or reconstruct PRE after the deadline/event.",
+  "result_access_authorized":false,
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_NUMERIC_ODDS","NO_HUMAN_FORECAST","NO_NARABIYOSO","NO_POST_RACE_PRE_RECONSTRUCTION","NO_MEMBERSHIP_SUBSTITUTION","UNKNOWN_NOT_ZERO","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
