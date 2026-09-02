@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_TACTICAL_PROFILE_GAMMA_LOCK_20260902_v1",
+  "status": "GAMMA_FROZEN_BEFORE_EVALUATION_TARGET_ACCESS",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "bb5e93fc9a41711e958dcbfee55c90defc6ecf63",
+    "fitset_selection_lock_commit": "cc4a004bf3888e35552ab7e606e2061edbdac49a",
+    "fit_receipt_commit": "82f9e806786f0e53cfaae092b0131caaacabf07c",
+    "fit_receipt_record": "KEIRIN_S0_OBJECTIVE_TACTICAL_PROFILE_FITSET_RECEIPT_20260902_v1"
+  },
+  "frozen_parameters": {
+    "beta": 0.22260435254784533,
+    "gamma": 0.2681505923161077
+  },
+  "candidate": {
+    "stage1": "beta * competition_score",
+    "stage2": "beta * competition_score + gamma * tactical_profile after actual stage1 removal",
+    "stage3": "beta * competition_score + gamma * tactical_profile after actual stage1 and stage2 removal"
+  },
+  "fit_summary": {
+    "successful_races": 55,
+    "s0_ordered_top3_log_loss": 4.903787533446853,
+    "candidate_ordered_top3_log_loss": 4.87301001175283,
+    "difference": -0.03077752169402359,
+    "L1_difference": 0.0,
+    "L2_difference": -0.02893400406082862,
+    "L3_difference": -0.001843514634039932
+  },
+  "evaluation_separation": {
+    "earliest_permitted_race_date": "2026-07-11",
+    "rule": "STRICTLY_AFTER_2026-07-10_AND_EXCLUDE_ALL_FIT_MEETING_IDENTITIES",
+    "excluded_fit_meeting_identities": ["1120260708", "2120260707", "2320260706", "4420260708", "6120260707", "6220260708"],
+    "minimum_successful_races": 50,
+    "whole_meeting_day_blocks_chronological_source_order": true
+  },
+  "frozen_no_rescue": ["NO_GAMMA_REFIT", "NO_GAMMA_SIGN_FLIP", "NO_GAMMA2_GAMMA3_SPLIT", "NO_BETA_CHANGE", "NO_STAGE1_CHANGE", "NO_SCALAR_REDEFINITION", "NO_TARGET_CONDITIONED_BLOCK_SUBSTITUTION"],
+  "source_boundary": {
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "human_forecast_used": false
+  },
+  "no_model_promotion": true
+}
