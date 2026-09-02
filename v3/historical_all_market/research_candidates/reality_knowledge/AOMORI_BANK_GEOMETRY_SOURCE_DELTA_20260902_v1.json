@@ -1,0 +1,17 @@
+{
+  "record":"AOMORI_BANK_GEOMETRY_SOURCE_DELTA_20260902_v1",
+  "status":"PARTIAL_PASS_OFFICIAL_LOCAL_2023_NUMERIC_GEOMETRY_FOUND_2026_EFFECTIVE_INTERVAL_UNVERIFIED",
+  "scope":"REALITY_KNOWLEDGE_SOURCE_AUDIT_NO_FEATURE_ADMISSION",
+  "retrieval_date_jst":"2026-09-02",
+  "purpose":"Resolve the previously open exact-numeric Aomori bank-geometry source gap while preserving target-date effective-version discipline.",
+  "sources":[
+    {"organization":"青森市 / 青森競輪 AOMORI KEIRIN","title":"2023 official local race guide / 青森競輪 バンクガイド","url":"https://aomorikeirin.com/wp-content/uploads/2023/08/23_moeban_vol04.pdf","historical_current":"HISTORICAL_2023_OFFICIAL_LOCAL_PUBLICATION","retrieval":"WEB_SEARCH_INDEX_TEXT; direct PDF screenshot fetch attempted but cache-missed, therefore not promoted to current effective truth","reported_geometry":{"circumference_m":400,"mashinashi_straight_m":58.9,"straight_surface_slope":"2°51′45″","back_width_m":9.8,"center_surface_slope":"32°15′7″","home_width_m":10.8,"center_width_m":7.8},"confidence":"MEDIUM_HIGH_FOR_2023_PUBLICATION_CONTENT_LOW_FOR_2026_EFFECTIVE_INTERVAL"},
+    {"organization":"JKA / KEIRIN.JP","title":"Historical Aomori bank data","url":"https://keirin.jp/pc/dfw/portal/guest/report/winner_data/h15/48/bank.html","historical_current":"HISTORICAL","reported_geometry":{"circumference_m":400,"home_straight_m":41.282,"max_cant":"32°15′07″"},"note":"Home straight length is not the same metric as みなし直線距離; do not treat 41.282m versus 58.9m as a contradiction.","confidence":"HIGH_FOR_HISTORICAL_DISPLAY"},
+    {"organization":"青森市 / 青森競輪 AOMORI KEIRIN","title":"Current venue/access page","url":"https://aomorikeirin.com/access/","historical_current":"CURRENT_PAGE","reported_claim":"クセのない400mバンク; current page confirms 400m but does not expose the full numeric geometry set in clean body text.","confidence":"HIGH_FOR_CURRENT_400M_ONLY"}
+  ],
+  "cross_source_observation":"The 2023 local guide and historical KEIRIN.JP source agree on the center/max cant value 32°15′07″ and on 400m circumference. This is supportive continuity evidence, not proof of an uninterrupted effective interval through 2026-09-03.",
+  "feature_admission":{"circumference_400m":"CURRENTLY_SUPPORTED_BY_CURRENT_OFFICIAL_PAGE","mashinashi_straight_58_9m":"BLOCKED_AS_2026_MODEL_FEATURE_UNTIL_NO_RENOVATION_OR_TARGET_DATE_EFFECTIVE_INTERVAL_IS_VERIFIED","cant_32_15_07":"BLOCKED_AS_2026_MODEL_FEATURE_UNTIL_EFFECTIVE_INTERVAL_VERIFIED","widths_and_straight_slope":"BLOCKED_AS_2026_MODEL_FEATURE_UNTIL_EFFECTIVE_INTERVAL_VERIFIED"},
+  "next":"Find an official current facility specification, renovation history/no-change evidence, or versioned source establishing that the 2023 geometry remained effective on 2026-09-03. Until then use Aomori circumference only and keep detailed geometry descriptive.",
+  "result_accessed":false,
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_CURRENT_GEOMETRY_BACKFILL_WITHOUT_EFFECTIVE_INTERVAL","NO_UNKNOWN_TO_ZERO","NO_MODEL_FIT_FROM_THIS_AUDIT","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
