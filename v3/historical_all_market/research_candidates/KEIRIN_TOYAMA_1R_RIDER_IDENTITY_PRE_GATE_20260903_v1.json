@@ -1,0 +1,24 @@
+{
+  "record":"KEIRIN_TOYAMA_1R_RIDER_IDENTITY_PRE_GATE_20260903_v1",
+  "status":"SEVEN_OF_SEVEN_EXACT_IDENTITY_CANDIDATES_MEETING_SCHEDULE_CORROBORATED_RACE_ASSIGNMENT_GATE_PENDING_FAIL_CLOSED",
+  "scope":"PRE_ONLY_RIDER_IDENTITY_GATE_NO_RESULT_OR_MODEL_AUTHORITY",
+  "race_binding":"KEIRIN_TOYAMA_1R_PRE_SEARCH_SURFACE_PILOT_20260903_v1.json",
+  "identity_contract":"KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
+  "race":{"race_id":"4620260903010001","race_date":"2026-09-03","venue":"富山","race_no":1,"start_jst":"08:30"},
+  "mappings":[
+    {"car_no":1,"rider_name":"吉田 航","prefecture":"大分","period":127,"registration_number":"015934","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=015934","name_prefecture_period":"EXACT","official_meeting_schedule":"富山 F2 09/03-09/05 VERIFIED","official_race_no_assignment":"NOT_VERIFIED"},
+    {"car_no":2,"rider_name":"竹内 優也","prefecture":"北海道","period":89,"registration_number":"013979","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=013979","name_prefecture_period":"EXACT","official_meeting_schedule":"富山 F2 09/03-09/05 VERIFIED","official_race_no_assignment":"NOT_VERIFIED"},
+    {"car_no":3,"rider_name":"山根 泰道","prefecture":"岡山","period":64,"registration_number":"012128","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=012128","name_prefecture_period":"EXACT","official_meeting_schedule":"富山 F2 09/03-09/05 VERIFIED","official_race_no_assignment":"NOT_VERIFIED"},
+    {"car_no":4,"rider_name":"大崎 智久","prefecture":"青森","period":89,"registration_number":"013983","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=013983","name_prefecture_period":"EXACT","official_meeting_schedule":"富山 F2 09/03-09/05 VERIFIED","official_race_no_assignment":"NOT_VERIFIED"},
+    {"car_no":5,"rider_name":"高橋 義秋","prefecture":"大分","period":96,"registration_number":"014561","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=014561","name_prefecture_period":"EXACT","official_meeting_schedule":"富山 F2 09/03-09/05 VERIFIED","official_race_no_assignment":"NOT_VERIFIED"},
+    {"car_no":6,"rider_name":"江本 博明","prefecture":"千葉","period":90,"registration_number":"014079","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=014079","name_prefecture_period":"EXACT","official_meeting_schedule":"富山 F2 09/03-09/05 VERIFIED","official_race_no_assignment":"NOT_VERIFIED"},
+    {"car_no":7,"rider_name":"松下 綾馬","prefecture":"岡山","period":121,"registration_number":"015639","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=015639","name_prefecture_period":"EXACT","official_meeting_schedule":"富山 F2 09/03-09/05 VERIFIED","official_race_no_assignment":"NOT_VERIFIED"}
+  ],
+  "summary":{"riders":7,"exact_name_prefecture_period_matches":7,"official_meeting_schedule_corroborated":7,"official_same_race_number_assignments_verified":0,"final_identity_gate_pass":false},
+  "why_not_pass":"The strengthened prospective identity contract requires corroboration of the same date/venue/race-number assignment from the official current-event interface. Static/cached official profile material available in this session verifies identity and Toyama 09/03-09/05 schedule but not 1R assignment. The gate is therefore deliberately not weakened to manufacture a pass.",
+  "allowed_use":"IDENTITY_CANDIDATE_TABLE_AND_TRANSPORT_DIAGNOSTIC_ONLY",
+  "forbidden_use":"RIDER_SPECIFIC_AFFINITY_RESULT_EVALUATION_OR_MODEL_FIT",
+  "result_access_authorized":false,
+  "next":"Before 08:25 JST, attempt official current-event race-number corroboration or another prespecified clean official assignment source. If unavailable by cutoff, keep Toyama 1R rider-affinity identity gate FAIL_CLOSED; do not repair after race.",
+  "hard_boundaries":["NO_RESULT_FOR_IDENTITY","NO_MANUAL_GUESS","NO_CONTRACT_WEAKENING_TO_FORCE_PASS","NO_CURRENT_PROFILE_ATTRIBUTE_BACKFILL","NO_UNKNOWN_TO_ZERO","NO_POST_RACE_REPAIR","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION"]
+}
