@@ -1,0 +1,21 @@
+{
+  "record":"KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2",
+  "status":"PRESPECIFIED_STRONG_PROSPECTIVE_MAPPING_CONTRACT_NO_RESULT_ACCESS_OR_MODEL_AUTHORITY",
+  "scope":"RESEARCH_DATA_IDENTITY_ONLY",
+  "supersedes_for_prospective_current_event_mapping":"KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v1.json",
+  "historical_rule_preserved":"v1 historical mapping/backfill restrictions remain unchanged; v2 adds a stronger contemporaneous prospective event-assignment gate only.",
+  "bindings":["KEIRIN_RIDER_IDENTITY_SOURCE_AUDIT_20260902_v1.json","KEIRIN_RIDER_IDENTITY_PROSPECTIVE_EVENT_ASSIGNMENT_GATE_20260902_v1.json","tools/keirin_rider_identity_pre_only_mapper_v1.py","KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPER_SELFTEST_20260902_v1.json"],
+  "purpose":"Deterministically map PRE race-card rider identities to official KEIRIN.JP registration numbers, and require same-event official profile corroboration before a 2026-09-03 race can enter prospective rider-specific affinity evaluation.",
+  "input_contract":{"pre_rows":"Output of tools/keirin_kdreams_pre_only_parser_v1.py","official_identity_catalog":"PRE-captured KEIRIN.JP registration-number profiles only","catalog_required_flags":{"result_accessed":false,"evidence_role":"PROSPECTIVE_PRE_ONLY_IDENTITY"}},
+  "normalization_v1":["Unicode NFKC normalization","trim leading/trailing whitespace","collapse internal ASCII/full-width whitespace to one separator","preserve kanji exactly after NFKC","no phonetic guess","no manual character substitution"],
+  "profile_validation":["registration_number must be exactly six decimal digits","official_profile_url query snum must equal registration_number","official profile name must be non-empty","if current_event exists it must contain valid race_date, venue, and positive race_no"],
+  "resolution_order":["exact normalized full-name lookup","zero candidates => FAIL_CLOSED_NO_MATCH","multiple candidates => FAIL_CLOSED_MULTIPLE_MATCH","one candidate with current_event mismatch on race_date/venue/race_no => FAIL_CLOSED_EVENT_CONTRADICTION","one candidate with exact same-event corroboration => EXACT_SINGLE_MATCH_EVENT_CORROBORATED","one candidate without captured event assignment => EXACT_SINGLE_MATCH_PROFILE_ONLY, which is mapping evidence but does not pass the stronger prospective rider-affinity race gate"],
+  "prospective_race_identity_gate":"PASS only when every PRE rider in the race is EXACT_SINGLE_MATCH_EVENT_CORROBORATED. Any profile-only, unmatched, duplicate-name, contradiction, or uncertainty makes the race fail closed for rider-specific affinity. The race remains in the frozen transport population with explicit identity failure; it is not silently dropped or repaired after RESULT.",
+  "forbidden_pre_input_fields":["result","finish","finish_1","finish_2","finish_3","payout","odds","forecast","prediction","tips","human_mark","narabiyoso","settlement"],
+  "important_mark_field_note":"The existing PRE parser field `mark` is an objective tactical-count column and is not the prohibited human forecast mark; the mapper therefore does not reject that field name.",
+  "output_and_freeze":["emit per-rider mapping status and provenance","emit per-race exact-unique/event-corroboration gate flags","hash the complete mapping table deterministically","freeze mapping hash before any rider-specific RESULT extraction","do not encode unmapped riders as zero/average/anonymous reusable buckets"],
+  "current_profile_nonfeature_boundary":["current_home_bank","current_preferred_circumference","current_preferred_velodrome","current_class","current_competition_score","current_style"],
+  "result_access_authorized":false,
+  "next_gate":"BUILD_PRE_ONLY_OFFICIAL_IDENTITY_CATALOG_FOR_LOCKED_2026_09_03_RACES_AND_RUN_COMPLETE_MAPPING_BEFORE_RIDER_SPECIFIC_RESULT_ACCESS",
+  "hard_boundaries":["NO_RESULT_FOR_IDENTITY_RESOLUTION","NO_MANUAL_NAME_GUESS","NO_CURRENT_PROFILE_ATTRIBUTE_BACKFILL","NO_UNKNOWN_TO_ZERO","NO_PAYOUT","NO_ODDS","NO_HUMAN_FORECAST","NO_POST_RACE_REPAIR","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
