@@ -1,0 +1,98 @@
+{
+  "schema": "multiverse.resume.adoption.cas_runner.v3",
+  "record": "MULTIVERSE_CHAT_INDEPENDENT_RESUME_V3_ADOPTION_CAS_RUNNER_20260903_v3",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority": "REVIEW_ONLY_NO_ADOPTION_AUTHORITY_UNTIL_NEW_OWNER_GATE",
+  "purpose": "CLOSE_RUNNER_V2_OWNER_GATE_FALSE_POSITIVE_AND_MANIFEST_JSON_DEFECT_WHILE_PRESERVING_EXACT_OLD_REF_CAS",
+  "supersedes_runner_v2_for_future_live_use": true,
+  "review_lineage": {
+    "prior_main_toctou_lab_fix_required": 5511212447,
+    "runner_v2_core_freeze": 5513184869,
+    "runner_v2_lab_request": 5513194577,
+    "runner_v2_lab_material_block": 5513240783,
+    "runner_v2_prelab_run": 33657570929,
+    "runner_v2_prelab_job": 100339837662
+  },
+  "runner": {
+    "workflow_path": ".github/workflows/multiverse-resume-v3-adoption-cas-v1.yml",
+    "workflow_blob": "f4e9b58d69dc9e0f2e34a43281976dbdf15b7379",
+    "runner_branch": "runner/chat-independent-resume-v3-adoption-cas-v1",
+    "runner_head": "BOUND_BY_FINAL_CORE_FREEZE_AFTER_COMMIT_CREATION",
+    "runner_not_adopted_to_main": true,
+    "permissions": ["contents:write","issues:read"],
+    "no_repository_secret_required": true,
+    "no_owner_token_or_writer_key_required": true
+  },
+  "owner_gate": {
+    "mode": "FIRST_PARTY_GITHUB_OWNER_COMMENT_EXACT_BODY",
+    "receipt_source": "PR_74_ISSUE_COMMENTS_ALL_PAGES",
+    "required_author_login": "fufufu1116",
+    "required_author_association": "OWNER",
+    "required_performed_via_github_app": null,
+    "required_exact_body": "APPROVE RESUME-CAS-V3 8a27427b8fbfe2b572701bf83929c305",
+    "substring_contains_matching": false,
+    "quoted_or_denial_text_can_match": false,
+    "chatgpt_connector_comment_can_match": false,
+    "required_matching_comment_count": 1,
+    "missing_duplicate_or_app_mediated_comment": "FAIL_CLOSED_BEFORE_ANY_MAIN_OR_STATE_WRITE",
+    "challenge_is_unique_to_this_reviewed_runner": true,
+    "prelab_mode_skips_owner_gate_and_has_no_write_steps": true
+  },
+  "exact_refs": {
+    "expected_old_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "target_main": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
+    "target_main_branch": "meta/chat-independent-resume-context-compression-20260902-v3-adoption-transaction-v1",
+    "expected_old_core_state": "6facca0f57383197fb0843824df2c65298cb9cb4",
+    "target_core_state": "3a89d12a2edea0f51723abf28f244194269e340f",
+    "target_core_state_branch": "state/multiverse-core-post-resume-v3-adoption-candidate-v1"
+  },
+  "gate_refs": {
+    "prelab": "gate/chat-independent-resume-v3-adoption-cas-prelab-v3",
+    "one_shot": "gate/chat-independent-resume-v3-adoption-cas-one-shot-v1",
+    "both_must_start_at_exact_expected_old_main_before_activation": true,
+    "activation_to_exact_reviewed_runner_head_must_be_non_force": true,
+    "workflow_requires_event_before_exact_expected_old_main": true
+  },
+  "cas_semantics": {
+    "main": "git push --force-with-lease=refs/heads/main:<EXPECTED_OLD_MAIN> origin <TARGET_MAIN>:refs/heads/main",
+    "core_state": "git push --force-with-lease=refs/heads/state/multiverse-core-current:<EXPECTED_OLD_STATE> origin <TARGET_STATE>:refs/heads/state/multiverse-core-current",
+    "remote_exact_old_guard": true,
+    "generic_force": false,
+    "force_without_lease": false,
+    "automatic_force_rollback": false
+  },
+  "prelab": {
+    "exact_lease_dry_run_only": true,
+    "owner_gate_step_skipped": true,
+    "main_write": false,
+    "state_write": false,
+    "post_dry_run_exact_ref_unchanged_checks": true
+  },
+  "live_sequence": [
+    "VERIFY_EVENT_REF_BEFORE_AFTER_AND_EXACT_TARGET_REFS",
+    "VERIFY_EXACT_SINGLE_FIRST_PARTY_OWNER_CHALLENGE_COMMENT_FROM_PR74",
+    "CAS_MAIN_WITH_EXPLICIT_EXPECTED_OLD_LEASE",
+    "VERIFY_MAIN_EXACT_TARGET",
+    "CAS_CORE_STATE_WITH_EXPLICIT_EXPECTED_OLD_LEASE",
+    "VERIFY_CORE_STATE_EXACT_TARGET",
+    "FINAL_NONSECRET_REF_VERIFICATION"
+  ],
+  "partial_failure": {
+    "before_main": "NO_MUTATION_FAIL_CLOSED",
+    "main_succeeds_state_fails": "SAFE_INCOMPLETE_NO_LIVE_ACTION_BOUNDED_REMEDIATION_ONLY",
+    "state_or_final_verify_fails": "FAIL_CLOSED_NO_LIVE_ACTION_BOUNDED_RECONCILIATION_ONLY",
+    "rerun_after_any_ref_changed": "EVENT_OR_EXACT_OLD_BINDING_FAILS_CLOSED"
+  },
+  "authority_ceiling": {
+    "codespace": false,
+    "static_guard": false,
+    "manual_arm": false,
+    "oauth_or_device_authorization": false,
+    "step3_step4_apply": false,
+    "production_or_ruleset": false,
+    "secrets_or_writer_keys": false,
+    "merge": false,
+    "keirin_promotion_or_real_money": false,
+    "runtime_activation": false
+  }
+}
