@@ -15,7 +15,7 @@
   },
   "runner": {
     "workflow_path": ".github/workflows/multiverse-resume-v3-adoption-cas-v1.yml",
-    "workflow_blob": "f4e9b58d69dc9e0f2e34a43281976dbdf15b7379",
+    "workflow_blob": "c81969f2b793e26b3a954cea675157b773796b41",
     "runner_branch": "runner/chat-independent-resume-v3-adoption-cas-v1",
     "runner_head": "BOUND_BY_FINAL_CORE_FREEZE_AFTER_COMMIT_CREATION",
     "runner_not_adopted_to_main": true,
@@ -36,7 +36,8 @@
     "required_matching_comment_count": 1,
     "missing_duplicate_or_app_mediated_comment": "FAIL_CLOSED_BEFORE_ANY_MAIN_OR_STATE_WRITE",
     "challenge_is_unique_to_this_reviewed_runner": true,
-    "prelab_mode_skips_owner_gate_and_has_no_write_steps": true
+    "prelab_mode_skips_live_owner_gate": true,
+    "prelab_negative_test_requires_current_first_party_challenge_count": 0
   },
   "exact_refs": {
     "expected_old_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
@@ -47,7 +48,7 @@
     "target_core_state_branch": "state/multiverse-core-post-resume-v3-adoption-candidate-v1"
   },
   "gate_refs": {
-    "prelab": "gate/chat-independent-resume-v3-adoption-cas-prelab-v3",
+    "prelab": "gate/chat-independent-resume-v3-adoption-cas-prelab-v4",
     "one_shot": "gate/chat-independent-resume-v3-adoption-cas-one-shot-v1",
     "both_must_start_at_exact_expected_old_main_before_activation": true,
     "activation_to_exact_reviewed_runner_head_must_be_non_force": true,
@@ -62,8 +63,8 @@
     "automatic_force_rollback": false
   },
   "prelab": {
+    "owner_gate_false_positive_negative_test": true,
     "exact_lease_dry_run_only": true,
-    "owner_gate_step_skipped": true,
     "main_write": false,
     "state_write": false,
     "post_dry_run_exact_ref_unchanged_checks": true

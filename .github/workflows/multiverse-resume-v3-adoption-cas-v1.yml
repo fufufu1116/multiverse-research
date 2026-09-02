@@ -3,7 +3,7 @@ name: MULTIVERSE Resume v3 CAS Adoption Runner v3
 on:
   push:
     branches:
-      - gate/chat-independent-resume-v3-adoption-cas-prelab-v3
+      - gate/chat-independent-resume-v3-adoption-cas-prelab-v4
       - gate/chat-independent-resume-v3-adoption-cas-one-shot-v1
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
       EXPECTED_OLD_STATE: 6facca0f57383197fb0843824df2c65298cb9cb4
       TARGET_STATE: 3a89d12a2edea0f51723abf28f244194269e340f
       TARGET_STATE_BRANCH: state/multiverse-core-post-resume-v3-adoption-candidate-v1
-      PRELAB_GATE_REF: refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v3
+      PRELAB_GATE_REF: refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v4
       LIVE_GATE_REF: refs/heads/gate/chat-independent-resume-v3-adoption-cas-one-shot-v1
       OWNER_FIRST_PARTY_CHALLENGE: APPROVE RESUME-CAS-V3 8a27427b8fbfe2b572701bf83929c305
       EVENT_BEFORE: ${{ github.event.before }}
@@ -68,6 +68,21 @@ jobs:
           git merge-base --is-ancestor "$EXPECTED_OLD_MAIN" "$TARGET_MAIN"
           git merge-base --is-ancestor "$EXPECTED_OLD_STATE" "$TARGET_STATE"
           echo "CAS_RUNNER_V3_BINDING_PASS"
+      - name: Prelab first-party Owner gate negative test
+        if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v4'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          matches="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/74/comments?per_page=100" | jq -s \
+            --arg challenge "$OWNER_FIRST_PARTY_CHALLENGE" \
+            'add | [ .[] | select(.user.login == "fufufu1116") | select(.author_association == "OWNER") | select(.performed_via_github_app == null) | select(.body == $challenge) ] | length')"
+          if [ "$matches" != "0" ]; then
+            echo "CAS_RUNNER_V3_DENIED:PRELAB_FIRST_PARTY_CHALLENGE_ALREADY_PRESENT_${matches}"
+            exit 94
+          fi
+          echo "CAS_RUNNER_V3_PRELAB_OWNER_GATE_NEGATIVE_PASS"
       - name: One-shot first-party Owner gate
         if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-one-shot-v1'
         shell: bash
@@ -80,11 +95,11 @@ jobs:
             'add | [ .[] | select(.user.login == "fufufu1116") | select(.author_association == "OWNER") | select(.performed_via_github_app == null) | select(.body == $challenge) ] | length')"
           if [ "$matches" != "1" ]; then
             echo "CAS_RUNNER_V3_DENIED:FIRST_PARTY_OWNER_CHALLENGE_COUNT_${matches}"
-            exit 94
+            exit 95
           fi
           echo "CAS_RUNNER_V3_FIRST_PARTY_OWNER_GATE_PASS"
       - name: Prelab exact lease dry-run
-        if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v3'
+        if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v4'
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.token }}
