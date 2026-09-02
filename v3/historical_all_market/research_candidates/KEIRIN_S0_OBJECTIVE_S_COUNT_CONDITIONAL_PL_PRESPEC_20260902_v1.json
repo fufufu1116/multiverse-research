@@ -1,0 +1,132 @@
+{
+  "record":"KEIRIN_S0_OBJECTIVE_S_COUNT_CONDITIONAL_PL_PRESPEC_20260902_v1",
+  "status":"PRESPECIFIED_BEFORE_NEW_TARGET_EXTRACTION",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "next_unburned_challenger_search_commit":"dd4c435f3b5f18c902f36accf0d37a92ecdae3ae",
+    "pre_source_manifest_blob":"c3aa1be3b8eeb43f438db57cbd29929bffae198a",
+    "retrospective_parser_blob":"d0c3da166b6f9590d7894f1bbe2ba438c05c4390",
+    "baseline_beta":0.22260435254784533
+  },
+  "scientific_question":"Can the source-recorded objective PRE S count add stable conditional second/third-place information while leaving the S0 winner model exactly untouched?",
+  "feature_definition":{
+    "source":"KDreams PRE rider table 直近4ヶ月の成績",
+    "field":"S",
+    "transformation":"RAW_S_COUNT_UNCHANGED",
+    "semantic_claim":"NONE_BEYOND_SOURCE_RECORDED_OBJECTIVE_PRE_COUNT",
+    "missing_or_malformed":"FAIL_CLOSED_RACE",
+    "unknown_to_zero":false,
+    "no_posthoc_transform_selection":true
+  },
+  "baseline":{
+    "name":"S0_SCORE_ONLY_STANDARD_PL",
+    "beta":0.22260435254784533,
+    "stage1_logits":"beta * competition_score",
+    "stage2_logits":"beta * competition_score after actual stage1 winner removal",
+    "stage3_logits":"beta * competition_score after actual stage1 and stage2 finisher removal"
+  },
+  "candidate":{
+    "name":"S0_OBJECTIVE_S_COUNT_CONDITIONAL_PL_V1",
+    "free_parameters":1,
+    "gamma":"FIT_ON_FIT_SET_ONLY",
+    "stage1_logits":"beta * competition_score",
+    "stage2_logits":"beta * competition_score + gamma * S after actual stage1 winner removal",
+    "stage3_logits":"beta * competition_score + gamma * S after actual stage1 and stage2 finisher removal",
+    "stage1_exactly_untouched":true,
+    "gamma2_gamma3_split":false,
+    "sign_precommitted_by_fit_objective_not_posthoc":true
+  },
+  "fit_objective":{
+    "objective":"MINIMIZE_MEAN_ORDERED_TOP3_LOG_LOSS_ON_FIT_SET_ONLY",
+    "equivalence_note":"Because stage1 is invariant to gamma, optimization is equivalent to minimizing mean L2+L3 on the fit set.",
+    "parameterization":"one real-valued gamma",
+    "beta_frozen":true,
+    "no_feature_selection":true,
+    "no_posthoc_transform_change":true,
+    "no_posthoc_sign_flip":true
+  },
+  "data_split":{
+    "earliest_fit_race_date":"2026-07-18",
+    "reason":"Strictly after the 2026-07-17 B-count evaluation date and therefore temporally beyond the explicitly burned Tactical/B-count populations.",
+    "fit_set":{
+      "minimum_successful_races":50,
+      "selection":"whole accessible meeting/day blocks in chronological KDreams daily-listing source order",
+      "selection_lock_timing":"LOCK_COMPLETE_MEETING_ORDER_BEFORE_OPENING_ANY_FIT_RESULT_TARGET",
+      "stop_rule":"Do not stop within a meeting block. Close at the end of the first locked block where cumulative successful races >= 50.",
+      "purpose":"FIT_GAMMA_ONLY"
+    },
+    "evaluation_holdout":{
+      "race_dates":"STRICTLY_AFTER_END_OF_FIT_SET",
+      "minimum_successful_races":50,
+      "selection":"whole accessible meeting/day blocks in chronological KDreams daily-listing source order",
+      "selection_lock_timing":"LOCK_COMPLETE_MEETING_ORDER_BEFORE_OPENING_ANY_EVALUATION_RESULT_TARGET",
+      "stop_rule":"Do not stop within a meeting block. Close at the end of the first locked block where cumulative successful races >= 50.",
+      "purpose":"EVALUATE_FROZEN_GAMMA_ONLY"
+    },
+    "fit_evaluation_overlap":false,
+    "previous_tactical_and_b_count_populations":"EXCLUDED_FROM_PARAMETER_OR_FEATURE_TUNING",
+    "same_holdout_rescue":false
+  },
+  "fail_closed_rules":[
+    "KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS",
+    "KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS",
+    "PRE_COMPETITION_SCORE_MISSING_OR_MALFORMED",
+    "PRE_COMPETITION_SCORE_0_00_ACTIVE_RIDER",
+    "PRE_S_MISSING_OR_MALFORMED",
+    "PRE_ACTIVE_FIELD_MISMATCH_OR_SCRATCH_CHANGE",
+    "RESULT_TOP3_MISSING",
+    "DEAD_HEAT_OR_NON_UNIQUE_ORDERED_TOP3",
+    "TOP3_NOT_IN_PRE_ACTIVE_CARS",
+    "AMBIGUOUS_SOURCE_IDENTITY",
+    "NO_MANUAL_REPAIR_OR_ALTERNATE_SOURCE_SUBSTITUTION_AFTER_RESULT_VIEW"
+  ],
+  "evaluation":{
+    "compare":["UNTOUCHED_S0_STANDARD_PL","FROZEN_S_COUNT_CONDITIONAL_PL"],
+    "primary":["ordered_top3_log_loss","L2","L3"],
+    "winner_invariance":["winner_log_loss exactly unchanged within numerical tolerance","winner_brier exactly unchanged within numerical tolerance","winner probabilities max absolute difference equals zero within numerical tolerance","winner ranking identical"],
+    "uncertainty":"RACE_LEVEL_CLUSTER_BOOTSTRAP_20000_SEED_20260902",
+    "negative_blocks_hidden":false
+  },
+  "advancement_rule":{
+    "all_required":true,
+    "conditions":[
+      "candidate ordered_top3_log_loss < untouched S0 ordered_top3_log_loss",
+      "candidate L2 < untouched S0 L2",
+      "candidate L3 < untouched S0 L3",
+      "winner invariance contract passes",
+      "95pct race-cluster bootstrap CI upper bound for candidate-minus-S0 ordered_top3_log_loss < 0"
+    ],
+    "otherwise":"NO_ADVANCE",
+    "no_auto_model_promotion":true
+  },
+  "source_boundary":{
+    "eligible_PRE":["competition_score","S"],
+    "RESULT":"TARGET_ONLY",
+    "PAYOUT":"EXCLUDED",
+    "odds":"EXCLUDED_FROM_OUTCOME_MODEL",
+    "KDreams_narabiyoso":"EXCLUDED",
+    "human_marks_comments_tips":"EXCLUDED",
+    "post_race_PRE_reconstruction":"PROHIBITED"
+  },
+  "hard_boundaries":[
+    "NO_CHANGE_TO_BASELINE_BETA",
+    "NO_GAMMA2_GAMMA3_SPLIT",
+    "NO_S_TRANSFORMATION_CHANGE_AFTER_TARGET_VIEW",
+    "NO_SIGN_FLIP_RESCUE",
+    "NO_VENUE_SPECIFIC_RESCUE",
+    "NO_FIELD_SIZE_RESCUE",
+    "NO_SAME_HOLDOUT_FEATURE_ENGINEERING",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_OUTCOME_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_ECON_HOLDOUT1000",
+    "NO_DEV2000_C_RESCUE",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_WAGERING_OR_STAKING",
+    "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"
+  ],
+  "next_gate":"CREATE_FITSET_SELECTION_LOCK_FROM_PRE_SOURCE_ORDER_BEFORE_ANY_NEW_RESULT_TARGET_EXTRACTION"
+}
