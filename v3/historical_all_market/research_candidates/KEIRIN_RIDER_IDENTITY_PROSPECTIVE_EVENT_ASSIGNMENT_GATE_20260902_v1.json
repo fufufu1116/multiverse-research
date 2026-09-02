@@ -1,0 +1,21 @@
+{
+  "record":"KEIRIN_RIDER_IDENTITY_PROSPECTIVE_EVENT_ASSIGNMENT_GATE_20260902_v1",
+  "status":"OFFICIAL_PRE_EVENT_REGISTRATION_KEYED_EVENT_ASSIGNMENT_INTERFACE_VERIFIED_ACROSS_ALL_THREE_20260903_LOCKED_VENUES",
+  "scope":"PROSPECTIVE_PRE_ONLY_IDENTITY_CORROBORATION_NO_RESULT_NO_FEATURE_ADMISSION",
+  "retrieval_date_jst":"2026-09-02",
+  "purpose":"Strengthen prospective rider identity beyond name-only matching by verifying that registration-number-keyed KEIRIN.JP profiles expose the rider's current event assignment before the 2026-09-03 locked races begin.",
+  "official_source":{"organization":"JKA / KEIRIN.JP","title":"選手プロフィール","url_pattern":"https://www.keirin.jp/pc/racerprofile?snum=<registration_number>","interface_field":"開催中のレース","classification":"CURRENT_PRE_EVENT_IDENTITY_CORROBORATION"},
+  "verified_examples":[
+    {"registration_number":"014262","profile_url":"https://www.keirin.jp/pc/racerprofile?snum=014262","profile_update_display":"2026/09/02 16:17","observed_assignment":{"venue":"武雄","grade":"F1","race_date":"2026-09-03","race_class":"S級予選","race_no":10},"body_verified_before_event":true},
+    {"registration_number":"015413","profile_url":"https://www.keirin.jp/pc/racerprofile?snum=015413","profile_update_display":"2026/09/02 16:53","observed_assignment":{"venue":"青森","grade":"G3","race_date":"2026-09-03","race_class":"S級初特選","race_no":12},"body_verified_before_event":true},
+    {"registration_number":"013892","profile_url":"https://www.keirin.jp/pc/racerprofile?snum=013892","profile_update_display":"2026/09/02 14:59","observed_assignment":{"venue":"富山","grade":"F2","race_date":"2026-09-03","race_class":"A級予選","race_no":3},"body_verified_before_event":true}
+  ],
+  "inference_boundary":"The verified interface supports contemporaneous prospective identity corroboration for a captured registration-number profile. It does not prove historical participation, lifetime uniqueness semantics, name-change history, or historical values of class/score/style/home-bank/preference fields.",
+  "mapping_rule_delta":["Exact normalized rider-name mapping still must resolve to one official registration-number profile.","When a current-event assignment is captured, race_date + venue + race_no must exactly match the PRE race card; mismatch is FAIL_CLOSED_EVENT_CONTRADICTION.","For the stronger 2026-09-03 prospective rider-affinity identity gate, profile-only exact name matching without event corroboration does not pass race eligibility.","All current profile attributes other than identity/event corroboration remain excluded from historical or prospective model features unless separately point-in-time prespecified."],
+  "result_accessed":false,
+  "payout_accessed":false,
+  "odds_used":false,
+  "human_forecast_used":false,
+  "decision":"PROSPECTIVE_EVENT_ASSIGNMENT_CAN_BE_USED_AS_PRE_ONLY_IDENTITY_CORROBORATION_INPUT_TO_FROZEN_MAPPER",
+  "hard_boundaries":["NO_RESULT_FOR_MAPPING","NO_CURRENT_PROFILE_BACKFILL","NO_MANUAL_NAME_GUESS","NO_UNKNOWN_TO_ZERO","NO_FEATURE_ADMISSION_FROM_CURRENT_PROFILE","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
