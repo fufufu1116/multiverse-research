@@ -1,0 +1,27 @@
+{
+  "record":"KEIRIN_LINE_SOURCE_CLASSIFICATION_AUDIT_20260902_v1",
+  "status":"KDreams_LINEUP_FORECAST_REJECTED_AS_OBJECTIVE_OUTCOME_FEATURE_SOURCE",
+  "scope":"SOURCE_CLASSIFICATION_ONLY_NO_MODEL_FIT",
+  "trigger":"Post-temperature NO_ADVANCE research order considered a minimal line/role structural candidate targeting L2/L3.",
+  "audited_examples":[
+    {
+      "source_url":"https://keirin.kdreams.jp/toride/racedetail/2320260627030001/?pageType=yoso",
+      "observed_labels":["並び予想","予想担当記者：アオケイ 長谷川 剛由","並び提供：アオケイ"],
+      "classification":"EXTERNAL_HUMAN_FORECAST_NOT_OBJECTIVE_LINE_TRUTH"
+    },
+    {
+      "source_url":"https://keirin.kdreams.jp/toride/racedetail/2320260627030011/",
+      "observed_labels":["並び予想","予想担当記者：アオケイ 長谷川 剛由","並び提供：アオケイ"],
+      "classification":"EXTERNAL_HUMAN_FORECAST_NOT_OBJECTIVE_LINE_TRUTH"
+    }
+  ],
+  "decision":{
+    "use_KDreams_narabiyoso_as_outcome_model_line_feature":false,
+    "reason":"The source explicitly presents lineup as a forecast supplied by a named professional newspaper/provider. Treating it as objective race structure would mix human forecast information into the sporting feature layer.",
+    "possible_future_role":"EXTERNAL_HUMAN_FORECAST_BENCHMARK_OR_SEPARATE_RESEARCH_LANE_ONLY",
+    "human_marks_or_race_review_used_as_feature":false
+  },
+  "objective_PRE_fields_still_eligible_for_minimal_structural_candidate":["style","S","B","nige","makuri","sashi","mark","competition_score"],
+  "next":"PRESPEC_MINIMAL_OBJECTIVE_TACTICAL_ROLE_CONDITIONAL_PL_CHALLENGER_WITHOUT_NARABI_FORECAST",
+  "hard_boundaries":["NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_HUMAN_PREDICTION_AS_OBJECTIVE_FEATURE","NO_MODEL_PROMOTION_FROM_SOURCE_AUDIT"]
+}
