@@ -1,78 +1,53 @@
 {
-  "schema": "multiverse.core.current_state.v3",
-  "record": "MULTIVERSE_CORE_CURRENT_STATE",
+  "schema": "multiverse.core.current_state.v3.post_adoption",
+  "record": "MULTIVERSE_CORE_CURRENT_STATE_POST_CHAT_INDEPENDENT_RESUME_V3_ADOPTION",
   "canonical_repo": "fufufu1116/multiverse-research",
   "state_branch": "state/multiverse-core-current",
   "authority": "RESUME_NAVIGATION_SNAPSHOT_ONLY_NEVER_BEARER_LIVE_AUTHORITY",
-  "capture_provenance": {
-    "canonical_main_at_capture": {
-      "branch": "main",
-      "head": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
-      "tree": "3d47741b4863411e5c36cb4c28925ac455ab6441",
-      "current_authority_after_capture": false
-    },
-    "core_live_candidate_at_capture": {
-      "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
-      "head": "c91010921898fffed633df9720d792b216c4ddd1",
-      "tree": "917cf843e230c99dc74bebcc391e9f235361ff52"
-    },
-    "pr74_at_capture": {
-      "state": "OPEN",
-      "draft": true,
-      "merged": false,
-      "aggregate_head_body_authority": "STALE_NOT_CANDIDATE_AUTHORITY"
-    }
-  },
-  "freshness_contract": {
+  "transition_semantics": {
+    "applies_only_after_reviewed_resume_metadata_main_adoption": true,
+    "does_not_embed_or_require_adopted_main_sha_equality": true,
     "canonical_main_current_value": "FRESH_READ_REFS_HEADS_MAIN",
-    "active_candidate_current_value": "FRESH_READ_EXACT_ACTIVE_CANDIDATE_REF",
-    "pr_current_value": "FRESH_READ_PR_STATE_AND_RELEVANT_COMMENTS",
-    "owner_receipt_current_value": "FRESH_READ_RECEIPT_AND_POST_RECEIPT_CONSUMPTION_OR_CONFLICT_EVIDENCE",
-    "stored_capture_shas_are_orientation_only": true,
-    "material_action_requires_fresh_revalidation": true,
-    "state_drift_during_resume": "REFRESH_STATE_METADATA_OR_FAIL_CLOSED_BEFORE_MATERIAL_ACTION"
+    "material_action_requires_fresh_action_specific_revalidation": true,
+    "unknown_or_mismatch": "FAIL_CLOSED"
   },
   "active_stage": "R1_STAGE1_PHASE_C",
   "active_workstreams": [
     {
       "id": "CHAT_INDEPENDENT_RESUME_CONTEXT_COMPRESSION_V3",
       "lane": "META_GOVERNANCE",
-      "status": "CORE_WORKING_REVIEW_PENDING",
-      "candidate_branch": "meta/chat-independent-resume-context-compression-20260902-v3",
-      "candidate_head": "b9530acc3a96040d010ce83643e392382c77e219",
-      "candidate_tree": "ef4d94842b7629280a04d322dc0a90669f493ffd",
-      "reason": "v2 Owner approval reached adoption but fail-closed pre-write validation found self-invalidating embedded canonical-main equality and rapidly stale duplicated Keirin state",
+      "status": "CANONICAL_METADATA_ADOPTION_COMPLETED",
+      "resume_entrypoint": "governance/MULTIVERSE_RESUME_INDEX_CURRENT.json",
+      "core_state_resolver": "state/multiverse-core-current:governance/MULTIVERSE_CORE_CURRENT_STATE.json",
+      "keirin_state_resolver": "FRESH research/keirin-real-evidence-dual-lane-20260901-v1 -> v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260902_v1.json",
+      "owner_addendum_receipt": 5508591175,
       "v2_fail_closed_receipt": 5509659017,
-      "next": "FREEZE_V3_THEN_INDEPENDENT_LAB_THEN_AUDITOR_THEN_NEW_OWNER_GATE"
+      "v3_lab_fix_required": 5509872983,
+      "completion_claim_scope": "RESUME_METADATA_AND_STATE_RESOLVERS_ONLY_NO_LIVE_AUTHORITY"
     },
     {
       "id": "R1_STAGE1_PHASE_C_STATIC_ENV_GUARD_PRELIVE",
       "lane": "CORE_LIVE_PRELIVE",
-      "status": "DEFERRED_WHILE_META_REMEDIATION_REVIEW_RUNS",
+      "status": "REQUIRES_SEPARATE_FRESH_REBIND_AFTER_CANONICAL_MAIN_METADATA_ADOPTION",
       "candidate_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
-      "candidate_head_at_capture": "c91010921898fffed633df9720d792b216c4ddd1",
       "owner_receipt": 5508415633,
-      "owner_receipt_snapshot": "ONE_FRESH_PRELIVE_NONMUTATING_CODESPACE_CREATE_ATTACH_PREVIOUSLY_APPROVED_NOT_CONSUMED_BY_META_WORK",
       "receipt_is_bearer_authority": false,
-      "before_any_use": "FRESH_REVALIDATE_RECEIPT_MAIN_CANDIDATE_PR_AND_CONSUMPTION_STATE",
+      "receipt_snapshot_note": "PREVIOUS_OWNER_APPROVAL_REMAINS_SEPARATE_GOVERNANCE_BUT_MAIN_BINDING_CHANGED_BY_META_ADOPTION_SO_IT_IS_NOT_AUTOMATICALLY_USABLE",
+      "before_any_use": "FRESH_REVALIDATE_CURRENT_MAIN_CANDIDATE_PR_RECEIPT_AND_POST_RECEIPT_CONSUMPTION_OR_CONFLICT_EVIDENCE_AND_ROUTE_SEPARATE_LIVE_REBIND_IF_BINDING_CHANGED",
+      "codespace_create_attach_authorized_by_this_state": false,
+      "static_guard_authorized_by_this_state": false,
       "manual_arm": false,
       "oauth": false,
       "runtime": "OFF"
     }
   ],
   "runtime_status": "OFF",
-  "latest_meta_evidence": {
-    "owner_addendum_receipt": 5508591175,
-    "v1_lab_fix_required": 5508695691,
-    "v2_lab_pass": 5508997012,
-    "v2_auditor_pass": 5509094438,
-    "v2_owner_presentation": 5509272918,
-    "v2_owner_approval_fail_closed_receipt": 5509659017
-  },
+  "current_gate": "RESUME_METADATA_ADOPTED__LIVE_PRELIVE_REBIND_REQUIRED_BEFORE_ANY_USE",
   "protected_locked_resources": {
-    "canonical_main": "NO_WRITE_UNTIL_NEW_V3_OWNER_GATE_AFTER_LAB_AND_AUDITOR",
-    "pr74": "DRAFT_OPEN_UNMERGED",
     "runtime": "OFF",
+    "pr74": "DRAFT_OPEN_UNMERGED_UNLESS_FRESH_EVIDENCE_SAYS_OTHERWISE",
+    "canonical_main_further_mutation": "NO_AUTHORITY_FROM_THIS_STATE",
+    "ruleset_mutation": "NO_AUTHORITY",
     "old_codespaces_nonreusable": [
       "miniature-spork-gx59qvqqxgxg3959r",
       "laughing-space-couscous-gx59qvqq5q4j25v7",
@@ -80,14 +55,15 @@
     ]
   },
   "allowed_next_actions": [
-    "FRESH_VERIFY_META_V3_AND_CORE_STATE_BRANCH_SCOPE",
-    "FREEZE_META_V3_AND_STATE_BRANCH_INITIAL_HEAD",
-    "ROUTE_INDEPENDENT_LAB_REVIEW",
-    "ON_LAB_PASS_ROUTE_INDEPENDENT_AUDITOR",
-    "ON_AUDITOR_PASS_RETURN_TO_NEW_OWNER_GATE"
+    "FRESH_VERIFY_CANONICAL_RESUME_LOCATOR_INDEX_AND_THIS_EXACT_STATE_AFTER_ADOPTION",
+    "FRESH_REBIND_CORE_LIVE_PRELIVE_WORKSTREAM_FROM_PRIMARY_GITHUB_EVIDENCE",
+    "IF_PREVIOUS_STATIC_ENV_RECEIPT_MAIN_BINDING_NO_LONGER_MATCHES_ROUTE_BOUNDED_LIVE_REBIND_WITHOUT_INHERITING_AUTHORITY",
+    "CONTINUE_KEIRIN_ONLY_THROUGH_FRESH_LANE_NATIVE_RESOLVER"
   ],
   "forbidden_actions": [
-    "CANONICAL_MAIN_ADOPTION_BEFORE_NEW_V3_OWNER_GATE",
+    "USE_THIS_STATE_AS_LIVE_AUTHORITY",
+    "CREATE_CODESPACE_FROM_META_ADOPTION_AUTHORITY",
+    "RUN_STATIC_GUARD_FROM_META_ADOPTION_AUTHORITY",
     "MANUAL_ARM",
     "OAUTH_OR_DEVICE_AUTHORIZATION",
     "STEP3_OR_STEP4_OR_APPLY",
@@ -96,7 +72,9 @@
     "MERGE",
     "WORKFLOW_DISPATCH",
     "SECRET_OR_WRITER_KEY_OPERATION",
-    "RUNTIME_ACTIVATION"
+    "RUNTIME_ACTIVATION",
+    "KEIRIN_PRODUCTION_OR_MODEL_PROMOTION",
+    "REAL_MONEY_EXECUTION"
   ],
   "resume_policy": {
     "chat_is_workspace_not_authority": true,
@@ -104,7 +82,8 @@
     "load_giant_handoff_by_default": false,
     "load_full_history_by_default": false,
     "history_pointer_only_on_demand": true,
-    "on_missing_or_invalid_state": "FAIL_CLOSED"
+    "fresh_main_candidate_pr_receipt_revalidation_before_material_claim": true,
+    "on_missing_invalid_or_stale_state": "FAIL_CLOSED"
   },
-  "next_safe_action": "REVIEW_CHAT_INDEPENDENT_RESUME_V3_ONLY; NO_LIVE_ACTION"
+  "next_safe_action": "FRESH_REBIND_CORE_LIVE_PRELIVE_WORKSTREAM_ONLY; DO_NOT_CREATE_CODESPACE_OR_RUN_ARM_FROM_META_AUTHORITY"
 }
