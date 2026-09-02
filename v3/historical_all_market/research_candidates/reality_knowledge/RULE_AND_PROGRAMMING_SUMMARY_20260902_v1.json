@@ -1,0 +1,40 @@
+{
+  "record": "RULE_AND_PROGRAMMING_SUMMARY_20260902_v1",
+  "status": "RESEARCH_CANDIDATE_REALITY_KNOWLEDGE_ONLY_NO_MODEL_AUTHORITY",
+  "retrieval_date_jst": "2026-09-02",
+  "source_registry": "OFFICIAL_SOURCE_REGISTRY_20260902_v1",
+  "summary": {
+    "race_lifecycle": [
+      {"phase":"ASSIGNMENT_AND_ENTRY","facts":["Riders are assigned/invited and must apply to participate.","Pre-meeting non-participation can lead to additional assignment/replacement."],"sources":["JKA_PROGRAM_FORMATION","JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"]},
+      {"phase":"PRE_INSPECTION_DAY","facts":["Program officials verify participants and investigate ability, riding style and past results.","Bicycle name and gear ratio are recorded.","Missing entrants can be filled according to formal replacement procedures."],"sources":["JKA_PROGRAM_FORMATION"]},
+      {"phase":"INITIAL_PROGRAM_FORMATION","facts":["Initial race allocation considers ability, riding style, regional balance and other factors.","Rider number allocation considers ability, riding style and competition results."],"sources":["JKA_PROGRAM_FORMATION"]},
+      {"phase":"ELIGIBILITY_AND_BICYCLE_CONFIRMATION","facts":["Health/fitness and bicycle inspections are formal gates.","Failure can stop all or part of participation."],"sources":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"]},
+      {"phase":"RACE_AND_JUDGING","facts":["Formal judging monitors interference and rule violations.","Finish/winner determination is an official judging act with photo-finish support."],"sources":["JKA_JUDGING","JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"]},
+      {"phase":"POST_RACE_PROGRAMMING","facts":["For later meeting days, finish order and progression rules determine advancing riders.","Tie, abandonment and race-not-established states have special progression handling.","Mid-meeting absences may be replaced."],"sources":["JKA_PROGRAM_FORMATION"]},
+      {"phase":"MARKET_SETTLEMENT","facts":["Bet-type winner definitions, payout and invalid-vote/refund rules are legally specified and separate from the outcome model."],"sources":["BICYCLE_RACING_LAW","BICYCLE_RACING_LAW_ENFORCEMENT_RULE"]}
+    ],
+    "programming_consequences_for_science": [
+      "Race samples are selected populations: rider composition depends on official assignment/programming processes, not only rider latent strength.",
+      "Race stage and meeting day encode real path dependence because previous finishes determine later advancement.",
+      "Class/grade/stage comparisons can be confounded by selection and advancement mechanisms.",
+      "Substitution and scratch handling need predeclared timestamp/state contracts rather than post-result row deletion.",
+      "A model trained on one venue/date/class/stage mix must not be generalized to all keirin without population evidence."
+    ],
+    "judgement_consequences_for_science": [
+      "Ordered top3 is a useful modeling object but reality contains tie, DQ, abandonment, cancellation and race-not-established states.",
+      "A retrospective parser may fail-close these states for a clean benchmark, but a Digital Twin should represent the states explicitly rather than imply they do not exist.",
+      "Interference rules depend on action, degree, effect and race phase; simple binary tactical labels should not be declared equivalent to official infringement states."
+    ],
+    "market_separation": [
+      "Bet-type and settlement rules belong to MARKET/SETTLEMENT modeling.",
+      "PAYOUT and post-race settlement must not enter sporting outcome features.",
+      "Scratch/refund rules can affect market probability normalization/settlement engineering but do not justify changing the sporting S0 without a separate prespec."
+    ]
+  },
+  "historical_note": {
+    "source": "KEIRINJP_2005_ALLSTAR_QA",
+    "use": "HISTORICAL_EVENT_FORMAT_ONLY",
+    "warning": "2005 All-Star point, replacement and cancellation rules are retained as historical evidence and are not generalized to current generic competition without current corroboration."
+  },
+  "hard_boundaries": ["NO_MODEL_CHANGE", "NO_FEATURE_AUTO_ADMISSION", "NO_SAME_DATA_RESCUE_TUNING", "NO_PROTECTED_HOLDOUT_ACCESS"]
+}
