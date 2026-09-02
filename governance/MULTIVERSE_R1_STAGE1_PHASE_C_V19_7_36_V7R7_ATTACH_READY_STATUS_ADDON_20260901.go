@@ -16,11 +16,13 @@ import (
 )
 
 const v7r7SecureStatusDir = "/run/multiverse-v36-v7r7"
+const v7r7SecureStatusPendingPath = v7r7SecureStatusDir + "/session-status.pending"
 const v7r7SecureStatusPath = v7r7SecureStatusDir + "/session-status.txt"
 const v7r7UIControlLeaf = "MULTIVERSE_PRELIVE_START_HERE.md"
 const v7r7ChallengePrefix = "PHASE_C_V19_7_36_V7R6_SESSION_CHALLENGE "
 const v7r7WaitingLine = "PHASE_C_V19_7_36_V7R6_WAITING_FOR_EXTERNAL_SESSION_BINDING"
 const v7r7ArmedLine = "PHASE_C_V19_7_36_V7R7_ARMED"
+const v7r7PendingFailClosedLine = "authority_state=PENDING_FAIL_CLOSED"
 const v7r7FailedClosedLine = "gate_state=FAILED_CLOSED"
 
 var v7r7SecureStatusMu sync.Mutex
@@ -70,59 +72,117 @@ func v7r7UnbindSecureStatus(secure *os.File) {
 	v7r7SecureStatusMu.Unlock()
 }
 
-func v7r7TerminalFailClosedSync() {
+func v7r7CloseBoundSecureStatus(secure *os.File) {
 	v7r7SecureStatusMu.Lock()
-	defer v7r7SecureStatusMu.Unlock()
-	if v7r7SecureStatusCurrent == nil || v7r7SecureStatusTerminal { return }
-	if err := v7r7WriteSecure(v7r7SecureStatusCurrent, v7r7FailedClosedLine); err != nil {
-		_ = os.Remove(v7r7SecureStatusPath)
-		v7r7SecureStatusCurrent = nil
-		return
-	}
-	v7r7SecureStatusTerminal = true
+	if v7r7SecureStatusCurrent == secure { v7r7SecureStatusCurrent = nil }
+	v7r7SecureStatusMu.Unlock()
+	if secure != nil { _ = secure.Close() }
 }
 
-func v7r7Fatal(original, secure *os.File, code string) {
+func v7r7WriteBoundSecure(secure *os.File, line string) error {
+	v7r7SecureStatusMu.Lock()
+	defer v7r7SecureStatusMu.Unlock()
+	if secure == nil || v7r7SecureStatusCurrent != secure || v7r7SecureStatusTerminal { return fmt.Errorf("secure-bound-write-state") }
+	return v7r7WriteSecure(secure, line)
+}
+
+func v7r7TerminalFailClosedSync() bool {
+	v7r7SecureStatusMu.Lock()
+	defer v7r7SecureStatusMu.Unlock()
+	if v7r7SecureStatusCurrent == nil || v7r7SecureStatusTerminal { return true }
+	if err := v7r7WriteSecure(v7r7SecureStatusCurrent, v7r7FailedClosedLine); err != nil {
+		// Correctness does not depend on unlinking a possibly stale record:
+		// pre-WAITING evidence exists only at the explicitly nonauthoritative pending path.
+		// Keep the binding intact and terminal=false so any concurrent terminalizer may retry.
+		return false
+	}
+	v7r7SecureStatusTerminal = true
+	return true
+}
+
+func v7r7FatalTerminalize(original *os.File, code string) {
 	if original != nil { fmt.Fprintln(original, "PHASE_C_V19_7_36_V7R7_STATUS_CHANNEL_DENIED:"+code) } else { fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R7_STATUS_CHANNEL_DENIED:"+code) }
-	if secure != nil { _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close() }
+	_ = v7r7TerminalFailClosedSync()
+}
+
+func v7r7Fatal(original *os.File, code string) {
+	v7r7FatalTerminalize(original, code)
 	os.Exit(92)
 }
 
-func v7r7MirrorUntilWaiting(r, w *os.File, originalFD int, secure *os.File, done chan<- struct{}) {
+func v7r7PromoteWaitingSecureAt(secure *os.File, pendingPath, authoritativePath string) error {
+	v7r7SecureStatusMu.Lock()
+	defer v7r7SecureStatusMu.Unlock()
+	if secure == nil || v7r7SecureStatusCurrent != secure || v7r7SecureStatusTerminal { return fmt.Errorf("secure-promote-state") }
+
+	var currentStat syscall.Stat_t
+	if err := syscall.Fstat(int(secure.Fd()), &currentStat); err != nil || currentStat.Uid != 0 || currentStat.Mode&syscall.S_IFMT != syscall.S_IFREG || currentStat.Mode&0777 != 0400 {
+		return fmt.Errorf("secure-promote-fd-class")
+	}
+	var pendingStat syscall.Stat_t
+	if err := syscall.Lstat(pendingPath, &pendingStat); err != nil || pendingStat.Uid != 0 || pendingStat.Mode&syscall.S_IFMT != syscall.S_IFREG || pendingStat.Mode&0777 != 0400 {
+		return fmt.Errorf("secure-promote-pending-class")
+	}
+	if currentStat.Dev != pendingStat.Dev || currentStat.Ino != pendingStat.Ino {
+		return fmt.Errorf("secure-promote-inode")
+	}
+	if _, err := os.Lstat(authoritativePath); err == nil {
+		return fmt.Errorf("secure-promote-authoritative-exists")
+	} else if !os.IsNotExist(err) {
+		return fmt.Errorf("secure-promote-authoritative-lstat")
+	}
+	// Hard-link promotion is atomic/no-replace: the authoritative name does not exist
+	// before successful WAITING, and os.Link fails if a target already exists.
+	if err := os.Link(pendingPath, authoritativePath); err != nil { return fmt.Errorf("secure-promote-link") }
+	v7r7SecureStatusTerminal = true
+	v7r7SecureStatusCurrent = nil
+	// Pending cleanup is not an authority dependency. If removal fails, both names point
+	// to the same already-complete root-only inode; only authoritativePath is authoritative.
+	_ = os.Remove(pendingPath)
+	return nil
+}
+
+func v7r7PromoteWaitingSecure(secure *os.File) error {
+	return v7r7PromoteWaitingSecureAt(secure, v7r7SecureStatusPendingPath, v7r7SecureStatusPath)
+}
+
+func v7r7MirrorUntilWaiting(r, w *os.File, originalFD int, secure *os.File, promote func(*os.File) error, done chan<- struct{}) {
 	defer r.Close()
 	if done != nil { defer close(done) }
 	original := os.NewFile(uintptr(originalFD), "multiverse-original-stdout")
-	if original == nil { v7r7Fatal(nil, secure, "ORIGINAL_STDOUT") }
+	if original == nil { v7r7Fatal(nil, "ORIGINAL_STDOUT") }
 	defer original.Close()
 	reader := bufio.NewReaderSize(r, 4096)
 	challengeSeen := false
 	for {
 		line, err := reader.ReadString('\n')
-		if len(line) > 8192 { v7r7Fatal(original, secure, "STDOUT_LINE_TOO_LONG") }
+		if len(line) > 8192 { v7r7Fatal(original, "STDOUT_LINE_TOO_LONG") }
 		if line != "" {
-			if _, werr := io.WriteString(original, line); werr != nil { v7r7Fatal(original, secure, "ORIGINAL_STDOUT_WRITE") }
+			if _, werr := io.WriteString(original, line); werr != nil { v7r7Fatal(original, "ORIGINAL_STDOUT_WRITE") }
 			trimmed := strings.TrimSuffix(strings.TrimSuffix(line, "\n"), "\r")
 			if strings.HasPrefix(trimmed, v7r7ChallengePrefix) {
-				if challengeSeen || !v7r7Safe(trimmed) { v7r7Fatal(original, secure, "CHALLENGE_LINE") }
-				if werr := v7r7WriteSecure(secure, trimmed); werr != nil { v7r7Fatal(original, secure, "CHALLENGE_WRITE") }
+				if challengeSeen || !v7r7Safe(trimmed) { v7r7Fatal(original, "CHALLENGE_LINE") }
+				if werr := v7r7WriteBoundSecure(secure, trimmed); werr != nil { v7r7Fatal(original, "CHALLENGE_WRITE") }
 				challengeSeen = true
 			}
 			if trimmed == v7r7WaitingLine {
-				if !challengeSeen { v7r7Fatal(original, secure, "WAITING_BEFORE_CHALLENGE") }
-				if werr := v7r7WriteSecure(secure, trimmed); werr != nil { v7r7Fatal(original, secure, "WAITING_WRITE") }
-				if werr := syscall.Dup2(originalFD, int(os.Stdout.Fd())); werr != nil { v7r7Fatal(original, secure, "STDOUT_RESTORE") }
-				v7r7UnbindSecureStatus(secure)
-				w.Close(); secure.Close(); return
+				if !challengeSeen { v7r7Fatal(original, "WAITING_BEFORE_CHALLENGE") }
+				if werr := v7r7WriteBoundSecure(secure, trimmed); werr != nil { v7r7Fatal(original, "WAITING_WRITE") }
+				if werr := syscall.Dup2(originalFD, int(os.Stdout.Fd())); werr != nil { v7r7Fatal(original, "STDOUT_RESTORE") }
+				if promote == nil { v7r7Fatal(original, "STATUS_PROMOTE_MISSING") }
+				if perr := promote(secure); perr != nil { v7r7Fatal(original, "STATUS_PROMOTE") }
+				w.Close()
+				_ = secure.Close()
+				return
 			}
 		}
 		if err != nil {
 			if err == io.EOF {
-				v7r7TerminalFailClosedSync()
-				v7r7UnbindSecureStatus(secure)
-				secure.Close()
+				_ = v7r7TerminalFailClosedSync()
+				v7r7CloseBoundSecureStatus(secure)
 				return
 			}
-			v7r7Fatal(original, secure, "STDOUT_READ")
+			v7r7Fatal(original, "STDOUT_READ")
 		}
 	}
 }
@@ -198,7 +258,16 @@ func v7r7ReplaceUIMirror(ruid uint32) error {
 	defer syscall.Close(repoFD)
 	var repoStat syscall.Stat_t
 	if err := syscall.Fstat(repoFD, &repoStat); err != nil || repoStat.Uid != ruid || repoStat.Mode&syscall.S_IFMT != syscall.S_IFDIR { return fmt.Errorf("ui-repo-class") }
-	mirror := strings.Join([]string{v7r7ArmedLine, "ui_mirror=NONAUTHORITATIVE_STATIC", "authoritative_status_path=" + v7r7SecureStatusPath, "next_action=FOLLOW_TERMINAL_AND_CORE_ONLY", "runtime=OFF", ""}, "\n")
+	mirror := strings.Join([]string{
+		v7r7ArmedLine,
+		"ui_mirror=NONAUTHORITATIVE_STATIC",
+		"authoritative_status_path=" + v7r7SecureStatusPath,
+		"authoritative_status_semantics=ABSENT_UNTIL_WAITING_FAIL_CLOSED",
+		"prewaiting_pending_status_is_nonauthoritative=true",
+		"next_action=FOLLOW_TERMINAL_AND_CORE_ONLY",
+		"runtime=OFF",
+		"",
+	}, "\n")
 	if err := v7r7AtomicMirrorAt(repoFD, v7r7UIControlLeaf, mirror); err != nil { return fmt.Errorf("ui-atomic-replace") }
 	if err := v7r7SetFSUIDExact(0); err != nil { return fmt.Errorf("fsuid-root-restore") }
 	restore = false
@@ -211,19 +280,37 @@ func v7r7OpenSecureStatus() (*os.File, error) {
 	var dirStat syscall.Stat_t
 	if err := syscall.Lstat(v7r7SecureStatusDir, &dirStat); err != nil || dirStat.Uid != 0 || dirStat.Mode&syscall.S_IFMT != syscall.S_IFDIR { return nil, fmt.Errorf("secure-dir-class") }
 	if err := os.Chmod(v7r7SecureStatusDir, 0700); err != nil { return nil, fmt.Errorf("secure-dir-mode") }
-	fd, err := syscall.Open(v7r7SecureStatusPath, syscall.O_WRONLY|syscall.O_CREAT|syscall.O_EXCL|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0600)
+	if _, err := os.Lstat(v7r7SecureStatusPath); err == nil {
+		return nil, fmt.Errorf("secure-authoritative-preexists")
+	} else if !os.IsNotExist(err) {
+		return nil, fmt.Errorf("secure-authoritative-lstat")
+	}
+	fd, err := syscall.Open(v7r7SecureStatusPendingPath, syscall.O_WRONLY|syscall.O_CREAT|syscall.O_EXCL|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0600)
 	if err != nil { return nil, err }
-	f := os.NewFile(uintptr(fd), "v7r7-authoritative-status")
+	f := os.NewFile(uintptr(fd), "v7r7-nonauthoritative-pending-status")
 	if f == nil { _ = syscall.Close(fd); return nil, fmt.Errorf("secure-file") }
 	var st syscall.Stat_t
-	if err := syscall.Fstat(fd, &st); err != nil || st.Uid != 0 || st.Mode&syscall.S_IFMT != syscall.S_IFREG { f.Close(); _ = os.Remove(v7r7SecureStatusPath); return nil, fmt.Errorf("secure-class") }
-	if err := f.Chmod(0400); err != nil { f.Close(); _ = os.Remove(v7r7SecureStatusPath); return nil, fmt.Errorf("secure-mode") }
+	if err := syscall.Fstat(fd, &st); err != nil || st.Uid != 0 || st.Mode&syscall.S_IFMT != syscall.S_IFREG {
+		f.Close()
+		_ = os.Remove(v7r7SecureStatusPendingPath)
+		return nil, fmt.Errorf("secure-class")
+	}
+	if err := f.Chmod(0400); err != nil {
+		f.Close()
+		_ = os.Remove(v7r7SecureStatusPendingPath)
+		return nil, fmt.Errorf("secure-mode")
+	}
+	if err := v7r7WriteSecure(f, v7r7PendingFailClosedLine); err != nil {
+		f.Close()
+		_ = os.Remove(v7r7SecureStatusPendingPath)
+		return nil, fmt.Errorf("secure-pending-baseline")
+	}
 	return f, nil
 }
 
 func v7r7CleanupSecure(secure *os.File) {
-	if secure != nil { v7r7UnbindSecureStatus(secure); secure.Close() }
-	_ = os.Remove(v7r7SecureStatusPath)
+	if secure != nil { v7r7UnbindSecureStatus(secure); _ = secure.Close() }
+	_ = os.Remove(v7r7SecureStatusPendingPath)
 	_ = os.Remove(v7r7SecureStatusDir)
 }
 
@@ -245,11 +332,18 @@ func v7r7Install() error {
 	if err != nil { return err }
 	if err := v7r7BindSecureStatus(secure); err != nil { v7r7CleanupSecure(secure); return err }
 	originalFD, err := syscall.Dup(int(os.Stdout.Fd()))
-	if err != nil { v7r7TerminalFailClosedSync(); v7r7UnbindSecureStatus(secure); secure.Close(); return err }
+	if err != nil { _ = v7r7TerminalFailClosedSync(); v7r7CloseBoundSecureStatus(secure); return err }
 	r, w, err := os.Pipe()
-	if err != nil { syscall.Close(originalFD); v7r7TerminalFailClosedSync(); v7r7UnbindSecureStatus(secure); secure.Close(); return err }
-	if err := syscall.Dup2(int(w.Fd()), int(os.Stdout.Fd())); err != nil { r.Close(); w.Close(); syscall.Close(originalFD); v7r7TerminalFailClosedSync(); v7r7UnbindSecureStatus(secure); secure.Close(); return err }
-	go v7r7MirrorUntilWaiting(r, w, originalFD, secure, nil)
+	if err != nil { syscall.Close(originalFD); _ = v7r7TerminalFailClosedSync(); v7r7CloseBoundSecureStatus(secure); return err }
+	if err := syscall.Dup2(int(w.Fd()), int(os.Stdout.Fd())); err != nil {
+		r.Close()
+		w.Close()
+		syscall.Close(originalFD)
+		_ = v7r7TerminalFailClosedSync()
+		v7r7CloseBoundSecureStatus(secure)
+		return err
+	}
+	go v7r7MirrorUntilWaiting(r, w, originalFD, secure, v7r7PromoteWaitingSecure, nil)
 	return nil
 }
 
@@ -259,47 +353,103 @@ func v7r7Selftest() {
 	td, err := os.MkdirTemp("", "multiverse-v7r7-status-")
 	if err != nil { panic("temp") }
 	defer os.RemoveAll(td)
-	secure, _ := os.OpenFile(td+"/secure", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+
+	pending := td + "/pending"
+	authoritative := td + "/authoritative"
+	secure, err := os.OpenFile(pending, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil { panic("secure-open") }
+	if err := secure.Chmod(0400); err != nil { panic("secure-mode") }
+	if err := v7r7WriteSecure(secure, v7r7PendingFailClosedLine); err != nil { panic("pending-baseline") }
+	if err := v7r7BindSecureStatus(secure); err != nil { panic("secure-bind") }
+
 	old, _ := syscall.Dup(int(os.Stdout.Fd()))
-	captureR, captureW, _ := os.Pipe(); sourceR, sourceW, _ := os.Pipe()
+	captureR, captureW, _ := os.Pipe()
+	sourceR, sourceW, _ := os.Pipe()
 	_ = syscall.Dup2(int(sourceW.Fd()), int(os.Stdout.Fd()))
 	done := make(chan struct{})
-	go v7r7MirrorUntilWaiting(sourceR, sourceW, int(captureW.Fd()), secure, done)
-	fmt.Println(good); fmt.Println(v7r7WaitingLine)
+	promote := func(f *os.File) error { return v7r7PromoteWaitingSecureAt(f, pending, authoritative) }
+	go v7r7MirrorUntilWaiting(sourceR, sourceW, int(captureW.Fd()), secure, promote, done)
+	fmt.Println(good)
+	fmt.Println(v7r7WaitingLine)
 	select { case <-done: case <-time.After(2 * time.Second): panic("mirror-timeout") }
 	const downstream = "DEVICE_CODE_SHOULD_REMAIN_TERMINAL_ONLY_AFTER_RESTORE"
 	fmt.Println(downstream)
-	_ = syscall.Dup2(old, int(os.Stdout.Fd())); syscall.Close(old); captureW.Close()
-	captured, _ := io.ReadAll(captureR); captureR.Close(); sb, _ := os.ReadFile(td + "/secure")
-	if !strings.Contains(string(captured), downstream) || strings.Contains(string(sb), downstream) || !strings.Contains(string(sb), good) || !strings.Contains(string(sb), v7r7WaitingLine) { panic("persistence-boundary") }
+	_ = syscall.Dup2(old, int(os.Stdout.Fd()))
+	syscall.Close(old)
+	captureW.Close()
+	captured, _ := io.ReadAll(captureR)
+	captureR.Close()
+	sb, _ := os.ReadFile(authoritative)
+	if !strings.Contains(string(captured), downstream) || strings.Contains(string(sb), downstream) || !strings.Contains(string(sb), good) || !strings.Contains(string(sb), v7r7WaitingLine) || !strings.Contains(string(sb), v7r7PendingFailClosedLine) || strings.Contains(string(sb), v7r7FailedClosedLine) {
+		panic("persistence-boundary")
+	}
+	if _, err := os.Lstat(pending); !os.IsNotExist(err) { panic("pending-not-retired") }
 
-	terminalSecure, err := os.OpenFile(td+"/terminal", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
-	if err != nil { panic("terminal-open") }
-	if err := v7r7BindSecureStatus(terminalSecure); err != nil { panic("terminal-bind") }
-	v7r7TerminalFailClosedSync()
-	v7r7TerminalFailClosedSync()
-	v7r7UnbindSecureStatus(terminalSecure)
-	terminalSecure.Close()
-	terminalBytes, _ := os.ReadFile(td + "/terminal")
-	if strings.Count(string(terminalBytes), v7r7FailedClosedLine) != 1 { panic("terminal-sync") }
+	concurrentPending := td + "/concurrent-pending"
+	concurrentSecure, err := os.OpenFile(concurrentPending, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil { panic("concurrent-open") }
+	if err := concurrentSecure.Chmod(0400); err != nil { panic("concurrent-mode") }
+	if err := v7r7WriteSecure(concurrentSecure, v7r7PendingFailClosedLine); err != nil { panic("concurrent-baseline") }
+	if err := v7r7BindSecureStatus(concurrentSecure); err != nil { panic("concurrent-bind") }
+	var wg sync.WaitGroup
+	for i := 0; i < 8; i++ {
+		wg.Add(1)
+		go func(n int) {
+			defer wg.Done()
+			if n%2 == 0 {
+				v7r7FatalTerminalize(nil, "SELFTEST_CONCURRENT")
+			} else {
+				_ = v7r7TerminalFailClosedSync()
+			}
+		}(i)
+	}
+	wg.Wait()
+	v7r7CloseBoundSecureStatus(concurrentSecure)
+	concurrentBytes, _ := os.ReadFile(concurrentPending)
+	if strings.Count(string(concurrentBytes), v7r7FailedClosedLine) != 1 { panic("terminal-concurrency-idempotence") }
 
-	bound := td + "/bound"; moved := td + "/moved"
+	failurePending := td + "/write-failure-pending"
+	failureAuthoritative := td + "/write-failure-authoritative"
+	failureSecure, err := os.OpenFile(failurePending, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil { panic("failure-open") }
+	if err := failureSecure.Chmod(0400); err != nil { panic("failure-mode") }
+	if err := v7r7WriteSecure(failureSecure, v7r7PendingFailClosedLine); err != nil { panic("failure-baseline") }
+	if err := v7r7BindSecureStatus(failureSecure); err != nil { panic("failure-bind") }
+	_ = failureSecure.Close()
+	if v7r7TerminalFailClosedSync() { panic("closed-fd-terminal-write-unexpected-success") }
+	v7r7UnbindSecureStatus(failureSecure)
+	failureBytes, _ := os.ReadFile(failurePending)
+	if !strings.Contains(string(failureBytes), v7r7PendingFailClosedLine) || strings.Contains(string(failureBytes), v7r7FailedClosedLine) {
+		panic("failure-baseline-lost")
+	}
+	if _, err := os.Lstat(failureAuthoritative); !os.IsNotExist(err) { panic("failure-authoritative-created") }
+
+	bound := td + "/bound"
+	moved := td + "/moved"
 	if err := os.Mkdir(bound, 0755); err != nil { panic("bound-mkdir") }
 	control := bound + "/" + v7r7UIControlLeaf
 	if err := os.WriteFile(control, []byte("OLD\n"), 0644); err != nil { panic("control-old") }
-	retained, err := os.OpenFile(control, os.O_WRONLY|os.O_APPEND, 0); if err != nil { panic("retained-open") }
-	dirFD, err := syscall.Open(bound, syscall.O_RDONLY|syscall.O_DIRECTORY|syscall.O_CLOEXEC, 0); if err != nil { panic("dirfd-open") }
+	retained, err := os.OpenFile(control, os.O_WRONLY|os.O_APPEND, 0)
+	if err != nil { panic("retained-open") }
+	dirFD, err := syscall.Open(bound, syscall.O_RDONLY|syscall.O_DIRECTORY|syscall.O_CLOEXEC, 0)
+	if err != nil { panic("dirfd-open") }
 	if err := os.Rename(bound, moved); err != nil { panic("bound-rename") }
 	if err := os.Mkdir(bound, 0755); err != nil { panic("replacement-mkdir") }
 	if err := os.WriteFile(bound+"/"+v7r7UIControlLeaf, []byte("DECOY\n"), 0644); err != nil { panic("decoy") }
 	if err := v7r7AtomicMirrorAt(dirFD, v7r7UIControlLeaf, "BOUND_NONAUTHORITY\n"); err != nil { panic("atomic-mirror") }
 	if _, err := retained.WriteString("RETAINED_FD_TAMPER\n"); err != nil { panic("retained-write") }
-	retained.Close(); syscall.Close(dirFD)
-	movedNow, _ := os.ReadFile(moved + "/" + v7r7UIControlLeaf); decoyNow, _ := os.ReadFile(bound + "/" + v7r7UIControlLeaf)
+	retained.Close()
+	syscall.Close(dirFD)
+	movedNow, _ := os.ReadFile(moved + "/" + v7r7UIControlLeaf)
+	decoyNow, _ := os.ReadFile(bound + "/" + v7r7UIControlLeaf)
 	if strings.Contains(string(movedNow), "RETAINED_FD_TAMPER") || string(movedNow) != "BOUND_NONAUTHORITY\n" || string(decoyNow) != "DECOY\n" { panic("descriptor-path-binding") }
+
 	fmt.Println("PHASE_C_V19_7_36_V7R7_ATTACH_READY_OBSERVABILITY_SELFTEST_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R7_ATTACH_READY_OBSERVABILITY_BEHAVIOR_SELFTEST_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R7_STATUS_TERMINAL_SYNC_SELFTEST_PASS")
+	fmt.Println("PHASE_C_V19_7_36_V7R7_STATUS_PENDING_AUTHORITY_SELFTEST_PASS")
+	fmt.Println("PHASE_C_V19_7_36_V7R7_STATUS_FATAL_CONCURRENCY_SELFTEST_PASS")
+	fmt.Println("PHASE_C_V19_7_36_V7R7_STATUS_MARKER_WRITE_FAILURE_BASELINE_FAIL_CLOSED_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R7_UI_RETAINED_FD_ATOMIC_REPLACE_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R7_UI_DIRECTORY_FD_BINDING_PASS")
 }
