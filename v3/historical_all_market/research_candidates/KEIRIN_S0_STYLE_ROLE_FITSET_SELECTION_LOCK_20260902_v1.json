@@ -1,0 +1,27 @@
+{
+  "record":"KEIRIN_S0_STYLE_ROLE_FITSET_SELECTION_LOCK_20260902_v1",
+  "status":"LOCKED_BEFORE_STYLE_ROLE_FIT_TARGET_EXTRACTION",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{"prespec_commit":"5ffc7dd6bc74feafe85d98cd490775048218a12a","line_source_audit_commit":"76f367ca181a387b15805e37c880bae89cac5c80"},
+  "selection_basis":"KDreams 2026-06-30 public racecard daily listing order; whole meeting/day blocks; no target-conditioned inclusion",
+  "daily_listing_url":"https://keirin.kdreams.jp/racecard/2026/06/30/",
+  "race_date":"2026-06-30",
+  "blocks_in_locked_order":[
+    {"order":1,"venue":"取手","attempt_all_races":12},
+    {"order":2,"venue":"平塚","attempt_all_races":12},
+    {"order":3,"venue":"伊東","attempt_all_races":7},
+    {"order":4,"venue":"豊橋","attempt_all_races":7},
+    {"order":5,"venue":"玉野","attempt_all_races":7},
+    {"order":6,"venue":"高知","attempt_all_races":12},
+    {"order":7,"venue":"武雄","attempt_all_races":12},
+    {"order":8,"venue":"佐世保","attempt_all_races":7}
+  ],
+  "total_attempted_if_all_locked_blocks_processed":76,
+  "stop_rule":"Process locked blocks in order. Do not stop mid-block. Close at first block boundary where successful_races >= 50; later locked blocks remain unopened if threshold already met.",
+  "fit_use":"FIT_GAMMA_ONLY",
+  "eligible_features":["competition_score","style"],
+  "style_mapping":{"逃":-1.0,"両":0.0,"追":1.0},
+  "target_extraction_started_before_lock":false,
+  "human_lineup_forecast_used":false,
+  "hard_boundaries":["NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","FAIL_CLOSED_ON_COMPETITION_SCORE_0_00_OR_STYLE_MISSING_OR_SCRATCH_OR_AMBIGUITY","NO_MODEL_PROMOTION"]
+}
