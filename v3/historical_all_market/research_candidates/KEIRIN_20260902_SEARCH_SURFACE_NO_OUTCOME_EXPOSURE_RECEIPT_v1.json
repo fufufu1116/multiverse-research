@@ -1,0 +1,17 @@
+{
+  "record":"KEIRIN_20260902_SEARCH_SURFACE_NO_OUTCOME_EXPOSURE_RECEIPT_v1",
+  "status":"SEARCH_ENGINE_CO_SURFACED_RESULT_OR_ODDS_ENDPOINTS_NO_OUTCOME_OR_NUMERIC_ODDS_OBSERVED_NO_TARGET_BURN",
+  "scope":"RESEARCH_INTEGRITY_INCIDENT_RECEIPT",
+  "event_date_jst":"2026-09-02",
+  "context":"While locating PRE racecard/program/detail pages for the already locked 2026-09-03 blocks, web search results automatically co-surfaced KDreams result/odds-related endpoints. They were not requested as target sources and are excluded from evidence extraction.",
+  "observed_content":["A result-list search snippet for 2026-09-03 displayed race labels with the explicit state レース結果未確定; no finish order or payout value was present.","Some returned detail URLs carried pageType=odds or odds-pop query strings, but the surfaced snippets used for transport verification did not contain numeric odds values.","Racecard/detail snippets also contain human forecast/line-prediction regions; none are admitted as features or objective line truth."],
+  "outcome_values_observed":false,
+  "payout_values_observed":false,
+  "numeric_odds_values_observed":false,
+  "selection_or_tuning_based_on_surfaced_content":false,
+  "population_burned_by_this_event":false,
+  "reason_no_target_burn":"No target outcome existed in the surfaced result page; it explicitly reported results unconfirmed. No finish/payout/odds value was used for membership, feature design, model choice, tuning, or evaluation.",
+  "mitigation":["Do not intentionally navigate result/raceresult endpoints before the future RESULT gate.","Use racecard/program/detail only for PRE transport, with the frozen PRE-only parser responsible for excluding forecast/market/post-event regions.","Treat any later accidental actual outcome exposure as a separate integrity incident and burn/close affected selection use as required."],
+  "result_access_authorized_now":false,
+  "hard_boundaries":["NO_TARGET_RESULT_EXTRACTION","NO_PAYOUT","NO_NUMERIC_ODDS_FOR_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_NARABIYOSO","NO_POST_RACE_PRE_RECONSTRUCTION","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
