@@ -2,86 +2,37 @@
   "schema": "multiverse.resume.adoption.cas_runner.v2",
   "record": "MULTIVERSE_CHAT_INDEPENDENT_RESUME_V3_ADOPTION_CAS_RUNNER_20260903_v2",
   "canonical_repo": "fufufu1116/multiverse-research",
-  "authority": "REVIEW_ONLY_NO_ADOPTION_AUTHORITY_UNTIL_NEW_OWNER_GATE",
-  "purpose": "ADD_MACHINE_ENFORCED_OWNER_RECEIPT_GATE_TO_EXACT_OLD_REF_FORCE_WITH_LEASE_ADOPTION_RUNNER",
-  "supersedes_runner_v1_for_future_live_use": true,
+  "authority": "RETIRED_REVIEW_HISTORY_ONLY_NO_LIVE_AUTHORITY",
+  "purpose": "PRESERVE_V2_REVIEW_HISTORY_AFTER_MATERIAL_BLOCK_WITH_VALID_JSON_BYTES",
+  "superseded_by_runner_v3_for_future_live_use": true,
   "review_lineage": {
     "v3_adoption_transaction_lab_fix_required": 5511212447,
     "runner_v1_core_freeze": 5513124658,
     "runner_v1_prelab_run": 33657038870,
-    "runner_v1_prelab_job": 100338078670
+    "runner_v1_prelab_job": 100338078670,
+    "runner_v2_core_freeze": 5513184869,
+    "runner_v2_lab_request": 5513194577,
+    "runner_v2_lab_material_block": 5513240783
   },
-  "runner": {
-    "workflow_path": ".github/workflows/multiverse-resume-v3-adoption-cas-v1.yml",
-    "workflow_blob": "ea4cbc84c51144e8eb06c2ce8608103593d40d17",
-    "runner_branch": "runner/chat-independent-resume-v3-adoption-cas-v1",
-    "runner_head": "BOUND_BY_FINAL_CORE_FREEZE_AFTER_COMMIT_CREATION",
-    "runner_not_adopted_to_main": true,
-    "permissions": ["contents:write","issues:read"],
-    "no_repository_secret_required": true,
-    "no_owner_token_or_writer_key_required": true
+  "material_block_closure_record": {
+    "owner_receipt_gate_false_positive": "CLOSED_ONLY_BY_SUCCESSOR_V3_FIRST_PARTY_EXACT_BODY_GATE_NOT_BY_THIS_V2_RECORD",
+    "original_v2_manifest_invalid_json": "THIS_REPLACEMENT_BYTES_ARE_VALID_JSON_BUT_DO_NOT_REAUTHORIZE_V2",
+    "prelab_mode_skips_owner_receipt_gate_and_has_no_write_steps": true
   },
-  "owner_gate": {
-    "live_mode_requires_exact_owner_receipt": true,
-    "receipt_source": "PR_74_ISSUE_COMMENTS_ALL_PAGES",
-    "required_author_login": "fufufu1116",
-    "required_author_association": "OWNER",
-    "required_marker": "OWNER_CAS_ADOPTION_RECEIPT_V2",
-    "required_approval_phrase": "APPROVE CHAT-INDEPENDENT RESUME v3 CAS ADOPTION ONE-SHOT",
-    "receipt_must_contain_exact_old_and_target_main_and_state_shas": true,
-    "required_matching_receipt_count": 1,
-    "missing_or_ambiguous_receipt": "FAIL_CLOSED_BEFORE_ANY_MAIN_OR_STATE_WRITE",
-    "prelab_mode_skips_owner_receipt_gate_and_has_no_write_steps"
-  },
-  "exact_refs": {
+  "exact_refs_historical": {
     "expected_old_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
     "target_main": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
-    "target_main_branch": "meta/chat-independent-resume-context-compression-20260902-v3-adoption-transaction-v1",
     "expected_old_core_state": "6facca0f57383197fb0843824df2c65298cb9cb4",
-    "target_core_state": "3a89d12a2edea0f51723abf28f244194269e340f",
-    "target_core_state_branch": "state/multiverse-core-post-resume-v3-adoption-candidate-v1"
+    "target_core_state": "3a89d12a2edea0f51723abf28f244194269e340f"
   },
-  "gate_refs": {
-    "prelab": "gate/chat-independent-resume-v3-adoption-cas-prelab-v2",
-    "one_shot": "gate/chat-independent-resume-v3-adoption-cas-one-shot-v1",
-    "both_must_start_at_exact_expected_old_main_before_activation": true,
-    "activation_to_exact_reviewed_runner_head_must_be_non_force": true,
-    "workflow_requires_event_before_exact_expected_old_main": true
-  },
-  "cas_semantics": {
-    "main": "git push --force-with-lease=refs/heads/main:<EXPECTED_OLD_MAIN> origin <TARGET_MAIN>:refs/heads/main",
-    "core_state": "git push --force-with-lease=refs/heads/state/multiverse-core-current:<EXPECTED_OLD_STATE> origin <TARGET_STATE>:refs/heads/state/multiverse-core-current",
-    "remote_exact_old_guard": true,
-    "generic_force": false,
-    "force_without_lease": false,
-    "automatic_force_rollback": false
-  },
-  "prelab": {
-    "exact_lease_dry_run_only": true,
+  "explicit_nonauthority": {
+    "runner_v2_live_use": false,
     "main_write": false,
     "state_write": false,
-    "post_dry_run_exact_ref_unchanged_checks": true
-  },
-  "live_sequence": [
-    "VERIFY_EVENT_REF_BEFORE_AFTER_AND_EXACT_TARGET_REFS",
-    "VERIFY_EXACT_SINGLE_OWNER_RECEIPT_FROM_PR74",
-    "CAS_MAIN_WITH_EXPLICIT_EXPECTED_OLD_LEASE",
-    "VERIFY_MAIN_EXACT_TARGET",
-    "CAS_CORE_STATE_WITH_EXPLICIT_EXPECTED_OLD_LEASE",
-    "VERIFY_CORE_STATE_EXACT_TARGET",
-    "FINAL_NONSECRET_REF_VERIFICATION"
-  ],
-  "partial_failure": {
-    "before_main": "NO_MUTATION_FAIL_CLOSED",
-    "main_succeeds_state_fails": "SAFE_INCOMPLETE_NO_LIVE_ACTION_BOUNDED_REMEDIATION_ONLY",
-    "state_or_final_verify_fails": "FAIL_CLOSED_NO_LIVE_ACTION_BOUNDED_RECONCILIATION_ONLY"
-  },
-  "authority_ceiling": {
     "codespace": false,
     "static_guard": false,
     "manual_arm": false,
     "oauth_or_device_authorization": false,
-    "step3_step4_apply": false,
     "production_or_ruleset": false,
     "secrets_or_writer_keys": false,
     "keirin_promotion_or_real_money": false,
