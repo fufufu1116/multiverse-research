@@ -87,6 +87,125 @@ class RelayV3Tests(unittest.TestCase):
         finally:
             s.close()
 
+    def test_recover_expired_serializes_heartbeat_after_validation(self):
+        op = self.enqueue()
+        s = RelayStore(self.relay_db)
+        try:
+            j1 = s.claim_next(worker_id="w1", lease_seconds=1)
+        finally:
+            s.close()
+
+        selected = threading.Event()
+        release = threading.Event()
+        recovered = []
+        recovery_errors = []
+        heartbeat_errors = []
+
+        def recoverer():
+            store = RelayStore(self.relay_db)
+            try:
+                def trace(sql):
+                    if sql.startswith("SELECT operation_key,claim_token FROM jobs"):
+                        selected.set()
+                        release.wait(2)
+                store.conn.set_trace_callback(trace)
+                recovered.extend(store.recover_expired(at=time.time() + 5))
+            except Exception as exc:
+                recovery_errors.append(exc)
+            finally:
+                store.close()
+
+        def heartbeater():
+            store = RelayStore(self.relay_db)
+            try:
+                store.heartbeat(op, j1["claim_token"], lease_seconds=30)
+            except Exception as exc:
+                heartbeat_errors.append(exc)
+            finally:
+                store.close()
+
+        rt = threading.Thread(target=recoverer)
+        rt.start()
+        self.assertTrue(selected.wait(2))
+        ht = threading.Thread(target=heartbeater)
+        ht.start()
+        time.sleep(0.1)
+        self.assertTrue(ht.is_alive(), "heartbeat must block behind recovery writer transaction")
+        release.set()
+        rt.join(2)
+        ht.join(2)
+        self.assertFalse(rt.is_alive())
+        self.assertFalse(ht.is_alive())
+        self.assertEqual(recovery_errors, [])
+        self.assertEqual(recovered, [op])
+        self.assertEqual(len(heartbeat_errors), 1)
+        self.assertIsInstance(heartbeat_errors[0], OrchestratorError)
+        check = RelayStore(self.relay_db)
+        try:
+            self.assertEqual(check.job(op)["status"], "QUEUED")
+        finally:
+            check.close()
+
+    def test_complete_validation_and_update_are_one_writer_transaction(self):
+        op = self.enqueue()
+        s = RelayStore(self.relay_db)
+        try:
+            j1 = s.claim_next(worker_id="w1", lease_seconds=1)
+        finally:
+            s.close()
+        good = {"candidate_head": "a"*40, "evidence_ref": "impl-evidence", "diff_lines": 1, "cost_microusd": 0}
+
+        selected = threading.Event()
+        release = threading.Event()
+        complete_errors = []
+        recovery_errors = []
+        recovered = []
+
+        def completer():
+            store = RelayStore(self.relay_db)
+            try:
+                def trace(sql):
+                    if sql.startswith("SELECT * FROM jobs WHERE operation_key="):
+                        selected.set()
+                        release.wait(2)
+                store.conn.set_trace_callback(trace)
+                store.complete(op, j1["claim_token"], good)
+            except Exception as exc:
+                complete_errors.append(exc)
+            finally:
+                store.close()
+
+        def recoverer():
+            store = RelayStore(self.relay_db)
+            try:
+                recovered.extend(store.recover_expired(at=time.time() + 120))
+            except Exception as exc:
+                recovery_errors.append(exc)
+            finally:
+                store.close()
+
+        ct = threading.Thread(target=completer)
+        ct.start()
+        self.assertTrue(selected.wait(2))
+        rt = threading.Thread(target=recoverer)
+        rt.start()
+        time.sleep(0.1)
+        self.assertTrue(rt.is_alive(), "recovery must block after completion has validated ownership")
+        release.set()
+        ct.join(2)
+        rt.join(2)
+        self.assertFalse(ct.is_alive())
+        self.assertFalse(rt.is_alive())
+        self.assertEqual(complete_errors, [])
+        self.assertEqual(recovery_errors, [])
+        self.assertEqual(recovered, [])
+        check = RelayStore(self.relay_db)
+        try:
+            self.assertEqual(check.job(op)["status"], "COMPLETE")
+            self.assertEqual(check.result(op), good)
+        finally:
+            check.close()
+
     def test_conflicting_duplicate_result_is_denied(self):
         op = self.enqueue()
         s = RelayStore(self.relay_db)
