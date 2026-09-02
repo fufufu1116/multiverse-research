@@ -1,0 +1,95 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_S_COUNT_FITSET_RECEIPT_20260902_v1",
+  "status": "FIT_COMPLETED_FROZEN_CANDIDATE_NOT_PROMOTED",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "7f10d0f7c9cd13470e51c504b20cc0ba91fdd615",
+    "fitset_selection_lock_commit": "354ade361aae7c2393ec9af15bc7b7152662695c",
+    "retrospective_parser_blob": "d0c3da166b6f9590d7894f1bbe2ba438c05c4390",
+    "beta": 0.22260435254784533
+  },
+  "population": {
+    "race_date": "2026-07-18",
+    "attempted_races": 62,
+    "successful_races": 56,
+    "fail_closed_races": 6,
+    "included_blocks_in_locked_order": [
+      {"venue": "いわき平", "attempted": 9, "successful": 9},
+      {"venue": "弥彦", "attempted": 11, "successful": 11},
+      {"venue": "西武園", "attempted": 11, "successful": 9},
+      {"venue": "静岡", "attempted": 12, "successful": 11},
+      {"venue": "岐阜", "attempted": 7, "successful": 5},
+      {"venue": "松阪", "attempted": 12, "successful": 11}
+    ],
+    "fail_closed": [
+      {"race": "西武園 2026-07-18 R4", "reason": "KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race": "西武園 2026-07-18 R10", "reason": "KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race": "静岡 2026-07-18 R10", "reason": "KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS"},
+      {"race": "岐阜 2026-07-18 R1", "reason": "PRE_ACTIVE_FIELD_MISMATCH_OR_SCRATCH_CHANGE"},
+      {"race": "岐阜 2026-07-18 R6", "reason": "KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race": "松阪 2026-07-18 R8", "reason": "KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS"}
+    ],
+    "stop_rule_application": "CLOSED_AT_END_OF_MATSUSAKA_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_56",
+    "later_locked_blocks_unopened": ["奈良", "高知"]
+  },
+  "model": {
+    "baseline_stage1_stage2_stage3": "beta * competition_score",
+    "candidate_stage1": "beta * competition_score",
+    "candidate_stage2_stage3": "beta * competition_score + gamma * S after actual prior finisher removal",
+    "S_transformation": "RAW_S_COUNT_UNCHANGED",
+    "only_fitted_parameter": "gamma"
+  },
+  "optimization": {
+    "objective": "MEAN_ORDERED_TOP3_LOG_LOSS_EQUIVALENT_TO_L2_PLUS_L3_WITH_L1_INVARIANT",
+    "solver_check": "CONVEX_ONE_DIMENSIONAL_SCORE_EQUATION_ROOT",
+    "gamma": 0.02629565071288781,
+    "mean_gradient_at_solution": -8.287021862380633e-16
+  },
+  "fit_metrics": {
+    "untouched_s0": {
+      "L1": 1.650373375514847,
+      "L2": 1.7004088419377292,
+      "L3": 1.6529075409872347,
+      "ordered_top3_log_loss": 5.003689758439811
+    },
+    "candidate": {
+      "L1": 1.650373375514847,
+      "L2": 1.6838469540149006,
+      "L3": 1.6628471956302189,
+      "ordered_top3_log_loss": 4.9970675251599666
+    },
+    "candidate_minus_s0": {
+      "L1": 0.0,
+      "L2": -0.016561887922828644,
+      "L3": 0.009939654642984186,
+      "ordered_top3_log_loss": -0.006622233279844458
+    }
+  },
+  "invariance_checks": {
+    "stage1_formula_identical": true,
+    "winner_probability_difference": 0.0,
+    "baseline_beta_unchanged": true,
+    "gamma2_gamma3_split_used": false,
+    "post_fit_sign_flip_used": false,
+    "S_transformation_changed": false
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score", "S"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_post_result_repair": false,
+    "source": "KDreams public retrospective race detail/result pages"
+  },
+  "extraction_transport_note": {
+    "saved_html_parser_execution_in_this_run": false,
+    "reason": "Execution environment could not directly network-fetch KDreams HTML into the offline parser.",
+    "read_only_web_transport_used": true,
+    "fields_read": ["PRE competition_score", "PRE S", "RESULT ordered top3"],
+    "parser_semantics_followed": true,
+    "fail_closed_cases_not_repaired": true
+  },
+  "interpretation": "Fit-set aggregate ordered-top3 log loss improved slightly, with L2 improving and L3 worsening. This is descriptive only. Gamma must be locked before any independent evaluation target extraction and no same-fit rescue tuning is permitted."
+}
