@@ -138,19 +138,36 @@ class RelayStore:
                 require(existing["canonical_main"] == spec["canonical_main"], "RELAY_REPLAY_MAIN_MISMATCH")
 
     def recover_expired(self, *, at: float | None = None) -> list[str]:
+        """Atomically recover only claims that are still expired when written.
+
+        BEGIN IMMEDIATE prevents a heartbeat or completion writer from succeeding
+        between the expiry validation and the conditional recovery update.
+        """
         at = time.time() if at is None else at
-        with self.conn:
+        recovered: list[str] = []
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             rows = self.conn.execute(
-                "SELECT operation_key FROM jobs WHERE status='CLAIMED' AND lease_expires_at IS NOT NULL AND lease_expires_at<=?",
+                "SELECT operation_key,claim_token FROM jobs "
+                "WHERE status='CLAIMED' AND claim_token IS NOT NULL "
+                "AND lease_expires_at IS NOT NULL AND lease_expires_at<=?",
                 (at,),
             ).fetchall()
-            keys = [r[0] for r in rows]
-            if keys:
-                self.conn.executemany(
-                    "UPDATE jobs SET status='QUEUED',claim_token=NULL,worker_id=NULL,lease_expires_at=NULL,updated_at=? WHERE operation_key=?",
-                    [(at, k) for k in keys],
+            for row in rows:
+                cur = self.conn.execute(
+                    "UPDATE jobs SET status='QUEUED',claim_token=NULL,worker_id=NULL,"
+                    "lease_expires_at=NULL,updated_at=? "
+                    "WHERE operation_key=? AND status='CLAIMED' AND claim_token=? "
+                    "AND lease_expires_at IS NOT NULL AND lease_expires_at<=?",
+                    (at, row["operation_key"], row["claim_token"], at),
                 )
-        return keys
+                if cur.rowcount == 1:
+                    recovered.append(row["operation_key"])
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
+        return recovered
 
     def claim_next(self, *, worker_id: str, lease_seconds: int = 30) -> dict[str, Any] | None:
         require(isinstance(worker_id, str) and bool(worker_id), "RELAY_WORKER_ID")
@@ -192,13 +209,20 @@ class RelayStore:
             require(cur.rowcount == 1, "RELAY_STALE_CLAIM")
 
     def complete(self, operation_key_value: str, claim_token: str, result: dict[str, Any]) -> None:
+        """Validate and complete under one SQLite writer transaction.
+
+        The final UPDATE repeats status+claim-token ownership predicates so stale
+        ownership cannot become COMPLETE even if this method is later refactored.
+        """
         require(isinstance(result, dict), "RELAY_RESULT_OBJECT")
         now = time.time()
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             row = self.conn.execute("SELECT * FROM jobs WHERE operation_key=?", (operation_key_value,)).fetchone()
             require(row is not None, "RELAY_JOB_NOT_FOUND")
             if row["status"] == "COMPLETE":
                 require(row["result_json"] == canonical_json(result), "RELAY_CONFLICTING_DUPLICATE_RESULT")
+                self.conn.commit()
                 return
             require(row["status"] == "CLAIMED" and row["claim_token"] == claim_token, "RELAY_STALE_CLAIM")
             if row["role"] == "IMPLEMENT":
@@ -207,10 +231,17 @@ class RelayStore:
                 require(result.get("reviewed_head") == row["candidate_head"], f"RELAY_{row['role']}_HEAD_MISMATCH")
             require(isinstance(result.get("evidence_ref"), str) and bool(result["evidence_ref"]), "RELAY_EVIDENCE_REQUIRED")
             fp = _fingerprint(result)
-            self.conn.execute(
-                "UPDATE jobs SET status='COMPLETE',result_json=?,result_fingerprint=?,lease_expires_at=NULL,updated_at=? WHERE operation_key=?",
-                (canonical_json(result), fp, now, operation_key_value),
+            cur = self.conn.execute(
+                "UPDATE jobs SET status='COMPLETE',result_json=?,result_fingerprint=?,"
+                "lease_expires_at=NULL,updated_at=? "
+                "WHERE operation_key=? AND status='CLAIMED' AND claim_token=?",
+                (canonical_json(result), fp, now, operation_key_value, claim_token),
             )
+            require(cur.rowcount == 1, "RELAY_STALE_CLAIM")
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
 
     def result(self, operation_key_value: str) -> dict[str, Any] | None:
         row = self.conn.execute("SELECT status,result_json FROM jobs WHERE operation_key=?", (operation_key_value,)).fetchone()
