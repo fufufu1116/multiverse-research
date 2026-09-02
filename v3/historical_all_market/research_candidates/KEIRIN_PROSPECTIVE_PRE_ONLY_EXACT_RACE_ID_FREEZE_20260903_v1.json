@@ -1,0 +1,57 @@
+{
+  "record":"KEIRIN_PROSPECTIVE_PRE_ONLY_EXACT_RACE_ID_FREEZE_20260903_v1",
+  "status":"LOCKED_31_EXACT_DAY1_RACE_IDS_PRE_EVENT_NO_OUTCOME_OBSERVED",
+  "scope":"RESEARCH_CANDIDATE_PRE_ONLY_MEMBERSHIP_BINDING",
+  "capture_timestamp_jst":"2026-09-02T23:27:05+09:00",
+  "parent_population_lock":"KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v2.json",
+  "selection_rule":"No new venue or race selection. This artifact resolves the already frozen ALL_DAY1_RACES membership into exact KDreams race identifiers from PRE program/detail pages before every selected race begins.",
+  "blocks":[
+    {
+      "venue":"青森",
+      "grade":"G3",
+      "meeting_name":"みちのく記念　善知鳥杯争奪戦",
+      "race_date":"2026-09-03",
+      "race_count":12,
+      "program_url":"https://keirin.kdreams.jp/aomori/raceprogram/1220260903/",
+      "racecard_url":"https://keirin.kdreams.jp/aomori/racecard/12202609030100/",
+      "verified_detail_boundary_urls":["https://keirin.kdreams.jp/aomori/racedetail/1220260903010001/","https://keirin.kdreams.jp/aomori/racedetail/1220260903010012/"],
+      "race_ids":["1220260903010001","1220260903010002","1220260903010003","1220260903010004","1220260903010005","1220260903010006","1220260903010007","1220260903010008","1220260903010009","1220260903010010","1220260903010011","1220260903010012"],
+      "first_race_start":"10:58",
+      "last_race_start":"16:25"
+    },
+    {
+      "venue":"武雄",
+      "grade":"F1",
+      "meeting_name":"オッズパーク杯",
+      "race_date":"2026-09-03",
+      "race_count":12,
+      "program_url":"https://keirin.kdreams.jp/takeo/raceprogram/8420260903/",
+      "racecard_url":"https://keirin.kdreams.jp/takeo/racecard/84202609030100/",
+      "verified_detail_boundary_urls":["https://keirin.kdreams.jp/takeo/racedetail/8420260903010001/","https://keirin.kdreams.jp/takeo/racedetail/8420260903010012/"],
+      "race_ids":["8420260903010001","8420260903010002","8420260903010003","8420260903010004","8420260903010005","8420260903010006","8420260903010007","8420260903010008","8420260903010009","8420260903010010","8420260903010011","8420260903010012"],
+      "first_race_start":"15:55",
+      "last_race_start":"20:30"
+    },
+    {
+      "venue":"富山",
+      "grade":"F2",
+      "meeting_name":"サイクルパークとやまカップ",
+      "race_date":"2026-09-03",
+      "race_count":7,
+      "program_url":"https://keirin.kdreams.jp/toyama/raceprogram/4620260903/",
+      "racecard_url":"https://keirin.kdreams.jp/toyama/racecard/46202609030100/",
+      "verified_detail_boundary_urls":["https://keirin.kdreams.jp/toyama/racedetail/4620260903010001/","https://keirin.kdreams.jp/toyama/racedetail/4620260903010007/"],
+      "race_ids":["4620260903010001","4620260903010002","4620260903010003","4620260903010004","4620260903010005","4620260903010006","4620260903010007"],
+      "first_race_start":"08:30",
+      "last_race_start":"10:35"
+    }
+  ],
+  "total_races":31,
+  "membership_closed":true,
+  "race_id_derivation":"Each program enumerated the complete Day1 race-number range. KDreams detail endpoints were directly verified at block boundaries, with additional interior details observed. Race IDs use the meeting/day prefix plus the two-digit race number; all listed IDs are frozen before race start.",
+  "result_or_payout_values_observed":false,
+  "integrity_note":"See KEIRIN_20260902_SEARCH_SURFACE_NO_OUTCOME_EXPOSURE_RECEIPT_v1.json for automatic search co-surfacing of unconfirmed result/odds endpoint links; no target or numeric odds value was observed or used.",
+  "next":"Capture and hash PRE rows for all 31 frozen race IDs before their individual cutoffs. Run frozen official registration-number identity mapping. Transport or identity failures remain explicit and are never repaired after the race.",
+  "result_access_authorized_now":false,
+  "hard_boundaries":["NO_MEMBERSHIP_CHANGE_FROM_OUTCOME","NO_RESULT_TARGET_EXTRACTION","NO_PAYOUT","NO_NUMERIC_ODDS_FOR_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_NARABIYOSO","NO_POST_RACE_PRE_RECONSTRUCTION","UNKNOWN_NOT_ZERO","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
