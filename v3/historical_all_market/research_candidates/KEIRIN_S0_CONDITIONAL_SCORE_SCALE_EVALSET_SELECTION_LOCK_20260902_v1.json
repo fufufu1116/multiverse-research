@@ -1,0 +1,33 @@
+{
+  "record":"KEIRIN_S0_CONDITIONAL_SCORE_SCALE_EVALSET_SELECTION_LOCK_20260902_v1",
+  "status":"LOCKED_BEFORE_EVALUATION_TARGET_EXTRACTION",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "prespec_commit":"d161aa79849dba05dab82bf74ee0a32fc3da3770",
+    "fitset_receipt_commit":"741de6c19d43a906d49cfb6832af7d659333bf74",
+    "alpha_lock_commit":"59dbda994cbc65b2f495565b076a773b02a9d42d"
+  },
+  "frozen_alpha":0.6365671401165879,
+  "selection_basis":"KDreams 2026-07-05 public racecard daily listing order; whole meeting/day blocks; no target-conditioned inclusion; exclude every meeting identity actually used in fit",
+  "daily_listing_url":"https://keirin.kdreams.jp/racecard/2026/07/05/",
+  "race_date":"2026-07-05",
+  "excluded_fit_meeting_identities":["1120260701","2120260702","2520260701","3120260701","3520260630","4520260630"],
+  "blocks_in_locked_order":[
+    {"order":1,"venue":"青森","attempt_all_races":12,"racecard_id":"12202607030300","meeting_identity":"1220260703","meeting_end":"2026-07-05"},
+    {"order":2,"venue":"京王閣","attempt_all_races":7,"racecard_id":"27202607040200","meeting_identity":"2720260704","meeting_end":"2026-07-06"},
+    {"order":3,"venue":"伊東","attempt_all_races":7,"racecard_id":"37202607040200","meeting_identity":"3720260704","meeting_end":"2026-07-06"},
+    {"order":4,"venue":"豊橋","attempt_all_races":12,"racecard_id":"45202607050100","meeting_identity":"4520260705","meeting_end":"2026-07-07"},
+    {"order":5,"venue":"和歌山","attempt_all_races":12,"racecard_id":"55202607050100","meeting_identity":"5520260705","meeting_end":"2026-07-07"},
+    {"order":6,"venue":"岸和田","attempt_all_races":7,"racecard_id":"56202607040200","meeting_identity":"5620260704","meeting_end":"2026-07-06"},
+    {"order":7,"venue":"小松島","attempt_all_races":12,"racecard_id":"73202607020400","meeting_identity":"7320260702","meeting_end":"2026-07-05"},
+    {"order":8,"venue":"佐世保","attempt_all_races":7,"racecard_id":"85202607050100","meeting_identity":"8520260705","meeting_end":"2026-07-07"},
+    {"order":9,"venue":"別府","attempt_all_races":7,"racecard_id":"86202607040200","meeting_identity":"8620260704","meeting_end":"2026-07-06"}
+  ],
+  "total_attempted_if_all_locked_blocks_processed":83,
+  "stop_rule":"Process locked blocks in order. Do not stop mid-block. Close at first block boundary where successful_races >= 50; later locked blocks remain unopened if threshold already met.",
+  "evaluation_use":"EVALUATE_FROZEN_ALPHA_ONLY",
+  "fit_eval_overlap":false,
+  "target_extraction_started_before_lock":false,
+  "eligible_features":["competition_score"],
+  "hard_boundaries":["ALPHA_FROZEN_NO_REFIT","NO_CHANGE_TO_BASELINE_BETA","NO_ALPHA2_ALPHA3_SPLIT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_HUMAN_LINEUP_FORECAST_FEATURE","FAIL_CLOSED_ON_COMPETITION_SCORE_0_00_OR_SCRATCH_OR_CANCELLATION_OR_AMBIGUITY","NO_MODEL_PROMOTION"]
+}
