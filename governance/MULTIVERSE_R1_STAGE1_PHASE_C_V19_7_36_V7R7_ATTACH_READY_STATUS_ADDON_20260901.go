@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -21,6 +22,10 @@ const v7r7ChallengePrefix = "PHASE_C_V19_7_36_V7R6_SESSION_CHALLENGE "
 const v7r7WaitingLine = "PHASE_C_V19_7_36_V7R6_WAITING_FOR_EXTERNAL_SESSION_BINDING"
 const v7r7ArmedLine = "PHASE_C_V19_7_36_V7R7_ARMED"
 const v7r7FailedClosedLine = "gate_state=FAILED_CLOSED"
+
+var v7r7SecureStatusMu sync.Mutex
+var v7r7SecureStatusCurrent *os.File
+var v7r7SecureStatusTerminal bool
 
 func v7r7Hex(s string, n int) bool {
 	if len(s) != n { return false }
@@ -48,6 +53,33 @@ func v7r7Safe(line string) bool {
 func v7r7WriteSecure(secure *os.File, line string) error {
 	if _, err := fmt.Fprintln(secure, line); err != nil { return err }
 	return secure.Sync()
+}
+
+func v7r7BindSecureStatus(secure *os.File) error {
+	v7r7SecureStatusMu.Lock()
+	defer v7r7SecureStatusMu.Unlock()
+	if secure == nil || v7r7SecureStatusCurrent != nil { return fmt.Errorf("secure-global-bind") }
+	v7r7SecureStatusCurrent = secure
+	v7r7SecureStatusTerminal = false
+	return nil
+}
+
+func v7r7UnbindSecureStatus(secure *os.File) {
+	v7r7SecureStatusMu.Lock()
+	if v7r7SecureStatusCurrent == secure { v7r7SecureStatusCurrent = nil }
+	v7r7SecureStatusMu.Unlock()
+}
+
+func v7r7TerminalFailClosedSync() {
+	v7r7SecureStatusMu.Lock()
+	defer v7r7SecureStatusMu.Unlock()
+	if v7r7SecureStatusCurrent == nil || v7r7SecureStatusTerminal { return }
+	if err := v7r7WriteSecure(v7r7SecureStatusCurrent, v7r7FailedClosedLine); err != nil {
+		_ = os.Remove(v7r7SecureStatusPath)
+		v7r7SecureStatusCurrent = nil
+		return
+	}
+	v7r7SecureStatusTerminal = true
 }
 
 func v7r7Fatal(original, secure *os.File, code string) {
@@ -79,12 +111,14 @@ func v7r7MirrorUntilWaiting(r, w *os.File, originalFD int, secure *os.File, done
 				if !challengeSeen { v7r7Fatal(original, secure, "WAITING_BEFORE_CHALLENGE") }
 				if werr := v7r7WriteSecure(secure, trimmed); werr != nil { v7r7Fatal(original, secure, "WAITING_WRITE") }
 				if werr := syscall.Dup2(originalFD, int(os.Stdout.Fd())); werr != nil { v7r7Fatal(original, secure, "STDOUT_RESTORE") }
+				v7r7UnbindSecureStatus(secure)
 				w.Close(); secure.Close(); return
 			}
 		}
 		if err != nil {
 			if err == io.EOF {
-				if werr := v7r7WriteSecure(secure, v7r7FailedClosedLine); werr != nil { _ = os.Remove(v7r7SecureStatusPath) }
+				v7r7TerminalFailClosedSync()
+				v7r7UnbindSecureStatus(secure)
 				secure.Close()
 				return
 			}
@@ -188,7 +222,7 @@ func v7r7OpenSecureStatus() (*os.File, error) {
 }
 
 func v7r7CleanupSecure(secure *os.File) {
-	if secure != nil { secure.Close() }
+	if secure != nil { v7r7UnbindSecureStatus(secure); secure.Close() }
 	_ = os.Remove(v7r7SecureStatusPath)
 	_ = os.Remove(v7r7SecureStatusDir)
 }
@@ -209,11 +243,12 @@ func v7r7Install() error {
 	if err != nil || n == 0 { return fmt.Errorf("arm-ruid") }
 	secure, err := v7r7OpenChannels(uint32(n))
 	if err != nil { return err }
+	if err := v7r7BindSecureStatus(secure); err != nil { v7r7CleanupSecure(secure); return err }
 	originalFD, err := syscall.Dup(int(os.Stdout.Fd()))
-	if err != nil { _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close(); return err }
+	if err != nil { v7r7TerminalFailClosedSync(); v7r7UnbindSecureStatus(secure); secure.Close(); return err }
 	r, w, err := os.Pipe()
-	if err != nil { syscall.Close(originalFD); _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close(); return err }
-	if err := syscall.Dup2(int(w.Fd()), int(os.Stdout.Fd())); err != nil { r.Close(); w.Close(); syscall.Close(originalFD); _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close(); return err }
+	if err != nil { syscall.Close(originalFD); v7r7TerminalFailClosedSync(); v7r7UnbindSecureStatus(secure); secure.Close(); return err }
+	if err := syscall.Dup2(int(w.Fd()), int(os.Stdout.Fd())); err != nil { r.Close(); w.Close(); syscall.Close(originalFD); v7r7TerminalFailClosedSync(); v7r7UnbindSecureStatus(secure); secure.Close(); return err }
 	go v7r7MirrorUntilWaiting(r, w, originalFD, secure, nil)
 	return nil
 }
@@ -238,6 +273,16 @@ func v7r7Selftest() {
 	captured, _ := io.ReadAll(captureR); captureR.Close(); sb, _ := os.ReadFile(td + "/secure")
 	if !strings.Contains(string(captured), downstream) || strings.Contains(string(sb), downstream) || !strings.Contains(string(sb), good) || !strings.Contains(string(sb), v7r7WaitingLine) { panic("persistence-boundary") }
 
+	terminalSecure, err := os.OpenFile(td+"/terminal", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil { panic("terminal-open") }
+	if err := v7r7BindSecureStatus(terminalSecure); err != nil { panic("terminal-bind") }
+	v7r7TerminalFailClosedSync()
+	v7r7TerminalFailClosedSync()
+	v7r7UnbindSecureStatus(terminalSecure)
+	terminalSecure.Close()
+	terminalBytes, _ := os.ReadFile(td + "/terminal")
+	if strings.Count(string(terminalBytes), v7r7FailedClosedLine) != 1 { panic("terminal-sync") }
+
 	bound := td + "/bound"; moved := td + "/moved"
 	if err := os.Mkdir(bound, 0755); err != nil { panic("bound-mkdir") }
 	control := bound + "/" + v7r7UIControlLeaf
@@ -254,6 +299,7 @@ func v7r7Selftest() {
 	if strings.Contains(string(movedNow), "RETAINED_FD_TAMPER") || string(movedNow) != "BOUND_NONAUTHORITY\n" || string(decoyNow) != "DECOY\n" { panic("descriptor-path-binding") }
 	fmt.Println("PHASE_C_V19_7_36_V7R7_ATTACH_READY_OBSERVABILITY_SELFTEST_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R7_ATTACH_READY_OBSERVABILITY_BEHAVIOR_SELFTEST_PASS")
+	fmt.Println("PHASE_C_V19_7_36_V7R7_STATUS_TERMINAL_SYNC_SELFTEST_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R7_UI_RETAINED_FD_ATOMIC_REPLACE_PASS")
 	fmt.Println("PHASE_C_V19_7_36_V7R7_UI_DIRECTORY_FD_BINDING_PASS")
 }
