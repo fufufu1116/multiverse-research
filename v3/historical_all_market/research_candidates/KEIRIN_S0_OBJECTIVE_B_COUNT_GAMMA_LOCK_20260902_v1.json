@@ -1,0 +1,43 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_B_COUNT_GAMMA_LOCK_20260902_v1",
+  "status": "GAMMA_LOCKED_BEFORE_INDEPENDENT_EVALUATION_TARGET_EXTRACTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "ad6a933ed958334c3b480344273b08f69cfff7b8",
+    "fitset_selection_lock_commit": "ecf86f935f08b75ab6819f65f9846c70519e4c12",
+    "fitset_receipt_commit": "586a644933e227a93d5ce769d900e88640bf19e9"
+  },
+  "frozen_parameters": {
+    "beta": 0.22260435254784533,
+    "gamma": 0.0817874186543189
+  },
+  "model": {
+    "stage1": "beta * competition_score",
+    "stage2": "beta * competition_score + gamma * B after actual stage1 winner removal",
+    "stage3": "beta * competition_score + gamma * B after actual stage1 and stage2 removals",
+    "B_transformation": "RAW_B_COUNT_UNCHANGED"
+  },
+  "fit_population": {
+    "successful_races": 50,
+    "attempted_races": 56,
+    "latest_included_meeting_end": "2026-07-16",
+    "included_meeting_identities": ["1120260714","2420260713","2720260713","5620260713","6120260714"]
+  },
+  "evaluation_constraints": {
+    "earliest_eligible_race_date": "2026-07-17",
+    "exclude_all_fit_meeting_identities": true,
+    "no_gamma_refit": true,
+    "no_gamma_sign_flip": true,
+    "no_gamma2_gamma3_split": true,
+    "no_B_transformation_change": true,
+    "no_beta_change": true,
+    "no_same_holdout_rescue_tuning": true
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score","B"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "human_forecast_used": false
+  }
+}
