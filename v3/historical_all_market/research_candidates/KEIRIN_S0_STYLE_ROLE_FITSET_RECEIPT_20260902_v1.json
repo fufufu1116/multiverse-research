@@ -1,0 +1,57 @@
+{
+  "record":"KEIRIN_S0_STYLE_ROLE_FITSET_RECEIPT_20260902_v1",
+  "status":"FIT_SET_CLOSED_GAMMA_FIT_COMPLETE_NOT_EVALUATED",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "prespec_commit":"5ffc7dd6bc74feafe85d98cd490775048218a12a",
+    "fitset_selection_lock_commit":"7258b54af45baabf6a20db4570989c3978b7c28d",
+    "line_source_audit_commit":"76f367ca181a387b15805e37c880bae89cac5c80"
+  },
+  "population":{
+    "race_date":"2026-06-30",
+    "attempted_races":57,
+    "successful_races":56,
+    "fail_closed_races":1,
+    "included_blocks_in_locked_order":[
+      {"venue":"取手","attempted":12,"successful":12},
+      {"venue":"平塚","attempted":12,"successful":11},
+      {"venue":"伊東","attempted":7,"successful":7},
+      {"venue":"豊橋","attempted":7,"successful":7},
+      {"venue":"玉野","attempted":7,"successful":7},
+      {"venue":"高知","attempted":12,"successful":12}
+    ],
+    "fail_closed":[{"race":"平塚 2026-06-30 R4","reason":"PRE_RACE_SCRATCH_PRESENT"}],
+    "stop_rule_application":"CLOSED_AT_END_OF_KOCHI_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_56_GE_50",
+    "later_locked_blocks_unopened":["武雄","佐世保"]
+  },
+  "features":{
+    "competition_score":true,
+    "style":true,
+    "style_mapping":{"逃":-1.0,"両":0.0,"追":1.0},
+    "human_lineup_forecast_used":false,
+    "result_used_as_feature":false,
+    "payout_used":false,
+    "odds_used":false
+  },
+  "fit":{
+    "objective":"MINIMIZE_MEAN_ORDERED_TOP3_LOG_LOSS_ON_FIT_SET_ONLY",
+    "optimizer":"BRENT_SCALAR_MINIMIZATION_WITH_BRACKET_-1_0_1",
+    "optimizer_success":true,
+    "gamma":0.06535649876903948,
+    "stagewise_mean_log_loss":{
+      "L1":{"untouched_s0":1.6647231837195235,"candidate":1.6647231837195235,"difference":0.0},
+      "L2":{"untouched_s0":1.639887248160031,"candidate":1.646096417181939,"difference":0.006209169021907934},
+      "L3":{"untouched_s0":1.5268815028582694,"candidate":1.5183659318325926,"difference":-0.008515571025676794},
+      "ordered_top3":{"untouched_s0":4.831491934737824,"candidate":4.829185532734055,"difference":-0.0023064020037688593}
+    },
+    "interpretation":"FIT OBJECTIVE IMPROVES ONLY SLIGHTLY; L2 WORSENS WHILE L3 IMPROVES. THIS IS MIXED FIT EVIDENCE AND DOES NOT ESTABLISH ADVANCEMENT."
+  },
+  "evaluation_gate":{
+    "gamma_must_be_locked_before_holdout_target_access":true,
+    "evaluation_dates":"STRICTLY_AFTER_2026-06-30",
+    "minimum_successful_races":50,
+    "whole_meeting_day_blocks_chronological_source_order":true,
+    "no_refit_on_evaluation":true
+  },
+  "hard_boundaries":["NO_GAMMA_REFIT_ON_EVAL","NO_CHANGE_TO_BASELINE_BETA","NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_FIT_EVAL_OVERLAP","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION_FROM_FIT"]
+}
