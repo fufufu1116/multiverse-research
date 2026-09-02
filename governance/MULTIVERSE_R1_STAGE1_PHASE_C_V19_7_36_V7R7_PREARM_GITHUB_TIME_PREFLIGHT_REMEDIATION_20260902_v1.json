@@ -1,0 +1,152 @@
+{
+  "artifact": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_PREARM_GITHUB_TIME_PREFLIGHT_REMEDIATION_20260902_v1",
+  "version": "v1",
+  "date_jst": "2026-09-02",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "pr": 74,
+  "source_live_incident": {
+    "core_live_result_receipt": 5504389790,
+    "codespace": "laughing-space-couscous-gx59qvqq5q4j25v7",
+    "reviewed_image_identity_sha256": "49da369aa0cbcd77a3037eb4bc42501e426f0c93684afc70348c24226584dbea",
+    "observed_terminal_result": "PHASE_C_V19_7_36_V7R6_SESSION_GATE_DENIED:GITHUB_SERVER_TIME",
+    "arm_attempt_consumed": true,
+    "trusted_github_server_time_acquired": false,
+    "strict_600_second_window_started": false,
+    "session_challenge_displayed": false,
+    "waiting_reached": false,
+    "device_code_displayed": false,
+    "device_code_shared_to_core_chat": false,
+    "manual_arm_retry_authorized": false
+  },
+  "predecessor_reviewed_successor": {
+    "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-status-terminal-lifecycle-remediation-v1",
+    "head": "a8d86bdfb834f7038055b330070147b63741268c",
+    "tree": "5034dc55b48390bdb8f5e4ff790b04e8720081ce",
+    "core_freeze": 5503611766,
+    "independent_lab_pass": 5503646627,
+    "independent_auditor_pass": 5503771655,
+    "owner_presentation": 5503983070,
+    "owner_approval_receipt": 5504097872,
+    "fresh_codespace_creation_receipt": 5504271041,
+    "one_shot_manual_arm_authorization": 5504312066,
+    "all_live_authority_consumed_or_closed": true
+  },
+  "candidate_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-prearm-github-time-preflight-remediation-v1",
+  "problem_statement": {
+    "fact": "The reviewed live arm reached the session gate but failed before trusted GitHub server time and before challenge/WAITING.",
+    "not_proven": "The exact lower-level cause within GITHUB_SERVER_TIME is not established by the live terminal evidence because multiple network, HTTP, Date, rate-header and rate-reserve failures map to the same fixed denial category.",
+    "governance_defect": "Real GitHub API/time/rate readiness was first discovered only after the one-shot arm invocation had already been consumed."
+  },
+  "bounded_remediation": {
+    "prearm_location": "reviewed UI READY writer executed on Codespaces attach before any arm authorization",
+    "ready_retirement": "If no arm lock/session exists, any prior READY leaf is retired before the current preflight; failed current preflight leaves READY absent.",
+    "network_client": {
+      "proxy": "DISABLED",
+      "minimum_tls": "TLS1.2",
+      "redirects": "REJECTED",
+      "credentials_or_authorization_headers": "NONE"
+    },
+    "probe_1": {
+      "method": "GET",
+      "target": "https://api.github.com/rate_limit",
+      "purpose": "nonmutating GitHub server Date plus anonymous core-rate readiness",
+      "required_http_status": 200,
+      "minimum_core_limit": 60,
+      "minimum_core_remaining_before_comments_probe": 55
+    },
+    "probe_2": {
+      "method": "GET",
+      "target": "https://api.github.com/repos/fufufu1116/multiverse-research/issues/74/comments?per_page=1&page=1",
+      "purpose": "exercise the same public PR-comment GitHub API family used by the inherited session gate before creating READY",
+      "required_http_status": 200,
+      "required_rate_resource": "core",
+      "minimum_core_remaining_after_comments_probe": 54
+    },
+    "safe_fixed_diagnostics_only": [
+      "RATE_REQUEST",
+      "RATE_NETWORK",
+      "RATE_STATUS",
+      "RATE_DATE",
+      "RATE_BODY",
+      "RATE_CORE",
+      "RATE_RESERVE",
+      "COMMENTS_REQUEST",
+      "COMMENTS_NETWORK",
+      "COMMENTS_STATUS",
+      "COMMENTS_DATE",
+      "COMMENTS_RATE_HEADERS",
+      "COMMENTS_RATE_RESERVE"
+    ],
+    "ready_created_only_after_preflight_pass": true,
+    "ready_and_control_schema_changed": false,
+    "manual_arm_launcher_changed": false,
+    "session_gate_changed": false,
+    "status_lifecycle_addon_changed": false,
+    "evidence_adapter_changed": false,
+    "capability_set_changed": false,
+    "oauth_or_token_authority_added": false
+  },
+  "rate_budget_rationale": {
+    "inherited_session_gate_api_hard_budget": 40,
+    "inherited_session_gate_api_reserve_remaining": 8,
+    "preflight_remaining_before_comments_min": 55,
+    "preflight_remaining_after_comments_min": 54,
+    "intent": "Conservatively block READY when anonymous shared-IP primary-rate capacity is already too depleted to give the inherited bounded polling design reasonable headroom. This reduces but does not mathematically eliminate post-preflight network/rate drift."
+  },
+  "machine_evidence_required": [
+    "PRELAB_PREARM_GITHUB_PREFLIGHT_SOURCE_GATE_PASS=true",
+    "PHASE_C_V19_7_36_V7R7_PREARM_GITHUB_PREFLIGHT_SELFTEST_PASS",
+    "PRELAB_PREARM_GITHUB_PREFLIGHT_SELFTEST_PASS=true",
+    "PRELAB_PREARM_NETWORK_NONE_FAILS_BEFORE_READY_PASS=true",
+    "PRELAB_CAP_THREAD_PIN_SOURCE_GATE_PASS=true",
+    "PRELAB_STATUS_FDPATH_SOURCE_GATE_PASS=true",
+    "PRELAB_STATUS_TERMINAL_FAIL_CLOSED_SOURCE_GATE_PASS=true",
+    "PRELAB_STATUS_PENDING_AUTHORITY_SOURCE_GATE_PASS=true",
+    "PRELAB_STATUS_FATAL_LIFECYCLE_SOURCE_GATE_PASS=true",
+    "PRELAB_BROAD_CAP_BOUNDARY_SELF_NARROW_PASS=true",
+    "PRELAB_NETWORK_NONE_TRUSTED_TIME_FAIL_CLOSED_PASS=true",
+    "PRELAB_STATUS_ROOT_PENDING_INTEGRITY_PASS=true",
+    "PRELAB_PREWAITING_AUTHORITY_ABSENT_FAIL_CLOSED_PASS=true",
+    "PRELAB_STATUS_TERMINAL_FAIL_CLOSED_PASS=true",
+    "PRELAB_STATUS_FATAL_LIFECYCLE_PASS=true",
+    "PRELAB_UI_RETAINED_FD_ATOMIC_REPLACE_PASS=true",
+    "PRELAB_UI_DIRECTORY_FD_BINDING_PASS=true",
+    "PRELAB_FINAL_TREE_DOCKER_BUILD_PASS=true",
+    "SECURITY_AUTHORITY_GRANTED=false",
+    "RUNTIME=OFF"
+  ],
+  "independent_review_requirements": {
+    "lab_required": true,
+    "auditor_required_after_lab_pass": true,
+    "new_owner_gate_required_after_auditor_pass": true,
+    "real_codespaces_equivalence_remains_unproven_until_new_reviewed_one_shot": true,
+    "specific_attack_points": [
+      "current-attach READY cannot survive a failed current GitHub preflight",
+      "READY retirement occurs before network probing and only when arm/session has not started",
+      "rate_limit and exact PR-comments probes provide useful readiness evidence without credentials or OAuth",
+      "fixed diagnostics cannot leak device codes, tokens, headers or raw network error text",
+      "55/54 reserve thresholds are conservative enough relative to inherited hard budget 40 and reserve 8",
+      "shared-IP primary-rate changes and secondary-rate/network changes after preflight remain explicit residual risks",
+      "CI network-none separation/preseed does not hide a production integration defect",
+      "all predecessor status lifecycle, retained-FD, dirfd, fsuid/thread and capability findings remain closed",
+      "no predecessor Owner approval, Codespace authority or arm authority is reusable"
+    ]
+  },
+  "live_authority": {
+    "create_codespace": false,
+    "manual_arm": false,
+    "manual_arm_retry": false,
+    "oauth": false,
+    "device_authorization": false,
+    "step3": false,
+    "step4_or_apply": false,
+    "production_mutation": false,
+    "main_or_ruleset_mutation": false,
+    "merge": false,
+    "workflow_dispatch": false,
+    "secret_or_writer_key_operation": false,
+    "runtime_activation": false
+  }
+}
