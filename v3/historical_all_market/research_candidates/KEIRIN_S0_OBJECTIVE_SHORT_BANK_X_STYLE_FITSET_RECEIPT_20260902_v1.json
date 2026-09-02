@@ -1,0 +1,102 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_FITSET_RECEIPT_20260902_v1",
+  "status": "FIT_COMPLETED_FROZEN_CANDIDATE_NOT_PROMOTED",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "c1c12d2f6537f322351f5889bdeb3da74e951ebf",
+    "source_audit_commit": "5ffe08dc239af04ab3e09aeac16a209528e05e67",
+    "fitset_selection_lock_commit": "c4b18be1ec77b73b5b4000adf4701d24d74d81c2",
+    "retrospective_parser_blob": "d0c3da166b6f9590d7894f1bbe2ba438c05c4390",
+    "beta": 0.22260435254784533
+  },
+  "population": {
+    "race_date": "2026-07-22",
+    "attempted_races": 60,
+    "successful_races": 56,
+    "fail_closed_races": 4,
+    "successful_short_bank_races": 30,
+    "successful_400m_races": 26,
+    "included_blocks_in_locked_order": [
+      {"venue":"いわき平","circumference_m":400,"attempted":7,"successful":7,"racedetail_prefix":"132026072201"},
+      {"venue":"前橋","circumference_m":335,"attempted":11,"successful":11,"racedetail_prefix":"222026072201"},
+      {"venue":"伊東","circumference_m":333,"attempted":7,"successful":7,"racedetail_prefix":"372026072201"},
+      {"venue":"富山","circumference_m":333,"attempted":12,"successful":12,"racedetail_prefix":"462026072102"},
+      {"venue":"松阪","circumference_m":400,"attempted":11,"successful":9,"racedetail_prefix":"472026072102"},
+      {"venue":"岸和田","circumference_m":400,"attempted":12,"successful":10,"racedetail_prefix":"562026072003"}
+    ],
+    "fail_closed": [
+      {"race":"松阪 2026-07-22 R5","reason":"FAIL-CLOSED:pre_rows=0","interpretation":"Bound retrospective parser recognizes S/A class rows only; L1 rows are not parsed. Parser was not modified after target view."},
+      {"race":"松阪 2026-07-22 R6","reason":"FAIL-CLOSED:pre_rows=0","interpretation":"Bound retrospective parser recognizes S/A class rows only; L1 rows are not parsed. Parser was not modified after target view."},
+      {"race":"岸和田 2026-07-22 R5","reason":"FAIL-CLOSED:pre_rows=0","interpretation":"Bound retrospective parser recognizes S/A class rows only; L1 rows are not parsed. Parser was not modified after target view."},
+      {"race":"岸和田 2026-07-22 R10","reason":"FAIL-CLOSED:pre_rows=0","interpretation":"Bound retrospective parser recognizes S/A class rows only; L1 rows are not parsed. Parser was not modified after target view."}
+    ],
+    "stop_rule_application": "CLOSED_AT_END_OF_KISHIWADA_BLOCK_WITH_56_TOTAL_SUCCESSFUL_30_SHORT_BANK_SUCCESSFUL_AND_26_400M_SUCCESSFUL",
+    "later_locked_blocks_unopened": ["玉野","広島","佐世保"]
+  },
+  "model": {
+    "baseline_stage1_stage2_stage3": "beta * competition_score",
+    "candidate_stage1": "beta * competition_score",
+    "candidate_stage2_stage3": "beta * competition_score + gamma * (short_bank_indicator * style_role_scalar) after actual prior finisher removal",
+    "short_bank_indicator": "1 iff official circumference is 333m or 335m; 0 iff 400m",
+    "style_role_scalar": {"逃":-1.0,"両":0.0,"追":1.0},
+    "only_fitted_parameter": "gamma"
+  },
+  "optimization": {
+    "objective": "MEAN_ORDERED_TOP3_LOG_LOSS_EQUIVALENT_TO_L2_PLUS_L3_WITH_L1_INVARIANT",
+    "solver_check": "CONVEX_ONE_DIMENSIONAL_SCORE_EQUATION_ROOT",
+    "gamma": -0.11202521777007654,
+    "mean_gradient_at_solution": 1.8762769116165146e-15,
+    "informative_subset_note": "The interaction is identically zero on 400m tracks, so gamma is exactly identified by the 30 successful short-bank races; all successful 400m races contribute a gamma-constant term and candidate-minus-baseline difference of zero."
+  },
+  "fit_metrics_short_bank_informative_subset": {
+    "successful_races": 30,
+    "untouched_s0": {
+      "L1": 1.8581464889197765,
+      "L2": 1.759027329532396,
+      "L3": 1.760625882644646,
+      "ordered_top3_log_loss": 5.3777997010968175
+    },
+    "candidate": {
+      "L1": 1.8581464889197765,
+      "L2": 1.7463461013785475,
+      "L3": 1.7659428438583307,
+      "ordered_top3_log_loss": 5.370435434156657
+    },
+    "candidate_minus_s0": {
+      "L1": 0.0,
+      "L2": -0.012681228153848423,
+      "L3": 0.0053169612136847455,
+      "ordered_top3_log_loss": -0.007364266940160569
+    }
+  },
+  "full_fit_candidate_minus_s0": {
+    "successful_races": 56,
+    "L1": 0.0,
+    "L2": -0.006793515082418798,
+    "L3": 0.002848372078759685,
+    "ordered_top3_log_loss": -0.0039451430036574475,
+    "derivation": "Short-bank candidate-minus-S0 sum divided by all 56 successful races; each of the 26 successful 400m races has exact candidate-minus-S0 difference zero by construction.",
+    "absolute_full_fit_losses_recomputed": false
+  },
+  "invariance_checks": {
+    "stage1_formula_identical": true,
+    "winner_probability_difference": 0.0,
+    "baseline_beta_unchanged": true,
+    "style_mapping_unchanged": true,
+    "gamma2_gamma3_split_used": false,
+    "post_fit_sign_flip_used": false,
+    "feature_definition_changed_after_target_view": false,
+    "parser_modified_after_target_view": false
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score","style","official_fixed_bank_circumference"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_post_result_repair": false,
+    "source": "KDreams public retrospective race detail/result pages plus pre-bound KEIRIN.JP official fixed bank circumference reference"
+  },
+  "interpretation": "Fit-set behavior is descriptive only. The fitted gamma must be locked before any independent evaluation target extraction. Fit L2 improved while Fit L3 worsened; no same-fit rescue, remapping, sign flip, parser repair, or feature change is permitted."
+}
