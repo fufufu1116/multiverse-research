@@ -1,0 +1,40 @@
+{
+  "record":"KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260904_v1",
+  "status":"LOCKED_PREOUTCOME_INDEPENDENT_333M_400M_FUTURE_DAY1_BLOCKS",
+  "scope":"RESEARCH_CANDIDATE_FUTURE_PRE_ONLY_ACQUISITION_NO_RESULT_OR_MODEL_AUTHORITY",
+  "lock_timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "selection_context":"Locked before any 2026-09-03 prospective population race starts or any selected-block outcome is observed.",
+  "selection_rule":"Scan the official September 2026 KEIRIN.JP schedule chronologically after the 2026-09-03 blocks and select the earliest next-starting independent venue block for an officially verified 333m venue and an officially verified 400m venue, excluding the current Sep3 venues. Do not use rider composition, odds, forecasts, expected signal, or outcomes.",
+  "selected_blocks":[
+    {
+      "race_date":"2026-09-04",
+      "venue":"防府",
+      "meeting_grade":"F2",
+      "meeting_name":"ニッカン・コム杯／せいらカップ",
+      "meeting_dates":"2026-09-04/2026-09-06",
+      "circumference_m":333,
+      "schedule_source":"https://www.keirin.jp/sp/raceschedule",
+      "bank_source":"https://www.hofukeirin.jp/bank_introduction/",
+      "bank_source_evidence":"防府競輪公式バンク紹介: 周長333m; みなし直線42.5m; 最大カント34°41’09”",
+      "membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT; transport failures retained; exact race IDs resolved only from PRE-event program transport"
+    },
+    {
+      "race_date":"2026-09-04",
+      "venue":"豊橋",
+      "meeting_grade":"F1",
+      "meeting_name":"みんなの競輪カップ",
+      "meeting_dates":"2026-09-04/2026-09-06",
+      "circumference_m":400,
+      "schedule_source":"https://www.keirin.jp/sp/raceschedule",
+      "bank_source":"https://www.toyohashikeirin.com/dataroom",
+      "bank_source_evidence":"豊橋競輪場公式データルーム: 昭和42年度に333mから現在の400mバンクへ改修",
+      "membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT; transport failures retained; exact race IDs resolved only from PRE-event program transport"
+    }
+  ],
+  "design_value":"Adds an independently preselected second near-term 333m venue and another 400m venue before Sep3 outcomes, reducing post-outcome venue-selection and single-venue circumference confounding risk. This is acquisition design, not evidence that circumference affinity exists.",
+  "relationship_to_other_locks":{"sep3_population":"KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v2.json","sep10_nara_333":"KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260910_v1.json","membership_independence":"SEPARATE_FUTURE_PHASE; no Sep3 membership changes"},
+  "result_access_authorized_now":false,
+  "feature_admission":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_SELECTION","NO_ODDS_SELECTION","NO_HUMAN_FORECAST_SELECTION","NO_POST_RESULT_VENUE_SELECTION_FOR_SAME_HYPOTHESIS","NO_RESULT_OR_PAYOUT_LEAKAGE","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
