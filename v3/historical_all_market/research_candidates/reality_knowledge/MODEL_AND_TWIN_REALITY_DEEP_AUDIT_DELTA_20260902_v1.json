@@ -1,0 +1,143 @@
+{
+  "record":"MODEL_AND_TWIN_REALITY_DEEP_AUDIT_DELTA_20260902_v1",
+  "status":"RESEARCH_CANDIDATE_GAP_UPDATE_ONLY_NO_MODEL_OR_TWIN_MUTATION_AUTHORITY",
+  "retrieval_date_jst":"2026-09-02",
+  "fresh_read_head_before_write":"62d87b703248359224a4222fd0fff69572bdee18",
+  "bindings":[
+    "MODEL_REALITY_GAP_MATRIX_20260902_v1",
+    "DIGITAL_TWIN_REALITY_GAP_MATRIX_20260902_v1",
+    "PRE_FEATURE_CANDIDATE_REGISTRY_20260902_v1",
+    "OFFICIAL_SOURCE_REGISTRY_DEEP_AUDIT_DELTA_20260902_v1",
+    "OFFICIAL_SOURCE_REGISTRY_DEEP_AUDIT_DELTA_2_20260902_v1",
+    "SOURCE_UNRESOLVED_ITEMS_20260902_v3"
+  ],
+  "model_gap_updates":[
+    {
+      "factor":"objective_line_structure",
+      "previous":"MISSING + UNKNOWN_IMPORTANCE with reality/source ambiguity",
+      "updated_reality":"LINE_MECHANISM_REALITY_SUPPORTED; SPECIFIC_PER_RACE_OBJECTIVE_PRE_MEMBERSHIP_UNRESOLVED",
+      "model_classification":["MISSING","UNKNOWN_IMPORTANCE"],
+      "note":"Do not infer actual line membership from region/style or substitute narabi forecasts as truth. Human narabi may only be a separately labeled external benchmark."
+    },
+    {
+      "factor":"tactical_profile_H_B_S_and_kimarite",
+      "updated_reality":"CURRENT_OFFICIAL_RACECARD_INFORMATION_SUPPORTED",
+      "model_classification":["MISSING","UNKNOWN_IMPORTANCE"],
+      "note":"Official KEIRIN.JP defines H, B, S and historical 逃/捲/差/マ. S0 uses none of them. Existing retrospective parser contains S/B and kimarite summaries but omits H; this is a source/schema gap, not a command to add H to the model.",
+      "leakage_warning":"Counts/summaries must come from a snapshot available before the target race and must not be recomputed using target/later results."
+    },
+    {
+      "factor":"bank_physical_geometry",
+      "updated_reality":"CURRENT_OFFICIAL_FIELD_SCHEMA_SUPPORTED; CURRENT_NUMERIC_VALUE_EXTRACTION_AND_CHANGE_VERSIONING_PARTIAL",
+      "model_classification":["MISSING","UNKNOWN_IMPORTANCE"],
+      "note":"Current KEIRIN.JP venue analysis exposes circumference, estimated straight length, center/straight slope and track widths. Use only after numeric current-source extraction and effective-date/versioning are made reproducible."
+    },
+    {
+      "factor":"weather_wind_temperature",
+      "updated_reality":"REALITY_SUPPORTED_OPERATIONAL_MEASUREMENT; PUBLIC_PRE_AVAILABILITY_UNRESOLVED",
+      "model_classification":["MISSING","UNKNOWN_IMPORTANCE"],
+      "note":"Current JKA judging operations formally measure wind direction, wind speed and temperature. This strengthens mechanism/source plausibility but does not establish that the measurements are publicly available before each prediction timestamp."
+    },
+    {
+      "factor":"competition_score_provenance",
+      "updated_reality":"PUBLIC_RECENT_FOUR_MONTH_STRENGTH_SCORE_SUPPORTED; REGULATORY_ONE_TO_ONE_MAPPING_UNRESOLVED",
+      "model_classification":["ALREADY_REPRESENTED"],
+      "note":"Do not change beta or reconstruct the public score from regulatory formulas until cutoff/update semantics are explicitly sourced."
+    },
+    {
+      "factor":"registered_bicycle_and_certified_parts",
+      "updated_reality":"CURRENT_REGISTRATION/CERTIFICATION_LIST_EXISTENCE_SUPPORTED",
+      "model_classification":["MISSING","UNKNOWN_IMPORTANCE"],
+      "note":"Current lists prove equipment categories/manufacturers are formal realities. Historical rider-level identity and change timestamp remain unresolved, so no equipment feature admission."
+    },
+    {
+      "factor":"dead_heat_market_settlement",
+      "updated_reality":"FORMAL_RACE_STATE_AND_PARTIAL_SETTLEMENT_RULES_SUPPORTED",
+      "model_classification":["MARKET_ONLY","ENGINEERING_ONLY"],
+      "note":"DMM worked example is secondary confirmation for ChariLoto only; primary law/regulation remains authoritative. No payout/settlement information enters sporting utility."
+    }
+  ],
+  "digital_twin_gap_updates":[
+    {
+      "twin_element":"line/tactical topology",
+      "classification":"REALITY_PARTIAL",
+      "reality_support":"Line cooperation, leader/self-powered role, follower/bante role and competition for position are officially described real mechanisms.",
+      "remaining_gap":"No objective per-race declared topology source/timestamp verified.",
+      "candidate_action":"Twin ontology may represent line concepts abstractly, but actual race instances must remain UNKNOWN unless a valid objective PRE source is found."
+    },
+    {
+      "twin_element":"official_racecard_tactical_history",
+      "classification":"REALITY_SUPPORTED",
+      "reality_support":"H/B/S and 逃/捲/差/マ are current official racecard concepts.",
+      "remaining_gap":"Current audited Twin/PRE parser contract does not uniformly carry H and provenance/version semantics for all tactical summaries.",
+      "candidate_action":"Engineering source-schema provenance candidate only; no model coefficient implied."
+    },
+    {
+      "twin_element":"venue_physics_object",
+      "classification":"REALITY_PARTIAL",
+      "reality_support":"Current official interface contains geometry field schema.",
+      "remaining_gap":"Reproducible numeric registry and historical change-versioning are absent.",
+      "candidate_action":"Build immutable venue-physics registry keyed by venue + effective interval before any bank interaction experiment."
+    },
+    {
+      "twin_element":"environment_state",
+      "classification":"REALITY_PARTIAL",
+      "reality_support":"Current JKA race operations measure wind direction/speed and temperature; JMA provides external observations.",
+      "remaining_gap":"Prediction-time availability/publication timestamp and venue/station mapping are unresolved.",
+      "candidate_action":"Add timestamped environment-source contract before representing values in Twin state."
+    },
+    {
+      "twin_element":"equipment_state",
+      "classification":"REALITY_PARTIAL",
+      "reality_support":"Registered bicycle categories, certified parts, inspection and gear/bicycle recording are formal realities.",
+      "remaining_gap":"Rider/race-specific historical equipment state and update timestamps unresolved.",
+      "candidate_action":"Do not create synthetic/default equipment values; retain UNKNOWN until source coverage is audited."
+    },
+    {
+      "twin_element":"nonstandard_result_and_settlement_state",
+      "classification":"REALITY_PARTIAL",
+      "reality_support":"Tie, scratch, DQ, abandonment, race non-establishment and invalid-vote/refund states are formally supported.",
+      "remaining_gap":"Current unique-order PL/ticket projection does not constitute a complete result/settlement state machine.",
+      "candidate_action":"Separate sporting ordered-probability baseline from a future result-integrity/settlement ontology."
+    }
+  ],
+  "pre_feature_registry_updates":[
+    {
+      "candidate":"OBJECTIVE_TACTICAL_PROFILE",
+      "add_component":"H",
+      "components_after_source_audit":["H","B","S","nige","makuri","sashi","mark","style"],
+      "source_basis_add":["KEIRINJP_RACECARD_GUIDE_RICH_PRE_FIELDS"],
+      "pre_availability":"OFFICIAL_CURRENT_CONCEPTS_SUPPORTED; HISTORICAL_TARGET_DATE_SNAPSHOT_COVERAGE_MUST_BE_AUDITED",
+      "point_in_time_correctness":"REQUIRES_SAVED_PRE_RACE_SNAPSHOT_OR_EQUIVALENT_ARCHIVE",
+      "priority_change":"NO_AUTOMATIC_RERANK",
+      "reason":"Reality/source support improved, but previous simple style representation failed and no new experiment has been prespecified."
+    },
+    {
+      "candidate":"BANK_PHYSICAL_STRUCTURE",
+      "source_status_update":"CURRENT_OFFICIAL_FIELD_SCHEMA_FOUND",
+      "priority_change":"NO_AUTOMATIC_RERANK",
+      "next_gate":"REPRODUCIBLE_NUMERIC_CURRENT_AND_HISTORICAL_VERSION_REGISTRY"
+    },
+    {
+      "candidate":"WEATHER_PRE_OBSERVATION",
+      "source_status_update":"JKA_OPERATIONAL_MEASUREMENT_REALITY_CONFIRMED_PLUS_JMA_EXTERNAL_SOURCE",
+      "priority_change":"NO_AUTOMATIC_RERANK",
+      "next_gate":"PUBLICATION_TIMESTAMP_AND_STATION_MAPPING_CONTRACT"
+    },
+    {
+      "candidate":"OBJECTIVE_LINE_STRUCTURE",
+      "source_status_update":"REAL_MECHANISM_CONFIRMED_BUT_SPECIFIC_RACE_OBJECTIVE_SOURCE_STILL_BLOCKED",
+      "priority_change":"REMAINS_BLOCKED_BY_SOURCE"
+    }
+  ],
+  "top5_experiment_value_status":"UNCHANGED_PENDING_REQUIRED_SOURCE_AUDITS",
+  "top5_from_current_registry":[
+    "PROGRAM_STAGE_CLASS_FIELD_CONTEXT",
+    "BANK_PHYSICAL_STRUCTURE",
+    "SCHEDULE_AND_FATIGUE_CONTEXT",
+    "WEATHER_PRE_OBSERVATION",
+    "GEAR_AND_BICYCLE_STATE"
+  ],
+  "watchlist_not_promoted_to_top5":["OBJECTIVE_TACTICAL_PROFILE_WITH_H_B_S_AND_KIMARITE"],
+  "hard_boundaries":["GAP_UPDATE_NOT_FEATURE_ADMISSION","NO_S0_CHANGE","NO_BETA_CHANGE","NO_REFIT","NO_PROTECTED_HOLDOUT_ACCESS","NO_SYNTHETIC_OR_HUMAN_FORECAST_TO_REALITY_TRUTH","NO_MODEL_OR_TWIN_PROMOTION"]
+}
