@@ -1,0 +1,19 @@
+{
+  "record":"AOMORI_BANK_GEOMETRY_SOURCE_DELTA_20260902_v2",
+  "status":"PARTIAL_PASS_POST_2023_WORKS_OFFICIAL_NUMERIC_SNAPSHOT_FOUND_2026_EFFECTIVE_CONTINUITY_NOT_PROVEN",
+  "scope":"REALITY_KNOWLEDGE_SOURCE_AUDIT_NO_FEATURE_ADMISSION",
+  "supersedes":"AOMORI_BANK_GEOMETRY_SOURCE_DELTA_20260902_v1.json",
+  "retrieval_date_jst":"2026-09-02",
+  "new_evidence":[
+    {"organization":"青森市","title":"令和5年度 工事成績評定結果","url":"https://www.city.aomori.aomori.jp/sangyo_koyou/jigyosha/1004461/1004462/1004678/1004680.html","body_fact":"青森競輪場ウォークトップ改修工事 completed inspection 2023-05-31","classification":"OFFICIAL_CONSTRUCTION_RECORD","interpretation":"A later August 2023 official local Bank Guide is chronologically post-work and therefore a stronger 2023 geometry snapshot than a pre-work source."},
+    {"organization":"青森市 / 青森競輪 AOMORI KEIRIN","title":"2023 official local race guide / 青森競輪 バンクガイド","url":"https://aomorikeirin.com/wp-content/uploads/2023/08/23_moeban_vol04.pdf","classification":"OFFICIAL_POST_WORK_2023_PUBLICATION","retrieval_note":"Search-index text exposed the Bank Guide values; direct PDF screenshot retrieval was attempted and cache-missed, so the artifact records the indexed official publication with this limitation rather than calling it a 2026 effective specification.","reported_geometry":{"circumference_m":400,"mashinashi_straight_m":58.9,"straight_surface_slope":"2°51′45″","back_width_m":9.8,"center_surface_slope":"32°15′7″","home_width_m":10.8,"center_width_m":7.8}},
+    {"organization":"JKA / KEIRIN.JP","title":"Historical Aomori bank data","url":"https://keirin.jp/pc/dfw/portal/guest/report/winner_data/h15/48/bank.html","classification":"OFFICIAL_HISTORICAL_CORROBORATION","reported_geometry":{"circumference_m":400,"home_straight_m":41.282,"max_cant":"32°15′07″"},"note":"ホーム直線 and みなし直線距離 are different metrics; their numeric difference is not treated as conflict. The cant value corroborates the later official local guide."},
+    {"organization":"青森市 / 青森競輪 AOMORI KEIRIN","title":"Current venue/access page","url":"https://aomorikeirin.com/access/","classification":"CURRENT_OFFICIAL_PAGE","body_fact":"Current page describes the venue as a クセのない400mバンク.","limitation":"Full current numeric geometry is not exposed in clean body text."},
+    {"organization":"青森市 / 青森競輪 AOMORI KEIRIN","title":"2026 venue activity pages","url_examples":["https://aomorikeirin.com/michinoku/2026-7-12rideonaomori/","https://aomorikeirin.com/news/%E3%80%907-23-25%E9%96%8B%E5%82%AC%E3%80%91%E5%84%AA%E5%8B%9D%E8%80%85%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%93%E3%83%A5%E3%83%BC%E3%83%BB%E6%8A%95%E3%81%92%E8%BE%BC%E3%81%BF%E3%83%97%E3%83%AC%E3%82%BC/"],"classification":"CURRENT_OPERATION_CORROBORATION","body_fact":"The venue is actively using the bank in 2026, including a 400m time-trial program and July race-event activity.","limitation":"Active use does not prove exact 2023 detailed geometry remained unchanged."}
+  ],
+  "search_for_intervening_changes":"Official-domain searches for 青森競輪 バンク/走路 改修 in 2024-2026 did not surface an explicit geometry-changing track rebuild. This absence is supportive only and is not treated as proof of no change.",
+  "current_feature_admission":{"circumference_400m":"PASS_CURRENT_OFFICIAL_BODY","mashinashi_straight_58_9m":"PARTIAL_BLOCKED_FOR_2026_MODEL_FEATURE","cant_32_15_07":"PARTIAL_BLOCKED_FOR_2026_MODEL_FEATURE","widths_and_straight_slope":"PARTIAL_BLOCKED_FOR_2026_MODEL_FEATURE"},
+  "decision":"USE_400M_CIRCUMFERENCE_AS_CURRENT_REALITY; KEEP_DETAILED_AOMORI_GEOMETRY_DESCRIPTIVE_UNTIL_EFFECTIVE_CONTINUITY_IS_POSITIVELY_VERIFIED",
+  "result_accessed":false,
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_GEOMETRY_BACKFILL_WITHOUT_EFFECTIVE_INTERVAL","NO_ABSENCE_OF_SEARCH_RESULT_AS_PROOF","NO_UNKNOWN_TO_ZERO","NO_MODEL_FIT_FROM_THIS_AUDIT","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
