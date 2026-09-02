@@ -1,0 +1,72 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_CROSS_BLOCK_SUPPORT_PRECHECK_20260903_v2",
+  "status": "EXHAUSTIVE_TAKEO_ACTUAL_DAY1_S_ROSTER_TO_NARA_SCHEDULED_ASSEN_INTERSECTION_9_OFFICIAL_IDS_VERIFIED_NARA_FINAL_CARD_PENDING",
+  "scope": "PRE_ONLY_SUPPORT_AND_IDENTITY_PRECHECK_NO_OUTCOME_EFFECT_ESTIMATE",
+  "supersedes": "KEIRIN_RIDER_CIRCUMFERENCE_CROSS_BLOCK_SUPPORT_PRECHECK_20260903_v1.json",
+  "purpose": "Determine before any selected-block RESULT whether the prospective 400m-to-333m design has repeated same-rider support, without estimating affinity or selecting riders from outcomes.",
+  "source_blocks": {
+    "takeo": {
+      "race_date": "2026-09-03",
+      "circumference_m": 400,
+      "population": "ACTUAL_DAY1_S_GRADE_RACECARDS_R6_TO_R12",
+      "races": 7,
+      "riders": 49,
+      "source_family": "KDreamS current PRE racecards/racedetail",
+      "membership_status": "ACTUAL_PRE_EVENT_DAY1_RACECARD"
+    },
+    "nara": {
+      "meeting_dates": "2026-09-10/2026-09-13",
+      "circumference_m": 333.33,
+      "population": "SCHEDULED_G3_ASSEN_ROSTER",
+      "source_url": "https://keirin.kdreams.jp/nara/assen/5320260910/",
+      "membership_status": "SCHEDULED_ASSEN_NOT_FINAL_RACECARD",
+      "important_limit": "Nara final racecard may change because this is an assignment/scheduled roster. Every repeated-rider candidate remains pending until the final PRE racecard is published."
+    }
+  },
+  "intersection": {
+    "takeo_actual_day1_s_roster_exhaustively_checked": true,
+    "scheduled_overlap_count": 9,
+    "scheduled_overlap": [
+      {"rider_name": "川口 公太朗", "period": 98, "official_registration_number": "014700", "takeo_race_no": 10, "takeo_car_no": 1, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=014700"},
+      {"rider_name": "桐山 敬太郎", "period": 88, "official_registration_number": "013944", "takeo_race_no": 10, "takeo_car_no": 4, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=013944"},
+      {"rider_name": "小林 弘和", "period": 91, "official_registration_number": "014196", "takeo_race_no": 11, "takeo_car_no": 1, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=014196"},
+      {"rider_name": "長井 妙樹", "period": 96, "official_registration_number": "014512", "takeo_race_no": 11, "takeo_car_no": 2, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=014512"},
+      {"rider_name": "佐々木 堅次", "period": 113, "official_registration_number": "015239", "takeo_race_no": 11, "takeo_car_no": 5, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=015239"},
+      {"rider_name": "植原 琢也", "period": 113, "official_registration_number": "015244", "takeo_race_no": 11, "takeo_car_no": 6, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=015244"},
+      {"rider_name": "中村 圭志", "period": 86, "official_registration_number": "013821", "takeo_race_no": 12, "takeo_car_no": 3, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=013821"},
+      {"rider_name": "近藤 誠二", "period": 80, "official_registration_number": "013357", "takeo_race_no": 9, "takeo_car_no": 6, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=013357"},
+      {"rider_name": "牧田 悠生", "period": 123, "official_registration_number": "015703", "takeo_race_no": 9, "takeo_car_no": 7, "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=015703"}
+    ],
+    "official_registration_number_verified_for_all_9": true,
+    "nara_final_racecard_required": true,
+    "final_repeated_rider_count": "PENDING_NARA_FINAL_PRE_RACECARD",
+    "effect_estimate": null
+  },
+  "interpretation": {
+    "support_conclusion": "The prospective design has non-zero same-rider cross-circumference support before outcomes. Nine Takeo 400m actual Day1 S-grade riders are independently present on the future Nara 333.33m scheduled G3 roster.",
+    "not_a_result": "This is support/transport evidence only. It does not show that circumference affinity exists, its sign, or its predictive value.",
+    "selection_bias_guard": "The nine names are the exhaustive intersection of the frozen Takeo actual Day1 S-grade roster with the already-preselected future Nara scheduled roster; they were not selected by performance or outcome."
+  },
+  "profile_attribute_firewall": "Current KEIRIN.JP preference/home-bank/current score/class/style fields are not admitted as historical or predictive features by this artifact. Registration number is identity-only.",
+  "next_gates": [
+    "Re-check Nara final PRE racecard before its cutoff and retain withdrawals/non-assignments as explicit support failures.",
+    "Complete additional cross-block roster intersections for other preselected 333m/400m venues where PRE rosters become available.",
+    "Do not open predictive RESULT until source, identity, support, fit/eval allocation and low-DOF predictive gate are separately frozen."
+  ],
+  "result_access_authorized": false,
+  "feature_admission": false,
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "NO_RESULT_ACCESS_FROM_SUPPORT_PRECHECK",
+    "NO_EFFECT_OR_AFFINITY_CLAIM",
+    "NO_POST_RESULT_RIDER_SELECTION",
+    "NO_CURRENT_PROFILE_PREFERENCE_AS_OBSERVED_TRUTH",
+    "NO_CURRENT_PROFILE_BACKFILL",
+    "NO_ODDS_OR_HUMAN_FORECAST_FEATURE",
+    "NO_PAYOUT",
+    "NO_S0_MUTATION",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION"
+  ]
+}
