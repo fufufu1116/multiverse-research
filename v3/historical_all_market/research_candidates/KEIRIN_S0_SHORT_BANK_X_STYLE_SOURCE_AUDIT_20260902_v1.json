@@ -1,0 +1,52 @@
+{
+  "record":"KEIRIN_S0_SHORT_BANK_X_STYLE_SOURCE_AUDIT_20260902_v1",
+  "status":"OBJECTIVE_PRE_SOURCE_AUDIT_PASS_FOR_NEW_LINEAGE_PRESPEC_ONLY",
+  "scope":"RESEARCH_CANDIDATE_SOURCE_AUDIT_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "research_direction":"KEIRIN_S0_REPLICATION_PRESERVATION_CALIBRATION_STRUCTURE_FEATURE_DIAGNOSTIC_DIRECTION_20260902_v1",
+    "line_source_audit":"KEIRIN_LINE_SOURCE_CLASSIFICATION_AUDIT_20260902_v1",
+    "pre_source_manifest_blob":"c3aa1be3b8eeb43f438db57cbd29929bffae198a",
+    "retrospective_parser_blob":"d0c3da166b6f9590d7894f1bbe2ba438c05c4390"
+  },
+  "rationale":"The recorded post-replication research order places BANK_X_STYLE after minimal line-role research. KDreams narabiyoso was separately rejected as an objective outcome feature because it is an external human forecast, so this audit considers only fixed objective bank circumference combined with the source-recorded PRE style field.",
+  "bank_source":{
+    "provider":"KEIRIN.JP",
+    "url":"https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+    "snapshot_date_shown":"2026-04-23",
+    "semantic_role":"OFFICIAL_FIXED_TRACK_CIRCUMFERENCE_REFERENCE_PRECEDING_NEW_FIT_TARGET_DATE",
+    "supported_current_circumferences_m":[333,335,400,500],
+    "target_lineage_allowed_circumferences_m":[333,335,400],
+    "target_lineage_excludes_500m":"YES_FAIL_CLOSED_BY_FEATURE_SCOPE_NOT_RESULT_CONDITIONING"
+  },
+  "style_source":{
+    "provider":"KDreams PRE rider table",
+    "field":"style",
+    "allowed_values":["逃","両","追"],
+    "mapping_inherited_unchanged_from_preexisting_style_role_prespec":{"逃":-1.0,"両":0.0,"追":1.0},
+    "mapping_refit_or_rescue":false
+  },
+  "candidate_feature_definition_for_prespec":{
+    "short_bank_indicator":"1 iff official circumference is 333m or 335m; 0 iff 400m",
+    "style_role_scalar":{"逃":-1.0,"両":0.0,"追":1.0},
+    "interaction":"short_bank_indicator * style_role_scalar",
+    "free_feature_definition_choices_after_target_view":0,
+    "note":"The interaction is zero on 400m tracks and tests whether the already-fixed style-role ordering behaves differently on short 333/335m banks. This is a new lineage, not a rescue refit of the prior style-only holdout."
+  },
+  "new_fit_eligibility":{
+    "earliest_target_date":"2026-07-22",
+    "reason":"Strictly after the S-count independent evaluation period ending 2026-07-20; 2026-07-21 was not selected because a racedetail search snippet surfaced during source discovery, even though no ordered RESULT target was extracted.",
+    "required_bank_source_before_target":true,
+    "required_PRE_style":true,
+    "no_prior_burned_population_for_fit_or_eval":true
+  },
+  "source_boundary":{
+    "eligible_PRE":["competition_score","style","official_fixed_bank_circumference"],
+    "RESULT":"TARGET_ONLY_AFTER_PRESPEC_AND_SELECTION_LOCK",
+    "PAYOUT":"EXCLUDED",
+    "odds":"EXCLUDED_FROM_OUTCOME_MODEL",
+    "KDreams_narabiyoso":"EXCLUDED",
+    "human_marks_comments_tips":"EXCLUDED"
+  },
+  "decision":"ALLOW_PRESPEC_OF_ONE_PARAMETER_SHORT_BANK_X_STYLE_CONDITIONAL_PL_CHALLENGER",
+  "hard_boundaries":["NO_RESULT_TARGET_EXTRACTION_BEFORE_PRESPEC_AND_FIT_SELECTION_LOCK","NO_STYLE_MAPPING_RESCUE","NO_500M_EXTRAPOLATION_IN_THIS_LINEAGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_OUTCOME_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION","NO_WAGERING_OR_STAKING","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"]
+}
