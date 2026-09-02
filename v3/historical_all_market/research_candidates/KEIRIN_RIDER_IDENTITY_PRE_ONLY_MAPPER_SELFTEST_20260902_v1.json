@@ -1,0 +1,21 @@
+{
+  "record":"KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPER_SELFTEST_20260902_v1",
+  "status":"PASS_9_OF_9_SYNTHETIC_FAIL_CLOSED_TESTS",
+  "scope":"RESEARCH_ONLY_SYNTHETIC_MECHANICAL_SELFTEST_NO_RESULT_ACCESS_NO_MODEL_AUTHORITY",
+  "tested_tool":{"path":"tools/keirin_rider_identity_pre_only_mapper_v1.py","blob_sha":"765dee6dc2b9431487ee7c47c07fa0bfb6dda514","mapping_version":"KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPER_v1"},
+  "execution":{"tests":9,"passed":9,"failed":0,"python_compile":"PASS"},
+  "tests":[
+    {"name":"NFKC_AND_SPACE_NORMALIZATION","result":"PASS"},
+    {"name":"EXACT_UNIQUE_EVENT_MATCH_PASS","result":"PASS"},
+    {"name":"MULTIPLE_MATCH_FAIL_CLOSED","result":"PASS"},
+    {"name":"NO_MATCH_FAIL_CLOSED","result":"PASS"},
+    {"name":"EVENT_MISMATCH_FAIL_CLOSED","result":"PASS"},
+    {"name":"PROFILE_ONLY_NOT_PROSPECTIVE_AFFINITY_PASS","result":"PASS"},
+    {"name":"REGISTRATION_PROFILE_URL_MISMATCH_FAIL_CLOSED","result":"PASS"},
+    {"name":"FORBIDDEN_RESULT_COLUMN_REJECTED","result":"PASS"},
+    {"name":"TACTICAL_MARK_COUNT_COLUMN_ALLOWED","result":"PASS","note":"Existing PRE parser field mark is a tactical count, not a human forecast mark."}
+  ],
+  "prospective_affinity_identity_rule":"A race is eligible for prospective rider-specific affinity only when every PRE rider is an exact unique official-name match and every official registration-number profile capture corroborates the same PRE race_date, venue, and race_no. Profile-only exact matches remain mapped evidence but do not pass this stronger prospective affinity gate.",
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_ODDS","NO_HUMAN_FORECAST","NO_NARABIYOSO","NO_CURRENT_PROFILE_ATTRIBUTE_BACKFILL","NO_MANUAL_NAME_GUESS","AMBIGUITY_FAIL_CLOSED","NO_UNKNOWN_TO_ZERO","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"],
+  "decision":"MAPPER_MECHANICAL_GATE_PASS_LIVE_PROSPECTIVE_IDENTITY_CATALOG_AND_COMPLETE_POPULATION_MAPPING_STILL_PENDING"
+}
