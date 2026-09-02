@@ -1,0 +1,25 @@
+{
+  "record":"KEIRIN_TOYAMA_1R_PRE_SEARCH_SURFACE_PILOT_20260903_v1",
+  "status":"PRE_EVENT_ALLOWLIST_CAPTURED_TRANSPORT_PILOT_NONCANONICAL_NO_RESULT_AUTHORITY",
+  "scope":"PRE_ONLY_TRANSPORT_FEASIBILITY_AND_IDENTITY_INPUT_PILOT",
+  "retrieval_session_started_jst":"2026-09-03T01:36:00+09:00",
+  "race":{"race_id":"4620260903010001","race_date":"2026-09-03","venue":"富山","race_no":1,"scheduled_start_jst":"08:30","scheduled_cutoff_jst":"08:25","meeting":"サイクルパークとやまカップ","circumference_m":333},
+  "source":{"organization":"Rakuten KDreams","url":"https://keirin.kdreams.jp/toyama/racedetail/4620260903010001/","transport":"WEB_SEARCH_INDEXED_PAGE_EXCERPT","raw_html_hash":null,"clean_direct_capture":false,"classification":"TRANSPORT_PILOT_ONLY_NOT_CANONICAL_FEATURE_ARTIFACT"},
+  "allowlist_fields":["car_no","rider_name_raw","prefecture","period","class","style","competition_score","S","B","nige","makuri","sashi","mark_count"],
+  "rows":[
+    {"car_no":1,"rider_name_raw":"吉田 航","prefecture":"大分","period":127,"class":"A2","style":"逃","competition_score":85.47,"S":10,"B":13,"nige":11,"makuri":1,"sashi":0,"mark_count":1},
+    {"car_no":2,"rider_name_raw":"竹内 優也","prefecture":"北海道","period":89,"class":"A2","style":"両","competition_score":83.59,"S":7,"B":2,"nige":1,"makuri":1,"sashi":4,"mark_count":0},
+    {"car_no":3,"rider_name_raw":"山根 泰道","prefecture":"岡山","period":64,"class":"A2","style":"追","competition_score":80.47,"S":1,"B":0,"nige":0,"makuri":0,"sashi":0,"mark_count":1},
+    {"car_no":4,"rider_name_raw":"大崎 智久","prefecture":"青森","period":89,"class":"A2","style":"追","competition_score":82.08,"S":1,"B":0,"nige":0,"makuri":0,"sashi":4,"mark_count":2},
+    {"car_no":5,"rider_name_raw":"高橋 義秋","prefecture":"大分","period":96,"class":"A1","style":"両","competition_score":88.33,"S":3,"B":0,"nige":0,"makuri":0,"sashi":4,"mark_count":3},
+    {"car_no":6,"rider_name_raw":"江本 博明","prefecture":"千葉","period":90,"class":"A2","style":"追","competition_score":75.88,"S":5,"B":1,"nige":0,"makuri":3,"sashi":3,"mark_count":1},
+    {"car_no":7,"rider_name_raw":"松下 綾馬","prefecture":"岡山","period":121,"class":"A1","style":"逃","competition_score":86.33,"S":7,"B":17,"nige":5,"makuri":2,"sashi":0,"mark_count":1}
+  ],
+  "cross_source_roster_check":{"source":"OddsPark public pre-race card","url":"https://www.oddspark.com/keirin/RaceList.do?joCode=46&kaisaiBi=20260903&raceNo=1","status":"ROSTER_AND_CORE_PRE_VALUES_CORROBORATED_FOR_VISIBLE_ROWS; NOT USED FOR HUMAN FORECAST"},
+  "excluded_surface_content":["prediction marks","reporter evaluation","rider comments","provider line forecast/narabiyoso","numeric odds","market popularity","result/payout tabs"],
+  "integrity_binding":"KEIRIN_20260903_PRE_WEB_SEARCH_SURFACE_CONTAMINATION_RECEIPT_v1.json",
+  "result_or_payout_observed":false,
+  "feature_admission":false,
+  "next":"Run official registration-number identity gate on these seven PRE identities. Do not use this search-surface capture as canonical model input unless a separately frozen clean transport contract passes before cutoff.",
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_ODDS_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_NARABIYOSO","NO_POST_RACE_RECONSTRUCTION","NO_S0_MUTATION","NO_MODEL_PROMOTION"]
+}
