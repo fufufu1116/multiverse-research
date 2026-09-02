@@ -1,0 +1,46 @@
+{
+  "record":"KEIRIN_OBJECTIVE_LINE_SOURCE_AUDIT_DELTA_20260902_v1",
+  "status":"REAL_PRE_EVENT_LINE_REVEAL_MECHANISM_VERIFIED_REPRODUCIBLE_PER_RACE_SOURCE_STILL_BLOCKED",
+  "scope":"RESEARCH_SOURCE_AUDIT_ONLY_NO_LINE_FEATURE_OR_RESULT_AUTHORITY",
+  "retrieval_date_jst":"2026-09-02",
+  "parent_audits":["KEIRIN_LINE_SOURCE_CLASSIFICATION_AUDIT_20260902_v1.json","reality_knowledge/OFFICIAL_SOURCE_REGISTRY_DEEP_AUDIT_DELTA_2_20260902_v1.json","reality_knowledge/SOURCE_UNRESOLVED_ITEMS_20260902_v3.json"],
+  "new_verified_official_evidence":[
+    {
+      "organization":"JKA / KEIRIN.JP",
+      "title":"ラインを読む｜競輪ガイド",
+      "url":"https://keirin.jp/pc/static/beginner/basics/lines.html",
+      "historical_current":"CURRENT_GUIDE_BODY_AVAILABLE",
+      "evidence":"Riders cooperate in lines; typical self-powered leader/follower structures and bante roles are described as real race mechanisms.",
+      "confidence":"HIGH_FOR_MECHANISM_EXISTENCE_NONE_FOR_SPECIFIC_RACE_ASSIGNMENT"
+    },
+    {
+      "organization":"JKA / KEIRIN.JP",
+      "title":"レースの流れ｜競輪ガイド",
+      "url":"https://keirin.jp/pc/static/beginner/basics/phases.html",
+      "historical_current":"CURRENT_GUIDE_BODY_AVAILABLE",
+      "evidence":"During pre-race rider introduction on the bank, riders show/appeal what line they will form and spectators are told to confirm the lineup. This identifies rider introduction/legshow as a real pre-event observation channel distinct from post-race inference.",
+      "confidence":"HIGH_FOR_PRE_EVENT_REVEAL_MECHANISM_NONE_FOR_ARCHIVED_STRUCTURED_PER_RACE_DATA_AVAILABILITY"
+    },
+    {
+      "organization":"JKA / KEIRIN.JP",
+      "title":"出走表を見る｜競輪ガイド",
+      "url":"https://www.keirin.jp/pc/static/beginner/basics/racecard.html",
+      "historical_current":"CURRENT_GUIDE_BODY_AVAILABLE",
+      "evidence":"Official racecard guide verifies rider basic information and tactical-history concepts such as style, H/B and 逃/捲/差/マ, but this audit did not verify a structured actual line-membership field in the racecard body.",
+      "confidence":"HIGH_FOR_LISTED_RACECARD_CONCEPTS_NOT_PROOF_OF_LINE_FIELD_ABSENCE_EVERYWHERE"
+    }
+  ],
+  "classification_update":{
+    "line_reality":"REALITY_SUPPORTED",
+    "pre_event_line_reveal":"REALITY_SUPPORTED_VIA_RIDER_INTRODUCTION_LEGSHOW",
+    "specific_per_race_objective_PRE_line_assignment":"UNRESOLVED_REPRODUCIBLE_SOURCE",
+    "historical_structured_archive":"UNRESOLVED",
+    "provider_narabiyoso":"REMAINS_EXTERNAL_HUMAN_FORECAST_NOT_OBJECTIVE_TRUTH"
+  },
+  "critical_distinction":"A rider-introduction/legshow observation can be an objective pre-event observation if captured with provenance before prediction cutoff. A journalist/provider narabiyoso forecast remains a prediction and cannot substitute for observed line truth.",
+  "source_acquisition_target":["official or organizer pre-race rider-introduction video/structured metadata with race identity","timestamp or archive evidence proving availability before prediction cutoff","deterministic annotation/capture contract frozen before RESULT","if video is used, independent duplicate annotation reliability before model use"],
+  "admission_gate":["specific race identity is exact","capture timestamp <= prediction cutoff","all active riders represented or race fails closed","line grouping and order can be derived without outcome information","annotation protocol frozen before target RESULT","human forecast content not substituted for observed formation","historical archive/replay does not expose later-result information to annotator during line capture"],
+  "current_decision":"DO_NOT_OPEN_LINE_AFFINITY_RESULTS; SEARCH_OR_BUILD_A_REPRODUCIBLE_PRE_EVENT_LEGSHOW_CAPTURE_LANE_FIRST",
+  "next":"PRE_EVENT_LEGSHOW_SOURCE_FEASIBILITY_AND_BLINDED_ANNOTATION_PROTOCOL_CANDIDATE",
+  "hard_boundaries":["NO_HUMAN_NARABI_AS_OBJECTIVE_FEATURE","NO_RESULT_INFERRED_LINE","NO_POST_RACE_PRE_RECONSTRUCTION","NO_RESULT_ACCESS_DURING_LINE_CAPTURE","NO_UNKNOWN_TO_ZERO","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION"]
+}
