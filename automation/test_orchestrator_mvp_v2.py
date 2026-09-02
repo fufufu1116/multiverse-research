@@ -1,4 +1,4 @@
-import pathlib, tempfile, unittest
+import os, pathlib, tempfile, unittest
 from orchestrator_mvp_v2 import (
     InjectedCrash, Orchestrator, OrchestratorError, OrchestratorStore,
     DurableScriptedRoleWorker, StaticBindingVerifier, demo_script, demo_spec,
@@ -21,6 +21,15 @@ class T(unittest.TestCase):
         r=out["task"]["result"]
         self.assertEqual((r["owner_copy_paste_count"],r["owner_continue_prompt_count"],r["owner_keep_alive_count"]),(0,0,0))
         self.assertEqual(r["semantic_retries"],1)
+
+    def test_exact_head_bound_e2e_from_env(self):
+        head=os.environ.get("MULTIVERSE_EXPECTED_HEAD")
+        main=os.environ.get("MULTIVERSE_CANONICAL_MAIN")
+        if not head or not main:
+            self.skipTest("exact-head env not supplied")
+        out=run_demo(self.p("ehs.sqlite"),self.p("ehw.sqlite"),canonical_main=main,candidate_head=head)
+        self.assertEqual(out["final_state"],"DONE")
+        self.assertEqual(out["task"]["result"]["candidate_head"],head)
 
     def test_crash_after_worker_return_replays_same_operation_once(self):
         head="a"*40
