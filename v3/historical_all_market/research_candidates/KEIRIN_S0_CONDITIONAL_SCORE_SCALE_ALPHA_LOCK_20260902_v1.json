@@ -1,0 +1,37 @@
+{
+  "record":"KEIRIN_S0_CONDITIONAL_SCORE_SCALE_ALPHA_LOCK_20260902_v1",
+  "status":"ALPHA_LOCKED_BEFORE_EVALUATION_HOLDOUT_TARGET_ACCESS",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "prespec_commit":"d161aa79849dba05dab82bf74ee0a32fc3da3770",
+    "fitset_selection_lock_commit":"35a85b1d8947779e1df53027de665fce01370034",
+    "fitset_receipt_commit":"741de6c19d43a906d49cfb6832af7d659333bf74"
+  },
+  "baseline":{
+    "beta":0.22260435254784533,
+    "stage1":"beta * competition_score",
+    "stage2":"beta * competition_score",
+    "stage3":"beta * competition_score"
+  },
+  "candidate":{
+    "alpha":0.6365671401165879,
+    "stage1":"beta * competition_score",
+    "stage2":"alpha * beta * competition_score after actual stage1 removal",
+    "stage3":"alpha * beta * competition_score after actual stage1 and stage2 removal",
+    "stage1_exactly_untouched":true,
+    "free_parameters":1,
+    "new_feature_added":false
+  },
+  "fit_evidence_warning":"FIT SET IMPROVED L2, L3, AND ORDERED_TOP3 POINT ESTIMATES, BUT BLOCK HETEROGENEITY REMAINS (INCLUDING NEGATIVE YAHIKO); HOLDOUT DECIDES AND NO RESCUE TUNING IS ALLOWED.",
+  "evaluation_gate":{
+    "alpha_frozen":true,
+    "holdout_targets_opened_before_this_lock":false,
+    "holdout_date":"STRICTLY_AFTER_2026-07-04",
+    "minimum_successful_races":50,
+    "selection":"whole accessible meeting/day blocks in chronological KDreams source order excluding all fit meeting identities",
+    "excluded_fit_meeting_identities":["1120260701","2120260702","2520260701","3120260701","3520260630","4520260630"],
+    "required_point_estimates":["candidate ordered_top3_log_loss < untouched S0","candidate L2 < untouched S0","candidate L3 < untouched S0"],
+    "wider_replication_uncertainty_rule":"95pct race-cluster bootstrap upper bound for candidate-minus-S0 ordered_top3_log_loss < 0"
+  },
+  "hard_boundaries":["ALPHA_FROZEN_NO_REFIT","NO_CHANGE_TO_BASELINE_BETA","NO_ALPHA2_ALPHA3_SPLIT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_FIT_EVAL_OVERLAP","NO_SAME_MEETING_CROSS_SPLIT","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION"]
+}
