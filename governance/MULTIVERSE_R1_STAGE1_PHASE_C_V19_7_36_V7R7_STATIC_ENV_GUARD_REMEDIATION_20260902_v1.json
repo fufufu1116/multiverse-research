@@ -1,0 +1,96 @@
+{
+  "artifact": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_STATIC_ENV_GUARD_REMEDIATION_20260902_v1",
+  "version": "v1",
+  "date_jst": "2026-09-02",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "pr": 74,
+  "supersedes_recovery_governance": {
+    "v3_head": "07002f882c85eed1307026b734d4e92467275538",
+    "v3_lab_fix_required_comment": 5506494375,
+    "reason": "env -i sanitizes only after the dynamically loaded env program has started; the invocation-program pre-main loader surface was not bound."
+  },
+  "design_change": {
+    "strategy": "ABANDON_EXISTING_CODESPACE_RECOVERY_AND_BUILD_NEW_REVIEWED_IMAGE_WITH_STATIC_ENV_GUARD",
+    "existing_codespace": "ideal-succotash-wv967q77v6xph5w54",
+    "existing_codespace_disposition": "EVIDENCE_ONLY_NONREUSABLE_NO_HELPER_NO_ARM_NO_OAUTH_NO_SESSION_NO_RUNTIME",
+    "new_wrapper_path": "/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7",
+    "new_wrapper_source": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_STATIC_ENV_GUARD_20260902.go",
+    "wrapper_build": "CGO_ENABLED=0_GO_STATIC_BUILD_NO_PT_INTERP_REQUIRED",
+    "wrapper_owner_mode": "0:0:0555",
+    "wrapped_helper_path": "/usr/local/bin/multiverse-v36-ui-ready-v7r7",
+    "wrapped_helper_expected_sha256": "2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301",
+    "wrapper_child_exec": "EXACT_ABSOLUTE_HELPER_EXECVE",
+    "wrapper_child_environment": ["CODESPACES=true", "CODESPACE_NAME=<validated exact current codespace name>"],
+    "all_other_child_environment_removed": true,
+    "wrapper_network_calls": false,
+    "wrapper_oauth_calls": false,
+    "wrapper_arm_calls": false,
+    "wrapper_session_calls": false,
+    "wrapper_runtime_calls": false
+  },
+  "startup_surface_model": {
+    "dynamic_loader_environment_injection_for_wrapper": "MECHANICALLY_EXCLUDED_BY_NO_PT_INTERP_STATIC_BINARY_REQUIREMENT",
+    "go_runtime_ambient_environment_before_main": "MAY_BE_PARSED_BY_STATIC_GO_RUNTIME_BUT_WRAPPER_HAS_NO_NETWORK_OR_EXTERNAL_AUTHORITY_BEFORE_MAIN; MAIN_VALIDATES_USER_AND_CODESPACE_NAME_THEN_CLEARSEnv_BEFORE_HELPER_FILE_VERIFICATION_AND_EXEC",
+    "helper_dynamic_loader_environment": "NOT_INHERITED; EXECVE_ENV_EXACT_TWO_VARIABLES",
+    "helper_proxy_environment": "NOT_INHERITED_AND_HELPER_TRANSPORT_PROXY_NIL",
+    "helper_tls_override_environment": "NOT_INHERITED",
+    "helper_token_environment": "NOT_INHERITED_AND_HELPER_ADDS_NO_AUTHORIZATION_HEADER"
+  },
+  "image_binding": {
+    "image_identity_builder_updated_to_include_static_env_guard": true,
+    "old_reviewed_image_identity": "e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+    "new_image_identity": "PENDING_EXACT_ACTIONS_EVIDENCE",
+    "new_wrapper_sha256": "PENDING_EXACT_ACTIONS_EVIDENCE",
+    "new_codespace_required_after_full_review_and_owner_gate": true,
+    "old_codespace_cannot_receive_or_use_new_wrapper": true
+  },
+  "prelive_flow_after_future_review": {
+    "owner_gate_phrase": "APPROVE V19.7.36 v7r7 STATIC-ENV-GUARD SUCCESSOR ONE-SHOT PRE-LIVE GATE",
+    "owner_gate_may_authorize": "EXACTLY_ONE_NEW_FRESH_PRELIVE_NONMUTATING_CODESPACE_CREATE_ATTACH_ON_EXACT_REVIEWED_BRANCH",
+    "post_attach_remains_existing_reviewed_direct_ui_ready_helper": true,
+    "if_post_attach_ready_succeeds": "RETURN_TO_CORE_FOR_FRESH_READY_CONTROL_IMAGE_REBIND",
+    "if_post_attach_ready_absent": "NO_ARM; AFTER_CORE_FRESH_REBIND_THE_SAME_OWNER_RECEIPT_MAY_CONDITIONALLY_AUTHORIZE_AT_MOST_ONE_STATIC_ENV_GUARD_INVOCATION_IF_THE_FINAL_REVIEWED_OWNER_PRESENTATION_EXPLICITLY_PRESERVES_THIS_CONDITIONAL_SCOPE",
+    "manual_static_guard_command_template": "/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 <EXACT_CODESPACE_NAME>",
+    "static_guard_one_shot_consumed_on_first_invocation_regardless_result": true,
+    "helper_success_definition": "EXACT_ENV_GUARD_PASS_PLUS_EXACT_UI_READY_WRITER_PASS_PLUS_EXACT_READY_AND_CONTROL_PAIR_SAME_CODESPACE_AND_NEW_IMAGE_TIMER_AND_ARM_NOT_STARTED_RUNTIME_OFF",
+    "helper_failure": "CONSUMED_NO_RETRY_NO_ARM_NO_OAUTH_NO_SESSION_NO_RUNTIME_CODESPACE_NONREUSABLE"
+  },
+  "independent_review_required": {
+    "machine_exact_image_build": true,
+    "lab": true,
+    "auditor_after_lab_pass": true,
+    "owner_gate_after_auditor_pass": true,
+    "attack_points": [
+      "exact wrapper source and binary provenance",
+      "CGO_ENABLED=0 and no PT_INTERP static startup",
+      "whether any ambient loader variable can execute code before wrapper main",
+      "wrapper user/codespace argument binding and os.Clearenv ordering",
+      "root-owned exact helper hash verification with O_NOFOLLOW",
+      "exact two-variable execve child environment",
+      "absence of wrapper network OAuth arm session Runtime paths",
+      "helper Proxy:nil TLS>=1.2 and no Authorization path",
+      "new image identity includes wrapper",
+      "old security gates remain closed after Dockerfile/image identity changes",
+      "new Codespace real-equivalence remains unproven until live evidence",
+      "conditional same-receipt fallback scope cannot authorize arm"
+    ]
+  },
+  "live_authority_now": {
+    "new_codespace": false,
+    "static_env_guard": false,
+    "manual_ui_ready_helper": false,
+    "manual_arm": false,
+    "oauth": false,
+    "device_authorization": false,
+    "step3": false,
+    "step4_or_apply": false,
+    "production_mutation": false,
+    "main_or_ruleset_mutation": false,
+    "merge": false,
+    "workflow_dispatch": false,
+    "secret_or_writer_key_operation": false,
+    "runtime_activation": false
+  }
+}

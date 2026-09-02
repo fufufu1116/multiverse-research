@@ -5,6 +5,7 @@ PATHS=[
 '/usr/local/sbin/multiverse-v36-session-gate-v7r7',
 '/usr/local/bin/multiverse-v36-arm-v7r7',
 '/usr/local/bin/multiverse-v36-ui-ready-v7r7',
+'/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7',
 '/usr/local/sbin/multiverse-v36-anchor-v7r2',
 '/usr/local/sbin/multiverse-v36-control-v7r2',
 '/opt/multiverse/v36/runtime-v7.py',
