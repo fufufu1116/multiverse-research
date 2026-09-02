@@ -1,0 +1,61 @@
+{
+  "record":"KEIRIN_S0_SECOND_FUTURE_PERIOD_101R_GATE_REPORT_20260902_v1",
+  "status":"CONTINUE_FIXED_S0_REPLICATION_DEVELOPMENT_CONFIRMATION_NOT_MODEL_PROMOTION",
+  "scope":"RETROSPECTIVE_DEVELOPMENT_CONFIRMATION_ONLY",
+  "bindings":{
+    "parent_55r_report_commit":"1c0e1c2796b204dfbaa00522f2ce1fe77fd1ec48",
+    "parent_100r_gate_prespec_commit":"ca23d646bed4a439a026946120cd232a45e4959e",
+    "owner_direction_commit":"75e2c88ee06cb670998812f3f62c291966b0f912",
+    "fixed_calibration_bins_commit":"b16e46f6d16b0a0708f87804e37439e263d2ee09"
+  },
+  "locked_model":{"name":"S0_SCORE_ONLY_SOFTMAX","feature":"competition_score","beta":0.22260435254784533,"refit":false,"recalibration":false,"feature_change":false,"PL_change":false},
+  "population":{
+    "parent_successful_races":55,
+    "additional_attempted_races":50,
+    "additional_successful_races":46,
+    "additional_fail_closed_races":4,
+    "combined_successful_races":101,
+    "combined_attempted_races":110,
+    "additional_period":["2026-06-25","2026-06-27"],
+    "additional_venues":["富山","青森","小松島"],
+    "selection":"WHOLE_ACCESSIBLE_MEETING_DAY_BLOCKS_NO_OUTCOME_CONDITIONED_INCLUSION"
+  },
+  "additional_fail_closed":[
+    {"race":"富山 2026-06-25 R11","reason":"COMPETITION_SCORE_0_00_FAIL_CLOSED"},
+    {"race":"富山 2026-06-26 R6","reason":"COMPETITION_SCORE_0_00_FAIL_CLOSED"},
+    {"race":"富山 2026-06-27 R6","reason":"COMPETITION_SCORE_0_00_FAIL_CLOSED"},
+    {"race":"小松島 2026-06-25 R3","reason":"PRE_RACE_SCRATCH_PRESENT_AND_SCRATCH_HANDLING_NOT_PREDEFINED_FOR_THIS_GATE"}
+  ],
+  "additional_block_metrics":[
+    {"block":"富山 2026-06-25","n":11,"winner_log_loss":{"s0":1.7639311974059646,"uniform":1.945910149055313},"winner_brier":{"s0":0.11914881895018505,"uniform":0.12244897959183679},"ordered_top3_log_loss":{"s0":4.788585107677937,"uniform":5.347107530717468}},
+    {"block":"富山 2026-06-26","n":11,"winner_log_loss":{"s0":1.7110765233528757,"uniform":1.9318964508891983},"winner_brier":{"s0":0.11882284405052186,"uniform":0.12394351680065972},"ordered_top3_log_loss":{"s0":4.826588737519909,"uniform":5.296233368177884}},
+    {"block":"富山 2026-06-27","n":11,"winner_log_loss":{"s0":2.0442695231997274,"uniform":1.9318964508891983},"winner_brier":{"s0":0.12979257208535747,"uniform":0.1239435168006597},"ordered_top3_log_loss":{"s0":5.337929232071546,"uniform":5.296233368177884},"negative_evidence_retained":true},
+    {"block":"青森 2026-06-25","n":7,"winner_log_loss":{"s0":0.9774790375413558,"uniform":1.9459101490553132},"winner_brier":{"s0":0.06669077516488497,"uniform":0.12244897959183677},"ordered_top3_log_loss":{"s0":3.9992822176545806,"uniform":5.347107530717468}},
+    {"block":"小松島 2026-06-25 safe joins","n":6,"winner_log_loss":{"s0":1.6524262762427424,"uniform":1.9459101490553132},"winner_brier":{"s0":0.11070448132236832,"uniform":0.12244897959183677},"ordered_top3_log_loss":{"s0":4.381141764175326,"uniform":5.3471075307174685}}
+  ],
+  "aggregate_additional_46R":{
+    "winner_log_loss":{"s0":1.6841078392128304,"uniform":1.9392079455845626,"better":true},
+    "winner_brier":{"s0":0.11253193260945897,"uniform":0.123163758256926,"better":true},
+    "ordered_top3_log_loss":{"s0":4.755781738230377,"uniform":5.322776409502884,"better":true}
+  },
+  "aggregate_101R":{
+    "winner_log_loss":{"s0":1.7662280455354444,"uniform":1.939805171636412,"better":true},
+    "winner_brier":{"s0":0.11561152702108583,"uniform":0.12310006510855168,"better":true},
+    "ordered_top3_log_loss":{"s0":4.943733434390621,"uniform":5.324944529215075,"better":true}
+  },
+  "calibration_monitor":{
+    "fixed_bins_unchanged":true,
+    "parent_55R_weighted_ECE":0.04909846513135548,
+    "additional_46R_weighted_ECE":0.03448136010860774,
+    "combined_101R_weighted_ECE":0.019538339457195613,
+    "additional_46R_max_gap_among_bins_n_ge_20":0.06846755637858282,
+    "parent_55R_max_gap_among_bins_n_ge_20":0.11059506862665179,
+    "material_worsening_observed":false,
+    "warning":"CALIBRATION_REMAINS_HETEROGENEOUS; NO RECALIBRATION PERMITTED ON THIS EVIDENCE"
+  },
+  "decision":{"prespec_classification":"CONTINUE","reason":"combined 101R fixed S0 remains better than uniform on all three primary metrics and the independent additional block does not show material calibration-warning worsening under the exact frozen bins","negative_blocks_hidden":false,"auto_repair":false,"model_promotion":false,"edge_or_profitability_claim":false},
+  "source_boundary":{"PRE":"public historical race-card representations","RESULT":"public historical result representations used as target only","RESULT_target_only_never_feature":true,"PAYOUT_used":false,"odds_used":false,"tips_or_marks_used":false,"manual_repair":false},
+  "limitations":["Development confirmation, not untouched final validation.","A negative full day block, Toyama 2026-06-27, is retained.","Calibration heterogeneity remains and no calibrator has been fitted.","Race 3 at Komatsushima 2026-06-25 was fail-closed because scratch handling had not been predeclared for this gate.","Probability skill does not establish market edge, EV, ROI, profitability, or real-money suitability."],
+  "next":"POST_100R_STAGEWISE_L1_L2_L3_PLUS_RACE_CLUSTER_UNCERTAINTY_PLUS_FIXED_CALIBRATION_DIAGNOSTICS",
+  "hard_boundaries":["NO_REFIT","NO_RECALIBRATION_ON_101R","NO_FEATURE_CHANGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION_FROM_THIS_REPORT"]
+}
