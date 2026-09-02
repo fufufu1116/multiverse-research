@@ -1,0 +1,35 @@
+{
+  "schema": "multiverse.resume.index.v1",
+  "status": "IMPLEMENTATION_CANDIDATE",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority": "RESUME_METADATA_ONLY_NO_LIVE_AUTHORITY",
+  "resume_commands": {
+    "core": "MULTIVERSE再開。Fresh Readして続けて",
+    "keirin": "競輪Research再開。Fresh Readして続けて"
+  },
+  "progressive_fresh_read": {
+    "sequence": [
+      "governance/MULTIVERSE_RESUME_INDEX_20260902_v1.json",
+      "selected_lane_current_state",
+      "active_task_manifest",
+      "required_artifacts_only"
+    ],
+    "load_full_history_by_default": false,
+    "load_giant_handoff_by_default": false,
+    "history_retrieval": "POINTER_ONLY_ON_DEMAND",
+    "missing_stale_or_binding_mismatch": "FAIL_CLOSED"
+  },
+  "safety": {
+    "resume_command_grants_authority": false,
+    "permissions_are_snapshot_not_bearer_token": true,
+    "fresh_revalidation_required_before_material_action": true,
+    "cross_lane_authority_inheritance": false,
+    "lab_auditor_shared_chat_auto_injection": false
+  },
+  "lane_state_pointers": {
+    "core": "governance/MULTIVERSE_CORE_CURRENT_STATE_20260902_v1.json",
+    "keirin": "governance/MULTIVERSE_KEIRIN_CURRENT_STATE_20260902_v1.json"
+  },
+  "policy_pointer": "governance/MULTIVERSE_CHAT_INDEPENDENT_RESUME_CONTEXT_COMPRESSION_OWNER_ADDENDUM_20260902_v1.json",
+  "metrics": ["HANDOFF_TOKEN_SIZE","RESUME_TIME","CONTEXT_LOADED","OWNER_COPY_PASTE_COUNT","OWNER_TOUCH_COUNT","RECOVERY_FAILURE_COUNT"]
+}

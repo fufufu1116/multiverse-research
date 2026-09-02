@@ -1,0 +1,47 @@
+{
+  "schema": "multiverse.chat_independent_resume_context_compression.owner_addendum.v1",
+  "status": "OWNER_AUTHORED_DESIGN_REQUIREMENT_IMPLEMENTATION_CANDIDATE",
+  "date": "2026-09-02",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "owner_receipt_comment": 5508591175,
+  "authority": {
+    "scope": "META_GOVERNANCE_DESIGN_AND_REVIEW_ONLY",
+    "resume_metadata_grants_live_authority": false,
+    "live_static_env_guard_authority_separately_governed": true,
+    "runtime": "OFF"
+  },
+  "target_ux": {
+    "core": "MULTIVERSE再開。Fresh Readして続けて",
+    "keirin": "競輪Research再開。Fresh Readして続けて"
+  },
+  "progressive_fresh_read": [
+    "RESUME_INDEX",
+    "LANE_CURRENT_STATE",
+    "ACTIVE_TASK_MANIFEST",
+    "REQUIRED_ARTIFACTS_ONLY"
+  ],
+  "principles": {
+    "chat_is_workspace_not_canonical_memory": true,
+    "machine_readable_current_state": true,
+    "fresh_read_is_not_full_repo_reload": true,
+    "giant_handoffs_default_recovery": false,
+    "canonicalize_before_chat_loss": "CHAT_LOSS != PROJECT_STATE_LOSS",
+    "context_budget_required": true,
+    "keirin_required_fields": ["active_baseline","fixed_prespecified_experiment","untouched_protected_datasets","parallel_research_lanes","latest_evidence","open_hypotheses","leakage_boundaries","next_safe_research_actions"],
+    "core_required_fields": ["canonical_main","active_stage","active_candidate","runtime_status","current_gate","pending_remediation","owner_gate","authority_ceiling","next_safe_action"],
+    "independent_lab_auditor_fresh_review_preserved": true,
+    "shared_chat_auto_injection_into_independent_review": false,
+    "orchestrator_responsibilities": ["task_routing","state_persistence","fresh_resume","context_selection","evidence_pointers","bounded_remediation_routing"],
+    "owner_is_ai_context_courier": false
+  },
+  "success_criteria": {
+    "new_chat_short_resume": true,
+    "fresh_canonical_evidence_only": true,
+    "old_chat_full_load_required": false,
+    "metrics": ["HANDOFF_TOKEN_SIZE","RESUME_TIME","CONTEXT_LOADED","OWNER_COPY_PASTE_COUNT","OWNER_TOUCH_COUNT","RECOVERY_FAILURE_COUNT"]
+  },
+  "maxims": [
+    "三権分立は残す。役所を回る市民役を主にやらせない。",
+    "会話を失っても、MULTIVERSEの状態は失わない。"
+  ]
+}
