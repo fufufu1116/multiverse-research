@@ -1,0 +1,30 @@
+{
+  "record":"KEIRIN_S0_OBJECTIVE_S_COUNT_FITSET_SELECTION_LOCK_20260902_v1",
+  "status":"FIT_SELECTION_LOCKED_BEFORE_ANY_FIT_RESULT_TARGET_EXTRACTION",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "prespec_commit":"7f10d0f7c9cd13470e51c504b20cc0ba91fdd615",
+    "daily_listing_url":"https://keirin.kdreams.jp/racecard/2026/07/18/",
+    "daily_listing_semantic_role":"PRE_RACECARD_MEETING_ORDER_ONLY"
+  },
+  "race_date":"2026-07-18",
+  "locked_source_order":[
+    {"order":1,"venue":"いわき平","listed_races":9},
+    {"order":2,"venue":"弥彦","listed_races":11},
+    {"order":3,"venue":"西武園","listed_races":11},
+    {"order":4,"venue":"静岡","listed_races":12},
+    {"order":5,"venue":"岐阜","listed_races":7},
+    {"order":6,"venue":"松阪","listed_races":12},
+    {"order":7,"venue":"奈良","listed_races":9},
+    {"order":8,"venue":"高知","listed_races":12}
+  ],
+  "selection_rule":"Attempt complete venue blocks in locked order. Do not stop within a venue block. Close the fit set at the end of the first venue block where cumulative successful races >= 50.",
+  "minimum_successful_races":50,
+  "fit_target_access_before_this_lock":"NONE_FOR_THIS_NEW_LINEAGE",
+  "result_links_opened_for_selection":"NO",
+  "odds_or_payout_used_for_selection":"NO",
+  "human_forecast_used_for_selection":"NO",
+  "failure_handling":"Use prespecified fail-closed rules. Do not replace a failed race with a favorable alternate source or alter source order after target view.",
+  "unopened_after_stop":"Any later locked venue blocks remain unopened once the stop rule closes the fit population.",
+  "hard_boundaries":["NO_SELECTION_CHANGE_AFTER_RESULT_TARGET_VIEW","NO_WITHIN_BLOCK_STOP","NO_MANUAL_REPAIR","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_OUTCOME_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
