@@ -1,0 +1,43 @@
+{
+  "record":"KEIRIN_OBJECTIVE_LINE_SOURCE_AUDIT_DELTA_20260902_v2",
+  "status":"AOMORI_OFFICIAL_LIVE_LEGSHOW_TRANSPORT_PATH_VERIFIED_CAPTURE_NOT_YET_EXECUTED",
+  "scope":"RESEARCH_SOURCE_AUDIT_ONLY_NO_LINE_FEATURE_OR_RESULT_AUTHORITY",
+  "retrieval_date_jst":"2026-09-02",
+  "parent":"KEIRIN_OBJECTIVE_LINE_SOURCE_AUDIT_DELTA_20260902_v1.json",
+  "bindings":["KEIRIN_LEGSHOW_PROSPECTIVE_BLINDED_LINE_ANNOTATION_PRESPEC_20260902_v1.json","KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v1.json"],
+  "new_verified_official_transport_evidence":[
+    {
+      "venue":"青森",
+      "organization":"青森競輪 official",
+      "title":"LIVE映像",
+      "url":"https://aomorikeirin.com/live/",
+      "historical_current":"CURRENT_ORGANIZER_SITE_SERVICE_BODY",
+      "evidence":"Organizer states that live distribution is available on race days from 1R 脚見せ through the final race, and links official viewing paths including KEIRIN.JP.",
+      "classification":"OBJECTIVE_PRE_EVENT_LEGSHOW_TRANSPORT_CANDIDATE",
+      "confidence":"HIGH_FOR_TRANSPORT_SERVICE_EXISTENCE_NONE_YET_FOR_PER_RACE_LINE_ANNOTATION_QUALITY"
+    },
+    {
+      "venue":"青森",
+      "organization":"青森競輪 official",
+      "title":"出走表・予想",
+      "url":"https://aomorikeirin.com/race_information/",
+      "historical_current":"CURRENT_ORGANIZER_SITE_BODY",
+      "evidence":"Organizer exposes a separate race-card PDF link under 出走表 and separate prediction links. This separation is a potential clean PRE roster/card transport path; prediction links remain forbidden for objective feature work.",
+      "classification":"PRE_RACECARD_TRANSPORT_CANDIDATE_PREDICTION_SEPARATION_VISIBLE",
+      "confidence":"HIGH_FOR_PAGE_STRUCTURE_LIVE_PDF_CONTENT_NOT_YET_AUDITED"
+    }
+  ],
+  "prospective_20260903_implication":{
+    "aomori_block_locked":true,
+    "transport_path_known_before_result":true,
+    "actual_legshow_capture_completed":false,
+    "duplicate_annotation_completed":false,
+    "line_feature_admitted":false,
+    "line_affinity_result":"EVIDENCE_PENDING_NOT_ESTABLISHED"
+  },
+  "capture_rule":"For the locked Aomori block, capture only before the applicable race cutoff under the blinded legshow prespec. Record race identity, access timestamp and source. If timing or identity is unsafe, mark UNKNOWN/TIMING_UNSAFE and never reconstruct after the race.",
+  "takeo_status":"Official municipal site links KEIRIN.JP live, but this delta did not yet verify a Takeo-specific organizer statement that the feed begins at 脚見せ; do not infer equivalent transport semantics without evidence.",
+  "current_decision":"AOMORI_SOURCE_BLOCK_PARTIALLY_RESOLVED_TO_CAPTURE_PENDING; DO_NOT_OPEN_LINE_AFFINITY_RESULTS",
+  "next":["Execute timing-safe Aomori legshow capture under the already-frozen duplicate-annotation protocol.","Audit the clean Aomori race-card PDF transport without opening prediction material; if the PDF mixes forbidden forecast content, classify transport unsafe and do not use it.","Resolve Takeo-specific objective pre-event legshow transport semantics independently.","Only after transport reliability is measured may a separate predictive line-affinity population be prespecified."],
+  "hard_boundaries":["NO_HUMAN_NARABI_AS_OBJECTIVE_FEATURE","NO_PREDICTION_PDF_AS_TRUTH","NO_RESULT_INFERRED_LINE","NO_POST_RACE_PRE_RECONSTRUCTION","NO_RESULT_ACCESS_DURING_CAPTURE","NO_UNKNOWN_TO_ZERO","NO_MODEL_FIT","NO_PROTECTED_HOLDOUT","NO_REAL_MONEY_EXECUTION"]
+}
