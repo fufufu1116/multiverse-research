@@ -1,0 +1,14 @@
+{
+  "record": "KEIRIN_S0_POST_200R_NEW_PERIOD_ACQUISITION_MANIFEST_20260902_v1",
+  "status": "LOCKED_DURING_ACQUISITION_BEFORE_AGGREGATE_MODEL_EVALUATION",
+  "parent_prespec_commit": "520b2c6c099661c8e780828f50718d94d8c7899b",
+  "selection_basis": "genuinely later public KDreams historical race pages; whole-meeting/day blocks selected for temporal separation and source accessibility, never by observed S0 performance",
+  "fixed_model": {"name":"S0_SCORE_ONLY_SOFTMAX","feature":"competition_score","beta":0.22260435254784533,"refit":false,"feature_change":false},
+  "blocks": [
+    {"venue":"久留米","venue_code":"83","meeting_key":"8320260622","race_dates":["2026-06-22","2026-06-23","2026-06-24"],"selection":"ALL_RACES_IN_RACE_NUMBER_ORDER","expected_races":36},
+    {"venue":"函館","venue_code":"11","meeting_key":"1120260620","race_dates":["2026-06-22"],"selection":"ALL_FINAL_DAY_RACES_IN_RACE_NUMBER_ORDER","expected_races":12}
+  ],
+  "continuation_rule": "After these 48 attempted races, append the next whole accessible later-period date block before aggregate model evaluation until at least 50 successful races are obtained; do not inspect S0 aggregate performance to choose the continuation block.",
+  "parser_rules": {"PRE_RESULT_SEPARATE":true,"RESULT_TARGET_ONLY":true,"PAYOUT_EXCLUDED":true,"AMBIGUOUS_FAIL_CLOSED":true,"MANUAL_REPAIR":false},
+  "hard_boundaries":["NO_RESULT_AS_FEATURE","NO_PAYOUT_AS_FEATURE","NO_POSTHOC_REFIT","NO_OUTCOME_CONDITIONED_INCLUSION","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"]
+}
