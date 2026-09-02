@@ -1,0 +1,29 @@
+{
+  "record":"KEIRIN_S0_TEMPERATURE_CALIBRATION_EVALSET_SELECTION_LOCK_20260902_v1",
+  "status":"LOCKED_BEFORE_EVALUATION_TARGET_EXTRACTION",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "temperature_prespec_commit":"7c9056be88e7b4ff166470ff192b45b024f8cb25",
+    "fitset_receipt_commit":"4226fe9172a22dae4432ff798418b43f3107fe74",
+    "temperature_lock_commit":"86cd0babeafe58434eaa1a11eaff3ba3db1251ab"
+  },
+  "frozen_temperature":0.8898924490271425,
+  "selection_basis":"KDreams 2026-06-29 public racecard daily listing order; whole meeting/day blocks; no target-conditioned inclusion",
+  "race_date":"2026-06-29",
+  "blocks_in_locked_order":[
+    {"order":1,"venue":"取手","meeting":"水戸黄門賞","day":"3日目","attempt_all_races":12,"racecard_id":"23202606270300"},
+    {"order":2,"venue":"伊東","meeting":"リンカイ！　伊東泉カップ","day":"2日目","attempt_all_races":7,"racecard_id":"37202606280200"},
+    {"order":3,"venue":"岐阜","meeting":"チャリロト杯","day":"最終日","attempt_all_races":7,"racecard_id":"43202606270300"},
+    {"order":4,"venue":"玉野","meeting":"前検日コメならウィンチケット杯","day":"2日目","attempt_all_races":7,"racecard_id":"61202606280200"},
+    {"order":5,"venue":"高知","day":"初日","attempt_all_races":12,"racecard_id":"74202606290100"},
+    {"order":6,"venue":"武雄","meeting":"オッズパーク杯","day":"初日","attempt_all_races":12,"racecard_id":"84202606290100"},
+    {"order":7,"venue":"佐世保","meeting":"第６回ヒラマサカップ","day":"2日目","attempt_all_races":7,"racecard_id":"85202606280200"}
+  ],
+  "total_attempted_if_all_locked_blocks_processed":64,
+  "stop_rule":"Process locked blocks in order. Do not stop mid-block. Close at first block boundary where successful_races >= 50; later locked blocks remain unopened if threshold already met.",
+  "evaluation_use":"EVALUATE_FROZEN_T_ONLY",
+  "fit_eval_overlap":false,
+  "fit_date":"2026-06-28",
+  "target_extraction_started_before_lock":false,
+  "hard_boundaries":["T_FROZEN_NO_REFIT","NO_FIT_EVAL_OVERLAP","NO_FEATURE_ADDITION","NO_PL_CHANGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","FAIL_CLOSED_ON_AMBIGUITY","NO_MODEL_PROMOTION"]
+}
