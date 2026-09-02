@@ -11,6 +11,7 @@ on:
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-cap-thread-pinning-remediation-v1
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-status-fsuid-remediation-v1
       - agent/r1-stage1-phase-c-v19-7-36-v7r7-status-fdpath-remediation-v1
+      - agent/r1-stage1-phase-c-v19-7-36-v7r7-status-terminal-remediation-v1
 
 permissions:
   contents: read
@@ -54,6 +55,8 @@ jobs:
           grep -F 'v7r7SetFSUIDExact(ruid)' "${status_addon}"
           grep -F 'v7r7SetFSUIDExact(0)' "${status_addon}"
           grep -F 'v7r7SecureStatusDir = "/run/multiverse-v36-v7r7"' "${status_addon}"
+          grep -F 'v7r7FailedClosedLine = "gate_state=FAILED_CLOSED"' "${status_addon}"
+          grep -F 'if werr := v7r7WriteSecure(secure, v7r7FailedClosedLine); werr != nil' "${status_addon}"
           grep -F 'ui_mirror=NONAUTHORITATIVE_STATIC' "${status_addon}"
           grep -F 'syscall.Openat' "${status_addon}"
           grep -F 'syscall.Renameat' "${status_addon}"
@@ -61,6 +64,7 @@ jobs:
           if grep -F '/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r7-session-status.txt' "${status_addon}"; then exit 92; fi
           if grep -F 'DAC_OVERRIDE' "${status_addon}"; then exit 92; fi
           printf 'PRELAB_STATUS_FDPATH_SOURCE_GATE_PASS=true\n'
+          printf 'PRELAB_STATUS_TERMINAL_FAIL_CLOSED_SOURCE_GATE_PASS=true\n'
 
           python3 governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_EVIDENCE_SCHEMA_ADAPTER_20260901.py --selftest governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R6_EXTERNAL_SESSION_GATE_20260901.go
           python3 governance/MULTIVERSE_PRE_LAB_MECHANICAL_GATE_V1_20260901.py
@@ -145,8 +149,10 @@ jobs:
             grep -Fx "PHASE_C_V19_7_36_V7R7_ARMED" "${status}"
             grep -Fx "timer_state=STARTING_TRUSTED_GITHUB_SERVER_TIME" "${status}"
             grep -Fx "runtime=OFF" "${status}"
+            grep -Fx "gate_state=FAILED_CLOSED" "${status}"
           '
           printf 'PRELAB_STATUS_ROOT_AUTHORITY_PASS=true\n'
+          printf 'PRELAB_STATUS_TERMINAL_FAIL_CLOSED_PASS=true\n'
           printf 'PRELAB_UI_RETAINED_FD_ATOMIC_REPLACE_PASS=true\n'
           printf 'PRELAB_UI_DIRECTORY_FD_BINDING_PASS=true\n'
           cleanup_status_volumes
