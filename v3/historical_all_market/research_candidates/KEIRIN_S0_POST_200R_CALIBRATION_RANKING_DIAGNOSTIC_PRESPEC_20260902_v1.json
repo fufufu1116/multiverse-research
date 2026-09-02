@@ -1,0 +1,24 @@
+{
+  "record":"KEIRIN_S0_POST_200R_CALIBRATION_RANKING_DIAGNOSTIC_PRESPEC_20260902_v1",
+  "status":"PRESPECIFIED_AFTER_REPLICATION_PASS_BEFORE_CALIBRATION_BIN_OUTCOME_AGGREGATION",
+  "parent_report_commit":"1c0e1c2796b204dfbaa00522f2ce1fe77fd1ec48",
+  "scope":"DESCRIPTIVE_FIXED_MODEL_DIAGNOSTIC_NO_TUNING",
+  "locked_model":{"name":"S0_SCORE_ONLY_SOFTMAX","feature":"competition_score","beta":0.22260435254784533,"refit":false,"recalibration":false},
+  "population":"ALL_55_SUCCESSFUL_RACES_FROM_POST_200R_NEW_PERIOD_CONFIRMATION_REPORT",
+  "calibration":{
+    "unit":"car_level_binary_winner_event",
+    "fixed_probability_bins":[[0.0,0.10],[0.10,0.15],[0.15,0.20],[0.20,0.25],[0.25,0.30],[0.30,0.40],[0.40,1.0000000001]],
+    "interval_rule":"left_closed_right_open_except_last_effectively_inclusive",
+    "report_per_bin":["n","mean_predicted_probability","empirical_win_rate","absolute_gap"],
+    "summary":["weighted_ECE_absolute_gap","max_eligible_bin_absolute_gap"],
+    "minimum_bin_n_for_interpretive_flag":20,
+    "empty_or_small_bins":"REPORT_BUT_DO_NOT_MERGE_POSTHOC"
+  },
+  "ranking":{
+    "metrics":["top1_winner_hit_rate","top2_winner_coverage","mean_winner_probability_rank","mean_reciprocal_winner_rank"],
+    "tie_rule":"average_rank_for_exact_probability_ties"
+  },
+  "temporal_block_stability":{"blocks":"same fixed acquisition blocks already reported; no redefinition or favorable merging"},
+  "decision_boundary":"DIAGNOSTIC_ONLY_NO_PARAMETER_CHANGE_NO_MODEL_PROMOTION",
+  "hard_boundaries":["NO_RECALIBRATION_ON_SAME_55R","NO_REFIT","NO_FEATURE_CHANGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"]
+}
