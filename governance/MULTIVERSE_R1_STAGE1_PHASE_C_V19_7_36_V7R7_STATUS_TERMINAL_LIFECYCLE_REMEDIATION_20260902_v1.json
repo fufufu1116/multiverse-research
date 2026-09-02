@@ -1,0 +1,63 @@
+{
+  "version": "V19.7.36-v7r7-status-terminal-lifecycle-remediation-v1",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "source_incident_comment": 5497183368,
+  "source_prior_fdpath_lab_fix_required_comment": 5502519230,
+  "source_terminal_sync_freeze_comment": 5503043242,
+  "source_terminal_sync_lab_request_comment": 5503046965,
+  "source_terminal_sync_lab_fix_required_comment": 5503062280,
+  "source_core_routing_comment": 5503116870,
+  "predecessor_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-status-terminal-remediation-v1",
+  "predecessor_head": "9b17dc32b755e3100ba40a7752dba6ad7d514547",
+  "lab_fix_required": {
+    "marker_write_or_sync_failure_plus_unlink_failure_can_leave_stale_authoritative_starting_evidence": true,
+    "mirror_fatal_bypasses_mutex_terminal_and_current_fd_lifecycle": true
+  },
+  "remediation": {
+    "authoritative_status_path": "/run/multiverse-v36-v7r7/session-status.txt",
+    "prewaiting_pending_path": "/run/multiverse-v36-v7r7/session-status.pending",
+    "pending_authority_semantics": "NONAUTHORITATIVE_FAIL_CLOSED",
+    "authoritative_path_absent_until_successful_waiting_promotion": true,
+    "pending_baseline": "authority_state=PENDING_FAIL_CLOSED",
+    "terminal_failure_marker": "gate_state=FAILED_CLOSED",
+    "terminal_correctness_depends_on_unlink": false,
+    "failed_terminal_marker_write_keeps_binding_for_possible_concurrent_retry": true,
+    "mirror_fatal_uses_shared_mutex_terminalization": true,
+    "all_secure_stream_writes_use_bound_mutex_path_after_binding": true,
+    "successful_waiting_promotion": "root-only verified pending inode hard-linked with no-replace semantics to authoritative status path after challenge, WAITING, and stdout restore",
+    "pending_cleanup_after_success_is_not_authority_critical": true,
+    "ui_mirror_remains_nonauthoritative_static": true,
+    "ui_mirror_contains_challenge_or_device_code": false,
+    "retained_fd_atomic_replacement_remains_unchanged": true,
+    "directory_fd_path_binding_remains_unchanged": true,
+    "expand_capability_ceiling": false,
+    "add_dac_override": false,
+    "add_dac_read_search": false,
+    "add_fowner": false,
+    "trusted_server_time_and_challenge_remain_downstream": true
+  },
+  "mechanical_requirements": [
+    "exact image build succeeds on exact final head",
+    "status addon selftest proves pending-path authority separation",
+    "status addon selftest proves mirror-fatal versus generated-gate terminalization concurrency is idempotent",
+    "status addon selftest injects closed-FD terminal-marker failure and proves pending fail-closed baseline survives while authoritative path is absent",
+    "source gate rejects terminal correctness dependency on removal of authoritative status path",
+    "network-none live-class run reaches ARM_START and GITHUB_SERVER_TIME denial",
+    "network-none live-class run leaves root-owned 0400 pending status with exactly one FAILED_CLOSED marker and no authoritative session-status.txt",
+    "retained-FD and directory-FD adversarial tests remain passing",
+    "SECURITY_AUTHORITY_GRANTED=false",
+    "RUNTIME=OFF"
+  ],
+  "authority_boundary": {
+    "all_predecessor_arm_attempts_reusable": false,
+    "all_predecessor_owner_approvals_reusable": false,
+    "codespace_create_or_arm_authorized_now": false,
+    "oauth_authorized_now": false,
+    "step3_authorized_now": false,
+    "step4_or_apply_authorized_now": false,
+    "production_mutation_authorized_now": false,
+    "runtime_activation_authorized_now": false,
+    "new_live_attempt_requires_new_freeze_lab_auditor_owner_gate": true
+  }
+}
