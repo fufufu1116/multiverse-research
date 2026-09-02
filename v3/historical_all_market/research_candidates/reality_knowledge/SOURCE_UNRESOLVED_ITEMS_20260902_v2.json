@@ -1,0 +1,137 @@
+{
+  "record": "SOURCE_UNRESOLVED_ITEMS_20260902_v2",
+  "status": "OPEN_REALITY_KNOWLEDGE_GAPS_FAIL_CLOSED",
+  "retrieval_date_jst": "2026-09-02",
+  "supersedes_for_status_tracking": "SOURCE_UNRESOLVED_ITEMS_20260902_v1",
+  "deep_audit_delta": "OFFICIAL_SOURCE_REGISTRY_DEEP_AUDIT_DELTA_20260902_v1",
+  "rule": "No unresolved item may be converted to ABSENT, zero, objective feature, current rule, or causal mechanism by inference.",
+  "closed_since_v1": [
+    {
+      "item_id": "CURRENT_KANTO_DUTY_WORDING",
+      "resolution": "CLOSED_CURRENT_PRIMARY_JKA_JUDGING_BODY",
+      "evidence": "Current JKA judging manual, last amended 2025-11-18, quotes competition rule Art.11 and classifies violations as 敢闘義務違反行為."
+    },
+    {
+      "item_id": "CURRENT_LAP_MISCOUNT_HANDLING",
+      "resolution": "CLOSED_CURRENT_PRIMARY_JKA_JUDGING_BODY",
+      "evidence": "Current JKA judging manual quotes competition rule Art.70(4), gives disqualification criterion/examples, and Art.73 race-non-establishment conditions for erroneous/missing lap notification."
+    },
+    {
+      "item_id": "REGISTERED_BICYCLE_DETAIL_BODY",
+      "resolution": "CLOSED_CURRENT_KEIRINJP_BODY_RETRIEVED",
+      "evidence": "Direct registered bicycle list body retrieved; page states 2025-11-07 and separates steel, carbon, and 250-only carbon frame lists."
+    },
+    {
+      "item_id": "CERTIFIED_PARTS_DETAIL_BODY",
+      "resolution": "CLOSED_CURRENT_KEIRINJP_BODY_RETRIEVED",
+      "evidence": "Direct certified-parts manufacturer body retrieved with component categories and manufacturer rows."
+    }
+  ],
+  "items": [
+    {
+      "item_id": "GENERIC_EXEMPTION_TAXONOMY",
+      "topic": "免責",
+      "status": "PARTIALLY_RESOLVED_SECTION_SPECIFIC",
+      "what_is_known": "Current JKA judging criteria contain section-specific 免責事由 for several infringements.",
+      "next_source_action": "Map every current infringement section before building any global exemption ontology.",
+      "blocking": "TACTICAL_JUDGEMENT_ONTOLOGY"
+    },
+    {
+      "item_id": "CURRENT_NATIONWIDE_BANK_GEOMETRY_REGISTRY",
+      "topic": "straight length / maximum cant / detailed curve geometry / enclosure",
+      "status": "UNRESOLVED_CURRENT_MACHINE_READABLE_COVERAGE",
+      "what_is_known": "Current KEIRIN.JP bank-record table gives circumference; official/historical venue materials demonstrate that straight length and maximum cant are real documented attributes.",
+      "next_source_action": "Build venue-by-venue current official source map and version physical changes by effective date before feature use.",
+      "blocking": "BANK_GEOMETRY_FEATURE"
+    },
+    {
+      "item_id": "COMPETITION_SCORE_FORMULA_MAPPING",
+      "topic": "public racecard competition_score vs regulatory scoring",
+      "status": "UNRESOLVED_ONE_TO_ONE_GOVERNANCE_MAPPING",
+      "what_is_known": "Current KEIRIN.JP racecard guide says displayed competition score is based on recent four months. JKA business rules define per-race competition points, average competition score and evaluation score, but an explicit current document mapping the public displayed rolling value to that regulatory calculation/update contract was not isolated.",
+      "next_source_action": "Locate explicit public-score calculation/update documentation or keep provenance as public recent-four-month strength score only.",
+      "blocking": "PROVENANCE_QUALITY_NOT_CURRENT_S0_EXECUTION"
+    },
+    {
+      "item_id": "HOME_BANK_HISTORICAL_PIT_SOURCE",
+      "topic": "home bank / home velodrome",
+      "status": "SEARCHABLE_CURRENT_ATTRIBUTE_BUT_HISTORICAL_PIT_UNRESOLVED",
+      "what_is_known": "KEIRIN.JP rider search exposes current home-bank/home-velodrome information.",
+      "next_source_action": "Audit historical snapshots/change semantics and prevent present-day backfill into old races.",
+      "blocking": "HOME_BANK_FEATURE"
+    },
+    {
+      "item_id": "OBJECTIVE_LINE_SOURCE",
+      "topic": "line structure / leader-follower / line position",
+      "status": "UNRESOLVED_OBJECTIVE_PRE_SOURCE",
+      "what_is_known": "Human narabi forecasts are not objective official physical line truth.",
+      "next_source_action": "Search JKA/organizer timing-safe declaration or objective source; otherwise keep blocked and use human forecasts only as external benchmark candidates.",
+      "blocking": "OBJECTIVE_LINE_FEATURE"
+    },
+    {
+      "item_id": "OFFICIAL_RACE_WEATHER_PUBLISH_TIMESTAMP",
+      "topic": "JKA-measured wind direction / wind speed / temperature",
+      "status": "REALITY_SUPPORTED_PUBLIC_PRE_TIMING_UNRESOLVED",
+      "what_is_known": "Current JKA judging manual formally assigns a measurement official to wind direction, wind speed and temperature. Historical/current KEIRIN.JP content also uses weather/wind in race analysis/reporting.",
+      "next_source_action": "Identify whether official per-race measurements are published before start, with exact timestamps and archive/version semantics.",
+      "blocking": "WEATHER_FEATURE"
+    },
+    {
+      "item_id": "JMA_POINT_IN_TIME_PUBLICATION_CONTRACT",
+      "topic": "external weather observation publication lag/version",
+      "status": "UNRESOLVED_FOR_MODEL_USE",
+      "what_is_known": "JMA provides objective observations and warns historical values can later be corrected.",
+      "next_source_action": "Freeze product, station mapping, observation timestamp, publication/access timestamp and correction policy.",
+      "blocking": "WEATHER_FEATURE"
+    },
+    {
+      "item_id": "GEAR_BICYCLE_HISTORICAL_COMPLETENESS",
+      "topic": "gear ratio / rider-level bicycle identity",
+      "status": "UNRESOLVED_HISTORICAL_COVERAGE_AND_CHANGE_TIMESTAMP",
+      "what_is_known": "Program operations formally record gear/bicycle state; registered frame and certified component lists are now verified current bodies.",
+      "next_source_action": "Audit archived racecard coverage, rider-level equipment identity and timing of pre-race changes.",
+      "blocking": "GEAR_EQUIPMENT_FEATURE"
+    },
+    {
+      "item_id": "CERTIFIED_PARTS_EFFECTIVE_DATE_CONSISTENCY",
+      "topic": "certified-parts list revision date",
+      "status": "MINOR_SOURCE_VERSION_CHECK_REQUIRED",
+      "what_is_known": "Direct body retrieved during this audit states 2026-05-11 current; a separate search-index snapshot surfaced a later date for the same page. No claim relies on the later indexed date.",
+      "next_source_action": "Recheck direct official body at experiment time and record body date/hash if equipment categories become operational inputs.",
+      "blocking": "NONE_FOR_REALITY_EXISTENCE; EQUIPMENT_VERSIONING_ONLY"
+    },
+    {
+      "item_id": "DMM_SUPPORT_31167_BODY",
+      "topic": "DMM support seed",
+      "status": "UNVERIFIED_BODY_NOT_OBTAINED",
+      "what_is_known": "Prior retrieval obtained no substantive article body.",
+      "next_source_action": "Use alternative legal/public retrieval only if needed; primary official sources already cover core rule facts.",
+      "blocking": "NONE_WHILE_PRIMARY_SOURCES_EXIST"
+    },
+    {
+      "item_id": "BET_TYPE_CONSUMER_LABEL_ENUMERATION",
+      "topic": "consumer bet labels vs legal taxonomy",
+      "status": "PARTIALLY_RESOLVED_CROSSWALK_PENDING",
+      "what_is_known": "Current enforcement rule Art.19/20 defines legal voting categories/subtypes and winning combinations.",
+      "next_source_action": "Create legal-to-current-KEIRIN.JP consumer label crosswalk rather than infer equivalence from historical materials.",
+      "blocking": "MARKET_SETTLEMENT_DOCUMENTATION_ONLY"
+    },
+    {
+      "item_id": "TIE_SETTLEMENT_ALL_MARKETS",
+      "topic": "dead-heat settlement by every currently sold market",
+      "status": "PARTIALLY_RESOLVED_LEGAL_WINNER_RULES_PAYOUT_CROSSWALK_PENDING",
+      "what_is_known": "Current enforcement rule Art.21 includes explicit tie handling for wide and three-winner systems; complete payout allocation behavior across every consumer market was not extracted.",
+      "next_source_action": "Trace implementing settlement rules market by market before settlement-engine use.",
+      "blocking": "MARKET_SETTLEMENT_ENGINE_NOT_OUTCOME_MODEL"
+    },
+    {
+      "item_id": "DIGITAL_TWIN_EXACT_CURRENT_SCHEMA",
+      "topic": "single authoritative current Digital Twin object/schema",
+      "status": "REALITY_UNKNOWN",
+      "what_is_known": "Repo has S0 contracts, probability engines and research/synthetic lanes, but no single artifact was assumed to be promoted authoritative Twin.",
+      "next_source_action": "When a Twin schema is designated canonical, repeat field-by-field Reality mapping.",
+      "blocking": "TWIN_GAP_PRECISION_ONLY"
+    }
+  ],
+  "hard_boundaries": ["FAIL_CLOSED_ON_UNRESOLVED", "NO_UNKNOWN_TO_ZERO", "NO_UNVERIFIED_SOURCE_TO_REALITY_TRUTH", "NO_FEATURE_AUTO_ADMISSION"]
+}
