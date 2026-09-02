@@ -1,0 +1,21 @@
+{
+  "record":"KEIRIN_SELECTED_BANK_PHYSICS_PROSPECTIVE_REGISTRY_20260903_v1",
+  "status":"SIX_VENUE_333M_400M_PROSPECTIVE_DESIGN_REGISTRY_PREOUTCOME_NO_AFFINITY_RESULT",
+  "scope":"RESEARCH_SOURCE_AND_ACQUISITION_DESIGN_ONLY_NO_FEATURE_OR_RESULT_AUTHORITY",
+  "freeze_timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "population_bindings":["../KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v2.json","../KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260904_v1.json","../KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260910_v1.json"],
+  "venues":[
+    {"venue":"富山","block_start":"2026-09-03","circumference_m":333,"source":"https://www.toyama-keirin.com/guide/bank","source_class":"CURRENT_ORGANIZER","geometry":{"estimated_straight":"約43m","max_cant":"33°41'"},"effective_note":"Organizer states full bank renovation completed 2025-05-28; current guide is preferred for prospective 2026 use.","prospective_geometry_status":"CURRENT_SOURCE_PASS"},
+    {"venue":"防府","block_start":"2026-09-04","circumference_m":333,"source":"https://www.hofukeirin.jp/bank_introduction/","source_class":"CURRENT_ORGANIZER","geometry":{"estimated_straight_m":42.5,"max_cant":"34°41’09”"},"prospective_geometry_status":"CURRENT_SOURCE_PASS"},
+    {"venue":"奈良","block_start":"2026-09-10","circumference_m":333.33,"source":"https://www.narakeirin.jp/record.html","source_class":"CURRENT_ORGANIZER","geometry":{"estimated_straight_m":38.0,"center_cant":"33°25′47″","home_width_m":10.8,"back_width_m":7.8,"center_width_m":7.8},"prospective_geometry_status":"CURRENT_SOURCE_PASS"},
+    {"venue":"青森","block_start":"2026-09-03","circumference_m":400,"source":"https://aomorikeirin.com/access/","source_class":"CURRENT_ORGANIZER_FOR_CIRCUMFERENCE","geometry_current_text":"current organizer identifies a 400m bank and long straight","historical_numeric_snapshot":"2023 post-work official Bank Guide: estimated straight 58.9m, center cant 32°15′7″","prospective_geometry_status":"CIRCUMFERENCE_PASS_DETAILED_NUMERIC_CONTINUITY_TO_2026_NOT_PROVEN"},
+    {"venue":"武雄","block_start":"2026-09-03","circumference_m":400,"source":"https://www.keirin.city.takeo.lg.jp/guide/","source_class":"CURRENT_ORGANIZER","geometry":{"estimated_straight_m":64.4,"max_cant":"32°00′19″","straight_cant":"2°17′26″","home_width_m":9.692,"back_width_m":8.693,"center_width_m":7.378},"prospective_geometry_status":"CURRENT_SOURCE_PASS"},
+    {"venue":"豊橋","block_start":"2026-09-04","circumference_m":400,"source":"https://www.toyohashikeirin.com/dataroom","source_class":"CURRENT_ORGANIZER","geometry_current_text":"Organizer states track was converted from 333m to the current 400m bank in Showa 42; McConnell curve noted.","prospective_geometry_status":"CIRCUMFERENCE_PASS_DETAILED_NUMERIC_NOT_CAPTURED_IN_CURRENT_TEXT"}
+  ],
+  "design_balance":{"333m_distinct_venues":3,"400m_distinct_venues":3,"333m_venues":["富山","防府","奈良"],"400m_venues":["青森","武雄","豊橋"],"all_selected_before_first_2026_09_03_outcome":true,"interpretation":"This materially reduces the original single-333-venue confounding risk, but does not itself establish Rider×Circumference affinity. Rider support, clean point-in-time PRE, identity gates, fit/eval separation, and later outcomes under a separate prespec are still required."},
+  "feature_policy":{"circumference":"ELIGIBLE_AS_PROSPECTIVE_SOURCE_ATTRIBUTE_AFTER_RACE_SOURCE_BINDING","detailed_geometry":"PER_VENUE_ONLY_WHERE_CURRENT_EFFECTIVE_SOURCE_PASS; AOMORI_DETAILED_VALUES_BLOCKED","venue_identity":"DIAGNOSTIC_SUPPORT_ONLY_NOT_HIGH_CARDINALITY_RESCUE","current_rider_preferred_circumference":"NOT_OBSERVED_AFFINITY_TRUTH_AND_NOT_HISTORICAL_BACKFILL"},
+  "bank_affinity_result":"EVIDENCE_PENDING_NOT_ESTABLISHED",
+  "result_access_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_FROM_THIS_REGISTRY","NO_CAUSAL_CIRCUMFERENCE_CLAIM","NO_POST_RESULT_VENUE_SELECTION","NO_VENUE_DUMMY_RESCUE","NO_CURRENT_RIDER_PROFILE_BACKFILL","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
