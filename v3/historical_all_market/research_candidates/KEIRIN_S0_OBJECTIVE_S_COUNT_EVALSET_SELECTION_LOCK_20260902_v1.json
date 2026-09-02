@@ -1,0 +1,59 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_S_COUNT_EVALSET_SELECTION_LOCK_20260902_v1",
+  "status": "LOCKED_BEFORE_EVALUATION_TARGET_EXTRACTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "7f10d0f7c9cd13470e51c504b20cc0ba91fdd615",
+    "fitset_selection_lock_commit": "354ade361aae7c2393ec9af15bc7b7152662695c",
+    "fitset_receipt_commit": "45cfc7d2934a9a581789c171129ad00e9bc2d34d",
+    "gamma_lock_commit": "11443d7caff7839e9c697179f353b04f4fc00e73",
+    "beta": 0.22260435254784533,
+    "gamma": 0.02629565071288781
+  },
+  "selection_basis": "KDreams 2026-07-19 then 2026-07-20 public racecard daily listing order; whole eligible venue/day blocks; no evaluation RESULT-target-conditioned inclusion",
+  "daily_listing_urls": [
+    "https://keirin.kdreams.jp/racecard/2026/07/19/",
+    "https://keirin.kdreams.jp/racecard/2026/07/20/"
+  ],
+  "eligibility_rule": "STRICTLY_AFTER_2026-07-18_AND_EXCLUDE_ALL_S_COUNT_FIT_MEETING_IDENTITIES",
+  "excluded_fit_meeting_identities": ["1320260716", "2120260717", "2620260716", "3820260718", "4320260718", "4720260716"],
+  "excluded_overlapping_blocks": [
+    {"race_date": "2026-07-19", "venue": "弥彦", "reason": "FIT_MEETING_IDENTITY_OVERLAP"},
+    {"race_date": "2026-07-19", "venue": "静岡", "reason": "FIT_MEETING_IDENTITY_OVERLAP"},
+    {"race_date": "2026-07-19", "venue": "岐阜", "reason": "FIT_MEETING_IDENTITY_OVERLAP"},
+    {"race_date": "2026-07-20", "venue": "静岡", "reason": "FIT_MEETING_IDENTITY_OVERLAP"},
+    {"race_date": "2026-07-20", "venue": "岐阜", "reason": "FIT_MEETING_IDENTITY_OVERLAP"}
+  ],
+  "blocks_in_locked_order": [
+    {"order": 1, "race_date": "2026-07-19", "venue": "京王閣", "attempt_all_races": 9},
+    {"order": 2, "race_date": "2026-07-19", "venue": "松戸", "attempt_all_races": 7},
+    {"order": 3, "race_date": "2026-07-19", "venue": "豊橋", "attempt_all_races": 9},
+    {"order": 4, "race_date": "2026-07-19", "venue": "高知", "attempt_all_races": 12},
+    {"order": 5, "race_date": "2026-07-20", "venue": "京王閣", "attempt_all_races": 9},
+    {"order": 6, "race_date": "2026-07-20", "venue": "松戸", "attempt_all_races": 7},
+    {"order": 7, "race_date": "2026-07-20", "venue": "豊橋", "attempt_all_races": 9},
+    {"order": 8, "race_date": "2026-07-20", "venue": "岸和田", "attempt_all_races": 12},
+    {"order": 9, "race_date": "2026-07-20", "venue": "高知", "attempt_all_races": 12}
+  ],
+  "total_attempted_if_all_locked_blocks_processed": 86,
+  "stop_rule": "Process locked blocks in order. Never stop mid-block. Close at first block boundary where successful_races >= 50; later locked blocks remain unopened.",
+  "evaluation_use": "EVALUATE_FROZEN_GAMMA_ONLY",
+  "minimum_successful_races": 50,
+  "target_extraction_started_before_lock": false,
+  "eligible_features": ["competition_score", "S"],
+  "frozen_parameters": {"beta": 0.22260435254784533, "gamma": 0.02629565071288781},
+  "bootstrap": {"unit": "race", "replicates": 20000, "seed": 20260902, "interval": "percentile_95pct"},
+  "hard_boundaries": [
+    "NO_GAMMA_REFIT",
+    "NO_CHANGE_TO_BASELINE_BETA",
+    "NO_GAMMA2_GAMMA3_SPLIT",
+    "NO_S_TRANSFORMATION_CHANGE",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "FAIL_CLOSED_ON_COMPETITION_SCORE_0_00_OR_BAD_S_OR_SCRATCH_OR_CANCELLATION_OR_AMBIGUITY",
+    "NO_SAME_HOLDOUT_RESCUE_TUNING",
+    "NO_MODEL_PROMOTION"
+  ]
+}
