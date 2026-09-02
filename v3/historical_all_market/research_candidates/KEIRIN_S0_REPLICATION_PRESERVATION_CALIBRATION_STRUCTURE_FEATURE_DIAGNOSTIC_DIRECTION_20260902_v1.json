@@ -1,0 +1,135 @@
+{
+  "record": "KEIRIN_S0_REPLICATION_PRESERVATION_CALIBRATION_STRUCTURE_FEATURE_DIAGNOSTIC_DIRECTION_20260902_v1",
+  "status": "OWNER_DIRECTION_RECORDED_AS_RESEARCH_CANDIDATE_NO_CURRENT_100R_MUTATION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "fresh_read_parent_head": "ca23d646bed4a439a026946120cd232a45e4959e",
+  "active_100r_prespec": "KEIRIN_S0_POST_200R_SECOND_FUTURE_PERIOD_100R_GATE_PRESPEC_20260902_v1",
+  "priority_0_preserve": {
+    "goal": "complete fixed S0 new-period 100R replication before any rescue or challenger fitting",
+    "locked": {
+      "model": "S0_SCORE_ONLY_SOFTMAX",
+      "feature": "competition_score",
+      "beta": 0.22260435254784533,
+      "additional_dates": "STRICTLY_AFTER_2026-06-24",
+      "minimum_additional_successful_races": 45
+    },
+    "forbidden_during_100r": [
+      "BETA_CHANGE",
+      "FEATURE_ADDITION",
+      "CALIBRATOR_FIT",
+      "VENUE_DATE_CLASS_ADJUSTMENT",
+      "PL_STRUCTURE_CHANGE",
+      "BAD_SLICE_EXCLUSION",
+      "POST_RESULT_THRESHOLD_CHANGE"
+    ]
+  },
+  "current_interpretation_ceiling": "competition_score alone may contain weak but temporally reproducible sporting signal; no claim of real edge, ROI, profitability, sufficient calibration, correct PL structure, or model correctness",
+  "post_100r_priority_1_stagewise_diagnostic": {
+    "before_feature_tuning": true,
+    "losses": {
+      "L1": "-log P(actual winner)",
+      "L2": "-log P(actual 2nd | actual winner removed)",
+      "L3": "-log P(actual 3rd | actual 1st and 2nd removed)"
+    },
+    "diagnostics": [
+      "CONDITIONAL_CALIBRATION",
+      "PAIR_ORDER_RESIDUALS",
+      "LINE_MEMBER_CONDITIONAL_PLACEMENT",
+      "RACE_LEVEL_CLUSTER_UNCERTAINTY"
+    ],
+    "interpretation": {
+      "L1_GOOD_L2_L3_BAD": "winner signal may survive while PL conditional placement is misspecified",
+      "ALL_IMPROVE": "S0 plus PL baseline may be stronger than expected",
+      "L1_BREAKS": "reassess temporal stability before adding features"
+    }
+  },
+  "calibration_research_after_100r": {
+    "do_not_fit_on": ["55R_CONFIRMATION", "FIXED_100R_REPLICATION"],
+    "require_separate_fit_and_evaluation_sets": true,
+    "candidate_order": [
+      "TEMPERATURE_SCALING",
+      "LOW_DOF_BETA_CALIBRATION",
+      "ISOTONIC_REGRESSION"
+    ],
+    "metrics": [
+      "WINNER_LOG_LOSS",
+      "WINNER_BRIER",
+      "CALIBRATION_INTERCEPT",
+      "CALIBRATION_SLOPE",
+      "RELIABILITY_BINS",
+      "ECE_WITH_FROZEN_BIN_CONTRACT",
+      "BRIER_DECOMPOSITION",
+      "STAGEWISE_L1_L2_L3",
+      "RACE_LEVEL_UNCERTAINTY_INTERVAL"
+    ],
+    "uncertainty": "RACE_LEVEL_CLUSTER_BOOTSTRAP_NOT_RIDER_ROW_BOOTSTRAP"
+  },
+  "feature_candidate_families": {
+    "STRUCTURAL_TACTICAL": ["line_composition", "number_of_lines", "line_size", "line_role", "leader_follower_relation", "tactical_role", "style", "nige", "makuri", "sashi", "mark"],
+    "BANK_COURSE": ["track_length", "straight_length", "banking_curve_geometry", "other_fixed_bank_characteristics", "BANK_X_STYLE", "BANK_X_LINE_ROLE"],
+    "WEATHER": ["point_in_time_wind_speed", "point_in_time_wind_direction", "point_in_time_temperature", "point_in_time_rain_or_weather_regime"],
+    "RECENT_FORM": ["prior_only_recent_results", "prior_only_performance_trend", "rolling_pre_statistics", "competition_score_change"],
+    "FATIGUE_SCHEDULE": ["days_since_previous_race", "consecutive_race_days", "current_meeting_day", "recent_race_load", "reliable_travel_schedule_load"],
+    "GEAR": ["gear_ratio_subject_to_point_in_time_and_definition_stability_audit"],
+    "FIELD_CLASS_STAGE": ["field_size", "grade", "class", "race_stage", "event_regime"],
+    "VENUE": ["prefer_explainable_bank_weather_regime_features_before_large_venue_dummy_memorization"]
+  },
+  "external_benchmarks": {
+    "professional_forecast_marks": "BENCHMARK_NOT_OUTCOME_MODEL_FEATURE_IF_LAWFUL_STABLE_POINT_IN_TIME",
+    "market_odds": "MARKET_MODEL_SEPARATE_FROM_OUTCOME_MODEL"
+  },
+  "common_probability_object": {
+    "default_candidate": "winner_probability_to_ordered_top3_to_3rentan_3renhuku_2shatan_2shahuku_wide",
+    "retain_for_now": true,
+    "risk": "ordered_top3 or PL misspecification propagates to every market",
+    "test_before_market_specific_models": true
+  },
+  "model_architecture_order": [
+    "S0_UNTOUCHED_BASELINE",
+    "S0_CALIBRATION_ONLY_CHALLENGER",
+    "S0_UTILITY_NONLINEAR_LOW_DOF_CHALLENGER",
+    "MINIMAL_LINE_ROLE_CONDITIONAL_SOFTMAX_OR_PL_EXTENSION",
+    "SMALL_REGULARIZED_MULTINOMIAL_OR_CONDITIONAL_MODEL",
+    "HIERARCHICAL_PARTIAL_POOLING_MODEL",
+    "SMALL_FEATURE_GBDT_CHALLENGER",
+    "GNN_SEQUENCE_OR_COMPLEX_INTERACTION_MODEL"
+  ],
+  "experiment_priority_after_priority_0": [
+    "1_STAGEWISE_L1_L2_L3_PLUS_RACE_CLUSTER_UNCERTAINTY_AND_CALIBRATION",
+    "2_TEMPERATURE_CALIBRATION_ON_SEPARATE_FIT_THEN_UNSEEN_EVAL",
+    "3_MINIMAL_LINE_ROLE_CANDIDATE",
+    "4_BANK_X_STYLE_OR_LINE_INTERACTION",
+    "5_RECENT_FORM_FIELD_SIZE_WEATHER_PRESPECIFIED_SMALL_FEATURE_CHALLENGERS"
+  ],
+  "selection_bias_audit": ["grade", "class", "venue", "field_size", "race_stage", "date_range"],
+  "scratch_cancellation_contract_required": ["prediction_timestamp_after_scratch_handling", "probability_redistribution", "invalid_race_rule", "market_closure_timing"],
+  "promotion_dimensions": [
+    "PROBABILITY_QUALITY",
+    "CALIBRATION",
+    "TEMPORAL_STABILITY",
+    "REGIME_STABILITY",
+    "CONDITIONAL_TOP3_QUALITY",
+    "UNCERTAINTY",
+    "SAMPLE_SIZE",
+    "REPEATED_UNTOUCHED_REPLICATION"
+  ],
+  "promotion_rule": "criteria must be frozen before evaluation data; compare S0 and challenger against Uniform and allowed external baselines on identical periods",
+  "hard_boundaries": [
+    "NO_55R_BETA_RESCUE",
+    "NO_MODEL_CHANGE_DURING_FIXED_100R",
+    "NO_BAD_VENUE_EXCLUSION",
+    "NO_CALIBRATION_FIT_EVAL_ON_SAME_DATA",
+    "NO_POSTHOC_ECE_BIN_CHANGE",
+    "NO_VENUE_TUNING_PROLIFERATION",
+    "NO_MANY_FEATURES_AT_ONCE",
+    "NO_EARLY_GBDT_GNN_JUMP",
+    "NO_ODDS_IN_OUTCOME_MODEL",
+    "NO_SYNTHETIC_TO_REAL_EVIDENCE_PROMOTION",
+    "NO_RESULT_OR_PAYOUT_LEAKAGE",
+    "NO_OUTCOME_CONDITIONED_SAMPLE_DEFINITION",
+    "NO_REAL_EDGE_OR_ROI_INFERENCE_FROM_PROBABILITY_QUALITY",
+    "NO_REAL_MONEY_EXECUTION"
+  ],
+  "single_best_next_action": "complete the already-prespecified fixed S0 100R replication unchanged; immediately afterward run stage-wise L1/L2/L3 plus race-level cluster uncertainty plus predefined calibration diagnostics before any feature tuning",
+  "owner_action_required_now": false
+}
