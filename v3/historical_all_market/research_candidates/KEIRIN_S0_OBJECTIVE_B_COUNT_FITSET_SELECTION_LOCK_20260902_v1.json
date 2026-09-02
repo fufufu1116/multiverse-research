@@ -1,0 +1,34 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_B_COUNT_FITSET_SELECTION_LOCK_20260902_v1",
+  "status": "LOCKED_BEFORE_FIT_TARGET_EXTRACTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "ad6a933ed958334c3b480344273b08f69cfff7b8",
+    "beta": 0.22260435254784533
+  },
+  "selection_basis": "KDreams 2026-07-14 public racecard daily listing order; whole meeting/day blocks; no RESULT-target-conditioned inclusion",
+  "daily_listing_url": "https://keirin.kdreams.jp/racecard/2026/07/14/",
+  "race_date": "2026-07-14",
+  "chronology_rule": "STRICTLY_AFTER_ALL_MEETINGS_USED_BY_CLOSED_2026-07-11_TACTICAL_PROFILE_EVALUATION",
+  "previous_lineage_closed_commit": "38c42ba7c38feb0b3eb5ddbae2d06b021b21afa1",
+  "blocks_in_locked_order": [
+    {"order":1,"venue":"函館","attempt_all_races":12,"racecard_id":"11202607140100","meeting_identity":"1120260714","meeting_end":"2026-07-16"},
+    {"order":2,"venue":"宇都宮","attempt_all_races":12,"racecard_id":"24202607130200","meeting_identity":"2420260713","meeting_end":"2026-07-15"},
+    {"order":3,"venue":"京王閣","attempt_all_races":9,"racecard_id":"27202607130200","meeting_identity":"2720260713","meeting_end":"2026-07-15"},
+    {"order":4,"venue":"岸和田","attempt_all_races":11,"racecard_id":"56202607130200","meeting_identity":"5620260713","meeting_end":"2026-07-15"},
+    {"order":5,"venue":"玉野","attempt_all_races":12,"racecard_id":"61202607140100","meeting_identity":"6120260714","meeting_end":"2026-07-16"},
+    {"order":6,"venue":"広島","attempt_all_races":9,"racecard_id":"62202607130200","meeting_identity":"6220260713","meeting_end":"2026-07-15"},
+    {"order":7,"venue":"佐世保","attempt_all_races":12,"racecard_id":"85202607130200","meeting_identity":"8520260713","meeting_end":"2026-07-15"},
+    {"order":8,"venue":"熊本","attempt_all_races":7,"racecard_id":"87202607130200","meeting_identity":"8720260713","meeting_end":"2026-07-15"}
+  ],
+  "total_attempted_if_all_locked_blocks_processed": 84,
+  "stop_rule": "Process locked blocks in order. Never stop mid-block. Close at first block boundary where successful_races >= 50; later locked blocks remain unopened.",
+  "minimum_successful_races": 50,
+  "eligible_features": ["competition_score","B"],
+  "RESULT_use": "ORDERED_TOP3_TARGET_ONLY",
+  "PAYOUT_used": false,
+  "odds_used": false,
+  "human_forecast_used": false,
+  "substitutions_forbidden": true,
+  "same_fit_rescue_tuning_forbidden": true
+}
