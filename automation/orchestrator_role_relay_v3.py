@@ -122,7 +122,8 @@ class RelayStore:
             },
         }
         now = time.time()
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             existing = self.conn.execute("SELECT * FROM jobs WHERE operation_key=?", (operation_key_value,)).fetchone()
             if existing is None:
                 self.conn.execute("""INSERT INTO jobs(operation_key,task_id,role,semantic_generation,candidate_head,candidate_branch,
@@ -136,6 +137,10 @@ class RelayStore:
                 require(existing["candidate_head"] == spec["candidate_head"], "RELAY_REPLAY_HEAD_MISMATCH")
                 require(existing["candidate_branch"] == spec["candidate_branch"], "RELAY_REPLAY_BRANCH_MISMATCH")
                 require(existing["canonical_main"] == spec["canonical_main"], "RELAY_REPLAY_MAIN_MISMATCH")
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
 
     def recover_expired(self, *, at: float | None = None) -> list[str]:
         """Atomically recover only claims that are still expired when written.
