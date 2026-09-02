@@ -1,0 +1,19 @@
+{
+  "record":"KEIRIN_20260903_THREE_VENUE_1R_TRANSPORT_SENTINEL_LOCK_v1",
+  "status":"PREOUTCOME_LOCKED_TRANSPORT_SENTINELS_NO_RESULT_AUTHORITY",
+  "scope":"TRANSPORT_IDENTITY_SOURCE_CROSSCHECK_ONLY",
+  "freeze_timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "parent_population":"KEIRIN_PROSPECTIVE_PRE_ONLY_EXACT_RACE_ID_FREEZE_20260903_v1.json",
+  "selection_rule":"For each already frozen 2026-09-03 venue block, select race number 1 mechanically as the transport sentinel. Selection does not use odds, forecast, rider strength, source completeness, or outcome.",
+  "sentinels":[
+    {"venue":"富山","circumference_m":333,"race_id":"4620260903010001","race_no":1,"start_jst":"08:30","cutoff_jst":"08:25"},
+    {"venue":"青森","circumference_m":400,"race_id":"1220260903010001","race_no":1,"start_jst":"10:58","cutoff_jst":"10:53"},
+    {"venue":"武雄","circumference_m":400,"race_id":"8420260903010001","race_no":1,"start_jst":"15:55","cutoff_jst":"15:50"}
+  ],
+  "purpose":["Verify PRE field transport across 333m/400m and F2/G3/F1 contexts.","Exercise rider identity mapping inputs before any rider-specific RESULT.","Detect source/schema differences without changing the 31-race population."],
+  "not_a_predictive_subset":true,
+  "result_or_payout_access":false,
+  "membership_change":false,
+  "next":"Capture immutable strict-allowlist witness rows for all three sentinels before their cutoffs. Missing or ambiguous capture remains fail-closed; no post-race repair.",
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_ODDS_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_LINE_AS_TRUTH","NO_POST_RACE_RECONSTRUCTION","NO_MODEL_FIT","NO_MODEL_PROMOTION","NO_S0_MUTATION"]
+}
