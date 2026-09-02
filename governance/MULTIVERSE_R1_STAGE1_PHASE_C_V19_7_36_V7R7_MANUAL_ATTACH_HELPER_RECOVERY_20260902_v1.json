@@ -1,0 +1,126 @@
+{
+  "artifact": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ATTACH_HELPER_RECOVERY_20260902_v1",
+  "version": "v1",
+  "date_jst": "2026-09-02",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "pr": 74,
+  "source_reviewed_candidate": {
+    "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-prearm-github-time-preflight-remediation-v1",
+    "head": "c5d214f2e4ddb314dff35adbe076e69b6a73af97",
+    "tree": "2ec1c33b7a25a864ca8157f428fcbc8f24c06de1",
+    "corrected_core_freeze": 5504853144,
+    "independent_lab_v2_pass": 5504903416,
+    "independent_auditor_pass": 5505129504,
+    "owner_presentation": 5505142363,
+    "owner_approval_receipt": 5505206440,
+    "codespace_create_attach_consumption_receipt": 5505579133,
+    "reviewed_image_identity_sha256": "e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+    "actions_run": 33591523672,
+    "actions_job": 100126327651
+  },
+  "live_target": {
+    "codespace": "ideal-succotash-wv967q77v6xph5w54",
+    "local_head_observed": "c5d214f2e4ddb314dff35adbe076e69b6a73af97",
+    "codespaces_env_observed": true,
+    "helper_path": "/usr/local/bin/multiverse-v36-ui-ready-v7r7",
+    "helper_observed_uid": 0,
+    "helper_observed_gid": 0,
+    "helper_observed_mode": "0555",
+    "image_identity_path": "/opt/multiverse/v36/image-identity-v7r3.json",
+    "image_identity_observed_uid": 0,
+    "image_identity_observed_gid": 0,
+    "image_identity_observed_mode": "0444",
+    "image_identity_sha256_observed": "e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+    "ready_observed": "ABSENT",
+    "manual_arm_observed": false,
+    "oauth_observed": false,
+    "source_live_evidence_comments": [5505635742, 5505722446, 5505786848]
+  },
+  "problem_statement": {
+    "fact": "The exact reviewed Codespace branch, local head, helper path, Codespaces environment and image identity were present, but the reviewed READY file remained absent after web attach.",
+    "unproven": [
+      "whether postAttachCommand was never invoked",
+      "whether postAttachCommand ran but its fixed PASS or DENIED output was not retained in the searched logs",
+      "whether the GitHub preflight itself would pass if the exact reviewed helper were invoked now"
+    ],
+    "safety_state": "READY absence mechanically blocks the unchanged manual arm launcher; no manual helper reexecution or arm retry is currently authorized."
+  },
+  "bounded_recovery_candidate": {
+    "purpose": "Allow one separately reviewed manual invocation of the already-reviewed non-arm UI READY helper in the already-created exact Codespace, solely to perform the same current GitHub preflight and create READY/control on PASS.",
+    "exact_command": "/usr/local/bin/multiverse-v36-ui-ready-v7r7",
+    "arguments": [],
+    "sudo": false,
+    "manual_environment_override": false,
+    "shell_wrapper": false,
+    "helper_source_or_binary_change": false,
+    "image_change": false,
+    "manual_arm_launcher_change": false,
+    "session_gate_change": false,
+    "status_lifecycle_change": false,
+    "oauth_or_token_authority_added": false,
+    "network_behavior": "UNCHANGED_REVIEWED_DIRECT_CREDENTIALLESS_PUBLIC_GITHUB_PREFLIGHT_ONLY",
+    "timer_behavior": "NOT_STARTED",
+    "challenge_behavior": "NOT_STARTED",
+    "runtime": "OFF"
+  },
+  "mandatory_fresh_preconditions_before_any_later_manual_helper_authorization": {
+    "core_fresh_rebind_candidate_main_pr_receipts": true,
+    "target_codespace_name_exact": "ideal-succotash-wv967q77v6xph5w54",
+    "local_head_exact": "c5d214f2e4ddb314dff35adbe076e69b6a73af97",
+    "CODESPACES": "true",
+    "image_identity_sha256_exact": "e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+    "helper_uid_gid_mode_exact": "0:0:0555",
+    "ready_must_be_absent": true,
+    "arm_lock_must_be_absent": true,
+    "session_status_must_be_absent": true,
+    "runtime_must_be_off": true
+  },
+  "one_shot_semantics": {
+    "manual_helper_invocations_authorized_by_future_owner_gate_max": 1,
+    "authority_consumed_on_first_invocation_regardless_of_result": true,
+    "failure_retry_without_new_review": false,
+    "success_does_not_authorize_arm": true,
+    "success_required_evidence": [
+      "PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_PASS",
+      "image_identity_sha256=e31e18cf6a325a08f6bb3109dc45e3ed826653f2c7c76859bd85acf5283adc64",
+      "prearm_github_preflight=PASS",
+      "timer_state=NOT_STARTED",
+      "runtime=OFF",
+      "exact READY file exists and binds the same Codespace name and image identity"
+    ],
+    "failure_behavior": "FAIL_CLOSED_READY_ABSENT_NO_ARM_NO_RETRY",
+    "after_success": "RETURN_TO_CORE_FOR_FRESH_REBIND_AND_SEPARATE_MANUAL_ARM_GOVERNANCE"
+  },
+  "independent_review_required": {
+    "lab": true,
+    "auditor_after_lab_pass": true,
+    "new_owner_gate_after_auditor_pass": true,
+    "specific_attack_points": [
+      "whether manual invocation is semantically equivalent to the reviewed postAttach invocation because helper path, user, inherited environment and no-argument surface are unchanged",
+      "whether exact preconditions prevent using a stale, drifted, already-armed or different Codespace",
+      "whether helper execution can start challenge, timer, OAuth, session gate or Runtime before separate arm authority",
+      "whether one-shot consumption on PASS or failure prevents unreviewed retry loops",
+      "whether current live evidence is sufficient to bind exact head and image while preserving the unproven postAttach root cause ceiling",
+      "whether READY/control created by a successful manual helper invocation remain mechanically bound by the unchanged launcher",
+      "whether any token, proxy, credential, capability, root, production, main/ruleset, workflow, secret or Runtime authority is added"
+    ]
+  },
+  "live_authority_now": {
+    "manual_ui_ready_helper": false,
+    "manual_arm": false,
+    "manual_arm_retry": false,
+    "new_codespace": false,
+    "oauth": false,
+    "device_authorization": false,
+    "step3": false,
+    "step4_or_apply": false,
+    "production_mutation": false,
+    "main_or_ruleset_mutation": false,
+    "merge": false,
+    "workflow_dispatch": false,
+    "secret_or_writer_key_operation": false,
+    "runtime_activation": false
+  }
+}
