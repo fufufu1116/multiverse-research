@@ -1,0 +1,35 @@
+{
+  "record":"KEIRIN_S0_OBJECTIVE_STYLE_ROLE_POSTEVAL_DISPOSITION_20260902_v1",
+  "status":"CLOSED_NO_SAME_HOLDOUT_RESCUE",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "binding_eval_commit":"23ef75db40b745e61bbd0d17198cc2ea32ecf694",
+  "decision":"ARCHIVE_AS_NO_ADVANCE",
+  "reason":"Independent evaluation preserved Stage-1 exactly but worsened L2, L3, and ordered-top3 point estimates. The prespecified race-cluster bootstrap 95% interval for candidate-minus-S0 ordered-top3 log loss crossed zero. Same-holdout rescue tuning is prohibited.",
+  "next_lane_rule":"Do not refit gamma, change the frozen style-role mapping, flip signs, split Stage2/Stage3 coefficients, or apply venue/field-size rescue using the burned fit/evaluation populations. Any later structural challenger must be a separately prespecified new lineage fixed before new RESULT target extraction.",
+  "burned_for_tuning":[
+    "fit population bound by KEIRIN_S0_STYLE_ROLE_FITSET_RECEIPT_20260902_v1",
+    "evaluation population bound by KEIRIN_S0_STYLE_ROLE_EVAL_REPORT_20260902_v1"
+  ],
+  "permitted_reuse":"diagnostic interpretation and provenance only; never parameter rescue or feature-definition rescue",
+  "hard_boundaries":[
+    "NO_SAME_HOLDOUT_RESCUE_TUNING",
+    "NO_GAMMA_REFIT",
+    "NO_STYLE_ROLE_MAPPING_RESCUE",
+    "NO_SIGN_FLIP_RESCUE",
+    "NO_STAGE2_STAGE3_SPLIT_RESCUE",
+    "NO_VENUE_SPECIFIC_RESCUE",
+    "NO_FIELD_SIZE_RESCUE",
+    "NO_SAME_HOLDOUT_FEATURE_ENGINEERING",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_OUTCOME_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_ECON_HOLDOUT1000",
+    "NO_DEV2000_C_RESCUE",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_WAGERING_OR_STAKING",
+    "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"
+  ]
+}
