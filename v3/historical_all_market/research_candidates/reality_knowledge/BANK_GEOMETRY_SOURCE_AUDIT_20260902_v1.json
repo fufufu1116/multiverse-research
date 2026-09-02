@@ -1,0 +1,72 @@
+{
+  "record":"BANK_GEOMETRY_SOURCE_AUDIT_20260902_v1",
+  "status":"PARTIAL_CURRENT_OFFICIAL_COVERAGE_CONFIRMED_VERSIONED_REGISTRY_NOT_YET_COMPLETE",
+  "retrieval_date_jst":"2026-09-02",
+  "fresh_read_head_before_write":"095e82af8a33b0a4707c19d9efd7394d69b4087f",
+  "purpose":"Establish whether objective bank physics can be sourced from current official material before any bank feature experiment.",
+  "national_current_anchor":{
+    "organization":"JKA / KEIRIN.JP",
+    "title":"バンクレコード",
+    "url":"https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+    "as_of":"2026-08-24",
+    "rows_in_current_table":43,
+    "fields_verified":["venue","circumference","record_time","record_rider","record_prefecture","record_date"],
+    "special_note":"千葉 is explicitly marked as old 500m-bank record; do not interpret this table as a flat immutable current-physics registry."
+  },
+  "current_official_geometry_interface":{
+    "organization":"JKA / KEIRIN.JP",
+    "url_pattern":"https://keirin.jp/pc/jyoguide?jocd=<venue_code>",
+    "fields_visible_in_current_body":["circumference","estimated_straight_length","center_track_slope","straight_track_slope","home_width","back_width","center_width","record"],
+    "numeric_values_in_text_retrieval":"NOT_CAPTURED_DYNAMIC_RENDERING",
+    "classification":"CURRENT_OFFICIAL_SCHEMA_CONFIRMED_VALUES_REQUIRE_REPRODUCIBLE_EXTRACTION"
+  },
+  "current_detailed_official_examples":[
+    {
+      "venue":"松戸",
+      "organization":"松戸けいりん official",
+      "url":"https://www.matsudokeirin.jp/guide/track",
+      "verification_status":"VERIFIED_CURRENT_BODY_READ",
+      "values":{"circumference_m":333,"estimated_straight_m":38.2,"center_slope":"29°44′42″","straight_slope":"3°1′2″","home_width_m":11.1,"back_width_m":9.6,"center_width_m":8.1},
+      "confidence":"HIGH"
+    },
+    {
+      "venue":"大宮",
+      "organization":"埼玉県営競輪 official",
+      "url":"https://www.keirin-saitama.jp/omiya/wp-content/uploads/pdf/omiya2026-3.pdf",
+      "verification_status":"VERIFIED_CURRENT_2026_OFFICIAL_PDF_SEARCH_BODY",
+      "source_date_note":"Document states bank data as of 2025-11-26.",
+      "values":{"circumference_m":500,"estimated_straight_m":66.7,"center_slope":"26°16′40″","straight_slope":"3°26′1″","home_width_m":10.3,"back_width_m":9.3,"center_width_m":7.5},
+      "confidence":"HIGH"
+    },
+    {
+      "venue":"豊橋",
+      "organization":"豊橋競輪場 official",
+      "url":"https://www.toyohashikeirin.com/dataroom",
+      "verification_status":"VERIFIED_CURRENT_BODY_READ_PARTIAL_GEOMETRY_TEXT",
+      "values":{"circumference_m":400,"curve_type":"McConnell curve"},
+      "additional_current_official_like_interface":"KEIRIN mobile venue page currently exposes estimated straight 60.3m, center slope 33°50′22″, straight slope 2°17′26″ and widths; ownership/provenance classification should be rechecked before registry authority.",
+      "confidence":"HIGH_FOR_ORGANIZER_BODY; MEDIUM_HIGH_FOR_MOBILE_VALUES_PENDING_ORGANIZATION_PROVENANCE"
+    }
+  ],
+  "historical_official_geometry_evidence":{
+    "status":"AVAILABLE_BUT_MUST_BE_DATE_VERSIONED",
+    "examples":"KEIRIN.JP historical event/bank pages publish circumference, maximum cant and estimated straight distance. Historical values cannot be silently used as current after renovations."
+  },
+  "feature_readiness":{
+    "circumference":"HIGH_CURRENT_NATIONAL_COVERAGE",
+    "estimated_straight_length":"MEDIUM_SOURCE_PATH_CONFIRMED_NATIONAL_REPRODUCIBLE_VALUES_PENDING",
+    "center_cant":"MEDIUM_SOURCE_PATH_CONFIRMED_NATIONAL_REPRODUCIBLE_VALUES_PENDING",
+    "straight_slope":"MEDIUM_SOURCE_PATH_CONFIRMED_NATIONAL_REPRODUCIBLE_VALUES_PENDING",
+    "track_widths":"MEDIUM_SOURCE_PATH_CONFIRMED_NATIONAL_REPRODUCIBLE_VALUES_PENDING",
+    "enclosure_or_indoor_status":"UNRESOLVED_NATIONAL_REGISTRY",
+    "historical_effective_intervals":"UNRESOLVED"
+  },
+  "next_source_work":[
+    "Enumerate current venue codes against KEIRIN.JP 2026-08-24 national table.",
+    "Resolve current jyoguide dynamic numeric payload or verify organizer official page for each venue.",
+    "Record source URL, retrieval date and effective/change date per venue.",
+    "Build immutable venue-physics records by effective interval; do not backfill current geometry into pre-renovation races."
+  ],
+  "model_boundary":"NO_BANK_FEATURE_ADMISSION_FROM_THIS_AUDIT; source registry must be complete enough for target population and a separate low-DOF prespec must precede evaluation.",
+  "hard_boundaries":["NO_MODEL_CHANGE","NO_FEATURE_ADMISSION","NO_VENUE_DUMMY_TUNING","NO_HISTORICAL_TO_CURRENT_BACKFILL","NO_PROTECTED_HOLDOUT_ACCESS"]
+}
