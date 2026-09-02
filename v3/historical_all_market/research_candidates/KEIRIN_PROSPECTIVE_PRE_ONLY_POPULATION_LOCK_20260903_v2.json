@@ -1,0 +1,52 @@
+{
+  "record":"KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v2",
+  "status":"LOCKED_PRE_EVENT_RESULT_BLIND_THREE_DAY1_MEETING_BLOCKS_WITH_333M_AND_400M_PILOT_CONTRAST_RACE_IDS_PENDING_SAFE_CAPTURE",
+  "scope":"RESEARCH_CANDIDATE_PROSPECTIVE_TRANSPORT_AND_FUTURE_AFFINITY_ELIGIBILITY_NO_MODEL_PROMOTION",
+  "supersedes":"KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v1.json",
+  "lock_timestamp_jst":"2026-09-02T21:51:26+09:00",
+  "selection_timestamp_relation":"ALL_SELECTED_BLOCKS_BEGIN_2026-09-03_AFTER_THIS_LOCK",
+  "selection_rule":"Expand before any selected-block RESULT access to create a minimal cross-circumference transport/design pilot; expansion is source/design driven, not outcome driven.",
+  "selected_blocks":[
+    {
+      "race_date":"2026-09-03",
+      "venue":"青森",
+      "meeting_grade":"G3",
+      "meeting_name":"みちのく記念　善知鳥杯争奪戦",
+      "meeting_dates":"2026-09-03/2026-09-06",
+      "official_schedule_source":"https://www.keirin.jp/pc/top and https://www.keirin.jp/pc/raceschedule?scym=09&scyy=2026",
+      "current_official_circumference_m":400,
+      "membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT_BEFORE_EACH_RACE_CUTOFF; transport failures retained",
+      "race_ids":"PENDING_PRE_ONLY_CAPTURE"
+    },
+    {
+      "race_date":"2026-09-03",
+      "venue":"武雄",
+      "meeting_grade":"F1",
+      "meeting_name":"OFFICIAL_MEETING_NAME_NOT_YET_CAPTURED",
+      "meeting_dates":"2026-09-03/2026-09-05",
+      "official_schedule_source":"https://www.keirin.city.takeo.lg.jp/ and KEIRIN.JP scheduled-appearance corroboration",
+      "current_official_circumference_m":400,
+      "membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT_BEFORE_EACH_RACE_CUTOFF; transport failures retained",
+      "race_ids":"PENDING_PRE_ONLY_CAPTURE"
+    },
+    {
+      "race_date":"2026-09-03",
+      "venue":"富山",
+      "meeting_grade":"F2",
+      "meeting_name":"OFFICIAL_MEETING_NAME_NOT_YET_CAPTURED",
+      "meeting_dates":"2026-09-03/2026-09-05",
+      "official_schedule_source":"KEIRIN.JP multiple current rider scheduled-appearance records; monthly schedule corroboration",
+      "current_official_bank_source":"https://www.toyama-keirin.com/guide/bank",
+      "current_official_circumference_m":333,
+      "membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT_BEFORE_EACH_RACE_CUTOFF; transport failures retained",
+      "race_ids":"PENDING_PRE_ONLY_CAPTURE"
+    }
+  ],
+  "design_note":{"circumference_levels_present":[333,400],"venue_counts_by_circumference":{"333":1,"400":2},"circumference_effect_identifiable_as_generalizable_affinity":false,"reason":"333m level is represented by only one venue in this pilot and remains confounded with 富山 venue identity; this block can test transport and expose a contrast, not establish generalized circumference affinity.","required_later":"Prospectively add at least one additional independent 333m venue block before any generalized circumference-affinity claim; preferably broader multi-venue/time coverage."},
+  "population_freeze_rules":["Do not remove races because of outcomes, model errors, line complexity, missing desired signal, or venue behavior.","Transport/source failures remain explicit UNKNOWN/TIMING_UNSAFE and are never silently dropped.","Exact race IDs and active fields may be appended only from PRE-event capture before each race cutoff.","If race start or PRE timestamp safety cannot be proven, do not reconstruct after the event.","No RESULT, PAYOUT, odds, human forecast, marks/comments/tips, provider narabiyoso, or candidate output may define membership.","No further venue expansion after viewing any selected-block RESULT unless the expanded population is a separately named future prespecified phase and prior blocks are treated as burned for selection."],
+  "parser_binding":{"path":"tools/keirin_kdreams_pre_only_parser_v1.py","selftest":"KEIRIN_PRE_ONLY_PARSER_SELFTEST_20260902_v1.json","live_future_html_transport_status":"PENDING_NOT_YET_PROVEN"},
+  "result_access_authorized_now":false,
+  "feature_admission":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["RESULT_TARGET_ONLY_NEVER_FEATURE","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_AS_TRUTH","NO_NARABIYOSO","NO_POST_RACE_PRE_RECONSTRUCTION","UNKNOWN_NOT_ZERO","NO_PROTECTED_HOLDOUT","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_RUNTIME_OR_MAIN_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
