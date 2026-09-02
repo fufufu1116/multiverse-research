@@ -1,0 +1,122 @@
+{
+  "record": "KEIRIN_S0_TEMPERATURE_CALIBRATION_EVAL_REPORT_20260902_v1",
+  "status": "TEMPERATURE_CHALLENGER_NO_ADVANCE_WITH_POST_GATE_SOURCE_ACCESS_PROTOCOL_DEVIATION",
+  "scope": "RESEARCH_CANDIDATE_EVALUATION_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "temperature_prespec_commit": "7c9056be88e7b4ff166470ff192b45b024f8cb25",
+    "fitset_receipt_commit": "4226fe9172a22dae4432ff798418b43f3107fe74",
+    "temperature_lock_commit": "86cd0babeafe58434eaa1a11eaff3ba3db1251ab",
+    "evalset_selection_lock_commit": "a89302a70b13ab5f1a86427c4e1df0ed5345817a"
+  },
+  "models": {
+    "untouched_s0": {"name": "S0_SCORE_ONLY_SOFTMAX", "feature": "competition_score", "beta": 0.22260435254784533, "refit": false},
+    "temperature_challenger": {"name": "S0_TEMPERATURE_SCALING_ONLY", "T": 0.8898924490271425, "effective_beta_equivalent": 0.2501474788230906, "ranking_change": false, "feature_change": false, "PL_structure_change": false},
+    "uniform": {"name": "UNIFORM"}
+  },
+  "population": {
+    "race_date": "2026-06-29",
+    "attempted_races": 57,
+    "successful_races": 56,
+    "fail_closed_races": 1,
+    "included_blocks_in_locked_order": [
+      {"venue": "取手", "attempted": 12, "successful": 12},
+      {"venue": "伊東", "attempted": 7, "successful": 7},
+      {"venue": "岐阜", "attempted": 7, "successful": 7},
+      {"venue": "玉野", "attempted": 7, "successful": 7},
+      {"venue": "高知", "attempted": 12, "successful": 12},
+      {"venue": "武雄", "attempted": 12, "successful": 11}
+    ],
+    "field_size_distribution": {"6": 3, "7": 43, "8": 1, "9": 9},
+    "stop_rule_application": "CLOSED_AT_END_OF_TAKEO_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_56_GE_50",
+    "later_locked_block": "佐世保",
+    "later_locked_block_included_in_metrics": false
+  },
+  "fail_closed": [
+    {"race": "武雄 2026-06-29 R6", "reason": "PRE_RACE_SCRATCH_PRESENT_AND_SCRATCH_HANDLING_NOT_PREDEFINED_FOR_THIS_GATE"}
+  ],
+  "primary_metrics": {
+    "winner_log_loss": {"untouched_s0": 1.6229676318263468, "temperature": 1.6107423580565587, "uniform": 1.9804263849065795, "temperature_minus_s0": -0.012225273769788103, "temperature_better_than_s0": true},
+    "winner_brier": {"untouched_s0": 0.10396215624559782, "temperature": 0.10336215923231906, "uniform": 0.11928994067865244, "temperature_minus_s0": -0.000599997013278758, "temperature_better_than_s0": true},
+    "ordered_top3_log_loss": {"untouched_s0": 4.919124675433892, "temperature": 4.937013152400913, "uniform": 5.466221368246479, "temperature_minus_s0": 0.017888476967020672, "temperature_better_than_s0": false}
+  },
+  "stagewise": {
+    "L1": {"untouched_s0": 1.6229676318263468, "temperature": 1.6107423580565587, "uniform": 1.9804263849065795, "temperature_minus_s0": -0.012225273769788103},
+    "L2": {"untouched_s0": 1.6118510546244738, "temperature": 1.6127938808531066, "uniform": 1.83097955246933, "temperature_minus_s0": 0.0009428262286328426},
+    "L3": {"untouched_s0": 1.6843059889830712, "temperature": 1.7134769134912469, "uniform": 1.6548154308705687, "temperature_minus_s0": 0.02917092450817571}
+  },
+  "ranking": {
+    "untouched_s0": {"top1_winner_hit_rate": 0.42857142857142855, "top2_winner_coverage": 0.6071428571428571, "mean_winner_probability_rank": 2.482142857142857, "mean_reciprocal_winner_rank": 0.6166666666666668},
+    "temperature_challenger": {"top1_winner_hit_rate": 0.42857142857142855, "top2_winner_coverage": 0.6071428571428571, "mean_winner_probability_rank": 2.482142857142857, "mean_reciprocal_winner_rank": 0.6166666666666668},
+    "ranking_preserved": true
+  },
+  "fixed_calibration": {
+    "bin_definition_commit": "b16e46f6d16b0a0708f87804e37439e263d2ee09",
+    "untouched_s0": {"car_level_records": 408, "weighted_ECE_absolute_gap": 0.03625662730088769, "bins": [
+      {"range": "[0.00,0.10)", "n": 184, "mean_p": 0.05772577357787914, "empirical_win_rate": 0.043478260869565216, "absolute_gap": 0.014247512708313925},
+      {"range": "[0.10,0.15)", "n": 76, "mean_p": 0.1251891032251109, "empirical_win_rate": 0.14473684210526316, "absolute_gap": 0.019547738880152266},
+      {"range": "[0.15,0.20)", "n": 62, "mean_p": 0.17378725211373103, "empirical_win_rate": 0.0967741935483871, "absolute_gap": 0.07701305856534393},
+      {"range": "[0.20,0.25)", "n": 37, "mean_p": 0.21933234788172085, "empirical_win_rate": 0.24324324324324326, "absolute_gap": 0.02391089536152241},
+      {"range": "[0.25,0.30)", "n": 14, "mean_p": 0.2697151160654158, "empirical_win_rate": 0.42857142857142855, "absolute_gap": 0.15885631250601273},
+      {"range": "[0.30,0.40)", "n": 21, "mean_p": 0.3270776406698997, "empirical_win_rate": 0.38095238095238093, "absolute_gap": 0.05387474028248124},
+      {"range": "[0.40,1.00]", "n": 14, "mean_p": 0.4520955167787924, "empirical_win_rate": 0.5714285714285714, "absolute_gap": 0.119333054649779}
+    ]},
+    "temperature_challenger": {"car_level_records": 408, "weighted_ECE_absolute_gap": 0.021891786061459615, "bins": [
+      {"range": "[0.00,0.10)", "n": 190, "mean_p": 0.052282545198648854, "empirical_win_rate": 0.04736842105263158, "absolute_gap": 0.0049141241460172735},
+      {"range": "[0.10,0.15)", "n": 73, "mean_p": 0.1234367695392588, "empirical_win_rate": 0.136986301369863, "absolute_gap": 0.0135495318306042},
+      {"range": "[0.15,0.20)", "n": 55, "mean_p": 0.17331346852353605, "empirical_win_rate": 0.10909090909090909, "absolute_gap": 0.06422255943262696},
+      {"range": "[0.20,0.25)", "n": 37, "mean_p": 0.2207859545384082, "empirical_win_rate": 0.24324324324324326, "absolute_gap": 0.022457288704835043},
+      {"range": "[0.25,0.30)", "n": 13, "mean_p": 0.2682900381703894, "empirical_win_rate": 0.3076923076923077, "absolute_gap": 0.03940226952191833},
+      {"range": "[0.30,0.40)", "n": 25, "mean_p": 0.3405435281234239, "empirical_win_rate": 0.36, "absolute_gap": 0.019456471876576065},
+      {"range": "[0.40,1.00]", "n": 15, "mean_p": 0.49018349665830563, "empirical_win_rate": 0.6, "absolute_gap": 0.10981650334169435}
+    ]},
+    "weighted_ECE_temperature_minus_s0": -0.014364841239428075,
+    "calibration_intercept": "NOT_COMPUTED_DEFINITION_NOT_CANONICALLY_PINNED",
+    "calibration_slope": "NOT_COMPUTED_DEFINITION_NOT_CANONICALLY_PINNED",
+    "interpretation": "ECE improved under the frozen bins, but calibration is not judged by ECE alone and the primary top3 criterion failed."
+  },
+  "race_cluster_bootstrap": {
+    "unit": "race", "replicates": 20000, "seed": 20260902, "interval": "percentile_95pct",
+    "differences_temperature_minus_untouched_s0": {
+      "winner_ll": {"mean_observed": -0.012225273769788414, "bootstrap_mean": -0.012216990268923188, "ci95": [-0.030007376961719626, 0.006366502388275962]},
+      "brier": {"mean_observed": -0.0005999970132787533, "bootstrap_mean": -0.0005967611832039886, "ci95": [-0.0018115640937307691, 0.0006087105335850954]},
+      "top3_ll": {"mean_observed": 0.017888476967020044, "bootstrap_mean": 0.01798608623999887, "ci95": [-0.018616041288149546, 0.05556492766029825]},
+      "L1": {"mean_observed": -0.012225273769788414, "bootstrap_mean": -0.012216990268923188, "ci95": [-0.030007376961719626, 0.006366502388275962]},
+      "L2": {"mean_observed": 0.0009428262286329417, "bootstrap_mean": 0.0010218508891769364, "ci95": [-0.019244512749124778, 0.022955673878138988]},
+      "L3": {"mean_observed": 0.029170924508175516, "bootstrap_mean": 0.02918122561974511, "ci95": [0.007550467816116404, 0.05168820504965959]}
+    }
+  },
+  "venue_slices": {
+    "取手": {"n": 12, "winner_log_loss": {"untouched_s0": 1.4147981916732775, "temperature": 1.3630946685720158, "uniform": 2.145523586318036, "temperature_minus_s0": -0.051703523101261694}, "winner_brier": {"untouched_s0": 0.07683167079265561, "temperature": 0.07440956069082498, "uniform": 0.10359682067271353, "temperature_minus_s0": -0.0024221101018306325}, "ordered_top3_log_loss": {"untouched_s0": 5.370347127028725, "temperature": 5.387816419494258, "uniform": 6.0428760528367045, "temperature_minus_s0": 0.017469292465533082}},
+    "伊東": {"n": 7, "winner_log_loss": {"untouched_s0": 1.6964409345901177, "temperature": 1.6917345936657244, "uniform": 1.9018670976760965, "temperature_minus_s0": -0.004706340924393259}, "winner_brier": {"untouched_s0": 0.1103507927037142, "temperature": 0.1088096544246724, "uniform": 0.12714609653385167, "temperature_minus_s0": -0.001541138279041799}, "ordered_top3_log_loss": {"untouched_s0": 4.411355027402896, "temperature": 4.3656567277443745, "uniform": 5.1872173055930615, "temperature_minus_s0": -0.04569829965852157}},
+    "岐阜": {"n": 7, "winner_log_loss": {"untouched_s0": 1.660175666636913, "temperature": 1.6558167269019746, "uniform": 1.9459101490553132, "temperature_minus_s0": -0.004358939734938393}, "winner_brier": {"untouched_s0": 0.11771272344029406, "temperature": 0.1191929279292613, "uniform": 0.12244897959183676, "temperature_minus_s0": 0.0014802044889672404}, "ordered_top3_log_loss": {"untouched_s0": 4.811468886809712, "temperature": 4.849662693418616, "uniform": 5.347107530717468, "temperature_minus_s0": 0.03819380660890359}},
+    "玉野": {"n": 7, "winner_log_loss": {"untouched_s0": 1.542367474039614, "temperature": 1.5256404460855375, "uniform": 1.923888623365705, "temperature_minus_s0": -0.016727027954076545}, "winner_brier": {"untouched_s0": 0.1111180063321617, "temperature": 0.1114319970982873, "uniform": 0.12479753806284422, "temperature_minus_s0": 0.000313990766125593}, "ordered_top3_log_loss": {"untouched_s0": 4.485852361539291, "temperature": 4.472840544300507, "uniform": 5.267162418155266, "temperature_minus_s0": -0.013011817238784306}},
+    "高知": {"n": 12, "winner_log_loss": {"untouched_s0": 1.7532426031281263, "temperature": 1.7662751042442137, "uniform": 1.9459101490553128, "temperature_minus_s0": 0.013032501116087447}, "winner_brier": {"untouched_s0": 0.10888597219343088, "temperature": 0.10868599514326284, "uniform": 0.1224489795918368, "temperature_minus_s0": -0.00019997705016804068}, "ordered_top3_log_loss": {"untouched_s0": 4.926821371575081, "temperature": 4.96350496183365, "uniform": 5.3471075307174685, "temperature_minus_s0": 0.036683590258569376}},
+    "武雄": {"n": 11, "winner_log_loss": {"untouched_s0": 1.6888008470720068, "temperature": 1.6851629464363527, "uniform": 1.945910149055313, "temperature_minus_s0": -0.0036379006356541677}, "winner_brier": {"untouched_s0": 0.11081803423520455, "temperature": 0.11046292643956973, "uniform": 0.12244897959183679, "temperature_minus_s0": -0.0003551077956348153}, "ordered_top3_log_loss": {"untouched_s0": 5.085838719162635, "temperature": 5.130887290933791, "uniform": 5.347107530717468, "temperature_minus_s0": 0.04504857177115662}}
+  },
+  "advancement_rule": {
+    "required": ["temperature winner_log_loss < untouched_S0 winner_log_loss", "temperature winner_brier < untouched_S0 winner_brier", "temperature ordered_top3_log_loss < untouched_S0 ordered_top3_log_loss"],
+    "winner_log_loss_pass": true,
+    "winner_brier_pass": true,
+    "ordered_top3_log_loss_pass": false,
+    "all_required_pass": false,
+    "decision": "NO_ADVANCE"
+  },
+  "interpretation": {
+    "winner_probability": "FROZEN_T_SLIGHTLY_IMPROVES_POINT_ESTIMATE_WINNER_LL_AND_BRIER",
+    "conditional_top3": "FROZEN_T_WORSENS_ORDERED_TOP3_POINT_ESTIMATE",
+    "stagewise": "L3 worsens under temperature scaling; race-cluster 95% CI for T-minus-S0 L3 is entirely above zero.",
+    "calibration": "Fixed-bin weighted ECE improves, but this does not override failure of the prespecified primary ordered-top3 criterion.",
+    "model_promotion": false,
+    "edge_or_profitability_claim": false
+  },
+  "protocol_deviation": {
+    "type": "POST_GATE_SOURCE_ACCESS_PROTOCOL_DEVIATION",
+    "description": "After the Takeo block had already satisfied the prespecified >=50-successful stop rule, an analysis execution arithmetic error caused the later locked Sasebo block to be opened.",
+    "containment": ["All Sasebo races are excluded from evaluation metrics.", "The frozen T was not changed.", "The prespecified evaluation sample through Takeo was not changed.", "No Sasebo outcome influenced the NO_ADVANCE decision."],
+    "scientific_effect": "The canonical evaluation sample remains the deterministic first stop-rule sample (56 successful / 57 attempted through Takeo), but the source-access deviation is preserved as a governance/reproducibility defect and forbids treating this run as flawless protocol execution.",
+    "owner_cause": false
+  },
+  "source_boundary": {"PRE": "public historical race-card representations", "RESULT": "public historical result representations used as target only", "RESULT_target_only_never_feature": true, "PAYOUT_used": false, "odds_used": false, "tips_or_marks_used": false, "manual_repair": false},
+  "hard_boundaries": ["NO_REFIT_T_ON_EVAL", "NO_FIT_EVAL_OVERLAP", "NO_FEATURE_ADDITION", "NO_PL_CHANGE", "NO_RESULT_AS_FEATURE", "NO_PAYOUT", "NO_ODDS_FIT", "NO_PROTECTED_HOLDOUT", "NO_DEV2000_C_RESCUE", "NO_REAL_MONEY_EXECUTION", "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM", "NO_MODEL_PROMOTION_FROM_THIS_EVALUATION"],
+  "next_research_order": ["DO_NOT_ADVANCE_GLOBAL_TEMPERATURE_SCALING_CHALLENGER", "PRESERVE_UNTOUCHED_S0_AS_BASELINE", "BEFORE_ANY_NEW_FEATURE_FIT, PRESPEC_MINIMAL_LINE_ROLE_CANDIDATE WITH SEPARATE FIT/EVAL OR RUN STRUCTURAL_DIAGNOSTIC_DESIGNED_TO_TARGET_L2_L3"]
+}
