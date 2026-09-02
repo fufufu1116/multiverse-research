@@ -1,0 +1,14 @@
+{
+  "record":"KEIRIN_20260903_AOMORI_SEARCH_SURFACE_ODDS_EXPOSURE_DELTA_v1",
+  "status":"RECORDED_MARKET_SURFACE_EXPOSURE_NO_OUTCOME_TARGET_OBSERVED",
+  "scope":"RESEARCH_INTEGRITY_ONLY_NO_MODEL_OR_FEATURE_AUTHORITY",
+  "timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "parent_firewall":"KEIRIN_20260903_PRE_WEB_SEARCH_SURFACE_CONTAMINATION_RECEIPT_v1.json",
+  "context":"During PRE-event source/crosscheck work for the already frozen Aomori 1R transport sentinel, a KDreams odds search result co-surfaced numeric market odds/placeholder values.",
+  "observed":{"finish_result_values":false,"payout_values":false,"numeric_odds_values":true,"examples_not_for_use":["9999.9","63.0","21.0"]},
+  "classification":"MARKET_SURFACE_CONTAMINATION_ONLY_NOT_OUTCOME_TARGET_LEAKAGE",
+  "population_effect":{"membership_changed":false,"outcome_population_burned_by_target_observation":false,"result_access_authorized":false},
+  "firewall":["Numeric odds are excluded from the Outcome model and all Rider×Bank/Line/Role features.","No membership, source choice, threshold, feature, or parameter may be changed because of the observed odds.","No odds values are copied into the PRE witness artifacts.","No RESULT or payout page/value may be accessed under this delta."],
+  "next":"Continue strict allowlist PRE provenance only. Keep market exposure separate from Outcome research.",
+  "hard_boundaries":["NO_RESULT_TARGET_ACCESS","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_NARABIYOSO","NO_POST_RACE_PRE_RECONSTRUCTION","NO_MEMBERSHIP_CHANGE","NO_MODEL_FIT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
