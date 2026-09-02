@@ -1,0 +1,183 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_B_COUNT_EVAL_REPORT_20260902_v1",
+  "status": "B_COUNT_CHALLENGER_NO_ADVANCE",
+  "scope": "RESEARCH_CANDIDATE_EVALUATION_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "ad6a933ed958334c3b480344273b08f69cfff7b8",
+    "fitset_selection_lock_commit": "ecf86f935f08b75ab6819f65f9846c70519e4c12",
+    "fitset_receipt_commit": "586a644933e227a93d5ce769d900e88640bf19e9",
+    "gamma_lock_commit": "86482b6599471877df16998cfe6424aab16a607d",
+    "evalset_selection_lock_commit": "e7d7fb1c0083fd9fcd3b6cdafa2d6010ee80f827"
+  },
+  "models": {
+    "untouched_s0": {
+      "beta": 0.22260435254784533,
+      "stage1": "beta * competition_score",
+      "stage2": "beta * competition_score",
+      "stage3": "beta * competition_score"
+    },
+    "candidate": {
+      "gamma": 0.0817874186543189,
+      "stage1": "beta * competition_score",
+      "stage2": "beta * competition_score + gamma * B after actual stage1 removal",
+      "stage3": "beta * competition_score + gamma * B after actual stage1 and stage2 removals",
+      "B_transformation": "RAW_B_COUNT_UNCHANGED"
+    }
+  },
+  "population": {
+    "race_date": "2026-07-17",
+    "attempted_races": 59,
+    "successful_races": 50,
+    "fail_closed_races": 9,
+    "included_blocks_in_locked_order": [
+      {"venue":"いわき平","attempted":9,"successful":9,"meeting_identity":"1320260716"},
+      {"venue":"弥彦","attempted":11,"successful":11,"meeting_identity":"2120260717"},
+      {"venue":"取手","attempted":7,"successful":6,"meeting_identity":"2320260715"},
+      {"venue":"西武園","attempted":11,"successful":7,"meeting_identity":"2620260716"},
+      {"venue":"松阪","attempted":12,"successful":10,"meeting_identity":"4720260716"},
+      {"venue":"奈良","attempted":9,"successful":7,"meeting_identity":"5320260716"}
+    ],
+    "fail_closed": [
+      {"race":"取手 2026-07-17 R6","reason":"KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race":"西武園 2026-07-17 R2","reason":"KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race":"西武園 2026-07-17 R3","reason":"KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race":"西武園 2026-07-17 R7","reason":"KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race":"西武園 2026-07-17 R8","reason":"KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"},
+      {"race":"松阪 2026-07-17 R11","reason":"KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS"},
+      {"race":"松阪 2026-07-17 R12","reason":"KDREAMS_RETROSPECTIVE_RACEDETAIL_CACHE_MISS"},
+      {"race":"奈良 2026-07-17 R1","reason":"PRE_SCRATCH_ACTIVE_FIELD_CHANGED_CAR_2"},
+      {"race":"奈良 2026-07-17 R3","reason":"KDREAMS_RETROSPECTIVE_RESULT_CACHE_MISS"}
+    ],
+    "stop_rule_application": "CLOSED_AT_END_OF_NARA_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_EXACTLY_50",
+    "later_locked_blocks_unopened": ["高知"],
+    "field_size_distribution": {"5":1,"6":2,"7":47}
+  },
+  "invariance_checks": {
+    "winner_log_loss": {
+      "untouched_s0": 1.7905983417686175,
+      "candidate": 1.7905983417686175,
+      "difference": 0.0,
+      "pass": true
+    },
+    "winner_brier": {
+      "untouched_s0": 0.12226970535592926,
+      "candidate": 0.12226970535592926,
+      "difference": 0.0,
+      "pass": true
+    },
+    "winner_probability_max_abs_difference": 0.0,
+    "winner_ranking": {
+      "top1_hit_rate": 0.24,
+      "top2_coverage": 0.6,
+      "mean_winner_rank": 2.66,
+      "mean_reciprocal_winner_rank": 0.5217142857142858,
+      "candidate_identical": true,
+      "pass": true
+    },
+    "baseline_beta_unchanged": true,
+    "gamma_refit_on_evaluation": false,
+    "B_transformation_changed": false
+  },
+  "primary_metrics": {
+    "L1": {
+      "untouched_s0": 1.7905983417686175,
+      "candidate": 1.7905983417686175,
+      "uniform": 1.9330146771297974,
+      "candidate_minus_s0": 0.0
+    },
+    "L2": {
+      "untouched_s0": 1.6220979087988707,
+      "candidate": 1.6321325213818367,
+      "uniform": 1.7763573047941332,
+      "candidate_minus_s0": 0.010034612582965792,
+      "candidate_better": false
+    },
+    "L3": {
+      "untouched_s0": 1.4382327459343396,
+      "candidate": 1.4557524375784674,
+      "uniform": 1.5902956579062133,
+      "candidate_minus_s0": 0.017519691644127918,
+      "candidate_better": false
+    },
+    "ordered_top3_log_loss": {
+      "untouched_s0": 4.850928996501828,
+      "candidate": 4.878483300728922,
+      "uniform": 5.299667639830145,
+      "candidate_minus_s0": 0.027554304227093717,
+      "candidate_better": false
+    }
+  },
+  "race_cluster_bootstrap": {
+    "unit": "race",
+    "replicates": 20000,
+    "seed": 20260902,
+    "interval": "percentile_95pct",
+    "differences_candidate_minus_s0": {
+      "ordered_top3_log_loss": {
+        "observed": 0.027554304227093717,
+        "bootstrap_mean": 0.02652475610868563,
+        "ci95": [-0.11517438351302754, 0.16593686793957305]
+      },
+      "L2": {
+        "observed": 0.010034612582965792,
+        "bootstrap_mean": 0.009247298086237461,
+        "ci95": [-0.11113166980408051, 0.11846528096724938]
+      },
+      "L3": {
+        "observed": 0.017519691644127918,
+        "bootstrap_mean": 0.01727745802244817,
+        "ci95": [-0.06764624948873106, 0.09899763460767287]
+      }
+    }
+  },
+  "venue_slices_diagnostic_only": {
+    "いわき平":{"n":9,"dL2":0.04249407308510463,"dL3":-0.09244627967608886,"dTop3":-0.049952206590984254},
+    "弥彦":{"n":11,"dL2":-0.01600390658859141,"dL3":-0.037719459664997575,"dTop3":-0.053723366253589},
+    "取手":{"n":6,"dL2":0.07174060644713494,"dL3":0.06355709411114097,"dTop3":0.13529770055827592},
+    "西武園":{"n":7,"dL2":-0.09810404029419806,"dL3":0.07153530708782899,"dTop3":-0.02656873320636905},
+    "松阪":{"n":10,"dL2":-0.008974403990978708,"dL3":0.09817302398062813,"dTop3":0.08919861998964942},
+    "奈良":{"n":7,"dL2":0.091622232449031,"dL3":0.03701360021689136,"dTop3":0.12863583266592235}
+  },
+  "advancement_decision": {
+    "required_point_estimates_all_better": false,
+    "ordered_top3_better": false,
+    "L2_better": false,
+    "L3_better": false,
+    "winner_invariance_contract_pass": true,
+    "wider_replication_bootstrap_rule_pass": false,
+    "decision": "B_COUNT_CHALLENGER_NO_ADVANCE",
+    "reason": "The frozen raw-B one-parameter candidate worsened L2, L3, and ordered-top3 point estimates on the independent evaluation set. The race-cluster bootstrap interval also crosses zero with a positive upper bound. The prespecified advancement gate therefore fails. No same-holdout rescue tuning is permitted."
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score","B"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_repair": false,
+    "source": "KDreams public retrospective race detail/result pages"
+  },
+  "interpretation": [
+    "The large fit-set improvement for raw B did not replicate independently; aggregate L2, L3, and ordered-top3 all worsened.",
+    "Stage-1 winner probabilities and rankings remained exactly unchanged as required.",
+    "Venue-level signs are heterogeneous and must not be used to rescue-tune this closed evaluation set.",
+    "This result does not authorize wider replication, model promotion, market/ROI claims, or real-money execution."
+  ],
+  "hard_boundaries": [
+    "NO_SAME_HOLDOUT_RESCUE_TUNING",
+    "NO_CHANGE_TO_BASELINE_BETA",
+    "NO_GAMMA_REFIT",
+    "NO_GAMMA2_GAMMA3_SPLIT",
+    "NO_B_TRANSFORMATION_CHANGE",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_DEV2000_C_RESCUE",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM",
+    "NO_MODEL_PROMOTION"
+  ]
+}
