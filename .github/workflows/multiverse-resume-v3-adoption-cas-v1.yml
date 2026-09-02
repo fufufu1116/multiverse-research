@@ -1,16 +1,17 @@
-name: MULTIVERSE Resume v3 CAS Adoption Runner
+name: MULTIVERSE Resume v3 CAS Adoption Runner v2
 
 on:
   push:
     branches:
-      - gate/chat-independent-resume-v3-adoption-cas-prelab-v1
+      - gate/chat-independent-resume-v3-adoption-cas-prelab-v2
       - gate/chat-independent-resume-v3-adoption-cas-one-shot-v1
 
 permissions:
   contents: write
+  issues: read
 
 concurrency:
-  group: multiverse-resume-v3-adoption-cas-v1
+  group: multiverse-resume-v3-adoption-cas-v2
   cancel-in-progress: false
 
 jobs:
@@ -24,8 +25,10 @@ jobs:
       EXPECTED_OLD_STATE: 6facca0f57383197fb0843824df2c65298cb9cb4
       TARGET_STATE: 3a89d12a2edea0f51723abf28f244194269e340f
       TARGET_STATE_BRANCH: state/multiverse-core-post-resume-v3-adoption-candidate-v1
-      PRELAB_GATE_REF: refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v1
+      PRELAB_GATE_REF: refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v2
       LIVE_GATE_REF: refs/heads/gate/chat-independent-resume-v3-adoption-cas-one-shot-v1
+      OWNER_RECEIPT_MARKER: OWNER_CAS_ADOPTION_RECEIPT_V2
+      OWNER_APPROVAL_PHRASE: APPROVE CHAT-INDEPENDENT RESUME v3 CAS ADOPTION ONE-SHOT
       EVENT_BEFORE: ${{ github.event.before }}
       EVENT_AFTER: ${{ github.event.after }}
     steps:
@@ -38,14 +41,14 @@ jobs:
           umask 077
           case "$GITHUB_REF" in
             "$PRELAB_GATE_REF"|"$LIVE_GATE_REF") ;;
-            *) echo "CAS_RUNNER_DENIED:UNEXPECTED_GATE_REF"; exit 91 ;;
+            *) echo "CAS_RUNNER_V2_DENIED:UNEXPECTED_GATE_REF"; exit 91 ;;
           esac
           if [ "$EVENT_BEFORE" != "$EXPECTED_OLD_MAIN" ]; then
-            echo "CAS_RUNNER_DENIED:GATE_BEFORE_MISMATCH"
+            echo "CAS_RUNNER_V2_DENIED:GATE_BEFORE_MISMATCH"
             exit 92
           fi
           if [ "$EVENT_AFTER" != "$GITHUB_SHA" ]; then
-            echo "CAS_RUNNER_DENIED:GATE_AFTER_MISMATCH"
+            echo "CAS_RUNNER_V2_DENIED:GATE_AFTER_MISMATCH"
             exit 93
           fi
           mkdir repo
@@ -65,9 +68,29 @@ jobs:
           test "$(git ls-remote origin refs/heads/state/multiverse-core-current | awk '{print $1}')" = "$EXPECTED_OLD_STATE"
           git merge-base --is-ancestor "$EXPECTED_OLD_MAIN" "$TARGET_MAIN"
           git merge-base --is-ancestor "$EXPECTED_OLD_STATE" "$TARGET_STATE"
-          echo "CAS_RUNNER_BINDING_PASS"
+          echo "CAS_RUNNER_V2_BINDING_PASS"
+      - name: One-shot Owner receipt gate
+        if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-one-shot-v1'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          matches="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/74/comments?per_page=100" | jq -s \
+            --arg marker "$OWNER_RECEIPT_MARKER" \
+            --arg phrase "$OWNER_APPROVAL_PHRASE" \
+            --arg oldmain "$EXPECTED_OLD_MAIN" \
+            --arg targetmain "$TARGET_MAIN" \
+            --arg oldstate "$EXPECTED_OLD_STATE" \
+            --arg targetstate "$TARGET_STATE" \
+            'add | [ .[] | select(.user.login == "fufufu1116") | select(.author_association == "OWNER") | select(.body | contains($marker)) | select(.body | contains($phrase)) | select(.body | contains($oldmain)) | select(.body | contains($targetmain)) | select(.body | contains($oldstate)) | select(.body | contains($targetstate)) ] | length')"
+          if [ "$matches" != "1" ]; then
+            echo "CAS_RUNNER_V2_DENIED:OWNER_RECEIPT_COUNT_${matches}"
+            exit 94
+          fi
+          echo "CAS_RUNNER_V2_OWNER_RECEIPT_GATE_PASS"
       - name: Prelab exact lease dry-run
-        if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v1'
+        if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-prelab-v2'
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -78,7 +101,7 @@ jobs:
           git push --dry-run --porcelain --force-with-lease="refs/heads/state/multiverse-core-current:${EXPECTED_OLD_STATE}" origin "${TARGET_STATE}:refs/heads/state/multiverse-core-current"
           test "$(git ls-remote origin refs/heads/main | awk '{print $1}')" = "$EXPECTED_OLD_MAIN"
           test "$(git ls-remote origin refs/heads/state/multiverse-core-current | awk '{print $1}')" = "$EXPECTED_OLD_STATE"
-          echo "CAS_RUNNER_PRELAB_DRY_RUN_PASS"
+          echo "CAS_RUNNER_V2_PRELAB_DRY_RUN_PASS"
       - name: One-shot CAS main update
         if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-one-shot-v1'
         shell: bash
@@ -89,7 +112,7 @@ jobs:
           cd repo
           git push --porcelain --force-with-lease="refs/heads/main:${EXPECTED_OLD_MAIN}" origin "${TARGET_MAIN}:refs/heads/main"
           test "$(git ls-remote origin refs/heads/main | awk '{print $1}')" = "$TARGET_MAIN"
-          echo "CAS_RUNNER_MAIN_UPDATE_PASS"
+          echo "CAS_RUNNER_V2_MAIN_UPDATE_PASS"
       - name: One-shot CAS Core state update
         if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-one-shot-v1'
         shell: bash
@@ -100,7 +123,7 @@ jobs:
           cd repo
           git push --porcelain --force-with-lease="refs/heads/state/multiverse-core-current:${EXPECTED_OLD_STATE}" origin "${TARGET_STATE}:refs/heads/state/multiverse-core-current"
           test "$(git ls-remote origin refs/heads/state/multiverse-core-current | awk '{print $1}')" = "$TARGET_STATE"
-          echo "CAS_RUNNER_STATE_UPDATE_PASS"
+          echo "CAS_RUNNER_V2_STATE_UPDATE_PASS"
       - name: One-shot final nonsecret verification
         if: github.ref == 'refs/heads/gate/chat-independent-resume-v3-adoption-cas-one-shot-v1'
         shell: bash
@@ -111,4 +134,4 @@ jobs:
           cd repo
           test "$(git ls-remote origin refs/heads/main | awk '{print $1}')" = "$TARGET_MAIN"
           test "$(git ls-remote origin refs/heads/state/multiverse-core-current | awk '{print $1}')" = "$TARGET_STATE"
-          echo "CAS_RUNNER_ONE_SHOT_ADOPTION_PASS runtime=OFF live_authority=false"
+          echo "CAS_RUNNER_V2_ONE_SHOT_ADOPTION_PASS runtime=OFF live_authority=false"
