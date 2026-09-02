@@ -1,0 +1,90 @@
+{
+  "record":"KEIRIN_S0_CONDITIONAL_SCORE_SCALE_EVAL_REPORT_20260902_v1",
+  "status":"PROMISING_NO_ADVANCE_TO_WIDER_REPLICATION",
+  "scope":"RESEARCH_CANDIDATE_EVALUATION_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings":{
+    "prespec_commit":"d161aa79849dba05dab82bf74ee0a32fc3da3770",
+    "fitset_receipt_commit":"741de6c19d43a906d49cfb6832af7d659333bf74",
+    "alpha_lock_commit":"59dbda994cbc65b2f495565b076a773b02a9d42d",
+    "evalset_selection_lock_commit":"994dbe2a2650eae606821880ad38472ffa5284e4"
+  },
+  "models":{
+    "untouched_s0":{"beta":0.22260435254784533,"stage1":"beta*competition_score","stage2":"beta*competition_score","stage3":"beta*competition_score"},
+    "candidate":{"alpha":0.6365671401165879,"stage1":"beta*competition_score","stage2":"alpha*beta*competition_score after actual stage1 removal","stage3":"alpha*beta*competition_score after actual stage1 and stage2 removal"},
+    "uniform":{"name":"UNIFORM"}
+  },
+  "population":{
+    "race_date":"2026-07-05",
+    "attempted_races":57,
+    "successful_races":54,
+    "fail_closed_races":3,
+    "included_blocks_in_locked_order":[
+      {"venue":"青森","attempted":12,"successful":12},
+      {"venue":"京王閣","attempted":7,"successful":5},
+      {"venue":"伊東","attempted":7,"successful":7},
+      {"venue":"豊橋","attempted":12,"successful":12},
+      {"venue":"和歌山","attempted":12,"successful":11},
+      {"venue":"岸和田","attempted":7,"successful":7}
+    ],
+    "fail_closed":[
+      {"race":"京王閣 2026-07-05 R2","reason":"DEAD_HEAT_AMBIGUOUS_ORDERED_TOP3_FIRST_POSITION"},
+      {"race":"京王閣 2026-07-05 R5","reason":"DEAD_HEAT_AMBIGUOUS_ORDERED_TOP3_THIRD_POSITION"},
+      {"race":"和歌山 2026-07-05 R6","reason":"PRE_COMPETITION_SCORE_0_00"}
+    ],
+    "stop_rule_application":"CLOSED_AT_END_OF_KISHIWADA_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_54_GE_50",
+    "later_locked_blocks_unopened":["小松島","佐世保","別府"],
+    "field_size_distribution":{"5":2,"6":3,"7":49}
+  },
+  "invariance_checks":{
+    "winner_log_loss":{"untouched_s0":1.6991005998859439,"candidate":1.6991005998859439,"difference":0.0,"pass":true},
+    "winner_brier":{"untouched_s0":0.11317756799190118,"candidate":0.11317756799190118,"difference":0.0,"uniform":0.12475308641975309,"pass":true},
+    "winner_ranking":{"top1_hit_rate":0.3333333333333333,"top2_coverage":0.5185185185185185,"mean_winner_rank":2.740740740740741,"mean_reciprocal_winner_rank":0.5484567901234567,"candidate_identical":true,"pass":true}
+  },
+  "primary_metrics":{
+    "L1":{"untouched_s0":1.6991005998859439,"candidate":1.6991005998859439,"uniform":1.9248842877085683,"candidate_minus_s0":0.0},
+    "L2":{"untouched_s0":1.593759140344128,"candidate":1.5780529367490093,"uniform":1.7666132676243846,"candidate_minus_s0":-0.0157062035951187,"candidate_better":true},
+    "L3":{"untouched_s0":1.4955019607760196,"candidate":1.4492733821670043,"uniform":1.5781215809253115,"candidate_minus_s0":-0.0462285786090153,"candidate_better":true},
+    "ordered_top3_log_loss":{"untouched_s0":4.788361701006091,"candidate":4.726426918801957,"uniform":5.269619136258267,"candidate_minus_s0":-0.0619347822041339,"candidate_better":true}
+  },
+  "race_cluster_bootstrap":{
+    "unit":"race","replicates":20000,"seed":20260902,"interval":"percentile_95pct",
+    "differences_candidate_minus_s0":{
+      "ordered_top3_log_loss":{"observed":-0.06193478220413387,"bootstrap_mean":-0.06232785353807562,"ci95":[-0.19291831658164393,0.05538801675948352]},
+      "L2":{"observed":-0.015706203595118522,"bootstrap_mean":-0.015519529351572766,"ci95":[-0.09727518946483685,0.057305601599872136]},
+      "L3":{"observed":-0.046228578609015344,"bootstrap_mean":-0.046808324186502846,"ci95":[-0.12638464887103848,0.02720131205052213]}
+    }
+  },
+  "venue_slices":{
+    "青森":{"n":12,"dL2":0.06414755108189862,"dL3":-0.008880305745705863,"dTop3":0.055267245336192684},
+    "京王閣":{"n":5,"dL2":-0.23691148118810604,"dL3":-0.22622530940784885,"dTop3":-0.4631367905959551},
+    "伊東":{"n":7,"dL2":0.039358683875870194,"dL3":0.018193942099644627,"dTop3":0.05755262597551499},
+    "豊橋":{"n":12,"dL2":-0.05560233714825246,"dL3":-0.03899384379728676,"dTop3":-0.09459618094553916},
+    "和歌山":{"n":11,"dL2":-0.006135651543435508,"dL3":-0.09919139272122902,"dTop3":-0.10532704426466459},
+    "岸和田":{"n":7,"dL2":0.0036944606352964687,"dL3":0.02471726027204768,"dTop3":0.02841172090734423}
+  },
+  "advancement_decision":{
+    "required_point_estimates_all_better":true,
+    "ordered_top3_better":true,
+    "L2_better":true,
+    "L3_better":true,
+    "winner_invariance_contract_pass":true,
+    "wider_replication_bootstrap_rule_pass":false,
+    "decision":"PROMISING_NO_ADVANCE_TO_WIDER_REPLICATION",
+    "reason":"The frozen one-parameter conditional score scale improved L2, L3, and ordered-top3 point estimates on the independent holdout while preserving Stage-1 exactly, but the race-cluster bootstrap 95% interval for candidate-minus-S0 ordered-top3 log loss crosses zero and its upper bound is positive. The prespecified uncertainty rule therefore blocks wider-replication advancement. No same-holdout rescue tuning is permitted."
+  },
+  "source_boundary":{
+    "PRE_features":["competition_score"],
+    "RESULT_target_only":true,
+    "PAYOUT_used":false,
+    "odds_used":false,
+    "KDreams_narabiyoso_used":false,
+    "tips_marks_comments_used":false,
+    "manual_repair":false
+  },
+  "interpretation":[
+    "This is stronger structural evidence than the prior style-role scalar because both conditional stages improve in aggregate on the independent holdout without changing Stage-1 winner probabilities.",
+    "The evidence is not yet stable enough for wider replication under the prespecified uncertainty gate; venue/block heterogeneity remains material, with Aomori, Ito, and Kishiwada negative while Keio, Toyohashi, and Wakayama are positive.",
+    "Alpha must not be rescue-tuned on this holdout, and this result does not authorize model promotion, market claims, ROI claims, or real-money execution."
+  ],
+  "hard_boundaries":["NO_SAME_HOLDOUT_RESCUE_TUNING","NO_CHANGE_TO_BASELINE_BETA","NO_ALPHA2_ALPHA3_SPLIT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_FIT","NO_HUMAN_LINEUP_FORECAST_FEATURE","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION"]
+}
