@@ -1,0 +1,82 @@
+{
+  "schema": "multiverse.core.current_state.v2",
+  "status": "FRESH_OBSERVED_SNAPSHOT_IMPLEMENTATION_CANDIDATE",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main": {
+    "branch": "main",
+    "head": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "tree": "3d47741b4863411e5c36cb4c28925ac455ab6441"
+  },
+  "active_stage": "R1_STAGE1_PHASE_C",
+  "active_candidate": {
+    "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
+    "head": "c91010921898fffed633df9720d792b216c4ddd1",
+    "tree": "917cf843e230c99dc74bebcc391e9f235361ff52"
+  },
+  "active_task": {
+    "status": "ACTIVE",
+    "task_id": "R1_STAGE1_PHASE_C_V19_7_36_V7R7_STATIC_ENV_GUARD_PRELIVE",
+    "manifest": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_STATIC_ENV_GUARD_REMEDIATION_20260902_v1.json",
+    "resolver_transition": "FETCH_MANIFEST_THEN_REQUIRED_ARTIFACTS_ONLY"
+  },
+  "runtime_status": "OFF",
+  "pr_state": {"pr":74,"draft":true,"open":true,"merged":false},
+  "latest_accepted_evidence": {
+    "lab_result_comment": 5506903843,
+    "auditor_result_comment": 5507888664,
+    "owner_presentation_comment": 5507921652,
+    "owner_approval_receipt_comment": 5508415633,
+    "actions_run": 33608836723,
+    "actions_job": 100178970670,
+    "image_identity_sha256": "e140ed8d23f84e815639ec5a05973891be00ca35d2446f7711052d7676655e8e",
+    "static_guard_sha256": "470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4"
+  },
+  "current_gate": "OWNER_APPROVED_ONE_FRESH_PRELIVE_CODESPACE_CREATE_ATTACH",
+  "owner_gate": {
+    "status": "APPROVED_SNAPSHOT_REQUIRES_FRESH_REVALIDATION",
+    "receipt_comment": 5508415633,
+    "fresh_codespace_create_attach_remaining_snapshot": 1,
+    "snapshot_observation": "NO_POST_RECEIPT_CONSUMPTION_COMMENT_OBSERVED_AT_STATE_CAPTURE",
+    "fresh_revalidation_required_before_use": true,
+    "bearer_authority": false
+  },
+  "authority_ceiling": {
+    "currently_snapshot_allowed_after_fresh_revalidation": ["ONE_FRESH_PRELIVE_NONMUTATING_CODESPACE_CREATE_ATTACH_ON_EXACT_ACTIVE_CANDIDATE"],
+    "manual_arm": false,
+    "oauth": false,
+    "device_authorization": false,
+    "step3": false,
+    "step4_or_apply": false,
+    "production_mutation": false,
+    "main_or_ruleset_mutation": false,
+    "merge": false,
+    "workflow_dispatch": false,
+    "secret_or_writer_key_operation": false,
+    "runtime_activation": false
+  },
+  "pending_work": [
+    "FRESH_REVALIDATE_CANDIDATE_MAIN_PR_RECEIPT_BEFORE_USING_OWNER_AUTHORITY",
+    "CREATE_ATTACH_AT_MOST_ONE_FRESH_EXACT_PRELIVE_CODESPACE",
+    "OBSERVE_AUTO_UI_READY_RESULT_WITHOUT_ARM",
+    "RETURN_TO_CORE_BEFORE_ANY_ARM_DECISION"
+  ],
+  "pending_remediation": "CONDITIONAL_STATIC_GUARD_FALLBACK_ONLY_IF_READY_ABSENT_AND_AFTER_ANOTHER_CORE_FRESH_REBIND",
+  "unresolved_items": ["PRIOR_POSTATTACH_ROOT_CAUSE_UNPROVEN","REAL_CODESPACES_POSITIVE_GITHUB_PREFLIGHT_UNPROVEN","REAL_CODESPACES_ATTACH_POSTATTACH_EQUIVALENCE_UNPROVEN"],
+  "protected_locked_resources": {
+    "canonical_main_mutation": "FORBIDDEN_WITHOUT_SEPARATE_AUTHORITY",
+    "pr74": "DRAFT_OPEN_UNMERGED",
+    "old_codespaces_nonreusable": ["miniature-spork-gx59qvqqxgxg3959r","laughing-space-couscous-gx59qvqq5q4j25v7","ideal-succotash-wv967q77v6xph5w54"]
+  },
+  "next_safe_action": "FRESH_REVALIDATE_THEN_USE_AT_MOST_ONE_APPROVED_FRESH_CODESPACE_CREATE_ATTACH; NO_ARM",
+  "forbidden_actions": ["MANUAL_ARM","OAUTH","DEVICE_AUTHORIZATION","STEP3","STEP4_OR_APPLY","PRODUCTION_MUTATION","MAIN_OR_RULESET_MUTATION","MERGE","WORKFLOW_DISPATCH","SECRET_OR_WRITER_KEY_OPERATION","RUNTIME_ACTIVATION"],
+  "resume_safety": {
+    "resume_command_never_grants_authority": true,
+    "permissions_snapshot_requires_fresh_revalidation": true,
+    "on_binding_mismatch": "FAIL_CLOSED"
+  },
+  "pointers": {
+    "pr": "https://github.com/fufufu1116/multiverse-research/pull/74",
+    "owner_addendum_receipt_comment": 5508591175,
+    "v1_lab_fix_required_comment": 5508695691
+  }
+}

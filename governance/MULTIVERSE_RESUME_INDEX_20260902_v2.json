@@ -1,0 +1,75 @@
+{
+  "schema": "multiverse.resume.index.v2",
+  "status": "IMPLEMENTATION_CANDIDATE",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority": "RESUME_METADATA_ONLY_NO_LIVE_AUTHORITY",
+  "supersedes": "governance/MULTIVERSE_RESUME_INDEX_20260902_v1.json",
+  "well_known_bootstrap_locator": "governance/MULTIVERSE_RESUME_INDEX_CURRENT.json",
+  "resume_commands": {
+    "core": "MULTIVERSE再開。Fresh Readして続けて",
+    "keirin": "競輪Research再開。Fresh Readして続けて"
+  },
+  "bootstrap_contract": {
+    "first_hop_must_be_well_known_locator": true,
+    "infer_latest_version_from_filename_or_timestamp": false,
+    "repository_wide_discovery_by_default": false,
+    "chat_memory_may_select_index_version": false,
+    "locator_or_blob_mismatch": "FAIL_CLOSED"
+  },
+  "progressive_fresh_read": {
+    "sequence": [
+      "FRESH_FETCH_WELL_KNOWN_LOCATOR_FROM_CANONICAL_MAIN",
+      "FRESH_FETCH_EXACT_CURRENT_INDEX_AND_VERIFY_LOCATOR_BOUND_BLOB",
+      "SELECT_LANE_AND_FRESH_FETCH_EXACT_LANE_CURRENT_STATE",
+      "RESOLVE_ACTIVE_TASK_STATUS",
+      "FETCH_ACTIVE_TASK_MANIFEST_ONLY_IF_STATUS_ACTIVE",
+      "FETCH_REQUIRED_ARTIFACTS_ONLY"
+    ],
+    "load_full_history_by_default": false,
+    "load_giant_handoff_by_default": false,
+    "history_retrieval": "POINTER_ONLY_ON_DEMAND",
+    "missing_stale_or_binding_mismatch": "FAIL_CLOSED"
+  },
+  "active_task_resolution": {
+    "ACTIVE": {
+      "manifest_requirement": "NONEMPTY_EXACT_POINTER_REQUIRED",
+      "transition": "FETCH_MANIFEST_THEN_REQUIRED_ARTIFACTS_ONLY"
+    },
+    "NO_ACTIVE_TASK": {
+      "manifest_requirement": "MUST_BE_NULL",
+      "transition": "SKIP_TASK_MANIFEST_AND_LOAD_REQUIRED_ARTIFACTS_ONLY"
+    },
+    "other_or_missing_status": "FAIL_CLOSED"
+  },
+  "safety": {
+    "resume_command_grants_authority": false,
+    "permissions_are_snapshot_not_bearer_token": true,
+    "fresh_revalidation_required_before_material_action": true,
+    "cross_lane_authority_inheritance": false,
+    "lab_auditor_shared_chat_auto_injection": false
+  },
+  "lane_state_pointers": {
+    "core": {
+      "path": "governance/MULTIVERSE_CORE_CURRENT_STATE_20260902_v2.json",
+      "expected_blob": "812016ac7821a366643bf93aef8b1c2a215b8a4d"
+    },
+    "keirin": {
+      "path": "governance/MULTIVERSE_KEIRIN_CURRENT_STATE_20260902_v2.json",
+      "expected_blob": "ebfd45c0a3530f69ba35065cf07855908174c7c3"
+    }
+  },
+  "state_update_contract": {
+    "snapshot_is_current_only_after_fresh_binding_check": true,
+    "future_state_transition_must_publish_new_versioned_state": true,
+    "future_index_rotation_must_update_well_known_locator_in_same_reviewed_git_commit": true,
+    "old_versioned_indexes_and_states_remain_audit_history_not_current_authority": true
+  },
+  "policy_pointer": "governance/MULTIVERSE_CHAT_INDEPENDENT_RESUME_CONTEXT_COMPRESSION_OWNER_ADDENDUM_20260902_v1.json",
+  "audit_pointer": {
+    "owner_addendum_receipt_comment": 5508591175,
+    "v1_freeze_comment": 5508654911,
+    "v1_lab_request_comment": 5508660633,
+    "v1_lab_fix_required_comment": 5508695691
+  },
+  "metrics": ["HANDOFF_TOKEN_SIZE","RESUME_TIME","CONTEXT_LOADED","OWNER_COPY_PASTE_COUNT","OWNER_TOUCH_COUNT","RECOVERY_FAILURE_COUNT"]
+}

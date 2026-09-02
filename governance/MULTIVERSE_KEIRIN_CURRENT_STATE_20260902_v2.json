@@ -1,0 +1,102 @@
+{
+  "schema": "multiverse.keirin.current_state.v2",
+  "status": "FRESH_OBSERVED_SNAPSHOT_IMPLEMENTATION_CANDIDATE",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": {
+    "name": "research/keirin-real-evidence-dual-lane-20260901-v1",
+    "head": "cf05b5f5a80e32007f023a1f3af9d3f1ca8a63dd",
+    "tree": "e2dad73c863a2af755cc0c5187703b82c9b35951"
+  },
+  "active_stage": "S0",
+  "active_baseline": {
+    "name": "UNTOUCHED_S0_STANDARD_PL",
+    "source": "latest_independent_evaluation_and_posteval_disposition"
+  },
+  "latest_closed_experiment": {
+    "name": "FROZEN_SHORT_BANK_X_STYLE_CONDITIONAL_PL",
+    "prespec_commit": "c1c12d2f6537f322351f5889bdeb3da74e951ebf",
+    "evaluation_receipt": "v3/historical_all_market/research_candidates/KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_EVALSET_RECEIPT_20260902_v1.json",
+    "evaluation_commit": "050817a6600b6153300ee99d358da5bdabc6964d",
+    "posteval_disposition": "v3/historical_all_market/research_candidates/KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_POSTEVAL_DISPOSITION_20260902_v1.json",
+    "posteval_commit": "cf05b5f5a80e32007f023a1f3af9d3f1ca8a63dd",
+    "decision": "ARCHIVE_AS_NO_ADVANCE",
+    "status": "CLOSED_NO_SAME_HOLDOUT_RESCUE"
+  },
+  "active_task": {
+    "status": "NO_ACTIVE_TASK",
+    "task_id": null,
+    "manifest": null,
+    "reason": "LATEST_PRESPECIFIED_EXPERIMENT_CLOSED_NO_ADVANCE_AND_NEXT_EXPERIMENT_NOT_YET_RESOLVED_FROM_MINIMAL_CURRENT_ARTIFACT_SET",
+    "resolver_transition": "SKIP_TASK_MANIFEST_AND_LOAD_REQUIRED_ARTIFACTS_ONLY"
+  },
+  "latest_evidence": {
+    "evaluation_status": "INDEPENDENT_EVALUATION_COMPLETED_NO_ADVANCE",
+    "disposition_status": "CLOSED_NO_SAME_HOLDOUT_RESCUE",
+    "candidate_minus_s0": {
+      "L1": 0.0,
+      "L2": -0.011143850979883576,
+      "L3": 0.007282036521625813,
+      "ordered_top3_log_loss": -0.0038618144582577628
+    },
+    "bootstrap_95pct_upper_below_zero": false,
+    "all_required_conditions_pass": false,
+    "baseline_remains_current": true
+  },
+  "untouched_protected_datasets": {
+    "later_locked_blocks_unopened": ["広島","佐世保"],
+    "no_post_target_parser_repair": true,
+    "no_same_holdout_rescue_tuning": true,
+    "burned_for_tuning": ["SHORT_BANK_X_STYLE_FIT_POPULATION","SHORT_BANK_X_STYLE_EVALUATION_POPULATION"]
+  },
+  "parallel_research_lanes": {
+    "status": "NOT_RESOLVED_FROM_MINIMAL_CURRENT_ARTIFACT_SET",
+    "rule": "DO_NOT_INVENT; RESOLVE_BY_POINTER_ONLY_IF_REQUIRED_FOR_ACTIVE_DECISION"
+  },
+  "open_hypotheses": [
+    "NEXT_CANDIDATE_MUST_COME_FROM_PREEXISTING_UNBURNED_PRESPECIFIED_LINEAGE_OR_NEW_LINEAGE_FIXED_BEFORE_NEW_TARGET_EXTRACTION",
+    "SHORT_BANK_X_STYLE_ARCHIVED_NO_ADVANCE",
+    "NO_SAME_HOLDOUT_RESCUE_PERMITTED"
+  ],
+  "leakage_boundaries": {
+    "pre_features": ["competition_score","style","official_fixed_bank_circumference"],
+    "result_target_only": true,
+    "payout_used": false,
+    "odds_used": false,
+    "kdreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_post_result_repair": false,
+    "parser_modified_after_target_view": false,
+    "result_as_feature": false,
+    "same_holdout_feature_engineering": false
+  },
+  "pending_work": {
+    "next_prespecified_experiment": "NOT_RESOLVED_FROM_MINIMAL_CURRENT_ARTIFACT_SET",
+    "same_holdout_rescue": "FORBIDDEN",
+    "promotion": "NO_ADVANCE"
+  },
+  "owner_gate": "NO_OWNER_GATE_IN_LATEST_RESEARCH_EVIDENCE",
+  "permissions": {
+    "research_candidate_only": true,
+    "production_authority": false,
+    "s1_promotion_authority": false,
+    "live_authority": false,
+    "real_money_execution": false
+  },
+  "next_safe_research_actions": [
+    "KEEP_UNTOUCHED_S0_STANDARD_PL_AS_CURRENT_BASELINE",
+    "DO_NOT_RESCUE_TUNE_ON_BURNED_FIT_OR_EVALUATION_POPULATIONS",
+    "RESOLVE_NEXT_EXPERIMENT_ONLY_FROM_PREEXISTING_UNBURNED_PRESPECIFIED_LINEAGE_OR_NEW_LINEAGE_FIXED_BEFORE_NEW_TARGET_EXTRACTION",
+    "LOAD_PARALLEL_LANE_DETAILS_ONLY_IF_REQUIRED_FOR_THE_ACTIVE_DECISION"
+  ],
+  "resume_safety": {
+    "resume_command_never_grants_authority": true,
+    "fresh_branch_and_receipt_revalidation_required": true,
+    "on_binding_mismatch": "FAIL_CLOSED"
+  },
+  "pointers": {
+    "latest_evaluation_receipt": "v3/historical_all_market/research_candidates/KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_EVALSET_RECEIPT_20260902_v1.json",
+    "latest_posteval_disposition": "v3/historical_all_market/research_candidates/KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_POSTEVAL_DISPOSITION_20260902_v1.json",
+    "owner_addendum_receipt_comment": 5508591175,
+    "v1_lab_fix_required_comment": 5508695691
+  }
+}
