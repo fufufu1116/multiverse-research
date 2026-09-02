@@ -1,0 +1,24 @@
+{
+  "record":"KEIRIN_S0_NEXT_UNBURNED_CHALLENGER_SEARCH_20260902_v1",
+  "status":"NO_PREEXISTING_UNBURNED_S0_CONDITIONAL_PL_CHALLENGER_FOUND",
+  "scope":"RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "branch_head_at_search":"9f01b12fc39e7ca4b22677b65d4bd5f64a541bad",
+  "research_candidates_tree_sha":"d5ed1e17028326fc4e46b59db47760fd8c95226c",
+  "search_rule":"Inspect the current research_candidates tree for explicit S0 conditional-placement challenger prespecs and corresponding fit/evaluation artifacts. Do not use protected holdout or new RESULT targets for candidate selection.",
+  "observed_explicit_s0_challenger_lineages":[
+    {"lineage":"S0_CONDITIONAL_SCORE_SCALE","prespec_present":true,"evaluation_report_present":true,"classification":"ALREADY_EVALUATED_NOT_UNBURNED"},
+    {"lineage":"S0_TEMPERATURE_CALIBRATION","prespec_present":true,"evaluation_report_present":true,"classification":"ALREADY_EVALUATED_NOT_UNBURNED"},
+    {"lineage":"S0_OBJECTIVE_STYLE_ROLE_CONDITIONAL_PL","prespec_present":true,"evaluation_report_present":true,"classification":"ALREADY_EVALUATED_NOT_UNBURNED"},
+    {"lineage":"S0_OBJECTIVE_TACTICAL_PROFILE_CONDITIONAL_PL","prespec_present":true,"evaluation_report_present":true,"posteval_disposition_present":true,"classification":"CLOSED_NOT_UNBURNED"},
+    {"lineage":"S0_OBJECTIVE_B_COUNT_CONDITIONAL_PL","prespec_present":true,"evaluation_report_present":true,"posteval_disposition_present":true,"classification":"CLOSED_NOT_UNBURNED"}
+  ],
+  "candidate_name_search":{"S_COUNT":"NO_EXISTING_S_COUNT_PRESPEC_FILENAME_FOUND_IN_CURRENT_RESEARCH_CANDIDATES_TREE"},
+  "safe_pre_evidence_bindings":{
+    "pre_source_manifest_blob":"c3aa1be3b8eeb43f438db57cbd29929bffae198a",
+    "retrospective_parser_blob":"d0c3da166b6f9590d7894f1bbe2ba438c05c4390"
+  },
+  "safe_pre_fields_confirmed_without_new_target_extraction":["competition_score","style","S","B","nige","makuri","sashi","mark"],
+  "decision":"CREATE_NEW_INDEPENDENT_LINEAGE_BEFORE_ANY_NEW_TARGET_EXTRACTION",
+  "next_rule":"Any new lineage must freeze feature definition, model formula, fit-selection rule, evaluation gate, and fail-closed rules before extracting any new RESULT target. Previously evaluated populations may be reused only for provenance/diagnostic interpretation and never for rescue tuning.",
+  "hard_boundaries":["NO_NEW_RESULT_TARGET_VIEW_FOR_CANDIDATE_SELECTION","NO_PAYOUT","NO_ODDS_OUTCOME_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_SAME_HOLDOUT_RESCUE_TUNING","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"]
+}
