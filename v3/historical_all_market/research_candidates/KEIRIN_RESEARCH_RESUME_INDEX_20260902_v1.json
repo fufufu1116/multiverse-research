@@ -1,0 +1,21 @@
+{
+  "record":"KEIRIN_RESEARCH_RESUME_INDEX_20260902_v1",
+  "status":"CHAT_INDEPENDENT_FRESH_RESUME_ENTRYPOINT_RESEARCH_CANDIDATE",
+  "canonical_repo":"fufufu1116/multiverse-research",
+  "research_branch":"research/keirin-real-evidence-dual-lane-20260901-v1",
+  "creation_parent_head":"78e9bff755fe206892af89a1cf97905f3dcd737d",
+  "first_rule":"Never infer CURRENT/NOW/LATEST from this file's stored SHA, chat history, handoff, or memory. Fresh Read the research branch ref first.",
+  "resume_sequence":[
+    {"step":1,"action":"FRESH_READ_RESEARCH_BRANCH_REF","load":"branch HEAD only"},
+    {"step":2,"action":"READ_CURRENT_STATE","path":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260902_v1.json"},
+    {"step":3,"action":"READ_ONLY_ACTIVE_TASK_OR_PRESPEC","rule":"Use current state's lane pointers; do not preload all historical artifacts."},
+    {"step":4,"action":"LOAD_REQUIRED_EVIDENCE_ONLY","rule":"Follow required_artifact_pointers and Reality authority read order only as needed."},
+    {"step":5,"action":"CONTINUE_WITH_FRESH_BINDING","rule":"If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+  ],
+  "current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260902_v1.json",
+  "lane_entrypoints":{"S0_FIXED":"v3/historical_all_market/research_candidates/KEIRIN_S0_SECOND_FUTURE_PERIOD_101R_GATE_REPORT_20260902_v1.json","S0_DIAGNOSTIC":"v3/historical_all_market/research_candidates/KEIRIN_S0_POST_101R_STAGEWISE_CLUSTER_CALIBRATION_DIAGNOSTIC_20260902_v1.json","RIDER_BANK":"v3/historical_all_market/research_candidates/KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json","RIDER_LINE_ROLE":"v3/historical_all_market/research_candidates/KEIRIN_RIDER_LINE_ROLE_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json","REALITY_KNOWLEDGE":"v3/historical_all_market/research_candidates/reality_knowledge/REALITY_KNOWLEDGE_AUTHORITY_INDEX_20260902_v2.json","REALITY_UNRESOLVED":"v3/historical_all_market/research_candidates/reality_knowledge/SOURCE_UNRESOLVED_ITEMS_20260902_v3.json","DIGITAL_TWIN_GAP":"v3/historical_all_market/research_candidates/reality_knowledge/MODEL_AND_TWIN_REALITY_DEEP_AUDIT_DELTA_20260902_v1.json"},
+  "context_policy":{"chat":"WORKSPACE_NOT_AUTHORITY","github":"RESEARCH_STATE_EVIDENCE_DECISION_PRESPEC_RESULTS_AUTHORITY_WITHIN_RESEARCH_LANE","history":"POINTERIZED_LOAD_ONLY_WHEN_NEEDED","owner":"MUST_NOT_BE_PERMANENT_CONTEXT_COURIER"},
+  "recovery_metrics":{"HANDOFF_TOKEN_SIZE":"TARGET_MINIMIZE","RESUME_TIME":"MEASURE_FROM_FRESH_READ_TO_SAFE_ACTIVE_TASK_RECOVERY","CONTEXT_LOADED":"COUNT_OR_SIZE_OF_ARTIFACTS_LOADED","OWNER_COPY_PASTE_COUNT":"TARGET_ZERO_FOR_ROUTINE_RESUME","OWNER_TOUCH_COUNT":"TARGET_MINIMIZE","RECOVERY_FAILURE_COUNT":"TARGET_ZERO"},
+  "success_test":"A new chat receiving only '競輪Research再開。Fresh Readして続けて' can safely recover active state from GitHub without old chat or a giant handoff.",
+  "owner_action_required_now":false
+}
