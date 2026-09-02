@@ -117,10 +117,12 @@ jobs:
           status_rc=$?
           set -e
           printf '%s\n' "${status_output}"
-          test "${status_rc}" -eq 92
+          test "${status_rc}" -ne 0
           grep -F 'PHASE_C_V19_7_36_V7R7_ARM_START codespace=mechanical-status-fdpath' <<<"${status_output}"
+          grep -F 'PHASE_C_V19_7_36_V7R6_SESSION_GATE_DENIED:GITHUB_SERVER_TIME' <<<"${status_output}"
           if grep -F 'PHASE_C_V19_7_36_V7R7_STATUS_CHANNEL_DENIED' <<<"${status_output}"; then exit 92; fi
           if grep -F 'RETAINED_FD_REACHED_CURRENT_PATH' <<<"${status_output}"; then exit 92; fi
+          printf 'PRELAB_NETWORK_NONE_TRUSTED_TIME_FAIL_CLOSED_PASS=true\n'
 
           docker run --rm -v "${status_volume}:/workspaces" --entrypoint /bin/bash "${MULTIVERSE_PRELAB_DOCKER_TAG}" -lc '
             set -euo pipefail
