@@ -1,0 +1,117 @@
+{
+  "record": "KEIRIN_S0_POST_200R_NEW_PERIOD_CONFIRMATION_REPORT_20260902_v1",
+  "status": "REPLICATION_PASS_DEVELOPMENT_CONFIRMATION_NOT_MODEL_PROMOTION",
+  "scope": "RETROSPECTIVE_DEVELOPMENT_CONFIRMATION_ONLY",
+  "bindings": {
+    "parent_prespec_commit": "520b2c6c099661c8e780828f50718d94d8c7899b",
+    "acquisition_manifest_commit": "4f59927e8b3fb0b8ddc71a065eafaa2bdeb39fd3",
+    "acquisition_append_commit": "a0631f5c1f6618b0e8066795d56a5f063fcaf004"
+  },
+  "locked_model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "feature": "competition_score",
+    "beta": 0.22260435254784533,
+    "refit_on_confirmation_batch": false,
+    "feature_change": false,
+    "venue_date_or_class_adjustment": false
+  },
+  "acquisition": {
+    "attempted_locked_races": 60,
+    "successful_PRE_plus_RESULT_races": 55,
+    "fail_closed_races": 5,
+    "period": ["2026-06-22", "2026-06-24"],
+    "venues": ["久留米", "函館", "小田原"],
+    "selection": "WHOLE_LOCKED_MEETING_OR_DAY_BLOCKS_IN_RACE_NUMBER_ORDER_NO_OUTCOME_CONDITIONED_INCLUSION",
+    "fail_closed": [
+      {"race":"久留米 2026-06-23 R3","reason":"PRE_SOURCE_NOT_SAFELY_JOINABLE"},
+      {"race":"函館 2026-06-22 R6","reason":"RESULT_JOIN_NOT_SAFELY_AVAILABLE_IN_ACQUISITION_PATH"},
+      {"race":"函館 2026-06-22 R7","reason":"RESULT_JOIN_NOT_SAFELY_AVAILABLE_IN_ACQUISITION_PATH"},
+      {"race":"函館 2026-06-22 R9","reason":"PRE_SOURCE_NOT_SAFELY_AVAILABLE"},
+      {"race":"函館 2026-06-22 R11","reason":"PRE_SOURCE_NOT_SAFELY_AVAILABLE"}
+    ]
+  },
+  "source_boundary": {
+    "PRE": "public historical race-card representations from KDreams and, for the appended whole-day block where KDreams direct retrieval was unstable, netkeirin race-card pages",
+    "RESULT": "public historical result pages, including netkeirin cross-source result pages where used",
+    "RESULT_target_only_never_feature": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "tips_or_marks_used": false,
+    "manual_repair": false
+  },
+  "block_metrics": [
+    {
+      "block":"久留米 2026-06-22",
+      "n":12,
+      "winner_log_loss":{"s0":1.6191351448584188,"uniform":1.9459101490553132},
+      "winner_brier":{"s0":0.10818573927118615,"uniform":0.12244897959183672},
+      "ordered_top3_log_loss":{"s0":5.300719734878682,"uniform":5.3471075307174685}
+    },
+    {
+      "block":"久留米 2026-06-23",
+      "n":11,
+      "winner_log_loss":{"s0":2.064564135559432,"uniform":1.9459101490553132},
+      "winner_brier":{"s0":0.13198486869009587,"uniform":0.12244897959183673},
+      "ordered_top3_log_loss":{"s0":4.879678507648044,"uniform":5.3471075307174685},
+      "negative_evidence_retained":true
+    },
+    {
+      "block":"久留米 2026-06-24",
+      "n":12,
+      "winner_log_loss":{"s0":1.8020395846156385,"uniform":1.9330642590697085},
+      "winner_brier":{"s0":0.11468698718750392,"uniform":0.12381897203325774},
+      "ordered_top3_log_loss":{"s0":5.162202023503091,"uniform":5.3004728817228495}
+    },
+    {
+      "block":"函館 2026-06-22 safe joins",
+      "n":8,
+      "winner_log_loss":{"s0":1.7492737848949689,"uniform":1.9266413140769059},
+      "winner_brier":{"s0":0.11328767925839077,"uniform":0.12450396825396826},
+      "ordered_top3_log_loss":{"s0":5.201004075794835,"uniform":5.277155557225541}
+    },
+    {
+      "block":"小田原 2026-06-22 whole-day",
+      "n":12,
+      "winner_log_loss":{"s0":1.930131622607291,"uniform":1.9459101490553128},
+      "winner_brier":{"s0":0.12230730182767452,"uniform":0.12244897959183672},
+      "ordered_top3_log_loss":{"s0":4.975963301982241,"uniform":5.347107530717467}
+    }
+  ],
+  "aggregate_55R": {
+    "winner_log_loss":{"s0":1.834910399914358,"uniform":1.9403046697888675,"better":true},
+    "winner_brier":{"s0":0.11818718780171919,"uniform":0.1230467944753659,"better":true},
+    "ordered_top3_log_loss":{"s0":5.100929398451916,"uniform":5.326757865701635,"better":true}
+  },
+  "decision": {
+    "prespec_classification":"REPLICATION_PASS",
+    "reason":"fixed S0 is better than uniform on all three aggregate primary metrics on the genuinely later-period confirmation batch",
+    "negative_block_hidden":false,
+    "auto_repair":false,
+    "model_promotion":false,
+    "edge_or_profitability_claim":false
+  },
+  "limitations": [
+    "This is development confirmation, not untouched final validation.",
+    "The 55 successful races are clustered in 2026-06-22 through 2026-06-24 and only three venues, so wider temporal and regime generalization remains unproven.",
+    "Source representations are retrospective public pages; PRE and RESULT were logically separated and RESULT was never used as a feature, but this is not equivalent to an independently archived pre-cutoff feed.",
+    "Source heterogeneity exists because public KDreams and netkeirin pages were used according to availability; PAYOUT, odds, tips, and prediction marks were excluded.",
+    "One full adequately sized day block, Kurume 2026-06-23, was worse than uniform on winner log loss and winner Brier and is retained as negative evidence.",
+    "Probability skill alone does not establish market mispricing, positive EV, ROI, profitability, or real-money suitability."
+  ],
+  "next_allowed_by_parent_prespec": [
+    "CALIBRATION_RELIABILITY_BINS",
+    "TEMPORAL_BLOCK_STABILITY",
+    "RANKING_METRICS",
+    "TIMESTAMP_PROVEN_MARKET_ONLY_COMPARISON"
+  ],
+  "hard_boundaries": [
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT_AS_FEATURE",
+    "NO_PROTECTED_HOLDOUT_OPENING",
+    "NO_DEV2000_C_RESCUE",
+    "NO_POSTHOC_S0_REFIT_ON_CONFIRMATION_BATCH",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM_FROM_PROBABILITY_SKILL_ALONE",
+    "NO_MODEL_PROMOTION_FROM_THIS_REPORT_ALONE"
+  ]
+}
