@@ -1,0 +1,141 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_S_COUNT_EVAL_REPORT_20260902_v1",
+  "status": "S_COUNT_CHALLENGER_NO_ADVANCE",
+  "scope": "RESEARCH_CANDIDATE_EVALUATION_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "7f10d0f7c9cd13470e51c504b20cc0ba91fdd615",
+    "fitset_selection_lock_commit": "354ade361aae7c2393ec9af15bc7b7152662695c",
+    "fitset_receipt_commit": "45cfc7d2934a9a581789c171129ad00e9bc2d34d",
+    "gamma_lock_commit": "11443d7caff7839e9c697179f353b04f4fc00e73",
+    "evalset_selection_lock_commit": "ab09c411fdd78dd061ba8c387b8c30061a8816b5"
+  },
+  "models": {
+    "untouched_s0": {
+      "beta": 0.22260435254784533,
+      "stage1": "beta * competition_score",
+      "stage2": "beta * competition_score",
+      "stage3": "beta * competition_score"
+    },
+    "candidate": {
+      "gamma": 0.02629565071288781,
+      "stage1": "beta * competition_score",
+      "stage2": "beta * competition_score + gamma * S after actual stage1 removal",
+      "stage3": "beta * competition_score + gamma * S after actual stage1 and stage2 removals",
+      "S_transformation": "RAW_S_COUNT_UNCHANGED"
+    }
+  },
+  "population": {
+    "race_dates": ["2026-07-19", "2026-07-20"],
+    "attempted_races": 53,
+    "successful_races": 51,
+    "fail_closed_races": 2,
+    "included_blocks_in_locked_order": [
+      {"race_date":"2026-07-19","venue":"京王閣","attempted":9,"successful":9},
+      {"race_date":"2026-07-19","venue":"松戸","attempted":7,"successful":7},
+      {"race_date":"2026-07-19","venue":"豊橋","attempted":9,"successful":9},
+      {"race_date":"2026-07-19","venue":"高知","attempted":12,"successful":11},
+      {"race_date":"2026-07-20","venue":"京王閣","attempted":9,"successful":9},
+      {"race_date":"2026-07-20","venue":"松戸","attempted":7,"successful":6}
+    ],
+    "fail_closed": [
+      {"race":"高知 2026-07-19 R8","reason":"DEAD_HEAT_OR_NON_UNIQUE_ORDERED_TOP3"},
+      {"race":"松戸 2026-07-20 R3","reason":"DEAD_HEAT_OR_NON_UNIQUE_ORDERED_TOP3"}
+    ],
+    "stop_rule_application": "CLOSED_AT_END_OF_2026-07-20_MATSUDO_BLOCK_WITH_51_SUCCESSFUL_RACES",
+    "later_locked_blocks_unopened": ["2026-07-20 豊橋", "2026-07-20 岸和田", "2026-07-20 高知"],
+    "field_size_distribution": {"6":1,"7":39,"9":11}
+  },
+  "finalization_integrity_check": {
+    "status": "PASSED_BEFORE_CANONICAL_EVAL_REPORT_WRITE",
+    "corrected_workspace_row": "京王閣 2026-07-20 R4",
+    "issue": "An interim workspace calculation had reused the prior-day PRE row for this race. No S-count evaluation report had yet been committed.",
+    "authoritative_source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260719020004/",
+    "verified_PRE_score_S_by_car": {
+      "1":[85.34,3],"2":[83.00,4],"3":[80.41,4],"4":[80.11,5],"5":[76.62,0],"6":[70.38,0],"7":[69.05,4]
+    },
+    "verified_ordered_top3": [4,1,2],
+    "effect_on_decision": "NONE_NO_ADVANCE_REMAINS"
+  },
+  "invariance_checks": {
+    "winner_log_loss": {"untouched_s0":1.6095577587562528,"candidate":1.6095577587562528,"difference":0.0,"pass":true},
+    "winner_brier": {"untouched_s0":0.09999024500554574,"candidate":0.09999024500554574,"difference":0.0,"pass":true},
+    "winner_probability_max_abs_difference": 0.0,
+    "winner_ranking": {
+      "top1_hit_rate":0.43137254901960786,
+      "top2_coverage":0.6470588235294118,
+      "mean_winner_rank":2.5294117647058822,
+      "mean_reciprocal_winner_rank":0.619327731092437,
+      "candidate_identical":true,
+      "pass":true
+    },
+    "baseline_beta_unchanged": true,
+    "gamma_refit_on_evaluation": false,
+    "S_transformation_changed": false
+  },
+  "primary_metrics": {
+    "L1": {"untouched_s0":1.6095577587562528,"candidate":1.6095577587562528,"candidate_minus_s0":0.0},
+    "L2": {"untouched_s0":1.7122889322891341,"candidate":1.7111173451017487,"candidate_minus_s0":-0.0011715871873854537,"candidate_better":true},
+    "L3": {"untouched_s0":1.8145727312377864,"candidate":1.7872837748838282,"candidate_minus_s0":-0.02728895635395795,"candidate_better":true},
+    "ordered_top3_log_loss": {"untouched_s0":5.136419422283172,"candidate":5.107958878741829,"candidate_minus_s0":-0.028460543541343402,"candidate_better":true}
+  },
+  "race_cluster_bootstrap": {
+    "unit": "race",
+    "replicates": 20000,
+    "seed": 20260902,
+    "interval": "percentile_95pct",
+    "differences_candidate_minus_s0": {
+      "ordered_top3_log_loss": {"observed":-0.028460543541343402,"bootstrap_mean":-0.028601712484335882,"ci95":[-0.06195762064664896,0.004483181420982727]},
+      "L2": {"observed":-0.0011715871873854537,"bootstrap_mean":-0.001244818812017417,"ci95":[-0.02553025870413019,0.020288664245081994]},
+      "L3": {"observed":-0.02728895635395795,"bootstrap_mean":-0.027356893672318472,"ci95":[-0.053226741267536716,-0.00291739454256343]}
+    }
+  },
+  "advancement_decision": {
+    "required_point_estimates_all_better": true,
+    "ordered_top3_better": true,
+    "L2_better": true,
+    "L3_better": true,
+    "winner_invariance_contract_pass": true,
+    "bootstrap_95pct_ordered_top3_upper_lt_zero": false,
+    "all_required_passed": false,
+    "decision": "S_COUNT_CHALLENGER_NO_ADVANCE",
+    "reason": "The frozen raw-S one-parameter candidate improved L2, L3, and ordered-top3 point estimates on the independent evaluation set while preserving Stage-1 exactly, but the prespecified race-cluster bootstrap 95% interval for candidate-minus-S0 ordered-top3 log loss crossed zero with a positive upper bound. The advancement gate therefore fails. No same-holdout rescue tuning is permitted."
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score","S"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_post_result_repair": false,
+    "source": "KDreams public retrospective race detail/result pages"
+  },
+  "interpretation": [
+    "Raw S showed directionally favorable independent point estimates for L2, L3, and ordered-top3 while preserving Stage-1 exactly.",
+    "The prespecified uncertainty gate did not pass because the ordered-top3 bootstrap interval retained a positive upper bound.",
+    "The fit and evaluation populations are burned for tuning and must not be used for rescue refits, transform changes, sign flips, stage splits, venue-specific rescue, field-size rescue, or same-holdout feature engineering.",
+    "This result does not authorize wider promotion, market/ROI claims, production use, or real-money execution."
+  ],
+  "hard_boundaries": [
+    "NO_SAME_HOLDOUT_RESCUE_TUNING",
+    "NO_CHANGE_TO_BASELINE_BETA",
+    "NO_GAMMA_REFIT",
+    "NO_GAMMA2_GAMMA3_SPLIT",
+    "NO_S_TRANSFORMATION_CHANGE",
+    "NO_SIGN_FLIP_RESCUE",
+    "NO_VENUE_SPECIFIC_RESCUE",
+    "NO_FIELD_SIZE_RESCUE",
+    "NO_SAME_HOLDOUT_FEATURE_ENGINEERING",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_ECON_HOLDOUT1000",
+    "NO_DEV2000_C_RESCUE",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION",
+    "NO_WAGERING_OR_STAKING",
+    "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"
+  ]
+}
