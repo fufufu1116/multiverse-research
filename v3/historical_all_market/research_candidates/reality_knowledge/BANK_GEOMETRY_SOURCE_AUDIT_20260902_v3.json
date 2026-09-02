@@ -1,0 +1,20 @@
+{
+  "record":"BANK_GEOMETRY_SOURCE_AUDIT_20260902_v3",
+  "status":"PROSPECTIVE_20260903_333M_400M_PILOT_CONTRAST_LOCKED_GENERALIZED_CIRCUMFERENCE_AFFINITY_NOT_IDENTIFIED",
+  "scope":"RESEARCH_SOURCE_AND_DESIGN_AUDIT_ONLY_NO_BANK_AFFINITY_RESULT_OR_FEATURE_ADMISSION",
+  "retrieval_date_jst":"2026-09-02",
+  "parents":["BANK_GEOMETRY_SOURCE_AUDIT_20260902_v1.json","BANK_GEOMETRY_SOURCE_AUDIT_20260902_v2.json"],
+  "prospective_population_binding":"../KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v2.json",
+  "current_official_bank_evidence":[
+    {"venue":"青森","source":"https://aomorikeirin.com/access/","circumference_m":400,"other_current_body":"long straight; organizer describes track as a neutral/クセのない 400m bank","exact_numeric_geometry_status":"NOT_CAPTURED_FROM_CURRENT_TEXT_BODY"},
+    {"venue":"武雄","source":"https://www.keirin.city.takeo.lg.jp/guide/","circumference_m":400.000,"estimated_straight_m":64.4,"max_cant":"32度00分19秒","straight_cant":"2度17分26秒","home_width_m":9.692,"back_width_m":8.693,"center_width_m":7.378},
+    {"venue":"富山","source":"https://www.toyama-keirin.com/guide/bank","circumference_m":333,"estimated_straight":"約43m","max_cant":"33°41'","renovation_note_source":"https://www.toyama-keirin.com/information/detail/2613","renovation_note":"Organizer states full bank renovation completed and reopening ceremony held 2025-05-28; current guide is therefore preferred over older historical geometry."}
+  ],
+  "design_conclusion":{"cross_circumference_transport_contrast":true,"levels_m":[333,400],"generalized_circumference_affinity_estimation_ready":false,"why_not":"Only one 333m venue (富山) is in this first future lock, so circumference is confounded with that venue and local program/rider mix. Two 400m venues do not remove the single-333-venue confound.","allowed_interpretation":"transport feasibility, missingness, source timing, and descriptive residual behavior by frozen block after a separately prespecified outcome gate","forbidden_interpretation":"claiming that 333m vs 400m causes or proves Rider×Circumference affinity from this three-venue pilot"},
+  "next_design_gate":["Before opening predictive outcomes for a generalized circumference hypothesis, prospectively lock at least one additional independent 333m venue block and preferably multiple future blocks per circumference.","Keep venue identity and physical-feature terms distinct; do not fit venue dummy rescue after seeing outcomes.","Use race-level clustered uncertainty and time-separated validation in later predictive evaluation.","Treat rider-profile '得意な周長' as official self-reported/profile attribute, not observed-performance truth; require point-in-time validity before feature use."],
+  "bank_affinity_result":"EVIDENCE_PENDING_NOT_ESTABLISHED",
+  "result_access_authorized":false,
+  "feature_admission":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_ACCESS_FROM_THIS_AUDIT","NO_CAUSAL_CIRCUMFERENCE_CLAIM_FROM_SINGLE_333_VENUE","NO_FEATURE_ADMISSION","NO_VENUE_DUMMY_RESCUE","NO_HISTORICAL_TO_CURRENT_BACKFILL","NO_POST_RESULT_VENUE_SELECTION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
