@@ -1,0 +1,15 @@
+{
+  "record":"KEIRIN_ODDSPARK_PRE_FIELD_MAPPING_CROSSCHECK_20260903_v1",
+  "status":"PASS_FOR_TRANSPORT_SEMANTICS_NONCANONICAL_SOURCE_NOT_FEATURE_ADMISSION",
+  "scope":"PRE_ONLY_TRANSPORT_CROSSCHECK",
+  "timestamp_jst":"2026-09-03T01:36:00+09:00",
+  "purpose":"Resolve the unlabeled numeric sequence in the indexed OddsPark mobile race-card surface by crosschecking against the already captured Toyama 1R KDreams PRE table before any outcome occurs.",
+  "race_binding":"4620260903010001",
+  "crosscheck_example":{"rider":"吉田 航","kdreams":{"competition_score":85.47,"nige":11,"makuri":1,"sashi":0,"mark_count":1,"S":10,"B":13},"oddspark":{"competition_score_display":85.476,"numeric_sequence_after_rates":[11,1,0,1,10,11,13]},"resolved_sequence_semantics":["nige","makuri","sashi","mark_count","S","H","B"],"agreement":{"nige":true,"makuri":true,"sashi":true,"mark_count":true,"S":true,"B":true},"note":"OddsPark exposes an additional H count between S and B; H is not part of the frozen KDreams PRE feature set and is not admitted here."},
+  "additional_consistency":"Toyama 1R remaining riders show the same positional pattern against the KDreams PRE-only pilot values.",
+  "precision_note":"OddsPark displays competition score to three decimals in this surface while the KDreams pilot displayed two decimals. Do not silently merge precision or choose a preferred source after outcomes; any canonical source/precision rule must be frozen before RESULT.",
+  "allowed_use":"TRANSPORT_SCHEMA_INTERPRETATION_AND_PRE_SOURCE_CROSSCHECK_ONLY",
+  "feature_admission":false,
+  "result_access_authorized":false,
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_ODDS_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_LINE_AS_TRUTH","NO_SILENT_PRECISION_MERGE","NO_POST_RACE_RECONSTRUCTION","NO_MODEL_FIT"]
+}
