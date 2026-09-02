@@ -1,0 +1,91 @@
+{
+  "record": "KEIRIN_REALITY_KNOWLEDGE_BASE_20260902_v1",
+  "status": "RESEARCH_CANDIDATE_REALITY_KNOWLEDGE_ONLY_NO_MODEL_AUTHORITY",
+  "retrieval_date_jst": "2026-09-02",
+  "source_registry": "OFFICIAL_SOURCE_REGISTRY_20260902_v1",
+  "principles": [
+    "Official existence does not imply feature admission or predictive importance.",
+    "Historical event-format documents are not current generic rules unless corroborated.",
+    "UNKNOWN is preserved as UNKNOWN.",
+    "Human forecast information is not objective race-generation truth."
+  ],
+  "categories": {
+    "A_RACE_RULES": {
+      "verified_reality": [
+        {"claim":"Competition is governed by formal judging criteria for interference and unsafe conduct, including pressure/pushing, inside/outer-band positioning, middle-splitting, and exemptions.","source_ids":["JKA_JUDGING"],"exact_evidence":"Judging PDF pp.73-80 and pp.119-123 sections; violation outcomes include disqualification, major riding caution and riding caution depending rule/degree.","confidence":"HIGH"},
+        {"claim":"Middle-splitting is formally defined as inserting/passing between two riders without sufficient safe interval and can lead to DQ or major caution depending impact/phase.","source_ids":["JKA_JUDGING"],"exact_evidence":"Judging PDF p.79 and related current criteria.","confidence":"HIGH"},
+        {"claim":"Pressure/pushing is formally defined and judged by resulting interference, degree and race phase; explicit exemption grounds exist.","source_ids":["JKA_JUDGING"],"exact_evidence":"Judging PDF pp.75-77 and current parallel criteria; exemption section explicitly labelled 免責事由.","confidence":"HIGH"},
+        {"claim":"Track-line concepts such as inner line, outer band line and yellow line are formal judging/track entities.","source_ids":["JKA_JUDGING"],"exact_evidence":"Judging PDF pp.73-74 and track-line appendix around pp.137-138.","confidence":"HIGH"},
+        {"claim":"Pacer/lead rider is a formal race actor in lead-fixed racing and judging/operations include it explicitly.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES","JKA_JUDGING"],"exact_evidence":"Implementation rule Arts.13, 17-23; judging role/track sections.","confidence":"HIGH"}
+      ],
+      "unresolved": ["Exact current primary wording for generic 敢闘義務 was not isolated in this audit.", "Exact current primary handling under the label 周回誤認 was not isolated; do not substitute historical explanations."]
+    },
+    "B_RACE_GENERATION_PROGRAMMING": {
+      "verified_reality": [
+        {"claim":"Race composition is not generated as an IID random sample of riders.","source_ids":["JKA_PROGRAM_FORMATION"],"exact_evidence":"Program formation PDF p.5: riders are allocated across races considering ability, riding style, regional balance and other factors; rider numbers consider ability/style/results.","confidence":"VERY_HIGH"},
+        {"claim":"Program officials explicitly examine rider ability, style, technical skill, recent competition results and other information before formation.","source_ids":["JKA_PROGRAM_FORMATION"],"exact_evidence":"PDF pp.4-5: advance assessment and program-card fields include class, age, registered prefecture, bicycle, gear ratio, recent average competition score and recent results.","confidence":"VERY_HIGH"},
+        {"claim":"Day-2-and-later progression is path-dependent on prior-day finish and event advancement rules.","source_ids":["JKA_PROGRAM_FORMATION"],"exact_evidence":"PDF pp.6-7: advancing riders are determined using the day's finish; tie/equal-position/abandonment/race-not-established cases have further rules.","confidence":"VERY_HIGH"},
+        {"claim":"Replacement/substitution is a formal process before and during a meeting.","source_ids":["JKA_PROGRAM_FORMATION"],"exact_evidence":"PDF pp.4-6: pre-meeting non-participation replacement, pre-inspection-day replacement, mid-meeting replacement.","confidence":"HIGH"},
+        {"claim":"Weather or other cancellation can trigger explicit reprogramming and can affect whether already-run finishes count for subsequent advancement.","source_ids":["JKA_PROGRAM_FORMATION","KEIRINJP_2005_ALLSTAR_QA"],"exact_evidence":"Current program PDF p.6 gives reprogramming rule for cancellation before race 5 start; 2005 Q&A is preserved only as event-specific historical detail.","confidence":"HIGH_CURRENT_GENERAL_PLUS_HISTORICAL_EVENT_DETAIL"},
+        {"claim":"Field size is formally constrained/determined per meeting and track width rather than universally fixed.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"],"exact_evidence":"Implementation rule Art.35.","confidence":"HIGH"}
+      ]
+    },
+    "C_RIDER_INFORMATION": {
+      "verified_reality": [
+        {"claim":"Official/public pre-race rider descriptors include registered prefecture, style, class, graduation term and age.","source_ids":["KEIRINJP_RACECARD_GUIDE","KEIRINJP_SEARCH_DATA_ROOM"],"exact_evidence":"KEIRIN.JP racecard guide and rider-search filters.","confidence":"HIGH"},
+        {"claim":"Public competition score is an official racecard strength summary based on the recent four months.","source_ids":["KEIRINJP_RACECARD_GUIDE"],"exact_evidence":"Racecard guide section 競走得点.","confidence":"HIGH"},
+        {"claim":"Program operations maintain additional pre-race context such as recent results, bicycle name and gear ratio.","source_ids":["JKA_PROGRAM_FORMATION"],"exact_evidence":"Program formation PDF pp.4-6.","confidence":"HIGH"},
+        {"claim":"KEIRIN.JP rider search exposes home bank/home velodrome as searchable attributes.","source_ids":["KEIRINJP_SEARCH_DATA_ROOM"],"exact_evidence":"Search page rider filters.","confidence":"HIGH_FOR_SEARCH_AVAILABILITY_ONLY"}
+      ],
+      "unresolved": ["Exact public competition_score formula/version governance was not mapped one-to-one to the JKA regulatory evaluation-point formula in this audit.", "Historical machine-readable completeness and point-in-time availability of home bank are not yet verified."]
+    },
+    "D_BANK_VENUE": {
+      "verified_reality": [
+        {"claim":"Track circumference differs materially across venues and current official values are published.","source_ids":["KEIRINJP_BANK_RECORD"],"exact_evidence":"Current bank-record table includes 333/335/400/500m examples and record metadata.","confidence":"HIGH"},
+        {"claim":"Track geometry and facility structure are regulated/approved physical properties, and changes require formal reporting.","source_ids":["BICYCLE_RACING_LAW_ENFORCEMENT_RULE"],"exact_evidence":"Enforcement rule Arts.8 and 13 require structure/equipment plans and change reporting.","confidence":"HIGH"}
+      ],
+      "partial_or_unresolved": ["A current, nationwide, machine-readable official registry for straight length, maximum cant and detailed geometry was not verified; old official venue pages may contain historical values but are not promoted to current truth.", "Indoor/outdoor/roof/environment classification needs venue-by-venue current official confirmation."]
+    },
+    "E_EQUIPMENT": {
+      "verified_reality": [
+        {"claim":"A rider must use a JKA-registered bicycle and the bicycle is subject to formal inspection.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES","JKA_RACING_VEHICLE_SAFETY_STANDARD"],"exact_evidence":"Implementation rule Art.32 and Arts.40-42; safety-standard context.","confidence":"HIGH"},
+        {"claim":"Bicycle name and gear ratio are operational pre-race data and can be updated/changed before racing.","source_ids":["JKA_PROGRAM_FORMATION"],"exact_evidence":"Program PDF pp.5-6 records bicycle name/gear ratio and records changes reported by inspection officials.","confidence":"HIGH"},
+        {"claim":"KEIRIN.JP data room maintains official indexes for registered bicycle and certified-parts information, but detailed iframe bodies were not obtained in this audit.","source_ids":["KEIRINJP_REGISTERED_BICYCLE_INDEX","KEIRINJP_CERTIFIED_PARTS_INDEX"],"exact_evidence":"Data-room link descriptions only.","confidence":"MEDIUM_FOR_EXISTENCE_ONLY"}
+      ]
+    },
+    "F_ENVIRONMENT": {
+      "verified_reality": [
+        {"claim":"JMA official observations can supply precipitation, temperature, humidity and wind with station-dependent coverage.","source_ids":["JMA_PAST_WEATHER_SEARCH"],"exact_evidence":"JMA observation-site data-element table.","confidence":"HIGH"},
+        {"claim":"Historical JMA values can be revised after publication.","source_ids":["JMA_PAST_WEATHER_DOWNLOAD"],"exact_evidence":"Download-service warning that historical data may later be corrected.","confidence":"HIGH"}
+      ],
+      "point_in_time_rule": "For a model feature, use only an observation/version provably available before prediction timestamp; separately freeze venue-to-station mapping and missingness/publication-lag policy.",
+      "unresolved": ["Publication-lag semantics for each observation product were not frozen here."]
+    },
+    "G_JUDGEMENT_RESULT_INTEGRITY": {
+      "verified_reality": [
+        {"claim":"Entrant membership is stateful: eligibility confirmation, health suitability and bicycle inspection can prevent participation.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"],"exact_evidence":"Implementation rule Arts.40-42.","confidence":"VERY_HIGH"},
+        {"claim":"Participation can be stopped/cancelled after initial program formation; relevant officials are notified.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES"],"exact_evidence":"Implementation rule Arts.18 and 42-46 context.","confidence":"HIGH"},
+        {"claim":"Finish order and winner determination are official judging acts; final judging includes photo-finish personnel.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES","JKA_JUDGING"],"exact_evidence":"Implementation Arts.20-23; judging PDF final-judge/photo sections.","confidence":"VERY_HIGH"},
+        {"claim":"Ties are legitimate result states rather than parser errors in reality.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES","JKA_PROGRAM_FORMATION"],"exact_evidence":"Implementation Art.36(3) prize split for ties; program PDF gives advancement handling for ties.","confidence":"HIGH"},
+        {"claim":"DQ, abandonment and race-not-established states participate in downstream program logic.","source_ids":["JKA_JUDGING","JKA_PROGRAM_FORMATION"],"exact_evidence":"Judging criteria and program PDF pp.6-7.","confidence":"HIGH"}
+      ]
+    },
+    "H_MARKET_SETTLEMENT_RULES": {
+      "classification": "MARKET_ONLY_NOT_OUTCOME_FEATURE",
+      "verified_reality": [
+        {"claim":"Japanese law distinguishes voting-system categories and defines the winning positions/combinations by system.","source_ids":["BICYCLE_RACING_LAW","BICYCLE_RACING_LAW_ENFORCEMENT_RULE"],"exact_evidence":"Law Art.11; enforcement rule Arts.19-20.","confidence":"VERY_HIGH"},
+        {"claim":"If entrants disappear to zero/one, a race is not established, or there is no winner, votes can be legally invalidated; non-starters also trigger invalidation rules depending voting type.","source_ids":["BICYCLE_RACING_LAW"],"exact_evidence":"Law Art.14.","confidence":"VERY_HIGH"},
+        {"claim":"Payout and refund are separate operational responsibilities from sporting outcome generation.","source_ids":["JKA_BICYCLE_RACE_IMPLEMENTATION_RULES","BICYCLE_RACING_LAW_ENFORCEMENT_RULE"],"exact_evidence":"Implementation Art.25; enforcement rule payout provisions.","confidence":"HIGH"}
+      ]
+    }
+  },
+  "cross_cutting_reality": [
+    "PROGRAM_SELECTION_EFFECTS_ARE_REAL_AND_OFFICIAL",
+    "ENTRANT_MEMBERSHIP_IS_STATEFUL_NOT_IMMUTABLE",
+    "RESULT_SPACE_INCLUDES_TIES_DQ_ABANDONMENT_CANCELLATION_NOT_ONLY_UNIQUE_ORDERED_TOP3",
+    "EQUIPMENT_AND_GEAR_ARE_REAL_PRE_RACE_STATE_BUT_TIMESTAMP_SENSITIVE",
+    "BANK_PHYSICS_ARE_REAL_BUT_CURRENT_GEOMETRY_COVERAGE_IS_INCOMPLETE",
+    "HUMAN_LINEUP_FORECAST_IS_NOT_OBJECTIVE_LINE_TRUTH"
+  ],
+  "hard_boundaries": ["NO_FEATURE_AUTO_ADMISSION", "NO_MODEL_CHANGE", "NO_PROTECTED_HOLDOUT_ACCESS", "NO_RESULT_OR_PAYOUT_LEAKAGE", "NO_MODEL_PROMOTION"]
+}
