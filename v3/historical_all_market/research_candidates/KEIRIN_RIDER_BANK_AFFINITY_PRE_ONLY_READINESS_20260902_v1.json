@@ -1,0 +1,24 @@
+{
+  "record":"KEIRIN_RIDER_BANK_AFFINITY_PRE_ONLY_READINESS_20260902_v1",
+  "status":"PARTIAL_READY_RESULT_EXTRACTION_NOT_AUTHORIZED",
+  "scope":"PRE_ONLY_SOURCE_AND_IDENTITY_READINESS_NO_MODEL_FIT",
+  "bindings":["KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json","KEIRIN_RIDER_IDENTITY_SOURCE_AUDIT_20260902_v1.json","KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v1.json","KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260902_v1.json","reality_knowledge/BANK_GEOMETRY_SOURCE_AUDIT_20260902_v1.json","reality_knowledge/SOURCE_UNRESOLVED_ITEMS_20260902_v3.json"],
+  "readiness_matrix":[
+    {"component":"FROZEN_S0_BASELINE","status":"PASS","note":"competition_score beta 0.22260435254784533 remains unchanged"},
+    {"component":"BURNED_DATA_FIREWALL","status":"PASS_CONSERVATIVE","note":"new affinity fit/eval target dates on or before 2026-07-23 are prohibited; 2026-07-24 is only a floor"},
+    {"component":"RIDER_STABLE_IDENTITY_SOURCE","status":"PARTIAL_PASS","note":"official KEIRIN.JP registration-number interface verified; deterministic PRE-only mapping still must be executed and hashed on the proposed population"},
+    {"component":"BANK_CIRCUMFERENCE_SOURCE","status":"PARTIAL_PASS","note":"official current/national circumference coverage exists; target-date effective interval must be verified and no post-renovation backfill allowed"},
+    {"component":"DETAILED_BANK_GEOMETRY","status":"BLOCKED","note":"straight length/cant/slopes/widths require reproducible numeric registry and historical effective versioning for target population"},
+    {"component":"HISTORICAL_HOME_BANK","status":"BLOCKED","note":"current profile attribute exists but historical point-in-time semantics/source are unresolved"},
+    {"component":"PREFERRED_CIRCUMFERENCE_OR_VENUE","status":"DESCRIPTIVE_ONLY_BLOCKED_AS_PERFORMANCE_TRUTH","note":"official profile attribute does not establish observed affinity and current value cannot be backfilled"},
+    {"component":"NEW_UNBURNED_PRE_ONLY_POPULATION_LOCK","status":"NOT_YET_CREATED","note":"must follow Fresh burned-ledger refresh, identity mapping readiness and source-version checks"},
+    {"component":"NEW_RESULT_TARGET_EXTRACTION","status":"NOT_AUTHORIZED","note":"no target may be opened from this readiness audit"}
+  ],
+  "first_safe_empirical_scope_if_future_gates_pass":"A low-DOF circumference/physical-affinity experiment on a fully PRE-locked post-firewall population; venue identity may be used for support/heterogeneity diagnostics but not high-cardinality rescue tuning.",
+  "rider_x_venue_lane":"DESCRIPTIVE_RESIDUAL_SUPPORT_AND_SELECTION_BIAS_AUDIT_FIRST; do not promote raw venue-specific rates or coefficients as generalizable bank affinity.",
+  "generalizable_bank_claim":"Requires reproduction across different venues sharing physical properties and a strictly later untouched evaluation block.",
+  "next_actions_in_order":["Fresh Read branch and burned ledger before population work","construct a PRE-only post-firewall candidate meeting/day inventory without RESULT","execute deterministic rider registration-number mapping on that PRE inventory","verify target-date circumference/effective status for every venue in the inventory","measure PRE-only rider×venue and rider×circumference support/missingness; do not inspect outcomes","freeze fit/evaluation membership and feature definition only if support gates pass","only then permit separate RESULT target extraction under a new execution receipt"],
+  "current_bank_affinity_result":"EVIDENCE_PENDING; BROAD RIDER_X_BANK_AFFINITY_NOT_ESTABLISHED",
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_EXTRACTION_FROM_READINESS_GATE","NO_S0_OR_BETA_CHANGE","NO_SHORT_BANK_X_STYLE_RESCUE","NO_CURRENT_GEOMETRY_OR_HOME_BANK_BACKFILL","NO_VENUE_DUMMY_RESCUE","NO_UNKNOWN_TO_ZERO","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM"]
+}
