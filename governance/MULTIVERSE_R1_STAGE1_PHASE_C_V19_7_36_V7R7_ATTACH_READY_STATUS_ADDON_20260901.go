@@ -20,6 +20,7 @@ const v7r7UIControlLeaf = "MULTIVERSE_PRELIVE_START_HERE.md"
 const v7r7ChallengePrefix = "PHASE_C_V19_7_36_V7R6_SESSION_CHALLENGE "
 const v7r7WaitingLine = "PHASE_C_V19_7_36_V7R6_WAITING_FOR_EXTERNAL_SESSION_BINDING"
 const v7r7ArmedLine = "PHASE_C_V19_7_36_V7R7_ARMED"
+const v7r7FailedClosedLine = "gate_state=FAILED_CLOSED"
 
 func v7r7Hex(s string, n int) bool {
 	if len(s) != n { return false }
@@ -51,7 +52,7 @@ func v7r7WriteSecure(secure *os.File, line string) error {
 
 func v7r7Fatal(original, secure *os.File, code string) {
 	if original != nil { fmt.Fprintln(original, "PHASE_C_V19_7_36_V7R7_STATUS_CHANNEL_DENIED:"+code) } else { fmt.Fprintln(os.Stderr, "PHASE_C_V19_7_36_V7R7_STATUS_CHANNEL_DENIED:"+code) }
-	if secure != nil { _ = v7r7WriteSecure(secure, "gate_state=FAILED_CLOSED"); secure.Close() }
+	if secure != nil { _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close() }
 	os.Exit(92)
 }
 
@@ -82,7 +83,11 @@ func v7r7MirrorUntilWaiting(r, w *os.File, originalFD int, secure *os.File, done
 			}
 		}
 		if err != nil {
-			if err == io.EOF { secure.Close(); return }
+			if err == io.EOF {
+				if werr := v7r7WriteSecure(secure, v7r7FailedClosedLine); werr != nil { _ = os.Remove(v7r7SecureStatusPath) }
+				secure.Close()
+				return
+			}
 			v7r7Fatal(original, secure, "STDOUT_READ")
 		}
 	}
@@ -205,10 +210,10 @@ func v7r7Install() error {
 	secure, err := v7r7OpenChannels(uint32(n))
 	if err != nil { return err }
 	originalFD, err := syscall.Dup(int(os.Stdout.Fd()))
-	if err != nil { _ = v7r7WriteSecure(secure, "gate_state=FAILED_CLOSED"); secure.Close(); return err }
+	if err != nil { _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close(); return err }
 	r, w, err := os.Pipe()
-	if err != nil { syscall.Close(originalFD); _ = v7r7WriteSecure(secure, "gate_state=FAILED_CLOSED"); secure.Close(); return err }
-	if err := syscall.Dup2(int(w.Fd()), int(os.Stdout.Fd())); err != nil { r.Close(); w.Close(); syscall.Close(originalFD); _ = v7r7WriteSecure(secure, "gate_state=FAILED_CLOSED"); secure.Close(); return err }
+	if err != nil { syscall.Close(originalFD); _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close(); return err }
+	if err := syscall.Dup2(int(w.Fd()), int(os.Stdout.Fd())); err != nil { r.Close(); w.Close(); syscall.Close(originalFD); _ = v7r7WriteSecure(secure, v7r7FailedClosedLine); secure.Close(); return err }
 	go v7r7MirrorUntilWaiting(r, w, originalFD, secure, nil)
 	return nil
 }
