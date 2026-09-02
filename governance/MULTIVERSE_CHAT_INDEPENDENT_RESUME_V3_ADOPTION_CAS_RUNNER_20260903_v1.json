@@ -1,0 +1,72 @@
+{
+  "schema": "multiverse.resume.adoption.cas_runner.v1",
+  "record": "MULTIVERSE_CHAT_INDEPENDENT_RESUME_V3_ADOPTION_CAS_RUNNER_20260903_v1",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority": "REVIEW_ONLY_NO_ADOPTION_AUTHORITY_UNTIL_NEW_OWNER_GATE",
+  "purpose": "PROVIDE_EXACT_OLD_REF_COMPARE_AND_SWAP_EQUIVALENT_FOR_MAIN_AND_CORE_STATE_ADOPTION_WRITES_USING_GIT_FORCE_WITH_LEASE",
+  "review_lineage": {
+    "v3_adoption_transaction_freeze": 5511074840,
+    "v3_adoption_transaction_lab_request": 5511087385,
+    "v3_adoption_transaction_lab_fix_required": 5511212447
+  },
+  "runner": {
+    "workflow_path": ".github/workflows/multiverse-resume-v3-adoption-cas-v1.yml",
+    "workflow_blob": "a5a44bf55031fc6104b5ec6877d1b48903d03650",
+    "runner_branch": "runner/chat-independent-resume-v3-adoption-cas-v1",
+    "runner_head": "BOUND_BY_FINAL_CORE_FREEZE_AFTER_COMMIT_CREATION",
+    "runner_not_adopted_to_main": true,
+    "github_token_permissions": ["contents:write"],
+    "no_repository_secret_required": true,
+    "no_owner_token_or_writer_key_required": true
+  },
+  "exact_refs": {
+    "expected_old_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "target_main": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
+    "target_main_branch": "meta/chat-independent-resume-context-compression-20260902-v3-adoption-transaction-v1",
+    "expected_old_core_state": "6facca0f57383197fb0843824df2c65298cb9cb4",
+    "target_core_state": "3a89d12a2edea0f51723abf28f244194269e340f",
+    "target_core_state_branch": "state/multiverse-core-post-resume-v3-adoption-candidate-v1"
+  },
+  "gate_refs": {
+    "prelab": "gate/chat-independent-resume-v3-adoption-cas-prelab-v1",
+    "one_shot_live_after_owner_gate": "gate/chat-independent-resume-v3-adoption-cas-one-shot-v1",
+    "gate_ref_must_start_at_expected_old_main": true,
+    "activation_is_non_force_ref_advance_from_expected_old_main_to_exact_reviewed_runner_head": true,
+    "workflow_requires_push_event_before_equals_expected_old_main": true
+  },
+  "cas_semantics": {
+    "main_command_shape": "git push --force-with-lease=refs/heads/main:<EXPECTED_OLD_MAIN> origin <TARGET_MAIN>:refs/heads/main",
+    "state_command_shape": "git push --force-with-lease=refs/heads/state/multiverse-core-current:<EXPECTED_OLD_STATE> origin <TARGET_STATE>:refs/heads/state/multiverse-core-current",
+    "expected_old_ref_is_checked_by_remote_receive_transaction": true,
+    "main_or_state_changed_after_precheck_causes_lease_rejection": true,
+    "force_without_lease": false,
+    "generic_force_push": false,
+    "automatic_rollback": false
+  },
+  "prelab_mode": {
+    "writes_main": false,
+    "writes_core_state": false,
+    "uses_git_push_dry_run_with_exact_leases": true,
+    "must_verify_main_and_state_refs_unchanged_after_dry_run": true,
+    "purpose": "MECHANICALLY_PROVE_PUSH_WORKFLOW_EXECUTION_AND_EXACT_LEASE_NEGOTIATION_WITHOUT_ADOPTION"
+  },
+  "one_shot_mode": {
+    "requires_new_exact_owner_gate": true,
+    "main_first_then_state": true,
+    "verify_each_remote_ref_after_write": true,
+    "partial_main_only_failure": "SAFE_INCOMPLETE_FAIL_CLOSED_NO_LIVE_ACTION_BOUNDED_REMEDIATION_ONLY",
+    "state_or_final_verify_failure": "FAIL_CLOSED_NO_LIVE_ACTION_BOUNDED_RECONCILIATION_ONLY",
+    "runtime": "OFF"
+  },
+  "authority_ceiling": {
+    "codespace": false,
+    "static_guard": false,
+    "manual_arm": false,
+    "oauth_or_device_authorization": false,
+    "step3_step4_apply": false,
+    "production_or_ruleset": false,
+    "secrets_or_writer_keys": false,
+    "keirin_promotion_or_real_money": false,
+    "runtime_activation": false
+  }
+}
