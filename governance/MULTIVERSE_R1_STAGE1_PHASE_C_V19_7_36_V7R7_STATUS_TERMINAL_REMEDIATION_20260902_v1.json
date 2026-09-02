@@ -1,0 +1,55 @@
+{
+  "version": "V19.7.36-v7r7-status-terminal-remediation-v1",
+  "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
+  "runtime": "OFF",
+  "source_incident_comment": 5497183368,
+  "source_prior_lab_fix_required_comment": 5497350664,
+  "source_fdpath_freeze_comment": 5502470868,
+  "source_fdpath_lab_request_comment": 5502474476,
+  "source_fdpath_lab_fix_required_comment": 5502519230,
+  "predecessor_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-status-fdpath-remediation-v1",
+  "predecessor_head": "7f07f53e9d3aeca0f79684c46ef1061a62358e55",
+  "lab_fix_required": {
+    "prior_retained_writable_descriptor_finding_closed": true,
+    "prior_intermediate_path_substitution_finding_closed": true,
+    "authoritative_status_stale_after_prechallenge_eof": true
+  },
+  "remediation": {
+    "authoritative_status_path": "/run/multiverse-v36-v7r7/session-status.txt",
+    "terminal_failure_marker": "gate_state=FAILED_CLOSED",
+    "prechallenge_stdout_eof_appends_terminal_failure_marker": true,
+    "terminal_failure_marker_is_fsynced_before_close": true,
+    "terminal_marker_write_failure_attempts_status_invalidation": true,
+    "successful_challenge_waiting_path_is_unchanged": true,
+    "ui_mirror_remains_nonauthoritative_static": true,
+    "ui_mirror_contains_challenge_or_device_code": false,
+    "retained_fd_atomic_replacement_remains_unchanged": true,
+    "directory_fd_path_binding_remains_unchanged": true,
+    "expand_capability_ceiling": false,
+    "add_dac_override": false,
+    "add_dac_read_search": false,
+    "add_fowner": false,
+    "trusted_server_time_and_challenge_remain_downstream": true
+  },
+  "mechanical_requirements": [
+    "exact image build succeeds on exact head",
+    "source gate requires explicit FAILED_CLOSED terminal marker constant",
+    "source gate requires EOF path to write the terminal marker",
+    "network-none live-class run reaches ARM_START and GITHUB_SERVER_TIME denial",
+    "network-none live-class run leaves root-owned 0400 authoritative status with gate_state=FAILED_CLOSED",
+    "retained-FD and directory-FD adversarial tests remain passing",
+    "SECURITY_AUTHORITY_GRANTED=false",
+    "RUNTIME=OFF"
+  ],
+  "authority_boundary": {
+    "all_predecessor_arm_attempts_reusable": false,
+    "all_predecessor_owner_approvals_reusable": false,
+    "codespace_create_or_arm_authorized_now": false,
+    "oauth_authorized_now": false,
+    "step3_authorized_now": false,
+    "step4_or_apply_authorized_now": false,
+    "production_mutation_authorized_now": false,
+    "runtime_activation_authorized_now": false,
+    "new_live_attempt_requires_new_freeze_lab_auditor_owner_gate": true
+  }
+}
