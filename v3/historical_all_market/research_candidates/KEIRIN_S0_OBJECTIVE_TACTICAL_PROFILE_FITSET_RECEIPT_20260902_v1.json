@@ -1,0 +1,105 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_TACTICAL_PROFILE_FITSET_RECEIPT_20260902_v1",
+  "status": "FIT_SET_CLOSED_GAMMA_FIT_COMPLETE_NOT_EVALUATED",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "bb5e93fc9a41711e958dcbfee55c90defc6ecf63",
+    "fitset_selection_lock_commit": "cc4a004bf3888e35552ab7e606e2061edbdac49a",
+    "source_audit_commit": "10545d8e8508575c7e170662c7a5287ed1d7be7f",
+    "parser_blob_sha": "d0c3da166b6f9590d7894f1bbe2ba438c05c4390",
+    "baseline_beta": 0.22260435254784533
+  },
+  "population": {
+    "race_date": "2026-07-08",
+    "attempted_races": 60,
+    "successful_races": 55,
+    "fail_closed_races": 5,
+    "included_blocks_in_locked_order": [
+      {"venue": "函館", "attempted": 12, "successful": 12, "meeting_identity": "1120260708", "meeting_end": "2026-07-10"},
+      {"venue": "弥彦", "attempted": 9, "successful": 5, "meeting_identity": "2120260707", "meeting_end": "2026-07-09"},
+      {"venue": "取手", "attempted": 11, "successful": 10, "meeting_identity": "2320260706", "meeting_end": "2026-07-08"},
+      {"venue": "大垣", "attempted": 12, "successful": 12, "meeting_identity": "4420260708", "meeting_end": "2026-07-10"},
+      {"venue": "玉野", "attempted": 9, "successful": 9, "meeting_identity": "6120260707", "meeting_end": "2026-07-09"},
+      {"venue": "広島", "attempted": 7, "successful": 7, "meeting_identity": "6220260708", "meeting_end": "2026-07-10"}
+    ],
+    "fail_closed": [
+      {"race": "弥彦 2026-07-08 R1", "reason": "PRE_TACTICAL_FIELDS_NOT_CANONICALLY_RETRIEVABLE"},
+      {"race": "弥彦 2026-07-08 R4", "reason": "RESULT_TARGET_NOT_CANONICALLY_RETRIEVABLE"},
+      {"race": "弥彦 2026-07-08 R6", "reason": "RESULT_TARGET_NOT_CANONICALLY_RETRIEVABLE"},
+      {"race": "弥彦 2026-07-08 R7", "reason": "RESULT_TARGET_NOT_CANONICALLY_RETRIEVABLE"},
+      {"race": "取手 2026-07-08 R4", "reason": "PRE_COMPETITION_SCORE_0_00"}
+    ],
+    "stop_rule_application": "CLOSED_AT_END_OF_HIROSHIMA_BLOCK_WHERE_CUMULATIVE_SUCCESSFUL_RACES_REACHED_55_GE_50",
+    "later_locked_fit_blocks_unopened": ["防府", "久留米"],
+    "field_size_distribution": {"5": 2, "6": 3, "7": 50},
+    "latest_meeting_end_among_included_fit_blocks": "2026-07-10",
+    "no_post_result_substitution": true,
+    "no_fail_closed_rescue": true
+  },
+  "model": {
+    "baseline": "stage1=beta*competition_score; stage2=beta*competition_score; stage3=beta*competition_score",
+    "candidate": "stage1=beta*competition_score; stage2=beta*competition_score+gamma*tactical_profile; stage3=beta*competition_score+gamma*tactical_profile",
+    "tactical_profile_formula": "((nige + makuri) - (sashi + mark)) / (nige + makuri + sashi + mark); explicit all-zero counts map to 0",
+    "stage1_exactly_untouched": true,
+    "free_parameters": 1
+  },
+  "fit": {
+    "objective": "MINIMIZE_MEAN_ORDERED_TOP3_LOG_LOSS_ON_FIT_SET_ONLY",
+    "optimizer": "SCIPY_MINIMIZE_SCALAR_BRENT_UNBOUNDED",
+    "scipy_version": "1.17.0",
+    "optimizer_success": true,
+    "iterations": 15,
+    "function_evaluations": 18,
+    "reported_xtol": 1.48e-08,
+    "bounds_used": false,
+    "bounds_changed_after_result": false,
+    "gamma": 0.2681505923161077,
+    "stagewise_mean_log_loss": {
+      "L1": {"untouched_s0": 1.7470597026556446, "candidate": 1.7470597026556446, "difference": 0.0},
+      "L2": {"untouched_s0": 1.606215111040066, "candidate": 1.5772811069792374, "difference": -0.02893400406082862},
+      "L3": {"untouched_s0": 1.5505127197511428, "candidate": 1.5486692051171028, "difference": -0.001843514634039932},
+      "ordered_top3": {"untouched_s0": 4.903787533446853, "candidate": 4.87301001175283, "difference": -0.03077752169402359},
+      "uniform_ordered_top3": {"mean": 5.271028016157526}
+    },
+    "interpretation": "FIT_SET_POINT_ESTIMATES_IMPROVE_L2_L3_AND_ORDERED_TOP3; FIT_EVIDENCE_ONLY; NO_ADVANCEMENT_CLAIM"
+  },
+  "stage1_invariance": {
+    "winner_log_loss_difference": 0.0,
+    "winner_brier_s0": 0.796106410643821,
+    "winner_brier_candidate": 0.796106410643821,
+    "winner_brier_difference": 0.0,
+    "max_absolute_winner_probability_difference": 0.0,
+    "winner_rankings_identical": true
+  },
+  "block_slices": {
+    "函館": {"n": 12, "dL2": 0.03595141217929646, "dL3": -0.09757619567124554, "dTop3": -0.061624783491949074},
+    "弥彦": {"n": 5, "dL2": -0.18254472479396283, "dL3": 0.18594907455774035, "dTop3": 0.003404349763777503},
+    "取手": {"n": 10, "dL2": -0.07745790311282068, "dL3": -0.01744215282735926, "dTop3": -0.09490005594017994},
+    "大垣": {"n": 12, "dL2": -0.0004894344115854802, "dL3": 0.000999788886181167, "dTop3": 0.0005103544745956867},
+    "玉野": {"n": 9, "dL2": -0.0585424016051365, "dL3": -0.0009445579656666641, "dTop3": -0.05948695957080316},
+    "広島": {"n": 7, "dL2": 0.028181453963998848, "dL3": 0.04438581771558958, "dTop3": 0.07256727167958843}
+  },
+  "field_size_slices": {
+    "5": {"n": 2, "dL2": -0.054561207886917984, "dL3": 0.032373486609820645, "dTop3": -0.02218772127709734},
+    "6": {"n": 3, "dL2": -0.20843172647809874, "dL3": 0.062389683099830506, "dTop3": -0.14604204337826823},
+    "7": {"n": 50, "dL2": -0.01713905526751187, "dL3": -0.0070661871421333795, "dTop3": -0.02420524240964525}
+  },
+  "evaluation_gate": {
+    "gamma_must_be_locked_before_holdout_target_access": true,
+    "evaluation_start": "STRICTLY_AFTER_2026-07-10",
+    "minimum_successful_races": 50,
+    "exclude_fit_meeting_identities": ["1120260708", "2120260707", "2320260706", "4420260708", "6120260707", "6220260708"],
+    "whole_meeting_day_blocks_chronological_source_order": true,
+    "no_refit_on_evaluation": true
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score", "nige", "makuri", "sashi", "mark"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "tips_marks_comments_used": false,
+    "manual_repair": false
+  },
+  "hard_boundaries": ["NO_GAMMA_REFIT_ON_EVAL", "NO_CHANGE_TO_BASELINE_BETA", "NO_GAMMA2_GAMMA3_SPLIT", "NO_SCALAR_REDEFINITION_AFTER_FIT_ACCESS", "NO_RESULT_AS_FEATURE", "NO_PAYOUT", "NO_ODDS_FIT", "NO_HUMAN_LINEUP_FORECAST_FEATURE", "NO_FIT_EVAL_OVERLAP", "NO_SAME_MEETING_CROSS_SPLIT", "NO_PROTECTED_HOLDOUT", "NO_DEV2000_C_RESCUE", "NO_REAL_MONEY_EXECUTION", "NO_EDGE_ROI_OR_PROFITABILITY_CLAIM", "NO_MODEL_PROMOTION_FROM_FIT"]
+}
