@@ -1,0 +1,18 @@
+{
+  "record":"KEIRIN_PROSPECTIVE_PRE_CAPTURE_TRANSPORT_ATTEMPT_20260902_v1",
+  "status":"RAW_HTML_DIRECT_CAPTURE_BLOCKED_BY_EXECUTION_ENVIRONMENT_NETWORK_NO_POST_RACE_REPAIR_ALLOWED",
+  "scope":"RESEARCH_TRANSPORT_RECEIPT_NO_RESULT_NO_MODEL_AUTHORITY",
+  "attempt_timestamp_window_jst":"2026-09-02T23:27+09:00",
+  "parent_race_id_freeze":"KEIRIN_PROSPECTIVE_PRE_ONLY_EXACT_RACE_ID_FREEZE_20260903_v1.json",
+  "attempted_url":"https://keirin.kdreams.jp/toyama/racedetail/4620260903010001/",
+  "attempts":[{"method":"container urllib direct GET","result":"FAIL","reason":"temporary DNS/name-resolution failure"},{"method":"approved file downloader after web viewing","result":"FAIL","reason":"download transport unavailable for target page"}],
+  "source_availability_evidence":"The same PRE page is visible through web search/browser indexing before event, so this receipt classifies the failure as execution-environment raw-download transport, not evidence that the race card is absent.",
+  "outcome_values_observed":false,
+  "payout_values_observed":false,
+  "numeric_odds_values_used":false,
+  "membership_changed":false,
+  "post_race_repair_allowed":false,
+  "impact":"Exact 31-race membership remains frozen. Full HTML hashes/PRE parser outputs remain pending. Any race not captured through a timing-safe PRE transport before its cutoff must remain an explicit transport failure and cannot be reconstructed after the event.",
+  "next":"Use only a timing-safe PRE-capable execution path before each frozen race cutoff. Do not substitute post-event pages, cached result pages, human forecasts, or manual reconstruction.",
+  "hard_boundaries":["NO_RESULT_TARGET_EXTRACTION","NO_PAYOUT","NO_POST_RACE_PRE_RECONSTRUCTION","NO_MANUAL_FILL","UNKNOWN_NOT_ZERO","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
