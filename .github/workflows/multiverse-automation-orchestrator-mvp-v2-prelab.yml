@@ -1,0 +1,56 @@
+name: MULTIVERSE Automation Orchestrator MVP v2 Pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-orchestrator-mvp-20260902-v1
+
+permissions:
+  contents: read
+
+concurrency:
+  group: automation-orchestrator-mvp-v2-prelab-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact pushed head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind exact candidate and Fresh main
+        id: bind
+        shell: bash
+        run: |
+          set -euo pipefail
+          HEAD_SHA="$(git rev-parse HEAD)"
+          test "$HEAD_SHA" = "$GITHUB_SHA"
+          git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          MAIN_SHA="$(git rev-parse refs/remotes/origin/main)"
+          printf 'head_sha=%s\n' "$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          printf 'main_sha=%s\n' "$MAIN_SHA" >> "$GITHUB_OUTPUT"
+          echo "PRELAB_EXACT_HEAD=$HEAD_SHA"
+          echo "PRELAB_FRESH_MAIN=$MAIN_SHA"
+
+      - name: Exact-head mechanical, E2E and failure-injection gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 automation/mechanical_gate_orchestrator_mvp_v2.py \
+            --expected-head '${{ steps.bind.outputs.head_sha }}' \
+            --canonical-main '${{ steps.bind.outputs.main_sha }}'
+
+      - name: Non-authority receipt
+        if: always()
+        shell: bash
+        run: |
+          echo 'PRELAB_WORKFLOW_DISPATCH_USED=false'
+          echo 'PRELAB_CONTENTS_WRITE_PERMISSION=false'
+          echo 'PRELAB_SECRETS_USED=false'
+          echo 'PRELAB_LIVE_PROVIDER_CONTACT=false'
+          echo 'PRELAB_PRODUCTION_AUTHORITY_GRANTED=false'
+          echo 'PRELAB_RUNTIME=OFF'
