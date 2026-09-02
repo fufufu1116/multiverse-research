@@ -1,0 +1,43 @@
+{
+  "record":"BANK_GEOMETRY_SOURCE_AUDIT_20260902_v2",
+  "status":"PROSPECTIVE_20260903_TWO_VENUE_CURRENT_OFFICIAL_SOURCE_DELTA_CIRCUMFERENCE_NO_CONTRAST_GEOMETRY_PARTIAL_CONTRAST",
+  "scope":"RESEARCH_SOURCE_AUDIT_ONLY_NO_BANK_AFFINITY_RESULT_OR_FEATURE_ADMISSION",
+  "retrieval_date_jst":"2026-09-02",
+  "parent":"BANK_GEOMETRY_SOURCE_AUDIT_20260902_v1.json",
+  "prospective_population_binding":"../KEIRIN_PROSPECTIVE_PRE_ONLY_POPULATION_LOCK_20260903_v1.json",
+  "official_current_venue_sources":[
+    {
+      "venue":"青森",
+      "organization":"青森競輪 official",
+      "title":"青森競輪場 | 施設紹介・アクセス",
+      "url":"https://aomorikeirin.com/access/",
+      "historical_current":"CURRENT_ORGANIZER_SITE_BODY",
+      "verified_fields":{"circumference_m":400,"qualitative_straight":"LONG","qualitative_track":"クセのない400mバンク"},
+      "not_claimed_from_this_body":["exact_estimated_straight_m","exact_center_cant","exact_straight_slope","exact_widths"],
+      "confidence":"HIGH_FOR_400M_AND_QUALITATIVE_DESCRIPTION"
+    },
+    {
+      "venue":"武雄",
+      "organization":"武雄競輪 official / municipal venue site",
+      "title":"競輪場案内",
+      "url":"https://www.keirin.city.takeo.lg.jp/guide/",
+      "historical_current":"CURRENT_ORGANIZER_SITE_BODY",
+      "verified_fields":{"circumference_m":400.000,"long_axis_m":162.476,"short_axis_m":70.853,"estimated_straight_m":64.4,"max_cant":"32度00分19秒","straight_cant":"2度17分26秒","home_width_m":9.692,"back_width_m":8.693,"center_width_m":7.378},
+      "confidence":"HIGH"
+    }
+  ],
+  "prospective_design_implication":{
+    "selected_venues":["青森","武雄"],
+    "same_circumference":true,
+    "circumference_contrast_available":false,
+    "decision":"DO_NOT_TREAT_20260903_AOMORI_VS_TAKEO_AS_A_CIRCUMFERENCE_AFFINITY_TEST",
+    "geometry_contrast_status":"PARTIAL_CURRENT_OFFICIAL_CONTRAST; Takeo numeric geometry is current-body verified, Aomori exact numeric geometry is not yet current-body verified in this delta.",
+    "appropriate_use":"PRE transport/source pilot and later geometry-support audit only; a generalizable circumference-affinity experiment requires additional prospectively frozen venues with different circumferences."
+  },
+  "selection_bias_guard":"Do not add/remove venues after viewing results to manufacture geometry or circumference contrast. Any expanded venue set must be prospectively locked before RESULT.",
+  "bank_affinity_result":"EVIDENCE_PENDING_NOT_ESTABLISHED",
+  "feature_admission":false,
+  "result_access_authorized":false,
+  "next":["Obtain reproducible current exact Aomori numeric geometry from a clean official source or classify exact values as historical/effective-date unresolved.","Prospectively lock additional 333m and/or 500m venue blocks before outcome access if circumference affinity is to be identified.","Separate venue identity from physical-feature effects in any later prespec.","Preserve 2026-09-03 Aomori/Takeo blocks regardless of future outcomes."],
+  "hard_boundaries":["NO_RESULT_ACCESS_FROM_THIS_AUDIT","NO_FEATURE_ADMISSION","NO_VENUE_DUMMY_TUNING","NO_HISTORICAL_TO_CURRENT_BACKFILL","NO_POST_RESULT_VENUE_SELECTION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
