@@ -1,0 +1,14 @@
+{
+  "record":"KEIRIN_S0_POST_200R_SECOND_FUTURE_PERIOD_100R_GATE_PRESPEC_20260902_v1",
+  "status":"PRESPECIFIED_BEFORE_SECOND_FUTURE_PERIOD_OUTCOME_EVALUATION",
+  "parent_replication_report_commit":"1c0e1c2796b204dfbaa00522f2ce1fe77fd1ec48",
+  "parent_calibration_diagnostic_commit":"c69ee4705a8d9652c3f240cca5faf0dc96b7de0f",
+  "goal":"extend genuinely later-period fixed-S0 confirmation from 55 successful races to at least 100 successful races without tuning",
+  "locked_model":{"name":"S0_SCORE_ONLY_SOFTMAX","feature":"competition_score","beta":0.22260435254784533,"refit":false,"recalibration":false,"feature_change":false},
+  "acquisition":{"race_dates":"STRICTLY_AFTER_2026-06-24","minimum_additional_successful_races":45,"selection":"whole accessible meeting/day blocks in source chronological order; no outcome-conditioned inclusion","ambiguous":"FAIL_CLOSED","manual_repair":false},
+  "primary_metrics":["winner_log_loss","winner_brier","ordered_top3_log_loss"],
+  "calibration_monitor":{"reuse_exact_fixed_bins_from_commit":"b16e46f6d16b0a0708f87804e37439e263d2ee09","no_bin_changes":true,"no_recalibration_on_new_block_before_report":true},
+  "decision_logic":{"continue":"aggregate 100R fixed S0 remains better than uniform on all three primary metrics and calibration warning does not materially worsen across independent temporal blocks","mixed_or_fail":"retain all negative evidence and do not repair on same evidence"},
+  "after_100R_only":"design a separately split calibration-development/calibration-confirmation experiment if probability reliability still warrants correction",
+  "hard_boundaries":["NO_REFIT","NO_RECALIBRATION_BEFORE_100R_REPORT","NO_FEATURE_CHANGE","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_PROTECTED_HOLDOUT","NO_DEV2000_C_RESCUE","NO_REAL_MONEY_EXECUTION","NO_EDGE_ROI_OR_PROFITABILITY_CLAIM","NO_MODEL_PROMOTION"]
+}
