@@ -1,5 +1,5 @@
 {
-  "version": "V19.7.36-v7r7-status-terminal-remediation-v1",
+  "version": "V19.7.36-v7r7-status-terminal-remediation-v2",
   "authority": "REVIEW_ONLY_NO_LIVE_AUTHORITY",
   "runtime": "OFF",
   "source_incident_comment": 5497183368,
@@ -9,18 +9,25 @@
   "source_fdpath_lab_fix_required_comment": 5502519230,
   "predecessor_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-status-fdpath-remediation-v1",
   "predecessor_head": "7f07f53e9d3aeca0f79684c46ef1061a62358e55",
+  "inherited_v7r6_gate_blob_preserved": "f2c3f1023a453bfe5ee43c7d978de9728c5a2dc8",
   "lab_fix_required": {
     "prior_retained_writable_descriptor_finding_closed": true,
     "prior_intermediate_path_substitution_finding_closed": true,
-    "authoritative_status_stale_after_prechallenge_eof": true
+    "authoritative_status_stale_after_prechallenge_exit": true,
+    "root_cause": "session gate die() calls os.Exit(92), which does not wait for the asynchronous stdout mirror goroutine to observe EOF and persist terminal status"
   },
   "remediation": {
     "authoritative_status_path": "/run/multiverse-v36-v7r7/session-status.txt",
     "terminal_failure_marker": "gate_state=FAILED_CLOSED",
-    "prechallenge_stdout_eof_appends_terminal_failure_marker": true,
-    "terminal_failure_marker_is_fsynced_before_close": true,
+    "status_addon_tracks_current_authoritative_fd_under_mutex": true,
+    "evidence_adapter_injects_sync_hook_into_generated_gate_die": "v7r7TerminalFailClosedSync()",
+    "die_sync_hook_runs_before_os_exit": true,
+    "terminal_failure_marker_is_fsynced_before_process_exit": true,
     "terminal_marker_write_failure_attempts_status_invalidation": true,
-    "successful_challenge_waiting_path_is_unchanged": true,
+    "async_eof_terminalization_remains_defense_in_depth": true,
+    "terminal_marker_is_idempotent_for_bound_status_fd": true,
+    "successful_challenge_waiting_path_unbinds_status_before_close": true,
+    "successful_challenge_waiting_path_avoids_false_failed_closed_marker": true,
     "ui_mirror_remains_nonauthoritative_static": true,
     "ui_mirror_contains_challenge_or_device_code": false,
     "retained_fd_atomic_replacement_remains_unchanged": true,
@@ -33,8 +40,9 @@
   },
   "mechanical_requirements": [
     "exact image build succeeds on exact head",
-    "source gate requires explicit FAILED_CLOSED terminal marker constant",
-    "source gate requires EOF path to write the terminal marker",
+    "adapter selftest proves inherited v7r6 blob remains exact and generated die contains v7r7TerminalFailClosedSync() before os.Exit",
+    "status-addon selftest proves synchronous terminal marker is idempotently written exactly once",
+    "source gate requires explicit FAILED_CLOSED terminal marker and status-terminal wiring",
     "network-none live-class run reaches ARM_START and GITHUB_SERVER_TIME denial",
     "network-none live-class run leaves root-owned 0400 authoritative status with gate_state=FAILED_CLOSED",
     "retained-FD and directory-FD adversarial tests remain passing",
