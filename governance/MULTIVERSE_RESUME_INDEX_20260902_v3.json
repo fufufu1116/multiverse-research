@@ -1,0 +1,90 @@
+{
+  "schema": "multiverse.resume.index.v3",
+  "record": "MULTIVERSE_RESUME_INDEX_20260902_v3",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "authority": "RESUME_METADATA_ONLY_NO_LIVE_AUTHORITY",
+  "well_known_bootstrap_locator": "governance/MULTIVERSE_RESUME_INDEX_CURRENT.json",
+  "policy_pointer": "governance/MULTIVERSE_CHAT_INDEPENDENT_RESUME_CONTEXT_COMPRESSION_OWNER_ADDENDUM_20260902_v1.json",
+  "resume_commands": {
+    "core": "MULTIVERSE再開。Fresh Readして続けて",
+    "keirin": "競輪Research再開。Fresh Readして続けて"
+  },
+  "bootstrap_contract": {
+    "first_hop_must_be_well_known_locator_from_canonical_main": true,
+    "locator_must_bind_exact_versioned_index_blob": true,
+    "infer_latest_version_from_filename_or_timestamp": false,
+    "repository_wide_discovery_by_default": false,
+    "chat_memory_may_select_index_version": false,
+    "missing_invalid_or_blob_mismatch": "FAIL_CLOSED"
+  },
+  "lane_resolvers": {
+    "core": {
+      "mode": "FRESH_MUTABLE_STATE_BRANCH",
+      "state_branch": "state/multiverse-core-current",
+      "state_path": "governance/MULTIVERSE_CORE_CURRENT_STATE.json",
+      "contract_path": "governance/MULTIVERSE_CORE_STATE_BRANCH_CONTRACT_20260902_v1.json",
+      "sequence": [
+        "FRESH_READ_CORE_STATE_BRANCH_REF",
+        "FETCH_CORE_STATE_PATH_AT_EXACT_FRESH_BRANCH_HEAD",
+        "VALIDATE_STATE_AND_AUTHORITY_CEILING",
+        "LOAD_ONLY_ACTIVE_WORKSTREAM_POINTERS",
+        "FRESH_REVALIDATE_MATERIAL_SOURCE_EVIDENCE_BEFORE_ACTION"
+      ],
+      "stored_main_capture_sha_is_current_authority": false
+    },
+    "keirin": {
+      "mode": "FRESH_LANE_NATIVE_RESUME_INDEX",
+      "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+      "lane_resume_index_path": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260902_v1.json",
+      "sequence": [
+        "FRESH_READ_KEIRIN_RESEARCH_BRANCH_REF",
+        "FETCH_LANE_NATIVE_RESUME_INDEX_AT_EXACT_FRESH_BRANCH_HEAD",
+        "FOLLOW_LANE_NATIVE_CURRENT_STATE_POINTER",
+        "LOAD_ONLY_ACTIVE_TASK_OR_PRESPEC_AND_REQUIRED_EVIDENCE"
+      ],
+      "central_duplicate_keirin_current_state": false
+    }
+  },
+  "progressive_fresh_read": {
+    "sequence": [
+      "FRESH_FETCH_WELL_KNOWN_LOCATOR_FROM_CANONICAL_MAIN",
+      "FETCH_EXACT_VERSIONED_INDEX_AND_VERIFY_LOCATOR_BOUND_BLOB",
+      "SELECT_LANE",
+      "RUN_SELECTED_LANE_RESOLVER",
+      "FETCH_REQUIRED_ARTIFACTS_ONLY"
+    ],
+    "load_full_history_by_default": false,
+    "load_giant_handoff_by_default": false,
+    "history_retrieval": "POINTER_ONLY_ON_DEMAND"
+  },
+  "self_reference_safety": {
+    "versioned_index_asserts_containing_main_commit_sha": false,
+    "current_state_must_embed_its_containing_commit_sha": false,
+    "stored_capture_shas_are_provenance_only_unless_action_specific_governance_says_otherwise": true,
+    "canonical_main_is_fresh_resolved_not_self_embedded": true
+  },
+  "safety": {
+    "resume_command_grants_authority": false,
+    "state_or_permission_snapshot_is_bearer_token": false,
+    "fresh_revalidation_required_before_material_action": true,
+    "cross_lane_authority_inheritance": false,
+    "lab_auditor_shared_chat_auto_injection": false,
+    "unknown_or_unresolvable_state": "FAIL_CLOSED"
+  },
+  "orchestrator_ceiling": {
+    "allowed_future_functions": ["TASK_ROUTING","STATE_PERSISTENCE","FRESH_RESUME","CONTEXT_SELECTION","EVIDENCE_POINTER_RESOLUTION","BOUNDED_REMEDIATION_ROUTING"],
+    "live_mutation_authority": false,
+    "owner_gate_authority": false,
+    "research_promotion_authority": false,
+    "cross_lane_authority": false
+  },
+  "audit_history": {
+    "owner_addendum_receipt": 5508591175,
+    "v1_lab_fix_required": 5508695691,
+    "v2_lab_pass": 5508997012,
+    "v2_auditor_pass": 5509094438,
+    "v2_owner_presentation": 5509272918,
+    "v2_owner_approval_fail_closed_receipt": 5509659017
+  },
+  "metrics": ["HANDOFF_TOKEN_SIZE","RESUME_TIME","CONTEXT_LOADED","OWNER_COPY_PASTE_COUNT","OWNER_TOUCH_COUNT","RECOVERY_FAILURE_COUNT"]
+}

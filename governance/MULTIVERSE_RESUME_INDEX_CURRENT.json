@@ -1,24 +1,29 @@
 {
-  "schema": "multiverse.resume.bootstrap_locator.v1",
-  "status": "IMPLEMENTATION_CANDIDATE_NOT_CANONICAL_UNTIL_REVIEWED_ADOPTION",
+  "schema": "multiverse.resume.bootstrap_locator.v2",
+  "record": "MULTIVERSE_RESUME_INDEX_CURRENT",
   "canonical_repo": "fufufu1116/multiverse-research",
   "well_known_path": "governance/MULTIVERSE_RESUME_INDEX_CURRENT.json",
   "purpose": "STABLE_FIRST_HOP_FOR_CHAT_INDEPENDENT_FRESH_RESUME",
   "current_index": {
-    "path": "governance/MULTIVERSE_RESUME_INDEX_20260902_v2.json",
-    "expected_blob": "631c4f3af2aa955536fabc07b62d6d831ffeb4ed"
+    "path": "governance/MULTIVERSE_RESUME_INDEX_20260902_v3.json",
+    "expected_blob": "5f680fd84692523a3e8591db93cbd122d7ccd4c7"
   },
   "resolution_rule": {
     "first_operation": "FRESH_FETCH_THIS_EXACT_WELL_KNOWN_PATH_FROM_CANONICAL_MAIN",
     "then": "FETCH_CURRENT_INDEX_PATH_AND_VERIFY_EXPECTED_BLOB_BEFORE_USING_ANY_POINTER",
     "never_guess_latest_version": true,
     "never_select_version_from_chat_memory": true,
-    "never_require_repository_wide_scan_for_NORMAL_RESUME": true,
+    "never_require_repository_wide_scan_for_normal_resume": true,
     "missing_invalid_or_blob_mismatch": "FAIL_CLOSED"
+  },
+  "canonicality_semantics": {
+    "locator_content_is_environment_neutral": true,
+    "locator_does_not_claim_candidate_or_adopted_status": true,
+    "canonical_currentness_is_established_only_by_presence_at_this_path_on_fresh_canonical_main": true
   },
   "update_rule": {
     "single_current_index_pointer_only": true,
-    "future_rotation_requires_locator_index_and_referenced_state_updates_in_same_reviewed_git_commit": true,
+    "future_rotation_requires_locator_and_new_versioned_index_in_same_reviewed_canonical_transition": true,
     "old_versioned_indexes_remain_audit_history_only": true
   },
   "authority": {
@@ -26,6 +31,6 @@
     "grants_live_authority": false,
     "grants_owner_gate_authority": false,
     "grants_research_promotion_authority": false,
-    "canonical_only_after_separate_reviewed_adoption": true
+    "grants_cross_lane_authority": false
   }
 }

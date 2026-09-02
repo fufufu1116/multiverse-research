@@ -1,0 +1,58 @@
+{
+  "schema": "multiverse.core.state_branch.contract.v1",
+  "record": "MULTIVERSE_CORE_STATE_BRANCH_CONTRACT_20260902_v1",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "state_branch": "state/multiverse-core-current",
+  "state_path": "governance/MULTIVERSE_CORE_CURRENT_STATE.json",
+  "purpose": "MUTABLE_MACHINE_READABLE_CORE_RESUME_STATE_WITHOUT_REQUIRING_CANONICAL_MAIN_MUTATION_FOR_EVERY_CORE_STATE_TRANSITION",
+  "authority": "RESUME_METADATA_ONLY_NEVER_BEARER_LIVE_AUTHORITY",
+  "branch_contract": {
+    "append_only_history": true,
+    "force_ref_rewrite": false,
+    "normal_transition_scope": "ONLY_STATE_PATH_MAY_CHANGE",
+    "executable_or_workflow_delta": false,
+    "runtime_or_production_delta": false,
+    "main_or_ruleset_mutation_authority": false,
+    "live_owner_gate_authority": false,
+    "cross_lane_authority": false
+  },
+  "state_semantics": {
+    "state_is_navigation_and_recovery_snapshot": true,
+    "stored_capture_shas_are_provenance_not_self_validating_current_authority": true,
+    "must_not_require_containing_or_future_canonical_main_commit_sha_to_equal_an_embedded_sha": true,
+    "canonical_main_current_value": "FRESH_RESOLVE_REFS_HEADS_MAIN_AT_RESUME_AND_BEFORE_MATERIAL_ACTION",
+    "active_candidate_current_value": "FRESH_RESOLVE_STATE_POINTER_AND_CANDIDATE_REF_BEFORE_MATERIAL_ACTION",
+    "pr_and_receipt_current_value": "FRESH_RESOLVE_RELEVANT_GITHUB_EVIDENCE_BEFORE_MATERIAL_ACTION",
+    "source_drift": "REFRESH_STATE_OR_ROUTE_BOUNDED_REMEDIATION_BEFORE_MATERIAL_ACTION",
+    "missing_invalid_or_unresolvable": "FAIL_CLOSED"
+  },
+  "resume_sequence": [
+    "FRESH_READ_STATE_BRANCH_REF",
+    "FETCH_STATE_PATH_AT_EXACT_FRESH_STATE_BRANCH_HEAD",
+    "VALIDATE_SCHEMA_REPO_BRANCH_AND_AUTHORITY_CEILING",
+    "READ_ONLY_POINTERS_REQUIRED_FOR_SELECTED_ACTIVE_WORKSTREAM",
+    "FRESH_REVALIDATE_CANONICAL_MAIN_CANDIDATE_PR_RECEIPTS_BEFORE_ANY_CURRENT_MATERIAL_CLAIM",
+    "IF_STATE_STALE_REFRESH_METADATA_STATE_BEFORE_MATERIAL_ACTION"
+  ],
+  "update_sequence": [
+    "FRESH_READ_CANONICAL_MAIN_AND_RELEVANT_ACTIVE_CANDIDATE_PR_RECEIPTS",
+    "BUILD_COMPLETE_REPLACEMENT_STATE_FROM_FRESH_EVIDENCE",
+    "COMMIT_ONLY_STATE_PATH_ON_STATE_BRANCH",
+    "FRESH_READ_STATE_BRANCH_AND_VERIFY_NEW_STATE_CONTENT",
+    "WRITE_NONSECRET_POINTER_RECEIPT_WHEN_GOVERNANCE_REQUIRES"
+  ],
+  "chat_policy": {
+    "chat_is_workspace_not_authority": true,
+    "giant_handoff_required": false,
+    "chat_loss_is_not_project_state_loss": true
+  },
+  "review_independence": {
+    "lab_and_auditor_do_not_inherit_state_as_verdict": true,
+    "independent_fresh_read_still_required": true
+  },
+  "audit_pointers": {
+    "owner_addendum_receipt": 5508591175,
+    "v2_owner_presentation": 5509272918,
+    "v2_owner_approval_fail_closed_receipt": 5509659017
+  }
+}
