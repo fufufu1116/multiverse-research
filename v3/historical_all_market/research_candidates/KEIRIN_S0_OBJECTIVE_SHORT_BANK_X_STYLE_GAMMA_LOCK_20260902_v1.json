@@ -1,0 +1,66 @@
+{
+  "record": "KEIRIN_S0_OBJECTIVE_SHORT_BANK_X_STYLE_GAMMA_LOCK_20260902_v1",
+  "status": "GAMMA_LOCKED_BEFORE_INDEPENDENT_EVALUATION_TARGET_EXTRACTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_PRODUCTION_AUTHORITY",
+  "bindings": {
+    "prespec_commit": "c1c12d2f6537f322351f5889bdeb3da74e951ebf",
+    "source_audit_commit": "5ffe08dc239af04ab3e09aeac16a209528e05e67",
+    "fitset_selection_lock_commit": "c4b18be1ec77b73b5b4000adf4701d24d74d81c2",
+    "fitset_receipt_commit": "bfd33dc566098e15e5d2a1b2f615096de083f222",
+    "retrospective_parser_blob": "d0c3da166b6f9590d7894f1bbe2ba438c05c4390"
+  },
+  "frozen_parameters": {
+    "beta": 0.22260435254784533,
+    "gamma": -0.11202521777007654
+  },
+  "feature": {
+    "short_bank_indicator": "1 iff official circumference is 333m or 335m; 0 iff 400m",
+    "style_role_scalar": {"逃":-1.0,"両":0.0,"追":1.0},
+    "interaction": "short_bank_indicator * style_role_scalar"
+  },
+  "model": {
+    "stage1": "beta * competition_score",
+    "stage2": "beta * competition_score + gamma * interaction after actual stage1 winner removal",
+    "stage3": "beta * competition_score + gamma * interaction after actual stage1 and stage2 removals"
+  },
+  "fit_population": {
+    "race_date": "2026-07-22",
+    "successful_races": 56,
+    "attempted_races": 60,
+    "successful_short_bank_races": 30,
+    "successful_400m_races": 26,
+    "closure_block": "岸和田"
+  },
+  "evaluation_constraints": {
+    "earliest_eligible_race_date": "2026-07-23",
+    "strictly_after_fit_race_date": true,
+    "exclude_fit_races": true,
+    "minimum_successful_races": 50,
+    "minimum_successful_short_bank_races": 10,
+    "minimum_successful_400m_races": 10,
+    "whole_venue_blocks_only": true,
+    "no_gamma_refit": true,
+    "no_gamma_sign_flip": true,
+    "no_gamma2_gamma3_split": true,
+    "no_style_mapping_change": true,
+    "no_feature_definition_change": true,
+    "no_parser_repair_after_fit_target_view": true,
+    "no_beta_change": true,
+    "no_same_holdout_rescue_tuning": true
+  },
+  "bootstrap": {
+    "unit": "race",
+    "replicates": 20000,
+    "seed": 20260902,
+    "interval": "percentile_95pct"
+  },
+  "source_boundary": {
+    "PRE_features": ["competition_score","style","official_fixed_bank_circumference"],
+    "RESULT_target_only": true,
+    "PAYOUT_used": false,
+    "odds_used": false,
+    "KDreams_narabiyoso_used": false,
+    "human_forecast_used": false
+  },
+  "next_gate": "LOCK_INDEPENDENT_EVALUATION_POPULATION_ORDER_BEFORE_ANY_EVALUATION_RESULT_TARGET_EXTRACTION"
+}
