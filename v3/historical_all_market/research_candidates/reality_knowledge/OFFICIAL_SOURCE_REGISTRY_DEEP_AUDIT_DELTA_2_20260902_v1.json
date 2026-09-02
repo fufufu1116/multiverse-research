@@ -1,0 +1,101 @@
+{
+  "record":"OFFICIAL_SOURCE_REGISTRY_DEEP_AUDIT_DELTA_2_20260902_v1",
+  "status":"RESEARCH_CANDIDATE_REALITY_KNOWLEDGE_DELTA_NO_MODEL_AUTHORITY",
+  "retrieval_date_jst":"2026-09-02",
+  "base_deep_audit":"OFFICIAL_SOURCE_REGISTRY_DEEP_AUDIT_DELTA_20260902_v1",
+  "fresh_read_head_before_write":"9800528e1c39fd03c9d4df246b95a327b16f2434",
+  "sources":[
+    {
+      "source_id":"KEIRINJP_LINE_GUIDE",
+      "organization":"JKA / KEIRIN.JP",
+      "title":"ラインを読む｜競輪ガイド",
+      "url":"https://keirin.jp/pc/static/beginner/basics/lines.html",
+      "verification_status":"VERIFIED_BODY_READ",
+      "historical_current":"CURRENT_GUIDE",
+      "effective_or_revision_date":"UNKNOWN",
+      "exact_evidence_location":"Body explains that riders cooperate in lines, line formation is fundamental to race development, basic composition is self-powered leader followed by pursuit riders, and describes 2/3/4-line patterns, 番手, block, gap opening, switching and competition for position.",
+      "confidence":"HIGH_FOR_REALITY_MECHANISM_EXISTENCE; NONE_FOR_ANY_SPECIFIC_RACE_LINE_ASSIGNMENT"
+    },
+    {
+      "source_id":"KEIRINJP_HISTORICAL_OFFICIAL_APP_NARABI_CLASSIFICATION",
+      "organization":"JKA / KEIRIN.JP",
+      "title":"KEIRIN official app service notices 2012-2013",
+      "urls":[
+        "https://keirin.jp/pc/dfw/portal/guest/news/2012khn/08/news20120830_00.html",
+        "https://keirin.jp/pc/dfw/portal/guest/news/2013khn/12/news20131210_01.html"
+      ],
+      "verification_status":"VERIFIED_BODY_READ",
+      "historical_current":"HISTORICAL_SERVICE_CLASSIFICATION_EVIDENCE",
+      "effective_or_revision_date":"2012-08-30_AND_2013-12-10",
+      "exact_evidence_location":"Official app notices describe 並び予想情報 as prediction information and a prediction-support content item, not as an objective declared race state.",
+      "confidence":"HIGH_FOR_HISTORICAL_CLASSIFICATION; CURRENT_PER_RACE_OBJECTIVE_SOURCE_STILL_UNRESOLVED"
+    },
+    {
+      "source_id":"KEIRINJP_CURRENT_JYOGUIDE_BANK_ANALYSIS_INTERFACE",
+      "organization":"JKA / KEIRIN.JP",
+      "title":"競輪場/場外売場｜競輪場分析",
+      "url_pattern":"https://keirin.jp/pc/jyoguide?jocd=<venue_code>",
+      "verification_status":"VERIFIED_BODY_READ_FIELD_SCHEMA_VALUES_DYNAMIC_NOT_CAPTURED",
+      "historical_current":"CURRENT_SERVICE",
+      "effective_or_revision_date":"UNKNOWN",
+      "exact_evidence_location":"Current body section バンク基礎データ exposes fields 周長, みなし直線距離, センター部路面傾斜, 直線部分路面傾斜, ホーム幅員, バック幅員, センター幅員, plus record data. Values were not present in retrieved text because the service renders/fetches them dynamically.",
+      "confidence":"HIGH_FOR_CURRENT_OFFICIAL_FIELD_SCHEMA; NONE_FOR_UNCAPTURED_NUMERIC_VALUES"
+    },
+    {
+      "source_id":"DMM_SUPPORT_31167",
+      "organization":"DMM競輪",
+      "title":"DMM競輪では、チャリロトの対象となっているレースで、2人の選手が1着になった場合はどのようになりますか？",
+      "url":"https://support.dmm.com/keirin/article/31167",
+      "verification_status":"VERIFIED_BODY_READ_SECONDARY_MARKET_ONLY",
+      "historical_current":"CURRENT_SUPPORT_BODY_RETRIEVED",
+      "effective_or_revision_date":"UNKNOWN",
+      "exact_evidence_location":"Body explains a ChariLoto dead-heat example producing two winning sequences and reproduces the payout formula identified as 自転車競技法施行規則 付録第2. It is secondary support evidence and must not outrank current law/JKA regulation.",
+      "confidence":"HIGH_FOR_BODY_CONTENT; SECONDARY_SOURCE_PRIORITY"
+    },
+    {
+      "source_id":"KEIRINJP_RACECARD_GUIDE_RICH_PRE_FIELDS",
+      "organization":"JKA / KEIRIN.JP",
+      "title":"出走表を見る｜競輪ガイド",
+      "url":"https://www.keirin.jp/pc/static/beginner/basics/racecard.html",
+      "verification_status":"VERIFIED_BODY_READ",
+      "historical_current":"CURRENT_GUIDE",
+      "effective_or_revision_date":"UNKNOWN",
+      "exact_evidence_location":"Body defines style 逃/両/追, recent-four-month competition score, historical finishing methods 逃/捲/差/マ, B, H, S, recent-four-month win/2-place/3-place rates, recent race stage/result notation including 欠/落/棄/失/補, and explicitly separates prediction marks as journalist predictions.",
+      "confidence":"HIGH"
+    },
+    {
+      "source_id":"JKA_BUSINESS_RULE_SCORE_CALCULATION_EXTENDED",
+      "organization":"公益財団法人JKA",
+      "title":"競輪に係る業務の方法に関する規程 付録第1 競走得点及び評価点算定の方法",
+      "url":"https://www.keirin-autorace.or.jp/regulation/keirin/gyoumu.html",
+      "verification_status":"VERIFIED_BODY_READ",
+      "historical_current":"CURRENT",
+      "effective_or_revision_date":"UNKNOWN",
+      "exact_evidence_location":"Current body defines per-race competition-point calculation, exclusions such as DQ/abandonment/non-established races, average competition-score calculation and evaluation-score penalties. No explicit current body isolated in this audit equates the public racecard recent-four-month displayed score to a specific regulatory averaging/version publication contract.",
+      "confidence":"HIGH_FOR_REGULATORY_CALCULATION; MAPPING_TO_PUBLIC_DISPLAY_REMAINS_UNRESOLVED"
+    }
+  ],
+  "reality_classification_updates":[
+    {
+      "factor":"line_structure_as_real_race_mechanism",
+      "classification":"REALITY_SUPPORTED",
+      "note":"Official KEIRIN.JP guide explicitly describes line cooperation and roles."
+    },
+    {
+      "factor":"specific_per_race_line_membership_as_objective_PRE_data",
+      "classification":"REALITY_UNKNOWN",
+      "note":"No objective timing-safe official per-race declaration was verified; historical official services explicitly label narabi as prediction information."
+    },
+    {
+      "factor":"nationwide_bank_geometry_field_schema",
+      "classification":"REALITY_SUPPORTED_CURRENT_INTERFACE",
+      "note":"Current official venue-analysis interface exposes the physical-field schema, but numeric extraction/versioning remains unresolved."
+    },
+    {
+      "factor":"H_home_lead_count",
+      "classification":"REALITY_SUPPORTED_CURRENT_PRE_INFORMATION",
+      "note":"Official racecard guide defines H; current audited v3 parser/S0 does not use H."
+    }
+  ],
+  "hard_boundaries":["NO_MODEL_CHANGE","NO_FEATURE_ADMISSION","NO_BETA_CHANGE","NO_CALIBRATION_FIT","NO_PROTECTED_HOLDOUT_ACCESS","NO_RESULT_OR_PAYOUT_AS_FEATURE","NO_PRODUCTION_OR_MAIN_MUTATION"]
+}
