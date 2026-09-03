@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v9",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v8.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "latest_refresh_parent_head": "a7f42f6739a1468603dba9baf5811524d181d4ec",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only. If HEAD is ahead of this state's refresh/creation binding, inspect only the delta before claiming CURRENT.",
+  "inherited_state": {"base":"KEIRIN_CURRENT_RESEARCH_STATE_20260903_v8.json","rule":"All inherited constraints, prespecs, protected populations, source-integrity rules and forbidden actions remain binding unless explicitly changed below."},
+  "delta_since_v8": {
+    "toyohashi_day1_membership_crosscheck": {
+      "artifact": "KEIRIN_TOYOHASHI_DAY1_PRE_MEMBERSHIP_CROSSCHECK_20260903_v1.json",
+      "commit": "a7f42f6739a1468603dba9baf5811524d181d4ec",
+      "races": 12,
+      "rider_rows": 82,
+      "race_rider_counts": {"1":7,"2":6,"3":7,"4":7,"5":7,"6":7,"7":7,"8":7,"9":7,"10":7,"11":6,"12":7},
+      "membership_status": "COMPLETE_PRE_RESULT_CROSSCHECK",
+      "strict_feature_authority": false,
+      "provider_switch": false
+    },
+    "toyohashi_primary_transport": {
+      "desktop_current_pages_positive": [2,9,11],
+      "desktop_membership_complete_for_positive_pages": true,
+      "strict_mobile_or_equivalent_allowlist_snapshot_count": 0,
+      "strict_snapshot_status": "BLOCKED_PRIMARY_INDEX_OR_TRANSPORT_NOT_YET_COMPLETE",
+      "secondary_all_race_membership_may_be_used_as_search_keys_only": true
+    }
+  },
+  "rider_circumference_support": {"target_unique_official_cross_circumference_riders":30,"current":9,"remaining":21,"gate":"FAIL","result_join_authorized":false,"formula_status":"BLOCKED_UNTIL_SUPPORT_GATE_PASS"},
+  "current_stage": "STAGE_3_SUPPORT_ACCUMULATION_AND_TOYOHASHI_STRICT_PRE_PRIMARY_CAPTURE",
+  "sep4_active": {
+    "防府": {"pre_overlap_screen":"COMPLETE_7_OF_7_ZERO_SUPPORT_DELTA","outcomes_for_fit":"FORBIDDEN"},
+    "豊橋": {
+      "circumference_m":400,
+      "membership_crosscheck":"COMPLETE_12_OF_12_82_ROWS",
+      "strict_primary_provider":"OddsPark public race card",
+      "current_primary_pages_positive":[2,9,11],
+      "strict_snapshots_accepted":0,
+      "pending_strict_races":[1,2,3,4,5,6,7,8,9,10,11,12],
+      "rule":"Secondary PRE rows are search keys/crosschecks only and must not substitute for the frozen OddsPark strict feature source."
+    },
+    "result_access_authorized": false
+  },
+  "next_actions": [
+    "Fresh Read branch before CURRENT claims and every write.",
+    "Keep using the 82-row Toyohashi PRE membership crosscheck only as exact search keys to recover OddsPark primary current race pages.",
+    "Obtain complete strict allowlist values including competition score, nige, makuri, sashi, mark, S, H and B with deterministic provenance before each frozen cutoff; desktop membership alone is insufficient.",
+    "If a race remains incomplete at its cutoff, freeze missingness permanently and never reconstruct PRE after race.",
+    "Do not switch to Tokyo Sports or another provider for strict feature admission under retrieval pressure; any secondary data remain non-authoritative crosschecks.",
+    "Continue cross-circumference support from 9 toward 30 while RESULT stays closed; confirm Nara repeats on final PRE card with official identity before increment."
+  ],
+  "source_integrity": {"prospective_finish_targets_observed":false,"payout_values_observed":false,"result_access_authorized":false,"secondary_feature_substitution":"FORBIDDEN","post_race_pre_reconstruction":"FORBIDDEN"},
+  "required_artifact_pointers": ["KEIRIN_CURRENT_RESEARCH_STATE_20260903_v8.json","KEIRIN_TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT_20260903_v1.json","KEIRIN_TOYOHASHI_DAY1_PRE_MEMBERSHIP_CROSSCHECK_20260903_v1.json","KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json","KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json"],
+  "owner_action_required_now": false
+}
