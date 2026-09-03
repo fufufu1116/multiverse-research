@@ -1,0 +1,86 @@
+name: Keirin HFT DayNav Probe One-Shot
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-hft-daynav-probe-one-shot.yml'
+      - 'tools/keirin_kdreams_historical_daynav_quarantine_probe_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  daynav-probe:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PROBE_PATH: 'tools/keirin_kdreams_historical_daynav_quarantine_probe_v1.py'
+      PROBE_BLOB_SHA: '2026db10ed43f454e315b35a8a279712cb94d77a'
+      PROBE_OUT: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_DAYNAV_QUARANTINE_PROBE_20260904_v1.json'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/keirin-real-evidence-dual-lane-20260901-v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet beautifulsoup4
+      - name: Verify probe and selftest
+        run: |
+          set -euo pipefail
+          test "$(git hash-object "$PROBE_PATH")" = "$PROBE_BLOB_SHA"
+          python "$PROBE_PATH" selftest > /tmp/daynav_selftest.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/daynav_selftest.json',encoding='utf-8'))
+          if x.get('status')!='PASS' or not all(x.get('tests',{}).values()) or x.get('network_access') is not False:
+              raise SystemExit('FAIL_CLOSED:daynav_selftest')
+          print('DAYNAV_SELFTEST_PASS')
+          PY
+      - name: Run sanitized day navigation probe
+        run: |
+          set -euo pipefail
+          mkdir -p "$(dirname "$PROBE_OUT")"
+          python "$PROBE_PATH" probe \
+            --archive-url https://keirin.kdreams.jp/hofu/racecard/ \
+            --archive-url https://keirin.kdreams.jp/toyama/racecard/ \
+            --archive-url https://keirin.kdreams.jp/nara/racecard/ \
+            --archive-url https://keirin.kdreams.jp/aomori/racecard/ \
+            --archive-url https://keirin.kdreams.jp/takeo/racecard/ \
+            --archive-url https://keirin.kdreams.jp/toyohashi/racecard/ \
+            --archive-url https://keirin.kdreams.jp/kawasaki/racecard/ \
+            --out "$PROBE_OUT" --timeout 25
+      - name: Validate sanitized probe firewall
+        run: |
+          python - <<'PY'
+          import json,os,re
+          from urllib.parse import urlparse
+          x=json.load(open(os.environ['PROBE_OUT'],encoding='utf-8'))
+          false_keys=['raw_html_persisted','raw_html_printed','race_detail_opened','target_result_accessed','payout_accessed','odds_emitted','forecast_emitted','comment_emitted','narabiyoso_emitted']
+          if any(x.get(k) is not False for k in false_keys): raise SystemExit('FAIL_CLOSED:probe_firewall')
+          allowed_cats={'INITIAL_DAY_EXPLICIT','FINAL_DAY_EXPLICIT','DAY_2_EXPLICIT','DAY_3_EXPLICIT','DAY_4_EXPLICIT','DAY_5_EXPLICIT','DAY_6_EXPLICIT','DAY_7_EXPLICIT','DAY_8_EXPLICIT','DAY_9_EXPLICIT','DATE_LABEL_ONLY','OTHER_OR_EMPTY'}
+          for rec in x.get('records',[]):
+              for key in ['archive_index_url','seed_day_url']:
+                  u=urlparse(rec[key])
+                  if u.scheme!='https' or u.hostname!='keirin.kdreams.jp' or u.query or u.fragment or '/racecard/' not in u.path: raise SystemExit('FAIL_CLOSED:probe_url')
+              for n in rec.get('navigation',[]):
+                  u=urlparse(n['target_day_url'])
+                  if u.scheme!='https' or u.hostname!='keirin.kdreams.jp' or u.query or u.fragment or '/racecard/' not in u.path: raise SystemExit('FAIL_CLOSED:nav_url')
+                  if not set(n.get('label_categories',[])) <= allowed_cats: raise SystemExit('FAIL_CLOSED:label_category')
+                  h=n.get('target_source_sha256')
+                  if h is not None and not re.fullmatch(r'[0-9a-f]{64}',h): raise SystemExit('FAIL_CLOSED:target_sha')
+          print(json.dumps({'records':len(x.get('records',[])),'failures':len(x.get('failures',[])),'initial_day_links':sum('INITIAL_DAY_EXPLICIT' in n.get('label_categories',[]) for r in x.get('records',[]) for n in r.get('navigation',[]))},sort_keys=True))
+          PY
+      - name: Commit sanitized daynav probe only
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$PROBE_OUT"
+          git diff --cached --quiet && exit 0
+          git commit -m 'research(keirin): record sanitized HFT daynav probe'
+          git push origin HEAD:research/keirin-real-evidence-dual-lane-20260901-v1
