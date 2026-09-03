@@ -1,0 +1,90 @@
+name: MULTIVERSE Automation Shared Engine Process Isolated Worker v10 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-process-isolated-worker-v10-20260904-v1
+    paths:
+      - 'automation/shared_engine/process_isolated_worker_v10.py'
+      - 'automation/shared_engine/process_isolated_worker_broker_v10.py'
+      - 'automation/shared_engine/PROCESS_ISOLATED_WORKER_V10.json'
+      - 'automation/shared_engine/README_PROCESS_ISOLATED_WORKER_V10.md'
+      - 'automation/shared_engine/mechanical_gate_process_isolated_worker_v10.py'
+      - 'automation/shared_engine/tests/test_process_isolated_worker_v10.py'
+      - '.github/workflows/multiverse-automation-shared-engine-process-isolated-worker-v10-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bind exact head, predecessor, and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/automation-shared-engine-process-isolated-worker-v10-20260904-v1"
+          test "${FRESH_MAIN}" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          git merge-base --is-ancestor 32b13303d888214215dd9a87cb6eef180bb52d69 HEAD
+          python - <<'PY'
+          import json
+          d=json.load(open('automation/shared_engine/PROCESS_ISOLATED_WORKER_V10.json'))
+          assert d['predecessor_head']=='32b13303d888214215dd9a87cb6eef180bb52d69'
+          assert d['predecessor_lab_material_block']==5529886746
+          assert d['route_decision']==5530315758
+          assert d['base_pr91_head']=='61f4e330fd5b1945dbfbceb223cbc71d205860f2'
+          assert d['stacked_v7_head']=='4a72ef46116043094c7a8e494404956925a5b3bf'
+          assert d['canonical_main']=='040d37f0a4e426cf2e119706484c90cbb48f0e56'
+          assert all(v is False for v in d['authority'].values())
+          PY
+          echo "V10_EXACT_HEAD=${EXACT_HEAD}"
+          echo "V10_FRESH_MAIN=${FRESH_MAIN}"
+      - name: Inherited v9 gate
+        shell: bash
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: |
+          set -euo pipefail
+          python automation/shared_engine/mechanical_gate_local_persistent_worker_v9.py
+      - name: Process isolation v10 mechanical gate
+        shell: bash
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: |
+          set -euo pipefail
+          python automation/shared_engine/mechanical_gate_process_isolated_worker_v10.py
+      - name: Candidate nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "V10_CANDIDATE_ONLY=true"
+          echo "V10_LOCAL_OS_PROCESS_ISOLATION=true"
+          echo "V10_IPC=AF_UNIX_STRICT_JSON"
+          echo "V10_TASK_CREATION_AUTHORITY=false"
+          echo "V10_GENERIC_DISPATCH=false"
+          echo "V10_FD_TRANSFER=false"
+          echo "V10_DEPLOYED_DAEMON=false"
+          echo "V10_AUTHENTICATED_EXTERNAL_IDENTITY=false"
+          echo "V10_SAME_OS_USER_ROOT_PROTECTION=false"
+          echo "V10_REMOTE_PROVIDER_EXACTLY_ONCE=false"
+          echo "V10_DISTRIBUTED_NETWORK_LEASE_SAFETY=false"
+          echo "V10_LIVE_PROVIDER=false"
+          echo "V10_NETWORK=false"
+          echo "V10_EXTERNAL_EFFECT=false"
+          echo "V10_SPEND=false"
+          echo "V10_SECRET_CREDENTIAL=false"
+          echo "V10_MAIN_MUTATION_AUTHORITY=false"
+          echo "V10_RULESET_MUTATION_AUTHORITY=false"
+          echo "V10_CORE_ADOPTION_AUTHORITY=false"
+          echo "V10_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "V10_RUNTIME=OFF"
+          echo "V10_INDEPENDENT_REVIEW_REQUIRED=true"
