@@ -1,0 +1,18 @@
+{
+  "record":"KEIRIN_SEP4_KDREAMS_RACELINK_AVAILABILITY_STATUS_20260903_v1",
+  "status":"POSITIVE_MEETING_RACE_NUMBER_AND_CUTOFF_BODY_EXACT_RACEDETAIL_LINKS_NOT_YET_POSITIVELY_SURFACED",
+  "scope":"RESEARCH_PRE_TRANSPORT_STATUS_NO_RESULT_AUTHORITY",
+  "capture_date_jst":"2026-09-03",
+  "source":"KDreams public 2026-09-04 kaisai/venue/racecard/program surfaces",
+  "positive_evidence":[
+    {"venue":"防府","meeting":"ニッカン・コム杯／せいらカップ 初日","date":"2026-09-04","race_numbers":[1,2,3,4,5,6,7],"cutoff_jst":["08:35","08:55","09:15","09:35","09:55","10:15","10:35"],"program_url":"https://keirin.kdreams.jp/hofu/raceprogram/6320260904/","venue_page":"https://keirin.kdreams.jp/hofu/","race_list_body":"POSITIVE"},
+    {"venue":"豊橋","meeting":"みんなの競輪カップ 初日","date":"2026-09-04","race_numbers":[1,2,3,4,5,6,7,8,9,10,11,12],"cutoff_jst":["15:46","16:09","16:33","16:57","17:21","17:45","18:09","18:33","18:57","19:21","19:46","20:12"],"program_url":"https://keirin.kdreams.jp/toyohashi/raceprogram/4520260904/","venue_page":"https://keirin.kdreams.jp/toyohashi/","race_list_body":"POSITIVE"}
+  ],
+  "negative_or_pending_evidence":{"program_body":"Both future program pages identify meeting and day but currently return race-information-unavailable in their program-table body.","dated_racecard_index":"The 2026-09-04 racecard index does not yet expose the two new meetings as positive per-race links in the fetched body.","kaisai_page":"Lists future races/cutoffs, but future 出走表 cells are not surfaced as clickable numbered links in the fetched representation.","exact_racedetail_urls":"PENDING_NOT_POSITIVELY_OBSERVED"},
+  "decision":"Do not infer or pattern-generate KDreams race-detail IDs. Recheck before Sep4 cutoffs. If positive detail URLs still do not appear, use only already-frozen alternative PRE transport contracts that do not require guessed IDs and record transport status explicitly.",
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RACE_ID_GUESSING","NO_RESULT","NO_PAYOUT","NO_POST_RACE_PRE_RECONSTRUCTION","NO_SOURCE_SWITCH_AFTER_OUTCOME","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
