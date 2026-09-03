@@ -92,6 +92,7 @@ def serve_unix(socket_path: str, broker: ConsumeOnlyBroker, *, max_requests: int
     except FileNotFoundError:
         pass
     served = 0
+    seen_request_ids = set()
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as server:
         server.bind(socket_path)
         os.chmod(socket_path, 0o600)
@@ -114,6 +115,9 @@ def serve_unix(socket_path: str, broker: ConsumeOnlyBroker, *, max_requests: int
                 try:
                     request = _decode_request(raw)
                     request_id = request["request_id"]
+                    if request_id in seen_request_ids:
+                        raise ProtocolError("V10_REQUEST_REPLAY_DENIED")
+                    seen_request_ids.add(request_id)
                     body = _response(request_id, True, broker.dispatch(request))
                 except Exception as exc:
                     body = _response(request_id, False, error=f"{type(exc).__name__}:{exc}")
