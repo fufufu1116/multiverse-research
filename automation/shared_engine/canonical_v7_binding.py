@@ -28,11 +28,9 @@ def v7_result_to_bridge_receipt(job:dict[str,Any],result:dict[str,Any],*,local_b
         d,c=result.get("diff_lines"),result.get("cost_microusd")
         if not isinstance(d,int) or isinstance(d,bool) or d<0: raise BridgeError("CANONICAL_V7_IMPLEMENT_DIFF_LINES")
         if not isinstance(c,int) or isinstance(c,bool) or c!=0: raise BridgeError("CANONICAL_V7_IMPLEMENT_COST")
-        bridge_result=dict(result); bridge_result["code"]="canonical-v7-accepted-result"
     else:
         if result.get("reviewed_head")!=job.get("candidate_head"): raise BridgeError(f"CANONICAL_V7_{role}_HEAD")
         if result.get("verdict") not in {"PASS","FIX_REQUIRED"}: raise BridgeError(f"CANONICAL_V7_{role}_VERDICT")
         if result["verdict"]=="FIX_REQUIRED" and (not isinstance(result.get("code"),str) or not result["code"] or not isinstance(result.get("detail"),str)): raise BridgeError(f"CANONICAL_V7_{role}_FIX_SCHEMA")
-        bridge_result=dict(result)
-    receipt={"operation_key":job["operation_key"],"task_id":job["task_id"],"role":role,"semantic_generation":job["semantic_generation"],"candidate_branch":local_binding.candidate_branch,"candidate_head":local_binding.candidate_head,"canonical_main":local_binding.canonical_main,"provider_adapter_head":V7_HEAD,"evidence_ref":result["evidence_ref"],"result":bridge_result,"authority":dict(V7_REQUEST_AUTHORITY)}
+    receipt={"operation_key":job["operation_key"],"task_id":job["task_id"],"role":role,"semantic_generation":job["semantic_generation"],"candidate_branch":local_binding.candidate_branch,"candidate_head":local_binding.candidate_head,"canonical_main":local_binding.canonical_main,"provider_adapter_head":V7_HEAD,"evidence_ref":result["evidence_ref"],"result":dict(result),"authority":dict(V7_REQUEST_AUTHORITY)}
     return validate_receipt(local_binding,receipt)
