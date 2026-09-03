@@ -17,11 +17,11 @@ No policy widening is performed. v7 integration exercises only the already-revie
 
 `ProviderAdapterManifest` pins exact repository/source-branch/predecessor/main identity and an exact all-false authority object. `DeterministicLocalAdapter` is the only accepted runtime adapter class. `ProviderAdapterReceiptStore` pins the manifest in a separate SQLite database and serializes identical operation-key execution under `BEGIN IMMEDIATE`.
 
-The provider-neutral request binds operation key, task, role, semantic generation, candidate head/branch, canonical main, objective, adapter identity and an all-false execution authority envelope.
+The provider-neutral request binds operation key, task, role, semantic generation, candidate head/branch, canonical main, objective, adapter identity and an all-false execution authority envelope. Before a result may become a durable adapter receipt, v7 applies the inherited relay acceptance boundary: IMPLEMENT must return the exact candidate head, LAB/AUDIT must return the exact reviewed head, and every result requires a nonempty evidence reference. Invalid output is rolled back and cannot become a durable poison receipt. Relay and receipt-store connections are closed on success, rejection and crash-injection paths.
 
 Crash injection covers:
 
-`relay claim -> deterministic local execution -> durable adapter receipt -> crash before relay completion -> lease recovery -> same operation -> receipt reuse -> relay completion`.
+`relay claim -> deterministic local execution -> validated durable adapter receipt -> crash before relay completion -> lease recovery -> same operation -> receipt reuse -> relay completion`.
 
 The durable execution count remains one for this sealed local adapter after a crash **after the receipt**. This does not prove exactly-once for a future live provider. In particular, a crash during or after an external provider call but before a local durable receipt would require provider-specific idempotency and separate review.
 
@@ -30,13 +30,17 @@ The durable execution count remains one for this sealed local adapter after a cr
 - altered manifest or capability widening: denied;
 - arbitrary runtime adapter subclass/object: denied;
 - conflicting request replay under one operation key: denied;
-- wrong result head/reviewed head: denied by inherited relay completion checks;
+- wrong result head/reviewed head or missing evidence: rejected before durable receipt;
 - v7 branch substitution into the existing v5 policy: denied;
 - network/live-provider/external-effect/spend/secret capability: absent and false;
 - merge/main/ruleset/production/Core/Keirin/Runtime authority: absent.
+
+## Proof ceiling
+
+The v7 integration fixture deliberately scripts IMPLEMENT, LAB and AUDIT outputs to exercise the end-to-end transport contract. That fixture is **not evidence of independent reviewer identity or role separation**. Independent Lab and Independent Auditor remain separate external review stages. v7 also does not authenticate a future live worker identity, provider identity, provider receipt or provider-side idempotency token.
 
 ## Required review sequence
 
 Exact push CI -> Candidate freeze -> Independent Lab -> Independent Auditor -> Candidate closure.
 
-Candidate validation, if achieved, proves only the sealed provider-neutral contract with deterministic local execution. Any actual provider adapter, provider credential, network call, spend, canonical deployment, policy widening/application, merge or Runtime activation is a separate later gate.
+Candidate validation, if achieved, proves only the sealed provider-neutral contract with deterministic local execution. Any actual provider adapter, provider credential, network call, spend, authenticated worker/provider identity, canonical deployment, policy widening/application, merge or Runtime activation is a separate later gate.
