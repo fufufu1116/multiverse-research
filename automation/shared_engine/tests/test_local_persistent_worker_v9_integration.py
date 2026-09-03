@@ -20,16 +20,14 @@ BRANCH = 'agent/automation-shared-engine-persistent-worker-v9-integration'
 def _process_worker(task_db, bridge_db, provider_db, max_cycles, execute_delay=0.0):
     config.DB_PATH = task_db
     binding = IntegrationBinding(CANONICAL_MAIN, BRANCH, HEAD, V7_HEAD)
-    engine = ExactV7SharedEngine(binding, bridge_db, provider_db)
-    try:
-        worker = LocalPersistentWorker(
-            engine,
-            WorkerConfig(lease_seconds=0.25, heartbeat_seconds=0.04, poll_seconds=0.02),
-            _execute_delay=execute_delay,
-        )
-        worker.run(max_cycles=max_cycles)
-    finally:
-        engine.close()
+    worker = LocalPersistentWorker(
+        binding,
+        bridge_db,
+        provider_db,
+        WorkerConfig(lease_seconds=0.25, heartbeat_seconds=0.04, poll_seconds=0.02),
+        _execute_delay=execute_delay,
+    )
+    worker.run(max_cycles=max_cycles)
 
 
 class LocalPersistentWorkerV9IntegrationTests(unittest.TestCase):
@@ -49,24 +47,26 @@ class LocalPersistentWorkerV9IntegrationTests(unittest.TestCase):
         config.DB_PATH = self.old_db
         self.tmp.cleanup()
 
+    def worker(self, **kwargs):
+        return LocalPersistentWorker(
+            self.binding,
+            self.bridge_db,
+            self.provider_db,
+            WorkerConfig(lease_seconds=0.25, heartbeat_seconds=0.04, poll_seconds=0.01),
+            **kwargs,
+        )
+
     def test_live_heartbeat_prevents_competing_reclaim(self):
         task = self.engine.submit('core', 'implement', 'slow local fixture')
         result = []
         failure = []
 
         def run_worker_in_own_thread_connection():
-            thread_engine = ExactV7SharedEngine(self.binding, self.bridge_db, self.provider_db)
             try:
-                worker = LocalPersistentWorker(
-                    thread_engine,
-                    WorkerConfig(lease_seconds=0.25, heartbeat_seconds=0.04, poll_seconds=0.01),
-                    _execute_delay=0.45,
-                )
+                worker = self.worker(_execute_delay=0.45)
                 result.append(worker.step())
             except BaseException as exc:
                 failure.append(exc)
-            finally:
-                thread_engine.close()
 
         thread = threading.Thread(target=run_worker_in_own_thread_connection)
         thread.start()
@@ -104,12 +104,8 @@ class LocalPersistentWorkerV9IntegrationTests(unittest.TestCase):
         finally:
             store.close()
         time.sleep(0.15)
-        fresh_engine = ExactV7SharedEngine(self.binding, self.bridge_db, self.provider_db)
-        try:
-            worker = LocalPersistentWorker(fresh_engine, WorkerConfig(lease_seconds=.25, heartbeat_seconds=.04, poll_seconds=.01))
-            self.assertEqual(worker.step(), (task, 'DONE'))
-        finally:
-            fresh_engine.close()
+        worker = self.worker()
+        self.assertEqual(worker.step(), (task, 'DONE'))
         store = ProviderAdapterReceiptStore(self.provider_db, self.engine.manifest)
         try:
             self.assertEqual(store.execution_count(operation), 1)
