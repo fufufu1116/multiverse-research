@@ -1,0 +1,111 @@
+name: keirin-nara-sep10-assen-structure-probe-v1-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-nara-sep10-assen-structure-probe-v1-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  structure-probe:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Observe roster DOM around already-known scheduled candidates only
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, re
+          from urllib.parse import urlparse
+          import requests
+          from bs4 import BeautifulSoup
+
+          URL='https://keirin.kdreams.jp/nara/assen/5320260910/'
+          EXPECTED_PATH='/nara/assen/5320260910/'
+          KNOWN=['川口 公太朗','桐山 敬太郎','小林 弘和','長井 妙樹','佐々木 堅次','植原 琢也','中村 圭志','近藤 誠二','牧田 悠生']
+          OUT=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_STRUCTURE_PROBE_20260904_v1.json')
+
+          r=requests.get(URL,timeout=20,allow_redirects=False,headers={'User-Agent':'MultiverseKeirinResearch/NaraAssenStructureProbe1.0','Accept':'text/html,application/xhtml+xml'})
+          if r.status_code != 200: raise SystemExit(f'FAIL_CLOSED_HTTP_{r.status_code}')
+          if len(r.content) > 4_000_000 or len(r.content) < 500: raise SystemExit('FAIL_CLOSED_SIZE')
+          if 'html' not in (r.headers.get('Content-Type') or '').lower(): raise SystemExit('FAIL_CLOSED_CONTENT_TYPE')
+          u=urlparse(URL)
+          if u.scheme!='https' or u.hostname!='keirin.kdreams.jp' or u.path!=EXPECTED_PATH or u.query or u.fragment: raise SystemExit('FAIL_CLOSED_SOURCE_URL')
+          soup=BeautifulSoup(r.content.decode('utf-8','replace'),'html.parser')
+
+          def n(s): return re.sub(r'\s+','',s or '')
+          def safe_attrs(tag):
+              if tag is None: return None
+              href=tag.get('href') if hasattr(tag,'get') else None
+              if href:
+                  hu=urlparse(href)
+                  if hu.scheme or hu.netloc:
+                      href_path=hu.path
+                  else:
+                      href_path=href.split('?',1)[0].split('#',1)[0]
+                  href_path=re.sub(r'\d+','#',href_path)
+              else: href_path=None
+              return {
+                  'tag': getattr(tag,'name',None),
+                  'id': tag.get('id') if hasattr(tag,'get') else None,
+                  'class': sorted(tag.get('class') or []) if hasattr(tag,'get') else [],
+                  'href_path_template': href_path,
+              }
+
+          hits=[]
+          page_text=n(soup.get_text(' ',strip=True))
+          for name in KNOWN:
+              want=n(name)
+              nodes=[]
+              for t in soup.find_all(string=True):
+                  if n(str(t)) != want: continue
+                  el=t.parent
+                  nodes.append({
+                      'self':safe_attrs(el),
+                      'parent':safe_attrs(el.parent if el else None),
+                      'grandparent':safe_attrs(el.parent.parent if el and el.parent else None),
+                      'great_grandparent':safe_attrs(el.parent.parent.parent if el and el.parent and el.parent.parent else None),
+                  })
+              hits.append({'known_rider_name':name,'page_text_present':want in page_text,'exact_text_node_count':len(nodes),'nodes':nodes[:5]})
+
+          doc={
+              'record':'KEIRIN_NARA_SEP10_ASSEN_STRUCTURE_PROBE_20260904_v1',
+              'status':'SANITIZED_KNOWN_NAME_DOM_STRUCTURE_CAPTURED',
+              'source_url':URL,
+              'source_sha256':hashlib.sha256(r.content).hexdigest(),
+              'known_candidate_count':len(KNOWN),
+              'known_name_hits':hits,
+              'all_known_names_present':all(x['page_text_present'] for x in hits),
+              'raw_html_persisted':False,
+              'raw_html_printed':False,
+              'unrelated_cell_values_emitted':False,
+              'predictive_numeric_values_emitted':False,
+              'result_page_opened':False,
+              'result_accessed':False,
+              'payout_accessed':False,
+              'odds_emitted':False,
+              'forecast_emitted':False,
+              'comment_emitted':False,
+              'narabiyoso_emitted':False,
+              'support_increment_authorized_now':0,
+              'final_pre_card_proven':False,
+              'model_fit_authorized':False,
+              'main_or_runtime_mutation':False
+          }
+          OUT.write_text(json.dumps(doc,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'record':doc['record'],'all_known_names_present':doc['all_known_names_present'],'hit_counts':[x['exact_text_node_count'] for x in hits],'raw_html_persisted':False,'result_accessed':False},ensure_ascii=False,sort_keys=True))
+          PY
+      - name: Persist sanitized research-only structure evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_STRUCTURE_PROBE_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): capture Nara Sep10 assen roster DOM structure v1'
+          git push origin HEAD:${{ github.ref_name }}
