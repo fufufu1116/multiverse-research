@@ -20,7 +20,8 @@ def main():
     require(m['stacked_v7_head']==EXPECTED_V7,'V10_V7_BINDING'); require(m['canonical_main']==EXPECTED_MAIN,'V10_MAIN_BINDING')
     require(all(v is False for v in m['authority'].values()),'V10_AUTHORITY_MUST_BE_FALSE')
     a=m['architecture']; require(a['client_and_engine_distinct_os_processes'] is True,'V10_PROCESS_ISOLATION_REQUIRED')
-    require(a['ipc_ops']==['PING','STEP','STOP'],'V10_EXACT_IPC_OPS'); require(a['task_creation_opcode'] is False and a['generic_dispatch'] is False,'V10_CONSUME_ONLY_PROTOCOL')
+    require(a['ipc_ops']==['PING','STEP','STOP'],'V10_EXACT_IPC_OPS'); require(a['request_id_replay_denied'] is True,'V10_REPLAY_DENIAL_REQUIRED')
+    require(a['task_creation_opcode'] is False and a['generic_dispatch'] is False,'V10_CONSUME_ONLY_PROTOCOL')
     require(a['fd_transfer'] is False and a['pickle_or_executable_serialization'] is False,'V10_CAPABILITY_LEAK_SURFACE')
     client=CLIENT.read_text(); broker=BROKER.read_text(); lowered=(client+'\n'+broker).lower()
     for banned in ('af_inet','af_inet6','import requests','import httpx','import urllib','import openai','import anthropic','boto3','scm_rights','send_handle','recv_handle'):
@@ -32,14 +33,16 @@ def main():
     require('socket.AF_UNIX' in client and 'socket.AF_UNIX' in broker,'V10_LOCAL_IPC_REQUIRED')
     require('ALLOWED_OPS = frozenset({"PING", "STEP", "STOP"})' in client,'V10_CLIENT_OPCODE_ALLOWLIST')
     require('ALLOWED_OPS = frozenset({"PING", "STEP", "STOP"})' in broker,'V10_BROKER_OPCODE_ALLOWLIST')
+    require('seen_request_ids = set()' in broker,'V10_BOUNDED_REPLAY_STATE_REQUIRED')
+    require('V10_REQUEST_REPLAY_DENIED' in broker,'V10_REPLAY_REJECTION_REQUIRED')
     require('LocalPersistentWorker' in broker,'V10_INHERITED_V9_BROKER_PATH_REQUIRED')
     readme=README.read_text().lower()
-    for phrase in ('distinct local os process','not a deployed service','same-os-user debugger/root','remote-provider exactly-once','runtime activation'):
+    for phrase in ('distinct local os process','replayed request id','not a deployed service','same-os-user debugger/root','remote-provider exactly-once','runtime activation'):
         require(phrase in readme,f'V10_PROOF_CEILING_DOC:{phrase}')
     env=dict(__import__('os').environ); env['PYTHONPATH']='automation/shared_engine:automation'
     cmd=[sys.executable,'-m','unittest','discover','-s','automation/shared_engine/tests','-p','v10_test_*.py','-v']
     completed=subprocess.run(cmd,cwd=ROOT,env=env,check=False); require(completed.returncode==0,'V10_TESTS_FAILED')
     print('V10_MECHANICAL_GATE=PASS'); print('V10_PROCESS_ISOLATION=local_os_address_space'); print('V10_IPC_OPS=PING,STEP,STOP')
-    print('V10_TASK_CREATION_AUTHORITY=false'); print('V10_GENERIC_DISPATCH=false'); print('V10_FD_TRANSFER=false')
+    print('V10_REQUEST_ID_REPLAY_DENIED=true'); print('V10_TASK_CREATION_AUTHORITY=false'); print('V10_GENERIC_DISPATCH=false'); print('V10_FD_TRANSFER=false')
     print('V10_NETWORK=false'); print('V10_LIVE_PROVIDER=false'); print('V10_SPEND=false'); print('V10_RUNTIME=OFF')
 if __name__=='__main__': main()
