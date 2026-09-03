@@ -1,0 +1,20 @@
+name: MULTIVERSE Automation Shared Engine v8 All Active Reclaim Support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-all-active-reclaim-support-20260904-v1
+
+permissions:
+  contents: read
+
+jobs:
+  support-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe reclaim across recoverable states
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation.shared_engine.tests.test_v8_all_active_reclaim_support -v
