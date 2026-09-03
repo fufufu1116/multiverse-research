@@ -36,6 +36,18 @@ _AGENT_BRANCH_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._/-]{1,199}")
 _DOMAIN_RE = re.compile(r"[a-z0-9][a-z0-9._-]{0,63}")
 
 
+def _sqlite_first_open_pragma(conn: sqlite3.Connection, sql: str, timeout_seconds: float = 10.0):
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        try:
+            return conn.execute(sql)
+        except sqlite3.OperationalError as exc:
+            message = str(exc).lower()
+            if ("locked" not in message and "busy" not in message) or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.01)
+
+
 def _sha40(value: Any) -> bool:
     return isinstance(value, str) and len(value) == 40 and all(c in "0123456789abcdef" for c in value)
 
@@ -105,8 +117,9 @@ class PolicyRelayStore(RelayStore):
         self.policy = policy
         self.conn = sqlite3.connect(self.path, timeout=10)
         self.conn.row_factory = sqlite3.Row
-        self.conn.execute("PRAGMA journal_mode=WAL")
-        self.conn.execute("PRAGMA synchronous=FULL")
+        self.conn.execute("PRAGMA busy_timeout=10000")
+        _sqlite_first_open_pragma(self.conn, "PRAGMA journal_mode=WAL")
+        _sqlite_first_open_pragma(self.conn, "PRAGMA synchronous=FULL")
         self._init_v4()
 
     def _init_v4(self) -> None:
