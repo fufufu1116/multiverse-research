@@ -35,6 +35,8 @@ class ExactV7SharedEngine:
         if claimed!=task_id: raise RuntimeError("UNEXPECTED_TASK_CLAIM")
         t=db.get_task(task_id); gen=t["claim_generation"]
         db.transition(task_id,"IN_IMPLEMENT",actor="exact_v7_shared_engine",event_type="START",fencing=(worker_id,gen)); return gen
+    def reclaim_expired(self,task_id:str,worker_id:str,*,lease_seconds:int|None=None)->int:
+        return db.reclaim_expired_task(task_id,worker_id,lease_seconds=lease_seconds)
     def _job(self,task_id:str,role:str,generation:int,operation_key:str)->dict[str,Any]:
         return {"operation_key":operation_key,"task_id":task_id,"role":role,"semantic_generation":generation,
                 "candidate_head":self.binding.candidate_head,"candidate_branch":self.binding.candidate_branch,
