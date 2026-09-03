@@ -13,6 +13,7 @@ class InvalidTransitionError(Exception): pass
 RECOVERABLE_ACTIVE_STATES = frozenset({
     'IN_IMPLEMENT', 'IN_LAB', 'LAB_FIX_REQUIRED', 'IN_AUDIT', 'AUDIT_FIX_REQUIRED'
 })
+RELEASE_SAFE_STATES = frozenset({'PENDING','FAILED_CLOSED','OWNER_GATE','DONE','ROLLED_BACK'})
 
 def _validated_worker_id(worker_id):
     if (not isinstance(worker_id,str) or not worker_id.strip() or
@@ -136,7 +137,9 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
     There is intentionally no unfenced mutation mode in Candidate v8. System and
     remediation callers must own a current worker/generation lease just like receipt
     application callers. This keeps SQLite as one authority without creating a
-    privileged bypass inside the authority itself.
+    privileged bypass inside the authority itself. Releasing ownership is only safe
+    when the target is re-claimable PENDING or terminal; active/blocked states must
+    retain a live owner so they cannot be orphaned outside reclaim semantics.
     """
     init_schema(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
@@ -144,6 +147,7 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
         if r is None: raise KeyError(task_id)
         before=r['state']
         if new_state not in config.ALLOWED_TRANSITIONS.get(before,set()): raise InvalidTransitionError(f'{before}->{new_state}')
+        if release and new_state not in RELEASE_SAFE_STATES: raise InvalidTransitionError(f'RELEASE_TARGET:{new_state}')
         if fencing is None: raise LostLeaseError('fencing token required')
         now=time.time()
         worker,generation=fencing; worker=_validated_worker_id(worker)
