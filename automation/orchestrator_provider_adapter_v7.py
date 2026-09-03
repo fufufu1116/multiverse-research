@@ -55,6 +55,21 @@ def _fingerprint(value: Any) -> str:
     return hashlib.sha256(canonical_json(value).encode()).hexdigest()
 
 
+def _validate_result_for_request(request: dict[str, Any], result: Any) -> dict[str, Any]:
+    """Apply the inherited relay acceptance boundary before a receipt becomes durable."""
+    require(isinstance(result, dict), "PROVIDER_ADAPTER_RESULT_SHAPE")
+    role = request.get("role")
+    expected_head = request.get("candidate_head")
+    if role == "IMPLEMENT":
+        require(result.get("candidate_head") == expected_head, "PROVIDER_ADAPTER_IMPLEMENT_HEAD_MISMATCH")
+    else:
+        require(role in ("LAB", "AUDIT"), "PROVIDER_ADAPTER_RESULT_ROLE")
+        require(result.get("reviewed_head") == expected_head, f"PROVIDER_ADAPTER_{role}_HEAD_MISMATCH")
+    require(isinstance(result.get("evidence_ref"), str) and bool(result["evidence_ref"]),
+            "PROVIDER_ADAPTER_EVIDENCE_REQUIRED")
+    return dict(result)
+
+
 @dataclass(frozen=True)
 class ProviderAdapterManifest:
     raw_sha256: str
@@ -203,11 +218,10 @@ class ProviderAdapterReceiptStore:
             ).fetchone()
             if row is not None:
                 require(row["request_fingerprint"] == request_fp, "PROVIDER_ADAPTER_CONFLICTING_REPLAY")
-                out = json.loads(row["result_json"])
+                out = _validate_result_for_request(request, json.loads(row["result_json"]))
                 self.conn.commit()
                 return out
-            result = adapter.execute(request)
-            require(isinstance(result, dict), "PROVIDER_ADAPTER_RESULT_SHAPE")
+            result = _validate_result_for_request(request, adapter.execute(request))
             self.conn.execute(
                 "INSERT INTO receipts(operation_key,request_fingerprint,request_json,result_json,created_at) VALUES(?,?,?,?,?)",
                 (operation_key_value, request_fp, request_json, canonical_json(result), now),
