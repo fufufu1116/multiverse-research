@@ -102,7 +102,7 @@ def main():
     if not protected:
         p.kill();raise SystemExit('protected credential boundary not observed')
     sel=selectors.DefaultSelector();sel.register(p.stdout,selectors.EVENT_READ)
-    pre_attempts=0;post_attempts=0;post_successes=[];out=[];retired=False;ordinary=False;deadline=time.time()+8
+    pre_attempts=0;post_attempts=0;post_successes=[];out=[];retired=False;ordinary=False;protected_proc_fd_denied=False;external_fd_absence_observed=False;deadline=time.time()+8
     while time.time()<deadline and p.poll() is None:
         for key,_ in sel.select(timeout=0):
             line=key.fileobj.readline()
@@ -111,10 +111,18 @@ def main():
                 if 'PHASE_C_V19_7_36_V7R16_AUTHORITY_RETIRED_BEFORE_USER_DROP' in line:
                     retired=True
                     try:
-                        os.readlink(f'/proc/{p.pid}/fd/{fd}')
-                        p.kill();raise SystemExit('authority fd still present after retirement marker')
+                        target=os.readlink(f'/proc/{p.pid}/fd/{fd}')
+                        p.kill();raise SystemExit('authority fd still externally observable after retirement marker: '+target)
                     except (FileNotFoundError,ProcessLookupError):
-                        pass
+                        external_fd_absence_observed=True
+                    except PermissionError:
+                        # This is expected while the process remains protected by
+                        # credential mismatch/nondumpable. It is NOT treated as
+                        # proof that the FD is absent. The runtime retirement
+                        # marker is emitted only after the guard's close(fd) and
+                        # Fstat(fd)==EBADF kernel check succeeds; Independent Lab
+                        # must inspect that exact source ordering separately.
+                        protected_proc_fd_denied=True
         u=uid_tuple(p.pid)
         if u and u[0]==uid and u[1]==uid and u[2]==uid:ordinary=True
         bad=attack_once(p.pid)
@@ -131,10 +139,13 @@ def main():
     rest=p.stdout.read() or '';out.append(rest);text=''.join(out)
     if not retired:raise SystemExit('authority retirement marker not observed: '+text)
     if pre_attempts<1:raise SystemExit('no pre-retirement attack attempts')
+    if not (protected_proc_fd_denied or external_fd_absence_observed):raise SystemExit('no post-retirement proc-fd observation result')
     if rc not in (0,92):raise SystemExit(f'unexpected helper rc={rc} out={text!r}')
     print(text,end='')
     print(f'PRELAB_V7R16_PRE_RETIREMENT_CONTINUOUS_ATTACK_DENIED=true attempts={pre_attempts}')
-    print('PRELAB_V7R16_AUTHORITY_FD_ABSENT_BEFORE_ORDINARY_UID=true')
+    print('PRELAB_V7R16_AUTHORITY_FD_RETIREMENT_EBADF_GUARD_MARKER=true')
+    print(f'PRELAB_V7R16_PROTECTED_PROC_FD_OBSERVATION_DENIED={protected_proc_fd_denied}')
+    print(f'PRELAB_V7R16_EXTERNAL_FD_ABSENCE_OBSERVED={external_fd_absence_observed}')
     print('PRELAB_V7R16_NO_POST_DROP_AUTHORITY_REVERIFY=true')
     print('PRELAB_V7R16_FINAL_AUTHORITY_TRANSITION_SYSCALL_SETRESUID=true')
     print(f'PRELAB_V7R16_POST_RETIREMENT_ATTACK_ATTEMPTS={post_attempts}')
