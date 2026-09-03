@@ -14,6 +14,7 @@ NAME='rate-v7r15-test'
 GEN='00112233445566778899aabbccddeeff'
 
 LAUNCHER_C=r'''#define _GNU_SOURCE
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/prctl.h>
 #include <unistd.h>
@@ -56,7 +57,7 @@ def uid_tuple(pid):
     return None
 
 def build_launcher():
-    p=pathlib.Path('/tmp/v7r15-final-launcher.c');p.write_text('#include <stdio.h>\n'+LAUNCHER_C,encoding='utf-8')
+    p=pathlib.Path('/tmp/v7r15-final-launcher.c');p.write_text(LAUNCHER_C,encoding='utf-8')
     subprocess.run(['gcc','-O2','-fno-stack-protector','-Wl,-z,noexecstack','-o','/tmp/v7r15-final-launcher',str(p)],check=True)
     os.chown('/tmp/v7r15-final-launcher',0,0);os.chmod('/tmp/v7r15-final-launcher',0o4555)
 
