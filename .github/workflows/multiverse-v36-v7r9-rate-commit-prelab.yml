@@ -38,16 +38,16 @@ jobs:
           driver='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R13_WHOLE_PROCESS_ATTACK_DRIVER_20260903.sh'
           helper='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go'
           guard='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_STATIC_ENV_GUARD_20260902.go'
-          grep -F 'minBeforeComments=60' "$probe"
-          grep -F 'minAfterComments=59' "$probe"
-          grep -F 'authorityUID=64173' "$probe"
+          grep -F 'minBeforeComments = 60' "$probe"
+          grep -F 'minAfterComments = 59' "$probe"
+          grep -F 'authorityUID = 64173' "$probe"
           grep -F 'verifyLauncherCredentialBoundary' "$probe"
           grep -F 'verifySecureRuntimeEnv' "$probe"
-          grep -F 'GOTRACEBACK=none' "$probe"
+          grep -F 'EXACT_LAUNCHER_TWO_ENV_NO_AMBIENT_POISON' "$probe"
           grep -F 'prepareGuardExecUserBoundary' "$probe"
           grep -F 'KERNEL_SETUID_LAUNCHER_TO_UNPRIVILEGED_CREDENTIAL_MISMATCH' "$probe"
           grep -F 'SEALED_MEMFD_SNAPSHOT' "$probe"
-          grep -F 'requiredSeals=fSealSeal|fSealShrink|fSealGrow|fSealWrite' "$probe"
+          grep -F 'requiredSeals = fSealSeal | fSealShrink | fSealGrow | fSealWrite' "$probe"
           grep -F 'V7R13_AUTH_UID 64173UL' "$launcher"
           grep -F 'PR_SET_NO_NEW_PRIVS' "$launcher"
           grep -F 'SYS_close_range' "$launcher"
@@ -153,8 +153,8 @@ jobs:
           grep -F 'authority_source=SEALED_MEMFD_SNAPSHOT' <<<"$status"
           grep -F 'KERNEL_SETUID_LAUNCHER_TO_UNPRIVILEGED_CREDENTIAL_MISMATCH' <<<"$status"
           grep -F 'launcher_execve_env_count=2' <<<"$status"
-          grep -F 'go_secure_runtime_env_count=3' <<<"$status"
-          grep -F 'go_secure_runtime_required_env=GOTRACEBACK=none' <<<"$status"
+          grep -F 'go_secure_runtime_inherited_env_count=2' <<<"$status"
+          grep -F 'go_secure_runtime_env_policy=EXACT_LAUNCHER_TWO_ENV_NO_AMBIENT_POISON' <<<"$status"
           grep -F 'status_control_authority=`OBSERVABILITY_ONLY`' <<<"$control"
           printf 'PRELAB_V7R13_LAUNCHER_EXACT_TWO_ENV_AND_GO_SECURE_RUNTIME_ENV_GATE_PASS=true\n'
           printf 'PRELAB_V7R13_DIRECT_PROBE_BYPASS_DENIED=true\n'
