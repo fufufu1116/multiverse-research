@@ -16,6 +16,7 @@ COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_ATTACH_READY_STATUS_A
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_MANUAL_ARM_LAUNCHER_20260901.go /tmp/manual-arm-v7r7.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go /tmp/ui-ready-v7r7.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_STATIC_ENV_GUARD_20260902.go /tmp/ui-ready-env-guard-v7r7.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R8_PREARM_RATE_READINESS_PROBE_20260903.go /tmp/prearm-rate-readiness-v7r8.go
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py /tmp/image-identity-builder.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py /tmp/rate-budget-history-selftest.py
 RUN set -eu; \
@@ -32,21 +33,25 @@ RUN set -eu; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/bin/multiverse-v36-arm-v7r7 /tmp/manual-arm-v7r7.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/bin/multiverse-v36-ui-ready-v7r7 /tmp/ui-ready-v7r7.go; \
  CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 /tmp/ui-ready-env-guard-v7r7.go; \
+ CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8 /tmp/prearm-rate-readiness-v7r8.go; \
  /usr/local/sbin/multiverse-v36-session-gate-v7r7 build-selftest; \
+ /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8 build-selftest; \
  /usr/bin/python3 /tmp/rate-budget-history-selftest.py; \
- rm -f /tmp/producer.go /tmp/control.go /tmp/session-gate-v7r6.go /tmp/session-gate.go /tmp/evidence-schema-adapter.py /tmp/session-status-addon-v7r7.go /tmp/manual-arm-v7r7.go /tmp/ui-ready-v7r7.go /tmp/ui-ready-env-guard-v7r7.go; \
- chown -R root:root /opt/multiverse/v36 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/sbin/multiverse-v36-session-gate-v7r7 /usr/local/bin/multiverse-v36-arm-v7r7 /usr/local/bin/multiverse-v36-ui-ready-v7r7 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7; \
- chmod 0555 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/sbin/multiverse-v36-session-gate-v7r7 /usr/local/bin/multiverse-v36-ui-ready-v7r7 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7; \
+ rm -f /tmp/producer.go /tmp/control.go /tmp/session-gate-v7r6.go /tmp/session-gate.go /tmp/evidence-schema-adapter.py /tmp/session-status-addon-v7r7.go /tmp/manual-arm-v7r7.go /tmp/ui-ready-v7r7.go /tmp/ui-ready-env-guard-v7r7.go /tmp/prearm-rate-readiness-v7r8.go; \
+ chown -R root:root /opt/multiverse/v36 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/sbin/multiverse-v36-session-gate-v7r7 /usr/local/bin/multiverse-v36-arm-v7r7 /usr/local/bin/multiverse-v36-ui-ready-v7r7 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8; \
+ chmod 0555 /usr/local/sbin/multiverse-v36-anchor-v7r2 /usr/local/sbin/multiverse-v36-control-v7r2 /usr/local/sbin/multiverse-v36-session-gate-v7r7 /usr/local/bin/multiverse-v36-ui-ready-v7r7 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8; \
  chmod 0444 /opt/multiverse/v36/runtime-v7.py /opt/multiverse/v36/step3-binding.json /opt/multiverse/v36/step3.py /opt/multiverse/v36/requirements.txt; \
  chmod -R go-w /opt/multiverse/v36/pydeps; chmod 0555 /opt/multiverse/v36/pydeps /opt/multiverse/v36/empty-config /opt/multiverse/v36; \
  test "$(sha256sum /usr/local/bin/multiverse-v36-ui-ready-v7r7 | cut -d' ' -f1)" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'; \
  command -v readelf >/dev/null; \
  if readelf -l /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 | grep -F 'Requesting program interpreter'; then exit 92; fi; \
+ if readelf -l /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8 | grep -F 'Requesting program interpreter'; then exit 92; fi; \
  rm -f /etc/sudoers.d/*; find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -type f -perm /6000 -exec chmod a-s {} + 2>/dev/null || true; \
  if command -v getcap >/dev/null 2>&1 && command -v setcap >/dev/null 2>&1; then getcap -r /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec 2>/dev/null | cut -d= -f1 | while read -r p; do [ -n "$p" ] && setcap -r "$p" || true; done; fi; \
  chown root:root /usr/local/bin/multiverse-v36-arm-v7r7; chmod 4555 /usr/local/bin/multiverse-v36-arm-v7r7; \
  test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-arm-v7r7)" = '0 0 4555'; \
  test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7)" = '0 0 555'; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8)" = '0 0 555'; \
  test -z "$(find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -type f -perm /6000 ! -path /usr/local/bin/multiverse-v36-arm-v7r7 -print -quit 2>/dev/null)"; \
  /usr/bin/python3 /tmp/manifest.py; \
  exec 3</usr/bin/python3; /proc/self/fd/3 -I -S -B /tmp/python-actual-use-selftest.py; exec 3<&-; \
