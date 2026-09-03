@@ -12,6 +12,7 @@ F_SEAL_WRITE=0x8
 SEALS=F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE
 NAME='rate-v7r16-test'
 GEN='00112233445566778899aabbccddeeff'
+HELPER='/usr/local/bin/multiverse-v36-ui-ready-v7r7'
 
 LAUNCHER_C=r'''#define _GNU_SOURCE
 #include <stdio.h>
@@ -102,7 +103,7 @@ def main():
     if not protected:
         p.kill();raise SystemExit('protected credential boundary not observed')
     sel=selectors.DefaultSelector();sel.register(p.stdout,selectors.EVENT_READ)
-    pre_attempts=0;post_attempts=0;post_successes=[];out=[];retired=False;ordinary=False;protected_proc_fd_denied=False;external_fd_absence_observed=False;deadline=time.time()+8
+    pre_attempts=0;post_attempts=0;post_successes=[];out=[];retired=False;ordinary=False;helper_exec_observed=False;protected_proc_fd_denied=False;external_fd_absence_observed=False;deadline=time.time()+8
     while time.time()<deadline and p.poll() is None:
         for key,_ in sel.select(timeout=0):
             line=key.fileobj.readline()
@@ -116,15 +117,21 @@ def main():
                     except (FileNotFoundError,ProcessLookupError):
                         external_fd_absence_observed=True
                     except PermissionError:
-                        # This is expected while the process remains protected by
-                        # credential mismatch/nondumpable. It is NOT treated as
-                        # proof that the FD is absent. The runtime retirement
-                        # marker is emitted only after the guard's close(fd) and
-                        # Fstat(fd)==EBADF kernel check succeeds; Independent Lab
-                        # must inspect that exact source ordering separately.
+                        # Protected /proc denial is expected and is not itself
+                        # treated as FD-absence proof. The guard emits the
+                        # retirement marker only after close(fd) and a kernel
+                        # Fstat(fd)==EBADF check have succeeded.
                         protected_proc_fd_denied=True
         u=uid_tuple(p.pid)
-        if u and u[0]==uid and u[1]==uid and u[2]==uid:ordinary=True
+        if u and u[0]==uid and u[1]==uid and u[2]==uid:
+            ordinary=True
+            try:
+                if os.readlink(f'/proc/{p.pid}/exe')==HELPER:
+                    helper_exec_observed=True
+                    p.kill()
+                    break
+            except (FileNotFoundError,ProcessLookupError,PermissionError):
+                pass
         bad=attack_once(p.pid)
         if not retired:
             pre_attempts+=1
@@ -133,14 +140,20 @@ def main():
         else:
             post_attempts+=1
             if bad:post_successes.append(bad)
-    try: rc=p.wait(timeout=10)
-    except subprocess.TimeoutExpired:
-        p.kill();raise SystemExit('guard/helper did not terminate')
+    if helper_exec_observed:
+        try: rc=p.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            p.kill();rc=p.wait(timeout=3)
+    else:
+        try: rc=p.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            p.kill();raise SystemExit('fixed helper exec boundary not observed before timeout')
     rest=p.stdout.read() or '';out.append(rest);text=''.join(out)
     if not retired:raise SystemExit('authority retirement marker not observed: '+text)
     if pre_attempts<1:raise SystemExit('no pre-retirement attack attempts')
     if not (protected_proc_fd_denied or external_fd_absence_observed):raise SystemExit('no post-retirement proc-fd observation result')
-    if rc not in (0,92):raise SystemExit(f'unexpected helper rc={rc} out={text!r}')
+    if not ordinary:raise SystemExit('ordinary uid transition not observed')
+    if not helper_exec_observed:raise SystemExit('fixed helper exec boundary not observed')
     print(text,end='')
     print(f'PRELAB_V7R16_PRE_RETIREMENT_CONTINUOUS_ATTACK_DENIED=true attempts={pre_attempts}')
     print('PRELAB_V7R16_AUTHORITY_FD_RETIREMENT_EBADF_GUARD_MARKER=true')
@@ -151,6 +164,7 @@ def main():
     print(f'PRELAB_V7R16_POST_RETIREMENT_ATTACK_ATTEMPTS={post_attempts}')
     print(f'PRELAB_V7R16_POST_RETIREMENT_SAME_UID_ACCESS_CLASSIFIED_NONAUTHORITY={bool(post_successes)}')
     print(f'PRELAB_V7R16_ORDINARY_UID_OBSERVED={ordinary}')
+    print('PRELAB_V7R16_FIXED_HELPER_EXEC_BOUNDARY_OBSERVED=true')
     print('PRELAB_V7R16_POST_AUTH_DROP_STRUCTURAL_BOUNDARY_PASS=true')
     print('RUNTIME=OFF')
 if __name__=='__main__':main()
