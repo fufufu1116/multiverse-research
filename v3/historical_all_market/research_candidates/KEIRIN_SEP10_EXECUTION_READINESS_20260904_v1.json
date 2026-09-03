@@ -1,0 +1,93 @@
+{
+  "record": "KEIRIN_SEP10_EXECUTION_READINESS_20260904_v1",
+  "status": "PRE_EVENT_EXECUTION_PATH_PREPARED_FINAL_PRE_CARD_NOT_YET_AVAILABLE",
+  "scope": "RESEARCH_PRE_ONLY_SUPPORT_ACQUISITION_READINESS_NO_RESULT_NO_MODEL_FIT",
+  "fresh_parent_head": "a007de64aaea7d0447dd062fc9c0dd9109843d86",
+  "prespec": "KEIRIN_SEP10_NARA_KAWASAKI_CROSS_CIRCUMFERENCE_PRE_EVENT_ACQUISITION_EXTENSION_20260903_v1.json",
+  "target_date": "2026-09-10",
+  "scheduled_sources": {
+    "nara": {
+      "venue": "奈良",
+      "circumference_m": 333.33,
+      "assen_url": "https://keirin.kdreams.jp/nara/assen/5320260910/",
+      "source_status": "CANONICAL_SCHEDULED_ASSEN_SOURCE_ALREADY_BOUND_AND_REVALIDATED",
+      "bindings": [
+        "KEIRIN_RIDER_CIRCUMFERENCE_CROSS_BLOCK_SUPPORT_PRECHECK_20260903_v2.json",
+        "KEIRIN_NARA_SEP10_ASSEN_STRUCTURE_PROBE_20260904_v1.json",
+        "KEIRIN_NARA_SEP10_ASSEN_ROW_STRUCTURE_PROBE_20260904_v2.json",
+        "KEIRIN_NARA_SEP10_ASSEN_KAWASAKI_PENDING_OVERLAP_PRECHECK_20260904_v2.json"
+      ],
+      "final_pre_card_proven": false
+    },
+    "kawasaki": {
+      "venue": "川崎",
+      "circumference_m": 400,
+      "assen_url": "https://keirin.kdreams.jp/kawasaki/assen/3420260910/",
+      "source_status": "POSITIVE_VENUE_ANCHOR_AND_SCHEDULED_ASSEN_SOURCE_VERIFIED",
+      "source_proof": "KEIRIN_KAWASAKI_SEP10_ASSEN_SOURCE_PROOF_20260904_v1.json",
+      "target_href_positively_observed_on_venue_landing": true,
+      "final_pre_card_proven": false
+    }
+  },
+  "support_snapshot": {
+    "confirmed_unique_cross_circumference_supported_riders": 1,
+    "confirmed_supported_rows": 2,
+    "pending_nara_scheduled_unique_union": 19,
+    "pending_takeo_to_nara": 9,
+    "pending_kawasaki_to_nara": 10,
+    "pending_cross_source_duplicate_registration_ids": [],
+    "nonfinal_combined_unique_upper_bound_if_all_pending_survive": 20,
+    "support_increment_authorized_now": 0,
+    "full_support_adequacy_gate": "FAIL"
+  },
+  "prepared_tools": {
+    "prospective_pre_acquirer": {
+      "path": "tools/keirin_kdreams_prospective_pre_acquire_v1.py",
+      "git_blob": "ee50af4c37ea6e951df3bcc7212c92e8f184f153",
+      "selftest": "KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS",
+      "base_hft_parser_blob_pinned": true,
+      "requires_positive_exact_racedetail_manifest": true,
+      "requires_capture_before_first_race_pit_cutoff": true,
+      "race_id_guessing_allowed": false
+    },
+    "official_same_race_assignment_probe": {
+      "path": "tools/keirinjp_same_race_assignment_probe_v1.py",
+      "git_blob": "01b6a024e190142bab3bd8bc723193e145899459",
+      "selftest": "KEIRINJP_SAME_RACE_ASSIGNMENT_PROBE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS",
+      "identity_contract": "KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
+      "assignment_gate": "KEIRIN_RIDER_IDENTITY_PROSPECTIVE_EVENT_ASSIGNMENT_GATE_20260902_v1.json",
+      "requires_exact_venue_date_race_match": true
+    }
+  },
+  "execution_sequence_when_final_pre_is_available": [
+    "Fresh Read the research branch and this readiness receipt before execution.",
+    "From the public Nara and Kawasaki Day1 racecard surfaces, positively observe exact racedetail hrefs; do not derive IDs arithmetically.",
+    "Freeze complete whole-day Day1 manifests before each venue's first-race PIT cutoff.",
+    "Run tools/keirin_kdreams_prospective_pre_acquire_v1.py on each frozen manifest; any rejected race, zero competition score, schema drift, source mismatch, or cutoff miss fails closed.",
+    "Resolve official registration identities for support-candidate PRE rows under the prospective identity contract.",
+    "For each Nara pending candidate that actually survives onto the final PRE card, run tools/keirinjp_same_race_assignment_probe_v1.py with the exact final race number and PIT cutoff.",
+    "Withdrawals, nonassignments, profile-only identity, event mismatch, ambiguous identity, or missed cutoff do not count as support.",
+    "Write new support receipts only after both valid PRE membership and official same-race assignment pass.",
+    "Recompute every support adequacy dimension; do not authorize RESULT based on unique-rider count alone."
+  ],
+  "current_non_authorities": {
+    "scheduled_assens_are_final_pre_cards": false,
+    "pending_19_are_confirmed_support": false,
+    "combined_upper_20_is_confirmed_support": false,
+    "result_join_authorized": false,
+    "formula_fit_authorized": false,
+    "s0_mutation": false,
+    "main_or_runtime_mutation": false
+  },
+  "source_integrity": {
+    "raw_html_persisted_by_prepared_tools": false,
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_used": false,
+    "human_forecast_used": false,
+    "narabiyoso_used": false
+  },
+  "owner_action_required_now": false
+}
