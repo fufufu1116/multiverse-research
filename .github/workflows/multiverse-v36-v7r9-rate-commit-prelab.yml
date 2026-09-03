@@ -79,14 +79,26 @@ jobs:
           set -euo pipefail
           tag="multiverse-v7r11-lock-anchor:${GITHUB_SHA}"
           docker build -f .devcontainer/Dockerfile -t "$tag" .
-          test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a %F' /opt/multiverse/v36)" = '0 0 555 directory'
-          test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a %F' /opt/multiverse/v36/empty-config)" = '0 0 555 directory'
+          parent_meta="$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /opt/multiverse/v36)"
+          anchor_meta="$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /opt/multiverse/v36/empty-config)"
+          printf 'PRELAB_V7R11_LOCK_PARENT_META=%s\n' "$parent_meta"
+          printf 'PRELAB_V7R11_LOCK_ANCHOR_META=%s\n' "$anchor_meta"
+          test "$parent_meta" = '0 0 555'
+          test "$anchor_meta" = '0 0 555'
+          docker run --rm --entrypoint /usr/bin/test "$tag" -d /opt/multiverse/v36
+          docker run --rm --entrypoint /usr/bin/test "$tag" -d /opt/multiverse/v36/empty-config
           for p in /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7; do
-            test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' "$p")" = '0 0 555'
+            meta="$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' "$p")"
+            printf 'PRELAB_V7R11_BINARY_META=%s:%s\n' "$p" "$meta"
+            test "$meta" = '0 0 555'
             test -z "$(docker run --rm --entrypoint /usr/bin/readelf "$tag" -l "$p" | grep -F 'Requesting program interpreter' || true)"
           done
-          test "$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-v7r7 | awk '{print $1}')" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'
-          test "$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 | awk '{print $1}')" = '470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4'
+          helper_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-v7r7 | awk '{print $1}')"
+          guard_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 | awk '{print $1}')"
+          printf 'PRELAB_V7R11_HELPER_SHA256=%s\n' "$helper_sha"
+          printf 'PRELAB_V7R11_GUARD_SHA256=%s\n' "$guard_sha"
+          test "$helper_sha" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'
+          test "$guard_sha" = '470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4'
           identity="$(docker run --rm --entrypoint /bin/cat "$tag" /opt/multiverse/v36/image-identity-v7r3.json)"
           python3 -c 'import json,sys; x=json.loads(sys.stdin.read()); p=[o["path"] for o in x["objects"]]; assert "/usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9" in p; assert "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9" in p' <<<"$identity"
           image_sha="$(printf '%s' "$identity" | sha256sum | awk '{print $1}')"
