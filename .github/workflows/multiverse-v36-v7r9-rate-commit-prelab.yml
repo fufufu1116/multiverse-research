@@ -102,10 +102,15 @@ jobs:
           #include <unistd.h>
           #include <time.h>
           #include <fcntl.h>
-          int main(void){uid_t r=0,e=0,s=0;if(getresuid(&r,&e,&s)!=0||r==0||e!=64173||s!=64173)return 93;int fd=open("/tmp/v7r13-hold-reached",O_WRONLY|O_CREAT|O_TRUNC,0644);if(fd>=0){write(fd,"ok\n",3);close(fd);}struct timespec ts={2,0};nanosleep(&ts,0);return 0;}
+          volatile unsigned char target_byte __attribute__((used)) = 0x35;
+          int main(void){uid_t r=0,e=0,s=0;if(getresuid(&r,&e,&s)!=0||r==0||e!=64173||s!=64173)return 93;int fd=open("/tmp/v7r13-hold-reached",O_WRONLY|O_CREAT|O_TRUNC,0644);if(fd>=0){if(write(fd,"ok\n",3)!=3)return 94;close(fd);}struct timespec ts={2,0};nanosleep(&ts,0);return target_byte==0x35?0:95;}
           EOF
-            gcc -O2 -o /tmp/v7r13-hold /tmp/v7r13-hold.c
-            gcc -nostdlib -static -fno-stack-protector -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-ident -Wl,--build-id=none -Wl,-z,noexecstack -DV7R13_PROBE_PATH='"'"'/tmp/v7r13-hold'"'"' -o /tmp/v7r13-launcher "$launcher_src"
+            gcc -O2 -no-pie -o /tmp/v7r13-hold /tmp/v7r13-hold.c
+            addr="$(nm -n /tmp/v7r13-hold | awk '$3=="target_byte"{print $1}')"
+            test -n "$addr"
+            printf '%s\n' "$addr" >/tmp/v7r13-target-address
+            chmod 0444 /tmp/v7r13-target-address
+            gcc -nostdlib -static -fno-stack-protector -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-ident -Wl,--build-id=none -Wl,-z,noexecstack -DV7R13_PROBE_PATH=/tmp/v7r13-hold -o /tmp/v7r13-launcher "$launcher_src"
             chown root:root /tmp/v7r13-launcher /tmp/v7r13-hold
             chmod 4555 /tmp/v7r13-launcher
             chmod 0555 /tmp/v7r13-hold
@@ -114,8 +119,10 @@ jobs:
           import ctypes,errno,os,signal,subprocess,time
           libc=ctypes.CDLL(None,use_errno=True)
           PTRACE_ATTACH=16;PTRACE_CONT=7
-          SYS_process_vm_writev=311
           class IOV(ctypes.Structure): _fields_=[("iov_base",ctypes.c_void_p),("iov_len",ctypes.c_size_t)]
+          libc.process_vm_writev.argtypes=[ctypes.c_int,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.c_ulong]
+          libc.process_vm_writev.restype=ctypes.c_ssize_t
+          remote_addr=int(open("/tmp/v7r13-target-address").read().strip(),16)
           env={"CODESPACES":"true","CODESPACE_NAME":"rate-v7r13-test"}
           def ptrace(req,pid,addr=0,data=0):
               ctypes.set_errno(0);r=libc.ptrace(req,pid,ctypes.c_void_p(addr),ctypes.c_void_p(data));return r,ctypes.get_errno()
@@ -136,12 +143,11 @@ jobs:
                       fd=os.open(p,os.O_RDWR if p.endswith("/mem") else os.O_RDONLY);os.close(fd);return "PROC_ACCESS_SUCCEEDED"
                   except OSError as ex:
                       if ex.errno not in (errno.EACCES,errno.EPERM,errno.ENOENT,errno.ESRCH): return f"PROC_ERR_{ex.errno}"
-              b=ctypes.c_ubyte(0x41);li=IOV(ctypes.cast(ctypes.pointer(b),ctypes.c_void_p),1);ri=IOV(ctypes.c_void_p(1),1)
-              ctypes.set_errno(0);rv=libc.syscall(SYS_process_vm_writev,pid,ctypes.byref(li),1,ctypes.byref(ri),1,0);er=ctypes.get_errno()
-              if rv>=0 or er in (errno.EFAULT,errno.EINVAL): return f"PROCESS_VM_ACCESS_CHECK_PASSED_{rv}_{er}"
-              if er not in (errno.EPERM,errno.ESRCH): return f"PROCESS_VM_ERR_{er}"
+              b=ctypes.c_ubyte(0x41);li=IOV(ctypes.cast(ctypes.pointer(b),ctypes.c_void_p),1);ri=IOV(ctypes.c_void_p(remote_addr),1)
+              ctypes.set_errno(0);rv=libc.process_vm_writev(pid,ctypes.byref(li),1,ctypes.byref(ri),1,0);er=ctypes.get_errno()
+              if rv>=0: return f"PROCESS_VM_WRITE_SUCCEEDED_{rv}"
+              if er not in (errno.EPERM,errno.ESRCH): return f"PROCESS_VM_NOT_PERMISSION_DENIED_{er}"
               return None
-          # Pre-exec attach: if an attacker already traces the child, setuid elevation must be suppressed and launcher must fail closed.
           pid=os.fork()
           if pid==0:
               os.kill(os.getpid(),signal.SIGSTOP)
@@ -152,14 +158,13 @@ jobs:
           if r!=0: raise SystemExit(f"preexec attach unexpectedly failed {e}")
           os.waitpid(pid,0);ptrace(PTRACE_CONT,pid)
           while True:
-              w,st=os.waitpid(pid,0)
+              _,st=os.waitpid(pid,0)
               if os.WIFEXITED(st):
                   if os.WEXITSTATUS(st)!=92: raise SystemExit(f"traced preexec reached unexpected exit {os.WEXITSTATUS(st)}")
                   break
               if os.WIFSIGNALED(st): raise SystemExit("traced preexec signaled")
               ptrace(PTRACE_CONT,pid)
           if os.path.exists("/tmp/v7r13-hold-reached"): raise SystemExit("traced preexec reached authority target")
-          # Normal exec: once kernel setuid boundary appears, every same-UID mutation class must remain denied throughout the held child.
           p=subprocess.Popen(["/tmp/v7r13-launcher"],env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
           deadline=time.time()+1
           observed=False;attempts=0
