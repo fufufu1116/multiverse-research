@@ -160,7 +160,7 @@ class ProviderAdapterV7Tests(unittest.TestCase):
             spec["candidate_branch"] = V7_BRANCH
             task = {"task_id": spec["task_id"], "spec": spec}
             try:
-                with self.assertRaisesRegex(OrchestratorError, "POLICY_BINDING_DENIED"):
+                with self.assertRaisesRegex(OrchestratorError, "RELAY_BINDING_POLICY_DENIED"):
                     relay.enqueue(role="IMPLEMENT", task=task,
                                   operation_key_value=operation_key(spec["task_id"], "IMPLEMENT", 0),
                                   semantic_attempt=1, transient_attempt=0)
