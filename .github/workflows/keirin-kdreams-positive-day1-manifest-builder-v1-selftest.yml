@@ -1,0 +1,41 @@
+name: keirin-kdreams-positive-day1-manifest-builder-v1-selftest
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-kdreams-positive-day1-manifest-builder-v1-selftest.yml'
+permissions:
+  contents: write
+jobs:
+  selftest:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check beautifulsoup4
+      - name: Run offline positive Day1 manifest builder selftest
+        run: |
+          python tools/keirin_kdreams_positive_day1_manifest_builder_v1.py selftest > /tmp/manifest_selftest.json
+          python - <<'PY'
+          import json, pathlib
+          p=pathlib.Path('/tmp/manifest_selftest.json')
+          x=json.loads(p.read_text(encoding='utf-8'))
+          if x.get('status')!='PASS':
+              raise SystemExit('FAIL_CLOSED_SELFTEST_NOT_PASS')
+          out=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_POSITIVE_DAY1_MANIFEST_BUILDER_SELFTEST_20260904_v1.json')
+          out.write_text(json.dumps(x,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'record':x['record'],'status':x['status'],'network_access':x['network_access'],'race_id_guessing':x['race_id_guessing'],'result_accessed':x['result_accessed']},ensure_ascii=False,sort_keys=True))
+          PY
+      - name: Persist research-only selftest evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_POSITIVE_DAY1_MANIFEST_BUILDER_SELFTEST_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no selftest evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): persist positive Day1 manifest builder v1 selftest'
+          git push origin HEAD:${{ github.ref_name }}
