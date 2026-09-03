@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_HOFU_1R_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1",
+  "status": "PRE_RESULT_CANDIDATE_OVERLAP_ZERO_SUPPORT_DELTA_ZERO",
+  "scope": "RESEARCH_PRE_ONLY_CROSS_CIRCUMFERENCE_CANDIDATE_SCREEN_NO_RESULT_AUTHORITY",
+  "fresh_binding_parent_head": "d5af9561485765644586aa49003ae19e7e940c75",
+  "target": {
+    "date": "2026-09-04",
+    "venue": "防府",
+    "circumference_m": 333,
+    "race_no": 1,
+    "start_jst": "08:40",
+    "cutoff_jst": "08:35",
+    "role": "PRE_TRANSPORT_IDENTITY_SUPPORT_ONLY_RESERVED_FROM_FIT",
+    "source": {
+      "organization": "OddsPark",
+      "url": "https://www.oddspark.com/keirin/RaceList.do?joCode=63&kaisaiBi=20260904&raceNo=1",
+      "retrieval_relation": "PRE_RESULT_ON_2026-09-03"
+    },
+    "riders": [
+      {"car_no": 1, "name": "岩原 健馬", "period": 127, "prefecture": "愛知"},
+      {"car_no": 2, "name": "名川 豊", "period": 99, "prefecture": "福岡"},
+      {"car_no": 3, "name": "櫻井 宏智", "period": 72, "prefecture": "広島"},
+      {"car_no": 4, "name": "金子 貴志", "period": 75, "prefecture": "愛知"},
+      {"car_no": 5, "name": "石川 航大", "period": 123, "prefecture": "宮崎"},
+      {"car_no": 6, "name": "武市 和人", "period": 74, "prefecture": "高知"},
+      {"car_no": 7, "name": "小川 将人", "period": 75, "prefecture": "愛知"}
+    ]
+  },
+  "reference_400m_pre_populations": [
+    {
+      "artifact": "KEIRIN_TAKEO_DAY1_PRE_ROSTER_SCORE_GATE_20260903_v1.json",
+      "venue": "武雄",
+      "date": "2026-09-03",
+      "circumference_m": 400,
+      "rider_rows": 84,
+      "candidate_name_overlap_count": 0
+    },
+    {
+      "artifact": "KEIRIN_AOMORI_DAY1_PRE_ROSTER_WITNESS_20260903_v1.json",
+      "venue": "青森",
+      "date": "2026-09-03",
+      "circumference_m": 400,
+      "rider_rows": 108,
+      "candidate_name_overlap_count": 0
+    }
+  ],
+  "combined_reference_rider_rows": 192,
+  "candidate_overlap_riders": [],
+  "official_registration_checks_triggered": 0,
+  "support_before": 9,
+  "support_delta": 0,
+  "support_after": 9,
+  "support_target": 30,
+  "interpretation": "No Hofu 1R rider appears in either known Sep3 400m PRE roster, so this race contributes no candidate requiring official registration identity confirmation and no cross-circumference support increment.",
+  "result_values_observed": false,
+  "payout_values_observed": false,
+  "result_access_authorized": false,
+  "feature_admission": false,
+  "model_fit_authorized": false,
+  "next": "Continue Sep4 Hofu 2R-7R PRE overlap screening before frozen cutoffs; only candidate repeats proceed to official registration identity confirmation; keep RESULT closed while support < 30.",
+  "hard_boundaries": [
+    "NO_RESULT",
+    "NO_PAYOUT",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "NO_ODDS_IN_OUTCOME_MODEL",
+    "NO_SUPPORT_INCREMENT_FROM_NAME_ONLY",
+    "NO_RACE_ID_GUESSING",
+    "NO_RESULT_JOIN_WHILE_SUPPORT_LT_30",
+    "NO_USE_HOFU_OUTCOMES_FOR_FIT",
+    "NO_S0_MUTATION",
+    "NO_MAIN_OR_RUNTIME_MUTATION"
+  ],
+  "owner_action_required_now": false
+}
