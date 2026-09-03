@@ -41,6 +41,8 @@ def main():
         require(banned not in lowered, f'V9_BANNED_RUNTIME_SURFACE:{banned}')
     for banned in ('os.environ', 'os.getenv', 'create_task(', '.submit('):
         require(banned not in source, f'V9_BANNED_AUTHORITY_SURFACE:{banned}')
+    require('def _open_exact_engine' not in source, 'V9_FULL_ENGINE_FACTORY_EXPOSED')
+    require('return engine' not in source, 'V9_FULL_ENGINE_CAPABILITY_RETURNED')
     require('db.claim_next_task' in source, 'V9_EXISTING_CLAIM_API_REQUIRED')
     require('engine.reclaim_expired' in source, 'V9_EXISTING_RECLAIM_API_REQUIRED')
     require('engine.renew' in source, 'V9_HEARTBEAT_REQUIRED')
@@ -61,6 +63,7 @@ def main():
     print('V9_MECHANICAL_GATE=PASS')
     print('V9_SOLE_TASK_STATE_AUTHORITY=shared_engine_sqlite')
     print('V9_TASK_CREATION_AUTHORITY=false')
+    print('V9_FULL_ENGINE_FACTORY_EXPOSED=false')
     print('V9_LIVE_PROVIDER=false')
     print('V9_NETWORK=false')
     print('V9_EXTERNAL_EFFECT=false')
