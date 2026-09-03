@@ -1,0 +1,34 @@
+name: keirin-hft-racecard-month-archive-probe-v1-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-hft-racecard-month-archive-probe-v1-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  month-archive-probe:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Selftest observed-form archive probe
+        run: python tools/keirin_kdreams_racecard_month_archive_probe_v1.py selftest
+      - name: Navigate only through live-observed 2026 Aug-Sep form options
+        run: |
+          python tools/keirin_kdreams_racecard_month_archive_probe_v1.py probe \
+            --out v3/historical_all_market/research_candidates/KEIRIN_HFT_RACECARD_MONTH_ARCHIVE_PROBE_20260904_v1.json
+      - name: Persist sanitized research-only archive evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_HFT_RACECARD_MONTH_ARCHIVE_PROBE_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): capture KDreams Aug-Sep archive day hrefs v1'
+          git push origin HEAD:${{ github.ref_name }}
