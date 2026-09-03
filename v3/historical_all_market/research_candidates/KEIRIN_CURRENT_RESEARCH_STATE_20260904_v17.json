@@ -1,0 +1,130 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v17",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v16.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "creation_parent_head": "7592ee30faa7b44c52595a25cdfb32b23ec9d974",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only. If HEAD is ahead, inspect only the delta before claiming CURRENT.",
+  "inherited_state": {
+    "base": "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v16.json",
+    "rule": "All v16 and inherited constraints remain binding unless explicitly changed below."
+  },
+  "current_stage": "STAGE_3_CROSS_CIRCUMFERENCE_SUPPORT_ACCUMULATION_SEP10_EXECUTION_PATH_PREPARED_FINAL_PRE_PENDING",
+  "active_baseline": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "feature": "competition_score",
+    "state": "FROZEN_CONTINUE_NO_PROMOTION",
+    "mutation_allowed": false
+  },
+  "rider_circumference_support": {
+    "confirmed_unique_cross_circumference_supported_riders_floor": 1,
+    "confirmed_supported_rider_race_rows_floor": 2,
+    "confirmed_rider": {"name":"高橋 梨香","official_registration_number":"015018"},
+    "pending_takeo400_to_nara33333_scheduled_unique": 9,
+    "pending_kawasaki400_to_nara33333_scheduled_unique": 10,
+    "pending_cross_source_duplicate_registration_ids": [],
+    "pending_unique_union_upper_count": 19,
+    "nonfinal_combined_unique_upper_bound_if_all_pending_survive": 20,
+    "support_increment_authorized_now": 0,
+    "target_unique_cross_circumference_supported_riders": 30,
+    "remaining_to_unique_floor_from_confirmed_floor": 29,
+    "remaining_to_unique_floor_if_all_19_pending_survive": 10,
+    "gate": "FAIL",
+    "result_join_authorized": false,
+    "formula_status": "BLOCKED"
+  },
+  "sep10_execution_readiness": {
+    "artifact": "KEIRIN_SEP10_EXECUTION_READINESS_20260904_v1.json",
+    "status": "PRE_EVENT_EXECUTION_PATH_PREPARED_FINAL_PRE_CARD_NOT_YET_AVAILABLE",
+    "target_date": "2026-09-10",
+    "nara": {
+      "circumference_m": 333.33,
+      "scheduled_source": "https://keirin.kdreams.jp/nara/assen/5320260910/",
+      "final_pre_card_proven": false
+    },
+    "kawasaki": {
+      "circumference_m": 400,
+      "scheduled_source": "https://keirin.kdreams.jp/kawasaki/assen/3420260910/",
+      "source_proof": "KEIRIN_KAWASAKI_SEP10_ASSEN_SOURCE_PROOF_20260904_v1.json",
+      "target_href_positively_observed_on_venue_landing": true,
+      "final_pre_card_proven": false
+    },
+    "prospective_pre_acquirer": {
+      "path": "tools/keirin_kdreams_prospective_pre_acquire_v1.py",
+      "git_blob": "ee50af4c37ea6e951df3bcc7212c92e8f184f153",
+      "selftest": "KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS",
+      "requires_positive_exact_racedetail_manifest": true,
+      "requires_capture_before_first_race_pit_cutoff": true,
+      "race_id_guessing_allowed": false
+    },
+    "official_same_race_assignment_probe": {
+      "path": "tools/keirinjp_same_race_assignment_probe_v1.py",
+      "git_blob": "01b6a024e190142bab3bd8bc723193e145899459",
+      "selftest": "KEIRINJP_SAME_RACE_ASSIGNMENT_PROBE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS",
+      "requires_exact_venue_date_race_match": true
+    }
+  },
+  "execution_sequence_when_final_pre_is_available": [
+    "Fresh Read the research branch and KEIRIN_SEP10_EXECUTION_READINESS_20260904_v1.json.",
+    "Positively observe exact Day1 racedetail hrefs from public Nara and Kawasaki racecard surfaces; never derive race IDs arithmetically.",
+    "Freeze complete whole-day Day1 manifests before each first-race PIT cutoff.",
+    "Run tools/keirin_kdreams_prospective_pre_acquire_v1.py on each manifest and fail closed on any race rejection, zero competition score, schema drift, source mismatch, or cutoff miss.",
+    "Retain only the 19 pending identities that survive onto the final Nara PRE card; withdrawal/nonassignment is an explicit support failure.",
+    "For each surviving Nara candidate, require official KEIRIN.JP contemporaneous same-race assignment with tools/keirinjp_same_race_assignment_probe_v1.py.",
+    "Acquire and identity-map Sep10 Kawasaki whole-day PRE and screen it against valid 333-family PRE identities without inspecting RESULT.",
+    "Write support receipts only after valid PRE membership plus official registration identity plus official same-race assignment all pass.",
+    "Recompute all support adequacy dimensions; unique-rider count alone cannot authorize RESULT."
+  ],
+  "historical_pit_fast_track": {
+    "state": "EXHAUSTED_UNDER_FROZEN_WINDOW_AND_VENUE_POOL",
+    "exhaustion_receipt": "KEIRIN_HFT_FROZEN_WINDOW_EXHAUSTION_RECEIPT_20260904_v1.json",
+    "additional_support_increment_available_under_current_hft_v2": 0
+  },
+  "support_gate_diagnostics": {
+    "minimum_unique_riders": 30,
+    "minimum_supported_rows": 60,
+    "minimum_333_venues": 2,
+    "minimum_400_venues": 2,
+    "minimum_333_calendar_blocks": 2,
+    "minimum_400_calendar_blocks": 2,
+    "maximum_single_venue_share": 0.60,
+    "maximum_single_rider_share": 0.10,
+    "required_official_identity_mapping_rate_for_supported_rows": 1.0,
+    "current_gate_result": "FAIL"
+  },
+  "next_actions": [
+    "Fresh Read branch before every resume/current claim and every write.",
+    "Keep confirmed support at one rider/two PRE rows until a new formal support receipt exists.",
+    "Treat all 19 Nara scheduled identities as pending upper-bound candidates only.",
+    "Before Sep10, keep the prepared PRE and official-assignment tools pinned and avoid unprespecified parser/source changes.",
+    "When final PRE becomes positively observable, execute the readiness sequence immediately before venue cutoff.",
+    "Keep RESULT and formula closed until the complete support adequacy gate passes."
+  ],
+  "rider_bank": {"empirical_result":"NOT_ESTABLISHED","state":"UNEVALUABLE_SUPPORT_GATE_FAIL"},
+  "line_role": {"empirical_result":"NOT_ESTABLISHED","state":"SECOND_OBJECTIVE_LEGSHOW_VENUE_PENDING","result_access_authorized":false},
+  "source_integrity": {
+    "new_affinity_target_result_intentionally_extracted": false,
+    "payout_values_observed": false,
+    "result_access_authorized": false,
+    "market_or_human_feature_use": "FORBIDDEN"
+  },
+  "forbidden_actions": [
+    "S0_BETA_CHANGE","S0_FEATURE_CHANGE","RESULT_JOIN_WHILE_GATE_BLOCKED","HFT_WINDOW_BACKWARD_EXPANSION","HFT_WHOLE_DAY_DAY1_RULE_WEAKENING","BURNED_FIREWALL_ROLLBACK","RACE_ID_GUESSING","ODDS_IN_OUTCOME_MODEL","HUMAN_FORECAST_AS_REALITY_TRUTH","NARABIYOSO_AS_OBJECTIVE_LINE_TRUTH","CURRENT_PROFILE_BACKFILL","UNKNOWN_AFFINITY_TO_ZERO","ZERO_SCORE_IMPUTATION","POST_RACE_PRE_RECONSTRUCTION","PROTECTED_HOLDOUT_ACCESS","MAIN_MUTATION","MERGE","RUNTIME_ACTIVATION","MODEL_PROMOTION","REAL_MONEY_EXECUTION","WAGERING_OR_STAKING","ROI_OR_PROFITABILITY_CLAIM"
+  ],
+  "required_artifact_pointers": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v16.json",
+    "KEIRIN_SEP10_EXECUTION_READINESS_20260904_v1.json",
+    "KEIRIN_KAWASAKI_SEP10_ASSEN_SOURCE_PROOF_20260904_v1.json",
+    "KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json",
+    "KEIRINJP_SAME_RACE_ASSIGNMENT_PROBE_SELFTEST_20260904_v1.json",
+    "KEIRIN_NARA_SEP10_ASSEN_KAWASAKI_PENDING_OVERLAP_PRECHECK_20260904_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
+    "KEIRIN_SEP10_NARA_KAWASAKI_CROSS_CIRCUMFERENCE_PRE_EVENT_ACQUISITION_EXTENSION_20260903_v1.json"
+  ],
+  "owner_action_required_now": false
+}
