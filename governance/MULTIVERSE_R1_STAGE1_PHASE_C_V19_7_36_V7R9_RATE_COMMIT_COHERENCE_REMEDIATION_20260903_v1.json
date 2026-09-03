@@ -1,0 +1,66 @@
+{
+  "schema": "multiverse.r1.stage1.phase_c.v19_7_36.v7r9.rate_commit_coherence_remediation.v1",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "predecessor_v7r8_head": "33181d3d73640bce2585fee018c94e791b25fc58",
+  "lab_request": 5522165178,
+  "lab_result": 5522633471,
+  "core_fail_closed_route": 5522695078,
+  "purpose": "Close all v7r8 Lab PASS_WITH_FIXES material findings before any Auditor routing or live action.",
+  "material_findings_closed_by_design": {
+    "rate_readiness_toctou": {
+      "design": "Add a commit mode that performs the final 60/59 core-rate proof inside the same sanitized process immediately before exec of the already-reviewed v7r7 static guard. If final readiness is not READY, the v7r7 guard is never invoked and its first-invocation one-shot authority is not consumed.",
+      "exact_requirements": [
+        "rate_limit core limit must equal 60",
+        "remaining before comments must equal 60",
+        "comments response remaining must equal 59",
+        "same reset epoch",
+        "exact decrement must equal one",
+        "probe mode never invokes guard",
+        "commit mode invokes guard only after final READY",
+        "at least five external core decrements would be required between final probe and inherited helper threshold failure; this residual must be independently reviewed and explicitly accepted or rejected"
+      ]
+    },
+    "repeatable_evidence_publication": {
+      "design": "Serialize publishers with O_NOFOLLOW regular same-UID flock, use 128-bit CSPRNG unique temp generations with O_EXCL|O_NOFOLLOW and no unconditional unlink, and bind status/control by identical generation. Mixed/partial pairs are invalid by contract.",
+      "required_tests": [
+        "concurrent independent publishers",
+        "preexisting symlink lock rejection",
+        "unique temp O_EXCL behavior",
+        "partial publication generation mismatch detection",
+        "no silent mixed-generation acceptance"
+      ]
+    },
+    "pre_main_ambient_debug_boundary": {
+      "design": "Place a linux-amd64 static -nostdlib launcher ahead of the Go probe. The launcher parses only CODESPACES=true and valid CODESPACE_NAME, constructs an exact two-variable environment, and execve()s the Go probe before any Go runtime startup. The launcher must be root-owned 0555 and have no PT_INTERP.",
+      "required_tests": [
+        "GODEBUG poisoned input removed before Go startup",
+        "GOTRACEBACK and arbitrary ambient variables removed",
+        "token/proxy/custom-CA variables removed",
+        "launcher no PT_INTERP",
+        "launcher exact two-variable child environment"
+      ]
+    }
+  },
+  "preserved_authority_boundary": {
+    "probe_repeatable_nonmutating_nonauthoritative": true,
+    "probe_mode_static_guard_invocation": false,
+    "commit_mode_requires_separate_core_fresh_rebind_and_explicit_authorization": true,
+    "v7r7_static_guard_one_shot_semantics_unchanged": true,
+    "new_codespace_authorized_now": false,
+    "live_probe_authorized_now": false,
+    "commit_mode_authorized_now": false,
+    "static_guard_authorized_now": false,
+    "manual_helper_authorized_now": false,
+    "arm_authorized_now": false,
+    "oauth_or_device_authorization_now": false,
+    "step3_or_step4_or_apply_now": false,
+    "production_mutation_now": false,
+    "main_or_ruleset_mutation_now": false,
+    "merge_now": false,
+    "workflow_dispatch_now": false,
+    "secret_or_writer_key_operation_now": false,
+    "runtime_activation_now": false,
+    "runtime": "OFF"
+  },
+  "review_requirement": "Candidate is not review-ready until Docker/devcontainer/image-identity/workflow integration is exact and a fresh exact-head machine run passes all new race/pre-main/rate-commit tests. Then Fresh Independent Lab re-review is mandatory before any Auditor request."
+}
