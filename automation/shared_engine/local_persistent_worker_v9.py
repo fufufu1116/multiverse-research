@@ -7,9 +7,8 @@ activate Runtime.
 
 The worker deliberately does not accept or retain a caller-supplied/full Shared Engine
 object. It stores only the exact reviewed binding plus local receipt DB locations and
-constructs the exact reviewed execution engine transiently for execution-only actions.
-This removes both arbitrary engine injection and retained transitive submit/create-task
-capability from the worker object.
+constructs the exact reviewed execution engine only inside the specific execution
+methods that need it. No worker method returns or exposes the full engine capability.
 """
 from __future__ import annotations
 
@@ -86,18 +85,6 @@ class LocalPersistentWorker:
         self.worker_id = f"lpw9-{os.getpid()}-{uuid.uuid4().hex[:16]}"
         db._validated_worker_id(self.worker_id)
 
-    def _open_exact_engine(self) -> ExactV7SharedEngine:
-        """Construct only the exact reviewed PR91->PR88 engine, transiently.
-
-        The full engine (which also owns submit/create authority for construction code)
-        is never accepted from a caller and is never retained on the worker object.
-        """
-        engine = ExactV7SharedEngine(self.binding, self._bridge_receipt_db, self._provider_receipt_db)
-        if type(engine) is not ExactV7SharedEngine:
-            engine.close()
-            raise TypeError("V9_EXACT_ENGINE_REQUIRED")
-        return engine
-
     def stop(self) -> None:
         """Request bounded shutdown. Active authority is never force-released."""
         self._stop.set()
@@ -119,21 +106,30 @@ class LocalPersistentWorker:
             conn.close()
 
     def _validate_persisted_task(self, task_id: str):
-        engine = self._open_exact_engine()
+        engine = ExactV7SharedEngine(self.binding, self._bridge_receipt_db, self._provider_receipt_db)
+        if type(engine) is not ExactV7SharedEngine:
+            engine.close()
+            raise TypeError("V9_EXACT_ENGINE_REQUIRED")
         try:
             return engine._validate_persisted_task(task_id)
         finally:
             engine.close()
 
     def _reclaim_expired(self, task_id: str) -> int:
-        engine = self._open_exact_engine()
+        engine = ExactV7SharedEngine(self.binding, self._bridge_receipt_db, self._provider_receipt_db)
+        if type(engine) is not ExactV7SharedEngine:
+            engine.close()
+            raise TypeError("V9_EXACT_ENGINE_REQUIRED")
         try:
             return engine.reclaim_expired(task_id, self.worker_id, lease_seconds=self.config.lease_seconds)
         finally:
             engine.close()
 
     def _renew(self, task_id: str, generation: int) -> float:
-        engine = self._open_exact_engine()
+        engine = ExactV7SharedEngine(self.binding, self._bridge_receipt_db, self._provider_receipt_db)
+        if type(engine) is not ExactV7SharedEngine:
+            engine.close()
+            raise TypeError("V9_EXACT_ENGINE_REQUIRED")
         try:
             return engine.renew(
                 task_id,
@@ -213,7 +209,10 @@ class LocalPersistentWorker:
         try:
             if self._execute_delay:
                 time.sleep(self._execute_delay)
-            engine = self._open_exact_engine()
+            engine = ExactV7SharedEngine(self.binding, self._bridge_receipt_db, self._provider_receipt_db)
+            if type(engine) is not ExactV7SharedEngine:
+                engine.close()
+                raise TypeError("V9_EXACT_ENGINE_REQUIRED")
             try:
                 return engine.execute_role(
                     task_id,
