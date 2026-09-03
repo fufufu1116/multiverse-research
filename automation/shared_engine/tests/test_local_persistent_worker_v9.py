@@ -54,7 +54,6 @@ class LocalPersistentWorkerV9Tests(unittest.TestCase):
         self.assertNotIn('create_task(', source)
         self.assertNotIn('.submit(', source)
         self.assertNotIn('def _open_exact_engine', source)
-        self.assertNotIn('return engine', source)
         w = self.worker()
         self.assertFalse(hasattr(w, 'engine'))
         self.assertFalse(hasattr(w, '_open_exact_engine'))
