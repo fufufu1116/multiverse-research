@@ -24,17 +24,14 @@ NEW_BOUNDARY = r'''func prepareGuardExecProtectedBoundary(a *sealedAuthority,loc
 OLD_CALL = 'if e=prepareGuardExecUserBoundary();e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R13_RATE_COMMIT_DENIED:GUARD_CREDENTIAL_BOUNDARY");os.Exit(92)};if e=verifySealedAuthority(a);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R13_RATE_COMMIT_DENIED:FINAL_SEALED_AUTHORITY_REVERIFY");os.Exit(92)};env:=[]string{"CODESPACES=true","CODESPACE_NAME="+name};argv:=[]string{guardPath,name};if e:=syscall.Exec(guardPath,argv,env);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R13_RATE_COMMIT_DENIED:GUARD_EXEC");os.Exit(92)}'
 NEW_CALL = 'authorityFD,e:=prepareGuardExecProtectedBoundary(a,lock);if e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R13_RATE_COMMIT_DENIED:PROTECTED_GUARD_BOUNDARY");os.Exit(92)};if e=verifySealedAuthority(a);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R13_RATE_COMMIT_DENIED:FINAL_SEALED_AUTHORITY_REVERIFY");os.Exit(92)};env:=[]string{"CODESPACES=true","CODESPACE_NAME="+name};argv:=[]string{guardPath,name,strconv.Itoa(authorityFD),gen};if e:=syscall.Exec(guardPath,argv,env);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R13_RATE_COMMIT_DENIED:GUARD_EXEC");os.Exit(92)}'
 
-
 def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
-
 
 def require_one(text: str, needle: str, label: str) -> str:
     n = text.count(needle)
     if n != 1:
         raise SystemExit(f"{label}: expected one match, got {n}")
     return text
-
 
 def main() -> None:
     if len(sys.argv) != 3:
@@ -51,6 +48,7 @@ def main() -> None:
         raise SystemExit(f"credential-boundary replacement count {n}")
     require_one(text, OLD_CALL, "final-transition")
     text = text.replace(OLD_CALL, NEW_CALL)
+    text = text.replace("EXEC_V7R7_STATIC_GUARD", "EXEC_V7R15_PROTECTED_GUARD")
     text = text.replace("V7R13", "V7R15").replace("v7r13", "v7r15")
     required = [
         'guardPath = "/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r15"',
@@ -58,6 +56,7 @@ def main() -> None:
         'strconv.Itoa(authorityFD)',
         'Version:"V19.7.36-v7r15"',
         'PHASE_C_V19_7_36_V7R15_RATE_COMMIT_READY',
+        'EXEC_V7R15_PROTECTED_GUARD',
     ]
     for marker in required:
         if marker not in text:
@@ -72,7 +71,6 @@ def main() -> None:
     print("SEALED_AUTHORITY_FD_INHERITED_TO_GUARD=true")
     print("RETAINED_FD_SWEEP_BEFORE_GUARD_EXEC=true")
     print("RUNTIME=OFF")
-
 
 if __name__ == "__main__":
     main()
