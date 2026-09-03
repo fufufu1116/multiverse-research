@@ -9,7 +9,7 @@ import pathlib
 from typing import Any
 import db
 from domain_registry import validate_domain_task
-from integration_bridge import IntegrationBinding, DurableReceiptBoundary, apply_receipt
+from integration_bridge import BridgeError, IntegrationBinding, DurableReceiptBoundary, apply_receipt, ROLE_EXPECTED_STATES
 from canonical_v7_binding import CANONICAL_MAIN, V7_HEAD, v7_result_to_bridge_receipt
 from orchestrator_provider_adapter_v7 import (
     ProviderAdapterManifest, DeterministicLocalAdapter, ProviderAdapterReceiptStore,
@@ -29,6 +29,7 @@ class ExactV7SharedEngine:
     def close(self): self.bridge_receipts.close()
     def _validate_persisted_task(self,task_id:str):
         task=db.get_task(task_id)
+        if task is None: raise BridgeError("UNKNOWN_TASK")
         validate_domain_task(task['domain'],task['task_type'])
         return task
     def submit(self,domain:str,task_type:str,goal:str,*,requested_capabilities:dict[str,Any]|None=None,resources:set[str]|None=None,priority:int=0)->str:
@@ -49,8 +50,17 @@ class ExactV7SharedEngine:
         return {"operation_key":operation_key,"task_id":task_id,"role":role,"semantic_generation":generation,
                 "candidate_head":self.binding.candidate_head,"candidate_branch":self.binding.candidate_branch,
                 "canonical_main":self.binding.canonical_main,"objective":task["goal"],"authority":dict(JOB_AUTHORITY)}
-    def execute_role(self,task_id:str,role:str,semantic_generation:int,operation_key:str,worker_id:str,claim_generation:int,result:dict[str,Any])->str:
+    def _assert_role_precondition(self,task_id:str,role:str,worker_id:str,claim_generation:int):
         db.assert_unexpired_fence(task_id,worker_id,claim_generation)
+        task=self._validate_persisted_task(task_id)
+        expected=ROLE_EXPECTED_STATES.get(role)
+        if expected is None: raise BridgeError(f"RECEIPT_ROLE:{role}")
+        if task['state'] not in expected: raise BridgeError(f"ROLE_STATE_MISMATCH:{role}:{task['state']}")
+        return task
+    def execute_role(self,task_id:str,role:str,semantic_generation:int,operation_key:str,worker_id:str,claim_generation:int,result:dict[str,Any])->str:
+        # Reject wrong-state work before provider execution or durable receipt creation.
+        # apply_receipt() still repeats the authoritative state/fence checks at mutation.
+        self._assert_role_precondition(task_id,role,worker_id,claim_generation)
         job=self._job(task_id,role,semantic_generation,operation_key)
         request=provider_request_from_job(job,self.manifest)
         script={role:{str(semantic_generation+1):dict(result)}}
