@@ -1,3 +1,4 @@
+import math
 import os
 import sqlite3
 import tempfile
@@ -36,11 +37,15 @@ class V8LeaseRenewalTests(unittest.TestCase):
         finally:
             conn.close()
 
+    def _snapshot(self, task_id):
+        task = db.get_task(task_id)
+        return (task["claimed_by"], task["claim_generation"], task["lease_until"], task["state"])
+
     def test_live_owner_can_renew_without_generation_change(self):
         task_id = self.engine.submit("core", "implement", "long work")
         gen = self.engine.claim_and_start(task_id, "worker-1")
         before = db.get_task(task_id)
-        renewed_until = self.engine.renew(task_id, "worker-1", gen, lease_seconds=120)
+        renewed_until = self.engine.renew(task_id, "worker-1", gen, lease_seconds=config.LEASE_MAX_SECONDS)
         after = db.get_task(task_id)
         self.assertGreaterEqual(renewed_until, before["lease_until"])
         self.assertEqual(after["claimed_by"], "worker-1")
@@ -72,14 +77,34 @@ class V8LeaseRenewalTests(unittest.TestCase):
         with self.assertRaisesRegex(db.InvalidTransitionError, "RENEW_STATE:PENDING"):
             db.renew_lease(task_id, "worker", 0, lease_seconds=120)
 
-    def test_invalid_renewal_duration_fails_closed(self):
+    def test_invalid_renewal_duration_fails_closed_without_mutation(self):
         task_id = self.engine.submit("core", "implement", "bad heartbeat")
         gen = self.engine.claim_and_start(task_id, "worker-1")
-        before = db.get_task(task_id)["lease_until"]
-        for bad in (0, -1, True):
-            with self.assertRaisesRegex(ValueError, "LEASE_SECONDS_POSITIVE_REQUIRED"):
-                self.engine.renew(task_id, "worker-1", gen, lease_seconds=bad)
-        self.assertEqual(db.get_task(task_id)["lease_until"], before)
+        before = self._snapshot(task_id)
+        bad_values = (
+            0, -1, True, "120", None if config.LEASE_SECONDS is None else object(),
+            config.LEASE_MAX_SECONDS + 0.001, config.LEASE_MAX_SECONDS * 1000,
+            float("inf"), float("-inf"), float("nan"),
+        )
+        for bad in bad_values:
+            with self.subTest(bad=repr(bad)):
+                with self.assertRaisesRegex(ValueError, "LEASE_SECONDS_BOUNDED_FINITE_REQUIRED"):
+                    self.engine.renew(task_id, "worker-1", gen, lease_seconds=bad)
+                self.assertEqual(self._snapshot(task_id), before)
+
+    def test_reclaim_duration_uses_same_bounded_finite_invariant(self):
+        task_id = self.engine.submit("core", "implement", "bad reclaim duration")
+        gen = self.engine.claim_and_start(task_id, "worker-1")
+        self._expire(task_id)
+        before = self._snapshot(task_id)
+        for bad in (0, -1, True, "120", config.LEASE_MAX_SECONDS + 1, float("inf"), float("nan")):
+            with self.subTest(bad=repr(bad)):
+                with self.assertRaisesRegex(ValueError, "LEASE_SECONDS_BOUNDED_FINITE_REQUIRED"):
+                    self.engine.reclaim_expired(task_id, "worker-2", lease_seconds=bad)
+                self.assertEqual(self._snapshot(task_id), before)
+        gen2 = self.engine.reclaim_expired(task_id, "worker-2", lease_seconds=config.LEASE_MAX_SECONDS)
+        self.assertEqual(gen2, gen + 1)
+        self.assertTrue(math.isfinite(db.get_task(task_id)["lease_until"]))
 
 
 if __name__ == "__main__":
