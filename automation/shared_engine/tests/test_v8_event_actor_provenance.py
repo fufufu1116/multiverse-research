@@ -43,7 +43,8 @@ class V8EventActorProvenanceTests(unittest.TestCase):
 
         detail = json.loads(event["detail_json"])
         self.assertEqual(event["actor"], "worker-1")
-        self.assertEqual(event["event_type"], "AUDITOR_APPROVED")
+        self.assertEqual(event["event_type"], "STATE_TRANSITION:PENDING->IN_IMPLEMENT")
+        self.assertEqual(detail["declared_event_type"], "AUDITOR_APPROVED")
         self.assertEqual(detail["declared_actor"], "Independent Auditor")
         self.assertEqual(detail["fencing_worker"], "worker-1")
 
@@ -64,13 +65,15 @@ class V8EventActorProvenanceTests(unittest.TestCase):
         conn.row_factory = sqlite3.Row
         try:
             event = conn.execute(
-                "SELECT actor,detail_json FROM events WHERE task_id=? ORDER BY id DESC LIMIT 1",
+                "SELECT actor,event_type,detail_json FROM events WHERE task_id=? ORDER BY id DESC LIMIT 1",
                 (task_id,),
             ).fetchone()
         finally:
             conn.close()
         detail = json.loads(event["detail_json"])
         self.assertEqual(event["actor"], "worker-2")
+        self.assertEqual(event["event_type"], "STATE_TRANSITION:PENDING->IN_IMPLEMENT")
+        self.assertEqual(detail["declared_event_type"], "START")
         self.assertEqual(detail["declared_actor"], "exact_v7_shared_engine")
         self.assertEqual(detail["fencing_worker"], "worker-2")
 
