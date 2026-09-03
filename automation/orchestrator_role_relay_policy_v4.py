@@ -123,7 +123,8 @@ class PolicyRelayStore(RelayStore):
         self._init_v4()
 
     def _init_v4(self) -> None:
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             self.conn.execute("CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT NOT NULL)")
             self.conn.execute("""CREATE TABLE IF NOT EXISTS jobs(
                 operation_key TEXT PRIMARY KEY,
@@ -161,6 +162,10 @@ class PolicyRelayStore(RelayStore):
                 require(fp_row is not None and json_row is not None, "RELAY_POLICY_META_PARTIAL")
                 require(fp_row[0] == self.policy.fingerprint, "RELAY_POLICY_FINGERPRINT_MISMATCH")
                 require(json_row[0] == policy_json, "RELAY_POLICY_JSON_MISMATCH")
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
 
     def _validate_job(self, role: str, task: dict[str, Any], op_key: str,
                       semantic_attempt: int) -> tuple[dict[str, Any], int]:
