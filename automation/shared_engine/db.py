@@ -164,9 +164,9 @@ def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
 def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=None,release=False,fencing=None):
     """Perform one workflow transition only with a live fencing token.
 
-    The durable event actor is always the exact fenced worker. Caller-supplied actor
-    labels are preserved only as declared emitter metadata so a valid worker cannot
-    forge Independent Lab/Auditor provenance in the authoritative event history.
+    Durable provenance is derived from authority, not caller labels: event actor is the
+    exact fenced worker and event_type is the canonical state transition. Caller-supplied
+    component/event labels survive only as declared metadata.
     """
     init_schema(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
@@ -185,10 +185,12 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
         claimed=None if release else r['claimed_by']; lease=None if release else r['lease_until']
         event_detail=dict(detail or {})
         event_detail['declared_actor']=actor
+        event_detail['declared_event_type']=event_type
         event_detail['fencing_worker']=worker
+        canonical_event_type=f'STATE_TRANSITION:{before}->{new_state}'
         c.execute('UPDATE tasks SET state=?,claimed_by=?,lease_until=?,result_json=?,updated_at=? WHERE id=?',
                   (new_state,claimed,lease,json.dumps(result,sort_keys=True,separators=(',',':')),now,task_id))
         c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
-                  (task_id,worker,event_type,before,new_state,json.dumps(event_detail,sort_keys=True,separators=(',',':')),now))
+                  (task_id,worker,canonical_event_type,before,new_state,json.dumps(event_detail,sort_keys=True,separators=(',',':')),now))
         c.commit(); c.close(); return new_state
     except BaseException: c.rollback(); c.close(); raise
