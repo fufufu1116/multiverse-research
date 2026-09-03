@@ -1,0 +1,61 @@
+{
+  "record": "KEIRIN_SEP4_PRE_TRANSPORT_READINESS_DELTA_20260903_v2",
+  "status": "POSITIVE_PRE_TRANSPORT_PATHS_AVAILABLE_EXACT_KDREAMS_RACEDETAIL_HREFS_STILL_PENDING",
+  "scope": "RESEARCH_PRE_ONLY_TRANSPORT_READINESS_NO_RESULT_AUTHORITY_NO_FEATURE_AUTO_ADMISSION",
+  "race_date": "2026-09-04",
+  "parent_membership": "KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
+  "parent_provider_receipt": "KEIRIN_SEP4_PROVIDER_POSITIVE_PRE_PATH_RECEIPT_20260903_v1.json",
+  "parent_kdreams_status": "KEIRIN_SEP4_KDREAMS_RACELINK_AVAILABILITY_STATUS_20260903_v1.json",
+  "fresh_observation": {
+    "kdreams": {
+      "date_index_url": "https://keirin.kdreams.jp/kaisai/2026/09/04/",
+      "hofu": "POSITIVE_7_RACE_ROWS_WITH 出走表 LABELS_AND_FROZEN_CUTOFFS",
+      "toyohashi": "POSITIVE_12_RACE_ROWS_WITH 出走表 LABELS_AND_FROZEN_CUTOFFS",
+      "exact_racedetail_hrefs_in_fetched_representation": "NOT_POSITIVELY_EXPOSED",
+      "decision": "DO_NOT_GUESS_OR_PATTERN_GENERATE_RACEDETAIL_IDS"
+    },
+    "oddspark_fallback": {
+      "prespec": "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
+      "hofu_positive_example": "https://www.oddspark.com/keirin/RaceList.do?joCode=63&kaisaiBi=20260904&raceNo=1",
+      "toyohashi_positive_examples": [
+        "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=2",
+        "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=9"
+      ],
+      "positive_body_fields_observed": ["date","venue","race_no","class","rider_name","period","prefecture","class","style","competition_score","decision_counts"],
+      "transport_readiness": "POSITIVE_AT_BOTH_TARGET_VENUES",
+      "important_limit": "Venue-level positive transport does not substitute for per-race pre-cutoff capture and acceptance receipts."
+    }
+  },
+  "content_firewall": {
+    "market_or_human_prediction_content_coexists_on_oddspark": true,
+    "allowed_use": "STRICT_PRE_ALLOWLIST_ONLY",
+    "forbidden": ["prediction_marks","human_comments","line_or_formation_forecast","AI_prediction","numeric_odds","popularity","RESULT","PAYOUT"],
+    "forbidden_content_used_for_this_delta": false
+  },
+  "sep4_blocks": {
+    "防府": {
+      "circumference_m": 333,
+      "race_numbers": [1,2,3,4,5,6,7],
+      "cutoffs_jst": ["08:35","08:55","09:15","09:35","09:55","10:15","10:35"],
+      "role": "PRE_TRANSPORT_IDENTITY_SUPPORT_ONLY_RESERVED_FROM_FIT"
+    },
+    "豊橋": {
+      "circumference_m": 400,
+      "race_numbers": [1,2,3,4,5,6,7,8,9,10,11,12],
+      "cutoffs_jst": ["15:46","16:09","16:33","16:57","17:21","17:45","18:09","18:33","18:57","19:21","19:46","20:12"],
+      "role": "DEVELOPMENT_CANDIDATE"
+    }
+  },
+  "decision": "Sep4 PRE transport is operationally viable through the already-frozen OddsPark fallback at both venues. Keep KDreams exact racedetail IDs PENDING unless a positive href/body is actually exposed. Capture each race before its frozen cutoff with deterministic content addressing; missing or ambiguous races fail closed and are never reconstructed after cutoff.",
+  "feature_admission": false,
+  "result_values_observed": false,
+  "payout_values_observed": false,
+  "result_access_authorized": false,
+  "owner_action_required_now": false,
+  "next": [
+    "Before Sep4 cutoffs, capture strict allowlist PRE snapshots for Hofu and Toyohashi under the frozen fallback transport contract.",
+    "Resolve KDreams exact racedetail hrefs only if positive provider evidence surfaces them; otherwise leave pending.",
+    "Do not use Hofu outcomes for fit."
+  ],
+  "hard_boundaries": ["NO_RACE_ID_GUESSING","NO_RESULT","NO_PAYOUT","NO_ODDS_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_LINE_AS_REALITY_TRUTH","NO_POST_RACE_PRE_RECONSTRUCTION","NO_SOURCE_SWITCH_AFTER_OUTCOME","NO_ZERO_SCORE_IMPUTATION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
