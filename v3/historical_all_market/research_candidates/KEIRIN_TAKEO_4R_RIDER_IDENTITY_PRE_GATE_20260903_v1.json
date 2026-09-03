@@ -1,0 +1,28 @@
+{
+  "record":"KEIRIN_TAKEO_4R_RIDER_IDENTITY_PRE_GATE_20260903_v1",
+  "status":"FAIL_CLOSED_5_OF_7_POSITIVE_OFFICIAL_SAME_RACE_ASSIGNMENTS_TWO_NOT_POSITIVELY_REFRESHED",
+  "scope":"RESEARCH_PRE_ONLY_RIDER_IDENTITY_GATE_NO_RESULT_AUTHORITY",
+  "attempt_started_jst":"2026-09-03T16:43:00+09:00",
+  "race":{"venue":"武雄","date":"2026-09-03","race_no":4,"race_id":"8420260903010004","cutoff_jst":"17:01","class":"A級予選"},
+  "pre_roster_source":"KEIRIN_TAKEO_DAY1_PRE_ROSTER_SCORE_GATE_20260903_v1.json",
+  "official_source":"KEIRIN.JP rider profiles keyed by registration number",
+  "positive_same_race_assignments":[
+    {"car_no":1,"name":"佐藤 竜太","registration_number":"015535","official_assignment":"武雄F1 09/03 A級予選/4R"},
+    {"car_no":2,"name":"三木 健正","registration_number":"015831","official_assignment":"武雄F1 09/03 A級予選/4R"},
+    {"car_no":4,"name":"深瀬 泰我","registration_number":"015531","official_assignment":"武雄F1 09/03 A級予選/4R"},
+    {"car_no":5,"name":"榊原 洋","registration_number":"013736","official_assignment":"武雄F1 09/03 A級予選/4R"},
+    {"car_no":7,"name":"奥谷 広巳","registration_number":"013209","official_assignment":"武雄F1 09/03 A級予選/4R"}
+  ],
+  "not_positively_verified":[
+    {"car_no":3,"name":"川崎 健次","registration_number":"013903","status":"OFFICIAL_IDENTITY_AND_TAKEO_MEETING_SCHEDULE_VERIFIED_BUT_AVAILABLE_PROFILE_BODY_WAS_STALE_FOR_SAME_RACE_ASSIGNMENT"},
+    {"car_no":6,"name":"峠 祐介","registration_number":"013175","status":"OFFICIAL_IDENTITY_AND_TAKEO_MEETING_SCHEDULE_VERIFIED_BUT_SAME_RACE_ASSIGNMENT_NOT_POSITIVELY_VISIBLE_IN_AVAILABLE_CURRENT_SEARCH_BODY"}
+  ],
+  "mapping_count":7,
+  "same_race_positive_count":5,
+  "final_identity_gate":"FAIL_CLOSED",
+  "decision":"Do not weaken the strengthened identity contract. This race is not eligible for rider-specific outcome work unless a separately timing-safe official same-race assignment was already captured pre-cutoff for the two unresolved riders; no post-race repair is allowed.",
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "hard_boundaries":["NO_RESULT","NO_POST_RACE_IDENTITY_REPAIR","NO_MEETING_ONLY_MATCH_AS_SAME_RACE_PASS","NO_CURRENT_PROFILE_FEATURE_BACKFILL","NO_IDENTITY_CONTRACT_WEAKENING","NO_MODEL_FIT","NO_MAIN_OR_RUNTIME_MUTATION"]
+}
