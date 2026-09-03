@@ -1,6 +1,7 @@
 package main
 
 import (
+    "errors"
     "fmt"
     "net/http"
     "net/http/httptest"
@@ -10,6 +11,7 @@ import (
     "strings"
     "syscall"
     "testing"
+    "time"
 )
 
 func testServer(before,after int,reset int64)*httptest.Server{
@@ -25,7 +27,11 @@ func TestRateCommitFloors(t *testing.T){
     s3:=testServer(60,58,1924995600);defer s3.Close(); r=probeAt(s3.URL,s3.Client()); if r.Ready||r.Reason!="RATE_DECREMENT_NOT_EXACT_ONE"{t.Fatalf("unexpected decrement must fail: %+v",r)}
 }
 
-func publishAt(lockPath,statusPath,controlPath,name,gen string)error{
+func productionAnchorAvailable()bool{
+    st,e:=os.Stat(lockPath); return e==nil&&st.IsDir()
+}
+
+func publishAt(statusPath,controlPath,name,gen string)error{
     l,e:=openLock(lockPath);if e!=nil{return e};defer releaseLock(l)
     st,ct:=render(name,gen,"probe",probeResult{Ready:true,Reason:"READY",Before:60,After:59,Reset:1924995600})
     if e=atomicReplaceUnique(statusPath,st,gen,0444);e!=nil{return e}
@@ -34,19 +40,20 @@ func publishAt(lockPath,statusPath,controlPath,name,gen string)error{
 }
 
 func TestIndependentPublisherProcessHelper(t *testing.T){
-    if os.Getenv("V7R10_PUBLISH_HELPER")!="1"{return}
-    d:=os.Getenv("V7R10_PUBLISH_DIR"); gen:=os.Getenv("V7R10_PUBLISH_GEN")
+    if os.Getenv("V7R11_PUBLISH_HELPER")!="1"{return}
+    d:=os.Getenv("V7R11_PUBLISH_DIR"); gen:=os.Getenv("V7R11_PUBLISH_GEN")
     if d==""||gen==""{os.Exit(97)}
-    if e:=publishAt(filepath.Join(d,"lock"),filepath.Join(d,"status"),filepath.Join(d,"control"),"rate-test",gen);e!=nil{fmt.Fprintln(os.Stderr,e);os.Exit(98)}
+    if e:=publishAt(filepath.Join(d,"status"),filepath.Join(d,"control"),"rate-test",gen);e!=nil{fmt.Fprintln(os.Stderr,e);os.Exit(98)}
     os.Exit(0)
 }
 
 func TestConcurrentIndependentProcessesKeepGenerationPair(t *testing.T){
+    if !productionAnchorAvailable(){t.Skip("production lock anchor exists only in exact image")}
     d:=t.TempDir(); cmds:=make([]*exec.Cmd,0,12)
     for i:=0;i<12;i++{
         gen:=fmt.Sprintf("%032x",i+1)
         c:=exec.Command(os.Args[0],"-test.run=TestIndependentPublisherProcessHelper")
-        c.Env=append(os.Environ(),"V7R10_PUBLISH_HELPER=1","V7R10_PUBLISH_DIR="+d,"V7R10_PUBLISH_GEN="+gen)
+        c.Env=append(os.Environ(),"V7R11_PUBLISH_HELPER=1","V7R11_PUBLISH_DIR="+d,"V7R11_PUBLISH_GEN="+gen)
         if e:=c.Start();e!=nil{t.Fatal(e)};cmds=append(cmds,c)
     }
     for _,c:=range cmds{if e:=c.Wait();e!=nil{t.Fatalf("publisher process failed: %v",e)}}
@@ -56,13 +63,13 @@ func TestConcurrentIndependentProcessesKeepGenerationPair(t *testing.T){
 }
 
 func TestPreexistingSymlinkLockFailsClosed(t *testing.T){
-    d:=t.TempDir(); target:=filepath.Join(d,"target"); if e:=os.WriteFile(target,[]byte("x"),0600);e!=nil{t.Fatal(e)}; lock:=filepath.Join(d,"lock"); if e:=os.Symlink(target,lock);e!=nil{t.Fatal(e)}
+    d:=t.TempDir(); target:=filepath.Join(d,"target"); if e:=os.Mkdir(target,0555);e!=nil{t.Fatal(e)}; lock:=filepath.Join(d,"lock"); if e:=os.Symlink(target,lock);e!=nil{t.Fatal(e)}
     if _,e:=openLock(lock);e==nil{t.Fatal("symlink lock unexpectedly accepted")}
 }
 
-func TestStaleRegularLockIsSafelyReusable(t *testing.T){
+func TestUserOwnedRegularLockCannotSubstituteForRootAnchor(t *testing.T){
     d:=t.TempDir(); lock:=filepath.Join(d,"lock"); if e:=os.WriteFile(lock,[]byte("stale"),0600);e!=nil{t.Fatal(e)}
-    l,e:=openLock(lock);if e!=nil{t.Fatalf("safe stale regular lock rejected: %v",e)};releaseLock(l)
+    if _,e:=openLock(lock);e==nil{t.Fatal("user-owned regular lock unexpectedly accepted")}
 }
 
 func TestUniqueTempPreexistingCollisionFailsClosed(t *testing.T){
@@ -110,10 +117,44 @@ func TestPartialPublicationIsDetectablyIncoherent(t *testing.T){
 
 func TestRenderNeverGrantsAuthority(t *testing.T){
     s,c:=render("rate-test","00112233445566778899aabbccddeeff","probe",probeResult{Ready:true,Reason:"READY",Before:60,After:59,Reset:1924995600})
-    for _,x:=range []string{s,c}{for _,want:=range []string{"one_shot_guard_consumed","authority_consumer_requires_generation_match","runtime","generation"}{if !strings.Contains(x,want){t.Fatalf("missing %s",want)}}}
+    for _,x:=range []string{s,c}{for _,want:=range []string{"one_shot_guard_consumed","authority_consumer_requires_generation_match","lock_anchor_root_owned_nonreplaceable","runtime","generation"}{if !strings.Contains(x,want){t.Fatalf("missing %s",want)}}}
 }
 
-func TestOpenLockUsesFlock(t *testing.T){
-    d:=t.TempDir();l,e:=openLock(filepath.Join(d,"lock"));if e!=nil{t.Fatal(e)};defer releaseLock(l)
-    if e:=syscall.Flock(int(l.Fd()),syscall.LOCK_EX|syscall.LOCK_NB);e!=nil{t.Fatal(e)}
+func TestProductionLockAnchorHolderHelper(t *testing.T){
+    if os.Getenv("V7R11_LOCK_HOLDER")!="1"{return}
+    signalDir:=os.Getenv("V7R11_LOCK_SIGNAL_DIR"); if signalDir==""{os.Exit(96)}
+    l,e:=openLock(lockPath);if e!=nil{fmt.Fprintln(os.Stderr,e);os.Exit(97)};defer releaseLock(l)
+    if e=os.WriteFile(filepath.Join(signalDir,"held"),[]byte("held"),0600);e!=nil{os.Exit(98)}
+    deadline:=time.Now().Add(10*time.Second)
+    for time.Now().Before(deadline){if _,e=os.Stat(filepath.Join(signalDir,"release"));e==nil{os.Exit(0)};time.Sleep(10*time.Millisecond)}
+    os.Exit(99)
+}
+
+func TestProductionLockAnchorRejectsPathReplacementAndSecondDomain(t *testing.T){
+    if !productionAnchorAvailable(){t.Skip("production lock anchor exists only in exact image")}
+    signalDir:=t.TempDir()
+    holder:=exec.Command(os.Args[0],"-test.run=TestProductionLockAnchorHolderHelper")
+    holder.Env=append(os.Environ(),"V7R11_LOCK_HOLDER=1","V7R11_LOCK_SIGNAL_DIR="+signalDir)
+    if e:=holder.Start();e!=nil{t.Fatal(e)}
+    deadline:=time.Now().Add(5*time.Second)
+    for {if _,e:=os.Stat(filepath.Join(signalDir,"held"));e==nil{break};if time.Now().After(deadline){_ = holder.Process.Kill();t.Fatal("holder did not acquire production anchor")};time.Sleep(10*time.Millisecond)}
+
+    if e:=os.Remove(lockPath);e==nil{_ = holder.Process.Kill();t.Fatal("same-UID unlink unexpectedly replaced production lock anchor")}
+    moved:=lockPath+".attacker-moved"
+    if e:=os.Rename(lockPath,moved);e==nil{_ = holder.Process.Kill();t.Fatal("same-UID rename unexpectedly moved production lock anchor")}
+    if e:=os.Mkdir(lockPath,0555);e==nil{_ = holder.Process.Kill();t.Fatal("same-UID recreate unexpectedly replaced production lock anchor")}
+
+    second,e:=openLockWithOperation(lockPath,syscall.LOCK_EX|syscall.LOCK_NB)
+    if e==nil{releaseLock(second);_ = holder.Process.Kill();t.Fatal("second lock domain unexpectedly acquired while holder owns production anchor")}
+    if !errors.Is(e,syscall.EWOULDBLOCK)&&!errors.Is(e,syscall.EAGAIN){_ = holder.Process.Kill();t.Fatalf("expected flock contention, got %v",e)}
+
+    if e:=os.WriteFile(filepath.Join(signalDir,"release"),[]byte("release"),0600);e!=nil{_ = holder.Process.Kill();t.Fatal(e)}
+    if e:=holder.Wait();e!=nil{t.Fatalf("holder failed: %v",e)}
+    after,e:=openLockWithOperation(lockPath,syscall.LOCK_EX|syscall.LOCK_NB);if e!=nil{t.Fatalf("anchor unavailable after holder release: %v",e)};releaseLock(after)
+}
+
+func TestProductionLockAnchorUsesFlock(t *testing.T){
+    if !productionAnchorAvailable(){t.Skip("production lock anchor exists only in exact image")}
+    l,e:=openLock(lockPath);if e!=nil{t.Fatal(e)};defer releaseLock(l)
+    if _,e:=openLockWithOperation(lockPath,syscall.LOCK_EX|syscall.LOCK_NB);e==nil{t.Fatal("second exclusive flock unexpectedly succeeded")}
 }
