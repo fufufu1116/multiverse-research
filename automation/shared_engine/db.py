@@ -22,6 +22,13 @@ def _validated_worker_id(worker_id):
         raise ValueError('WORKER_ID_BOUNDED_NONEMPTY_REQUIRED')
     return worker_id
 
+def _validated_generation(generation):
+    # Python bool and integral floats compare equal to ints (True == 1, 1.0 == 1).
+    # Fencing tokens must preserve exact type/identity semantics, not numeric coercion.
+    if isinstance(generation,bool) or not isinstance(generation,int) or generation <= 0:
+        raise LostLeaseError('invalid fencing generation')
+    return generation
+
 def _validated_lease_seconds(lease_seconds):
     lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
     if (isinstance(lease_seconds,bool) or not isinstance(lease_seconds,(int,float)) or
@@ -72,7 +79,7 @@ def list_tasks():
 
 def assert_unexpired_fence(task_id, worker_id, generation):
     """Fail closed unless worker/generation still owns an unexpired task lease."""
-    init_schema(); worker_id=_validated_worker_id(worker_id); now=time.time(); c=_conn()
+    init_schema(); worker_id=_validated_worker_id(worker_id); generation=_validated_generation(generation); now=time.time(); c=_conn()
     try:
         r=c.execute('SELECT claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
     finally:
@@ -120,7 +127,7 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
     is acquired, so lock wait cannot turn a pre-expiry observation into a post-expiry
     resurrection. Expired work must reclaim with generation bump.
     """
-    init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
+    init_schema(); worker_id=_validated_worker_id(worker_id); generation=_validated_generation(generation); lease_seconds=_validated_lease_seconds(lease_seconds)
     c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         now=time.time()
@@ -165,7 +172,7 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
         if release and new_state not in RELEASE_SAFE_STATES: raise InvalidTransitionError(f'RELEASE_TARGET:{new_state}')
         if fencing is None: raise LostLeaseError('fencing token required')
         now=time.time()
-        worker,generation=fencing; worker=_validated_worker_id(worker)
+        worker,generation=fencing; worker=_validated_worker_id(worker); generation=_validated_generation(generation)
         if r['claimed_by']!=worker or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
         if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
         result=json.loads(r['result_json'])
