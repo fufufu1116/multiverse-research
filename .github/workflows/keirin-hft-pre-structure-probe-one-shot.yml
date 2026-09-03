@@ -1,0 +1,65 @@
+name: Keirin HFT PRE Structure Probe One-Shot
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-hft-pre-structure-probe-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pre-structure-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROBE: 'tools/keirin_kdreams_pre_table_structure_quarantine_probe_v1.py'
+      PROBE_BLOB: 'f1e5123a6dca276d73a56adbb5e8731d2b07453e'
+      OUT: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_REJECTED_PRE_TABLE_STRUCTURE_PROBE_20260904_v1.json'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/keirin-real-evidence-dual-lane-20260901-v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet beautifulsoup4
+      - name: Verify probe
+        run: |
+          set -euo pipefail
+          test "$(git hash-object "$PROBE")" = "$PROBE_BLOB"
+      - name: Probe only rejected PRE structure
+        run: |
+          set +e
+          python "$PROBE" \
+            --url https://keirin.kdreams.jp/kawasaki/racedetail/3420260830010006/ \
+            --url https://keirin.kdreams.jp/kawasaki/racedetail/3420260830010007/ \
+            --out "$OUT" --timeout 25
+          rc=$?
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 3 ]; then exit "$rc"; fi
+          exit 0
+      - name: Validate quarantine firewall
+        run: |
+          python - <<'PY'
+          import json,os,re
+          x=json.load(open(os.environ['OUT'],encoding='utf-8'))
+          for k in ['raw_html_persisted','raw_html_printed','rider_names_emitted','result_fields_emitted','payout_fields_emitted','odds_fields_emitted','forecast_fields_emitted','comments_emitted','narabiyoso_emitted']:
+              if x.get(k) is not False: raise SystemExit('FAIL_CLOSED:firewall')
+          allowed_classes={'S1','S2','A1','A2','A3','L1'}; allowed_styles={'逃','追','両'}
+          for r in x.get('records',[]):
+              if not set(r.get('class_tokens',[])) <= allowed_classes: raise SystemExit('FAIL_CLOSED:class')
+              if not set(r.get('style_tokens',[])) <= allowed_styles: raise SystemExit('FAIL_CLOSED:style')
+              if not re.fullmatch(r'[0-9a-f]{64}',r.get('source_file_sha256','')): raise SystemExit('FAIL_CLOSED:sha')
+          print(json.dumps({'records':len(x.get('records',[])),'rejects':len(x.get('rejects',[])),'class_sets':[r.get('class_tokens',[]) for r in x.get('records',[])],'structural_rows':[r.get('recognized_structural_rows',0) for r in x.get('records',[])]},ensure_ascii=False,sort_keys=True))
+          PY
+      - name: Commit sanitized structural receipt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$OUT"
+          git diff --cached --quiet && exit 0
+          git commit -m 'research(keirin): record rejected PRE table structure probe'
+          git push origin HEAD:research/keirin-real-evidence-dual-lane-20260901-v1
