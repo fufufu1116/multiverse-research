@@ -35,8 +35,8 @@ func publishAt(lockPath,statusPath,controlPath,name,gen string)error{
 
 func TestIndependentPublisherProcessHelper(t *testing.T){
     if os.Getenv("V7R10_PUBLISH_HELPER")!="1"{return}
-    if len(os.Args)<3{os.Exit(97)}
     d:=os.Getenv("V7R10_PUBLISH_DIR"); gen:=os.Getenv("V7R10_PUBLISH_GEN")
+    if d==""||gen==""{os.Exit(97)}
     if e:=publishAt(filepath.Join(d,"lock"),filepath.Join(d,"status"),filepath.Join(d,"control"),"rate-test",gen);e!=nil{fmt.Fprintln(os.Stderr,e);os.Exit(98)}
     os.Exit(0)
 }
