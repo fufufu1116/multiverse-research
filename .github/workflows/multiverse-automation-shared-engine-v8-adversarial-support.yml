@@ -1,0 +1,41 @@
+name: MULTIVERSE Automation Shared Engine v8 adversarial support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-adversarial-support-20260903-v1
+
+permissions:
+  contents: read
+
+jobs:
+  adversarial-support:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact support head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fresh binding guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "$(git ls-remote origin refs/heads/main | awk '{print $1}')" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          git merge-base --is-ancestor 3be80af7b232453777db2d8b05918c10d3b58fd8 HEAD
+      - name: Run adversarial support suite
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: |
+          python -m unittest automation/shared_engine/tests/test_v8_adversarial_support.py -v
+      - name: Nonauthority receipt
+        run: |
+          echo "FORMAL_LAB_VERDICT=false"
+          echo "FORMAL_AUDITOR_VERDICT=false"
+          echo "MAIN_MUTATION_AUTHORITY=false"
+          echo "RUNTIME=OFF"
+          echo "LIVE_PROVIDER=false"
+          echo "NETWORK=false"
+          echo "EXTERNAL_EFFECT=false"
+          echo "SPEND=false"
+          echo "SECRET_CREDENTIAL=false"
