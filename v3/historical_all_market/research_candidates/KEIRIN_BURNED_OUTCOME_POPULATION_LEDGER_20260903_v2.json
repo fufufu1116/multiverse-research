@@ -1,0 +1,29 @@
+{
+  "record":"KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v2",
+  "status":"CONSERVATIVE_RESEARCH_CONTAMINATION_FIREWALL_NO_NEW_TARGET_RESULT_EXTRACTION",
+  "supersedes":"KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260902_v1.json",
+  "purpose":"Prevent new Rider x Bank / Circumference and Rider x Line/Role research from reusing outcome-viewed periods for tuning or evaluation.",
+  "inherited_rule":"All populations whose RESULT was previously viewed remain burned for tuning. For simplicity and safety, all target dates on or before the latest confirmed explicit outcome-viewed date are sacrificed for new affinity fit/eval.",
+  "prior_latest_confirmed_outcome_viewed_target_date":"2026-07-23",
+  "new_exposure_receipt":"KEIRIN_HISTORICAL_PIT_TRANSPORT_VALIDATION_EXPOSURE_RECEIPT_20260903_v1.json",
+  "new_exposure_reason":"Historical source validation surfaced explicit prior-race finish values in archived KDreams recent-form sections, with the latest observed prior-race finish date 2026-08-25. These outcomes were not used for tuning, but the conservative date firewall is extended anyway.",
+  "latest_confirmed_outcome_viewed_target_date":"2026-08-25",
+  "conservative_new_affinity_date_firewall":{
+    "dates_on_or_before":"2026-08-25",
+    "classification":"NOT_ELIGIBLE_FOR_NEW_RIDER_AFFINITY_FIT_OR_EVAL",
+    "first_possible_date":"2026-08-26",
+    "important":"2026-08-26 is only a date floor, not an authorized population. PRE-only membership/source locks, official identity mapping and support-gate rules still apply before any target RESULT extraction."
+  },
+  "historical_fast_track_boundary":{
+    "eligible_date_floor":"2026-08-26",
+    "result_access":false,
+    "support_increment_from_burned_rows":0,
+    "rule":"Do not use rows dated on or before 2026-08-25 as new Rider x Circumference support for the intended clean development acquisition pool."
+  },
+  "permitted_reuse_of_burned_data":["provenance","audit","reproducibility","failure analysis","source transport validation without target tuning"],
+  "forbidden_reuse":["parameter tuning","feature definition selection","threshold selection","sign flip rescue","transformation rescue","venue rescue","field-size rescue","candidate selection based on observed outcome improvement"],
+  "future_refresh_rule":"Immediately before any new affinity target extraction, Fresh Read the branch and extend this ledger if any newer explicit outcome finish has been surfaced. Never move the firewall backward.",
+  "result_join_authorized":false,
+  "model_fit_authorized":false,
+  "hard_boundaries":["NO_RESULT_JOIN_WHILE_SUPPORT_GATE_BLOCKED","NO_FIREWALL_ROLLBACK","NO_SAME_HOLDOUT_RESCUE","NO_PROTECTED_HOLDOUT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
