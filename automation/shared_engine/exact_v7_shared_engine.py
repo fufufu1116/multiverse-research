@@ -42,6 +42,9 @@ class ExactV7SharedEngine:
                 "candidate_head":self.binding.candidate_head,"candidate_branch":self.binding.candidate_branch,
                 "canonical_main":self.binding.canonical_main,"objective":db.get_task(task_id)["goal"],"authority":dict(JOB_AUTHORITY)}
     def execute_role(self,task_id:str,role:str,semantic_generation:int,operation_key:str,worker_id:str,claim_generation:int,result:dict[str,Any])->str:
+        # Fail before even the sealed provider fixture runs if this worker no longer
+        # owns a live lease. A second in-transaction check occurs on state mutation.
+        db.assert_unexpired_fence(task_id,worker_id,claim_generation)
         job=self._job(task_id,role,semantic_generation,operation_key)
         request=provider_request_from_job(job,self.manifest)
         script={role:{str(semantic_generation+1):dict(result)}}
