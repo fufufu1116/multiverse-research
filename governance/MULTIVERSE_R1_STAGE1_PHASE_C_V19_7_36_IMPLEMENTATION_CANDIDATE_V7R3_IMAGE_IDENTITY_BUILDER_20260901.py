@@ -22,8 +22,8 @@ def ident(p):
    n+=len(b);h.update(b)
  return {'path':p,'size':n,'sha256':h.hexdigest()}
 def main():
- b=json.dumps({'version':'V19.7.36-v7r9-image-identity','objects':[ident(p) for p in PATHS]},sort_keys=True,separators=(',',':')).encode()
+ b=json.dumps({'version':'V19.7.36-v7r12-image-identity','authority_model':'SEALED_MEMFD_SNAPSHOT_STATUS_CONTROL_OBSERVABILITY_ONLY','objects':[ident(p) for p in PATHS]},sort_keys=True,separators=(',',':')).encode()
  with open(OUT,'wb') as f:f.write(b)
  os.chown(OUT,0,0);os.chmod(OUT,0o444)
- print('PHASE_C_V19_7_36_V7R9_IMAGE_IDENTITY_SHA256='+hashlib.sha256(b).hexdigest())
+ print('PHASE_C_V19_7_36_V7R12_IMAGE_IDENTITY_SHA256='+hashlib.sha256(b).hexdigest())
 if __name__=='__main__':main()
