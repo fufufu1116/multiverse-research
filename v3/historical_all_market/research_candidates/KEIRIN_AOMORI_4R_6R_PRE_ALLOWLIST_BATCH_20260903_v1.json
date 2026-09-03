@@ -1,0 +1,24 @@
+{
+  "record":"KEIRIN_AOMORI_4R_6R_PRE_ALLOWLIST_BATCH_20260903_v1",
+  "status":"4R_AND_6R_REQUIRED_PRE_PASS_5R_FAIL_CLOSED_ZERO_COMPETITION_SCORE_ALL_FROZEN_PRE_EVENT",
+  "scope":"RESEARCH_PRE_ONLY_TRANSPORT_NO_RESULT_NO_FEATURE_ADMISSION",
+  "source":{"organization":"Tokyo Sports Keirin","retrieval_relation":"BEFORE_ALL_THREE_RACE_STARTS","field_order":["competition_score","nige","makuri","sashi","mark","B","S"]},
+  "races":[
+    {"race_no":4,"race_id":"1220260903010004","start_jst":"12:22","stage":"S級一予選","pre_gate":"PASS_REQUIRED_FIELDS","rows":[
+      [1,"菊地 圭尚",89,"北海道","追",104.23,0,0,5,2,0,1],[2,"松本 秀之介",117,"熊本","逃",108.56,0,9,2,2,2,0],[3,"丸山 啓一",74,"静岡","追",99.00,0,0,3,3,1,5],[4,"土屋 裕二",81,"静岡","追",96.93,0,0,0,1,0,1],[5,"青森 伸也",87,"福島","追",97.54,0,0,2,1,0,3],[6,"佐々木 亮太",125,"青森","逃",95.64,5,3,0,0,11,1],[7,"上野 優太",113,"熊本","追",109.08,0,0,3,4,0,7],[8,"松尾 信太郎",92,"福岡","追",96.83,0,1,1,4,0,0],[9,"新村 穣",119,"神奈川","逃",101.52,1,2,3,0,3,1]
+    ]},
+    {"race_no":5,"race_id":"1220260903010005","start_jst":"12:50","stage":"S級一予選","pre_gate":"FAIL_CLOSED_ZERO_COMPETITION_SCORE","failure":{"car_no":6,"rider":"山本 直","competition_score":0.00,"rule":"active rider competition score 0.00 fails closed; no later repair or imputation"},"rows":[
+      [1,"三谷 竜生",101,"奈良","両",109.89,1,5,1,1,2,2],[2,"大川 剛",121,"青森","逃",104.92,10,2,0,0,16,11],[3,"徳永 哲人",100,"熊本","両",104.00,0,0,3,3,0,3],[4,"坂本 貴史",94,"青森","両",99.04,0,4,3,1,0,8],[5,"渡辺 十夢",85,"福井","追",101.82,0,0,5,3,0,1],[6,"山本 直",101,"岡山","両",0.00,0,0,0,0,0,0],[7,"岡崎 智哉",96,"大阪","両",108.19,0,1,6,0,0,4],[8,"石川 裕二",99,"茨城","追",98.44,0,0,1,0,0,0],[9,"松岡 辰泰",117,"熊本","逃",105.04,1,8,3,1,4,6]
+    ]},
+    {"race_no":6,"race_id":"1220260903010006","start_jst":"13:18","stage":"S級一予選","pre_gate":"PASS_REQUIRED_FIELDS","rows":[
+      [1,"小原 丈一郎",115,"青森","両",104.40,0,1,8,0,0,8],[2,"菊池 竣太朗",111,"静岡","両",99.78,2,7,0,0,3,1],[3,"高田 修汰",115,"福井","逃",99.50,8,2,0,0,15,4],[4,"柴田 洋輔",92,"東京","追",98.03,0,0,1,1,0,1],[5,"村上 直久",95,"神奈川","両",99.41,4,4,1,0,9,0],[6,"奥村 諭志",111,"岡山","両",92.92,1,1,3,0,2,2],[7,"小堀 敢太",125,"北海道","逃",109.05,6,5,0,0,12,6],[8,"山崎 泰己",101,"岡山","追",96.48,0,0,4,0,0,5],[9,"上田 国広",89,"三重","追",105.27,0,0,4,2,0,3]
+    ]}
+  ],
+  "row_schema":["car_no","rider","period","prefecture","style","competition_score","nige","makuri","sashi","mark","B","S"],
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "market_or_human_content_used":false,
+  "feature_admission":false,
+  "result_access_authorized":false,
+  "hard_boundaries":["ZERO_SCORE_FAIL_CLOSED","NO_IMPUTATION_OR_POST_RACE_REPAIR","NO_RESULT_TARGET_ACCESS","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_NARABIYOSO_AS_OBJECTIVE_LINE_TRUTH","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
