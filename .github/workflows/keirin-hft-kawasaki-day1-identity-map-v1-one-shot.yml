@@ -1,0 +1,209 @@
+name: keirin-hft-kawasaki-day1-identity-map-v1-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-hft-kawasaki-day1-identity-map-v1-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  identity-map:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Resolve official registration identities only
+        run: |
+          python - <<'PY'
+          import csv, hashlib, importlib.util, json, pathlib, re, subprocess, time, traceback, unicodedata
+          from datetime import datetime, timezone
+
+          SRC = pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv')
+          LOC = pathlib.Path('v3/prospective_shadow250_v2/keirinjp_identity_locator_v3.py')
+          OUT = pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v1.json')
+          REC = pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HFT_KAWASAKI_DAY1_IDENTITY_MAPPING_RECEIPT_20260904_v1.json')
+          EXPECTED_SRC_BLOB = 'b8ad8a8368a4f934812989c9aa57a3c3b213c9b8'
+          EXPECTED_LOC_BLOB = 'c97d1d7c736e8cd778029446ffc704a684d4938e'
+          BRANCH = 'research/keirin-real-evidence-dual-lane-20260901-v1'
+          PREFS = ['北海道','青森','岩手','宮城','秋田','山形','福島','茨城','栃木','群馬','埼玉','千葉','東京','神奈川','新潟','富山','石川','福井','山梨','長野','岐阜','静岡','愛知','三重','滋賀','京都','大阪','兵庫','奈良','和歌山','鳥取','島根','岡山','広島','山口','徳島','香川','愛媛','高知','福岡','佐賀','長崎','熊本','大分','宮崎','鹿児島','沖縄']
+          PREFS = sorted(PREFS, key=len, reverse=True)
+
+          def git_blob(path):
+              return subprocess.check_output(['git','hash-object',str(path)], text=True).strip()
+          def git_head():
+              return subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip()
+          def norm(s):
+              s = unicodedata.normalize('NFKC', str(s))
+              s = unicodedata.normalize('NFC', s)
+              return ''.join(ch for ch in s if not ch.isspace())
+          def parse_pre_identity(raw):
+              m = re.fullmatch(r'(.+)/(\d+)/(\d+)', str(raw).strip())
+              if not m:
+                  raise ValueError('PRE_IDENTITY_RAW_FORMAT')
+              head = norm(m.group(1)); age = int(m.group(2)); term = int(m.group(3))
+              hits = [p for p in PREFS if head.endswith(p) and len(head) > len(p)]
+              if len(hits) != 1:
+                  raise ValueError(f'PRE_PREFECTURE_SUFFIX_CARDINALITY={len(hits)}')
+              pref = hits[0]; name = head[:-len(pref)]
+              if not name:
+                  raise ValueError('PRE_EMPTY_NAME')
+              return name, pref, age, term
+          def classify_error(msg):
+              low = msg.lower()
+              if 'halt_http_403' in low or 'halt_http_429' in low:
+                  return 'FAIL_CLOSED_RATE_HALT'
+              if 'name match cardinality=0' in low or 'no identity candidates' in low:
+                  return 'FAIL_CLOSED_NO_MATCH'
+              if 'name match cardinality=' in low or 'too many search results' in low:
+                  return 'FAIL_CLOSED_MULTIPLE_MATCH'
+              if 'mismatch' in low:
+                  return 'FAIL_CLOSED_CONTRADICTION'
+              return 'FAIL_CLOSED_TRANSPORT_OR_INTERFACE'
+
+          started = datetime.now(timezone.utc)
+          source_blob = git_blob(SRC); locator_blob = git_blob(LOC); source_head = git_head()
+          if source_blob != EXPECTED_SRC_BLOB:
+              raise RuntimeError(f'FAIL_CLOSED_SOURCE_BLOB {source_blob}')
+          if locator_blob != EXPECTED_LOC_BLOB:
+              raise RuntimeError(f'FAIL_CLOSED_LOCATOR_BLOB {locator_blob}')
+
+          with SRC.open(newline='', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+          if len(rows) != 84:
+              raise RuntimeError(f'FAIL_CLOSED_ROW_COUNT {len(rows)}')
+          required = {'race_id','race_date','venue','race_no','car_no','rider_name_raw','source_url','source_file_sha256','evidence_role'}
+          if not required.issubset(rows[0]):
+              raise RuntimeError('FAIL_CLOSED_REQUIRED_COLUMNS')
+          seen = set(); prepared = []
+          for r in rows:
+              if r['race_date'] != '2026-08-30' or r['venue'] != '川崎':
+                  raise RuntimeError('FAIL_CLOSED_EVENT_BINDING')
+              if r['evidence_role'] != 'HISTORICAL_PIT_PRE_SUPPORT_CANDIDATE_ONLY':
+                  raise RuntimeError('FAIL_CLOSED_EVIDENCE_ROLE')
+              if '?pageType=result' in r['source_url'] or '/raceresult/' in r['source_url']:
+                  raise RuntimeError('FAIL_CLOSED_RESULT_URL_IN_PRE_SOURCE')
+              key = (r['race_id'], r['car_no'])
+              if key in seen:
+                  raise RuntimeError('FAIL_CLOSED_DUPLICATE_RACE_CAR')
+              seen.add(key)
+              name, pref, age, term = parse_pre_identity(r['rider_name_raw'])
+              prepared.append({
+                  'race_id': r['race_id'], 'race_date': r['race_date'], 'venue': r['venue'],
+                  'race_no': int(r['race_no']), 'car_no': int(r['car_no']),
+                  'historical_pre_rider_name_raw': r['rider_name_raw'],
+                  'historical_pre_rider_name_normalized': name,
+                  'historical_pre_prefecture_normalized': pref,
+                  'historical_pre_term': term,
+                  'historical_pre_source_url': r['source_url'],
+                  'historical_pre_source_file_sha256': r['source_file_sha256'],
+              })
+          if sorted({x['race_no'] for x in prepared}) != list(range(1,13)):
+              raise RuntimeError('FAIL_CLOSED_RACE_NUMBER_COVERAGE')
+          if len({x['historical_pre_rider_name_normalized'] for x in prepared}) != 84:
+              raise RuntimeError('FAIL_CLOSED_NONUNIQUE_PRE_NAMES')
+
+          spec = importlib.util.spec_from_file_location('keirinjp_locator_v3', LOC)
+          locator = importlib.util.module_from_spec(spec); spec.loader.exec_module(locator)
+          mappings = []; halted = False
+          for idx, x in enumerate(prepared, start=1):
+              row = dict(x)
+              if halted:
+                  row.update({'identity_resolution_status':'NOT_ATTEMPTED_AFTER_RATE_HALT','mapping_status':None,'registration_number':None,'official_profile_url':None})
+                  mappings.append(row); continue
+              try:
+                  res = locator.resolve_snum(x['historical_pre_rider_name_normalized'], x['historical_pre_prefecture_normalized'], x['historical_pre_term'])
+                  snum = str(res['snum']).zfill(6)
+                  if not re.fullmatch(r'\d{6}', snum):
+                      raise RuntimeError('registration number not six digits after normalization')
+                  row.update({
+                      'identity_resolution_status':'PASS_VERIFIED_IDENTITY_LOCATOR_ONLY',
+                      'mapping_status':'EXACT_SINGLE_MATCH',
+                      'registration_number':snum,
+                      'official_profile_url':f'https://www.keirin.jp/pc/racerprofile?snum={snum}',
+                      'official_profile_name':x['historical_pre_rider_name_normalized'],
+                      'official_profile_name_evidence':'PROFILE_NORMALIZED_NAME_VERIFIED_EQUAL_TO_PRE',
+                      'query_basis':res['query_basis'],
+                      'search_result_identity_fields_used':res['search_result_identity_fields_used'],
+                      'final_identity_checks':res['final_identity_checks'],
+                      'search_result_count':res['search_result_count'],
+                      'name_match_count':res['name_match_count'],
+                      'search_landing_sha256':res['search_landing_sha256'],
+                      'search_result_sha256':res['search_result_sha256'],
+                      'profile_raw_sha256':res['profile_raw_sha256'],
+                      'capture_timestamp_utc':res['capture_timestamp_utc'],
+                  })
+              except Exception as e:
+                  msg = str(e); status = classify_error(msg)
+                  if status == 'FAIL_CLOSED_RATE_HALT': halted = True
+                  row.update({
+                      'identity_resolution_status':status,
+                      'mapping_status': status if status in {'FAIL_CLOSED_NO_MATCH','FAIL_CLOSED_MULTIPLE_MATCH','FAIL_CLOSED_CONTRADICTION'} else None,
+                      'registration_number':None,
+                      'official_profile_url':None,
+                      'error_type':type(e).__name__,
+                      'error_message':msg[:500],
+                  })
+              mappings.append(row)
+              print(f"identity {idx:02d}/84 {row['identity_resolution_status']}")
+              if idx < len(prepared) and not halted:
+                  time.sleep(5.2)
+
+          exact = [m for m in mappings if m.get('mapping_status') == 'EXACT_SINGLE_MATCH']
+          regs = [m['registration_number'] for m in exact]
+          duplicate_regs = sorted({r for r in regs if regs.count(r) > 1})
+          if duplicate_regs:
+              for m in mappings:
+                  if m.get('registration_number') in duplicate_regs:
+                      m['identity_resolution_status'] = 'FAIL_CLOSED_DUPLICATE_REGISTRATION_ID'
+                      m['mapping_status'] = 'FAIL_CLOSED_CONTRADICTION'
+              exact = [m for m in mappings if m.get('mapping_status') == 'EXACT_SINGLE_MATCH']
+          complete = len(exact) == 84 and not duplicate_regs
+          mapping_doc = {
+              'record':'KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v1',
+              'generated_utc':datetime.now(timezone.utc).isoformat(),
+              'status':'COMPLETE_EXACT_SINGLE_MATCH_FROZEN_CANDIDATE' if complete else 'INCOMPLETE_FAIL_CLOSED',
+              'mapping_contract':'KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v1.json',
+              'event':{'race_date':'2026-08-30','venue':'川崎','circumference_m':400,'day':'Day1','row_count':84},
+              'source_pre_file':str(SRC),'source_pre_git_blob':source_blob,'source_checkout_head':source_head,
+              'locator_file':str(LOC),'locator_git_blob':locator_blob,
+              'historical_rule':'v1 retrospective PRE-only identity mapping; v2 prospective same-event gate not applied',
+              'identity_only_fields_from_official_source':['normalized_name','registration_number','prefecture_for_identity_check_only','term_for_identity_check_only'],
+              'current_profile_attributes_persisted_as_historical_features':False,
+              'predictive_values_from_official_profile_persisted':False,
+              'result_accessed':False,'payout_accessed':False,'odds_accessed':False,'human_forecast_accessed':False,'raw_html_persisted':False,'raw_html_printed':False,
+              'support_increment_authorized_now':0,'result_join_authorized':False,'formula_fit_authorized':False,'main_or_runtime_mutation':False,
+              'exact_single_match_count':len(exact),'unresolved_count':84-len(exact),'duplicate_registration_ids':duplicate_regs,
+              'mappings':mappings,
+          }
+          OUT.write_text(json.dumps(mapping_doc, ensure_ascii=False, sort_keys=True, indent=2)+'\n', encoding='utf-8')
+          mapping_sha = hashlib.sha256(OUT.read_bytes()).hexdigest()
+          counts = {}
+          for m in mappings: counts[m['identity_resolution_status']] = counts.get(m['identity_resolution_status'],0)+1
+          receipt = {
+              'record':'KEIRIN_HFT_KAWASAKI_DAY1_IDENTITY_MAPPING_RECEIPT_20260904_v1',
+              'generated_utc':datetime.now(timezone.utc).isoformat(),
+              'status':'IDENTITY_MAPPING_COMPLETE_SUPPORT_ACCOUNTING_STILL_REQUIRED' if complete else 'IDENTITY_MAPPING_INCOMPLETE_FAIL_CLOSED',
+              'mapping_file':str(OUT),'mapping_file_sha256':mapping_sha,'source_pre_git_blob':source_blob,'locator_git_blob':locator_blob,
+              'row_count':84,'exact_single_match_count':len(exact),'mapping_rate':len(exact)/84,'status_counts':counts,
+              'registration_number_uniqueness_pass':len(set(regs)) == len(regs),
+              'target_result_accessed':False,'payout_accessed':False,'odds_accessed':False,'raw_html_persisted':False,
+              'support_increment_authorized_now':0,'cross_circumference_overlap_not_yet_computed':True,
+              'result_join_authorized':False,'formula_fit_authorized':False,'main_or_runtime_mutation':False,
+              'started_utc':started.isoformat(),'finished_utc':datetime.now(timezone.utc).isoformat(),
+          }
+          REC.write_text(json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2)+'\n', encoding='utf-8')
+          print(json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2))
+          PY
+      - name: Persist research-only identity evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v3/historical_all_market/research_candidates/KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v1.json v3/historical_all_market/research_candidates/KEIRIN_HFT_KAWASAKI_DAY1_IDENTITY_MAPPING_RECEIPT_20260904_v1.json
+          if git diff --cached --quiet; then echo 'no evidence files produced'; exit 0; fi
+          git commit -m 'research(keirin): map Kawasaki HFT official rider identities'
+          git push origin HEAD:${{ github.ref_name }}
