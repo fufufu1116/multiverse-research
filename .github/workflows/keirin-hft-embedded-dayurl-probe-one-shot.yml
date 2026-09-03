@@ -1,0 +1,84 @@
+name: Keirin HFT Embedded DayURL Probe One-Shot
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-hft-embedded-dayurl-probe-one-shot.yml'
+      - 'tools/keirin_kdreams_historical_embedded_dayurl_quarantine_probe_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  embedded-dayurl-probe:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PROBE_PATH: 'tools/keirin_kdreams_historical_embedded_dayurl_quarantine_probe_v1.py'
+      PROBE_BLOB_SHA: '5c6d766d9eaac9e07549c1b4d27edd5e8bc438ff'
+      PROBE_OUT: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_EMBEDDED_DAYURL_QUARANTINE_PROBE_20260904_v1.json'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/keirin-real-evidence-dual-lane-20260901-v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet beautifulsoup4
+      - name: Verify probe and selftest
+        run: |
+          set -euo pipefail
+          test "$(git hash-object "$PROBE_PATH")" = "$PROBE_BLOB_SHA"
+          python "$PROBE_PATH" selftest > /tmp/embedded_dayurl_selftest.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/embedded_dayurl_selftest.json',encoding='utf-8'))
+          if x.get('status')!='PASS' or not all(x.get('tests',{}).values()): raise SystemExit('FAIL_CLOSED:selftest')
+          if x.get('network_access') is not False or x.get('race_id_guessing') is not False: raise SystemExit('FAIL_CLOSED:selftest_firewall')
+          print('EMBEDDED_DAYURL_SELFTEST_PASS')
+          PY
+      - name: Run sanitized embedded day-url probe
+        run: |
+          set -euo pipefail
+          mkdir -p "$(dirname "$PROBE_OUT")"
+          python "$PROBE_PATH" probe \
+            --archive-url https://keirin.kdreams.jp/hofu/racecard/ \
+            --archive-url https://keirin.kdreams.jp/toyama/racecard/ \
+            --archive-url https://keirin.kdreams.jp/nara/racecard/ \
+            --archive-url https://keirin.kdreams.jp/aomori/racecard/ \
+            --archive-url https://keirin.kdreams.jp/takeo/racecard/ \
+            --archive-url https://keirin.kdreams.jp/toyohashi/racecard/ \
+            --archive-url https://keirin.kdreams.jp/kawasaki/racecard/ \
+            --out "$PROBE_OUT" --timeout 25
+      - name: Validate sanitized firewall and scope
+        run: |
+          python - <<'PY'
+          import json,os,re
+          from urllib.parse import urlparse
+          x=json.load(open(os.environ['PROBE_OUT'],encoding='utf-8'))
+          false_keys=['raw_html_persisted','raw_html_printed','race_detail_opened','target_result_accessed','payout_accessed','odds_emitted','forecast_emitted','comment_emitted','narabiyoso_emitted','race_id_guessed']
+          if any(x.get(k) is not False for k in false_keys): raise SystemExit('FAIL_CLOSED:firewall')
+          cats={'INITIAL_DAY_EXPLICIT','FINAL_DAY_EXPLICIT','DAY_2_EXPLICIT','DAY_3_EXPLICIT','DAY_4_EXPLICIT','DAY_5_EXPLICIT','DAY_6_EXPLICIT','DAY_7_EXPLICIT','DAY_8_EXPLICIT','DAY_9_EXPLICIT','NO_EXPLICIT_DAY_STATUS','AMBIGUOUS_ACTIVE_DAY_STATUS'}
+          for rec in x.get('records',[]):
+              for obj in [rec.get('seed',{})]+list(rec.get('embedded_day_urls',[])):
+                  u=urlparse(obj['day_url'])
+                  if u.scheme!='https' or u.hostname!='keirin.kdreams.jp' or u.query or u.fragment or '/racecard/' not in u.path: raise SystemExit('FAIL_CLOSED:url')
+                  if obj.get('title_day_category') not in cats or obj.get('active_day_category') not in cats: raise SystemExit('FAIL_CLOSED:category')
+                  if not re.fullmatch(r'[0-9a-f]{64}',obj.get('source_sha256','')): raise SystemExit('FAIL_CLOSED:sha')
+              for obj in rec.get('embedded_day_urls',[]):
+                  if obj.get('positively_observed_in_seed_raw') is not True: raise SystemExit('FAIL_CLOSED:positive_observation')
+          print(json.dumps({'records':len(x.get('records',[])),'failures':len(x.get('failures',[])),'embedded_day_urls':sum(r.get('embedded_day_url_count',0) for r in x.get('records',[])),'explicit_initial_targets':sum((o.get('title_day_category')=='INITIAL_DAY_EXPLICIT' or o.get('active_day_category')=='INITIAL_DAY_EXPLICIT') for r in x.get('records',[]) for o in r.get('embedded_day_urls',[]))},sort_keys=True))
+          PY
+      - name: Commit sanitized embedded day-url probe only
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$PROBE_OUT"
+          git diff --cached --quiet && exit 0
+          git commit -m 'research(keirin): record sanitized embedded day-url probe'
+          git push origin HEAD:research/keirin-real-evidence-dual-lane-20260901-v1
