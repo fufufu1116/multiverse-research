@@ -31,9 +31,7 @@ class ExactV7SharedEngine:
         validate_domain_task(domain,task_type,requested_capabilities,resources)
         return db.create_task(domain,goal,task_type=task_type,priority=priority)
     def claim_and_start(self,task_id:str,worker_id:str)->int:
-        claimed=db.claim_next_task(worker_id)
-        if claimed!=task_id: raise RuntimeError("UNEXPECTED_TASK_CLAIM")
-        t=db.get_task(task_id); gen=t["claim_generation"]
+        gen=db.claim_task(task_id,worker_id)
         db.transition(task_id,"IN_IMPLEMENT",actor="exact_v7_shared_engine",event_type="START",fencing=(worker_id,gen)); return gen
     def renew(self,task_id:str,worker_id:str,claim_generation:int,*,lease_seconds:int|float|None=None)->float:
         return db.renew_lease(task_id,worker_id,claim_generation,lease_seconds=lease_seconds)
@@ -44,8 +42,6 @@ class ExactV7SharedEngine:
                 "candidate_head":self.binding.candidate_head,"candidate_branch":self.binding.candidate_branch,
                 "canonical_main":self.binding.canonical_main,"objective":db.get_task(task_id)["goal"],"authority":dict(JOB_AUTHORITY)}
     def execute_role(self,task_id:str,role:str,semantic_generation:int,operation_key:str,worker_id:str,claim_generation:int,result:dict[str,Any])->str:
-        # Fail before even the sealed provider fixture runs if this worker no longer
-        # owns a live lease. A second in-transaction check occurs on state mutation.
         db.assert_unexpired_fence(task_id,worker_id,claim_generation)
         job=self._job(task_id,role,semantic_generation,operation_key)
         request=provider_request_from_job(job,self.manifest)
