@@ -1,0 +1,30 @@
+{
+  "record":"KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1",
+  "status":"PRE_RESULT_SUPPORT_GATE_FROZEN_NO_OUTCOME_ACCESS",
+  "scope":"RESEARCH_IDENTIFIABILITY_GATE_ONLY_NO_MODEL_FIT_NO_FEATURE_ADMISSION",
+  "purpose":"Prevent a Rider x Circumference model from being fit on venue-level contrasts or a handful of repeated-rider anecdotes. This gate must pass from PRE identity/membership only before the exact predictive formula can be frozen and any development RESULT may be joined.",
+  "bindings":["KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json","KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json","KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json"],
+  "support_unit":"OFFICIAL_REGISTRATION_NUMBER_X_VALID_PRE_RACE",
+  "cross_circumference_supported_rider_definition":"One official registration number with at least one valid, point-in-time PRE race at a verified 333/333.33m venue and at least one valid PRE race at a verified 400m venue in the development acquisition pool. RESULT is irrelevant to this definition.",
+  "minimum_gate":{
+    "unique_cross_circumference_supported_riders":30,
+    "minimum_supported_rider_race_rows":60,
+    "minimum_distinct_development_venues_per_circumference":2,
+    "minimum_distinct_calendar_blocks_per_circumference":2,
+    "maximum_single_venue_share_of_supported_rows":0.60,
+    "maximum_single_rider_share_of_supported_rows":0.10,
+    "official_registration_number_mapping_rate_for_supported_rows":1.0,
+    "zero_competition_score_rows":"EXCLUDED_BY_PERMANENT_FAIL_CLOSED_RACE_RULE_NOT_IMPUTED",
+    "ambiguous_identity_rows":"NOT_SUPPORTED_FAIL_CLOSED"
+  },
+  "why_30":"Thirty cross-circumference riders is a conservative identifiability floor for a shrinkage-based rider-specific interaction: it prevents the scientific claim from resting on the currently known single-digit repeated-rider set and provides multiple independent rider units for later uncertainty and concentration diagnostics. It is a support floor, not a power guarantee.",
+  "current_known_support":{"takeo_20260903_to_nara_20260910_scheduled_official_identities":9,"gate_result":"FAIL_NOT_ENOUGH_YET","note":"Nara final PRE card is still pending, so 9 is a scheduled-support upper input, not final usable support."},
+  "gate_evaluation_timing":"Evaluate only after PRE-only acquisition/identity tables for the intended development pool are frozen. Do not inspect any target RESULT to decide whether to add blocks or change thresholds.",
+  "if_gate_passes":"Freeze the exact low-DOF predictive formula, shrinkage/parameter rule, development membership, primary metric, race-cluster bootstrap, and advance/no-advance criterion before any RESULT join.",
+  "if_gate_fails":"RESULT remains closed. Add future whole-day PRE blocks in chronological source order under a separately written pre-event acquisition extension. Never lower the threshold because outcomes are attractive or because acquisition is inconvenient.",
+  "unsupported_rider_policy":"No rider-specific affinity value is silently encoded as zero. Formula design remains blocked until it explicitly defines how unsupported riders are handled and that handling is frozen before RESULT.",
+  "result_access_authorized":false,
+  "model_fit_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_JOIN_BEFORE_SUPPORT_GATE","NO_THRESHOLD_LOWERING_AFTER_RESULT","NO_VENUE_LEVEL_CONTRAST_AS_RIDER_AFFINITY_PROOF","NO_SMALL_RIDER_ANECDOTE_PROMOTION","NO_UNKNOWN_TO_ZERO","NO_ZERO_SCORE_IMPUTATION","NO_IDENTITY_CONTRACT_WEAKENING","NO_POST_RACE_PRE_RECONSTRUCTION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
