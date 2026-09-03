@@ -83,8 +83,9 @@ def assert_unexpired_fence(task_id, worker_id, generation):
 
 def claim_next_task(worker_id, *, lease_seconds=None):
     init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
-    now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
+    c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
+        now=time.time()
         r=c.execute("SELECT id FROM tasks WHERE state='PENDING' AND (claimed_by IS NULL OR lease_until<?) ORDER BY priority DESC,created_at LIMIT 1",(now,)).fetchone()
         if r is None: c.commit(); c.close(); return None
         tid=r['id']; c.execute('UPDATE tasks SET claimed_by=?,claim_generation=claim_generation+1,lease_until=?,updated_at=? WHERE id=?',
@@ -95,13 +96,14 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
     """Extend a healthy active lease without changing ownership or generation.
 
     Renewal cannot resurrect an expired lease and cannot operate on pending/terminal
-    states. Expired work must go through explicit reclaim so the generation bump
-    fences the old worker. Lease duration is finite and bounded by the reviewed
-    Shared Engine lease ceiling.
+    states. The authoritative clock sample is taken only after the SQLite writer
+    transaction is acquired, so lock wait cannot turn a pre-expiry observation into
+    a post-expiry resurrection. Expired work must reclaim with generation bump.
     """
     init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
-    now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
+    c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
+        now=time.time()
         r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
         if r is None: raise KeyError(task_id)
         if r['state'] not in RECOVERABLE_ACTIVE_STATES: raise InvalidTransitionError(f"RENEW_STATE:{r['state']}")
@@ -117,8 +119,9 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
 def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     """Take over one expired active task without changing its workflow state."""
     init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
-    now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
+    c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
+        now=time.time()
         r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
         if r is None: raise KeyError(task_id)
         if r['state'] not in RECOVERABLE_ACTIVE_STATES: raise InvalidTransitionError(f"RECLAIM_STATE:{r['state']}")
@@ -136,10 +139,8 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
 
     There is intentionally no unfenced mutation mode in Candidate v8. System and
     remediation callers must own a current worker/generation lease just like receipt
-    application callers. This keeps SQLite as one authority without creating a
-    privileged bypass inside the authority itself. Releasing ownership is only safe
-    when the target is re-claimable PENDING or terminal; active/blocked states must
-    retain a live owner so they cannot be orphaned outside reclaim semantics.
+    application callers. Releasing ownership is only safe when the target is
+    re-claimable PENDING or terminal; active/blocked states retain a live owner.
     """
     init_schema(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
