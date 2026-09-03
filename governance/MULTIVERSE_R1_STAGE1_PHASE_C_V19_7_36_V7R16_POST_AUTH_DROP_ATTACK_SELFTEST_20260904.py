@@ -42,7 +42,7 @@ class IOV(ctypes.Structure):
 libc=ctypes.CDLL(None,use_errno=True)
 libc.ptrace.argtypes=[ctypes.c_ulong,ctypes.c_ulong,ctypes.c_void_p,ctypes.c_void_p]
 libc.ptrace.restype=ctypes.c_long
-libc.process_vm_writev.argtypes=[ctypes.c_int,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.c_ulong,ctypes.c_ulong]
+libc.process_vm_writev.argtypes=[ctypes.c_int,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.c_ulong]
 libc.process_vm_writev.restype=ctypes.c_ssize_t
 
 def ptrace(req,pid):
@@ -63,8 +63,6 @@ def build_launcher():
 
 def make_authority():
     fd=os.memfd_create('multiverse-v36-v7r16-authority-test',os.MFD_ALLOW_SEALING)
-    # v7r16 intentionally consumes the already-reviewed v7r15 sealed snapshot
-    # contract; the remediation changes only retirement timing.
     snap={'version':'V19.7.36-v7r15','generation':GEN,'codespace':NAME,'mode':'commit','reason':'READY','before':60,'after':59,'reset':1924995600,'status_sha256':'a'*64,'control_sha256':'b'*64,'runtime':'OFF'}
     b=(json.dumps(snap,sort_keys=True,separators=(',',':'))+'\n').encode();os.write(fd,b);os.lseek(fd,0,os.SEEK_SET)
     fcntl.fcntl(fd,F_ADD_SEALS,SEALS);os.set_inheritable(fd,True);return fd
@@ -91,13 +89,6 @@ def attack_once(pid):
     if er not in (errno.EPERM,errno.ESRCH):return f'PROCESS_VM_PERMISSION_GATE_NOT_DENIED_{er}'
     return None
 
-def authority_fd_absent(pid,fd):
-    try:
-        os.readlink(f'/proc/{pid}/fd/{fd}')
-        return False
-    except OSError as ex:
-        return ex.errno in (errno.ENOENT,errno.ESRCH,EACCES if False else errno.ENOENT)
-
 def main():
     if os.geteuid()!=0:raise SystemExit('root preparation required')
     build_launcher();uid=int(subprocess.check_output(['id','-u','codespace'],text=True));gid=int(subprocess.check_output(['id','-g','codespace'],text=True))
@@ -122,9 +113,7 @@ def main():
                     try:
                         os.readlink(f'/proc/{p.pid}/fd/{fd}')
                         p.kill();raise SystemExit('authority fd still present after retirement marker')
-                    except FileNotFoundError:
-                        pass
-                    except ProcessLookupError:
+                    except (FileNotFoundError,ProcessLookupError):
                         pass
         u=uid_tuple(p.pid)
         if u and u[0]==uid and u[1]==uid and u[2]==uid:ordinary=True
@@ -136,14 +125,12 @@ def main():
         else:
             post_attempts+=1
             if bad:post_successes.append(bad)
-        if retired and ordinary and p.poll() is not None:break
     try: rc=p.wait(timeout=10)
     except subprocess.TimeoutExpired:
         p.kill();raise SystemExit('guard/helper did not terminate')
     rest=p.stdout.read() or '';out.append(rest);text=''.join(out)
     if not retired:raise SystemExit('authority retirement marker not observed: '+text)
     if pre_attempts<1:raise SystemExit('no pre-retirement attack attempts')
-    if not ordinary and rc not in (0,92):raise SystemExit(f'ordinary user transition not observed rc={rc} out={text!r}')
     if rc not in (0,92):raise SystemExit(f'unexpected helper rc={rc} out={text!r}')
     print(text,end='')
     print(f'PRELAB_V7R16_PRE_RETIREMENT_CONTINUOUS_ATTACK_DENIED=true attempts={pre_attempts}')
@@ -152,6 +139,7 @@ def main():
     print('PRELAB_V7R16_FINAL_AUTHORITY_TRANSITION_SYSCALL_SETRESUID=true')
     print(f'PRELAB_V7R16_POST_RETIREMENT_ATTACK_ATTEMPTS={post_attempts}')
     print(f'PRELAB_V7R16_POST_RETIREMENT_SAME_UID_ACCESS_CLASSIFIED_NONAUTHORITY={bool(post_successes)}')
+    print(f'PRELAB_V7R16_ORDINARY_UID_OBSERVED={ordinary}')
     print('PRELAB_V7R16_POST_AUTH_DROP_STRUCTURAL_BOUNDARY_PASS=true')
     print('RUNTIME=OFF')
 if __name__=='__main__':main()
