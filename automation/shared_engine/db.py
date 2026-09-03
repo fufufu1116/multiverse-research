@@ -10,6 +10,10 @@ import config
 class LostLeaseError(Exception): pass
 class InvalidTransitionError(Exception): pass
 
+RECOVERABLE_ACTIVE_STATES = frozenset({
+    'IN_IMPLEMENT', 'IN_LAB', 'LAB_FIX_REQUIRED', 'IN_AUDIT', 'AUDIT_FIX_REQUIRED'
+})
+
 def _conn():
     c=sqlite3.connect(config.DB_PATH, timeout=10); c.row_factory=sqlite3.Row
     c.execute('PRAGMA journal_mode=WAL'); c.execute('PRAGMA synchronous=FULL'); c.execute('PRAGMA busy_timeout=10000')
@@ -58,6 +62,28 @@ def claim_next_task(worker_id, *, lease_seconds=None):
         if r is None: c.commit(); c.close(); return None
         tid=r['id']; c.execute('UPDATE tasks SET claimed_by=?,claim_generation=claim_generation+1,lease_until=?,updated_at=? WHERE id=?',
                                (worker_id,now+lease_seconds,now,tid)); c.commit(); c.close(); return tid
+    except BaseException: c.rollback(); c.close(); raise
+
+def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
+    """Take over one expired active task without changing its workflow state.
+
+    This is deliberately explicit rather than folded into claim_next_task: a new task
+    claimant must not accidentally steal an older active task. The generation bump
+    fences every pre-crash worker/receipt application attempt.
+    """
+    init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
+    now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
+    try:
+        r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
+        if r is None: raise KeyError(task_id)
+        if r['state'] not in RECOVERABLE_ACTIVE_STATES: raise InvalidTransitionError(f"RECLAIM_STATE:{r['state']}")
+        if r['claimed_by'] is None or r['lease_until'] is None or r['lease_until']>=now: raise LostLeaseError('task lease is not expired')
+        new_generation=r['claim_generation']+1
+        c.execute('UPDATE tasks SET claimed_by=?,claim_generation=?,lease_until=?,updated_at=? WHERE id=?',
+                  (worker_id,new_generation,now+lease_seconds,now,task_id))
+        c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
+                  (task_id,worker_id,'LEASE_RECLAIMED',r['state'],r['state'],json.dumps({'prior_worker':r['claimed_by'],'generation':new_generation},sort_keys=True,separators=(',',':')),now))
+        c.commit(); c.close(); return new_generation
     except BaseException: c.rollback(); c.close(); raise
 
 def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=None,release=False,fencing=None):
