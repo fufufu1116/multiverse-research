@@ -1,0 +1,39 @@
+name: keirin-kdreams-prospective-pre-acquire-v1-selftest
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-kdreams-prospective-pre-acquire-v1-selftest.yml'
+permissions:
+  contents: write
+jobs:
+  selftest:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check beautifulsoup4
+      - name: Run offline prospective PRE selftest
+        run: |
+          python tools/keirin_kdreams_prospective_pre_acquire_v1.py selftest | tee /tmp/selftest.json
+          python - <<'PY'
+          import json, pathlib
+          x=json.loads(pathlib.Path('/tmp/selftest.json').read_text())
+          if x.get('status')!='PASS': raise SystemExit('FAIL_SELFTEST')
+          if x.get('network_access') is not False or x.get('result_accessed') is not False or x.get('race_id_guessing') is not False: raise SystemExit('FAIL_BOUNDARY')
+          out=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json')
+          out.write_text(json.dumps(x,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Persist selftest evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no selftest evidence'; exit 0; fi
+          git commit -m 'research(keirin): record prospective PRE acquirer v1 selftest'
+          git push origin HEAD:${{ github.ref_name }}
