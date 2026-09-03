@@ -42,6 +42,8 @@ jobs:
           grep -F 'minAfterComments=59' "$probe"
           grep -F 'authorityUID=64173' "$probe"
           grep -F 'verifyLauncherCredentialBoundary' "$probe"
+          grep -F 'verifySecureRuntimeEnv' "$probe"
+          grep -F 'GOTRACEBACK=none' "$probe"
           grep -F 'prepareGuardExecUserBoundary' "$probe"
           grep -F 'KERNEL_SETUID_LAUNCHER_TO_UNPRIVILEGED_CREDENTIAL_MISMATCH' "$probe"
           grep -F 'SEALED_MEMFD_SNAPSHOT' "$probe"
@@ -124,7 +126,7 @@ jobs:
           printf 'PRELAB_V7R13_INHERITED_PROCESS_CONCURRENCY_GATE_PASS=true\n'
           printf 'PRELAB_V7R13_INHERITED_FILESYSTEM_NEGATIVE_GATE_PASS=true\n'
 
-      - name: Exact-image launcher is mandatory and poisoned environment remains exactly two variables
+      - name: Exact-image launcher two-env and Go secure-runtime exact environment
         shell: bash
         working-directory: repo
         run: |
@@ -138,20 +140,25 @@ jobs:
             set -euo pipefail; uid="$(id -u codespace)"; gid="$(id -g codespace)"; mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research; chown -R "${uid}:${gid}" /workspaces/.codespaces /workspaces/multiverse-research; chmod 0755 /workspaces /workspaces/.codespaces /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
           '
           direct_extra="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r13-test -e GOTRACEBACK=crash --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 "$tag" 2>&1 || true)"
-          grep -F 'PHASE_C_V19_7_36_V7R13_RATE_PROBE_DENIED:SANITIZER_ENV_COUNT' <<<"$direct_extra"
+          grep -F 'PHASE_C_V19_7_36_V7R13_RATE_PROBE_DENIED:PROCESS_INTEGRITY_CREDENTIAL_BOUNDARY' <<<"$direct_extra"
           direct_two="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" --entrypoint /usr/bin/env "$tag" -i CODESPACES=true CODESPACE_NAME=rate-v7r13-test /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 2>&1 || true)"
           grep -F 'PHASE_C_V19_7_36_V7R13_RATE_PROBE_DENIED:PROCESS_INTEGRITY_CREDENTIAL_BOUNDARY' <<<"$direct_two"
-          out="$(docker run --rm --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r13-test -e GOTRACEBACK=crash -e MULTIVERSE_EXTRA_POISON=YES -e GITHUB_TOKEN=SHOULD_NOT_BE_USED -e HTTPS_PROXY=http://127.0.0.1:9 --entrypoint /usr/bin/setpriv "$tag" --reuid=codespace --regid=codespace --init-groups /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 2>&1 || true)"
-          printf '%s\n' "$out"
+          direct_forged="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" --entrypoint /usr/bin/env "$tag" -i CODESPACES=true CODESPACE_NAME=rate-v7r13-test GOTRACEBACK=none /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 2>&1 || true)"
+          grep -F 'PHASE_C_V19_7_36_V7R13_RATE_PROBE_DENIED:PROCESS_INTEGRITY_CREDENTIAL_BOUNDARY' <<<"$direct_forged"
+          out="$(docker run --rm --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r13-test -e GOTRACEBACK=crash -e MULTIVERSE_EXTRA_POISON=YES -e GITHUB_TOKEN=SHOULD_NOT_BE_USED -e HTTPS_PROXY=http://127.0.0.1:9 --entrypoint /usr/bin/setpriv "$tag" --reuid=codespace --regid=codespace --init-groups /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 2>&1)"
           grep -F 'PHASE_C_V19_7_36_V7R13_PREARM_RATE_NOT_READY' <<<"$out"
           grep -F 'reason=RATE_NETWORK' <<<"$out"
           status="$(docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/cat "$tag" /workspaces/.codespaces/.persistedshare/multiverse-v36-v7r9-rate-readiness.txt)"
           control="$(docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/cat "$tag" /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md)"
           grep -F 'authority_source=SEALED_MEMFD_SNAPSHOT' <<<"$status"
           grep -F 'KERNEL_SETUID_LAUNCHER_TO_UNPRIVILEGED_CREDENTIAL_MISMATCH' <<<"$status"
+          grep -F 'launcher_execve_env_count=2' <<<"$status"
+          grep -F 'go_secure_runtime_env_count=3' <<<"$status"
+          grep -F 'go_secure_runtime_required_env=GOTRACEBACK=none' <<<"$status"
           grep -F 'status_control_authority=`OBSERVABILITY_ONLY`' <<<"$control"
-          printf 'PRELAB_V7R13_EXACT_TWO_ENV_PROCESS_GATE_PASS=true\n'
+          printf 'PRELAB_V7R13_LAUNCHER_EXACT_TWO_ENV_AND_GO_SECURE_RUNTIME_ENV_GATE_PASS=true\n'
           printf 'PRELAB_V7R13_DIRECT_PROBE_BYPASS_DENIED=true\n'
+          printf 'PRELAB_V7R13_FORGED_GOTRACEBACK_BYPASS_DENIED=true\n'
           printf 'PRELAB_V7R13_GENERATION_AND_EXACT_CONTENT_GATE_PASS=true\n'
           printf 'FINAL_COMMIT_RATE_FLOOR=60/59\n'
           printf 'INHERITED_HELPER_RATE_FLOOR=55/54\n'
