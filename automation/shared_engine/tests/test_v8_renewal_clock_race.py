@@ -61,7 +61,9 @@ class V8RenewalClockRaceTests(unittest.TestCase):
         self.assertEqual(after_failed_renew["claim_generation"], before["claim_generation"])
         self.assertEqual(after_failed_renew["lease_until"], before["lease_until"])
 
-        gen2 = db.reclaim_expired_task(task_id, "worker-2", lease_seconds=0.20)
+        # Use a comfortably long post-reclaim lease: this assertion is about successful
+        # generation-bumped takeover, not scheduler speed after the transaction commits.
+        gen2 = db.reclaim_expired_task(task_id, "worker-2", lease_seconds=1.0)
         self.assertEqual(gen2, gen1 + 1)
         reclaimed = db.get_task(task_id)
         self.assertEqual(reclaimed["claimed_by"], "worker-2")
