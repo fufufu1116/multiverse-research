@@ -1,0 +1,38 @@
+{
+  "record":"KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2",
+  "status":"PRE_RESULT_IDENTIFIABILITY_PATH_AND_CROSS_VENUE_FINAL_EVAL_LOCKED",
+  "supersedes":"KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v1.json",
+  "scope":"RESEARCH_PRESPEC_ONLY_NO_RESULT_ACCESS_NO_MODEL_FIT",
+  "created_jst":"2026-09-03T16:43+09:00",
+  "revision_reason":"The v1 Sep24 Nara/Kawasaki pair was time-separated but reused the same venue identities already selected for Sep10 support. The parent prespec requires physical affinity to reproduce across venue identities. Before any Sep3 target outcome observation, v2 therefore reserves previously unused final-evaluation venue identities.",
+  "outcome_independence":{"sep3_finish_or_target_values_observed":false,"payout_values_observed":false,"decision_basis":"existing prespec cross-venue requirement, PRE support, official future schedule and current organizer bank sources only"},
+  "development_role_policy":{
+    "eligible_candidate_blocks":[
+      {"date":"2026-09-03","venue":"富山","circumference_m":333},
+      {"date":"2026-09-03","venue":"青森","circumference_m":400},
+      {"date":"2026-09-03","venue":"武雄","circumference_m":400},
+      {"date":"2026-09-04","venue":"豊橋","circumference_m":400},
+      {"date":"2026-09-10","venue":"奈良","circumference_m":333.33,"note":"repeated-rider support/fit candidate only after PRE identity gates"},
+      {"date":"2026-09-10","venue":"川崎","circumference_m":400,"note":"same-period support/fit candidate only after PRE identity gates"}
+    ],
+    "reserved_not_for_fit":[{"date":"2026-09-04","venue":"防府","circumference_m":333,"allowed_use":"PRE transport/source/identity support only","prohibited_use":"parameter fitting or rider-affinity estimation","reason":"reserve 防府 venue identity for cross-venue final evaluation"}],
+    "sep24_nara_kawasaki":"May be captured PRE-only as a time-stability/support block, but is not the final cross-venue generalization test and must not replace v2 final pair based on outcomes."
+  },
+  "final_untouched_cross_venue_eval":{
+    "selection_timestamp_relation":"LOCKED_BEFORE_ANY_SEP3_TARGET_OUTCOME_OBSERVATION",
+    "blocks":[
+      {"venue":"玉野","circumference_m":400,"grade":"F2","meeting_dates":"2026-09-27/2026-09-29","eval_membership_rule":"DAY1_WHOLE_ACCESSIBLE_BLOCK_PRELOCKED; exact races/fields later frozen PRE-only","official_schedule_source":"KEIRIN.JP September 2026 schedule","official_bank_source":"https://www.tamano-keirin.jp/map/","current_geometry":{"circumference_m":400,"straight_m":47.9,"max_cant":"30度37分33秒"}},
+      {"venue":"防府","circumference_m":333,"grade":"F2","meeting_dates":"2026-09-29/2026-10-01","eval_membership_rule":"DAY1_WHOLE_ACCESSIBLE_BLOCK_PRELOCKED; exact races/fields later frozen PRE-only","official_schedule_source":"KEIRIN.JP September 2026 schedule / official CTC September notice","bank_source_binding":"existing selected-bank registry current organizer source"}
+    ],
+    "venue_identity_separation":"PASS_BY_DESIGN_IF_DEVELOPMENT_POLICY_IS_OBEYED: 玉野 is not a development venue and 防府 outcomes are reserved from fit.",
+    "time_separation":"Final pair occurs after Sep3/Sep4/Sep10 development candidate periods.",
+    "result_access":"FORBIDDEN_UNTIL_DEVELOPMENT_PARAMETER_LOCK_AND_FINAL_PRE_MEMBERSHIP_LOCK"
+  },
+  "fit_eval_rule":"Exact usable development membership remains PRE-only gated by immutable race membership, competition_score validity, official registration identity, source timing and missingness. Any block used to estimate rider affinity or a global parameter is development and cannot be called independent evaluation. Final advancement requires the v2 玉野/防府 pair unless a new pre-outcome superseding lock is created before any development target is viewed.",
+  "support_gate":"Do not fit a rider-specific affinity term merely from venue contrasts. A separate PRE-only repeated-rider support gate must pass before formula lock; sparse riders remain explicit unsupported, never silently zero-imputed.",
+  "formula_gate":"Exact low-DOF predictive formula, rider-support threshold, parameter estimation/shrinkage rule, primary metric, race-level cluster bootstrap and advancement criterion must be frozen before any development RESULT join.",
+  "result_access_authorized":false,
+  "model_fit_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_JOIN","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_POST_RESULT_ROLE_REASSIGNMENT","NO_POST_RESULT_VENUE_SELECTION","NO_USE_SEP4_HOFU_OUTCOMES_FOR_FIT","NO_RACE_ID_GUESSING","NO_IDENTITY_CONTRACT_WEAKENING","NO_ZERO_SCORE_IMPUTATION","NO_POST_RACE_PRE_RECONSTRUCTION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
