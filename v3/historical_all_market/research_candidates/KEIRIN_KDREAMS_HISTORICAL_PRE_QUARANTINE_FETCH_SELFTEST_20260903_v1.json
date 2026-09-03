@@ -1,0 +1,27 @@
+{
+  "record":"KEIRIN_KDREAMS_HISTORICAL_PRE_QUARANTINE_FETCH_SELFTEST_20260903_v1",
+  "status":"PASS_SYNTHETIC_OFFLINE_DESIGN_GUARDS_NETWORK_EXECUTION_PENDING",
+  "tool":"tools/keirin_kdreams_historical_pre_quarantine_fetch_v1.py",
+  "committed_blob_sha":"f9a950695970dcb14d4ed8de550b25561f9afcf3",
+  "test_scope":"Synthetic mixed-content HTML and URL-policy checks were executed offline on the implementation candidate immediately before commit. No external network access was used.",
+  "tests":{
+    "pre_rows_5":true,
+    "schema_exact_allowlist":true,
+    "mixed_forbidden_text_not_emitted":true,
+    "query_result_url_rejected":true,
+    "positive_day1_association_required":true
+  },
+  "design_guards":[
+    "KDreams HTTPS host only.",
+    "Query strings and fragments rejected, including result-specific query variants.",
+    "Mixed source HTML remains in memory and is not emitted as evidence.",
+    "Only strict PRE allowlist fields plus SHA-256 provenance are written.",
+    "Day1 is not inferred from race ID/date pattern; positive page association is required.",
+    "Tool itself never authorizes support increment or RESULT join."
+  ],
+  "environment_probe":{"direct_container_dns_to_keirin_kdreams_jp":"FAILED_NO_DNS_EGRESS","external_raw_http_plugin_found":false},
+  "network_live_test_status":"NOT_RUN_CURRENT_ENVIRONMENT_HAS_NO_RAW_EGRESS",
+  "support_increment":0,
+  "result_join_authorized":false,
+  "owner_action_required_now":false
+}
