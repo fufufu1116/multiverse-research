@@ -139,7 +139,7 @@ jobs:
           '
           direct_extra="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r13-test -e GOTRACEBACK=crash --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 "$tag" 2>&1 || true)"
           grep -F 'PHASE_C_V19_7_36_V7R13_RATE_PROBE_DENIED:SANITIZER_ENV_COUNT' <<<"$direct_extra"
-          direct_two="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r13-test --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 "$tag" 2>&1 || true)"
+          direct_two="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" --entrypoint /usr/bin/env "$tag" -i CODESPACES=true CODESPACE_NAME=rate-v7r13-test /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 2>&1 || true)"
           grep -F 'PHASE_C_V19_7_36_V7R13_RATE_PROBE_DENIED:PROCESS_INTEGRITY_CREDENTIAL_BOUNDARY' <<<"$direct_two"
           out="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r13-test -e GOTRACEBACK=crash -e MULTIVERSE_EXTRA_POISON=YES -e GITHUB_TOKEN=SHOULD_NOT_BE_USED -e HTTPS_PROXY=http://127.0.0.1:9 --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 "$tag" 2>&1)"
           grep -F 'PHASE_C_V19_7_36_V7R13_PREARM_RATE_NOT_READY' <<<"$out"
