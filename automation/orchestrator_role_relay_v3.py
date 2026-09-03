@@ -68,7 +68,8 @@ class RelayStore:
         self.conn.close()
 
     def _init(self) -> None:
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             self.conn.execute("CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT NOT NULL)")
             self.conn.execute("""CREATE TABLE IF NOT EXISTS jobs(
                 operation_key TEXT PRIMARY KEY,
@@ -93,6 +94,10 @@ class RelayStore:
                 self.conn.execute("INSERT INTO meta(k,v) VALUES('schema',?)", (str(RELAY_DB_SCHEMA_VERSION),))
             elif row[0] != str(RELAY_DB_SCHEMA_VERSION):
                 raise OrchestratorError("RELAY_DB_SCHEMA_VERSION_MISMATCH")
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
 
     @staticmethod
     def _validate_job(role: str, task: dict[str, Any], op_key: str, semantic_attempt: int) -> tuple[dict[str, Any], int]:
