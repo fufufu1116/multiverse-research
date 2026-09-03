@@ -1,6 +1,6 @@
 {
-  "schema": "multiverse.core.current_state.v4.live_prelive_rebind",
-  "record": "MULTIVERSE_CORE_CURRENT_STATE_STATIC_ENV_LIVE_PRELIVE_REBOUND",
+  "schema": "multiverse.core.current_state.v5.post_attach_rebind_in_progress",
+  "record": "MULTIVERSE_CORE_CURRENT_STATE_STATIC_ENV_POST_ATTACH_REBIND_IN_PROGRESS",
   "canonical_repo": "fufufu1116/multiverse-research",
   "state_branch": "state/multiverse-core-current",
   "authority": "RESUME_NAVIGATION_SNAPSHOT_ONLY_NEVER_BEARER_LIVE_AUTHORITY",
@@ -18,53 +18,59 @@
       "lane": "META_GOVERNANCE",
       "status": "CANONICAL_METADATA_ADOPTION_COMPLETED",
       "resume_entrypoint": "governance/MULTIVERSE_RESUME_INDEX_CURRENT.json",
-      "core_state_resolver": "state/multiverse-core-current:governance/MULTIVERSE_CORE_CURRENT_STATE.json",
-      "keirin_state_resolver": "FRESH research/keirin-real-evidence-dual-lane-20260901-v1 -> v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260902_v1.json",
-      "owner_addendum_receipt": 5508591175,
       "completion_receipt": 5519496470,
       "completion_claim_scope": "RESUME_METADATA_AND_STATE_RESOLVERS_ONLY_NO_LIVE_AUTHORITY"
     },
     {
       "id": "R1_STAGE1_PHASE_C_STATIC_ENV_GUARD_PRELIVE",
       "lane": "CORE_LIVE_PRELIVE",
-      "status": "FRESH_LIVE_REBIND_COMPLETED__ONE_FRESH_CODESPACE_CREATE_ATTACH_SCOPE_PRESERVED",
+      "status": "ONE_FRESH_CODESPACE_CREATED_ATTACHED__POST_ATTACH_FRESH_REBIND_IN_PROGRESS_FAIL_CLOSED",
       "candidate_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
       "fresh_candidate_capture": {
         "head": "c91010921898fffed633df9720d792b216c4ddd1",
         "tree": "917cf843e230c99dc74bebcc391e9f235361ff52"
       },
+      "fresh_main_capture": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
       "prior_owner_receipt": 5508415633,
       "live_rebind_receipt": 5519712608,
-      "prior_receipt_main_capture": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
-      "fresh_main_capture": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
-      "fresh_main_tree_capture": "3624dbf7973e5bedd3724270210cbba44c458d45",
-      "main_drift_classification": "RESUME_CORE_META_GOVERNANCE_ONLY_NO_STATIC_ENV_RUNTIME_OR_LIVE_EXECUTION_PATH_DELTA",
-      "actions_evidence": {
-        "run": 33608836723,
-        "job": 100178970670,
-        "status": "COMPLETED_SUCCESS_EXACT_CANDIDATE"
+      "post_attach_incident_note": 5521897072,
+      "codespace_create_attach_authority_consumed": true,
+      "second_or_replacement_codespace_authorized": false,
+      "owner_reported_post_attach_observations": {
+        "arm_lock": "ABSENT",
+        "persisted_session_status": "ABSENT",
+        "authoritative_session_status": "ABSENT",
+        "control_page": "WAITING_PLACEHOLDER",
+        "runtime": "OFF"
       },
-      "lab_pass": 5506903843,
-      "auditor_pass": 5507888664,
-      "owner_presentation": 5507921652,
-      "resume_completion_receipt": 5519496470,
-      "canonical_consumption_evidence": "NO_CONSUMPTION_OR_CONFLICT_RECORD_FOUND_IN_FRESH_PR74_DISCUSSION_AT_REBIND_CHECKPOINT",
-      "receipt_is_bearer_authority": false,
-      "state_is_bearer_authority": false,
-      "rebind_verdict": "PASS_SCOPE_PRESERVED",
-      "new_lab_required": false,
-      "new_auditor_required": false,
-      "new_owner_gate_required": false,
+      "core_operator_instruction_incident": {
+        "classification": "CORE_SEQUENCE_ARGUMENT_DEFECT_OWNER_NOT_AT_FAULT",
+        "attempted_command": "/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7",
+        "result": "PHASE_C_V19_7_36_V7R7_UI_READY_ENV_GUARD_DENIED:PLATFORM_OR_ARGS",
+        "guard_fail_closed_observed": true,
+        "retry_authorized_now": false
+      },
+      "required_same_codespace_rebind_evidence": [
+        "LOCAL_HEAD",
+        "GOOS_GOARCH_OR_EQUIVALENT_PLATFORM_ARCH",
+        "CODESPACE_NAME_NONSECRET",
+        "IMAGE_IDENTITY_SHA256",
+        "HELPER_SHA256_AND_CLASS",
+        "GUARD_SHA256_AND_CLASS",
+        "READY_STATE",
+        "CONTROL_STATE",
+        "ARM_LOCK_ABSENCE",
+        "SESSION_STATUS_ABSENCE",
+        "RUNTIME_OFF"
+      ],
       "runtime": "OFF"
     }
   ],
   "runtime_status": "OFF",
-  "current_gate": "STATIC_ENV_PRELIVE_ONE_FRESH_CODESPACE_CREATE_ATTACH_REBOUND__AWAIT_OWNER_SINGLE_UI_ACTION",
+  "current_gate": "POST_ATTACH_SAME_CODESPACE_FRESH_REBIND_REQUIRED_BEFORE_ANY_GUARD_RETRY",
   "live_authority_snapshot": {
-    "authority_basis": "PRIOR_OWNER_RECEIPT_5508415633_PLUS_ACTION_SPECIFIC_CORE_REBIND_RECEIPT_5519712608",
-    "snapshot_only_requires_fresh_revalidation_immediately_before_use": true,
-    "one_fresh_prelive_nonmutating_codespace_create_attach": true,
-    "static_env_guard_now": false,
+    "one_fresh_prelive_nonmutating_codespace_create_attach": false,
+    "static_env_guard_retry_now": false,
     "manual_ui_ready_helper_now": false,
     "manual_arm_now": false,
     "oauth_or_device_authorization_now": false,
@@ -77,28 +83,15 @@
     "secret_or_writer_key_operation_now": false,
     "runtime_activation_now": false
   },
-  "protected_locked_resources": {
-    "runtime": "OFF",
-    "pr74": "DRAFT_OPEN_UNMERGED_UNLESS_FRESH_EVIDENCE_SAYS_OTHERWISE",
-    "canonical_main_further_mutation": "NO_AUTHORITY_FROM_THIS_STATE",
-    "ruleset_mutation": "NO_AUTHORITY",
-    "old_codespaces_nonreusable": [
-      "miniature-spork-gx59qvqqxgxg3959r",
-      "laughing-space-couscous-gx59qvqq5q4j25v7",
-      "ideal-succotash-wv967q77v6xph5w54"
-    ]
-  },
   "allowed_next_actions": [
-    "FRESH_REVALIDATE_MAIN_CANDIDATE_PR_AND_LIVE_REBIND_RECEIPT_IMMEDIATELY_BEFORE_OWNER_CODESPACE_CREATE",
-    "OWNER_CREATE_AND_ATTACH_EXACTLY_ONE_FRESH_PRELIVE_NONMUTATING_CODESPACE_FROM_EXACT_REVIEWED_CANDIDATE_BRANCH",
-    "AFTER_ATTACH_RETURN_TO_CORE_FOR_FRESH_LIVE_CODESPACE_HEAD_IMAGE_READY_CONTROL_REBIND",
-    "IF_AUTOMATIC_READY_IS_ABSENT_DO_NOT_RUN_STATIC_GUARD_UNTIL_SEPARATE_SAME_CODESPACE_FRESH_REBIND",
+    "READONLY_NONSECRET_SAME_CODESPACE_POST_ATTACH_EVIDENCE_COLLECTION",
+    "CORE_FRESH_REBIND_AFTER_EXACT_READONLY_EVIDENCE",
     "CONTINUE_KEIRIN_ONLY_THROUGH_FRESH_LANE_NATIVE_RESOLVER"
   ],
   "forbidden_actions": [
     "USE_THIS_STATE_AS_BEARER_LIVE_AUTHORITY",
     "CREATE_SECOND_OR_REPLACEMENT_CODESPACE_UNDER_THIS_SCOPE",
-    "RUN_STATIC_ENV_GUARD_BEFORE_POST_ATTACH_FRESH_REBIND",
+    "RETRY_STATIC_ENV_GUARD_BEFORE_SAME_CODESPACE_FRESH_REBIND",
     "RUN_MANUAL_UI_READY_HELPER",
     "MANUAL_ARM",
     "OAUTH_OR_DEVICE_AUTHORIZATION",
@@ -108,18 +101,7 @@
     "MERGE",
     "WORKFLOW_DISPATCH",
     "SECRET_OR_WRITER_KEY_OPERATION",
-    "RUNTIME_ACTIVATION",
-    "KEIRIN_PRODUCTION_OR_MODEL_PROMOTION",
-    "REAL_MONEY_EXECUTION"
+    "RUNTIME_ACTIVATION"
   ],
-  "resume_policy": {
-    "chat_is_workspace_not_authority": true,
-    "resume_command_never_grants_authority": true,
-    "load_giant_handoff_by_default": false,
-    "load_full_history_by_default": false,
-    "history_pointer_only_on_demand": true,
-    "fresh_main_candidate_pr_receipt_revalidation_before_material_claim": true,
-    "on_missing_invalid_or_stale_state": "FAIL_CLOSED"
-  },
-  "next_safe_action": "IMMEDIATE_FRESH_REVALIDATION_THEN_OWNER_ONE_FRESH_CODESPACE_CREATE_ATTACH_ONLY; AFTER_ATTACH_RETURN_TO_CORE; NO_GUARD_NO_ARM_NO_OAUTH"
+  "next_safe_action": "OWNER_RUN_ONE_READONLY_NONSECRET_SAME_CODESPACE_EVIDENCE_COMMAND; RETURN_OUTPUT_TO_CORE; NO_GUARD_NO_ARM_NO_OAUTH"
 }
