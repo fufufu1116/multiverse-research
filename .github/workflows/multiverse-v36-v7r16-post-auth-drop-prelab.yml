@@ -43,7 +43,7 @@ jobs:
           grep -F 'authority-fd-not-retired' "$guard"
           grep -F 'FINAL_AUTHORITY_TRANSITION_SYSCALL=SETRESUID' "$guard"
           grep -F 'if err = dropToOrdinaryUser(uid); err != nil' "$guard"
-          grep -F 'syscall.Exec(helperPath,argv,env)' "$guard"
+          grep -F 'syscall.Exec(helperPath, argv, env)' "$guard"
           ! awk '/dropToOrdinaryUser\(uid\)/,0' "$guard" | grep -F 'verifyAuthorityFD('
           ! awk '/dropToOrdinaryUser\(uid\)/,0' "$guard" | grep -F 'setNondumpable('
           ! awk '/dropToOrdinaryUser\(uid\)/,0' "$guard" | grep -F 'verifyNoTracer('
