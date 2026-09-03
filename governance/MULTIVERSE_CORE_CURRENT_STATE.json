@@ -1,14 +1,14 @@
 {
-  "schema": "multiverse.core.current_state.v3.post_adoption",
-  "record": "MULTIVERSE_CORE_CURRENT_STATE_POST_CHAT_INDEPENDENT_RESUME_V3_ADOPTION",
+  "schema": "multiverse.core.current_state.v4.live_prelive_rebind",
+  "record": "MULTIVERSE_CORE_CURRENT_STATE_STATIC_ENV_LIVE_PRELIVE_REBOUND",
   "canonical_repo": "fufufu1116/multiverse-research",
   "state_branch": "state/multiverse-core-current",
   "authority": "RESUME_NAVIGATION_SNAPSHOT_ONLY_NEVER_BEARER_LIVE_AUTHORITY",
   "transition_semantics": {
-    "applies_only_after_reviewed_resume_metadata_main_adoption": true,
-    "does_not_embed_or_require_adopted_main_sha_equality": true,
     "canonical_main_current_value": "FRESH_READ_REFS_HEADS_MAIN",
+    "stored_main_and_candidate_shas_are_provenance_only": true,
     "material_action_requires_fresh_action_specific_revalidation": true,
+    "state_snapshot_cannot_create_or_expand_owner_authority": true,
     "unknown_or_mismatch": "FAIL_CLOSED"
   },
   "active_stage": "R1_STAGE1_PHASE_C",
@@ -21,28 +21,62 @@
       "core_state_resolver": "state/multiverse-core-current:governance/MULTIVERSE_CORE_CURRENT_STATE.json",
       "keirin_state_resolver": "FRESH research/keirin-real-evidence-dual-lane-20260901-v1 -> v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260902_v1.json",
       "owner_addendum_receipt": 5508591175,
-      "v2_fail_closed_receipt": 5509659017,
-      "v3_lab_fix_required": 5509872983,
+      "completion_receipt": 5519496470,
       "completion_claim_scope": "RESUME_METADATA_AND_STATE_RESOLVERS_ONLY_NO_LIVE_AUTHORITY"
     },
     {
       "id": "R1_STAGE1_PHASE_C_STATIC_ENV_GUARD_PRELIVE",
       "lane": "CORE_LIVE_PRELIVE",
-      "status": "REQUIRES_SEPARATE_FRESH_REBIND_AFTER_CANONICAL_MAIN_METADATA_ADOPTION",
+      "status": "FRESH_LIVE_REBIND_COMPLETED__ONE_FRESH_CODESPACE_CREATE_ATTACH_SCOPE_PRESERVED",
       "candidate_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
-      "owner_receipt": 5508415633,
+      "fresh_candidate_capture": {
+        "head": "c91010921898fffed633df9720d792b216c4ddd1",
+        "tree": "917cf843e230c99dc74bebcc391e9f235361ff52"
+      },
+      "prior_owner_receipt": 5508415633,
+      "live_rebind_receipt": 5519712608,
+      "prior_receipt_main_capture": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+      "fresh_main_capture": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
+      "fresh_main_tree_capture": "3624dbf7973e5bedd3724270210cbba44c458d45",
+      "main_drift_classification": "RESUME_CORE_META_GOVERNANCE_ONLY_NO_STATIC_ENV_RUNTIME_OR_LIVE_EXECUTION_PATH_DELTA",
+      "actions_evidence": {
+        "run": 33608836723,
+        "job": 100178970670,
+        "status": "COMPLETED_SUCCESS_EXACT_CANDIDATE"
+      },
+      "lab_pass": 5506903843,
+      "auditor_pass": 5507888664,
+      "owner_presentation": 5507921652,
+      "resume_completion_receipt": 5519496470,
+      "canonical_consumption_evidence": "NO_CONSUMPTION_OR_CONFLICT_RECORD_FOUND_IN_FRESH_PR74_DISCUSSION_AT_REBIND_CHECKPOINT",
       "receipt_is_bearer_authority": false,
-      "receipt_snapshot_note": "PREVIOUS_OWNER_APPROVAL_REMAINS_SEPARATE_GOVERNANCE_BUT_MAIN_BINDING_CHANGED_BY_META_ADOPTION_SO_IT_IS_NOT_AUTOMATICALLY_USABLE",
-      "before_any_use": "FRESH_REVALIDATE_CURRENT_MAIN_CANDIDATE_PR_RECEIPT_AND_POST_RECEIPT_CONSUMPTION_OR_CONFLICT_EVIDENCE_AND_ROUTE_SEPARATE_LIVE_REBIND_IF_BINDING_CHANGED",
-      "codespace_create_attach_authorized_by_this_state": false,
-      "static_guard_authorized_by_this_state": false,
-      "manual_arm": false,
-      "oauth": false,
+      "state_is_bearer_authority": false,
+      "rebind_verdict": "PASS_SCOPE_PRESERVED",
+      "new_lab_required": false,
+      "new_auditor_required": false,
+      "new_owner_gate_required": false,
       "runtime": "OFF"
     }
   ],
   "runtime_status": "OFF",
-  "current_gate": "RESUME_METADATA_ADOPTED__LIVE_PRELIVE_REBIND_REQUIRED_BEFORE_ANY_USE",
+  "current_gate": "STATIC_ENV_PRELIVE_ONE_FRESH_CODESPACE_CREATE_ATTACH_REBOUND__AWAIT_OWNER_SINGLE_UI_ACTION",
+  "live_authority_snapshot": {
+    "authority_basis": "PRIOR_OWNER_RECEIPT_5508415633_PLUS_ACTION_SPECIFIC_CORE_REBIND_RECEIPT_5519712608",
+    "snapshot_only_requires_fresh_revalidation_immediately_before_use": true,
+    "one_fresh_prelive_nonmutating_codespace_create_attach": true,
+    "static_env_guard_now": false,
+    "manual_ui_ready_helper_now": false,
+    "manual_arm_now": false,
+    "oauth_or_device_authorization_now": false,
+    "step3_now": false,
+    "step4_or_apply_now": false,
+    "production_mutation_now": false,
+    "main_or_ruleset_mutation_now": false,
+    "merge_now": false,
+    "workflow_dispatch_now": false,
+    "secret_or_writer_key_operation_now": false,
+    "runtime_activation_now": false
+  },
   "protected_locked_resources": {
     "runtime": "OFF",
     "pr74": "DRAFT_OPEN_UNMERGED_UNLESS_FRESH_EVIDENCE_SAYS_OTHERWISE",
@@ -55,20 +89,22 @@
     ]
   },
   "allowed_next_actions": [
-    "FRESH_VERIFY_CANONICAL_RESUME_LOCATOR_INDEX_AND_THIS_EXACT_STATE_AFTER_ADOPTION",
-    "FRESH_REBIND_CORE_LIVE_PRELIVE_WORKSTREAM_FROM_PRIMARY_GITHUB_EVIDENCE",
-    "IF_PREVIOUS_STATIC_ENV_RECEIPT_MAIN_BINDING_NO_LONGER_MATCHES_ROUTE_BOUNDED_LIVE_REBIND_WITHOUT_INHERITING_AUTHORITY",
+    "FRESH_REVALIDATE_MAIN_CANDIDATE_PR_AND_LIVE_REBIND_RECEIPT_IMMEDIATELY_BEFORE_OWNER_CODESPACE_CREATE",
+    "OWNER_CREATE_AND_ATTACH_EXACTLY_ONE_FRESH_PRELIVE_NONMUTATING_CODESPACE_FROM_EXACT_REVIEWED_CANDIDATE_BRANCH",
+    "AFTER_ATTACH_RETURN_TO_CORE_FOR_FRESH_LIVE_CODESPACE_HEAD_IMAGE_READY_CONTROL_REBIND",
+    "IF_AUTOMATIC_READY_IS_ABSENT_DO_NOT_RUN_STATIC_GUARD_UNTIL_SEPARATE_SAME_CODESPACE_FRESH_REBIND",
     "CONTINUE_KEIRIN_ONLY_THROUGH_FRESH_LANE_NATIVE_RESOLVER"
   ],
   "forbidden_actions": [
-    "USE_THIS_STATE_AS_LIVE_AUTHORITY",
-    "CREATE_CODESPACE_FROM_META_ADOPTION_AUTHORITY",
-    "RUN_STATIC_GUARD_FROM_META_ADOPTION_AUTHORITY",
+    "USE_THIS_STATE_AS_BEARER_LIVE_AUTHORITY",
+    "CREATE_SECOND_OR_REPLACEMENT_CODESPACE_UNDER_THIS_SCOPE",
+    "RUN_STATIC_ENV_GUARD_BEFORE_POST_ATTACH_FRESH_REBIND",
+    "RUN_MANUAL_UI_READY_HELPER",
     "MANUAL_ARM",
     "OAUTH_OR_DEVICE_AUTHORIZATION",
     "STEP3_OR_STEP4_OR_APPLY",
     "PRODUCTION_MUTATION",
-    "RULESET_MUTATION",
+    "MAIN_OR_RULESET_MUTATION",
     "MERGE",
     "WORKFLOW_DISPATCH",
     "SECRET_OR_WRITER_KEY_OPERATION",
@@ -85,5 +121,5 @@
     "fresh_main_candidate_pr_receipt_revalidation_before_material_claim": true,
     "on_missing_invalid_or_stale_state": "FAIL_CLOSED"
   },
-  "next_safe_action": "FRESH_REBIND_CORE_LIVE_PRELIVE_WORKSTREAM_ONLY; DO_NOT_CREATE_CODESPACE_OR_RUN_ARM_FROM_META_AUTHORITY"
+  "next_safe_action": "IMMEDIATE_FRESH_REVALIDATION_THEN_OWNER_ONE_FRESH_CODESPACE_CREATE_ATTACH_ONLY; AFTER_ATTACH_RETURN_TO_CORE; NO_GUARD_NO_ARM_NO_OAUTH"
 }
