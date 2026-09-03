@@ -20,6 +20,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 HERE = ROOT / "automation"
 ADAPTER_MANIFEST = HERE / "MULTIVERSE_AUTOMATION_PROVIDER_ADAPTER_CONTRACT_V7.json"
 POLICY_MANIFEST = HERE / "MULTIVERSE_AUTOMATION_REVIEWED_POLICY_SOURCE_V5.json"
+V5_VALIDATED_HEAD = "e803723309a045086287e613f924a90a880b5a3b"
+V5_CANDIDATE_BRANCH = "agent/automation-orchestrator-policy-source-v5-20260903-v1"
 FILES = [
     HERE / "orchestrator_provider_adapter_v7.py",
     HERE / "test_orchestrator_provider_adapter_v7.py",
@@ -33,6 +35,17 @@ FORBIDDEN_IMPORTS = {
 
 def run(cmd, *, env=None):
     return subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, env=env)
+
+
+def run_test(pattern: str, env: dict[str, str]) -> bool:
+    tests = run([sys.executable, "-m", "unittest", "discover", "-s", "automation",
+                 "-p", pattern, "-v"], env=env)
+    print(tests.stdout, end="")
+    print(tests.stderr, end="")
+    if tests.returncode != 0:
+        print(f"PROVIDER_ADAPTER_V7_TESTS_FAIL:{pattern}")
+        return False
+    return True
 
 
 def main() -> int:
@@ -85,29 +98,32 @@ def main() -> int:
     env["MULTIVERSE_V7_CODE_HEAD"] = ns.expected_head
     env["MULTIVERSE_CANONICAL_MAIN"] = ns.canonical_main
 
-    patterns = [
+    for pattern in [
         "test_orchestrator_role_relay_v3.py",
         "test_orchestrator_role_relay_policy_v4.py",
         "test_orchestrator_role_relay_policy_source_v5.py",
-        "test_orchestrator_role_relay_policy_source_v5_integration.py",
         "test_orchestrator_policy_change_control_v6.py",
         "test_orchestrator_provider_adapter_v7.py",
         "test_orchestrator_provider_adapter_v7_integration.py",
-    ]
-    for pattern in patterns:
-        tests = run([sys.executable, "-m", "unittest", "discover", "-s", "automation",
-                     "-p", pattern, "-v"], env=env)
-        print(tests.stdout, end="")
-        print(tests.stderr, end="")
-        if tests.returncode != 0:
-            print(f"PROVIDER_ADAPTER_V7_TESTS_FAIL:{pattern}")
+    ]:
+        if not run_test(pattern, env):
             return 7
+
+    # Re-run the inherited v5 full E2E with its own exact validated task binding.
+    # The checked-out code is the v7 successor, but the task under this regression
+    # remains the exact independently validated v5 candidate binding.
+    v5_env = env.copy()
+    v5_env["MULTIVERSE_EXPECTED_HEAD"] = V5_VALIDATED_HEAD
+    v5_env["MULTIVERSE_V5_CANDIDATE_BRANCH"] = V5_CANDIDATE_BRANCH
+    if not run_test("test_orchestrator_role_relay_policy_source_v5_integration.py", v5_env):
+        return 7
 
     print("PROVIDER_ADAPTER_V7_MECHANICAL_GATE_PASS=true")
     print("PROVIDER_ADAPTER_V7_EXACT_HEAD=" + ns.expected_head)
     print("PROVIDER_ADAPTER_V7_CANONICAL_MAIN=" + ns.canonical_main)
     print("PROVIDER_ADAPTER_V7_SOURCE_BRANCH=" + ns.candidate_branch)
     print("PROVIDER_ADAPTER_V7_MANIFEST_SHA256=" + adapter_manifest.raw_sha256)
+    print("PROVIDER_ADAPTER_V7_V5_INHERITED_E2E=true")
     print("PROVIDER_ADAPTER_V7_SEALED_LOCAL_ADAPTER_ONLY=true")
     print("PROVIDER_ADAPTER_V7_ARBITRARY_RUNTIME_ADAPTER_INJECTION=false")
     print("PROVIDER_ADAPTER_V7_EXISTING_V5_POLICY_ONLY=true")
