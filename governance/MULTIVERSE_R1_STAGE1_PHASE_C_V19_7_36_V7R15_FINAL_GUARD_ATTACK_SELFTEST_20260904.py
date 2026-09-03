@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import ctypes,errno,fcntl,json,os,pathlib,selectors,subprocess,sys,time
+import ctypes,errno,fcntl,json,os,pathlib,selectors,subprocess,time
 
 AUTH_UID=64173
 PTRACE_ATTACH=16
@@ -10,7 +10,6 @@ F_SEAL_SHRINK=0x2
 F_SEAL_GROW=0x4
 F_SEAL_WRITE=0x8
 SEALS=F_SEAL_SEAL|F_SEAL_SHRINK|F_SEAL_GROW|F_SEAL_WRITE
-GUARD='/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r15'
 NAME='rate-v7r15-test'
 GEN='00112233445566778899aabbccddeeff'
 
@@ -47,6 +46,14 @@ libc.process_vm_writev.restype=ctypes.c_ssize_t
 
 def ptrace(req,pid):
     ctypes.set_errno(0);rv=libc.ptrace(req,pid,None,None);return rv,ctypes.get_errno()
+
+def uid_tuple(pid):
+    try:
+        with open(f'/proc/{pid}/status',encoding='utf-8') as f:
+            for line in f:
+                if line.startswith('Uid:'):return tuple(map(int,line.split()[1:5]))
+    except FileNotFoundError:return None
+    return None
 
 def build_launcher():
     p=pathlib.Path('/tmp/v7r15-final-launcher.c');p.write_text('#include <stdio.h>\n'+LAUNCHER_C,encoding='utf-8')
@@ -87,6 +94,12 @@ def main():
     os.setgroups([]);os.setresgid(gid,gid,gid);os.setresuid(uid,uid,uid)
     fd=make_authority()
     p=subprocess.Popen(['/tmp/v7r15-final-launcher',NAME,str(fd),GEN],env={'CODESPACES':'true','CODESPACE_NAME':NAME},pass_fds=(fd,),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,bufsize=1)
+    protected=False;start=time.time()
+    while time.time()-start<2 and p.poll() is None:
+        u=uid_tuple(p.pid)
+        if u and u[0]!=u[1] and u[1]==AUTH_UID and u[2]==AUTH_UID:protected=True;break
+    if not protected:
+        p.kill();raise SystemExit('protected credential boundary not observed')
     sel=selectors.DefaultSelector();sel.register(p.stdout,selectors.EVENT_READ)
     attempts=0;out=[];sealed=False;deadline=time.time()+5
     while time.time()<deadline and p.poll() is None and not sealed:
@@ -99,10 +112,8 @@ def main():
                 if 'PHASE_C_V19_7_36_V7R15_PROTECTED_GUARD_PASS' in line:sealed=True
     if not sealed:
         p.kill();rest=p.communicate()[0] or '';raise SystemExit('authorization seal marker not observed: '+''.join(out)+rest)
-    rc=p.wait(timeout=10);rest=p.stdout.read() or '';out.append(rest)
-    text=''.join(out)
+    rc=p.wait(timeout=10);rest=p.stdout.read() or '';out.append(rest);text=''.join(out)
     if attempts<1:raise SystemExit('no attack attempts')
-    if 'PHASE_C_V19_7_36_V7R15_PROTECTED_GUARD_PASS' not in text:raise SystemExit('guard pass missing')
     if rc not in (0,92):raise SystemExit(f'unexpected post-boundary helper rc={rc} out={text!r}')
     print(text,end='')
     print(f'PRELAB_V7R15_FINAL_GUARD_CONTINUOUS_ATTACK_DENIED_UNTIL_AUTHORITY_SEALED=true attempts={attempts}')
