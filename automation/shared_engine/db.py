@@ -23,8 +23,6 @@ def _validated_worker_id(worker_id):
     return worker_id
 
 def _validated_generation(generation):
-    # Python bool and integral floats compare equal to ints (True == 1, 1.0 == 1).
-    # Fencing tokens must preserve exact type/identity semantics, not numeric coercion.
     if isinstance(generation,bool) or not isinstance(generation,int) or generation <= 0:
         raise LostLeaseError('invalid fencing generation')
     return generation
@@ -78,7 +76,6 @@ def list_tasks():
     return out
 
 def assert_unexpired_fence(task_id, worker_id, generation):
-    """Fail closed unless worker/generation still owns an unexpired task lease."""
     init_schema(); worker_id=_validated_worker_id(worker_id); generation=_validated_generation(generation); now=time.time(); c=_conn()
     try:
         r=c.execute('SELECT claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
@@ -96,12 +93,16 @@ def claim_next_task(worker_id, *, lease_seconds=None):
         now=time.time()
         r=c.execute("SELECT id FROM tasks WHERE state='PENDING' AND (claimed_by IS NULL OR lease_until<?) ORDER BY priority DESC,created_at LIMIT 1",(now,)).fetchone()
         if r is None: c.commit(); c.close(); return None
-        tid=r['id']; c.execute('UPDATE tasks SET claimed_by=?,claim_generation=claim_generation+1,lease_until=?,updated_at=? WHERE id=?',
-                               (worker_id,now+lease_seconds,now,tid)); c.commit(); c.close(); return tid
+        tid=r['id']
+        c.execute('UPDATE tasks SET claimed_by=?,claim_generation=claim_generation+1,lease_until=?,updated_at=? WHERE id=?',
+                  (worker_id,now+lease_seconds,now,tid))
+        generation=c.execute('SELECT claim_generation FROM tasks WHERE id=?',(tid,)).fetchone()['claim_generation']
+        c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
+                  (tid,worker_id,'LEASE_CLAIMED','PENDING','PENDING',json.dumps({'generation':generation,'lease_until':now+lease_seconds,'claim_mode':'queue'},sort_keys=True,separators=(',',':')),now))
+        c.commit(); c.close(); return tid
     except BaseException: c.rollback(); c.close(); raise
 
 def claim_task(task_id, worker_id, *, lease_seconds=None):
-    """Claim exactly one requested PENDING task without mutating any other queue item."""
     init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
     c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
@@ -114,19 +115,12 @@ def claim_task(task_id, worker_id, *, lease_seconds=None):
         c.execute('UPDATE tasks SET claimed_by=?,claim_generation=claim_generation+1,lease_until=?,updated_at=? WHERE id=?',
                   (worker_id,now+lease_seconds,now,task_id))
         generation=c.execute('SELECT claim_generation FROM tasks WHERE id=?',(task_id,)).fetchone()['claim_generation']
+        c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
+                  (task_id,worker_id,'LEASE_CLAIMED','PENDING','PENDING',json.dumps({'generation':generation,'lease_until':now+lease_seconds,'claim_mode':'exact'},sort_keys=True,separators=(',',':')),now))
         c.commit(); c.close(); return generation
     except BaseException: c.rollback(); c.close(); raise
 
 def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
-    """Extend a healthy recoverable lease without changing ownership or generation.
-
-    Renewal cannot resurrect an expired lease and cannot operate on pending/terminal
-    states. BLOCKED_TECHNICAL remains owned and recoverable, so a healthy blocker may
-    renew while a dead blocker can later be reclaimed with a generation bump.
-    The authoritative clock sample is taken only after the SQLite writer transaction
-    is acquired, so lock wait cannot turn a pre-expiry observation into a post-expiry
-    resurrection. Expired work must reclaim with generation bump.
-    """
     init_schema(); worker_id=_validated_worker_id(worker_id); generation=_validated_generation(generation); lease_seconds=_validated_lease_seconds(lease_seconds)
     c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
@@ -144,7 +138,6 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
-    """Take over one expired recoverable task without changing its workflow state."""
     init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
     c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
@@ -162,12 +155,6 @@ def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=None,release=False,fencing=None):
-    """Perform one workflow transition only with a live fencing token.
-
-    Durable provenance is derived from authority, not caller labels: event actor is the
-    exact fenced worker and event_type is the canonical state transition. Caller-supplied
-    component/event labels survive only as declared metadata.
-    """
     init_schema(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT * FROM tasks WHERE id=?',(task_id,)).fetchone()
