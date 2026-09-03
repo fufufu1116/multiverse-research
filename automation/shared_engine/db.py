@@ -162,7 +162,12 @@ def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=None,release=False,fencing=None):
-    """Perform one workflow transition only with a live fencing token."""
+    """Perform one workflow transition only with a live fencing token.
+
+    The durable event actor is always the exact fenced worker. Caller-supplied actor
+    labels are preserved only as declared emitter metadata so a valid worker cannot
+    forge Independent Lab/Auditor provenance in the authoritative event history.
+    """
     init_schema(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT * FROM tasks WHERE id=?',(task_id,)).fetchone()
@@ -178,9 +183,12 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
         result=json.loads(r['result_json'])
         if result_update: result.update(result_update)
         claimed=None if release else r['claimed_by']; lease=None if release else r['lease_until']
+        event_detail=dict(detail or {})
+        event_detail['declared_actor']=actor
+        event_detail['fencing_worker']=worker
         c.execute('UPDATE tasks SET state=?,claimed_by=?,lease_until=?,result_json=?,updated_at=? WHERE id=?',
                   (new_state,claimed,lease,json.dumps(result,sort_keys=True,separators=(',',':')),now,task_id))
         c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
-                  (task_id,actor,event_type,before,new_state,json.dumps(detail or {},sort_keys=True,separators=(',',':')),now))
+                  (task_id,worker,event_type,before,new_state,json.dumps(event_detail,sort_keys=True,separators=(',',':')),now))
         c.commit(); c.close(); return new_state
     except BaseException: c.rollback(); c.close(); raise
