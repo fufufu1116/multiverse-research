@@ -1,0 +1,29 @@
+{
+  "record":"KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v3",
+  "status":"CONSERVATIVE_RESEARCH_CONTAMINATION_FIREWALL_NO_NEW_TARGET_RESULT_EXTRACTION",
+  "supersedes":"KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v2.json",
+  "purpose":"Prevent new Rider x Bank / Circumference and Rider x Line/Role research from reusing outcome-viewed periods for tuning, support-pool selection or evaluation.",
+  "prior_latest_confirmed_outcome_viewed_target_date":"2026-08-25",
+  "new_exposure_receipt":"KEIRIN_HISTORICAL_PIT_TRANSPORT_VALIDATION_EXPOSURE_RECEIPT_20260903_v2.json",
+  "new_exposure_reason":"A 2026-08-27 Nara archive/search surface explicitly exposed same-meet first-day finish values corresponding to 2026-08-26 during source discovery. They were not used for tuning, but the conservative date firewall advances.",
+  "latest_confirmed_outcome_viewed_target_date":"2026-08-26",
+  "conservative_new_affinity_date_firewall":{
+    "dates_on_or_before":"2026-08-26",
+    "classification":"NOT_ELIGIBLE_FOR_NEW_RIDER_AFFINITY_FIT_EVAL_OR_HFT_SUPPORT_POOL",
+    "first_possible_date":"2026-08-27",
+    "important":"2026-08-27 is only a date floor. Fresh Read plus PRE-only population/source locks and official identity mapping are still required before any support increment or later target RESULT extraction."
+  },
+  "historical_fast_track_boundary":{
+    "eligible_date_floor":"2026-08-27",
+    "result_access":false,
+    "support_increment_from_burned_rows":0,
+    "nara_2026_08_26_day1":"EXCLUDED_BURNED"
+  },
+  "firewall_monotonicity":"NEVER_MOVE_BACKWARD",
+  "future_refresh_rule":"Immediately before any historical population lock and again before any later target extraction, Fresh Read the branch and advance this firewall if any newer explicit finish has been surfaced.",
+  "permitted_reuse_of_burned_data":["provenance","audit","reproducibility","failure analysis","source transport validation without target tuning"],
+  "forbidden_reuse":["support-pool selection based on exposed outcomes","parameter tuning","feature definition selection","threshold selection","sign flip rescue","transformation rescue","venue rescue","field-size rescue","candidate selection based on observed outcome improvement"],
+  "result_join_authorized":false,
+  "model_fit_authorized":false,
+  "hard_boundaries":["NO_RESULT_JOIN_WHILE_SUPPORT_GATE_BLOCKED","NO_FIREWALL_ROLLBACK","NO_SAME_HOLDOUT_RESCUE","NO_PROTECTED_HOLDOUT","NO_RESULT_AS_FEATURE","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
