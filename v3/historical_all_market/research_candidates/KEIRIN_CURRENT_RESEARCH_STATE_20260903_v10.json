@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v10",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v9.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "latest_refresh_parent_head": "8973a1f095e6b5bc0d8a75a0e12b7ab708fb0729",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only. If HEAD is ahead of this state's refresh/creation binding, inspect only the delta before claiming CURRENT.",
+  "inherited_state": {"base":"KEIRIN_CURRENT_RESEARCH_STATE_20260903_v9.json","rule":"All inherited constraints, prespecs, protected populations, source-integrity rules and forbidden actions remain binding unless explicitly changed below."},
+  "delta_since_v9": {
+    "toyohashi_primary_transport_exhaustive_recheck": {
+      "artifact": "KEIRIN_TOYOHASHI_PRE_PRIMARY_TRANSPORT_EXHAUSTIVE_RECHECK_20260903_v1.json",
+      "commit": "8973a1f095e6b5bc0d8a75a0e12b7ab708fb0729",
+      "oddspark_desktop_current_pages_positive": [2,9,11],
+      "oddspark_mobile_current_sep4_hits": 0,
+      "kdreams_current_meeting_and_outbound_racecard_label_positive": true,
+      "kdreams_positive_series_key": "4520260904",
+      "kdreams_positive_day_key_in_existing_url": "45202609040100",
+      "kdreams_exact_current_racecard_or_racedetail_href_exposed": false,
+      "strict_snapshot_gain": 0,
+      "strict_snapshot_count": 0,
+      "decision": "CONTINUE_PRIMARY_RETRIEVAL_FAIL_CLOSED_NO_PROVIDER_SWITCH_NO_URL_INFERENCE"
+    }
+  },
+  "rider_circumference_support": {"target_unique_official_cross_circumference_riders":30,"current":9,"remaining":21,"gate":"FAIL","result_join_authorized":false,"formula_status":"BLOCKED_UNTIL_SUPPORT_GATE_PASS"},
+  "current_stage": "STAGE_3_SUPPORT_ACCUMULATION_AND_TOYOHASHI_STRICT_PRE_PRIMARY_CAPTURE",
+  "sep4_active": {
+    "防府": {"pre_overlap_screen":"COMPLETE_7_OF_7_ZERO_SUPPORT_DELTA","outcomes_for_fit":"FORBIDDEN"},
+    "豊橋": {
+      "membership_crosscheck":"COMPLETE_12_OF_12_82_ROWS",
+      "strict_primary_provider":"OddsPark public race card",
+      "desktop_current_pages_positive":[2,9,11],
+      "mobile_current_strict_pages_positive":[],
+      "strict_snapshots_accepted":0,
+      "pending_strict_races":[1,2,3,4,5,6,7,8,9,10,11,12],
+      "kdreams_racecard_hrefs":"PENDING_NOT_EXPOSED_DO_NOT_INFER",
+      "cutoffs_jst":["15:46","16:09","16:33","16:57","17:21","17:45","18:09","18:33","18:57","19:21","19:46","20:12"]
+    },
+    "result_access_authorized": false
+  },
+  "next_actions": [
+    "Fresh Read branch before every CURRENT claim and write.",
+    "Re-query the prespecified OddsPark mobile strict surface and current desktop pages before Toyohashi cutoffs; use the frozen 82-row membership only as search keys.",
+    "Accept a Toyohashi race only after a complete strict allowlist snapshot including competition score, nige, makuri, sashi, mark, S, H and B with deterministic provenance is frozen before its cutoff.",
+    "Do not infer KDreams race-card/racedetail URLs from the exposed series/day key; use only positively surfaced hrefs.",
+    "If a race remains incomplete at cutoff, permanently fail-close it and never reconstruct PRE after race.",
+    "Keep secondary Tokyo Sports PRE data as non-authoritative membership/search crosscheck only; no feature substitution.",
+    "Continue official cross-circumference support acquisition from 9 toward 30 with RESULT closed."
+  ],
+  "source_integrity": {"prospective_finish_targets_observed":false,"payout_values_observed":false,"result_access_authorized":false,"secondary_feature_substitution":"FORBIDDEN","post_race_pre_reconstruction":"FORBIDDEN","provider_switch":"FORBIDDEN_UNLESS_PREPRESPECIFIED"},
+  "required_artifact_pointers": ["KEIRIN_CURRENT_RESEARCH_STATE_20260903_v9.json","KEIRIN_TOYOHASHI_PRE_PRIMARY_TRANSPORT_EXHAUSTIVE_RECHECK_20260903_v1.json","KEIRIN_TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT_20260903_v1.json","KEIRIN_TOYOHASHI_DAY1_PRE_MEMBERSHIP_CROSSCHECK_20260903_v1.json","KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json","KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json"],
+  "owner_action_required_now": false
+}
