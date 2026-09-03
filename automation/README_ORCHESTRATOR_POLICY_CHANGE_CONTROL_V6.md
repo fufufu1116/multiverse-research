@@ -33,14 +33,19 @@ Every proposed policy change is classified deterministically:
   still requires a new exact Candidate review before any later adoption.
 - `OWNER_GATE_REQUIRED`: any allowed binding is added/substituted, canonical
   repo/main changes, Candidate-only is disabled, authority keys change or become
-  true, bindings are malformed/empty/duplicated, or the document shape widens.
+  true, bindings are malformed/empty/duplicated, the document shape widens, or
+  the proposed source branch fails the same conservative Candidate branch-shape
+  validation used by the validated v4 binding policy.
 
 `may_apply` is **always false**. v6 is a classifier/journal only.
 
 ## Durable replay
 
 `PolicyChangeControlStore` uses SQLite WAL + synchronous FULL, schema 4, and
-`BEGIN IMMEDIATE` for decision creation. Exact replay of the same request ID and
+`BEGIN IMMEDIATE` for both first-time schema/metadata initialization and decision
+creation. This serializes two independent first-open connections before either can
+observe-and-insert missing schema/meta rows, so initialization converges instead
+of leaking raw UNIQUE/locking failures. Exact replay of the same request ID and
 same canonical proposed bytes returns the same durable decision. A conflicting
 replay under the same request ID fails closed.
 
@@ -52,13 +57,30 @@ The DB pins:
 The v5 adapter expects DB schema 3 and therefore rejects the v6 schema-4 decision
 DB rather than bypass-opening it as a relay DB.
 
+## Independent Lab remediation
+
+The first v6 Independent Lab review (`5524112187`) returned `FIX_REQUIRED` with
+two bounded Candidate-only findings. The remediation changes only new v6 code,
+tests, and this documentation:
+
+1. source-policy identity now validates `source_branch` through the established
+   `CandidateBindingPolicy` branch-shape rules, so malformed identities such as
+   `agent/` route `OWNER_GATE_REQUIRED` rather than Candidate review;
+2. schema-4 initialization is now wrapped in an immediate write transaction and
+   a new test starts two independent connections against an empty DB to exercise
+   the first-open race directly.
+
+The historical pre-remediation Lab result remains evidence only. Any remediated
+head requires a new exact push CI, new freeze, and new Independent Lab review.
+
 ## Security / authority ceiling
 
 v6 can route a non-widening proposal toward **future independent review**. It
 cannot approve or apply it.
 
 Any widening, canonical-main move, repo move, Candidate-only removal, authority
-change, or malformed/unknown shape becomes `OWNER_GATE_REQUIRED`.
+change, malformed/unknown shape, or invalid source-branch identity becomes
+`OWNER_GATE_REQUIRED`.
 
 This does **not** establish canonical policy issuance authority, production
 change-control, merge readiness, live-provider exactly-once behavior, or a
