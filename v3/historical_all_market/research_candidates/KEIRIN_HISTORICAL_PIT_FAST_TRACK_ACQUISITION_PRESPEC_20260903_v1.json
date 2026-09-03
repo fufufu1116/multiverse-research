@@ -1,0 +1,75 @@
+{
+  "record":"KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v1",
+  "status":"PRE_RESULT_HISTORICAL_PIT_SUPPORT_FAST_TRACK_FROZEN_NO_MODEL_FIT_AUTHORITY",
+  "scope":"RIDER_X_CIRCUMFERENCE_SUPPORT_ACQUISITION_ONLY",
+  "purpose":"Accelerate the clean cross-circumference support gate without waiting for future race days by using archived race-date-specific PRE tables, while keeping target RESULT closed and preserving all contamination, identity and fail-closed rules.",
+  "bindings":[
+    "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v2.json",
+    "KEIRIN_HISTORICAL_PIT_TRANSPORT_VALIDATION_EXPOSURE_RECEIPT_20260903_v1.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v1.json",
+    "KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
+    "KEIRIN_20260903_PRE_WEB_SEARCH_SURFACE_CONTAMINATION_RECEIPT_v1.json",
+    "tools/keirin_kdreams_pre_only_parser_v1.py"
+  ],
+  "date_window":{
+    "start_inclusive":"2026-08-26",
+    "end_inclusive":"2026-09-02",
+    "why":"The refreshed conservative burned firewall ends at 2026-08-25. The window ends before the already separately managed 2026-09-03 prospective population."
+  },
+  "venue_pool":{
+    "333_or_333_33m":["防府","富山","奈良"],
+    "400m":["青森","武雄","豊橋","川崎"],
+    "rule":"Venue circumference must be verified by accepted Reality knowledge before support is counted."
+  },
+  "population_selection_rule":[
+    "Use whole-day Day1 blocks only, in chronological date order, from the frozen date window and venue pool.",
+    "A block enters acquisition only when an exact KDreams archive day/list href is positively observed; never derive or guess a racedetail ID by pattern.",
+    "For each accepted day block, acquire every race in that Day1 block. Do not cherry-pick races or riders based on any target outcome, odds, forecast, support overlap or apparent model value.",
+    "Freeze extracted PRE membership and content hashes before official identity resolution for support counting.",
+    "The entire eligible window is the intended acquisition pool; do not stop early because the first 30 riders look favorable."
+  ],
+  "primary_historical_pre_source":"KDreams archived racecard/racedetail pages reached from positively observed archive hrefs",
+  "transport_validation":{
+    "required_pre_fields_retained":true,
+    "target_finish_embedded_in_pre_table":false,
+    "mixed_page_contamination_present":true,
+    "safe_extraction_required":true,
+    "point_in_time_signal":"Same-rider archived competition_score changed across historical race dates; validation example Kitamura Atsushi 77.95 on 2026-07-31, 77.29 on 2026-08-25/26 surfaces, 76.70 on 2026-08-31.",
+    "operational_note":"Current environment external raw HTML download path was not available during validation, so this prespec grants no support increment by itself. Acquisition must remain fail-closed until raw HTML can be quarantined and parsed by the existing PRE-only parser without exposing target results."
+  },
+  "strict_allowlist":["race_id","race_date","venue","race_no","car_no","rider_name_raw","class","style","competition_score","S","B","nige","makuri","sashi","mark","source_url","source_file_sha256"],
+  "forbidden_surface_fields":["target_result","finish","payout","settlement","numeric_odds","forecast_mark","prediction","tip","comment","narabiyoso","provider_line_text","prior_race_finish_as_new_feature"],
+  "raw_html_policy":[
+    "Mixed-content source HTML is quarantine transport only, not model evidence.",
+    "Do not commit mixed raw HTML to the research evidence tree.",
+    "Run tools/keirin_kdreams_pre_only_parser_v1.py and commit only the allowlisted PRE table plus parser/source-hash receipt.",
+    "Any parser rejection, missing competition_score, zero competition_score, ambiguous metadata or missing tactical counts makes that race fail closed."
+  ],
+  "identity_policy":[
+    "Map historical PRE rider names to official KEIRIN.JP registration numbers under KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v1.json.",
+    "Current profile attributes are never backfilled historically.",
+    "Ambiguous, multiple, renamed or contradictory identity fails closed for rider-specific support.",
+    "Support is counted only from official_registration_number x valid PRE race rows."
+  ],
+  "support_gate_application":{
+    "current_counter_before_fast_track":9,
+    "increment_authorized_now":0,
+    "target_unique_cross_circumference_supported_riders":30,
+    "minimum_supported_rider_race_rows":60,
+    "minimum_distinct_development_venues_per_circumference":2,
+    "minimum_distinct_calendar_blocks_per_circumference":2,
+    "official_registration_mapping_rate":1.0,
+    "result_irrelevant_to_support_definition":true
+  },
+  "result_policy":{
+    "target_result_pages_may_be_opened_during_acquisition":false,
+    "result_join_authorized":false,
+    "model_fit_authorized":false,
+    "formula_freeze_authorized":false,
+    "next_gate":"Only if the clean PRE-only support gate passes, freeze the exact low-DOF Rider x Circumference formula, unsupported-rider policy, exact development membership, metric, race-cluster bootstrap and advance criterion before any target RESULT join."
+  },
+  "fallback_if_historical_transport_cannot_be_safely_acquired":"NO_SUPPORT_INCREMENT_KEEP_RESULT_CLOSED_CONTINUE_PROSPECTIVE_SEP10_LANE",
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_JOIN_WHILE_SUPPORT_GATE_BLOCKED","NO_RACE_ID_GUESSING","NO_RAW_MIXED_HTML_AS_MODEL_EVIDENCE","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_NARABIYOSO","NO_CURRENT_PROFILE_BACKFILL","NO_UNKNOWN_TO_ZERO","NO_ZERO_SCORE_IMPUTATION","NO_POST_RACE_PRE_RECONSTRUCTION","NO_THRESHOLD_LOWERING","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
