@@ -19,7 +19,7 @@ const (
     githubAPIBase = "https://api.github.com"
     controlPath = "/workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md"
     statusPath = "/workspaces/.codespaces/.persistedshare/multiverse-v36-v7r9-rate-readiness.txt"
-    lockPath = "/workspaces/.codespaces/.persistedshare/.multiverse-v36-v7r9-rate-readiness.lock"
+    lockPath = "/opt/multiverse/v36/empty-config"
     guardPath = "/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7"
     minBeforeComments = 60
     minAfterComments = 59
@@ -64,13 +64,14 @@ func probeAt(base string,cl *http.Client) probeResult {
 
 func newGeneration()(string,error){ var b [16]byte; if _,e:=io.ReadFull(rand.Reader,b[:]);e!=nil{return "",e}; return hex.EncodeToString(b[:]),nil }
 
-func openLock(path string)(*os.File,error){
-    fd,e:=syscall.Open(path,syscall.O_RDWR|syscall.O_CREAT|syscall.O_NOFOLLOW|syscall.O_CLOEXEC,0600); if e!=nil{return nil,e}
+func openLockWithOperation(path string, operation int)(*os.File,error){
+    fd,e:=syscall.Open(path,syscall.O_RDONLY|syscall.O_NOFOLLOW|syscall.O_CLOEXEC|syscall.O_DIRECTORY,0); if e!=nil{return nil,e}
     var st syscall.Stat_t; if e=syscall.Fstat(fd,&st);e!=nil{syscall.Close(fd);return nil,e}
-    if st.Uid!=uint32(os.Getuid()) || st.Mode&syscall.S_IFMT!=syscall.S_IFREG { syscall.Close(fd); return nil,fmt.Errorf("lock-class") }
-    if e=syscall.Flock(fd,syscall.LOCK_EX);e!=nil{syscall.Close(fd);return nil,e}
+    if st.Uid!=0 || st.Mode&syscall.S_IFMT!=syscall.S_IFDIR || uint32(st.Mode&0777)!=0555 { syscall.Close(fd); return nil,fmt.Errorf("lock-anchor-class") }
+    if e=syscall.Flock(fd,operation);e!=nil{syscall.Close(fd);return nil,e}
     return os.NewFile(uintptr(fd),path),nil
 }
+func openLock(path string)(*os.File,error){ return openLockWithOperation(path,syscall.LOCK_EX) }
 func releaseLock(f *os.File){ if f==nil{return}; _=syscall.Flock(int(f.Fd()),syscall.LOCK_UN); _=f.Close() }
 
 func atomicReplaceUnique(path,body,gen string,mode uint32)error{
@@ -108,8 +109,8 @@ func verifyPairAt(status,control,expected string)error{
 
 func render(name,gen,mode string,r probeResult)(string,string){
     state:="NOT_READY"; if r.Ready{state="READY"}
-    status:=fmt.Sprintf("PHASE_C_V19_7_36_V7R10_PREARM_RATE_%s\ngeneration=%s\nmode=%s\ncodespace=%s\nreason=%s\nremaining_before_comments=%d\nremaining_after_probe=%d\nreset_epoch=%d\nprobe_repeatable_nonmutating=true\none_shot_guard_consumed=false\ncommit_invokes_guard_only_after_final_ready=true\nauthority_consumer_requires_generation_match=true\nrate_residual_bound=AT_LEAST_FIVE_EXTERNAL_CORE_DECREMENTS_REQUIRED_BETWEEN_FINAL_PROBE_AND_HELPER_THRESHOLD_FAILURE\nnext_action=RETURN_TO_CORE_BEFORE_STATIC_GUARD_COMMIT\nruntime=OFF\n",state,gen,mode,name,r.Reason,r.Before,r.After,r.Reset)
-    control:=fmt.Sprintf("# MULTIVERSE PRE-LIVE CONTROL — V19.7.36 v7r10\n\n`PHASE_C_V19_7_36_V7R10_PREARM_RATE_%s`\n\n- generation=`%s`\n- mode=`%s`\n- codespace=`%s`\n- reason=`%s`\n- remaining_before_comments=`%d`\n- remaining_after_probe=`%d`\n- reset_epoch=`%d`\n- probe_repeatable_nonmutating=`true`\n- one_shot_guard_consumed=`false`\n- commit_invokes_guard_only_after_final_ready=`true`\n- authority_consumer_requires_generation_match=`true`\n- next_action=`RETURN_TO_CORE_BEFORE_STATIC_GUARD_COMMIT`\n- runtime=`OFF`\n\nStatus and control are valid only when their generation values match. The commit-mode authority-bearing consumer mechanically re-opens both final files with O_NOFOLLOW, rejects non-regular/multi-link/wrong-mode files, requires the exact generation just published, and holds the publication lock through guard exec. Probe evidence remains nonauthoritative.\n",state,gen,mode,name,r.Reason,r.Before,r.After,r.Reset)
+    status:=fmt.Sprintf("PHASE_C_V19_7_36_V7R11_PREARM_RATE_%s\ngeneration=%s\nmode=%s\ncodespace=%s\nreason=%s\nremaining_before_comments=%d\nremaining_after_probe=%d\nreset_epoch=%d\nprobe_repeatable_nonmutating=true\none_shot_guard_consumed=false\ncommit_invokes_guard_only_after_final_ready=true\nauthority_consumer_requires_generation_match=true\nlock_anchor_root_owned_nonreplaceable=true\nrate_residual_bound=AT_LEAST_FIVE_EXTERNAL_CORE_DECREMENTS_REQUIRED_BETWEEN_FINAL_PROBE_AND_HELPER_THRESHOLD_FAILURE\nnext_action=RETURN_TO_CORE_BEFORE_STATIC_GUARD_COMMIT\nruntime=OFF\n",state,gen,mode,name,r.Reason,r.Before,r.After,r.Reset)
+    control:=fmt.Sprintf("# MULTIVERSE PRE-LIVE CONTROL — V19.7.36 v7r11\n\n`PHASE_C_V19_7_36_V7R11_PREARM_RATE_%s`\n\n- generation=`%s`\n- mode=`%s`\n- codespace=`%s`\n- reason=`%s`\n- remaining_before_comments=`%d`\n- remaining_after_probe=`%d`\n- reset_epoch=`%d`\n- probe_repeatable_nonmutating=`true`\n- one_shot_guard_consumed=`false`\n- commit_invokes_guard_only_after_final_ready=`true`\n- authority_consumer_requires_generation_match=`true`\n- lock_anchor_root_owned_nonreplaceable=`true`\n- next_action=`RETURN_TO_CORE_BEFORE_STATIC_GUARD_COMMIT`\n- runtime=`OFF`\n\nStatus and control are valid only when their generation values match. The commit-mode authority-bearing consumer mechanically re-opens both final files with O_NOFOLLOW, rejects non-regular/multi-link/wrong-mode files, requires the exact generation just published, and holds an exclusive flock on the root-owned mode-0555 /opt/multiverse/v36/empty-config directory through final generation verification and guard exec. The codespace UID cannot unlink, rename, recreate, or replace that anchor because its parent is root-owned mode 0555. Probe evidence remains nonauthoritative.\n",state,gen,mode,name,r.Reason,r.Before,r.After,r.Reset)
     return status,control
 }
 
@@ -126,12 +127,14 @@ func publishPair(name,mode string,r probeResult,hold bool)(*os.File,string,error
 
 func selftest(){
     if minBeforeComments!=60||minAfterComments!=59{panic("threshold")}
+    if lockPath!="/opt/multiverse/v36/empty-config"{panic("lock-anchor")}
     s,c:=render("rate-probe-test","00112233445566778899aabbccddeeff","probe",probeResult{Ready:true,Reason:"READY",Before:60,After:59,Reset:1924995600})
-    for _,x:=range []string{s,c}{for _,w:=range []string{"generation=","one_shot_guard_consumed","authority_consumer_requires_generation_match","runtime"}{if !strings.Contains(x,w){panic("render")}}}
-    fmt.Println("PHASE_C_V19_7_36_V7R10_RATE_READINESS_SELFTEST_PASS")
+    for _,x:=range []string{s,c}{for _,w:=range []string{"generation=","one_shot_guard_consumed","authority_consumer_requires_generation_match","lock_anchor_root_owned_nonreplaceable","runtime"}{if !strings.Contains(x,w){panic("render")}}}
+    fmt.Println("PHASE_C_V19_7_36_V7R11_RATE_READINESS_SELFTEST_PASS")
     fmt.Println("FINAL_COMMIT_RATE_FLOOR=60/59")
     fmt.Println("PAIR_GENERATION_BINDING=true")
     fmt.Println("AUTHORITY_CONSUMER_REQUIRES_GENERATION_MATCH=true")
+    fmt.Println("LOCK_ANCHOR_ROOT_OWNED_NONREPLACEABLE=true")
     fmt.Println("ONE_SHOT_GUARD_CONSUMED=false")
     fmt.Println("SECURITY_AUTHORITY_GRANTED=false")
     fmt.Println("RUNTIME=OFF")
@@ -139,20 +142,20 @@ func selftest(){
 
 func main(){
     if len(os.Args)==2&&os.Args[1]=="build-selftest"{selftest();return}
-    mode:="probe"; if len(os.Args)==2&&os.Args[1]=="commit"{mode="commit"}else if len(os.Args)!=1{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_PROBE_DENIED:ARGS");os.Exit(92)}
-    uid:=os.Getuid(); if uid==0||os.Geteuid()!=uid{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_PROBE_DENIED:USER_BOUNDARY");os.Exit(92)}
-    if os.Getenv("CODESPACES")!="true"{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_PROBE_DENIED:CODESPACES");os.Exit(92)}
-    name:=os.Getenv("CODESPACE_NAME"); if !validName(name){fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_PROBE_DENIED:CODESPACE_NAME");os.Exit(92)}
-    envs:=os.Environ(); if len(envs)!=2{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_PROBE_DENIED:SANITIZER_ENV_COUNT");os.Exit(92)}
-    for _,k:=range envs{ if !(strings.HasPrefix(k,"CODESPACES=")||strings.HasPrefix(k,"CODESPACE_NAME=")){fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_PROBE_DENIED:SANITIZER_ENV");os.Exit(92)} }
+    mode:="probe"; if len(os.Args)==2&&os.Args[1]=="commit"{mode="commit"}else if len(os.Args)!=1{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:ARGS");os.Exit(92)}
+    uid:=os.Getuid(); if uid==0||os.Geteuid()!=uid{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:USER_BOUNDARY");os.Exit(92)}
+    if os.Getenv("CODESPACES")!="true"{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:CODESPACES");os.Exit(92)}
+    name:=os.Getenv("CODESPACE_NAME"); if !validName(name){fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:CODESPACE_NAME");os.Exit(92)}
+    envs:=os.Environ(); if len(envs)!=2{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:SANITIZER_ENV_COUNT");os.Exit(92)}
+    for _,k:=range envs{ if !(strings.HasPrefix(k,"CODESPACES=")||strings.HasPrefix(k,"CODESPACE_NAME=")){fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:SANITIZER_ENV");os.Exit(92)} }
     os.Clearenv()
     r:=probeAt(githubAPIBase,client())
     hold:=mode=="commit"&&r.Ready
-    lock,gen,e:=publishPair(name,mode,r,hold); if e!=nil{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_PROBE_DENIED:EVIDENCE_WRITE_OR_VERIFY");os.Exit(92)}
-    if !r.Ready{fmt.Printf("PHASE_C_V19_7_36_V7R10_PREARM_RATE_NOT_READY codespace=%s mode=%s reason=%s one_shot_guard_consumed=false runtime=OFF\n",name,mode,r.Reason);return}
-    if mode=="probe"{fmt.Printf("PHASE_C_V19_7_36_V7R10_PREARM_RATE_READY codespace=%s mode=probe remaining_after_probe=%d one_shot_guard_consumed=false runtime=OFF\n",name,r.After);return}
-    if e=verifyPairAt(statusPath,controlPath,gen);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_COMMIT_DENIED:GENERATION_CONSUMER");os.Exit(92)}
-    fmt.Printf("PHASE_C_V19_7_36_V7R10_RATE_COMMIT_READY codespace=%s remaining_after_probe=%d generation=%s next=EXEC_V7R7_STATIC_GUARD runtime=OFF\n",name,r.After,gen)
+    lock,gen,e:=publishPair(name,mode,r,hold); if e!=nil{fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:EVIDENCE_WRITE_OR_VERIFY");os.Exit(92)}
+    if !r.Ready{fmt.Printf("PHASE_C_V19_7_36_V7R11_PREARM_RATE_NOT_READY codespace=%s mode=%s reason=%s one_shot_guard_consumed=false runtime=OFF\n",name,mode,r.Reason);return}
+    if mode=="probe"{fmt.Printf("PHASE_C_V19_7_36_V7R11_PREARM_RATE_READY codespace=%s mode=probe remaining_after_probe=%d one_shot_guard_consumed=false runtime=OFF\n",name,r.After);return}
+    if e=verifyPairAt(statusPath,controlPath,gen);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_COMMIT_DENIED:GENERATION_CONSUMER");os.Exit(92)}
+    fmt.Printf("PHASE_C_V19_7_36_V7R11_RATE_COMMIT_READY codespace=%s remaining_after_probe=%d generation=%s next=EXEC_V7R7_STATIC_GUARD runtime=OFF\n",name,r.After,gen)
     env:=[]string{"CODESPACES=true","CODESPACE_NAME="+name}; argv:=[]string{guardPath,name}
-    if e:=syscall.Exec(guardPath,argv,env);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R10_RATE_COMMIT_DENIED:GUARD_EXEC");os.Exit(92)}
+    if e:=syscall.Exec(guardPath,argv,env);e!=nil{releaseLock(lock);fmt.Fprintln(os.Stderr,"PHASE_C_V19_7_36_V7R11_RATE_COMMIT_DENIED:GUARD_EXEC");os.Exit(92)}
 }
