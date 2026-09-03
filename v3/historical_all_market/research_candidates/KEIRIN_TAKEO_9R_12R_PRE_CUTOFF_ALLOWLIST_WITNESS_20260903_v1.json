@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_TAKEO_9R_12R_PRE_CUTOFF_ALLOWLIST_WITNESS_20260903_v1",
+  "status": "PRE_CUTOFF_WITNESS_FROZEN_RESULT_BLIND_NONCANONICAL_SEARCH_TRANSPORT",
+  "scope": "RESEARCH_PRE_ONLY_TRANSPORT_WITNESS_NO_FEATURE_ADMISSION_NO_RESULT_AUTHORITY",
+  "race_date": "2026-09-03",
+  "venue": "武雄",
+  "circumference_m": 400,
+  "parent_population": "KEIRIN_PROSPECTIVE_PRE_ONLY_EXACT_RACE_ID_FREEZE_20260903_v1.json",
+  "capture_timing_evidence": {
+    "conversation_local_time_at_resume": "2026-09-03T18:40:00+09:00",
+    "race9_source_status_at_retrieval": "発売中 / 19:04締切",
+    "logical_implication": "9R through 12R source observations occurred while 9R was still pre-cutoff; therefore 10R/11R/12R were also pre-cutoff.",
+    "frozen_cutoffs_jst": {"9":"19:04","10":"19:30","11":"19:57","12":"20:25"}
+  },
+  "transport": {
+    "mode": "WEB_SEARCH_SURFACE_ALLOWLIST_WITNESS",
+    "canonical_raw_html": false,
+    "feature_admission": false,
+    "allowed_fields": ["race_id","race_no","car_no","rider_name","prefecture","period","class","style","competition_score","S","B","nige","makuri","sashi","mark"],
+    "forbidden_fields": ["RESULT","PAYOUT","numeric_odds","forecast_mark","forecast_comment","narabiyoso","human_tip","candidate_prediction"],
+    "market_or_forecast_content_coexisted_on_source_pages": true,
+    "market_or_forecast_content_used": false,
+    "finish_result_values_observed_in_capture": false,
+    "payout_values_observed_in_capture": false
+  },
+  "sources": [
+    {"race_no":9,"url":"https://keirin.tokyo-sports.co.jp/list/race/20260902_31519","provider":"東スポ競輪","role":"PRE_ALLOWLIST_TABLE_ONLY"},
+    {"race_no":10,"url":"https://sp.oddspark.com/keirin/SpRaceInfo.do?joCd=84&kaisaiBi=20260903&raceNo=10","provider":"オッズパーク","role":"PRE_ALLOWLIST_TABLE_ONLY"},
+    {"race_no":11,"url":"https://keirin.kdreams.jp/takeo/racedetail/8420260903010011/","provider":"KDreams","role":"PRE_ALLOWLIST_TABLE_ONLY"},
+    {"race_no":12,"url":"https://keirin.tokyo-sports.co.jp/list/race/20260902_31513","provider":"東スポ競輪","role":"PRE_ALLOWLIST_TABLE_ONLY"}
+  ],
+  "races": [
+    {"race_no":9,"race_id":"8420260903010009","rows":[
+      {"car_no":1,"rider_name":"東矢 昇太","prefecture":"熊本","period":98,"class":"S2","style":"追","competition_score":101.72,"S":2,"B":0,"nige":0,"makuri":1,"sashi":3,"mark":2},
+      {"car_no":2,"rider_name":"伊勢崎 彰大","prefecture":"千葉","period":81,"class":"S2","style":"追","competition_score":100.16,"S":0,"B":0,"nige":0,"makuri":0,"sashi":2,"mark":2},
+      {"car_no":3,"rider_name":"塩崎 隼秀","prefecture":"愛媛","period":121,"class":"S2","style":"両","competition_score":96.34,"S":1,"B":4,"nige":1,"makuri":5,"sashi":1,"mark":0},
+      {"car_no":4,"rider_name":"沢田 義和","prefecture":"兵庫","period":69,"class":"S2","style":"追","competition_score":96.91,"S":2,"B":0,"nige":0,"makuri":0,"sashi":4,"mark":0},
+      {"car_no":5,"rider_name":"立部 楓真","prefecture":"佐賀","period":115,"class":"S1","style":"逃","competition_score":102.18,"S":2,"B":7,"nige":2,"makuri":5,"sashi":1,"mark":0},
+      {"car_no":6,"rider_name":"近藤 誠二","prefecture":"香川","period":80,"class":"S2","style":"追","competition_score":95.87,"S":0,"B":0,"nige":0,"makuri":0,"sashi":1,"mark":2},
+      {"car_no":7,"rider_name":"牧田 悠生","prefecture":"新潟","period":123,"class":"S2","style":"両","competition_score":100.37,"S":2,"B":0,"nige":0,"makuri":1,"sashi":3,"mark":0}
+    ]},
+    {"race_no":10,"race_id":"8420260903010010","rows":[
+      {"car_no":1,"rider_name":"川口 公太朗","prefecture":"岐阜","period":98,"class":"S1","style":"追","competition_score":103.695,"S":2,"B":0,"nige":0,"makuri":0,"sashi":6,"mark":1},
+      {"car_no":2,"rider_name":"稲吉 悠大","prefecture":"福岡","period":92,"class":"S2","style":"追","competition_score":99.225,"S":4,"B":0,"nige":0,"makuri":0,"sashi":2,"mark":3},
+      {"car_no":3,"rider_name":"武田 亮","prefecture":"東京","period":115,"class":"S2","style":"逃","competition_score":100.958,"S":4,"B":8,"nige":3,"makuri":5,"sashi":0,"mark":1},
+      {"car_no":4,"rider_name":"桐山 敬太郎","prefecture":"神奈川","period":88,"class":"S2","style":"追","competition_score":97.0,"S":5,"B":0,"nige":0,"makuri":1,"sashi":1,"mark":2},
+      {"car_no":5,"rider_name":"岸田 剛","prefecture":"福井","period":121,"class":"S1","style":"逃","competition_score":103.076,"S":0,"B":13,"nige":5,"makuri":4,"sashi":1,"mark":0},
+      {"car_no":6,"rider_name":"鶴 良生","prefecture":"福岡","period":111,"class":"S2","style":"逃","competition_score":94.8,"S":2,"B":4,"nige":2,"makuri":3,"sashi":2,"mark":0},
+      {"car_no":7,"rider_name":"芦澤 辰弘","prefecture":"茨城","period":95,"class":"S1","style":"追","competition_score":103.2,"S":8,"B":0,"nige":0,"makuri":0,"sashi":3,"mark":2}
+    ]},
+    {"race_no":11,"race_id":"8420260903010011","rows":[
+      {"car_no":1,"rider_name":"小林 弘和","prefecture":"佐賀","period":91,"class":"S2","style":"追","competition_score":101.88,"S":1,"B":0,"nige":0,"makuri":0,"sashi":2,"mark":2},
+      {"car_no":2,"rider_name":"長井 妙樹","prefecture":"東京","period":96,"class":"S2","style":"追","competition_score":96.03,"S":0,"B":1,"nige":1,"makuri":0,"sashi":3,"mark":2},
+      {"car_no":3,"rider_name":"板垣 昴","prefecture":"北海道","period":115,"class":"S2","style":"逃","competition_score":101.00,"S":0,"B":5,"nige":1,"makuri":4,"sashi":2,"mark":0},
+      {"car_no":4,"rider_name":"伊藤 颯馬","prefecture":"沖縄","period":115,"class":"S1","style":"逃","competition_score":105.93,"S":3,"B":9,"nige":5,"makuri":1,"sashi":1,"mark":2},
+      {"car_no":5,"rider_name":"佐々木 堅次","prefecture":"福島","period":113,"class":"S2","style":"両","competition_score":101.26,"S":5,"B":1,"nige":0,"makuri":1,"sashi":4,"mark":1},
+      {"car_no":6,"rider_name":"植原 琢也","prefecture":"埼玉","period":113,"class":"S2","style":"両","competition_score":95.03,"S":17,"B":3,"nige":0,"makuri":1,"sashi":1,"mark":1},
+      {"car_no":7,"rider_name":"西田 雅志","prefecture":"広島","period":82,"class":"S2","style":"追","competition_score":96.90,"S":0,"B":0,"nige":0,"makuri":0,"sashi":3,"mark":0}
+    ]},
+    {"race_no":12,"race_id":"8420260903010012","rows":[
+      {"car_no":1,"rider_name":"和田 圭","prefecture":"宮城","period":92,"class":"S1","style":"追","competition_score":108.95,"S":1,"B":0,"nige":0,"makuri":0,"sashi":6,"mark":1},
+      {"car_no":2,"rider_name":"河端 朋之","prefecture":"岡山","period":95,"class":"S1","style":"逃","competition_score":111.12,"S":6,"B":10,"nige":3,"makuri":7,"sashi":6,"mark":0},
+      {"car_no":3,"rider_name":"中村 圭志","prefecture":"熊本","period":86,"class":"S1","style":"追","competition_score":106.75,"S":2,"B":0,"nige":0,"makuri":0,"sashi":6,"mark":1},
+      {"car_no":4,"rider_name":"田中 勇二","prefecture":"岡山","period":95,"class":"S1","style":"追","competition_score":107.80,"S":1,"B":0,"nige":0,"makuri":0,"sashi":6,"mark":1},
+      {"car_no":5,"rider_name":"菅田 壱道","prefecture":"宮城","period":91,"class":"S1","style":"両","competition_score":115.31,"S":4,"B":0,"nige":0,"makuri":0,"sashi":5,"mark":3},
+      {"car_no":6,"rider_name":"新山 将史","prefecture":"青森","period":98,"class":"S1","style":"追","competition_score":106.25,"S":4,"B":0,"nige":0,"makuri":0,"sashi":4,"mark":4},
+      {"car_no":7,"rider_name":"山形 一気","prefecture":"徳島","period":96,"class":"S1","style":"追","competition_score":107.21,"S":3,"B":0,"nige":0,"makuri":1,"sashi":2,"mark":1}
+    ]}
+  ],
+  "race_count": 4,
+  "row_count": 28,
+  "quality_notes": [
+    "Provider score precision differs by source; preserve observed provider value and do not retune precision after outcomes.",
+    "This is a pre-cutoff witness, not immutable raw HTML; feature admission remains false.",
+    "No race 1-8 PRE reconstruction is attempted because their frozen deadlines had passed by resume time."
+  ],
+  "result_access_authorized": false,
+  "owner_action_required_now": false,
+  "hard_boundaries": ["NO_RESULT","NO_PAYOUT","NO_ODDS_FEATURE","NO_HUMAN_FORECAST_FEATURE","NO_NARABIYOSO","NO_POST_RACE_PRE_RECONSTRUCTION","NO_MEMBERSHIP_CHANGE","NO_S0_MUTATION","NO_MAIN_OR_RUNTIME_MUTATION","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
