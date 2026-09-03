@@ -101,7 +101,8 @@ class SourceBoundPolicyRelayStore(PolicyRelayStore):
         self._init_v5()
 
     def _init_v5(self) -> None:
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             self.conn.execute("CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT NOT NULL)")
             self.conn.execute("""CREATE TABLE IF NOT EXISTS jobs(
                 operation_key TEXT PRIMARY KEY,
@@ -146,6 +147,10 @@ class SourceBoundPolicyRelayStore(PolicyRelayStore):
                 require(set(rows) == set(expected), "POLICY_SOURCE_META_PARTIAL")
                 for key, value in expected.items():
                     require(rows[key] == value, f"POLICY_SOURCE_META_MISMATCH:{key}")
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
 
     def _validate_job(self, role: str, task: dict[str, Any], op_key: str,
                       semantic_attempt: int) -> tuple[dict[str, Any], int]:
