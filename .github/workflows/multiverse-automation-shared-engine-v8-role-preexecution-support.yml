@@ -1,0 +1,23 @@
+name: MULTIVERSE Automation Shared Engine v8 Role Preexecution Support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-role-preexecution-support-20260904-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-role-preexecution-support.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reproduce wrong-state provider execution
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation.shared_engine.tests.test_v8_role_preexecution_support -v
