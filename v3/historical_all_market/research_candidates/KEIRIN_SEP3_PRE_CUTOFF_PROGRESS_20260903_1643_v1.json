@@ -1,0 +1,17 @@
+{
+  "record":"KEIRIN_SEP3_PRE_CUTOFF_PROGRESS_20260903_1643_v1",
+  "status":"TIME_BOUND_PRE_CAPTURE_STATUS_AFTER_INTERRUPTION_NO_POST_RACE_REPAIR",
+  "scope":"RESEARCH_TRANSPORT_INTEGRITY_ONLY_NO_RESULT_AUTHORITY",
+  "as_of_jst":"2026-09-03T16:43:00+09:00",
+  "binding":"KEIRIN_PROSPECTIVE_PRE_CAPTURE_SCHEDULE_20260903_v1.json",
+  "blocks":[
+    {"venue":"富山","cutoff_state":"ALL_7_CUTOFFS_PASSED","pre_state":"49_RIDER_ROWS_ALREADY_FROZEN_PRE_EVENT","allowed_now":"PROVENANCE_AUDIT_ONLY","forbidden_now":"NEW_PRE_CAPTURE_OR_RECONSTRUCTION"},
+    {"venue":"青森","cutoff_state":"ALL_12_CUTOFFS_PASSED_LAST_16:20","pre_state":"11_OF_12_NUMERIC_PASS_ALREADY_FROZEN_PRE_EVENT; 5R PERMANENT_FAIL_CLOSED_ZERO_SCORE","allowed_now":"PROVENANCE_AUDIT_ONLY","forbidden_now":"NEW_PRE_CAPTURE_OR_REPAIR"},
+    {"venue":"武雄","cutoff_state":{"passed_races":[1,2,3],"future_at_16_43":[4,5,6,7,8,9,10,11,12]},"pre_state":"FULL_DAY_ROSTER_84_OF_84_AND_NUMERIC_PRE_11_OF_12_ALREADY_FROZEN_PRE_EVENT; 2R PERMANENT_FAIL_CLOSED_ZERO_SCORE","allowed_now":"NO_RECOVERY_NEEDED_FOR_ALREADY_FROZEN_PRE; future races may only receive additional independent PRE provenance if it does not alter frozen values or source rules","forbidden_now":"REPAIR_OR_REPLACE_RACES_1_TO_3; ZERO_SCORE_IMPUTATION; SOURCE_WINDOW_SWITCH"}
+  ],
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "next":"Preserve Sep3 PRE immutably. Focus on Sep4 positive exact race-detail evidence and PRE capture, identity/support gates, and future cross-venue evaluation locks. Do not spend effort reconstructing expired Sep3 PRE.",
+  "hard_boundaries":["NO_RESULT","NO_PAYOUT","NO_POST_RACE_PRE_RECONSTRUCTION","NO_ZERO_SCORE_IMPUTATION","NO_SOURCE_RESCUE","NO_MEMBERSHIP_SUBSTITUTION","NO_S0_MUTATION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
