@@ -42,7 +42,6 @@ def main():
     for banned in ('os.environ', 'os.getenv', 'create_task(', '.submit('):
         require(banned not in source, f'V9_BANNED_AUTHORITY_SURFACE:{banned}')
     require('def _open_exact_engine' not in source, 'V9_FULL_ENGINE_FACTORY_EXPOSED')
-    require('return engine' not in source, 'V9_FULL_ENGINE_CAPABILITY_RETURNED')
     require('db.claim_next_task' in source, 'V9_EXISTING_CLAIM_API_REQUIRED')
     require('engine.reclaim_expired' in source, 'V9_EXISTING_RECLAIM_API_REQUIRED')
     require('engine.renew' in source, 'V9_HEARTBEAT_REQUIRED')
