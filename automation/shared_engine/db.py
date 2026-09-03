@@ -92,6 +92,23 @@ def claim_next_task(worker_id, *, lease_seconds=None):
                                (worker_id,now+lease_seconds,now,tid)); c.commit(); c.close(); return tid
     except BaseException: c.rollback(); c.close(); raise
 
+def claim_task(task_id, worker_id, *, lease_seconds=None):
+    """Claim exactly one requested PENDING task without mutating any other queue item."""
+    init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
+    c=_conn(); c.execute('BEGIN IMMEDIATE')
+    try:
+        now=time.time()
+        r=c.execute('SELECT state,claimed_by,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
+        if r is None: raise KeyError(task_id)
+        if r['state']!='PENDING': raise InvalidTransitionError(f"CLAIM_STATE:{r['state']}")
+        if r['claimed_by'] is not None and (r['lease_until'] is None or r['lease_until']>=now):
+            raise LostLeaseError('task is already claimed')
+        c.execute('UPDATE tasks SET claimed_by=?,claim_generation=claim_generation+1,lease_until=?,updated_at=? WHERE id=?',
+                  (worker_id,now+lease_seconds,now,task_id))
+        generation=c.execute('SELECT claim_generation FROM tasks WHERE id=?',(task_id,)).fetchone()['claim_generation']
+        c.commit(); c.close(); return generation
+    except BaseException: c.rollback(); c.close(); raise
+
 def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
     """Extend a healthy active lease without changing ownership or generation.
 
@@ -135,13 +152,7 @@ def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=None,release=False,fencing=None):
-    """Perform one workflow transition only with a live fencing token.
-
-    There is intentionally no unfenced mutation mode in Candidate v8. System and
-    remediation callers must own a current worker/generation lease just like receipt
-    application callers. Releasing ownership is only safe when the target is
-    re-claimable PENDING or terminal; active/blocked states retain a live owner.
-    """
+    """Perform one workflow transition only with a live fencing token."""
     init_schema(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT * FROM tasks WHERE id=?',(task_id,)).fetchone()
