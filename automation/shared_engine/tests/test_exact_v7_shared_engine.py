@@ -79,5 +79,11 @@ class ExactV7SharedEngineTests(unittest.TestCase):
         self.engine.execute_role(t,'IMPLEMENT',0,'i','w',gen,{'status':'READY','candidate_head':head,'diff_lines':0,'cost_microusd':0,'evidence_ref':'i'})
         state=self.engine.execute_role(t,'LAB',0,'l','w',gen,{'verdict':'FIX_REQUIRED','reviewed_head':head,'evidence_ref':'l','code':'EDGE','detail':'repair'})
         self.assertEqual(state,'LAB_FIX_REQUIRED'); self.assertNotEqual(db.get_task(t)['state'],'OWNER_GATE')
+    def test_audit_fix_required_routes_without_owner_gate(self):
+        t=self.engine.submit('core','implement','x'); gen=self.engine.claim_and_start(t,'w'); head=HEAD
+        self.engine.execute_role(t,'IMPLEMENT',0,'i-audit','w',gen,{'status':'READY','candidate_head':head,'diff_lines':0,'cost_microusd':0,'evidence_ref':'i-audit'})
+        self.engine.execute_role(t,'LAB',0,'l-pass','w',gen,{'verdict':'PASS','reviewed_head':head,'evidence_ref':'l-pass'})
+        state=self.engine.execute_role(t,'AUDIT',0,'a-fix','w',gen,{'verdict':'FIX_REQUIRED','reviewed_head':head,'evidence_ref':'a-fix','code':'AUDIT_EDGE','detail':'bounded repair'})
+        self.assertEqual(state,'AUDIT_FIX_REQUIRED'); self.assertNotEqual(db.get_task(t)['state'],'OWNER_GATE')
 
 if __name__=='__main__': unittest.main()
