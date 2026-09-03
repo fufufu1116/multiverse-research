@@ -1,0 +1,28 @@
+name: MULTIVERSE Automation Shared Engine v8 Domain Bypass Support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-domain-bypass-support-20260904-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-domain-bypass-support.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  adversarial-reproduction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reproduce direct task-store domain policy bypass
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation.shared_engine.tests.test_v8_domain_creation_bypass_support -v
+      - name: Support nonauthority receipt
+        run: |
+          echo 'SUPPORT_ONLY=true'
+          echo 'CANDIDATE_MUTATION_AUTHORITY=false'
+          echo 'RUNTIME=OFF'
