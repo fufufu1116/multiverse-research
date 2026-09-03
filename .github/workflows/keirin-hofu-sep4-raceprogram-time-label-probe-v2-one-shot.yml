@@ -1,0 +1,88 @@
+name: keirin-hofu-sep4-raceprogram-time-label-probe-v2-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-hofu-sep4-raceprogram-time-label-probe-v2-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  time-label-probe:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Capture only semantic labels paired with race timing values before Hofu 1R cutoff
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, re, unicodedata
+          from datetime import datetime, timezone
+          import requests
+          from bs4 import BeautifulSoup
+
+          URL='https://keirin.kdreams.jp/hofu/raceprogram/6320260904/'
+          CUTOFF=datetime(2026,9,3,23,35,0,tzinfo=timezone.utc)
+          OUT=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_RACEPROGRAM_TIME_LABEL_PROBE_20260904_v2.json')
+          def clean(x): return re.sub(r'\s+',' ',unicodedata.normalize('NFKC',str(x))).strip()
+          now=datetime.now(timezone.utc)
+          if now>=CUTOFF: raise SystemExit('FAIL_CLOSED_CAPTURE_AT_OR_AFTER_1R_CUTOFF')
+          r=requests.get(URL,timeout=20,allow_redirects=False,headers={'User-Agent':'MultiverseKeirinResearch/TimeLabelProbe2.0','Accept':'text/html,application/xhtml+xml','Cache-Control':'no-cache'})
+          if r.status_code!=200: raise SystemExit(f'FAIL_CLOSED_HTTP_{r.status_code}')
+          if not 500<=len(r.content)<=4_000_000: raise SystemExit('FAIL_CLOSED_SIZE')
+          soup=BeautifulSoup(r.content.decode('utf-8','replace'),'html.parser')
+          title=clean(soup.title.get_text(' ',strip=True)) if soup.title else ''
+          if '防府' not in title or not (('2026年09月04日' in title) or ('2026年9月4日' in title)):
+              raise SystemExit('FAIL_CLOSED_TITLE_BINDING')
+
+          # Only inspect dl blocks inside td.pre; emit dt labels and dd HH:MM values, never surrounding rider cells.
+          pairs=[]
+          for td in soup.select('td.pre'):
+              for dl in td.find_all('dl',recursive=False):
+                  children=[x for x in dl.find_all(['dt','dd'],recursive=False)]
+                  labels=[]; times=[]
+                  for x in children:
+                      txt=clean(x.get_text(' ',strip=True))
+                      if x.name=='dt' and txt:
+                          labels.append(txt)
+                      elif x.name=='dd' and re.fullmatch(r'(?:[01]?\d|2[0-3]):[0-5]\d',txt):
+                          times.append(txt)
+                  if labels or times:
+                      pairs.append({'labels':labels,'times':times,'child_tags':[x.name for x in children]})
+
+          if not pairs: raise SystemExit('FAIL_CLOSED_NO_PRE_DL_PAIRS')
+          # Require at least one block to expose both known 1R timing values so semantic label order can be established.
+          one=[p for p in pairs if '08:35' in p['times'] or '08:40' in p['times']]
+          if len(one)!=1 or set(one[0]['times'])!={'08:35','08:40'}:
+              raise SystemExit(f'FAIL_CLOSED_1R_PAIR_CARDINALITY_{len(one)}')
+
+          doc={
+            'record':'KEIRIN_HOFU_SEP4_RACEPROGRAM_TIME_LABEL_PROBE_20260904_v2',
+            'status':'SANITIZED_PRE_RACE_TIMING_LABEL_PAIR_CAPTURED',
+            'generated_utc':now.isoformat(),
+            'captured_before_1r_cutoff':True,
+            'source_url':URL,
+            'source_sha256':hashlib.sha256(r.content).hexdigest(),
+            'timing_dl_pair_count':len(pairs),
+            'timing_label_pairs':pairs,
+            'one_race_pair':one[0],
+            'raw_html_persisted':False,'raw_html_printed':False,'rider_values_persisted':False,
+            'result_accessed':False,'payout_accessed':False,'odds_accessed':False,'forecast_accessed':False,
+            'support_increment_authorized_now':0,'model_fit_authorized':False,'main_or_runtime_mutation':False
+          }
+          OUT.write_text(json.dumps(doc,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'record':doc['record'],'status':doc['status'],'one_race_pair':doc['one_race_pair'],'timing_dl_pair_count':len(pairs),'result_accessed':False},ensure_ascii=False,sort_keys=True))
+          PY
+      - name: Persist sanitized timing-label evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_RACEPROGRAM_TIME_LABEL_PROBE_20260904_v2.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): capture Hofu PRE raceprogram timing labels v2'
+          git push origin HEAD:${{ github.ref_name }}
