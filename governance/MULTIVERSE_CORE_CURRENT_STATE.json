@@ -1,6 +1,6 @@
 {
-  "schema": "multiverse.core.current_state.v5.post_attach_rebind_in_progress",
-  "record": "MULTIVERSE_CORE_CURRENT_STATE_STATIC_ENV_POST_ATTACH_REBIND_IN_PROGRESS",
+  "schema": "multiverse.core.current_state.v6.static_env_fallback_consumed_fail_closed",
+  "record": "MULTIVERSE_CORE_CURRENT_STATE_STATIC_ENV_FALLBACK_CONSUMED_FAIL_CLOSED",
   "canonical_repo": "fufufu1116/multiverse-research",
   "state_branch": "state/multiverse-core-current",
   "authority": "RESUME_NAVIGATION_SNAPSHOT_ONLY_NEVER_BEARER_LIVE_AUTHORITY",
@@ -24,7 +24,7 @@
     {
       "id": "R1_STAGE1_PHASE_C_STATIC_ENV_GUARD_PRELIVE",
       "lane": "CORE_LIVE_PRELIVE",
-      "status": "ONE_FRESH_CODESPACE_CREATED_ATTACHED__POST_ATTACH_FRESH_REBIND_IN_PROGRESS_FAIL_CLOSED",
+      "status": "STATIC_ENV_FALLBACK_CONSUMED_FAIL_CLOSED_PREARM_GITHUB_RATE_RESERVE__SUCCESSOR_REMEDIATION_REQUIRED",
       "candidate_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
       "fresh_candidate_capture": {
         "head": "c91010921898fffed633df9720d792b216c4ddd1",
@@ -34,40 +34,32 @@
       "prior_owner_receipt": 5508415633,
       "live_rebind_receipt": 5519712608,
       "post_attach_incident_note": 5521897072,
+      "fallback_failure_receipt": 5521978062,
+      "codespace_name_nonauthoritative_nonsensitive_observation": "verbose-carnival-vpg4vjvvpx673xj99",
       "codespace_create_attach_authority_consumed": true,
+      "static_guard_fallback_consumed": true,
+      "static_guard_consumption_semantics": "CONSUMED_ON_FIRST_INVOCATION_REGARDLESS_RESULT",
+      "static_guard_result": "PHASE_C_V19_7_36_V7R7_UI_READY_ENV_GUARD_PASS",
+      "helper_result": "PHASE_C_V19_7_36_V7R7_UI_READY_DENIED:PREARM_GITHUB_RATE_RESERVE",
+      "current_codespace_reusable": false,
       "second_or_replacement_codespace_authorized": false,
-      "owner_reported_post_attach_observations": {
-        "arm_lock": "ABSENT",
-        "persisted_session_status": "ABSENT",
-        "authoritative_session_status": "ABSENT",
-        "control_page": "WAITING_PLACEHOLDER",
-        "runtime": "OFF"
+      "manual_helper_authorized": false,
+      "manual_arm_authorized": false,
+      "oauth_authorized": false,
+      "production_mutation_authorized": false,
+      "successor_requirement": {
+        "required": true,
+        "reason": "RATE_READINESS_MUST_BE_PROVEN_BEFORE_ANY_FUTURE_ONE_SHOT_FALLBACK_CAN_BE_SAFELY_CONSUMED",
+        "fresh_machine_evidence_required": true,
+        "fresh_independent_lab_required": true,
+        "fresh_independent_auditor_required_after_lab_pass": true,
+        "fresh_owner_gate_required_after_auditor_pass": true
       },
-      "core_operator_instruction_incident": {
-        "classification": "CORE_SEQUENCE_ARGUMENT_DEFECT_OWNER_NOT_AT_FAULT",
-        "attempted_command": "/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7",
-        "result": "PHASE_C_V19_7_36_V7R7_UI_READY_ENV_GUARD_DENIED:PLATFORM_OR_ARGS",
-        "guard_fail_closed_observed": true,
-        "retry_authorized_now": false
-      },
-      "required_same_codespace_rebind_evidence": [
-        "LOCAL_HEAD",
-        "GOOS_GOARCH_OR_EQUIVALENT_PLATFORM_ARCH",
-        "CODESPACE_NAME_NONSECRET",
-        "IMAGE_IDENTITY_SHA256",
-        "HELPER_SHA256_AND_CLASS",
-        "GUARD_SHA256_AND_CLASS",
-        "READY_STATE",
-        "CONTROL_STATE",
-        "ARM_LOCK_ABSENCE",
-        "SESSION_STATUS_ABSENCE",
-        "RUNTIME_OFF"
-      ],
       "runtime": "OFF"
     }
   ],
   "runtime_status": "OFF",
-  "current_gate": "POST_ATTACH_SAME_CODESPACE_FRESH_REBIND_REQUIRED_BEFORE_ANY_GUARD_RETRY",
+  "current_gate": "RETURN_TO_RESEARCH_CANDIDATE_FOR_STATIC_ENV_RATE_READINESS_SUCCESSOR__NO_LIVE_RETRY",
   "live_authority_snapshot": {
     "one_fresh_prelive_nonmutating_codespace_create_attach": false,
     "static_env_guard_retry_now": false,
@@ -84,14 +76,16 @@
     "runtime_activation_now": false
   },
   "allowed_next_actions": [
-    "READONLY_NONSECRET_SAME_CODESPACE_POST_ATTACH_EVIDENCE_COLLECTION",
-    "CORE_FRESH_REBIND_AFTER_EXACT_READONLY_EVIDENCE",
+    "RESEARCH_AND_PREPARE_SUCCESSOR_REMEDIATION_FOR_PREARM_RATE_READINESS_BEFORE_ONE_SHOT_FALLBACK",
+    "GENERATE_FRESH_MACHINE_EVIDENCE_ON_SUCCESSOR_CANDIDATE",
+    "REQUEST_FRESH_INDEPENDENT_LAB_REVIEW_ONLY_AFTER_SUCCESSOR_CANDIDATE_AND_MACHINE_EVIDENCE_ARE_EXACT",
     "CONTINUE_KEIRIN_ONLY_THROUGH_FRESH_LANE_NATIVE_RESOLVER"
   ],
   "forbidden_actions": [
     "USE_THIS_STATE_AS_BEARER_LIVE_AUTHORITY",
-    "CREATE_SECOND_OR_REPLACEMENT_CODESPACE_UNDER_THIS_SCOPE",
-    "RETRY_STATIC_ENV_GUARD_BEFORE_SAME_CODESPACE_FRESH_REBIND",
+    "REUSE_CURRENT_CODESPACE_FOR_GUARD_HELPER_ARM_OAUTH_OR_SESSION",
+    "CREATE_SECOND_OR_REPLACEMENT_CODESPACE_UNDER_CONSUMED_SCOPE",
+    "RETRY_STATIC_ENV_GUARD",
     "RUN_MANUAL_UI_READY_HELPER",
     "MANUAL_ARM",
     "OAUTH_OR_DEVICE_AUTHORIZATION",
@@ -103,5 +97,5 @@
     "SECRET_OR_WRITER_KEY_OPERATION",
     "RUNTIME_ACTIVATION"
   ],
-  "next_safe_action": "OWNER_RUN_ONE_READONLY_NONSECRET_SAME_CODESPACE_EVIDENCE_COMMAND; RETURN_OUTPUT_TO_CORE; NO_GUARD_NO_ARM_NO_OAUTH"
+  "next_safe_action": "CORE_RESEARCH_PREPARE_RATE_READINESS_SUCCESSOR_CANDIDATE_ONLY; NO_OWNER_TERMINAL_ACTION"
 }
