@@ -1,0 +1,18 @@
+{
+  "record":"KEIRIN_BANK_AFFINITY_LATER_EVAL_PAIR_LOCK_20260910_v1",
+  "status":"PREOUTCOME_LOCKED_LATER_TIME_333M_400M_ACQUISITION_PAIR_EVALUATION_CANDIDATE_NOT_RESULT_AUTHORITY",
+  "scope":"RESEARCH_CANDIDATE_FUTURE_ACQUISITION_DESIGN_ONLY",
+  "selection_timestamp_relation":"Locked on 2026-09-03 before any selected 2026-09-03 prospective outcome was intentionally observed or joined.",
+  "scientific_reason":"Avoid a later untouched evaluation design represented only by the 333m Nara block. Preselect a same-start-date independent 400m venue so later evaluation acquisition contains both circumference levels and multiple venue identities.",
+  "selection_rule":"Use the already prelocked Nara G3 333.33m block and select a 400m venue independently scheduled to start on the same later date 2026-09-10. Kawasaki is selected from schedule timing and current official/city 400m physical status only; rider mix, forecasts, odds, expected signal and outcomes are not selection inputs.",
+  "blocks":[
+    {"date":"2026-09-10","venue":"奈良","grade":"G3","circumference_m":333.33,"meeting_status":"PREVIOUSLY_PRELOCKED","parent":"KEIRIN_BANK_CIRCUMFERENCE_PROSPECTIVE_EXTENSION_LOCK_20260910_v1.json","membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT; failures retained"},
+    {"date":"2026-09-10","venue":"川崎","grade":"F2","meeting_name":"オッズパーク杯","circumference_m":400,"schedule_evidence":"KDreams current Sep10 series page","physical_evidence":"Kawasaki City materials: race track one lap 400m","membership_rule":"ALL_OFFICIAL_DAY1_RACES_CAPTUREABLE_PRE_EVENT; failures retained"}
+  ],
+  "fit_eval_authority":"NOT_YET_FINAL_ASSIGNMENT. This lock only protects later-time acquisition from post-outcome venue choice. Final model fit/eval membership and formula still require PRE source, identity and support gates and a separately frozen predictive prespec before RESULT join.",
+  "result_access_authorized":false,
+  "feature_admission":false,
+  "model_fit_authorized":false,
+  "advancement_claim":false,
+  "hard_boundaries":["NO_RESULT_ACCESS_FROM_THIS_LOCK","NO_ODDS_SELECTION","NO_HUMAN_FORECAST_SELECTION","NO_RIDER_MIX_SELECTION","NO_POST_RESULT_VENUE_SWAP","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
