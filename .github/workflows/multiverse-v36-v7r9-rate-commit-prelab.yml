@@ -43,7 +43,7 @@ jobs:
           grep -F 'authorityUID = 64173' "$probe"
           grep -F 'verifyLauncherCredentialBoundary' "$probe"
           grep -F 'verifySecureRuntimeEnv' "$probe"
-          grep -F 'EXACT_LAUNCHER_TWO_ENV_NO_AMBIENT_POISON' "$probe"
+          grep -F 'EXACT_LAUNCHER_TWO_PLUS_GO_SECURE_GOTRACEBACK_NONE_NO_AMBIENT_POISON' "$probe"
           grep -F 'prepareGuardExecUserBoundary' "$probe"
           grep -F 'KERNEL_SETUID_LAUNCHER_TO_UNPRIVILEGED_CREDENTIAL_MISMATCH' "$probe"
           grep -F 'SEALED_MEMFD_SNAPSHOT' "$probe"
@@ -126,7 +126,7 @@ jobs:
           printf 'PRELAB_V7R13_INHERITED_PROCESS_CONCURRENCY_GATE_PASS=true\n'
           printf 'PRELAB_V7R13_INHERITED_FILESYSTEM_NEGATIVE_GATE_PASS=true\n'
 
-      - name: Exact-image launcher two-env and Go secure-runtime exact environment
+      - name: Exact-image launcher two-env plus exact Go secure-runtime delta
         shell: bash
         working-directory: repo
         run: |
@@ -159,9 +159,10 @@ jobs:
           grep -F 'authority_source=SEALED_MEMFD_SNAPSHOT' <<<"$status"
           grep -F 'KERNEL_SETUID_LAUNCHER_TO_UNPRIVILEGED_CREDENTIAL_MISMATCH' <<<"$status"
           grep -F 'launcher_execve_env_count=2' <<<"$status"
-          grep -F 'go_secure_runtime_inherited_env_count=2' <<<"$status"
-          grep -F 'go_secure_runtime_env_policy=EXACT_LAUNCHER_TWO_ENV_NO_AMBIENT_POISON' <<<"$status"
+          grep -F 'go_secure_runtime_inherited_env_count=3' <<<"$status"
+          grep -F 'go_secure_runtime_env_policy=EXACT_LAUNCHER_TWO_PLUS_GO_SECURE_GOTRACEBACK_NONE_NO_AMBIENT_POISON' <<<"$status"
           grep -F 'status_control_authority=`OBSERVABILITY_ONLY`' <<<"$control"
+          printf 'PRELAB_V7R13_GO_SECURE_EXEC_DETERMINISTIC_GOTRACEBACK_NONE_DELTA_PASS=true\n'
           printf 'PRELAB_V7R13_LAUNCHER_EXACT_TWO_ENV_AND_GO_SECURE_RUNTIME_ENV_GATE_PASS=true\n'
           printf 'PRELAB_V7R13_DIRECT_PROBE_BYPASS_DENIED=true\n'
           printf 'PRELAB_V7R13_FORGED_GOTRACEBACK_BYPASS_DENIED=true\n'
