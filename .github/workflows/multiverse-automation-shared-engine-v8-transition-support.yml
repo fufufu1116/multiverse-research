@@ -1,0 +1,37 @@
+name: MULTIVERSE Automation Shared Engine v8 transition support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-transition-support-20260903-v4
+
+permissions:
+  contents: read
+
+jobs:
+  transition-support:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout support head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bind exact Candidate ancestor and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${FRESH_MAIN}" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          git merge-base --is-ancestor c8a6c1a1878bb2b86463e2128d8e0117964aa72a HEAD
+          echo "V8_SUPPORT_HEAD=$(git rev-parse HEAD)"
+          echo "V8_SUPPORT_FRESH_MAIN=${FRESH_MAIN}"
+      - name: Run active release liveness attack
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation/shared_engine/tests/test_v8_active_release_support.py -v
+      - name: Nonauthoritative receipt
+        run: |
+          echo "FORMAL_LAB_VERDICT=false"
+          echo "FORMAL_AUDITOR_VERDICT=false"
+          echo "MAIN_MUTATION_AUTHORITY=false"
+          echo "RUNTIME=OFF"
