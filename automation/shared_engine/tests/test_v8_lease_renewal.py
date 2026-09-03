@@ -75,7 +75,7 @@ class V8LeaseRenewalTests(unittest.TestCase):
     def test_pending_task_cannot_be_renewed(self):
         task_id = self.engine.submit("core", "implement", "not claimed")
         with self.assertRaisesRegex(db.InvalidTransitionError, "RENEW_STATE:PENDING"):
-            db.renew_lease(task_id, "worker", 0, lease_seconds=120)
+            db.renew_lease(task_id, "worker", 1, lease_seconds=120)
 
     def test_invalid_renewal_duration_fails_closed_without_mutation(self):
         task_id = self.engine.submit("core", "implement", "bad heartbeat")
