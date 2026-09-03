@@ -1,0 +1,47 @@
+name: keirin-hofu-sep4-pit-cutoff-extractor-live-v1-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-hofu-sep4-pit-cutoff-extractor-live-v1-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  live-validate:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Live PRE validate positive racecard to raceprogram PIT cutoff extraction
+        run: |
+          python tools/keirin_kdreams_pit_cutoff_extractor_v1.py extract \
+            --racecard-url 'https://keirin.kdreams.jp/hofu/racecard/63202609040100/' \
+            --expected-venue '防府' \
+            --expected-date '2026-09-04' \
+            --out 'v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_PIT_CUTOFF_EXTRACTOR_LIVE_20260904_v1.json'
+          python - <<'PY'
+          import json, pathlib
+          p=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_PIT_CUTOFF_EXTRACTOR_LIVE_20260904_v1.json')
+          x=json.loads(p.read_text(encoding='utf-8'))
+          if x.get('status')!='POSITIVE_RACECARD_TO_RACEPROGRAM_PIT_CUTOFF_CAPTURED_PRE_ONLY': raise SystemExit('FAIL_CLOSED_LIVE_STATUS')
+          if x.get('first_race_pit_cutoff_jst')!='2026-09-04T08:35:00+09:00': raise SystemExit('FAIL_CLOSED_FROZEN_CUTOFF_MISMATCH')
+          if x.get('race_count')!=7: raise SystemExit('FAIL_CLOSED_RACE_COUNT')
+          expected=['08:35','08:55','09:15','09:35','09:55','10:15','10:35']
+          if [r['pit_cutoff_hhmm_jst'] for r in x['races']]!=expected: raise SystemExit('FAIL_CLOSED_FROZEN_SCHEDULE_MISMATCH')
+          if x.get('result_accessed') is not False or x.get('raceprogram_url_guessed') is not False: raise SystemExit('FAIL_CLOSED_BOUNDARY')
+          print(json.dumps({'record':x['record'],'status':x['status'],'first_race_pit_cutoff_jst':x['first_race_pit_cutoff_jst'],'race_count':x['race_count'],'matches_prior_frozen_cutoffs':True,'result_accessed':False},ensure_ascii=False,sort_keys=True))
+          PY
+      - name: Persist live PRE validation evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_PIT_CUTOFF_EXTRACTOR_LIVE_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no live evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): live validate PIT cutoff extractor v1 on Hofu PRE'
+          git push origin HEAD:${{ github.ref_name }}
