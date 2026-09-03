@@ -1,0 +1,28 @@
+{
+  "record":"KEIRIN_TAKEO_5R_RIDER_IDENTITY_PRE_GATE_20260903_v1",
+  "status":"FAIL_CLOSED_5_OF_7_POSITIVE_OFFICIAL_SAME_RACE_ASSIGNMENTS_BEFORE_CUTOFF",
+  "scope":"RESEARCH_PRE_ONLY_RIDER_IDENTITY_GATE_NO_RESULT_AUTHORITY",
+  "race":{"venue":"武雄","date":"2026-09-03","race_no":5,"race_id":"8420260903010005","cutoff_jst":"17:25","class":"A級初特選"},
+  "timing_integrity":{"gate_frozen_before_cutoff":true,"time_check_jst":"2026-09-03T17:05:13+09:00","post_cutoff_repair_allowed":false},
+  "pre_roster_source":"KEIRIN_TAKEO_DAY1_PRE_ROSTER_SCORE_GATE_20260903_v1.json",
+  "official_source":"KEIRIN.JP rider profile/current-race bodies keyed by registration number",
+  "positive_same_race_assignments":[
+    {"car_no":2,"name":"吉田 茂生","registration_number":"014672","official_assignment":"武雄F1 09/03 A級初特選/5R"},
+    {"car_no":3,"name":"山田 敦也","registration_number":"013901","official_assignment":"武雄F1 09/03 A級初特選/5R"},
+    {"car_no":4,"name":"小笠原 一真","registration_number":"015685","official_assignment":"武雄F1 09/03 A級初特選/5R"},
+    {"car_no":5,"name":"金ヶ江 勇気","registration_number":"015208","official_assignment":"武雄F1 09/03 A級初特選/5R"},
+    {"car_no":6,"name":"肥後 尚己","registration_number":"013582","official_assignment":"武雄F1 09/03 A級初特選/5R"}
+  ],
+  "unresolved":[
+    {"car_no":1,"name":"一丸 尚伍","registration_number":"015655","status":"OFFICIAL_IDENTITY_AND_TAKEO_MEETING_SCHEDULE_VERIFIED_BUT_AVAILABLE_KEIRINJP_CURRENT-RACE BODY REMAINED STALE/NO_CURRENT_RACE BEFORE GATE FREEZE"},
+    {"car_no":7,"name":"和田 誠寿","registration_number":"014953","status":"OFFICIAL_IDENTITY_AND_TAKEO_MEETING_SCHEDULE_VERIFIED_BUT AVAILABLE_KEIRINJP CURRENT-RACE BODY REMAINED STALE/NO_CURRENT_RACE BEFORE GATE FREEZE"}
+  ],
+  "mapping_count":7,
+  "same_race_positive_count":5,
+  "final_identity_gate":"FAIL_CLOSED",
+  "decision":"Race 5 is not eligible for rider-specific affinity RESULT work under the strengthened contract. Do not use post-cutoff profile refreshes, result pages, or third-party race cards to repair the two unresolved official same-race assignments.",
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "hard_boundaries":["NO_RESULT","NO_POST_CUTOFF_IDENTITY_REPAIR","NO_MEETING_ONLY_MATCH_AS_SAME_RACE_PASS","NO_THIRD_PARTY_RACE_CARD_AS_OFFICIAL_IDENTITY_GATE_SUBSTITUTE","NO_CURRENT_PROFILE_FEATURE_BACKFILL","NO_IDENTITY_CONTRACT_WEAKENING","NO_MODEL_FIT","NO_MAIN_OR_RUNTIME_MUTATION"]
+}
