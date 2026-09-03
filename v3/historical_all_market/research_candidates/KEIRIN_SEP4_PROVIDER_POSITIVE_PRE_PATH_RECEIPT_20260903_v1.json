@@ -1,0 +1,44 @@
+{
+  "record":"KEIRIN_SEP4_PROVIDER_POSITIVE_PRE_PATH_RECEIPT_20260903_v1",
+  "status":"POSITIVE_PROVIDER_MEETING_PATHS_AND_RACE_NUMBER_TIMES_VERIFIED_EXACT_RACEDETAIL_IDS_NOT_YET_POSITIVELY_EXPOSED",
+  "scope":"RESEARCH_PRE_ONLY_TRANSPORT_NO_RESULT_AUTHORITY",
+  "capture_timestamp_jst":"2026-09-03T15:40:37+09:00",
+  "parent_membership":"KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
+  "blocks":[
+    {
+      "date":"2026-09-04",
+      "venue":"防府",
+      "circumference_m":333,
+      "grade":"F2",
+      "meeting_name":"ニッカン・コム杯／せいらカップ",
+      "positive_program_url":"https://keirin.kdreams.jp/hofu/raceprogram/6320260904/",
+      "positive_provider_meeting_id":"6320260904",
+      "race_numbers":[1,2,3,4,5,6,7],
+      "race_count":7,
+      "cutoff_times_jst":["08:35","08:55","09:15","09:35","09:55","10:15","10:35"],
+      "race_classes_summary":"A級特予選 / A級初日特選 / ガールズ予選1",
+      "exact_racedetail_ids":"PENDING_POSITIVE_PROVIDER_LINK_OR_BODY_EVIDENCE_DO_NOT_DERIVE_BY_PATTERN"
+    },
+    {
+      "date":"2026-09-04",
+      "venue":"豊橋",
+      "circumference_m":400,
+      "grade":"F1",
+      "meeting_name":"みんなの競輪カップ",
+      "positive_program_url":"https://keirin.kdreams.jp/toyohashi/raceprogram/4520260904/",
+      "positive_provider_meeting_id":"4520260904",
+      "race_numbers":[1,2,3,4,5,6,7,8,9,10,11,12],
+      "race_count":12,
+      "cutoff_times_jst":["15:46","16:09","16:33","16:57","17:21","17:45","18:09","18:33","18:57","19:21","19:46","20:12"],
+      "race_classes_summary":"A級予選 / A級初日特選 / ガールズ予選1 / S級予選 / S級初日特選",
+      "exact_racedetail_ids":"PENDING_POSITIVE_PROVIDER_LINK_OR_BODY_EVIDENCE_DO_NOT_DERIVE_BY_PATTERN"
+    }
+  ],
+  "verification":"KDreams current Sep4 meeting pages/program pages positively displayed date, venue, meeting, complete Day1 race-number range and cutoff schedule before Sep4 outcomes.",
+  "important_limit":"Program URLs positively establish provider meeting identifiers, but current public body did not positively expose exact race-detail identifiers. The numeric ID pattern MUST NOT be extrapolated under the current no-race-id-guessing rule.",
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "next":"Before each Sep4 cutoff, resolve exact race-detail IDs only if a positive provider URL/body exposes them; capture PRE fields under the frozen allowlist. If not positively exposed before cutoff, retain transport failure and never reconstruct after race.",
+  "hard_boundaries":["NO_RACE_ID_GUESSING","NO_RESULT_JOIN","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_NARABIYOSO","NO_POST_RACE_PRE_RECONSTRUCTION","NO_ZERO_SCORE_IMPUTATION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
