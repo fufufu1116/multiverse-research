@@ -33,7 +33,9 @@ class LocalPersistentWorkerV9Tests(unittest.TestCase):
 
     def worker(self, **kwargs):
         return LocalPersistentWorker(
-            self.engine,
+            self.binding,
+            self.bridge,
+            self.provider,
             WorkerConfig(lease_seconds=0.30, heartbeat_seconds=0.05, poll_seconds=0.01),
             **kwargs,
         )
@@ -41,15 +43,21 @@ class LocalPersistentWorkerV9Tests(unittest.TestCase):
     def test_worker_identity_is_internal_and_bounded(self):
         sig = inspect.signature(LocalPersistentWorker)
         self.assertNotIn('worker_id', sig.parameters)
+        self.assertNotIn('engine', sig.parameters)
         a, b = self.worker(), self.worker()
         self.assertNotEqual(a.worker_id, b.worker_id)
         self.assertTrue(a.worker_id.startswith('lpw9-'))
         self.assertLessEqual(len(a.worker_id), config.WORKER_ID_MAX_LENGTH)
 
-    def test_worker_has_no_task_creation_surface(self):
+    def test_worker_has_no_task_creation_or_retained_engine_surface(self):
         source = inspect.getsource(LocalPersistentWorker)
         self.assertNotIn('create_task(', source)
         self.assertNotIn('.submit(', source)
+        w = self.worker()
+        self.assertFalse(hasattr(w, 'engine'))
+        self.assertFalse(any(isinstance(value, ExactV7SharedEngine) for value in vars(w).values()))
+        with self.assertRaisesRegex(TypeError, 'V9_EXACT_BINDING_TYPE_REQUIRED'):
+            LocalPersistentWorker(object(), self.bridge, self.provider)
 
     def test_consumes_only_preexisting_task_and_runs_to_done(self):
         task = self.engine.submit('core', 'implement', 'preexisting only')
