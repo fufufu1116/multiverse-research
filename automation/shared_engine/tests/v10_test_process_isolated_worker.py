@@ -86,6 +86,25 @@ class ProcessIsolatedWorkerV10Tests(unittest.TestCase):
     def test_oversized_frame_fails_closed(self):
         before = db.list_tasks(); self.assertIn(b'"ok":false', self.raw(b'{' + b'x' * 5000 + b'}\n')); self.assertEqual(before, db.list_tasks())
 
+    def test_replayed_request_id_is_rejected_before_second_authoritative_step(self):
+        first_task = self.engine.submit('core', 'implement', 'replay first')
+        second_task = self.engine.submit('core', 'implement', 'replay second')
+        frame = b'{"v":1,"op":"STEP","request_id":"replay-step-1"}\n'
+        first = self.raw(frame)
+        self.assertIn(b'"ok":true', first)
+        second = self.raw(frame)
+        self.assertIn(b'"ok":false', second)
+        self.assertIn(b'V10_REQUEST_REPLAY_DENIED', second)
+        states = {db.get_task(first_task)['state'], db.get_task(second_task)['state']}
+        self.assertEqual(states, {'DONE', 'PENDING'})
+
+    def test_conflicting_reuse_of_request_id_is_rejected(self):
+        first = self.raw(b'{"v":1,"op":"PING","request_id":"same-id"}\n')
+        self.assertIn(b'"ok":true', first)
+        second = self.raw(b'{"v":1,"op":"STEP","request_id":"same-id"}\n')
+        self.assertIn(b'"ok":false', second)
+        self.assertIn(b'V10_REQUEST_REPLAY_DENIED', second)
+
     def test_preexisting_core_and_keirin_tasks_use_same_client_broker_path(self):
         core = self.engine.submit('core','implement','preexisting core'); keirin = self.engine.submit('keirin','research','PIT-safe preexisting keirin')
         a = self.client.step(); b = self.client.step(); self.assertEqual({a['task_id'], b['task_id']}, {core, keirin})
