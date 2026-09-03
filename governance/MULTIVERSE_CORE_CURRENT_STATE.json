@@ -1,12 +1,12 @@
 {
-  "schema": "multiverse.core.current_state.v7.v7r8_successor_lab_requested",
-  "record": "MULTIVERSE_CORE_CURRENT_STATE_V7R8_RATE_READINESS_SUCCESSOR_LAB_REQUESTED",
+  "schema": "multiverse.core.current_state.v8.v7r9_remediation_in_progress",
+  "record": "MULTIVERSE_CORE_CURRENT_STATE_V7R8_LAB_FIXES_ROUTED_TO_V7R9",
   "canonical_repo": "fufufu1116/multiverse-research",
   "state_branch": "state/multiverse-core-current",
   "authority": "RESUME_NAVIGATION_SNAPSHOT_ONLY_NEVER_BEARER_LIVE_AUTHORITY",
   "transition_semantics": {
     "canonical_main_current_value": "FRESH_READ_REFS_HEADS_MAIN",
-    "stored_main_and_candidate_shas_are_provenance_only": true,
+    "stored_shas_are_provenance_only": true,
     "material_action_requires_fresh_action_specific_revalidation": true,
     "state_snapshot_cannot_create_or_expand_owner_authority": true,
     "unknown_or_mismatch": "FAIL_CLOSED"
@@ -18,62 +18,58 @@
       "lane": "META_GOVERNANCE",
       "status": "CANONICAL_METADATA_ADOPTION_COMPLETED",
       "resume_entrypoint": "governance/MULTIVERSE_RESUME_INDEX_CURRENT.json",
-      "completion_receipt": 5519496470,
-      "completion_claim_scope": "RESUME_METADATA_AND_STATE_RESOLVERS_ONLY_NO_LIVE_AUTHORITY"
+      "completion_receipt": 5519496470
     },
     {
       "id": "R1_STAGE1_PHASE_C_STATIC_ENV_RATE_READINESS_SUCCESSOR",
       "lane": "CORE_RESEARCH_CANDIDATE",
-      "status": "V7R8_SUCCESSOR_CANDIDATE_MACHINE_EVIDENCE_PASS__INDEPENDENT_LAB_REVIEW_REQUESTED",
-      "predecessor": {
-        "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
-        "head": "c91010921898fffed633df9720d792b216c4ddd1",
-        "tree": "917cf843e230c99dc74bebcc391e9f235361ff52",
-        "fallback_failure_receipt": 5521978062,
-        "live_scope_consumed": true,
-        "failed_codespace_reusable": false
-      },
-      "successor": {
+      "status": "V7R8_LAB_PASS_WITH_FIXES_FAIL_CLOSED__V7R9_CANDIDATE_ASSEMBLY_IN_PROGRESS",
+      "canonical_main_fresh_capture": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
+      "v7r8": {
         "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r8-prearm-rate-readiness-remediation-v1",
-        "fresh_head": "33181d3d73640bce2585fee018c94e791b25fc58",
-        "fresh_tree": "e9e6e1697b5d5fe49929a68dd68f5e256ae840c0",
-        "canonical_main_at_review_request": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
-        "final_delta_path_count": 7,
-        "governance_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R8_PREARM_RATE_READINESS_REMEDIATION_20260903_v1.json",
-        "probe_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R8_PREARM_RATE_READINESS_PROBE_20260903.go",
-        "post_attach_command": "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8",
-        "rate_min_before_comments": 57,
-        "rate_min_after_probe": 56,
-        "inherited_helper_min_before_comments": 55,
-        "inherited_helper_min_after_comments": 54,
-        "probe_repeatable_nonmutating_claim": true,
-        "probe_grants_authority": false
+        "head": "33181d3d73640bce2585fee018c94e791b25fc58",
+        "tree": "e9e6e1697b5d5fe49929a68dd68f5e256ae840c0",
+        "machine_run": 33727638443,
+        "machine_job": 100560168743,
+        "lab_request": 5522165178,
+        "lab_result": 5522633471,
+        "lab_verdict": "PASS_WITH_FIXES",
+        "core_fail_closed_route": 5522695078,
+        "auditor_eligible": false,
+        "material_findings": [
+          "RATE_READINESS_TOCTOU_57_56_TO_55_54_MARGIN_UNBOUNDED_ACROSS_CORE_REBIND",
+          "REPEATABLE_OUTPUT_FIXED_TEMP_CONCURRENCY_AND_STATUS_CONTROL_GENERATION_COHERENCE",
+          "PREMAIN_AMBIENT_DEBUG_INPUT_BOUNDARY_NOT_SANITIZED_BEFORE_GO_RUNTIME",
+          "TEST_SUFFICIENCY_REQUIRES_NEW_EXACT_HEAD_MACHINE_RUN"
+        ]
       },
-      "machine_evidence": {
-        "run": 33727638443,
-        "job": 100560168743,
-        "event": "push",
-        "status": "COMPLETED_SUCCESS_EXACT_CANDIDATE",
-        "image_identity_sha256": "7747e2940f9f06966d59976ae359755795dfe05935a6b44158aa90fd614bf7f1",
-        "rate_probe_sha256": "396d2003fd2b074d48774263e32299369c0e45246409986e86903ec99dc76aa8",
-        "inherited_helper_sha256": "2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301",
-        "inherited_guard_sha256": "470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4",
-        "security_authority_granted": false,
-        "runtime": "OFF"
+      "v7r9_successor": {
+        "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r9-rate-commit-coherence-remediation-v1",
+        "base": "33181d3d73640bce2585fee018c94e791b25fc58",
+        "assembly_status": "IN_PROGRESS_NOT_REVIEW_READY",
+        "design_manifest": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_RATE_COMMIT_COHERENCE_REMEDIATION_20260903_v1.json",
+        "new_probe_source": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go",
+        "new_probe_tests": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903_test.go",
+        "pre_main_sanitizer_source": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_COMMIT_SANITIZER_20260903.c",
+        "intended_final_rate_floor_before_after": "60/59",
+        "intended_commit_semantics": "FINAL_RATE_PROOF_THEN_IMMEDIATE_EXEC_V7R7_STATIC_GUARD; NOT_READY_DOES_NOT_INVOKE_OR_CONSUME_V7R7_GUARD",
+        "evidence_pair_semantics": "SERIALIZED_UNIQUE_128BIT_GENERATION_STATUS_CONTROL_PAIR; MISMATCH_INVALID",
+        "pre_main_semantics": "STATIC_NOSTDLIB_AMD64_LAUNCHER_SANITIZES_TO_EXACT_CODESPACES_AND_NAME_BEFORE_GO_RUNTIME",
+        "machine_evidence": "NOT_YET_GENERATED",
+        "lab_review": "NOT_YET_ELIGIBLE",
+        "auditor_review": "NOT_YET_ELIGIBLE",
+        "owner_gate": "NOT_YET_ELIGIBLE"
       },
-      "independent_lab_review_request": 5522165178,
-      "lab_verdict": "PENDING_INDEPENDENT_REVIEW",
-      "auditor_verdict": "NOT_YET_ELIGIBLE",
-      "owner_gate": "NOT_YET_ELIGIBLE",
       "runtime": "OFF"
     }
   ],
   "runtime_status": "OFF",
-  "current_gate": "AWAIT_INDEPENDENT_LAB_REVIEW_OF_EXACT_V7R8_SUCCESSOR_33181D3",
+  "current_gate": "COMPLETE_V7R9_DOCKER_DEVCONTAINER_IMAGE_IDENTITY_WORKFLOW_INTEGRATION_AND_FRESH_MACHINE_EVIDENCE_BEFORE_NEW_LAB",
   "live_authority_snapshot": {
     "create_new_codespace_now": false,
     "reuse_failed_codespace_now": false,
-    "run_v7r8_probe_live_now": false,
+    "run_v7r8_or_v7r9_probe_live_now": false,
+    "run_v7r9_commit_mode_now": false,
     "static_env_guard_now": false,
     "manual_ui_ready_helper_now": false,
     "manual_arm_now": false,
@@ -88,20 +84,19 @@
     "runtime_activation_now": false
   },
   "allowed_next_actions": [
-    "RECEIVE_AND_FRESH_VALIDATE_INDEPENDENT_LAB_VERDICT_BOUND_TO_EXACT_V7R8_HEAD_TREE_AND_MACHINE_EVIDENCE",
-    "IF_AND_ONLY_IF_LAB_PASS_REQUEST_INDEPENDENT_AUDITOR_REVIEW",
-    "IF_LAB_REQUIRES_FIXES_RETURN_TO_RESEARCH_CANDIDATE_AND_REGENERATE_EXACT_MACHINE_EVIDENCE",
+    "COMPLETE_V7R9_CANDIDATE_ONLY_INTEGRATION",
+    "GENERATE_FRESH_EXACT_HEAD_MACHINE_EVIDENCE_AFTER_INTEGRATION",
+    "ONLY_AFTER_MACHINE_PASS_POST_FRESH_INDEPENDENT_LAB_REREVIEW_REQUEST",
     "CONTINUE_KEIRIN_ONLY_THROUGH_FRESH_LANE_NATIVE_RESOLVER"
   ],
   "forbidden_actions": [
     "USE_THIS_STATE_AS_BEARER_LIVE_AUTHORITY",
-    "SELF_DECLARE_INDEPENDENT_LAB_PASS",
-    "PROCEED_TO_AUDITOR_WITHOUT_FRESH_EXACT_LAB_PASS",
-    "PRESENT_TO_OWNER_WITHOUT_LAB_AND_AUDITOR_PASS",
+    "ROUTE_V7R8_PASS_WITH_FIXES_TO_AUDITOR",
+    "SELF_DECLARE_V7R9_LAB_OR_AUDITOR_PASS",
     "CREATE_NEW_CODESPACE",
-    "REUSE_FAILED_CODESPACE_FOR_GUARD_HELPER_ARM_OAUTH_OR_SESSION",
-    "RUN_V7R8_RATE_PROBE_LIVE",
-    "RETRY_V7R7_STATIC_ENV_GUARD",
+    "REUSE_FAILED_CODESPACE_FOR_LIVE_ACTION",
+    "RUN_LIVE_RATE_PROBE_OR_COMMIT_MODE",
+    "RETRY_OR_INVOKE_STATIC_GUARD",
     "RUN_MANUAL_UI_READY_HELPER",
     "MANUAL_ARM",
     "OAUTH_OR_DEVICE_AUTHORIZATION",
@@ -113,5 +108,5 @@
     "SECRET_OR_WRITER_KEY_OPERATION",
     "RUNTIME_ACTIVATION"
   ],
-  "next_safe_action": "WAIT_FOR_INDEPENDENT_LAB_VERDICT_ON_PR74_COMMENT_5522165178; NO_OWNER_ACTION; RUNTIME_OFF"
+  "next_safe_action": "CORE_CANDIDATE_ONLY_V7R9_INTEGRATION; NO_OWNER_ACTION; RUNTIME_OFF"
 }
