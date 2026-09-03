@@ -1,0 +1,125 @@
+name: MULTIVERSE V19.7.36 v7r8 Rate Readiness Pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/r1-stage1-phase-c-v19-7-36-v7r8-prearm-rate-readiness-remediation-v1
+
+permissions:
+  contents: read
+
+jobs:
+  test-rate-readiness-successor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact event commit without third-party actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin https://github.com/fufufu1116/multiverse-research.git
+          git -c protocol.version=2 fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          printf 'PRELAB_EXACT_HEAD=%s\n' "$(git rev-parse HEAD)"
+          printf 'PRELAB_EXACT_TREE=%s\n' "$(git rev-parse HEAD^{tree})"
+
+      - name: Prove rate readiness source and inherited one-shot isolation
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          probe='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R8_PREARM_RATE_READINESS_PROBE_20260903.go'
+          testfile='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R8_PREARM_RATE_READINESS_PROBE_20260903_test.go'
+          guard='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_STATIC_ENV_GUARD_20260902.go'
+          helper='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go'
+
+          grep -F 'minBeforeComments = 57' "${probe}"
+          grep -F 'minAfterComments = 56' "${probe}"
+          grep -F 'Proxy: nil' "${probe}"
+          grep -F 'MinVersion: tls.VersionTLS12' "${probe}"
+          grep -F 'os.Clearenv()' "${probe}"
+          grep -F 'probe_repeatable_nonmutating=true' "${probe}"
+          grep -F 'one_shot_guard_consumed=false' "${probe}"
+          grep -F 'RETURN_TO_CORE_BEFORE_STATIC_GUARD' "${probe}"
+          grep -F 'runtime=OFF' "${probe}"
+          if grep -E 'GITHUB_TOKEN|Authorization|gh auth|syscall.Exec\(|os/exec|exec.Command' "${probe}"; then exit 92; fi
+          go test "${probe}" "${testfile}"
+
+          grep -F 'static_guard_one_shot_consumed_on_first_invocation_regardless_result' governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_STATIC_ENV_GUARD_REMEDIATION_20260902_v1.json
+          grep -F 'syscall.Exec(helperPath, argv, env)' "${guard}"
+          grep -F 'prearmMinRateBeforeComments = 55' "${helper}"
+          grep -F 'prearmMinRateAfterComments = 54' "${helper}"
+          python3 - <<'PY'
+          import json
+          q=json.load(open('.devcontainer/devcontainer.json'))
+          assert q['postAttachCommand']==['/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8']
+          assert q['remoteUser']=='codespace'
+          assert q['containerUser']=='root'
+          assert q['overrideCommand'] is True
+          PY
+          printf 'PRELAB_V7R8_SOURCE_AND_POSTATTACH_GATE_PASS=true\n'
+
+      - name: Build exact image and prove repeatable nonmutating probe
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          tag="multiverse-v7r8-rate-readiness:${GITHUB_SHA}"
+          docker build -f .devcontainer/Dockerfile -t "${tag}" .
+
+          test "$(docker run --rm --entrypoint /usr/bin/stat "${tag}" -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8)" = '0 0 555'
+          test "$(docker run --rm --entrypoint /usr/bin/stat "${tag}" -c '%u %g %a' /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7)" = '0 0 555'
+          test "$(docker run --rm --entrypoint /usr/bin/sha256sum "${tag}" /usr/local/bin/multiverse-v36-ui-ready-v7r7 | awk '{print $1}')" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'
+          test "$(docker run --rm --entrypoint /usr/bin/sha256sum "${tag}" /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 | awk '{print $1}')" = '470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4'
+
+          interp="$(docker run --rm --entrypoint /usr/bin/readelf "${tag}" -l /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8 | grep -F 'Requesting program interpreter' || true)"
+          test -z "${interp}"
+
+          identity="$(docker run --rm --entrypoint /bin/cat "${tag}" /opt/multiverse/v36/image-identity-v7r3.json)"
+          python3 -c 'import json,sys; x=json.loads(sys.stdin.read()); assert x["version"]=="V19.7.36-v7r8-image-identity"; p=[o["path"] for o in x["objects"]]; assert "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8" in p' <<<"${identity}"
+
+          workvol="multiverse-v7r8-rate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          docker volume create "${workvol}" >/dev/null
+          cleanup() { docker volume rm -f "${workvol}" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          docker run --rm -v "${workvol}:/workspaces" --entrypoint /bin/bash "${tag}" -lc '
+            set -euo pipefail
+            uid="$(id -u codespace)"; gid="$(id -g codespace)"
+            mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
+            chown -R "${uid}:${gid}" /workspaces/.codespaces /workspaces/multiverse-research
+            chmod 0755 /workspaces /workspaces/.codespaces /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
+            printf "%s\n" "# MULTIVERSE PRE-LIVE CONTROL — V19.7.36 v7r8" "" "STATE: WAITING_FOR_RATE_READINESS" > /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
+            chown "${uid}:${gid}" /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
+            chmod 0644 /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
+          '
+
+          out="$(docker run --rm --user codespace --network=none -v "${workvol}:/workspaces" \
+            -e CODESPACES=true \
+            -e CODESPACE_NAME=rate-readiness-test \
+            -e GITHUB_TOKEN=SHOULD_NOT_BE_USED \
+            -e HTTPS_PROXY=http://127.0.0.1:9 \
+            -e SSL_CERT_FILE=/definitely/not-present.pem \
+            --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8 \
+            "${tag}" 2>&1)"
+          printf '%s\n' "${out}"
+          grep -F 'PHASE_C_V19_7_36_V7R8_PREARM_RATE_NOT_READY codespace=rate-readiness-test reason=RATE_NETWORK' <<<"${out}"
+          grep -F 'one_shot_guard_consumed=false runtime=OFF' <<<"${out}"
+
+          status="$(docker run --rm -v "${workvol}:/workspaces" --entrypoint /bin/cat "${tag}" /workspaces/.codespaces/.persistedshare/multiverse-v36-v7r8-rate-readiness.txt)"
+          control="$(docker run --rm -v "${workvol}:/workspaces" --entrypoint /bin/cat "${tag}" /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md)"
+          grep -F 'PHASE_C_V19_7_36_V7R8_PREARM_RATE_NOT_READY' <<<"${status}"
+          grep -F 'probe_repeatable_nonmutating=true' <<<"${status}"
+          grep -F 'one_shot_guard_consumed=false' <<<"${status}"
+          grep -F 'RETURN_TO_CORE_BEFORE_STATIC_GUARD' <<<"${control}"
+          grep -F 'runtime=`OFF`' <<<"${control}"
+
+          image_sha="$(printf '%s' "${identity}" | sha256sum | awk '{print $1}')"
+          probe_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "${tag}" /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8 | awk '{print $1}')"
+          printf 'PRELAB_V7R8_IMAGE_IDENTITY_SHA256=%s\n' "${image_sha}"
+          printf 'PRELAB_V7R8_RATE_PROBE_SHA256=%s\n' "${probe_sha}"
+          printf 'PRELAB_V7R8_RATE_READINESS_IMAGE_GATE_PASS=true\n'
+          printf 'SECURITY_AUTHORITY_GRANTED=false\n'
+          printf 'RUNTIME=OFF\n'
