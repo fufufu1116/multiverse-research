@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_HFT_L1_PRE_PARSER_SCHEMA_DELTA_PRESPEC_20260904_v1",
+  "status": "PRE_RESULT_PARSER_SCHEMA_REPAIR_FROZEN_NO_SUPPORT_AUTHORITY",
+  "scope": "HISTORICAL_PIT_PRE_ONLY_CLASS_TOKEN_RECOGNITION_REPAIR",
+  "purpose": "Repair a source-parser class-token omission so the already-frozen whole-day Kawasaki 2026-08-30 Day1 block can be acquired without silently dropping valid PRE races.",
+  "bindings": [
+    "KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
+    "KEIRIN_HFT_REJECTED_PRE_TABLE_STRUCTURE_PROBE_20260904_v1.json",
+    "tools/keirin_kdreams_pre_only_parser_v1.py",
+    "tools/keirin_kdreams_historical_pre_quarantine_fetch_v2.py"
+  ],
+  "observed_failure": {
+    "day_block": "川崎 2026-08-30 Day1",
+    "planned_races": 12,
+    "accepted_races_v2": 10,
+    "rejected_races": [6, 7],
+    "reject_reason": "FAIL-CLOSED:pre_rows=0"
+  },
+  "sanitized_structure_evidence": {
+    "race_6": {
+      "class_tokens": ["L1"],
+      "recognized_structural_rows": 7,
+      "all_rows_have_score_token": true,
+      "all_rows_have_six_tactical_integer_tokens": true
+    },
+    "race_7": {
+      "class_tokens": ["L1"],
+      "recognized_structural_rows": 7,
+      "all_rows_have_score_token": true,
+      "all_rows_have_six_tactical_integer_tokens": true
+    },
+    "forbidden_surface_emitted": false
+  },
+  "contract_interpretation": {
+    "hft_allowlist_field": "class",
+    "support_gate_explicit_l1_exclusion": false,
+    "affinity_prespec_controls_include_class": true,
+    "population_change": false,
+    "feature_change": false,
+    "outcome_conditioning": false,
+    "reason": "The races were already members of the positively observed whole-day Day1 block; recognizing L1 only prevents parser-driven membership loss."
+  },
+  "frozen_parser_delta": {
+    "only_change": "Recognize L1 in the same class-token position currently recognized for S1/S2/A1/A2/A3.",
+    "allowed_class_tokens": ["S1", "S2", "A1", "A2", "A3", "L1"],
+    "output_schema_change": false,
+    "pre_allowlist_change": false,
+    "zero_competition_score_rule_change": false,
+    "race_id_discovery_change": false,
+    "result_access_change": false,
+    "unknown_class_policy": "FAIL_CLOSED"
+  },
+  "required_validation": [
+    "Synthetic selftest covers both A/S and L1 structural rows.",
+    "Re-acquire every race from the already-frozen exact Day1 detail href manifest.",
+    "Require 12/12 races accepted and no rejected race before calling Day1 PRE acquisition complete.",
+    "Keep support increment at zero until official registration number mapping is 100 percent for rows proposed for support accounting."
+  ],
+  "result_join_authorized": false,
+  "model_fit_authorized": false,
+  "support_increment_authorized_now": 0,
+  "hard_boundaries": [
+    "NO_RESULT_JOIN",
+    "NO_RACE_ID_GUESSING",
+    "NO_RAW_MIXED_HTML_PERSISTENCE",
+    "NO_OUTPUT_SCHEMA_EXPANSION",
+    "NO_SUPPORT_COUNT_BEFORE_100_PERCENT_OFFICIAL_ID_MAPPING",
+    "NO_S0_MUTATION",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION"
+  ]
+}
