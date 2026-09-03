@@ -54,6 +54,18 @@ def list_tasks():
         d=dict(r); d['result']=json.loads(d.pop('result_json')); out.append(d)
     return out
 
+def assert_unexpired_fence(task_id, worker_id, generation):
+    """Fail closed unless worker/generation still owns an unexpired task lease."""
+    init_schema(); now=time.time(); c=_conn()
+    try:
+        r=c.execute('SELECT claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
+    finally:
+        c.close()
+    if r is None: raise KeyError(task_id)
+    if r['claimed_by']!=worker_id or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
+    if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
+    return True
+
 def claim_next_task(worker_id, *, lease_seconds=None):
     init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
@@ -93,12 +105,14 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
         if r is None: raise KeyError(task_id)
         before=r['state']
         if new_state not in config.ALLOWED_TRANSITIONS.get(before,set()): raise InvalidTransitionError(f'{before}->{new_state}')
+        now=time.time()
         if fencing is not None:
             worker,generation=fencing
             if r['claimed_by']!=worker or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
+            if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
         result=json.loads(r['result_json'])
         if result_update: result.update(result_update)
-        now=time.time(); claimed=None if release else r['claimed_by']; lease=None if release else r['lease_until']
+        claimed=None if release else r['claimed_by']; lease=None if release else r['lease_until']
         c.execute('UPDATE tasks SET state=?,claimed_by=?,lease_until=?,result_json=?,updated_at=? WHERE id=?',
                   (new_state,claimed,lease,json.dumps(result,sort_keys=True,separators=(',',':')),now,task_id))
         c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
