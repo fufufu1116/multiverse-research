@@ -1,0 +1,41 @@
+name: MULTIVERSE Governance Independent Review Gate Dryrun
+
+on:
+  push:
+    branches:
+      - agent/governance-independent-review-gate-dryrun-20260904-v1
+    paths:
+      - 'governance/**'
+      - '.github/workflows/multiverse-governance-independent-review-gate-dryrun.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  review-gate-dryrun:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fresh-bind canonical main
+        shell: bash
+        run: |
+          set -euo pipefail
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${FRESH_MAIN}" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          echo "GOVERNANCE_FRESH_MAIN=${FRESH_MAIN}"
+      - name: Run separation and drift negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd governance
+          python -m unittest -v test_review_gate_v1.py
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          echo "FORMAL_LAB_VERDICT=false"
+          echo "FORMAL_AUDITOR_VERDICT=false"
+          echo "CANDIDATE_MUTATION_AUTHORITY=false"
+          echo "MAIN_MUTATION_AUTHORITY=false"
+          echo "MERGE_AUTHORITY=false"
+          echo "RUNTIME=OFF"
