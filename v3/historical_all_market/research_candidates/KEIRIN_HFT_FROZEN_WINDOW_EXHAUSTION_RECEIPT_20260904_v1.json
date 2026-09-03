@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_HFT_FROZEN_WINDOW_EXHAUSTION_RECEIPT_20260904_v1",
+  "status": "FROZEN_HFT_V2_WINDOW_EXHAUSTED_NO_ADDITIONAL_WHOLE_DAY_DAY1_BLOCKS",
+  "scope": "RESEARCH_PRE_ONLY_POPULATION_SELECTION_NO_RESULT_NO_MODEL_FIT",
+  "fresh_parent_head": "0a221fe9f1df51d03602c69f68d9154395826227",
+  "bindings": [
+    "KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v2.json",
+    "KEIRIN_HFT_333_CLEAN_WINDOW_DAY1_EXHAUSTION_RECEIPT_20260904_v1.json",
+    "KEIRIN_HFT_400_RACECARD_MONTH_ARCHIVE_PROBE_20260904_v1.json",
+    "KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv",
+    "KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v2.json",
+    "KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json"
+  ],
+  "frozen_clean_window": {
+    "start_inclusive": "2026-08-27",
+    "end_inclusive": "2026-09-02",
+    "may_move_backward": false
+  },
+  "frozen_venue_pool": {
+    "333_or_333_33m": ["防府", "富山", "奈良"],
+    "400m": ["青森", "武雄", "豊橋", "川崎"]
+  },
+  "observed_day1_inventory": {
+    "333_or_333_33m": {
+      "eligible_clean_window_day1_count": 0,
+      "eligible_blocks": [],
+      "additional_acquisition_available": false
+    },
+    "400m": {
+      "eligible_clean_window_day1_count": 1,
+      "eligible_blocks": [
+        {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "day_url": "https://keirin.kdreams.jp/kawasaki/racecard/34202608300100/",
+          "already_acquired_whole_day": true,
+          "pre_row_count": 84,
+          "official_identity_exact_single_match_count": 81
+        }
+      ],
+      "additional_unacquired_eligible_day1_count": 0,
+      "additional_acquisition_available": false
+    }
+  },
+  "archive_navigation_integrity": {
+    "month_form_contract_observed_live": true,
+    "months_scanned": ["2026-08", "2026-09"],
+    "racecard_day_id_arithmetic_used": false,
+    "race_id_guessed": false,
+    "query_parameter_guessed": false,
+    "raw_html_persisted": false,
+    "raw_html_printed": false,
+    "result_page_opened": false,
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_emitted": false,
+    "forecast_emitted": false,
+    "comment_emitted": false,
+    "narabiyoso_emitted": false
+  },
+  "support_effect": {
+    "confirmed_unique_cross_circumference_supported_riders_now": 1,
+    "confirmed_supported_rider_race_rows_now": 2,
+    "confirmed_rider": {
+      "name": "高橋 梨香",
+      "official_registration_number": "015018"
+    },
+    "additional_support_increment_available_from_further_hft_v2_window_acquisition": 0,
+    "pending_scheduled_nara_candidates": 9,
+    "pending_scheduled_candidates_counted_as_confirmed": false,
+    "full_support_adequacy_gate": "FAIL"
+  },
+  "decision": {
+    "historical_fast_track_v2_additional_acquisition": "EXHAUSTED_UNDER_FROZEN_WINDOW_AND_VENUE_POOL",
+    "do_not_expand_window_backward": true,
+    "do_not_lower_whole_day_day1_rule": true,
+    "do_not_guess_unobserved_urls": true,
+    "next_support_lane": "KEIRIN_SEP10_NARA_KAWASAKI_CROSS_CIRCUMFERENCE_PRE_EVENT_ACQUISITION_EXTENSION_20260903_v1.json",
+    "next_support_lane_mode": "PROSPECTIVE_PRE_ONLY",
+    "result_join_authorized": false,
+    "formula_fit_authorized": false
+  },
+  "s0_mutation": false,
+  "main_or_runtime_mutation": false,
+  "owner_action_required_now": false
+}
