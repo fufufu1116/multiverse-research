@@ -1,0 +1,70 @@
+{
+  "record": "KEIRIN_SEP10_NARA_KAWASAKI_CROSS_CIRCUMFERENCE_PRE_EVENT_ACQUISITION_EXTENSION_20260903_v1",
+  "status": "PREOUTCOME_FUTURE_SUPPORT_ACQUISITION_EXTENSION_FROZEN_NO_RESULT_AUTHORITY",
+  "scope": "RESEARCH_PRE_ONLY_FUTURE_CROSS_CIRCUMFERENCE_SUPPORT_ACQUISITION_NO_MODEL_FIT",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding_parent_head": "61d1451ddde967c922744a9d7c9c7b908a622bd7",
+  "bindings": [
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
+    "KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
+    "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json"
+  ],
+  "reason": "The support gate remains below its frozen floor after Sep4 whole-day PRE work. The support prespec requires adding future whole-day PRE blocks in chronological source order under a separately written pre-event extension while RESULT remains closed.",
+  "target_blocks": [
+    {
+      "date": "2026-09-10",
+      "venue": "奈良",
+      "circumference_m": 333.33,
+      "role": "REPEATED_RIDER_CROSS_CIRCUMFERENCE_SUPPORT_AND_DEVELOPMENT_CANDIDATE_ONLY_AFTER_PRE_IDENTITY_GATES",
+      "known_takeo_400_to_nara_33333_scheduled_official_identities": 9,
+      "schedule_only_support_increment": 0,
+      "final_pre_card_required": true
+    },
+    {
+      "date": "2026-09-10",
+      "venue": "川崎",
+      "circumference_m": 400,
+      "role": "SAME_PERIOD_SUPPORT_REFERENCE_AND_DEVELOPMENT_CANDIDATE_ONLY_AFTER_PRE_IDENTITY_GATES",
+      "final_pre_card_required": true
+    }
+  ],
+  "support_state_at_extension": {
+    "current_research_counter": 9,
+    "target_unique_cross_circumference_supported_riders": 30,
+    "remaining_to_floor": 21,
+    "gate": "FAIL",
+    "result_join_authorized": false,
+    "note": "The known nine Takeo-to-Nara identities are scheduled-support input only until the Nara final PRE card and official point-in-time identity evidence satisfy the frozen support definition. This extension adds no support merely from schedule membership."
+  },
+  "required_pre_event_sequence": [
+    "Freeze whole-day race membership from positive public PRE surfaces before each frozen cutoff; never infer or guess race IDs.",
+    "Capture the already-prespecified strict PRE allowlist from the frozen fallback transport before each race cutoff with deterministic content addressing.",
+    "Map supported rider rows to official KEIRIN.JP registration numbers and require unambiguous point-in-time race assignment under the existing identity contract.",
+    "Only a rider with at least one valid PRE race at verified 333/333.33m and at least one valid PRE race at verified 400m in the development acquisition pool may count as cross-circumference supported.",
+    "Missing, stale, ambiguous, zero-score, or cutoff-expired rows fail closed; never repair after race.",
+    "Evaluate the frozen support gate only after PRE-only acquisition and identity tables are frozen; do not inspect RESULT to decide whether to add blocks or change thresholds."
+  ],
+  "minimum_gate_remains": {
+    "unique_cross_circumference_supported_riders": 30,
+    "minimum_supported_rider_race_rows": 60,
+    "minimum_distinct_development_venues_per_circumference": 2,
+    "minimum_distinct_calendar_blocks_per_circumference": 2,
+    "official_registration_number_mapping_rate_for_supported_rows": 1.0
+  },
+  "after_gate_pass_only": "Freeze exact low-DOF Rider x Circumference formula, shrinkage/parameter rule, unsupported-rider policy, development membership, primary metric, race-cluster bootstrap, and advance/no-advance criterion before any RESULT join.",
+  "reserved_and_protected": {
+    "sep4_hofu_outcomes": "RESERVED_FROM_FIT_NOT_A_SUPPORT_SHORTFALL_RESCUE",
+    "final_cross_venue_eval": ["2026-09-27 玉野 400m Day1", "2026-09-29 防府 333m Day1"],
+    "protected_holdout": "UNTOUCHED_AND_FORBIDDEN"
+  },
+  "result_values_observed": false,
+  "payout_values_observed": false,
+  "result_access_authorized": false,
+  "model_fit_authorized": false,
+  "feature_admission": false,
+  "s0_impact": "NONE_FROZEN",
+  "owner_action_required_now": false,
+  "hard_boundaries": ["NO_RESULT_JOIN_BEFORE_SUPPORT_GATE","NO_SCHEDULE_ONLY_SUPPORT_INCREMENT","NO_THRESHOLD_LOWERING_AFTER_RESULT","NO_RACE_ID_GUESSING","NO_IDENTITY_CONTRACT_WEAKENING","NO_ZERO_SCORE_IMPUTATION","NO_UNKNOWN_TO_ZERO","NO_POST_RACE_PRE_RECONSTRUCTION","NO_USE_SEP4_HOFU_OUTCOMES_FOR_FIT","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MAIN_OR_RUNTIME_MUTATION","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
