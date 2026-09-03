@@ -1,0 +1,135 @@
+name: Keirin HFT Positively Observed Day1 PRE Acquire V2 One-Shot
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-hft-observed-day1-acquire-v2-one-shot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  observed-day1-pre-acquire-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HFT_START: '2026-08-27'
+      HFT_END: '2026-09-02'
+      FETCHER_PATH: 'tools/keirin_kdreams_historical_pre_quarantine_fetch_v2.py'
+      FETCHER_BLOB_SHA: '28e460cf84986180946056aaaf1118959a0c9181'
+      DAYPROBE_PATH: 'tools/keirin_kdreams_historical_embedded_dayurl_quarantine_probe_v1.py'
+      DAYPROBE_BLOB_SHA: '5c6d766d9eaac9e07549c1b4d27edd5e8bc438ff'
+      SOURCE_PROBE: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_EMBEDDED_DAYURL_QUARANTINE_PROBE_20260904_v1.json'
+      MANIFEST: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_POSITIVELY_OBSERVED_DAY1_MANIFEST_20260904_v2.json'
+      PRE_CSV: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_POSITIVELY_OBSERVED_DAY1_PRE_ROWS_20260904_v2.csv'
+      RECEIPT: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_POSITIVELY_OBSERVED_DAY1_FETCH_RECEIPT_20260904_v2.json'
+      STATUS: 'v3/historical_all_market/research_candidates/KEIRIN_HFT_POSITIVELY_OBSERVED_DAY1_RUN_STATUS_20260904_v2.json'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/keirin-real-evidence-dual-lane-20260901-v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet beautifulsoup4
+
+      - name: Verify quarantine tools
+        run: |
+          set -euo pipefail
+          test "$(git hash-object "$FETCHER_PATH")" = "$FETCHER_BLOB_SHA"
+          test "$(git hash-object "$DAYPROBE_PATH")" = "$DAYPROBE_BLOB_SHA"
+          python "$FETCHER_PATH" selftest > /tmp/fetcher.json
+          python "$DAYPROBE_PATH" selftest > /tmp/dayprobe.json
+          python - <<'PY'
+          import json
+          for p in ['/tmp/fetcher.json','/tmp/dayprobe.json']:
+              x=json.load(open(p,encoding='utf-8'))
+              if x.get('status')!='PASS' or not all(x.get('tests',{}).values()) or x.get('network_access') is not False:
+                  raise SystemExit('FAIL_CLOSED:selftest')
+          print('QUARANTINE_SELFTESTS_PASS')
+          PY
+
+      - name: Freeze positively observed clean Day1 membership
+        run: |
+          python - <<'PY'
+          import importlib.util,json,os
+          from datetime import date
+          from pathlib import Path
+          def load(path,name):
+              s=importlib.util.spec_from_file_location(name,path); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
+          f=load(os.environ['FETCHER_PATH'],'hftfetch'); p=load(os.environ['DAYPROBE_PATH'],'dayprobe')
+          src=json.load(open(os.environ['SOURCE_PROBE'],encoding='utf-8'))
+          for k in ['raw_html_persisted','raw_html_printed','race_detail_opened','target_result_accessed','payout_accessed','race_id_guessed']:
+              if src.get(k) is not False: raise SystemExit('FAIL_CLOSED:source_probe_firewall')
+          lo=date.fromisoformat(os.environ['HFT_START']); hi=date.fromisoformat(os.environ['HFT_END']); allowed={'防府','富山','奈良','青森','武雄','豊橋','川崎'}
+          candidates={}
+          for rec in src.get('records',[]):
+              for obj in rec.get('embedded_day_urls',[]):
+                  if obj.get('positively_observed_in_seed_raw') is not True: continue
+                  if obj.get('active_day_category')!='INITIAL_DAY_EXPLICIT' and obj.get('title_day_category')!='INITIAL_DAY_EXPLICIT': continue
+                  if obj.get('venue') not in allowed or not obj.get('race_date'): continue
+                  if lo <= date.fromisoformat(obj['race_date']) <= hi: candidates[obj['day_url']]=obj
+          if not candidates: raise SystemExit('FAIL_CLOSED:no_clean_initial_day_candidate')
+          blocks=[]
+          for url,obj in sorted(candidates.items(),key=lambda kv:(kv[1]['race_date'],kv[1]['venue'],kv[0])):
+              f.validate_url(url,{'day'}); raw,final=f.fetch_bytes(url,25)
+              if final!=url: raise SystemExit('FAIL_CLOSED:redirect')
+              md=p.metadata(raw,final)
+              if md.get('race_date')!=obj['race_date'] or md.get('venue')!=obj['venue']: raise SystemExit('FAIL_CLOSED:metadata_changed')
+              if md.get('active_day_category')!='INITIAL_DAY_EXPLICIT' and md.get('title_day_category')!='INITIAL_DAY_EXPLICIT': raise SystemExit('FAIL_CLOSED:initial_day_not_reconfirmed')
+              details=f.collect_links(raw,final,'detail')
+              if not 5 <= len(details) <= 12: raise SystemExit(f'FAIL_CLOSED:detail_count={len(details)}')
+              refetch_hash=f.sha256_bytes(raw)
+              blocks.append({'race_date':md['race_date'],'venue':md['venue'],'day_url':final,'day_source_sha256_probe':obj['source_sha256'],'day_source_sha256_refetch':refetch_hash,'day_source_hash_stable':refetch_hash==obj['source_sha256'],'day1_confirmed':True,'day1_evidence':'POSITIVELY_OBSERVED_EMBEDDED_DAY_URL_AND_RECONFIRMED_INITIAL_DAY_ACTIVE_STATE','discovery_path':'SANITIZED_EMBEDDED_DAYURL_PROBE_V1','detail_urls':details,'detail_count':len(details)})
+          out={'record':'KEIRIN_HFT_POSITIVELY_OBSERVED_DAY1_MANIFEST_20260904_v2','date_window':[os.environ['HFT_START'],os.environ['HFT_END']],'blocks':blocks,'confirmed_day1_blocks':len(blocks),'day_page_hash_policy':'PROBE_AND_REFETCH_SHA_RETAINED_SEPARATELY_URL_DATE_VENUE_INITIAL_STATE_MUST_RECONFIRM','raw_html_emitted':False,'result_fields_emitted':False,'odds_fields_emitted':False,'forecast_fields_emitted':False,'race_id_guessed':False,'source_probe':os.environ['SOURCE_PROBE']}
+          Path(os.environ['MANIFEST']).write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'blocks':len(blocks),'races_planned':sum(b['detail_count'] for b in blocks),'venues':sorted({b['venue'] for b in blocks}),'day_hash_stable':all(b['day_source_hash_stable'] for b in blocks)},ensure_ascii=False,sort_keys=True))
+          PY
+
+      - name: Acquire strict PRE rows for every race
+        run: |
+          set +e
+          python "$FETCHER_PATH" acquire --manifest "$MANIFEST" --pre-csv "$PRE_CSV" --receipt "$RECEIPT" --timeout 25
+          rc=$?
+          echo "ACQUIRE_RC=$rc" >> "$GITHUB_ENV"
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 3 ]; then exit "$rc"; fi
+          exit 0
+
+      - name: Verify acquisition and write status
+        run: |
+          python - <<'PY'
+          import csv,hashlib,json,os,re
+          from pathlib import Path
+          from urllib.parse import urlparse
+          fields=['race_id','race_date','venue','race_no','car_no','rider_name_raw','class','style','competition_score','S','B','nige','makuri','sashi','mark','source_url','source_file_sha256','evidence_role']
+          m=json.load(open(os.environ['MANIFEST'],encoding='utf-8')); rcp=json.load(open(os.environ['RECEIPT'],encoding='utf-8'))
+          for k in ['raw_html_written_to_disk','raw_html_printed','result_fields_emitted','payout_fields_emitted','odds_fields_emitted','forecast_fields_emitted','narabiyoso_fields_emitted','race_id_guessed','support_increment_authorized_by_tool']:
+              if rcp.get(k) is not False: raise SystemExit('FAIL_CLOSED:receipt_firewall')
+          rows=[]
+          with open(os.environ['PRE_CSV'],encoding='utf-8',newline='') as f:
+              rd=csv.DictReader(f)
+              if rd.fieldnames!=fields: raise SystemExit('FAIL_CLOSED:schema')
+              for x in rd:
+                  if float(x['competition_score'])==0: raise SystemExit('FAIL_CLOSED:zero_score')
+                  u=urlparse(x['source_url'])
+                  if u.scheme!='https' or u.hostname!='keirin.kdreams.jp' or u.query or u.fragment or '/racedetail/' not in u.path: raise SystemExit('FAIL_CLOSED:source_url')
+                  if not re.fullmatch(r'[0-9a-f]{64}',x['source_file_sha256']): raise SystemExit('FAIL_CLOSED:sha')
+                  rows.append(x)
+          planned=sum(int(b['detail_count']) for b in m['blocks']); accepted=int(rcp.get('successful_races',0)); rejected=len(rcp.get('rejected',[]))
+          status='PRE_ONLY_MEMBERSHIP_FROZEN_IDENTITY_MAPPING_PENDING' if accepted==planned and rejected==0 and accepted>0 else 'PRE_ONLY_PARTIAL_FAIL_CLOSED_NO_SUPPORT'
+          out={'record':'KEIRIN_HFT_POSITIVELY_OBSERVED_DAY1_RUN_STATUS_20260904_v2','status':status,'date_window':[os.environ['HFT_START'],os.environ['HFT_END']],'confirmed_day1_blocks':m['confirmed_day1_blocks'],'venues':sorted({b['venue'] for b in m['blocks']}),'planned_races':planned,'successful_races':accepted,'pre_rows':len(rows),'rejected_races':rejected,'day_page_hash_stable':all(b['day_source_hash_stable'] for b in m['blocks']),'day_page_hash_policy':m['day_page_hash_policy'],'acquire_return_code':int(os.environ.get('ACQUIRE_RC','0')),'pre_csv_sha256':hashlib.sha256(Path(os.environ['PRE_CSV']).read_bytes()).hexdigest(),'manifest_sha256':hashlib.sha256(Path(os.environ['MANIFEST']).read_bytes()).hexdigest(),'receipt_sha256':hashlib.sha256(Path(os.environ['RECEIPT']).read_bytes()).hexdigest(),'raw_html_persisted':False,'raw_html_printed':False,'target_result_accessed':False,'payout_accessed':False,'race_id_guessed':False,'identity_mapping_status':'PENDING_FAIL_CLOSED','support_increment_authorized_now':0,'result_join_authorized':False,'model_fit_authorized':False,'main_or_runtime_mutation':False,'hard_boundaries':['NO_RESULT_JOIN','NO_RACE_ID_GUESSING','NO_RAW_MIXED_HTML_PERSISTENCE','NO_SUPPORT_COUNT_BEFORE_100_PERCENT_OFFICIAL_ID_MAPPING','NO_S0_MUTATION','NO_MODEL_PROMOTION','NO_REAL_MONEY_EXECUTION']}
+          Path(os.environ['STATUS']).write_text(json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({k:out[k] for k in ['status','confirmed_day1_blocks','venues','planned_races','successful_races','pre_rows','rejected_races','day_page_hash_stable','support_increment_authorized_now','target_result_accessed']},ensure_ascii=False,sort_keys=True))
+          PY
+
+      - name: Commit sanitized artifacts only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$MANIFEST" "$PRE_CSV" "$RECEIPT" "$STATUS"
+          git diff --cached --quiet && exit 0
+          git commit -m 'research(keirin): record clean HFT Day1 PRE acquisition v2'
+          git push origin HEAD:research/keirin-real-evidence-dual-lane-20260901-v1
