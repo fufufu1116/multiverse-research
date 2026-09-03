@@ -3,12 +3,13 @@
   "status":"RESULT_GATE_BLOCKED_SOURCE_IDENTITY_SUPPORT_AND_FINAL_MODEL_PRESPEC_INCOMPLETE",
   "scope":"RESEARCH_GATE_STATUS_ONLY_NO_RESULT_AUTHORITY",
   "baseline":{"name":"S0_SCORE_ONLY_SOFTMAX","beta":0.22260435254784533,"mutation_allowed":false},
+  "latest_pre_provider_receipt":"KEIRIN_SEP4_PROVIDER_POSITIVE_PRE_PATH_RECEIPT_20260903_v1.json",
   "population_and_pre_capture":[
     {"block":"2026-09-03 富山 333m","membership":"LOCKED_7R","pre":"49_RIDER_ROWS_FROZEN","status":"PRE_CAPTURE_PASS_FOR_TRANSPORT"},
     {"block":"2026-09-03 青森 400m","membership":"LOCKED_12R","pre":"11_OF_12_NUMERIC_PASS","fail_closed":"5R car6 山本 直 competition_score=0.00"},
     {"block":"2026-09-03 武雄 400m","membership":"LOCKED_12R","pre":"11_OF_12_NUMERIC_PASS_77_ROWS","fail_closed":"2R car6 鳥生 知八 competition_score=0.00"},
-    {"block":"2026-09-04 防府 333m","membership":"LOCKED_7_RACE_NUMBERS","pre":"PENDING_BEFORE_CUTOFF"},
-    {"block":"2026-09-04 豊橋 400m","membership":"LOCKED_12_RACE_NUMBERS","pre":"PENDING_BEFORE_CUTOFF"},
+    {"block":"2026-09-04 防府 333m","membership":"LOCKED_7_RACE_NUMBERS","pre":"POSITIVE_KDREAMS_PROGRAM_MEETING_ID_6320260904_AND_CUTOFF_SCHEDULE_VERIFIED; EXACT_RACEDETAIL_IDS_AND_NUMERIC_PRE_PENDING"},
+    {"block":"2026-09-04 豊橋 400m","membership":"LOCKED_12_RACE_NUMBERS","pre":"POSITIVE_KDREAMS_PROGRAM_MEETING_ID_4520260904_AND_CUTOFF_SCHEDULE_VERIFIED; EXACT_RACEDETAIL_IDS_AND_NUMERIC_PRE_PENDING"},
     {"block":"2026-09-10 奈良 333.33m","membership":"FUTURE_DAY1_BLOCK_PRELOCKED","pre":"PENDING"},
     {"block":"2026-09-10 川崎 400m","membership":"FUTURE_DAY1_BLOCK_PRELOCKED_AS_LATER_PAIR","pre":"PENDING"}
   ],
@@ -16,7 +17,7 @@
     {"gate":"S0_FROZEN","status":"PASS"},
     {"gate":"OUTCOME_INDEPENDENT_VENUE_SELECTION","status":"PASS","note":"Sep3/Sep4/Sep10 venue blocks were selected before any Sep3 target outcome join."},
     {"gate":"CIRCUMFERENCE_SOURCE_FOR_SELECTED_VENUES","status":"PASS_FOR_CURRENT_PROSPECTIVE_CIRCUMFERENCE_ONLY","note":"Detailed geometry remains separately gated where effective/version continuity is unresolved."},
-    {"gate":"PRE_MEMBERSHIP_AND_NUMERIC_CAPTURE","status":"PARTIAL_PASS","note":"Sep3 captured with explicit fail-closed races; Sep4 and later blocks still pending."},
+    {"gate":"PRE_MEMBERSHIP_AND_NUMERIC_CAPTURE","status":"PARTIAL_PASS","note":"Sep3 captured with explicit fail-closed races. Sep4 positive provider meeting paths and cutoff schedules are now verified before Sep4, but exact positive race-detail IDs/numeric PRE remain pending; race-id pattern derivation is prohibited."},
     {"gate":"RIDER_IDENTITY","status":"BLOCKED","note":"Strengthened official registration-number plus same-race assignment contract is not fully passed across the candidate population."},
     {"gate":"RIDER_X_CIRCUMFERENCE_SUPPORT","status":"PARTIAL_SUPPORT_ONLY","note":"Takeo-to-Nara scheduled repeated-rider support exists with 9 official identities, but Nara final card and broader fit support are not complete; no effect estimate."},
     {"gate":"FIT_EVAL_MEMBERSHIP","status":"BLOCKED_NOT_FINALIZED","note":"Later 333m/400m acquisition pair is preselected, but final fit/eval usable membership must follow PRE/identity/support gates."},
@@ -25,12 +26,12 @@
   ],
   "decision":"DO_NOT_OPEN_PROSPECTIVE_RESULT_TARGETS_YET",
   "why":"Opening Sep3 outcomes now would burn the prospective population before identity/support/final predictive prespec gates are complete and would create avoidable post-outcome design pressure.",
-  "next_actions":["Capture Sep4 PRE before each cutoff with exact positive provider URL/body evidence; no race-id guessing.","Complete Takeo/Sep4 official rider identity mapping without weakening the contract.","Confirm Takeo-to-Nara repeated riders on the Nara final PRE card.","Accumulate/measure direct rider×circumference support without outcomes.","Freeze exact fit/eval membership, low-DOF candidate formula, parameter fitting rule, primary metric, race-level bootstrap and advancement criterion before RESULT join."],
+  "next_actions":["Resolve Sep4 exact race-detail IDs only from positive provider URL/body evidence; do not infer the ID pattern.","Capture Sep4 numeric PRE before each cutoff under frozen allowlist rules; retain any transport/zero-score failures without post-race repair.","Complete Takeo/Sep4 official rider identity mapping without weakening the contract.","Confirm Takeo-to-Nara repeated riders on the Nara final PRE card.","Accumulate/measure direct rider×circumference support without outcomes.","Freeze exact fit/eval membership, low-DOF candidate formula, parameter fitting rule, primary metric, race-level bootstrap and advancement criterion before RESULT join."],
   "result_values_observed":false,
   "payout_values_observed":false,
   "result_access_authorized":false,
   "feature_admission":false,
   "model_fit_authorized":false,
   "owner_action_required_now":false,
-  "hard_boundaries":["NO_RESULT_JOIN_WHILE_GATE_BLOCKED","NO_ZERO_SCORE_IMPUTATION","NO_IDENTITY_CONTRACT_WEAKENING","NO_POST_RESULT_SOURCE_OR_VENUE_SELECTION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_ECON_HOLDOUT1000","NO_DEV2000_C_RESCUE","NO_ODDS_IN_OUTCOME_MODEL","NO_PAYOUT","NO_HUMAN_FORECAST_FEATURE","NO_POST_RACE_PRE_RECONSTRUCTION","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+  "hard_boundaries":["NO_RESULT_JOIN_WHILE_GATE_BLOCKED","NO_RACE_ID_GUESSING","NO_ZERO_SCORE_IMPUTATION","NO_IDENTITY_CONTRACT_WEAKENING","NO_POST_RESULT_SOURCE_OR_VENUE_SELECTION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_ECON_HOLDOUT1000","NO_DEV2000_C_RESCUE","NO_ODDS_IN_OUTCOME_MODEL","NO_PAYOUT","NO_HUMAN_FORECAST_FEATURE","NO_POST_RACE_PRE_RECONSTRUCTION","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
 }
