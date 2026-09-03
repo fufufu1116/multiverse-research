@@ -17,11 +17,11 @@ No policy widening is performed. v7 integration exercises only the already-revie
 
 `ProviderAdapterManifest` pins exact repository/source-branch/predecessor/main identity and an exact all-false authority object. `DeterministicLocalAdapter` is the only accepted runtime adapter class. `ProviderAdapterReceiptStore` pins the manifest in a separate SQLite database and serializes identical operation-key execution under `BEGIN IMMEDIATE`.
 
-The provider-neutral request binds operation key, task, role, semantic generation, candidate head/branch, canonical main, objective, adapter identity and an all-false execution authority envelope. Before a result may become a durable adapter receipt, v7 applies the inherited relay acceptance boundary: IMPLEMENT must return the exact candidate head, LAB/AUDIT must return the exact reviewed head, and every result requires a nonempty evidence reference. Invalid output is rolled back and cannot become a durable poison receipt. Relay and receipt-store connections are closed on success, rejection and crash-injection paths.
+The provider-neutral request binds operation key, task, role, semantic generation, candidate head/branch, canonical main, objective, adapter identity and an all-false execution authority envelope. Before a result may become a durable adapter receipt, v7 validates the full bounded role schema and re-validates it on replay. IMPLEMENT requires `status=READY`, exact `candidate_head`, nonnegative integer `diff_lines`, exact zero `cost_microusd`, and nonempty `evidence_ref`. LAB/AUDIT require exact `reviewed_head`, nonempty `evidence_ref`, and `verdict` limited to `PASS` or `FIX_REQUIRED`; `FIX_REQUIRED` additionally requires a nonempty string `code` and string `detail`. Invalid output is rolled back before receipt/execution insertion and cannot become a durable poison receipt. A pre-existing malformed stored receipt is rejected on replay. Relay and receipt-store connections are closed on success, rejection and crash-injection paths.
 
 Crash injection covers:
 
-`relay claim -> deterministic local execution -> validated durable adapter receipt -> crash before relay completion -> lease recovery -> same operation -> receipt reuse -> relay completion`.
+`relay claim -> deterministic local execution -> schema-validated durable adapter receipt -> crash before relay completion -> lease recovery -> same operation -> receipt reuse -> schema revalidation -> relay completion`.
 
 The durable execution count remains one for this sealed local adapter after a crash **after the receipt**. This does not prove exactly-once for a future live provider. In particular, a crash during or after an external provider call but before a local durable receipt would require provider-specific idempotency and separate review.
 
@@ -30,7 +30,8 @@ The durable execution count remains one for this sealed local adapter after a cr
 - altered manifest or capability widening: denied;
 - arbitrary runtime adapter subclass/object: denied;
 - conflicting request replay under one operation key: denied;
-- wrong result head/reviewed head or missing evidence: rejected before durable receipt;
+- malformed IMPLEMENT/LAB/AUDIT result schema, wrong result head/reviewed head or missing evidence: rejected before durable receipt;
+- malformed pre-existing stored receipt: rejected on replay;
 - v7 branch substitution into the existing v5 policy: denied;
 - network/live-provider/external-effect/spend/secret capability: absent and false;
 - merge/main/ruleset/production/Core/Keirin/Runtime authority: absent.
@@ -38,6 +39,8 @@ The durable execution count remains one for this sealed local adapter after a cr
 ## Proof ceiling
 
 The v7 integration fixture deliberately scripts IMPLEMENT, LAB and AUDIT outputs to exercise the end-to-end transport contract. That fixture is **not evidence of independent reviewer identity or role separation**. Independent Lab and Independent Auditor remain separate external review stages. v7 also does not authenticate a future live worker identity, provider identity, provider receipt or provider-side idempotency token.
+
+The SQLite writer transaction is safe here only because the accepted adapter is a deterministic local no-effect fixture. A future remote provider call must not simply be inserted into this transaction; it needs a separately reviewed provider-specific idempotency and crash-recovery design.
 
 ## Required review sequence
 
