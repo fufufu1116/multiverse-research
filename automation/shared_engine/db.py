@@ -76,6 +76,30 @@ def claim_next_task(worker_id, *, lease_seconds=None):
                                (worker_id,now+lease_seconds,now,tid)); c.commit(); c.close(); return tid
     except BaseException: c.rollback(); c.close(); raise
 
+def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
+    """Extend a healthy active lease without changing ownership or generation.
+
+    Renewal cannot resurrect an expired lease and cannot operate on pending/terminal
+    states. Expired work must go through explicit reclaim so the generation bump
+    fences the old worker.
+    """
+    init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
+    if isinstance(lease_seconds,bool) or not isinstance(lease_seconds,(int,float)) or lease_seconds<=0:
+        raise ValueError('LEASE_SECONDS_POSITIVE_REQUIRED')
+    now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
+    try:
+        r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
+        if r is None: raise KeyError(task_id)
+        if r['state'] not in RECOVERABLE_ACTIVE_STATES: raise InvalidTransitionError(f"RENEW_STATE:{r['state']}")
+        if r['claimed_by']!=worker_id or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
+        if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
+        new_until=max(float(r['lease_until']),now+float(lease_seconds))
+        c.execute('UPDATE tasks SET lease_until=?,updated_at=? WHERE id=?',(new_until,now,task_id))
+        c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
+                  (task_id,worker_id,'LEASE_RENEWED',r['state'],r['state'],json.dumps({'generation':generation,'lease_until':new_until},sort_keys=True,separators=(',',':')),now))
+        c.commit(); c.close(); return new_until
+    except BaseException: c.rollback(); c.close(); raise
+
 def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     """Take over one expired active task without changing its workflow state."""
     init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
