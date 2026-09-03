@@ -7,6 +7,7 @@ import threading
 import unittest
 
 from orchestrator_mvp_v2 import OrchestratorError
+from orchestrator_role_relay_v3 import RelayStore
 from orchestrator_role_relay_policy_v4 import CandidateBindingPolicy, PolicyRelayStore
 from orchestrator_role_relay_policy_source_v5 import ReviewedPolicySource, SourceBoundPolicyRelayStore
 from orchestrator_policy_change_control_v6 import (
@@ -169,7 +170,7 @@ class PolicyChangeControlV6Tests(unittest.TestCase):
         self.assertEqual(out[0], out[1])
         self.assertEqual(out[0]["classification"], NO_CHANGE)
 
-    def test_inherited_v4_v5_empty_db_first_open_is_lock_safe(self):
+    def test_inherited_v3_v4_v5_empty_db_first_open_is_lock_safe(self):
         v4_policy = CandidateBindingPolicy.exact(
             "fufufu1116/multiverse-research",
             ("automation-v5", "agent/automation-orchestrator-policy-source-v5-20260903-v1"),
@@ -198,6 +199,7 @@ class PolicyChangeControlV6Tests(unittest.TestCase):
                 self.assertFalse(a.is_alive() or b.is_alive(), f"{label}:{round_no}:thread_stuck")
                 self.assertEqual(errors, [], f"{label}:{round_no}:{errors!r}")
 
+        race("v3", lambda db: RelayStore(db))
         race("v4", lambda db: PolicyRelayStore(db, v4_policy))
         race("v5", lambda db: SourceBoundPolicyRelayStore(db, self.source))
 
