@@ -1,0 +1,107 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v7",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v6.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "latest_refresh_parent_head": "6653baaabb8649b27041485039c775c46bd57116",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only. If HEAD is ahead of this state's refresh/creation binding, inspect only the delta before claiming CURRENT.",
+  "inherited_state": {
+    "base": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v6.json",
+    "rule": "All v6 and inherited v5 constraints, source-integrity rules, protected populations, prespecs, pointers, roadmap gates, and forbidden actions remain binding unless explicitly changed below."
+  },
+  "delta_since_v6": {
+    "hofu_day1_cross_circumference_precheck": {
+      "artifact": "KEIRIN_HOFU_DAY1_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
+      "commit": "6653baaabb8649b27041485039c775c46bd57116",
+      "date": "2026-09-04",
+      "venue": "防府",
+      "circumference_m": 333,
+      "races_screened_pre_result": [1,2,3,4,5,6,7],
+      "target_rider_rows": 49,
+      "reference_takeo_400m_rider_rows": 84,
+      "reference_aomori_400m_rider_rows": 108,
+      "combined_reference_rider_rows": 192,
+      "candidate_overlap_count": 0,
+      "official_registration_checks_triggered": 0,
+      "support_delta": 0,
+      "result_values_observed": false,
+      "payout_values_observed": false
+    },
+    "hofu_day1_overlap_precheck_status": "COMPLETE_ALL_7_RACES_PRE_RESULT",
+    "hofu_outcomes_role": "RESERVED_FROM_FIT_DO_NOT_OPEN_FOR_SUPPORT_SHORTFALL_RESCUE"
+  },
+  "active_baseline": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "feature": "competition_score",
+    "state": "FROZEN_CONTINUE_NO_PROMOTION",
+    "mutation_allowed": false
+  },
+  "rider_circumference_support": {
+    "target_unique_official_cross_circumference_riders": 30,
+    "current": 9,
+    "remaining": 21,
+    "gate": "FAIL",
+    "result_join_authorized": false,
+    "formula_status": "BLOCKED_UNTIL_SUPPORT_GATE_PASS",
+    "hofu_day1_increment": 0
+  },
+  "current_stage": "STAGE_3_CROSS_CIRCUMFERENCE_SUPPORT_ACCUMULATION_WITH_SEP4_PRE_CAPTURE",
+  "roadmap_position": {
+    "stage_1_pre_freeze": "ACTIVE_PROSPECTIVE_DISCIPLINE_CONTINUES",
+    "stage_2_identity_gate": "TAKEO_DAY1_CLOSED_THROUGH_12R; FUTURE_CANDIDATES_FAIL_CLOSED",
+    "stage_3_support_gate": "CURRENT_MAIN_BOTTLENECK_9_OF_30",
+    "stage_4_formula_freeze": "BLOCKED",
+    "stage_5_controlled_result_join": "BLOCKED",
+    "stage_6_affinity_evaluation": "NOT_ESTABLISHED",
+    "stage_7_final_eval": "PRELOCKED_DESIGN_ONLY"
+  },
+  "sep4_active": {
+    "防府": {
+      "circumference_m": 333,
+      "role": "PRE_TRANSPORT_IDENTITY_SUPPORT_ONLY_RESERVED_FROM_FIT",
+      "pre_overlap_screen": "COMPLETE_7_OF_7",
+      "candidate_overlap_count_vs_known_sep3_400m_rosters": 0,
+      "support_delta": 0,
+      "outcomes_for_fit": "FORBIDDEN"
+    },
+    "豊橋": {
+      "circumference_m": 400,
+      "races": 12,
+      "cutoffs": ["15:46", "16:09", "16:33", "16:57", "17:21", "17:45", "18:09", "18:33", "18:57", "19:21", "19:46", "20:12"],
+      "role": "DEVELOPMENT_CANDIDATE",
+      "next": "CAPTURE_STRICT_PRE_BEFORE_FROZEN_CUTOFFS"
+    },
+    "kdreams_exact_racedetail_hrefs": "PENDING_UNLESS_POSITIVELY_EXPOSED_DO_NOT_GUESS",
+    "oddspark_fallback": "POSITIVE_UNDER_FROZEN_FALLBACK_PRESPEC",
+    "result_access_authorized": false
+  },
+  "source_integrity": {
+    "prospective_finish_targets_observed": false,
+    "payout_values_observed": false,
+    "result_access_authorized": false,
+    "market_or_human_feature_use": "FORBIDDEN"
+  },
+  "next_actions": [
+    "Fresh Read branch first on every resume/current claim.",
+    "Capture Sep4 Toyohashi PRE for all 12 races before their frozen cutoffs under the strict allowlist/fallback contract; do not infer KDreams race IDs.",
+    "Continue cross-circumference support acquisition from 9 toward 30 using only prespecified legitimate PRE/final-card opportunities; confirm candidate repeats by official registration identity before support increment.",
+    "Confirm Nara repeated riders on the final PRE card when available; no support from schedule-only membership.",
+    "Keep Hofu outcomes reserved from fit and do not use them to rescue the support shortfall.",
+    "Only after support reaches at least 30 freeze low-DOF Rider x Circumference formula, unsupported-rider policy, fit rule, primary metric, race-cluster bootstrap, advance criterion, and exact membership before any RESULT join.",
+    "Verify second objective legshow venue and later freeze exact final-evaluation membership."
+  ],
+  "required_artifact_pointers": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v6.json",
+    "KEIRIN_HOFU_DAY1_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
+    "KEIRIN_HOFU_1R_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
+    "KEIRIN_TAKEO_10R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+    "KEIRIN_TAKEO_11R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+    "KEIRIN_TAKEO_12R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
+    "KEIRIN_SEP4_PRE_TRANSPORT_READINESS_DELTA_20260903_v2.json"
+  ],
+  "owner_action_required_now": false
+}
