@@ -1,0 +1,215 @@
+name: keirin-nara-sep10-assen-kawasaki-overlap-v1-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-nara-sep10-assen-kawasaki-overlap-v1-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  overlap:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Extract only inferred rider-name column and intersect with Kawasaki official IDs
+        run: |
+          python - <<'PY'
+          import collections, hashlib, json, pathlib, re, subprocess, unicodedata
+          from urllib.parse import urlparse
+          import requests
+          from bs4 import BeautifulSoup
+
+          URL='https://keirin.kdreams.jp/nara/assen/5320260910/'
+          EXPECTED_PATH='/nara/assen/5320260910/'
+          MAP=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v2.json')
+          OLD=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_CROSS_BLOCK_SUPPORT_PRECHECK_20260903_v2.json')
+          STRUCT=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_STRUCTURE_PROBE_20260904_v1.json')
+          OUT=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_KAWASAKI_PENDING_OVERLAP_PRECHECK_20260904_v1.json')
+          KNOWN=['川口 公太朗','桐山 敬太郎','小林 弘和','長井 妙樹','佐々木 堅次','植原 琢也','中村 圭志','近藤 誠二','牧田 悠生']
+          CONFIRMED_REG='015018'
+
+          def norm(s):
+              s=unicodedata.normalize('NFKC',str(s)); s=unicodedata.normalize('NFC',s)
+              return ''.join(ch for ch in s if not ch.isspace())
+          def blob(p): return subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+
+          for p in (MAP,OLD,STRUCT):
+              if not p.exists(): raise SystemExit(f'FAIL_CLOSED_MISSING_BINDING {p}')
+          mapping=json.loads(MAP.read_text(encoding='utf-8'))
+          old=json.loads(OLD.read_text(encoding='utf-8'))
+          struct=json.loads(STRUCT.read_text(encoding='utf-8'))
+          if mapping.get('event',{}).get('race_date')!='2026-08-30' or mapping.get('event',{}).get('venue')!='川崎' or mapping.get('event',{}).get('circumference_m')!=400:
+              raise SystemExit('FAIL_CLOSED_KAWASAKI_BINDING')
+          if mapping.get('result_accessed') is not False or mapping.get('payout_accessed') is not False:
+              raise SystemExit('FAIL_CLOSED_KAWASAKI_RESULT_BOUNDARY')
+          if old.get('source_blocks',{}).get('nara',{}).get('source_url') != URL:
+              raise SystemExit('FAIL_CLOSED_NARA_SOURCE_BINDING')
+          if struct.get('all_known_names_present') is not True or struct.get('source_url') != URL:
+              raise SystemExit('FAIL_CLOSED_STRUCTURE_BINDING')
+
+          r=requests.get(URL,timeout=20,allow_redirects=False,headers={'User-Agent':'MultiverseKeirinResearch/NaraAssenKawasakiOverlap1.0','Accept':'text/html,application/xhtml+xml'})
+          if r.status_code != 200: raise SystemExit(f'FAIL_CLOSED_HTTP_{r.status_code}')
+          if len(r.content)>4_000_000 or len(r.content)<500: raise SystemExit('FAIL_CLOSED_SIZE')
+          if 'html' not in (r.headers.get('Content-Type') or '').lower(): raise SystemExit('FAIL_CLOSED_CONTENT_TYPE')
+          u=urlparse(URL)
+          if u.scheme!='https' or u.hostname!='keirin.kdreams.jp' or u.path!=EXPECTED_PATH or u.query or u.fragment:
+              raise SystemExit('FAIL_CLOSED_SOURCE_URL')
+          soup=BeautifulSoup(r.content.decode('utf-8','replace'),'html.parser')
+          tables=soup.select('table.assen_s')
+          if not tables: raise SystemExit('FAIL_CLOSED_NO_ASSEN_S_TABLE')
+
+          # Infer the rider-name cell index only from the nine names already frozen in the prior precheck.
+          observed_indices=[]
+          known_presence={}
+          for name in KNOWN:
+              want=norm(name); hits=[]
+              for table_i,table in enumerate(tables):
+                  for row_i,tr in enumerate(table.find_all('tr')):
+                      cells=tr.find_all(['th','td'],recursive=False)
+                      for cell_i,cell in enumerate(cells):
+                          if norm(cell.get_text(' ',strip=True))==want:
+                              hits.append((table_i,row_i,cell_i))
+              known_presence[name]=len(hits)
+              if len(hits)!=1: raise SystemExit(f'FAIL_CLOSED_KNOWN_NAME_CARDINALITY {name} {len(hits)}')
+              observed_indices.append(hits[0][2])
+          if len(set(observed_indices))!=1: raise SystemExit(f'FAIL_CLOSED_NAME_COLUMN_DRIFT {observed_indices}')
+          name_col=observed_indices[0]
+
+          roster=[]
+          for table in tables:
+              for tr in table.find_all('tr'):
+                  cells=tr.find_all(['th','td'],recursive=False)
+                  if len(cells)<=name_col: continue
+                  c=cells[name_col]
+                  if c.name!='td': continue
+                  raw=re.sub(r'\s+',' ',c.get_text(' ',strip=True)).strip()
+                  nr=norm(raw)
+                  if not nr: continue
+                  # Rider names here are text-only Japanese names; reject numeric/punctuation-bearing cells rather than leaking another column.
+                  if any(ch.isdigit() for ch in nr): continue
+                  if len(nr)<2 or len(nr)>12: continue
+                  if re.search(r'[A-Za-z0-9:/.%+-]',nr): continue
+                  roster.append({'display_name':raw,'normalized_name':nr})
+          if not (50 <= len(roster) <= 200): raise SystemExit(f'FAIL_CLOSED_ROSTER_ROW_COUNT {len(roster)}')
+          counts=collections.Counter(x['normalized_name'] for x in roster)
+          unique_roster=sorted(set(counts))
+          if not all(norm(x) in counts for x in KNOWN): raise SystemExit('FAIL_CLOSED_KNOWN_NAMES_NOT_IN_EXTRACTED_ROSTER')
+
+          kw=[]
+          for m in mapping.get('mappings',[]):
+              if m.get('mapping_status')!='EXACT_SINGLE_MATCH' or not m.get('support_eligible_from_identity'): continue
+              reg=str(m.get('registration_number') or '')
+              name=m.get('historical_pre_rider_name_normalized') or ''
+              if not re.fullmatch(r'\d{6}',reg): raise SystemExit('FAIL_CLOSED_KAWASAKI_REG_FORMAT')
+              kw.append({'normalized_name':norm(name),'display_name':name,'registration_number':reg,'race_no':m.get('race_no'),'car_no':m.get('car_no')})
+          if len(kw)!=81: raise SystemExit(f'FAIL_CLOSED_KAWASAKI_EXACT_COUNT {len(kw)}')
+          kw_by_name=collections.defaultdict(list)
+          for x in kw: kw_by_name[x['normalized_name']].append(x)
+
+          overlaps=[]; ambiguous=[]
+          for nm,krows in sorted(kw_by_name.items()):
+              if nm not in counts: continue
+              if counts[nm]!=1 or len({x['registration_number'] for x in krows})!=1:
+                  ambiguous.append({'normalized_name':nm,'nara_name_count':counts[nm],'kawasaki_registration_ids':sorted({x['registration_number'] for x in krows})})
+                  continue
+              x=krows[0]
+              overlaps.append({
+                  'rider_name':x['display_name'],
+                  'official_registration_number_from_kawasaki_identity':x['registration_number'],
+                  'kawasaki_race_date':'2026-08-30',
+                  'kawasaki_race_no':x['race_no'],
+                  'kawasaki_car_no':x['car_no'],
+                  'kawasaki_circumference_m':400,
+                  'nara_scheduled_meeting_start':'2026-09-10',
+                  'nara_circumference_m':333.33,
+                  'nara_membership_status':'SCHEDULED_ASSEN_NOT_FINAL_RACECARD',
+                  'support_status':'PENDING_FINAL_PRE_CARD_AND_PROSPECTIVE_OFFICIAL_EVENT_ASSIGNMENT'
+              })
+
+          old_pending={str(x['official_registration_number']) for x in old.get('intersection',{}).get('scheduled_overlap',[])}
+          if len(old_pending)!=9: raise SystemExit(f'FAIL_CLOSED_OLD_PENDING_COUNT {len(old_pending)}')
+          overlap_regs={x['official_registration_number_from_kawasaki_identity'] for x in overlaps}
+          new_pending=sorted(overlap_regs-old_pending-{CONFIRMED_REG})
+          overlap_by_reg={x['official_registration_number_from_kawasaki_identity']:x for x in overlaps}
+          new_pending_rows=[overlap_by_reg[r] for r in new_pending]
+          old_pending_also_in_kawasaki=sorted(overlap_regs & old_pending)
+          confirmed_rider_also_in_nara_schedule=CONFIRMED_REG in overlap_regs
+          pending_union=(old_pending | set(new_pending))-{CONFIRMED_REG}
+
+          roster_hash=hashlib.sha256(('\n'.join(unique_roster)+'\n').encode('utf-8')).hexdigest()
+          doc={
+              'record':'KEIRIN_NARA_SEP10_ASSEN_KAWASAKI_PENDING_OVERLAP_PRECHECK_20260904_v1',
+              'status':'EXHAUSTIVE_SCHEDULED_NAME_INTERSECTION_PENDING_ONLY_NO_SUPPORT_INCREMENT',
+              'source':{
+                  'url':URL,
+                  'source_sha256':hashlib.sha256(r.content).hexdigest(),
+                  'membership_status':'SCHEDULED_ASSEN_NOT_FINAL_RACECARD'
+              },
+              'bindings':{
+                  'kawasaki_mapping_file':str(MAP),'kawasaki_mapping_git_blob':blob(MAP),
+                  'prior_takeo_nara_precheck_file':str(OLD),'prior_takeo_nara_precheck_git_blob':blob(OLD),
+                  'structure_probe_file':str(STRUCT),'structure_probe_git_blob':blob(STRUCT)
+              },
+              'extraction':{
+                  'selector':'table.assen_s',
+                  'name_column_index_zero_based':name_col,
+                  'name_column_inferred_only_from_prior_known_9':True,
+                  'scheduled_roster_row_count':len(roster),
+                  'scheduled_roster_unique_normalized_name_count':len(unique_roster),
+                  'scheduled_roster_normalized_name_sha256':roster_hash,
+                  'duplicate_normalized_name_count':sum(1 for v in counts.values() if v>1),
+                  'full_roster_names_persisted':False,
+                  'non_name_table_values_persisted':False
+              },
+              'kawasaki_official_identity_rows':81,
+              'kawasaki_to_nara_scheduled_overlap_count':len(overlaps),
+              'kawasaki_to_nara_scheduled_overlap':overlaps,
+              'ambiguous_name_overlap':ambiguous,
+              'new_pending_candidates_beyond_prior_takeo9_count':len(new_pending_rows),
+              'new_pending_candidates_beyond_prior_takeo9':new_pending_rows,
+              'prior_takeo9_also_present_in_kawasaki_overlap_registration_numbers':old_pending_also_in_kawasaki,
+              'confirmed_015018_also_present_in_nara_schedule':confirmed_rider_also_in_nara_schedule,
+              'pending_unique_union_upper_count':len(pending_union),
+              'confirmed_unique_support_floor':1,
+              'nonfinal_combined_unique_upper_bound':1+len(pending_union),
+              'support_increment_authorized_now':0,
+              'final_pre_card_required':True,
+              'prospective_official_same_event_assignment_required':True,
+              'result_accessed':False,
+              'payout_accessed':False,
+              'odds_accessed':False,
+              'human_forecast_accessed':False,
+              'raw_html_persisted':False,
+              'raw_html_printed':False,
+              'predictive_numeric_values_persisted':False,
+              'model_fit_authorized':False,
+              'result_join_authorized':False,
+              'main_or_runtime_mutation':False
+          }
+          OUT.write_text(json.dumps(doc,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({
+              'record':doc['record'],
+              'scheduled_roster_row_count':len(roster),
+              'kawasaki_to_nara_scheduled_overlap_count':len(overlaps),
+              'new_pending_candidates_beyond_prior_takeo9_count':len(new_pending_rows),
+              'pending_unique_union_upper_count':len(pending_union),
+              'nonfinal_combined_unique_upper_bound':1+len(pending_union),
+              'support_increment_authorized_now':0,
+              'result_accessed':False
+          },ensure_ascii=False,sort_keys=True))
+          PY
+      - name: Persist research-only pending overlap evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_KAWASAKI_PENDING_OVERLAP_PRECHECK_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): screen Nara Sep10 assen against Kawasaki identities v1'
+          git push origin HEAD:${{ github.ref_name }}
