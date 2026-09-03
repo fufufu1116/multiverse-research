@@ -1,0 +1,44 @@
+{
+  "schema": "multiverse.automation.shared_engine.local_persistent_worker.v9",
+  "candidate_only": true,
+  "branch": "agent/automation-shared-engine-persistent-worker-v9-20260904-v1",
+  "predecessor_pr": 91,
+  "predecessor_head": "61f4e330fd5b1945dbfbceb223cbc71d205860f2",
+  "predecessor_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "predecessor_closure_comment": 5528780140,
+  "stacked_v7_head": "4a72ef46116043094c7a8e494404956925a5b3bf",
+  "canonical_main": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
+  "worker": {
+    "task_creation_authority": false,
+    "sole_task_state_authority": "automation/shared_engine/db.py",
+    "local_process_identity_only": true,
+    "authenticated_external_worker_identity": false,
+    "lease_max_seconds": 120,
+    "poll_max_seconds": 5,
+    "max_run_cycles": 1000,
+    "provider_path": "sealed_deterministic_local_pr88_v7"
+  },
+  "proof": {
+    "deployed_daemon": false,
+    "continuous_autonomous_operation": false,
+    "remote_provider_exactly_once": false,
+    "distributed_network_lease_safety": false,
+    "production_portability": false
+  },
+  "authority": {
+    "merge": false,
+    "main_mutation": false,
+    "ruleset_mutation": false,
+    "production": false,
+    "core_adoption": false,
+    "keirin_adoption": false,
+    "protected_keirin_data": false,
+    "live_provider": false,
+    "network": false,
+    "external_effect": false,
+    "spend": false,
+    "secret_credential": false,
+    "workflow_dispatch": false,
+    "runtime": false
+  }
+}
