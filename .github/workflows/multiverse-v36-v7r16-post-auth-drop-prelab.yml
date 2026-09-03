@@ -1,0 +1,113 @@
+name: MULTIVERSE V19.7.36 v7r16 Post-Auth Credential Drop Pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/r1-stage1-phase-c-v19-7-36-v7r16-post-auth-credential-drop-atomicity-remediation-v1
+
+permissions:
+  contents: read
+
+jobs:
+  test-v7r16-post-auth-drop:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact event commit without third-party actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin https://github.com/fufufu1116/multiverse-research.git
+          git -c protocol.version=2 fetch --depth=100 origin "${GITHUB_SHA}" 51c48d366027339a78526031de175bb78f8e62ce
+          git checkout --detach "${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git merge-base --is-ancestor 51c48d366027339a78526031de175bb78f8e62ce HEAD
+          main_now="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$main_now" = '040d37f0a4e426cf2e119706484c90cbb48f0e56'
+          printf 'PRELAB_V7R16_EXACT_HEAD=%s\n' "$(git rev-parse HEAD)"
+          printf 'PRELAB_V7R16_EXACT_TREE=%s\n' "$(git rev-parse HEAD^{tree})"
+          printf 'PRELAB_V7R16_CANONICAL_MAIN=%s\n' "$main_now"
+
+      - name: Static v7r16 structural contract
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          guard='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R16_POST_AUTH_CREDENTIAL_DROP_GUARD_20260904.go'
+          gofmt -w "$guard"
+          go test "$guard" -count=1
+          grep -F 'retireAuthorityBeforeUserDrop' "$guard"
+          grep -F 'syscall.Close(fd)' "$guard"
+          grep -F 'authority-fd-not-retired' "$guard"
+          grep -F 'FINAL_AUTHORITY_TRANSITION_SYSCALL=SETRESUID' "$guard"
+          grep -F 'if err = dropToOrdinaryUser(uid); err != nil' "$guard"
+          grep -F 'syscall.Exec(helperPath,argv,env)' "$guard"
+          ! awk '/dropToOrdinaryUser\(uid\)/,0' "$guard" | grep -F 'verifyAuthorityFD('
+          ! awk '/dropToOrdinaryUser\(uid\)/,0' "$guard" | grep -F 'setNondumpable('
+          ! awk '/dropToOrdinaryUser\(uid\)/,0' "$guard" | grep -F 'verifyNoTracer('
+          grep -F 'prearmMinRateBeforeComments = 55' governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go
+          grep -F 'prearmMinRateAfterComments = 54' governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go
+          go test governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903_test.go -count=1
+          printf 'PRELAB_V7R16_STATIC_STRUCTURAL_GATE_PASS=true\n'
+
+      - name: Build predecessor image then exact v7r16 child image
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          base="multiverse-v7r16-base:${GITHUB_SHA}"
+          tag="multiverse-v7r16-post-auth-drop:${GITHUB_SHA}"
+          docker build -f .devcontainer/Dockerfile -t "$base" .
+          docker build --build-arg BASE_IMAGE="$base" -f .devcontainer/Dockerfile.v7r16 -t "$tag" .
+          test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r16)" = '0 0 555'
+          test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9)" = '0 0 4555'
+          test -z "$(docker run --rm --entrypoint /bin/bash "$tag" -c 'find /opt/multiverse/v36 /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -uid 64173 -print -quit 2>/dev/null')"
+          helper_sha="$(docker run --rm --entrypoint sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-v7r7 | awk '{print $1}')"
+          test "$helper_sha" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'
+          guard_sha="$(docker run --rm --entrypoint sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r16 | awk '{print $1}')"
+          probe_sha="$(docker run --rm --entrypoint sha256sum "$tag" /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 | awk '{print $1}')"
+          identity="$(docker run --rm --entrypoint cat "$tag" /opt/multiverse/v36/image-identity-v7r16.json)"
+          grep -F 'V19.7.36-v7r16-image-identity' <<<"$identity"
+          grep -F 'SEALED_AUTHORITY_RETIRED_BEFORE_ORDINARY_USER_SETRESUID' <<<"$identity"
+          printf 'PRELAB_V7R16_GUARD_SHA256=%s\n' "$guard_sha"
+          printf 'PRELAB_V7R16_RATE_PROBE_SHA256=%s\n' "$probe_sha"
+          printf 'PRELAB_V7R16_HELPER_SHA256=%s\n' "$helper_sha"
+          printf 'PRELAB_V7R16_IMAGE_IDENTITY_SHA256=%s\n' "$(printf '%s' "$identity" | sha256sum | awk '{print $1}')"
+
+      - name: Direct ordinary same-UID invocation denied
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          tag="multiverse-v7r16-post-auth-drop:${GITHUB_SHA}"
+          out="$(docker run --rm --user codespace --network=none -e CODESPACES=true -e CODESPACE_NAME=rate-v7r16-test --entrypoint /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r16 "$tag" rate-v7r16-test 3 00112233445566778899aabbccddeeff 2>&1 || true)"
+          grep -F 'PHASE_C_V19_7_36_V7R16_POST_AUTH_DROP_GUARD_DENIED:PROTECTED_CREDENTIAL_BOUNDARY' <<<"$out"
+          printf 'PRELAB_V7R16_DIRECT_ORDINARY_SAME_UID_GUARD_DENIED=true\n'
+
+      - name: Inherited launcher-to-probe attacks remain closed
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          tag="multiverse-v7r16-post-auth-drop:${GITHUB_SHA}"
+          docker run --rm -v "$PWD:/src:ro" --entrypoint /bin/bash "$tag" /src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R13_WHOLE_PROCESS_ATTACK_DRIVER_20260903.sh
+          printf 'PRELAB_V7R16_INHERITED_LAUNCHER_TO_PROBE_ATTACK_GATE_PASS=true\n'
+
+      - name: Structural post-auth drop attack proof
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          tag="multiverse-v7r16-post-auth-drop:${GITHUB_SHA}"
+          docker run --rm --network=none -v "$PWD:/src:ro" --entrypoint /usr/bin/python3 "$tag" /src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R16_POST_AUTH_DROP_ATTACK_SELFTEST_20260904.py
+          printf 'PRELAB_V7R16_POST_AUTH_CREDENTIAL_DROP_ATOMICITY_GATE_PASS=true\n'
+          printf 'FINAL_COMMIT_RATE_FLOOR=60/59\n'
+          printf 'INHERITED_HELPER_RATE_FLOOR=55/54\n'
+          printf 'RATE_TOCTOU_RESIDUAL_NONZERO=true\n'
+          printf 'ONE_SHOT_GUARD_CONSUMED=false\n'
+          printf 'SECURITY_AUTHORITY_GRANTED=false\n'
+          printf 'CAN_CREATE_OR_REUSE_CODESPACE_NOW=false\n'
+          printf 'CAN_RUN_LIVE_NOW=false\n'
+          printf 'RUNTIME=OFF\n'
