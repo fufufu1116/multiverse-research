@@ -1,0 +1,30 @@
+{
+  "record":"KEIRIN_HISTORICAL_PIT_TRANSPORT_VALIDATION_EXPOSURE_RECEIPT_20260903_v2",
+  "status":"ADDITIONAL_SOURCE_VALIDATION_EXPOSURE_RECORDED_FAIL_CLOSED_NO_MODEL_AUTHORITY",
+  "supersedes":"KEIRIN_HISTORICAL_PIT_TRANSPORT_VALIDATION_EXPOSURE_RECEIPT_20260903_v1.json",
+  "scope":"RESEARCH_INTEGRITY_AND_HISTORICAL_TRANSPORT_VALIDATION_ONLY",
+  "timestamp_jst":"2026-09-03T23:45:00+09:00",
+  "purpose":"Record additional explicit outcome exposure created after v1 while discovering eligible Historical Fast Track archive blocks.",
+  "additional_exposure":{
+    "source_family":"KDreams archived Nara race-detail/search surface",
+    "surface_date":"2026-08-27",
+    "explicit_prior_same_meet_finish_values_observed":true,
+    "corresponding_prior_race_date":"2026-08-26",
+    "target_result_page_intentionally_opened":false,
+    "payout_values_observed":false,
+    "use_for_tuning_or_feature_selection":false
+  },
+  "conservative_burn_action":"Extend the affinity burned-date firewall through 2026-08-26. The first possible clean historical date becomes 2026-08-27, subject to another Fresh burned-ledger refresh before any target extraction.",
+  "historical_population_effect":{
+    "nara_2026_08_26_day1":"BURNED_NOT_ELIGIBLE_FOR_NEW_AFFINITY_FIT_EVAL_OR_HFT_SUPPORT_POOL",
+    "support_increment":0
+  },
+  "feature_firewall":[
+    "No observed finish value may enter an affinity feature, support definition, formula choice, threshold, population selection or rescue decision.",
+    "Do not use model-visible mixed KDreams pages as the acquisition path for an otherwise clean Historical Fast Track population.",
+    "Use quarantined raw transport plus PRE-only parser if such a path becomes available."
+  ],
+  "result_join_authorized":false,
+  "model_fit_authorized":false,
+  "hard_boundaries":["NO_TARGET_RESULT_EXTRACTION","NO_PAYOUT","NO_RESULT_AS_FEATURE","NO_OUTCOME_BASED_POPULATION_SELECTION","NO_FIREWALL_ROLLBACK","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
