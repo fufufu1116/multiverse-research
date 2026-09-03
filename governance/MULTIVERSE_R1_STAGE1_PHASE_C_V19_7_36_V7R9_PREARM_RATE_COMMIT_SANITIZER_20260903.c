@@ -1,16 +1,71 @@
 #if !defined(__x86_64__)
-#error "v7r9 sanitizer requires linux amd64"
+#error "v7r13 launcher requires linux amd64"
 #endif
 
 typedef unsigned long u64;
 typedef long s64;
 
-static const char probe_path[] = "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9";
+#ifndef V7R13_PROBE_PATH
+#define V7R13_PROBE_PATH "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9"
+#endif
+#ifndef V7R13_AUTH_UID
+#define V7R13_AUTH_UID 64173UL
+#endif
+
+static const char probe_path[] = V7R13_PROBE_PATH;
 static const char env_codespaces[] = "CODESPACES=true";
 static const char key_codespaces[] = "CODESPACES=";
 static const char key_name[] = "CODESPACE_NAME=";
 static const char arg_commit[] = "commit";
 static char env_name[15 + 129];
+
+#define SYS_close 3
+#define SYS_chdir 80
+#define SYS_getuid 102
+#define SYS_geteuid 107
+#define SYS_setresuid 117
+#define SYS_getresuid 118
+#define SYS_prctl 157
+#define SYS_close_range 436
+#define PR_SET_DUMPABLE 4
+#define PR_SET_NO_NEW_PRIVS 38
+
+static s64 xsys0(s64 nr) {
+  register s64 rax __asm__("rax") = nr;
+  __asm__ volatile("syscall" : "+r"(rax) : : "rcx", "r11", "memory");
+  return rax;
+}
+static s64 xsys1(s64 nr, u64 a1) {
+  register s64 rax __asm__("rax") = nr;
+  register u64 rdi __asm__("rdi") = a1;
+  __asm__ volatile("syscall" : "+r"(rax) : "r"(rdi) : "rcx", "r11", "memory");
+  return rax;
+}
+static s64 xsys2(s64 nr, u64 a1, u64 a2) {
+  register s64 rax __asm__("rax") = nr;
+  register u64 rdi __asm__("rdi") = a1;
+  register u64 rsi __asm__("rsi") = a2;
+  __asm__ volatile("syscall" : "+r"(rax) : "r"(rdi), "r"(rsi) : "rcx", "r11", "memory");
+  return rax;
+}
+static s64 xsys3(s64 nr, u64 a1, u64 a2, u64 a3) {
+  register s64 rax __asm__("rax") = nr;
+  register u64 rdi __asm__("rdi") = a1;
+  register u64 rsi __asm__("rsi") = a2;
+  register u64 rdx __asm__("rdx") = a3;
+  __asm__ volatile("syscall" : "+r"(rax) : "r"(rdi), "r"(rsi), "r"(rdx) : "rcx", "r11", "memory");
+  return rax;
+}
+static s64 xsys5(s64 nr, u64 a1, u64 a2, u64 a3, u64 a4, u64 a5) {
+  register s64 rax __asm__("rax") = nr;
+  register u64 rdi __asm__("rdi") = a1;
+  register u64 rsi __asm__("rsi") = a2;
+  register u64 rdx __asm__("rdx") = a3;
+  register u64 r10 __asm__("r10") = a4;
+  register u64 r8 __asm__("r8") = a5;
+  __asm__ volatile("syscall" : "+r"(rax) : "r"(rdi), "r"(rsi), "r"(rdx), "r"(r10), "r"(r8) : "rcx", "r11", "memory");
+  return rax;
+}
 
 static __attribute__((noreturn)) void xexit(int code) {
   register s64 rax __asm__("rax") = 60;
@@ -55,7 +110,31 @@ static int valid_name(const char *s, u64 *n_out) {
   return 1;
 }
 
+static int launcher_credentials(u64 *real_uid_out) {
+  u64 r = 0, e = 0, s = 0;
+  if (xsys0(SYS_geteuid) != 0) return 0;
+  r = (u64)xsys0(SYS_getuid);
+  if (r == 0 || r == V7R13_AUTH_UID) return 0;
+  if (xsys3(SYS_getresuid, (u64)&r, (u64)&e, (u64)&s) < 0) return 0;
+  if (e != 0 || s != 0) return 0;
+  *real_uid_out = r;
+  return 1;
+}
+
+static int establish_exec_boundary(u64 real_uid) {
+  u64 r = 0, e = 0, s = 0;
+  if (xsys5(SYS_prctl, PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) < 0) return 0;
+  if (xsys3(SYS_setresuid, real_uid, V7R13_AUTH_UID, V7R13_AUTH_UID) < 0) return 0;
+  if (xsys3(SYS_getresuid, (u64)&r, (u64)&e, (u64)&s) < 0) return 0;
+  if (r != real_uid || e != V7R13_AUTH_UID || s != V7R13_AUTH_UID) return 0;
+  if (xsys5(SYS_prctl, PR_SET_DUMPABLE, 0, 0, 0, 0) < 0) return 0;
+  return 1;
+}
+
 static __attribute__((noreturn)) void start_c(u64 *sp) {
+  u64 real_uid = 0;
+  if (!launcher_credentials(&real_uid)) xexit(92);
+
   u64 argc = sp[0];
   char **argv = (char **)&sp[1];
   char **envp = &argv[argc + 1];
@@ -74,6 +153,11 @@ static __attribute__((noreturn)) void start_c(u64 *sp) {
   for (u64 i = 0; i < 15; i++) env_name[i] = key_name[i];
   for (u64 i = 0; i < n; i++) env_name[15 + i] = name[i];
   env_name[15 + n] = 0;
+
+  if (xsys3(SYS_close_range, 3, 0xffffffffUL, 0) < 0) xexit(92);
+  static const char slash[] = "/";
+  if (xsys1(SYS_chdir, (u64)slash) < 0) xexit(92);
+  if (!establish_exec_boundary(real_uid)) xexit(92);
 
   char *clean_env[3];
   clean_env[0] = (char *)env_codespaces;
