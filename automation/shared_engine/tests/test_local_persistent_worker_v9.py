@@ -49,12 +49,15 @@ class LocalPersistentWorkerV9Tests(unittest.TestCase):
         self.assertTrue(a.worker_id.startswith('lpw9-'))
         self.assertLessEqual(len(a.worker_id), config.WORKER_ID_MAX_LENGTH)
 
-    def test_worker_has_no_task_creation_or_retained_engine_surface(self):
+    def test_worker_has_no_task_creation_or_retained_or_returned_engine_surface(self):
         source = inspect.getsource(LocalPersistentWorker)
         self.assertNotIn('create_task(', source)
         self.assertNotIn('.submit(', source)
+        self.assertNotIn('def _open_exact_engine', source)
+        self.assertNotIn('return engine', source)
         w = self.worker()
         self.assertFalse(hasattr(w, 'engine'))
+        self.assertFalse(hasattr(w, '_open_exact_engine'))
         self.assertFalse(any(isinstance(value, ExactV7SharedEngine) for value in vars(w).values()))
         with self.assertRaisesRegex(TypeError, 'V9_EXACT_BINDING_TYPE_REQUIRED'):
             LocalPersistentWorker(object(), self.bridge, self.provider)
