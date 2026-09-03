@@ -1,0 +1,30 @@
+name: MULTIVERSE Shared Engine v8 Event Type Support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-event-type-support-20260904-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-event-type-support.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  support-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run event-type provenance probe
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation.shared_engine.tests.test_v8_event_type_support_probe -v
+      - name: Nonauthority receipt
+        run: |
+          echo 'SUPPORT_ONLY=true'
+          echo 'RUNTIME=OFF'
+          echo 'MAIN_MUTATION_AUTHORITY=false'
