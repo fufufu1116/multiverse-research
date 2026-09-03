@@ -6,6 +6,7 @@ import unittest
 import config
 import db
 from canonical_v7_binding import CANONICAL_MAIN, V7_HEAD, v7_result_to_bridge_receipt
+from domain_registry import DomainPolicyError, ENGINE_GLOBAL_DENY, KEIRIN
 from exact_v7_shared_engine import ExactV7SharedEngine, V7_MANIFEST
 from integration_bridge import IntegrationBinding, apply_receipt
 from orchestrator_provider_adapter_v7 import (
@@ -133,6 +134,54 @@ class V8AdversarialSupportTests(unittest.TestCase):
         job["authority"]["runtime"] = True
         with self.assertRaisesRegex(OrchestratorError, "PROVIDER_JOB_AUTHORITY"):
             provider_request_from_job(job, manifest)
+
+    def test_all_core_global_denies_block_before_task_creation(self):
+        before = len(db.list_tasks())
+        for capability in sorted(ENGINE_GLOBAL_DENY):
+            with self.subTest(capability=capability):
+                with self.assertRaisesRegex(DomainPolicyError, capability):
+                    self.engine.submit(
+                        "core",
+                        "implement",
+                        f"deny {capability}",
+                        requested_capabilities={capability: True},
+                    )
+        self.assertEqual(len(db.list_tasks()), before)
+
+    def test_all_keirin_specific_denies_block_before_task_creation(self):
+        before = len(db.list_tasks())
+        specific = sorted(KEIRIN.denied_capabilities - ENGINE_GLOBAL_DENY)
+        for capability in specific:
+            with self.subTest(capability=capability):
+                with self.assertRaisesRegex(DomainPolicyError, capability):
+                    self.engine.submit(
+                        "keirin",
+                        "research",
+                        f"deny {capability}",
+                        requested_capabilities={capability: True},
+                    )
+        self.assertEqual(len(db.list_tasks()), before)
+
+    def test_all_keirin_protected_resources_block_before_task_creation(self):
+        before = len(db.list_tasks())
+        for resource in sorted(KEIRIN.protected_resources):
+            with self.subTest(resource=resource):
+                with self.assertRaisesRegex(DomainPolicyError, "PROTECTED_RESOURCE_DENIED"):
+                    self.engine.submit(
+                        "keirin",
+                        "analysis",
+                        f"deny {resource}",
+                        resources={resource},
+                    )
+        self.assertEqual(len(db.list_tasks()), before)
+
+    def test_unknown_domain_and_disallowed_task_type_fail_closed(self):
+        before = len(db.list_tasks())
+        with self.assertRaisesRegex(DomainPolicyError, "UNKNOWN_DOMAIN"):
+            self.engine.submit("unknown", "research", "x")
+        with self.assertRaisesRegex(DomainPolicyError, "TASK_TYPE_DENIED"):
+            self.engine.submit("keirin", "implement", "x")
+        self.assertEqual(len(db.list_tasks()), before)
 
     def test_malformed_lab_result_does_not_advance(self):
         t = self.engine.submit("core", "implement", "x")
