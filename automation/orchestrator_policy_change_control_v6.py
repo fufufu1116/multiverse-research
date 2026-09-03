@@ -56,6 +56,19 @@ _BASELINE_AUTHORITY_KEYS = {
 }
 
 
+def _execute_sqlite_locked_retry(conn: sqlite3.Connection, sql: str, timeout_seconds: float = 10.0):
+    """Retry only SQLite lock/busy failures during connection-level PRAGMA setup."""
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        try:
+            return conn.execute(sql)
+        except sqlite3.OperationalError as exc:
+            message = str(exc).lower()
+            if ("locked" not in message and "busy" not in message) or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.01)
+
+
 @dataclass(frozen=True)
 class ChangeControlBaseline:
     raw_sha256: str
@@ -278,8 +291,8 @@ class PolicyChangeControlStore:
         self.conn = sqlite3.connect(self.path, timeout=10)
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("PRAGMA busy_timeout=10000")
-        self.conn.execute("PRAGMA journal_mode=WAL")
-        self.conn.execute("PRAGMA synchronous=FULL")
+        _execute_sqlite_locked_retry(self.conn, "PRAGMA journal_mode=WAL")
+        _execute_sqlite_locked_retry(self.conn, "PRAGMA synchronous=FULL")
         self._init_v6()
 
     def _init_v6(self) -> None:
