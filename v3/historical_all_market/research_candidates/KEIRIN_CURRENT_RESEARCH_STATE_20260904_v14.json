@@ -1,0 +1,172 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v14",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v13.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "creation_parent_head": "1e8638e2b5fe4072f8a9b8d8fe5fe08fb58d71c8",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only. If HEAD is ahead, inspect only the delta before claiming CURRENT.",
+  "inherited_state": {
+    "base": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v13.json",
+    "rule": "All v13 and inherited constraints remain binding unless explicitly changed below."
+  },
+  "current_stage": "STAGE_3_CROSS_CIRCUMFERENCE_SUPPORT_ACCUMULATION_CONFIRMED_ONE_PENDING_NINE_GATE_FAIL",
+  "roadmap_position": {
+    "stage_1_pre_freeze": "ACTIVE_DISCIPLINE",
+    "stage_2_identity_gate": "ACTIVE_FAIL_CLOSED_DISCIPLINE",
+    "stage_3_support_gate": "CURRENT_MAIN_BOTTLENECK_CONFIRMED_1_PENDING_SCHEDULED_9_NONFINAL_UPPER_10_OF_30",
+    "stage_4_formula_freeze": "BLOCKED_UNTIL_FULL_SUPPORT_ADEQUACY_GATE_PASS",
+    "stage_5_controlled_result_join": "BLOCKED",
+    "stage_6_affinity_evaluation": "NOT_ESTABLISHED",
+    "stage_7_final_eval": "PRELOCKED_DESIGN_ONLY"
+  },
+  "active_baseline": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "feature": "competition_score",
+    "state": "FROZEN_CONTINUE_NO_PROMOTION",
+    "mutation_allowed": false
+  },
+  "rider_circumference_support": {
+    "support_gate": "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "confirmed_unique_cross_circumference_supported_riders_floor": 1,
+    "confirmed_supported_rider_race_rows_floor": 2,
+    "confirmed_support_receipt": "KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
+    "confirmed_rider": {
+      "name": "高橋 梨香",
+      "official_registration_number": "015018",
+      "333_row": "2026-09-04 防府 R7 car2",
+      "400_row": "2026-08-30 川崎 R6 car6"
+    },
+    "pending_scheduled_unique_riders": 9,
+    "pending_scheduled_source": "KEIRIN_RIDER_CIRCUMFERENCE_CROSS_BLOCK_SUPPORT_PRECHECK_20260903_v2.json",
+    "pending_nara_final_pre_card_required": true,
+    "confirmed_rider_distinct_from_all_pending_9": true,
+    "nonfinal_combined_unique_upper_bound_if_all_pending_survive": 10,
+    "target_unique_cross_circumference_supported_riders": 30,
+    "remaining_to_unique_floor_from_confirmed_floor": 29,
+    "remaining_to_unique_floor_if_all_pending_9_survive": 20,
+    "do_not_claim_confirmed_10_of_30": true,
+    "gate": "FAIL",
+    "result_join_authorized": false,
+    "formula_status": "BLOCKED"
+  },
+  "kawasaki_hft_400m": {
+    "pre_rows": "KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv",
+    "identity_mapping": "KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v2.json",
+    "race_date": "2026-08-30",
+    "venue": "川崎",
+    "circumference_m": 400,
+    "whole_day_day1_races": 12,
+    "row_count": 84,
+    "official_identity_exact_single_match_count": 81,
+    "fail_closed_no_match_count": 3,
+    "foreign_invitee_policy": "UNSUPPORTED_NO_JAPANESE_REGISTRATION_GUESS",
+    "result_accessed": false,
+    "payout_accessed": false,
+    "raw_html_persisted": false
+  },
+  "hofu_333m_confirmed_assignment": {
+    "pre_card": "KEIRIN_HOFU_DAY1_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
+    "official_assignment": "KEIRIN_HOFU_R7_OFFICIAL_SAME_RACE_ASSIGNMENT_20260904_v1.json",
+    "race_date": "2026-09-04",
+    "venue": "防府",
+    "circumference_m": 333,
+    "race_no": 7,
+    "car_no": 2,
+    "rider": "高橋 梨香",
+    "registration_number": "015018",
+    "assignment_status": "EXACT_SINGLE_MATCH_EVENT_CORROBORATED",
+    "captured_before_pit_cutoff": true,
+    "pit_cutoff_utc": "2026-09-03T23:35:00+00:00",
+    "result_accessed": false,
+    "support_increment_from_this_pair": 1
+  },
+  "support_gate_diagnostics": {
+    "minimum_unique_riders": 30,
+    "minimum_supported_rows": 60,
+    "minimum_333_venues": 2,
+    "minimum_400_venues": 2,
+    "minimum_333_calendar_blocks": 2,
+    "minimum_400_calendar_blocks": 2,
+    "maximum_single_venue_share": 0.60,
+    "maximum_single_rider_share": 0.10,
+    "required_official_identity_mapping_rate_for_supported_rows": 1.0,
+    "current_gate_result": "FAIL",
+    "result_access_authorized": false
+  },
+  "historical_pit_fast_track": {
+    "prespec": "KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v2.json",
+    "eligible_date_window": ["2026-08-27", "2026-09-02"],
+    "kawasaki_400_day1_clean_block_acquired": true,
+    "confirmed_cross_circumference_support_increment_now": 1,
+    "next_historical_need": "Acquire additional positively observed whole-day 333/333.33m PRE blocks under the frozen archive-navigation and contamination rules; no race-id guessing.",
+    "result_access_authorized": false,
+    "model_fit_authorized": false
+  },
+  "prospective_fallback": {
+    "sep10_nara_kawasaki": "ACTIVE_INDEPENDENT_SUPPORT_ACQUISITION_FALLBACK",
+    "nara_scheduled_upper_candidates": 9,
+    "final_pre_card_required_before_any_of_9_become_confirmed": true
+  },
+  "rider_bank": {
+    "empirical_result": "NOT_ESTABLISHED",
+    "state": "UNEVALUABLE_SUPPORT_GATE_FAIL"
+  },
+  "line_role": {
+    "empirical_result": "NOT_ESTABLISHED",
+    "state": "SECOND_OBJECTIVE_LEGSHOW_VENUE_PENDING",
+    "result_access_authorized": false
+  },
+  "source_integrity": {
+    "new_affinity_target_result_intentionally_extracted": false,
+    "payout_values_observed": false,
+    "result_access_authorized": false,
+    "market_or_human_feature_use": "FORBIDDEN"
+  },
+  "next_actions": [
+    "Fresh Read branch before every resume/current claim and every write.",
+    "Preserve KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json as confirmed +1 PRE-only support for official registration 015018.",
+    "Keep the nine Takeo-to-Nara identities pending until the 2026-09-10 Nara final PRE racecard; do not merge scheduled assignment with final usable support.",
+    "Continue additional support acquisition using positively observed whole-day PRE blocks, prioritizing an eligible 333/333.33m historical archive-navigation path that does not guess race IDs and keeps mixed raw HTML in process memory only.",
+    "If a new prospective 333/400 candidate is used, require exact official registration identity and contemporaneous same-event race assignment before cutoff under the v2 identity contract.",
+    "Recompute all support adequacy metrics only from frozen supported rows; threshold 30 alone is not sufficient for PASS.",
+    "Keep target RESULT closed until the complete support gate passes and exact low-DOF formula, unsupported-rider policy, development membership, metric, race-cluster bootstrap and advance criterion are frozen."
+  ],
+  "forbidden_actions": [
+    "S0_BETA_CHANGE",
+    "S0_FEATURE_CHANGE",
+    "RESULT_JOIN_WHILE_GATE_BLOCKED",
+    "BURNED_FIREWALL_ROLLBACK",
+    "BURNED_RETROSPECTIVE_CORPUS_AS_NEW_SUPPORT",
+    "HISTORICAL_RAW_MIXED_HTML_AS_MODEL_EVIDENCE",
+    "RACE_ID_GUESSING",
+    "ODDS_IN_OUTCOME_MODEL",
+    "HUMAN_FORECAST_AS_REALITY_TRUTH",
+    "NARABIYOSO_AS_OBJECTIVE_LINE_TRUTH",
+    "CURRENT_PROFILE_BACKFILL",
+    "UNKNOWN_AFFINITY_TO_ZERO",
+    "ZERO_SCORE_IMPUTATION",
+    "POST_RACE_PRE_RECONSTRUCTION",
+    "PROTECTED_HOLDOUT_ACCESS",
+    "MAIN_MUTATION",
+    "MERGE",
+    "RUNTIME_ACTIVATION",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_EXECUTION",
+    "WAGERING_OR_STAKING",
+    "ROI_OR_PROFITABILITY_CLAIM"
+  ],
+  "required_artifact_pointers": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v13.json",
+    "KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
+    "KEIRIN_HOFU_R7_OFFICIAL_SAME_RACE_ASSIGNMENT_20260904_v1.json",
+    "KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv",
+    "KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_CROSS_BLOCK_SUPPORT_PRECHECK_20260903_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
+    "KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v2.json"
+  ],
+  "owner_action_required_now": false
+}
