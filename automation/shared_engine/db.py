@@ -4,7 +4,7 @@ SQLite task state is the sole workflow authority. Relay/provider receipts are ev
 inputs only and cannot mutate state without a fenced transition through this module.
 """
 from __future__ import annotations
-import json, sqlite3, time, uuid
+import json, math, sqlite3, time, uuid
 import config
 
 class LostLeaseError(Exception): pass
@@ -13,6 +13,14 @@ class InvalidTransitionError(Exception): pass
 RECOVERABLE_ACTIVE_STATES = frozenset({
     'IN_IMPLEMENT', 'IN_LAB', 'LAB_FIX_REQUIRED', 'IN_AUDIT', 'AUDIT_FIX_REQUIRED'
 })
+
+def _validated_lease_seconds(lease_seconds):
+    lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
+    if (isinstance(lease_seconds,bool) or not isinstance(lease_seconds,(int,float)) or
+            not math.isfinite(float(lease_seconds)) or lease_seconds<=0 or
+            lease_seconds>config.LEASE_MAX_SECONDS):
+        raise ValueError('LEASE_SECONDS_BOUNDED_FINITE_REQUIRED')
+    return float(lease_seconds)
 
 def _conn():
     c=sqlite3.connect(config.DB_PATH, timeout=10); c.row_factory=sqlite3.Row
@@ -67,7 +75,7 @@ def assert_unexpired_fence(task_id, worker_id, generation):
     return True
 
 def claim_next_task(worker_id, *, lease_seconds=None):
-    init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
+    init_schema(); lease_seconds=_validated_lease_seconds(lease_seconds)
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute("SELECT id FROM tasks WHERE state='PENDING' AND (claimed_by IS NULL OR lease_until<?) ORDER BY priority DESC,created_at LIMIT 1",(now,)).fetchone()
@@ -81,11 +89,10 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
 
     Renewal cannot resurrect an expired lease and cannot operate on pending/terminal
     states. Expired work must go through explicit reclaim so the generation bump
-    fences the old worker.
+    fences the old worker. Lease duration is finite and bounded by the reviewed
+    Shared Engine lease ceiling.
     """
-    init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
-    if isinstance(lease_seconds,bool) or not isinstance(lease_seconds,(int,float)) or lease_seconds<=0:
-        raise ValueError('LEASE_SECONDS_POSITIVE_REQUIRED')
+    init_schema(); lease_seconds=_validated_lease_seconds(lease_seconds)
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
@@ -93,7 +100,7 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
         if r['state'] not in RECOVERABLE_ACTIVE_STATES: raise InvalidTransitionError(f"RENEW_STATE:{r['state']}")
         if r['claimed_by']!=worker_id or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
         if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
-        new_until=max(float(r['lease_until']),now+float(lease_seconds))
+        new_until=max(float(r['lease_until']),now+lease_seconds)
         c.execute('UPDATE tasks SET lease_until=?,updated_at=? WHERE id=?',(new_until,now,task_id))
         c.execute('INSERT INTO events(task_id,actor,event_type,before_state,after_state,detail_json,created_at) VALUES(?,?,?,?,?,?,?)',
                   (task_id,worker_id,'LEASE_RENEWED',r['state'],r['state'],json.dumps({'generation':generation,'lease_until':new_until},sort_keys=True,separators=(',',':')),now))
@@ -102,7 +109,7 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
 
 def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     """Take over one expired active task without changing its workflow state."""
-    init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
+    init_schema(); lease_seconds=_validated_lease_seconds(lease_seconds)
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
