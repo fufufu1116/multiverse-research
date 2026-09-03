@@ -20,6 +20,9 @@ BASELINE = HERE / "MULTIVERSE_AUTOMATION_POLICY_CHANGE_CONTROL_V6_BASELINE.json"
 BASE_POLICY = HERE / "MULTIVERSE_AUTOMATION_REVIEWED_POLICY_SOURCE_V5.json"
 CANDIDATE_BRANCH = "agent/automation-orchestrator-policy-change-control-v6-20260903-v1"
 FILES = [
+    HERE / "orchestrator_role_relay_v3.py",
+    HERE / "orchestrator_role_relay_policy_v4.py",
+    HERE / "orchestrator_role_relay_policy_source_v5.py",
     HERE / "orchestrator_policy_change_control_v6.py",
     HERE / "test_orchestrator_policy_change_control_v6.py",
 ]
@@ -51,15 +54,15 @@ def main() -> int:
             print(f"MISSING:{path.relative_to(ROOT)}")
             return 3
         tree = ast.parse(path.read_text(), filename=str(path))
-        if path.name == "orchestrator_policy_change_control_v6.py":
+        if path.name.startswith("orchestrator_"):
             for node in ast.walk(tree):
                 if isinstance(node, ast.Import):
                     for name in node.names:
                         if name.name in FORBIDDEN_IMPORTS:
-                            print(f"FORBIDDEN_IMPORT:{name.name}")
+                            print(f"FORBIDDEN_IMPORT:{path.name}:{name.name}")
                             return 4
                 if isinstance(node, ast.ImportFrom) and node.module in FORBIDDEN_IMPORTS:
-                    print(f"FORBIDDEN_IMPORT:{node.module}")
+                    print(f"FORBIDDEN_IMPORT:{path.name}:{node.module}")
                     return 4
 
     head = run(["git", "rev-parse", "HEAD"])
@@ -98,6 +101,7 @@ def main() -> int:
     print("POLICY_CHANGE_CONTROL_V6_CANDIDATE_BRANCH=" + ns.candidate_branch)
     print("POLICY_CHANGE_CONTROL_V6_BASELINE_SHA256=" + baseline.raw_sha256)
     print("POLICY_CHANGE_CONTROL_V6_BASE_POLICY_SHA256=" + source.raw_sha256)
+    print("POLICY_CHANGE_CONTROL_V6_EXPANDED_SQLITE_SCOPE=v3,v4,v5,v6")
     print("POLICY_CHANGE_CONTROL_V6_POLICY_APPLY_SURFACE=false")
     print("POLICY_CHANGE_CONTROL_V6_POLICY_WIDEN_AUTO_AUTHORITY=false")
     print("POLICY_CHANGE_CONTROL_V6_MAIN_MUTATION_AUTHORITY=false")
