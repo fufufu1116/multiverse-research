@@ -1,0 +1,123 @@
+name: MULTIVERSE V19.7.36 v7r9 Rate-Commit Pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/r1-stage1-phase-c-v19-7-36-v7r9-rate-commit-coherence-remediation-v1
+
+permissions:
+  contents: read
+
+jobs:
+  test-v7r9-rate-commit-successor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact event commit without third-party actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init repo
+          cd repo
+          git remote add origin https://github.com/fufufu1116/multiverse-research.git
+          git -c protocol.version=2 fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          printf 'PRELAB_V7R9_EXACT_HEAD=%s\n' "$(git rev-parse HEAD)"
+          printf 'PRELAB_V7R9_EXACT_TREE=%s\n' "$(git rev-parse HEAD^{tree})"
+
+      - name: Static source and test gate
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          probe='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go'
+          testfile='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903_test.go'
+          sanitizer='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_COMMIT_SANITIZER_20260903.c'
+          guard='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_STATIC_ENV_GUARD_20260902.go'
+          helper='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go'
+          grep -F 'minBeforeComments = 60' "$probe"
+          grep -F 'minAfterComments = 59' "$probe"
+          grep -F 'RATE_DECREMENT_NOT_EXACT_ONE' "$probe"
+          grep -F 'syscall.Exec(guardPath,argv,env)' "$probe"
+          grep -F 'Proxy:nil' "$probe"
+          grep -F 'os.Clearenv()' "$probe"
+          grep -F 'ONE_SHOT_GUARD_CONSUMED=false' "$probe"
+          grep -F 'probe_path[] = "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9"' "$sanitizer"
+          grep -F 'clean_env[0] = (char *)env_codespaces' "$sanitizer"
+          grep -F 'clean_env[1] = env_name' "$sanitizer"
+          grep -F 'xexecve(probe_path, clean_argv, clean_env)' "$sanitizer"
+          go test "$probe" "$testfile"
+          grep -F 'prearmMinRateBeforeComments = 55' "$helper"
+          grep -F 'prearmMinRateAfterComments = 54' "$helper"
+          grep -F 'syscall.Exec(helperPath, argv, env)' "$guard"
+          python3 - <<'PY'
+          import json
+          q=json.load(open('.devcontainer/devcontainer.json'))
+          assert q['postAttachCommand']==['/usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9']
+          assert q['remoteUser']=='codespace'
+          assert q['containerUser']=='root'
+          PY
+          printf 'PRELAB_V7R9_STATIC_SOURCE_TEST_GATE_PASS=true\n'
+
+      - name: Build exact image and verify image identity
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          tag="multiverse-v7r9-rate-commit:${GITHUB_SHA}"
+          docker build -f .devcontainer/Dockerfile -t "$tag" .
+          for p in /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7; do
+            test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' "$p")" = '0 0 555'
+            test -z "$(docker run --rm --entrypoint /usr/bin/readelf "$tag" -l "$p" | grep -F 'Requesting program interpreter' || true)"
+          done
+          test "$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-v7r7 | awk '{print $1}')" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'
+          test "$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 | awk '{print $1}')" = '470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4'
+          identity="$(docker run --rm --entrypoint /bin/cat "$tag" /opt/multiverse/v36/image-identity-v7r3.json)"
+          python3 -c 'import json,sys; x=json.loads(sys.stdin.read()); assert x["version"]=="V19.7.36-v7r9-image-identity"; p=[o["path"] for o in x["objects"]]; assert "/usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9" in p; assert "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9" in p' <<<"$identity"
+          image_sha="$(printf '%s' "$identity" | sha256sum | awk '{print $1}')"
+          sanitizer_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 | awk '{print $1}')"
+          probe_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 | awk '{print $1}')"
+          printf 'PRELAB_V7R9_IMAGE_IDENTITY_SHA256=%s\n' "$image_sha"
+          printf 'PRELAB_V7R9_SANITIZER_SHA256=%s\n' "$sanitizer_sha"
+          printf 'PRELAB_V7R9_RATE_PROBE_SHA256=%s\n' "$probe_sha"
+
+      - name: Exact-image poisoned ambient environment must be scrubbed before Go startup
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          tag="multiverse-v7r9-rate-commit:${GITHUB_SHA}"
+          workvol="multiverse-v7r9-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          docker volume create "$workvol" >/dev/null
+          cleanup(){ docker volume rm -f "$workvol" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/bash "$tag" -lc '
+            set -euo pipefail
+            uid="$(id -u codespace)"; gid="$(id -g codespace)"
+            mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
+            chown -R "${uid}:${gid}" /workspaces/.codespaces /workspaces/multiverse-research
+            chmod 0755 /workspaces /workspaces/.codespaces /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
+            printf "%s\n" "# MULTIVERSE PRE-LIVE CONTROL — V19.7.36 v7r9" > /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
+            chown "${uid}:${gid}" /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
+            chmod 0644 /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
+          '
+          out="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" \
+            -e CODESPACES=true -e CODESPACE_NAME=rate-v7r9-test \
+            -e GODEBUG=http2debug=2 -e GITHUB_TOKEN=SHOULD_NOT_BE_USED \
+            -e HTTPS_PROXY=http://127.0.0.1:9 -e SSL_CERT_FILE=/definitely/not-present.pem \
+            --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 "$tag" 2>&1)"
+          printf '%s\n' "$out"
+          grep -F 'PHASE_C_V19_7_36_V7R9_PREARM_RATE_NOT_READY' <<<"$out"
+          grep -F 'reason=RATE_NETWORK' <<<"$out"
+          grep -F 'one_shot_guard_consumed=false runtime=OFF' <<<"$out"
+          status="$(docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/cat "$tag" /workspaces/.codespaces/.persistedshare/multiverse-v36-v7r9-rate-readiness.txt)"
+          control="$(docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/cat "$tag" /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md)"
+          sg="$(grep '^generation=' <<<"$status" | cut -d= -f2)"
+          cg="$(grep '^- generation=' <<<"$control" | sed -E 's/^- generation=`([^`]*)`/\1/')"
+          test -n "$sg"; test "$sg" = "$cg"
+          grep -F 'runtime=OFF' <<<"$status"
+          grep -F 'runtime=`OFF`' <<<"$control"
+          printf 'PRELAB_V7R9_PREMAIN_ENV_AND_PAIR_COHERENCE_GATE_PASS=true\n'
+          printf 'SECURITY_AUTHORITY_GRANTED=false\n'
+          printf 'RUNTIME=OFF\n'
