@@ -1,0 +1,187 @@
+name: keirin-hofu-r7-official-assignment-probe-v1-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-hofu-r7-official-assignment-probe-v1-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  assignment-probe:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Capture official same-race assignment before PIT cutoff
+        run: |
+          python - <<'PY'
+          import hashlib, importlib.util, json, pathlib, re, unicodedata
+          from datetime import datetime, timezone
+          from urllib.parse import urlparse, parse_qs
+          import requests
+          from bs4 import BeautifulSoup
+
+          OUT = pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HOFU_R7_OFFICIAL_SAME_RACE_ASSIGNMENT_20260904_v1.json')
+          PROFILE_URL = 'https://keirin.jp/pc/racerprofile?snum=015018'
+          EXPECTED = {
+              'registration_number': '015018',
+              'name': '高橋 梨香',
+              'prefecture': '埼玉',
+              'term': 106,
+              'venue': '防府',
+              'race_date': '2026-09-04',
+              'race_date_display': '09/04',
+              'race_no': 7,
+              'circumference_m': 333,
+              'day': 'Day1',
+          }
+          CUTOFF_UTC = datetime(2026, 9, 3, 23, 35, 0, tzinfo=timezone.utc)
+          MAX_BYTES = 2_000_000
+
+          def clean(s):
+              s = unicodedata.normalize('NFKC', str(s)).replace('\u3000', ' ')
+              return re.sub(r'\s+', ' ', s).strip()
+
+          captured = datetime.now(timezone.utc)
+          doc = {
+              'record': 'KEIRIN_HOFU_R7_OFFICIAL_SAME_RACE_ASSIGNMENT_20260904_v1',
+              'generated_utc': captured.isoformat(),
+              'status': 'FAIL_CLOSED_NOT_EVALUATED',
+              'contract': 'KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json',
+              'assignment_gate': 'KEIRIN_RIDER_IDENTITY_PROSPECTIVE_EVENT_ASSIGNMENT_GATE_20260902_v1.json',
+              'source': {
+                  'organization': 'JKA / KEIRIN.JP',
+                  'interface_field': '開催中のレース',
+                  'profile_url': PROFILE_URL,
+              },
+              'expected': EXPECTED,
+              'pit_cutoff_utc': CUTOFF_UTC.isoformat(),
+              'captured_before_pit_cutoff': captured < CUTOFF_UTC,
+              'result_accessed': False,
+              'target_result_accessed': False,
+              'payout_accessed': False,
+              'odds_accessed': False,
+              'human_forecast_accessed': False,
+              'raw_html_persisted': False,
+              'raw_html_printed': False,
+              'current_profile_nonidentity_fields_persisted_as_features': False,
+              'predictive_features_emitted': False,
+              'support_increment_authorized_by_this_probe': 0,
+              'formula_fit_authorized': False,
+              'main_or_runtime_mutation': False,
+          }
+          fatal = None
+          try:
+              if captured >= CUTOFF_UTC:
+                  raise RuntimeError('FAIL_CLOSED_CAPTURE_AT_OR_AFTER_PIT_CUTOFF')
+              u = urlparse(PROFILE_URL)
+              if u.scheme != 'https' or u.hostname != 'keirin.jp' or u.path != '/pc/racerprofile' or parse_qs(u.query) != {'snum':['015018']}:
+                  raise RuntimeError('FAIL_CLOSED_PROFILE_URL_BINDING')
+              headers = {
+                  'User-Agent': 'MultiverseResearch-KEIRIN-OfficialAssignmentProbe/1.0',
+                  'Accept': 'text/html',
+                  'Cache-Control': 'no-cache',
+                  'Pragma': 'no-cache',
+              }
+              r = requests.get(PROFILE_URL, timeout=20, allow_redirects=False, headers=headers)
+              if 300 <= r.status_code < 400:
+                  raise RuntimeError(f'FAIL_CLOSED_REDIRECT_{r.status_code}')
+              if r.status_code in (403, 429):
+                  raise RuntimeError(f'FAIL_CLOSED_RATE_HALT_{r.status_code}')
+              if r.status_code != 200:
+                  raise RuntimeError(f'FAIL_CLOSED_HTTP_{r.status_code}')
+              if len(r.content) > MAX_BYTES:
+                  raise RuntimeError('FAIL_CLOSED_OVERSIZED_RESPONSE')
+              if 'text/html' not in r.headers.get('Content-Type','').lower():
+                  raise RuntimeError('FAIL_CLOSED_CONTENT_TYPE')
+              raw_sha = hashlib.sha256(r.content).hexdigest()
+
+              loc_path = pathlib.Path('v3/prospective_shadow250_v2/keirinjp_identity_locator_v3.py')
+              spec = importlib.util.spec_from_file_location('keirinjp_locator_v3', loc_path)
+              locator = importlib.util.module_from_spec(spec); spec.loader.exec_module(locator)
+              ident = locator.parse_identity_profile(r.content, PROFILE_URL)
+              locator.verify_identity(ident, EXPECTED['name'], EXPECTED['prefecture'], EXPECTED['term'], EXPECTED['registration_number'])
+
+              soup = BeautifulSoup(r.content, 'html.parser')
+              lines = [clean(x) for x in soup.get_text('\n', strip=True).splitlines()]
+              lines = [x for x in lines if x]
+              starts = [i for i,x in enumerate(lines) if '開催中のレース' in x]
+              if len(starts) != 1:
+                  raise RuntimeError(f'FAIL_CLOSED_CURRENT_RACE_HEADING_CARDINALITY_{len(starts)}')
+              start = starts[0]
+              ends = [i for i,x in enumerate(lines[start+1:], start+1) if '最近の成績' in x]
+              if not ends:
+                  raise RuntimeError('FAIL_CLOSED_CURRENT_RACE_SECTION_END_NOT_FOUND')
+              section_lines = lines[start:ends[0]]
+              section = ' | '.join(section_lines)
+              section_sha = hashlib.sha256(section.encode('utf-8')).hexdigest()
+              if '現在、開催中のレースには出場しておりません' in section:
+                  raise RuntimeError('FAIL_CLOSED_OFFICIAL_PROFILE_SAYS_NOT_IN_CURRENT_RACE')
+              checks = {
+                  'venue_exact_present': EXPECTED['venue'] in section,
+                  'race_date_display_exact_present': EXPECTED['race_date_display'] in section,
+                  'race_no_exact_present': re.search(r'(?<!\d)7R(?!\d)', section) is not None,
+                  'current_race_heading_present': '開催中のレース' in section,
+              }
+              if not all(checks.values()):
+                  raise RuntimeError('FAIL_CLOSED_CURRENT_EVENT_MISMATCH_' + '_'.join(k for k,v in checks.items() if not v))
+
+              doc.update({
+                  'status': 'EXACT_SINGLE_MATCH_EVENT_CORROBORATED',
+                  'official_identity': {
+                      'registration_number': ident['registration_number'],
+                      'name': ident['name'],
+                      'prefecture': ident['prefecture'],
+                      'term': ident['term'],
+                  },
+                  'observed_current_event': {
+                      'venue': EXPECTED['venue'],
+                      'race_date': EXPECTED['race_date'],
+                      'race_no': EXPECTED['race_no'],
+                      'circumference_m': EXPECTED['circumference_m'],
+                      'day': EXPECTED['day'],
+                      'same_event_exact_match': True,
+                      'same_race_exact_match': True,
+                  },
+                  'event_match_checks': checks,
+                  'profile_raw_sha256': raw_sha,
+                  'current_race_section_sha256': section_sha,
+                  'event_assignment_eligible_for_frozen_mapper': True,
+                  'fatal_error': None,
+              })
+          except Exception as e:
+              fatal = f'{type(e).__name__}: {str(e)[:500]}'
+              doc.update({
+                  'status': 'FAIL_CLOSED_OFFICIAL_SAME_RACE_ASSIGNMENT_NOT_PROVEN',
+                  'event_assignment_eligible_for_frozen_mapper': False,
+                  'fatal_error': fatal,
+              })
+
+          OUT.write_text(json.dumps(doc, ensure_ascii=False, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({
+              'record': doc['record'],
+              'status': doc['status'],
+              'generated_utc': doc['generated_utc'],
+              'captured_before_pit_cutoff': doc['captured_before_pit_cutoff'],
+              'event_assignment_eligible_for_frozen_mapper': doc.get('event_assignment_eligible_for_frozen_mapper'),
+              'fatal_error': fatal,
+              'raw_html_persisted': False,
+              'raw_html_printed': False,
+          }, ensure_ascii=False, sort_keys=True))
+          if fatal is not None:
+              raise SystemExit(1)
+          PY
+      - name: Persist research-only assignment evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_HOFU_R7_OFFICIAL_SAME_RACE_ASSIGNMENT_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): capture Hofu R7 official same-race assignment v1'
+          git push origin HEAD:${{ github.ref_name }}
