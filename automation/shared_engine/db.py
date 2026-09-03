@@ -77,12 +77,7 @@ def claim_next_task(worker_id, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
-    """Take over one expired active task without changing its workflow state.
-
-    This is deliberately explicit rather than folded into claim_next_task: a new task
-    claimant must not accidentally steal an older active task. The generation bump
-    fences every pre-crash worker/receipt application attempt.
-    """
+    """Take over one expired active task without changing its workflow state."""
     init_schema(); lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
@@ -99,17 +94,24 @@ def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=None,release=False,fencing=None):
+    """Perform one workflow transition only with a live fencing token.
+
+    There is intentionally no unfenced mutation mode in Candidate v8. System and
+    remediation callers must own a current worker/generation lease just like receipt
+    application callers. This keeps SQLite as one authority without creating a
+    privileged bypass inside the authority itself.
+    """
     init_schema(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT * FROM tasks WHERE id=?',(task_id,)).fetchone()
         if r is None: raise KeyError(task_id)
         before=r['state']
         if new_state not in config.ALLOWED_TRANSITIONS.get(before,set()): raise InvalidTransitionError(f'{before}->{new_state}')
+        if fencing is None: raise LostLeaseError('fencing token required')
         now=time.time()
-        if fencing is not None:
-            worker,generation=fencing
-            if r['claimed_by']!=worker or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
-            if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
+        worker,generation=fencing
+        if r['claimed_by']!=worker or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
+        if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
         result=json.loads(r['result_json'])
         if result_update: result.update(result_update)
         claimed=None if release else r['claimed_by']; lease=None if release else r['lease_until']
