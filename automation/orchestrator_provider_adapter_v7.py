@@ -55,18 +55,38 @@ def _fingerprint(value: Any) -> str:
     return hashlib.sha256(canonical_json(value).encode()).hexdigest()
 
 
+def _nonbool_int(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
 def _validate_result_for_request(request: dict[str, Any], result: Any) -> dict[str, Any]:
-    """Apply the inherited relay acceptance boundary before a receipt becomes durable."""
+    """Validate role semantics before a receipt becomes durable and again on replay."""
     require(isinstance(result, dict), "PROVIDER_ADAPTER_RESULT_SHAPE")
     role = request.get("role")
     expected_head = request.get("candidate_head")
+    evidence = result.get("evidence_ref")
+    require(isinstance(evidence, str) and bool(evidence), "PROVIDER_ADAPTER_EVIDENCE_REQUIRED")
+
     if role == "IMPLEMENT":
+        required = {"status", "candidate_head", "diff_lines", "cost_microusd", "evidence_ref"}
+        require(required.issubset(result), "PROVIDER_ADAPTER_IMPLEMENT_SCHEMA")
         require(result.get("candidate_head") == expected_head, "PROVIDER_ADAPTER_IMPLEMENT_HEAD_MISMATCH")
+        require(result.get("status") == "READY", "PROVIDER_ADAPTER_IMPLEMENT_STATUS")
+        require(_nonbool_int(result.get("diff_lines")) and result["diff_lines"] >= 0,
+                "PROVIDER_ADAPTER_IMPLEMENT_DIFF_LINES")
+        require(_nonbool_int(result.get("cost_microusd")) and result["cost_microusd"] == 0,
+                "PROVIDER_ADAPTER_IMPLEMENT_COST")
     else:
         require(role in ("LAB", "AUDIT"), "PROVIDER_ADAPTER_RESULT_ROLE")
+        required = {"verdict", "reviewed_head", "evidence_ref"}
+        require(required.issubset(result), f"PROVIDER_ADAPTER_{role}_SCHEMA")
         require(result.get("reviewed_head") == expected_head, f"PROVIDER_ADAPTER_{role}_HEAD_MISMATCH")
-    require(isinstance(result.get("evidence_ref"), str) and bool(result["evidence_ref"]),
-            "PROVIDER_ADAPTER_EVIDENCE_REQUIRED")
+        verdict = result.get("verdict")
+        require(verdict in ("PASS", "FIX_REQUIRED"), f"PROVIDER_ADAPTER_{role}_VERDICT")
+        if verdict == "FIX_REQUIRED":
+            require(isinstance(result.get("code"), str) and bool(result["code"]),
+                    f"PROVIDER_ADAPTER_{role}_FIX_CODE")
+            require(isinstance(result.get("detail"), str), f"PROVIDER_ADAPTER_{role}_FIX_DETAIL")
     return dict(result)
 
 
