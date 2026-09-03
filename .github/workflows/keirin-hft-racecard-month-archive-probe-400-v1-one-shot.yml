@@ -1,0 +1,83 @@
+name: keirin-hft-racecard-month-archive-probe-400-v1-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-hft-racecard-month-archive-probe-400-v1-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  month-archive-probe-400:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Selftest frozen observed-form archive probe
+        run: python tools/keirin_kdreams_racecard_month_archive_probe_v1.py selftest
+      - name: Navigate 400m pool only through live-observed Aug-Sep form options
+        run: |
+          python - <<'PY'
+          import importlib.util, json, pathlib, subprocess
+          TOOL = pathlib.Path('tools/keirin_kdreams_racecard_month_archive_probe_v1.py')
+          OUT = pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_HFT_400_RACECARD_MONTH_ARCHIVE_PROBE_20260904_v1.json')
+          EXPECTED_TOOL_BLOB = 'd17dd4a5bde43fdd805c89b31577ae040e63d788'
+          got_blob = subprocess.check_output(['git','hash-object',str(TOOL)], text=True).strip()
+          if got_blob != EXPECTED_TOOL_BLOB:
+              raise SystemExit(f'FAIL_CLOSED_TOOL_BLOB {got_blob}')
+          spec = importlib.util.spec_from_file_location('month_probe_v1', TOOL)
+          m = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(m)
+          m.VENUES = ('aomori','takeo','toyohashi','kawasaki')
+          x = m.run()
+          if x.get('status') != 'ARCHIVE_MONTH_NAVIGATION_CAPTURED':
+              raise SystemExit(f"FAIL_CLOSED_PROBE_STATUS {x.get('status')}")
+          if x.get('failures'):
+              raise SystemExit(f"FAIL_CLOSED_VENUE_FAILURES {len(x['failures'])}")
+          for k in ('raw_html_persisted','raw_html_printed','page_visible_text_emitted','race_detail_opened','result_page_opened','result_accessed','payout_accessed','odds_emitted','forecast_emitted','comment_emitted','narabiyoso_emitted','rider_data_emitted'):
+              if x.get(k) is not False:
+                  raise SystemExit(f'FAIL_CLOSED_SAFETY_FLAG {k}={x.get(k)}')
+          x['record'] = 'KEIRIN_HFT_400_RACECARD_MONTH_ARCHIVE_PROBE_20260904_v1'
+          x['venue_pool_400'] = [
+              {'venue':'青森','slug':'aomori'},
+              {'venue':'武雄','slug':'takeo'},
+              {'venue':'豊橋','slug':'toyohashi'},
+              {'venue':'川崎','slug':'kawasaki'},
+          ]
+          x.pop('venue_pool_333', None)
+          x['source_tool'] = str(TOOL)
+          x['source_tool_git_blob'] = got_blob
+          x['racecard_day_id_arithmetic_used'] = False
+          x['race_id_guessed'] = False
+          x['query_parameter_guessed'] = False
+          x['support_increment_authorized_now'] = 0
+          x['result_join_authorized'] = False
+          x['formula_fit_authorized'] = False
+          x['main_or_runtime_mutation'] = False
+          OUT.write_text(json.dumps(x, ensure_ascii=False, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({
+              'record': x['record'],
+              'status': x['status'],
+              'eligible_clean_window_day1_count': x['eligible_clean_window_day1_count'],
+              'eligible': [
+                  {'venue_slug':b['venue_slug'],'race_date':b.get('race_date'),'day_url':b.get('day_url')}
+                  for b in x['eligible_clean_window_day1_blocks']
+              ],
+              'raw_html_persisted': x['raw_html_persisted'],
+              'result_accessed': x['result_accessed'],
+              'race_id_guessed': x['race_id_guessed'],
+          }, ensure_ascii=False, sort_keys=True))
+          PY
+      - name: Persist sanitized research-only 400m archive evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_HFT_400_RACECARD_MONTH_ARCHIVE_PROBE_20260904_v1.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): capture 400m HFT Aug-Sep archive day hrefs v1'
+          git push origin HEAD:${{ github.ref_name }}
