@@ -76,6 +76,20 @@ class PolicyChangeControlV6Tests(unittest.TestCase):
         self.assertIn("POLICY_IDENTITY_ROTATED", d.reasons)
         self.assertFalse(d.may_apply)
 
+    def test_invalid_source_branch_identity_is_owner_gate(self):
+        invalid = ["agent/", "agent/a..b", "agent/a//b", "agent/a.lock", "not-agent/x"]
+        for branch in invalid:
+            with self.subTest(branch=branch):
+                proposed = base_doc()
+                proposed["source_branch"] = branch
+                proposed["policy_id"] = "automation-candidate-policy-source-v6-invalid-branch"
+                d = classify_policy_change(self.baseline, self.source, proposed)
+                self.assertEqual(d.classification, OWNER_GATE_REQUIRED)
+                self.assertTrue(d.owner_gate_required)
+                self.assertFalse(d.may_route_independent_review)
+                self.assertFalse(d.may_apply)
+                self.assertIn("SOURCE_BRANCH_INVALID", d.reasons)
+
     def test_added_or_substituted_binding_is_owner_gate(self):
         added = base_doc()
         added["allowed_bindings"].append({
@@ -126,6 +140,33 @@ class PolicyChangeControlV6Tests(unittest.TestCase):
                 store.decide("req-1", changed)
         finally:
             store.close()
+
+    def test_concurrent_first_open_identical_decision_converges(self):
+        barrier = threading.Barrier(2)
+        out = []
+        errors = []
+
+        def run_one():
+            try:
+                local_baseline = ChangeControlBaseline.load(BASELINE)
+                local_source = ReviewedPolicySource.load(BASE_POLICY)
+                barrier.wait(timeout=2)
+                store = PolicyChangeControlStore(self.db, local_baseline, local_source)
+                try:
+                    out.append(store.decide("req-first-open", base_doc()))
+                finally:
+                    store.close()
+            except Exception as exc:
+                errors.append(exc)
+
+        a = threading.Thread(target=run_one)
+        b = threading.Thread(target=run_one)
+        a.start(); b.start(); a.join(5); b.join(5)
+        self.assertFalse(a.is_alive() or b.is_alive())
+        self.assertEqual(errors, [])
+        self.assertEqual(len(out), 2)
+        self.assertEqual(out[0], out[1])
+        self.assertEqual(out[0]["classification"], NO_CHANGE)
 
     def test_concurrent_identical_decision_converges_across_connections(self):
         seed = PolicyChangeControlStore(self.db, self.baseline, self.source)

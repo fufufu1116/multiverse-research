@@ -166,6 +166,16 @@ def _binding_set(doc: dict[str, Any]) -> tuple[frozenset[tuple[str, str]] | None
     return frozenset(pairs), sorted(set(reasons))
 
 
+def _source_branch_shape_valid(branch: Any) -> bool:
+    if not isinstance(branch, str):
+        return False
+    try:
+        CandidateBindingPolicy.exact(CANONICAL_REPO, ("automation-source", branch))
+    except Exception:
+        return False
+    return True
+
+
 def classify_policy_change(
     baseline: ChangeControlBaseline,
     base_source: ReviewedPolicySource,
@@ -193,8 +203,7 @@ def classify_policy_change(
         reasons.append("CANDIDATE_ONLY_DISABLED")
 
     source_branch = proposed_policy.get("source_branch")
-    if (not isinstance(source_branch, str) or not source_branch.startswith("agent/")
-            or len(source_branch) > 200 or any(x in source_branch for x in ("..", "//", "@{", "\\", "~", "^", ":", "?", "*", "[", " "))):
+    if not _source_branch_shape_valid(source_branch):
         reasons.append("SOURCE_BRANCH_INVALID")
     policy_id = proposed_policy.get("policy_id")
     if not isinstance(policy_id, str) or not (1 <= len(policy_id) <= 128):
@@ -268,12 +277,14 @@ class PolicyChangeControlStore:
         self.base_source = base_source
         self.conn = sqlite3.connect(self.path, timeout=10)
         self.conn.row_factory = sqlite3.Row
+        self.conn.execute("PRAGMA busy_timeout=10000")
         self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.execute("PRAGMA synchronous=FULL")
         self._init_v6()
 
     def _init_v6(self) -> None:
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             self.conn.execute("CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT NOT NULL)")
             self.conn.execute("""CREATE TABLE IF NOT EXISTS decisions(
                 request_id TEXT PRIMARY KEY,
@@ -305,6 +316,10 @@ class PolicyChangeControlStore:
                 require(set(rows) == set(expected), "CHANGE_CONTROL_META_PARTIAL")
                 for key, value in expected.items():
                     require(rows[key] == value, f"CHANGE_CONTROL_META_MISMATCH:{key}")
+            self.conn.commit()
+        except Exception:
+            self.conn.rollback()
+            raise
 
     def decide(self, request_id: str, proposed_policy: dict[str, Any]) -> dict[str, Any]:
         require(isinstance(request_id, str) and 1 <= len(request_id) <= 128,
