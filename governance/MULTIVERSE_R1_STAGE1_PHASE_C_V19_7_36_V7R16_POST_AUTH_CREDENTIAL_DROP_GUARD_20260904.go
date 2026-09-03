@@ -173,17 +173,16 @@ func verifyHelper() {
 }
 
 // retireAuthorityBeforeUserDrop is the v7r16 security boundary. Every
-// authorization-bearing read/decision completes while euid/suid=authorityUID,
-// then the inherited sealed authority descriptor is closed while the process
-// is still protected. After this function returns there is no authority FD and
-// no later authority re-read or authorization decision is permitted.
-func retireAuthorityBeforeUserDrop(fd int, name, generation string) (string,error) {
-    _,sha,err := verifyAuthorityFD(fd,name,generation)
-    if err != nil { return "",err }
-    if err = syscall.Close(fd); err != nil { return "",err }
+// authorization-bearing read/decision has already completed while
+// euid/suid=authorityUID. This function only retires the already-verified
+// sealed authority descriptor while the process is still protected. After it
+// returns there is no authority FD and no later authority re-read or
+// authorization decision is permitted.
+func retireAuthorityBeforeUserDrop(fd int) error {
+    if err := syscall.Close(fd); err != nil { return err }
     var st syscall.Stat_t
-    if err = syscall.Fstat(fd,&st); err == nil || err != syscall.EBADF { return "",fmt.Errorf("authority-fd-not-retired") }
-    return sha,nil
+    if err := syscall.Fstat(fd,&st); err == nil || err != syscall.EBADF { return fmt.Errorf("authority-fd-not-retired") }
+    return nil
 }
 
 // dropToOrdinaryUser is intentionally the final authority-transition syscall.
@@ -225,12 +224,11 @@ func main() {
     uid,err := verifyProtectedCredentialBoundary()
     if err != nil { deny("PROTECTED_CREDENTIAL_BOUNDARY") }
     if err = verifySecureRuntimeEnv(name); err != nil { deny("SECURE_RUNTIME_ENV") }
-    snap,_,err := verifyAuthorityFD(fd,name,generation)
+    snap,authoritySHA,err := verifyAuthorityFD(fd,name,generation)
     if err != nil { deny("SEALED_AUTHORITY") }
     os.Clearenv()
     verifyHelper()
-    authoritySHA,err := retireAuthorityBeforeUserDrop(fd,name,generation)
-    if err != nil { deny("AUTHORITY_RETIREMENT") }
+    if err = retireAuthorityBeforeUserDrop(fd); err != nil { deny("AUTHORITY_RETIREMENT") }
 
     // Everything printed before the user-drop is nonsecret machine evidence.
     // This marker establishes the structural boundary used by the independent
