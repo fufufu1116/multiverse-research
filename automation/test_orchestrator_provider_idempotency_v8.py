@@ -112,6 +112,30 @@ class ProviderIdempotencyV8Tests(unittest.TestCase):
                 self.assertEqual(j.state(req["operation_key"]),"PREPARED")
             finally: s.close(); j.close()
 
+    def test_provider_receipt_id_tampering_rejected_before_observed(self):
+        req=request_from_job(make_job())
+        with tempfile.TemporaryDirectory() as td:
+            j=LocalIdempotencyJournal(str(pathlib.Path(td)/"l.db"),V8Manifest(MANIFEST)); s=SimulatedProviderStore(str(pathlib.Path(td)/"r.db"))
+            try:
+                j.prepare(req); receipt=DeterministicRemoteSimulator(s,make_script()).execute(req); bad=dict(receipt); bad["provider_receipt_id"]="sim-tampered-nonempty-receipt-id"
+                with self.assertRaisesRegex(OrchestratorError,"V8_PROVIDER_RECEIPT_ID_INTEGRITY"): j.record_observed(req,bad)
+                self.assertEqual(j.state(req["operation_key"]),"PREPARED")
+                self.assertEqual(s.effect_count(req["idempotency_key"]),1)
+            finally: s.close(); j.close()
+
+    def test_stored_observed_receipt_id_tampering_rejected_on_replay(self):
+        req=request_from_job(make_job())
+        with tempfile.TemporaryDirectory() as td:
+            j=LocalIdempotencyJournal(str(pathlib.Path(td)/"l.db"),V8Manifest(MANIFEST)); s=SimulatedProviderStore(str(pathlib.Path(td)/"r.db"))
+            try:
+                execute_idempotent_simulated_remote(j,DeterministicRemoteSimulator(s,make_script()),req)
+                j.conn.execute("UPDATE journal SET provider_receipt_id=? WHERE operation_key=?",("sim-tampered-stored",req["operation_key"]))
+                j.conn.commit()
+                with self.assertRaisesRegex(OrchestratorError,"V8_LOCAL_OBSERVED_RECEIPT_ID_INTEGRITY"):
+                    execute_idempotent_simulated_remote(j,DeterministicRemoteSimulator(s,make_script()),req)
+                self.assertEqual(s.effect_count(req["idempotency_key"]),1)
+            finally: s.close(); j.close()
+
     def test_malformed_v7_role_result_never_becomes_observed(self):
         req=request_from_job(make_job()); bad={"IMPLEMENT":{"1":{"status":"READY","candidate_head":HEAD,"diff_lines":True,"cost_microusd":0,"evidence_ref":"bad"}}}
         with tempfile.TemporaryDirectory() as td:
