@@ -22,6 +22,7 @@ COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_COMMIT_SA
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_IMPLEMENTATION_CANDIDATE_V7R3_IMAGE_IDENTITY_BUILDER_20260901.py /tmp/image-identity-builder.py
 COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R6_RATE_BUDGET_HISTORY_SELFTEST_20260901.py /tmp/rate-budget-history-selftest.py
 RUN set -eu; \
+ test -z "$(getent passwd 64173 || true)"; \
  /usr/bin/python3 -m pip install --no-cache-dir --no-compile --only-binary=:all: --require-hashes --target /opt/multiverse/v36/pydeps -r /opt/multiverse/v36/requirements.txt; \
  find /opt/multiverse/v36/pydeps -type f -name '*.pyc' -delete; \
  find /opt/multiverse/v36/pydeps -type d -name '__pycache__' -prune -exec rm -rf {} +; \
@@ -52,12 +53,14 @@ RUN set -eu; \
  for p in /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9; do if readelf -l "$p" | grep -F 'Requesting program interpreter'; then exit 92; fi; done; \
  rm -f /etc/sudoers.d/*; find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -type f -perm /6000 -exec chmod a-s {} + 2>/dev/null || true; \
  if command -v getcap >/dev/null 2>&1 && command -v setcap >/dev/null 2>&1; then getcap -r /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec 2>/dev/null | cut -d= -f1 | while read -r p; do [ -n "$p" ] && setcap -r "$p" || true; done; fi; \
- chown root:root /usr/local/bin/multiverse-v36-arm-v7r7; chmod 4555 /usr/local/bin/multiverse-v36-arm-v7r7; \
+ chown root:root /usr/local/bin/multiverse-v36-arm-v7r7 /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9; \
+ chmod 4555 /usr/local/bin/multiverse-v36-arm-v7r7 /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9; \
  test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-arm-v7r7)" = '0 0 4555'; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9)" = '0 0 4555'; \
  test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7)" = '0 0 555'; \
  test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9)" = '0 0 555'; \
- test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9)" = '0 0 555'; \
- test -z "$(find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -type f -perm /6000 ! -path /usr/local/bin/multiverse-v36-arm-v7r7 -print -quit 2>/dev/null)"; \
+ test -z "$(find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -type f -perm /6000 ! -path /usr/local/bin/multiverse-v36-arm-v7r7 ! -path /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 -print -quit 2>/dev/null)"; \
+ test -z "$(find /opt/multiverse/v36 /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -uid 64173 -print -quit 2>/dev/null)"; \
  /usr/bin/python3 /tmp/manifest.py; \
  exec 3</usr/bin/python3; /proc/self/fd/3 -I -S -B /tmp/python-actual-use-selftest.py; exec 3<&-; \
  /usr/local/sbin/multiverse-v36-control-v7r2 build-selftest; \
