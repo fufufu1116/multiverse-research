@@ -1,0 +1,103 @@
+{
+  "record": "KEIRIN_TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT_20260903_v1",
+  "status": "PRE_RESULT_PARTIAL_PRIMARY_SURFACE_CAPTURE_3_OF_12_RACE_PAGES_POSITIVE_REMAINDER_FAIL_CLOSED_PENDING",
+  "scope": "RESEARCH_PRE_TRANSPORT_ONLY_NO_FEATURE_ADMISSION_NO_RESULT_AUTHORITY",
+  "fresh_binding_parent_head": "e0df9153f57283dec7e29ab848fa4bc5cb5ac7d2",
+  "meeting": {
+    "date": "2026-09-04",
+    "venue": "豊橋",
+    "grade": "F1",
+    "day": 1,
+    "circumference_m": 400,
+    "race_count": 12,
+    "frozen_cutoffs_jst": ["15:46", "16:09", "16:33", "16:57", "17:21", "17:45", "18:09", "18:33", "18:57", "19:21", "19:46", "20:12"]
+  },
+  "upstream": {
+    "membership": "KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
+    "transport_readiness": "KEIRIN_SEP4_PRE_TRANSPORT_READINESS_DELTA_20260903_v2.json",
+    "fallback_prespec": "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json"
+  },
+  "kdreams_date_index": {
+    "url": "https://keirin.kdreams.jp/kaisai/2026/09/04/",
+    "status": "POSITIVE_MEETING_12_RACE_AND_CUTOFF_SURFACE",
+    "race_classes": {"1-4":"A級予選","5":"A級初日特選","6-7":"ガールズ予選1","8-11":"S級予選","12":"S級初日特選"},
+    "exact_racedetail_hrefs": "NOT_POSITIVELY_EXPOSED_IN_CURRENT_RETRIEVAL_REPRESENTATION",
+    "race_id_inference_allowed": false
+  },
+  "primary_surface": {
+    "provider": "OddsPark public race card",
+    "prespecified_allowlist": ["race date","venue","race number","scheduled start","car number","rider name","prefecture source display","period","class","style","competition score","nige","makuri","sashi","mark count","S","H","B"],
+    "forbidden": ["prediction marks","human comments","line/formation forecast","AI predictions","numeric odds","popularity","result","payout"],
+    "positive_current_race_pages": [
+      {
+        "race_no": 2,
+        "url": "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=2",
+        "start_jst": "16:14",
+        "class": "A級予選",
+        "transport_status": "CURRENT_PAGE_POSITIVE_BUT_SEARCH_REPRESENTATION_NOT_FULL_STRICT_SNAPSHOT",
+        "visible_rows": [
+          [1,"田代 匠",121,"福岡","A2","逃",86.916,[7,2,0,0]],
+          [2,"和田 禎嗣",99,"埼玉","A2","追",83.619,[0,0,3,2]],
+          [3,"落合 達彦",96,"静岡","A1","追",87.625,[0,0,4,3]],
+          [4,"松田 昂己",123,"茨城","A2","逃",86.761,[6,3,0,1]],
+          [5,"小林 健",67,"岡山","A2","追",82.296,[0,1,3,2]],
+          [6,"小岩 哲也",101,"大分","A2","両",81.25,[0,1,3,0]]
+        ],
+        "strict_snapshot_accepted": false,
+        "reason": "Search representation did not expose all seven rows plus complete strict tactical allowlist including S/H/B."
+      },
+      {
+        "race_no": 9,
+        "url": "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=9",
+        "start_jst": "19:02",
+        "class": "S級予選",
+        "transport_status": "CURRENT_PAGE_POSITIVE_BUT_STRICT_FULL_ALLOWLIST_NOT_CERTIFIED",
+        "known_membership_rows": [
+          [1,"濱田 浩司",81,"愛媛","S2","追",106.826,[0,0,3,6]],
+          [2,"佐藤 大地",125,"三重","S2","逃",93.363,[4,3,0,0]],
+          [3,"山下 渡",91,"茨城","S1","追",103.434,[0,0,4,1]],
+          [4,"晝田宗一郎",115,"岡山","S1","逃",105.92,[2,4,5,0]],
+          [5,"加藤 将武",121,"埼玉","S2","逃",101.38,[1,5,1,1]],
+          [6,"北川大五郎",103,"大阪","S2","両",92.09,[1,1,1,0]],
+          [7,"北村 信明",93,"徳島","S2","追",99.52,[0,0,6,3]]
+        ],
+        "strict_snapshot_accepted": false,
+        "reason": "Current page is positively identified, but a deterministic complete allowlist snapshot with all S/H/B fields has not yet been frozen."
+      },
+      {
+        "race_no": 11,
+        "url": "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=11",
+        "start_jst": "19:51",
+        "class": "S級予選",
+        "transport_status": "CURRENT_PAGE_POSITIVE_BUT_SEARCH_REPRESENTATION_PARTIAL",
+        "visible_rows": [
+          [1,"三谷 政史",93,"奈良","S2","追",100.625,[0,0,0,1]],
+          [2,"堤 洋",75,"徳島","S1","追",100.464,[0,0,7,1]],
+          [6,"富 武大",121,"山口","S2","逃",96.937,[2,2,2,0]]
+        ],
+        "strict_snapshot_accepted": false,
+        "reason": "Search representation is partial. Co-surfaced formation/prediction text is firewalled and cannot be used to infer missing rider rows."
+      }
+    ],
+    "current_positive_race_numbers": [2,9,11],
+    "current_unresolved_race_numbers": [1,3,4,5,6,7,8,10,12],
+    "unresolved_rule": "Fail closed. Do not treat stale/other-race search returns as the requested current race and do not silently switch providers based on retrieval difficulty or later outcomes."
+  },
+  "secondary_pre_crosschecks": [
+    {"source":"KDreams date index","role":"meeting/race-count/cutoff crosscheck only"},
+    {"source":"Toyohashi official schedule","role":"meeting-date crosscheck only"},
+    {"source":"WINTICKET meeting participant list","role":"participant-pool crosscheck only, not primary race snapshot"},
+    {"source":"Tokyo Sports current race pages","role":"secondary PRE crosscheck only; not substituted for prespecified OddsPark primary surface"}
+  ],
+  "accepted_strict_race_snapshots": [],
+  "strict_snapshot_count": 0,
+  "transport_positive_race_page_count": 3,
+  "pending_race_page_count": 9,
+  "result_values_observed": false,
+  "payout_values_observed": false,
+  "result_access_authorized": false,
+  "feature_admission": false,
+  "model_fit_authorized": false,
+  "next": "Continue current-primary OddsPark retrieval and exact race-page capture before each frozen cutoff. Accept a race only after complete strict allowlist rows and deterministic snapshot provenance are frozen. If a race remains incomplete at cutoff, freeze missingness permanently; never reconstruct PRE after race.",
+  "hard_boundaries": ["NO_RESULT","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_PREDICTION_MARKS","NO_HUMAN_COMMENTS","NO_LINE_FORECAST_FEATURE","NO_KDREAMS_RACE_ID_GUESSING","NO_SILENT_PROVIDER_SWITCH","NO_PARTIAL_ROW_INFERENCE_FROM_FORMATION","NO_POST_RACE_PRE_RECONSTRUCTION","NO_SOURCE_TRANSFORM_RETUNING_AFTER_OUTCOME","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
