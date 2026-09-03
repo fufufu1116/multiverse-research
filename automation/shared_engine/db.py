@@ -11,7 +11,8 @@ class LostLeaseError(Exception): pass
 class InvalidTransitionError(Exception): pass
 
 RECOVERABLE_ACTIVE_STATES = frozenset({
-    'IN_IMPLEMENT', 'IN_LAB', 'LAB_FIX_REQUIRED', 'IN_AUDIT', 'AUDIT_FIX_REQUIRED'
+    'IN_IMPLEMENT', 'IN_LAB', 'LAB_FIX_REQUIRED', 'IN_AUDIT', 'AUDIT_FIX_REQUIRED',
+    'BLOCKED_TECHNICAL'
 })
 RELEASE_SAFE_STATES = frozenset({'PENDING','FAILED_CLOSED','OWNER_GATE','DONE','ROLLED_BACK'})
 
@@ -110,12 +111,14 @@ def claim_task(task_id, worker_id, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
-    """Extend a healthy active lease without changing ownership or generation.
+    """Extend a healthy recoverable lease without changing ownership or generation.
 
     Renewal cannot resurrect an expired lease and cannot operate on pending/terminal
-    states. The authoritative clock sample is taken only after the SQLite writer
-    transaction is acquired, so lock wait cannot turn a pre-expiry observation into
-    a post-expiry resurrection. Expired work must reclaim with generation bump.
+    states. BLOCKED_TECHNICAL remains owned and recoverable, so a healthy blocker may
+    renew while a dead blocker can later be reclaimed with a generation bump.
+    The authoritative clock sample is taken only after the SQLite writer transaction
+    is acquired, so lock wait cannot turn a pre-expiry observation into a post-expiry
+    resurrection. Expired work must reclaim with generation bump.
     """
     init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
     c=_conn(); c.execute('BEGIN IMMEDIATE')
@@ -134,7 +137,7 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
     except BaseException: c.rollback(); c.close(); raise
 
 def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
-    """Take over one expired active task without changing its workflow state."""
+    """Take over one expired recoverable task without changing its workflow state."""
     init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
     c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
