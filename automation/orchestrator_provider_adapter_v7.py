@@ -291,23 +291,23 @@ def provider_adapter_process_one(relay_db: str, receipt_db: str, policy_manifest
     source = ReviewedPolicySource.load(policy_manifest_path)
     require(source.canonical_main == manifest.canonical_main, "PROVIDER_POLICY_MAIN_MISMATCH")
     relay = SourceBoundPolicyRelayStore(relay_db, source)
-    job = relay.claim_next(worker_id=worker_id, lease_seconds=lease_seconds)
-    if job is None:
-        relay.close()
-        return "NO_JOB"
-    request = provider_request_from_job(job, manifest)
-    adapter = DeterministicLocalAdapter(script)
-    receipts = ProviderAdapterReceiptStore(receipt_db, manifest)
     try:
-        durable = receipts.execute_local_once(job["operation_key"], request, adapter)
-        if crash_after_receipt:
-            relay.close()
-            return "CRASH_AFTER_RECEIPT"
-        relay.complete(job["operation_key"], job["claim_token"], durable)
-        relay.close()
-        return "COMPLETE"
+        job = relay.claim_next(worker_id=worker_id, lease_seconds=lease_seconds)
+        if job is None:
+            return "NO_JOB"
+        request = provider_request_from_job(job, manifest)
+        adapter = DeterministicLocalAdapter(script)
+        receipts = ProviderAdapterReceiptStore(receipt_db, manifest)
+        try:
+            durable = receipts.execute_local_once(job["operation_key"], request, adapter)
+            if crash_after_receipt:
+                return "CRASH_AFTER_RECEIPT"
+            relay.complete(job["operation_key"], job["claim_token"], durable)
+            return "COMPLETE"
+        finally:
+            receipts.close()
     finally:
-        receipts.close()
+        relay.close()
 
 
 def request_fingerprint(request: dict[str, Any]) -> str:
