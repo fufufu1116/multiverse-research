@@ -1,0 +1,85 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v8",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v7.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "latest_refresh_parent_head": "eafa1bddbe8905e55885119a76dc923436bc4165",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only. If HEAD is ahead of this state's refresh/creation binding, inspect only the delta before claiming CURRENT.",
+  "inherited_state": {
+    "base": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v7.json",
+    "rule": "All v7 and inherited constraints, protected populations, prespecs, source-integrity rules, roadmap gates and forbidden actions remain binding unless explicitly changed below."
+  },
+  "delta_since_v7": {
+    "toyohashi_day1_pre_transport": {
+      "artifact": "KEIRIN_TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT_20260903_v1.json",
+      "commit": "eafa1bddbe8905e55885119a76dc923436bc4165",
+      "meeting_date": "2026-09-04",
+      "venue": "豊橋",
+      "circumference_m": 400,
+      "race_count": 12,
+      "transport_positive_primary_race_pages": [2,9,11],
+      "pending_primary_race_pages": [1,3,4,5,6,7,8,10,12],
+      "accepted_strict_race_snapshots": [],
+      "strict_snapshot_count": 0,
+      "status": "PARTIAL_PRIMARY_TRANSPORT_POSITIVE_FAIL_CLOSED_PENDING",
+      "result_values_observed": false,
+      "payout_values_observed": false,
+      "result_access_authorized": false
+    }
+  },
+  "rider_circumference_support": {
+    "target_unique_official_cross_circumference_riders": 30,
+    "current": 9,
+    "remaining": 21,
+    "gate": "FAIL",
+    "result_join_authorized": false,
+    "formula_status": "BLOCKED_UNTIL_SUPPORT_GATE_PASS"
+  },
+  "current_stage": "STAGE_3_CROSS_CIRCUMFERENCE_SUPPORT_ACCUMULATION_WITH_TOYOHASHI_PRE_CAPTURE",
+  "sep4_active": {
+    "防府": {
+      "circumference_m": 333,
+      "pre_overlap_screen": "COMPLETE_7_OF_7_ZERO_SUPPORT_DELTA",
+      "outcomes_for_fit": "FORBIDDEN"
+    },
+    "豊橋": {
+      "circumference_m": 400,
+      "races": 12,
+      "cutoffs": ["15:46", "16:09", "16:33", "16:57", "17:21", "17:45", "18:09", "18:33", "18:57", "19:21", "19:46", "20:12"],
+      "role": "DEVELOPMENT_CANDIDATE",
+      "transport_checkpoint": "KEIRIN_TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT_20260903_v1.json",
+      "primary_provider": "OddsPark public race card",
+      "primary_pages_positive": [2,9,11],
+      "primary_pages_pending_fail_closed": [1,3,4,5,6,7,8,10,12],
+      "strict_snapshots_accepted": 0,
+      "kdreams_exact_racedetail_hrefs": "PENDING_UNLESS_POSITIVELY_EXPOSED_DO_NOT_GUESS"
+    },
+    "result_access_authorized": false
+  },
+  "next_actions": [
+    "Fresh Read branch first on every resume/current claim and before writes.",
+    "Continue current-primary OddsPark retrieval for Toyohashi races 1,3,4,5,6,7,8,10,12; never accept stale or wrong-race search returns.",
+    "For races 2,9,11, obtain complete strict allowlist rows including S/H/B and deterministic snapshot provenance before cutoff; partial search snippets are not accepted snapshots.",
+    "If any race remains incomplete at its frozen cutoff, permanently freeze missingness and never reconstruct PRE after race.",
+    "Continue official cross-circumference support acquisition from 9 toward 30 while RESULT remains closed.",
+    "Confirm Nara repeated riders on final PRE card; only official registration-confirmed repeats may increment support.",
+    "Only after support reaches at least 30 freeze the low-DOF Rider x Circumference formula and all evaluation rules before RESULT join."
+  ],
+  "source_integrity": {
+    "prospective_finish_targets_observed": false,
+    "payout_values_observed": false,
+    "result_access_authorized": false,
+    "market_or_human_feature_use": "FORBIDDEN",
+    "post_race_pre_reconstruction": "FORBIDDEN"
+  },
+  "required_artifact_pointers": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v7.json",
+    "KEIRIN_TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT_20260903_v1.json",
+    "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
+    "KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
+    "KEIRIN_SEP4_PRE_TRANSPORT_READINESS_DELTA_20260903_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json"
+  ],
+  "owner_action_required_now": false
+}
