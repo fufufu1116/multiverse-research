@@ -1,0 +1,41 @@
+name: MULTIVERSE Automation Shared Engine v8 transition matrix support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-transition-matrix-support-20260904-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-transition-matrix-support.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  transition-matrix-support:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout support head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bind exact Candidate ancestor and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${FRESH_MAIN}" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          git merge-base --is-ancestor 3827648399f3701c211b87746dc07fb77f00ddb2 HEAD
+          echo "V8_SUPPORT_HEAD=$(git rev-parse HEAD)"
+          echo "V8_SUPPORT_FRESH_MAIN=${FRESH_MAIN}"
+      - name: Run transition matrix immutability attack
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation/shared_engine/tests/test_v8_transition_matrix_support.py -v
+      - name: Nonauthoritative receipt
+        run: |
+          echo "V8_SUPPORT_ONLY=true"
+          echo "V8_CANDIDATE_MUTATION_AUTHORITY=false"
+          echo "V8_RUNTIME=OFF"
+          echo "V8_MAIN_MUTATION_AUTHORITY=false"
