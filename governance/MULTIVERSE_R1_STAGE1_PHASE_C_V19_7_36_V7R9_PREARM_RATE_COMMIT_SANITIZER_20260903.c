@@ -5,14 +5,16 @@
 typedef unsigned long u64;
 typedef long s64;
 
+#define V7R13_STR2(x) #x
+#define V7R13_STR(x) V7R13_STR2(x)
 #ifndef V7R13_PROBE_PATH
-#define V7R13_PROBE_PATH "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9"
+#define V7R13_PROBE_PATH /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9
 #endif
 #ifndef V7R13_AUTH_UID
 #define V7R13_AUTH_UID 64173UL
 #endif
 
-static const char probe_path[] = V7R13_PROBE_PATH;
+static const char probe_path[] = V7R13_STR(V7R13_PROBE_PATH);
 static const char env_codespaces[] = "CODESPACES=true";
 static const char key_codespaces[] = "CODESPACES=";
 static const char key_name[] = "CODESPACE_NAME=";
