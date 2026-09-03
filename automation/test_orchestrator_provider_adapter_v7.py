@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import hashlib
 import json
 import multiprocessing as mp
 import pathlib
@@ -6,7 +7,7 @@ import tempfile
 import time
 import unittest
 
-from orchestrator_mvp_v2 import OrchestratorError, demo_spec, operation_key
+from orchestrator_mvp_v2 import OrchestratorError, canonical_json, demo_spec, operation_key
 from orchestrator_provider_adapter_v7 import (
     PROVIDER_ADAPTER_CANONICAL_MAIN,
     PROVIDER_ADAPTER_ID,
@@ -39,12 +40,12 @@ def _receipt_once(path, manifest_path, request, result, q):
 
 
 class ProviderAdapterV7Tests(unittest.TestCase):
-    def _job(self):
+    def _job(self, role="IMPLEMENT", task_id="provider-v7-task"):
         return {
             "schema_version": "MULTIVERSE_ORCHESTRATOR_ROLE_RELAY_v3",
-            "task_id": "provider-v7-task",
-            "role": "IMPLEMENT",
-            "operation_key": operation_key("provider-v7-task", "IMPLEMENT", 0),
+            "task_id": task_id,
+            "role": role,
+            "operation_key": operation_key(task_id, role, 0),
             "semantic_generation": 0,
             "candidate_head": TASK_HEAD,
             "candidate_branch": V5_BRANCH,
@@ -243,6 +244,76 @@ class ProviderAdapterV7Tests(unittest.TestCase):
                 self.assertIsNone(relay.result(op))
             finally:
                 relay.close()
+
+    def test_role_schema_malformed_outputs_never_become_durable_receipts(self):
+        manifest = ProviderAdapterManifest.load(ADAPTER_MANIFEST)
+        cases = [
+            ("IMPLEMENT", {"candidate_head": TASK_HEAD, "diff_lines": 1,
+                           "cost_microusd": 0, "evidence_ref": "missing-status"},
+             "PROVIDER_ADAPTER_IMPLEMENT_SCHEMA"),
+            ("IMPLEMENT", {"status": "BROKEN", "candidate_head": TASK_HEAD, "diff_lines": 1,
+                           "cost_microusd": 0, "evidence_ref": "bad-status"},
+             "PROVIDER_ADAPTER_IMPLEMENT_STATUS"),
+            ("IMPLEMENT", {"status": "READY", "candidate_head": TASK_HEAD, "diff_lines": True,
+                           "cost_microusd": 0, "evidence_ref": "bad-diff"},
+             "PROVIDER_ADAPTER_IMPLEMENT_DIFF_LINES"),
+            ("IMPLEMENT", {"status": "READY", "candidate_head": TASK_HEAD, "diff_lines": 1,
+                           "cost_microusd": 1, "evidence_ref": "bad-cost"},
+             "PROVIDER_ADAPTER_IMPLEMENT_COST"),
+            ("LAB", {"reviewed_head": TASK_HEAD, "evidence_ref": "missing-verdict"},
+             "PROVIDER_ADAPTER_LAB_SCHEMA"),
+            ("LAB", {"verdict": "MATERIAL_BLOCK", "reviewed_head": TASK_HEAD,
+                     "evidence_ref": "bad-verdict"}, "PROVIDER_ADAPTER_LAB_VERDICT"),
+            ("LAB", {"verdict": "FIX_REQUIRED", "reviewed_head": TASK_HEAD,
+                     "evidence_ref": "missing-fix-fields"}, "PROVIDER_ADAPTER_LAB_FIX_CODE"),
+            ("AUDIT", {"verdict": "FIX_REQUIRED", "reviewed_head": TASK_HEAD,
+                       "code": "FIX", "evidence_ref": "missing-detail"},
+             "PROVIDER_ADAPTER_AUDIT_FIX_DETAIL"),
+            ("AUDIT", {"verdict": "PASS", "reviewed_head": TASK_HEAD, "evidence_ref": ""},
+             "PROVIDER_ADAPTER_EVIDENCE_REQUIRED"),
+        ]
+        with tempfile.TemporaryDirectory() as td:
+            for index, (role, result, error) in enumerate(cases):
+                request = provider_request_from_job(self._job(role, f"malformed-{index}"), manifest)
+                db = pathlib.Path(td) / f"receipt-{index}.sqlite"
+                store = ProviderAdapterReceiptStore(db, manifest)
+                try:
+                    with self.assertRaisesRegex(OrchestratorError, error):
+                        store.execute_local_once(
+                            request["operation_key"], request,
+                            DeterministicLocalAdapter({role: {"1": result}}),
+                        )
+                    self.assertEqual(store.execution_count(request["operation_key"]), 0)
+                    row = store.conn.execute("SELECT COUNT(*) FROM receipts").fetchone()
+                    self.assertEqual(int(row[0]), 0)
+                finally:
+                    store.close()
+
+    def test_preexisting_malformed_stored_receipt_is_revalidated_and_rejected(self):
+        manifest = ProviderAdapterManifest.load(ADAPTER_MANIFEST)
+        request = provider_request_from_job(self._job("LAB", "legacy-poison"), manifest)
+        malformed = {"reviewed_head": TASK_HEAD, "evidence_ref": "legacy-poison"}
+        request_json = canonical_json(request)
+        request_fp = hashlib.sha256(request_json.encode()).hexdigest()
+        with tempfile.TemporaryDirectory() as td:
+            store = ProviderAdapterReceiptStore(pathlib.Path(td) / "receipt.sqlite", manifest)
+            try:
+                with store.conn:
+                    store.conn.execute(
+                        "INSERT INTO receipts(operation_key,request_fingerprint,request_json,result_json,created_at) VALUES(?,?,?,?,?)",
+                        (request["operation_key"], request_fp, request_json, canonical_json(malformed), time.time()),
+                    )
+                with self.assertRaisesRegex(OrchestratorError, "PROVIDER_ADAPTER_LAB_SCHEMA"):
+                    store.execute_local_once(
+                        request["operation_key"], request,
+                        DeterministicLocalAdapter({"LAB": {"1": {
+                            "verdict": "PASS", "reviewed_head": TASK_HEAD,
+                            "evidence_ref": "should-not-run",
+                        }}}),
+                    )
+                self.assertEqual(store.execution_count(request["operation_key"]), 0)
+            finally:
+                store.close()
 
 
 if __name__ == "__main__":
