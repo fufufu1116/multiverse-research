@@ -1,0 +1,64 @@
+{
+  "record": "KEIRIN_TAKEO_9R_12R_PRE_CUTOFF_IMMUTABILITY_RECEIPT_20260903_v1",
+  "status": "PRE_CUTOFF_GIT_IMMUTABILITY_RECEIPT_RESULT_BLIND_RESEARCH_ONLY",
+  "scope": "SEAL_EXISTING_PRE_ALLOWLIST_WITNESS_WITHOUT_RESULT_OR_FEATURE_ADMISSION",
+  "race_date": "2026-09-03",
+  "venue": "武雄",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "sealed_witness": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_TAKEO_9R_12R_PRE_CUTOFF_ALLOWLIST_WITNESS_20260903_v1.json",
+    "record": "KEIRIN_TAKEO_9R_12R_PRE_CUTOFF_ALLOWLIST_WITNESS_20260903_v1",
+    "commit_sha": "525d2209b63b3062e78b3b7bc933e4e6cdafa0ad",
+    "git_blob_sha1": "392fbd6c9915bf63bbff937297d8ef86353f67ce",
+    "content_hash_algorithm": "git_blob_sha1",
+    "content_hash_scope": "entire UTF-8 witness file bytes under Git blob framing",
+    "commit_author_timestamp_utc": "2026-09-03T09:43:41Z",
+    "commit_author_timestamp_jst": "2026-09-03T18:43:41+09:00",
+    "commit_message": "research(keirin): freeze Takeo 9R-12R PRE cutoff witness"
+  },
+  "pre_cutoff_proof": {
+    "earliest_relevant_frozen_cutoff_jst": "2026-09-03T19:04:00+09:00",
+    "sealed_commit_precedes_earliest_cutoff": true,
+    "margin_seconds": 1229,
+    "covered_races": [9, 10, 11, 12],
+    "frozen_cutoffs_jst": {"9":"19:04","10":"19:30","11":"19:57","12":"20:25"},
+    "witness_capture_statement": "The sealed witness states that all four race-card observations were made while 9R was still 発売中 with 19:04 cutoff."
+  },
+  "transport_contract": {
+    "source_type": "NONCANONICAL_WEB_SEARCH_SURFACE_ALLOWLIST_WITNESS",
+    "canonical_raw_html": false,
+    "strict_allowlist_values_are_in_sealed_witness": true,
+    "source_urls_are_in_sealed_witness": true,
+    "exact_race_ids_are_in_sealed_witness": true,
+    "retrieval_timing_evidence_is_in_sealed_witness": true,
+    "deterministic_content_address_now_bound": true,
+    "feature_admission": false,
+    "result_access_authorized": false
+  },
+  "admission_caveat": {
+    "rule": "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1 requires a snapshot to contain a deterministic content hash.",
+    "observation": "The sealed v1 witness does not itself contain an internal content-hash field; this separate pre-cutoff receipt binds the complete v1 witness to its immutable Git blob SHA before 9R cutoff.",
+    "decision": "DO_NOT_AUTO_PROMOTE_TO_FEATURE_ADMISSION. If the prespec is interpreted as requiring an internal hash field in the same snapshot object, fail closed and treat this receipt as provenance/immutability evidence only."
+  },
+  "observations": {
+    "finish_result_values_observed_for_this_receipt": false,
+    "payout_values_observed_for_this_receipt": false,
+    "odds_used": false,
+    "human_forecast_used": false,
+    "narabiyoso_used": false
+  },
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "NO_RESULT",
+    "NO_PAYOUT",
+    "NO_ODDS_FEATURE",
+    "NO_HUMAN_FORECAST_FEATURE",
+    "NO_NARABIYOSO",
+    "NO_POST_RACE_PRE_RECONSTRUCTION",
+    "NO_MEMBERSHIP_CHANGE",
+    "NO_S0_MUTATION",
+    "NO_MAIN_OR_RUNTIME_MUTATION",
+    "NO_MODEL_PROMOTION",
+    "NO_REAL_MONEY_EXECUTION"
+  ]
+}
