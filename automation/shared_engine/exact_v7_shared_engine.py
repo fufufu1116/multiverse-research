@@ -27,10 +27,17 @@ class ExactV7SharedEngine:
         self.manifest=ProviderAdapterManifest.load(V7_MANIFEST)
         self.provider_receipt_db=provider_receipt_db
     def close(self): self.bridge_receipts.close()
+    def _validate_persisted_task(self,task_id:str):
+        task=db.get_task(task_id)
+        validate_domain_task(task['domain'],task['task_type'])
+        return task
     def submit(self,domain:str,task_type:str,goal:str,*,requested_capabilities:dict[str,Any]|None=None,resources:set[str]|None=None,priority:int=0)->str:
         validate_domain_task(domain,task_type,requested_capabilities,resources)
         return db.create_task(domain,goal,task_type=task_type,priority=priority)
     def claim_and_start(self,task_id:str,worker_id:str)->int:
+        # Revalidate durable task identity at the execution boundary. The DB is the
+        # workflow authority, but direct low-level insertion must not bypass domain policy.
+        self._validate_persisted_task(task_id)
         gen=db.claim_task(task_id,worker_id)
         db.transition(task_id,"IN_IMPLEMENT",actor="exact_v7_shared_engine",event_type="START",fencing=(worker_id,gen)); return gen
     def renew(self,task_id:str,worker_id:str,claim_generation:int,*,lease_seconds:int|float|None=None)->float:
@@ -38,9 +45,10 @@ class ExactV7SharedEngine:
     def reclaim_expired(self,task_id:str,worker_id:str,*,lease_seconds:int|None=None)->int:
         return db.reclaim_expired_task(task_id,worker_id,lease_seconds=lease_seconds)
     def _job(self,task_id:str,role:str,generation:int,operation_key:str)->dict[str,Any]:
+        task=self._validate_persisted_task(task_id)
         return {"operation_key":operation_key,"task_id":task_id,"role":role,"semantic_generation":generation,
                 "candidate_head":self.binding.candidate_head,"candidate_branch":self.binding.candidate_branch,
-                "canonical_main":self.binding.canonical_main,"objective":db.get_task(task_id)["goal"],"authority":dict(JOB_AUTHORITY)}
+                "canonical_main":self.binding.canonical_main,"objective":task["goal"],"authority":dict(JOB_AUTHORITY)}
     def execute_role(self,task_id:str,role:str,semantic_generation:int,operation_key:str,worker_id:str,claim_generation:int,result:dict[str,Any])->str:
         db.assert_unexpired_fence(task_id,worker_id,claim_generation)
         job=self._job(task_id,role,semantic_generation,operation_key)
