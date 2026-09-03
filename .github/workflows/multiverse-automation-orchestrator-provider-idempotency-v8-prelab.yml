@@ -1,0 +1,65 @@
+name: MULTIVERSE Automation Provider Idempotency v8 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-orchestrator-provider-idempotency-v8-20260903-v1
+    paths:
+      - 'automation/orchestrator_provider_idempotency_v8.py'
+      - 'automation/MULTIVERSE_AUTOMATION_PROVIDER_IDEMPOTENCY_V8.json'
+      - 'automation/test_orchestrator_provider_idempotency_v8.py'
+      - 'automation/test_orchestrator_provider_idempotency_v8_integration.py'
+      - 'automation/mechanical_gate_orchestrator_provider_idempotency_v8.py'
+      - 'automation/README_ORCHESTRATOR_PROVIDER_IDEMPOTENCY_V8.md'
+      - '.github/workflows/multiverse-automation-orchestrator-provider-idempotency-v8-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bind exact head branch and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/automation-orchestrator-provider-idempotency-v8-20260903-v1"
+          test -n "${FRESH_MAIN}"
+          echo "PROVIDER_IDEMPOTENCY_V8_EXACT_HEAD=${EXACT_HEAD}" >> "${GITHUB_ENV}"
+          echo "PROVIDER_IDEMPOTENCY_V8_FRESH_MAIN=${FRESH_MAIN}" >> "${GITHUB_ENV}"
+          echo "PROVIDER_IDEMPOTENCY_V8_BRANCH=${GITHUB_REF_NAME}" >> "${GITHUB_ENV}"
+      - name: Exact-head provider idempotency v8 mechanical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/mechanical_gate_orchestrator_provider_idempotency_v8.py \
+            --expected-head "${PROVIDER_IDEMPOTENCY_V8_EXACT_HEAD}" \
+            --canonical-main "${PROVIDER_IDEMPOTENCY_V8_FRESH_MAIN}" \
+            --candidate-branch "${PROVIDER_IDEMPOTENCY_V8_BRANCH}"
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "PROVIDER_IDEMPOTENCY_V8_WORKFLOW_DISPATCH_USED=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_CONTENTS_WRITE_PERMISSION=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_SIMULATED_REMOTE_EFFECT=true"
+          echo "PROVIDER_IDEMPOTENCY_V8_REAL_EXTERNAL_EFFECT=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_NETWORK=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_LIVE_PROVIDER_CONTACT=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_CREDENTIAL=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_PROVIDER_SPEND=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_POLICY_WIDENING=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_PRODUCTION_AUTHORITY_GRANTED=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_CORE_ADOPTION_AUTHORITY=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_CANONICAL_ADOPTION_AUTHORITY=false"
+          echo "PROVIDER_IDEMPOTENCY_V8_RUNTIME=OFF"
