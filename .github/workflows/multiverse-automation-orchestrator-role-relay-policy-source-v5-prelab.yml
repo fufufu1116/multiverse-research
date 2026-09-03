@@ -1,0 +1,66 @@
+name: MULTIVERSE Automation Reviewed Policy Source v5 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-orchestrator-policy-source-v5-20260903-v1
+    paths:
+      - 'automation/orchestrator_role_relay_policy_source_v5.py'
+      - 'automation/MULTIVERSE_AUTOMATION_REVIEWED_POLICY_SOURCE_V5.json'
+      - 'automation/test_orchestrator_role_relay_policy_source_v5.py'
+      - 'automation/test_orchestrator_role_relay_policy_source_v5_integration.py'
+      - 'automation/mechanical_gate_orchestrator_role_relay_policy_source_v5.py'
+      - 'automation/README_ORCHESTRATOR_ROLE_RELAY_POLICY_SOURCE_V5.md'
+      - '.github/workflows/multiverse-automation-orchestrator-role-relay-policy-source-v5-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind exact head branch and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/automation-orchestrator-policy-source-v5-20260903-v1"
+          test -n "${FRESH_MAIN}"
+          echo "POLICY_SOURCE_V5_EXACT_HEAD=${EXACT_HEAD}" >> "${GITHUB_ENV}"
+          echo "POLICY_SOURCE_V5_FRESH_MAIN=${FRESH_MAIN}" >> "${GITHUB_ENV}"
+          echo "POLICY_SOURCE_V5_CANDIDATE_BRANCH=${GITHUB_REF_NAME}" >> "${GITHUB_ENV}"
+          echo "POLICY_SOURCE_V5_EXACT_HEAD=${EXACT_HEAD}"
+          echo "POLICY_SOURCE_V5_FRESH_MAIN=${FRESH_MAIN}"
+          echo "POLICY_SOURCE_V5_CANDIDATE_BRANCH=${GITHUB_REF_NAME}"
+
+      - name: Exact-head policy-source v5 mechanical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/mechanical_gate_orchestrator_role_relay_policy_source_v5.py \
+            --expected-head "${POLICY_SOURCE_V5_EXACT_HEAD}" \
+            --canonical-main "${POLICY_SOURCE_V5_FRESH_MAIN}" \
+            --candidate-branch "${POLICY_SOURCE_V5_CANDIDATE_BRANCH}"
+
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "POLICY_SOURCE_V5_WORKFLOW_DISPATCH_USED=false"
+          echo "POLICY_SOURCE_V5_CONTENTS_WRITE_PERMISSION=false"
+          echo "POLICY_SOURCE_V5_LIVE_PROVIDER_CONTACT=false"
+          echo "POLICY_SOURCE_V5_PROVIDER_SPEND=false"
+          echo "POLICY_SOURCE_V5_PRODUCTION_AUTHORITY_GRANTED=false"
+          echo "POLICY_SOURCE_V5_CORE_ADOPTION_AUTHORITY=false"
+          echo "POLICY_SOURCE_V5_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "POLICY_SOURCE_V5_CANONICAL_ADOPTION_AUTHORITY=false"
+          echo "POLICY_SOURCE_V5_RUNTIME=OFF"
