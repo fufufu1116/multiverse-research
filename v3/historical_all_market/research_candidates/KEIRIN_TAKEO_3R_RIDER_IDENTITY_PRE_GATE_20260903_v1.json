@@ -1,0 +1,30 @@
+{
+  "record":"KEIRIN_TAKEO_3R_RIDER_IDENTITY_PRE_GATE_20260903_v1",
+  "status":"PASS_7_OF_7_OFFICIAL_REGISTRATION_NUMBER_AND_SAME_RACE_ASSIGNMENT_VERIFIED_PRE_CUTOFF",
+  "scope":"RESEARCH_PRE_ONLY_IDENTITY_GATE_NO_RESULT_AUTHORITY_NO_FEATURE_ADMISSION",
+  "capture_timestamp_jst":"2026-09-03T16:26:26+09:00",
+  "race":{"date":"2026-09-03","venue":"武雄","grade":"F1","race_no":3,"race_id":"8420260903010003","class":"A級予選","cutoff_jst":"16:37","start_jst":"16:42"},
+  "pre_roster_parent":"KEIRIN_TAKEO_DAY1_PRE_ROSTER_SCORE_GATE_20260903_v1.json",
+  "identity_contract":"KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
+  "verification_rule":"Each rider must match frozen PRE name plus official KEIRIN.JP registration number and official current-event assignment 武雄F1 / 2026-09-03 / A級予選 / 3R before cutoff. Current profile attributes are not admitted as historical/model features.",
+  "riders":[
+    {"car_no":1,"rider_name":"馬場 和広","registration_number":"014658","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=014658","same_race_assignment":"武雄F1 09/03 A級予選/3R","status":"PASS"},
+    {"car_no":2,"rider_name":"原田 礼","registration_number":"014115","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=014115","same_race_assignment":"武雄F1 09/03 A級予選/3R","status":"PASS"},
+    {"car_no":3,"rider_name":"木村 浩宣","registration_number":"014619","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=014619","same_race_assignment":"武雄F1 09/03 A級予選/3R","status":"PASS"},
+    {"car_no":4,"rider_name":"眞砂 英作","registration_number":"015642","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=015642","same_race_assignment":"武雄F1 09/03 A級予選/3R","status":"PASS"},
+    {"car_no":5,"rider_name":"山田 雄大","registration_number":"015429","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=015429","same_race_assignment":"武雄F1 09/03 A級予選/3R","status":"PASS"},
+    {"car_no":6,"rider_name":"若林 耕司","registration_number":"013839","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=013839","same_race_assignment":"武雄F1 09/03 A級予選/3R","status":"PASS"},
+    {"car_no":7,"rider_name":"池田 伍功羽","registration_number":"015659","official_profile_url":"https://keirin.jp/pc/racerprofile?snum=015659","same_race_assignment":"武雄F1 09/03 A級予選/3R","status":"PASS"}
+  ],
+  "all_riders_pass":true,
+  "registration_numbers_unique":7,
+  "same_race_assignment_verified":7,
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "feature_admission":false,
+  "model_fit_authorized":false,
+  "decision":"TAKEO_3R_IDENTITY_GATE_PASS_FOR_FUTURE_RIDER_LEVEL_RESEARCH_ELIGIBILITY_ONLY; NO RESULT JOIN AUTHORIZED",
+  "next":"Repeat the exact same strengthened PRE-only identity gate for later still-future Takeo races when time permits; do not backfill races after cutoff. Sep4 and Sep10 future blocks remain higher priority for prospective acquisition.",
+  "hard_boundaries":["NO_RESULT_TARGET_ACCESS","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_LINE_FORECAST_AS_TRUTH","NO_CURRENT_PROFILE_ATTRIBUTE_BACKFILL","NO_IDENTITY_CONTRACT_WEAKENING","NO_POST_RACE_IDENTITY_REPAIR","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
