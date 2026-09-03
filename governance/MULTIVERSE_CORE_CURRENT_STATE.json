@@ -1,6 +1,6 @@
 {
-  "schema": "multiverse.core.current_state.v6.static_env_fallback_consumed_fail_closed",
-  "record": "MULTIVERSE_CORE_CURRENT_STATE_STATIC_ENV_FALLBACK_CONSUMED_FAIL_CLOSED",
+  "schema": "multiverse.core.current_state.v7.v7r8_successor_lab_requested",
+  "record": "MULTIVERSE_CORE_CURRENT_STATE_V7R8_RATE_READINESS_SUCCESSOR_LAB_REQUESTED",
   "canonical_repo": "fufufu1116/multiverse-research",
   "state_branch": "state/multiverse-core-current",
   "authority": "RESUME_NAVIGATION_SNAPSHOT_ONLY_NEVER_BEARER_LIVE_AUTHORITY",
@@ -22,47 +22,59 @@
       "completion_claim_scope": "RESUME_METADATA_AND_STATE_RESOLVERS_ONLY_NO_LIVE_AUTHORITY"
     },
     {
-      "id": "R1_STAGE1_PHASE_C_STATIC_ENV_GUARD_PRELIVE",
-      "lane": "CORE_LIVE_PRELIVE",
-      "status": "STATIC_ENV_FALLBACK_CONSUMED_FAIL_CLOSED_PREARM_GITHUB_RATE_RESERVE__SUCCESSOR_REMEDIATION_REQUIRED",
-      "candidate_branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
-      "fresh_candidate_capture": {
+      "id": "R1_STAGE1_PHASE_C_STATIC_ENV_RATE_READINESS_SUCCESSOR",
+      "lane": "CORE_RESEARCH_CANDIDATE",
+      "status": "V7R8_SUCCESSOR_CANDIDATE_MACHINE_EVIDENCE_PASS__INDEPENDENT_LAB_REVIEW_REQUESTED",
+      "predecessor": {
+        "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r7-static-env-guard-remediation-v1",
         "head": "c91010921898fffed633df9720d792b216c4ddd1",
-        "tree": "917cf843e230c99dc74bebcc391e9f235361ff52"
+        "tree": "917cf843e230c99dc74bebcc391e9f235361ff52",
+        "fallback_failure_receipt": 5521978062,
+        "live_scope_consumed": true,
+        "failed_codespace_reusable": false
       },
-      "fresh_main_capture": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
-      "prior_owner_receipt": 5508415633,
-      "live_rebind_receipt": 5519712608,
-      "post_attach_incident_note": 5521897072,
-      "fallback_failure_receipt": 5521978062,
-      "codespace_name_nonauthoritative_nonsensitive_observation": "verbose-carnival-vpg4vjvvpx673xj99",
-      "codespace_create_attach_authority_consumed": true,
-      "static_guard_fallback_consumed": true,
-      "static_guard_consumption_semantics": "CONSUMED_ON_FIRST_INVOCATION_REGARDLESS_RESULT",
-      "static_guard_result": "PHASE_C_V19_7_36_V7R7_UI_READY_ENV_GUARD_PASS",
-      "helper_result": "PHASE_C_V19_7_36_V7R7_UI_READY_DENIED:PREARM_GITHUB_RATE_RESERVE",
-      "current_codespace_reusable": false,
-      "second_or_replacement_codespace_authorized": false,
-      "manual_helper_authorized": false,
-      "manual_arm_authorized": false,
-      "oauth_authorized": false,
-      "production_mutation_authorized": false,
-      "successor_requirement": {
-        "required": true,
-        "reason": "RATE_READINESS_MUST_BE_PROVEN_BEFORE_ANY_FUTURE_ONE_SHOT_FALLBACK_CAN_BE_SAFELY_CONSUMED",
-        "fresh_machine_evidence_required": true,
-        "fresh_independent_lab_required": true,
-        "fresh_independent_auditor_required_after_lab_pass": true,
-        "fresh_owner_gate_required_after_auditor_pass": true
+      "successor": {
+        "branch": "agent/r1-stage1-phase-c-v19-7-36-v7r8-prearm-rate-readiness-remediation-v1",
+        "fresh_head": "33181d3d73640bce2585fee018c94e791b25fc58",
+        "fresh_tree": "e9e6e1697b5d5fe49929a68dd68f5e256ae840c0",
+        "canonical_main_at_review_request": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
+        "final_delta_path_count": 7,
+        "governance_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R8_PREARM_RATE_READINESS_REMEDIATION_20260903_v1.json",
+        "probe_path": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R8_PREARM_RATE_READINESS_PROBE_20260903.go",
+        "post_attach_command": "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r8",
+        "rate_min_before_comments": 57,
+        "rate_min_after_probe": 56,
+        "inherited_helper_min_before_comments": 55,
+        "inherited_helper_min_after_comments": 54,
+        "probe_repeatable_nonmutating_claim": true,
+        "probe_grants_authority": false
       },
+      "machine_evidence": {
+        "run": 33727638443,
+        "job": 100560168743,
+        "event": "push",
+        "status": "COMPLETED_SUCCESS_EXACT_CANDIDATE",
+        "image_identity_sha256": "7747e2940f9f06966d59976ae359755795dfe05935a6b44158aa90fd614bf7f1",
+        "rate_probe_sha256": "396d2003fd2b074d48774263e32299369c0e45246409986e86903ec99dc76aa8",
+        "inherited_helper_sha256": "2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301",
+        "inherited_guard_sha256": "470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4",
+        "security_authority_granted": false,
+        "runtime": "OFF"
+      },
+      "independent_lab_review_request": 5522165178,
+      "lab_verdict": "PENDING_INDEPENDENT_REVIEW",
+      "auditor_verdict": "NOT_YET_ELIGIBLE",
+      "owner_gate": "NOT_YET_ELIGIBLE",
       "runtime": "OFF"
     }
   ],
   "runtime_status": "OFF",
-  "current_gate": "RETURN_TO_RESEARCH_CANDIDATE_FOR_STATIC_ENV_RATE_READINESS_SUCCESSOR__NO_LIVE_RETRY",
+  "current_gate": "AWAIT_INDEPENDENT_LAB_REVIEW_OF_EXACT_V7R8_SUCCESSOR_33181D3",
   "live_authority_snapshot": {
-    "one_fresh_prelive_nonmutating_codespace_create_attach": false,
-    "static_env_guard_retry_now": false,
+    "create_new_codespace_now": false,
+    "reuse_failed_codespace_now": false,
+    "run_v7r8_probe_live_now": false,
+    "static_env_guard_now": false,
     "manual_ui_ready_helper_now": false,
     "manual_arm_now": false,
     "oauth_or_device_authorization_now": false,
@@ -76,16 +88,20 @@
     "runtime_activation_now": false
   },
   "allowed_next_actions": [
-    "RESEARCH_AND_PREPARE_SUCCESSOR_REMEDIATION_FOR_PREARM_RATE_READINESS_BEFORE_ONE_SHOT_FALLBACK",
-    "GENERATE_FRESH_MACHINE_EVIDENCE_ON_SUCCESSOR_CANDIDATE",
-    "REQUEST_FRESH_INDEPENDENT_LAB_REVIEW_ONLY_AFTER_SUCCESSOR_CANDIDATE_AND_MACHINE_EVIDENCE_ARE_EXACT",
+    "RECEIVE_AND_FRESH_VALIDATE_INDEPENDENT_LAB_VERDICT_BOUND_TO_EXACT_V7R8_HEAD_TREE_AND_MACHINE_EVIDENCE",
+    "IF_AND_ONLY_IF_LAB_PASS_REQUEST_INDEPENDENT_AUDITOR_REVIEW",
+    "IF_LAB_REQUIRES_FIXES_RETURN_TO_RESEARCH_CANDIDATE_AND_REGENERATE_EXACT_MACHINE_EVIDENCE",
     "CONTINUE_KEIRIN_ONLY_THROUGH_FRESH_LANE_NATIVE_RESOLVER"
   ],
   "forbidden_actions": [
     "USE_THIS_STATE_AS_BEARER_LIVE_AUTHORITY",
-    "REUSE_CURRENT_CODESPACE_FOR_GUARD_HELPER_ARM_OAUTH_OR_SESSION",
-    "CREATE_SECOND_OR_REPLACEMENT_CODESPACE_UNDER_CONSUMED_SCOPE",
-    "RETRY_STATIC_ENV_GUARD",
+    "SELF_DECLARE_INDEPENDENT_LAB_PASS",
+    "PROCEED_TO_AUDITOR_WITHOUT_FRESH_EXACT_LAB_PASS",
+    "PRESENT_TO_OWNER_WITHOUT_LAB_AND_AUDITOR_PASS",
+    "CREATE_NEW_CODESPACE",
+    "REUSE_FAILED_CODESPACE_FOR_GUARD_HELPER_ARM_OAUTH_OR_SESSION",
+    "RUN_V7R8_RATE_PROBE_LIVE",
+    "RETRY_V7R7_STATIC_ENV_GUARD",
     "RUN_MANUAL_UI_READY_HELPER",
     "MANUAL_ARM",
     "OAUTH_OR_DEVICE_AUTHORIZATION",
@@ -97,5 +113,5 @@
     "SECRET_OR_WRITER_KEY_OPERATION",
     "RUNTIME_ACTIVATION"
   ],
-  "next_safe_action": "CORE_RESEARCH_PREPARE_RATE_READINESS_SUCCESSOR_CANDIDATE_ONLY; NO_OWNER_TERMINAL_ACTION"
+  "next_safe_action": "WAIT_FOR_INDEPENDENT_LAB_VERDICT_ON_PR74_COMMENT_5522165178; NO_OWNER_ACTION; RUNTIME_OFF"
 }
