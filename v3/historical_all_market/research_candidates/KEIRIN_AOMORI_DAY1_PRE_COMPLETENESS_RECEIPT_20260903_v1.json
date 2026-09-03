@@ -1,0 +1,42 @@
+{
+  "record":"KEIRIN_AOMORI_DAY1_PRE_COMPLETENESS_RECEIPT_20260903_v1",
+  "status":"DAY1_ROSTER_108_OF_108_FROZEN_NUMERIC_PRE_11_OF_12_PASS_ONE_FAIL_CLOSED_PRE_EVENT",
+  "scope":"RESEARCH_PRE_ONLY_COMPLETENESS_GATE_NO_RESULT_NO_FEATURE_ADMISSION",
+  "meeting":{"date":"2026-09-03","venue":"青森","grade":"G3","name":"みちのく記念　善知鳥杯争奪戦","day":1,"circumference_m":400,"race_count":12},
+  "roster_witness":"KEIRIN_AOMORI_DAY1_PRE_ROSTER_WITNESS_20260903_v1.json",
+  "roster_rows_frozen":108,
+  "numeric_pre_artifacts":[
+    "KEIRIN_AOMORI_1R_PRE_ALLOWLIST_WITNESS_20260903_v2.json",
+    "KEIRIN_AOMORI_2R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+    "KEIRIN_AOMORI_3R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+    "KEIRIN_AOMORI_4R_6R_PRE_ALLOWLIST_BATCH_20260903_v1.json",
+    "KEIRIN_AOMORI_7R_9R_PRE_ALLOWLIST_BATCH_20260903_v1.json",
+    "KEIRIN_AOMORI_10R_12R_PRE_ALLOWLIST_BATCH_20260903_v1.json"
+  ],
+  "race_gates":[
+    {"race_no":1,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":2,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":3,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":4,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":5,"status":"FAIL_CLOSED_ZERO_COMPETITION_SCORE","car_no":6,"rider":"山本 直","competition_score":0.00},
+    {"race_no":6,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":7,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":8,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":9,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":10,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":11,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"},
+    {"race_no":12,"status":"PASS_REQUIRED_PRE_NUMERIC_FIELDS"}
+  ],
+  "numeric_pre_eligible_races":11,
+  "fail_closed_races":1,
+  "fail_closed_rule":"An active rider with competition_score 0.00 makes the race ineligible for this PRE feature contract; no imputation, alternate provider rescue, or post-race repair is allowed.",
+  "identity_status":{"aomori_1r_registration_numbers":"9/9","aomori_1r_positive_same_race_official_assignment":"3/9","aomori_1r_final_identity_gate":"FAIL_CLOSED","other_races":"NOT_YET_FULLY_MAPPED_UNDER_STRENGTHENED_CONTRACT"},
+  "source_window_note":"Numeric PRE values are bound to their pre-frozen source/window contracts. Do not switch tactical-count windows after outcome observation.",
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "feature_admission":false,
+  "model_fit_authorized":false,
+  "next":"Preserve these PRE values immutably; finish identity/support/source gates and future-block acquisition before any separately prespecified RESULT gate. Aomori 5R remains permanently fail-closed for this contract.",
+  "hard_boundaries":["NO_RESULT_TARGET_ACCESS_FROM_THIS_RECEIPT","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_NARABIYOSO_AS_OBJECTIVE_LINE_TRUTH","NO_ZERO_SCORE_IMPUTATION","NO_POST_RACE_PRE_RECONSTRUCTION","NO_SOURCE_WINDOW_RESCUE_AFTER_OUTCOMES","NO_IDENTITY_CONTRACT_WEAKENING","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
