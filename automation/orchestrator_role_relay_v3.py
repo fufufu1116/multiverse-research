@@ -31,6 +31,19 @@ MAX_RELAY_LEASE_SECONDS = 60
 CANDIDATE_BRANCH = "agent/automation-orchestrator-role-relay-v3-current-main-successor-20260903-v1"
 
 
+def _sqlite_first_open_pragma(conn: sqlite3.Connection, sql: str, timeout_seconds: float = 10.0):
+    """Retry only SQLite busy/locked failures at the first-open PRAGMA boundary."""
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        try:
+            return conn.execute(sql)
+        except sqlite3.OperationalError as exc:
+            message = str(exc).lower()
+            if ("locked" not in message and "busy" not in message) or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.01)
+
+
 def _sha40(value: Any) -> bool:
     return isinstance(value, str) and len(value) == 40 and all(c in "0123456789abcdef" for c in value)
 
@@ -46,15 +59,17 @@ class RelayStore:
         self.path = str(path)
         self.conn = sqlite3.connect(self.path, timeout=10)
         self.conn.row_factory = sqlite3.Row
-        self.conn.execute("PRAGMA journal_mode=WAL")
-        self.conn.execute("PRAGMA synchronous=FULL")
+        self.conn.execute("PRAGMA busy_timeout=10000")
+        _sqlite_first_open_pragma(self.conn, "PRAGMA journal_mode=WAL")
+        _sqlite_first_open_pragma(self.conn, "PRAGMA synchronous=FULL")
         self._init()
 
     def close(self) -> None:
         self.conn.close()
 
     def _init(self) -> None:
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             self.conn.execute("CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT NOT NULL)")
             self.conn.execute("""CREATE TABLE IF NOT EXISTS jobs(
                 operation_key TEXT PRIMARY KEY,
@@ -79,6 +94,10 @@ class RelayStore:
                 self.conn.execute("INSERT INTO meta(k,v) VALUES('schema',?)", (str(RELAY_DB_SCHEMA_VERSION),))
             elif row[0] != str(RELAY_DB_SCHEMA_VERSION):
                 raise OrchestratorError("RELAY_DB_SCHEMA_VERSION_MISMATCH")
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
 
     @staticmethod
     def _validate_job(role: str, task: dict[str, Any], op_key: str, semantic_attempt: int) -> tuple[dict[str, Any], int]:
@@ -299,9 +318,10 @@ class DurableFixtureReceiptStore:
     def __init__(self, path: pathlib.Path | str) -> None:
         self.path = str(path)
         conn = sqlite3.connect(self.path, timeout=10)
+        conn.execute("PRAGMA busy_timeout=10000")
+        _sqlite_first_open_pragma(conn, "PRAGMA journal_mode=WAL")
+        _sqlite_first_open_pragma(conn, "PRAGMA synchronous=FULL")
         with conn:
-            conn.execute("PRAGMA journal_mode=WAL")
-            conn.execute("PRAGMA synchronous=FULL")
             conn.execute("CREATE TABLE IF NOT EXISTS receipts(operation_key TEXT PRIMARY KEY,result_json TEXT NOT NULL)")
             conn.execute("CREATE TABLE IF NOT EXISTS executions(operation_key TEXT PRIMARY KEY,count INTEGER NOT NULL)")
         conn.close()

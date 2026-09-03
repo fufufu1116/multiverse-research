@@ -18,7 +18,7 @@ from typing import Any
 
 from orchestrator_mvp_v2 import OrchestratorError, TransientFailure, canonical_json, operation_key, require
 from orchestrator_role_relay_v3 import DurableFixtureReceiptStore
-from orchestrator_role_relay_policy_v4 import CandidateBindingPolicy, PolicyRelayStore
+from orchestrator_role_relay_policy_v4 import CandidateBindingPolicy, PolicyRelayStore, _sqlite_first_open_pragma
 
 POLICY_SOURCE_SCHEMA_VERSION = "MULTIVERSE_AUTOMATION_REVIEWED_POLICY_SOURCE_v5"
 POLICY_SOURCE_DB_SCHEMA_VERSION = 3
@@ -95,12 +95,14 @@ class SourceBoundPolicyRelayStore(PolicyRelayStore):
         self.policy = source.policy
         self.conn = sqlite3.connect(self.path, timeout=10)
         self.conn.row_factory = sqlite3.Row
-        self.conn.execute("PRAGMA journal_mode=WAL")
-        self.conn.execute("PRAGMA synchronous=FULL")
+        self.conn.execute("PRAGMA busy_timeout=10000")
+        _sqlite_first_open_pragma(self.conn, "PRAGMA journal_mode=WAL")
+        _sqlite_first_open_pragma(self.conn, "PRAGMA synchronous=FULL")
         self._init_v5()
 
     def _init_v5(self) -> None:
-        with self.conn:
+        self.conn.execute("BEGIN IMMEDIATE")
+        try:
             self.conn.execute("CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT NOT NULL)")
             self.conn.execute("""CREATE TABLE IF NOT EXISTS jobs(
                 operation_key TEXT PRIMARY KEY,
@@ -145,6 +147,10 @@ class SourceBoundPolicyRelayStore(PolicyRelayStore):
                 require(set(rows) == set(expected), "POLICY_SOURCE_META_PARTIAL")
                 for key, value in expected.items():
                     require(rows[key] == value, f"POLICY_SOURCE_META_MISMATCH:{key}")
+            self.conn.commit()
+        except BaseException:
+            self.conn.rollback()
+            raise
 
     def _validate_job(self, role: str, task: dict[str, Any], op_key: str,
                       semantic_attempt: int) -> tuple[dict[str, Any], int]:
