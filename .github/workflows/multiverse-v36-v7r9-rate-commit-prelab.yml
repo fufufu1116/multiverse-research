@@ -43,7 +43,7 @@ jobs:
           grep -F 'lockPath = "/opt/multiverse/v36/empty-config"' "$probe"
           grep -F 'syscall.O_DIRECTORY' "$probe"
           grep -F 'st.Uid!=0' "$probe"
-          grep -F 'uint32(st.Mode&07777)!=02555' "$probe"
+          grep -F 'uint32(st.Mode&07777)!=00555' "$probe"
           grep -F 'authority_consumer_requires_generation_match=true' "$probe"
           grep -F 'lock_anchor_root_owned_nonreplaceable=true' "$probe"
           grep -F 'verifyPairAt(statusPath,controlPath,gen)' "$probe"
@@ -83,8 +83,8 @@ jobs:
           anchor_meta="$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /opt/multiverse/v36/empty-config)"
           printf 'PRELAB_V7R11_LOCK_PARENT_META=%s\n' "$parent_meta"
           printf 'PRELAB_V7R11_LOCK_ANCHOR_META=%s\n' "$anchor_meta"
-          test "$parent_meta" = '0 0 2555'
-          test "$anchor_meta" = '0 0 2555'
+          test "$parent_meta" = '0 0 555'
+          test "$anchor_meta" = '0 0 555'
           docker run --rm --entrypoint /usr/bin/test "$tag" -d /opt/multiverse/v36
           docker run --rm --entrypoint /usr/bin/test "$tag" -d /opt/multiverse/v36/empty-config
           for p in /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7; do
@@ -118,7 +118,7 @@ jobs:
           docker run --rm --user codespace \
             -v "$PWD:/src:ro" \
             -e GOCACHE=/tmp/go-cache \
-            --entrypoint /bin/bash "$tag" -lc '
+            --entrypoint /bin/bash "$tag" --noprofile --norc -c '
               set -euo pipefail
               cd /src
               probe="governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go"
@@ -138,7 +138,7 @@ jobs:
           docker volume create "$workvol" >/dev/null
           cleanup(){ docker volume rm -f "$workvol" >/dev/null 2>&1 || true; }
           trap cleanup EXIT
-          docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/bash "$tag" -lc '
+          docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/bash "$tag" --noprofile --norc -c '
             set -euo pipefail
             uid="$(id -u codespace)"; gid="$(id -g codespace)"
             mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
