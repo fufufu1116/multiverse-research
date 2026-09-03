@@ -1,0 +1,68 @@
+name: MULTIVERSE Automation Policy Change-Control v6 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-orchestrator-policy-change-control-v6-20260903-v1
+    paths:
+      - 'automation/orchestrator_policy_change_control_v6.py'
+      - 'automation/MULTIVERSE_AUTOMATION_POLICY_CHANGE_CONTROL_V6_BASELINE.json'
+      - 'automation/test_orchestrator_policy_change_control_v6.py'
+      - 'automation/mechanical_gate_orchestrator_policy_change_control_v6.py'
+      - 'automation/README_ORCHESTRATOR_POLICY_CHANGE_CONTROL_V6.md'
+      - '.github/workflows/multiverse-automation-orchestrator-policy-change-control-v6-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind exact head branch and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/automation-orchestrator-policy-change-control-v6-20260903-v1"
+          test -n "${FRESH_MAIN}"
+          echo "POLICY_CHANGE_CONTROL_V6_EXACT_HEAD=${EXACT_HEAD}" >> "${GITHUB_ENV}"
+          echo "POLICY_CHANGE_CONTROL_V6_FRESH_MAIN=${FRESH_MAIN}" >> "${GITHUB_ENV}"
+          echo "POLICY_CHANGE_CONTROL_V6_CANDIDATE_BRANCH=${GITHUB_REF_NAME}" >> "${GITHUB_ENV}"
+          echo "POLICY_CHANGE_CONTROL_V6_EXACT_HEAD=${EXACT_HEAD}"
+          echo "POLICY_CHANGE_CONTROL_V6_FRESH_MAIN=${FRESH_MAIN}"
+          echo "POLICY_CHANGE_CONTROL_V6_CANDIDATE_BRANCH=${GITHUB_REF_NAME}"
+
+      - name: Exact-head policy change-control v6 mechanical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/mechanical_gate_orchestrator_policy_change_control_v6.py \
+            --expected-head "${POLICY_CHANGE_CONTROL_V6_EXACT_HEAD}" \
+            --canonical-main "${POLICY_CHANGE_CONTROL_V6_FRESH_MAIN}" \
+            --candidate-branch "${POLICY_CHANGE_CONTROL_V6_CANDIDATE_BRANCH}"
+
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "POLICY_CHANGE_CONTROL_V6_WORKFLOW_DISPATCH_USED=false"
+          echo "POLICY_CHANGE_CONTROL_V6_CONTENTS_WRITE_PERMISSION=false"
+          echo "POLICY_CHANGE_CONTROL_V6_POLICY_APPLY_AUTHORITY=false"
+          echo "POLICY_CHANGE_CONTROL_V6_POLICY_WIDEN_AUTHORITY=false"
+          echo "POLICY_CHANGE_CONTROL_V6_MAIN_MUTATION_AUTHORITY=false"
+          echo "POLICY_CHANGE_CONTROL_V6_LIVE_PROVIDER_CONTACT=false"
+          echo "POLICY_CHANGE_CONTROL_V6_PROVIDER_SPEND=false"
+          echo "POLICY_CHANGE_CONTROL_V6_PRODUCTION_AUTHORITY_GRANTED=false"
+          echo "POLICY_CHANGE_CONTROL_V6_CORE_ADOPTION_AUTHORITY=false"
+          echo "POLICY_CHANGE_CONTROL_V6_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "POLICY_CHANGE_CONTROL_V6_CANONICAL_ADOPTION_AUTHORITY=false"
+          echo "POLICY_CHANGE_CONTROL_V6_RUNTIME=OFF"
