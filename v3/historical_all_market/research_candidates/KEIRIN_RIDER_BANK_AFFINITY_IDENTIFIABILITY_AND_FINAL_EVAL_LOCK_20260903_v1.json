@@ -1,0 +1,34 @@
+{
+  "record":"KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v1",
+  "status":"PRE_RESULT_IDENTIFIABILITY_REMEDIATION_AND_FINAL_UNTOUCHED_EVAL_PAIR_LOCKED",
+  "scope":"RESEARCH_PRESPEC_ONLY_NO_RESULT_ACCESS_NO_MODEL_FIT",
+  "created_jst":"2026-09-03T16:43+09:00",
+  "reason":"PRE-only support audit showed that a rider-specific circumference effect cannot be identified defensibly from venue-level contrasts alone. Takeo 2026-09-03 400m to Nara 2026-09-10 333.33m already has at least 9 scheduled repeated official rider identities, so a development/support period must include repeated riders before any independent evaluation of Rider x Circumference.",
+  "outcome_independence":{"sep3_finish_or_target_values_observed":false,"payout_values_observed":false,"decision_basis":"PRE membership, source availability, official schedule and repeated-rider support only"},
+  "supersession_rule":"KEIRIN_BANK_AFFINITY_LATER_EVAL_PAIR_LOCK_20260910_v1.json remains a valid future acquisition lock, but is no longer sufficient by itself to guarantee final independent evaluation if Sep10 observations are required for rider-specific identifiability or parameter fitting. No Sep10 target outcome may be opened until final role assignment is frozen.",
+  "development_candidate_blocks":[
+    {"date":"2026-09-03","venue":"富山","circumference_m":333,"role":"PRELOCKED_DEVELOPMENT_CANDIDATE"},
+    {"date":"2026-09-03","venue":"青森","circumference_m":400,"role":"PRELOCKED_DEVELOPMENT_CANDIDATE"},
+    {"date":"2026-09-03","venue":"武雄","circumference_m":400,"role":"PRELOCKED_DEVELOPMENT_CANDIDATE"},
+    {"date":"2026-09-04","venue":"防府","circumference_m":333,"role":"FUTURE_DEVELOPMENT_CANDIDATE"},
+    {"date":"2026-09-04","venue":"豊橋","circumference_m":400,"role":"FUTURE_DEVELOPMENT_CANDIDATE"},
+    {"date":"2026-09-10","venue":"奈良","circumference_m":333.33,"role":"FUTURE_REPEATED_RIDER_SUPPORT_OR_FIT_CANDIDATE_ONLY_IF_PRE_IDENTITY_GATES_PASS"},
+    {"date":"2026-09-10","venue":"川崎","circumference_m":400,"role":"FUTURE_MATCHED_PERIOD_SUPPORT_OR_FIT_CANDIDATE_ONLY_IF_PRE_IDENTITY_GATES_PASS"}
+  ],
+  "final_untouched_eval_pair":{
+    "dates":"2026-09-24/2026-09-26",
+    "selection_timestamp_relation":"LOCKED_BEFORE_ANY_SEP3_TARGET_OUTCOME_OBSERVATION",
+    "source":"KEIRIN.JP September 2026 official race schedule",
+    "blocks":[
+      {"venue":"奈良","circumference_m":333.33,"grade":"F2","meeting_dates":"2026-09-24/2026-09-26","role":"FINAL_UNTOUCHED_EVAL_333"},
+      {"venue":"川崎","circumference_m":400,"grade":"F2","meeting_dates":"2026-09-24/2026-09-26","role":"FINAL_UNTOUCHED_EVAL_400"}
+    ],
+    "why":"Same calendar period provides a cleaner 333m/400m external evaluation pair while preserving Sep10 for repeated-rider development/support if required. Venue identity remains a diagnostic dimension, not a rescue feature."
+  },
+  "fit_eval_rule":"Exact usable race/rider membership remains PRE-only gated by immutable membership, competition_score validity, official registration identity, source timing and missingness. Do not decide inclusion from outcomes. If Sep10 is used in any parameter estimation, Sep24 pair is mandatory final independent evaluation and Sep10 cannot be reported as independent validation.",
+  "formula_gate":"Exact low-DOF Rider x Circumference formula, shrinkage/estimation rule, primary metric, race-level cluster bootstrap and advance criterion must be frozen before any development RESULT join. This artifact does not authorize outcome access.",
+  "result_access_authorized":false,
+  "model_fit_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_JOIN","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_POST_RESULT_ROLE_REASSIGNMENT","NO_POST_RESULT_VENUE_SELECTION","NO_RACE_ID_GUESSING","NO_IDENTITY_CONTRACT_WEAKENING","NO_ZERO_SCORE_IMPUTATION","NO_POST_RACE_PRE_RECONSTRUCTION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
