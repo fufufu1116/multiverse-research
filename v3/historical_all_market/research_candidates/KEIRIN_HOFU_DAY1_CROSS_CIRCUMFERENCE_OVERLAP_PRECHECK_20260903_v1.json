@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_HOFU_DAY1_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1",
+  "status": "ALL_7_RACES_PRE_RESULT_SCREENED_ZERO_CANDIDATE_OVERLAP_ZERO_SUPPORT_DELTA",
+  "scope": "RESEARCH_PRE_ONLY_CROSS_CIRCUMFERENCE_CANDIDATE_SCREEN_NO_RESULT_AUTHORITY",
+  "fresh_binding_parent_head": "2a2831a36dac27ec182f6e4057adbeac8aa53e4f",
+  "target_meeting": {
+    "date": "2026-09-04",
+    "venue": "防府",
+    "circumference_m": 333,
+    "race_count": 7,
+    "cutoffs_jst": ["08:35", "08:55", "09:15", "09:35", "09:55", "10:15", "10:35"],
+    "role": "PRE_TRANSPORT_IDENTITY_SUPPORT_ONLY_RESERVED_FROM_FIT",
+    "source": {
+      "organization": "OddsPark",
+      "url": "https://www.oddspark.com/keirin/yosou/houfu/2026/0904.html",
+      "retrieval_relation": "PRE_RESULT_ON_2026-09-03",
+      "allowed_fields_used": ["race_no", "car_no", "rider_name", "period", "prefecture"],
+      "firewalled_fields": ["prediction_mark", "comment", "predicted_line", "human_forecast"]
+    }
+  },
+  "races": [
+    {"race_no":1,"riders":[[1,"岩原 健馬",127,"愛知"],[2,"名川 豊",99,"福岡"],[3,"櫻井 宏智",72,"広島"],[4,"金子 貴志",75,"愛知"],[5,"石川 航大",123,"宮崎"],[6,"武市 和人",74,"高知"],[7,"小川 将人",75,"愛知"]],"overlap_vs_takeo84":0,"overlap_vs_aomori108":0},
+    {"race_no":2,"riders":[[1,"國村 洋",80,"山口"],[2,"竹内 一暢",84,"滋賀"],[3,"飯塚 直人",98,"佐賀"],[4,"森 柾斗",125,"徳島"],[5,"緒方慎太朗",115,"熊本"],[6,"日浅 保幸",84,"岡山"],[7,"油谷 蒼",125,"兵庫"]],"overlap_vs_takeo84":0,"overlap_vs_aomori108":0},
+    {"race_no":3,"riders":[[1,"泉谷 直哉",94,"兵庫"],[2,"吉川 嘉斗",105,"徳島"],[3,"橋本 陸",121,"福岡"],[4,"安谷屋将志",96,"沖縄"],[5,"蒋野 翔太",115,"徳島"],[6,"北川 紋部",78,"福井"],[7,"中村 翔平",117,"福岡"]],"overlap_vs_takeo84":0,"overlap_vs_aomori108":0},
+    {"race_no":4,"riders":[[1,"滝本 泰行",107,"岡山"],[2,"成海 大聖",123,"大分"],[3,"原田 峻治",125,"山口"],[4,"三木 健治",73,"沖縄"],[5,"吉永 好宏",80,"広島"],[6,"松尾 淳",77,"岐阜"],[7,"小原 将通",92,"大分"]],"overlap_vs_takeo84":0,"overlap_vs_aomori108":0},
+    {"race_no":5,"riders":[[1,"中村 健志",96,"熊本"],[2,"出口謙一郎",123,"岐阜"],[3,"田中 和磨",113,"岡山"],[4,"池野 健太",109,"兵庫"],[5,"成松 春樹",93,"佐賀"],[6,"小林 信晴",83,"愛知"],[7,"今野 大輔",111,"岡山"]],"overlap_vs_takeo84":0,"overlap_vs_aomori108":0},
+    {"race_no":6,"riders":[[1,"河内 桜雪",122,"群馬"],[2,"佐藤 乃愛",126,"北海"],[3,"小林 莉子",102,"東京"],[4,"渡口まりあ",114,"山口"],[5,"村田 奈穂",116,"熊本"],[6,"高橋 智香",112,"愛知"],[7,"中島 瞳",126,"埼玉"]],"overlap_vs_takeo84":0,"overlap_vs_aomori108":0},
+    {"race_no":7,"riders":[[1,"下条 未悠",118,"富山"],[2,"高橋 梨香",106,"埼玉"],[3,"吉岡 詩織",116,"広島"],[4,"野口諭実可",102,"大分"],[5,"枝光 美奈",124,"福岡"],[6,"梅川 風子",112,"東京"],[7,"伊澤 茉那",126,"千葉"]],"overlap_vs_takeo84":0,"overlap_vs_aomori108":0}
+  ],
+  "target_rider_rows": 49,
+  "reference_400m_pre_populations": [
+    {"artifact":"KEIRIN_TAKEO_DAY1_PRE_ROSTER_SCORE_GATE_20260903_v1.json","venue":"武雄","date":"2026-09-03","circumference_m":400,"rider_rows":84},
+    {"artifact":"KEIRIN_AOMORI_DAY1_PRE_ROSTER_WITNESS_20260903_v1.json","venue":"青森","date":"2026-09-03","circumference_m":400,"rider_rows":108}
+  ],
+  "combined_reference_rider_rows": 192,
+  "normalization_for_candidate_screen": "REMOVE_ASCII_AND_FULLWIDTH_SPACES_FROM_RIDER_NAME; CANDIDATE_ONLY_NOT_IDENTITY_AUTHORITY",
+  "candidate_overlap_riders": [],
+  "candidate_overlap_count": 0,
+  "official_registration_checks_triggered": 0,
+  "support_before": 9,
+  "support_delta": 0,
+  "support_after": 9,
+  "support_target": 30,
+  "interpretation": "Across all 49 Hofu Day1 rider rows, no rider-name candidate overlaps either known Sep3 400m PRE roster. No official registration identity check is triggered from these two reference populations, and no support increment is permitted.",
+  "result_values_observed": false,
+  "payout_values_observed": false,
+  "result_access_authorized": false,
+  "feature_admission": false,
+  "model_fit_authorized": false,
+  "next": "Keep Hofu outcomes reserved from fit and RESULT closed. Shift support acquisition to other prespecified/final-card cross-circumference opportunities, including Nara confirmation, while separately capturing Sep4 Toyohashi PRE under the frozen development contract.",
+  "hard_boundaries": ["NO_RESULT","NO_PAYOUT","NO_HUMAN_FORECAST_FEATURE","NO_PROVIDER_PREDICTED_LINE_AS_TRUTH","NO_ODDS_IN_OUTCOME_MODEL","NO_SUPPORT_INCREMENT_FROM_NAME_ONLY","NO_RACE_ID_GUESSING","NO_RESULT_JOIN_WHILE_SUPPORT_LT_30","NO_USE_HOFU_OUTCOMES_FOR_FIT","NO_S0_MUTATION","NO_MAIN_OR_RUNTIME_MUTATION"],
+  "owner_action_required_now": false
+}
