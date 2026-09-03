@@ -1,0 +1,40 @@
+{
+  "record":"KEIRIN_HISTORICAL_PIT_EXISTING_CORPUS_REUSE_AUDIT_20260903_v1",
+  "status":"EXISTING_RETROSPECTIVE_CORPUS_NOT_PROVEN_ELIGIBLE_FOR_CLEAN_HFT_WINDOW_NO_SUPPORT_INCREMENT",
+  "scope":"RIDER_X_CIRCUMFERENCE_HISTORICAL_PIT_FAST_TRACK_SUPPORT_REUSE_AUDIT_ONLY",
+  "purpose":"Determine whether already-saved retrospective KDreams HTML/PRE corpus can satisfy the clean Historical Fast Track window without new external raw acquisition.",
+  "bindings":[
+    "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v3.json",
+    "KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v2.json",
+    "KEIRIN_RETROSPECTIVE_HTML_CORPUS_READINESS_20260901_v1.json",
+    "KEIRIN_FIXED_S0_RETROSPECTIVE_125R_PARSE_CHECKPOINT_20260902_v1.json",
+    "KEIRIN_S0_RETROSPECTIVE_151R_FIXED_SIGNAL_AND_REGIME_CHECK_20260902_v1.json",
+    "KEIRIN_S0_RETROSPECTIVE_200R_REGIME_STABILITY_REPORT_20260902_v1.json"
+  ],
+  "existing_corpus_facts":{
+    "saved_html_inventory_lower_bound":100,
+    "offline_pre_parse_checkpoint":{"input_html_files":134,"successful_races":125,"pre_rows":910,"result_access":false,"network_access":false},
+    "expanded_retrospective_development":{"successful_races":200,"pre_rider_rows":1438},
+    "representative_drive_html":{"canonical_race":"京王閣 2026-03-03 2R","saved_file_mime":"text/html"},
+    "explicit_151r_meeting_dates_observed":["2026-03-03","2026-03-04","2026-03-05","2026-03-06"]
+  },
+  "clean_hft_requirement":{"date_start":"2026-08-27","date_end":"2026-09-02","whole_day_day1":true,"pre_only":true,"official_registration_identity_required":true},
+  "drive_inventory_checks":{
+    "html_files_created_on_or_after_2026_08_27_found":0,
+    "date_keyword_search_is_not_race_date_authority":true,
+    "reason":"A Drive search hit for 2026-08-27 resolved to a 2026-03-03 京王閣 race-detail page, showing that page-global calendar/navigation text creates false date hits."
+  },
+  "decision":{
+    "existing_retrospective_corpus_proven_to_cover_clean_2026_08_27_to_2026_09_02_window":false,
+    "existing_corpus_authorized_for_new_clean_hft_support":false,
+    "support_increment":0,
+    "reason":"The verified saved corpus is retrospective March development material and no authoritative manifest/PRE output establishing race dates in the clean HFT window was found. Reusing burned/older rows would violate the refreshed firewall.",
+    "allowed_reuse":["source semantics validation","parser regression tests","provenance/audit","S0 retrospective reproduction under existing lineage"],
+    "forbidden_reuse":["new Rider x Circumference clean support counting","new affinity formula selection","new affinity evaluation"]
+  },
+  "remaining_operational_path":"Acquire clean-window KDreams archive HTML through a quarantined networked execution context and run tools/keirin_kdreams_historical_pre_quarantine_fetch_v1.py, or continue the Sep10 prospective lane. Current local execution environment has no raw external DNS/HTTP egress.",
+  "result_join_authorized":false,
+  "model_fit_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_BURNED_CORPUS_AS_NEW_SUPPORT","NO_DATE_KEYWORD_AS_RACE_DATE_AUTHORITY","NO_RESULT_JOIN_WHILE_SUPPORT_GATE_BLOCKED","NO_OUTCOME_AWARE_SAMPLE_SELECTION","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
