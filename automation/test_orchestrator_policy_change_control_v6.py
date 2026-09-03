@@ -7,6 +7,7 @@ import threading
 import unittest
 
 from orchestrator_mvp_v2 import OrchestratorError
+from orchestrator_role_relay_policy_v4 import CandidateBindingPolicy, PolicyRelayStore
 from orchestrator_role_relay_policy_source_v5 import ReviewedPolicySource, SourceBoundPolicyRelayStore
 from orchestrator_policy_change_control_v6 import (
     BASE_V5_AUDITOR_COMMENT_ID,
@@ -167,6 +168,38 @@ class PolicyChangeControlV6Tests(unittest.TestCase):
         self.assertEqual(len(out), 2)
         self.assertEqual(out[0], out[1])
         self.assertEqual(out[0]["classification"], NO_CHANGE)
+
+    def test_inherited_v4_v5_empty_db_first_open_is_lock_safe(self):
+        v4_policy = CandidateBindingPolicy.exact(
+            "fufufu1116/multiverse-research",
+            ("automation-v5", "agent/automation-orchestrator-policy-source-v5-20260903-v1"),
+        )
+
+        def race(label, factory):
+            for round_no in range(12):
+                db = self.root / f"{label}-{round_no}.sqlite"
+                barrier = threading.Barrier(2)
+                errors = []
+
+                def run_one():
+                    store = None
+                    try:
+                        barrier.wait(timeout=2)
+                        store = factory(db)
+                    except Exception as exc:
+                        errors.append(exc)
+                    finally:
+                        if store is not None:
+                            store.close()
+
+                a = threading.Thread(target=run_one)
+                b = threading.Thread(target=run_one)
+                a.start(); b.start(); a.join(5); b.join(5)
+                self.assertFalse(a.is_alive() or b.is_alive(), f"{label}:{round_no}:thread_stuck")
+                self.assertEqual(errors, [], f"{label}:{round_no}:{errors!r}")
+
+        race("v4", lambda db: PolicyRelayStore(db, v4_policy))
+        race("v5", lambda db: SourceBoundPolicyRelayStore(db, self.source))
 
     def test_concurrent_identical_decision_converges_across_connections(self):
         seed = PolicyChangeControlStore(self.db, self.baseline, self.source)
