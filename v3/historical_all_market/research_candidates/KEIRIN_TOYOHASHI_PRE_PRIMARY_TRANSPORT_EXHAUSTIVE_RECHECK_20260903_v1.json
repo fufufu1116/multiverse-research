@@ -1,0 +1,60 @@
+{
+  "record": "KEIRIN_TOYOHASHI_PRE_PRIMARY_TRANSPORT_EXHAUSTIVE_RECHECK_20260903_v1",
+  "status": "PRE_RESULT_EXHAUSTIVE_RECHECK_NO_STRICT_SNAPSHOT_GAIN_FAIL_CLOSED_CONTINUE",
+  "scope": "RESEARCH_PRE_TRANSPORT_ONLY_NO_FEATURE_ADMISSION_NO_RESULT_AUTHORITY",
+  "fresh_binding_parent_head": "b6092fec05bdfeb92fcc449bb8c4ee90722cab0b",
+  "meeting": {"date":"2026-09-04","venue":"豊橋","grade":"F1","day":1,"circumference_m":400,"race_count":12},
+  "primary_contract": {
+    "artifact": "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
+    "strict_primary_provider": "OddsPark public race card",
+    "required_strict_fields": ["race date","venue","race number","scheduled start","car number","rider name","prefecture source display","period","class","style","competition score","nige","makuri","sashi","mark count","S","H","B"],
+    "secondary_feature_substitution_allowed": false
+  },
+  "oddspark_recheck": {
+    "desktop_current_pages_positive": [2,9,11],
+    "desktop_current_urls": [
+      "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=2",
+      "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=9",
+      "https://www.oddspark.com/keirin/RaceList.do?joCode=45&kaisaiBi=20260904&raceNo=11"
+    ],
+    "desktop_other_races_current_search_index_status": "NOT_POSITIVELY_RETRIEVED_AFTER_RACE_NUMBER_AND_DISTINCTIVE_RIDER_NAME_QUERIES",
+    "mobile_strict_surface": "SpRaceInfo.do",
+    "mobile_current_sep4_toyohashi_search_index_hits": 0,
+    "historical_mobile_surface_schema_positive": true,
+    "historical_mobile_schema_fields_confirmed": ["competition score","nige","makuri","sashi","mark","S","H","B"],
+    "strict_snapshot_gain": 0,
+    "strict_snapshot_count_after_recheck": 0
+  },
+  "kdreams_recheck": {
+    "current_bank_page": "https://keirin.kdreams.jp/toyohashi/",
+    "current_meeting_status": "POSITIVE_SHOWS_2026-09-04_MINNANO_KEIRIN_CUP_INITIAL_DAY_AND_12_RACES",
+    "current_outbound_label": "出走表一覧",
+    "current_gamboo_race_news_url": "https://keirin.kdreams.jp/gamboo/keirin-kaisai/race-news/4520260904/45202609040100/",
+    "positive_series_key": "4520260904",
+    "positive_day_key_exposed_in_existing_url": "45202609040100",
+    "exact_current_racecard_or_racedetail_href_exposed": false,
+    "search_for_day_key_plus_race_card": "NO_RESULT",
+    "racecard_or_racedetail_url_construction_allowed": false,
+    "rule": "Do not infer current race-card or race-detail URLs from historical patterns or from the positively exposed series/day key."
+  },
+  "secondary_pre_crosscheck": {
+    "toyohashi_all_race_membership_artifact": "KEIRIN_TOYOHASHI_DAY1_PRE_MEMBERSHIP_CROSSCHECK_20260903_v1.json",
+    "membership_status": "COMPLETE_12_OF_12_82_ROWS",
+    "use": "SEARCH_KEYS_AND_MEMBERSHIP_CROSSCHECK_ONLY",
+    "strict_feature_authority": false
+  },
+  "decision": {
+    "accepted_strict_race_snapshots": [],
+    "strict_snapshot_count": 0,
+    "continue_primary_retrieval": true,
+    "provider_switch": false,
+    "result_join": false,
+    "cutoff_rule": "Any race still incomplete at its frozen cutoff is permanently fail-closed for strict PRE feature use; never reconstruct after race."
+  },
+  "result_values_observed": false,
+  "payout_values_observed": false,
+  "result_access_authorized": false,
+  "feature_admission": false,
+  "owner_action_required_now": false,
+  "hard_boundaries": ["NO_RESULT","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_KDREAMS_URL_PATTERN_INFERENCE","NO_SILENT_PROVIDER_SWITCH","NO_SECONDARY_FEATURE_SUBSTITUTION","NO_POST_RACE_PRE_RECONSTRUCTION","NO_S0_MUTATION","NO_PROTECTED_HOLDOUT","NO_MODEL_PROMOTION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"]
+}
