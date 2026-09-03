@@ -14,6 +14,12 @@ RECOVERABLE_ACTIVE_STATES = frozenset({
     'IN_IMPLEMENT', 'IN_LAB', 'LAB_FIX_REQUIRED', 'IN_AUDIT', 'AUDIT_FIX_REQUIRED'
 })
 
+def _validated_worker_id(worker_id):
+    if (not isinstance(worker_id,str) or not worker_id.strip() or
+            len(worker_id)>config.WORKER_ID_MAX_LENGTH):
+        raise ValueError('WORKER_ID_BOUNDED_NONEMPTY_REQUIRED')
+    return worker_id
+
 def _validated_lease_seconds(lease_seconds):
     lease_seconds=config.LEASE_SECONDS if lease_seconds is None else lease_seconds
     if (isinstance(lease_seconds,bool) or not isinstance(lease_seconds,(int,float)) or
@@ -64,7 +70,7 @@ def list_tasks():
 
 def assert_unexpired_fence(task_id, worker_id, generation):
     """Fail closed unless worker/generation still owns an unexpired task lease."""
-    init_schema(); now=time.time(); c=_conn()
+    init_schema(); worker_id=_validated_worker_id(worker_id); now=time.time(); c=_conn()
     try:
         r=c.execute('SELECT claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
     finally:
@@ -75,7 +81,7 @@ def assert_unexpired_fence(task_id, worker_id, generation):
     return True
 
 def claim_next_task(worker_id, *, lease_seconds=None):
-    init_schema(); lease_seconds=_validated_lease_seconds(lease_seconds)
+    init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute("SELECT id FROM tasks WHERE state='PENDING' AND (claimed_by IS NULL OR lease_until<?) ORDER BY priority DESC,created_at LIMIT 1",(now,)).fetchone()
@@ -92,7 +98,7 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
     fences the old worker. Lease duration is finite and bounded by the reviewed
     Shared Engine lease ceiling.
     """
-    init_schema(); lease_seconds=_validated_lease_seconds(lease_seconds)
+    init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
@@ -109,7 +115,7 @@ def renew_lease(task_id, worker_id, generation, *, lease_seconds=None):
 
 def reclaim_expired_task(task_id, worker_id, *, lease_seconds=None):
     """Take over one expired active task without changing its workflow state."""
-    init_schema(); lease_seconds=_validated_lease_seconds(lease_seconds)
+    init_schema(); worker_id=_validated_worker_id(worker_id); lease_seconds=_validated_lease_seconds(lease_seconds)
     now=time.time(); c=_conn(); c.execute('BEGIN IMMEDIATE')
     try:
         r=c.execute('SELECT state,claimed_by,claim_generation,lease_until FROM tasks WHERE id=?',(task_id,)).fetchone()
@@ -140,7 +146,7 @@ def transition(task_id,new_state,*,actor,event_type,detail=None,result_update=No
         if new_state not in config.ALLOWED_TRANSITIONS.get(before,set()): raise InvalidTransitionError(f'{before}->{new_state}')
         if fencing is None: raise LostLeaseError('fencing token required')
         now=time.time()
-        worker,generation=fencing
+        worker,generation=fencing; worker=_validated_worker_id(worker)
         if r['claimed_by']!=worker or r['claim_generation']!=generation: raise LostLeaseError('stale fencing token')
         if r['lease_until'] is None or r['lease_until']<=now: raise LostLeaseError('task lease expired')
         result=json.loads(r['result_json'])
