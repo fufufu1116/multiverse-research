@@ -211,12 +211,13 @@ class ProviderAdapterV7Tests(unittest.TestCase):
             finally:
                 relay.close()
 
-    def test_bad_result_head_is_rejected_by_relay_after_durable_receipt(self):
+    def test_invalid_result_is_rejected_before_durable_receipt(self):
         bad = {"status": "READY", "candidate_head": "0" * 40, "diff_lines": 1,
                "cost_microusd": 0, "evidence_ref": "bad-head"}
         with tempfile.TemporaryDirectory() as td:
             root = pathlib.Path(td)
             relay_db = root / "relay.sqlite"
+            receipt_db = root / "receipt.sqlite"
             source = ReviewedPolicySource.load(POLICY_MANIFEST)
             relay = SourceBoundPolicyRelayStore(relay_db, source)
             spec = demo_spec("provider-v7-bad-head", canonical_main=PROVIDER_ADAPTER_CANONICAL_MAIN,
@@ -228,10 +229,20 @@ class ProviderAdapterV7Tests(unittest.TestCase):
             relay.enqueue(role="IMPLEMENT", task=task, operation_key_value=op,
                           semantic_attempt=1, transient_attempt=0)
             relay.close()
-            with self.assertRaisesRegex(OrchestratorError, "RELAY_IMPLEMENT_HEAD_MISMATCH"):
-                provider_adapter_process_one(str(relay_db), str(root / "receipt.sqlite"), str(POLICY_MANIFEST),
+            with self.assertRaisesRegex(OrchestratorError, "PROVIDER_ADAPTER_IMPLEMENT_HEAD_MISMATCH"):
+                provider_adapter_process_one(str(relay_db), str(receipt_db), str(POLICY_MANIFEST),
                                              str(ADAPTER_MANIFEST), "provider", {"IMPLEMENT": {"1": bad}},
                                              lease_seconds=1)
+            receipts = ProviderAdapterReceiptStore(receipt_db, ProviderAdapterManifest.load(ADAPTER_MANIFEST))
+            try:
+                self.assertEqual(receipts.execution_count(op), 0)
+            finally:
+                receipts.close()
+            relay = SourceBoundPolicyRelayStore(relay_db, source)
+            try:
+                self.assertIsNone(relay.result(op))
+            finally:
+                relay.close()
 
 
 if __name__ == "__main__":
