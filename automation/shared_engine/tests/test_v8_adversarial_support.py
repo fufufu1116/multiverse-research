@@ -104,6 +104,7 @@ class V8AdversarialSupportTests(unittest.TestCase):
         t1 = self.engine.submit("core", "implement", "one")
         gen1 = self.engine.claim_and_start(t1, "w")
         t2 = self.engine.submit("core", "implement", "two")
+        before = db.get_task(t2)["state"]
         job = self.engine._job(t1, "IMPLEMENT", 0, "bound-op")
         result = {
             "status": "READY",
@@ -116,7 +117,7 @@ class V8AdversarialSupportTests(unittest.TestCase):
         self.engine.bridge_receipts.record(bridge)
         with self.assertRaises(Exception):
             apply_receipt(t2, bridge, self.binding, "w", gen1)
-        self.assertEqual(db.get_task(t2)["state"], "QUEUED")
+        self.assertEqual(db.get_task(t2)["state"], before)
 
     def test_provider_main_drift_fails_before_receipt(self):
         manifest = ProviderAdapterManifest.load(V7_MANIFEST)
