@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_TAKEO_11R_RIDER_IDENTITY_PRE_GATE_20260903_v1",
+  "status": "FINAL_FAIL_CLOSED_4_OF_7_POSITIVE_OFFICIAL_SAME_RACE_ASSIGNMENTS_BEFORE_CUTOFF",
+  "scope": "RESEARCH_PRE_ONLY_RIDER_IDENTITY_GATE_NO_RESULT_AUTHORITY",
+  "race": {"venue":"武雄","date":"2026-09-03","race_no":11,"race_id":"8420260903010011","cutoff_jst":"19:57","class":"S級予選"},
+  "pre_roster_source": "KEIRIN_TAKEO_9R_12R_PRE_CUTOFF_ALLOWLIST_WITNESS_20260903_v1.json",
+  "official_identity_source": "KEIRIN.JP rider profile/current-race bodies keyed by registration number",
+  "timing_integrity": {
+    "gate_frozen_before_cutoff": true,
+    "time_check_before_gate_jst": "2026-09-03T19:06:23+09:00",
+    "post_cutoff_repair_allowed": false,
+    "rule": "Only a positive KEIRIN.JP current-race body showing 武雄F1 09/03 S級予選/11R counts as same-race PASS. Registration identity alone, meeting schedule alone, stale cached profile bodies, and third-party race cards do not count."
+  },
+  "official_registration_mapping": [
+    {"car_no":1,"name":"小林 弘和","registration_number":"014196"},
+    {"car_no":2,"name":"長井 妙樹","registration_number":"014512"},
+    {"car_no":3,"name":"板垣 昴","registration_number":"015329"},
+    {"car_no":4,"name":"伊藤 颯馬","registration_number":"015390"},
+    {"car_no":5,"name":"佐々木 堅次","registration_number":"015239"},
+    {"car_no":6,"name":"植原 琢也","registration_number":"015244"},
+    {"car_no":7,"name":"西田 雅志","registration_number":"013498"}
+  ],
+  "positive_same_race_assignments": [
+    {"car_no":2,"name":"長井 妙樹","registration_number":"014512","official_assignment":"武雄F1 09/03 S級予選/11R","evidence":"Fresh KEIRIN.JP search surface positively showed 開催中のレース 武雄F1 / 09/03 / S級予選/11R before cutoff."},
+    {"car_no":3,"name":"板垣 昴","registration_number":"015329","official_assignment":"武雄F1 09/03 S級予選/11R","evidence":"Fresh KEIRIN.JP search surface positively showed 開催中のレース 武雄F1 / 09/03 / S級予選/11R before cutoff."},
+    {"car_no":4,"name":"伊藤 颯馬","registration_number":"015390","official_assignment":"武雄F1 09/03 S級予選/11R","evidence":"Fresh KEIRIN.JP search surface positively showed 開催中のレース 武雄F1 / 09/03 / S級予選/11R before cutoff."},
+    {"car_no":5,"name":"佐々木 堅次","registration_number":"015239","official_assignment":"武雄F1 09/03 S級予選/11R","evidence":"Fresh KEIRIN.JP search surface positively showed 開催中のレース 武雄F1 / 09/03 / S級予選/11R before cutoff."}
+  ],
+  "unresolved_same_race_assignments": [
+    {"car_no":1,"name":"小林 弘和","registration_number":"014196","status":"OFFICIAL_IDENTITY_VERIFIED_BUT_NO_POSITIVE_CURRENT_SAME_RACE_11R_BODY_OBTAINED_BEFORE_GATE_FREEZE"},
+    {"car_no":6,"name":"植原 琢也","registration_number":"015244","status":"OFFICIAL_IDENTITY_VERIFIED_BUT_NO_POSITIVE_CURRENT_SAME_RACE_11R_BODY_OBTAINED_BEFORE_GATE_FREEZE"},
+    {"car_no":7,"name":"西田 雅志","registration_number":"013498","status":"OFFICIAL_IDENTITY_VERIFIED_BUT_NO_POSITIVE_CURRENT_SAME_RACE_11R_BODY_OBTAINED_BEFORE_GATE_FREEZE"}
+  ],
+  "mapping_count":7,
+  "same_race_positive_count":4,
+  "final_identity_gate":"FAIL_CLOSED",
+  "systemic_observation":"KEIRIN.JP current-race profile transport remains inconsistently fresh across riders and retrieval paths. Missing same-race bodies are source-transport missingness, not evidence permitting contract relaxation.",
+  "decision":"Race 11 is permanently ineligible for rider-specific affinity RESULT work under the current strengthened identity contract. Do not repair unresolved assignments after cutoff.",
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT","NO_POST_CUTOFF_IDENTITY_REPAIR","NO_MEETING_ONLY_MATCH_AS_SAME_RACE_PASS","NO_THIRD_PARTY_RACE_CARD_AS_OFFICIAL_IDENTITY_GATE_SUBSTITUTE","NO_CURRENT_PROFILE_FEATURE_BACKFILL","NO_IDENTITY_CONTRACT_WEAKENING","NO_MODEL_FIT","NO_MAIN_OR_RUNTIME_MUTATION"]
+}
