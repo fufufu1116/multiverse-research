@@ -1,9 +1,9 @@
 import os, tempfile, unittest
 import config, db
 from domain_registry import DomainPolicyError
-from integration_bridge import IntegrationBinding
+from integration_bridge import IntegrationBinding, apply_receipt
 from exact_v7_shared_engine import ExactV7SharedEngine, V7_MANIFEST
-from canonical_v7_binding import CANONICAL_MAIN, V7_HEAD
+from canonical_v7_binding import CANONICAL_MAIN, V7_HEAD, v7_result_to_bridge_receipt
 from current_state import shared_current
 from orchestrator_provider_adapter_v7 import ProviderAdapterManifest, ProviderAdapterReceiptStore, DeterministicLocalAdapter, provider_request_from_job, OrchestratorError
 
@@ -48,6 +48,31 @@ class ExactV7SharedEngineTests(unittest.TestCase):
             self.assertEqual(store.execute_local_once('op',req,DeterministicLocalAdapter({'IMPLEMENT':{'1':result}})),result)
             self.assertEqual(store.execute_local_once('op',req,DeterministicLocalAdapter({'IMPLEMENT':{'1':result}})),result)
             self.assertEqual(store.execution_count('op'),1)
+        finally: store.close()
+    def test_crash_after_provider_receipt_before_task_transition_reuses_once(self):
+        t=self.engine.submit('core','implement','crash-window'); gen=self.engine.claim_and_start(t,'w'); job=self.engine._job(t,'IMPLEMENT',0,'crash-op')
+        req=provider_request_from_job(job,self.engine.manifest); result={'status':'READY','candidate_head':HEAD,'diff_lines':1,'cost_microusd':0,'evidence_ref':'crash-e'}
+        store=ProviderAdapterReceiptStore(self.engine.provider_receipt_db,self.engine.manifest)
+        try:
+            durable=store.execute_local_once('crash-op',req,DeterministicLocalAdapter({'IMPLEMENT':{'1':result}}))
+            self.assertEqual(store.execution_count('crash-op'),1)
+        finally: store.close()
+        self.assertEqual(db.get_task(t)['state'],'IN_IMPLEMENT')
+        store=ProviderAdapterReceiptStore(self.engine.provider_receipt_db,self.engine.manifest)
+        try:
+            replay=store.execute_local_once('crash-op',req,DeterministicLocalAdapter({'IMPLEMENT':{'1':result}})); self.assertEqual(store.execution_count('crash-op'),1)
+        finally: store.close()
+        bridge=v7_result_to_bridge_receipt(job,replay,local_binding=self.binding); self.engine.bridge_receipts.record(bridge)
+        self.assertEqual(apply_receipt(t,bridge,self.binding,'w',gen),'IN_LAB')
+    def test_conflicting_same_operation_provider_replay_fails_closed(self):
+        m=ProviderAdapterManifest.load(V7_MANIFEST); path=os.path.join(self.tmp.name,'conflict.db'); store=ProviderAdapterReceiptStore(path,m)
+        base={'operation_key':'same','task_id':'t','role':'IMPLEMENT','semantic_generation':0,'candidate_head':HEAD,'candidate_branch':BRANCH,'canonical_main':CANONICAL_MAIN,'objective':'a','authority':{'candidate_only':True,'live_provider':False,'production':False,'runtime':False,'spend':False}}
+        result={'status':'READY','candidate_head':HEAD,'diff_lines':0,'cost_microusd':0,'evidence_ref':'e'}
+        try:
+            store.execute_local_once('same',provider_request_from_job(base,m),DeterministicLocalAdapter({'IMPLEMENT':{'1':result}}))
+            changed=dict(base); changed['objective']='b'
+            with self.assertRaisesRegex(OrchestratorError,'CONFLICTING_REPLAY'):
+                store.execute_local_once('same',provider_request_from_job(changed,m),DeterministicLocalAdapter({'IMPLEMENT':{'1':result}}))
         finally: store.close()
     def test_lab_fix_required_routes_without_owner_gate(self):
         t=self.engine.submit('core','implement','x'); gen=self.engine.claim_and_start(t,'w'); head=HEAD
