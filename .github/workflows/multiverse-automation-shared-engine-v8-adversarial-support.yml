@@ -27,7 +27,10 @@ jobs:
         env:
           PYTHONPATH: automation/shared_engine:automation
         run: |
-          python -m unittest automation/shared_engine/tests/test_v8_adversarial_support.py -v
+          python -m unittest \
+            automation/shared_engine/tests/test_v8_adversarial_support.py \
+            automation/shared_engine/tests/test_v8_state_authority_support.py \
+            -v
       - name: Nonauthority receipt
         run: |
           echo "FORMAL_LAB_VERDICT=false"
