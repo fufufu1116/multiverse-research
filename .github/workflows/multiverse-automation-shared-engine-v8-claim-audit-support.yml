@@ -1,0 +1,23 @@
+name: MULTIVERSE Automation Shared Engine v8 Claim Audit Support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-claim-audit-support-20260904-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-claim-audit-support.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  support-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reproduce unaudited claim ownership mutation
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation.shared_engine.tests_support.test_v8_claim_audit_support -v
