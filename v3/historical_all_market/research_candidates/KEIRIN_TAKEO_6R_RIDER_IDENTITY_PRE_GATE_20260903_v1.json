@@ -1,0 +1,27 @@
+{
+  "record":"KEIRIN_TAKEO_6R_RIDER_IDENTITY_PRE_GATE_20260903_v1",
+  "status":"FAIL_CLOSED_6_OF_7_POSITIVE_OFFICIAL_SAME_RACE_ASSIGNMENTS_BEFORE_CUTOFF",
+  "scope":"RESEARCH_PRE_ONLY_RIDER_IDENTITY_GATE_NO_RESULT_AUTHORITY",
+  "race":{"venue":"武雄","date":"2026-09-03","race_no":6,"race_id":"8420260903010006","cutoff_jst":"17:49","class":"S級予選"},
+  "timing_integrity":{"gate_frozen_before_cutoff":true,"post_cutoff_repair_allowed":false},
+  "pre_roster_source":"KEIRIN_TAKEO_DAY1_PRE_ROSTER_SCORE_GATE_20260903_v1.json",
+  "official_source":"KEIRIN.JP rider profile/current-race bodies keyed by registration number",
+  "positive_same_race_assignments":[
+    {"car_no":1,"name":"筒井 敦史","registration_number":"013737","official_assignment":"武雄F1 09/03 S級予選/6R"},
+    {"car_no":2,"name":"小西 晴己","registration_number":"015624","official_assignment":"武雄F1 09/03 S級予選/6R"},
+    {"car_no":4,"name":"元砂 勇雪","registration_number":"014946","official_assignment":"武雄F1 09/03 S級予選/6R"},
+    {"car_no":5,"name":"森川 大輔","registration_number":"014246","official_assignment":"武雄F1 09/03 S級予選/6R"},
+    {"car_no":6,"name":"望月 湧世","registration_number":"015713","official_assignment":"武雄F1 09/03 S級予選/6R"},
+    {"car_no":7,"name":"月森 亮輔","registration_number":"014879","official_assignment":"武雄F1 09/03 S級予選/6R"}
+  ],
+  "unresolved":[{"car_no":3,"name":"福田 知也","registration_number":"013945","status":"OFFICIAL_IDENTITY_VERIFIED_BUT_AVAILABLE_KEIRINJP_PROFILE BODY DID_NOT_POSITIVELY_SHOW_CURRENT_SAME_RACE_ASSIGNMENT_BEFORE_GATE_FREEZE"}],
+  "mapping_count":7,
+  "same_race_positive_count":6,
+  "final_identity_gate":"FAIL_CLOSED",
+  "systemic_observation":"Across Takeo 4R-6R, some official rider-profile current-race bodies lag or remain stale even while the PRE roster is otherwise stable. Treat this as source-transport missingness, not permission to weaken identity rules.",
+  "decision":"Race 6 remains ineligible for rider-specific affinity RESULT work under the current strengthened profile-assignment contract. Seek a separate official race-card identity transport for future blocks; do not repair this race post-cutoff.",
+  "result_values_observed":false,
+  "payout_values_observed":false,
+  "result_access_authorized":false,
+  "hard_boundaries":["NO_RESULT","NO_POST_CUTOFF_IDENTITY_REPAIR","NO_MEETING_ONLY_MATCH_AS_SAME_RACE_PASS","NO_THIRD_PARTY_RACE_CARD_AS_OFFICIAL_IDENTITY_GATE_SUBSTITUTE","NO_IDENTITY_CONTRACT_WEAKENING","NO_MODEL_FIT","NO_MAIN_OR_RUNTIME_MUTATION"]
+}
