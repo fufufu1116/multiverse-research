@@ -1,0 +1,622 @@
+{
+  "archive_month_request_executed": false,
+  "comment_emitted": false,
+  "failures": [],
+  "forecast_emitted": false,
+  "narabiyoso_emitted": false,
+  "odds_emitted": false,
+  "page_visible_text_emitted": false,
+  "payout_accessed": false,
+  "race_detail_opened": false,
+  "race_id_guessed": false,
+  "raw_html_persisted": false,
+  "raw_html_printed": false,
+  "record": "KEIRIN_KDREAMS_RACECARD_MONTHNAV_STRUCTURE_PROBE_v1",
+  "records": [
+    {
+      "forms": [
+        {
+          "action_url": "https://keirin.kdreams.jp/hofu/racecard/",
+          "control_count": 3,
+          "controls": [
+            {
+              "id": null,
+              "name": "yy",
+              "tag": "select",
+              "type": "select"
+            },
+            {
+              "id": null,
+              "name": "mm",
+              "tag": "select",
+              "type": "select"
+            },
+            {
+              "hidden_value_length": 8,
+              "hidden_value_sha256": "614ba309e00d7c156bc1833c2bc09c395d3fa2212179f39caa7c10d2f8039e4f",
+              "id": null,
+              "name": "searchDate",
+              "tag": "input",
+              "type": "hidden"
+            }
+          ],
+          "id": "searchDate",
+          "method": "post",
+          "name": "searchDate"
+        },
+        {
+          "action_url": null,
+          "control_count": 3,
+          "controls": [
+            {
+              "id": null,
+              "name": "userid",
+              "tag": "input",
+              "type": "text"
+            },
+            {
+              "id": null,
+              "name": "password",
+              "tag": "input",
+              "type": "password"
+            },
+            {
+              "id": null,
+              "name": "easyflg",
+              "tag": "input",
+              "type": "checkbox"
+            }
+          ],
+          "id": "JS_FORM_LOGIN",
+          "method": "post",
+          "name": "formLogin"
+        },
+        {
+          "action_url": "https://keirin.kdreams.jp/hofu/racecard/",
+          "control_count": 4,
+          "controls": [
+            {
+              "hidden_value_length": 4,
+              "hidden_value_sha256": "61ab550f4c85a975cd46f8606ede483d8ee720a76f627773de1bc1dd8ce5fb35",
+              "id": "ratAccountId",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 1,
+              "hidden_value_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+              "id": "ratServiceId",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 7,
+              "hidden_value_sha256": "c9584109e6000c58299b2b47308e870d51ff8582b0de69f96664501e4181f3c5",
+              "id": "ratServiceType",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 2,
+              "hidden_value_sha256": "d8463bd3ba4b10e5916f65fa7b0c1f9f91f67ca40cc25b48810fb2f5a3340488",
+              "id": "ratPageLayout",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            }
+          ],
+          "id": "ratForm",
+          "method": "get",
+          "name": "ratForm"
+        }
+      ],
+      "index_url": "https://keirin.kdreams.jp/hofu/racecard/",
+      "interesting_selects": [
+        {
+          "context_token": "UNCLASSIFIED",
+          "id": null,
+          "name": "yy",
+          "onchange": null,
+          "onclick": null,
+          "option_count": 20,
+          "selected_options": [
+            {
+              "selected": true,
+              "text": "2026",
+              "value": "2026"
+            }
+          ],
+          "target_month_candidates": [],
+          "target_year_candidates": [
+            {
+              "selected": true,
+              "text": "2026",
+              "value": "2026"
+            }
+          ]
+        },
+        {
+          "context_token": "UNCLASSIFIED",
+          "id": null,
+          "name": "mm",
+          "onchange": null,
+          "onclick": null,
+          "option_count": 12,
+          "selected_options": [
+            {
+              "selected": true,
+              "text": "9",
+              "value": "09"
+            }
+          ],
+          "target_month_candidates": [
+            {
+              "selected": false,
+              "text": "8",
+              "value": "08"
+            },
+            {
+              "selected": true,
+              "text": "9",
+              "value": "09"
+            }
+          ],
+          "target_year_candidates": []
+        }
+      ],
+      "script_semantics": [
+        {
+          "function_names": [],
+          "recognized_tokens": [],
+          "script_index": 12,
+          "script_sha256": "432e3d5e37ffda8b806117ae7ec97b0c81ac60ffdb6e6faa86b9bafb854f7b12",
+          "structural_racecard_urls": []
+        },
+        {
+          "function_names": [],
+          "recognized_tokens": [
+            "racecard"
+          ],
+          "script_index": 15,
+          "script_sha256": "75de0f10fb8be5da9f3889f178e5185f43ca5e9df73a55afebf100d71bd922c4",
+          "structural_racecard_urls": [
+            "https://keirin.kdreams.jp/hofu/racecard/"
+          ]
+        }
+      ],
+      "select_form_bindings": [
+        {
+          "form_binding": {
+            "action_url": "https://keirin.kdreams.jp/hofu/racecard/",
+            "form_id": "searchDate",
+            "form_name": "searchDate",
+            "method": "post"
+          },
+          "select_id": null,
+          "select_name": "yy"
+        },
+        {
+          "form_binding": {
+            "action_url": "https://keirin.kdreams.jp/hofu/racecard/",
+            "form_id": "searchDate",
+            "form_name": "searchDate",
+            "method": "post"
+          },
+          "select_id": null,
+          "select_name": "mm"
+        }
+      ],
+      "source_sha256": "4630c14c53fc4e61115bae670432c81b89d299dccf4ec0cee3a6f465802f5bdb",
+      "venue_slug": "hofu"
+    },
+    {
+      "forms": [
+        {
+          "action_url": "https://keirin.kdreams.jp/toyama/racecard/",
+          "control_count": 3,
+          "controls": [
+            {
+              "id": null,
+              "name": "yy",
+              "tag": "select",
+              "type": "select"
+            },
+            {
+              "id": null,
+              "name": "mm",
+              "tag": "select",
+              "type": "select"
+            },
+            {
+              "hidden_value_length": 8,
+              "hidden_value_sha256": "614ba309e00d7c156bc1833c2bc09c395d3fa2212179f39caa7c10d2f8039e4f",
+              "id": null,
+              "name": "searchDate",
+              "tag": "input",
+              "type": "hidden"
+            }
+          ],
+          "id": "searchDate",
+          "method": "post",
+          "name": "searchDate"
+        },
+        {
+          "action_url": null,
+          "control_count": 3,
+          "controls": [
+            {
+              "id": null,
+              "name": "userid",
+              "tag": "input",
+              "type": "text"
+            },
+            {
+              "id": null,
+              "name": "password",
+              "tag": "input",
+              "type": "password"
+            },
+            {
+              "id": null,
+              "name": "easyflg",
+              "tag": "input",
+              "type": "checkbox"
+            }
+          ],
+          "id": "JS_FORM_LOGIN",
+          "method": "post",
+          "name": "formLogin"
+        },
+        {
+          "action_url": "https://keirin.kdreams.jp/toyama/racecard/",
+          "control_count": 4,
+          "controls": [
+            {
+              "hidden_value_length": 4,
+              "hidden_value_sha256": "61ab550f4c85a975cd46f8606ede483d8ee720a76f627773de1bc1dd8ce5fb35",
+              "id": "ratAccountId",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 1,
+              "hidden_value_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+              "id": "ratServiceId",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 7,
+              "hidden_value_sha256": "c9584109e6000c58299b2b47308e870d51ff8582b0de69f96664501e4181f3c5",
+              "id": "ratServiceType",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 2,
+              "hidden_value_sha256": "d8463bd3ba4b10e5916f65fa7b0c1f9f91f67ca40cc25b48810fb2f5a3340488",
+              "id": "ratPageLayout",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            }
+          ],
+          "id": "ratForm",
+          "method": "get",
+          "name": "ratForm"
+        }
+      ],
+      "index_url": "https://keirin.kdreams.jp/toyama/racecard/",
+      "interesting_selects": [
+        {
+          "context_token": "UNCLASSIFIED",
+          "id": null,
+          "name": "yy",
+          "onchange": null,
+          "onclick": null,
+          "option_count": 20,
+          "selected_options": [
+            {
+              "selected": true,
+              "text": "2026",
+              "value": "2026"
+            }
+          ],
+          "target_month_candidates": [],
+          "target_year_candidates": [
+            {
+              "selected": true,
+              "text": "2026",
+              "value": "2026"
+            }
+          ]
+        },
+        {
+          "context_token": "UNCLASSIFIED",
+          "id": null,
+          "name": "mm",
+          "onchange": null,
+          "onclick": null,
+          "option_count": 12,
+          "selected_options": [
+            {
+              "selected": true,
+              "text": "9",
+              "value": "09"
+            }
+          ],
+          "target_month_candidates": [
+            {
+              "selected": false,
+              "text": "8",
+              "value": "08"
+            },
+            {
+              "selected": true,
+              "text": "9",
+              "value": "09"
+            }
+          ],
+          "target_year_candidates": []
+        }
+      ],
+      "script_semantics": [
+        {
+          "function_names": [],
+          "recognized_tokens": [],
+          "script_index": 12,
+          "script_sha256": "432e3d5e37ffda8b806117ae7ec97b0c81ac60ffdb6e6faa86b9bafb854f7b12",
+          "structural_racecard_urls": []
+        },
+        {
+          "function_names": [],
+          "recognized_tokens": [
+            "racecard"
+          ],
+          "script_index": 15,
+          "script_sha256": "f33e4097336d8d2cac6e12f3063dd296f33d660097ef62c28330c7e3f2a519aa",
+          "structural_racecard_urls": [
+            "https://keirin.kdreams.jp/toyama/racecard/"
+          ]
+        }
+      ],
+      "select_form_bindings": [
+        {
+          "form_binding": {
+            "action_url": "https://keirin.kdreams.jp/toyama/racecard/",
+            "form_id": "searchDate",
+            "form_name": "searchDate",
+            "method": "post"
+          },
+          "select_id": null,
+          "select_name": "yy"
+        },
+        {
+          "form_binding": {
+            "action_url": "https://keirin.kdreams.jp/toyama/racecard/",
+            "form_id": "searchDate",
+            "form_name": "searchDate",
+            "method": "post"
+          },
+          "select_id": null,
+          "select_name": "mm"
+        }
+      ],
+      "source_sha256": "0fae896a20758367ff83a37fb590bda5ccc4c4903ec97a13e1f8a7f9bb09d267",
+      "venue_slug": "toyama"
+    },
+    {
+      "forms": [
+        {
+          "action_url": "https://keirin.kdreams.jp/nara/racecard/",
+          "control_count": 3,
+          "controls": [
+            {
+              "id": null,
+              "name": "yy",
+              "tag": "select",
+              "type": "select"
+            },
+            {
+              "id": null,
+              "name": "mm",
+              "tag": "select",
+              "type": "select"
+            },
+            {
+              "hidden_value_length": 8,
+              "hidden_value_sha256": "614ba309e00d7c156bc1833c2bc09c395d3fa2212179f39caa7c10d2f8039e4f",
+              "id": null,
+              "name": "searchDate",
+              "tag": "input",
+              "type": "hidden"
+            }
+          ],
+          "id": "searchDate",
+          "method": "post",
+          "name": "searchDate"
+        },
+        {
+          "action_url": null,
+          "control_count": 3,
+          "controls": [
+            {
+              "id": null,
+              "name": "userid",
+              "tag": "input",
+              "type": "text"
+            },
+            {
+              "id": null,
+              "name": "password",
+              "tag": "input",
+              "type": "password"
+            },
+            {
+              "id": null,
+              "name": "easyflg",
+              "tag": "input",
+              "type": "checkbox"
+            }
+          ],
+          "id": "JS_FORM_LOGIN",
+          "method": "post",
+          "name": "formLogin"
+        },
+        {
+          "action_url": "https://keirin.kdreams.jp/nara/racecard/",
+          "control_count": 4,
+          "controls": [
+            {
+              "hidden_value_length": 4,
+              "hidden_value_sha256": "61ab550f4c85a975cd46f8606ede483d8ee720a76f627773de1bc1dd8ce5fb35",
+              "id": "ratAccountId",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 1,
+              "hidden_value_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+              "id": "ratServiceId",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 7,
+              "hidden_value_sha256": "c9584109e6000c58299b2b47308e870d51ff8582b0de69f96664501e4181f3c5",
+              "id": "ratServiceType",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            },
+            {
+              "hidden_value_length": 2,
+              "hidden_value_sha256": "d8463bd3ba4b10e5916f65fa7b0c1f9f91f67ca40cc25b48810fb2f5a3340488",
+              "id": "ratPageLayout",
+              "name": "rat",
+              "tag": "input",
+              "type": "hidden"
+            }
+          ],
+          "id": "ratForm",
+          "method": "get",
+          "name": "ratForm"
+        }
+      ],
+      "index_url": "https://keirin.kdreams.jp/nara/racecard/",
+      "interesting_selects": [
+        {
+          "context_token": "UNCLASSIFIED",
+          "id": null,
+          "name": "yy",
+          "onchange": null,
+          "onclick": null,
+          "option_count": 20,
+          "selected_options": [
+            {
+              "selected": true,
+              "text": "2026",
+              "value": "2026"
+            }
+          ],
+          "target_month_candidates": [],
+          "target_year_candidates": [
+            {
+              "selected": true,
+              "text": "2026",
+              "value": "2026"
+            }
+          ]
+        },
+        {
+          "context_token": "UNCLASSIFIED",
+          "id": null,
+          "name": "mm",
+          "onchange": null,
+          "onclick": null,
+          "option_count": 12,
+          "selected_options": [
+            {
+              "selected": true,
+              "text": "9",
+              "value": "09"
+            }
+          ],
+          "target_month_candidates": [
+            {
+              "selected": false,
+              "text": "8",
+              "value": "08"
+            },
+            {
+              "selected": true,
+              "text": "9",
+              "value": "09"
+            }
+          ],
+          "target_year_candidates": []
+        }
+      ],
+      "script_semantics": [
+        {
+          "function_names": [],
+          "recognized_tokens": [],
+          "script_index": 12,
+          "script_sha256": "432e3d5e37ffda8b806117ae7ec97b0c81ac60ffdb6e6faa86b9bafb854f7b12",
+          "structural_racecard_urls": []
+        },
+        {
+          "function_names": [],
+          "recognized_tokens": [
+            "racecard"
+          ],
+          "script_index": 15,
+          "script_sha256": "58244e3f4ca9d68f144d5f69f807b53bc48afadff38f66caba203b6f99338490",
+          "structural_racecard_urls": [
+            "https://keirin.kdreams.jp/nara/racecard/"
+          ]
+        }
+      ],
+      "select_form_bindings": [
+        {
+          "form_binding": {
+            "action_url": "https://keirin.kdreams.jp/nara/racecard/",
+            "form_id": "searchDate",
+            "form_name": "searchDate",
+            "method": "post"
+          },
+          "select_id": null,
+          "select_name": "yy"
+        },
+        {
+          "form_binding": {
+            "action_url": "https://keirin.kdreams.jp/nara/racecard/",
+            "form_id": "searchDate",
+            "form_name": "searchDate",
+            "method": "post"
+          },
+          "select_id": null,
+          "select_name": "mm"
+        }
+      ],
+      "source_sha256": "69cb8cfa7e4429ad53911bf9e528e0c448b74aa69eb07d15e13d47aa851aa2e6",
+      "venue_slug": "nara"
+    }
+  ],
+  "result_accessed": false,
+  "rider_data_emitted": false,
+  "status": "STRUCTURE_CAPTURED",
+  "target_months": [
+    8,
+    9
+  ],
+  "target_year": 2026
+}
