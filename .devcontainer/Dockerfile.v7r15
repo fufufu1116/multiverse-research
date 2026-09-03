@@ -1,0 +1,25 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+USER root
+SHELL ["/bin/bash","-o","pipefail","-c"]
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go /tmp/prearm-rate-readiness-v7r13-base.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R15_PROBE_TRANSITION_PATCHER_20260904.py /tmp/v7r15-probe-patcher.py
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R15_PROTECTED_UI_READY_GUARD_20260904.go /tmp/ui-ready-env-guard-v7r15.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R15_IMAGE_IDENTITY_BUILDER_20260904.py /tmp/image-identity-v7r15.py
+RUN set -euo pipefail; \
+ /usr/bin/python3 /tmp/v7r15-probe-patcher.py /tmp/prearm-rate-readiness-v7r13-base.go /tmp/prearm-rate-readiness-v7r15.go; \
+ CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /tmp/prearm-rate-readiness-v7r15 /tmp/prearm-rate-readiness-v7r15.go; \
+ CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /tmp/ui-ready-env-guard-v7r15 /tmp/ui-ready-env-guard-v7r15.go; \
+ /tmp/prearm-rate-readiness-v7r15 build-selftest; \
+ /tmp/ui-ready-env-guard-v7r15 build-selftest; \
+ install -o root -g root -m 0555 /tmp/prearm-rate-readiness-v7r15 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9; \
+ install -o root -g root -m 0555 /tmp/ui-ready-env-guard-v7r15 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r15; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r15)" = '0 0 555'; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9)" = '0 0 555'; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9)" = '0 0 4555'; \
+ test "$(sha256sum /usr/local/bin/multiverse-v36-ui-ready-v7r7 | cut -d' ' -f1)" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'; \
+ test -z "$(find /opt/multiverse/v36 /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -uid 64173 -print -quit 2>/dev/null)"; \
+ /usr/bin/python3 /tmp/image-identity-v7r15.py; \
+ test "$(stat -c '%u %g %a' /opt/multiverse/v36/image-identity-v7r3.json)" = '0 0 444'; \
+ grep -F 'V19.7.36-v7r15-image-identity' /opt/multiverse/v36/image-identity-v7r3.json; \
+ rm -f /tmp/prearm-rate-readiness-v7r13-base.go /tmp/v7r15-probe-patcher.py /tmp/v7r15-probe-patcher.pyc /tmp/prearm-rate-readiness-v7r15.go /tmp/prearm-rate-readiness-v7r15 /tmp/ui-ready-env-guard-v7r15.go /tmp/ui-ready-env-guard-v7r15 /tmp/image-identity-v7r15.py
