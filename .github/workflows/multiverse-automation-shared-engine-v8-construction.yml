@@ -1,0 +1,54 @@
+name: MULTIVERSE Automation Shared Engine v8 construction
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-integration-v8-20260903-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-construction.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-v7-shared-engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact construction head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bind Fresh main and stacked v7 base
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${FRESH_MAIN}" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          test "${GITHUB_REF_NAME}" = "agent/automation-shared-engine-integration-v8-20260903-v1"
+          echo "V8_EXACT_HEAD=${EXACT_HEAD}"
+          echo "V8_FRESH_MAIN=${FRESH_MAIN}"
+      - name: Run exact v7 shared-engine integration
+        shell: bash
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s automation/shared_engine/tests -p 'test_*.py' -v
+      - name: Construction nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "V8_CONSTRUCTION_ONLY=true"
+          echo "V8_RUNTIME=OFF"
+          echo "V8_LIVE_PROVIDER=false"
+          echo "V8_NETWORK=false"
+          echo "V8_EXTERNAL_EFFECT=false"
+          echo "V8_SPEND=false"
+          echo "V8_SECRET_CREDENTIAL=false"
+          echo "V8_CORE_ADOPTION_AUTHORITY=false"
+          echo "V8_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "V8_MAIN_MUTATION_AUTHORITY=false"
