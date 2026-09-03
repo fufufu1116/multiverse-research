@@ -1,0 +1,45 @@
+name: MULTIVERSE Shared Engine v8 Actor Evidence Support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-actor-evidence-support-20260904-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-actor-evidence-support.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  actor-evidence-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bind support branch to reviewed Candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='84158dc1a6c0f7967e8ac16fe910168b6e537f82'
+          git merge-base --is-ancestor "${BASE}" HEAD
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${FRESH_MAIN}" = '040d37f0a4e426cf2e119706484c90cbb48f0e56'
+          echo "SUPPORT_BASE_CANDIDATE=${BASE}"
+          echo "FRESH_MAIN=${FRESH_MAIN}"
+      - name: Run actor evidence spoof probe
+        shell: bash
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: |
+          set -euo pipefail
+          python -m unittest automation.shared_engine.tests.test_v8_actor_evidence_spoof_probe -v
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          echo 'SUPPORT_ONLY=true'
+          echo 'CANDIDATE_MUTATION=false'
+          echo 'MAIN_MUTATION=false'
+          echo 'RUNTIME=OFF'
