@@ -1,0 +1,30 @@
+name: MULTIVERSE Automation Shared Engine v8 Renew Horizon Support
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-v8-renew-horizon-support-20260904-v1
+    paths:
+      - 'automation/shared_engine/tests/test_v8_renew_horizon_support.py'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-renew-horizon-support.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  renew-horizon-support:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run bounded renewal horizon support probe
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: python -m unittest automation.shared_engine.tests.test_v8_renew_horizon_support -v
+      - name: Non-authority receipt
+        run: |
+          echo "SUPPORT_ONLY=true"
+          echo "FORMAL_LAB_VERDICT=false"
+          echo "FORMAL_AUDITOR_VERDICT=false"
+          echo "RUNTIME=OFF"
+          echo "MAIN_MUTATION_AUTHORITY=false"
