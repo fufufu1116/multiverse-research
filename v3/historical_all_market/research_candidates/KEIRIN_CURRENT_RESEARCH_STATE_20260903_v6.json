@@ -1,0 +1,171 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v6",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v5.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "latest_refresh_parent_head": "8b7ae6e7d26d8142bec4f812a0a3cbd6af13c8d2",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only. If HEAD is ahead of this state's refresh/creation binding, inspect only the delta before claiming CURRENT.",
+  "inherited_state": {
+    "base": "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v5.json",
+    "rule": "All v5 constraints, source-integrity rules, protected populations, prespecs, lane pointers, and forbidden actions remain binding unless explicitly changed below."
+  },
+  "deltas_since_v5": {
+    "takeo_identity_gates": [
+      {
+        "race_no": 10,
+        "artifact": "KEIRIN_TAKEO_10R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+        "commit": "68874a38f62ba43ca3817a234de4b621a5f5dc77",
+        "mapping_count": 7,
+        "positive_same_race_assignments": 2,
+        "final_gate": "FAIL_CLOSED",
+        "post_cutoff_repair_allowed": false
+      },
+      {
+        "race_no": 11,
+        "artifact": "KEIRIN_TAKEO_11R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+        "commit": "a6ef22a76ec04f682a627c6da1d87a20eba03901",
+        "mapping_count": 7,
+        "positive_same_race_assignments": 4,
+        "final_gate": "FAIL_CLOSED",
+        "post_cutoff_repair_allowed": false
+      },
+      {
+        "race_no": 12,
+        "artifact": "KEIRIN_TAKEO_12R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+        "commit": "d5af9561485765644586aa49003ae19e7e940c75",
+        "mapping_count": 7,
+        "positive_same_race_assignments": 6,
+        "final_gate": "FAIL_CLOSED",
+        "post_cutoff_repair_allowed": false
+      }
+    ],
+    "takeo_day1_identity_window_status": "CLOSED_THROUGH_12R_NO_POST_CUTOFF_REPAIR",
+    "hofu_1r_cross_circumference_precheck": {
+      "artifact": "KEIRIN_HOFU_1R_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
+      "commit": "8b7ae6e7d26d8142bec4f812a0a3cbd6af13c8d2",
+      "candidate_overlap_count_vs_takeo_84_rows": 0,
+      "candidate_overlap_count_vs_aomori_108_rows": 0,
+      "combined_reference_rider_rows": 192,
+      "official_registration_checks_triggered": 0,
+      "support_delta": 0
+    }
+  },
+  "active_baseline": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "feature": "competition_score",
+    "state": "FROZEN_CONTINUE_NO_PROMOTION",
+    "mutation_allowed": false
+  },
+  "rider_circumference_support": {
+    "support_gate_prespec": "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "target_unique_official_cross_circumference_riders": 30,
+    "current": 9,
+    "remaining": 21,
+    "gate": "FAIL",
+    "interpretation": "SUPPORT_ONLY_NO_EFFECT_ESTIMATE",
+    "result_join_authorized": false,
+    "formula_status": "BLOCKED_UNTIL_SUPPORT_GATE_PASS"
+  },
+  "rider_bank": {
+    "prespec": "KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
+    "empirical_result": "NOT_ESTABLISHED",
+    "state": "UNEVALUABLE_SUPPORT_TOO_SMALL",
+    "reserved_from_fit": ["2026-09-04 防府 outcomes"]
+  },
+  "line_role": {
+    "prespec": "KEIRIN_RIDER_LINE_ROLE_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
+    "empirical_result": "NOT_ESTABLISHED",
+    "state": "DESIGN_READY_OBJECTIVE_SECOND_VENUE_PENDING",
+    "result_access_authorized": false
+  },
+  "sep4_active": {
+    "membership": "KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
+    "transport_readiness": "KEIRIN_SEP4_PRE_TRANSPORT_READINESS_DELTA_20260903_v2.json",
+    "kdreams_exact_racedetail_hrefs": "PENDING_NOT_POSITIVELY_EXPOSED; DO_NOT_GUESS",
+    "oddspark_fallback": "POSITIVE_UNDER_FROZEN_FALLBACK_PRESPEC",
+    "防府": {
+      "circumference_m": 333,
+      "races": 7,
+      "cutoffs": ["08:35", "08:55", "09:15", "09:35", "09:55", "10:15", "10:35"],
+      "role": "PRE_TRANSPORT_IDENTITY_SUPPORT_ONLY_RESERVED_FROM_FIT",
+      "completed_overlap_prechecks": [1],
+      "next_overlap_prechecks": [2, 3, 4, 5, 6, 7]
+    },
+    "豊橋": {
+      "circumference_m": 400,
+      "races": 12,
+      "cutoffs": ["15:46", "16:09", "16:33", "16:57", "17:21", "17:45", "18:09", "18:33", "18:57", "19:21", "19:46", "20:12"],
+      "role": "DEVELOPMENT_CANDIDATE"
+    },
+    "result_access_authorized": false
+  },
+  "source_integrity": {
+    "prospective_finish_targets_observed": false,
+    "payout_values_observed": false,
+    "result_access_authorized": false,
+    "market_or_human_content_may_co_surface": true,
+    "market_or_human_feature_use": "FORBIDDEN",
+    "prospective_population_burned_by_target_observation": false
+  },
+  "roadmap": [
+    "1_PRE_FREEZE: Freeze membership and strict PRE allowlist fields before race cutoff; never reconstruct expired PRE.",
+    "2_IDENTITY_GATE: Verify official registration and positive same-race identity under fail-closed contract; no post-cutoff repair.",
+    "3_SUPPORT_GATE_CURRENT: Accumulate at least 30 unique officially identified cross-circumference riders while RESULT stays closed.",
+    "4_FORMULA_FREEZE_AFTER_SUPPORT_PASS: Freeze low-DOF Rider x Circumference formula, unsupported-rider policy, fit rule, primary metric, race-cluster bootstrap, advance criterion, and exact membership before RESULT join.",
+    "5_CONTROLLED_RESULT_JOIN: Only after the support/formula freeze may prospective RESULT be joined for the prespecified development evaluation; payout remains outside the outcome model.",
+    "6_AFFINITY_EVALUATION: Estimate Rider x Bank/Circumference and objective Line-Role effects only if evidence and identifiability gates permit.",
+    "7_FINAL_EVAL: Recheck prelocked final cross-venue sources/membership; keep protected holdout untouched; no main/runtime promotion without later explicit gates."
+  ],
+  "next_actions": [
+    "Fresh Read branch first on every resume/current claim.",
+    "Complete Sep4 Hofu 2R-7R PRE overlap screening before frozen cutoffs; only candidate repeats proceed to official registration identity confirmation.",
+    "Capture Sep4 Toyohashi PRE before each frozen cutoff under strict frozen allowlist/fallback rules with deterministic content addressing.",
+    "Keep KDreams exact racedetail IDs pending unless positive href/body evidence actually surfaces; never infer a pattern.",
+    "Accumulate official cross-circumference support from 9 to at least 30; keep RESULT closed below threshold.",
+    "Confirm Nara repeated riders on the final PRE card.",
+    "Only after support gate passes freeze the low-DOF Rider x Circumference formula and all evaluation rules before any RESULT join.",
+    "Verify second objective legshow venue and later freeze exact final-evaluation membership."
+  ],
+  "forbidden_actions": [
+    "S0_BETA_CHANGE",
+    "S0_FEATURE_CHANGE",
+    "RESULT_JOIN_WHILE_GATE_BLOCKED",
+    "LOWER_SUPPORT_THRESHOLD_AFTER_RESULT",
+    "SAME_HOLDOUT_RESCUE",
+    "POST_RESULT_VENUE_OR_ROLE_SELECTION",
+    "USE_SEP4_HOFU_OUTCOMES_FOR_FIT",
+    "RACE_ID_GUESSING",
+    "ZERO_SCORE_IMPUTATION",
+    "UNKNOWN_AFFINITY_TO_ZERO_WITHOUT_PRESPEC",
+    "IDENTITY_CONTRACT_WEAKENING",
+    "POST_RACE_PRE_RECONSTRUCTION",
+    "POST_RACE_IDENTITY_REPAIR",
+    "PAYOUT",
+    "ODDS_IN_OUTCOME_MODEL",
+    "HUMAN_FORECAST_AS_REALITY_TRUTH",
+    "NARABIYOSO_AS_OBJECTIVE_LINE_TRUTH",
+    "PROTECTED_HOLDOUT_ACCESS",
+    "MAIN_MUTATION",
+    "MERGE",
+    "RUNTIME_ACTIVATION",
+    "MODEL_PROMOTION",
+    "REAL_MONEY_EXECUTION",
+    "WAGERING_OR_STAKING",
+    "ROI_OR_PROFITABILITY_CLAIM"
+  ],
+  "required_artifact_pointers": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260903_v5.json",
+    "KEIRIN_TAKEO_10R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+    "KEIRIN_TAKEO_11R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+    "KEIRIN_TAKEO_12R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
+    "KEIRIN_HOFU_1R_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
+    "KEIRIN_SEP4_PRE_TRANSPORT_READINESS_DELTA_20260903_v2.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
+    "KEIRIN_RIDER_LINE_ROLE_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json"
+  ],
+  "owner_action_required_now": false
+}
