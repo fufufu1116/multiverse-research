@@ -51,13 +51,24 @@ class LocalPersistentWorkerV9IntegrationTests(unittest.TestCase):
 
     def test_live_heartbeat_prevents_competing_reclaim(self):
         task = self.engine.submit('core', 'implement', 'slow local fixture')
-        worker = LocalPersistentWorker(
-            self.engine,
-            WorkerConfig(lease_seconds=0.25, heartbeat_seconds=0.04, poll_seconds=0.01),
-            _execute_delay=0.45,
-        )
         result = []
-        thread = threading.Thread(target=lambda: result.append(worker.step()))
+        failure = []
+
+        def run_worker_in_own_thread_connection():
+            thread_engine = ExactV7SharedEngine(self.binding, self.bridge_db, self.provider_db)
+            try:
+                worker = LocalPersistentWorker(
+                    thread_engine,
+                    WorkerConfig(lease_seconds=0.25, heartbeat_seconds=0.04, poll_seconds=0.01),
+                    _execute_delay=0.45,
+                )
+                result.append(worker.step())
+            except BaseException as exc:
+                failure.append(exc)
+            finally:
+                thread_engine.close()
+
+        thread = threading.Thread(target=run_worker_in_own_thread_connection)
         thread.start()
         deadline = time.time() + 2
         while time.time() < deadline and db.get_task(task)['state'] != 'IN_IMPLEMENT':
@@ -72,6 +83,7 @@ class LocalPersistentWorkerV9IntegrationTests(unittest.TestCase):
             competitor.close()
         thread.join(timeout=3)
         self.assertFalse(thread.is_alive())
+        self.assertEqual(failure, [])
         self.assertEqual(result, [(task, 'DONE')])
 
     def test_crash_after_durable_provider_receipt_reuses_same_operation(self):
