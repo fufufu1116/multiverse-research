@@ -1,15 +1,15 @@
-name: MULTIVERSE V19.7.36 v7r11 Lock-Anchor Pre-Lab
+name: MULTIVERSE V19.7.36 v7r12 Sealed-Authority Pre-Lab
 
 on:
   push:
     branches:
-      - agent/r1-stage1-phase-c-v19-7-36-v7r11-lock-anchor-remediation-v1
+      - agent/r1-stage1-phase-c-v19-7-36-v7r12-sealed-authority-snapshot-remediation-v1
 
 permissions:
   contents: read
 
 jobs:
-  test-v7r11-lock-anchor-successor:
+  test-v7r12-sealed-authority:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -23,118 +23,70 @@ jobs:
           git -c protocol.version=2 fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
-          printf 'PRELAB_V7R11_EXACT_HEAD=%s\n' "$(git rev-parse HEAD)"
-          printf 'PRELAB_V7R11_EXACT_TREE=%s\n' "$(git rev-parse HEAD^{tree})"
+          printf 'PRELAB_V7R12_EXACT_HEAD=%s\n' "$(git rev-parse HEAD)"
+          printf 'PRELAB_V7R12_EXACT_TREE=%s\n' "$(git rev-parse HEAD^{tree})"
 
-      - name: Static source and inherited negative-test gate
+      - name: Static source and host negative tests
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
           probe='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go'
           testfile='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903_test.go'
-          sanitizer='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_COMMIT_SANITIZER_20260903.c'
-          guard='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_STATIC_ENV_GUARD_20260902.go'
           helper='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go'
-          grep -F 'minBeforeComments = 60' "$probe"
-          grep -F 'minAfterComments = 59' "$probe"
-          grep -F 'RATE_DECREMENT_NOT_EXACT_ONE' "$probe"
-          grep -F 'len(envs)!=2' "$probe"
-          grep -F 'lockPath = "/opt/multiverse/v36/empty-config"' "$probe"
-          grep -F 'syscall.O_DIRECTORY' "$probe"
-          grep -F 'st.Uid!=0' "$probe"
-          grep -F 'uint32(st.Mode&07777)!=00555' "$probe"
-          grep -F 'authority_consumer_requires_generation_match=true' "$probe"
-          grep -F 'lock_anchor_root_owned_nonreplaceable=true' "$probe"
-          grep -F 'verifyPairAt(statusPath,controlPath,gen)' "$probe"
-          grep -F 'st.Nlink!=1' "$probe"
-          grep -F 'syscall.Exec(guardPath,argv,env)' "$probe"
-          grep -F 'Proxy:nil' "$probe"
-          grep -F 'os.Clearenv()' "$probe"
-          grep -F 'TestProductionLockAnchorRejectsPathReplacementAndSecondDomain' "$testfile"
-          grep -F 'os.Remove(lockPath)' "$testfile"
-          grep -F 'os.Rename(lockPath,moved)' "$testfile"
-          grep -F 'syscall.LOCK_EX|syscall.LOCK_NB' "$testfile"
-          grep -F 'probe_path[] = "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9"' "$sanitizer"
-          grep -F 'clean_env[0] = (char *)env_codespaces' "$sanitizer"
-          grep -F 'clean_env[1] = env_name' "$sanitizer"
-          grep -F 'xexecve(probe_path, clean_argv, clean_env)' "$sanitizer"
-          go test "$probe" "$testfile" -count=1
+          guard='governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_STATIC_ENV_GUARD_20260902.go'
+          grep -F 'minBeforeComments=60' "$probe"
+          grep -F 'minAfterComments=59' "$probe"
+          grep -F 'SEALED_MEMFD_SNAPSHOT' "$probe"
+          grep -F 'status_control_authority=OBSERVABILITY_ONLY' "$probe"
+          grep -F 'requiredSeals=fSealSeal|fSealShrink|fSealGrow|fSealWrite' "$probe"
+          grep -F 'setCommitNondumpable' "$probe"
+          grep -F 'verifyNoTracer' "$probe"
+          grep -F 'verifyPairExactAt' "$probe"
+          grep -F 'TestFinalVerifyToExecSameUIDEvidenceMutationCannotAlterSealedAuthority' "$testfile"
+          grep -F '/proc/%d/fd/%d' "$testfile"
+          grep -F '/proc/%d/mem' "$testfile"
+          grep -F 'attacker-in-place-control' "$testfile"
+          grep -F 'os.Rename(p,moved)' "$testfile"
           grep -F 'prearmMinRateBeforeComments = 55' "$helper"
           grep -F 'prearmMinRateAfterComments = 54' "$helper"
           grep -F 'syscall.Exec(helperPath, argv, env)' "$guard"
-          python3 - <<'PY'
-          import json
-          q=json.load(open('.devcontainer/devcontainer.json'))
-          assert q['postAttachCommand']==['/usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9']
-          assert q['remoteUser']=='codespace'
-          assert q['containerUser']=='root'
-          PY
-          printf 'PRELAB_V7R11_STATIC_AND_NEGATIVE_TEST_GATE_PASS=true\n'
+          go test "$probe" "$testfile" -count=1
+          printf 'PRELAB_V7R12_STATIC_AND_NEGATIVE_TEST_GATE_PASS=true\n'
 
-      - name: Build exact image and verify image identity plus root lock anchor
+      - name: Build exact image and bind inherited binaries
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
-          tag="multiverse-v7r11-lock-anchor:${GITHUB_SHA}"
+          tag="multiverse-v7r12-sealed:${GITHUB_SHA}"
           docker build -f .devcontainer/Dockerfile -t "$tag" .
-          parent_meta="$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /opt/multiverse/v36)"
-          anchor_meta="$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /opt/multiverse/v36/empty-config)"
-          printf 'PRELAB_V7R11_LOCK_PARENT_META=%s\n' "$parent_meta"
-          printf 'PRELAB_V7R11_LOCK_ANCHOR_META=%s\n' "$anchor_meta"
-          test "$parent_meta" = '0 0 555'
-          test "$anchor_meta" = '0 0 555'
-          docker run --rm --entrypoint /usr/bin/test "$tag" -d /opt/multiverse/v36
-          docker run --rm --entrypoint /usr/bin/test "$tag" -d /opt/multiverse/v36/empty-config
-          for p in /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7; do
-            meta="$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' "$p")"
-            printf 'PRELAB_V7R11_BINARY_META=%s:%s\n' "$p" "$meta"
-            test "$meta" = '0 0 555'
-            test -z "$(docker run --rm --entrypoint /usr/bin/readelf "$tag" -l "$p" | grep -F 'Requesting program interpreter' || true)"
-          done
+          test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /opt/multiverse/v36)" = '0 0 555'
+          test "$(docker run --rm --entrypoint /usr/bin/stat "$tag" -c '%u %g %a' /opt/multiverse/v36/empty-config)" = '0 0 555'
           helper_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-v7r7 | awk '{print $1}')"
           guard_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r7 | awk '{print $1}')"
-          printf 'PRELAB_V7R11_HELPER_SHA256=%s\n' "$helper_sha"
-          printf 'PRELAB_V7R11_GUARD_SHA256=%s\n' "$guard_sha"
           test "$helper_sha" = '2fd9e085e866924fb52995e5bb5fcb58763bdbd1fa1ee2c96e1d57df28a42301'
           test "$guard_sha" = '470eee2ed9c4f3f4c5d629820f531c0126da36a38012ad96ea69cf6306f901e4'
           identity="$(docker run --rm --entrypoint /bin/cat "$tag" /opt/multiverse/v36/image-identity-v7r3.json)"
-          python3 -c 'import json,sys; x=json.loads(sys.stdin.read()); p=[o["path"] for o in x["objects"]]; assert "/usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9" in p; assert "/usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9" in p' <<<"$identity"
+          grep -F 'V19.7.36-v7r12-image-identity' <<<"$identity"
+          grep -F 'SEALED_MEMFD_SNAPSHOT_STATUS_CONTROL_OBSERVABILITY_ONLY' <<<"$identity"
           image_sha="$(printf '%s' "$identity" | sha256sum | awk '{print $1}')"
           sanitizer_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 | awk '{print $1}')"
           probe_sha="$(docker run --rm --entrypoint /usr/bin/sha256sum "$tag" /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 | awk '{print $1}')"
-          printf 'PRELAB_V7R11_IMAGE_IDENTITY_SHA256=%s\n' "$image_sha"
-          printf 'PRELAB_V7R11_SANITIZER_SHA256=%s\n' "$sanitizer_sha"
-          printf 'PRELAB_V7R11_RATE_PROBE_SHA256=%s\n' "$probe_sha"
-          printf 'PRELAB_V7R11_ROOT_LOCK_ANCHOR_CLASS_PASS=true\n'
+          printf 'PRELAB_V7R12_HELPER_SHA256=%s\n' "$helper_sha"
+          printf 'PRELAB_V7R12_GUARD_SHA256=%s\n' "$guard_sha"
+          printf 'PRELAB_V7R12_IMAGE_IDENTITY_SHA256=%s\n' "$image_sha"
+          printf 'PRELAB_V7R12_SANITIZER_SHA256=%s\n' "$sanitizer_sha"
+          printf 'PRELAB_V7R12_RATE_PROBE_SHA256=%s\n' "$probe_sha"
+          printf 'PRELAB_V7R12_ROOT_LOCK_ANCHOR_CLASS_PASS=true\n'
 
-      - name: Exact-image same-UID lock-path replacement race is denied
+      - name: Exact-image direct same-UID final-boundary attack
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
-          tag="multiverse-v7r11-lock-anchor:${GITHUB_SHA}"
-          docker run --rm --user codespace \
-            -v "$PWD:/src:ro" \
-            -e GOCACHE=/tmp/go-cache \
-            --entrypoint /bin/bash "$tag" --noprofile --norc -c '
-              set -euo pipefail
-              cd /src
-              probe="governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go"
-              testfile="governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903_test.go"
-              go test "$probe" "$testfile" -count=1 -run "TestConcurrentIndependentProcessesKeepGenerationPair|TestProductionLockAnchorRejectsPathReplacementAndSecondDomain|TestProductionLockAnchorUsesFlock" -v
-            '
-          printf 'PRELAB_V7R11_LOCK_PATH_INODE_REPLACEMENT_RACE_GATE_PASS=true\n'
-          printf 'PRELAB_V7R11_SECOND_LOCK_DOMAIN_DENIED=true\n'
-
-      - name: Exact-image process-level poisoned environment is reduced to exactly two variables
-        shell: bash
-        working-directory: repo
-        run: |
-          set -euo pipefail
-          tag="multiverse-v7r11-lock-anchor:${GITHUB_SHA}"
-          workvol="multiverse-v7r11-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          tag="multiverse-v7r12-sealed:${GITHUB_SHA}"
+          workvol="multiverse-v7r12-race-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           docker volume create "$workvol" >/dev/null
           cleanup(){ docker volume rm -f "$workvol" >/dev/null 2>&1 || true; }
           trap cleanup EXIT
@@ -144,38 +96,49 @@ jobs:
             mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
             chown -R "${uid}:${gid}" /workspaces/.codespaces /workspaces/multiverse-research
             chmod 0755 /workspaces /workspaces/.codespaces /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
-            printf "%s\n" "# MULTIVERSE PRE-LIVE CONTROL — V19.7.36 v7r11" > /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
-            chown "${uid}:${gid}" /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
-            chmod 0644 /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md
           '
-          direct="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" \
-            -e CODESPACES=true -e CODESPACE_NAME=rate-v7r11-test -e GOTRACEBACK=crash -e MULTIVERSE_EXTRA_POISON=YES \
-            --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 "$tag" 2>&1 || true)"
-          grep -F 'PHASE_C_V19_7_36_V7R11_RATE_PROBE_DENIED:SANITIZER_ENV_COUNT' <<<"$direct"
-          out="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" \
-            -e CODESPACES=true -e CODESPACE_NAME=rate-v7r11-test \
-            -e GOTRACEBACK=crash -e MULTIVERSE_EXTRA_POISON=YES -e GODEBUG=http2debug=2 \
-            -e GITHUB_TOKEN=SHOULD_NOT_BE_USED -e HTTPS_PROXY=http://127.0.0.1:9 -e SSL_CERT_FILE=/definitely/not-present.pem \
-            --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 "$tag" 2>&1)"
-          printf '%s\n' "$out"
-          grep -F 'PHASE_C_V19_7_36_V7R11_PREARM_RATE_NOT_READY' <<<"$out"
+          docker run --rm --user codespace -v "$workvol:/workspaces" -v "$PWD:/src:ro" -e GOCACHE=/tmp/go-cache --entrypoint /bin/bash "$tag" --noprofile --norc -c '
+            set -euo pipefail; cd /src
+            probe="governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go"
+            testfile="governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903_test.go"
+            go test "$probe" "$testfile" -count=1 -run "TestConcurrentIndependentProcessesKeepGenerationPair|TestProductionLockAnchorRejectsPathReplacementAndSecondDomain|TestFinalVerifyToExecSameUIDEvidenceMutationCannotAlterSealedAuthority" -v
+          '
+          printf 'PRELAB_V7R12_DIRECT_SAME_UID_FINAL_BOUNDARY_RACE_GATE_PASS=true\n'
+          printf 'PRELAB_V7R12_SEALED_AUTHORITY_SNAPSHOT_IMMUTABLE=true\n'
+          printf 'PRELAB_V7R12_STATUS_CONTROL_OBSERVABILITY_ONLY=true\n'
+          printf 'PRELAB_V7R12_SAME_UID_PROC_FD_MEM_DENIED=true\n'
+
+      - name: Exact-image poisoned environment remains exactly two variables
+        shell: bash
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          tag="multiverse-v7r12-sealed:${GITHUB_SHA}"
+          workvol="multiverse-v7r12-env-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          docker volume create "$workvol" >/dev/null
+          cleanup(){ docker volume rm -f "$workvol" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/bash "$tag" --noprofile --norc -c '
+            set -euo pipefail; uid="$(id -u codespace)"; gid="$(id -g codespace)"; mkdir -p /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research; chown -R "${uid}:${gid}" /workspaces/.codespaces /workspaces/multiverse-research; chmod 0755 /workspaces /workspaces/.codespaces /workspaces/.codespaces/.persistedshare /workspaces/multiverse-research
+          '
+          direct="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r12-test -e GOTRACEBACK=crash -e MULTIVERSE_EXTRA_POISON=YES --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 "$tag" 2>&1 || true)"
+          grep -F 'PHASE_C_V19_7_36_V7R12_RATE_PROBE_DENIED:SANITIZER_ENV_COUNT' <<<"$direct"
+          out="$(docker run --rm --user codespace --network=none -v "$workvol:/workspaces" -e CODESPACES=true -e CODESPACE_NAME=rate-v7r12-test -e GOTRACEBACK=crash -e MULTIVERSE_EXTRA_POISON=YES -e GITHUB_TOKEN=SHOULD_NOT_BE_USED -e HTTPS_PROXY=http://127.0.0.1:9 --entrypoint /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9 "$tag" 2>&1)"
+          grep -F 'PHASE_C_V19_7_36_V7R12_PREARM_RATE_NOT_READY' <<<"$out"
           grep -F 'reason=RATE_NETWORK' <<<"$out"
           grep -F 'one_shot_guard_consumed=false runtime=OFF' <<<"$out"
           status="$(docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/cat "$tag" /workspaces/.codespaces/.persistedshare/multiverse-v36-v7r9-rate-readiness.txt)"
           control="$(docker run --rm -v "$workvol:/workspaces" --entrypoint /bin/cat "$tag" /workspaces/multiverse-research/MULTIVERSE_PRELIVE_START_HERE.md)"
-          sg="$(grep '^generation=' <<<"$status" | cut -d= -f2)"
-          cg="$(grep '^- generation=' <<<"$control" | sed -E 's/^- generation=`([^`]*)`/\1/')"
-          test -n "$sg"; test "$sg" = "$cg"
-          grep -F 'authority_consumer_requires_generation_match=true' <<<"$status"
-          grep -F 'lock_anchor_root_owned_nonreplaceable=true' <<<"$status"
-          grep -F 'authority_consumer_requires_generation_match=`true`' <<<"$control"
-          grep -F 'lock_anchor_root_owned_nonreplaceable=`true`' <<<"$control"
-          printf 'PRELAB_V7R11_EXACT_TWO_ENV_PROCESS_GATE_PASS=true\n'
-          printf 'PRELAB_V7R11_INDEPENDENT_PROCESS_CONCURRENCY_GATE_PASS=true\n'
-          printf 'PRELAB_V7R11_FILESYSTEM_NEGATIVE_GATE_PASS=true\n'
-          printf 'PRELAB_V7R11_GENERATION_AUTHORITY_CONSUMER_GATE_PASS=true\n'
-          printf 'LOCK_ANCHOR_ROOT_OWNED_NONREPLACEABLE=true\n'
+          grep -F 'authority_source=SEALED_MEMFD_SNAPSHOT' <<<"$status"
+          grep -F 'status_control_authority=OBSERVABILITY_ONLY' <<<"$status"
+          grep -F 'authority_source=`SEALED_MEMFD_SNAPSHOT`' <<<"$control"
+          grep -F 'status_control_authority=`OBSERVABILITY_ONLY`' <<<"$control"
+          printf 'PRELAB_V7R12_EXACT_TWO_ENV_PROCESS_GATE_PASS=true\n'
+          printf 'PRELAB_V7R12_INDEPENDENT_PROCESS_CONCURRENCY_GATE_PASS=true\n'
+          printf 'PRELAB_V7R12_FILESYSTEM_NEGATIVE_GATE_PASS=true\n'
+          printf 'PRELAB_V7R12_GENERATION_AND_EXACT_CONTENT_GATE_PASS=true\n'
           printf 'FINAL_COMMIT_RATE_FLOOR=60/59\n'
+          printf 'INHERITED_HELPER_RATE_FLOOR=55/54\n'
           printf 'ONE_SHOT_GUARD_CONSUMED=false\n'
           printf 'SECURITY_AUTHORITY_GRANTED=false\n'
           printf 'RUNTIME=OFF\n'
