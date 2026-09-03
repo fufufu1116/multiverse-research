@@ -61,9 +61,8 @@ func TestRateReadinessResourceClass(t *testing.T) {
 
 func TestRenderNeverGrantsAuthority(t *testing.T) {
 	status, control := render("rate-probe-test", probeResult{Ready:true, Reason:"READY", Before:57, After:56, Reset:1924995600})
-	for _, s := range []string{status, control} {
-		if !containsAll(s, "one_shot_guard_consumed=false", "RETURN_TO_CORE_BEFORE_STATIC_GUARD", "runtime=OFF") { t.Fatalf("missing nonauthority marker: %q", s) }
-	}
+	if !containsAll(status, "one_shot_guard_consumed=false", "RETURN_TO_CORE_BEFORE_STATIC_GUARD", "runtime=OFF") { t.Fatalf("status missing nonauthority marker: %q", status) }
+	if !containsAll(control, "one_shot_guard_consumed=`false`", "RETURN_TO_CORE_BEFORE_STATIC_GUARD", "runtime=`OFF`") { t.Fatalf("control missing nonauthority marker: %q", control) }
 }
 
 func containsAll(s string, wants ...string) bool {
