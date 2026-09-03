@@ -1,0 +1,40 @@
+{
+  "record":"KEIRIN_HISTORICAL_PIT_TRANSPORT_VALIDATION_EXPOSURE_RECEIPT_20260903_v1",
+  "status":"SOURCE_VALIDATION_EXPOSURE_RECORDED_FAIL_CLOSED_NO_MODEL_AUTHORITY",
+  "scope":"RESEARCH_INTEGRITY_AND_HISTORICAL_TRANSPORT_VALIDATION_ONLY",
+  "timestamp_jst":"2026-09-03T23:45:00+09:00",
+  "purpose":"Record all material exposure created while validating whether archived KDreams race-detail pages can support a result-blind Historical Fast Track.",
+  "validated_source":"KDreams archived racecard/racedetail surfaces",
+  "positive_findings":[
+    "Archived race-detail pages retain race-date-specific PRE tables containing competition_score, S, B, nige, makuri, sashi and mark alongside identity fields.",
+    "The target race finish/result is separated behind a result/payout link rather than embedded as the target finish in the PRE table.",
+    "The same rider showed changing archived competition_score across dates, supporting non-current-value behavior: Kitamura Atsushi 77.95 on 2026-07-31, 77.29 on 2026-08-25/26 archive surfaces, and 76.70 on 2026-08-31.",
+    "Existing tools/keirin_kdreams_pre_only_parser_v1.py is designed to emit only the frozen PRE table and no result, payout, odds, forecast or narabiyoso fields."
+  ],
+  "co_surfaced_content_observed_during_validation":{
+    "target_race_finish_values":false,
+    "target_race_payout_values":false,
+    "numeric_odds_values":true,
+    "human_forecast_marks_or_comments":true,
+    "narabiyoso_or_provider_line_text":true,
+    "prior_race_finish_values_in_recent_form_sections":true,
+    "latest_explicit_prior_race_finish_date_observed":"2026-08-25"
+  },
+  "conservative_burn_action":"Because explicit prior-race finish values through 2026-08-25 were surfaced during transport validation, refresh the affinity burned-date firewall through 2026-08-25 before any new Historical Fast Track population lock.",
+  "pilot_surfaces_for_source_validation_only":[
+    "KDreams Hofu 2026-07-31 racecard/racedetail archive",
+    "KDreams Kumamoto 2026-08-25 and 2026-08-26 search/archive surfaces",
+    "KDreams Seibuen 2026-08-31 search/archive surface",
+    "OddsPark 2026-08-01 race-list search/archive surfaces"
+  ],
+  "feature_firewall":[
+    "Only race_date, venue, race_no, car_no, rider identity fields, class, style, competition_score, S, B, nige, makuri, sashi and mark may be emitted by the Historical Fast Track PRE parser.",
+    "No human prediction mark, comment, narabiyoso, odds, prior-race finish, payout, settlement or target result may enter the candidate feature table.",
+    "Raw mixed-content HTML must not be committed as model evidence; only allowlist extraction plus source hash/provenance receipts may be committed.",
+    "Any target result page remains forbidden until the support gate passes and exact formula/evaluation membership are frozen."
+  ],
+  "support_increment_from_this_validation":0,
+  "result_join_authorized":false,
+  "model_fit_authorized":false,
+  "hard_boundaries":["NO_TARGET_RESULT_EXTRACTION","NO_PAYOUT","NO_ODDS_IN_OUTCOME_MODEL","NO_HUMAN_FORECAST_FEATURE","NO_NARABIYOSO","NO_PRIOR_RESULT_AS_NEW_FEATURE","NO_POST_RACE_PRE_RECONSTRUCTION","NO_S0_MUTATION","NO_MODEL_PROMOTION","NO_REAL_MONEY_EXECUTION"]
+}
