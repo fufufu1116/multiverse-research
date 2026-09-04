@@ -129,7 +129,7 @@ def patch_guard(src):
     src=src[:start]+src[end:]
     src=src.replace('retireAuthorityBeforeUserDrop','retireAuthorityBeforeProtectedHelperExec')
     src=src.replace('v7r16','v7r18').replace('V7R16','V7R18')
-    src=once(src,'uid,err := verifyProtectedCredentialBoundary()','_,err := verifyProtectedCredentialBoundary()','guard-unused-target-uid')
+    src=once(src,'uid,err := verifyProtectedCredentialBoundary()','_,err = verifyProtectedCredentialBoundary()','guard-unused-target-uid')
     src=src.replace('AUTHORITY_FD_RETIRED_BEFORE_ORDINARY_UID=true','AUTHORITY_FD_RETIRED_BEFORE_PROTECTED_HELPER_EXEC=true')
     src=src.replace('NO_POST_DROP_AUTHORIZATION_DECISION=true','PROTECTED_HELPER_IMAGE_ENTRY_BEFORE_USER_DROP=true')
     src=src.replace('FINAL_AUTHORITY_TRANSITION_SYSCALL=SETRESUID','FINAL_GUARD_TRANSITION=PROTECTED_EXEC_TO_V7R18_HELPER')
