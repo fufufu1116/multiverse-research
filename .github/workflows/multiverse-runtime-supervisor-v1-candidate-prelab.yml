@@ -60,7 +60,11 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-          files=[Path('automation/runtime_v1/runtime_supervisor.py'),Path('automation/runtime_v1/shared_engine_driver.py')]
+          files=[
+              Path('automation/runtime_v1/runtime_supervisor.py'),
+              Path('automation/runtime_v1/shared_engine_driver.py'),
+              Path('automation/runtime_v1/runtime_service.py'),
+          ]
           forbidden=('requests','urllib','http.client','socket','boto3','openai','anthropic')
           for p in files:
               s=p.read_text()
@@ -70,8 +74,14 @@ jobs:
           assert 'INDEPENDENT_REVIEW_CANNOT_BE_SELF_MANUFACTURED' in supervisor
           assert 'KILL_SWITCH_ENGAGED' in supervisor
           assert 'MAX_STEPS_BOUNDED_1_100_REQUIRED' in supervisor
+          assert 'set_test_kill_switch' not in supervisor
+          assert 'disable_kill_switch' not in supervisor
+          assert 'Callable[[], dict' not in supervisor
           driver=files[1].read_text()
           assert 'claim_task' in driver and 'claim_next_task' not in driver
+          service=files[2].read_text()
+          assert 'run_forever' in service
+          assert 'EXACT_SHARED_ENGINE_DRIVER_REQUIRED' in service
           print('RUNTIME_V1_CANDIDATE_MECHANICAL_GATE=PASS')
           PY
 
