@@ -57,7 +57,7 @@ jobs:
           python3 - <<'PY'
           s=open('/tmp/v7r20-helper.go').read(); m=s[s.index('func main() {'):]
           assert m.index('V7R20_PROTECTED_HELPER_ENTRY') < m.index('imageIdentitySHA256()') < m.index('v7r20StartPinnedProofThreads(4)') < m.index('v7r20DropIrreversibly(targetUID)') < m.index('V7R20_IRREVERSIBLE_USER_DROP_COMPLETE') < m.index('githubPreflight()')
-          assert 'v7r20PostDropThreadCreationStress(uid,preTIDs)' in s
+          assert 'v7r20PostDropThreadCreationStress(uid, preTIDs)' in s
           g=open('/tmp/v7r20-guard.go').read(); gm=g[g.index('func main() {'):]
           assert gm.index('retireAuthorityBeforeProtectedHelperExec(fd)') < gm.index('syscall.Exec(helperPath, argv, env)')
           PY
