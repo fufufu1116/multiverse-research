@@ -1,0 +1,311 @@
+"""MULTIVERSE Runtime deployment-evidence v1 — sealed, no-effect validation surface."""
+from __future__ import annotations
+
+from dataclasses import dataclass, asdict
+import hashlib
+import json
+from pathlib import Path
+from typing import Any
+
+ADOPTED_RUNTIME_HEAD = "8685193cc6d592a36ea78bc7a8647ceadce13ae6"
+CANONICAL_MAIN = "a6f56facc80709f2e7b8218d927484d522bfa356"
+MODE = "SEALED_DEPLOYMENT_VALIDATION"
+RUNTIME = "OFF"
+TARGET_ENVIRONMENT = "LOCAL_SEALED_DRY_RUN"
+SNAPSHOT_SCHEMA = "MULTIVERSE_RUNTIME_STATE_SNAPSHOT_v1"
+
+
+class DeploymentGateError(RuntimeError):
+    pass
+
+
+DEFAULT_DENY_CAPABILITIES = {
+    "production": False,
+    "runtime_activation": False,
+    "live_provider": False,
+    "network": False,
+    "external_effect": False,
+    "spend": False,
+    "protected_keirin_data": False,
+    "secret_persistence": False,
+    "workflow_dispatch_rerun": False,
+    "main_mutation": False,
+    "ruleset_mutation": False,
+}
+
+
+def sha256_file(path: str | Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _is_lower_hex_sha256(value: object) -> bool:
+    return (
+        type(value) is str
+        and len(value) == 64
+        and all(c in "0123456789abcdef" for c in value)
+    )
+
+
+def _require_exact_str(value: object, expected: str, error: str) -> None:
+    if type(value) is not str or value != expected:
+        raise DeploymentGateError(error)
+
+
+@dataclass(frozen=True)
+class DeploymentManifest:
+    adopted_runtime_head: str
+    canonical_main: str
+    mode: str
+    runtime: str
+    target_environment: str
+    artifact_sha256: str
+    rollback_ref: str
+    rollback_artifact_sha256: str
+    credential_source: str
+    credential_persistence: bool
+    capabilities: dict[str, bool]
+
+    def validate(
+        self,
+        *,
+        artifact_path: str | Path,
+        rollback_artifact_path: str | Path,
+    ) -> None:
+        _require_exact_str(
+            self.adopted_runtime_head,
+            ADOPTED_RUNTIME_HEAD,
+            "ADOPTED_RUNTIME_HEAD_MISMATCH",
+        )
+        _require_exact_str(
+            self.canonical_main,
+            CANONICAL_MAIN,
+            "CANONICAL_MAIN_MISMATCH",
+        )
+        _require_exact_str(self.mode, MODE, "SEALED_MODE_REQUIRED")
+        _require_exact_str(self.runtime, RUNTIME, "SEALED_MODE_REQUIRED")
+        _require_exact_str(
+            self.target_environment,
+            TARGET_ENVIRONMENT,
+            "TARGET_ENVIRONMENT_MISMATCH",
+        )
+        _require_exact_str(
+            self.credential_source,
+            "INJECTED_EPHEMERAL_ONLY",
+            "EPHEMERAL_CREDENTIAL_INJECTION_REQUIRED",
+        )
+        _require_exact_str(
+            self.rollback_ref,
+            ADOPTED_RUNTIME_HEAD,
+            "ROLLBACK_BINDING_REQUIRED",
+        )
+        if self.credential_persistence is not False:
+            raise DeploymentGateError("SECRET_PERSISTENCE_FORBIDDEN")
+        if type(self.capabilities) is not dict:
+            raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
+        if set(self.capabilities) != set(DEFAULT_DENY_CAPABILITIES):
+            raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
+        if any(type(value) is not bool or value is not False for value in self.capabilities.values()):
+            raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
+        if not _is_lower_hex_sha256(self.artifact_sha256):
+            raise DeploymentGateError("DEPLOYMENT_ARTIFACT_DIGEST_INVALID")
+        if not _is_lower_hex_sha256(self.rollback_artifact_sha256):
+            raise DeploymentGateError("ROLLBACK_ARTIFACT_DIGEST_INVALID")
+
+        artifact_path = Path(artifact_path)
+        rollback_artifact_path = Path(rollback_artifact_path)
+        if not artifact_path.is_file():
+            raise DeploymentGateError("DEPLOYMENT_ARTIFACT_MISSING")
+        if not rollback_artifact_path.is_file():
+            raise DeploymentGateError("ROLLBACK_ARTIFACT_MISSING")
+
+        actual_artifact_sha = sha256_file(artifact_path)
+        actual_rollback_sha = sha256_file(rollback_artifact_path)
+        if self.artifact_sha256 != actual_artifact_sha:
+            raise DeploymentGateError("DEPLOYMENT_ARTIFACT_DIGEST_MISMATCH")
+        if self.rollback_artifact_sha256 != actual_rollback_sha:
+            raise DeploymentGateError("ROLLBACK_ARTIFACT_DIGEST_MISMATCH")
+
+    def receipt(
+        self,
+        *,
+        artifact_path: str | Path,
+        rollback_artifact_path: str | Path,
+    ) -> dict[str, Any]:
+        self.validate(
+            artifact_path=artifact_path,
+            rollback_artifact_path=rollback_artifact_path,
+        )
+        return {"status": "PASS", **asdict(self)}
+
+
+@dataclass(frozen=True)
+class SnapshotIntegrityReceipt:
+    schema_version: str
+    snapshot_identity: str
+    adopted_runtime_head: str
+    canonical_main: str
+    source_sha256: str
+    snapshot_sha256: str
+    byte_length: int
+
+    def validate_metadata(
+        self,
+        *,
+        expected_identity: str,
+        expected_runtime_head: str,
+        expected_main: str,
+    ) -> None:
+        string_fields = (
+            self.schema_version,
+            self.snapshot_identity,
+            self.adopted_runtime_head,
+            self.canonical_main,
+            self.source_sha256,
+            self.snapshot_sha256,
+        )
+        if any(type(value) is not str for value in string_fields):
+            raise DeploymentGateError("SNAPSHOT_RECEIPT_FIELD_TYPE_INVALID")
+        if type(self.byte_length) is not int:
+            raise DeploymentGateError("SNAPSHOT_LENGTH_TYPE_INVALID")
+        if (
+            type(expected_identity) is not str
+            or not expected_identity
+            or expected_identity.strip() != expected_identity
+        ):
+            raise DeploymentGateError("SNAPSHOT_EXPECTED_IDENTITY_INVALID")
+        if (
+            type(expected_runtime_head) is not str
+            or expected_runtime_head != ADOPTED_RUNTIME_HEAD
+        ):
+            raise DeploymentGateError("SNAPSHOT_EXPECTED_RUNTIME_HEAD_INVALID")
+        if type(expected_main) is not str or expected_main != CANONICAL_MAIN:
+            raise DeploymentGateError("SNAPSHOT_EXPECTED_MAIN_INVALID")
+        if self.schema_version != SNAPSHOT_SCHEMA:
+            raise DeploymentGateError("SNAPSHOT_SCHEMA_MISMATCH")
+        if not self.snapshot_identity or self.snapshot_identity.strip() != self.snapshot_identity:
+            raise DeploymentGateError("SNAPSHOT_IDENTITY_INVALID")
+        if self.snapshot_identity != expected_identity:
+            raise DeploymentGateError("SNAPSHOT_IDENTITY_MISMATCH")
+        if self.adopted_runtime_head != expected_runtime_head:
+            raise DeploymentGateError("SNAPSHOT_RUNTIME_HEAD_MISMATCH")
+        if self.canonical_main != expected_main:
+            raise DeploymentGateError("SNAPSHOT_MAIN_MISMATCH")
+        if not _is_lower_hex_sha256(self.source_sha256) or not _is_lower_hex_sha256(self.snapshot_sha256):
+            raise DeploymentGateError("SNAPSHOT_DIGEST_FORMAT_INVALID")
+        if self.source_sha256 != self.snapshot_sha256:
+            raise DeploymentGateError("SNAPSHOT_SOURCE_DIGEST_MISMATCH")
+        if self.byte_length < 0:
+            raise DeploymentGateError("SNAPSHOT_LENGTH_INVALID")
+
+
+def snapshot_bytes(
+    source: str | Path,
+    snapshot: str | Path,
+    *,
+    snapshot_identity: str,
+) -> dict[str, Any]:
+    if type(snapshot_identity) is not str or not snapshot_identity or snapshot_identity.strip() != snapshot_identity:
+        raise DeploymentGateError("SNAPSHOT_IDENTITY_REQUIRED")
+    source = Path(source)
+    snapshot = Path(snapshot)
+    data = source.read_bytes()
+    snapshot.write_bytes(data)
+    digest = hashlib.sha256(data).hexdigest()
+    receipt = SnapshotIntegrityReceipt(
+        schema_version=SNAPSHOT_SCHEMA,
+        snapshot_identity=snapshot_identity,
+        adopted_runtime_head=ADOPTED_RUNTIME_HEAD,
+        canonical_main=CANONICAL_MAIN,
+        source_sha256=digest,
+        snapshot_sha256=sha256_file(snapshot),
+        byte_length=len(data),
+    )
+    receipt.validate_metadata(
+        expected_identity=snapshot_identity,
+        expected_runtime_head=ADOPTED_RUNTIME_HEAD,
+        expected_main=CANONICAL_MAIN,
+    )
+    return asdict(receipt)
+
+
+def restore_bytes(
+    snapshot: str | Path,
+    restored: str | Path,
+    *,
+    expected_receipt: dict[str, Any],
+    expected_identity: str,
+    expected_runtime_head: str = ADOPTED_RUNTIME_HEAD,
+    expected_main: str = CANONICAL_MAIN,
+) -> dict[str, Any]:
+    if type(expected_receipt) is not dict:
+        raise DeploymentGateError("SNAPSHOT_RECEIPT_INVALID")
+    try:
+        receipt = SnapshotIntegrityReceipt(**expected_receipt)
+    except (TypeError, KeyError) as e:
+        raise DeploymentGateError("SNAPSHOT_RECEIPT_INVALID") from e
+
+    receipt.validate_metadata(
+        expected_identity=expected_identity,
+        expected_runtime_head=expected_runtime_head,
+        expected_main=expected_main,
+    )
+
+    snapshot = Path(snapshot)
+    restored = Path(restored)
+    if not snapshot.is_file():
+        raise DeploymentGateError("SNAPSHOT_MISSING")
+    data = snapshot.read_bytes()
+    actual_snapshot_sha = hashlib.sha256(data).hexdigest()
+    if actual_snapshot_sha != receipt.snapshot_sha256:
+        raise DeploymentGateError("SNAPSHOT_DIGEST_MISMATCH")
+    if len(data) != receipt.byte_length:
+        raise DeploymentGateError("SNAPSHOT_LENGTH_MISMATCH")
+
+    restored.write_bytes(data)
+    restored_sha = sha256_file(restored)
+    if restored_sha != receipt.source_sha256:
+        restored.unlink(missing_ok=True)
+        raise DeploymentGateError("RESTORED_DIGEST_MISMATCH")
+
+    return {
+        "schema_version": receipt.schema_version,
+        "snapshot_identity": receipt.snapshot_identity,
+        "snapshot_sha256": actual_snapshot_sha,
+        "restored_sha256": restored_sha,
+        "byte_length": len(data),
+        "integrity": "PASS",
+    }
+
+
+def health_receipt(
+    manifest: DeploymentManifest,
+    *,
+    kill_switch_engaged: bool,
+    artifact_path: str | Path,
+    rollback_artifact_path: str | Path,
+) -> dict[str, Any]:
+    manifest.validate(
+        artifact_path=artifact_path,
+        rollback_artifact_path=rollback_artifact_path,
+    )
+    if kill_switch_engaged is not True:
+        raise DeploymentGateError("KILL_SWITCH_MUST_REMAIN_ENGAGED")
+    return {
+        "schema_version": "MULTIVERSE_RUNTIME_DEPLOYMENT_HEALTH_v1",
+        "runtime": "OFF",
+        "ready_for_live_activation": False,
+        "kill_switch_engaged": True,
+        "manifest": manifest.receipt(
+            artifact_path=artifact_path,
+            rollback_artifact_path=rollback_artifact_path,
+        ),
+    }
+
+
+def canonical_json_sha256(obj: dict[str, Any]) -> str:
+    raw = json.dumps(obj, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(raw).hexdigest()

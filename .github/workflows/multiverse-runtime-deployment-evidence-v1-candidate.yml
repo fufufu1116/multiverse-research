@@ -1,0 +1,88 @@
+name: MULTIVERSE Runtime Deployment Evidence v1 Candidate
+
+on:
+  push:
+    branches:
+      - agent/runtime-deployment-evidence-v1-candidate-20260904-v1
+    paths:
+      - 'automation/deployment_v1/**'
+      - '.github/workflows/multiverse-runtime-deployment-evidence-v1-candidate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-lineage-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact Candidate head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind adopted Runtime, construction merge, and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/runtime-deployment-evidence-v1-candidate-20260904-v1"
+          test "${FRESH_MAIN}" = "a6f56facc80709f2e7b8218d927484d522bfa356"
+          python - <<'PY'
+          import json
+          d=json.load(open('automation/deployment_v1/DEPLOYMENT_EVIDENCE_V1_CANDIDATE_FREEZE.json'))
+          assert d['frozen'] is True
+          assert d['adopted_runtime_head']=='8685193cc6d592a36ea78bc7a8647ceadce13ae6'
+          assert d['construction_merge']=='48ac0ebe56ce301f5c55538c8e21cb16a2594171'
+          assert d['construction_ci']['run_id']==33851664839
+          assert d['construction_ci']['conclusion']=='success'
+          assert d['canonical_main']=='a6f56facc80709f2e7b8218d927484d522bfa356'
+          assert d['runtime']=='OFF'
+          assert d['mode']=='SEALED_DEPLOYMENT_VALIDATION'
+          assert all(v is False for v in d['authority'].values())
+          PY
+
+      - name: Full deployment evidence regression
+        shell: bash
+        env:
+          PYTHONPATH: automation/deployment_v1
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s automation/deployment_v1 -p 'test_*.py' -v
+
+      - name: Candidate mechanical authority gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('automation/deployment_v1/deployment_contract.py')
+          s=p.read_text()
+          forbidden=('requests','urllib','http.client','socket','boto3','openai','anthropic')
+          for item in forbidden:
+              assert f'import {item}' not in s and f'from {item}' not in s, item
+          assert 'RUNTIME = "OFF"' in s
+          assert 'SEALED_DEPLOYMENT_VALIDATION' in s
+          assert 'INJECTED_EPHEMERAL_ONLY' in s
+          assert 'CAPABILITY_DEFAULT_DENY_REQUIRED' in s
+          assert 'KILL_SWITCH_MUST_REMAIN_ENGAGED' in s
+          assert 'ready_for_live_activation": False' in s
+          print('DEPLOYMENT_EVIDENCE_CANDIDATE_GATE=PASS')
+          PY
+
+      - name: Candidate nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'RUNTIME=OFF'
+          echo 'PRODUCTION=false'
+          echo 'LIVE_PROVIDER=false'
+          echo 'NETWORK=false'
+          echo 'EXTERNAL_EFFECT=false'
+          echo 'SPEND=false'
+          echo 'PROTECTED_KEIRIN_DATA=false'
+          echo 'SECRET_PERSISTENCE=false'
+          echo 'RUNTIME_ACTIVATION=false'
+          echo 'INDEPENDENT_REVIEW_REQUIRED=true'

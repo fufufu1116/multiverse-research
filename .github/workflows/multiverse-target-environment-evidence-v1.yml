@@ -1,0 +1,36 @@
+name: MULTIVERSE target-environment evidence v1
+
+on:
+  push:
+    branches:
+      - 'agent/runtime-target-environment-evidence-v1-20260904-v1'
+      - 'agent/runtime-target-environment-evidence-v1-candidate-20260904-v1'
+  pull_request:
+    paths:
+      - 'automation/target_environment_v1/**'
+      - '.github/workflows/multiverse-target-environment-evidence-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  no-effect-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run target-environment contract tests
+        env:
+          PYTHONPATH: automation/target_environment_v1
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s automation/target_environment_v1 -p 'test_*.py' -v
+      - name: Assert authority ceiling markers
+        run: |
+          set -euo pipefail
+          grep -F 'RUNTIME = "OFF"' automation/target_environment_v1/target_environment_contract.py
+          grep -F 'ready_for_activation": False' automation/target_environment_v1/target_environment_contract.py
+          grep -F 'runtime_activation: bool = False' automation/target_environment_v1/target_environment_contract.py
+          grep -F 'production_credentials_enabled: bool = False' automation/target_environment_v1/target_environment_contract.py
