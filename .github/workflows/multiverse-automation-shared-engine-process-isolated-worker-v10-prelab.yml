@@ -34,7 +34,7 @@ jobs:
           FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
           test "$EXACT_HEAD" = "$GITHUB_SHA"
           test "$GITHUB_REF_NAME" = "agent/automation-shared-engine-process-isolated-worker-v10-20260904-v1"
-          test "$FRESH_MAIN" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          test "$FRESH_MAIN" = "a6f56facc80709f2e7b8218d927484d522bfa356"
           git merge-base --is-ancestor 32b13303d888214215dd9a87cb6eef180bb52d69 HEAD
           python - <<'PY'
           import json
@@ -44,9 +44,14 @@ jobs:
           assert d['route_decision']==5530315758
           assert d['prior_replay_lab_fix_required']==5530712282
           assert d['owner_approval_durable_replay']==5535323028
+          assert d['lab_two_finding_fix_required']==5535444044
+          assert d['owner_gate_two_finding']==5535499176
+          assert d['owner_approval_two_finding_remediation']==5535736466
           assert d['base_pr91_head']=='61f4e330fd5b1945dbfbceb223cbc71d205860f2'
           assert d['stacked_v7_head']=='4a72ef46116043094c7a8e494404956925a5b3bf'
           assert d['canonical_main']=='040d37f0a4e426cf2e119706484c90cbb48f0e56'
+          assert d['inherited_stack_main_binding']=='040d37f0a4e426cf2e119706484c90cbb48f0e56'
+          assert d['fresh_canonical_main_at_two_finding_remediation']=='a6f56facc80709f2e7b8218d927484d522bfa356'
           a=d['architecture']
           assert a['durable_request_id_replay_denied_across_broker_restart'] is True
           assert a['reservation_commits_before_dispatch'] is True
@@ -54,11 +59,15 @@ jobs:
           assert a['replay_ttl_or_eviction'] is False
           assert a['replay_reset_or_rotation_api'] is False
           assert a['anti_replay_is_workflow_authority'] is False
+          assert a['strict_protocol_version_exact_int'] is True
+          assert a['replay_db_existing_inode_alias_denied'] is True
           assert all(v is False for v in d['authority'].values())
           PY
           echo "V10_EXACT_HEAD=$EXACT_HEAD"
           echo "V10_FRESH_MAIN=$FRESH_MAIN"
           echo "V10_OWNER_APPROVAL_DURABLE_REPLAY=5535323028"
+          echo "V10_OWNER_APPROVAL_TWO_FINDING_REMEDIATION=5535736466"
+          echo "V10_INHERITED_STACK_MAIN=040d37f0a4e426cf2e119706484c90cbb48f0e56"
 
       - name: Inherited v9 gate
         shell: bash
@@ -88,6 +97,8 @@ jobs:
           echo "V10_REPLAY_CAPACITY=256"
           echo "V10_REPLAY_EVICTION=false"
           echo "V10_REPLAY_RESET_ROTATION=false"
+          echo "V10_PROTOCOL_VERSION_EXACT_INT=true"
+          echo "V10_REPLAY_DB_EXISTING_INODE_ALIAS_DENIED=true"
           echo "V10_ANTI_REPLAY_WORKFLOW_AUTHORITY=false"
           echo "V10_TASK_CREATION_AUTHORITY=false"
           echo "V10_GENERIC_DISPATCH=false"
