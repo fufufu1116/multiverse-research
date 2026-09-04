@@ -8,15 +8,17 @@
     {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF", "load": "branch HEAD only"},
     {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v25.json"},
     {"step": 3, "action": "READ_ACTIVE_EVENT_QUEUE", "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json"},
-    {"step": 4, "action": "READ_MULTI_VENUE_EXTENSION", "path": "v3/historical_all_market/research_candidates/KEIRIN_MULTI_VENUE_DISCOVERY_EXTENSION_PLAN_20260904_v1.json"},
-    {"step": 5, "action": "READ_OWNER_ROADMAP_SNAPSHOT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json"},
-    {"step": 6, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+    {"step": 4, "action": "READ_QUEUE_PRIORITY_POLICY", "path": "v3/historical_all_market/research_candidates/KEIRIN_QUEUE_PRIORITY_POLICY_20260904_v1.json"},
+    {"step": 5, "action": "READ_MULTI_VENUE_EXTENSION", "path": "v3/historical_all_market/research_candidates/KEIRIN_MULTI_VENUE_DISCOVERY_EXTENSION_PLAN_20260904_v1.json"},
+    {"step": 6, "action": "READ_OWNER_ROADMAP_SNAPSHOT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json"},
+    {"step": 7, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
   "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v25.json",
   "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json",
   "active_lane_pointers": {
     "PROSPECTIVE_SUPPORT_CONTINUITY_PRESPEC": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json",
+    "QUEUE_PRIORITY_POLICY": "v3/historical_all_market/research_candidates/KEIRIN_QUEUE_PRIORITY_POLICY_20260904_v1.json",
     "MULTI_VENUE_DISCOVERY_EXTENSION": "v3/historical_all_market/research_candidates/KEIRIN_MULTI_VENUE_DISCOVERY_EXTENSION_PLAN_20260904_v1.json",
     "OWNER_ROADMAP_SNAPSHOT": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json",
     "SEP10_EXECUTION_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_EXECUTION_READINESS_20260904_v4.json",
