@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "candidate": "AUTOMATION SHARED ENGINE CURRENT-MAIN WORKER REBIND v11",
+  "branch": "agent/automation-shared-engine-current-main-worker-rebind-v11-20260904-v1",
+  "base_canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "base_canonical_main_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "reviewed_pr91_head": "61f4e330fd5b1945dbfbceb223cbc71d205860f2",
+  "reviewed_pr91_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "reviewed_v9_head": "32b13303d888214215dd9a87cb6eef180bb52d69",
+  "reviewed_v10_head": "a4a845158bc03a0dbbc95cebd581b3334e1325b2",
+  "reviewed_v10_closure_comment": 5536530060,
+  "reviewed_v10_auditor_pass": 5536468187,
+  "reviewed_v10_lab_pass": 5535827724,
+  "inherited_v7_head": "4a72ef46116043094c7a8e494404956925a5b3bf",
+  "inherited_v7_contract_main": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
+  "imported_exact_git_blobs": {
+    "automation/shared_engine/local_persistent_worker_v9.py": "6056c50759147bd3a306bb6f71d54bb354ab7b60",
+    "automation/shared_engine/tests/test_local_persistent_worker_v9.py": "9185be3271f5e0b6a631cfce2830a7bceafea2cc",
+    "automation/shared_engine/tests/test_local_persistent_worker_v9_integration.py": "a256521162a46353519c0233a360c43fd48e09e6",
+    "automation/shared_engine/process_isolated_worker_broker_v10.py": "54991d33e9ea8e9126fa51285483fa557799f72d",
+    "automation/shared_engine/process_isolated_worker_v10.py": "9d65c61cbaf537064f95fc5489753664693974d0",
+    "automation/shared_engine/tests/v10_test_process_isolated_worker.py": "134a1ccc40038a089cf58e69f4cb2f90efdc7fc7"
+  },
+  "architecture": {
+    "current_main_tree_equals_reviewed_pr91_tree": true,
+    "v9_v10_functional_sources_imported_byte_for_byte": true,
+    "inherited_pr91_files_modified": false,
+    "inherited_v7_contract_rebound": false,
+    "workflow_authority_remains_pr91_sqlite": true,
+    "client_broker_process_isolation_preserved": true,
+    "durable_replay_preserved": true,
+    "live_provider": false,
+    "network_provider": false,
+    "external_effect": false,
+    "spend": false,
+    "secret_credential": false,
+    "runtime": false
+  },
+  "proof_ceiling": {
+    "current_main_host_compatibility_only": true,
+    "v7_contract_main_semantic_rebind_proved": false,
+    "malicious_same_os_user_or_root_protection_proved": false,
+    "replay_reset_rotation_lifecycle_proved": false,
+    "authenticated_external_identity_proved": false,
+    "remote_provider_exactly_once_proved": false,
+    "distributed_network_lease_safety_proved": false,
+    "deployed_daemon_scheduler_proved": false,
+    "production_portability_adoption_proved": false
+  }
+}

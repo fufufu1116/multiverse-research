@@ -1,0 +1,102 @@
+name: MULTIVERSE Automation Shared Engine current-main worker rebind v11 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-current-main-worker-rebind-v11-20260904-v1
+    paths:
+      - '.github/workflows/multiverse-automation-shared-engine-current-main-worker-rebind-v11-prelab.yml'
+      - 'automation/shared_engine/CURRENT_MAIN_WORKER_REBIND_V11.json'
+      - 'automation/shared_engine/README_CURRENT_MAIN_WORKER_REBIND_V11.md'
+      - 'automation/shared_engine/local_persistent_worker_v9.py'
+      - 'automation/shared_engine/mechanical_gate_current_main_worker_rebind_v11.py'
+      - 'automation/shared_engine/process_isolated_worker_broker_v10.py'
+      - 'automation/shared_engine/process_isolated_worker_v10.py'
+      - 'automation/shared_engine/tests/test_current_main_worker_rebind_v11.py'
+      - 'automation/shared_engine/tests/test_local_persistent_worker_v9.py'
+      - 'automation/shared_engine/tests/test_local_persistent_worker_v9_integration.py'
+      - 'automation/shared_engine/tests/v10_test_process_isolated_worker.py'
+
+permissions:
+  contents: read
+
+jobs:
+  current-main-worker-rebind-v11:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Exact branch and Fresh-main binding
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "agent/automation-shared-engine-current-main-worker-rebind-v11-20260904-v1"
+          git fetch --no-tags origin main
+          FRESH_MAIN="$(git rev-parse FETCH_HEAD)"
+          test "$FRESH_MAIN" = "a6f56facc80709f2e7b8218d927484d522bfa356"
+          test "$(git rev-parse a6f56facc80709f2e7b8218d927484d522bfa356^{tree})" = "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf"
+          test "$(git rev-parse 61f4e330fd5b1945dbfbceb223cbc71d205860f2^{tree})" = "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf"
+          git merge-base --is-ancestor a6f56facc80709f2e7b8218d927484d522bfa356 HEAD
+          echo "V11_FRESH_CANONICAL_MAIN=$FRESH_MAIN"
+          echo "V11_PR91_AND_MAIN_TREE_IDENTICAL=true"
+
+      - name: Compile imported worker layers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile             automation/shared_engine/local_persistent_worker_v9.py             automation/shared_engine/process_isolated_worker_broker_v10.py             automation/shared_engine/process_isolated_worker_v10.py             automation/shared_engine/mechanical_gate_current_main_worker_rebind_v11.py
+
+      - name: Inherited Shared Engine plus v9 and v11 tests
+        shell: bash
+        env:
+          PYTHONPATH: automation:automation/shared_engine
+        run: |
+          set -euo pipefail
+          python -m unittest discover -v -s automation/shared_engine/tests -p 'test_*.py'
+
+      - name: v10 process-isolation and durable-replay adversarial tests
+        shell: bash
+        env:
+          PYTHONPATH: automation:automation/shared_engine
+        run: |
+          set -euo pipefail
+          python automation/shared_engine/tests/v10_test_process_isolated_worker.py
+
+      - name: v11 exact-source mechanical gate
+        shell: bash
+        env:
+          PYTHONPATH: automation:automation/shared_engine
+        run: |
+          set -euo pipefail
+          python automation/shared_engine/mechanical_gate_current_main_worker_rebind_v11.py
+
+      - name: Candidate nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "V11_CANDIDATE_ONLY=true"
+          echo "V11_CURRENT_MAIN_HOST_COMPATIBILITY_ONLY=true"
+          echo "V11_INHERITED_V7_CONTRACT_REBOUND=false"
+          echo "V11_TASK_CREATION_AUTHORITY=false"
+          echo "V11_MAIN_MUTATION_AUTHORITY=false"
+          echo "V11_RULESET_MUTATION_AUTHORITY=false"
+          echo "V11_PRODUCTION_ADOPTION_AUTHORITY=false"
+          echo "V11_CORE_ADOPTION_AUTHORITY=false"
+          echo "V11_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "V11_PROTECTED_KEIRIN_DATA_AUTHORITY=false"
+          echo "V11_LIVE_PROVIDER_AUTHORITY=false"
+          echo "V11_PROVIDER_NETWORK_AUTHORITY=false"
+          echo "V11_EXTERNAL_EFFECT_AUTHORITY=false"
+          echo "V11_SPEND_AUTHORITY=false"
+          echo "V11_SECRET_CREDENTIAL_AUTHORITY=false"
+          echo "V11_WORKFLOW_DISPATCH_OR_RERUN_AUTHORITY=false"
+          echo "V11_RUNTIME=OFF"
