@@ -69,6 +69,24 @@ class DeploymentContractTests(unittest.TestCase):
         with self.assertRaisesRegex(DeploymentGateError, "CAPABILITY_DEFAULT_DENY_REQUIRED"):
             self.validate(self.manifest(capabilities=caps))
 
+    def test_capability_numeric_and_wrong_type_confusion_fails_closed(self):
+        for bad_value in (0, 0.0, None, "false", [], {}):
+            with self.subTest(value=bad_value):
+                caps = dict(DEFAULT_DENY_CAPABILITIES)
+                caps["network"] = bad_value
+                with self.assertRaisesRegex(DeploymentGateError, "CAPABILITY_DEFAULT_DENY_REQUIRED"):
+                    self.validate(self.manifest(capabilities=caps))
+
+    def test_capability_missing_extra_and_non_dict_fails_closed(self):
+        missing = dict(DEFAULT_DENY_CAPABILITIES)
+        missing.pop("network")
+        extra = dict(DEFAULT_DENY_CAPABILITIES)
+        extra["unknown"] = False
+        for caps in (missing, extra, [], None):
+            with self.subTest(caps=caps):
+                with self.assertRaisesRegex(DeploymentGateError, "CAPABILITY_DEFAULT_DENY_REQUIRED"):
+                    self.validate(self.manifest(capabilities=caps))
+
     def test_secret_persistence_fails_closed(self):
         with self.assertRaisesRegex(DeploymentGateError, "SECRET_PERSISTENCE_FORBIDDEN"):
             self.validate(self.manifest(credential_persistence=True))
@@ -207,6 +225,58 @@ class DeploymentContractTests(unittest.TestCase):
                 expected_receipt=bad,
                 expected_identity="runtime-state-primary",
             )
+
+    def test_snapshot_byte_length_wrong_types_fail_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        for bad_value in (False, True, 1.0, "1", None):
+            with self.subTest(value=bad_value):
+                bad = copy.deepcopy(receipt)
+                bad["byte_length"] = bad_value
+                with self.assertRaises(DeploymentGateError):
+                    restore_bytes(
+                        snap,
+                        restored,
+                        expected_receipt=bad,
+                        expected_identity="runtime-state-primary",
+                    )
+
+    def test_snapshot_string_field_wrong_types_fail_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        for field in (
+            "schema_version",
+            "snapshot_identity",
+            "adopted_runtime_head",
+            "canonical_main",
+            "source_sha256",
+            "snapshot_sha256",
+        ):
+            for bad_value in (False, 0, 0.0, None, b"x"):
+                with self.subTest(field=field, value=bad_value):
+                    bad = copy.deepcopy(receipt)
+                    bad[field] = bad_value
+                    with self.assertRaises(DeploymentGateError):
+                        restore_bytes(
+                            snap,
+                            restored,
+                            expected_receipt=bad,
+                            expected_identity="runtime-state-primary",
+                        )
+
+    def test_snapshot_receipt_missing_extra_and_non_dict_fails_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        missing = copy.deepcopy(receipt)
+        missing.pop("byte_length")
+        extra = copy.deepcopy(receipt)
+        extra["unexpected"] = "field"
+        for bad in (missing, extra, None, []):
+            with self.subTest(receipt=bad):
+                with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_RECEIPT_INVALID"):
+                    restore_bytes(
+                        snap,
+                        restored,
+                        expected_receipt=bad,
+                        expected_identity="runtime-state-primary",
+                    )
 
     def test_cross_run_receipt_fails_closed(self):
         _, snap, restored, _ = self.snapshot_fixture()
