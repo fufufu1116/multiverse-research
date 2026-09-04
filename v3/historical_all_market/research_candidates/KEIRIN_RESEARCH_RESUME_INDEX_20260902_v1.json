@@ -3,122 +3,31 @@
   "status": "CHAT_INDEPENDENT_FRESH_RESUME_ENTRYPOINT_RESEARCH_CANDIDATE",
   "canonical_repo": "fufufu1116/multiverse-research",
   "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
-  "creation_parent_head": "78e9bff755fe206892af89a1cf97905f3dcd737d",
-  "latest_pointer_refresh_parent_head": "442da4908cdc17736572456fb1882302abad8d00",
   "first_rule": "Never infer CURRENT/NOW/LATEST from this file's stored SHA, chat history, handoff, or memory. Fresh Read the research branch ref first.",
   "resume_sequence": [
-    {
-      "step": 1,
-      "action": "FRESH_READ_RESEARCH_BRANCH_REF",
-      "load": "branch HEAD only"
-    },
-    {
-      "step": 2,
-      "action": "READ_CURRENT_STATE",
-      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v23.json"
-    },
-    {
-      "step": 3,
-      "action": "READ_CURRENT_TO_HEAD_DELTA_IF_ANY",
-      "rule": "If Fresh HEAD is ahead of the CURRENT state's refresh/creation binding, inspect only that commit delta before claiming CURRENT."
-    },
-    {
-      "step": 4,
-      "action": "READ_ONLY_ACTIVE_TASK_OR_PRESPEC",
-      "rule": "Use current state's lane pointers; do not preload all historical artifacts."
-    },
-    {
-      "step": 5,
-      "action": "LOAD_REQUIRED_EVIDENCE_ONLY",
-      "rule": "Follow required_artifact_pointers and Reality authority read order only as needed."
-    },
-    {
-      "step": 6,
-      "action": "CONTINUE_WITH_FRESH_BINDING",
-      "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."
-    }
+    {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF", "load": "branch HEAD only"},
+    {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json"},
+    {"step": 3, "action": "READ_CURRENT_TO_HEAD_DELTA_IF_ANY", "rule": "If Fresh HEAD is ahead of the CURRENT state's refresh/creation binding, inspect only that commit delta before claiming CURRENT."},
+    {"step": 4, "action": "READ_ONLY_ACTIVE_TASK_OR_PRESPEC", "rule": "Use current state's pointers; do not preload all historical artifacts."},
+    {"step": 5, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v23.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v22.json",
-  "lane_entrypoints": {
-    "S0_FIXED": "v3/historical_all_market/research_candidates/KEIRIN_S0_SECOND_FUTURE_PERIOD_101R_GATE_REPORT_20260902_v1.json",
-    "HISTORICAL_PIT_FAST_TRACK": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v2.json",
-    "HISTORICAL_PIT_EXPOSURE": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_PIT_TRANSPORT_VALIDATION_EXPOSURE_RECEIPT_20260903_v2.json",
-    "BURNED_OUTCOME_LEDGER": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v3.json",
-    "HFT_QUARANTINE_FETCHER": "tools/keirin_kdreams_historical_pre_quarantine_fetch_v1.py",
-    "HFT_FETCHER_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_HISTORICAL_PRE_QUARANTINE_FETCH_SELFTEST_20260903_v1.json",
-    "HFT_EXISTING_CORPUS_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_PIT_EXISTING_CORPUS_REUSE_AUDIT_20260903_v1.json",
-    "HFT_333_CLEAN_WINDOW_EXHAUSTION": "v3/historical_all_market/research_candidates/KEIRIN_HFT_333_CLEAN_WINDOW_DAY1_EXHAUSTION_RECEIPT_20260904_v1.json",
-    "HFT_400_MONTH_ARCHIVE": "v3/historical_all_market/research_candidates/KEIRIN_HFT_400_RACECARD_MONTH_ARCHIVE_PROBE_20260904_v1.json",
-    "HFT_FROZEN_WINDOW_EXHAUSTION": "v3/historical_all_market/research_candidates/KEIRIN_HFT_FROZEN_WINDOW_EXHAUSTION_RECEIPT_20260904_v1.json",
-    "HFT_KAWASAKI_DAY1_PRE_ROWS": "v3/historical_all_market/research_candidates/KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv",
-    "HFT_KAWASAKI_OFFICIAL_IDENTITY": "v3/historical_all_market/research_candidates/KEIRIN_HFT_KAWASAKI_DAY1_OFFICIAL_IDENTITY_MAPPING_20260904_v2.json",
-    "HOFU_R7_OFFICIAL_ASSIGNMENT": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_R7_OFFICIAL_SAME_RACE_ASSIGNMENT_20260904_v1.json",
-    "HOFU_KAWASAKI_CONFIRMED_SUPPORT": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
-    "NARA_SEP10_ASSEN_STRUCTURE": "v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_STRUCTURE_PROBE_20260904_v1.json",
-    "NARA_SEP10_ASSEN_ROW_STRUCTURE": "v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_ROW_STRUCTURE_PROBE_20260904_v2.json",
-    "NARA_SEP10_KAWASAKI_PENDING_OVERLAP": "v3/historical_all_market/research_candidates/KEIRIN_NARA_SEP10_ASSEN_KAWASAKI_PENDING_OVERLAP_PRECHECK_20260904_v2.json",
-    "KAWASAKI_SEP10_ASSEN_SOURCE_PROOF": "v3/historical_all_market/research_candidates/KEIRIN_KAWASAKI_SEP10_ASSEN_SOURCE_PROOF_20260904_v1.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v23.json",
+  "active_lane_pointers": {
+    "PROSPECTIVE_SUPPORT_CONTINUITY_PRESPEC": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
+    "PROSPECTIVE_SUPPORT_CONTINUITY_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_CONTINUITY_OFFLINE_SELFTEST_20260904_v1.json",
+    "PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT_20260904_v1.json",
     "SEP10_EXECUTION_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_EXECUTION_READINESS_20260904_v4.json",
     "SEP10_FINAL_RACECARD_AVAILABILITY": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_FINAL_RACECARD_AVAILABILITY_PROBE_20260904_v2.json",
-    "POSITIVE_DAY1_MANIFEST_BUILDER": "tools/keirin_kdreams_positive_day1_manifest_builder_v1.py",
-    "POSITIVE_DAY1_MANIFEST_BUILDER_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_POSITIVE_DAY1_MANIFEST_BUILDER_SELFTEST_20260904_v1.json",
-    "PROSPECTIVE_PRE_ACQUIRER": "tools/keirin_kdreams_prospective_pre_acquire_v1.py",
-    "PROSPECTIVE_PRE_ACQUIRER_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json",
-    "SAME_RACE_ASSIGNMENT_PROBE": "tools/keirinjp_same_race_assignment_probe_v1.py",
-    "SAME_RACE_ASSIGNMENT_PROBE_SELFTEST": "v3/historical_all_market/research_candidates/KEIRINJP_SAME_RACE_ASSIGNMENT_PROBE_SELFTEST_20260904_v1.json",
-    "SEP3_CUTOFF_STATUS": "v3/historical_all_market/research_candidates/KEIRIN_SEP3_PRE_CUTOFF_PROGRESS_20260903_1643_v1.json",
-    "TAKEO_9R_12R_PRE_WITNESS": "v3/historical_all_market/research_candidates/KEIRIN_TAKEO_9R_12R_PRE_CUTOFF_ALLOWLIST_WITNESS_20260903_v1.json",
-    "TAKEO_9R_12R_PRE_SEAL": "v3/historical_all_market/research_candidates/KEIRIN_TAKEO_9R_12R_PRE_CUTOFF_IMMUTABILITY_RECEIPT_20260903_v1.json",
-    "TAKEO_9R_IDENTITY_GATE": "v3/historical_all_market/research_candidates/KEIRIN_TAKEO_9R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
-    "TAKEO_10R_IDENTITY_GATE": "v3/historical_all_market/research_candidates/KEIRIN_TAKEO_10R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
-    "TAKEO_11R_IDENTITY_GATE": "v3/historical_all_market/research_candidates/KEIRIN_TAKEO_11R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
-    "TAKEO_12R_IDENTITY_GATE": "v3/historical_all_market/research_candidates/KEIRIN_TAKEO_12R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json",
-    "HOFU_1R_CROSS_CIRCUMFERENCE_PRECHECK": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_1R_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
-    "HOFU_DAY1_CROSS_CIRCUMFERENCE_PRECHECK": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_DAY1_CROSS_CIRCUMFERENCE_OVERLAP_PRECHECK_20260903_v1.json",
-    "TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT": "v3/historical_all_market/research_candidates/KEIRIN_TOYOHASHI_DAY1_PRE_TRANSPORT_CHECKPOINT_20260903_v1.json",
-    "TOYOHASHI_DAY1_PRE_MEMBERSHIP_CROSSCHECK": "v3/historical_all_market/research_candidates/KEIRIN_TOYOHASHI_DAY1_PRE_MEMBERSHIP_CROSSCHECK_20260903_v1.json",
-    "TOYOHASHI_PRIMARY_TRANSPORT_RECHECK": "v3/historical_all_market/research_candidates/KEIRIN_TOYOHASHI_PRE_PRIMARY_TRANSPORT_EXHAUSTIVE_RECHECK_20260903_v1.json",
-    "TOYOHASHI_DAY1_STRICT_PRE_POST_CUTOFF_CLOSURE": "v3/historical_all_market/research_candidates/KEIRIN_TOYOHASHI_DAY1_STRICT_PRE_POST_CUTOFF_CLOSURE_20260903_v1.json",
-    "SEP10_NARA_KAWASAKI_SUPPORT_EXTENSION": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_NARA_KAWASAKI_CROSS_CIRCUMFERENCE_PRE_EVENT_ACQUISITION_EXTENSION_20260903_v1.json",
-    "SEP4_MEMBERSHIP": "v3/historical_all_market/research_candidates/KEIRIN_SEP4_DAY1_RACE_NUMBER_MEMBERSHIP_FREEZE_20260903_v1.json",
-    "SEP4_TRANSPORT_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_SEP4_PRE_TRANSPORT_READINESS_DELTA_20260903_v2.json",
-    "PRE_FALLBACK_TRANSPORT": "v3/historical_all_market/research_candidates/KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
-    "RIDER_IDENTITY": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_IDENTITY_PRE_ONLY_MAPPING_CONTRACT_20260902_v2.json",
-    "RIDER_BANK": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
-    "RIDER_BANK_GATE": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_BANK_AFFINITY_PRE_RESULT_GATE_STATUS_20260903_v1.json",
-    "RIDER_BANK_IDENTIFIABILITY_FINAL_EVAL": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
-    "RIDER_LINE_ROLE": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_LINE_ROLE_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
-    "BANK_PHYSICS": "v3/historical_all_market/research_candidates/reality_knowledge/KEIRIN_SELECTED_BANK_PHYSICS_PROSPECTIVE_REGISTRY_20260903_v1.json",
-    "TAMANO_BANK_SOURCE": "v3/historical_all_market/research_candidates/reality_knowledge/TAMANO_BANK_GEOMETRY_SOURCE_DELTA_20260903_v1.json",
-    "REALITY_KNOWLEDGE": "v3/historical_all_market/research_candidates/reality_knowledge/REALITY_KNOWLEDGE_AUTHORITY_INDEX_20260902_v2.json",
-    "REALITY_UNRESOLVED": "v3/historical_all_market/research_candidates/reality_knowledge/SOURCE_UNRESOLVED_ITEMS_20260902_v3.json",
-    "DIGITAL_TWIN_GAP": "v3/historical_all_market/research_candidates/reality_knowledge/MODEL_AND_TWIN_REALITY_DEEP_AUDIT_DELTA_20260902_v1.json",
-    "PIT_CUTOFF_EXTRACTOR": "tools/keirin_kdreams_pit_cutoff_extractor_v2.py",
-    "PIT_CUTOFF_EXTRACTOR_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PIT_CUTOFF_EXTRACTOR_SELFTEST_20260904_v2.json",
-    "HOFU_PIT_CUTOFF_V1_LIVE_FAIL": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_PIT_CUTOFF_EXTRACTOR_LIVE_20260904_v1.json",
-    "HOFU_RACEPROGRAM_HREF_SHAPE": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_RACECARD_PROGRAM_HREF_PROBE_20260904_v1.json",
     "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py",
-    "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PROSPECTIVE_PRECAPTURE_ORCHESTRATOR_SELFTEST_20260904_v1.json",
     "SEP10_NARA_PENDING_SUPPORT_RESOLVER": "tools/keirin_sep10_nara_pending_support_candidate_resolver_v1.py",
-    "SEP10_NARA_PENDING_SUPPORT_RESOLVER_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_NARA_PENDING_SUPPORT_CANDIDATE_RESOLVER_SELFTEST_20260904_v1.json",
-    "SEP10_NARA_SAME_RACE_ASSIGNMENT_BATCH": "tools/keirin_sep10_nara_same_race_assignment_batch_v1.py",
-    "SEP10_NARA_SAME_RACE_ASSIGNMENT_BATCH_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_NARA_SAME_RACE_ASSIGNMENT_BATCH_SELFTEST_20260904_v1.json"
+    "SEP10_NARA_SAME_RACE_ASSIGNMENT_BATCH": "tools/keirin_sep10_nara_same_race_assignment_batch_v1.py"
   },
-  "context_policy": {
-    "chat": "WORKSPACE_NOT_AUTHORITY",
-    "github": "RESEARCH_STATE_EVIDENCE_DECISION_PRESPEC_RESULTS_AUTHORITY_WITHIN_RESEARCH_LANE",
-    "history": "POINTERIZED_LOAD_ONLY_WHEN_NEEDED",
-    "owner": "MUST_NOT_BE_PERMANENT_CONTEXT_COURIER"
+  "owner_reporting_contract": {
+    "periodically_include": ["ロードマップ（全体工程）", "現在地（今どこか）", "今やっていること", "苦戦していること", "解決策"],
+    "terminology": "専門用語・英語には簡潔な日本語訳を添える。",
+    "handoff": "引き継ぎ文章には必ずこの報告形式と最新ロードマップ/現在地を含める。"
   },
-  "recovery_metrics": {
-    "HANDOFF_TOKEN_SIZE": "TARGET_MINIMIZE",
-    "RESUME_TIME": "MEASURE_FROM_FRESH_READ_TO_SAFE_ACTIVE_TASK_RECOVERY",
-    "CONTEXT_LOADED": "COUNT_OR_SIZE_OF_ARTIFACTS_LOADED",
-    "OWNER_COPY_PASTE_COUNT": "TARGET_ZERO_FOR_ROUTINE_RESUME",
-    "OWNER_TOUCH_COUNT": "TARGET_MINIMIZE",
-    "RECOVERY_FAILURE_COUNT": "TARGET_ZERO"
-  },
-  "success_test": "A new chat receiving only '競輪Research再開。Fresh Readして続けて' can safely recover active state from GitHub without old chat or a giant handoff.",
+  "context_policy": {"chat": "WORKSPACE_NOT_AUTHORITY", "github": "RESEARCH_STATE_EVIDENCE_DECISION_PRESPEC_RESULTS_AUTHORITY_WITHIN_RESEARCH_LANE", "owner": "MUST_NOT_BE_PERMANENT_CONTEXT_COURIER"},
   "owner_action_required_now": false
 }
