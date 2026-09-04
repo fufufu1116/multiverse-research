@@ -7,7 +7,7 @@
   "resume_sequence": [
     {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF", "load": "branch HEAD only"},
     {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v29.json"},
-    {"step": 3, "action": "READ_V29_POINTER_RECEIPT", "path": "v3/historical_all_market/research_candidates/KEIRIN_V29_POINTER_RECEIPT_20260904_v1.json"},
+    {"step": 3, "action": "READ_POST_POINTER_DELTA", "path": "v3/historical_all_market/research_candidates/KEIRIN_V29_POST_POINTER_DELTA_20260904_v1.json"},
     {"step": 4, "action": "READ_NEXT_ACTION_BOUNDARY", "path": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_ACTION_BOUNDARY_20260904_v1.json"},
     {"step": 5, "action": "READ_NEXT_LIVE_EXECUTION_ORDER", "path": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_LIVE_DISCOVERY_EXECUTION_ORDER_20260904_v1.json"},
     {"step": 6, "action": "READ_OWNER_PROGRESS_REPORT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_PROGRESS_REPORT_20260904_v1.json"},
@@ -17,7 +17,7 @@
   "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v29.json",
   "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v28.json",
   "active_lane_pointers": {
-    "V29_POINTER_RECEIPT": "v3/historical_all_market/research_candidates/KEIRIN_V29_POINTER_RECEIPT_20260904_v1.json",
+    "POST_POINTER_DELTA": "v3/historical_all_market/research_candidates/KEIRIN_V29_POST_POINTER_DELTA_20260904_v1.json",
     "NEXT_ACTION_BOUNDARY": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_ACTION_BOUNDARY_20260904_v1.json",
     "NEXT_LIVE_EXECUTION_ORDER": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_LIVE_DISCOVERY_EXECUTION_ORDER_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json",
