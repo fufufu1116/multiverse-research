@@ -1,0 +1,23 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT_20260904_v1",
+  "status": "READY_FOR_POSITIVE_NAVIGATION_DISCOVERY",
+  "prespec": "KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
+  "goal": "Maintain multiple future PRE-only support opportunities so one unpublished event cannot stall the research lane.",
+  "queue_entry_required_fields": ["venue", "circumference_class", "event_start_date", "official_schedule_source", "positive_program_href_observed", "day1_racecard_status", "pit_cutoff_status", "capture_status", "identity_status", "same_race_assignment_status", "support_receipt_status"],
+  "admission": {
+    "future_event_only": true,
+    "official_positive_navigation_required": true,
+    "race_id_guessing_forbidden": true,
+    "result_access_forbidden": true,
+    "circumference_classes": ["333_OR_333_33M", "400M"]
+  },
+  "priority": [
+    "events with exact Day1 racecard positively observed and pre-cutoff time remaining",
+    "events with official program link positively observed but Day1 racecard not yet published",
+    "future official schedule opportunities suitable for cross-circumference pairing"
+  ],
+  "execution": "Use existing tested PRE capture components; queue does not itself authorize support.",
+  "support_increment_authorized": 0,
+  "result_accessed": false,
+  "owner_action_required_now": false
+}
