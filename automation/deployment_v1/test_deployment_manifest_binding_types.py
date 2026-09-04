@@ -11,7 +11,9 @@ from deployment_contract import (
     MODE,
     RUNTIME,
     TARGET_ENVIRONMENT,
+    restore_bytes,
     sha256_file,
+    snapshot_bytes,
 )
 
 
@@ -39,6 +41,17 @@ class _HashCompatibleKey:
 
     def __eq__(self, other):
         return other == "production"
+
+
+class _HashCompatibleReceiptKey:
+    def __init__(self, target):
+        self.target = target
+
+    def __hash__(self):
+        return hash(self.target)
+
+    def __eq__(self, other):
+        return other == self.target
 
 
 class DeploymentManifestBindingTypeTests(unittest.TestCase):
@@ -103,7 +116,7 @@ class DeploymentManifestBindingTypeTests(unittest.TestCase):
             ("rollback_ref", "ROLLBACK_BINDING_REQUIRED"),
         )
         for field, error in cases:
-            for bad_value in (False, 0, 0.0, None, b"x", [], {}, ()): 
+            for bad_value in (False, 0, 0.0, None, b"x", [], {}, ()):
                 with self.subTest(field=field, value=bad_value):
                     with self.assertRaisesRegex(DeploymentGateError, error):
                         self.validate(self.manifest(**{field: bad_value}))
@@ -136,6 +149,53 @@ class DeploymentManifestBindingTypeTests(unittest.TestCase):
         capabilities[_HashCompatibleKey()] = False
         with self.assertRaisesRegex(DeploymentGateError, "CAPABILITY_DEFAULT_DENY_REQUIRED"):
             self.validate(self.manifest(capabilities=capabilities))
+
+    def test_snapshot_receipt_keys_reject_str_subclasses_before_kwarg_binding(self):
+        source = self.root / "state.db"
+        snapshot = self.root / "state.snapshot"
+        restored = self.root / "state.restored"
+        source.write_bytes(b"sealed-runtime-state")
+        receipt = snapshot_bytes(source, snapshot, snapshot_identity="runtime-state-primary")
+        value = receipt.pop("snapshot_identity")
+        receipt[_AlwaysEqualStr("snapshot_identity")] = value
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_RECEIPT_INVALID"):
+            restore_bytes(
+                snapshot,
+                restored,
+                expected_receipt=receipt,
+                expected_identity="runtime-state-primary",
+            )
+
+    def test_snapshot_receipt_keys_reject_equality_hash_compatible_objects_before_kwarg_binding(self):
+        source = self.root / "state.db"
+        snapshot = self.root / "state.snapshot"
+        restored = self.root / "state.restored"
+        source.write_bytes(b"sealed-runtime-state")
+        receipt = snapshot_bytes(source, snapshot, snapshot_identity="runtime-state-primary")
+        value = receipt.pop("snapshot_identity")
+        receipt[_HashCompatibleReceiptKey("snapshot_identity")] = value
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_RECEIPT_INVALID"):
+            restore_bytes(
+                snapshot,
+                restored,
+                expected_receipt=receipt,
+                expected_identity="runtime-state-primary",
+            )
+
+    def test_exact_snapshot_receipt_still_restores_after_key_type_hardening(self):
+        source = self.root / "state.db"
+        snapshot = self.root / "state.snapshot"
+        restored = self.root / "state.restored"
+        source.write_bytes(b"sealed-runtime-state")
+        receipt = snapshot_bytes(source, snapshot, snapshot_identity="runtime-state-primary")
+        result = restore_bytes(
+            snapshot,
+            restored,
+            expected_receipt=receipt,
+            expected_identity="runtime-state-primary",
+        )
+        self.assertEqual(result["integrity"], "PASS")
+        self.assertEqual(restored.read_bytes(), source.read_bytes())
 
     def test_exact_manifest_still_passes_after_type_hardening(self):
         self.validate(self.manifest())
