@@ -42,9 +42,8 @@ def prove_nondumpable_ptrace_denial(tid):
     return er
 
 def retained_authority_fd_attack(fd,baseline):
-    # This is the exact sealed authority memfd created before the protected transition
-    # and inherited by the target. The attacker intentionally retains its own duplicate
-    # of the same underlying authority object across the mixed interval.
+    # Exact sealed authority memfd: created before the protected transition,
+    # inherited by the target, and intentionally retained by the attacker.
     results=[]
     try:
         os.pwrite(fd,b'X',0); raise SystemExit('MATERIAL_RETAINED_AUTHORITY_FD_PWRITE_SUCCEEDED')
@@ -56,9 +55,7 @@ def retained_authority_fd_attack(fd,baseline):
     except OSError as e:
         if e.errno not in (errno.EPERM,errno.EACCES): raise
         results.append(f'truncate={e.errno}')
-    seals=fcntl.fcntl(fd,M.F_ADD_SEALS-1) # F_GET_SEALS = 1034? Correct below via numeric constant.
-    # Python fcntl may not expose F_GET_SEALS consistently; use Linux value 1034.
-    seals=fcntl.fcntl(fd,1034)
+    seals=fcntl.fcntl(fd,1034) # Linux F_GET_SEALS
     if seals!=M.SEALS: raise SystemExit(f'MATERIAL_RETAINED_AUTHORITY_FD_SEALS_CHANGED:{seals}')
     now=os.pread(fd,1<<20,0)
     if hashlib.sha256(now).hexdigest()!=baseline: raise SystemExit('MATERIAL_RETAINED_AUTHORITY_FD_CONTENT_CHANGED')
@@ -104,13 +101,9 @@ def main():
                 rec=dict(s); rec['ptrace_attach_errno']=er; rec['dumpability_evidence']='kernel_ptrace_attach_denied_after_helper_PR_SET_DUMPABLE_0'
                 post_safe_records[tid]=rec
         if protected:
-            # Exact-boundary preattachment challenge: after protected helper entry,
-            # before mixed transition, try to establish a tracer on every live TID.
-            # A successful attach would create the very retained tracer the Lab asked us to challenge.
             if helper_entry:
                 for tid in list(states):
-                    er=prove_nondumpable_ptrace_denial(tid); pre_boundary_attach_denials+=1
-                    if er!=errno.EPERM and tid in states: pass
+                    prove_nondumpable_ptrace_denial(tid); pre_boundary_attach_denials+=1
             bad=M.attack_tid(p.pid,p.pid,addr,fd); protected_attempts+=1
             if bad:p.kill(); raise SystemExit('MATERIAL_PROTECTED_TRANSIENT_ACCESS:'+bad)
         elif mixed:
