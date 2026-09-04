@@ -24,6 +24,8 @@ class _AlwaysEqual:
 
 
 class _AlwaysEqualStr(str):
+    __hash__ = str.__hash__
+
     def __eq__(self, other):
         return True
 
