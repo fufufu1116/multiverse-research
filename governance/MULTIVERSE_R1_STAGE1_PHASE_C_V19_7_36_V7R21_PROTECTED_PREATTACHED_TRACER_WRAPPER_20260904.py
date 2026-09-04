@@ -29,13 +29,13 @@ def build_exact_ci_guard_copy():
     run('python3',g+'MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TRANSITION_RACE_PATCHER_20260904.py','/tmp/ci-v19-guard.go','/tmp/ci-v19-helper.go','/tmp/ci-v20-guard.go','/tmp/ci-v20-helper.go')
     run('python3',g+'MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_NEW_THREAD_REGAIN_PATCHER_20260904.py','/tmp/ci-v20-guard.go','/tmp/ci-v20-helper.go','/tmp/ci-v21-guard.go','/tmp/ci-v21-helper.go')
     run('gofmt','-w','/tmp/ci-v21-guard.go','/tmp/ci-v21-helper.go')
-    run('go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/ci-v21-helper','/tmp/ci-v21-helper.go')
+    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/ci-v21-helper','/tmp/ci-v21-helper.go')
     helper_sha=sha('/tmp/ci-v21-helper')
     if helper_sha!=sha(R.HELPER): raise SystemExit('CI regenerated helper does not byte-match production helper')
     p=pathlib.Path('/tmp/ci-v21-guard.go'); s=p.read_text(encoding='utf-8')
     if s.count('__V7R21_HELPER_SHA256__')!=1: raise SystemExit('guard helper hash placeholder topology changed')
     s=s.replace('__V7R21_HELPER_SHA256__',helper_sha,1); p.write_text(s,encoding='utf-8'); run('gofmt','-w',str(p))
-    run('go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/ci-v21-guard-production',str(p))
+    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/ci-v21-guard-production',str(p))
     if sha('/tmp/ci-v21-guard-production')!=sha(PROD_GUARD): raise SystemExit('CI regenerated guard does not byte-match production guard')
 
     # Insert exactly one unconditional CI-only stop AFTER the production guard
@@ -50,7 +50,7 @@ def build_exact_ci_guard_copy():
     if ci.replace('\tif err := syscall.Kill(syscall.Getpid(), syscall.SIGSTOP); err != nil { deny("CI_TRACER_STOP") }\n','',1)!=s:
         raise SystemExit('CI guard differs by more than exact stop line')
     p.write_text(ci,encoding='utf-8'); run('gofmt','-w',str(p))
-    run('go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o',CI_GUARD,str(p))
+    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o',CI_GUARD,str(p))
     os.chown(CI_GUARD,0,0); os.chmod(CI_GUARD,0o555)
     print('PRELAB_V7R21_CI_GUARD_REGENERATED_PRODUCTION_MATCH=true')
     print('PRELAB_V7R21_CI_GUARD_ONLY_DIFF=ONE_UNCONDITIONAL_SIGSTOP_AFTER_PROTECTED_TRACER_GATE')
