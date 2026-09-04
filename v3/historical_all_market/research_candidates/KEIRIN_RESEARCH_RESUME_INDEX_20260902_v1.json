@@ -8,8 +8,9 @@
     {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF", "load": "branch HEAD only"},
     {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json"},
     {"step": 3, "action": "READ_POST_CURRENT_DELTA", "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_QUEUE_BINDING_DELTA_20260904_v1.json"},
-    {"step": 4, "action": "READ_ONLY_ACTIVE_TASK_OR_PRESPEC", "rule": "Use active lane pointers; do not preload all historical artifacts."},
-    {"step": 5, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+    {"step": 4, "action": "READ_OWNER_ROADMAP_SNAPSHOT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json"},
+    {"step": 5, "action": "READ_ONLY_ACTIVE_TASK_OR_PRESPEC", "rule": "Use active lane pointers; do not preload all historical artifacts."},
+    {"step": 6, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
   "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json",
   "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v23.json",
@@ -19,6 +20,7 @@
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_QUEUE_BINDING_DELTA": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_QUEUE_BINDING_DELTA_20260904_v1.json",
+    "OWNER_ROADMAP_SNAPSHOT": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json",
     "SEP10_EXECUTION_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_EXECUTION_READINESS_20260904_v4.json",
     "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py"
   },
