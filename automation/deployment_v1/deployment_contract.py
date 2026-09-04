@@ -42,6 +42,14 @@ def sha256_file(path: str | Path) -> str:
     return h.hexdigest()
 
 
+def _is_lower_hex_sha256(value: object) -> bool:
+    return (
+        type(value) is str
+        and len(value) == 64
+        and all(c in "0123456789abcdef" for c in value)
+    )
+
+
 @dataclass(frozen=True)
 class DeploymentManifest:
     adopted_runtime_head: str
@@ -74,10 +82,18 @@ class DeploymentManifest:
             raise DeploymentGateError("EPHEMERAL_CREDENTIAL_INJECTION_REQUIRED")
         if self.credential_persistence is not False:
             raise DeploymentGateError("SECRET_PERSISTENCE_FORBIDDEN")
-        if self.capabilities != DEFAULT_DENY_CAPABILITIES:
+        if type(self.capabilities) is not dict:
+            raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
+        if set(self.capabilities) != set(DEFAULT_DENY_CAPABILITIES):
+            raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
+        if any(type(value) is not bool or value is not False for value in self.capabilities.values()):
             raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
         if self.rollback_ref != ADOPTED_RUNTIME_HEAD:
             raise DeploymentGateError("ROLLBACK_BINDING_REQUIRED")
+        if not _is_lower_hex_sha256(self.artifact_sha256):
+            raise DeploymentGateError("DEPLOYMENT_ARTIFACT_DIGEST_INVALID")
+        if not _is_lower_hex_sha256(self.rollback_artifact_sha256):
+            raise DeploymentGateError("ROLLBACK_ARTIFACT_DIGEST_INVALID")
 
         artifact_path = Path(artifact_path)
         rollback_artifact_path = Path(rollback_artifact_path)
@@ -123,14 +139,30 @@ class SnapshotIntegrityReceipt:
         expected_runtime_head: str,
         expected_main: str,
     ) -> None:
+        string_fields = (
+            self.schema_version,
+            self.snapshot_identity,
+            self.adopted_runtime_head,
+            self.canonical_main,
+            self.source_sha256,
+            self.snapshot_sha256,
+        )
+        if any(type(value) is not str for value in string_fields):
+            raise DeploymentGateError("SNAPSHOT_RECEIPT_FIELD_TYPE_INVALID")
+        if type(self.byte_length) is not int:
+            raise DeploymentGateError("SNAPSHOT_LENGTH_TYPE_INVALID")
         if self.schema_version != SNAPSHOT_SCHEMA:
             raise DeploymentGateError("SNAPSHOT_SCHEMA_MISMATCH")
+        if not self.snapshot_identity or self.snapshot_identity.strip() != self.snapshot_identity:
+            raise DeploymentGateError("SNAPSHOT_IDENTITY_INVALID")
         if self.snapshot_identity != expected_identity:
             raise DeploymentGateError("SNAPSHOT_IDENTITY_MISMATCH")
         if self.adopted_runtime_head != expected_runtime_head:
             raise DeploymentGateError("SNAPSHOT_RUNTIME_HEAD_MISMATCH")
         if self.canonical_main != expected_main:
             raise DeploymentGateError("SNAPSHOT_MAIN_MISMATCH")
+        if not _is_lower_hex_sha256(self.source_sha256) or not _is_lower_hex_sha256(self.snapshot_sha256):
+            raise DeploymentGateError("SNAPSHOT_DIGEST_FORMAT_INVALID")
         if self.source_sha256 != self.snapshot_sha256:
             raise DeploymentGateError("SNAPSHOT_SOURCE_DIGEST_MISMATCH")
         if self.byte_length < 0:
@@ -143,7 +175,7 @@ def snapshot_bytes(
     *,
     snapshot_identity: str,
 ) -> dict[str, Any]:
-    if not snapshot_identity or snapshot_identity.strip() != snapshot_identity:
+    if type(snapshot_identity) is not str or not snapshot_identity or snapshot_identity.strip() != snapshot_identity:
         raise DeploymentGateError("SNAPSHOT_IDENTITY_REQUIRED")
     source = Path(source)
     snapshot = Path(snapshot)
@@ -176,6 +208,8 @@ def restore_bytes(
     expected_runtime_head: str = ADOPTED_RUNTIME_HEAD,
     expected_main: str = CANONICAL_MAIN,
 ) -> dict[str, Any]:
+    if type(expected_receipt) is not dict:
+        raise DeploymentGateError("SNAPSHOT_RECEIPT_INVALID")
     try:
         receipt = SnapshotIntegrityReceipt(**expected_receipt)
     except (TypeError, KeyError) as e:
