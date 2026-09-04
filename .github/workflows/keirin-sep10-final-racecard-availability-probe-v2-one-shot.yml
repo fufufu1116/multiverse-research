@@ -1,0 +1,162 @@
+name: keirin-sep10-final-racecard-availability-probe-v2-one-shot
+on:
+  push:
+    paths:
+      - '.github/workflows/keirin-sep10-final-racecard-availability-probe-v2-one-shot.yml'
+permissions:
+  contents: write
+jobs:
+  availability-probe:
+    if: github.ref == 'refs/heads/research/keirin-real-evidence-dual-lane-20260901-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Probe Sep10 target racecard availability through observed September archive form only
+        run: |
+          python - <<'PY'
+          import hashlib, importlib.util, json, pathlib
+          from datetime import datetime, timezone
+          from bs4 import BeautifulSoup
+
+          ARCHIVE_PATH=pathlib.Path('tools/keirin_kdreams_racecard_month_archive_probe_v1.py')
+          BUILDER_PATH=pathlib.Path('tools/keirin_kdreams_positive_day1_manifest_builder_v1.py')
+          OUT=pathlib.Path('v3/historical_all_market/research_candidates/KEIRIN_SEP10_FINAL_RACECARD_AVAILABILITY_PROBE_20260904_v2.json')
+          TARGET_DATE='2026-09-10'
+          TARGETS=[('nara','奈良',333.33),('kawasaki','川崎',400.0)]
+
+          def load(name,path):
+              spec=importlib.util.spec_from_file_location(name,path)
+              m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
+          arc=load('kd_month_archive',ARCHIVE_PATH)
+          bld=load('kd_day1_builder',BUILDER_PATH)
+
+          records=[]
+          for slug,venue,circ in TARGETS:
+              index_url=f'https://{arc.HOST}/{slug}/racecard/'
+              s=arc.requests.Session()
+              raw_index,final_index=arc.get(s,index_url,slug,'index')
+              _,form,by_name,hidden,action=arc.find_exact_archive_form(raw_index,final_index,slug)
+              payload,safe_payload=arc.observed_payload(form,by_name,hidden,'09')
+              raw_month,final_month,redirects=arc.post_archive(s,action,slug,payload)
+              links=arc.exact_day_links(raw_month,final_month,slug)
+
+              matching=[]
+              examined=[]
+              for u in links:
+                  raw,final=arc.get(s,u,slug,'day')
+                  soup=BeautifulSoup(raw.decode('utf-8',errors='replace'),'html.parser')
+                  title=arc.clean(soup.title.get_text(' ',strip=True)) if soup.title else ''
+                  race_date=arc.parse_date_from_title(title)
+                  title_venue=arc.parse_venue_from_title(title)
+                  active=arc.active_day_category(soup)
+                  title_cat=arc.day_category(title)
+                  examined.append({
+                      'day_url':final,
+                      'race_date':race_date,
+                      'venue_from_title':title_venue,
+                      'active_day_category':active,
+                      'title_day_category':title_cat,
+                      'source_sha256':hashlib.sha256(raw).hexdigest(),
+                  })
+                  if race_date != TARGET_DATE or arc.norm(title_venue or '') != arc.norm(venue):
+                      continue
+                  positive,anchor_count,dupes=bld.extract_positive_detail_urls(raw,final,slug)
+                  explicit={x for x in [active,title_cat] if x!='NO_EXPLICIT_DAY_STATUS'}
+                  day1_unambiguous=(explicit=={'INITIAL_DAY_EXPLICIT'})
+                  matching.append({
+                      'racecard_url':final,
+                      'source_sha256':hashlib.sha256(raw).hexdigest(),
+                      'active_day_category':active,
+                      'title_day_category':title_cat,
+                      'day1_explicit_unambiguous':day1_unambiguous,
+                      'observed_racedetail_anchor_count':anchor_count,
+                      'unique_exact_racedetail_href_count':len(positive),
+                      'duplicate_exact_racedetail_href_count':dupes,
+                      'structurally_complete_candidate':bool(day1_unambiguous and 5 <= len(positive) <= 12),
+                  })
+
+              if len(matching)>1:
+                  raise SystemExit(f'FAIL_CLOSED_TARGET_DAY_CARDINALITY_{slug}_{len(matching)}')
+              match=matching[0] if matching else None
+              records.append({
+                  'venue_slug':slug,
+                  'venue':venue,
+                  'circumference_m':circ,
+                  'target_date':TARGET_DATE,
+                  'index_url':final_index,
+                  'index_source_sha256':hashlib.sha256(raw_index).hexdigest(),
+                  'observed_archive_form':{
+                      'request_method':'post',
+                      'request_action_url':action,
+                      'observed_form_payload':safe_payload,
+                      'redirect_history':redirects,
+                      'response_url':final_month,
+                      'response_sha256':hashlib.sha256(raw_month).hexdigest(),
+                  },
+                  'positively_observed_september_day_href_count':len(links),
+                  'target_day_href_cardinality':len(matching),
+                  'target_racecard':match,
+                  'racecard_structurally_available_now':bool(match and match['structurally_complete_candidate']),
+                  'final_pre_capture_authorized_by_this_probe':False,
+                  'final_pre_capture_authority_reason':'PIT_CUTOFF_AND_COMPLETE_CAPTURE_SEQUENCE_MUST_BE_SEPARATELY_FROZEN_AT_FINAL_PRE_TIME',
+                  'examined_day_page_count':len(examined),
+                  'examined_day_metadata_sha256':hashlib.sha256((json.dumps(examined,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n').encode('utf-8')).hexdigest(),
+                  'examined_day_metadata_persisted':False,
+              })
+
+          available=sum(1 for x in records if x['racecard_structurally_available_now'])
+          doc={
+              'record':'KEIRIN_SEP10_FINAL_RACECARD_AVAILABILITY_PROBE_20260904_v2',
+              'generated_utc':datetime.now(timezone.utc).isoformat(),
+              'status':('BOTH_TARGET_RACECARDS_STRUCTURALLY_AVAILABLE_NO_CAPTURE_AUTHORITY' if available==2 else
+                        'PARTIAL_TARGET_RACECARD_STRUCTURAL_AVAILABILITY_NO_CAPTURE_AUTHORITY' if available==1 else
+                        'TARGET_RACECARDS_NOT_YET_STRUCTURALLY_AVAILABLE'),
+              'scope':'PRE_ONLY_TARGET_RACECARD_AVAILABILITY_NO_DETAIL_OPEN_NO_RESULT',
+              'target_date':TARGET_DATE,
+              'records':records,
+              'structurally_available_target_count':available,
+              'all_targets_structurally_available_now':available==2,
+              'final_pre_capture_authorized_now':False,
+              'support_increment_authorized_now':0,
+              'detail_pages_opened':False,
+              'race_id_guessed':False,
+              'racecard_day_id_arithmetic_used':False,
+              'raw_html_persisted':False,
+              'raw_html_printed':False,
+              'result_accessed':False,
+              'result_page_opened':False,
+              'payout_accessed':False,
+              'odds_accessed':False,
+              'forecast_accessed':False,
+              'human_comment_accessed':False,
+              'rider_values_persisted':False,
+              'model_fit_authorized':False,
+              'result_join_authorized':False,
+              'main_or_runtime_mutation':False,
+              'next_gate':'REPROBE_FROM_FRESH_BRANCH_WHEN_FINAL_PRE_RACECARD_IS_EXPECTED; THEN FREEZE PIT CUTOFF AND BUILD POSITIVE DAY1 MANIFEST BEFORE CAPTURE',
+          }
+          OUT.write_text(json.dumps(doc,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({
+              'record':doc['record'],'status':doc['status'],
+              'structurally_available_target_count':available,
+              'target_day_href_cardinalities':{x['venue']:x['target_day_href_cardinality'] for x in records},
+              'racecard_structurally_available':{x['venue']:x['racecard_structurally_available_now'] for x in records},
+              'final_pre_capture_authorized_now':False,'support_increment_authorized_now':0,
+              'detail_pages_opened':False,'result_accessed':False,
+          },ensure_ascii=False,sort_keys=True))
+          PY
+      - name: Persist sanitized Sep10 availability evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          f='v3/historical_all_market/research_candidates/KEIRIN_SEP10_FINAL_RACECARD_AVAILABILITY_PROBE_20260904_v2.json'
+          test -f "$f" && git add "$f" || true
+          if git diff --cached --quiet; then echo 'no availability evidence file produced'; exit 0; fi
+          git commit -m 'research(keirin): capture Sep10 final racecard availability v2'
+          git push origin HEAD:${{ github.ref_name }}
