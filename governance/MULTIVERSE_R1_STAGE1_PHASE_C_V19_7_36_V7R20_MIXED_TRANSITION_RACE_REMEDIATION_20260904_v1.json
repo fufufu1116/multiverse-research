@@ -1,0 +1,80 @@
+{
+  "schema": "multiverse.r1.stage1.phase_c.v19_7_36.v7r20.mixed_transition_race_remediation.v1",
+  "record": "MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TRANSITION_RACE_REMEDIATION",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "lane": "CORE_RESEARCH_CANDIDATE",
+  "status": "CANDIDATE_ONLY_PUSH_CI_REQUIRED_NO_LIVE_AUTHORITY",
+  "base": {
+    "v7r19_head": "00916732f345ab84d8de0d96dba40814afca2c7e",
+    "v7r19_tree": "965fea4c3a7da59db5697d9d72dff0120faff8c0",
+    "v7r19_lab_request": 5537282543,
+    "v7r19_lab_result": 5537439200,
+    "v7r19_lab_verdict": "MATERIAL_BLOCK",
+    "owner_scope_gate": 5535749691,
+    "owner_scope_approval": 5536470107,
+    "approved_scope": "HELPER_CREDENTIAL_CONTRACT_REDESIGN"
+  },
+  "preserved_v7r19_mechanism": {
+    "build_mode": "CGO_ENABLED_0",
+    "process_wide_primitive": "syscall.AllThreadsSyscall",
+    "post_return_process_wide_credential_retirement": "PRESERVED",
+    "v7r18_raw_per_thread_defect_reproduction": "PRESERVED",
+    "protected_helper_entry": "PRESERVED",
+    "authority_fd_retirement_before_helper_exec": "PRESERVED"
+  },
+  "v7r19_material_proof_gaps": [
+    "THREAD_CREATION_AND_REAPPEARANCE_RACE_REVIEW_MATERIAL_BLOCK",
+    "MIXED_CREDENTIAL_TRANSITION_SECURITY_REVIEW_MATERIAL_BLOCK"
+  ],
+  "v7r20_closure": {
+    "mixed_state_targeting": "EVERY_OBSERVED_ORDINARY_CREDENTIAL_TID_IS_INDIVIDUALLY_ATTACKED_WHILE_ANY_SIBLING_TID_RETAINS_AUTHORITY_CREDENTIALS",
+    "attack_surfaces": [
+      "PTRACE_ATTACH_REGISTER_MODIFY_DETACH_PER_TID",
+      "PROCESS_VM_WRITEV_ACTUAL_ADDRESS_PER_TID",
+      "PROC_TASK_TID_MEM_ACTUAL_ADDRESS_WRITE",
+      "PROC_TASK_TID_FD_AUTHORITY_ACCESS"
+    ],
+    "thread_creation_stress": "POSTDROP_SIMULTANEOUS_LOCKOSTHREAD_BATCHES_FORCE_NEW_OS_THREAD_CREATION_AND_VERIFY_EACH_NEW_TID_ORDINARY",
+    "external_reappearance_observer": "SELFTEST_TRACKS_PRE_SAFE_AND_POST_SAFE_TID_SETS_AND_REQUIRES_POST_SAFE_NEW_TID_OBSERVATION",
+    "mixed_state_fail_rule": "ANY_TRANSIENT_SAME_UID_INFLUENCE_AGAINST_ANY_ORDINARY_TID_WHILE_AUTHORITY_SIBLING_EXISTS_IS_MATERIAL_FAILURE",
+    "post_safe_rule": "ALL_AUTHORITY_BEARING_STATE_ALREADY_RETIRED_AND_ALL_NEW_TASKS_MUST_INHERIT_ORDINARY_CREDENTIALS"
+  },
+  "files": {
+    "patcher": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TRANSITION_RACE_PATCHER_20260904.py",
+    "attack_selftest": "governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TID_ATTACK_SELFTEST_20260904.py",
+    "dockerfile": ".devcontainer/Dockerfile.v7r20",
+    "workflow": ".github/workflows/multiverse-v36-v7r20-mixed-transition-race-prelab.yml"
+  },
+  "inherited_closures": [
+    "SEALED_ANONYMOUS_MEMFD_FULL_SEALS_READBACK_HASH",
+    "MUTABLE_STATUS_CONTROL_OBSERVABILITY_ONLY",
+    "DIRECT_ORDINARY_ROOT_ARBITRARY_CREDENTIAL_HELPER_INVOCATION_DENIAL",
+    "FORGED_ENV_WRONG_CODESPACE_STALE_UNSEALED_WRONG_GENERATION_AUTHORITY_DENIAL",
+    "FIXED_TARGET_ARGV_ENV_FD_BINDING",
+    "NO_GENERIC_EXEC_SHELL_NETWORK_PROVIDER_SECRET_SPEND_SURFACE",
+    "EXACT_TWO_LAUNCHER_ENV_AND_GO_SECURE_RUNTIME_ENV_BOUNDARY",
+    "ROOT_OWNED_0555_LOCK_ANCHOR_SERIALIZATION_ONLY",
+    "O_EXCL_SYMLINK_HARDLINK_GENERATION_EXACT_CONTENT_CONCURRENCY_NEGATIVES",
+    "RATE_RESIDUAL_60_59_TO_55_54_NONZERO_TOCTOU",
+    "ONE_SHOT_LIVE_PATH_UNCONSUMED"
+  ],
+  "workflow_contract": {
+    "trigger": "PUSH_ONLY_EXACT_V7R20_BRANCH",
+    "workflow_dispatch": false,
+    "permissions": "CONTENTS_READ_ONLY",
+    "manual_rerun_or_dispatch_authorized": false,
+    "failed_runs_preserved_as_evidence": true
+  },
+  "authority_ceiling": {
+    "codespace_create_reuse_delete": false,
+    "live_probe_guard_helper_arm": false,
+    "oauth_device_device_code": false,
+    "step3_step4_apply": false,
+    "main_ruleset_production_mutation": false,
+    "merge": false,
+    "workflow_dispatch_or_manual_rerun": false,
+    "secret_writer_key": false,
+    "runtime_activation": false
+  },
+  "runtime": "OFF"
+}
