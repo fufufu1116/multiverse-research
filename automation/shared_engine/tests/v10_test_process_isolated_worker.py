@@ -249,6 +249,17 @@ class ProcessIsolatedWorkerV10Tests(unittest.TestCase):
         self.assertEqual(db.get_task(core)['state'], 'DONE')
         self.assertEqual(db.get_task(keirin)['state'], 'DONE')
 
+    def test_replay_db_cannot_alias_task_bridge_or_provider_db(self):
+        bad_socket = os.path.join(self.tmp.name, 'bad-replay-alias.sock')
+        completed = subprocess.run([
+            sys.executable, BROKER, '--socket', bad_socket, '--task-db', self.task_db,
+            '--bridge-db', self.bridge, '--provider-db', self.provider, '--replay-db', self.task_db,
+            '--candidate-branch', BRANCH, '--candidate-head', HEAD,
+            '--lease', '0.30', '--heartbeat', '0.05', '--poll', '0.01', '--max-requests', '1'
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn('V10_REPLAY_DB_MUST_BE_DISTINCT', completed.stderr)
+
     def test_no_task_creation_opcode_and_bounds(self):
         self.assertEqual(client_module.ALLOWED_OPS, frozenset({'PING','STEP','STOP'}))
         with self.assertRaisesRegex(ValueError, 'V10_RUN_CYCLE_BOUND'):
