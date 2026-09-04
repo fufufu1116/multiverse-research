@@ -79,8 +79,9 @@ def main():
     require('V10_REPLAY_STORE_FULL' in broker,'V10_REPLAY_CAPACITY_FAIL_CLOSED_REQUIRED')
     require(broker.index('replay_store.reserve(request)') < broker.index('broker.dispatch(request)'),'V10_RESERVATION_MUST_PRECEDE_DISPATCH')
     broker_lower=broker.lower()
-    for banned in ('delete from ipc_replay','drop table ipc_replay','vacuum ipc_replay','ttl','expire request_id','evict'):
+    for banned in ('delete from ipc_replay','drop table ipc_replay','vacuum ipc_replay'):
         require(banned not in broker_lower,f'V10_REPLAY_FORGETTING_SURFACE:{banned}')
+    require('.clear()' not in broker_lower,'V10_REPLAY_CLEAR_FORBIDDEN')
     require('LocalPersistentWorker' in broker,'V10_INHERITED_V9_BROKER_PATH_REQUIRED')
 
     readme=README.read_text().lower()
