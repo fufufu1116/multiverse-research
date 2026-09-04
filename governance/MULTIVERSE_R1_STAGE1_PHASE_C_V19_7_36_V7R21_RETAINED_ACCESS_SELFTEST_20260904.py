@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-import errno,fcntl,hashlib,importlib.util,json,os,re,selectors,signal,subprocess,threading,time
+import errno,fcntl,hashlib,importlib.util,json,os,re,selectors,signal,subprocess,time
 BASE='/src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TID_ATTACK_SELFTEST_20260904.py'
 spec=importlib.util.spec_from_file_location('v7r20',BASE); M=importlib.util.module_from_spec(spec); spec.loader.exec_module(M)
 NAME='rate-v7r21-test'; AUTH_UID=M.AUTH_UID
 HELPER='/usr/local/bin/multiverse-v36-ui-ready-v7r21'
+PTRACE_CONT=7
 
 def configure_base():
     M.NAME=NAME
@@ -60,45 +61,64 @@ def retained_authority_fd_attack(fd,baseline):
     if hashlib.sha256(now).hexdigest()!=baseline: raise SystemExit('MATERIAL_RETAINED_AUTHORITY_FD_CONTENT_CHANGED')
     return ','.join(results)
 
+def preattached_tracer_fail_closed(uid,gid):
+    # CI-only adversarial observer. The trace relationship is established by a
+    # root test observer after the setuid launcher image has been entered, then
+    # retained across guard/helper exec. No production delay/hook/control knob
+    # is added. The reviewed helper must detect TracerPid and fail closed before
+    # the irreversible user-drop boundary.
+    for attempt in range(12):
+        fd=M.make_authority()
+        def child_ids():
+            os.setgroups([]); os.setresgid(gid,gid,gid); os.setresuid(uid,uid,uid)
+        p=subprocess.Popen(['/tmp/v7r20-launcher',NAME,str(fd),M.GEN],env={'CODESPACES':'true','CODESPACE_NAME':NAME},pass_fds=(fd,),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,bufsize=1,preexec_fn=child_ids)
+        rv,er=M.ptrace(M.PTRACE_ATTACH,p.pid)
+        if rv!=0:
+            try:p.kill(); p.wait(timeout=1)
+            except Exception:pass
+            os.close(fd)
+            if er in (errno.ESRCH,errno.EPERM): continue
+            raise SystemExit(f'preattached-tracer-attach-unexpected:{er}')
+        try:
+            try:os.waitpid(p.pid,0)
+            except ChildProcessError:pass
+            seen_helper=False
+            deadline=time.time()+4
+            while time.time()<deadline:
+                try:
+                    exe=os.readlink(f'/proc/{p.pid}/exe')
+                    if exe==HELPER: seen_helper=True
+                except OSError:pass
+                M.ptrace(PTRACE_CONT,p.pid)
+                try:wpid,status=os.waitpid(p.pid,0)
+                except ChildProcessError:break
+                if os.WIFEXITED(status) or os.WIFSIGNALED(status):break
+            text=p.stdout.read() or ''
+            try:p.wait(timeout=1)
+            except subprocess.TimeoutExpired:p.kill(); p.wait(timeout=1)
+        finally:
+            os.close(fd)
+        if 'PHASE_C_V19_7_36_V7R21_HELPER_DENIED:PROTECTED_STARTUP:tracer-present' in text and 'V7R21_IRREVERSIBLE_USER_DROP_COMPLETE' not in text:
+            print(text,end='')
+            print(f'PRELAB_V7R21_PREATTACHED_TRACER_ATTEMPTS={attempt+1}')
+            print(f'PRELAB_V7R21_PREATTACHED_TRACER_REACHED_HELPER={str(seen_helper).lower()}')
+            print('PRELAB_V7R21_PREATTACHED_TRACER_EXACT_BOUNDARY_RESULT=FAIL_CLOSED_TRACER_PRESENT_BEFORE_IRREVERSIBLE_DROP')
+            return
+    raise SystemExit('genuine preattached tracer variant did not reach fail-closed helper boundary')
+
 def main():
     if os.geteuid()!=0: raise SystemExit('root preparation required')
     configure_base(); M.build_launcher()
     uid=int(subprocess.check_output(['id','-u','codespace'],text=True)); gid=int(subprocess.check_output(['id','-g','codespace'],text=True))
+    preattached_tracer_fail_closed(uid,gid)
     os.setgroups([]); os.setresgid(gid,gid,gid); os.setresuid(uid,uid,uid)
     fd=M.make_authority(); baseline=hashlib.sha256(os.pread(fd,1<<20,0)).hexdigest()
     p=subprocess.Popen(['/tmp/v7r20-launcher',NAME,str(fd),M.GEN],env={'CODESPACES':'true','CODESPACE_NAME':NAME},pass_fds=(fd,),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,bufsize=1)
-    # Selftest-only external observer: stop the exact installed helper as soon as
-    # /proc reports the exec transition. This creates no production hook, delay,
-    # environment knob or control channel in the reviewed helper/guard bytes.
-    boundary_stop=threading.Event(); boundary_done=threading.Event()
-    def stop_exact_helper():
-        limit=time.time()+3
-        while time.time()<limit and p.poll() is None and not boundary_done.is_set():
-            try:
-                if os.readlink(f'/proc/{p.pid}/exe')==HELPER:
-                    os.kill(p.pid,signal.SIGSTOP); boundary_stop.set(); return
-            except (FileNotFoundError,PermissionError,ProcessLookupError,OSError):
-                pass
-    threading.Thread(target=stop_exact_helper,daemon=True).start()
     sel=selectors.DefaultSelector(); sel.register(p.stdout,selectors.EVENT_READ)
-    helper_entry=retired=drop_marker=stress_armed=stress_pass=False; addr=None; boundary_stop_handled=False
-    protected_attempts=pre_boundary_attach_denials=mixed_snapshots=mixed_tid_attempts=retained_fd_mixed_attempts=0
+    helper_entry=retired=drop_marker=stress_armed=stress_pass=False; addr=None
+    protected_attempts=mixed_snapshots=mixed_tid_attempts=retained_fd_mixed_attempts=0
     mixed_targeted=set(); all_tids=set(); pre_safe_tids=set(); post_safe_records={}; post_safe_scans=0; out=[]; deadline=time.time()+15
     while time.time()<deadline and p.poll() is None:
-        if boundary_stop.is_set() and not boundary_stop_handled:
-            try: os.waitpid(p.pid,os.WUNTRACED)
-            except ChildProcessError: raise SystemExit('exact-helper-stop-child-disappeared')
-            try: exe=os.readlink(f'/proc/{p.pid}/exe')
-            except OSError as e: raise SystemExit(f'exact-helper-stop-exe-unreadable:{e}')
-            if exe!=HELPER: raise SystemExit(f'exact-helper-stop-wrong-exe:{exe}')
-            held=task_states(p.pid)
-            if not held: raise SystemExit('exact-helper-stop-no-tasks')
-            for tid,s in held.items():
-                if s['uid']!=(uid,AUTH_UID,AUTH_UID,AUTH_UID): raise SystemExit(f'exact-helper-stop-too-late-or-wrong-creds:tid={tid}:{s["uid"]}')
-                er=prove_nondumpable_ptrace_denial(tid)
-                if er!=errno.EPERM: raise SystemExit(f'exact-helper-stop-ptrace-not-kernel-eperm:tid={tid}:errno={er}')
-                pre_boundary_attach_denials+=1
-            boundary_stop_handled=True; boundary_done.set(); os.kill(p.pid,signal.SIGCONT)
         for key,_ in sel.select(timeout=0):
             line=key.fileobj.readline()
             if line:
@@ -141,18 +161,16 @@ def main():
                 bad=M.attack_tid(p.pid,tid,addr,fd)
                 if bad:p.kill(); raise SystemExit(f'MATERIAL_ORDINARY_BEFORE_SAFE_BOUNDARY:tid={tid}:'+str(bad))
         time.sleep(0.0004)
-    boundary_done.set()
     try: rc=p.wait(timeout=3)
     except subprocess.TimeoutExpired: p.kill(); rc=p.wait(timeout=3)
     out.append(p.stdout.read() or ''); text=''.join(out); print(text,end='')
     if not retired or not helper_entry or not stress_armed or not drop_marker or not stress_pass: raise SystemExit('required helper boundary marker missing')
-    if not boundary_stop_handled or protected_attempts<1 or pre_boundary_attach_denials<1: raise SystemExit('no exact-boundary preattach challenge')
+    if protected_attempts<1: raise SystemExit('no protected attack attempt')
     if mixed_snapshots<1 or mixed_tid_attempts<1 or not mixed_targeted: raise SystemExit('mixed-state per-TID proof absent')
     if retained_fd_mixed_attempts<1: raise SystemExit('true retained authority FD not attacked during mixed state')
     if not post_safe_records: raise SystemExit('no externally persisted post-safe new-TID full-state record')
     encoded=json.dumps({str(k):v for k,v in sorted(post_safe_records.items())},sort_keys=True,separators=(',',':'))
-    print(f'PRELAB_V7R21_PRE_BOUNDARY_PTRACE_ATTACH_DENIALS={pre_boundary_attach_denials}')
-    print('PRELAB_V7R21_PREATTACHED_TRACER_EXACT_BOUNDARY_RESULT=ATTACH_DENIED_BY_KERNEL_NONDUMPABLE_BEFORE_MIXED')
+    print(f'PRELAB_V7R21_PROTECTED_ATTACK_ATTEMPTS={protected_attempts}')
     print(f'PRELAB_V7R21_RETAINED_AUTHORITY_FD_MIXED_ATTACKS={retained_fd_mixed_attempts}')
     print('PRELAB_V7R21_TRUE_RETAINED_FD_VARIANT=true')
     print(f'PRELAB_V7R21_MIXED_SNAPSHOTS={mixed_snapshots}')
