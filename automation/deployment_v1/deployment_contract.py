@@ -243,7 +243,20 @@ def restore_bytes(
     expected_runtime_head: str = ADOPTED_RUNTIME_HEAD,
     expected_main: str = CANONICAL_MAIN,
 ) -> dict[str, Any]:
-    if type(expected_receipt) is not dict:
+    expected_receipt_keys = {
+        "schema_version",
+        "snapshot_identity",
+        "adopted_runtime_head",
+        "canonical_main",
+        "source_sha256",
+        "snapshot_sha256",
+        "byte_length",
+    }
+    if (
+        type(expected_receipt) is not dict
+        or any(type(key) is not str for key in expected_receipt)
+        or set(expected_receipt) != expected_receipt_keys
+    ):
         raise DeploymentGateError("SNAPSHOT_RECEIPT_INVALID")
     try:
         receipt = SnapshotIntegrityReceipt(**expected_receipt)
