@@ -1,0 +1,24 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_SUPPORT_CONTINUITY_OFFLINE_SELFTEST_20260904_v1",
+  "status": "PASS",
+  "scope": "OFFLINE_POLICY_AND_GATE_FIXTURES_ONLY_NO_LIVE_RESULT_ACCESS",
+  "prespec": "KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
+  "fixtures": [
+    {"case": "schedule_only_candidate", "expected": "REJECT_SUPPORT_INCREMENT", "observed": "REJECT_SUPPORT_INCREMENT", "pass": true},
+    {"case": "pre_membership_without_official_identity", "expected": "FAIL_CLOSED", "observed": "FAIL_CLOSED", "pass": true},
+    {"case": "identity_without_same_race_assignment", "expected": "FAIL_CLOSED", "observed": "FAIL_CLOSED", "pass": true},
+    {"case": "post_cutoff_capture", "expected": "FAIL_CLOSED", "observed": "FAIL_CLOSED", "pass": true},
+    {"case": "guessed_racecard_url", "expected": "FAIL_CLOSED", "observed": "FAIL_CLOSED", "pass": true},
+    {"case": "complete_pre_identity_assignment_provenance_cross_circ_pair", "expected": "ELIGIBLE_FOR_FORMAL_RECEIPT_ASSEMBLY_ONLY", "observed": "ELIGIBLE_FOR_FORMAL_RECEIPT_ASSEMBLY_ONLY", "pass": true}
+  ],
+  "invariants": {
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_accessed": false,
+    "support_increment_authorized_by_selftest": 0,
+    "historical_frozen_window_mutated": false,
+    "s0_mutated": false,
+    "main_or_runtime_mutated": false
+  },
+  "next": "Build a reusable prospective event discovery/capture queue under the prespec; Sep10 remains a parallel target rather than the sole blocking dependency."
+}
