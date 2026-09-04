@@ -90,7 +90,7 @@ def main():
     for phrase in (
         'distinct local os process',
         'broker/serve-loop/process restart',
-        'non-evicting',
+        'no automatic eviction',
         'capacity exhaustion',
         'no reset/rotation api',
         'not a deployed service',
