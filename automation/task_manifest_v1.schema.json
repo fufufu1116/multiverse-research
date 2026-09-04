@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://multiverse.local/schemas/task-manifest-v1.json",
+  "title": "MULTIVERSE Task Manifest v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "task_id",
+    "objective",
+    "canonical_repo",
+    "target_branch",
+    "target_head",
+    "artifact_ref",
+    "role_owner",
+    "state",
+    "previous_state",
+    "retry_count",
+    "risk_class",
+    "created_at",
+    "updated_at",
+    "evidence_refs",
+    "allowed_read",
+    "forbidden_read",
+    "allowed_actions",
+    "forbidden_actions",
+    "pass_criteria",
+    "fail_criteria",
+    "authority",
+    "routing_contract"
+  ],
+  "properties": {
+    "schema_version": {"const": "multiverse-task-router-v1"},
+    "task_id": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "canonical_repo": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+    "target_branch": {"type": "string", "minLength": 1},
+    "target_head": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "artifact_ref": {"type": "string", "minLength": 1},
+    "role_owner": {"type": "string", "minLength": 1},
+    "state": {"enum": ["NEW", "CORE_WORKING", "MECHANICAL_GATE", "LAB_REVIEW", "LAB_FIX_REQUIRED", "AUDIT_REVIEW", "AUDIT_FIX_REQUIRED", "OWNER_GATE", "DONE", "FAILED_CLOSED"]},
+    "previous_state": {"anyOf": [{"type": "null"}, {"enum": ["NEW", "CORE_WORKING", "MECHANICAL_GATE", "LAB_REVIEW", "LAB_FIX_REQUIRED", "AUDIT_REVIEW", "AUDIT_FIX_REQUIRED", "OWNER_GATE", "DONE", "FAILED_CLOSED"]}]},
+    "retry_count": {"type": "integer", "minimum": 0, "maximum": 3},
+    "risk_class": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "minLength": 1},
+    "updated_at": {"type": "string", "minLength": 1},
+    "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "allowed_read": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "forbidden_read": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "allowed_actions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "forbidden_actions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "pass_criteria": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "fail_criteria": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "authority": {
+      "type": "object",
+      "required": [
+        "candidate_scope_only",
+        "no_production_or_stable_effect",
+        "no_external_send",
+        "no_spending",
+        "no_secrets_or_writer_key",
+        "no_protected_data_access",
+        "no_irreversible_operation",
+        "no_authority_expansion",
+        "deterministic_testable"
+      ],
+      "additionalProperties": true
+    },
+    "routing_contract": {
+      "type": "object",
+      "required": ["lab_verdict_field", "lab_head_field", "auditor_verdict_field", "auditor_head_field"],
+      "properties": {
+        "lab_verdict_field": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "lab_head_field": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "auditor_verdict_field": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "auditor_head_field": {"type": "string", "pattern": "^[A-Z0-9_]+$"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

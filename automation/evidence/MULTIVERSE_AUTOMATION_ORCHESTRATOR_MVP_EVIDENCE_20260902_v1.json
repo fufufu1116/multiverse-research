@@ -1,0 +1,123 @@
+{
+  "schema_version": "MULTIVERSE_AUTOMATION_ORCHESTRATOR_MVP_EVIDENCE_v1",
+  "status": "CANDIDATE_EVIDENCE_READY_FOR_INDEPENDENT_LAB_AUDITOR",
+  "generated_at_utc": "2026-09-02T12:33:21Z",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "fresh_bindings": {
+    "canonical_main": "5c1403c1f5aabb80d29e8c868440aede8888ce61",
+    "core_critical_path_pr": 74,
+    "core_critical_path_head": "0e3b062e9ab4e68c5a3ae6382845da4d5ef871e7",
+    "core_runtime_status": "OFF",
+    "automation_precursor_branch": "agent/core-automation-minimal-routing-sprint-20260901-v1",
+    "automation_precursor_head": "6c71b952173ab21bf1f23825e0abff84ce4b78c4",
+    "orchestrator_candidate_branch": "agent/automation-orchestrator-mvp-20260902-v1",
+    "implementation_head_before_evidence_receipts": "99c424dd070bfe60e0d87b201b273db417431dbf",
+    "selftest_receipt_commit": "6e3b8f71018905a0e05c501576188080d90c3ed8"
+  },
+  "source_blobs": {
+    "automation/orchestrator_mvp_v1.py": "df85d30e2bf6614b3ac2c9195142f294627b8cf5",
+    "automation/test_orchestrator_mvp_v1.py": "b8ce49c66febdd22e5fdfd38ca944ec3d15bacd6",
+    "automation/mechanical_gate_orchestrator_mvp_v1.py": "f882c3fe51cda0c79666bf30ff40680a40ea639b",
+    "automation/README_ORCHESTRATOR_MVP_V1.md": "3cfe95f66a6b6bcd596f0db58dcca61b3072f113",
+    "automation/evidence/orchestrator_mvp_selftest_receipt_20260902_v1.txt": "2da079728ff2bb2ea24094cf3e0fc1c847f07b10"
+  },
+  "selftest_receipt": {
+    "path": "automation/evidence/orchestrator_mvp_selftest_receipt_20260902_v1.txt",
+    "sha256": "bd5219673a80973d518e898f0edd3bc0c89e314c04a34ea71217650dd2ee3e87",
+    "execution_provenance": "CHATGPT_LOCAL_CANDIDATE_WORKSPACE_PRE_UPLOAD_IMPLEMENTATION_EQUIVALENT",
+    "exact_receipt_bytes_committed_to_github": true,
+    "independent_review": false,
+    "exact_github_head_reexecution_required_by_lab": true
+  },
+  "mvp_interface": {
+    "storage": "SQLITE_SINGLE_PROCESS_TRANSACTIONAL",
+    "domain_neutral": true,
+    "states": [
+      "PENDING",
+      "IN_IMPLEMENT",
+      "MECH_GATE_FAIL",
+      "IN_LAB",
+      "LAB_FIX_REQUIRED",
+      "IN_AUDIT",
+      "AUDIT_FIX_REQUIRED",
+      "OWNER_GATE",
+      "DONE",
+      "ROLLED_BACK"
+    ],
+    "worker_interface": "RoleWorker",
+    "live_llm_provider_adapter_enabled": false,
+    "chat_ui_is_execution_engine": false
+  },
+  "mechanical_limits": {
+    "semantic_retry_budget": 2,
+    "semantic_total_attempts": 3,
+    "semantic_retry_basis": "EXISTING_R1_STAGE1_RETRY_BUDGET_2",
+    "transient_retry_budget": 3,
+    "transient_retry_basis": "CANDIDATE_LOCAL_MVP_ONLY",
+    "heartbeat_timeout_seconds": 300,
+    "heartbeat_basis": "EXISTING_R1_STAGE1_INVOCATION_LEASE_5_MINUTES",
+    "diff_budget_lines": 500,
+    "diff_budget_basis": "CANDIDATE_LOCAL_MVP_ONLY_NOT_GLOBAL_GOVERNANCE",
+    "execution_budget_seconds": 300,
+    "execution_budget_basis": "CANDIDATE_LOCAL_MVP_ONLY",
+    "cost_budget_microusd": 0,
+    "repeated_identical_failure_fingerprint_ceiling": 2
+  },
+  "deterministic_safety": {
+    "candidate_only_required": true,
+    "stable_production_effect_required_false": true,
+    "secret_credential_required_false": true,
+    "external_effect_required_false": true,
+    "money_spend_required_false": true,
+    "protected_data_required_false": true,
+    "irreversible_operation_required_false": true,
+    "authority_expansion_required_false": true,
+    "unknown_risk_required_false": true,
+    "unknown_or_risky_action": "OWNER_GATE_FAIL_CLOSED"
+  },
+  "selftest_results": {
+    "unit_tests": 6,
+    "unit_tests_passed": 6,
+    "mechanical_gate": "PASS",
+    "e2e_final_state": "DONE",
+    "e2e_event_count": 18,
+    "e2e_semantic_retries": 1,
+    "e2e_transient_retries": 0,
+    "owner_copy_paste_count": 0,
+    "owner_continue_prompt_count": 0,
+    "owner_keep_alive_count": 0,
+    "failure_injection": {
+      "lab_fix_then_auto_remediation": "PASS",
+      "process_crash_and_stale_resume_without_semantic_retry": "PASS",
+      "transient_failure_separate_from_semantic_retry": "PASS",
+      "same_failure_fingerprint_loop_detection": "PASS",
+      "unknown_safety_fail_closed_owner_gate": "PASS",
+      "candidate_rollback_terminal_nonproduction": "PASS"
+    }
+  },
+  "reuse_inventory": {
+    "existing_r1_runtime": "REUSE_CONCEPTS_AND_FUTURE_ADAPTER_TARGET",
+    "existing_r1_cas_and_authority": "DO_NOT_REPLACE",
+    "existing_zero_history_resume_resolver": "ORIENTATION_ONLY_DO_NOT_TREAT_AS_EXECUTION_AUTHORITY",
+    "existing_minimal_routing_sprint": "DIRECT_PRECURSOR_REUSED"
+  },
+  "non_authority": {
+    "main_mutated": false,
+    "pr74_mutated": false,
+    "runtime_activated": false,
+    "production_mutated": false,
+    "ruleset_mutated": false,
+    "workflow_dispatched": false,
+    "writer_key_or_secret_used": false,
+    "protected_keirin_data_used": false,
+    "live_external_llm_called": false,
+    "spend_incurred_by_mvp": false,
+    "merge_authorized": false,
+    "production_adoption_authorized": false
+  },
+  "required_next_gate": {
+    "lab": "INDEPENDENT_EXACT_HEAD_REEXECUTION_AND_ADVERSARIAL_REVIEW",
+    "auditor": "AFTER_LAB_PASS_EXACT_HEAD_AUTHORITY_RECOVERY_AND_OVERCLAIM_REVIEW",
+    "production_or_core_keirin_adoption": "SEPARATE_OWNER_GATED_LATER_DECISION"
+  }
+}
