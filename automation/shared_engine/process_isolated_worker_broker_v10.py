@@ -243,6 +243,14 @@ def main() -> int:
     parser.add_argument("--poll", type=float, default=0.25)
     parser.add_argument("--max-requests", type=int, default=1000)
     args = parser.parse_args()
+    db_paths = [args.task_db, args.bridge_db, args.provider_db, args.replay_db]
+    if any(not isinstance(p, str) or not os.path.isabs(p) for p in db_paths):
+        raise ValueError("V10_ABSOLUTE_DB_PATHS_REQUIRED")
+    real_db_paths = [os.path.realpath(p) for p in db_paths]
+    if len(set(real_db_paths)) != len(real_db_paths):
+        raise ValueError("V10_REPLAY_DB_MUST_BE_DISTINCT")
+    if os.path.realpath(args.socket) in set(real_db_paths):
+        raise ValueError("V10_SOCKET_DB_PATH_COLLISION")
     config.DB_PATH = args.task_db
     binding = IntegrationBinding(CANONICAL_MAIN, args.candidate_branch, args.candidate_head, V7_HEAD)
     replay_store = DurableReplayStore(args.replay_db)
