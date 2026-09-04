@@ -1,0 +1,100 @@
+{
+  "record": "KEIRIN_SEP10_EXECUTION_READINESS_20260904_v3",
+  "status": "PRE_EVENT_EXECUTION_PATH_PREPARED_WITH_OFFLINE_INTEGRATED_PRECAPTURE_ORCHESTRATOR_FINAL_PRE_CARD_NOT_YET_AVAILABLE",
+  "scope": "RESEARCH_PRE_ONLY_SUPPORT_ACQUISITION_READINESS_NO_RESULT_NO_MODEL_FIT",
+  "supersedes": "KEIRIN_SEP10_EXECUTION_READINESS_20260904_v2.json",
+  "fresh_parent_head": "4de473d7836b98d3e3ce7611a878f621c092a0bc",
+  "target_date": "2026-09-10",
+  "support_snapshot": {
+    "confirmed_unique_cross_circumference_supported_riders": 1,
+    "confirmed_supported_rows": 2,
+    "confirmed_rider": {
+      "name": "高橋 梨香",
+      "official_registration_number": "015018"
+    },
+    "pending_nara_scheduled_unique_union": 19,
+    "nonfinal_combined_unique_upper_bound_if_all_pending_survive": 20,
+    "support_increment_authorized_now": 0,
+    "full_support_adequacy_gate": "FAIL",
+    "result_join_authorized": false,
+    "formula_fit_authorized": false
+  },
+  "final_racecard_availability": {
+    "artifact": "KEIRIN_SEP10_FINAL_RACECARD_AVAILABILITY_PROBE_20260904_v1.json",
+    "status": "TARGET_RACECARDS_NOT_YET_STRUCTURALLY_AVAILABLE",
+    "final_pre_capture_authorized_now": false
+  },
+  "integrated_precapture_orchestrator": {
+    "path": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py",
+    "selftest": "KEIRIN_KDREAMS_PROSPECTIVE_PRECAPTURE_ORCHESTRATOR_SELFTEST_20260904_v1.json",
+    "selftest_status": "PASS",
+    "live_pre_validation": false,
+    "live_pre_validation_rule": "Must execute against the exact positively observed Sep10 Day1 racecard before that venue first-race PIT cutoff.",
+    "stages": [
+      "PIT_CUTOFF_EXTRACTOR_V2",
+      "POSITIVE_DAY1_RACEDETAIL_MANIFEST_V1",
+      "STRICT_PROSPECTIVE_PRE_ACQUIRE_V1"
+    ],
+    "child_blob_pins": {
+      "pit_cutoff_extractor_v2": "d11d32432fbb09c54f2456c69e99a586da0ffc84",
+      "positive_day1_manifest_builder_v1": "6093791c1f5439fced0128aaea64910c952efd50",
+      "prospective_pre_acquirer_v1": "ee50af4c37ea6e951df3bcc7212c92e8f184f153"
+    },
+    "identity_mapping_performed": false,
+    "same_race_assignment_performed": false,
+    "support_increment_authorized_by_orchestrator": false
+  },
+  "child_tools": {
+    "pit_cutoff_extractor": {
+      "path": "tools/keirin_kdreams_pit_cutoff_extractor_v2.py",
+      "selftest": "KEIRIN_KDREAMS_PIT_CUTOFF_EXTRACTOR_SELFTEST_20260904_v2.json",
+      "selftest_status": "PASS",
+      "query_policy": "ALLOW_NONE_OR_SINGLE_NONEMPTY_L_ID_ONLY_ON_EXACT_POSITIVELY_OBSERVED_PROGRAM_HREF",
+      "historical_v1_live_failure_preserved": true
+    },
+    "positive_day1_manifest_builder": {
+      "path": "tools/keirin_kdreams_positive_day1_manifest_builder_v1.py",
+      "selftest": "KEIRIN_KDREAMS_POSITIVE_DAY1_MANIFEST_BUILDER_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS"
+    },
+    "prospective_pre_acquirer": {
+      "path": "tools/keirin_kdreams_prospective_pre_acquire_v1.py",
+      "selftest": "KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS"
+    },
+    "official_same_race_assignment_probe": {
+      "path": "tools/keirinjp_same_race_assignment_probe_v1.py",
+      "selftest": "KEIRINJP_SAME_RACE_ASSIGNMENT_PROBE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS"
+    }
+  },
+  "execution_sequence_when_final_pre_is_available": [
+    "Fresh Read the research branch and this readiness receipt.",
+    "Re-probe Nara and Kawasaki final Day1 racecard availability from positively observed navigation only.",
+    "When an exact target Day1 racecard URL is positively observed, run the integrated prospective PRE capture orchestrator before the venue first-race PIT cutoff.",
+    "Require orchestrator PASS; any cutoff, manifest, child-blob, race coverage, schema, source, or timing failure fails closed.",
+    "Resolve official registration identities for only the captured PRE rows that are support candidates.",
+    "Require contemporaneous official same-race assignment for each prospective support candidate.",
+    "Write support receipts only after PRE membership, identity, assignment, and provenance all pass.",
+    "Recompute every support adequacy dimension; unique-rider count alone never opens RESULT."
+  ],
+  "hard_non_authorities": {
+    "scheduled_assens_are_final_pre_cards": false,
+    "pending_19_are_confirmed_support": false,
+    "combined_upper_20_is_confirmed_support": false,
+    "orchestrator_offline_selftest_is_live_pre_validation": false,
+    "result_join_authorized": false,
+    "formula_fit_authorized": false,
+    "s0_mutation": false,
+    "main_or_runtime_mutation": false
+  },
+  "source_integrity": {
+    "raw_html_persisted": false,
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_used": false,
+    "human_forecast_used": false,
+    "narabiyoso_used": false
+  },
+  "owner_action_required_now": false
+}
