@@ -56,8 +56,10 @@ jobs:
           grep -F 'syscall.Exec(helperPath, argv, env)' /tmp/v7r20-guard.go
           python3 - <<'PY'
           s=open('/tmp/v7r20-helper.go').read(); m=s[s.index('func main() {'):]
-          assert m.index('V7R20_PROTECTED_HELPER_ENTRY') < m.index('imageIdentitySHA256()') < m.index('v7r20StartPinnedProofThreads(4)') < m.index('v7r20DropIrreversibly(targetUID)') < m.index('V7R20_IRREVERSIBLE_USER_DROP_COMPLETE') < m.index('githubPreflight()')
-          assert 'v7r20PostDropThreadCreationStress(uid, preTIDs)' in s
+          d=s[s.index('func v7r20DropIrreversibly('):s.index('func main() {')]
+          assert m.index('V7R20_PROTECTED_HELPER_ENTRY') < m.index('imageIdentitySHA256()') < m.index('v7r20StartPinnedProofThreads(4)') < m.index('v7r20DropIrreversibly(targetUID)') < m.index('V7R20_POST_SAFE_THREAD_STRESS_COMPLETE') < m.index('githubPreflight()')
+          assert d.index('syscall.AllThreadsSyscall(syscall.SYS_SETRESUID') < d.index('V7R20_IRREVERSIBLE_USER_DROP_COMPLETE') < d.index('v7r20PostDropThreadCreationStress(uid, preTIDs)') < d.index('V7R20_POSTDROP_THREAD_CREATION_STRESS_PASS')
+          assert s.count('PHASE_C_V19_7_36_V7R20_IRREVERSIBLE_USER_DROP_COMPLETE') == 1
           g=open('/tmp/v7r20-guard.go').read(); gm=g[g.index('func main() {'):]
           assert gm.index('retireAuthorityBeforeProtectedHelperExec(fd)') < gm.index('syscall.Exec(helperPath, argv, env)')
           PY
