@@ -47,6 +47,7 @@ jobs:
           assert 'runtime.LockOSThread()' in stress and 'v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)' in stress
           assert 'before := syscall.Gettid()' in s and 'after := syscall.Gettid()' in s and 'before != after' in s
           assert s.count('PHASE_C_V19_7_36_V7R21_IRREVERSIBLE_USER_DROP_COMPLETE') == 1
+          assert 'v7r21VerifyNoTracer()' in s
           assert m.index('V7R21_PROTECTED_HELPER_ENTRY') < m.index('v7r21DropIrreversibly(targetUID)') < m.index('V7R21_POST_SAFE_THREAD_STRESS_COMPLETE') < m.index('githubPreflight()')
           g=open('/tmp/v7r21-guard.go').read(); gm=g[g.index('func main() {'):]
           assert gm.index('retireAuthorityBeforeProtectedHelperExec(fd)') < gm.index('syscall.Exec(helperPath, argv, env)')
@@ -98,8 +99,9 @@ jobs:
           set -euo pipefail
           tag="multiverse-v7r21-proof:${GITHUB_SHA}"
           docker run --rm --network=none -v "$PWD:/src:ro" --entrypoint /usr/bin/python3 "$tag" /src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_RETAINED_ACCESS_SELFTEST_20260904.py | tee /tmp/v7r21-attack.out
-          grep -E 'PRELAB_V7R21_PRE_BOUNDARY_PTRACE_ATTACH_DENIALS=[1-9][0-9]*' /tmp/v7r21-attack.out
-          grep -F 'PRELAB_V7R21_PREATTACHED_TRACER_EXACT_BOUNDARY_RESULT=ATTACH_DENIED_BY_KERNEL_NONDUMPABLE_BEFORE_MIXED' /tmp/v7r21-attack.out
+          grep -E 'PRELAB_V7R21_PREATTACHED_TRACER_ATTEMPTS=[1-9][0-9]*' /tmp/v7r21-attack.out
+          grep -F 'PRELAB_V7R21_PREATTACHED_TRACER_REACHED_HELPER=true' /tmp/v7r21-attack.out
+          grep -F 'PRELAB_V7R21_PREATTACHED_TRACER_EXACT_BOUNDARY_RESULT=FAIL_CLOSED_TRACER_PRESENT_BEFORE_IRREVERSIBLE_DROP' /tmp/v7r21-attack.out
           grep -E 'PRELAB_V7R21_RETAINED_AUTHORITY_FD_MIXED_ATTACKS=[1-9][0-9]*' /tmp/v7r21-attack.out
           grep -F 'PRELAB_V7R21_TRUE_RETAINED_FD_VARIANT=true' /tmp/v7r21-attack.out
           grep -E 'PRELAB_V7R21_MIXED_TID_ATTACK_ATTEMPTS=[1-9][0-9]*' /tmp/v7r21-attack.out
