@@ -1,0 +1,15 @@
+{
+  "record": "KEIRIN_OWNER_REPORTING_CONTRACT_20260904_v1",
+  "status": "FROZEN_OWNER_COMMUNICATION_CONTRACT",
+  "required_periodic_report": [
+    {"section": "ロードマップ", "meaning": "研究全体の工程と完了/現在/未着手を示す"},
+    {"section": "現在地", "meaning": "今どの工程にいて、主要な数値がどこまで来たかを示す"},
+    {"section": "今やっていること", "meaning": "現在実行中の具体作業"},
+    {"section": "苦戦していること", "meaning": "外部依存・データ不足・技術的詰まり"},
+    {"section": "解決策", "meaning": "詰まりを解消する次の具体手段"}
+  ],
+  "terminology_rule": "専門用語または英語を使う場合、初出または必要箇所で短い日本語訳・意味を併記する。例: PRE（発走前データ）, support（正式な裏付け証拠）, gate（合格条件）, fail-closed（不明なら不採用で閉じる）。",
+  "handoff_rule": "Every handoff must include this contract, latest roadmap, latest current position, current work, blockers, resolution, active CURRENT pointer and Fresh Read rule.",
+  "style": "Owner is iPhone-first. Result-first and concise; avoid making owner carry recovery context.",
+  "owner_action_required_now": false
+}
