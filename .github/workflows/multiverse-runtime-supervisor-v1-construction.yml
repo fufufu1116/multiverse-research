@@ -1,0 +1,83 @@
+name: MULTIVERSE Runtime Supervisor v1 construction
+
+on:
+  push:
+    branches:
+      - agent/runtime-supervisor-v1-construction-20260904-v1
+    paths:
+      - 'automation/runtime_v1/**'
+      - '.github/workflows/multiverse-runtime-supervisor-v1-construction.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  sealed-runtime-construction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact construction head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind Fresh canonical main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/runtime-supervisor-v1-construction-20260904-v1"
+          test "${FRESH_MAIN}" = "a6f56facc80709f2e7b8218d927484d522bfa356"
+          python - <<'PY'
+          import json
+          p='automation/runtime_v1/RUNTIME_V1_MANIFEST.json'
+          d=json.load(open(p))
+          assert d['canonical_main']=='a6f56facc80709f2e7b8218d927484d522bfa356'
+          assert d['canonical_tree']=='2c957c4ad8a553b3a0e7122ebcdb22e75398afaf'
+          assert d['mode']=='SEALED_DRY_RUN'
+          assert d['runtime']=='OFF'
+          assert all(v is False for v in d['authority'].values())
+          PY
+          echo "RUNTIME_V1_CONSTRUCTION_HEAD=${EXACT_HEAD}"
+          echo "RUNTIME_V1_FRESH_MAIN=${FRESH_MAIN}"
+
+      - name: Runtime Supervisor v1 tests
+        shell: bash
+        env:
+          PYTHONPATH: automation/runtime_v1
+        run: |
+          set -euo pipefail
+          python -m unittest automation/runtime_v1/test_runtime_supervisor.py -v
+
+      - name: Mechanical no-network and review-separation gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('automation/runtime_v1/runtime_supervisor.py')
+          s=p.read_text()
+          forbidden=('requests','urllib','http.client','socket','boto3','openai','anthropic')
+          for item in forbidden:
+              assert f'import {item}' not in s and f'from {item}' not in s, item
+          assert 'INDEPENDENT_REVIEW_CANNOT_BE_SELF_MANUFACTURED' in s
+          assert 'TEST_ONLY_LOCAL_CANDIDATE' in s
+          print('MECHANICAL_GATE=PASS')
+          PY
+
+      - name: Construction nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "RUNTIME=OFF"
+          echo "MODE=SEALED_DRY_RUN"
+          echo "LIVE_PROVIDER=false"
+          echo "NETWORK=false"
+          echo "EXTERNAL_EFFECT=false"
+          echo "SPEND=false"
+          echo "PROTECTED_KEIRIN_DATA=false"
+          echo "LAB_VERDICT_AUTHORITY=false"
+          echo "AUDITOR_VERDICT_AUTHORITY=false"
+          echo "RUNTIME_ACTIVATION_AUTHORITY=false"
