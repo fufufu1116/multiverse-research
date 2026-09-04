@@ -11,6 +11,24 @@ ADOPTED_RUNTIME_HEAD = "8685193cc6d592a36ea78bc7a8647ceadce13ae6"
 ADOPTED_DEPLOYMENT_HEAD = "722465fda607198858e48f66ec9b936430ff3d6a"
 RUNTIME = "OFF"
 MODE = "TARGET_ENVIRONMENT_EVIDENCE_ONLY"
+ALLOWED_ENVIRONMENT_CLASSES = {"PRE_PRODUCTION", "PRODUCTION_SHADOW_NO_EFFECT"}
+REQUIRED_EVIDENCE_DOMAINS = {
+    "credential_scope",
+    "credential_provisioning",
+    "credential_rotation",
+    "credential_revocation",
+    "provider_idempotency",
+    "duplicate_request_control",
+    "state_store_binding",
+    "backup_restore",
+    "crash_restart_recovery",
+    "host_model",
+    "lease_fencing",
+    "health_readiness",
+    "logs_metrics_alerts",
+    "kill_switch",
+    "rollback_execution",
+}
 
 class TargetEnvironmentGateError(RuntimeError):
     pass
@@ -25,27 +43,19 @@ def _sha256(value: object, error: str) -> str:
         raise TargetEnvironmentGateError(error)
     return value
 
+def _evidence_ref(value: object, error: str) -> str:
+    value = _exact_str(value, error)
+    if not value.startswith("EVIDENCE_REF:") or len(value) <= len("EVIDENCE_REF:"):
+        raise TargetEnvironmentGateError(error)
+    return value
+
 @dataclass(frozen=True)
 class TargetEnvironmentEvidence:
     target_id: str
     environment_class: str
     artifact_sha256: str
     rollback_artifact_sha256: str
-    credential_scope: str
-    credential_provisioning: str
-    credential_rotation: str
-    credential_revocation: str
-    provider_idempotency: str
-    duplicate_request_control: str
-    state_store_binding: str
-    backup_restore: str
-    crash_restart_recovery: str
-    host_model: str
-    lease_fencing: str
-    health_readiness: str
-    logs_metrics_alerts: str
-    kill_switch: str
-    rollback_execution: str
+    evidence_refs: dict[str, str]
     network_enabled: bool = False
     external_effect_enabled: bool = False
     spend_enabled: bool = False
@@ -55,29 +65,16 @@ class TargetEnvironmentEvidence:
 
     def validate(self) -> None:
         _exact_str(self.target_id, "TARGET_ID_REQUIRED")
-        if self.environment_class not in {"PRE_PRODUCTION", "PRODUCTION_SHADOW_NO_EFFECT"}:
+        if type(self.environment_class) is not str or self.environment_class not in ALLOWED_ENVIRONMENT_CLASSES:
             raise TargetEnvironmentGateError("TARGET_CLASS_NOT_ALLOWED")
         _sha256(self.artifact_sha256, "ARTIFACT_DIGEST_INVALID")
         _sha256(self.rollback_artifact_sha256, "ROLLBACK_DIGEST_INVALID")
-        required = {
-            "credential_scope": self.credential_scope,
-            "credential_provisioning": self.credential_provisioning,
-            "credential_rotation": self.credential_rotation,
-            "credential_revocation": self.credential_revocation,
-            "provider_idempotency": self.provider_idempotency,
-            "duplicate_request_control": self.duplicate_request_control,
-            "state_store_binding": self.state_store_binding,
-            "backup_restore": self.backup_restore,
-            "crash_restart_recovery": self.crash_restart_recovery,
-            "host_model": self.host_model,
-            "lease_fencing": self.lease_fencing,
-            "health_readiness": self.health_readiness,
-            "logs_metrics_alerts": self.logs_metrics_alerts,
-            "kill_switch": self.kill_switch,
-            "rollback_execution": self.rollback_execution,
-        }
-        for name, value in required.items():
-            _exact_str(value, f"{name.upper()}_EVIDENCE_REQUIRED")
+        if type(self.evidence_refs) is not dict or set(self.evidence_refs) != REQUIRED_EVIDENCE_DOMAINS:
+            raise TargetEnvironmentGateError("EVIDENCE_DOMAIN_SET_INVALID")
+        for domain, ref in self.evidence_refs.items():
+            if type(domain) is not str:
+                raise TargetEnvironmentGateError("EVIDENCE_DOMAIN_TYPE_INVALID")
+            _evidence_ref(ref, f"{domain.upper()}_EVIDENCE_REF_REQUIRED")
         denied = (
             self.network_enabled,
             self.external_effect_enabled,
@@ -100,9 +97,11 @@ class TargetEnvironmentEvidence:
             "runtime": RUNTIME,
             "ready_for_activation": False,
             "evidence": asdict(self),
-            "proof_ceiling": "Evidence package only; no Runtime activation, production effect, spend, protected-data, merge, main/ruleset mutation, or production credential authority.",
+            "proof_ceiling": "Evidence-reference package only; ref shape is mechanically validated but referenced real-world execution must be independently verified. No Runtime activation, production effect, spend, protected-data, merge, main/ruleset mutation, or production credential authority.",
         }
 
 def canonical_receipt_sha256(receipt: dict[str, Any]) -> str:
+    if type(receipt) is not dict:
+        raise TargetEnvironmentGateError("RECEIPT_TYPE_INVALID")
     raw = json.dumps(receipt, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(raw).hexdigest()
