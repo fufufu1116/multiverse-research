@@ -1,0 +1,45 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+USER root
+SHELL ["/bin/bash","-o","pipefail","-c"]
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R16_POST_AUTH_CREDENTIAL_DROP_GUARD_20260904.go /tmp/v7r16-guard.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go /tmp/v7r7-helper.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R18_HELPER_CREDENTIAL_CONTRACT_PATCHER_20260904.py /tmp/v7r18-patcher.py
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R19_WHOLE_PROCESS_CREDENTIAL_DROP_PATCHER_20260904.py /tmp/v7r19-patcher.py
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TRANSITION_RACE_PATCHER_20260904.py /tmp/v7r20-patcher.py
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_NEW_THREAD_REGAIN_PATCHER_20260904.py /tmp/v7r21-patcher.py
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R9_PREARM_RATE_READINESS_PROBE_20260903.go /tmp/prearm-rate-readiness-v7r13-base.go
+COPY governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R15_PROBE_TRANSITION_PATCHER_20260904.py /tmp/v7r15-probe-patcher.py
+RUN set -euo pipefail; \
+ /usr/bin/python3 /tmp/v7r18-patcher.py /tmp/v7r16-guard.go /tmp/v7r7-helper.go /tmp/v7r18-guard.go /tmp/v7r18-helper.go; \
+ /usr/bin/python3 /tmp/v7r19-patcher.py /tmp/v7r18-guard.go /tmp/v7r18-helper.go /tmp/v7r19-guard.go /tmp/v7r19-helper.go; \
+ /usr/bin/python3 /tmp/v7r20-patcher.py /tmp/v7r19-guard.go /tmp/v7r19-helper.go /tmp/v7r20-guard.go /tmp/v7r20-helper.go; \
+ /usr/bin/python3 /tmp/v7r21-patcher.py /tmp/v7r20-guard.go /tmp/v7r20-helper.go /tmp/v7r21-guard.go /tmp/v7r21-helper.go; \
+ gofmt -w /tmp/v7r21-guard.go /tmp/v7r21-helper.go; \
+ CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /tmp/ui-ready-v7r21 /tmp/v7r21-helper.go; \
+ /tmp/ui-ready-v7r21 build-selftest; \
+ helper_sha="$(sha256sum /tmp/ui-ready-v7r21 | awk '{print $1}')"; \
+ test "${#helper_sha}" = 64; \
+ sed -i "s/__V7R21_HELPER_SHA256__/$helper_sha/" /tmp/v7r21-guard.go; \
+ ! grep -F '__V7R21_HELPER_SHA256__' /tmp/v7r21-guard.go; \
+ CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /tmp/ui-ready-env-guard-v7r21 /tmp/v7r21-guard.go; \
+ /tmp/ui-ready-env-guard-v7r21 build-selftest; \
+ /usr/bin/python3 /tmp/v7r15-probe-patcher.py /tmp/prearm-rate-readiness-v7r13-base.go /tmp/prearm-rate-readiness-v7r21.go; \
+ sed -i 's|/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r15|/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r21|g' /tmp/prearm-rate-readiness-v7r21.go; \
+ sed -i 's/EXEC_V7R15_PROTECTED_GUARD/EXEC_V7R21_NEW_THREAD_REGAIN_RETAINED_ACCESS_GUARD/g' /tmp/prearm-rate-readiness-v7r21.go; \
+ CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags='-s -w -buildid=' -o /tmp/prearm-rate-readiness-v7r21 /tmp/prearm-rate-readiness-v7r21.go; \
+ install -o root -g root -m 0555 /tmp/ui-ready-v7r21 /usr/local/bin/multiverse-v36-ui-ready-v7r21; \
+ install -o root -g root -m 0555 /tmp/ui-ready-env-guard-v7r21 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r21; \
+ install -o root -g root -m 0555 /tmp/prearm-rate-readiness-v7r21 /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-ui-ready-v7r21)" = '0 0 555'; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r21)" = '0 0 555'; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9)" = '0 0 555'; \
+ test "$(stat -c '%u %g %a' /usr/local/bin/multiverse-v36-prearm-rate-sanitizer-v7r9)" = '0 0 4555'; \
+ if command -v getcap >/dev/null 2>&1; then test -z "$(getcap /usr/local/bin/multiverse-v36-ui-ready-v7r21 /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r21 2>/dev/null)"; fi; \
+ test -z "$(find /opt/multiverse/v36 /usr/local/bin /usr/local/sbin /usr/local/libexec -xdev -uid 64173 -print -quit 2>/dev/null)"; \
+ guard_sha="$(sha256sum /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r21 | awk '{print $1}')"; \
+ probe_sha="$(sha256sum /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 | awk '{print $1}')"; \
+ go_toolchain="$(go version | tr -d '\n')"; \
+ printf '{"version":"V19.7.36-v7r21-image-identity","guard_sha256":"%s","probe_sha256":"%s","helper_sha256":"%s","go_toolchain":"%s","credential_transition":"ALLTHREADSSYSCALL_PLUS_PER_NEW_TID_REGAIN_AND_RETAINED_ACCESS_PROOF","authority_fd":"SEALED_AND_RETIRED_BEFORE_HELPER_EXEC","runtime":"OFF"}\n' "$guard_sha" "$probe_sha" "$helper_sha" "$go_toolchain" > /opt/multiverse/v36/image-identity-v7r21.json; \
+ chown root:root /opt/multiverse/v36/image-identity-v7r21.json; chmod 0444 /opt/multiverse/v36/image-identity-v7r21.json; \
+ rm -f /tmp/v7r16-guard.go /tmp/v7r7-helper.go /tmp/v7r18-patcher.py /tmp/v7r19-patcher.py /tmp/v7r20-patcher.py /tmp/v7r21-patcher.py /tmp/v7r18-guard.go /tmp/v7r18-helper.go /tmp/v7r19-guard.go /tmp/v7r19-helper.go /tmp/v7r20-guard.go /tmp/v7r20-helper.go /tmp/v7r21-guard.go /tmp/v7r21-helper.go /tmp/ui-ready-v7r21 /tmp/ui-ready-env-guard-v7r21 /tmp/prearm-rate-readiness-v7r13-base.go /tmp/v7r15-probe-patcher.py /tmp/prearm-rate-readiness-v7r21.go /tmp/prearm-rate-readiness-v7r21
