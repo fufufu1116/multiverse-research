@@ -1,0 +1,58 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1",
+  "status": "PRESPEC_RESEARCH_ONLY_FAIL_CLOSED",
+  "purpose": "Continue cross-circumference support accumulation without repeatedly polling only Sep10 targets while preserving all frozen evidence and RESULT boundaries.",
+  "binding_parent_head": "a13153d8132a7ce75e3c0dde430f4951b0c7f2e9",
+  "current_support_floor": {"unique_riders": 1, "rider_race_pre_rows": 2},
+  "target_gate": {"unique_riders": 30, "minimum_rows": 60},
+  "principles": [
+    "Sep10 Nara/Kawasaki execution chain remains unchanged and independently monitored.",
+    "Historical PIT Fast Track frozen window and venue pool MUST NOT be expanded or repaired.",
+    "Only prospective pre-event evidence captured before the applicable PIT cutoff may enter this continuity lane.",
+    "RESULT, payout, odds, forecasts, comments, predictions and post-race-derived information remain forbidden.",
+    "S0 remains frozen; no feature, beta, fit, calibration, promotion or production mutation is authorized.",
+    "Schedule or assen membership alone never increments support.",
+    "A rider increments support only after PRE membership, official registration identity, contemporaneous official same-race assignment, provenance and cross-circumference pairing all pass.",
+    "Ambiguity, missed cutoff, transport failure, identity conflict, assignment conflict or provenance failure closes that candidate without repair."
+  ],
+  "continuity_lane": {
+    "mode": "PROSPECTIVE_MULTI_EVENT_PRE_ONLY_SUPPORT_ACCUMULATION",
+    "eligible_circumference_classes": ["333_OR_333_33M", "400M"],
+    "event_selection_rule": "Select future events only through positively observed official navigation; never guess race IDs or racecard URLs.",
+    "capture_rule": "When an exact Day1 racecard becomes positively observable, run the existing PIT cutoff extractor, positive Day1 manifest builder and prospective PRE acquisition chain before cutoff.",
+    "identity_rule": "Use official KEIRIN.JP registration number as identity truth; name-only or fuzzy equality is insufficient.",
+    "assignment_rule": "Require positive contemporaneous official same-race assignment before support receipt.",
+    "receipt_rule": "Only complete cross-circumference pairs receive formal support receipts.",
+    "recompute_rule": "After every new formal receipt batch, recompute every frozen support adequacy dimension, not only rider count."
+  },
+  "anti_stall_policy": {
+    "manual_repeat_polling": "DO_NOT_USE_AS_PRIMARY_WORK",
+    "sep10_waiting": "PARALLEL_DEPENDENCY_NOT_GLOBAL_BLOCKER",
+    "while_waiting": [
+      "prepare reusable prospective event discovery and capture queue",
+      "validate fail-closed offline fixtures for multi-event orchestration",
+      "identify future positively observed 333/333.33m and 400m event opportunities without opening RESULT",
+      "execute PRE capture only when exact racecard and cutoff conditions are satisfied"
+    ]
+  },
+  "owner_reporting_contract": {
+    "periodic_required_sections": [
+      "ロードマップ（roadmap / 全体工程）",
+      "現在地（current position / 今どこか）",
+      "今やっていること（current work）",
+      "苦戦していること（blockers / 詰まり）",
+      "解決策（resolution / 次の打ち手）"
+    ],
+    "terminology_rule": "When specialist terminology or English is used in owner-facing reporting, append a concise Japanese meaning or translation.",
+    "handoff_rule": "Every future handoff must include this reporting contract and the latest roadmap/current-position snapshot.",
+    "style": "iPhone-first, result-first, concise; do not ask owner to carry routine recovery context."
+  },
+  "authorization": {
+    "research_branch_write": true,
+    "main_mutation": false,
+    "production_activation": false,
+    "result_access": false,
+    "formula_fit": false,
+    "support_increment_now": 0
+  }
+}
