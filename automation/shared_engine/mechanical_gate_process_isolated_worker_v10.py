@@ -77,6 +77,8 @@ def main():
     require('V10_REQUEST_REPLAY_DENIED' in broker,'V10_REPLAY_REJECTION_REQUIRED')
     require('V10_REQUEST_ID_CONFLICT' in broker,'V10_REPLAY_CONFLICT_REQUIRED')
     require('V10_REPLAY_STORE_FULL' in broker,'V10_REPLAY_CAPACITY_FAIL_CLOSED_REQUIRED')
+    require('V10_REPLAY_DB_MUST_BE_DISTINCT' in broker,'V10_REPLAY_DB_SEPARATION_REQUIRED')
+    require('V10_SOCKET_DB_PATH_COLLISION' in broker,'V10_SOCKET_DB_SEPARATION_REQUIRED')
     require(broker.index('replay_store.reserve(request)') < broker.index('broker.dispatch(request)'),'V10_RESERVATION_MUST_PRECEDE_DISPATCH')
     broker_lower=broker.lower()
     for banned in ('delete from ipc_replay','drop table ipc_replay','vacuum ipc_replay'):
