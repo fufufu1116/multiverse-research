@@ -137,6 +137,11 @@ def protected_preattached_tracer_fail_closed(uid,gid):
     print(f'PRELAB_V7R21_PREATTACHED_TRACER_ATTACH_EXE={attach_exe}')
     print('PRELAB_V7R21_PREATTACHED_TRACER_REACHED_HELPER=true')
     print('PRELAB_V7R21_PREATTACHED_TRACER_EXACT_BOUNDARY_RESULT=FAIL_CLOSED_TRACER_PRESENT_BEFORE_IRREVERSIBLE_DROP')
+    if R.M.LAUNCHER_C.count(CI_GUARD)!=1: raise SystemExit('CI guard launcher topology changed before production restoration')
+    R.M.LAUNCHER_C=R.M.LAUNCHER_C.replace(CI_GUARD,PROD_GUARD,1)
+    R.M.build_launcher()
+    if R.M.LAUNCHER_C.count(PROD_GUARD)!=1 or CI_GUARD in R.M.LAUNCHER_C: raise SystemExit('production guard launcher restoration failed')
+    print('PRELAB_V7R21_NORMAL_PROOF_LAUNCHER_REBUILT_WITH_PRODUCTION_GUARD=true')
 
 R.preattached_tracer_fail_closed=protected_preattached_tracer_fail_closed
 R.main()
