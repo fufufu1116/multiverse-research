@@ -106,6 +106,8 @@ class DeploymentManifest:
             raise DeploymentGateError("SECRET_PERSISTENCE_FORBIDDEN")
         if type(self.capabilities) is not dict:
             raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
+        if any(type(key) is not str for key in self.capabilities):
+            raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
         if set(self.capabilities) != set(DEFAULT_DENY_CAPABILITIES):
             raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
         if any(type(value) is not bool or value is not False for value in self.capabilities.values()):
