@@ -1,0 +1,37 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v6",
+  "status": "MULTI_EVENT_MULTI_VENUE_QUEUE_ACTIVE_EARLIER_OPPORTUNITIES_ADDED",
+  "supersedes": "KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v5.json",
+  "contract": "KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT_20260904_v1.json",
+  "entries": [
+    {"venue":"伊東","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-07","event_end_date":"2026-09-09","event_name":"前検コメはウィンチケット杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"奈良","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-10","event_end_date":"2026-09-13","event_name":"７６周年記念平安賞ｉｎ奈良","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"川崎","circumference_class":"400M","event_start_date":"2026-09-10","event_end_date":"2026-09-12","event_name":"オッズパーク杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"豊橋","circumference_class":"400M","event_start_date":"2026-09-11","event_end_date":"2026-09-13","event_name":"ＷＩＮＴＩＣＫＥＴ杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"伊東","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-14","event_end_date":"2026-09-16","event_name":"ミッドナイトＧ３×ＨＰＣＪＣ","official_schedule_positive_observation":true,"positive_program_href_observed":true,"capture_status":"QUEUED"},
+    {"venue":"青森","circumference_class":"400M","event_start_date":"2026-09-14","event_end_date":"2026-09-16","event_name":"前検日コメならウィンチケット杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"防府","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-15","event_end_date":"2026-09-17","event_name":"第６回石村正利記念杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"武雄","circumference_class":"400M","event_start_date":"2026-09-16","event_end_date":"2026-09-18","event_name":"オッズパーク杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"川崎","circumference_class":"400M","event_start_date":"2026-09-17","event_end_date":"2026-09-19","event_name":"前検コメはウィンチケット杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"capture_status":"QUEUED"},
+    {"venue":"富山","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-18","event_end_date":"2026-09-21","event_name":"共同通信社杯競輪","official_schedule_positive_observation":true,"positive_program_href_observed":true,"day1_racecard_status":"NOT_YET_STRUCTURALLY_AVAILABLE","capture_status":"WAIT_POSITIVE_RACECARD"},
+    {"venue":"伊東","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-23","event_end_date":"2026-09-25","event_name":"スポーツニッポン杯争奪戦","official_schedule_positive_observation":true,"positive_program_href_observed":true,"capture_status":"QUEUED"},
+    {"venue":"奈良","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-24","event_end_date":"2026-09-26","event_name":"競輪投票サービスＢｅｔｉｍｏ杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"capture_status":"QUEUED"},
+    {"venue":"川崎","circumference_class":"400M","event_start_date":"2026-09-24","event_end_date":"2026-09-26","event_name":"前検コメはウィンチケット杯","official_schedule_positive_observation":true,"positive_program_href_observed":true,"capture_status":"QUEUED"}
+  ],
+  "queue_counts":{"total_events":13,"333_or_333_33m":7,"400m":6,"unique_venues":8,"unique_333_or_333_33m_venues":4,"unique_400m_venues":4},
+  "corrections_from_v5":[
+    {"venue":"奈良","removed_event_start_date":"2026-09-18","reason":"Fresh KDreams official schedule does not show a Nara event starting 2026-09-18; fail-closed removal."}
+  ],
+  "new_positive_discovery":{
+    "伊東":[
+      {"dates":"2026-09-07..09","event":"前検コメはウィンチケット杯","program_observed":true,"day1_racecard":"NOT_YET_STRUCTURALLY_AVAILABLE"},
+      {"dates":"2026-09-14..16","event":"ミッドナイトＧ３×ＨＰＣＪＣ","program_observed":true},
+      {"dates":"2026-09-23..25","event":"スポーツニッポン杯争奪戦","program_observed":true}
+    ],
+    "豊橋":{"dates":"2026-09-11..13","event":"ＷＩＮＴＩＣＫＥＴ杯","program_observed":true,"day1_racecard":"NOT_YET_STRUCTURALLY_AVAILABLE"}
+  },
+  "priority_order_by_earliest_start":["伊東_2026-09-07","奈良_2026-09-10","川崎_2026-09-10","豊橋_2026-09-11","伊東_2026-09-14","青森_2026-09-14","防府_2026-09-15","武雄_2026-09-16"],
+  "support_increment_authorized":0,
+  "result_page_clicked":false,
+  "race_id_guessed":false
+}
