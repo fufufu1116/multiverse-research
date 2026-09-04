@@ -1,13 +1,9 @@
 name: MULTIVERSE V19.7.36 v7r21 New Thread Regain Retained Access Pre-Lab
-
 on:
   push:
-    branches:
-      - agent/r1-stage1-phase-c-v19-7-36-v7r21-new-thread-regain-retained-access-remediation-v1
-
+    branches: [agent/r1-stage1-phase-c-v19-7-36-v7r21-new-thread-regain-retained-access-remediation-v1]
 permissions:
   contents: read
-
 jobs:
   test-v7r21-proof-closure:
     runs-on: ubuntu-24.04
@@ -17,19 +13,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git init repo
-          cd repo
+          git init repo; cd repo
           git remote add origin https://github.com/fufufu1116/multiverse-research.git
           git -c protocol.version=2 fetch --depth=200 origin "${GITHUB_SHA}" 27d663d7ddb3c57c78c5eaa3494e422fd0aeacdf 00916732f345ab84d8de0d96dba40814afca2c7e
           git checkout --detach "${GITHUB_SHA}"
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
           git merge-base --is-ancestor 27d663d7ddb3c57c78c5eaa3494e422fd0aeacdf HEAD
-          main_now="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
-          test "$main_now" = 'a6f56facc80709f2e7b8218d927484d522bfa356'
-          printf 'PRELAB_V7R21_EXACT_HEAD=%s\n' "$(git rev-parse HEAD)"
-          printf 'PRELAB_V7R21_EXACT_TREE=%s\n' "$(git rev-parse HEAD^{tree})"
-          printf 'PRELAB_V7R21_CANONICAL_MAIN=%s\n' "$main_now"
-
+          main_now="$(git ls-remote origin refs/heads/main | awk '{print $1}')"; test "$main_now" = a6f56facc80709f2e7b8218d927484d522bfa356
+          printf 'PRELAB_V7R21_EXACT_HEAD=%s\nPRELAB_V7R21_EXACT_TREE=%s\nPRELAB_V7R21_CANONICAL_MAIN=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" "$main_now"
       - name: Generate and statically verify v7r21 helper boundary
         shell: bash
         working-directory: repo
@@ -40,8 +31,7 @@ jobs:
           python3 governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TRANSITION_RACE_PATCHER_20260904.py /tmp/v7r19-guard.go /tmp/v7r19-helper.go /tmp/v7r20-guard.go /tmp/v7r20-helper.go
           python3 governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_NEW_THREAD_REGAIN_PATCHER_20260904.py /tmp/v7r20-guard.go /tmp/v7r20-helper.go /tmp/v7r21-guard.go /tmp/v7r21-helper.go
           gofmt -w /tmp/v7r21-guard.go /tmp/v7r21-helper.go
-          go test /tmp/v7r21-guard.go -count=1
-          go test /tmp/v7r21-helper.go -count=1
+          go test /tmp/v7r21-guard.go -count=1; go test /tmp/v7r21-helper.go -count=1
           grep -F 'syscall.AllThreadsSyscall(syscall.SYS_SETFSUID' /tmp/v7r21-helper.go
           grep -F 'syscall.AllThreadsSyscall(syscall.SYS_SETRESUID' /tmp/v7r21-helper.go
           grep -F 'syscall.RawSyscall(syscall.SYS_SETRESUID' /tmp/v7r21-helper.go
@@ -55,34 +45,29 @@ jobs:
           stress=s[s.index('func v7r21PostDropThreadCreationStress('):s.index('func v7r21DropIrreversibly(')]
           assert d.index('syscall.AllThreadsSyscall(syscall.SYS_SETRESUID') < d.index('V7R21_IRREVERSIBLE_USER_DROP_COMPLETE') < d.index('v7r21PostDropThreadCreationStress(uid, preTIDs)')
           assert 'runtime.LockOSThread()' in stress and 'v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)' in stress
-          assert 'before:=syscall.Gettid()' in s and 'after:=syscall.Gettid()' in s and 'before!=after' in s
+          assert 'before := syscall.Gettid()' in s and 'after := syscall.Gettid()' in s and 'before != after' in s
           assert s.count('PHASE_C_V19_7_36_V7R21_IRREVERSIBLE_USER_DROP_COMPLETE') == 1
           assert m.index('V7R21_PROTECTED_HELPER_ENTRY') < m.index('v7r21DropIrreversibly(targetUID)') < m.index('V7R21_POST_SAFE_THREAD_STRESS_COMPLETE') < m.index('githubPreflight()')
           g=open('/tmp/v7r21-guard.go').read(); gm=g[g.index('func main() {'):]
           assert gm.index('retireAuthorityBeforeProtectedHelperExec(fd)') < gm.index('syscall.Exec(helperPath, argv, env)')
           PY
           printf 'PRELAB_V7R21_STATIC_GATE_PASS=true\n'
-
       - name: Reproduce v7r18 raw calling-thread defect
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
           CGO_ENABLED=0 go build -trimpath -buildvcs=false -o /tmp/v7r19-neg governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R19_RAW_THREAD_DROP_NEGATIVE_CONTROL_20260904.go
-          sudo chown root:root /tmp/v7r19-neg
-          sudo chmod 4555 /tmp/v7r19-neg
+          sudo chown root:root /tmp/v7r19-neg; sudo chmod 4555 /tmp/v7r19-neg
           /tmp/v7r19-neg | tee /tmp/v7r21-neg.out
           grep -F 'V7R18_RAW_THREAD_DROP_NEGATIVE_CONTROL_REPRODUCED=true' /tmp/v7r21-neg.out
           printf 'PRELAB_V7R21_V7R18_DEFECT_NEGATIVE_CONTROL_PASS=true\n'
-
       - name: Build exact v7r21 child image and freeze Go toolchain
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
-          base="multiverse-v7r21-base:${GITHUB_SHA}"
-          v16="multiverse-v7r21-v16:${GITHUB_SHA}"
-          tag="multiverse-v7r21-proof:${GITHUB_SHA}"
+          base="multiverse-v7r21-base:${GITHUB_SHA}"; v16="multiverse-v7r21-v16:${GITHUB_SHA}"; tag="multiverse-v7r21-proof:${GITHUB_SHA}"
           docker build -f .devcontainer/Dockerfile -t "$base" .
           docker build --build-arg BASE_IMAGE="$base" -f .devcontainer/Dockerfile.v7r16 -t "$v16" .
           docker build --build-arg BASE_IMAGE="$v16" -f .devcontainer/Dockerfile.v7r21 -t "$tag" .
@@ -90,30 +75,22 @@ jobs:
           guard_sha="$(docker run --rm --entrypoint sha256sum "$tag" /usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r21 | awk '{print $1}')"
           probe_sha="$(docker run --rm --entrypoint sha256sum "$tag" /usr/local/bin/multiverse-v36-prearm-rate-readiness-v7r9 | awk '{print $1}')"
           identity="$(docker run --rm --entrypoint cat "$tag" /opt/multiverse/v36/image-identity-v7r21.json)"
-          go_toolchain="$(docker run --rm --entrypoint go "$tag" version)"
-          helper_go_version="$(docker run --rm --entrypoint go "$tag" version /usr/local/bin/multiverse-v36-ui-ready-v7r21)"
+          go_toolchain="$(docker run --rm --entrypoint go "$tag" version)"; helper_go_version="$(docker run --rm --entrypoint go "$tag" version /usr/local/bin/multiverse-v36-ui-ready-v7r21)"
           grep -F "$helper_sha" <<<"$identity"; grep -F "$guard_sha" <<<"$identity"; grep -F "$probe_sha" <<<"$identity"; grep -F "$go_toolchain" <<<"$identity"
           grep -F 'ALLTHREADSSYSCALL_PLUS_PER_NEW_TID_REGAIN_AND_RETAINED_ACCESS_PROOF' <<<"$identity"
-          printf 'PRELAB_V7R21_HELPER_SHA256=%s\n' "$helper_sha"
-          printf 'PRELAB_V7R21_GUARD_SHA256=%s\n' "$guard_sha"
-          printf 'PRELAB_V7R21_RATE_PROBE_SHA256=%s\n' "$probe_sha"
+          printf 'PRELAB_V7R21_HELPER_SHA256=%s\nPRELAB_V7R21_GUARD_SHA256=%s\nPRELAB_V7R21_RATE_PROBE_SHA256=%s\n' "$helper_sha" "$guard_sha" "$probe_sha"
           printf 'PRELAB_V7R21_IMAGE_IDENTITY_SHA256=%s\n' "$(printf '%s' "$identity" | sha256sum | awk '{print $1}')"
-          printf 'PRELAB_V7R21_GO_TOOLCHAIN=%s\n' "$go_toolchain"
-          printf 'PRELAB_V7R21_HELPER_GO_VERSION=%s\n' "$helper_go_version"
-
+          printf 'PRELAB_V7R21_GO_TOOLCHAIN=%s\nPRELAB_V7R21_HELPER_GO_VERSION=%s\n' "$go_toolchain" "$helper_go_version"
       - name: Direct helper credential negatives and inherited attacks
         shell: bash
         working-directory: repo
         run: |
           set -euo pipefail
           tag="multiverse-v7r21-proof:${GITHUB_SHA}"
-          out="$(docker run --rm --user codespace --network=none -e CODESPACES=true -e CODESPACE_NAME=rate-v7r21-test -e GOTRACEBACK=none --entrypoint /usr/local/bin/multiverse-v36-ui-ready-v7r21 "$tag" 2>&1 || true)"
-          grep -F 'PHASE_C_V19_7_36_V7R21_HELPER_DENIED:PROTECTED_STARTUP' <<<"$out"
-          out="$(docker run --rm --network=none -e CODESPACES=true -e CODESPACE_NAME=rate-v7r21-test -e GOTRACEBACK=none --entrypoint /usr/local/bin/multiverse-v36-ui-ready-v7r21 "$tag" 2>&1 || true)"
-          grep -F 'PHASE_C_V19_7_36_V7R21_HELPER_DENIED:PROTECTED_STARTUP' <<<"$out"
+          out="$(docker run --rm --user codespace --network=none -e CODESPACES=true -e CODESPACE_NAME=rate-v7r21-test -e GOTRACEBACK=none --entrypoint /usr/local/bin/multiverse-v36-ui-ready-v7r21 "$tag" 2>&1 || true)"; grep -F 'PHASE_C_V19_7_36_V7R21_HELPER_DENIED:PROTECTED_STARTUP' <<<"$out"
+          out="$(docker run --rm --network=none -e CODESPACES=true -e CODESPACE_NAME=rate-v7r21-test -e GOTRACEBACK=none --entrypoint /usr/local/bin/multiverse-v36-ui-ready-v7r21 "$tag" 2>&1 || true)"; grep -F 'PHASE_C_V19_7_36_V7R21_HELPER_DENIED:PROTECTED_STARTUP' <<<"$out"
           docker run --rm -v "$PWD:/src:ro" --entrypoint /bin/bash "$tag" /src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R13_WHOLE_PROCESS_ATTACK_DRIVER_20260903.sh
           printf 'PRELAB_V7R21_INHERITED_REGRESSION_GATE_PASS=true\n'
-
       - name: Production-equivalent retained-access and per-birth proof
         shell: bash
         working-directory: repo
@@ -129,12 +106,4 @@ jobs:
           grep -E 'PRELAB_V7R21_POST_SAFE_NEW_TID_FULL_STATE_RECORDS=[1-9][0-9]*' /tmp/v7r21-attack.out
           grep -F 'PRELAB_V7R21_POST_SAFE_PER_BIRTH_FAIL_CLOSED=true' /tmp/v7r21-attack.out
           grep -E 'PHASE_C_V19_7_36_V7R21_POSTDROP_THREAD_CREATION_STRESS_PASS .*per_thread_regain_denied=[1-9][0-9]*' /tmp/v7r21-attack.out
-          printf 'PRELAB_V7R21_FOUR_BLOCKER_MACHINE_GATE_PASS=true\n'
-          printf 'FINAL_COMMIT_RATE_FLOOR=60/59\n'
-          printf 'HELPER_RATE_FLOOR=55/54\n'
-          printf 'RATE_TOCTOU_RESIDUAL_NONZERO=true\n'
-          printf 'ONE_SHOT_LIVE_PATH_CONSUMED_BY_CI=false\n'
-          printf 'SECURITY_AUTHORITY_GRANTED=false\n'
-          printf 'CAN_CREATE_OR_REUSE_CODESPACE_NOW=false\n'
-          printf 'CAN_RUN_LIVE_NOW=false\n'
-          printf 'RUNTIME=OFF\n'
+          printf 'PRELAB_V7R21_FOUR_BLOCKER_MACHINE_GATE_PASS=true\nFINAL_COMMIT_RATE_FLOOR=60/59\nHELPER_RATE_FLOOR=55/54\nRATE_TOCTOU_RESIDUAL_NONZERO=true\nONE_SHOT_LIVE_PATH_CONSUMED_BY_CI=false\nSECURITY_AUTHORITY_GRANTED=false\nCAN_CREATE_OR_REUSE_CODESPACE_NOW=false\nCAN_RUN_LIVE_NOW=false\nRUNTIME=OFF\n'
