@@ -50,7 +50,7 @@ def _decode_request(raw: bytes) -> dict:
         raise ProtocolError("V10_INVALID_JSON") from exc
     if type(value) is not dict or set(value) != REQUEST_KEYS:
         raise ProtocolError("V10_REQUEST_SCHEMA")
-    if value["v"] != PROTOCOL_VERSION:
+    if type(value["v"]) is not int or value["v"] != PROTOCOL_VERSION:
         raise ProtocolError("V10_PROTOCOL_VERSION")
     if value["op"] not in ALLOWED_OPS:
         raise ProtocolError("V10_OPCODE_DENIED")
@@ -249,8 +249,22 @@ def main() -> int:
     real_db_paths = [os.path.realpath(p) for p in db_paths]
     if len(set(real_db_paths)) != len(real_db_paths):
         raise ValueError("V10_REPLAY_DB_MUST_BE_DISTINCT")
-    if os.path.realpath(args.socket) in set(real_db_paths):
+    for i, left in enumerate(db_paths):
+        for right in db_paths[i + 1:]:
+            try:
+                if os.path.samefile(left, right):
+                    raise ValueError("V10_REPLAY_DB_MUST_BE_DISTINCT")
+            except FileNotFoundError:
+                pass
+    socket_real = os.path.realpath(args.socket)
+    if socket_real in set(real_db_paths):
         raise ValueError("V10_SOCKET_DB_PATH_COLLISION")
+    for path in db_paths:
+        try:
+            if os.path.samefile(args.socket, path):
+                raise ValueError("V10_SOCKET_DB_PATH_COLLISION")
+        except FileNotFoundError:
+            pass
     config.DB_PATH = args.task_db
     binding = IntegrationBinding(CANONICAL_MAIN, args.candidate_branch, args.candidate_head, V7_HEAD)
     replay_store = DurableReplayStore(args.replay_db)
