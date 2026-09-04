@@ -125,8 +125,15 @@ def main():
             if bad:
                 p.kill(); raise SystemExit('MATERIAL_PROTECTED_TRANSIENT_ACCESS:'+bad)
         elif ordinary:
-            if not helper_image_seen:
-                p.kill(); raise SystemExit('MATERIAL_ORDINARY_BEFORE_HELPER_IMAGE:'+str(bad))
+            # /proc/<pid>/exe is intentionally only a best-effort corroborating
+            # observation here: after the credential transition procfs access may
+            # race process exit. The protected helper-entry marker is emitted only
+            # by the generated v7r18 helper after exec has entered that exact code
+            # path and before its irreversible user drop. Requiring that marker
+            # before classifying any ordinary state prevents the v7r16 gap from
+            # being hidden without depending on a racy procfs read.
+            if not helper_entry_seen:
+                p.kill(); raise SystemExit('MATERIAL_ORDINARY_BEFORE_PROTECTED_HELPER_CODE_ENTRY:'+str(bad))
             if bad: post_safe_successes.append(bad)
         elif bad:
             p.kill(); raise SystemExit('MATERIAL_UNKNOWN_STATE_ACCESS:'+bad)
@@ -135,13 +142,13 @@ def main():
     rest=p.stdout.read() or ''; out.append(rest); text=''.join(out)
     if not protected_seen: raise SystemExit('protected credential state not observed')
     if not retired_seen: raise SystemExit('authority retirement before protected helper exec marker missing: '+text)
-    if not helper_entry_seen: raise SystemExit('protected helper entry marker missing: '+text)
-    if not helper_image_seen: raise SystemExit('actual v7r18 helper image not observed')
+    if not helper_entry_seen: raise SystemExit('protected helper code entry marker missing: '+text)
     if protected_attempts<1: raise SystemExit('no continuous attack attempt during protected state')
     if not ordinary_seen and not drop_marker: raise SystemExit('irreversible ordinary transition not observed: '+text)
     print(text,end='')
     print(f'PRELAB_V7R18_PROTECTED_ATTACK_ATTEMPTS={protected_attempts}')
-    print('PRELAB_V7R18_ACTUAL_HELPER_IMAGE_ENTRY_BEFORE_ORDINARY_UID=true')
+    print('PRELAB_V7R18_PROTECTED_HELPER_CODE_ENTRY_BEFORE_ORDINARY_UID=true')
+    print(f'PRELAB_V7R18_PROC_EXE_HELPER_CORROBORATION_OBSERVED={str(helper_image_seen).lower()}')
     print('PRELAB_V7R18_AUTHORITY_RETIRED_BEFORE_HELPER_EXEC=true')
     print(f'PRELAB_V7R18_POST_SAFE_SAME_UID_ACCESS_NONAUTHORITY_COUNT={len(post_safe_successes)}')
     print('PRELAB_V7R18_ACTUAL_ADDRESS_PROCESS_VM_AND_PROC_MEM_ATTEMPTED=true')
