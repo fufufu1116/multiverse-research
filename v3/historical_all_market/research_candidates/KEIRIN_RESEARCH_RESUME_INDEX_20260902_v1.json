@@ -10,7 +10,7 @@
     {"step": 3, "action": "READ_NEXT_LIVE_EXECUTION_ORDER", "path": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_LIVE_DISCOVERY_EXECUTION_ORDER_20260904_v1.json"},
     {"step": 4, "action": "READ_ACTIVE_EVENT_QUEUE", "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json"},
     {"step": 5, "action": "READ_OWNER_REPORTING_CONTRACT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_REPORTING_CONTRACT_20260904_v1.json"},
-    {"step": 6, "action": "READ_OWNER_ROADMAP_SNAPSHOT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json"},
+    {"step": 6, "action": "READ_HANDOFF_REQUIRED_SECTIONS", "path": "v3/historical_all_market/research_candidates/KEIRIN_HANDOFF_REQUIRED_SECTIONS_20260904_v1.json"},
     {"step": 7, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
   "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v27.json",
@@ -19,7 +19,7 @@
     "NEXT_LIVE_EXECUTION_ORDER": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_LIVE_DISCOVERY_EXECUTION_ORDER_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json",
     "OWNER_REPORTING_CONTRACT": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_REPORTING_CONTRACT_20260904_v1.json",
-    "OWNER_ROADMAP_SNAPSHOT": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json",
+    "HANDOFF_REQUIRED_SECTIONS": "v3/historical_all_market/research_candidates/KEIRIN_HANDOFF_REQUIRED_SECTIONS_20260904_v1.json",
     "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py"
   },
   "owner_reporting_contract": {"periodically_include": ["ロードマップ（全体工程）", "現在地（今どこか）", "今やっていること", "苦戦していること", "解決策"], "terminology": "専門用語・英語には簡潔な日本語訳を添える。", "handoff": "引き継ぎ文章には必ずこの報告形式と最新ロードマップ/現在地を含める。"},
