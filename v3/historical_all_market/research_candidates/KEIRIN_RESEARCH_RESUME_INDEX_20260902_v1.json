@@ -7,8 +7,8 @@
   "resume_sequence": [
     {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF", "load": "branch HEAD only"},
     {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json"},
-    {"step": 3, "action": "READ_CURRENT_TO_HEAD_DELTA_IF_ANY", "rule": "If Fresh HEAD is ahead of the CURRENT state's refresh/creation binding, inspect only that commit delta before claiming CURRENT."},
-    {"step": 4, "action": "READ_ONLY_ACTIVE_TASK_OR_PRESPEC", "rule": "Use current state's pointers; do not preload all historical artifacts."},
+    {"step": 3, "action": "READ_POST_CURRENT_DELTA", "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_QUEUE_BINDING_DELTA_20260904_v1.json"},
+    {"step": 4, "action": "READ_ONLY_ACTIVE_TASK_OR_PRESPEC", "rule": "Use active lane pointers; do not preload all historical artifacts."},
     {"step": 5, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
   "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json",
@@ -17,11 +17,10 @@
     "PROSPECTIVE_SUPPORT_CONTINUITY_PRESPEC": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_CONTINUITY_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_CONTINUITY_OFFLINE_SELFTEST_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_CONTRACT_20260904_v1.json",
+    "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v1.json",
+    "PROSPECTIVE_SUPPORT_QUEUE_BINDING_DELTA": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_QUEUE_BINDING_DELTA_20260904_v1.json",
     "SEP10_EXECUTION_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_EXECUTION_READINESS_20260904_v4.json",
-    "SEP10_FINAL_RACECARD_AVAILABILITY": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_FINAL_RACECARD_AVAILABILITY_PROBE_20260904_v2.json",
-    "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py",
-    "SEP10_NARA_PENDING_SUPPORT_RESOLVER": "tools/keirin_sep10_nara_pending_support_candidate_resolver_v1.py",
-    "SEP10_NARA_SAME_RACE_ASSIGNMENT_BATCH": "tools/keirin_sep10_nara_same_race_assignment_batch_v1.py"
+    "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py"
   },
   "owner_reporting_contract": {
     "periodically_include": ["ロードマップ（全体工程）", "現在地（今どこか）", "今やっていること", "苦戦していること", "解決策"],
