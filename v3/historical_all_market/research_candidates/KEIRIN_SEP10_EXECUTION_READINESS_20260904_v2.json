@@ -1,0 +1,107 @@
+{
+  "record": "KEIRIN_SEP10_EXECUTION_READINESS_20260904_v2",
+  "status": "PRE_EVENT_EXECUTION_PATH_PREPARED_CUTOFF_QUERY_SHAPE_FIXED_OFFLINE_FINAL_PRE_CARD_NOT_YET_AVAILABLE",
+  "scope": "RESEARCH_PRE_ONLY_SUPPORT_ACQUISITION_READINESS_NO_RESULT_NO_MODEL_FIT",
+  "supersedes": "KEIRIN_SEP10_EXECUTION_READINESS_20260904_v1.json",
+  "fresh_parent_head": "e23514b098a50151db31d10ffc07d30da708f540",
+  "target_date": "2026-09-10",
+  "support_snapshot": {
+    "confirmed_unique_cross_circumference_supported_riders": 1,
+    "confirmed_supported_rows": 2,
+    "confirmed_rider": {
+      "name": "高橋 梨香",
+      "official_registration_number": "015018"
+    },
+    "pending_nara_scheduled_unique_union": 19,
+    "nonfinal_combined_unique_upper_bound_if_all_pending_survive": 20,
+    "support_increment_authorized_now": 0,
+    "full_support_adequacy_gate": "FAIL",
+    "result_join_authorized": false,
+    "formula_fit_authorized": false
+  },
+  "final_racecard_availability": {
+    "artifact": "KEIRIN_SEP10_FINAL_RACECARD_AVAILABILITY_PROBE_20260904_v1.json",
+    "status": "TARGET_RACECARDS_NOT_YET_STRUCTURALLY_AVAILABLE",
+    "final_pre_capture_authorized_now": false
+  },
+  "prepared_tools": {
+    "positive_day1_manifest_builder": {
+      "path": "tools/keirin_kdreams_positive_day1_manifest_builder_v1.py",
+      "selftest": "KEIRIN_KDREAMS_POSITIVE_DAY1_MANIFEST_BUILDER_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS",
+      "contract": "Only exact racedetail anchor hrefs positively observed in final Day1 racecard DOM; no detail-page open and no race-ID arithmetic."
+    },
+    "pit_cutoff_extractor": {
+      "path": "tools/keirin_kdreams_pit_cutoff_extractor_v2.py",
+      "base_v1_blob": "ba9f2114647038139b54eae0843302c8781729da",
+      "selftest": "KEIRIN_KDREAMS_PIT_CUTOFF_EXTRACTOR_SELFTEST_20260904_v2.json",
+      "selftest_status": "PASS",
+      "query_policy": "ALLOW_NONE_OR_SINGLE_NONEMPTY_L_ID_ONLY_ON_EXACT_POSITIVELY_OBSERVED_PROGRAM_HREF",
+      "positive_observed_href_preserved_exactly": true,
+      "live_pre_validation_status": "NOT_YET_VALIDATED_WITH_V2",
+      "live_pre_validation_rule": "Must be run on the Sep10 final Day1 PRE surface before that venue's first-race PIT cutoff. No post-cutoff reconstruction is allowed."
+    },
+    "prospective_pre_acquirer": {
+      "path": "tools/keirin_kdreams_prospective_pre_acquire_v1.py",
+      "selftest": "KEIRIN_KDREAMS_PROSPECTIVE_PRE_ACQUIRE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS",
+      "requires_positive_exact_racedetail_manifest": true,
+      "requires_capture_before_first_race_pit_cutoff": true,
+      "race_id_guessing_allowed": false
+    },
+    "official_same_race_assignment_probe": {
+      "path": "tools/keirinjp_same_race_assignment_probe_v1.py",
+      "selftest": "KEIRINJP_SAME_RACE_ASSIGNMENT_PROBE_SELFTEST_20260904_v1.json",
+      "selftest_status": "PASS",
+      "requires_exact_venue_date_race_match": true
+    }
+  },
+  "cutoff_extractor_resolution": {
+    "v1_live_attempt": "KEIRIN_HOFU_SEP4_PIT_CUTOFF_EXTRACTOR_LIVE_20260904_v1.json",
+    "v1_live_status": "FAIL_CLOSED_PIT_CUTOFF_NOT_CAPTURED",
+    "v1_live_failure": "FAIL_CLOSED_PROGRAM_URL",
+    "observed_href_shape": "KEIRIN_HOFU_SEP4_RACECARD_PROGRAM_HREF_PROBE_20260904_v1.json",
+    "observed_query_keys": [
+      "l-id"
+    ],
+    "independent_timing_structure": "KEIRIN_HOFU_SEP4_RACEPROGRAM_TIME_LABEL_PROBE_20260904_v3.json",
+    "independent_first_race_deadline_label": "締切時間",
+    "independent_first_race_deadline_hhmm_jst": "08:35",
+    "independent_first_race_start_label": "発走時間",
+    "independent_first_race_start_hhmm_jst": "08:40",
+    "v2_change": "Allow only the exact positively observed raceprogram href with either no query or one non-empty l-id query; all other query shapes remain fail closed.",
+    "v2_selftest_status": "PASS",
+    "historical_live_repair_authorized": false,
+    "reason": "Hofu Sep4 first-race cutoff has passed; preserve historical failure and validate v2 prospectively on Sep10."
+  },
+  "execution_sequence_when_final_pre_is_available": [
+    "Fresh Read the research branch and this readiness receipt.",
+    "Re-probe Nara and Kawasaki final Day1 racecard availability from positively observed navigation only.",
+    "When an exact Day1 racecard URL is positively observed, run PIT cutoff extractor v2 immediately and require live PRE PASS before the venue first-race cutoff.",
+    "Build exact-positive-link Day1 manifest from the same final racecard before cutoff.",
+    "Run prospective PRE acquirer v1 on the frozen manifest; any race rejection, schema drift, source mismatch, or cutoff miss fails closed.",
+    "Resolve official registration identities for support-candidate PRE rows.",
+    "Require contemporaneous official same-race assignment for each prospective support candidate.",
+    "Write support receipts only after PRE membership, identity, assignment, and provenance all pass.",
+    "Recompute every support adequacy dimension; unique-rider count alone never opens RESULT."
+  ],
+  "hard_non_authorities": {
+    "scheduled_assens_are_final_pre_cards": false,
+    "pending_19_are_confirmed_support": false,
+    "combined_upper_20_is_confirmed_support": false,
+    "v2_offline_selftest_is_live_pre_validation": false,
+    "result_join_authorized": false,
+    "formula_fit_authorized": false,
+    "s0_mutation": false,
+    "main_or_runtime_mutation": false
+  },
+  "source_integrity": {
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_used": false,
+    "human_forecast_used": false,
+    "narabiyoso_used": false,
+    "raw_html_persisted": false
+  },
+  "owner_action_required_now": false
+}
