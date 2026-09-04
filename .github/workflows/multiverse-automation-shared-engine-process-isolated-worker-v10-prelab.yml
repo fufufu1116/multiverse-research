@@ -25,15 +25,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Bind exact head, predecessor, and Fresh main
+
+      - name: Bind exact head, predecessor, Owner approval, and Fresh main
         shell: bash
         run: |
           set -euo pipefail
           EXACT_HEAD="$(git rev-parse HEAD)"
           FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
-          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
-          test "${GITHUB_REF_NAME}" = "agent/automation-shared-engine-process-isolated-worker-v10-20260904-v1"
-          test "${FRESH_MAIN}" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          test "$EXACT_HEAD" = "$GITHUB_SHA"
+          test "$GITHUB_REF_NAME" = "agent/automation-shared-engine-process-isolated-worker-v10-20260904-v1"
+          test "$FRESH_MAIN" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
           git merge-base --is-ancestor 32b13303d888214215dd9a87cb6eef180bb52d69 HEAD
           python - <<'PY'
           import json
@@ -41,13 +42,24 @@ jobs:
           assert d['predecessor_head']=='32b13303d888214215dd9a87cb6eef180bb52d69'
           assert d['predecessor_lab_material_block']==5529886746
           assert d['route_decision']==5530315758
+          assert d['prior_replay_lab_fix_required']==5530712282
+          assert d['owner_approval_durable_replay']==5535323028
           assert d['base_pr91_head']=='61f4e330fd5b1945dbfbceb223cbc71d205860f2'
           assert d['stacked_v7_head']=='4a72ef46116043094c7a8e494404956925a5b3bf'
           assert d['canonical_main']=='040d37f0a4e426cf2e119706484c90cbb48f0e56'
+          a=d['architecture']
+          assert a['durable_request_id_replay_denied_across_broker_restart'] is True
+          assert a['reservation_commits_before_dispatch'] is True
+          assert a['replay_capacity']==256
+          assert a['replay_ttl_or_eviction'] is False
+          assert a['replay_reset_or_rotation_api'] is False
+          assert a['anti_replay_is_workflow_authority'] is False
           assert all(v is False for v in d['authority'].values())
           PY
-          echo "V10_EXACT_HEAD=${EXACT_HEAD}"
-          echo "V10_FRESH_MAIN=${FRESH_MAIN}"
+          echo "V10_EXACT_HEAD=$EXACT_HEAD"
+          echo "V10_FRESH_MAIN=$FRESH_MAIN"
+          echo "V10_OWNER_APPROVAL_DURABLE_REPLAY=5535323028"
+
       - name: Inherited v9 gate
         shell: bash
         env:
@@ -55,13 +67,15 @@ jobs:
         run: |
           set -euo pipefail
           python automation/shared_engine/mechanical_gate_local_persistent_worker_v9.py
-      - name: Process isolation v10 mechanical gate
+
+      - name: Process isolation and durable replay v10 mechanical gate
         shell: bash
         env:
           PYTHONPATH: automation/shared_engine:automation
         run: |
           set -euo pipefail
           python automation/shared_engine/mechanical_gate_process_isolated_worker_v10.py
+
       - name: Candidate nonauthority receipt
         shell: bash
         run: |
@@ -69,6 +83,12 @@ jobs:
           echo "V10_CANDIDATE_ONLY=true"
           echo "V10_LOCAL_OS_PROCESS_ISOLATION=true"
           echo "V10_IPC=AF_UNIX_STRICT_JSON"
+          echo "V10_DURABLE_REPLAY_ACROSS_BROKER_RESTART=true"
+          echo "V10_REPLAY_RESERVATION_BEFORE_DISPATCH=true"
+          echo "V10_REPLAY_CAPACITY=256"
+          echo "V10_REPLAY_EVICTION=false"
+          echo "V10_REPLAY_RESET_ROTATION=false"
+          echo "V10_ANTI_REPLAY_WORKFLOW_AUTHORITY=false"
           echo "V10_TASK_CREATION_AUTHORITY=false"
           echo "V10_GENERIC_DISPATCH=false"
           echo "V10_FD_TRANSFER=false"
