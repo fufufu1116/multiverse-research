@@ -23,7 +23,7 @@ class IOV(ctypes.Structure): _fields_=[('iov_base',ctypes.c_void_p),('iov_len',c
 class Regs(ctypes.Structure): _fields_=[(n,ctypes.c_ulonglong) for n in ('r15','r14','r13','r12','rbp','rbx','r11','r10','r9','r8','rax','rcx','rdx','rsi','rdi','orig_rax','rip','cs','eflags','rsp','ss','fs_base','gs_base','ds','es','fs','gs')]
 libc=ctypes.CDLL(None,use_errno=True)
 libc.ptrace.argtypes=[ctypes.c_ulong,ctypes.c_ulong,ctypes.c_void_p,ctypes.c_void_p]; libc.ptrace.restype=ctypes.c_long
-libc.process_vm_writev.argtypes=[ctypes.c_int,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.c_ulong,ctypes.c_ulong]; libc.process_vm_writev.restype=ctypes.c_ssize_t
+libc.process_vm_writev.argtypes=[ctypes.c_int,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.POINTER(IOV),ctypes.c_ulong,ctypes.c_ulong]; libc.process_vm_writev.restype=ctypes.c_ssize_t
 
 def ptrace(req,pid,a=None,d=None): ctypes.set_errno(0); rv=libc.ptrace(req,pid,a,d); return rv,ctypes.get_errno()
 def task_uid_tuples(pid):
