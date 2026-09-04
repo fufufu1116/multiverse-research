@@ -151,6 +151,19 @@ class SnapshotIntegrityReceipt:
             raise DeploymentGateError("SNAPSHOT_RECEIPT_FIELD_TYPE_INVALID")
         if type(self.byte_length) is not int:
             raise DeploymentGateError("SNAPSHOT_LENGTH_TYPE_INVALID")
+        if (
+            type(expected_identity) is not str
+            or not expected_identity
+            or expected_identity.strip() != expected_identity
+        ):
+            raise DeploymentGateError("SNAPSHOT_EXPECTED_IDENTITY_INVALID")
+        if (
+            type(expected_runtime_head) is not str
+            or expected_runtime_head != ADOPTED_RUNTIME_HEAD
+        ):
+            raise DeploymentGateError("SNAPSHOT_EXPECTED_RUNTIME_HEAD_INVALID")
+        if type(expected_main) is not str or expected_main != CANONICAL_MAIN:
+            raise DeploymentGateError("SNAPSHOT_EXPECTED_MAIN_INVALID")
         if self.schema_version != SNAPSHOT_SCHEMA:
             raise DeploymentGateError("SNAPSHOT_SCHEMA_MISMATCH")
         if not self.snapshot_identity or self.snapshot_identity.strip() != self.snapshot_identity:
