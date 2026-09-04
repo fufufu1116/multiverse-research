@@ -1,0 +1,25 @@
+{
+  "record":"KEIRIN_TOYAMA_0918_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260904_v1",
+  "status":"PREQUALIFIED_CANDIDATE_SET_ALL_IDENTITIES_RESOLVED_NO_SUPPORT_INCREMENT",
+  "observed_at_jst":"2026-09-04",
+  "prospective_event":{"venue":"富山","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-18","event_end_date":"2026-09-21","event_name":"共同通信社杯競輪","evidence_role":"EVENT_LEVEL_ASSEN_ONLY_NOT_SAME_RACE_ASSIGNMENT","positive_navigation":"KDreams Toyama event schedule/program -> assen information"},
+  "historical_counterpart":{"venue":"川崎","circumference_class":"400M","race_date":"2026-08-30","source_artifact":"KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv"},
+  "matching_scope":{"prospective":"official KDreams event-level assen list for Toyama 2026-09-18..21","historical":"all S-class riders in frozen Kawasaki 2026-08-30 PRE; A/L classes cannot overlap the G2 S-class assen pool","method":"exact normalized rider-name equality only; no fuzzy matching"},
+  "exact_name_overlap_candidates":[
+    {"rider":"佐藤 一伸","historical_race_no":9,"historical_car_no":2,"historical_class":"S2","official_registration_number":"014356","official_identity_mapping":"PASS"},
+    {"rider":"佐々木 眞也","historical_race_no":12,"historical_car_no":2,"historical_class":"S1","official_registration_number":"015439","official_identity_mapping":"PASS"},
+    {"rider":"杉浦 侑吾","historical_race_no":12,"historical_car_no":3,"historical_class":"S1","official_registration_number":"015356","official_identity_mapping":"PASS"},
+    {"rider":"中川 誠一郎","historical_race_no":12,"historical_car_no":4,"historical_class":"S1","official_registration_number":"013745","official_identity_mapping":"PASS"},
+    {"rider":"渡邉 雅也","historical_race_no":12,"historical_car_no":5,"historical_class":"S1","official_registration_number":"015444","official_identity_mapping":"PASS"},
+    {"rider":"山崎 賢人","historical_race_no":12,"historical_car_no":7,"historical_class":"S1","official_registration_number":"015213","official_identity_mapping":"PASS"}
+  ],
+  "exact_name_candidates_observed":6,
+  "official_identity_mapping_pass_count":6,
+  "candidate_set_scope":"EXHAUSTIVE_WITHIN_HISTORICAL_S_CLASS_FROZEN_PRE_VS_OBSERVED_TOYAMA_G2_ASSEN",
+  "day1_program_state":"RACE_INFORMATION_NOT_YET_AVAILABLE_ON_OBSERVED_PROGRAM_PAGE",
+  "support_receipt_authorized":false,
+  "support_increment_authorized":0,
+  "missing_for_formal_support":["prospective Day1 PRE membership after positive racecard publication","contemporaneous official same-race assignment","prospective PRE provenance PASS"],
+  "hard_boundaries":{"result_access_for_research_evidence":false,"payout_access_for_research_evidence":false,"odds_used":false,"race_id_guessing":false,"post_cutoff_pre_reconstruction":false},
+  "owner_action_required_now":false
+}
