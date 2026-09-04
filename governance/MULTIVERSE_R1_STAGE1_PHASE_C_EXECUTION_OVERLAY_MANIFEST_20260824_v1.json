@@ -1,0 +1,95 @@
+{
+  "schema_version": "MULTIVERSE_R1_STAGE1_PHASE_C_EXECUTION_OVERLAY_MANIFEST_v1",
+  "status": "DRAFT_REVIEW_ONLY_NONSECRET_NOT_AUTHORIZED",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main_authority_binding": "ff07e5ee02fa84405eb2fc89cfdbff1d26267cc9",
+  "purpose": "Close Lab 5387100985 exact-main TOCTOU and operator-sequence blockers without changing canonical main or performing production Phase C.",
+  "source_lab_material_block_comment": 5387100985,
+  "execution_model": {
+    "overlay_is_not_canonical_main": true,
+    "overlay_must_be_exact_independently_reviewed_before_owner_presentation": true,
+    "production_codespace_must_execute_the_exact_reviewed_overlay_head": true,
+    "canonical_main_must_remain_exact_authorized_sha": true,
+    "guarded_apply_is_zero_argument": true,
+    "caller_may_not_supply_authorized_main": true,
+    "authorized_main_is_reviewed_literal_inside_guarded_execution": true
+  },
+  "exact_main_toctou_closure": {
+    "preflight_requires_fresh_main_equals_authorized_literal": true,
+    "authoritative_apply_rechecks_fresh_main_equals_authorized_literal_before_first_mutation": true,
+    "fence_target_is_authorized_literal": true,
+    "post_fence_fresh_main_must_equal_authorized_literal": true,
+    "post_secret_fresh_main_must_equal_authorized_literal": true,
+    "main_drift": "DENY_FAIL_CLOSED_NO_REBIND"
+  },
+  "pre_fence_failure_reduction": {
+    "environment_absence_rechecked_inside_authoritative_apply_before_fence": true,
+    "pynacl_availability_rechecked_inside_authoritative_apply_before_fence": true,
+    "fence_absence_rechecked_inside_authoritative_apply_before_fence": true,
+    "ruleset_rechecked_inside_authoritative_apply_before_fence": true,
+    "identity_and_exact_oauth_scope_rechecked_inside_authoritative_apply_before_fence": true
+  },
+  "operator_sequence": {
+    "single_reviewed_operator_tool": "tools/multiverse_r1_stage1_phase_c_operator_v1.py",
+    "login_preflight_mode": "--login-preflight",
+    "apply_mode": "--apply",
+    "cleanup_mode": "--cleanup <PHASE_C_SESSION_ID>",
+    "browser_oauth_command_exact": "gh auth login --hostname github.com --git-protocol https --web --scopes repo --insecure-storage",
+    "memory_gh_config_dir_set_internally": "/dev/shm/multiverse-r1-stage1-phase-c-gh-auth",
+    "credential_storage_mode": "FORCE_GH_CONFIG_FILE_STORAGE_INSIDE_MEMORY_BACKED_GH_CONFIG_DIR",
+    "ambient_token_proxy_custom_ca_debug_denied": true,
+    "no_gh_auth_token": true,
+    "no_pat_token_in_chat": true,
+    "login_preflight_failure_local_auth_cleanup_best_effort": true,
+    "network_install": false
+  },
+  "live_nonmutating_preflight": {
+    "exact_main": true,
+    "identity_and_oauth_scopes": true,
+    "ruleset_full_semantics": true,
+    "fence_absent_expected_404": true,
+    "environment_absent_expected_404": true,
+    "pynacl_import_without_network_install": true,
+    "production_mutation": false,
+    "writer_secret_generation": false
+  },
+  "retained_one_shot_security": {
+    "fixed_provision_fence_first_mutation": true,
+    "fence_success_only_http_201": true,
+    "post_fence_main_ruleset_fence_barriers": true,
+    "all_csprng_after_fence_and_post_fence_barriers": true,
+    "locked_environment_after_fence_only": true,
+    "zero_reserved_prefix_before_writer_generation": true,
+    "writer_id_entropy_bits": 128,
+    "writer_key_entropy_bits": 256,
+    "one_secret_put_call_site": true,
+    "one_secret_put_attempt": true,
+    "secret_put_success_only_http_201": true,
+    "secret_put_204_material_incident": true,
+    "no_secret_readback_test_or_egress": true,
+    "blind_retry_forbidden": true
+  },
+  "cleanup_and_quiescence": {
+    "canonical_cleanup_reused": true,
+    "cleanup_requires_returned_phase_c_session_id": true,
+    "local_auth_config_removed": true,
+    "memory_credential_directory_emptied": true,
+    "gh_auth_logout_not_server_revocation": true,
+    "owner_codespace_deletion_required": true,
+    "durable_receipt_and_independent_quiescence_acceptance_required": true
+  },
+  "explicit_nonauthority": {
+    "canonical_main_update": false,
+    "ruleset_mutation": false,
+    "production_apply_now": false,
+    "provision_fence_now": false,
+    "environment_now": false,
+    "writer_key_secret_now": false,
+    "runtime_branch_sequence0": false,
+    "activation_receipt_tag": false,
+    "environment_arm": false,
+    "workflow_dispatch": false,
+    "runtime_activation": false
+  },
+  "runtime": "OFF"
+}
