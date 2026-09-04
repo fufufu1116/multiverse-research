@@ -1,4 +1,4 @@
-import json
+import copy
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,11 +14,23 @@ from deployment_contract import (
     TARGET_ENVIRONMENT,
     health_receipt,
     restore_bytes,
+    sha256_file,
     snapshot_bytes,
 )
 
 
 class DeploymentContractTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.artifact = self.root / "deployment.artifact"
+        self.rollback_artifact = self.root / "rollback.artifact"
+        self.artifact.write_bytes(b"sealed-deployment-artifact-v1")
+        self.rollback_artifact.write_bytes(b"sealed-runtime-rollback-artifact-v1")
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
     def manifest(self, **overrides):
         values = {
             "adopted_runtime_head": ADOPTED_RUNTIME_HEAD,
@@ -26,8 +38,9 @@ class DeploymentContractTests(unittest.TestCase):
             "mode": MODE,
             "runtime": RUNTIME,
             "target_environment": TARGET_ENVIRONMENT,
-            "artifact_sha256": "a" * 64,
+            "artifact_sha256": sha256_file(self.artifact),
             "rollback_ref": ADOPTED_RUNTIME_HEAD,
+            "rollback_artifact_sha256": sha256_file(self.rollback_artifact),
             "credential_source": "INJECTED_EPHEMERAL_ONLY",
             "credential_persistence": False,
             "capabilities": dict(DEFAULT_DENY_CAPABILITIES),
@@ -35,8 +48,17 @@ class DeploymentContractTests(unittest.TestCase):
         values.update(overrides)
         return DeploymentManifest(**values)
 
+    def validate(self, manifest=None):
+        (manifest or self.manifest()).validate(
+            artifact_path=self.artifact,
+            rollback_artifact_path=self.rollback_artifact,
+        )
+
     def test_exact_manifest_passes(self):
-        receipt = self.manifest().receipt()
+        receipt = self.manifest().receipt(
+            artifact_path=self.artifact,
+            rollback_artifact_path=self.rollback_artifact,
+        )
         self.assertEqual(receipt["status"], "PASS")
         self.assertEqual(receipt["runtime"], "OFF")
         self.assertTrue(all(v is False for v in receipt["capabilities"].values()))
@@ -45,41 +67,164 @@ class DeploymentContractTests(unittest.TestCase):
         caps = dict(DEFAULT_DENY_CAPABILITIES)
         caps["network"] = True
         with self.assertRaisesRegex(DeploymentGateError, "CAPABILITY_DEFAULT_DENY_REQUIRED"):
-            self.manifest(capabilities=caps).validate()
+            self.validate(self.manifest(capabilities=caps))
 
     def test_secret_persistence_fails_closed(self):
         with self.assertRaisesRegex(DeploymentGateError, "SECRET_PERSISTENCE_FORBIDDEN"):
-            self.manifest(credential_persistence=True).validate()
+            self.validate(self.manifest(credential_persistence=True))
 
     def test_wrong_lineage_fails_closed(self):
         with self.assertRaisesRegex(DeploymentGateError, "ADOPTED_RUNTIME_HEAD_MISMATCH"):
-            self.manifest(adopted_runtime_head="0" * 40).validate()
+            self.validate(self.manifest(adopted_runtime_head="0" * 40))
 
-    def test_rollback_must_bind_adopted_head(self):
+    def test_rollback_ref_must_bind_adopted_head(self):
         with self.assertRaisesRegex(DeploymentGateError, "ROLLBACK_BINDING_REQUIRED"):
-            self.manifest(rollback_ref="0" * 40).validate()
+            self.validate(self.manifest(rollback_ref="0" * 40))
+
+    def test_valid_looking_wrong_artifact_digest_fails_closed(self):
+        with self.assertRaisesRegex(DeploymentGateError, "DEPLOYMENT_ARTIFACT_DIGEST_MISMATCH"):
+            self.validate(self.manifest(artifact_sha256="0" * 64))
+
+    def test_artifact_mutation_after_manifest_freeze_fails_closed(self):
+        manifest = self.manifest()
+        self.artifact.write_bytes(b"tampered")
+        with self.assertRaisesRegex(DeploymentGateError, "DEPLOYMENT_ARTIFACT_DIGEST_MISMATCH"):
+            self.validate(manifest)
+
+    def test_rollback_artifact_digest_tamper_fails_closed(self):
+        with self.assertRaisesRegex(DeploymentGateError, "ROLLBACK_ARTIFACT_DIGEST_MISMATCH"):
+            self.validate(self.manifest(rollback_artifact_sha256="f" * 64))
+
+    def test_rollback_artifact_mutation_fails_closed(self):
+        manifest = self.manifest()
+        self.rollback_artifact.write_bytes(b"tampered rollback")
+        with self.assertRaisesRegex(DeploymentGateError, "ROLLBACK_ARTIFACT_DIGEST_MISMATCH"):
+            self.validate(manifest)
 
     def test_kill_switch_must_stay_engaged(self):
         with self.assertRaisesRegex(DeploymentGateError, "KILL_SWITCH_MUST_REMAIN_ENGAGED"):
-            health_receipt(self.manifest(), kill_switch_engaged=False)
+            health_receipt(
+                self.manifest(),
+                kill_switch_engaged=False,
+                artifact_path=self.artifact,
+                rollback_artifact_path=self.rollback_artifact,
+            )
 
     def test_health_is_explicitly_not_live_ready(self):
-        receipt = health_receipt(self.manifest(), kill_switch_engaged=True)
+        receipt = health_receipt(
+            self.manifest(),
+            kill_switch_engaged=True,
+            artifact_path=self.artifact,
+            rollback_artifact_path=self.rollback_artifact,
+        )
         self.assertFalse(receipt["ready_for_live_activation"])
         self.assertEqual(receipt["runtime"], "OFF")
 
+    def snapshot_fixture(self):
+        source = self.root / "state.db"
+        snap = self.root / "state.snapshot"
+        restored = self.root / "state.restored"
+        source.write_bytes(b"sealed-state-v1\x00\x01")
+        receipt = snapshot_bytes(source, snap, snapshot_identity="runtime-state-primary")
+        return source, snap, restored, receipt
+
     def test_snapshot_restore_integrity(self):
-        with tempfile.TemporaryDirectory() as d:
-            root = Path(d)
-            source = root / "state.db"
-            snap = root / "state.snapshot"
-            restored = root / "state.restored"
-            source.write_bytes(b"sealed-state-v1\x00\x01")
-            s = snapshot_bytes(source, snap)
-            r = restore_bytes(snap, restored)
-            self.assertEqual(s["source_sha256"], s["snapshot_sha256"])
-            self.assertEqual(r["snapshot_sha256"], r["restored_sha256"])
-            self.assertEqual(source.read_bytes(), restored.read_bytes())
+        source, snap, restored, receipt = self.snapshot_fixture()
+        result = restore_bytes(
+            snap,
+            restored,
+            expected_receipt=receipt,
+            expected_identity="runtime-state-primary",
+        )
+        self.assertEqual(result["integrity"], "PASS")
+        self.assertEqual(source.read_bytes(), restored.read_bytes())
+
+    def test_corrupted_snapshot_fails_before_restore_write(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        snap.write_bytes(b"corrupt")
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_DIGEST_MISMATCH"):
+            restore_bytes(
+                snap,
+                restored,
+                expected_receipt=receipt,
+                expected_identity="runtime-state-primary",
+            )
+        self.assertFalse(restored.exists())
+
+    def test_truncated_snapshot_fails_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        snap.write_bytes(snap.read_bytes()[:-1])
+        with self.assertRaises(DeploymentGateError):
+            restore_bytes(
+                snap,
+                restored,
+                expected_receipt=receipt,
+                expected_identity="runtime-state-primary",
+            )
+
+    def test_wrong_snapshot_identity_fails_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_IDENTITY_MISMATCH"):
+            restore_bytes(
+                snap,
+                restored,
+                expected_receipt=receipt,
+                expected_identity="other-state",
+            )
+
+    def test_wrong_snapshot_schema_fails_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        bad = copy.deepcopy(receipt)
+        bad["schema_version"] = "WRONG"
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_SCHEMA_MISMATCH"):
+            restore_bytes(
+                snap,
+                restored,
+                expected_receipt=bad,
+                expected_identity="runtime-state-primary",
+            )
+
+    def test_wrong_snapshot_runtime_head_fails_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        bad = copy.deepcopy(receipt)
+        bad["adopted_runtime_head"] = "0" * 40
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_RUNTIME_HEAD_MISMATCH"):
+            restore_bytes(
+                snap,
+                restored,
+                expected_receipt=bad,
+                expected_identity="runtime-state-primary",
+            )
+
+    def test_wrong_snapshot_main_fails_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        bad = copy.deepcopy(receipt)
+        bad["canonical_main"] = "0" * 40
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_MAIN_MISMATCH"):
+            restore_bytes(
+                snap,
+                restored,
+                expected_receipt=bad,
+                expected_identity="runtime-state-primary",
+            )
+
+    def test_cross_run_receipt_fails_closed(self):
+        _, snap, restored, _ = self.snapshot_fixture()
+        other_source = self.root / "other.db"
+        other_snap = self.root / "other.snapshot"
+        other_source.write_bytes(b"different-state")
+        other_receipt = snapshot_bytes(
+            other_source,
+            other_snap,
+            snapshot_identity="runtime-state-primary",
+        )
+        with self.assertRaisesRegex(DeploymentGateError, "SNAPSHOT_DIGEST_MISMATCH"):
+            restore_bytes(
+                snap,
+                restored,
+                expected_receipt=other_receipt,
+                expected_identity="runtime-state-primary",
+            )
 
 
 if __name__ == "__main__":
