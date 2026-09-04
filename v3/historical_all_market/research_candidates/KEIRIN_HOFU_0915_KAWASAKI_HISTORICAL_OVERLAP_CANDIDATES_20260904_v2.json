@@ -1,0 +1,25 @@
+{
+  "record":"KEIRIN_HOFU_0915_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260904_v2",
+  "status":"PREQUALIFIED_CANDIDATE_SET_EXHAUSTIVE_ALL_IDENTITIES_RESOLVED_NO_SUPPORT_INCREMENT",
+  "supersedes":"KEIRIN_HOFU_0915_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260904_v1.json",
+  "observed_at_jst":"2026-09-04",
+  "prospective_event":{"venue":"防府","circumference":"333_OR_333_33M","dates":"2026-09-15..17","event":"第６回石村正利記念杯","event_level_full_assen_positive":true,"day1_racecard_positive":false,"day1_program_state":"RACE_INFORMATION_NOT_YET_AVAILABLE_ON_OBSERVED_PROGRAM_PAGE"},
+  "historical_counterpart":{"venue":"川崎","circumference":"400M","date":"2026-08-30","evidence":"KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv","historical_rows_screened":84},
+  "screen_method":"Exact normalized rider-name equality across all 84 frozen Kawasaki PRE rows against the full positively observed Hofu 2026-09-15 event-level assen roster; no fuzzy matching.",
+  "mapped_candidates":[
+    {"rider":"桑原 大志","registration_number":"013355","historical_race":12,"historical_car_no":1,"historical_class":"S1","prospective_class":"S1","official_identity_mapping":"PASS"},
+    {"rider":"中村 龍吉","registration_number":"015787","historical_race":9,"historical_car_no":4,"historical_class":"S2","prospective_class":"S2","official_identity_mapping":"PASS"},
+    {"rider":"永井 哉多","registration_number":"015610","historical_race":11,"historical_car_no":3,"historical_class":"S2","prospective_class":"S2","official_identity_mapping":"PASS"},
+    {"rider":"田中 陽平","registration_number":"014633","historical_race":10,"historical_car_no":2,"historical_class":"S2","prospective_class":"S2","official_identity_mapping":"PASS"},
+    {"rider":"岡崎 陸登","registration_number":"015734","historical_race":4,"historical_car_no":7,"historical_class":"A1","prospective_class":"A1","official_identity_mapping":"PASS"}
+  ],
+  "exact_name_candidates_observed":5,
+  "new_candidates_vs_v1":["桑原 大志 / 013355"],
+  "official_identity_mapping_pass_count":5,
+  "candidate_set_scope":"EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_ALL_84_KAWASAKI_FROZEN_PRE_ROWS",
+  "support_receipt_authorized":false,
+  "support_increment_authorized":0,
+  "missing_for_formal_support":["Day1 PRE membership after positive racecard publication","contemporaneous official same-race assignment","prospective PRE provenance PASS"],
+  "hard_boundaries":{"RESULT":"BLOCKED","payout_access":false,"odds_used":false,"race_id_guessing":false,"post_cutoff_pre_reconstruction":false},
+  "owner_action_required_now":false
+}
