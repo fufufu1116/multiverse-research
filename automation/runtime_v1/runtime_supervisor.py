@@ -1,8 +1,8 @@
-"""MULTIVERSE Runtime Supervisor v1 — sealed construction surface.
+"""MULTIVERSE Runtime Supervisor v1 — sealed Candidate surface.
 
 This module proves local lifecycle/checkpoint/identity/kill-switch mechanics only.
-It cannot contact a provider or network, cannot create Independent Lab/Auditor
-verdicts, and carries no production/Runtime activation authority.
+It cannot contact a provider or network, cannot execute caller-supplied code, cannot
+create Independent Lab/Auditor verdicts, and carries no Runtime activation authority.
 """
 from __future__ import annotations
 
@@ -112,7 +112,11 @@ class WorkerIdentityVerifier:
 
 
 class SupervisorStore:
-    """Durable local runtime-control journal, separate from Shared Engine task authority."""
+    """Durable local runtime-control journal, separate from Shared Engine task authority.
+
+    The sealed Candidate has no method that can disengage its durable kill switch.
+    A future activation surface must be added as a separately reviewed exact-lineage change.
+    """
 
     def __init__(self, path: str):
         self.path = path
@@ -159,6 +163,7 @@ class SupervisorStore:
             "canonical_main": CANONICAL_MAIN,
             "canonical_tree": CANONICAL_TREE,
             "mode": MODE,
+            "kill_switch": "1",
         }
         if any(rows.get(k) != v for k, v in expected.items()):
             raise RuntimeGateError("RUNTIME_STORE_BINDING_MISMATCH")
@@ -180,14 +185,6 @@ class SupervisorStore:
     def kill_switch_engaged(self) -> bool:
         c = self._conn(); row = c.execute("SELECT v FROM meta WHERE k='kill_switch'").fetchone(); c.close()
         return row["v"] == "1"
-
-    def set_test_kill_switch(self, engaged: bool, *, authority: str) -> None:
-        if authority != "TEST_ONLY_LOCAL_CANDIDATE":
-            raise RuntimeGateError("KILL_SWITCH_AUTHORITY_DENIED")
-        c = self._conn()
-        with c:
-            c.execute("UPDATE meta SET v=? WHERE k='kill_switch'", ("1" if engaged else "0",))
-        c.close()
 
     def journal(self, instance_id: str, event_type: str, *, worker_id: str | None = None, detail: dict[str, Any] | None = None) -> None:
         c = self._conn(); now = time.time()
@@ -221,7 +218,7 @@ class SupervisorStore:
 
 
 class RuntimeSupervisor:
-    """Bounded supervisor loop. Executes injected local actions only in SEALED_DRY_RUN."""
+    """Bounded sealed supervisor. It accepts data payloads, never executable callbacks."""
 
     def __init__(self, store: SupervisorStore, verifier: WorkerIdentityVerifier):
         self.store = store
@@ -237,7 +234,7 @@ class RuntimeSupervisor:
         return worker
 
     def step(self, token: str, action_type: str, checkpoint_key: str,
-             action: Callable[[], dict[str, Any]]) -> dict[str, Any]:
+             payload: dict[str, Any]) -> dict[str, Any]:
         worker = self.verifier.verify(token)
         if action_type in FORBIDDEN_REVIEW_ROLES:
             self.store.journal(self.instance_id, "REVIEW_ROLE_REJECTED", worker_id=worker.worker_id,
@@ -252,11 +249,12 @@ class RuntimeSupervisor:
         self.store.journal(self.instance_id, "STEP_STARTED", worker_id=worker.worker_id,
                            detail={"action_type": action_type, "checkpoint_key": checkpoint_key})
         try:
-            result = action()
-            if not isinstance(result, dict):
-                raise RuntimeGateError("ACTION_RESULT_OBJECT_REQUIRED")
-            # serialization check before durable success/checkpoint
-            json.dumps(result, sort_keys=True)
+            if not isinstance(payload, dict):
+                raise RuntimeGateError("ACTION_PAYLOAD_OBJECT_REQUIRED")
+            # Deep serialization is the execution boundary: this sealed Candidate only
+            # durably checkpoints inert JSON data. It cannot invoke caller code.
+            encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+            result = json.loads(encoded)
             self.store.checkpoint(checkpoint_key, result, instance_id=self.instance_id)
             self.store.journal(self.instance_id, "STEP_COMPLETED", worker_id=worker.worker_id,
                                detail={"action_type": action_type, "checkpoint_key": checkpoint_key})
@@ -267,10 +265,10 @@ class RuntimeSupervisor:
             raise
 
     def run_bounded(self, token: str, action_type: str, checkpoint_key: str,
-                    action: Callable[[], dict[str, Any]], *, max_steps: int) -> list[dict[str, Any]]:
+                    payload: dict[str, Any], *, max_steps: int) -> list[dict[str, Any]]:
         if isinstance(max_steps, bool) or not isinstance(max_steps, int) or not (1 <= max_steps <= 100):
             raise RuntimeGateError("MAX_STEPS_BOUNDED_1_100_REQUIRED")
         results = []
         for _ in range(max_steps):
-            results.append(self.step(token, action_type, checkpoint_key, action))
+            results.append(self.step(token, action_type, checkpoint_key, payload))
         return results
