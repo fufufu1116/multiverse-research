@@ -58,7 +58,7 @@ jobs:
       - name: Inherited Shared Engine plus v9 and v11 tests
         shell: bash
         env:
-          PYTHONPATH: automation/shared_engine
+          PYTHONPATH: automation:automation/shared_engine
         run: |
           set -euo pipefail
           python -m unittest discover -v -s automation/shared_engine/tests -p 'test_*.py'
@@ -66,7 +66,7 @@ jobs:
       - name: v10 process-isolation and durable-replay adversarial tests
         shell: bash
         env:
-          PYTHONPATH: automation/shared_engine
+          PYTHONPATH: automation:automation/shared_engine
         run: |
           set -euo pipefail
           python automation/shared_engine/tests/v10_test_process_isolated_worker.py
@@ -74,7 +74,7 @@ jobs:
       - name: v11 exact-source mechanical gate
         shell: bash
         env:
-          PYTHONPATH: automation/shared_engine
+          PYTHONPATH: automation:automation/shared_engine
         run: |
           set -euo pipefail
           python automation/shared_engine/mechanical_gate_current_main_worker_rebind_v11.py
