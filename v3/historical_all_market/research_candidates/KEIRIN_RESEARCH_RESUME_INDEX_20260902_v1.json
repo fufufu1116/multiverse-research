@@ -4,7 +4,7 @@
   "canonical_repo": "fufufu1116/multiverse-research",
   "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
   "creation_parent_head": "78e9bff755fe206892af89a1cf97905f3dcd737d",
-  "latest_pointer_refresh_parent_head": "e0b682fd5389d921a990baee7fcffb448564968e",
+  "latest_pointer_refresh_parent_head": "0023373e7a29fe344d78c1c14c20232c0de0adf3",
   "first_rule": "Never infer CURRENT/NOW/LATEST from this file's stored SHA, chat history, handoff, or memory. Fresh Read the research branch ref first.",
   "resume_sequence": [
     {
@@ -15,7 +15,7 @@
     {
       "step": 2,
       "action": "READ_CURRENT_STATE",
-      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v21.json"
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v22.json"
     },
     {
       "step": 3,
@@ -38,8 +38,8 @@
       "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v21.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v20.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v22.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v21.json",
   "lane_entrypoints": {
     "S0_FIXED": "v3/historical_all_market/research_candidates/KEIRIN_S0_SECOND_FUTURE_PERIOD_101R_GATE_REPORT_20260902_v1.json",
     "HISTORICAL_PIT_FAST_TRACK": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_PIT_FAST_TRACK_ACQUISITION_PRESPEC_20260903_v2.json",
@@ -99,7 +99,9 @@
     "HOFU_PIT_CUTOFF_V1_LIVE_FAIL": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_PIT_CUTOFF_EXTRACTOR_LIVE_20260904_v1.json",
     "HOFU_RACEPROGRAM_HREF_SHAPE": "v3/historical_all_market/research_candidates/KEIRIN_HOFU_SEP4_RACECARD_PROGRAM_HREF_PROBE_20260904_v1.json",
     "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py",
-    "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PROSPECTIVE_PRECAPTURE_ORCHESTRATOR_SELFTEST_20260904_v1.json"
+    "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PROSPECTIVE_PRECAPTURE_ORCHESTRATOR_SELFTEST_20260904_v1.json",
+    "SEP10_NARA_PENDING_SUPPORT_RESOLVER": "tools/keirin_sep10_nara_pending_support_candidate_resolver_v1.py",
+    "SEP10_NARA_PENDING_SUPPORT_RESOLVER_SELFTEST": "v3/historical_all_market/research_candidates/KEIRIN_SEP10_NARA_PENDING_SUPPORT_CANDIDATE_RESOLVER_SELFTEST_20260904_v1.json"
   },
   "context_policy": {
     "chat": "WORKSPACE_NOT_AUTHORITY",
