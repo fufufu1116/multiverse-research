@@ -4,6 +4,16 @@ This successor exists because PR #96 Independent Lab correctly blocked a same-Py
 
 The client module does not import or retain Shared Engine, the v9 worker, task DB, provider adapter, receipt stores, candidate binding, broker replay DB, or DB paths. Its protocol is exactly `PING`, `STEP`, and `STOP`; there is no task-id-directed call, submit/create-task opcode, arbitrary attribute/method dispatch, generic import, arbitrary path/command/env operation, pickle/marshal/eval/exec, or file-descriptor transfer. Unknown opcodes, malformed JSON, duplicate/extra keys, oversized messages and response binding errors fail closed.
 
+## Two-finding strict-schema / inode-alias remediation
+
+Independent Lab result `5535444044` found two additional material defects on exact head `0058edc00c3a3ec9f58e4af63bae69052108c48d`: JSON protocol version type confusion and replay-DB hard-link aliasing. Owner receipt `5535736466` authorizes only bounded v10-local closure of those two findings.
+
+The broker now requires protocol version to be an **exact JSON integer** equal to `1`. JSON `true`, `1.0`, strings, null and every other wrong type are rejected before durable replay reservation, so they cannot consume replay capacity or reach `PING/STEP/STOP` dispatch.
+
+Replay DB separation now checks both canonicalized path strings and existing filesystem identity via inode-equivalence checks. This closes distinct-path hard-link aliases where `realpath()` strings differ but task/bridge/provider/replay paths name the same underlying file. The reviewed boundary still excludes a malicious same-OS-user/root/filesystem controller racing the filesystem after validation.
+
+Fresh canonical main advanced after the earlier freeze to `a6f56facc80709f2e7b8218d927484d522bfa356` via the Owner-authorized Shared Engine v8 canonical merge. The inherited v10 stack still carries its historical exact PR91/PR88 construction binding to `040d37f0a4e426cf2e119706484c90cbb48f0e56`. This Candidate records those as two different facts: **Fresh repository main observation** versus **inherited stack binding**. This remediation does not rewrite inherited PR96/PR91/PR88 files or claim a new inherited-stack rebind.
+
 ## Durable replay boundary
 
 Before any syntactically valid request reaches broker dispatch, the privileged broker reserves its exact `request_id` plus canonical request fingerprint in a private SQLite deny-only anti-replay store. The reservation commits **before dispatch**. The store is bounded to exactly 256 accepted request IDs, has no TTL, no automatic eviction, and no reset/rotation API. A replayed request ID is therefore rejected across broker/serve-loop/process restart before a second dispatch or authoritative PR91 workflow mutation. Reuse of an old ID with a different opcode/body is conflict-rejected before dispatch.
