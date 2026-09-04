@@ -50,6 +50,11 @@ def _is_lower_hex_sha256(value: object) -> bool:
     )
 
 
+def _require_exact_str(value: object, expected: str, error: str) -> None:
+    if type(value) is not str or value != expected:
+        raise DeploymentGateError(error)
+
+
 @dataclass(frozen=True)
 class DeploymentManifest:
     adopted_runtime_head: str
@@ -70,16 +75,33 @@ class DeploymentManifest:
         artifact_path: str | Path,
         rollback_artifact_path: str | Path,
     ) -> None:
-        if self.adopted_runtime_head != ADOPTED_RUNTIME_HEAD:
-            raise DeploymentGateError("ADOPTED_RUNTIME_HEAD_MISMATCH")
-        if self.canonical_main != CANONICAL_MAIN:
-            raise DeploymentGateError("CANONICAL_MAIN_MISMATCH")
-        if self.mode != MODE or self.runtime != RUNTIME:
-            raise DeploymentGateError("SEALED_MODE_REQUIRED")
-        if self.target_environment != TARGET_ENVIRONMENT:
-            raise DeploymentGateError("TARGET_ENVIRONMENT_MISMATCH")
-        if self.credential_source != "INJECTED_EPHEMERAL_ONLY":
-            raise DeploymentGateError("EPHEMERAL_CREDENTIAL_INJECTION_REQUIRED")
+        _require_exact_str(
+            self.adopted_runtime_head,
+            ADOPTED_RUNTIME_HEAD,
+            "ADOPTED_RUNTIME_HEAD_MISMATCH",
+        )
+        _require_exact_str(
+            self.canonical_main,
+            CANONICAL_MAIN,
+            "CANONICAL_MAIN_MISMATCH",
+        )
+        _require_exact_str(self.mode, MODE, "SEALED_MODE_REQUIRED")
+        _require_exact_str(self.runtime, RUNTIME, "SEALED_MODE_REQUIRED")
+        _require_exact_str(
+            self.target_environment,
+            TARGET_ENVIRONMENT,
+            "TARGET_ENVIRONMENT_MISMATCH",
+        )
+        _require_exact_str(
+            self.credential_source,
+            "INJECTED_EPHEMERAL_ONLY",
+            "EPHEMERAL_CREDENTIAL_INJECTION_REQUIRED",
+        )
+        _require_exact_str(
+            self.rollback_ref,
+            ADOPTED_RUNTIME_HEAD,
+            "ROLLBACK_BINDING_REQUIRED",
+        )
         if self.credential_persistence is not False:
             raise DeploymentGateError("SECRET_PERSISTENCE_FORBIDDEN")
         if type(self.capabilities) is not dict:
@@ -88,8 +110,6 @@ class DeploymentManifest:
             raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
         if any(type(value) is not bool or value is not False for value in self.capabilities.values()):
             raise DeploymentGateError("CAPABILITY_DEFAULT_DENY_REQUIRED")
-        if self.rollback_ref != ADOPTED_RUNTIME_HEAD:
-            raise DeploymentGateError("ROLLBACK_BINDING_REQUIRED")
         if not _is_lower_hex_sha256(self.artifact_sha256):
             raise DeploymentGateError("DEPLOYMENT_ARTIFACT_DIGEST_INVALID")
         if not _is_lower_hex_sha256(self.rollback_artifact_sha256):
