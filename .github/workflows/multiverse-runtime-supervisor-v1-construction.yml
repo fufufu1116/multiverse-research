@@ -46,10 +46,10 @@ jobs:
       - name: Runtime Supervisor v1 tests
         shell: bash
         env:
-          PYTHONPATH: automation/runtime_v1
+          PYTHONPATH: automation/runtime_v1:automation/shared_engine
         run: |
           set -euo pipefail
-          python -m unittest automation/runtime_v1/test_runtime_supervisor.py -v
+          python -m unittest discover -s automation/runtime_v1 -p 'test_*.py' -v
 
       - name: Mechanical no-network and review-separation gate
         shell: bash
@@ -57,11 +57,13 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-          p=Path('automation/runtime_v1/runtime_supervisor.py')
-          s=p.read_text()
+          files=[Path('automation/runtime_v1/runtime_supervisor.py'),Path('automation/runtime_v1/shared_engine_driver.py')]
           forbidden=('requests','urllib','http.client','socket','boto3','openai','anthropic')
-          for item in forbidden:
-              assert f'import {item}' not in s and f'from {item}' not in s, item
+          for p in files:
+              s=p.read_text()
+              for item in forbidden:
+                  assert f'import {item}' not in s and f'from {item}' not in s, (p,item)
+          s=files[0].read_text()
           assert 'INDEPENDENT_REVIEW_CANNOT_BE_SELF_MANUFACTURED' in s
           assert 'TEST_ONLY_LOCAL_CANDIDATE' in s
           print('MECHANICAL_GATE=PASS')
