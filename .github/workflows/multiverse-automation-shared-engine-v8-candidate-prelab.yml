@@ -1,0 +1,66 @@
+name: MULTIVERSE Automation Shared Engine v8 Candidate pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-shared-engine-integration-v8-candidate-20260903-v1
+    paths:
+      - 'automation/shared_engine/**'
+      - '.github/workflows/multiverse-automation-shared-engine-v8-candidate-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bind exact candidate and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/automation-shared-engine-integration-v8-candidate-20260903-v1"
+          test "${FRESH_MAIN}" = "040d37f0a4e426cf2e119706484c90cbb48f0e56"
+          python - <<'PY'
+          import json
+          p='automation/shared_engine/INTEGRATION_V8_CANDIDATE_FREEZE.json'
+          d=json.load(open(p))
+          assert d['frozen'] is True
+          assert d['construction_head']=='04a8234096ad6cb98ac0219e25ba6ecffd0823c3'
+          assert d['stacked_v7_head']=='4a72ef46116043094c7a8e494404956925a5b3bf'
+          assert d['canonical_main']=='040d37f0a4e426cf2e119706484c90cbb48f0e56'
+          assert all(v is False for v in d['authority'].values())
+          PY
+          echo "V8_CANDIDATE_EXACT_HEAD=${EXACT_HEAD}"
+          echo "V8_CANDIDATE_FRESH_MAIN=${FRESH_MAIN}"
+      - name: Exact v7 shared-engine Candidate tests
+        shell: bash
+        env:
+          PYTHONPATH: automation/shared_engine:automation
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s automation/shared_engine/tests -p 'test_*.py' -v
+      - name: Candidate nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "V8_CANDIDATE_FROZEN=true"
+          echo "V8_RUNTIME=OFF"
+          echo "V8_LIVE_PROVIDER=false"
+          echo "V8_NETWORK=false"
+          echo "V8_EXTERNAL_EFFECT=false"
+          echo "V8_SPEND=false"
+          echo "V8_SECRET_CREDENTIAL=false"
+          echo "V8_MAIN_MUTATION_AUTHORITY=false"
+          echo "V8_RULESET_MUTATION_AUTHORITY=false"
+          echo "V8_CORE_ADOPTION_AUTHORITY=false"
+          echo "V8_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "V8_INDEPENDENT_REVIEW_REQUIRED=true"
