@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v25",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "CURRENT/NOW/LATEST always requires Fresh Read of branch ref first; stored heads are provenance only.",
+  "inherited_state": {"base": "KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json", "rule": "All inherited hard boundaries remain binding unless explicitly changed below."},
+  "current_stage": "STAGE_3_CROSS_CIRCUMFERENCE_SUPPORT_ACCUMULATION_MULTI_EVENT_QUEUE_ACTIVE",
+  "support_state": {"confirmed_unique_cross_circumference_supported_riders_floor": 1, "confirmed_supported_rider_race_rows_floor": 2, "support_increment_authorized_now": 0, "target_unique_cross_circumference_supported_riders": 30, "gate": "FAIL", "result_join_authorized": false, "formula_status": "BLOCKED"},
+  "active_continuity_lane": {
+    "prespec": "KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
+    "offline_selftest_status": "PASS",
+    "event_queue": "KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json",
+    "queue_total_events": 6,
+    "queue_333_or_333_33m_events": 3,
+    "queue_400m_events": 3,
+    "queued_dates": {"奈良": ["2026-09-10", "2026-09-18", "2026-09-24"], "川崎": ["2026-09-10", "2026-09-16", "2026-09-26"]},
+    "sep10_role": "PARALLEL_HIGH_PRIORITY_TARGET_NOT_SOLE_GLOBAL_BLOCKER"
+  },
+  "roadmap": {
+    "phase_1_s0_fixed": "DONE_FROZEN",
+    "phase_2_pre_evidence_tooling": "DONE_CORE_TOOLS_PASS",
+    "phase_3_cross_circumference_support": "CURRENT",
+    "phase_4_support_adequacy_gate": "BLOCKED_SAMPLE_SIZE",
+    "phase_5_result_join_formula_evaluation": "LOCKED_UNTIL_GATE_PASS",
+    "phase_6_promotion_production": "OUT_OF_SCOPE_LOCKED"
+  },
+  "current_work": "Expand and execute a prospective multi-event PRE-only queue rather than repeatedly polling only Sep10.",
+  "blocker": "External racecard publication timing plus strict pre-cutoff/identity/same-race evidence requirements.",
+  "resolution": "Parallelize future 333/333.33m and 400m opportunities; capture before cutoff and issue support only after complete official evidence.",
+  "next_actions": [
+    "Fresh Read before every CURRENT claim/write.",
+    "Continue positive-navigation discovery beyond the initial six events where useful for venue/calendar-block adequacy.",
+    "Check queued events for exact Day1 racecard availability at appropriate pre-event times; do not use repetitive Sep10-only polling as primary work.",
+    "When any queued event becomes actionable pre-cutoff, run existing prospective PRE capture chain.",
+    "Require official registration identity and contemporaneous official same-race assignment before support receipt.",
+    "Recompute all frozen adequacy dimensions after every formal support batch.",
+    "Keep RESULT/formula/S0 mutation/main/production closed."
+  ],
+  "owner_reporting_contract": {"periodically_include": ["ロードマップ（全体工程）", "現在地（今どこか）", "今やっていること", "苦戦していること", "解決策"], "terminology": "専門用語・英語には簡潔な日本語訳を添える。", "handoff": "引き継ぎ文章には必ず同形式と最新ロードマップ/現在地を含める。"},
+  "source_integrity": {"result_accessed": false, "payout_accessed": false, "odds_accessed": false, "race_id_guessed": false, "main_or_runtime_mutation": false},
+  "owner_action_required_now": false
+}
