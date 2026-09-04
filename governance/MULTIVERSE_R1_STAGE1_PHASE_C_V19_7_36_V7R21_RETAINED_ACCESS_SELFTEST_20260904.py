@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-import errno,fcntl,hashlib,importlib.util,json,os,re,selectors,subprocess,time
+import errno,fcntl,hashlib,importlib.util,json,os,re,selectors,signal,subprocess,threading,time
 BASE='/src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TID_ATTACK_SELFTEST_20260904.py'
 spec=importlib.util.spec_from_file_location('v7r20',BASE); M=importlib.util.module_from_spec(spec); spec.loader.exec_module(M)
 NAME='rate-v7r21-test'; AUTH_UID=M.AUTH_UID
+HELPER='/usr/local/bin/multiverse-v36-ui-ready-v7r21'
 
 def configure_base():
     M.NAME=NAME
@@ -42,8 +43,6 @@ def prove_nondumpable_ptrace_denial(tid):
     return er
 
 def retained_authority_fd_attack(fd,baseline):
-    # Exact sealed authority memfd: created before the protected transition,
-    # inherited by the target, and intentionally retained by the attacker.
     results=[]
     try:
         os.pwrite(fd,b'X',0); raise SystemExit('MATERIAL_RETAINED_AUTHORITY_FD_PWRITE_SUCCEEDED')
@@ -55,7 +54,7 @@ def retained_authority_fd_attack(fd,baseline):
     except OSError as e:
         if e.errno not in (errno.EPERM,errno.EACCES): raise
         results.append(f'truncate={e.errno}')
-    seals=fcntl.fcntl(fd,1034) # Linux F_GET_SEALS
+    seals=fcntl.fcntl(fd,1034)
     if seals!=M.SEALS: raise SystemExit(f'MATERIAL_RETAINED_AUTHORITY_FD_SEALS_CHANGED:{seals}')
     now=os.pread(fd,1<<20,0)
     if hashlib.sha256(now).hexdigest()!=baseline: raise SystemExit('MATERIAL_RETAINED_AUTHORITY_FD_CONTENT_CHANGED')
@@ -68,11 +67,38 @@ def main():
     os.setgroups([]); os.setresgid(gid,gid,gid); os.setresuid(uid,uid,uid)
     fd=M.make_authority(); baseline=hashlib.sha256(os.pread(fd,1<<20,0)).hexdigest()
     p=subprocess.Popen(['/tmp/v7r20-launcher',NAME,str(fd),M.GEN],env={'CODESPACES':'true','CODESPACE_NAME':NAME},pass_fds=(fd,),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,bufsize=1)
+    # Selftest-only external observer: stop the exact installed helper as soon as
+    # /proc reports the exec transition. This creates no production hook, delay,
+    # environment knob or control channel in the reviewed helper/guard bytes.
+    boundary_stop=threading.Event(); boundary_done=threading.Event()
+    def stop_exact_helper():
+        limit=time.time()+3
+        while time.time()<limit and p.poll() is None and not boundary_done.is_set():
+            try:
+                if os.readlink(f'/proc/{p.pid}/exe')==HELPER:
+                    os.kill(p.pid,signal.SIGSTOP); boundary_stop.set(); return
+            except (FileNotFoundError,PermissionError,ProcessLookupError,OSError):
+                pass
+    threading.Thread(target=stop_exact_helper,daemon=True).start()
     sel=selectors.DefaultSelector(); sel.register(p.stdout,selectors.EVENT_READ)
-    helper_entry=retired=drop_marker=stress_armed=stress_pass=False; addr=None
+    helper_entry=retired=drop_marker=stress_armed=stress_pass=False; addr=None; boundary_stop_handled=False
     protected_attempts=pre_boundary_attach_denials=mixed_snapshots=mixed_tid_attempts=retained_fd_mixed_attempts=0
     mixed_targeted=set(); all_tids=set(); pre_safe_tids=set(); post_safe_records={}; post_safe_scans=0; out=[]; deadline=time.time()+15
     while time.time()<deadline and p.poll() is None:
+        if boundary_stop.is_set() and not boundary_stop_handled:
+            try: os.waitpid(p.pid,os.WUNTRACED)
+            except ChildProcessError: raise SystemExit('exact-helper-stop-child-disappeared')
+            try: exe=os.readlink(f'/proc/{p.pid}/exe')
+            except OSError as e: raise SystemExit(f'exact-helper-stop-exe-unreadable:{e}')
+            if exe!=HELPER: raise SystemExit(f'exact-helper-stop-wrong-exe:{exe}')
+            held=task_states(p.pid)
+            if not held: raise SystemExit('exact-helper-stop-no-tasks')
+            for tid,s in held.items():
+                if s['uid']!=(uid,AUTH_UID,AUTH_UID,AUTH_UID): raise SystemExit(f'exact-helper-stop-too-late-or-wrong-creds:tid={tid}:{s["uid"]}')
+                er=prove_nondumpable_ptrace_denial(tid)
+                if er!=errno.EPERM: raise SystemExit(f'exact-helper-stop-ptrace-not-kernel-eperm:tid={tid}:errno={er}')
+                pre_boundary_attach_denials+=1
+            boundary_stop_handled=True; boundary_done.set(); os.kill(p.pid,signal.SIGCONT)
         for key,_ in sel.select(timeout=0):
             line=key.fileobj.readline()
             if line:
@@ -101,9 +127,6 @@ def main():
                 rec=dict(s); rec['ptrace_attach_errno']=er; rec['dumpability_evidence']='kernel_ptrace_attach_denied_after_helper_PR_SET_DUMPABLE_0'
                 post_safe_records[tid]=rec
         if protected:
-            if helper_entry:
-                for tid in list(states):
-                    prove_nondumpable_ptrace_denial(tid); pre_boundary_attach_denials+=1
             bad=M.attack_tid(p.pid,p.pid,addr,fd); protected_attempts+=1
             if bad:p.kill(); raise SystemExit('MATERIAL_PROTECTED_TRANSIENT_ACCESS:'+bad)
         elif mixed:
@@ -118,11 +141,12 @@ def main():
                 bad=M.attack_tid(p.pid,tid,addr,fd)
                 if bad:p.kill(); raise SystemExit(f'MATERIAL_ORDINARY_BEFORE_SAFE_BOUNDARY:tid={tid}:'+str(bad))
         time.sleep(0.0004)
+    boundary_done.set()
     try: rc=p.wait(timeout=3)
     except subprocess.TimeoutExpired: p.kill(); rc=p.wait(timeout=3)
     out.append(p.stdout.read() or ''); text=''.join(out); print(text,end='')
     if not retired or not helper_entry or not stress_armed or not drop_marker or not stress_pass: raise SystemExit('required helper boundary marker missing')
-    if protected_attempts<1 or pre_boundary_attach_denials<1: raise SystemExit('no exact-boundary preattach challenge')
+    if not boundary_stop_handled or protected_attempts<1 or pre_boundary_attach_denials<1: raise SystemExit('no exact-boundary preattach challenge')
     if mixed_snapshots<1 or mixed_tid_attempts<1 or not mixed_targeted: raise SystemExit('mixed-state per-TID proof absent')
     if retained_fd_mixed_attempts<1: raise SystemExit('true retained authority FD not attacked during mixed state')
     if not post_safe_records: raise SystemExit('no externally persisted post-safe new-TID full-state record')
