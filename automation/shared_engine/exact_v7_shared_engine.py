@@ -9,7 +9,7 @@ import pathlib
 from typing import Any
 import db
 from domain_registry import validate_domain_task
-from integration_bridge import IntegrationBinding, DurableReceiptBoundary, apply_receipt
+from integration_bridge import BridgeError, IntegrationBinding, DurableReceiptBoundary, apply_receipt, ROLE_EXPECTED_STATES
 from canonical_v7_binding import CANONICAL_MAIN, V7_HEAD, v7_result_to_bridge_receipt
 from orchestrator_provider_adapter_v7 import (
     ProviderAdapterManifest, DeterministicLocalAdapter, ProviderAdapterReceiptStore,
@@ -27,19 +27,40 @@ class ExactV7SharedEngine:
         self.manifest=ProviderAdapterManifest.load(V7_MANIFEST)
         self.provider_receipt_db=provider_receipt_db
     def close(self): self.bridge_receipts.close()
+    def _validate_persisted_task(self,task_id:str):
+        task=db.get_task(task_id)
+        if task is None: raise BridgeError("UNKNOWN_TASK")
+        validate_domain_task(task['domain'],task['task_type'])
+        return task
     def submit(self,domain:str,task_type:str,goal:str,*,requested_capabilities:dict[str,Any]|None=None,resources:set[str]|None=None,priority:int=0)->str:
         validate_domain_task(domain,task_type,requested_capabilities,resources)
         return db.create_task(domain,goal,task_type=task_type,priority=priority)
     def claim_and_start(self,task_id:str,worker_id:str)->int:
-        claimed=db.claim_next_task(worker_id)
-        if claimed!=task_id: raise RuntimeError("UNEXPECTED_TASK_CLAIM")
-        t=db.get_task(task_id); gen=t["claim_generation"]
+        # Revalidate durable task identity at the execution boundary. The DB is the
+        # workflow authority, but direct low-level insertion must not bypass domain policy.
+        self._validate_persisted_task(task_id)
+        gen=db.claim_task(task_id,worker_id)
         db.transition(task_id,"IN_IMPLEMENT",actor="exact_v7_shared_engine",event_type="START",fencing=(worker_id,gen)); return gen
+    def renew(self,task_id:str,worker_id:str,claim_generation:int,*,lease_seconds:int|float|None=None)->float:
+        return db.renew_lease(task_id,worker_id,claim_generation,lease_seconds=lease_seconds)
+    def reclaim_expired(self,task_id:str,worker_id:str,*,lease_seconds:int|None=None)->int:
+        return db.reclaim_expired_task(task_id,worker_id,lease_seconds=lease_seconds)
     def _job(self,task_id:str,role:str,generation:int,operation_key:str)->dict[str,Any]:
+        task=self._validate_persisted_task(task_id)
         return {"operation_key":operation_key,"task_id":task_id,"role":role,"semantic_generation":generation,
                 "candidate_head":self.binding.candidate_head,"candidate_branch":self.binding.candidate_branch,
-                "canonical_main":self.binding.canonical_main,"objective":db.get_task(task_id)["goal"],"authority":dict(JOB_AUTHORITY)}
+                "canonical_main":self.binding.canonical_main,"objective":task["goal"],"authority":dict(JOB_AUTHORITY)}
+    def _assert_role_precondition(self,task_id:str,role:str,worker_id:str,claim_generation:int):
+        db.assert_unexpired_fence(task_id,worker_id,claim_generation)
+        task=self._validate_persisted_task(task_id)
+        expected=ROLE_EXPECTED_STATES.get(role)
+        if expected is None: raise BridgeError(f"RECEIPT_ROLE:{role}")
+        if task['state'] not in expected: raise BridgeError(f"ROLE_STATE_MISMATCH:{role}:{task['state']}")
+        return task
     def execute_role(self,task_id:str,role:str,semantic_generation:int,operation_key:str,worker_id:str,claim_generation:int,result:dict[str,Any])->str:
+        # Reject wrong-state work before provider execution or durable receipt creation.
+        # apply_receipt() still repeats the authoritative state/fence checks at mutation.
+        self._assert_role_precondition(task_id,role,worker_id,claim_generation)
         job=self._job(task_id,role,semantic_generation,operation_key)
         request=provider_request_from_job(job,self.manifest)
         script={role:{str(semantic_generation+1):dict(result)}}
