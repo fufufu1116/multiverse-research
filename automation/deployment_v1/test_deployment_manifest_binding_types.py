@@ -31,6 +31,14 @@ class _AlwaysEqualStr(str):
         return False
 
 
+class _HashCompatibleKey:
+    def __hash__(self):
+        return hash("production")
+
+    def __eq__(self, other):
+        return other == "production"
+
+
 class DeploymentManifestBindingTypeTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -112,6 +120,20 @@ class DeploymentManifestBindingTypeTests(unittest.TestCase):
             with self.subTest(field=field):
                 with self.assertRaisesRegex(DeploymentGateError, error):
                     self.validate(self.manifest(**{field: bad_value}))
+
+    def test_capability_keys_reject_str_subclasses(self):
+        capabilities = dict(DEFAULT_DENY_CAPABILITIES)
+        capabilities.pop("production")
+        capabilities[_AlwaysEqualStr("production")] = False
+        with self.assertRaisesRegex(DeploymentGateError, "CAPABILITY_DEFAULT_DENY_REQUIRED"):
+            self.validate(self.manifest(capabilities=capabilities))
+
+    def test_capability_keys_reject_equality_hash_compatible_objects(self):
+        capabilities = dict(DEFAULT_DENY_CAPABILITIES)
+        capabilities.pop("production")
+        capabilities[_HashCompatibleKey()] = False
+        with self.assertRaisesRegex(DeploymentGateError, "CAPABILITY_DEFAULT_DENY_REQUIRED"):
+            self.validate(self.manifest(capabilities=capabilities))
 
     def test_exact_manifest_still_passes_after_type_hardening(self):
         self.validate(self.manifest())
