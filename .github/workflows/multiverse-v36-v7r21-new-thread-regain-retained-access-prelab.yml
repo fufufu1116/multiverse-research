@@ -39,6 +39,7 @@ jobs:
           grep -F 'per_thread_regain_denied=' /tmp/v7r21-helper.go
           grep -F 'retireAuthorityBeforeProtectedHelperExec(fd)' /tmp/v7r21-guard.go
           grep -F 'syscall.Exec(helperPath, argv, env)' /tmp/v7r21-guard.go
+          test -f governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_PROTECTED_PREATTACHED_TRACER_WRAPPER_20260904.py
           python3 - <<'PY'
           s=open('/tmp/v7r21-helper.go').read(); m=s[s.index('func main() {'):]
           d=s[s.index('func v7r21DropIrreversibly('):s.index('func main() {')]
@@ -98,8 +99,9 @@ jobs:
         run: |
           set -euo pipefail
           tag="multiverse-v7r21-proof:${GITHUB_SHA}"
-          docker run --rm --network=none -v "$PWD:/src:ro" --entrypoint /usr/bin/python3 "$tag" /src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_RETAINED_ACCESS_SELFTEST_20260904.py | tee /tmp/v7r21-attack.out
+          docker run --rm --cap-add SYS_PTRACE --network=none -v "$PWD:/src:ro" --entrypoint /usr/bin/python3 "$tag" /src/governance/MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_PROTECTED_PREATTACHED_TRACER_WRAPPER_20260904.py | tee /tmp/v7r21-attack.out
           grep -E 'PRELAB_V7R21_PREATTACHED_TRACER_ATTEMPTS=[1-9][0-9]*' /tmp/v7r21-attack.out
+          grep -F 'PRELAB_V7R21_PREATTACHED_TRACER_PROTECTED_UID_OBSERVED=true' /tmp/v7r21-attack.out
           grep -F 'PRELAB_V7R21_PREATTACHED_TRACER_REACHED_HELPER=true' /tmp/v7r21-attack.out
           grep -F 'PRELAB_V7R21_PREATTACHED_TRACER_EXACT_BOUNDARY_RESULT=FAIL_CLOSED_TRACER_PRESENT_BEFORE_IRREVERSIBLE_DROP' /tmp/v7r21-attack.out
           grep -E 'PRELAB_V7R21_RETAINED_AUTHORITY_FD_MIXED_ATTACKS=[1-9][0-9]*' /tmp/v7r21-attack.out
