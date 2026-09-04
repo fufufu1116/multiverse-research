@@ -1,0 +1,19 @@
+{
+  "record": "KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1",
+  "status": "OWNER_REPORTING_AND_HANDOFF_SNAPSHOT",
+  "roadmap": [
+    {"phase": 1, "name": "S0固定", "status": "DONE_FROZEN", "meaning": "基準モデルを固定し、勝手な再学習を禁止"},
+    {"phase": 2, "name": "PRE証拠取得基盤", "status": "DONE_CORE_TOOLS_PASS", "meaning": "発走前データを安全に取得する道具を整備"},
+    {"phase": 3, "name": "周長横断support蓄積", "status": "CURRENT", "meaning": "333/333.33mと400mをまたぐ同一選手の正式な発走前証拠を増やす"},
+    {"phase": 4, "name": "support adequacy gate", "status": "BLOCKED_BY_SAMPLE_SIZE", "meaning": "必要人数・行数・会場分散などの十分性判定"},
+    {"phase": 5, "name": "RESULT join / formula evaluation", "status": "LOCKED", "meaning": "結果データ結合・式の評価。Phase 4 PASSまで禁止"},
+    {"phase": 6, "name": "promotion / production", "status": "OUT_OF_SCOPE_LOCKED", "meaning": "本番昇格・稼働。Research laneでは実行しない"}
+  ],
+  "current_position": "Phase 3: confirmed support 1 rider / 2 PRE rows; target unique riders 30; multi-event prospective continuity lane activated so Sep10 publication is a parallel dependency rather than the sole blocker.",
+  "current_work": "Expand a future-event queue from positive official navigation and capture exact Day1 PRE evidence before cutoff when available.",
+  "blocker": "Racecards are published on external timing; schedule-only candidates cannot count as support, and the frozen historical lane is exhausted.",
+  "resolution": "Use multiple future 333/333.33m and 400m events in parallel, reuse tested PRE capture components, and require official identity plus same-race assignment before each formal support receipt.",
+  "reporting_contract": "Periodically show roadmap/current position/current work/blockers/resolution. Add concise Japanese translations for specialist or English terms. Include the same sections in every handoff.",
+  "result_accessed": false,
+  "owner_action_required_now": false
+}
