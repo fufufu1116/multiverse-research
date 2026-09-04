@@ -1,0 +1,54 @@
+name: keirin-pit-cutoff-extractor-v2-selftest
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - tools/keirin_kdreams_pit_cutoff_extractor_v2.py
+      - .github/workflows/keirin-pit-cutoff-extractor-v2-selftest.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/keirin-real-evidence-dual-lane-20260901-v1
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Run offline PIT cutoff extractor v2 selftest
+        run: |
+          mkdir -p v3/historical_all_market/research_candidates
+          python tools/keirin_kdreams_pit_cutoff_extractor_v2.py selftest             > v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PIT_CUTOFF_EXTRACTOR_SELFTEST_20260904_v2.json
+          python - <<'PY'
+          import json
+          p="v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PIT_CUTOFF_EXTRACTOR_SELFTEST_20260904_v2.json"
+          x=json.load(open(p,encoding="utf-8"))
+          assert x["status"]=="PASS", x
+          assert x["network_access"] is False
+          assert x["result_accessed"] is False
+          assert x["raceprogram_url_guessing"] is False
+          assert x["race_id_guessing"] is False
+          print(json.dumps({"record":x["record"],"status":x["status"],"live_pre_validation":x["live_pre_validation"]},sort_keys=True))
+          PY
+      - name: Persist research-only selftest evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add v3/historical_all_market/research_candidates/KEIRIN_KDREAMS_PIT_CUTOFF_EXTRACTOR_SELFTEST_20260904_v2.json
+          if git diff --cached --quiet; then
+            echo "No evidence delta"
+            exit 0
+          fi
+          git commit -m "research(keirin): persist PIT cutoff extractor v2 selftest"
+          git pull --rebase origin research/keirin-real-evidence-dual-lane-20260901-v1
+          git push origin HEAD:research/keirin-real-evidence-dual-lane-20260901-v1
