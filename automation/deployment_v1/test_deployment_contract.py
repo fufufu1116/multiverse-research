@@ -19,6 +19,22 @@ from deployment_contract import (
 )
 
 
+class _AlwaysEqual:
+    def __eq__(self, other):
+        return True
+
+    def __ne__(self, other):
+        return False
+
+
+class _AlwaysEqualStr(str):
+    def __eq__(self, other):
+        return True
+
+    def __ne__(self, other):
+        return False
+
+
 class DeploymentContractTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -277,6 +293,123 @@ class DeploymentContractTests(unittest.TestCase):
                         expected_receipt=bad,
                         expected_identity="runtime-state-primary",
                     )
+
+    def test_expected_snapshot_identity_argument_types_fail_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        bad_values = (
+            False,
+            0,
+            0.0,
+            None,
+            b"x",
+            [],
+            {},
+            _AlwaysEqual(),
+            _AlwaysEqualStr("runtime-state-primary"),
+            "",
+            " runtime-state-primary",
+            "runtime-state-primary ",
+        )
+        for bad_value in bad_values:
+            with self.subTest(value=bad_value):
+                with self.assertRaisesRegex(
+                    DeploymentGateError,
+                    "SNAPSHOT_EXPECTED_IDENTITY_INVALID",
+                ):
+                    restore_bytes(
+                        snap,
+                        restored,
+                        expected_receipt=receipt,
+                        expected_identity=bad_value,
+                    )
+                self.assertFalse(restored.exists())
+
+    def test_expected_runtime_and_main_argument_types_fail_closed(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        cases = (
+            (
+                "expected_runtime_head",
+                "SNAPSHOT_EXPECTED_RUNTIME_HEAD_INVALID",
+                "0" * 40,
+                ADOPTED_RUNTIME_HEAD,
+            ),
+            (
+                "expected_main",
+                "SNAPSHOT_EXPECTED_MAIN_INVALID",
+                "0" * 40,
+                CANONICAL_MAIN,
+            ),
+        )
+        for argument, error, wrong_string, exact_string in cases:
+            bad_values = (
+                False,
+                0,
+                0.0,
+                None,
+                b"x",
+                [],
+                {},
+                _AlwaysEqual(),
+                _AlwaysEqualStr(exact_string),
+                wrong_string,
+            )
+            for bad_value in bad_values:
+                with self.subTest(argument=argument, value=bad_value):
+                    kwargs = {
+                        "expected_identity": "runtime-state-primary",
+                        "expected_runtime_head": ADOPTED_RUNTIME_HEAD,
+                        "expected_main": CANONICAL_MAIN,
+                    }
+                    kwargs[argument] = bad_value
+                    with self.assertRaisesRegex(DeploymentGateError, error):
+                        restore_bytes(
+                            snap,
+                            restored,
+                            expected_receipt=receipt,
+                            **kwargs,
+                        )
+                    self.assertFalse(restored.exists())
+
+    def test_custom_equality_cannot_bypass_forged_expected_bindings(self):
+        _, snap, restored, receipt = self.snapshot_fixture()
+        cases = (
+            (
+                "snapshot_identity",
+                "expected_identity",
+                "forged-runtime-state",
+                "SNAPSHOT_EXPECTED_IDENTITY_INVALID",
+            ),
+            (
+                "adopted_runtime_head",
+                "expected_runtime_head",
+                "0" * 40,
+                "SNAPSHOT_EXPECTED_RUNTIME_HEAD_INVALID",
+            ),
+            (
+                "canonical_main",
+                "expected_main",
+                "0" * 40,
+                "SNAPSHOT_EXPECTED_MAIN_INVALID",
+            ),
+        )
+        for receipt_field, argument, forged_value, error in cases:
+            with self.subTest(field=receipt_field):
+                forged = copy.deepcopy(receipt)
+                forged[receipt_field] = forged_value
+                kwargs = {
+                    "expected_identity": "runtime-state-primary",
+                    "expected_runtime_head": ADOPTED_RUNTIME_HEAD,
+                    "expected_main": CANONICAL_MAIN,
+                }
+                kwargs[argument] = _AlwaysEqual()
+                with self.assertRaisesRegex(DeploymentGateError, error):
+                    restore_bytes(
+                        snap,
+                        restored,
+                        expected_receipt=forged,
+                        **kwargs,
+                    )
+                self.assertFalse(restored.exists())
 
     def test_cross_run_receipt_fails_closed(self):
         _, snap, restored, _ = self.snapshot_fixture()
