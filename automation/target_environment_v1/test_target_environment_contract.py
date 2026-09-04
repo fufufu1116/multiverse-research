@@ -1,6 +1,7 @@
 import unittest
 
 from target_environment_contract import (
+    REQUIRED_EVIDENCE_DOMAINS,
     TargetEnvironmentEvidence,
     TargetEnvironmentGateError,
     canonical_receipt_sha256,
@@ -9,30 +10,28 @@ from target_environment_contract import (
 DIGEST = "a" * 64
 ROLLBACK = "b" * 64
 
+def refs():
+    return {
+        domain: f"EVIDENCE_REF:test/{domain}/001"
+        for domain in REQUIRED_EVIDENCE_DOMAINS
+    }
+
 def valid(**overrides):
     data = dict(
         target_id="sealed-preprod-target-01",
         environment_class="PRE_PRODUCTION",
         artifact_sha256=DIGEST,
         rollback_artifact_sha256=ROLLBACK,
-        credential_scope="least-privilege documented",
-        credential_provisioning="ephemeral injection documented",
-        credential_rotation="rotation drill evidence pending target execution",
-        credential_revocation="revocation drill evidence pending target execution",
-        provider_idempotency="bounded no-effect adapter contract",
-        duplicate_request_control="duplicate negative control specified",
-        state_store_binding="exact target state-store identity required",
-        backup_restore="backup/restore drill required",
-        crash_restart_recovery="restart recovery drill required",
-        host_model="explicit single-host proof ceiling until demonstrated otherwise",
-        lease_fencing="lease owner/fencing evidence required",
-        health_readiness="health/readiness receipt required",
-        logs_metrics_alerts="operator-visible telemetry required",
-        kill_switch="engaged by default",
-        rollback_execution="rollback drill required",
+        evidence_refs=refs(),
     )
     data.update(overrides)
     return TargetEnvironmentEvidence(**data)
+
+class EqualToPreprod:
+    def __eq__(self, other):
+        return other == "PRE_PRODUCTION"
+    def __hash__(self):
+        return hash("PRE_PRODUCTION")
 
 class ContractTests(unittest.TestCase):
     def test_valid_no_effect_receipt(self):
@@ -49,13 +48,51 @@ class ContractTests(unittest.TestCase):
         with self.assertRaises(TargetEnvironmentGateError):
             valid(environment_class="PRODUCTION_LIVE").validate()
 
+    def test_environment_class_custom_equality_rejected(self):
+        with self.assertRaises(TargetEnvironmentGateError):
+            valid(environment_class=EqualToPreprod()).validate()
+
+    def test_environment_class_str_subclass_rejected(self):
+        class S(str):
+            pass
+        with self.assertRaises(TargetEnvironmentGateError):
+            valid(environment_class=S("PRE_PRODUCTION")).validate()
+
     def test_digest_format_fail_closed(self):
         with self.assertRaises(TargetEnvironmentGateError):
             valid(artifact_sha256="bad").validate()
 
-    def test_missing_evidence_fail_closed(self):
+    def test_evidence_ref_domain_set_exact(self):
+        bad = refs()
+        bad.pop("backup_restore")
         with self.assertRaises(TargetEnvironmentGateError):
-            valid(backup_restore="").validate()
+            valid(evidence_refs=bad).validate()
+
+    def test_extra_evidence_ref_rejected(self):
+        bad = refs()
+        bad["extra"] = "EVIDENCE_REF:test/extra/001"
+        with self.assertRaises(TargetEnvironmentGateError):
+            valid(evidence_refs=bad).validate()
+
+    def test_evidence_refs_must_be_exact_dict(self):
+        class D(dict):
+            pass
+        with self.assertRaises(TargetEnvironmentGateError):
+            valid(evidence_refs=D(refs())).validate()
+
+    def test_evidence_ref_prefix_required(self):
+        bad = refs()
+        bad["backup_restore"] = "pending"
+        with self.assertRaises(TargetEnvironmentGateError):
+            valid(evidence_refs=bad).validate()
+
+    def test_evidence_ref_str_subclass_rejected(self):
+        class S(str):
+            pass
+        bad = refs()
+        bad["backup_restore"] = S("EVIDENCE_REF:test/backup/001")
+        with self.assertRaises(TargetEnvironmentGateError):
+            valid(evidence_refs=bad).validate()
 
     def test_runtime_activation_forbidden(self):
         with self.assertRaises(TargetEnvironmentGateError):
@@ -81,9 +118,15 @@ class ContractTests(unittest.TestCase):
         with self.assertRaises(TargetEnvironmentGateError):
             valid(production_credentials_enabled=True).validate()
 
-    def test_bool_subclass_trick_rejected(self):
+    def test_bool_type_confusion_rejected(self):
+        for value in (0, 0.0, None, "false"):
+            with self.subTest(value=value):
+                with self.assertRaises(TargetEnvironmentGateError):
+                    valid(runtime_activation=value).validate()
+
+    def test_receipt_hash_rejects_non_dict(self):
         with self.assertRaises(TargetEnvironmentGateError):
-            valid(runtime_activation=0).validate()
+            canonical_receipt_sha256([])
 
 if __name__ == "__main__":
     unittest.main()
