@@ -6,6 +6,8 @@
   "predecessor_head": "32b13303d888214215dd9a87cb6eef180bb52d69",
   "predecessor_lab_material_block": 5529886746,
   "route_decision": 5530315758,
+  "prior_replay_lab_fix_required": 5530712282,
+  "owner_approval_durable_replay": 5535323028,
   "base_pr91_head": "61f4e330fd5b1945dbfbceb223cbc71d205860f2",
   "stacked_v7_head": "4a72ef46116043094c7a8e494404956925a5b3bf",
   "canonical_main": "040d37f0a4e426cf2e119706484c90cbb48f0e56",
@@ -14,6 +16,13 @@
     "ipc": "AF_UNIX strict JSON",
     "ipc_ops": ["PING", "STEP", "STOP"],
     "request_id_replay_denied": true,
+    "durable_request_id_replay_denied_across_broker_restart": true,
+    "reservation_commits_before_dispatch": true,
+    "replay_store": "bounded non-evicting SQLite deny-only transport state",
+    "replay_capacity": 256,
+    "replay_ttl_or_eviction": false,
+    "replay_reset_or_rotation_api": false,
+    "anti_replay_is_workflow_authority": false,
     "generic_dispatch": false,
     "task_creation_opcode": false,
     "fd_transfer": false,
@@ -43,6 +52,7 @@
     "remote_provider_exactly_once": false,
     "distributed_network_lease_safety": false,
     "deployed_always_on_daemon": false,
-    "production_portability_or_adoption": false
+    "production_portability_or_adoption": false,
+    "replay_store_reset_or_rotation_lifecycle_proved_or_authorized": false
   }
 }
