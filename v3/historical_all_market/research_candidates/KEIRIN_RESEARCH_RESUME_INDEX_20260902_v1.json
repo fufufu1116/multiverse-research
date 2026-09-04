@@ -6,7 +6,7 @@
   "first_rule": "Never infer CURRENT/NOW/LATEST from this file's stored SHA, chat history, handoff, or memory. Fresh Read the research branch ref first.",
   "resume_sequence": [
     {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF", "load": "branch HEAD only"},
-    {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v30.json"},
+    {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v31.json"},
     {"step": 3, "action": "READ_LIVE_DISCOVERY_SESSION_PLAN", "path": "v3/historical_all_market/research_candidates/KEIRIN_LIVE_DISCOVERY_SESSION_PLAN_20260904_v1.json"},
     {"step": 4, "action": "READ_REPORTING_CADENCE", "path": "v3/historical_all_market/research_candidates/KEIRIN_REPORTING_CADENCE_POLICY_20260904_v1.json"},
     {"step": 5, "action": "READ_OWNER_PROGRESS_REPORT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_PROGRESS_REPORT_20260904_v1.json"},
@@ -14,8 +14,8 @@
     {"step": 7, "action": "READ_HANDOFF_REQUIRED_SECTIONS", "path": "v3/historical_all_market/research_candidates/KEIRIN_HANDOFF_REQUIRED_SECTIONS_20260904_v1.json"},
     {"step": 8, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v30.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v29.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v31.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v30.json",
   "active_lane_pointers": {
     "LIVE_DISCOVERY_SESSION_PLAN": "v3/historical_all_market/research_candidates/KEIRIN_LIVE_DISCOVERY_SESSION_PLAN_20260904_v1.json",
     "REPORTING_CADENCE_POLICY": "v3/historical_all_market/research_candidates/KEIRIN_REPORTING_CADENCE_POLICY_20260904_v1.json",
