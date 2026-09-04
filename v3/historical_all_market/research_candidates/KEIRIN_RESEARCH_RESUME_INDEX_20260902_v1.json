@@ -6,21 +6,18 @@
   "first_rule": "Never infer CURRENT/NOW/LATEST from this file's stored SHA, chat history, handoff, or memory. Fresh Read the research branch ref first.",
   "resume_sequence": [
     {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF", "load": "branch HEAD only"},
-    {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v25.json"},
+    {"step": 2, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v26.json"},
     {"step": 3, "action": "READ_ACTIVE_NEXT_TASK", "path": "v3/historical_all_market/research_candidates/KEIRIN_MULTI_VENUE_QUEUE_EXPANSION_CHECKLIST_20260904_v1.json"},
-    {"step": 4, "action": "READ_PROGRESS_RECEIPT", "path": "v3/historical_all_market/research_candidates/KEIRIN_CONTINUITY_LANE_PROGRESS_RECEIPT_20260904_v1.json"},
-    {"step": 5, "action": "READ_ACTIVE_EVENT_QUEUE", "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json"},
-    {"step": 6, "action": "READ_OWNER_ROADMAP_SNAPSHOT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json"},
-    {"step": 7, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+    {"step": 4, "action": "READ_ACTIVE_EVENT_QUEUE", "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json"},
+    {"step": 5, "action": "READ_OWNER_ROADMAP_SNAPSHOT", "path": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json"},
+    {"step": 6, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v25.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v24.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v26.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260904_v25.json",
   "active_lane_pointers": {
     "ACTIVE_NEXT_TASK": "v3/historical_all_market/research_candidates/KEIRIN_MULTI_VENUE_QUEUE_EXPANSION_CHECKLIST_20260904_v1.json",
-    "CONTINUITY_PROGRESS_RECEIPT": "v3/historical_all_market/research_candidates/KEIRIN_CONTINUITY_LANE_PROGRESS_RECEIPT_20260904_v1.json",
-    "PROSPECTIVE_SUPPORT_CONTINUITY_PRESPEC": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v2.json",
-    "QUEUE_PRIORITY_POLICY": "v3/historical_all_market/research_candidates/KEIRIN_QUEUE_PRIORITY_POLICY_20260904_v1.json",
+    "PROSPECTIVE_SUPPORT_CONTINUITY_PRESPEC": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_ACQUISITION_CONTINUITY_PRESPEC_20260904_v1.json",
     "OWNER_ROADMAP_SNAPSHOT": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_ROADMAP_SNAPSHOT_20260904_v1.json",
     "PROSPECTIVE_PRECAPTURE_ORCHESTRATOR": "tools/keirin_kdreams_prospective_precapture_orchestrator_v1.py"
   },
