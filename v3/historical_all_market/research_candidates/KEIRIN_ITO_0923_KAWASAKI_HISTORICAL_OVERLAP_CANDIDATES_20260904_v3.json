@@ -1,0 +1,26 @@
+{
+  "record":"KEIRIN_ITO_0923_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260904_v3",
+  "status":"PREQUALIFIED_CANDIDATE_SET_EXHAUSTIVE_ALL_IDENTITIES_RESOLVED_NO_SUPPORT_INCREMENT",
+  "supersedes":"KEIRIN_ITO_0923_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260904_v2.json",
+  "observed_at_jst":"2026-09-04",
+  "prospective_event":{"venue":"伊東","circumference_class":"333_OR_333_33M","event_start_date":"2026-09-23","event_end_date":"2026-09-25","event_name":"スポーツニッポン杯争奪戦","evidence_role":"EVENT_LEVEL_ASSEN_ONLY_NOT_SAME_RACE_ASSIGNMENT","positive_navigation":"Ito schedule -> 2026-09-23 assen link","fresh_full_assen_observed":true},
+  "historical_counterpart":{"venue":"川崎","circumference_class":"400M","race_date":"2026-08-30","source_artifact":"KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv","historical_rows_screened":84},
+  "screen_method":"Exact normalized rider-name equality across all 84 frozen Kawasaki PRE rows against the full positively observed Ito 2026-09-23 event-level assen roster; no fuzzy matching.",
+  "exact_name_overlap_candidates":[
+    {"rider":"格清 洋介","historical_race_no":11,"historical_car_no":2,"historical_class":"S2","prospective_event_level_assignment":true,"official_registration_number":"015173","official_identity_mapping":"PASS"},
+    {"rider":"丸山 留依","historical_race_no":10,"historical_car_no":1,"historical_class":"S2","prospective_event_level_assignment":true,"official_registration_number":"015896","official_identity_mapping":"PASS"},
+    {"rider":"近藤 夏樹","historical_race_no":5,"historical_car_no":7,"historical_class":"S2","prospective_event_level_assignment":true,"official_registration_number":"014590","official_identity_mapping":"PASS"},
+    {"rider":"遠藤 勝行","historical_race_no":2,"historical_car_no":2,"historical_class":"A2","prospective_event_level_assignment":true,"official_registration_number":"012823","official_identity_mapping":"PASS"},
+    {"rider":"篠崎 新純","historical_race_no":7,"historical_car_no":1,"historical_class":"L1","prospective_event_level_assignment":true,"official_registration_number":"014910","official_identity_mapping":"PASS"},
+    {"rider":"西脇 美唯奈","historical_race_no":7,"historical_car_no":2,"historical_class":"L1","prospective_event_level_assignment":true,"official_registration_number":"015584","official_identity_mapping":"PASS"}
+  ],
+  "exact_name_candidates_observed":6,
+  "new_candidates_vs_v2":["格清 洋介 / 015173","近藤 夏樹 / 014590","篠崎 新純 / 014910","西脇 美唯奈 / 015584"],
+  "official_identity_mapping_pass_count":6,
+  "candidate_set_scope":"EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_ALL_84_KAWASAKI_FROZEN_PRE_ROWS",
+  "support_receipt_authorized":false,
+  "support_increment_authorized":0,
+  "missing_for_formal_support":["prospective Day1 PRE membership after positive racecard publication","contemporaneous official same-race assignment","prospective PRE provenance PASS"],
+  "hard_boundaries":{"result_access_for_research_evidence":false,"payout_access_for_research_evidence":false,"odds_used":false,"race_id_guessing":false,"post_cutoff_pre_reconstruction":false},
+  "owner_action_required_now":false
+}
