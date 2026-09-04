@@ -132,6 +132,10 @@ class ProcessIsolatedWorkerV10Tests(unittest.TestCase):
             b'{"v":1,"op":"SUBMIT","request_id":"x"}\n',
             b'{"v":1,"op":"PING","request_id":"x","extra":1}\n',
             b'{"v":1,"op":"PING","op":"STEP","request_id":"x"}\n',
+            b'{"v":true,"op":"PING","request_id":"v-bool"}\n',
+            b'{"v":1.0,"op":"STEP","request_id":"v-float"}\n',
+            b'{"v":"1","op":"PING","request_id":"v-string"}\n',
+            b'{"v":null,"op":"PING","request_id":"v-null"}\n',
             b'[]\n',
         ):
             self.assertIn(b'"ok":false', self.raw(frame))
@@ -259,6 +263,21 @@ class ProcessIsolatedWorkerV10Tests(unittest.TestCase):
         ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
         self.assertNotEqual(completed.returncode, 0)
         self.assertIn('V10_REPLAY_DB_MUST_BE_DISTINCT', completed.stderr)
+
+    def test_replay_db_hardlink_alias_is_denied(self):
+        self.terminate_broker()
+        replay_alias = os.path.join(self.tmp.name, 'hardlink-replay.db')
+        os.link(self.task_db, replay_alias)
+        bad_socket = os.path.join(self.tmp.name, 'hardlink-alias.sock')
+        completed = subprocess.run([
+            sys.executable, BROKER, '--socket', bad_socket, '--task-db', self.task_db,
+            '--bridge-db', self.bridge, '--provider-db', self.provider, '--replay-db', replay_alias,
+            '--candidate-branch', BRANCH, '--candidate-head', HEAD,
+            '--lease', '0.30', '--heartbeat', '0.05', '--poll', '0.01', '--max-requests', '1'
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn('V10_REPLAY_DB_MUST_BE_DISTINCT', completed.stderr)
+        self.assertFalse(os.path.exists(bad_socket))
 
     def test_no_task_creation_opcode_and_bounds(self):
         self.assertEqual(client_module.ALLOWED_OPS, frozenset({'PING','STEP','STOP'}))
