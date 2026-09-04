@@ -1,0 +1,70 @@
+name: MULTIVERSE Automation Provider Adapter v7 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-orchestrator-provider-adapter-contract-v7-20260903-v1
+    paths:
+      - 'automation/orchestrator_provider_adapter_v7.py'
+      - 'automation/MULTIVERSE_AUTOMATION_PROVIDER_ADAPTER_CONTRACT_V7.json'
+      - 'automation/test_orchestrator_provider_adapter_v7.py'
+      - 'automation/test_orchestrator_provider_adapter_v7_integration.py'
+      - 'automation/mechanical_gate_orchestrator_provider_adapter_v7.py'
+      - 'automation/README_ORCHESTRATOR_PROVIDER_ADAPTER_V7.md'
+      - '.github/workflows/multiverse-automation-orchestrator-provider-adapter-v7-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind exact head branch and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/automation-orchestrator-provider-adapter-contract-v7-20260903-v1"
+          test -n "${FRESH_MAIN}"
+          echo "PROVIDER_ADAPTER_V7_EXACT_HEAD=${EXACT_HEAD}" >> "${GITHUB_ENV}"
+          echo "PROVIDER_ADAPTER_V7_FRESH_MAIN=${FRESH_MAIN}" >> "${GITHUB_ENV}"
+          echo "PROVIDER_ADAPTER_V7_CANDIDATE_BRANCH=${GITHUB_REF_NAME}" >> "${GITHUB_ENV}"
+          echo "PROVIDER_ADAPTER_V7_EXACT_HEAD=${EXACT_HEAD}"
+          echo "PROVIDER_ADAPTER_V7_FRESH_MAIN=${FRESH_MAIN}"
+          echo "PROVIDER_ADAPTER_V7_CANDIDATE_BRANCH=${GITHUB_REF_NAME}"
+
+      - name: Exact-head provider-adapter v7 mechanical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/mechanical_gate_orchestrator_provider_adapter_v7.py \
+            --expected-head "${PROVIDER_ADAPTER_V7_EXACT_HEAD}" \
+            --canonical-main "${PROVIDER_ADAPTER_V7_FRESH_MAIN}" \
+            --candidate-branch "${PROVIDER_ADAPTER_V7_CANDIDATE_BRANCH}"
+
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "PROVIDER_ADAPTER_V7_WORKFLOW_DISPATCH_USED=false"
+          echo "PROVIDER_ADAPTER_V7_CONTENTS_WRITE_PERMISSION=false"
+          echo "PROVIDER_ADAPTER_V7_POLICY_WIDENING=false"
+          echo "PROVIDER_ADAPTER_V7_NETWORK=false"
+          echo "PROVIDER_ADAPTER_V7_LIVE_PROVIDER_CONTACT=false"
+          echo "PROVIDER_ADAPTER_V7_EXTERNAL_EFFECT=false"
+          echo "PROVIDER_ADAPTER_V7_PROVIDER_SPEND=false"
+          echo "PROVIDER_ADAPTER_V7_SECRET_CREDENTIAL=false"
+          echo "PROVIDER_ADAPTER_V7_PRODUCTION_AUTHORITY_GRANTED=false"
+          echo "PROVIDER_ADAPTER_V7_CORE_ADOPTION_AUTHORITY=false"
+          echo "PROVIDER_ADAPTER_V7_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "PROVIDER_ADAPTER_V7_CANONICAL_ADOPTION_AUTHORITY=false"
+          echo "PROVIDER_ADAPTER_V7_RUNTIME=OFF"

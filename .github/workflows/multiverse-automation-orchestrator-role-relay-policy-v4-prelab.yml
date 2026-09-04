@@ -1,0 +1,69 @@
+name: MULTIVERSE Automation Role Relay Policy v4 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/automation-orchestrator-role-relay-policy-v4-20260903-v1
+    paths:
+      - 'automation/orchestrator_mvp_v2.py'
+      - 'automation/orchestrator_role_relay_v3.py'
+      - 'automation/orchestrator_role_relay_policy_v4.py'
+      - 'automation/test_orchestrator_role_relay_v3.py'
+      - 'automation/test_orchestrator_role_relay_policy_v4.py'
+      - 'automation/test_orchestrator_role_relay_policy_v4_integration.py'
+      - 'automation/mechanical_gate_orchestrator_role_relay_policy_v4.py'
+      - 'automation/README_ORCHESTRATOR_ROLE_RELAY_POLICY_V4.md'
+      - '.github/workflows/multiverse-automation-orchestrator-role-relay-policy-v4-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind exact head branch and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXACT_HEAD="$(git rev-parse HEAD)"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${EXACT_HEAD}" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/automation-orchestrator-role-relay-policy-v4-20260903-v1"
+          test -n "${FRESH_MAIN}"
+          echo "POLICY_V4_EXACT_HEAD=${EXACT_HEAD}" >> "${GITHUB_ENV}"
+          echo "POLICY_V4_FRESH_MAIN=${FRESH_MAIN}" >> "${GITHUB_ENV}"
+          echo "POLICY_V4_CANDIDATE_BRANCH=${GITHUB_REF_NAME}" >> "${GITHUB_ENV}"
+          echo "POLICY_V4_EXACT_HEAD=${EXACT_HEAD}"
+          echo "POLICY_V4_FRESH_MAIN=${FRESH_MAIN}"
+          echo "POLICY_V4_CANDIDATE_BRANCH=${GITHUB_REF_NAME}"
+
+      - name: Exact-head policy v4 mechanical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/mechanical_gate_orchestrator_role_relay_policy_v4.py \
+            --expected-head "${POLICY_V4_EXACT_HEAD}" \
+            --canonical-main "${POLICY_V4_FRESH_MAIN}" \
+            --candidate-branch "${POLICY_V4_CANDIDATE_BRANCH}"
+
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "POLICY_V4_WORKFLOW_DISPATCH_USED=false"
+          echo "POLICY_V4_CONTENTS_WRITE_PERMISSION=false"
+          echo "POLICY_V4_SECRETS_USED=false"
+          echo "POLICY_V4_LIVE_PROVIDER_CONTACT=false"
+          echo "POLICY_V4_PROVIDER_SPEND=false"
+          echo "POLICY_V4_PRODUCTION_AUTHORITY_GRANTED=false"
+          echo "POLICY_V4_CORE_ADOPTION_AUTHORITY=false"
+          echo "POLICY_V4_KEIRIN_ADOPTION_AUTHORITY=false"
+          echo "POLICY_V4_CANONICAL_ADOPTION_AUTHORITY=false"
+          echo "POLICY_V4_RUNTIME=OFF"
