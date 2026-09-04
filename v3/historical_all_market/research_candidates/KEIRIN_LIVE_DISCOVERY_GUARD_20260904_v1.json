@@ -1,0 +1,9 @@
+{
+  "record": "KEIRIN_LIVE_DISCOVERY_GUARD_20260904_v1",
+  "status": "ACTIVE",
+  "purpose": "Ensure multi-venue expansion does not accidentally become URL guessing or RESULT access.",
+  "allow": ["official venue schedule pages reached through positive navigation", "future event labels", "positive program links", "pre-event racecard links when positively exposed"],
+  "deny": ["constructed race IDs", "constructed racedetail URLs", "RESULT tabs/pages", "payout", "odds", "predictions/comments", "post-cutoff PRE reconstruction"],
+  "fail_closed": "If the official schedule/program route is not positively observable, do not admit the event and move to the next discovery target.",
+  "support_increment_authorized": 0
+}
