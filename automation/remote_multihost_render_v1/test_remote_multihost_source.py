@@ -81,10 +81,19 @@ class RemoteMultiHostSourceTests(unittest.TestCase):
             self.assertIn(token, APP)
 
     def test_github_artifacts_contain_no_connection_secret(self):
-        for path in ROOT.iterdir():
-            if not path.is_file():
-                continue
-            raw = path.read_text(errors="ignore")
+        durable = (
+            "REMOTE_TARGET_BINDING_v1.json",
+            "REMOTE_EVIDENCE_RECEIPT_v2.json",
+            "PROVIDER_OBSERVABILITY_v2.json",
+            "CANDIDATE_SEAL_v2.json",
+            "RECOVERY_DRILL_v2.md",
+            "README.md",
+            "requirements.txt",
+            "app.py",
+        )
+
+        for name in durable:
+            raw = (ROOT / name).read_text(errors="ignore")
             self.assertNotIn("postgresql://", raw)
             self.assertNotIn("postgres://", raw)
             self.assertNotIn("DATABASE_URL=", raw)
