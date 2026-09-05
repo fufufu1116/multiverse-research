@@ -1,0 +1,52 @@
+{
+  "schema": "MULTIVERSE_REMOTE_PREPRODUCTION_RENDER_TARGET_BINDING_v1",
+  "issue": 122,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "remote_execution_authority_comment": 5549002692,
+  "preparation_adoption_comment": 5548994090,
+  "target_binding_comment": 5549118439,
+  "provider": "RENDER",
+  "provider_target_class": "RENDER_REMOTE_PREPRODUCTION_SINGLE_SERVICE_NO_EFFECT_v1",
+  "environment_class": "PRE_PRODUCTION",
+  "workspace_id": "tea-dadorv0u01pc73bnlg50",
+  "service": {
+    "id": "srv-dadou8pt0dsc73fg73cg",
+    "name": "multiverse-preprod-noeffect-evidence-v1",
+    "plan": "free",
+    "region": "singapore",
+    "runtime": "python",
+    "branch": "agent/remote-preprod-render-noeffect-v1-20260905-v1",
+    "deployed_code_commit": "9da766ac53a3f99b8f4d3eaa21b5aec00fec63e9",
+    "auto_deploy": false,
+    "public_url": "https://multiverse-preprod-noeffect-evidence-v1.onrender.com"
+  },
+  "state_store": {
+    "provider": "RENDER_POSTGRES",
+    "id": "dpg-dadou0on74is73b09570-a",
+    "name": "multiverse-preprod-noeffect-state-v1",
+    "plan": "free",
+    "region": "singapore",
+    "postgres_version": 18,
+    "high_availability": false,
+    "expires_at": "2026-10-05T03:39:47.899546Z"
+  },
+  "credential_boundary": {
+    "source": "CHATGPT_RENDER_CONNECTED_ACCOUNT_DELEGATION",
+    "database_url_stored_in_github": false,
+    "production_credentials_enabled": false
+  },
+  "spend_boundary": {
+    "incremental_monetary_spend_ceiling_usd": 0,
+    "paid_upgrade_authorized": false,
+    "paid_external_service_authorized": false
+  },
+  "network_effect_boundary": {
+    "live_business_provider_enabled": false,
+    "betting_trading_action_enabled": false,
+    "protected_keirin_data_enabled": false,
+    "production_endpoint_enabled": false
+  },
+  "runtime": "OFF",
+  "runtime_activation": false,
+  "proof_ceiling": "REMOTE_PREPRODUCTION_SINGLE_RENDER_NO_EFFECT_EVIDENCE_ONLY"
+}
