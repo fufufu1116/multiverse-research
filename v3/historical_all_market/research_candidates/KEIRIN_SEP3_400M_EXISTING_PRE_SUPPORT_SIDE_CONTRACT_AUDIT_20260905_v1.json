@@ -1,0 +1,125 @@
+{
+  "record": "KEIRIN_SEP3_400M_EXISTING_PRE_SUPPORT_SIDE_CONTRACT_AUDIT_20260905_v1",
+  "status": "PARTIAL_PASS_TWO_HASHED_1R_SENTINELS_ONLY_REMAINDER_FAIL_CLOSED_NO_REPAIR",
+  "scope": "AUDIT_EXISTING_2026_09_03_400M_PRE_AS_HISTORICAL_SUPPORT_SIDE_ONLY",
+  "audited_at_jst": "2026-09-05",
+  "original_contract": "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
+  "contract_freeze": {
+    "commit_sha": "188a6c7dd72cbf79cad2330d7a724dee115ae677",
+    "commit_jst": "2026-09-03T01:49:11+09:00",
+    "required_snapshot_fields": [
+      "source URL",
+      "retrieval session timestamp",
+      "exact race ID",
+      "strict allowlist values",
+      "deterministic content hash"
+    ],
+    "required_timing": "snapshot committed before frozen cutoff/start",
+    "no_post_race_repair": true
+  },
+  "sentinel_lock": {
+    "artifact": "KEIRIN_20260903_THREE_VENUE_1R_TRANSPORT_SENTINEL_LOCK_v1.json",
+    "commit_sha": "74f01f3fe8fffff5fdfac432391e270fe130036e",
+    "commit_jst": "2026-09-03T01:50:23+09:00",
+    "selection_rule": "mechanical race 1 sentinel for each already frozen Sep3 venue block"
+  },
+  "pass_blocks": [
+    {
+      "venue": "青森",
+      "circumference_m": 400,
+      "race_date": "2026-09-03",
+      "race_no": 1,
+      "race_id": "1220260903010001",
+      "pre_rows": 9,
+      "witness": "KEIRIN_AOMORI_1R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+      "witness_blob_sha": "ff1f505a88718596c9bc981fea92dd51db9f6b88",
+      "witness_commit_sha": "ffffb53b9f067b97a64385ed97b4e18282d9114c",
+      "witness_commit_jst": "2026-09-03T01:50:52+09:00",
+      "cutoff_jst": "2026-09-03T10:53:00+09:00",
+      "committed_before_cutoff": true,
+      "deterministic_rows_sha256": "c54d24422b3ccf4cfdfb27fad7755946a5c84be63fdd51e354e053190c367c06",
+      "exact_race_id_inline": true,
+      "source_url_inline": true,
+      "capture_session_jst_inline": true,
+      "strict_allowlist_values_inline": true,
+      "result_or_payout_observed": false,
+      "decision": "PASS_RESEARCH_HISTORICAL_SUPPORT_SIDE_ONLY"
+    },
+    {
+      "venue": "武雄",
+      "circumference_m": 400,
+      "race_date": "2026-09-03",
+      "race_no": 1,
+      "race_id": "8420260903010001",
+      "pre_rows": 7,
+      "witness": "KEIRIN_TAKEO_1R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+      "witness_blob_sha": "af0d84409cc413038d3a3effe5d832250d3cf6a3",
+      "witness_commit_sha": "9f46d3be0dafa995eecc64e613953fa9076dc3c5",
+      "witness_commit_jst": "2026-09-03T01:52:43+09:00",
+      "cutoff_jst": "2026-09-03T15:50:00+09:00",
+      "committed_before_cutoff": true,
+      "deterministic_rows_sha256": "1c91dcbcabf78006839c840e4781c38fc6bd268c6e344e3bb2becb5b83797669",
+      "exact_race_id_inline": true,
+      "source_url_inline": true,
+      "capture_session_jst_inline": true,
+      "strict_allowlist_values_inline": true,
+      "result_or_payout_observed": false,
+      "decision": "PASS_RESEARCH_HISTORICAL_SUPPORT_SIDE_ONLY"
+    }
+  ],
+  "fail_closed_remainder": [
+    {
+      "venue": "青森",
+      "scope": "Day1 races 2-12 / non-1R numeric witness set",
+      "artifacts": [
+        "KEIRIN_AOMORI_2R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+        "KEIRIN_AOMORI_3R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+        "KEIRIN_AOMORI_4R_6R_PRE_ALLOWLIST_BATCH_20260903_v1.json",
+        "KEIRIN_AOMORI_7R_9R_PRE_ALLOWLIST_BATCH_20260903_v1.json",
+        "KEIRIN_AOMORI_10R_12R_PRE_ALLOWLIST_BATCH_20260903_v1.json",
+        "KEIRIN_AOMORI_DAY1_PRE_COMPLETENESS_RECEIPT_20260903_v1.json"
+      ],
+      "reason": "Original PRE witness objects do not contain the fallback prespec's required deterministic content hash. Race 5 also has permanent zero-competition-score failure under its own contract.",
+      "decision": "FAIL_CLOSED_FOR_NEW_FORMAL_SUPPORT_SIDE_USE",
+      "repair_allowed": false
+    },
+    {
+      "venue": "武雄",
+      "scope": "Day1 races 2-12 / full-day numeric witness beyond independent hashed 1R sentinel",
+      "artifacts": [
+        "KEIRIN_TAKEO_DAY1_PRE_ROSTER_SCORE_GATE_20260903_v1.json",
+        "KEIRIN_TAKEO_DAY1_PRE_NUMERIC_WITNESS_20260903_v1.json",
+        "KEIRIN_TAKEO_DAY1_PRE_COMPLETENESS_RECEIPT_20260903_v1.json"
+      ],
+      "reason": "Full-day witness objects do not contain the fallback prespec's required deterministic content hash for the strict PRE snapshot. Race 2 is additionally permanent zero-score fail-closed. The separate 9R-12R later immutability receipt cannot repair the original snapshot hash requirement and remains immutable no-repair.",
+      "decision": "FAIL_CLOSED_FOR_NEW_FORMAL_SUPPORT_SIDE_USE_EXCEPT_HASHED_1R_SENTINEL",
+      "repair_allowed": false
+    }
+  ],
+  "decision": {
+    "usable_historical_400m_blocks": 2,
+    "usable_historical_400m_pre_rows": 16,
+    "usable_venues": [
+      "青森",
+      "武雄"
+    ],
+    "support_increment_authorized_now": 0,
+    "candidate_screening_authorized": true,
+    "candidate_identity_must_use_official_registration_number": true,
+    "future_prospective_day1_pre_membership_required": true,
+    "future_contemporaneous_same_race_assignment_required": true,
+    "future_provenance_pass_required": true,
+    "model_feature_admission": false
+  },
+  "immutable_closure": "Do not add hashes, timestamps, source bytes, race IDs, assignments or reconstructed PRE to the failed Sep3 remainder after cutoff.",
+  "hard_boundaries": [
+    "NO_RESULT",
+    "NO_PAYOUT",
+    "NO_POST_CUTOFF_PRE_REPAIR",
+    "NO_FEATURE_ADMISSION_FROM_THIS_AUDIT",
+    "NO_S0_MUTATION",
+    "NO_MAIN_OR_RUNTIME_MUTATION",
+    "NO_MODEL_PROMOTION"
+  ],
+  "owner_action_required_now": false
+}
