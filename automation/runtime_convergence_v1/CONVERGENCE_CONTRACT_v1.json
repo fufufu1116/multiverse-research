@@ -1,0 +1,158 @@
+{
+  "schema": "MULTIVERSE_RUNTIME_CONVERGENCE_CONTRACT_v1",
+  "issue": 133,
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "canonical_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "canonical_shared_engine_subtree": "36208a51847b01f6185efd690649694e94645bda",
+  "mode": "PRE_PRODUCTION_NO_EFFECT_RUNTIME_CONVERGENCE",
+  "proof_ceiling": "RUNTIME_CONVERGENCE_REPOSITORY_PREPARATION_ONLY",
+  "runtime": "OFF",
+  "materialized_subtrees": {
+    "runtime_v1": {
+      "path": "automation/runtime_v1",
+      "source_commit": "8685193cc6d592a36ea78bc7a8647ceadce13ae6",
+      "source_tree": "2dd2bc01f2756f4d2da24e4187b7251213b3d94f",
+      "subtree": "d93e7d86347d5766eeffac3bd604e66f8aee0177",
+      "adoption_issue": 109,
+      "adoption_comment": 5537525257
+    },
+    "deployment_v1": {
+      "path": "automation/deployment_v1",
+      "source_commit": "722465fda607198858e48f66ec9b936430ff3d6a",
+      "source_tree": "636e53d4f476c39cb5f52a6770b2642a7d693b04",
+      "subtree": "a30dd4941298e272b3bd93e3efaebcc1c7234d0e",
+      "adoption_issue": 113,
+      "adoption_comment": 5538752769
+    },
+    "target_environment_v1": {
+      "path": "automation/target_environment_v1",
+      "source_commit": "b587206560bfb623c74f9bdc95007f2c7cbce022",
+      "source_tree": "a954fd13967d660804f894b40606c2178f27c1d1",
+      "subtree": "d75b733a1be0526ece53d25ba14e62153ec2ab45",
+      "adoption_issue": 116,
+      "adoption_comment": 5540202938
+    },
+    "real_infrastructure_prep_v1": {
+      "path": "automation/real_infrastructure_prep_v1",
+      "source_commit": "04a56bda6c94007445be579d5407c8bc5d2316e1",
+      "source_tree": "df7adb6d2bc949a502ca2baa990029b4879da2a1",
+      "subtree": "790a2ff0a97143229673a81d6eff3b0ec64fc3c0",
+      "adoption_issue": 120,
+      "adoption_comment": 5548994090
+    },
+    "remote_preprod_render_v1": {
+      "path": "automation/remote_preprod_render_v1",
+      "source_commit": "f673d5eb53d5831ce345ff3262970cad6bcd0f9a",
+      "source_tree": "ce2ddbeb47496ebcf826ea5e68f35f1dacbc3f72",
+      "subtree": "45876b831ce5980bbd5e4891c8749bf2feb1ee8e",
+      "adoption_issue": 124,
+      "adoption_comment": 5549590213,
+      "explicitly_excludes_later_pr123_head": "f5cdc340a1e80281d4805e0f7701cb92a63e8402"
+    },
+    "multi_host_preprod_noeffect_preparation_v1": {
+      "path": "automation/multi_host_preprod_noeffect_preparation_v1",
+      "source_commit": "11a3f91ddde15a0a329ff11bdb09bc0bd1796631",
+      "source_tree": "f8750ac601c245bbaec8ed68ab534ab8c2a4c41d",
+      "subtree": "9cceda99f9f9ac0fd8012ee7507bc99318962e35",
+      "adoption_issue": 128,
+      "adoption_comment": 5553228829
+    },
+    "remote_multihost_render_v1": {
+      "path": "automation/remote_multihost_render_v1",
+      "source_commit": "c5dfa99d7cc81c4e7e32e4d5f33c5ce4df7b2e8b",
+      "source_tree": "2c3e9972b5f2c4a4ce14087b76ae7b434be69866",
+      "subtree": "1a25ea3ce8dbd61b2eff1f64f448bd787619b9dc",
+      "adoption_issue": 132,
+      "adoption_comment": 5554954156
+    }
+  },
+  "runtime_contract": {
+    "supervisor": "automation/runtime_v1/runtime_supervisor.py",
+    "service": "automation/runtime_v1/runtime_service.py",
+    "shared_engine_driver": "automation/runtime_v1/shared_engine_driver.py",
+    "mode": "SEALED_DRY_RUN",
+    "kill_switch_default_engaged": true,
+    "worker_identity_credentials": "INJECTED_EPHEMERAL_ONLY",
+    "secret_persistence": false
+  },
+  "deployment_contract": {
+    "contract": "automation/deployment_v1/deployment_contract.py",
+    "mode": "SEALED_DEPLOYMENT_VALIDATION",
+    "artifact_digest_binding_required": true,
+    "rollback_digest_binding_required": true,
+    "kill_switch_required": true,
+    "credential_persistence": false
+  },
+  "target_contract": {
+    "environment_class": "PRE_PRODUCTION",
+    "topology_class": "RENDER_PREPRODUCTION_TWO_SERVICE_SHARED_POSTGRES_NO_EFFECT_v1",
+    "provider_family": "RENDER",
+    "worker_ids": ["worker-a", "worker-b"],
+    "shared_postgres_id": "dpg-dadou0on74is73b09570-a",
+    "worker_a_service_id": "srv-dae4cs8n74is73cbj7vg",
+    "worker_b_service_id": "srv-dae4cugn74is73cbjfu0",
+    "incremental_spend_ceiling_usd": 0
+  },
+  "distributed_safety_contract": {
+    "observed_fence_sequence": [1, 2, 3],
+    "final_owner": "worker-a",
+    "final_fence_token": 3,
+    "durable_operation_count": 1,
+    "simulated_effect_count": 1,
+    "early_lease_rejection": true,
+    "stale_owner_rejection": true,
+    "stale_fence_rejection": true,
+    "split_brain_rejection": true,
+    "cross_worker_duplicate_suppression": true,
+    "same_key_different_payload_rejection": true,
+    "restart_successor_observed": true,
+    "duplicate_external_effect": false
+  },
+  "observability_contract": {
+    "worker_a_cpu_memory_observed": true,
+    "worker_b_cpu_memory_observed": true,
+    "restart_instance_transition_observed": true,
+    "http_slo_claim": false,
+    "network_partition_timing_claim": false
+  },
+  "authority": {
+    "additional_spend": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "network_effect": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "secret_persistence": false,
+    "workflow_dispatch_rerun": false
+  },
+  "governance": {
+    "runtime_readiness_reassessment_comment": 5554965156,
+    "cross_lab_t2_comment": 5535401492,
+    "cross_lab_convergence_update_comment": 5554963124,
+    "candidate_must_traverse": [
+      "CANDIDATE_FREEZE",
+      "INDEPENDENT_LAB",
+      "T1",
+      "INDEPENDENT_AUDITOR",
+      "T2",
+      "SEPARATE_OWNER_DECISION"
+    ]
+  },
+  "not_proven": [
+    "PRODUCTION_DEPLOYMENT",
+    "PRODUCTION_CREDENTIALS",
+    "LIVE_BUSINESS_EFFECTS",
+    "PROTECTED_KEIRIN_DATA",
+    "PAID_OR_ADDITIONAL_SPEND",
+    "HTTP_SLO",
+    "NETWORK_PARTITION_SLO",
+    "MULTI_REGION_FAILOVER",
+    "POSTGRES_HIGH_AVAILABILITY",
+    "RUNTIME_ACTIVATION"
+  ]
+}
