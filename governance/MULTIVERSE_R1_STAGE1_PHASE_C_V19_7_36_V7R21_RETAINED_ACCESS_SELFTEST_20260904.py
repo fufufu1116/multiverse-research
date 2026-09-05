@@ -164,6 +164,21 @@ def main():
     try: rc=p.wait(timeout=3)
     except subprocess.TimeoutExpired: p.kill(); rc=p.wait(timeout=3)
     out.append(p.stdout.read() or ''); text=''.join(out); print(text,end='')
+    # Dense /proc sampling intentionally prioritizes the real mixed window over
+    # stdout consumption. Reconcile only truthful helper markers that were
+    # actually drained from this same child after exit; never synthesize them.
+    retired = retired or 'V7R21_AUTHORITY_RETIRED_BEFORE_PROTECTED_HELPER_EXEC' in text
+    helper_entry = helper_entry or 'V7R21_PROTECTED_HELPER_ENTRY' in text
+    stress_armed = stress_armed or 'V7R21_THREAD_CREATION_STRESS_ARMED' in text
+    drop_lines=[line for line in text.splitlines() if 'V7R21_IRREVERSIBLE_USER_DROP_COMPLETE' in line]
+    if drop_lines:
+        if not any('all_tasks_ordinary=true' in line for line in drop_lines): raise SystemExit('safe marker missing all-task proof')
+        drop_marker=True
+    stress_lines=[line for line in text.splitlines() if 'V7R21_POSTDROP_THREAD_CREATION_STRESS_PASS' in line]
+    if stress_lines:
+        counts=[int(m.group(1)) for line in stress_lines for m in [re.search(r'per_thread_regain_denied=(\d+)',line)] if m]
+        if not counts or max(counts)<1: raise SystemExit('new-thread regain-denial count absent')
+        stress_pass=True
     if not retired or not helper_entry or not stress_armed or not drop_marker or not stress_pass: raise SystemExit('required helper boundary marker missing')
     if protected_attempts<1: raise SystemExit('no protected attack attempt')
     if mixed_snapshots<1 or mixed_tid_attempts<1 or not mixed_targeted: raise SystemExit('mixed-state per-TID proof absent')
