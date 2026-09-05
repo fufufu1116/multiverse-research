@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_TOYAMA_0918_AOMORI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v1",
+  "status": "PREQUALIFIED_CANDIDATE_SET_EXHAUSTIVE_ALL_IDENTITIES_RESOLVED_NO_SUPPORT_INCREMENT",
+  "observed_at_jst": "2026-09-05",
+  "prospective_event": {
+    "venue": "富山",
+    "circumference_class": "333_OR_333_33M",
+    "event_start_date": "2026-09-18",
+    "event_end_date": "2026-09-21",
+    "event_name": "共同通信社杯競輪",
+    "grade": "G2",
+    "positive_navigation": "KDreams Toyama schedule -> displayed 2026-09-18 assen link -> assen page",
+    "full_event_level_assen_positive": true,
+    "assen_snapshot_as_of": "2026-09-05",
+    "evidence_role": "EVENT_LEVEL_ASSEN_PREQUALIFICATION_ONLY_NOT_SAME_RACE_ASSIGNMENT"
+  },
+  "historical_counterpart": {
+    "venue": "青森",
+    "race_date": "2026-09-03",
+    "race_no": 1,
+    "race_id": "1220260903010001",
+    "circumference_class": "400M",
+    "pre_rows": 9,
+    "witness": "KEIRIN_AOMORI_1R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+    "transport_audit": "KEIRIN_SEP3_400M_EXISTING_PRE_SUPPORT_SIDE_CONTRACT_AUDIT_20260905_v1.json",
+    "identity_gate": "KEIRIN_AOMORI_1R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json"
+  },
+  "screen_method": "Exact normalized rider-name equality across the full positively observed Toyama 2026-09-18 event-level assen roster versus all 9 frozen Aomori 1R PRE rows; no fuzzy matching.",
+  "exact_name_overlap_candidates": [
+    {
+      "rider": "志田 龍星",
+      "historical_car_no": 1,
+      "period": 119,
+      "official_registration_number": "015537",
+      "official_identity_mapping": "PASS",
+      "identity_evidence": "KEIRIN_AOMORI_1R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json"
+    },
+    {
+      "rider": "小堺 浩二",
+      "historical_car_no": 5,
+      "period": 91,
+      "official_registration_number": "014177",
+      "official_identity_mapping": "PASS",
+      "identity_evidence": "KEIRIN_AOMORI_1R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json"
+    },
+    {
+      "rider": "室井 蓮太朗",
+      "historical_car_no": 9,
+      "period": 121,
+      "official_registration_number": "015645",
+      "official_identity_mapping": "PASS",
+      "identity_evidence": "KEIRIN_AOMORI_1R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json"
+    }
+  ],
+  "exact_name_candidates_observed": 3,
+  "official_identity_mapping_pass_count": 3,
+  "candidate_set_scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_ALL_9_AOMORI_1R_FROZEN_PRE_ROWS",
+  "support_receipt_authorized": false,
+  "support_increment_authorized": 0,
+  "missing_for_formal_support": [
+    "prospective Toyama Day1 strict PRE membership",
+    "contemporaneous official same-race assignment",
+    "prospective provenance PASS"
+  ],
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "payout_access_for_research_evidence": false,
+    "odds_used": false,
+    "race_id_guessing": false,
+    "post_cutoff_pre_reconstruction": false,
+    "fuzzy_name_matching": false
+  },
+  "owner_action_required_now": false
+}
