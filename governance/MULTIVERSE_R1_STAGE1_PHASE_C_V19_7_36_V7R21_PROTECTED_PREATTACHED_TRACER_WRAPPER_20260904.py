@@ -68,17 +68,20 @@ def configure_ci_guard():
 R.configure_base=configure_ci_guard
 
 # The real AllThreadsSyscall mixed-credential interval is intentionally tiny.
-# Do not stretch production code to make it observable. Instead, make each
-# external observer call densely sample the exact same /proc task state. Return
-# one truthful fully-protected snapshot so the inherited protected actual-address
-# attack is not skipped; after that obligation is satisfied, keep later dense
-# calls sampling through fully-protected states and prioritize the first truthful
-# simultaneous ordinary+authority mixed snapshot. No synthetic credentials,
-# delay, helper hook, privilege surface, or marker substitution is introduced.
+# Do not stretch production code to make it observable. Densely sample only
+# until one truthful protected snapshot and one truthful mixed snapshot have
+# satisfied those proof obligations. After the mixed snapshot is captured,
+# immediately return to one ordinary /proc snapshot per observer call so stdout
+# boundary markers can catch up before post-safe births are conservatively
+# absorbed into the pre-safe baseline. No synthetic credentials, delay, helper
+# hook, privilege surface, or marker substitution is introduced.
 _base_task_states=R.task_states
 _protected_snapshot_returned=False
+_mixed_snapshot_returned=False
 def dense_task_states(pid):
-    global _protected_snapshot_returned
+    global _protected_snapshot_returned, _mixed_snapshot_returned
+    if _mixed_snapshot_returned:
+        return _base_task_states(pid)
     last={}
     for _ in range(96):
         states=_base_task_states(pid)
@@ -86,6 +89,7 @@ def dense_task_states(pid):
         ordinary=[tid for tid,s in states.items() if len(s.get('uid',()))==4 and len(set(s['uid']))==1 and R.AUTH_UID not in s['uid']]
         authority=[tid for tid,s in states.items() if R.AUTH_UID in s.get('uid',(0,))[1:]]
         if ordinary and authority:
+            _mixed_snapshot_returned=True
             print(f'PRELAB_V7R21_DENSE_EXTERNAL_MIXED_SNAPSHOT_CAUGHT=true ordinary={len(ordinary)} authority={len(authority)}')
             return states
         if authority and len(authority)==len(states) and not _protected_snapshot_returned:
