@@ -7,6 +7,9 @@ R=importlib.util.module_from_spec(spec); spec.loader.exec_module(R)
 
 PROD_GUARD='/usr/local/bin/multiverse-v36-ui-ready-env-guard-v7r21'
 CI_GUARD='/tmp/v7r21-guard-tracer-selftest'
+CI_STABLE_HELPER='/tmp/v7r21-helper-stable-birth-selftest'
+CI_STABLE_GUARD='/tmp/v7r21-guard-stable-birth-selftest'
+CI_BIRTH_PREFIX='/tmp/v7r21-ci-birth-proof-'
 
 
 def sha(path):
@@ -20,11 +23,8 @@ def run(*args):
     subprocess.run(list(args),check=True)
 
 
-def build_exact_ci_guard_copy():
+def regenerate_production_sources():
     g='/src/governance/'
-    # Reproduce the Dockerfile.v7r21 source-path and patcher topology exactly.
-    # Go command-line packages can encode source-file identity even with
-    # -trimpath, so byte-for-byte comparison must use the same /tmp names.
     shutil.copyfile(g+'MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R16_POST_AUTH_CREDENTIAL_DROP_GUARD_20260904.go','/tmp/v7r16-guard.go')
     shutil.copyfile(g+'MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R7_UI_READY_WRITER_20260901.go','/tmp/v7r7-helper.go')
     run('python3',g+'MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R18_HELPER_CREDENTIAL_CONTRACT_PATCHER_20260904.py','/tmp/v7r16-guard.go','/tmp/v7r7-helper.go','/tmp/v7r18-guard.go','/tmp/v7r18-helper.go')
@@ -32,19 +32,24 @@ def build_exact_ci_guard_copy():
     run('python3',g+'MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R20_MIXED_TRANSITION_RACE_PATCHER_20260904.py','/tmp/v7r19-guard.go','/tmp/v7r19-helper.go','/tmp/v7r20-guard.go','/tmp/v7r20-helper.go')
     run('python3',g+'MULTIVERSE_R1_STAGE1_PHASE_C_V19_7_36_V7R21_NEW_THREAD_REGAIN_PATCHER_20260904.py','/tmp/v7r20-guard.go','/tmp/v7r20-helper.go','/tmp/v7r21-guard.go','/tmp/v7r21-helper.go')
     run('gofmt','-w','/tmp/v7r21-guard.go','/tmp/v7r21-helper.go')
-    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/ui-ready-v7r21','/tmp/v7r21-helper.go')
-    helper_sha=sha('/tmp/ui-ready-v7r21')
-    if helper_sha!=sha(R.HELPER): raise SystemExit('CI regenerated helper does not byte-match production helper')
+
+
+def bind_guard_helper_hash(helper_sha):
     p=pathlib.Path('/tmp/v7r21-guard.go'); s=p.read_text(encoding='utf-8')
     if s.count('__V7R21_HELPER_SHA256__')!=1: raise SystemExit('guard helper hash placeholder topology changed')
     s=s.replace('__V7R21_HELPER_SHA256__',helper_sha,1); p.write_text(s,encoding='utf-8'); run('gofmt','-w',str(p))
+
+
+def build_exact_ci_guard_copy():
+    regenerate_production_sources()
+    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/ui-ready-v7r21','/tmp/v7r21-helper.go')
+    helper_sha=sha('/tmp/ui-ready-v7r21')
+    if helper_sha!=sha(R.HELPER): raise SystemExit('CI regenerated helper does not byte-match production helper')
+    bind_guard_helper_hash(helper_sha)
+    p=pathlib.Path('/tmp/v7r21-guard.go')
     run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/ui-ready-env-guard-v7r21',str(p))
     if sha('/tmp/ui-ready-env-guard-v7r21')!=sha(PROD_GUARD): raise SystemExit('CI regenerated guard does not byte-match production guard')
 
-    # Insert exactly one unconditional CI-only stop AFTER the production guard
-    # has completed verifyProtectedCredentialBoundary(), which includes its
-    # TracerPid=0 check. All production code before and after this one line is
-    # byte-for-source identical to the regenerated production guard.
     s=p.read_text(encoding='utf-8')
     anchor='\tif err != nil {\n\t\tdeny("PROTECTED_CREDENTIAL_BOUNDARY")\n\t}\n'
     if s.count(anchor)!=1: raise SystemExit('guard protected-boundary anchor changed')
@@ -59,6 +64,83 @@ def build_exact_ci_guard_copy():
     print('PRELAB_V7R21_CI_GUARD_ONLY_DIFF=ONE_UNCONDITIONAL_SIGSTOP_AFTER_PROTECTED_TRACER_GATE')
 
 
+def build_stable_birth_proof_pair():
+    regenerate_production_sources()
+    helper=pathlib.Path('/tmp/v7r21-helper.go'); prod_helper_src=helper.read_text(encoding='utf-8')
+    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/v7r21-helper-production-recheck',str(helper))
+    if sha('/tmp/v7r21-helper-production-recheck')!=sha(R.HELPER): raise SystemExit('stable-proof regenerated helper does not byte-match production helper')
+
+    anchor='\t\t\tready<-proof{tid,e}; <-release; runtime.UnlockOSThread(); wg.Done()\n'
+    if prod_helper_src.count(anchor)!=1: raise SystemExit('stable birth helper anchor changed')
+    barrier=r'''\t\t\tif e==nil {
+\t\t\t\tpath:=fmt.Sprintf("/tmp/v7r21-ci-birth-proof-%d",tid)
+\t\t\t\t_ = syscall.Unlink(path)
+\t\t\t\tif be:=syscall.Mkfifo(path,0600); be!=nil { e=fmt.Errorf("ci-birth-proof-mkfifo-%d:%v",tid,be) } else {
+\t\t\t\t\tfd,be:=syscall.Open(path,syscall.O_RDONLY,0)
+\t\t\t\t\tif be!=nil { e=fmt.Errorf("ci-birth-proof-open-%d:%v",tid,be) } else {
+\t\t\t\t\t\tvar ack [8]byte; n,re:=syscall.Read(fd,ack[:]); _=syscall.Close(fd); _=syscall.Unlink(path)
+\t\t\t\t\t\tif re!=nil || string(ack[:n])!="release\\n" { e=fmt.Errorf("ci-birth-proof-ack-%d-n-%d-err-%v",tid,n,re) }
+\t\t\t\t\t}
+\t\t\t\t}
+\t\t\t}
+'''
+    ci_helper_src=prod_helper_src.replace(anchor,barrier+anchor,1)
+    if ci_helper_src.replace(barrier,'',1)!=prod_helper_src: raise SystemExit('CI stable helper differs by more than exact FIFO barrier block')
+    helper.write_text(ci_helper_src,encoding='utf-8'); run('gofmt','-w',str(helper))
+    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o',CI_STABLE_HELPER,str(helper))
+    os.chown(CI_STABLE_HELPER,0,0); os.chmod(CI_STABLE_HELPER,0o555)
+    ci_helper_sha=sha(CI_STABLE_HELPER)
+
+    guard=pathlib.Path('/tmp/v7r21-guard.go'); prod_guard_src=guard.read_text(encoding='utf-8')
+    helper_path='/usr/local/bin/multiverse-v36-ui-ready-v7r21'
+    if prod_guard_src.count(helper_path)!=1: raise SystemExit('stable guard helper path topology changed')
+    ci_guard_src=prod_guard_src.replace(helper_path,CI_STABLE_HELPER,1)
+    guard.write_text(ci_guard_src,encoding='utf-8')
+    bind_guard_helper_hash(ci_helper_sha)
+    run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o',CI_STABLE_GUARD,str(guard))
+    os.chown(CI_STABLE_GUARD,0,0); os.chmod(CI_STABLE_GUARD,0o555)
+    final_guard_src=guard.read_text(encoding='utf-8')
+    normalized=final_guard_src.replace(CI_STABLE_HELPER,helper_path,1).replace(ci_helper_sha,'__V7R21_HELPER_SHA256__',1)
+    if normalized!=prod_guard_src: raise SystemExit('CI stable guard differs beyond helper path/hash binding')
+    print('PRELAB_V7R21_CI_STABLE_HELPER_PRODUCTION_SOURCE_REGENERATED_MATCH=true')
+    print('PRELAB_V7R21_CI_STABLE_HELPER_ONLY_DIFF=POSTDROP_LOCKED_WORKER_FIFO_ACK_BARRIER')
+    print('PRELAB_V7R21_CI_STABLE_GUARD_ONLY_DIFF=CI_HELPER_PATH_AND_EXACT_HASH_BINDING')
+    print(f'PRELAB_V7R21_CI_STABLE_HELPER_SHA256={ci_helper_sha}')
+
+
+def stable_fifo_tids():
+    out=set()
+    for p in pathlib.Path('/tmp').glob('v7r21-ci-birth-proof-*'):
+        try: out.add(int(p.name.rsplit('-',1)[1]))
+        except ValueError: raise SystemExit(f'CI birth FIFO malformed:{p}')
+    return out
+
+
+def enable_stable_birth_observer():
+    base_task_states=R.task_states
+    base_prove=R.prove_nondumpable_ptrace_denial
+    def stable_task_states(pid):
+        states=base_task_states(pid); stable=stable_fifo_tids()
+        return {tid:s for tid,s in states.items() if tid in stable}
+    def stable_prove_and_release(pid,tid,expected,uid):
+        path=f'{CI_BIRTH_PREFIX}{tid}'
+        if not os.path.exists(path): raise SystemExit(f'AMBIGUOUS_CI_STABLE_BIRTH_BARRIER_ABSENT:tid={tid}')
+        er=base_prove(pid,tid,expected,uid)
+        if not os.path.exists(path): raise SystemExit(f'AMBIGUOUS_CI_STABLE_BIRTH_BARRIER_VANISHED_BEFORE_ACK:tid={tid}')
+        try:
+            fd=os.open(path,os.O_WRONLY)
+            try:
+                n=os.write(fd,b'release\n')
+                if n!=8: raise SystemExit(f'AMBIGUOUS_CI_STABLE_BIRTH_ACK_SHORT_WRITE:tid={tid}:n={n}')
+            finally: os.close(fd)
+        except OSError as e:
+            raise SystemExit(f'AMBIGUOUS_CI_STABLE_BIRTH_ACK_FAILED:tid={tid}:errno={e.errno}')
+        print(f'PRELAB_V7R21_CI_STABLE_PER_BIRTH_ACK_RELEASED_TID={tid}')
+        return er
+    R.task_states=stable_task_states
+    R.prove_nondumpable_ptrace_denial=stable_prove_and_release
+
+
 _base_configure=R.configure_base
 def configure_ci_guard():
     _base_configure(); build_exact_ci_guard_copy()
@@ -66,38 +148,6 @@ def configure_ci_guard():
     if R.M.LAUNCHER_C.count(old)!=1: raise SystemExit('launcher guard path topology changed')
     R.M.LAUNCHER_C=R.M.LAUNCHER_C.replace(old,CI_GUARD,1)
 R.configure_base=configure_ci_guard
-
-# The real AllThreadsSyscall mixed-credential interval is intentionally tiny.
-# Do not stretch production code to make it observable. Densely sample only
-# until one truthful protected snapshot and one truthful mixed snapshot have
-# satisfied those proof obligations. After the mixed snapshot is captured,
-# immediately return to one ordinary /proc snapshot per observer call so stdout
-# boundary markers can catch up before post-safe births are conservatively
-# absorbed into the pre-safe baseline. No synthetic credentials, delay, helper
-# hook, privilege surface, or marker substitution is introduced.
-_base_task_states=R.task_states
-_protected_snapshot_returned=False
-_mixed_snapshot_returned=False
-def dense_task_states(pid):
-    global _protected_snapshot_returned, _mixed_snapshot_returned
-    if _mixed_snapshot_returned:
-        return _base_task_states(pid)
-    last={}
-    for _ in range(96):
-        states=_base_task_states(pid)
-        if states: last=states
-        ordinary=[tid for tid,s in states.items() if len(s.get('uid',()))==4 and len(set(s['uid']))==1 and R.AUTH_UID not in s['uid']]
-        authority=[tid for tid,s in states.items() if R.AUTH_UID in s.get('uid',(0,))[1:]]
-        if ordinary and authority:
-            _mixed_snapshot_returned=True
-            print(f'PRELAB_V7R21_DENSE_EXTERNAL_MIXED_SNAPSHOT_CAUGHT=true ordinary={len(ordinary)} authority={len(authority)}')
-            return states
-        if authority and len(authority)==len(states) and not _protected_snapshot_returned:
-            _protected_snapshot_returned=True
-            print(f'PRELAB_V7R21_DENSE_EXTERNAL_PROTECTED_SNAPSHOT_CAUGHT=true authority={len(authority)}')
-            return states
-    return last
-R.task_states=dense_task_states
 
 
 def uid_tuple(pid):
@@ -169,11 +219,13 @@ def protected_preattached_tracer_fail_closed(uid,gid):
     print(f'PRELAB_V7R21_PREATTACHED_TRACER_ATTACH_EXE={attach_exe}')
     print('PRELAB_V7R21_PREATTACHED_TRACER_REACHED_HELPER=true')
     print('PRELAB_V7R21_PREATTACHED_TRACER_EXACT_BOUNDARY_RESULT=FAIL_CLOSED_TRACER_PRESENT_BEFORE_IRREVERSIBLE_DROP')
-    if R.M.LAUNCHER_C.count(CI_GUARD)!=1: raise SystemExit('CI guard launcher topology changed before production restoration')
-    R.M.LAUNCHER_C=R.M.LAUNCHER_C.replace(CI_GUARD,PROD_GUARD,1)
+    if R.M.LAUNCHER_C.count(CI_GUARD)!=1: raise SystemExit('CI guard launcher topology changed before stable proof rebind')
+    build_stable_birth_proof_pair()
+    R.M.LAUNCHER_C=R.M.LAUNCHER_C.replace(CI_GUARD,CI_STABLE_GUARD,1)
     R.M.build_launcher()
-    if R.M.LAUNCHER_C.count(PROD_GUARD)!=1 or CI_GUARD in R.M.LAUNCHER_C: raise SystemExit('production guard launcher restoration failed')
-    print('PRELAB_V7R21_NORMAL_PROOF_LAUNCHER_REBUILT_WITH_PRODUCTION_GUARD=true')
+    if R.M.LAUNCHER_C.count(CI_STABLE_GUARD)!=1 or CI_GUARD in R.M.LAUNCHER_C: raise SystemExit('stable proof guard launcher rebind failed')
+    enable_stable_birth_observer()
+    print('PRELAB_V7R21_NORMAL_PREBOUNDARY_PROOF_REBUILT_WITH_CI_STABLE_POSTDROP_HELPER=true')
 
 R.preattached_tracer_fail_closed=protected_preattached_tracer_fail_closed
 R.main()
