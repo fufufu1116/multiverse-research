@@ -1,0 +1,80 @@
+{
+  "schema": "MULTIVERSE_REMOTE_MULTIHOST_RENDER_TARGET_BINDING_v1",
+  "issue": 130,
+  "authority_issue": 129,
+  "authority_comment": 5553241915,
+  "resource_binding_comment": 5553270949,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "adopted_preparation_decision": 5553228829,
+  "adopted_preparation_head": "11a3f91ddde15a0a329ff11bdb09bc0bd1796631",
+  "workspace": {
+    "name": "My Workspace",
+    "id": "tea-dadorv0u01pc73bnlg50"
+  },
+  "provider": "RENDER",
+  "region": "singapore",
+  "repository": "https://github.com/fufufu1116/multiverse-research",
+  "branch": "agent/remote-multihost-render-noeffect-v1-20260906-v1",
+  "deployed_workload_source_commit": "3b9748cee8d4a9e4769ea8b58d496580617a79e5",
+  "target_class": "RENDER_PREPRODUCTION_TWO_SERVICE_SHARED_POSTGRES_NO_EFFECT_v1",
+  "environment_class": "PRE_PRODUCTION",
+  "auto_deploy": false,
+  "workers": [
+    {
+      "worker_id": "worker-a",
+      "service_id": "srv-dae4cs8n74is73cbj7vg",
+      "name": "multiverse-preprod-multihost-worker-a-v1",
+      "plan": "free",
+      "region": "singapore",
+      "url": "https://multiverse-preprod-multihost-worker-a-v1.onrender.com",
+      "creation_deploy_id": "dep-dae4cson74is73cbj9a0"
+    },
+    {
+      "worker_id": "worker-b",
+      "service_id": "srv-dae4cugn74is73cbjfu0",
+      "name": "multiverse-preprod-multihost-worker-b-v1",
+      "plan": "free",
+      "region": "singapore",
+      "url": "https://multiverse-preprod-multihost-worker-b-v1.onrender.com",
+      "creation_deploy_id": "dep-dae4cv0n74is73cbjhm0"
+    }
+  ],
+  "shared_state": {
+    "postgres_id": "dpg-dadou0on74is73b09570-a",
+    "name": "multiverse-preprod-noeffect-state-v1",
+    "plan": "free",
+    "region": "singapore",
+    "version": 18,
+    "high_availability": false,
+    "table_namespace": "mv_mh1_",
+    "database_url_stored_in_github": false
+  },
+  "spend_boundary": {
+    "incremental_monetary_spend_ceiling_usd": 0,
+    "paid_upgrade_authorized": false,
+    "paid_external_service_authorized": false
+  },
+  "network_effect_boundary": {
+    "render_to_bound_postgres": true,
+    "public_read_only_evidence_gets": true,
+    "http_state_changes": false,
+    "live_business_provider": false,
+    "protected_keirin_data": false,
+    "production_endpoint": false,
+    "unrelated_outbound_network": false
+  },
+  "execution_gate": {
+    "database_secret_bound_to_both_workers": false,
+    "multihost_execution_authorized_on_both_workers": false,
+    "database_bound_drill_started": false
+  },
+  "rollback": {
+    "kill_switch_env_key": "MULTIVERSE_MULTIHOST_EXECUTION_AUTHORIZED",
+    "kill_switch_value": "false",
+    "auto_deploy": false,
+    "http_state_changes_disabled": true
+  },
+  "runtime": "OFF",
+  "runtime_activation": false,
+  "proof_ceiling": "REMOTE_MULTI_HOST_PREPRODUCTION_EXECUTION_IN_PROGRESS_NO_EFFECT_ONLY"
+}
