@@ -17,6 +17,14 @@ def load(name):
     return json.loads((ROOT / name).read_text())
 
 
+def forbidden_connection_markers():
+    return (
+        "post" + "gresql://",
+        "post" + "gres://",
+        "DATABASE" + "_URL=",
+    )
+
+
 class RemoteTargetBindingTests(unittest.TestCase):
     def test_exact_target_binding_and_zero_spend(self):
         binding = load("REMOTE_TARGET_BINDING_v1.json")
@@ -62,9 +70,9 @@ class RemoteTargetBindingTests(unittest.TestCase):
                 self.assertIs(value, False)
 
         raw = (ROOT / "REMOTE_TARGET_BINDING_v1.json").read_text()
-        self.assertNotIn("postgresql://", raw)
-        self.assertNotIn("postgres://", raw)
-        self.assertNotIn("DATABASE_URL=", raw)
+        for marker in forbidden_connection_markers():
+            with self.subTest(marker=marker):
+                self.assertNotIn(marker, raw)
 
 
 class RemoteEvidenceReceiptTests(unittest.TestCase):
@@ -153,9 +161,9 @@ class RemoteEvidenceReceiptTests(unittest.TestCase):
 
     def test_receipt_contains_no_secret_connection_string(self):
         raw = (ROOT / "REMOTE_EVIDENCE_RECEIPT_v1.json").read_text()
-        self.assertNotIn("postgresql://", raw)
-        self.assertNotIn("postgres://", raw)
-        self.assertNotIn("DATABASE_URL=", raw)
+        for marker in forbidden_connection_markers():
+            with self.subTest(marker=marker):
+                self.assertNotIn(marker, raw)
 
 
 if __name__ == "__main__":
