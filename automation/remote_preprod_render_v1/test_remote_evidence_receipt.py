@@ -99,11 +99,12 @@ class RemoteEvidenceReceiptTests(unittest.TestCase):
         self.assertIs(first["duplicate_external_effect"], False)
         self.assertEqual(first["findings"], [])
 
-    def test_restart_persistence_is_observed_on_new_instance(self):
+    def test_restart_persistence_is_observed_on_new_live_instance(self):
         receipt = load("REMOTE_EVIDENCE_RECEIPT_v1.json")
         first = receipt["first_database_bound_deploy"]
         restart = receipt["restart_persistence_deploy"]
 
+        self.assertEqual(restart["provider_status"], "live")
         self.assertNotEqual(first["instance_id"], restart["instance_id"])
         self.assertIs(restart["database_bound"], True)
         self.assertIs(restart["ready"], True)
