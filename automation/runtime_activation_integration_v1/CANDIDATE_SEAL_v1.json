@@ -17,9 +17,9 @@
   "runtime_activation_ready": false,
   "independent_review_ready": true,
   "deterministic_tests_present": true,
-  "deterministic_tests_executed_before_seal": true,
-  "deterministic_test_result": "PASS_6_OF_6",
-  "tested_blob_shas": {
+  "deterministic_tests_executed_before_seal": false,
+  "deterministic_test_result": "PENDING_EXACT_HEAD_INDEPENDENT_EXECUTION",
+  "test_target_blob_shas": {
     "ACTIVATION_INTEGRATION_CONTRACT_v1.json": "d8a6b1e2b13be252b77d69714817b0a3aaed88f5",
     "activation_integration_validator.py": "59886448166f0c5c53e424974bf737b08796abc2",
     "distributed_control.py": "607a987f2b90b4e8636458ff67144d37643e3efb",
@@ -27,6 +27,7 @@
     "runtime_activation_bridge.py": "08815a28e5312355e052f3e9ec29a7cfdb769d7c",
     "test_runtime_activation_integration.py": "02010d640044bf8014666600dbc8b1773d9ff94a"
   },
+  "execution_note": "The test suite and validator are present and blob-bound. This ChatGPT runtime could not clone/download the exact GitHub head for local execution. No PASS is claimed from Candidate self-execution; Independent Lab must execute the exact frozen head.",
   "activation_gates": {
     "kill_switch_default_engaged": true,
     "provider_effect_adapter_enabled": false,
