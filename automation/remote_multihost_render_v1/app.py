@@ -19,9 +19,10 @@ RUNTIME = "OFF"
 
 WORKERS = ("worker-a", "worker-b")
 EXPECTED_POSTGRES_ID = "dpg-dadou0on74is73b09570-a"
-DRILL_ID = "remote-multihost-render-v1-20260906"
+CONTROL_BINDING_ID = "remote-multihost-render-v1-20260906"
+DRILL_ID = "remote-multihost-render-v2-20260906"
 LEASE_TTL_SECONDS = 30
-WAIT_TIMEOUT_SECONDS = 240
+WAIT_TIMEOUT_SECONDS = 900
 
 PAYLOAD = b"MULTIVERSE_REMOTE_MULTIHOST_NO_EFFECT_PAYLOAD_v1"
 CONFLICT_PAYLOAD = b"MULTIVERSE_REMOTE_MULTIHOST_DIFFERENT_PAYLOAD_v1"
@@ -81,7 +82,7 @@ def validate_environment() -> None:
     _require_env("MULTIVERSE_PRODUCTION_CREDENTIALS", "false")
     _require_env("MULTIVERSE_INCREMENTAL_SPEND_USD", "0")
     _require_env("MULTIVERSE_POSTGRES_ID", EXPECTED_POSTGRES_ID)
-    _require_env("MULTIVERSE_DRILL_ID", DRILL_ID)
+    _require_env("MULTIVERSE_DRILL_ID", CONTROL_BINDING_ID)
 
 
 def db_connect():
