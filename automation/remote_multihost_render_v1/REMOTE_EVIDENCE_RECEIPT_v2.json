@@ -1,0 +1,90 @@
+{
+  "schema": "MULTIVERSE_REMOTE_MULTIHOST_RENDER_EVIDENCE_RECEIPT_v2",
+  "issue": 130,
+  "authority_issue": 129,
+  "authority_comment": 5553241915,
+  "final_pass_comment": 5554166751,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "execution_branch": "agent/remote-multihost-render-noeffect-v1-20260906-v1",
+  "deployed_head": "5d9b06e0e04495c3d3a3fe7dc5a1971f31fd3474",
+  "deployed_tree": "7b96eabbe5717593069fa358fbb9151a3719c629",
+  "target_class": "RENDER_PREPRODUCTION_TWO_SERVICE_SHARED_POSTGRES_NO_EFFECT_v1",
+  "environment_class": "PRE_PRODUCTION",
+  "proof_ceiling": "REMOTE_MULTI_HOST_PREPRODUCTION_RENDER_NO_EFFECT_EVIDENCE_ONLY",
+  "workspace": {
+    "id": "tea-dadorv0u01pc73bnlg50",
+    "name": "My Workspace",
+    "region": "singapore"
+  },
+  "shared_postgres": {
+    "id": "dpg-dadou0on74is73b09570-a",
+    "name": "multiverse-preprod-noeffect-state-v1",
+    "plan": "free",
+    "region": "singapore",
+    "version": 18,
+    "high_availability": false,
+    "database_url_persisted_in_github": false
+  },
+  "workers": {
+    "worker-a": {
+      "service_id": "srv-dae4cs8n74is73cbj7vg",
+      "service_name": "multiverse-preprod-multihost-worker-a-v1",
+      "plan": "free",
+      "v2_first_deploy_id": "dep-dae6eugu01pc73d9tj3g",
+      "restart_deploy_id": "dep-dae6gilbedkc73bh778g",
+      "final_instance_id": "srv-dae4cs8n74is73cbj7vg-hibernate-586d4fd5d-b2c7q",
+      "boot_count": 2
+    },
+    "worker-b": {
+      "service_id": "srv-dae4cugn74is73cbjfu0",
+      "service_name": "multiverse-preprod-multihost-worker-b-v1",
+      "plan": "free",
+      "v2_deploy_id": "dep-dae6esu7bikc7388ncbg",
+      "instance_id": "srv-dae4cugn74is73cbjfu0-hibernate-bff7756fb-2ffkl",
+      "boot_count": 1
+    }
+  },
+  "drill": {
+    "id": "remote-multihost-render-v2-20260906",
+    "phase": "COMPLETE",
+    "current_owner": "worker-a",
+    "current_fence_token": 3,
+    "operation_count": 1,
+    "database_bound": true,
+    "events": {
+      "worker_a_token_1_acquired": true,
+      "worker_b_early_acquire_rejected_lease_held": true,
+      "worker_b_token_2_acquired": true,
+      "stale_fence_token_1_rejected": true,
+      "same_key_same_payload_duplicate_suppressed": true,
+      "same_key_different_payload_rejected": true,
+      "stale_worker_a_rejected": true,
+      "split_brain_reacquire_rejected": true,
+      "worker_a_restart_observed": true,
+      "worker_a_token_3_acquired": true,
+      "restart_duplicate_suppressed": true,
+      "restart_failover_complete": true,
+      "final_phase_complete": true
+    },
+    "simulated_effect_count": 1,
+    "duplicate_external_effect": false,
+    "fatal_error_present": false
+  },
+  "provider_observability": {
+    "worker_a_cpu_memory_timeseries_present": true,
+    "worker_b_cpu_memory_timeseries_present": true,
+    "worker_a_distinct_pre_and_post_restart_instances_present": true,
+    "final_evidence_http_200_observed": true,
+    "http_slo_claim": false
+  },
+  "authority": {
+    "additional_spend_above_usd_0": false,
+    "live_business_effect": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "runtime_activation": false
+  },
+  "incremental_spend_ceiling_usd": 0,
+  "runtime": "OFF"
+}
