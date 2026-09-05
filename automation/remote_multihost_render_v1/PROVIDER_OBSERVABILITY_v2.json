@@ -1,0 +1,37 @@
+{
+  "schema": "MULTIVERSE_REMOTE_MULTIHOST_RENDER_PROVIDER_OBSERVABILITY_v2",
+  "issue": 130,
+  "final_pass_comment": 5554166751,
+  "provider": "RENDER",
+  "workspace_id": "tea-dadorv0u01pc73bnlg50",
+  "window_utc": {
+    "start": "2026-09-05T19:02:30Z",
+    "end": "2026-09-05T19:14:00Z"
+  },
+  "worker_a": {
+    "service_id": "srv-dae4cs8n74is73cbj7vg",
+    "cpu_timeseries_present": true,
+    "memory_timeseries_present": true,
+    "observed_instances": [
+      "srv-dae4cs8n74is73cbj7vg-rbq7c",
+      "srv-dae4cs8n74is73cbj7vg-b2c7q"
+    ],
+    "restart_instance_transition_observed": true,
+    "final_evidence_get_http_200_at": "2026-09-05T19:13:12.520531756Z"
+  },
+  "worker_b": {
+    "service_id": "srv-dae4cugn74is73cbjfu0",
+    "cpu_timeseries_present": true,
+    "memory_timeseries_present": true,
+    "observed_instances": [
+      "srv-dae4cugn74is73cbjfu0-2ffkl"
+    ]
+  },
+  "claims": {
+    "cpu_memory_observability": true,
+    "restart_instance_observability": true,
+    "http_slo": false,
+    "network_partition_timing": false
+  },
+  "runtime": "OFF"
+}
