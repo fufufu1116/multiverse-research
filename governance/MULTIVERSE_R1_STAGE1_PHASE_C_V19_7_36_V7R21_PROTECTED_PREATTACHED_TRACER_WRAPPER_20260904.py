@@ -70,24 +70,27 @@ R.configure_base=configure_ci_guard
 # The real AllThreadsSyscall mixed-credential interval is intentionally tiny.
 # Do not stretch production code to make it observable. Instead, make each
 # external observer call densely sample the exact same /proc task state. Return
-# a truthful fully-protected snapshot immediately when observed so the inherited
-# protected actual-address attack is not skipped; otherwise prioritize and
-# return the first truthful simultaneous ordinary+authority mixed snapshot.
-# No synthetic credentials, delay, helper hook, privilege surface, or marker
-# substitution is introduced.
+# one truthful fully-protected snapshot so the inherited protected actual-address
+# attack is not skipped; after that obligation is satisfied, keep later dense
+# calls sampling through fully-protected states and prioritize the first truthful
+# simultaneous ordinary+authority mixed snapshot. No synthetic credentials,
+# delay, helper hook, privilege surface, or marker substitution is introduced.
 _base_task_states=R.task_states
+_protected_snapshot_returned=False
 def dense_task_states(pid):
+    global _protected_snapshot_returned
     last={}
     for _ in range(96):
         states=_base_task_states(pid)
         if states: last=states
         ordinary=[tid for tid,s in states.items() if len(s.get('uid',()))==4 and len(set(s['uid']))==1 and R.AUTH_UID not in s['uid']]
         authority=[tid for tid,s in states.items() if R.AUTH_UID in s.get('uid',(0,))[1:]]
-        if authority and len(authority)==len(states):
-            print(f'PRELAB_V7R21_DENSE_EXTERNAL_PROTECTED_SNAPSHOT_CAUGHT=true authority={len(authority)}')
-            return states
         if ordinary and authority:
             print(f'PRELAB_V7R21_DENSE_EXTERNAL_MIXED_SNAPSHOT_CAUGHT=true ordinary={len(ordinary)} authority={len(authority)}')
+            return states
+        if authority and len(authority)==len(states) and not _protected_snapshot_returned:
+            _protected_snapshot_returned=True
+            print(f'PRELAB_V7R21_DENSE_EXTERNAL_PROTECTED_SNAPSHOT_CAUGHT=true authority={len(authority)}')
             return states
     return last
 R.task_states=dense_task_states
