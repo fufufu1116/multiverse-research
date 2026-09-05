@@ -1,0 +1,115 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260905_v51",
+  "status": "CHAT_INDEPENDENT_RESEARCH_RECOVERY_CURRENT_MULTI_CANDIDATE_NO_PRODUCTION_AUTHORITY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260905_v50.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh Read branch before every CURRENT claim/write.",
+  "current_stage": "STAGE_3_MULTI_EVENT_MULTI_VENUE_PROSPECTIVE_SUPPORT_ACCUMULATION_TOYAMA_SUPPORT_SIDE_AUDITED_TWO_400M_CANDIDATE_SETS_ADDED",
+  "support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "remaining_unique_riders_floor": 29,
+    "remaining_pre_rows_floor": 58,
+    "increment_authorized_now": 0,
+    "gate": "FAIL"
+  },
+  "active_queue": {
+    "artifact": "KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v6.json",
+    "events": 13,
+    "unique_venues": 8
+  },
+  "prequalified_candidate_rows_observed": 39,
+  "prequalified_unique_riders_observed": 35,
+  "official_identity_mapping_pass_rows": 39,
+  "historical_support_side_audit": {
+    "artifact": "KEIRIN_TOYAMA_0903_PRE_SUPPORT_SIDE_CONTRACT_AUDIT_20260905_v1.json",
+    "block": "富山 2026-09-03 Day1 333m 7R / 49 PRE rows",
+    "decision": "PASS_RESEARCH_SUPPORT_SIDE_ONLY",
+    "model_feature_admission": false,
+    "post_cutoff_repair": false,
+    "support_increment_authorized": 0
+  },
+  "new_candidate_sets": [
+    {
+      "artifact": "KEIRIN_KAWASAKI_0910_TOYAMA_HISTORICAL_OVERLAP_CANDIDATES_20260905_v1.json",
+      "event": "川崎 2026-09-10..12 400m F2",
+      "exact_name_candidates_observed": 4,
+      "official_identity_mapping_pass_count": 4,
+      "candidate_set_scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_ALL_49_TOYAMA_FROZEN_PRE_ROWS",
+      "riders": [
+        "松澤 敬輔 / 014570",
+        "高本 和也 / 015618",
+        "平山 優太 / 015515",
+        "齋藤 昌弘 / 014062"
+      ],
+      "support_increment_authorized": 0
+    },
+    {
+      "artifact": "KEIRIN_TOYOHASHI_0911_TOYAMA_HISTORICAL_OVERLAP_CANDIDATES_20260905_v1.json",
+      "event": "豊橋 2026-09-11..13 400m F2",
+      "exact_name_candidates_observed": 4,
+      "official_identity_mapping_pass_count": 4,
+      "candidate_set_scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_ALL_49_TOYAMA_FROZEN_PRE_ROWS",
+      "riders": [
+        "金澤 竜二 / 014136",
+        "石井 毅 / 012879",
+        "表 大暁 / 013484",
+        "辻 力 / 012681"
+      ],
+      "support_increment_authorized": 0
+    }
+  ],
+  "candidate_delta_from_v50": {
+    "rows_added": 8,
+    "unique_riders_added": 8,
+    "identity_pass_rows_added": 8,
+    "formal_support_delta_riders": 0,
+    "formal_support_delta_rows": 0
+  },
+  "fresh_web_check": {
+    "ito_2026_09_07": {
+      "checked_at_jst": "2026-09-05",
+      "schedule_program_positive": true,
+      "actual_day1_rider_racecard_positive": false,
+      "program_state": "Day1/Day2/final race information could not be retrieved"
+    },
+    "kawasaki_2026_09_10": {
+      "checked_at_jst": "2026-09-05",
+      "full_event_level_assen_positive": true,
+      "full_exact_match_against_all_49_toyama_frozen_pre_rows": true,
+      "overlap_count": 4
+    },
+    "toyohashi_2026_09_11": {
+      "checked_at_jst": "2026-09-05",
+      "full_event_level_assen_positive": true,
+      "assen_snapshot_as_of": "2026-09-05",
+      "full_exact_match_against_all_49_toyama_frozen_pre_rows": true,
+      "overlap_count": 4
+    }
+  },
+  "priority_next": "Keep Ito 2026-09-07 first. If Day1 racecard becomes positive through the already observed schedule -> program navigation, immediately switch to strict PRE capture and formal support resolution. If still unavailable, continue exhaustive Toyama-333-to-future-400m overlap screening and identity resolution inside the existing queue, starting with Aomori 2026-09-14, Takeo 2026-09-16 and later Kawasaki blocks. Do not expand the queue without a real coverage need.",
+  "roadmap": {
+    "1_S0固定": "完了・凍結",
+    "2_PRE証拠取得基盤": "中核ツール完成",
+    "3_周長横断support蓄積": "現在地",
+    "4_support十分性gate": "未通過",
+    "5_RESULT結合/式評価": "ロック",
+    "6_本番昇格": "Research範囲外・ロック"
+  },
+  "current_work": "伊東9/7のpositive schedule -> program routeを再確認しDay1実出走表はまだ取得不能。待機せず富山9/3 333m Day1 49 PRE rowsのoriginal fallback transport contractを再監査し、research support-side限定でPASS。これをhistorical sideとして川崎9/10・豊橋9/11のfull positive assenを全49行とexact-name照合し、各4人・計8 candidate rowsを追加。8人すべてofficial registration identity PASS。既存候補との重複はなくunique candidate ridersは27→35。",
+  "blocker": "formal supportは1人/2 PRE行のまま。新8候補もfuture Day1 PRE membership・contemporaneous official same-race assignment・prospective provenance PASSが揃うまでsupport加算不可。",
+  "resolution": "Owner操作は不要。伊東9/7のpositive racecard公開時はstrict PRE chainへ即割込み。それまでは既存queueの400m future assenをToyama49とexhaustive screenしidentityを前倒しする。Toyama historical blockへのpost-cutoff repairはしない。",
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "formula": "BLOCKED",
+    "S0": "FROZEN",
+    "historical_HFT": "FROZEN_EXHAUSTED_NO_EXPANSION",
+    "main_production": "NO_MUTATION",
+    "race_id_guessing": false,
+    "post_cutoff_pre_reconstruction": false,
+    "fuzzy_name_matching": false
+  },
+  "owner_action_required_now": false
+}
