@@ -69,11 +69,12 @@ R.configure_base=configure_ci_guard
 
 # The real AllThreadsSyscall mixed-credential interval is intentionally tiny.
 # Do not stretch production code to make it observable. Instead, make each
-# external observer call densely sample the exact same /proc task state until
-# it catches a truthful simultaneous ordinary+authority snapshot, then return
-# that exact snapshot immediately so the existing per-TID/retained-FD attacks
-# execute against the still-live mixed state. No synthetic credentials, delay,
-# helper hook, privilege surface, or marker substitution is introduced.
+# external observer call densely sample the exact same /proc task state. Return
+# a truthful fully-protected snapshot immediately when observed so the inherited
+# protected actual-address attack is not skipped; otherwise prioritize and
+# return the first truthful simultaneous ordinary+authority mixed snapshot.
+# No synthetic credentials, delay, helper hook, privilege surface, or marker
+# substitution is introduced.
 _base_task_states=R.task_states
 def dense_task_states(pid):
     last={}
@@ -82,6 +83,9 @@ def dense_task_states(pid):
         if states: last=states
         ordinary=[tid for tid,s in states.items() if len(s.get('uid',()))==4 and len(set(s['uid']))==1 and R.AUTH_UID not in s['uid']]
         authority=[tid for tid,s in states.items() if R.AUTH_UID in s.get('uid',(0,))[1:]]
+        if authority and len(authority)==len(states):
+            print(f'PRELAB_V7R21_DENSE_EXTERNAL_PROTECTED_SNAPSHOT_CAUGHT=true authority={len(authority)}')
+            return states
         if ordinary and authority:
             print(f'PRELAB_V7R21_DENSE_EXTERNAL_MIXED_SNAPSHOT_CAUGHT=true ordinary={len(ordinary)} authority={len(authority)}')
             return states
