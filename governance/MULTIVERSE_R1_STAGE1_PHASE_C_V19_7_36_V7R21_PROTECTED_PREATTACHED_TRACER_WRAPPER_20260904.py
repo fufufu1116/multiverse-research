@@ -70,16 +70,32 @@ def build_stable_birth_proof_pair():
     run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/v7r21-helper-production-recheck',str(helper))
     if sha('/tmp/v7r21-helper-production-recheck')!=sha(R.HELPER): raise SystemExit('stable-proof regenerated helper does not byte-match production helper')
 
-    anchor='\t\t\tready<-proof{tid,e}; <-release; runtime.UnlockOSThread(); wg.Done()\n'
-    if prod_helper_src.count(anchor)!=1: raise SystemExit('stable birth helper anchor changed')
-    barrier=r'''\t\t\tif e==nil {
-\t\t\t\tpath:=fmt.Sprintf("/tmp/v7r21-ci-birth-proof-%d",tid)
+    anchor=(
+        '\t\t\tready <- proof{tid, e}\n'
+        '\t\t\t<-release\n'
+        '\t\t\truntime.UnlockOSThread()\n'
+        '\t\t\twg.Done()\n'
+    )
+    if prod_helper_src.count(anchor)!=1: raise SystemExit('stable birth helper semantic anchor changed')
+    if prod_helper_src.count('\t\t\truntime.LockOSThread()\n')<1: raise SystemExit('stable birth helper locked-thread topology missing')
+    if prod_helper_src.count('v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)')!=1: raise SystemExit('stable birth helper regain topology changed')
+    barrier='''\t\t\tif e == nil {
+\t\t\t\tpath := fmt.Sprintf("/tmp/v7r21-ci-birth-proof-%d", tid)
 \t\t\t\t_ = syscall.Unlink(path)
-\t\t\t\tif be:=syscall.Mkfifo(path,0600); be!=nil { e=fmt.Errorf("ci-birth-proof-mkfifo-%d:%v",tid,be) } else {
-\t\t\t\t\tfd,be:=syscall.Open(path,syscall.O_RDONLY,0)
-\t\t\t\t\tif be!=nil { e=fmt.Errorf("ci-birth-proof-open-%d:%v",tid,be) } else {
-\t\t\t\t\t\tvar ack [8]byte; n,re:=syscall.Read(fd,ack[:]); _=syscall.Close(fd); _=syscall.Unlink(path)
-\t\t\t\t\t\tif re!=nil || string(ack[:n])!="release\\n" { e=fmt.Errorf("ci-birth-proof-ack-%d-n-%d-err-%v",tid,n,re) }
+\t\t\t\tif be := syscall.Mkfifo(path, 0600); be != nil {
+\t\t\t\t\te = fmt.Errorf("ci-birth-proof-mkfifo-%d:%v", tid, be)
+\t\t\t\t} else {
+\t\t\t\t\tfd, be := syscall.Open(path, syscall.O_RDONLY, 0)
+\t\t\t\t\tif be != nil {
+\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-open-%d:%v", tid, be)
+\t\t\t\t\t} else {
+\t\t\t\t\t\tvar ack [8]byte
+\t\t\t\t\t\tn, re := syscall.Read(fd, ack[:])
+\t\t\t\t\t\t_ = syscall.Close(fd)
+\t\t\t\t\t\t_ = syscall.Unlink(path)
+\t\t\t\t\t\tif re != nil || string(ack[:n]) != "release\\n" {
+\t\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-ack-%d-n-%d-err-%v", tid, n, re)
+\t\t\t\t\t\t}
 \t\t\t\t\t}
 \t\t\t\t}
 \t\t\t}
