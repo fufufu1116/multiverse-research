@@ -70,15 +70,18 @@ def build_stable_birth_proof_pair():
     run('env','CGO_ENABLED=0','go','build','-trimpath','-buildvcs=false','-ldflags=-s -w -buildid=','-o','/tmp/v7r21-helper-production-recheck',str(helper))
     if sha('/tmp/v7r21-helper-production-recheck')!=sha(R.HELPER): raise SystemExit('stable-proof regenerated helper does not byte-match production helper')
 
-    anchor=(
-        '\t\t\tready <- proof{tid, e}\n'
-        '\t\t\t<-release\n'
-        '\t\t\truntime.UnlockOSThread()\n'
-        '\t\t\twg.Done()\n'
-    )
-    if prod_helper_src.count(anchor)!=1: raise SystemExit('stable birth helper semantic anchor changed')
-    if prod_helper_src.count('\t\t\truntime.LockOSThread()\n')<1: raise SystemExit('stable birth helper locked-thread topology missing')
-    if prod_helper_src.count('v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)')!=1: raise SystemExit('stable birth helper regain topology changed')
+    fn_start=prod_helper_src.index('func v7r21PostDropThreadCreationStress(')
+    fn_end=prod_helper_src.index('\nfunc v7r21DropIrreversibly(',fn_start)
+    worker=prod_helper_src[fn_start:fn_end]
+    lock='\t\t\truntime.LockOSThread(); tid := syscall.Gettid()\n'
+    regain='\t\t\tattemptTID, e := v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)\n'
+    anchor='\t\t\tready <- proof{tid, e}; <-release; runtime.UnlockOSThread(); wg.Done()\n'
+    if worker.count(lock)!=1: raise SystemExit('stable birth helper locked-worker anchor changed')
+    if worker.count(regain)!=1: raise SystemExit('stable birth helper regain anchor changed')
+    if worker.count(anchor)!=1: raise SystemExit('stable birth helper publish-release anchor changed')
+    if not (worker.index(lock) < worker.index(regain) < worker.index(anchor)):
+        raise SystemExit('stable birth helper locked-worker semantic order changed')
+    if prod_helper_src.count(anchor)!=1: raise SystemExit('stable birth helper publish-release anchor not globally unique')
     barrier='''\t\t\tif e == nil {
 \t\t\t\tpath := fmt.Sprintf("/tmp/v7r21-ci-birth-proof-%d", tid)
 \t\t\t\t_ = syscall.Unlink(path)
