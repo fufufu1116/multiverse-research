@@ -1,0 +1,100 @@
+{
+  "record": "KEIRIN_SEP3_400M_HASHED_1R_TO_FUTURE_333_QUEUE_EXHAUSTIVE_SCREEN_SUMMARY_20260905_v1",
+  "status": "EXHAUSTIVE_ALL_EXISTING_FUTURE_333_QUEUE_EVENTS_SCREENED_FIVE_NEW_CANDIDATE_ROWS_ALL_IDENTITIES_RESOLVED_ZERO_FORMAL_SUPPORT_INCREMENT",
+  "observed_at_jst": "2026-09-05",
+  "historical_support_side_audit": "KEIRIN_SEP3_400M_EXISTING_PRE_SUPPORT_SIDE_CONTRACT_AUDIT_20260905_v1.json",
+  "historical_blocks": [
+    {
+      "venue": "青森",
+      "race_date": "2026-09-03",
+      "race_no": 1,
+      "circumference_class": "400M",
+      "pre_rows": 9,
+      "witness": "KEIRIN_AOMORI_1R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+      "decision": "PASS_SUPPORT_SIDE_ONLY"
+    },
+    {
+      "venue": "武雄",
+      "race_date": "2026-09-03",
+      "race_no": 1,
+      "circumference_class": "400M",
+      "pre_rows": 7,
+      "witness": "KEIRIN_TAKEO_1R_PRE_ALLOWLIST_WITNESS_20260903_v1.json",
+      "decision": "PASS_SUPPORT_SIDE_ONLY"
+    }
+  ],
+  "screen_method": "For each existing future 333/333.33m queue event with a positively navigated full event-level assen page, exact-name screen the entire observed assen roster against all 16 usable hashed Sep3 400m 1R PRE rows. No fuzzy matching. Event-level assen is candidate prequalification only.",
+  "screened_future_333_queue": [
+    {
+      "event": "伊東 2026-09-07..09",
+      "historical_overlap_rows": 0,
+      "scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_16_HASHED_400M_PRE_ROWS"
+    },
+    {
+      "event": "奈良 2026-09-10..13",
+      "historical_overlap_rows": 0,
+      "scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_16_HASHED_400M_PRE_ROWS"
+    },
+    {
+      "event": "伊東 2026-09-14..16",
+      "historical_overlap_rows": 0,
+      "scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_16_HASHED_400M_PRE_ROWS"
+    },
+    {
+      "event": "防府 2026-09-15..17",
+      "historical_overlap_rows": 0,
+      "scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_16_HASHED_400M_PRE_ROWS"
+    },
+    {
+      "event": "富山 2026-09-18..21",
+      "historical_overlap_rows": 3,
+      "artifact": "KEIRIN_TOYAMA_0918_AOMORI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v1.json",
+      "riders": [
+        "志田 龍星 / 015537",
+        "小堺 浩二 / 014177",
+        "室井 蓮太朗 / 015645"
+      ]
+    },
+    {
+      "event": "伊東 2026-09-23..25",
+      "historical_overlap_rows": 2,
+      "artifact": "KEIRIN_ITO_0923_AOMORI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v1.json",
+      "riders": [
+        "笠松 信幸 / 013637",
+        "香川 雄介 / 013059"
+      ]
+    },
+    {
+      "event": "奈良 2026-09-24..26",
+      "historical_overlap_rows": 0,
+      "scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_16_HASHED_400M_PRE_ROWS"
+    }
+  ],
+  "future_333_queue_events_screened": 7,
+  "future_333_queue_events_remaining_unscreened": 0,
+  "candidate_rows_from_aomori_1r": 5,
+  "candidate_rows_from_takeo_1r": 0,
+  "unique_candidate_riders": 5,
+  "all_candidate_rows_official_identity_mapping_pass": true,
+  "unique_riders": [
+    "笠松 信幸 / 013637",
+    "香川 雄介 / 013059",
+    "志田 龍星 / 015537",
+    "小堺 浩二 / 014177",
+    "室井 蓮太朗 / 015645"
+  ],
+  "formal_support_increment_authorized": 0,
+  "reason": "Future event-level assen is prequalification only. Each event still requires prospective Day1 strict PRE membership + official identity + contemporaneous official same-race assignment + provenance PASS before a formal support receipt.",
+  "queue_expansion_required_now": false,
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "NO_RESULT",
+    "NO_PAYOUT",
+    "NO_ODDS_AS_EVIDENCE",
+    "NO_RACE_ID_GUESSING",
+    "NO_POST_CUTOFF_PRE_REPAIR",
+    "NO_FUZZY_MATCH",
+    "NO_S0_MUTATION",
+    "NO_MAIN_OR_RUNTIME_MUTATION"
+  ]
+}
