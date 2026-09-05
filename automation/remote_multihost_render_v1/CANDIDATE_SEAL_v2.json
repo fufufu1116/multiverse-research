@@ -1,0 +1,51 @@
+{
+  "schema": "MULTIVERSE_REMOTE_MULTIHOST_RENDER_CANDIDATE_SEAL_v2",
+  "issue": 130,
+  "authority_issue": 129,
+  "authority_comment": 5553241915,
+  "final_pass_comment": 5554166751,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "deployed_head": "5d9b06e0e04495c3d3a3fe7dc5a1971f31fd3474",
+  "deployed_tree": "7b96eabbe5717593069fa358fbb9151a3719c629",
+  "target_class": "RENDER_PREPRODUCTION_TWO_SERVICE_SHARED_POSTGRES_NO_EFFECT_v1",
+  "proof_ceiling": "REMOTE_MULTI_HOST_PREPRODUCTION_RENDER_NO_EFFECT_EVIDENCE_ONLY",
+  "required_artifacts": [
+    "REMOTE_TARGET_BINDING_v1.json",
+    "REMOTE_EVIDENCE_RECEIPT_v2.json",
+    "PROVIDER_OBSERVABILITY_v2.json",
+    "RECOVERY_DRILL_v2.md",
+    "app.py",
+    "requirements.txt"
+  ],
+  "failed_attempt_preserved": {
+    "diagnosis_comment": 5554083946,
+    "result": "TIMING_FAILURE_NO_PASS"
+  },
+  "successful_v2": {
+    "pre_restart_pass_comment": 5554122102,
+    "final_restart_live_comment": 5554132514,
+    "final_pass_comment": 5554166751,
+    "phase": "COMPLETE",
+    "fence_sequence": [1, 2, 3],
+    "operation_count": 1,
+    "worker_a_boot_count": 2,
+    "worker_b_boot_count": 1,
+    "duplicate_external_effect": false,
+    "fatal_error_present": false
+  },
+  "provider_resources": {
+    "worker_a_service_id": "srv-dae4cs8n74is73cbj7vg",
+    "worker_b_service_id": "srv-dae4cugn74is73cbjfu0",
+    "postgres_id": "dpg-dadou0on74is73b09570-a"
+  },
+  "authority": {
+    "additional_spend_above_usd_0": false,
+    "live_business_effect": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "runtime_activation": false
+  },
+  "candidate_ready_for_independent_lab": true,
+  "runtime": "OFF"
+}
