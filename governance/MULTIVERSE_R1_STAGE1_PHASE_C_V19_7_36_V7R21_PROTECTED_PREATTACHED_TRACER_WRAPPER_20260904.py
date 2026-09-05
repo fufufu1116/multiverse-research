@@ -67,6 +67,27 @@ def configure_ci_guard():
     R.M.LAUNCHER_C=R.M.LAUNCHER_C.replace(old,CI_GUARD,1)
 R.configure_base=configure_ci_guard
 
+# The real AllThreadsSyscall mixed-credential interval is intentionally tiny.
+# Do not stretch production code to make it observable. Instead, make each
+# external observer call densely sample the exact same /proc task state until
+# it catches a truthful simultaneous ordinary+authority snapshot, then return
+# that exact snapshot immediately so the existing per-TID/retained-FD attacks
+# execute against the still-live mixed state. No synthetic credentials, delay,
+# helper hook, privilege surface, or marker substitution is introduced.
+_base_task_states=R.task_states
+def dense_task_states(pid):
+    last={}
+    for _ in range(96):
+        states=_base_task_states(pid)
+        if states: last=states
+        ordinary=[tid for tid,s in states.items() if len(s.get('uid',()))==4 and len(set(s['uid']))==1 and R.AUTH_UID not in s['uid']]
+        authority=[tid for tid,s in states.items() if R.AUTH_UID in s.get('uid',(0,))[1:]]
+        if ordinary and authority:
+            print(f'PRELAB_V7R21_DENSE_EXTERNAL_MIXED_SNAPSHOT_CAUGHT=true ordinary={len(ordinary)} authority={len(authority)}')
+            return states
+    return last
+R.task_states=dense_task_states
+
 
 def uid_tuple(pid):
     try:
