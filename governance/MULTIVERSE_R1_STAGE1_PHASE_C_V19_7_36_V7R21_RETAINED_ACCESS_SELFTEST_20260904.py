@@ -113,27 +113,45 @@ def main():
     preattached_tracer_fail_closed(uid,gid)
     os.setgroups([]); os.setresgid(gid,gid,gid); os.setresuid(uid,uid,uid)
     fd=M.make_authority(); baseline=hashlib.sha256(os.pread(fd,1<<20,0)).hexdigest()
-    p=subprocess.Popen(['/tmp/v7r20-launcher',NAME,str(fd),M.GEN],env={'CODESPACES':'true','CODESPACE_NAME':NAME},pass_fds=(fd,),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,bufsize=1)
+    p=subprocess.Popen(['/tmp/v7r20-launcher',NAME,str(fd),M.GEN],env={'CODESPACES':'true','CODESPACE_NAME':NAME},pass_fds=(fd,),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,bufsize=0)
+    os.set_blocking(p.stdout.fileno(),False)
     sel=selectors.DefaultSelector(); sel.register(p.stdout,selectors.EVENT_READ)
     helper_entry=retired=drop_marker=stress_armed=stress_pass=False; addr=None
     protected_attempts=mixed_snapshots=mixed_tid_attempts=retained_fd_mixed_attempts=0
-    mixed_targeted=set(); all_tids=set(); pre_safe_tids=set(); post_safe_records={}; post_safe_scans=0; out=[]; deadline=time.time()+15
+    mixed_targeted=set(); all_tids=set(); pre_safe_tids=set(); post_safe_records={}; post_safe_scans=0; out=[]; pending=b''; deadline=time.time()+15
+
+    def consume_available_output():
+        nonlocal pending,helper_entry,retired,drop_marker,stress_armed,stress_pass,addr
+        while True:
+            try:chunk=os.read(p.stdout.fileno(),65536)
+            except BlockingIOError:break
+            if not chunk:break
+            pending+=chunk
+        while b'\n' in pending:
+            raw,pending=pending.split(b'\n',1)
+            line=raw.decode('utf-8','strict')+'\n'; out.append(line)
+            if 'V7R21_AUTHORITY_RETIRED_BEFORE_PROTECTED_HELPER_EXEC' in line:retired=True
+            if 'V7R21_PROTECTED_HELPER_ENTRY' in line:
+                helper_entry=True; m=re.search(r'codespace_name_addr=0x([0-9a-fA-F]+)',line); addr=int(m.group(1),16) if m else addr
+            if 'V7R21_THREAD_CREATION_STRESS_ARMED' in line:stress_armed=True
+            if 'V7R21_POSTDROP_THREAD_CREATION_STRESS_PASS' in line:
+                stress_pass=True
+                m=re.search(r'per_thread_regain_denied=(\d+)',line)
+                if not m or int(m.group(1))<1: p.kill(); raise SystemExit('new-thread regain-denial count absent')
+            if 'V7R21_IRREVERSIBLE_USER_DROP_COMPLETE' in line:
+                if 'all_tasks_ordinary=true' not in line: p.kill(); raise SystemExit('safe marker missing all-task proof')
+                drop_marker=True
+
     while time.time()<deadline and p.poll() is None:
-        for key,_ in sel.select(timeout=0):
-            line=key.fileobj.readline()
-            if line:
-                out.append(line)
-                if 'V7R21_AUTHORITY_RETIRED_BEFORE_PROTECTED_HELPER_EXEC' in line:retired=True
-                if 'V7R21_PROTECTED_HELPER_ENTRY' in line:
-                    helper_entry=True; m=re.search(r'codespace_name_addr=0x([0-9a-fA-F]+)',line); addr=int(m.group(1),16) if m else addr
-                if 'V7R21_THREAD_CREATION_STRESS_ARMED' in line:stress_armed=True
-                if 'V7R21_POSTDROP_THREAD_CREATION_STRESS_PASS' in line:
-                    stress_pass=True
-                    m=re.search(r'per_thread_regain_denied=(\d+)',line)
-                    if not m or int(m.group(1))<1: p.kill(); raise SystemExit('new-thread regain-denial count absent')
-                if 'V7R21_IRREVERSIBLE_USER_DROP_COMPLETE' in line:
-                    if 'all_tasks_ordinary=true' not in line: p.kill(); raise SystemExit('safe marker missing all-task proof')
-                    drop_marker=True
+        # Drain every boundary line already present in the kernel pipe before
+        # classifying any /proc task snapshot. The helper prints the truthful
+        # irreversible marker before entering post-drop thread creation stress;
+        # therefore any newborn task that can be visible in the following scan
+        # is classified post-safe if its marker bytes were already available.
+        # Using raw nonblocking reads avoids TextIOWrapper read-ahead hiding
+        # later marker lines from select() while they sit only in user buffering.
+        sel.select(timeout=0)
+        consume_available_output()
         states=task_states(p.pid); tids=set(states); all_tids|=tids
         ordinary=[tid for tid,s in states.items() if s['uid']==(uid,uid,uid,uid)]
         authority=[tid for tid,s in states.items() if AUTH_UID in s['uid'][1:]]
@@ -163,10 +181,15 @@ def main():
         time.sleep(0.0004)
     try: rc=p.wait(timeout=3)
     except subprocess.TimeoutExpired: p.kill(); rc=p.wait(timeout=3)
-    out.append(p.stdout.read() or ''); text=''.join(out); print(text,end='')
-    # Dense /proc sampling intentionally prioritizes the real mixed window over
-    # stdout consumption. Reconcile only truthful helper markers that were
-    # actually drained from this same child after exit; never synthesize them.
+    os.set_blocking(p.stdout.fileno(),True)
+    tail=p.stdout.read() or b''
+    pending+=tail
+    if pending:
+        text_tail=pending.decode('utf-8','strict'); out.append(text_tail); pending=b''
+    text=''.join(out); print(text,end='')
+    # Raw nonblocking draining prioritizes truthful stdout boundary consumption
+    # before each /proc classification. Reconcile only markers actually emitted
+    # by this same child; never synthesize them.
     retired = retired or 'V7R21_AUTHORITY_RETIRED_BEFORE_PROTECTED_HELPER_EXEC' in text
     helper_entry = helper_entry or 'V7R21_PROTECTED_HELPER_ENTRY' in text
     stress_armed = stress_armed or 'V7R21_THREAD_CREATION_STRESS_ARMED' in text
