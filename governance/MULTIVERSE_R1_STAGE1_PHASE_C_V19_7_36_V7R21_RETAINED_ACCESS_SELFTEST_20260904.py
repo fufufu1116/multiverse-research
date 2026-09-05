@@ -27,6 +27,25 @@ def task_states(pid):
         except (FileNotFoundError,PermissionError,ProcessLookupError):pass
     return out
 
+def task_uids(pid):
+    # Pre-safe mixed-state detector: list the complete task-set first, then read
+    # only Uid so the real per-thread credential transition can be sampled at
+    # maximum density without weakening the post-safe full-state proof.
+    try: listed={int(x) for x in os.listdir(f'/proc/{pid}/task')}
+    except (FileNotFoundError,PermissionError): return set(),{}
+    out={}
+    for tid in listed:
+        try:
+            u=None
+            for line in open(f'/proc/{pid}/task/{tid}/status',encoding='utf-8'):
+                if line.startswith('Uid:'):
+                    u=tuple(map(int,line.split(':',1)[1].split()))
+                    break
+            if u is None or len(u)!=4: raise RuntimeError(f'tid-{tid}-uid-fields')
+            out[tid]=u
+        except (FileNotFoundError,PermissionError,ProcessLookupError): pass
+    return listed,out
+
 def validate_ordinary_state(tid,s,uid):
     if s['uid']!=(uid,uid,uid,uid) or s['fsuid']!=uid: raise SystemExit(f'MATERIAL_POST_SAFE_NEW_TID_UID:tid={tid}:{s}')
     if s['nnp']!='1': raise SystemExit(f'MATERIAL_POST_SAFE_NEW_TID_NNP:tid={tid}:{s}')
@@ -159,12 +178,24 @@ def main():
         # later marker lines from select() while they sit only in user buffering.
         sel.select(timeout=0)
         consume_available_output()
-        states=task_states(p.pid); tids=set(states); all_tids|=tids
-        ordinary=[tid for tid,s in states.items() if s['uid']==(uid,uid,uid,uid)]
-        authority=[tid for tid,s in states.items() if AUTH_UID in s['uid'][1:]]
-        protected=bool(states and len(authority)==len(states)); mixed=bool(ordinary and authority); ordinary_all=bool(states and len(ordinary)==len(states))
-        if not drop_marker: pre_safe_tids|=tids
+        if not drop_marker:
+            # Freeze every listed pre-safe TID conservatively before reading
+            # credentials. Uid-only reads keep the mixed window observable;
+            # any unreadable task stays in the baseline and can never be
+            # misclassified later as a post-safe birth.
+            tids,uid_states=task_uids(p.pid); all_tids|=tids; pre_safe_tids|=tids
+            ordinary=[tid for tid,u in uid_states.items() if u==(uid,uid,uid,uid)]
+            authority=[tid for tid,u in uid_states.items() if AUTH_UID in u[1:]]
+            protected=bool(uid_states and len(authority)==len(uid_states))
+            mixed=bool(ordinary and authority)
+            ordinary_all=bool(uid_states and len(ordinary)==len(uid_states))
         else:
+            states=task_states(p.pid); tids=set(states); all_tids|=tids
+            ordinary=[tid for tid,s in states.items() if s['uid']==(uid,uid,uid,uid)]
+            authority=[tid for tid,s in states.items() if AUTH_UID in s['uid'][1:]]
+            protected=bool(states and len(authority)==len(states))
+            mixed=bool(ordinary and authority)
+            ordinary_all=bool(states and len(ordinary)==len(states))
             post_safe_scans+=1
             for tid in sorted(tids-pre_safe_tids):
                 s=states[tid]; validate_ordinary_state(tid,s,uid)
@@ -185,7 +216,7 @@ def main():
             for tid in ordinary:
                 bad=M.attack_tid(p.pid,tid,addr,fd)
                 if bad:p.kill(); raise SystemExit(f'MATERIAL_ORDINARY_BEFORE_SAFE_BOUNDARY:tid={tid}:'+str(bad))
-        time.sleep(0.0004)
+        if drop_marker: time.sleep(0.0004)
     try: rc=p.wait(timeout=3)
     except subprocess.TimeoutExpired: p.kill(); rc=p.wait(timeout=3)
     os.set_blocking(p.stdout.fileno(),True)
