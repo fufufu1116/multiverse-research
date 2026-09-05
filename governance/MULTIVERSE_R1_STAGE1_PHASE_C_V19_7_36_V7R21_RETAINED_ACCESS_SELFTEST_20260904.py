@@ -33,14 +33,21 @@ def validate_ordinary_state(tid,s,uid):
     for k in ('cap_inh','cap_prm','cap_eff','cap_amb'):
         if s[k]!='0000000000000000': raise SystemExit(f'MATERIAL_POST_SAFE_NEW_TID_CAP:tid={tid}:{k}={s[k]}')
 
-def prove_nondumpable_ptrace_denial(tid):
+def prove_nondumpable_ptrace_denial(pid,tid,expected,uid):
     rv,er=M.ptrace(M.PTRACE_ATTACH,tid)
     if rv==0:
         try:os.waitpid(tid,0)
         except ChildProcessError:pass
         M.ptrace(M.PTRACE_DETACH,tid)
         raise SystemExit(f'MATERIAL_PTRACE_ELIGIBLE_TID:tid={tid}')
-    if er not in (errno.EPERM,errno.ESRCH): raise SystemExit(f'AMBIGUOUS_PTRACE_ELIGIBILITY:tid={tid}:errno={er}')
+    if er!=errno.EPERM:
+        raise SystemExit(f'AMBIGUOUS_PTRACE_ELIGIBILITY:tid={tid}:errno={er}')
+    now=task_states(pid)
+    if tid not in now:
+        raise SystemExit(f'AMBIGUOUS_PTRACE_TID_DISAPPEARED:tid={tid}')
+    validate_ordinary_state(tid,now[tid],uid)
+    if now[tid]!=expected:
+        raise SystemExit(f'AMBIGUOUS_PTRACE_TID_STATE_CHANGED:tid={tid}:before={expected}:after={now[tid]}')
     return er
 
 def retained_authority_fd_attack(fd,baseline):
@@ -161,7 +168,7 @@ def main():
             post_safe_scans+=1
             for tid in sorted(tids-pre_safe_tids):
                 s=states[tid]; validate_ordinary_state(tid,s,uid)
-                er=prove_nondumpable_ptrace_denial(tid)
+                er=prove_nondumpable_ptrace_denial(p.pid,tid,s,uid)
                 rec=dict(s); rec['ptrace_attach_errno']=er; rec['dumpability_evidence']='kernel_ptrace_attach_denied_after_helper_PR_SET_DUMPABLE_0'
                 post_safe_records[tid]=rec
         if protected:
