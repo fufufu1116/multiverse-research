@@ -41,6 +41,11 @@ class RuntimeConvergenceTests(unittest.TestCase):
             "RUNTIME_CONVERGENCE_REPOSITORY_PREPARATION_ONLY",
         )
         self.assertEqual(receipt["runtime"], "OFF")
+        self.assertIs(receipt["activation_ready"], False)
+        self.assertEqual(
+            receipt["integration_state"],
+            "PREPARATION_NOT_ACTIVATABLE",
+        )
         self.assertEqual(receipt["distributed_safety"]["fence_sequence"], [1, 2, 3])
         self.assertEqual(receipt["distributed_safety"]["operation_count"], 1)
         self.assertIs(
@@ -87,6 +92,21 @@ class RuntimeConvergenceTests(unittest.TestCase):
         self.assertEqual(receipt["workers"]["worker-b"]["boot_count"], 1)
         self.assertIs(receipt["drill"]["duplicate_external_effect"], False)
 
+    def test_adopted_deployment_lineage_excludes_later_pr112_head(self):
+        item = CONTRACT["materialized_subtrees"]["deployment_v1"]
+        self.assertEqual(
+            item["source_commit"],
+            "722465fda607198858e48f66ec9b936430ff3d6a",
+        )
+        self.assertEqual(
+            item["explicitly_excludes_later_pr112_head"],
+            "30505eb3ddcc2351041cbeef709e713df20a8fc2",
+        )
+        self.assertNotEqual(
+            item["source_commit"],
+            item["explicitly_excludes_later_pr112_head"],
+        )
+
     def test_adopted_single_host_lineage_excludes_later_pr123_head(self):
         item = CONTRACT["materialized_subtrees"]["remote_preprod_render_v1"]
         self.assertEqual(
@@ -101,6 +121,28 @@ class RuntimeConvergenceTests(unittest.TestCase):
             item["source_commit"],
             item["explicitly_excludes_later_pr123_head"],
         )
+
+    def test_activation_boundary_is_explicitly_not_ready(self):
+        boundary = CONTRACT["integration_boundary"]
+        readiness = CONTRACT["readiness"]
+        self.assertEqual(
+            boundary["convergence_status"],
+            "PREPARATION_NOT_ACTIVATABLE",
+        )
+        self.assertEqual(
+            boundary["runtime_control_store"],
+            "LOCAL_SQLITE_SEALED",
+        )
+        self.assertEqual(
+            boundary["distributed_fencing_evidence_store"],
+            "RENDER_POSTGRESQL",
+        )
+        self.assertIs(boundary["provider_effect_adapter_enabled"], False)
+        self.assertIs(boundary["runtime_activation_bridge_enabled"], False)
+        self.assertIs(boundary["canonical_merge_completed"], False)
+        self.assertIs(boundary["activation_integration_required"], True)
+        self.assertIs(readiness["independent_review_ready"], True)
+        self.assertIs(readiness["runtime_activation_ready"], False)
 
     def test_superseded_failures_cannot_be_current_pass(self):
         self.assertEqual(

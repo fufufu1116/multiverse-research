@@ -117,6 +117,13 @@ def build_convergence_receipt() -> dict[str, Any]:
     _require_false_map(
         deployment_freeze["authority"], "DEPLOYMENT_AUTHORITY_NOT_FALSE"
     )
+    _require(
+        contract["materialized_subtrees"]["deployment_v1"]["source_commit"]
+        != contract["materialized_subtrees"]["deployment_v1"][
+            "explicitly_excludes_later_pr112_head"
+        ],
+        "DEPLOYMENT_LATER_HEAD_MUST_NOT_BE_ADOPTED",
+    )
 
     _require(
         target_seal["canonical_main"] == CANONICAL_MAIN
@@ -159,11 +166,10 @@ def build_convergence_receipt() -> dict[str, Any]:
         _require(infrastructure_seal[key] is False, "INFRASTRUCTURE_AUTHORITY_NOT_FALSE")
 
     _require(
-        remote_single["canonical_main"] if "canonical_main" in remote_single else CANONICAL_MAIN,
-        "REMOTE_SINGLE_RECEIPT_INVALID",
-    )
-    _require(
-        remote_single["environment_class"] == "PRE_PRODUCTION"
+        remote_single["issue"] == 122
+        and remote_single["target_class"]
+        == "RENDER_REMOTE_PREPRODUCTION_SINGLE_SERVICE_NO_EFFECT_v1"
+        and remote_single["environment_class"] == "PRE_PRODUCTION"
         and remote_single["postgres_id"] == contract["target_contract"]["shared_postgres_id"]
         and remote_single["spend"]["incremental_monetary_spend_ceiling_usd"] == 0
         and remote_single["runtime"] == "OFF",
@@ -238,12 +244,33 @@ def build_convergence_receipt() -> dict[str, Any]:
         "PROVENANCE_LEDGER_MISMATCH",
     )
 
+    integration = contract["integration_boundary"]
+    _require(
+        integration["convergence_status"] == "PREPARATION_NOT_ACTIVATABLE"
+        and integration["runtime_control_store"] == "LOCAL_SQLITE_SEALED"
+        and integration["distributed_fencing_evidence_store"] == "RENDER_POSTGRESQL"
+        and integration["distributed_state_provider_id"]
+        == contract["target_contract"]["shared_postgres_id"]
+        and integration["provider_effect_adapter_enabled"] is False
+        and integration["runtime_activation_bridge_enabled"] is False
+        and integration["canonical_merge_completed"] is False
+        and integration["activation_integration_required"] is True,
+        "INTEGRATION_BOUNDARY_MISMATCH",
+    )
+    _require(
+        contract["readiness"]["independent_review_ready"] is True
+        and contract["readiness"]["runtime_activation_ready"] is False,
+        "READINESS_BOUNDARY_MISMATCH",
+    )
+
     return {
         "schema": "MULTIVERSE_RUNTIME_CONVERGENCE_RECEIPT_v1",
         "status": "READY_FOR_INDEPENDENT_REVIEW",
         "canonical_main": CANONICAL_MAIN,
         "proof_ceiling": PROOF,
         "runtime": "OFF",
+        "activation_ready": False,
+        "integration_state": "PREPARATION_NOT_ACTIVATABLE",
         "target": {
             "environment_class": "PRE_PRODUCTION",
             "topology_class": contract["target_contract"]["topology_class"],

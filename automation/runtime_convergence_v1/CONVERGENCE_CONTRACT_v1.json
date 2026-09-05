@@ -23,7 +23,8 @@
       "source_tree": "636e53d4f476c39cb5f52a6770b2642a7d693b04",
       "subtree": "a30dd4941298e272b3bd93e3efaebcc1c7234d0e",
       "adoption_issue": 113,
-      "adoption_comment": 5538752769
+      "adoption_comment": 5538752769,
+      "explicitly_excludes_later_pr112_head": "30505eb3ddcc2351041cbeef709e713df20a8fc2"
     },
     "target_environment_v1": {
       "path": "automation/target_environment_v1",
@@ -88,14 +89,21 @@
     "environment_class": "PRE_PRODUCTION",
     "topology_class": "RENDER_PREPRODUCTION_TWO_SERVICE_SHARED_POSTGRES_NO_EFFECT_v1",
     "provider_family": "RENDER",
-    "worker_ids": ["worker-a", "worker-b"],
+    "worker_ids": [
+      "worker-a",
+      "worker-b"
+    ],
     "shared_postgres_id": "dpg-dadou0on74is73b09570-a",
     "worker_a_service_id": "srv-dae4cs8n74is73cbj7vg",
     "worker_b_service_id": "srv-dae4cugn74is73cbjfu0",
     "incremental_spend_ceiling_usd": 0
   },
   "distributed_safety_contract": {
-    "observed_fence_sequence": [1, 2, 3],
+    "observed_fence_sequence": [
+      1,
+      2,
+      3
+    ],
     "final_owner": "worker-a",
     "final_fence_token": 3,
     "durable_operation_count": 1,
@@ -153,6 +161,23 @@
     "NETWORK_PARTITION_SLO",
     "MULTI_REGION_FAILOVER",
     "POSTGRES_HIGH_AVAILABILITY",
-    "RUNTIME_ACTIVATION"
-  ]
+    "RUNTIME_ACTIVATION",
+    "POSTGRES_BACKED_RUNTIME_SUPERVISOR_INTEGRATION",
+    "CANONICAL_CONVERGENCE_MERGE"
+  ],
+  "integration_boundary": {
+    "convergence_status": "PREPARATION_NOT_ACTIVATABLE",
+    "runtime_control_store": "LOCAL_SQLITE_SEALED",
+    "distributed_fencing_evidence_store": "RENDER_POSTGRESQL",
+    "distributed_state_provider_id": "dpg-dadou0on74is73b09570-a",
+    "provider_effect_adapter_enabled": false,
+    "runtime_activation_bridge_enabled": false,
+    "canonical_merge_completed": false,
+    "activation_integration_required": true
+  },
+  "readiness": {
+    "independent_review_ready": true,
+    "runtime_activation_ready": false,
+    "reason": "Adopted evidence is co-materialized in one exact repository tree, but the sealed Runtime Supervisor still uses its local control store and no activation/provider-effect bridge exists."
+  }
 }

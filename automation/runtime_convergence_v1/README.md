@@ -52,3 +52,27 @@ The intended path is:
 `Candidate freeze -> Independent Lab -> T1 -> Independent Auditor -> T2 -> separate Owner decision`
 
 No review artifact can self-adopt this Candidate.
+
+
+## 統合境界
+
+ここはかなり重要です。
+
+このCandidateは、採用済みの材料を **同じGit tree上に正確に並べて矛盾なく検査できる状態** まで進めますが、まだRuntime Supervisorの内部状態ストアをRender Postgresへ置き換えたわけではありません。
+
+現在の明示的境界:
+
+- Runtime control store: `LOCAL_SQLITE_SEALED`
+- distributed fencing evidence store: `RENDER_POSTGRESQL`
+- provider-effect adapter: disabled
+- Runtime activation bridge: disabled
+- canonical convergence merge: not completed
+- activation integration: still required
+
+したがって:
+
+`PREPARATION_NOT_ACTIVATABLE`
+
+です。
+
+これは失敗ではなく、証拠採用と実際のRuntime起動を混同しないための安全境界です。
