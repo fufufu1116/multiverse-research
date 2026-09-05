@@ -1,0 +1,82 @@
+{
+  "record": "KEIRIN_TOYOHASHI_0911_TOYAMA_HISTORICAL_OVERLAP_CANDIDATES_20260905_v1",
+  "status": "PREQUALIFIED_CANDIDATE_SET_EXHAUSTIVE_ALL_IDENTITIES_RESOLVED_NO_SUPPORT_INCREMENT",
+  "observed_at_jst": "2026-09-05",
+  "prospective_event": {
+    "venue": "豊橋",
+    "circumference_class": "400M",
+    "event_start_date": "2026-09-11",
+    "event_end_date": "2026-09-13",
+    "event_name": "ＷＩＮＴＩＣＫＥＴ杯",
+    "evidence_role": "EVENT_LEVEL_ASSEN_ONLY_NOT_SAME_RACE_ASSIGNMENT",
+    "positive_navigation": "KDreams Toyohashi schedule -> 2026-09-11 assen",
+    "full_event_level_assen_positive": true,
+    "assen_snapshot_as_of": "2026-09-05"
+  },
+  "historical_counterpart": {
+    "venue": "富山",
+    "circumference_class": "333_OR_333_33M",
+    "race_date": "2026-09-03",
+    "source_artifact": "KEIRIN_TOYAMA_DAY1_PRE_ALLOWLIST_WITNESS_SNAPSHOT_20260903_v1.json",
+    "historical_rows_screened": 49,
+    "transport_audit": "KEIRIN_TOYAMA_0903_PRE_SUPPORT_SIDE_CONTRACT_AUDIT_20260905_v1.json"
+  },
+  "screen_method": "Exact normalized rider-name equality across the full positively observed Toyohashi event-level assen roster versus all 49 frozen Toyama PRE rows; no fuzzy matching.",
+  "exact_name_overlap_candidates": [
+    {
+      "rider": "金澤 竜二",
+      "historical_race_no": 7,
+      "historical_car_no": 7,
+      "period": 91,
+      "official_registration_number": "014136",
+      "official_identity_mapping": "PASS",
+      "identity_evidence": "KEIRIN_TOYAMA_7R_RIDER_IDENTITY_PRE_GATE_20260903_v1.json"
+    },
+    {
+      "rider": "石井 毅",
+      "historical_race_no": 2,
+      "historical_car_no": 6,
+      "period": 74,
+      "official_registration_number": "012879",
+      "official_identity_mapping": "PASS",
+      "identity_evidence": "KEIRIN.JP exact official profile name/prefecture/period"
+    },
+    {
+      "rider": "表 大暁",
+      "historical_race_no": 2,
+      "historical_car_no": 5,
+      "period": 82,
+      "official_registration_number": "013484",
+      "official_identity_mapping": "PASS",
+      "identity_evidence": "KEIRIN.JP exact official profile name/prefecture/period"
+    },
+    {
+      "rider": "辻 力",
+      "historical_race_no": 3,
+      "historical_car_no": 6,
+      "period": 71,
+      "official_registration_number": "012681",
+      "official_identity_mapping": "PASS",
+      "identity_evidence": "KEIRIN.JP exact official profile name/prefecture/period"
+    }
+  ],
+  "exact_name_candidates_observed": 4,
+  "official_identity_mapping_pass_count": 4,
+  "candidate_set_scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_ALL_49_TOYAMA_FROZEN_PRE_ROWS",
+  "support_receipt_authorized": false,
+  "support_increment_authorized": 0,
+  "missing_for_formal_support": [
+    "prospective Toyohashi Day1 PRE membership after positive racecard publication",
+    "contemporaneous official same-race assignment",
+    "prospective PRE provenance PASS"
+  ],
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "payout_access_for_research_evidence": false,
+    "odds_used": false,
+    "race_id_guessing": false,
+    "post_cutoff_pre_reconstruction": false,
+    "fuzzy_name_matching": false
+  },
+  "owner_action_required_now": false
+}
