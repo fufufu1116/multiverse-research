@@ -1,0 +1,83 @@
+{
+  "record": "KEIRIN_TOYAMA_0903_PRE_SUPPORT_SIDE_CONTRACT_AUDIT_20260905_v1",
+  "status": "PASS_RESEARCH_SUPPORT_SIDE_ONLY_NO_FORMAL_SUPPORT_INCREMENT_NO_FEATURE_ADMISSION",
+  "scope": "AUDIT_EXISTING_PRE_CUTOFF_EVIDENCE_BUNDLE_FOR_RIDER_X_CIRCUMFERENCE_SUPPORT_ONLY",
+  "audited_at_jst": "2026-09-05",
+  "historical_block": {
+    "venue": "富山",
+    "race_date": "2026-09-03",
+    "circumference_m": 333,
+    "day": "Day1",
+    "races": 7,
+    "pre_rows": 49
+  },
+  "original_contract": "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
+  "snapshot": {
+    "artifact": "KEIRIN_TOYAMA_DAY1_PRE_ALLOWLIST_WITNESS_SNAPSHOT_20260903_v1.json",
+    "capture_session_jst": "2026-09-03T01:36:00+09:00",
+    "git_commit_sha": "50afc85d2f2764e5343d9cba813208785e8be082",
+    "git_commit_jst": "2026-09-03T01:48:14+09:00",
+    "first_race_cutoff_jst": "2026-09-03T08:25:00+09:00",
+    "committed_before_first_cutoff": true,
+    "deterministic_rows_sha256": "20746c08396f07b71ffa92a33b6a1e08450b99f7ba9eea52561c9e24b515c423",
+    "strict_allowlist_rows": 49,
+    "result_or_payout_observed": false,
+    "raw_source_hash_available": false,
+    "canonical_feature_admission": false
+  },
+  "population_binding": {
+    "artifact": "KEIRIN_PROSPECTIVE_PRE_ONLY_EXACT_RACE_ID_FREEZE_20260903_v1.json",
+    "capture_timestamp_jst": "2026-09-02T23:27:05+09:00",
+    "git_commit_sha": "ab6877f4c64154b45c4d538e1e4670459fb8cef9",
+    "exact_toyama_race_ids_frozen": 7,
+    "exact_race_ids_frozen_before_all_races": true
+  },
+  "coverage_binding": {
+    "artifact": "KEIRIN_TOYAMA_DAY1_PRE_SEARCH_SURFACE_COVERAGE_20260903_v1.json",
+    "git_commit_sha": "b6f1d1b45798db2e8d87a451c1a721a10bdbdaee",
+    "git_commit_jst": "2026-09-03T01:46:05+09:00",
+    "exact_per_race_source_urls_present": true,
+    "all_7_racecards_pre_event_visible": true,
+    "rider_rows_visible": 49
+  },
+  "original_prespec_freeze": {
+    "artifact": "KEIRIN_PRE_WITNESS_FALLBACK_TRANSPORT_PRESPEC_20260903_v1.json",
+    "git_commit_sha": "188a6c7dd72cbf79cad2330d7a724dee115ae677",
+    "git_commit_jst": "2026-09-03T01:49:11+09:00",
+    "explicitly_names_current_toyama_snapshot": true,
+    "preoutcome": true
+  },
+  "contract_findings": {
+    "independent_membership_frozen_preoutcome": "PASS",
+    "snapshot_committed_before_cutoff": "PASS",
+    "source_and_retrieval_provenance": "PASS_AS_BOUND_EVIDENCE_BUNDLE",
+    "exact_race_id_binding": "PASS_VIA_PREOUTCOME_POPULATION_BINDING_AND_COVERAGE",
+    "strict_allowlist_values": "PASS",
+    "deterministic_content_hash": "PASS_NORMALIZED_ROWS_SHA256_IN_SNAPSHOT",
+    "no_result_or_payout": "PASS",
+    "forbidden_market_forecast_firewall": "PASS",
+    "no_post_cutoff_repair": "PASS",
+    "raw_html_persistence": "NOT_REQUIRED_FOR_SUPPORT_SIDE_AND_NOT_PRESENT",
+    "canonical_model_feature_admission": "FAIL_NOT_AUTHORIZED_AND_NOT_NEEDED_FOR_SUPPORT_SIDE"
+  },
+  "same_object_caveat": "The 49-row snapshot does not repeat each exact race_id inline; it explicitly binds to the separately preoutcome-frozen exact-race-id population, while the preoutcome coverage artifact contains exact per-race IDs/URLs. This audit accepts that original frozen evidence bundle for support-side identity/membership use only. It does not authorize model feature admission. Any downstream contract that newly requires literal inline race_id in the same JSON object must fail closed rather than post-cutoff repair.",
+  "decision": {
+    "historical_pre_block_valid_for_cross_circumference_support_candidate_screen": true,
+    "formal_support_increment_authorized_now": 0,
+    "requires_official_registration_identity_for_candidate": true,
+    "requires_future_prospective_day1_pre_membership": true,
+    "requires_future_contemporaneous_official_same_race_assignment": true,
+    "requires_provenance_pass": true
+  },
+  "immutable_closure_rule": "No new Sep3 PRE values, source bytes, race IDs, timestamps, or assignment evidence may be added to repair this historical block after cutoff.",
+  "hard_boundaries": [
+    "NO_RESULT",
+    "NO_PAYOUT",
+    "NO_POST_CUTOFF_PRE_REPAIR",
+    "NO_MODEL_FEATURE_ADMISSION_FROM_THIS_AUDIT",
+    "NO_S0_MUTATION",
+    "NO_MAIN_OR_RUNTIME_MUTATION",
+    "NO_MODEL_PROMOTION"
+  ],
+  "owner_action_required_now": false
+}
