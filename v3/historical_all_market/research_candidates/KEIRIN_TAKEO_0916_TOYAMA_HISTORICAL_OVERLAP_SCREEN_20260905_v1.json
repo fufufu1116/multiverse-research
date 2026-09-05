@@ -1,0 +1,38 @@
+{
+  "record": "KEIRIN_TAKEO_0916_TOYAMA_HISTORICAL_OVERLAP_SCREEN_20260905_v1",
+  "status": "EXHAUSTIVE_ZERO_OVERLAP_SCREEN_NO_SUPPORT_INCREMENT",
+  "observed_at_jst": "2026-09-05",
+  "prospective_event": {
+    "venue": "武雄",
+    "circumference_class": "400M",
+    "event_start_date": "2026-09-16",
+    "event_end_date": "2026-09-18",
+    "event_name": "オッズパーク杯",
+    "evidence_role": "EVENT_LEVEL_ASSEN_ONLY_NOT_SAME_RACE_ASSIGNMENT",
+    "positive_navigation": "KDreams Takeo schedule -> 2026-09-16 assen",
+    "full_event_level_assen_positive": true,
+    "assen_snapshot_as_of": "2026-09-05"
+  },
+  "historical_counterpart": {
+    "venue": "富山",
+    "race_date": "2026-09-03",
+    "circumference_class": "333_OR_333_33M",
+    "source_artifact": "KEIRIN_TOYAMA_DAY1_PRE_ALLOWLIST_WITNESS_SNAPSHOT_20260903_v1.json",
+    "historical_rows_screened": 49,
+    "transport_audit": "KEIRIN_TOYAMA_0903_PRE_SUPPORT_SIDE_CONTRACT_AUDIT_20260905_v1.json"
+  },
+  "screen_method": "Exact normalized rider-name equality across the full positively observed Takeo event-level assen roster versus all 49 frozen Toyama PRE rows; no fuzzy matching.",
+  "exact_name_overlap_candidates": [],
+  "exact_name_candidates_observed": 0,
+  "candidate_set_scope": "EXHAUSTIVE_FULL_POSITIVE_ASSEN_VS_ALL_49_TOYAMA_FROZEN_PRE_ROWS",
+  "support_increment_authorized": 0,
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "payout_access_for_research_evidence": false,
+    "odds_used": false,
+    "race_id_guessing": false,
+    "post_cutoff_pre_reconstruction": false,
+    "fuzzy_name_matching": false
+  },
+  "owner_action_required_now": false
+}
