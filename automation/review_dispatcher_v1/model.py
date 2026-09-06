@@ -83,11 +83,18 @@ def lane_result_comment_trusted(
     else:
         return False
 
-    login = (comment.get("user") or {}).get("login")
-    app_slug = (
-        (comment.get("performed_via_github_app") or {}).get("slug")
-    )
-    return login == expected_login and app_slug == expected_app
+    user = comment.get("user") or {}
+    login = user.get("login")
+    user_type = user.get("type")
+    if login != expected_login or user_type != "Bot":
+        return False
+
+    app = comment.get("performed_via_github_app")
+    if app is None:
+        return True
+    if not isinstance(app, dict):
+        return False
+    return app.get("slug") == expected_app
 
 
 def fetch_all_pages(
