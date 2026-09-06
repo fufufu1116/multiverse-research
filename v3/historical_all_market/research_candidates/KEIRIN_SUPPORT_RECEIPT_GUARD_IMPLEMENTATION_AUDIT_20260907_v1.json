@@ -1,0 +1,31 @@
+{
+  "record":"KEIRIN_SUPPORT_RECEIPT_GUARD_IMPLEMENTATION_AUDIT_20260907_v1",
+  "status":"IMPLEMENTED_STATIC_BINDING_REVIEWED_EXECUTION_NOT_YET_EVIDENCED",
+  "scope":"RESEARCH_PRE_ONLY_DUPLICATE_AND_RECEIPT_SHAPE_GUARD_NO_SUPPORT_AUTO_AUTHORITY",
+  "parent_head_before_implementation":"719fb21d4534fa5cfa530ea43baea10d36eb3d73",
+  "implementation_commit":"d20906269048aa78214caae5c3c9e043cff2f436",
+  "tool":"tools/keirin_support_receipt_guard_v1.py",
+  "tool_git_blob":"3105c38fb10f25846dbfa80fd2c6a952e6dd1425",
+  "prespec":"KEIRIN_SUPPORT_RECEIPT_DUPLICATE_PROVENANCE_PRESPEC_20260906_v1.json",
+  "prespec_git_blob":"26a0fedd2a8b1a000b8bdba294c4e9a47f704e54",
+  "implemented_guards":[
+    "canonical row key derivation uses official registration number + circumference bucket + date + venue + race_no + car_no + source_file_sha256",
+    "duplicate canonical rows are not counted twice across receipt inputs",
+    "qualified unique riders are deduplicated by official registration number",
+    "333/333.33 and 400 buckets are both required for cross-circumference qualification",
+    "missing/invalid source SHA256 fails closed",
+    "registration mismatch between rider and row fails closed",
+    "non-Day1 row fails closed",
+    "RESULT/payout/odds/human-forecast positive flags fail closed",
+    "tool never authorizes support increment"
+  ],
+  "explicit_boundary":"This v1 guard validates duplicate semantics and receipt/provenance shape only. It does not itself prove that capture predated PIT cutoff or that contemporaneous official same-race assignment was observed. Those facts must already be established by bound evidence artifacts before a receipt can become formal support.",
+  "selftest_embedded":true,
+  "selftest_execution_evidence":"NOT_RUN_BY_GITHUB_CONNECTOR_IN_THIS_AUDIT",
+  "support_increment_authorized_now":0,
+  "result_accessed":false,
+  "result_join_authorized":false,
+  "formula_fit_authorized":false,
+  "main_or_runtime_mutation":false,
+  "owner_action_required_now":false
+}
