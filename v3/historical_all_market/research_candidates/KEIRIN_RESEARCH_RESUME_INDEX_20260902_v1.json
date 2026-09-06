@@ -6,15 +6,23 @@
   "first_rule":"Never infer CURRENT/NOW/LATEST from stored state. Fresh Read the research branch ref first.",
   "resume_sequence":[
     {"step":1,"action":"FRESH_READ_RESEARCH_BRANCH_REF"},
-    {"step":2,"action":"READ_CURRENT_STATE","path":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v59.json"},
+    {"step":2,"action":"READ_CURRENT_STATE","path":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v60.json"},
     {"step":3,"action":"READ_ACTIVE_EVENT_QUEUE","path":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"},
     {"step":4,"action":"READ_TOP_PREQUALIFIED_CANDIDATE","path":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v2.json"},
     {"step":5,"action":"READ_ITO0907_LIVE_STATUS","path":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_DAY1_PRE_MEMBERSHIP_STATUS_20260907_v1.json"},
-    {"step":6,"action":"CONTINUE_WITH_FRESH_BINDING","rule":"If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+    {"step":6,"action":"READ_RECEIPT_GUARD_AUDIT","path":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_RECEIPT_GUARD_IMPLEMENTATION_AUDIT_20260907_v1.json"},
+    {"step":7,"action":"WORK_CONSERVING_CONTINUATION","rule":"Ito 2026-09-07 stays highest priority. Recheck positively navigated official same-race assignment. If positive, complete formal PRE provenance, run duplicate-safe receipt accounting, create support receipt only if all conditions pass, then recompute adequacy gate. If not positive, do not increment support; continue full provenance validator/builder hardening and other legal material lanes."},
+    {"step":8,"action":"CONTINUE_WITH_FRESH_BINDING","rule":"If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
-  "current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v59.json",
-  "prior_current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260906_v58.json",
-  "active_lane_pointers":{"PROSPECTIVE_SUPPORT_EVENT_QUEUE":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json","TOP_PREQUALIFIED_CANDIDATE":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v2.json","ITO0907_LIVE_STATUS":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_DAY1_PRE_MEMBERSHIP_STATUS_20260907_v1.json"},
+  "current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v60.json",
+  "prior_current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v59.json",
+  "active_lane_pointers":{
+    "PROSPECTIVE_SUPPORT_EVENT_QUEUE":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
+    "TOP_PREQUALIFIED_CANDIDATE":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v2.json",
+    "ITO0907_LIVE_STATUS":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_DAY1_PRE_MEMBERSHIP_STATUS_20260907_v1.json",
+    "SUPPORT_RECEIPT_GUARD":"tools/keirin_support_receipt_guard_v1.py",
+    "SUPPORT_RECEIPT_GUARD_AUDIT":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_RECEIPT_GUARD_IMPLEMENTATION_AUDIT_20260907_v1.json"
+  },
   "context_policy":{"chat":"WORKSPACE_NOT_AUTHORITY","github":"RESEARCH_STATE_AUTHORITY_WITHIN_RESEARCH_LANE","owner":"MUST_NOT_BE_PERMANENT_CONTEXT_COURIER"},
   "owner_action_required_now":false
 }
