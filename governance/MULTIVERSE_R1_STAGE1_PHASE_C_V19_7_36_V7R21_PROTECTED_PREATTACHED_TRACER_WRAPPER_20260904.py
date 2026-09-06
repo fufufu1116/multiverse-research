@@ -73,35 +73,35 @@ def build_stable_birth_proof_pair():
     fn_start=prod_helper_src.index('func v7r21PostDropThreadCreationStress(')
     fn_end=prod_helper_src.index('\nfunc v7r21DropIrreversibly(',fn_start)
     worker=prod_helper_src[fn_start:fn_end]
-    lock='\t\t\truntime.LockOSThread()\n\t\t\ttid := syscall.Gettid()\n'
-    regain='\t\t\tattemptTID, e := v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)\n'
-    anchor='\t\t\tready <- proof{tid, e}\n\t\t\t<-release\n\t\t\truntime.UnlockOSThread()\n\t\t\twg.Done()\n'
+    lock='\t\t\t\truntime.LockOSThread()\n\t\t\t\ttid := syscall.Gettid()\n'
+    regain='\t\t\t\tattemptTID, e := v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)\n'
+    anchor='\t\t\t\tready <- proof{tid, e}\n\t\t\t\t<-release\n\t\t\t\truntime.UnlockOSThread()\n\t\t\t\twg.Done()\n'
     if worker.count(lock)!=1: raise SystemExit('stable birth helper locked-worker anchor changed')
     if worker.count(regain)!=1: raise SystemExit('stable birth helper regain anchor changed')
     if worker.count(anchor)!=1: raise SystemExit('stable birth helper publish-release anchor changed')
     if not (worker.index(lock) < worker.index(regain) < worker.index(anchor)):
         raise SystemExit('stable birth helper locked-worker semantic order changed')
     if prod_helper_src.count(anchor)!=1: raise SystemExit('stable birth helper publish-release anchor not globally unique')
-    barrier='''\t\t\tif e == nil {
-\t\t\t\tpath := fmt.Sprintf("/tmp/v7r21-ci-birth-proof-%d", tid)
-\t\t\t\t_ = syscall.Unlink(path)
-\t\t\t\tif be := syscall.Mkfifo(path, 0600); be != nil {
-\t\t\t\t\te = fmt.Errorf("ci-birth-proof-mkfifo-%d:%v", tid, be)
-\t\t\t\t} else {
-\t\t\t\t\tfd, be := syscall.Open(path, syscall.O_RDONLY, 0)
-\t\t\t\t\tif be != nil {
-\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-open-%d:%v", tid, be)
+    barrier='''\t\t\t\tif e == nil {
+\t\t\t\t\tpath := fmt.Sprintf("/tmp/v7r21-ci-birth-proof-%d", tid)
+\t\t\t\t\t_ = syscall.Unlink(path)
+\t\t\t\t\tif be := syscall.Mkfifo(path, 0600); be != nil {
+\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-mkfifo-%d:%v", tid, be)
 \t\t\t\t\t} else {
-\t\t\t\t\t\tvar ack [8]byte
-\t\t\t\t\t\tn, re := syscall.Read(fd, ack[:])
-\t\t\t\t\t\t_ = syscall.Close(fd)
-\t\t\t\t\t\t_ = syscall.Unlink(path)
-\t\t\t\t\t\tif re != nil || string(ack[:n]) != "release\\n" {
-\t\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-ack-%d-n-%d-err-%v", tid, n, re)
+\t\t\t\t\t\tfd, be := syscall.Open(path, syscall.O_RDONLY, 0)
+\t\t\t\t\t\tif be != nil {
+\t\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-open-%d:%v", tid, be)
+\t\t\t\t\t\t} else {
+\t\t\t\t\t\t\tvar ack [8]byte
+\t\t\t\t\t\t\tn, re := syscall.Read(fd, ack[:])
+\t\t\t\t\t\t\t_ = syscall.Close(fd)
+\t\t\t\t\t\t\t_ = syscall.Unlink(path)
+\t\t\t\t\t\t\tif re != nil || string(ack[:n]) != "release\\n" {
+\t\t\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-ack-%d-n-%d-err-%v", tid, n, re)
+\t\t\t\t\t\t\t}
 \t\t\t\t\t\t}
 \t\t\t\t\t}
 \t\t\t\t}
-\t\t\t}
 '''
     ci_helper_src=prod_helper_src.replace(anchor,barrier+anchor,1)
     if ci_helper_src.replace(barrier,'',1)!=prod_helper_src: raise SystemExit('CI stable helper differs by more than exact FIFO barrier block')
