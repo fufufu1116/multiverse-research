@@ -15,10 +15,17 @@ from automation.review_dispatcher_v1.github_app import (
 )
 from automation.review_dispatcher_v1.model import (
     AUDITOR_APP_ID,
+    AUDITOR_APP_SLUG,
     AUDITOR_LOGIN,
+    LAB_APP_ID,
+    LAB_APP_SLUG,
     LAB_LOGIN,
+    RESULT_SCHEMA,
     T2_SCHEMA,
     ReviewContractError,
+    fetch_all_pages,
+    issue_comment_owner_trusted,
+    lane_result_comment_trusted,
     t2_marker,
     validate_request,
 )
@@ -128,7 +135,7 @@ def publish_t2(
         (auditor_comment.get("performed_via_github_app") or {}).get("slug")
     )
     require(
-        outer_app in (None, "multiverse-independent-auditor"),
+        outer_app == AUDITOR_APP_SLUG,
         "AUDITOR_COMMENT_APP",
     )
 
@@ -154,12 +161,75 @@ def publish_t2(
         (lab_comment.get("user") or {}).get("login") == LAB_LOGIN,
         "LAB_UPSTREAM_LOGIN",
     )
+    lab_app = (
+        (lab_comment.get("performed_via_github_app") or {}).get("slug")
+    )
+    require(lab_app == LAB_APP_SLUG, "LAB_UPSTREAM_APP")
+
+    lab_artifact = json_block(lab_comment.get("body") or "")
+    require(
+        lab_artifact.get("schema_version")
+        == "MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1",
+        "LAB_UPSTREAM_SCHEMA",
+    )
+    require(
+        lab_artifact.get("result_schema") == RESULT_SCHEMA,
+        "LAB_UPSTREAM_RESULT_SCHEMA",
+    )
+    require(lab_artifact.get("lane") == "LAB", "LAB_UPSTREAM_LANE")
+    require(lab_artifact.get("verdict") == "PASS", "LAB_UPSTREAM_VERDICT")
+    require(lab_artifact.get("findings") == [], "LAB_UPSTREAM_FINDINGS")
+    require(
+        lab_artifact.get("reviewed_repo") == repo,
+        "LAB_UPSTREAM_REPO",
+    )
+    require(
+        lab_artifact.get("reviewed_pr") == pr_number,
+        "LAB_UPSTREAM_PR",
+    )
+    require(
+        lab_artifact.get("reviewed_head") == job["head"],
+        "LAB_UPSTREAM_HEAD",
+    )
+    require(
+        lab_artifact.get("reviewed_tree") == job["tree"],
+        "LAB_UPSTREAM_TREE",
+    )
+    require(
+        lab_artifact.get("reviewed_base") == job["base"],
+        "LAB_UPSTREAM_BASE",
+    )
+    require(
+        lab_artifact.get("reviewed_main") == job["main"],
+        "LAB_UPSTREAM_MAIN",
+    )
+    require(
+        lab_artifact.get("proof_ceiling") == request["proof_ceiling"],
+        "LAB_UPSTREAM_PROOF_CEILING",
+    )
+    require(
+        lab_artifact.get("execution_state") == request["execution_state"],
+        "LAB_UPSTREAM_EXECUTION_STATE",
+    )
+    lab_producer = lab_artifact.get("producer") or {}
+    require(
+        lab_producer.get("github_login") == LAB_LOGIN,
+        "LAB_UPSTREAM_ARTIFACT_LOGIN",
+    )
+    require(
+        lab_producer.get("github_app_id") == LAB_APP_ID,
+        "LAB_UPSTREAM_ARTIFACT_APP",
+    )
 
     t1_comment = public_github(
         (
             f"https://api.github.com/repos/{repo}/issues/comments/"
             f"{t1_comment_id}"
         )
+    )
+    require(
+        issue_comment_owner_trusted(t1_comment, repo),
+        "T1_PRODUCER_NOT_OWNER",
     )
     t1_body = t1_comment.get("body") or ""
     require(
@@ -174,12 +244,19 @@ def publish_t2(
         job["tree"] in t1_body,
         "T1_TREE_BINDING_MISSING",
     )
+    require(
+        job["base"] in t1_body,
+        "T1_BASE_BINDING_MISSING",
+    )
+    require(
+        job["main"] in t1_body,
+        "T1_MAIN_BINDING_MISSING",
+    )
+    require("PASS" in t1_body, "T1_PASS_MARKER_MISSING")
 
-    comments = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/"
-            f"{pr_number}/comments?per_page=100"
-        )
+    comments = fetch_all_pages(
+        public_github,
+        f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
     )
     marker = t2_marker(
         job["request_id"],
@@ -187,7 +264,10 @@ def publish_t2(
         auditor_comment_id,
     )
     for comment in comments:
-        if marker in (comment.get("body") or ""):
+        if (
+            marker in (comment.get("body") or "")
+            and lane_result_comment_trusted(comment, "AUDITOR")
+        ):
             raise ReviewContractError(
                 f"CURRENT_T2_ALREADY_EXISTS:{comment['id']}"
             )

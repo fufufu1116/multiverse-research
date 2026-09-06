@@ -4,12 +4,14 @@ import copy
 import json
 import unittest
 
-from automation.review_dispatcher_v1 import dispatcher
+from automation.review_dispatcher_v1 import dispatcher, review
 from automation.review_dispatcher_v1.model import (
+    LAB_APP_SLUG,
     REQUEST_MARKER,
     ReviewContractError,
     dotted_get,
     extract_request_from_comment,
+    fetch_all_pages,
     result_marker,
     validate_request,
     validate_public_https_url,
@@ -169,7 +171,7 @@ class DispatcherTests(unittest.TestCase):
         repo = "fufufu1116/multiverse-research"
 
         def fake_fetch(url: str):
-            if url.endswith(f"/commits/{pr_head}/pulls"):
+            if f"/commits/{pr_head}/pulls?" in url:
                 return [
                     {
                         "number": 999,
@@ -199,7 +201,7 @@ class DispatcherTests(unittest.TestCase):
                         "sha": main,
                     }
                 }
-            if url.endswith("/issues/999/comments?per_page=100"):
+            if "/issues/999/comments?per_page=100&page=1" in url:
                 return comments
             raise AssertionError(f"unexpected URL: {url}")
 
@@ -213,7 +215,7 @@ class DispatcherTests(unittest.TestCase):
             {
                 "id": 10,
                 "body": request_body(first),
-                "user": {"login": "controller"},
+                "user": {"login": "fufufu1116"},
             },
             {
                 "id": 20,
@@ -283,6 +285,9 @@ class DispatcherTests(unittest.TestCase):
                 "id": 30,
                 "body": marker + "build -->\nPASS",
                 "user": {"login": "multiverse-independent-lab[bot]"},
+                "performed_via_github_app": {
+                    "slug": "multiverse-independent-lab",
+                },
             },
         ]
 
@@ -316,7 +321,7 @@ class DispatcherTests(unittest.TestCase):
 
     def test_12_multiple_exact_open_prs_fail_closed(self):
         def fake_fetch(url: str):
-            if url.endswith(f"/commits/{SHA_A}/pulls"):
+            if f"/commits/{SHA_A}/pulls?" in url:
                 return [
                     {
                         "number": 1,
@@ -337,6 +342,168 @@ class DispatcherTests(unittest.TestCase):
                 SHA_A,
                 fetch=fake_fetch,
             )
+
+
+class HardeningTests(unittest.TestCase):
+    def test_13_fetch_all_pages_reads_beyond_first_100(self):
+        first = [{"id": i} for i in range(100)]
+        second = [{"id": 100}]
+
+        def fake_fetch(url: str):
+            if "page=1" in url:
+                return first
+            if "page=2" in url:
+                return second
+            raise AssertionError(url)
+
+        items = fetch_all_pages(
+            fake_fetch,
+            "https://api.github.com/repos/o/r/issues/1/comments",
+        )
+        self.assertEqual(len(items), 101)
+        self.assertEqual(items[-1]["id"], 100)
+
+    def test_14_untrusted_newer_request_is_ignored(self):
+        trusted = lab_request("trusted-request")
+        untrusted = lab_request("untrusted-request")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(trusted),
+                "user": {"login": "fufufu1116"},
+            },
+            {
+                "id": 20,
+                "body": request_body(untrusted),
+                "user": {"login": "attacker"},
+            },
+        ]
+        helper = DispatcherTests()
+        job = dispatcher.discover_request(
+            repo="fufufu1116/multiverse-research",
+            lane="LAB",
+            head=SHA_A,
+            fetch=helper.fake_fetch_factory(comments),
+        )
+        self.assertEqual(job["request_id"], "trusted-request")
+        self.assertEqual(job["request_comment"], 10)
+
+    def test_15_requested_app_slug_requires_exact_attribution(self):
+        job = {
+            "repo": "fufufu1116/multiverse-research",
+            "request": {
+                "recipe": {
+                    "durable_comments": [
+                        {
+                            "id": 123,
+                            "login": "multiverse-independent-lab[bot]",
+                            "app_slug": LAB_APP_SLUG,
+                            "body_contains": ["PASS"],
+                        }
+                    ]
+                }
+            },
+        }
+
+        def fake_fetch(_url: str):
+            return {
+                "user": {"login": "multiverse-independent-lab[bot]"},
+                "performed_via_github_app": None,
+                "body": "PASS",
+            }
+
+        checks = {}
+        findings = []
+        review._check_comments(job, fake_fetch, checks, findings)
+        self.assertTrue(findings)
+        self.assertEqual(
+            checks["comment:123:app_slug"],
+            "FIX_REQUIRED",
+        )
+
+    def test_16_auditor_upstream_requires_exact_lab_and_owner_t1(self):
+        request = lab_request("auditor-upstream")
+        request["lane"] = "AUDITOR"
+        request["upstream"] = {
+            "lab_pass_comment": 123,
+            "t1_comment": 456,
+        }
+        job = {
+            "lane": "AUDITOR",
+            "repo": request["repo"],
+            "pr": request["pr"],
+            "head": request["head"],
+            "tree": request["tree"],
+            "base": request["base"],
+            "main": request["main"],
+            "request": request,
+        }
+        lab_artifact = {
+            "schema_version": "MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1",
+            "result_schema": "MULTIVERSE_FIXED_REVIEW_RESULT_v1",
+            "lane": "LAB",
+            "verdict": "PASS",
+            "findings": [],
+            "reviewed_repo": request["repo"],
+            "reviewed_pr": request["pr"],
+            "reviewed_head": request["head"],
+            "reviewed_tree": request["tree"],
+            "reviewed_base": request["base"],
+            "reviewed_main": request["main"],
+            "proof_ceiling": request["proof_ceiling"],
+            "execution_state": request["execution_state"],
+            "producer": {
+                "github_login": "multiverse-independent-lab[bot]",
+                "github_app_id": 4819755,
+            },
+        }
+        fence = chr(96) * 3
+        lab_body = "\n".join(
+            [
+                fence + "json",
+                json.dumps(lab_artifact, sort_keys=True),
+                fence,
+            ]
+        )
+        t1_body = " ".join(
+            [
+                "T1 PASS",
+                "123",
+                request["head"],
+                request["tree"],
+                request["base"],
+                request["main"],
+            ]
+        )
+
+        def fake_fetch(url: str):
+            if url.endswith("/issues/comments/123"):
+                return {
+                    "user": {"login": "multiverse-independent-lab[bot]"},
+                    "performed_via_github_app": {
+                        "slug": "multiverse-independent-lab",
+                    },
+                    "body": lab_body,
+                }
+            if url.endswith("/issues/comments/456"):
+                return {
+                    "user": {"login": "fufufu1116"},
+                    "body": t1_body,
+                }
+            raise AssertionError(url)
+
+        checks = {}
+        findings = []
+        review._check_auditor_upstream(
+            job,
+            fake_fetch,
+            checks,
+            findings,
+        )
+        self.assertEqual(findings, [])
+        self.assertTrue(
+            all(value == "PASS" for value in checks.values())
+        )
 
 
 if __name__ == "__main__":

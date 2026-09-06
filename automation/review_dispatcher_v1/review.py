@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -15,13 +16,16 @@ from typing import Any, Callable
 
 from automation.review_dispatcher_v1.model import (
     AUDITOR_APP_ID,
+    AUDITOR_APP_SLUG,
     AUDITOR_LOGIN,
     LAB_APP_ID,
+    LAB_APP_SLUG,
     LAB_LOGIN,
     RESULT_SCHEMA,
     ReviewContractError,
     canonical_json,
     dotted_get,
+    issue_comment_owner_trusted,
     require,
     validate_request,
 )
@@ -227,7 +231,7 @@ def _check_comments(
 
         if rule["app_slug"] is not None:
             name = f"comment:{cid}:app_slug"
-            if app_slug in (None, rule["app_slug"]):
+            if app_slug == rule["app_slug"]:
                 checks[name] = "PASS"
             else:
                 checks[name] = "FIX_REQUIRED"
@@ -242,6 +246,122 @@ def _check_comments(
             else:
                 checks[name] = "FIX_REQUIRED"
                 findings.append(f"{name}: missing token")
+
+
+def _comment_json_block(body: str) -> dict[str, Any]:
+    fence = r"\x60\x60\x60"
+    match = re.search(
+        fence + r"json\s*(\{.*?\})\s*" + fence,
+        body,
+        re.S,
+    )
+    if match is None:
+        raise ValueError("JSON_BLOCK_MISSING")
+    return json.loads(match.group(1))
+
+
+def _check_auditor_upstream(
+    job: dict[str, Any],
+    fetch: Callable[[str], Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    if job["lane"] != "AUDITOR":
+        return
+
+    def check(name: str, condition: bool, detail: str) -> None:
+        if condition:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: {detail}")
+
+    upstream = job["request"]["upstream"]
+    lab_comment_id = upstream["lab_pass_comment"]
+    t1_comment_id = upstream["t1_comment"]
+
+    lab_comment = fetch(
+        f"https://api.github.com/repos/{job['repo']}/issues/comments/{lab_comment_id}"
+    )
+    lab_login = (lab_comment.get("user") or {}).get("login")
+    lab_app = (
+        (lab_comment.get("performed_via_github_app") or {}).get("slug")
+    )
+    check(
+        "upstream_lab_login",
+        lab_login == LAB_LOGIN,
+        repr(lab_login),
+    )
+    check(
+        "upstream_lab_app",
+        lab_app == LAB_APP_SLUG,
+        repr(lab_app),
+    )
+
+    try:
+        lab_artifact = _comment_json_block(lab_comment.get("body") or "")
+    except Exception as exc:
+        checks["upstream_lab_artifact"] = "FIX_REQUIRED"
+        findings.append(f"upstream_lab_artifact: {exc!r}")
+        lab_artifact = None
+
+    if lab_artifact is not None:
+        exact_fields = {
+            "schema_version": ARTIFACT_SCHEMA,
+            "result_schema": RESULT_SCHEMA,
+            "lane": "LAB",
+            "verdict": "PASS",
+            "findings": [],
+            "reviewed_repo": job["repo"],
+            "reviewed_pr": job["pr"],
+            "reviewed_head": job["head"],
+            "reviewed_tree": job["tree"],
+            "reviewed_base": job["base"],
+            "reviewed_main": job["main"],
+            "proof_ceiling": job["request"]["proof_ceiling"],
+            "execution_state": job["request"]["execution_state"],
+        }
+        for key, expected in exact_fields.items():
+            actual = lab_artifact.get(key)
+            check(
+                f"upstream_lab_artifact:{key}",
+                actual == expected,
+                f"{actual!r} != {expected!r}",
+            )
+        producer = lab_artifact.get("producer") or {}
+        check(
+            "upstream_lab_artifact:producer_login",
+            producer.get("github_login") == LAB_LOGIN,
+            repr(producer.get("github_login")),
+        )
+        check(
+            "upstream_lab_artifact:producer_app_id",
+            producer.get("github_app_id") == LAB_APP_ID,
+            repr(producer.get("github_app_id")),
+        )
+
+    t1_comment = fetch(
+        f"https://api.github.com/repos/{job['repo']}/issues/comments/{t1_comment_id}"
+    )
+    check(
+        "upstream_t1_owner",
+        issue_comment_owner_trusted(t1_comment, job["repo"]),
+        repr((t1_comment.get("user") or {}).get("login")),
+    )
+    t1_body = t1_comment.get("body") or ""
+    for label, token in (
+        ("lab_comment", str(lab_comment_id)),
+        ("head", job["head"]),
+        ("tree", job["tree"]),
+        ("base", job["base"]),
+        ("main", job["main"]),
+        ("pass", "PASS"),
+    ):
+        check(
+            f"upstream_t1_binding:{label}",
+            token in t1_body,
+            f"missing {token!r}",
+        )
 
 
 def _check_source_rules(
@@ -592,6 +712,7 @@ def run_review(
 
     _check_secret_environment(checks, findings)
     _fresh_binding(job, fetch, checks, findings)
+    _check_auditor_upstream(job, fetch, checks, findings)
     _check_subtrees(job, fetch, checks, findings)
     _check_comments(job, fetch, checks, findings)
     _check_source_rules(repo_root, job, checks, findings)

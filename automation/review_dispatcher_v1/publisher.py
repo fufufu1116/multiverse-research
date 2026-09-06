@@ -19,6 +19,9 @@ from automation.review_dispatcher_v1.model import (
     LAB_LOGIN,
     ReviewContractError,
     extract_request_from_comment,
+    fetch_all_pages,
+    issue_comment_owner_trusted,
+    lane_result_comment_trusted,
     result_marker,
     validate_request,
 )
@@ -97,12 +100,14 @@ def _fresh_verify(job: dict[str, Any]) -> list[dict[str, Any]]:
     require(parsed is not None, "REQUEST_COMMENT_NOT_PARSEABLE")
     validate_request(parsed)
     require(parsed == job["request"], "REQUEST_COMMENT_DRIFT")
+    require(
+        issue_comment_owner_trusted(request_comment, repo),
+        "REQUEST_COMMENT_PRODUCER_NOT_OWNER",
+    )
 
-    comments = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/"
-            f"{pr_number}/comments?per_page=100"
-        )
+    comments = fetch_all_pages(
+        public_github,
+        f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
     )
     return comments
 
@@ -172,7 +177,10 @@ def publish(
         job["request_comment"],
     )
     for comment in comments:
-        if marker in (comment.get("body") or ""):
+        if (
+            marker in (comment.get("body") or "")
+            and lane_result_comment_trusted(comment, lane)
+        ):
             raise ReviewContractError(
                 f"CURRENT_REQUEST_RESULT_ALREADY_EXISTS:{comment['id']}"
             )

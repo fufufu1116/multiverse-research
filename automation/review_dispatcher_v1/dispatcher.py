@@ -11,6 +11,9 @@ from automation.review_dispatcher_v1.model import (
     REQUEST_MARKER,
     ReviewContractError,
     extract_request_from_comment,
+    fetch_all_pages,
+    issue_comment_owner_trusted,
+    lane_result_comment_trusted,
     require,
     result_marker,
     validate_request,
@@ -33,8 +36,9 @@ def github_get(url: str) -> Any:
 
 
 def discover_pr(repo: str, head: str, fetch=github_get) -> dict[str, Any]:
-    pulls = fetch(
-        f"https://api.github.com/repos/{repo}/commits/{head}/pulls"
+    pulls = fetch_all_pages(
+        fetch,
+        f"https://api.github.com/repos/{repo}/commits/{head}/pulls",
     )
     exact = [
         item
@@ -66,8 +70,9 @@ def discover_request(
     )
     main_sha = main["commit"]["sha"]
 
-    comments = fetch(
-        f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments?per_page=100"
+    comments = fetch_all_pages(
+        fetch,
+        f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
     )
 
     candidates: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
@@ -93,6 +98,8 @@ def discover_request(
             continue
         if request["main"] != main_sha:
             continue
+        if not issue_comment_owner_trusted(comment, repo):
+            continue
         candidates.append((int(comment["id"]), request, comment))
 
     require(bool(candidates), "NO_EXACT_CURRENT_REVIEW_REQUEST")
@@ -109,6 +116,7 @@ def discover_request(
         int(item["id"])
         for item in comments
         if marker in (item.get("body") or "")
+        and lane_result_comment_trusted(item, lane)
     ]
     require(
         not duplicate_ids,

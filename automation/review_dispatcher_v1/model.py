@@ -5,7 +5,7 @@ import ipaddress
 import json
 import re
 from pathlib import PurePosixPath
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urlparse
 
 REQUEST_SCHEMA = "MULTIVERSE_REVIEW_REQUEST_v1"
@@ -22,6 +22,8 @@ LAB_LOGIN = "multiverse-independent-lab[bot]"
 LAB_APP_ID = 4819755
 AUDITOR_LOGIN = "multiverse-independent-auditor[bot]"
 AUDITOR_APP_ID = 4821179
+LAB_APP_SLUG = "multiverse-independent-lab"
+AUDITOR_APP_SLUG = "multiverse-independent-auditor"
 
 REQUEST_KEYS = {
     "schema", "request_id", "lane", "mode", "repo", "pr",
@@ -56,6 +58,53 @@ class ReviewContractError(RuntimeError):
 def require(condition: bool, code: str) -> None:
     if not condition:
         raise ReviewContractError(code)
+
+
+def issue_comment_owner_trusted(
+    comment: dict[str, Any],
+    repo: str,
+) -> bool:
+    owner = repo.split("/", 1)[0]
+    return (comment.get("user") or {}).get("login") == owner
+
+
+def lane_result_comment_trusted(
+    comment: dict[str, Any],
+    lane: str,
+) -> bool:
+    if lane == "LAB":
+        expected_login = LAB_LOGIN
+        expected_app = LAB_APP_SLUG
+    elif lane == "AUDITOR":
+        expected_login = AUDITOR_LOGIN
+        expected_app = AUDITOR_APP_SLUG
+    else:
+        return False
+
+    login = (comment.get("user") or {}).get("login")
+    app_slug = (
+        (comment.get("performed_via_github_app") or {}).get("slug")
+    )
+    return login == expected_login and app_slug == expected_app
+
+
+def fetch_all_pages(
+    fetch: Callable[[str], Any],
+    url: str,
+    *,
+    max_pages: int = 100,
+) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    separator = "&" if "?" in url else "?"
+    for page in range(1, max_pages + 1):
+        batch = fetch(
+            f"{url}{separator}per_page=100&page={page}"
+        )
+        require(isinstance(batch, list), "PAGINATED_RESPONSE_NOT_LIST")
+        items.extend(batch)
+        if len(batch) < 100:
+            return items
+    raise ReviewContractError("PAGINATION_LIMIT_EXCEEDED")
 
 
 def canonical_json(value: Any) -> str:
