@@ -282,7 +282,24 @@ def _check_comments(
 
         if rule["app_slug"] is not None:
             name = f"comment:{cid}:app_slug"
-            if app_slug == rule["app_slug"]:
+            lane: str | None = None
+            if (
+                rule["login"] == LAB_LOGIN
+                and rule["app_slug"] == LAB_APP_SLUG
+            ):
+                lane = "LAB"
+            elif (
+                rule["login"] == AUDITOR_LOGIN
+                and rule["app_slug"] == AUDITOR_APP_SLUG
+            ):
+                lane = "AUDITOR"
+
+            if lane is not None:
+                app_ok = lane_result_comment_trusted(comment, lane)
+            else:
+                app_ok = app_slug == rule["app_slug"]
+
+            if app_ok:
                 checks[name] = "PASS"
             else:
                 checks[name] = "FIX_REQUIRED"
