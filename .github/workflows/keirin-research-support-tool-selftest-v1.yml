@@ -12,6 +12,7 @@ on:
       - 'tools/keirin_support_gate_partial_evaluator_v1.py'
       - 'v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_RECEIPT_DUPLICATE_PROVENANCE_PRESPEC_20260906_v1.json'
       - 'v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json'
+      - 'v3/historical_all_market/research_candidates/KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json'
   workflow_dispatch:
 
 permissions:
@@ -34,3 +35,17 @@ jobs:
         run: python tools/keirin_support_receipt_builder_v1.py selftest
       - name: Partial support gate evaluator selftest
         run: python tools/keirin_support_gate_partial_evaluator_v1.py selftest
+      - name: Evaluate confirmed support receipt
+        run: |
+          python tools/keirin_support_gate_partial_evaluator_v1.py evaluate \
+            v3/historical_all_market/research_candidates/KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json \
+            --out /tmp/gate.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/gate.json'))
+          assert x['status']=='FAIL_KNOWN_DIMENSION'
+          assert x['checks']['unique_cross_circumference_supported_riders']['value']==1
+          assert x['checks']['minimum_supported_rider_race_rows']['value']==2
+          assert len(x['unknown_dimensions'])==2
+          assert x['full_gate_pass_authorized'] is False
+          PY
