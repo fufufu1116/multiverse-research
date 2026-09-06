@@ -1,0 +1,55 @@
+{
+  "record":"KEIRIN_SUPPORT_GATE_BREAKTHROUGH_PORTFOLIO_20260906_v1",
+  "status":"FROZEN_PRE_ONLY_GATE_REVERSE_ACQUISITION_PLAN_NO_RESULT_AUTHORITY",
+  "scope":"RESEARCH_SUPPORT_ACQUISITION_ORDER_ONLY",
+  "canonical_repo":"fufufu1116/multiverse-research",
+  "research_branch":"research/keirin-real-evidence-dual-lane-20260901-v1",
+  "bindings":[
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260904_v6.json",
+    "KEIRIN_WORK_CONSERVING_MULTI_LANE_PROGRESS_POLICY_20260906_v1.json",
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260906_v54.json"
+  ],
+  "objective":"Convert the already-front-loaded candidate supply into formal cross-circumference support with the smallest avoidable idle time while satisfying the frozen gate's rider, row, venue, calendar-block, concentration, and identity constraints. This plan does not count any candidate as support before the formal receipt chain passes.",
+  "frozen_gate_snapshot":{"formal_supported_unique_riders":1,"formal_supported_rows":2,"remaining_unique_riders_floor":29,"remaining_supported_rows_floor":58,"target_unique_riders":30,"target_supported_rows":60,"minimum_distinct_venues_per_circumference":2,"minimum_distinct_calendar_blocks_per_circumference":2,"maximum_single_venue_share":0.60,"maximum_single_rider_share":0.10,"official_identity_mapping_rate":1.0},
+  "candidate_supply_snapshot":{"candidate_rows":48,"unique_candidates":43,"identity_pass_rows":48,"assessment":"SUPPLY_EXCEEDS_UNIQUE_RIDER_GATE_FLOOR_FORMAL_CONVERSION_IS_BOTTLENECK"},
+  "portfolio_policy":{
+    "primary":"Acquire formal conversions, not more raw candidates, unless a documented gate-coverage deficit requires queue expansion.",
+    "event_selection_key":[
+      "actual positive Day1 racecard before cutoff interrupts all lower-priority work",
+      "prefer events that add a missing or underrepresented circumference venue and frozen calendar block",
+      "prefer a new unique rider over another row for an already-supported rider until the 30-rider floor is secured",
+      "prefer earlier event start date when gate contribution is otherwise equivalent",
+      "prefer the choice that lowers projected single-venue and single-rider concentration",
+      "stable tie-breaker: venue, event date, official registration number"
+    ],
+    "calendar_block_rule":"Use only the frozen gate/evaluator definition. This portfolio does not invent or loosen calendar-block granularity.",
+    "concentration_rule":"Never authorize a portfolio selection that would require exceeding venue 0.60 or rider 0.10 to pass the gate.",
+    "identity_rule":"Official registration mapping must remain 1.0 for every supported row; ambiguous identity fails closed."
+  },
+  "acquisition_tiers":[
+    {"tier":1,"purpose":"EARLIEST_DIVERSITY_AND_HIGH_YIELD","events":[
+      {"venue":"伊東","date":"2026-09-07","circumference":"333_OR_333_33M","known_candidate_rows":1,"role":"earliest 333 conversion opportunity; useful venue diversity if formalized"},
+      {"venue":"奈良","date":"2026-09-10","circumference":"333_OR_333_33M","known_candidate_rows":10,"role":"high-yield distinct 333 venue conversion block"},
+      {"venue":"豊橋","date":"2026-09-11","circumference":"400M","known_candidate_rows":4,"role":"distinct 400 venue diversification relative to existing Kawasaki formal side"},
+      {"venue":"川崎","date":"2026-09-10","circumference":"400M","known_candidate_rows":4,"role":"early rider/row yield; venue concentration must be watched because Kawasaki is already represented"}
+    ]},
+    {"tier":2,"purpose":"SECOND_BLOCK_AND_DISTRIBUTION_DEPTH","events":[
+      {"venue":"伊東","date":"2026-09-14","circumference":"333_OR_333_33M","known_candidate_rows":3},
+      {"venue":"青森","date":"2026-09-14","circumference":"400M","known_candidate_rows":2,"role":"additional distinct 400 venue"},
+      {"venue":"防府","date":"2026-09-15","circumference":"333_OR_333_33M","known_candidate_rows":5,"role":"existing formal 333 venue; useful rows/riders but concentration-aware"},
+      {"venue":"川崎","date":"2026-09-17","circumference":"400M","known_candidate_rows":2,"known_duplicate_rider_risk":"金澤竜二 overlaps Toyohashi candidate pool"},
+      {"venue":"富山","date":"2026-09-18","circumference":"333_OR_333_33M","known_candidate_rows_upper":9,"role":"high-yield distinct 333 venue with some candidate duplication across earlier pools"},
+      {"venue":"伊東","date":"2026-09-23","circumference":"333_OR_333_33M","known_candidate_rows_upper":8,"role":"later depth; duplicate-aware"}
+    ]}
+  ],
+  "formal_conversion_chain":["prospective Day1 PRE membership","official registration identity","contemporaneous official same-race assignment","provenance PASS","support receipt","gate recomputation"],
+  "queue_expansion_trigger":"Expand only when withdrawals, candidate absence, calendar/venue diversity, or concentration math demonstrates that the existing queue cannot plausibly satisfy the frozen gate. Never expand merely to stay busy.",
+  "positive_racecard_interrupt":"A positively navigated actual Day1 rider racecard before cutoff supersedes portfolio planning and immediately starts the strict PRE chain for that event.",
+  "support_increment_authorized_now":0,
+  "result_access_authorized":false,
+  "formula_access_authorized":false,
+  "model_fit_authorized":false,
+  "owner_action_required_now":false,
+  "hard_boundaries":["NO_RESULT_JOIN","NO_RACE_ID_GUESSING","NO_POST_CUTOFF_PRE_RECONSTRUCTION","NO_FUZZY_IDENTITY","UNKNOWN_NE_ZERO","NO_S0_MUTATION","NO_MAIN_OR_RUNTIME_MUTATION"]
+}
