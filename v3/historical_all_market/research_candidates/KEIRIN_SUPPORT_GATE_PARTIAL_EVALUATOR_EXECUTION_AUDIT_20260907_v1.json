@@ -1,0 +1,19 @@
+{
+  "record":"KEIRIN_SUPPORT_GATE_PARTIAL_EVALUATOR_EXECUTION_AUDIT_20260907_v1",
+  "status":"EXECUTION_PASS_CONFIRMED_RECEIPT_REPRODUCES_KNOWN_GATE_FAILURES_CALENDAR_UNKNOWN",
+  "scope":"RESEARCH_PRE_ONLY_PARTIAL_GATE_DIAGNOSTIC_NO_PASS_AUTHORITY",
+  "tool":"tools/keirin_support_gate_partial_evaluator_v1.py",
+  "tool_git_blob":"ae6bcea800027e33de3f8e59a9562f4834fba518",
+  "gate_prespec":"KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+  "gate_prespec_git_blob":"107bc07bbaca5b73351ae190ca368b9b57702077",
+  "confirmed_receipt":"KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
+  "github_actions":{"workflow":".github/workflows/keirin-research-support-tool-selftest-v1.yml","run_id":34055376417,"head_sha":"6d1f1c349ba39797cf777cf8ca47607d6d320170","partial_evaluator_selftest":"SUCCESS","confirmed_receipt_evaluation":"SUCCESS"},
+  "reproduced_known_state":{"confirmed_unique_cross_circumference_supported_riders":1,"confirmed_supported_rider_race_rows":2,"distinct_333_or_333_33_venues":1,"distinct_400_venues":1,"maximum_single_rider_share":1.0,"calendar_block_dimensions":"UNKNOWN_UNDEFINED_FROZEN_GRANULARITY","full_gate_result":"FAIL_KNOWN_DIMENSION","full_gate_pass_authorized":false},
+  "interpretation":"The evaluator can now recompute all unambiguous frozen gate dimensions from formal receipts and can prove a known-dimension FAIL without inventing the missing calendar-block definition. It cannot emit a full PASS while calendar granularity remains undefined.",
+  "result_accessed":false,
+  "result_join_authorized":false,
+  "formula_fit_authorized":false,
+  "support_increment_authorized_now":0,
+  "main_or_runtime_mutation":false,
+  "owner_action_required_now":false
+}
