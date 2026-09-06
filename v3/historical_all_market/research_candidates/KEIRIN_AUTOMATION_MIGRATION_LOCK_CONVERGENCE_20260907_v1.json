@@ -1,0 +1,60 @@
+{
+  "record": "KEIRIN_AUTOMATION_MIGRATION_LOCK_CONVERGENCE_20260907_v1",
+  "status": "RESEARCH_AUTOMATION_CONVERGED_WITH_T2_1_MIGRATION_LOCK_NO_SHARED_STEP_AUTHORITY",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "automation": {
+    "id": "6a9a433e10b48191bf692653ebb8999f",
+    "title": "Keirin PRE 自動進行",
+    "enabled": true,
+    "timing_mode": "condition_watch",
+    "cadence": "HOURLY",
+    "duplicate_automation_created": false
+  },
+  "governance_binding": {
+    "issue_93_migration_lock_comment": 5561567913,
+    "issue_152": 152,
+    "pr_153": 153,
+    "shared_independent_lab_auditor_steps_mutation_authorized": false,
+    "shared_workflow_dispatch_or_rerun_authorized": false,
+    "allowed_scope": "RESEARCH_AND_CANDIDATE_ONLY",
+    "review_routing_rule": "If independent review is required, publish a durable exact-bound GitHub request and leave routing to dispatcher/control-plane."
+  },
+  "automation_policy": {
+    "fresh_read_each_run": true,
+    "positive_day1_pre_interrupts_lower_lanes": true,
+    "positive_navigation_only": true,
+    "guessed_race_ids_or_urls": false,
+    "result_payout_odds_prediction_comments_as_evidence": false,
+    "formal_support_chain": [
+      "FRESH_BINDING",
+      "PROSPECTIVE_DAY1_PRE_MEMBERSHIP",
+      "EXACT_OFFICIAL_REGISTRATION_IDENTITY",
+      "CONTEMPORANEOUS_OFFICIAL_SAME_RACE_BEFORE_CUTOFF",
+      "FULL_PROVENANCE_VALIDATOR",
+      "RECEIPT_BUILDER",
+      "RECEIPT_GUARD",
+      "FORMAL_SUPPORT_RECEIPT",
+      "PARTIAL_GATE_EVALUATOR",
+      "CURRENT_AND_RESUME_ON_MATERIAL_CHANGE"
+    ],
+    "cutoff_rule": "If same-race/provenance is not positively proven before cutoff, support increment stays zero; at or after cutoff no reconstruction, repair, or backfill is allowed and work pivots to the next portfolio event.",
+    "calendar_rule": "While authoritative frozen calendar-block granularity is undefined, calendar dimensions remain UNKNOWN and full gate PASS is prohibited; granularity must not be invented.",
+    "work_conserving_fallback": [
+      "LAWFUL_EXISTING_PRE_CUTOFF_EVIDENCE_MINING",
+      "AUTHORITATIVE_CALENDAR_DEFINITION_AND_GATE_DEFICIT_PLANNING",
+      "RESEARCH_TOOLING_SELFTEST_AND_READINESS_HARDENING"
+    ],
+    "queue_expansion_rule": "Do not expand merely to create activity; expand only if the current queue is proven structurally insufficient.",
+    "identity_rule": "Exact name then official registration; no fuzzy matching; UNKNOWN != 0."
+  },
+  "hard_boundaries": {
+    "S0": "FROZEN",
+    "historical_HFT": "FROZEN_EXHAUSTED",
+    "RESULT": "BLOCKED",
+    "formula": "BLOCKED",
+    "main_runtime_production": "NO_MUTATION",
+    "shared_lab_auditor_steps": "NO_MUTATION"
+  },
+  "owner_action_required_now": false
+}
