@@ -82,7 +82,7 @@ def build_stable_birth_proof_pair():
     if not (worker.index(lock) < worker.index(regain) < worker.index(anchor)):
         raise SystemExit('stable birth helper locked-worker semantic order changed')
     if prod_helper_src.count(anchor)!=1: raise SystemExit('stable birth helper publish-release anchor not globally unique')
-    barrier='''\t\t\t\tif e == nil {
+    barrier='''\t\t\t\tif _, existed := pre[tid]; e == nil && !existed {
 \t\t\t\t\tpath := fmt.Sprintf("/tmp/v7r21-ci-birth-proof-%d", tid)
 \t\t\t\t\t_ = syscall.Unlink(path)
 \t\t\t\t\tif be := syscall.Mkfifo(path, 0600); be != nil {
@@ -96,7 +96,7 @@ def build_stable_birth_proof_pair():
 \t\t\t\t\t\t\tn, re := syscall.Read(fd, ack[:])
 \t\t\t\t\t\t\t_ = syscall.Close(fd)
 \t\t\t\t\t\t\t_ = syscall.Unlink(path)
-\t\t\t\t\t\t\tif re != nil || string(ack[:n]) != "release\\n" {
+\t\t\t\t\t\t\tif re != nil || string(ack[:n]) != "release\n" {
 \t\t\t\t\t\t\t\te = fmt.Errorf("ci-birth-proof-ack-%d-n-%d-err-%v", tid, n, re)
 \t\t\t\t\t\t\t}
 \t\t\t\t\t\t}
