@@ -211,7 +211,6 @@ def validate() -> dict:
         "_candidate_env(",
         "_repo_file(",
         "latest_exact_current_owner_request(",
-        "supersedes_request_sha256",
         "request_sha256",
         "lab_request_sha256",
         "resolve_public_https_target(base_url)",
@@ -219,6 +218,19 @@ def validate() -> dict:
     ):
         name = f"review:hardening:{token[:32]}"
         if token in review_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: missing")
+
+    model_source = (ROOT / "model.py").read_text()
+    for token in (
+        "supersedes_request_sha256",
+        "SAME_HEAD_SUPERSESSION_CHAIN_INVALID",
+        "sha256_json(request)",
+    ):
+        name = f"model:request_identity:{token[:32]}"
+        if token in model_source:
             checks[name] = "PASS"
         else:
             checks[name] = "FIX_REQUIRED"
