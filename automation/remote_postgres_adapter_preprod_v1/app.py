@@ -27,7 +27,7 @@ EXPECTED_RUNTIME_ID = "mv-runtime-postgres-adapter-preprod-v1"
 EXECUTION_AUTHORITY = "OWNER_AUTHORIZED_REMOTE_POSTGRES_ADAPTER_PREPROD_V1"
 PROOF_CEILING = "REMOTE_POSTGRES_ADAPTER_PREPRODUCTION_NO_EFFECT_EVIDENCE_ONLY"
 RUNTIME = "OFF"
-LEASE_TTL_SECONDS = 2
+WORKER_A_LEASE_TTL_SECONDS = 3\nWORKER_B_LEASE_TTL_SECONDS = 30
 REQUEST_KEY = "remote-postgres-adapter-noeffect-request-v1"
 FINAL_EVIDENCE_CHECKPOINT = "remote:final_evidence"
 PAYLOAD = {"kind": "synthetic_no_effect", "version": 1}
@@ -126,7 +126,7 @@ def run_bounded_drill(
 
     lease_a = store.acquire_lease(
         identity_a,
-        ttl_seconds=LEASE_TTL_SECONDS,
+        ttl_seconds=WORKER_A_LEASE_TTL_SECONDS,
     )
 
     checkpoint_a = store.checkpoint(
@@ -171,11 +171,11 @@ def run_bounded_drill(
     if readiness_a["ready"] is not False:
         raise RemoteExecutionViolation("READINESS_A_UNEXPECTEDLY_TRUE")
 
-    sleeper(LEASE_TTL_SECONDS + 1)
+    sleeper(WORKER_A_LEASE_TTL_SECONDS + 1)
 
     lease_b = store.acquire_lease(
         identity_b,
-        ttl_seconds=LEASE_TTL_SECONDS,
+        ttl_seconds=WORKER_B_LEASE_TTL_SECONDS,
     )
 
     if lease_b.fence_token <= lease_a.fence_token:
