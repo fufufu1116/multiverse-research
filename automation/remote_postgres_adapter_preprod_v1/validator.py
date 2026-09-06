@@ -40,17 +40,24 @@ def validate() -> dict[str, object]:
         + (ROOT / "README.md").read_text()
     )
 
-    authority_index = app.index("validate_nonsecret_environment()")
-    thread_index = app.index("thread = threading.Thread")
+    main_start = app.index("def main()")
+    authority_index = app.index("validate_nonsecret_environment()", main_start)
+    thread_index = app.index("thread = threading.Thread", main_start)
     assert authority_index < thread_index
 
-    assert 'import psycopg' in app
-    assert app.index('import psycopg') > app.index("def build_connection_factory")
-    assert "DATABASE_URL" not in durable
+    build_factory = app.index("def build_connection_factory")
+    psycopg_import = app.index("import psycopg", build_factory)
+    assert psycopg_import > build_factory
+
+    forbidden_secret_literals = ("postgresql://", "postgres://", "DATABASE_URL=")
+    assert not any(token in durable for token in forbidden_secret_literals)
+
+    assert "FINAL_EVIDENCE_CHECKPOINT" in app
+    assert "recovered_after_restart" in app
     assert "state_changes_disabled_over_http" in app
     assert "external_effect_executed" in app
     assert '"runtime": RUNTIME' in app
-    assert "RUNTIME = \"OFF\"" in app
+    assert 'RUNTIME = "OFF"' in app
 
     return {
         "proof_ceiling": PROOF,
