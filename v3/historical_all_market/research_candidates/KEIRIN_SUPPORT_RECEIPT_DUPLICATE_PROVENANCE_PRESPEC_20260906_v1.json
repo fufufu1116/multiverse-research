@@ -1,0 +1,33 @@
+{
+  "record":"KEIRIN_SUPPORT_RECEIPT_DUPLICATE_PROVENANCE_PRESPEC_20260906_v1",
+  "status":"FROZEN_RESEARCH_PRE_ONLY_NO_RESULT_NO_SUPPORT_AUTO_AUTHORITY",
+  "purpose":"Make future cross-circumference support receipt assembly deterministic, duplicate-safe, and provenance-complete before scaling formal conversions.",
+  "canonical_identity_key":"official_registration_number",
+  "canonical_row_key":["official_registration_number","circumference_bucket","race_date","venue","race_no","car_no","source_file_sha256"],
+  "circumference_bucket_rule":{"333":"333_OR_333_33","333.33":"333_OR_333_33","400":"400"},
+  "required_rider_fields":["name","official_registration_number"],
+  "required_row_fields":["race_date","venue","circumference_m","day","race_no","car_no","pre_artifact","source_file_sha256","registration_number","valid_pre_row_for_support"],
+  "required_provenance_assertions":[
+    "PRE capture or original frozen witness predates the applicable PIT cutoff",
+    "official registration identity is exact and deterministic",
+    "prospective support-side row has contemporaneous official same-race assignment before cutoff",
+    "source artifact and source hash are bound",
+    "RESULT/payout/odds/forecast were not used in the support decision"
+  ],
+  "duplicate_guards":[
+    "A canonical row key already present in any confirmed support receipt MUST NOT increment supported rows again.",
+    "The same official registration number may appear in multiple valid rows, but confirmed_unique_riders increments only on first confirmed cross-circumference qualification.",
+    "A rider needs at least one valid 333/333.33 row and at least one valid 400 row to qualify as cross-circumference supported.",
+    "Multiple receipts for the same rider are merge/update evidence only unless they add a previously unseen canonical row key; they MUST NOT increment unique rider count twice.",
+    "Ambiguous or missing registration number, row hash, event binding, or cutoff provenance fails closed."
+  ],
+  "receipt_decision_fields":["same_official_registration_number_across_333_and_400","both_rows_valid_pre","cross_circumference_supported_rider","confirmed_unique_rider_increment_now","confirmed_supported_rider_race_rows_increment_now","result_needed_for_support_decision"],
+  "accounting_rules":{"unique_rider_increment_max_per_registration_number":1,"row_increment":"COUNT_ONLY_PREVIOUSLY_UNSEEN_CANONICAL_ROW_KEYS","identity_mapping_rate_required":1.0},
+  "reference_confirmed_receipt":"KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
+  "result_accessed":false,
+  "result_join_authorized":false,
+  "formula_fit_authorized":false,
+  "support_increment_authorized_by_this_prespec":0,
+  "main_or_runtime_mutation":false,
+  "owner_action_required_now":false
+}
