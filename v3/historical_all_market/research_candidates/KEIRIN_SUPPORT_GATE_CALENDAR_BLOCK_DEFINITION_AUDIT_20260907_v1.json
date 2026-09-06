@@ -1,0 +1,19 @@
+{
+  "record":"KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_AUDIT_20260907_v1",
+  "status":"NO_FROZEN_CALENDAR_BLOCK_GRANULARITY_FOUND_FAIL_CLOSED_PARTIAL_EVALUATION_ONLY",
+  "scope":"RESEARCH_PRE_ONLY_GATE_DEFINITION_AUDIT_NO_RESULT_NO_THRESHOLD_CHANGE",
+  "fresh_parent_head":"6d1f1c349ba39797cf777cf8ca47607d6d320170",
+  "gate_prespec":"KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+  "gate_prespec_git_blob":"107bc07bbaca5b73351ae190ca368b9b57702077",
+  "identifiability_lock":"KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
+  "finding":"The frozen gate requires at least 2 distinct calendar blocks per circumference, but no authoritative granularity rule defining a calendar block (for example day, week, meet, month, or other partition) was found in the searched research-candidate state, gate prespec, identifiability/final-eval lock, or repository filenames/tree references examined in this audit.",
+  "decision":"DO_NOT_INVENT_OR_INFER_CALENDAR_BLOCK_GRANULARITY",
+  "permitted_evaluation":"Known unambiguous dimensions may be computed. Calendar-block dimensions remain UNKNOWN_UNDEFINED_FROZEN_GRANULARITY. Full gate PASS is prohibited while the definition remains unresolved.",
+  "threshold_lowering_authorized":false,
+  "result_accessed":false,
+  "result_join_authorized":false,
+  "formula_fit_authorized":false,
+  "support_increment_authorized_now":0,
+  "main_or_runtime_mutation":false,
+  "owner_action_required_now":false
+}
