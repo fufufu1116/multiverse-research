@@ -1,0 +1,33 @@
+{
+  "record":"KEIRIN_SUPPORT_PROVENANCE_VALIDATOR_IMPLEMENTATION_AUDIT_20260907_v1",
+  "status":"IMPLEMENTED_STATIC_BINDING_REVIEWED_EXECUTION_NOT_YET_EVIDENCED",
+  "scope":"RESEARCH_PRE_ONLY_FULL_PROVENANCE_VALIDATION_NO_SUPPORT_AUTO_AUTHORITY",
+  "parent_head_before_implementation":"c012f4f6541dbd7f4c8f210ae5e57012b86751ca",
+  "implementation_commit":"967a4a86f9afef8a687461af2df230a1ebfaa6a8",
+  "tool":"tools/keirin_support_provenance_validator_v1.py",
+  "tool_git_blob":"5f0b49a83b619b8ac474891cfbd086f48b0f054e",
+  "prespec":"KEIRIN_SUPPORT_RECEIPT_DUPLICATE_PROVENANCE_PRESPEC_20260906_v1.json",
+  "prespec_git_blob":"26a0fedd2a8b1a000b8bdba294c4e9a47f704e54",
+  "implemented_guards":[
+    "PRE event binding must be exact Day1 with race_date and venue",
+    "PRE capture timestamp must precede the bound PIT cutoff",
+    "official same-race assignment status must be exact-pass and captured before the same cutoff",
+    "assignment expected event must match PRE event",
+    "observed same-race exact-match flag must be true when emitted",
+    "official registration number must be six digits and can be externally bound",
+    "PRE and assignment source SHA256 values are mandatory",
+    "PRE and assignment PIT cutoff values must match exactly",
+    "RESULT/payout/odds/forecast positive flags fail closed",
+    "tool never authorizes support increment"
+  ],
+  "explicit_boundary":"The validator joins already-captured PRE evidence and official same-race assignment evidence. It does not create either source, does not reconstruct PRE after cutoff, does not guess race IDs, and does not authorize support by itself. A PASS record is only ready for the duplicate-safe receipt guard/builder layer.",
+  "selftest_embedded":true,
+  "selftest_execution_evidence":"NOT_RUN_BY_GITHUB_CONNECTOR_IN_THIS_AUDIT",
+  "ito_0907_current_use":"NOT_RUN_BECAUSE_KEIRIN.JP_SAME_RACE_ASSIGNMENT_IS_NOT_POSITIVE_YET",
+  "support_increment_authorized_now":0,
+  "result_accessed":false,
+  "result_join_authorized":false,
+  "formula_fit_authorized":false,
+  "main_or_runtime_mutation":false,
+  "owner_action_required_now":false
+}
