@@ -1,0 +1,85 @@
+steps:
+  - label: ":compass: Fixed Independent Lab Dispatcher v1"
+    key: "multiverse-fixed-independent-lab-dispatcher-v1"
+
+    agents:
+      queue: "independent-lab"
+
+    command: |
+      set -euo pipefail
+
+      git fetch origin main
+      DISPATCHER_REF="$(git rev-parse origin/main)"
+      export MULTIVERSE_DISPATCHER_REF="$DISPATCHER_REF"
+
+      rm -rf .mv_dispatcher
+      mkdir -p .mv_dispatcher
+
+      git archive "$DISPATCHER_REF" automation/review_dispatcher_v1 \
+        | tar -x -C .mv_dispatcher
+
+      tar -czf review_dispatcher_bundle.tgz \
+        -C .mv_dispatcher automation/review_dispatcher_v1
+
+      PYTHONPATH=.mv_dispatcher \
+        python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+        --lane LAB \
+        --repo fufufu1116/multiverse-research \
+        --head "$BUILDKITE_COMMIT" \
+        --output review_job.json
+
+      PYTHONPATH=.mv_dispatcher \
+        python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
+        --job review_job.json \
+        --output review_artifact.json \
+        --repo-root .
+
+      buildkite-agent artifact upload \
+        "review_dispatcher_bundle.tgz"
+
+      buildkite-agent artifact upload \
+        "review_job.json"
+
+      buildkite-agent artifact upload \
+        "review_artifact.json"
+
+  - wait
+
+  - label: ":github: Publish Fixed Independent Lab Result v1"
+    key: "multiverse-fixed-independent-lab-publish-v1"
+
+    agents:
+      queue: "independent-lab"
+
+    checkout:
+      skip: true
+
+    secrets:
+      - MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY
+
+    command: |
+      set -euo pipefail
+
+      buildkite-agent artifact download \
+        "review_dispatcher_bundle.tgz" .
+
+      buildkite-agent artifact download \
+        "review_job.json" .
+
+      buildkite-agent artifact download \
+        "review_artifact.json" .
+
+      rm -rf .mv_dispatcher
+      mkdir -p .mv_dispatcher
+
+      tar -xzf review_dispatcher_bundle.tgz \
+        -C .mv_dispatcher
+
+      PYTHONPATH=.mv_dispatcher \
+        python3 .mv_dispatcher/automation/review_dispatcher_v1/publisher.py \
+        --job review_job.json \
+        --artifact review_artifact.json \
+        --receipt review_publish_receipt.json
+
+      buildkite-agent artifact upload \
+        "review_publish_receipt.json"
