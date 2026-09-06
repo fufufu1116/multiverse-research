@@ -1,0 +1,682 @@
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import time
+import unittest
+import urllib.error
+import urllib.request
+from pathlib import Path
+from typing import Any, Callable
+
+from automation.review_dispatcher_v1.model import (
+    AUDITOR_APP_ID,
+    AUDITOR_LOGIN,
+    LAB_APP_ID,
+    LAB_LOGIN,
+    RESULT_SCHEMA,
+    ReviewContractError,
+    canonical_json,
+    dotted_get,
+    require,
+    validate_request,
+)
+
+ARTIFACT_SCHEMA = "MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1"
+
+
+def github_get(url: str) -> Any:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "multiverse-fixed-review-runner-v1",
+        },
+    )
+    with urllib.request.urlopen(req, timeout=30) as response:
+        return json.load(response)
+
+
+def endpoint(
+    base_url: str,
+    method: str,
+    path: str,
+    *,
+    attempts: int = 6,
+) -> tuple[int, Any]:
+    last: Any = None
+    for attempt in range(attempts):
+        req = urllib.request.Request(
+            base_url + path,
+            method=method,
+            headers={
+                "Accept": "application/json",
+                "User-Agent": "multiverse-fixed-review-runner-v1",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=45) as response:
+                raw = response.read().decode()
+                return response.status, json.loads(raw)
+        except urllib.error.HTTPError as exc:
+            raw = exc.read().decode()
+            try:
+                payload = json.loads(raw)
+            except Exception:
+                payload = {"raw": raw}
+            if (
+                exc.code in (502, 503, 504)
+                and attempt + 1 < attempts
+            ):
+                last = (exc.code, payload)
+                time.sleep(3)
+                continue
+            return exc.code, payload
+        except Exception as exc:
+            last = repr(exc)
+            if attempt + 1 < attempts:
+                time.sleep(3)
+                continue
+            raise
+    raise RuntimeError(f"HTTP_RETRIES_EXHAUSTED:{last!r}")
+
+
+def _fresh_binding(
+    job: dict[str, Any],
+    fetch: Callable[[str], Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    repo = job["repo"]
+    pr_number = job["pr"]
+    head = job["head"]
+    tree = job["tree"]
+    base = job["base"]
+    main = job["main"]
+
+    pr = fetch(
+        f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+    )
+    commit = fetch(
+        f"https://api.github.com/repos/{repo}/commits/{head}"
+    )
+    main_obj = fetch(
+        f"https://api.github.com/repos/{repo}/branches/main"
+    )
+
+    def check(name: str, condition: bool, detail: str) -> None:
+        if condition:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: {detail}")
+
+    check(
+        "fresh_pr_head",
+        pr["head"]["sha"] == head,
+        repr(pr["head"]["sha"]),
+    )
+    check(
+        "fresh_pr_tree",
+        commit["commit"]["tree"]["sha"] == tree,
+        repr(commit["commit"]["tree"]["sha"]),
+    )
+    check(
+        "fresh_pr_base",
+        pr["base"]["sha"] == base,
+        repr(pr["base"]["sha"]),
+    )
+    check(
+        "fresh_main",
+        main_obj["commit"]["sha"] == main,
+        repr(main_obj["commit"]["sha"]),
+    )
+    check(
+        "pr_open",
+        pr["state"] == "open",
+        repr(pr["state"]),
+    )
+    check(
+        "pr_draft",
+        pr["draft"] is True,
+        repr(pr["draft"]),
+    )
+    check(
+        "pr_unmerged",
+        pr["merged"] is False,
+        repr(pr["merged"]),
+    )
+
+
+def _check_secret_environment(
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    forbidden = (
+        "DATABASE_URL",
+        "RENDER_API_KEY",
+        "MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY",
+        "MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY",
+    )
+    for name in forbidden:
+        if os.environ.get(name):
+            checks[f"secret_env_absent:{name}"] = "FIX_REQUIRED"
+            findings.append(f"secret_env_absent:{name}: value present")
+        else:
+            checks[f"secret_env_absent:{name}"] = "PASS"
+
+
+def _check_subtrees(
+    job: dict[str, Any],
+    fetch: Callable[[str], Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    expected = job["request"]["recipe"]["subtrees"]
+    if not expected:
+        return
+    tree = fetch(
+        f"https://api.github.com/repos/{job['repo']}/git/trees/{job['tree']}?recursive=1"
+    )
+    actual = {
+        item["path"]: item["sha"]
+        for item in tree.get("tree", [])
+    }
+    for path, sha in expected.items():
+        name = f"subtree:{path}"
+        if actual.get(path) == sha:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(
+                f"{name}: {actual.get(path)!r} != {sha!r}"
+            )
+
+
+def _check_comments(
+    job: dict[str, Any],
+    fetch: Callable[[str], Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    for rule in job["request"]["recipe"]["durable_comments"]:
+        cid = rule["id"]
+        comment = fetch(
+            f"https://api.github.com/repos/{job['repo']}/issues/comments/{cid}"
+        )
+        login = (comment.get("user") or {}).get("login")
+        app_slug = (
+            (comment.get("performed_via_github_app") or {}).get("slug")
+        )
+        body = comment.get("body") or ""
+
+        if rule["login"] is not None:
+            name = f"comment:{cid}:login"
+            if login == rule["login"]:
+                checks[name] = "PASS"
+            else:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(
+                    f"{name}: {login!r} != {rule['login']!r}"
+                )
+
+        if rule["app_slug"] is not None:
+            name = f"comment:{cid}:app_slug"
+            if app_slug in (None, rule["app_slug"]):
+                checks[name] = "PASS"
+            else:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(
+                    f"{name}: {app_slug!r} != {rule['app_slug']!r}"
+                )
+
+        for token in rule["body_contains"]:
+            name = f"comment:{cid}:contains:{token[:24]}"
+            if token in body:
+                checks[name] = "PASS"
+            else:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(f"{name}: missing token")
+
+
+def _check_source_rules(
+    repo_root: Path,
+    job: dict[str, Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    for rule in job["request"]["recipe"]["source_rules"]:
+        path = repo_root / rule["path"]
+        name = f"source_exists:{rule['path']}"
+        if path.is_file():
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: missing")
+            continue
+
+        text = path.read_text()
+
+        for token in rule["contains"]:
+            key = f"source_contains:{rule['path']}:{token[:20]}"
+            if token in text:
+                checks[key] = "PASS"
+            else:
+                checks[key] = "FIX_REQUIRED"
+                findings.append(f"{key}: missing")
+
+        for token in rule["not_contains"]:
+            key = f"source_not_contains:{rule['path']}:{token[:20]}"
+            if token not in text:
+                checks[key] = "PASS"
+            else:
+                checks[key] = "FIX_REQUIRED"
+                findings.append(f"{key}: found")
+
+
+def _run_unittests(
+    job: dict[str, Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> int:
+    total = 0
+    for rule in job["request"]["recipe"]["unittest_modules"]:
+        module = rule["module"]
+        suite = unittest.defaultTestLoader.loadTestsFromName(module)
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        count = result.testsRun
+        total += count
+
+        name = f"unittest_count:{module}"
+        if count == rule["count"]:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(
+                f"{name}: {count} != {rule['count']}"
+            )
+
+        name = f"unittest_result:{module}"
+        if result.wasSuccessful():
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(
+                f"{name}: failures={len(result.failures)} errors={len(result.errors)}"
+            )
+    return total
+
+
+def _run_validators(
+    repo_root: Path,
+    job: dict[str, Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    for rule in job["request"]["recipe"]["validators"]:
+        path = repo_root / rule["path"]
+        name = f"validator_exit:{rule['path']}"
+        proc = subprocess.run(
+            [sys.executable, str(path)],
+            cwd=str(repo_root),
+            text=True,
+            capture_output=True,
+        )
+        if proc.stdout:
+            print(proc.stdout)
+        if proc.stderr:
+            print(proc.stderr, file=sys.stderr)
+
+        if proc.returncode == 0:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(
+                f"{name}: exit={proc.returncode}"
+            )
+            continue
+
+        try:
+            lines = [
+                line
+                for line in proc.stdout.splitlines()
+                if line.strip()
+            ]
+            payload = json.loads(lines[-1])
+        except Exception as exc:
+            checks[f"validator_json:{rule['path']}"] = "FIX_REQUIRED"
+            findings.append(
+                f"validator_json:{rule['path']}: {exc!r}"
+            )
+            continue
+
+        checks[f"validator_json:{rule['path']}"] = "PASS"
+
+        for dotted, expected in rule["expect"].items():
+            name = f"validator_expect:{rule['path']}:{dotted}"
+            try:
+                actual = dotted_get(payload, dotted)
+            except Exception as exc:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(f"{name}: {exc}")
+                continue
+
+            if actual == expected:
+                checks[name] = "PASS"
+            else:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(
+                    f"{name}: {actual!r} != {expected!r}"
+                )
+
+
+def _scan_secrets(
+    repo_root: Path,
+    job: dict[str, Any],
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    paths = job["request"]["recipe"]["secret_scan_paths"]
+    patterns = job["request"]["recipe"]["forbidden_patterns"]
+    for rel in paths:
+        path = repo_root / rel
+        if not path.is_file():
+            checks[f"secret_scan_exists:{rel}"] = "FIX_REQUIRED"
+            findings.append(f"secret_scan_exists:{rel}: missing")
+            continue
+        checks[f"secret_scan_exists:{rel}"] = "PASS"
+        text = path.read_text()
+        for pattern in patterns:
+            name = f"secret_scan:{rel}:{pattern[:20]}"
+            if pattern not in text:
+                checks[name] = "PASS"
+            else:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(f"{name}: forbidden pattern found")
+
+
+def _check_json_equals(
+    payload: Any,
+    expected: dict[str, Any],
+    prefix: str,
+    checks: dict[str, str],
+    findings: list[str],
+) -> None:
+    for dotted, value in expected.items():
+        name = f"{prefix}:{dotted}"
+        try:
+            actual = dotted_get(payload, dotted)
+        except Exception as exc:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: {exc}")
+            continue
+
+        if actual == value:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(
+                f"{name}: {actual!r} != {value!r}"
+            )
+
+
+def _run_http(
+    job: dict[str, Any],
+    checks: dict[str, str],
+    findings: list[str],
+    endpoint_fn: Callable[..., tuple[int, Any]],
+) -> dict[str, str]:
+    http = job["request"]["recipe"]["http"]
+    if http is None:
+        return {}
+
+    base_url = http["base_url"]
+    digests: dict[str, str] = {}
+    captured_payloads: dict[str, Any] = {}
+
+    for rule in http["get"]:
+        status, payload = endpoint_fn(
+            base_url,
+            "GET",
+            rule["path"],
+        )
+        name = f"http_get_status:{rule['path']}"
+        if status == rule["status"]:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(
+                f"{name}: {status} != {rule['status']}"
+            )
+
+        _check_json_equals(
+            payload,
+            rule["json_equals"],
+            f"http_get_json:{rule['path']}",
+            checks,
+            findings,
+        )
+        captured_payloads[rule["path"]] = payload
+
+        capture = rule["capture_digest_as"]
+        if capture is not None:
+            digests[capture] = hashlib.sha256(
+                canonical_json(payload).encode()
+            ).hexdigest()
+
+    deny = http["deny"]
+    evidence_path = deny["evidence_unchanged_path"]
+
+    before = captured_payloads.get(evidence_path)
+    if before is None:
+        status, before = endpoint_fn(
+            base_url,
+            "GET",
+            evidence_path,
+        )
+        if status != 200:
+            findings.append(
+                f"http_evidence_before:{evidence_path}: status={status}"
+            )
+            checks[
+                f"http_evidence_before:{evidence_path}"
+            ] = "FIX_REQUIRED"
+        else:
+            checks[
+                f"http_evidence_before:{evidence_path}"
+            ] = "PASS"
+
+    for method in deny["methods"]:
+        status, payload = endpoint_fn(
+            base_url,
+            method,
+            deny["path"],
+            attempts=1,
+        )
+        name = f"http_deny_status:{method}:{deny['path']}"
+        if status == deny["status"]:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(
+                f"{name}: {status} != {deny['status']}"
+            )
+
+        _check_json_equals(
+            payload,
+            deny["json_equals"],
+            f"http_deny_json:{method}:{deny['path']}",
+            checks,
+            findings,
+        )
+
+    status, after = endpoint_fn(
+        base_url,
+        "GET",
+        evidence_path,
+    )
+    if status == 200:
+        checks[
+            f"http_evidence_after:{evidence_path}"
+        ] = "PASS"
+    else:
+        checks[
+            f"http_evidence_after:{evidence_path}"
+        ] = "FIX_REQUIRED"
+        findings.append(
+            f"http_evidence_after:{evidence_path}: status={status}"
+        )
+
+    if after == before:
+        checks["http_evidence_unchanged_after_denied_methods"] = "PASS"
+    else:
+        checks[
+            "http_evidence_unchanged_after_denied_methods"
+        ] = "FIX_REQUIRED"
+        findings.append(
+            "http_evidence_unchanged_after_denied_methods: changed"
+        )
+
+    return digests
+
+
+def run_review(
+    job: dict[str, Any],
+    *,
+    repo_root: Path,
+    fetch: Callable[[str], Any] = github_get,
+    endpoint_fn: Callable[..., tuple[int, Any]] = endpoint,
+) -> dict[str, Any]:
+    require(job.get("schema") == "MULTIVERSE_FIXED_REVIEW_JOB_v1", "JOB_SCHEMA")
+    request = job["request"]
+    validate_request(request)
+
+    require(job["lane"] == request["lane"], "JOB_REQUEST_LANE")
+    require(job["repo"] == request["repo"], "JOB_REQUEST_REPO")
+    require(job["pr"] == request["pr"], "JOB_REQUEST_PR")
+    require(job["head"] == request["head"], "JOB_REQUEST_HEAD")
+    require(job["tree"] == request["tree"], "JOB_REQUEST_TREE")
+    require(job["base"] == request["base"], "JOB_REQUEST_BASE")
+    require(job["main"] == request["main"], "JOB_REQUEST_MAIN")
+
+    checks: dict[str, str] = {}
+    findings: list[str] = []
+
+    buildkite_commit = os.environ.get("BUILDKITE_COMMIT", "")
+    local_head = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(repo_root),
+        text=True,
+    ).strip()
+
+    if buildkite_commit == job["head"]:
+        checks["buildkite_commit_exact"] = "PASS"
+    else:
+        checks["buildkite_commit_exact"] = "FIX_REQUIRED"
+        findings.append(
+            f"buildkite_commit_exact: {buildkite_commit!r} != {job['head']!r}"
+        )
+
+    if local_head == job["head"]:
+        checks["local_head_exact"] = "PASS"
+    else:
+        checks["local_head_exact"] = "FIX_REQUIRED"
+        findings.append(
+            f"local_head_exact: {local_head!r} != {job['head']!r}"
+        )
+
+    _check_secret_environment(checks, findings)
+    _fresh_binding(job, fetch, checks, findings)
+    _check_subtrees(job, fetch, checks, findings)
+    _check_comments(job, fetch, checks, findings)
+    _check_source_rules(repo_root, job, checks, findings)
+    test_count = _run_unittests(job, checks, findings)
+    _run_validators(repo_root, job, checks, findings)
+    _scan_secrets(repo_root, job, checks, findings)
+    digests = _run_http(job, checks, findings, endpoint_fn)
+
+    verdict = "PASS" if not findings else "FIX_REQUIRED"
+
+    if job["lane"] == "LAB":
+        producer_login = LAB_LOGIN
+        producer_app_id = LAB_APP_ID
+    else:
+        producer_login = AUDITOR_LOGIN
+        producer_app_id = AUDITOR_APP_ID
+
+    artifact = {
+        "schema_version": ARTIFACT_SCHEMA,
+        "result_schema": RESULT_SCHEMA,
+        "lane": job["lane"],
+        "request_id": job["request_id"],
+        "request_comment": job["request_comment"],
+        "reviewed_repo": job["repo"],
+        "reviewed_pr": job["pr"],
+        "reviewed_head": job["head"],
+        "reviewed_tree": job["tree"],
+        "reviewed_base": job["base"],
+        "reviewed_main": job["main"],
+        "mode": request["mode"],
+        "proof_ceiling": request["proof_ceiling"],
+        "execution_state": request["execution_state"],
+        "dispatcher_ref": job.get("dispatcher_ref", ""),
+        "upstream": request["upstream"],
+        "digests": digests,
+        "test_count": test_count,
+        "checks": checks,
+        "findings": findings,
+        "verdict": verdict,
+        "producer": {
+            "github_login": producer_login,
+            "github_app_id": producer_app_id,
+            "build_id": os.environ.get("BUILDKITE_BUILD_ID"),
+            "build_number": os.environ.get("BUILDKITE_BUILD_NUMBER"),
+            "build_branch": os.environ.get("BUILDKITE_BRANCH"),
+            "build_commit": buildkite_commit,
+        },
+        "nonauthority": request["nonauthority"],
+    }
+    return artifact
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--job", default="review_job.json")
+    parser.add_argument("--output", default="review_artifact.json")
+    parser.add_argument("--repo-root", default=".")
+    args = parser.parse_args()
+
+    job = json.loads(Path(args.job).read_text())
+    artifact = run_review(
+        job,
+        repo_root=Path(args.repo_root).resolve(),
+    )
+    Path(args.output).write_text(
+        json.dumps(
+            artifact,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+    print(json.dumps(artifact, indent=2, sort_keys=True))
+
+    if artifact["verdict"] != "PASS":
+        print("FIX_REQUIRED")
+        return 1
+
+    print("PASS")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except ReviewContractError as exc:
+        print(f"REVIEW_FIX_REQUIRED:{exc}")
+        raise SystemExit(1)
