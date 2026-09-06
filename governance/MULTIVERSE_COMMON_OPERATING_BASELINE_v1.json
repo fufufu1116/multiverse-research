@@ -1,0 +1,62 @@
+{
+  "schema": "MULTIVERSE_COMMON_OPERATING_BASELINE_v1",
+  "status": "CANDIDATE_NOT_YET_ADOPTED",
+  "baseline_version": "2026-09-07.review-dispatcher-v1",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "migration_issue": 152,
+  "convergence_issue": 93,
+  "precedence": [
+    "fresh_canonical_github",
+    "latest_adopted_common_operating_baseline",
+    "durable_current_lane_artifacts",
+    "chat_memory_or_handoff"
+  ],
+  "resume_contract": {
+    "fresh_read_required": true,
+    "read_convergence_issue_93": true,
+    "consume_latest_adopted_common_baseline": true,
+    "stale_local_common_procedure_must_yield": true,
+    "domain_specific_research_context_remains_local": true
+  },
+  "common_interfaces": {
+    "candidate_intake": "single_adoption_intake",
+    "review_submission": "durable_machine_readable_request",
+    "independent_lab": "fixed_shared_dispatcher_after_installation",
+    "independent_auditor": "fixed_shared_dispatcher_after_installation",
+    "owner_courier": "not_required_for_routine_review_yaml",
+    "self_adoption": false
+  },
+  "shared_pipeline_policy": {
+    "during_migration": "single_writer_control_plane_only",
+    "after_installation": "immutable_shared_pipeline_definition",
+    "per_chat_step_replacement": "deprecated_after_installation",
+    "per_job_binding_source": "exact_github_review_request"
+  },
+  "review_request": {
+    "schema": "MULTIVERSE_REVIEW_REQUEST_v1",
+    "arbitrary_shell_allowed": false,
+    "arbitrary_yaml_allowed": false,
+    "arbitrary_python_allowed": false,
+    "provider_credentials_allowed": false,
+    "database_credentials_allowed": false,
+    "exact_repo_pr_head_tree_base_main_required": true
+  },
+  "migration_lock": {
+    "active_until_fixed_pipeline_installation_proved": true,
+    "source_comment": 5561567913,
+    "existing_review_requests_preserved": true
+  },
+  "nonauthority": {
+    "merge": false,
+    "main_mutation": false,
+    "ruleset_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "runtime_activation": false,
+    "provider_mutation": false,
+    "production": false,
+    "protected_data": false,
+    "live_business_effect": false,
+    "spend": false
+  },
+  "runtime": "OFF"
+}
