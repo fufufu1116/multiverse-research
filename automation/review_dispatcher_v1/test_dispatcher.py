@@ -220,7 +220,7 @@ class DispatcherTests(unittest.TestCase):
             {
                 "id": 20,
                 "body": request_body(second),
-                "user": {"login": "controller"},
+                "user": {"login": "fufufu1116"},
             },
         ]
 
@@ -249,12 +249,12 @@ class DispatcherTests(unittest.TestCase):
             {
                 "id": 10,
                 "body": request_body(auditor),
-                "user": {"login": "controller"},
+                "user": {"login": "fufufu1116"},
             },
             {
                 "id": 11,
                 "body": request_body(lab),
-                "user": {"login": "controller"},
+                "user": {"login": "fufufu1116"},
             },
         ]
 
@@ -279,7 +279,7 @@ class DispatcherTests(unittest.TestCase):
             {
                 "id": request_comment,
                 "body": request_body(request),
-                "user": {"login": "controller"},
+                "user": {"login": "fufufu1116"},
             },
             {
                 "id": 30,
@@ -307,7 +307,7 @@ class DispatcherTests(unittest.TestCase):
             {
                 "id": 10,
                 "body": request_body(request),
-                "user": {"login": "controller"},
+                "user": {"login": "fufufu1116"},
             }
         ]
 
@@ -350,9 +350,9 @@ class HardeningTests(unittest.TestCase):
         second = [{"id": 100}]
 
         def fake_fetch(url: str):
-            if "page=1" in url:
+            if url.endswith("page=1"):
                 return first
-            if "page=2" in url:
+            if url.endswith("page=2"):
                 return second
             raise AssertionError(url)
 
