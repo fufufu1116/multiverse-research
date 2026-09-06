@@ -1,0 +1,24 @@
+{
+  "record":"KEIRIN_SAME_RACE_ASSIGNMENT_HARDENING_AUDIT_20260906_v1",
+  "status":"PASS_RESEARCH_TOOLING_HARDENED_NO_SUPPORT_INCREMENT",
+  "audited_head_before_write":"52621c3a25f71368a53a9c98d8ad536e048c962e",
+  "findings":[
+    {"issue":"TRANSITIVE_IDENTITY_LOCATOR_UNPINNED_IN_V1","severity":"MATERIAL_TOOLING_DRIFT_RISK","resolution":"keirinjp_same_race_assignment_probe_v2.py pins v1 probe and identity locator v3 blobs before use"},
+    {"issue":"V1_EVENT_FIELDS_MATCHED_INDEPENDENTLY_ACROSS_CURRENT_RACE_SECTION","severity":"AMBIGUOUS_STRUCTURAL_CORROBORATION_RISK","resolution":"v2 requires venue/date/race_no to co-occur in exactly one bounded current-race text fragment"}
+  ],
+  "bindings":{
+    "same_race_probe_v1_blob":"01b6a024e190142bab3bd8bc723193e145899459",
+    "identity_locator_v3_blob":"c97d1d7c736e8cd778029446ffc704a684d4938e",
+    "same_race_probe_v2_blob":"71849c756c90365a1942c3af205b3a61fddbb0e1",
+    "nara_batch_v1_blob":"f59a266a9d0382baf65891c8e61e96e52c8acc04",
+    "nara_batch_v2_blob":"e39ad0c1ab9d2b0b776759719d7d6e34ed0008b6"
+  },
+  "tools_added":["tools/keirinjp_same_race_assignment_probe_v2.py","tools/keirin_sep10_nara_same_race_assignment_batch_v2.py"],
+  "support_increment_authorized_now":0,
+  "support_receipt_authorized_now":false,
+  "result_accessed":false,
+  "result_join_authorized":false,
+  "formula_fit_authorized":false,
+  "main_or_runtime_mutation":false,
+  "owner_action_required_now":false
+}
