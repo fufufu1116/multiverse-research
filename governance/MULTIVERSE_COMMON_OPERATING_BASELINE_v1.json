@@ -30,7 +30,7 @@
     "during_migration": "single_writer_control_plane_only",
     "after_installation": "immutable_shared_pipeline_definition",
     "per_chat_step_replacement": "deprecated_after_installation",
-    "per_job_binding_source": "exact_github_review_request"
+    "per_job_binding_source": "exact_github_review_request_plus_request_sha256"
   },
   "review_request": {
     "schema": "MULTIVERSE_REVIEW_REQUEST_v1",
@@ -39,7 +39,11 @@
     "arbitrary_python_allowed": false,
     "provider_credentials_allowed": false,
     "database_credentials_allowed": false,
-    "exact_repo_pr_head_tree_base_main_required": true
+    "exact_repo_pr_head_tree_base_main_required": true,
+    "request_sha256_required": true,
+    "same_head_supersession": "explicit_immediate_predecessor_sha256_chain",
+    "silent_newest_wins": false,
+    "auditor_upstream_lab_request_sha256_required": true
   },
   "migration_lock": {
     "active_until_fixed_pipeline_installation_proved": true,

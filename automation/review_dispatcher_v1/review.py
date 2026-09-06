@@ -35,6 +35,7 @@ from automation.review_dispatcher_v1.model import (
     resolve_public_https_target,
     result_marker,
     safe_repo_path,
+    sha256_json,
     validate_request,
 )
 
@@ -364,11 +365,21 @@ def _check_auditor_upstream(
             == job["request"]["execution_state"],
             repr(latest_lab_request["execution_state"]),
         )
+        latest_lab_request_sha256 = sha256_json(latest_lab_request)
+        check(
+            "upstream_lab_request_sha256",
+            upstream["lab_request_sha256"] == latest_lab_request_sha256,
+            (
+                f"{upstream['lab_request_sha256']!r} "
+                f"!= {latest_lab_request_sha256!r}"
+            ),
+        )
     except Exception as exc:
         checks["upstream_latest_lab_request"] = "FIX_REQUIRED"
         findings.append(f"upstream_latest_lab_request: {exc}")
         latest_lab_request_id = -1
         latest_lab_request = {}
+        latest_lab_request_sha256 = ""
 
     lab_comment = fetch(
         f"https://api.github.com/repos/{job['repo']}/issues/comments/{lab_comment_id}"
@@ -402,6 +413,7 @@ def _check_auditor_upstream(
             "lane": "LAB",
             "request_id": latest_lab_request.get("request_id"),
             "request_comment": latest_lab_request_id,
+            "request_sha256": latest_lab_request_sha256,
             "mode": latest_lab_request.get("mode"),
             "verdict": "PASS",
             "findings": [],
@@ -437,6 +449,7 @@ def _check_auditor_upstream(
             latest_lab_request.get("request_id", ""),
             job["head"],
             latest_lab_request_id,
+            latest_lab_request_sha256,
         )
         authentic_result_ids = [
             int(item["id"])
@@ -461,6 +474,7 @@ def _check_auditor_upstream(
     t1_body = t1_comment.get("body") or ""
     for label, token in (
         ("lab_comment", str(lab_comment_id)),
+        ("lab_request_sha256", latest_lab_request_sha256),
         ("head", job["head"]),
         ("tree", job["tree"]),
         ("base", job["base"]),
@@ -886,6 +900,10 @@ def run_review(
     require(job.get("schema") == "MULTIVERSE_FIXED_REVIEW_JOB_v1", "JOB_SCHEMA")
     request = job["request"]
     validate_request(request)
+    require(
+        job.get("request_sha256") == sha256_json(request),
+        "JOB_REQUEST_SHA256",
+    )
 
     require(job["lane"] == request["lane"], "JOB_REQUEST_LANE")
     require(job["repo"] == request["repo"], "JOB_REQUEST_REPO")
@@ -947,6 +965,7 @@ def run_review(
         "lane": job["lane"],
         "request_id": job["request_id"],
         "request_comment": job["request_comment"],
+        "request_sha256": job["request_sha256"],
         "reviewed_repo": job["repo"],
         "reviewed_pr": job["pr"],
         "reviewed_head": job["head"],

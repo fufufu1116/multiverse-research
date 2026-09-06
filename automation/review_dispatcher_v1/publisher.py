@@ -23,6 +23,7 @@ from automation.review_dispatcher_v1.model import (
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
     result_marker,
+    sha256_json,
     validate_request,
 )
 
@@ -105,6 +106,10 @@ def _fresh_verify(job: dict[str, Any]) -> list[dict[str, Any]]:
     validate_request(parsed)
     require(parsed == job["request"], "REQUEST_COMMENT_DRIFT")
     require(
+        job.get("request_sha256") == sha256_json(parsed),
+        "REQUEST_SHA256_DRIFT",
+    )
+    require(
         issue_comment_owner_trusted(request_comment, repo),
         "REQUEST_COMMENT_PRODUCER_NOT_OWNER",
     )
@@ -136,6 +141,10 @@ def publish(
     require(
         artifact.get("request_comment") == job["request_comment"],
         "ARTIFACT_REQUEST_COMMENT",
+    )
+    require(
+        artifact.get("request_sha256") == job["request_sha256"],
+        "ARTIFACT_REQUEST_SHA256",
     )
     require(
         artifact.get("reviewed_repo") == job["repo"],
@@ -179,6 +188,7 @@ def publish(
         job["request_id"],
         job["head"],
         job["request_comment"],
+        job["request_sha256"],
     )
     for comment in comments:
         if (
@@ -226,6 +236,7 @@ def publish(
             ),
             f"REQUEST_ID: {job['request_id']}",
             f"REQUEST_COMMENT: {job['request_comment']}",
+            f"REQUEST_SHA256: {job['request_sha256']}",
             f"REVIEWED_HEAD: {job['head']}",
             f"REVIEWED_TREE: {job['tree']}",
             f"REVIEWED_BASE: {job['base']}",
@@ -255,6 +266,7 @@ def publish(
         "lane": lane,
         "request_id": job["request_id"],
         "request_comment": job["request_comment"],
+        "request_sha256": job["request_sha256"],
         "reviewed_head": job["head"],
         "reviewed_tree": job["tree"],
         "reviewed_main": job["main"],

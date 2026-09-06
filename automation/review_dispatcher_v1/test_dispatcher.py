@@ -20,6 +20,7 @@ from automation.review_dispatcher_v1.model import (
     latest_exact_current_owner_request,
     resolve_public_https_target,
     result_marker,
+    sha256_json,
     validate_request,
     validate_public_https_url,
 )
@@ -78,6 +79,7 @@ def lab_request(request_id: str = "test-lab-request") -> dict:
         "main": SHA_D,
         "proof_ceiling": "TEST_ONLY",
         "execution_state": "TEST_REQUESTED",
+        "supersedes_request_sha256": None,
         "recipe": base_recipe(),
         "upstream": {},
         "nonauthority": nonauthority(),
@@ -106,6 +108,7 @@ class ModelTests(unittest.TestCase):
         request["lane"] = "AUDITOR"
         request["upstream"] = {
             "lab_pass_comment": 123,
+            "lab_request_sha256": "f" * 64,
             "t1_comment": 456,
         }
         self.assertEqual(validate_request(request), request)
@@ -226,6 +229,7 @@ class DispatcherTests(unittest.TestCase):
     def test_08_discover_latest_exact_request(self):
         first = lab_request("first-request")
         second = lab_request("second-request")
+        second["supersedes_request_sha256"] = sha256_json(first)
 
         comments = [
             {
@@ -258,6 +262,7 @@ class DispatcherTests(unittest.TestCase):
         auditor["lane"] = "AUDITOR"
         auditor["upstream"] = {
             "lab_pass_comment": 100,
+            "lab_request_sha256": "f" * 64,
             "t1_comment": 101,
         }
 
@@ -289,6 +294,7 @@ class DispatcherTests(unittest.TestCase):
             request["request_id"],
             request["head"],
             request_comment,
+            sha256_json(request),
         )
 
         comments = [
@@ -440,11 +446,13 @@ class HardeningTests(unittest.TestCase):
     def test_16_auditor_upstream_requires_latest_exact_lab_and_owner_t1(self):
         auditor_request = lab_request("auditor-upstream")
         auditor_request["lane"] = "AUDITOR"
+        latest_lab = lab_request("latest-lab")
+        latest_lab_sha256 = sha256_json(latest_lab)
         auditor_request["upstream"] = {
             "lab_pass_comment": 123,
+            "lab_request_sha256": latest_lab_sha256,
             "t1_comment": 456,
         }
-        latest_lab = lab_request("latest-lab")
         latest_lab_comment_id = 111
 
         job = {
@@ -463,6 +471,7 @@ class HardeningTests(unittest.TestCase):
             "lane": "LAB",
             "request_id": latest_lab["request_id"],
             "request_comment": latest_lab_comment_id,
+            "request_sha256": latest_lab_sha256,
             "mode": latest_lab["mode"],
             "verdict": "PASS",
             "findings": [],
@@ -483,6 +492,7 @@ class HardeningTests(unittest.TestCase):
             latest_lab["request_id"],
             auditor_request["head"],
             latest_lab_comment_id,
+            latest_lab_sha256,
         )
         fence = chr(96) * 3
         lab_body = "\n".join(
@@ -497,6 +507,7 @@ class HardeningTests(unittest.TestCase):
             [
                 "T1 PASS",
                 "123",
+                latest_lab_sha256,
                 auditor_request["head"],
                 auditor_request["tree"],
                 auditor_request["base"],
@@ -685,6 +696,7 @@ class HardeningTests(unittest.TestCase):
     def test_22_latest_exact_current_owner_request_selects_newest(self):
         first = lab_request("first")
         second = lab_request("second")
+        second["supersedes_request_sha256"] = sha256_json(first)
         comments = [
             {
                 "id": 10,
@@ -734,6 +746,102 @@ class HardeningTests(unittest.TestCase):
         ):
             with self.assertRaises(ReviewContractError):
                 resolve_public_https_target("https://example.com")
+
+
+
+    def test_24_same_head_supersession_without_digest_fails_closed(self):
+        first = lab_request("first-chain")
+        second = lab_request("second-chain")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(first),
+                "user": {"login": "fufufu1116"},
+            },
+            {
+                "id": 20,
+                "body": request_body(second),
+                "user": {"login": "fufufu1116"},
+            },
+        ]
+        with self.assertRaises(ReviewContractError):
+            latest_exact_current_owner_request(
+                comments,
+                repo=first["repo"],
+                pr=first["pr"],
+                lane="LAB",
+                head=first["head"],
+                tree=first["tree"],
+                base=first["base"],
+                main=first["main"],
+            )
+
+    def test_25_explicit_same_head_supersession_chain_is_accepted(self):
+        first = lab_request("first-chain")
+        second = lab_request("second-chain")
+        first_sha256 = sha256_json(first)
+        second["supersedes_request_sha256"] = first_sha256
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(first),
+                "user": {"login": "fufufu1116"},
+            },
+            {
+                "id": 20,
+                "body": request_body(second),
+                "user": {"login": "fufufu1116"},
+            },
+        ]
+        cid, request, _ = latest_exact_current_owner_request(
+            comments,
+            repo=first["repo"],
+            pr=first["pr"],
+            lane="LAB",
+            head=first["head"],
+            tree=first["tree"],
+            base=first["base"],
+            main=first["main"],
+        )
+        self.assertEqual(cid, 20)
+        self.assertEqual(request["request_id"], "second-chain")
+        self.assertEqual(
+            request["supersedes_request_sha256"],
+            first_sha256,
+        )
+
+    def test_26_dispatcher_job_binds_exact_request_sha256(self):
+        request = lab_request("digest-bound")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        helper = DispatcherTests()
+        job = dispatcher.discover_request(
+            repo="fufufu1116/multiverse-research",
+            lane="LAB",
+            head=SHA_A,
+            fetch=helper.fake_fetch_factory(comments),
+        )
+        self.assertEqual(job["request_sha256"], sha256_json(request))
+
+    def test_27_auditor_requires_exact_lab_request_sha256(self):
+        request = lab_request("auditor-digest")
+        request["lane"] = "AUDITOR"
+        request["upstream"] = {
+            "lab_pass_comment": 123,
+            "lab_request_sha256": "f" * 64,
+            "t1_comment": 456,
+        }
+        self.assertEqual(validate_request(request), request)
+
+        broken = copy.deepcopy(request)
+        broken["upstream"]["lab_request_sha256"] = "not-a-digest"
+        with self.assertRaises(ReviewContractError):
+            validate_request(broken)
 
 
 

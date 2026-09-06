@@ -14,6 +14,7 @@ from automation.review_dispatcher_v1.model import (
     latest_exact_current_owner_request,
     require,
     result_marker,
+    sha256_json,
     validate_request,
 )
 
@@ -84,11 +85,13 @@ def discover_request(
         main=main_sha,
     )
     validate_request(request)
+    request_sha256 = sha256_json(request)
 
     marker = result_marker(
         request["request_id"],
         head,
         request_comment,
+        request_sha256,
     )
     duplicate_ids = [
         int(item["id"])
@@ -118,6 +121,7 @@ def discover_request(
         "lane": lane,
         "request_id": request["request_id"],
         "request_comment": request_comment,
+        "request_sha256": request_sha256,
         "request_comment_author": (comment.get("user") or {}).get("login"),
         "request": request,
         "dispatcher_ref": os.environ.get(
@@ -179,6 +183,7 @@ def main() -> int:
                 "schema": JOB_SCHEMA,
                 "request_id": job["request_id"],
                 "request_comment": job["request_comment"],
+                "request_sha256": job["request_sha256"],
                 "lane": job["lane"],
                 "pr": job["pr"],
                 "head": job["head"],

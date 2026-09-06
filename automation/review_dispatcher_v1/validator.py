@@ -72,6 +72,7 @@ def _sample_request() -> dict:
         "main": "d" * 40,
         "proof_ceiling": "VALIDATOR_SAMPLE_ONLY",
         "execution_state": "VALIDATOR_SAMPLE",
+        "supersedes_request_sha256": None,
         "recipe": {
             "subtrees": {},
             "durable_comments": [],
@@ -210,6 +211,9 @@ def validate() -> dict:
         "_candidate_env(",
         "_repo_file(",
         "latest_exact_current_owner_request(",
+        "supersedes_request_sha256",
+        "request_sha256",
+        "lab_request_sha256",
         "resolve_public_https_target(base_url)",
         "_PinnedHTTPSConnection(",
     ):

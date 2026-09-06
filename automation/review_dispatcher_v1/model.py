@@ -29,7 +29,8 @@ AUDITOR_APP_SLUG = "multiverse-independent-auditor"
 REQUEST_KEYS = {
     "schema", "request_id", "lane", "mode", "repo", "pr",
     "head", "tree", "base", "main", "proof_ceiling",
-    "execution_state", "recipe", "upstream", "nonauthority",
+    "execution_state", "supersedes_request_sha256",
+    "recipe", "upstream", "nonauthority",
 }
 
 RECIPE_KEYS = {
@@ -125,6 +126,14 @@ def sha40(value: Any) -> bool:
     return (
         isinstance(value, str)
         and len(value) == 40
+        and all(c in "0123456789abcdef" for c in value)
+    )
+
+
+def sha256_hex(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 64
         and all(c in "0123456789abcdef" for c in value)
     )
 
@@ -266,6 +275,12 @@ def validate_request(request: dict[str, Any]) -> dict[str, Any]:
             f"REQUEST_{key.upper()}",
         )
 
+    supersedes = request["supersedes_request_sha256"]
+    require(
+        supersedes is None or sha256_hex(supersedes),
+        "REQUEST_SUPERSEDES_SHA256",
+    )
+
     nonauth = request["nonauthority"]
     require(
         isinstance(nonauth, dict)
@@ -281,7 +296,8 @@ def validate_request(request: dict[str, Any]) -> dict[str, Any]:
         require(upstream == {}, "LAB_UPSTREAM_MUST_BE_EMPTY")
     else:
         require(
-            set(upstream) == {"lab_pass_comment", "t1_comment"},
+            set(upstream)
+            == {"lab_pass_comment", "lab_request_sha256", "t1_comment"},
             "AUDITOR_UPSTREAM_SCHEMA",
         )
         for key in ("lab_pass_comment", "t1_comment"):
@@ -291,6 +307,10 @@ def validate_request(request: dict[str, Any]) -> dict[str, Any]:
                 and upstream[key] > 0,
                 f"AUDITOR_UPSTREAM_{key.upper()}",
             )
+        require(
+            sha256_hex(upstream["lab_request_sha256"]),
+            "AUDITOR_UPSTREAM_LAB_REQUEST_SHA256",
+        )
 
     recipe = request["recipe"]
     require(isinstance(recipe, dict), "RECIPE_OBJECT")
@@ -457,7 +477,7 @@ def validate_request(request: dict[str, Any]) -> dict[str, Any]:
     return request
 
 
-def extract_request_from_comment(body: str) -> dict[str, Any] | None:
+def parse_request_from_comment(body: str) -> dict[str, Any] | None:
     if REQUEST_MARKER not in body:
         return None
     fence = r"\x60\x60\x60"
@@ -470,6 +490,14 @@ def extract_request_from_comment(body: str) -> dict[str, Any] | None:
     match = re.search(pattern, body, re.S)
     require(match is not None, "REQUEST_JSON_BLOCK_MISSING")
     request = json.loads(match.group(1))
+    require(isinstance(request, dict), "REQUEST_OBJECT")
+    return request
+
+
+def extract_request_from_comment(body: str) -> dict[str, Any] | None:
+    request = parse_request_from_comment(body)
+    if request is None:
+        return None
     validate_request(request)
     return request
 
@@ -492,9 +520,14 @@ def exact_current_owner_requests(
             continue
         if not issue_comment_owner_trusted(comment, repo):
             continue
-        request = extract_request_from_comment(body)
+        request = parse_request_from_comment(body)
         if request is None:
             continue
+
+        envelope_keys = ("lane", "repo", "pr", "head", "tree", "base", "main")
+        if not all(key in request for key in envelope_keys):
+            raise ReviewContractError("OWNER_REQUEST_ENVELOPE_INCOMPLETE")
+
         if (
             request["lane"] == lane
             and request["repo"] == repo
@@ -504,8 +537,28 @@ def exact_current_owner_requests(
             and request["base"] == base
             and request["main"] == main
         ):
+            validate_request(request)
             candidates.append((int(comment["id"]), request, comment))
-    candidates.sort(key=lambda item: item[0], reverse=True)
+
+    candidates.sort(key=lambda item: item[0])
+
+    seen_ids: set[str] = set()
+    previous_sha256: str | None = None
+    for comment_id, request, _ in candidates:
+        rid = request["request_id"]
+        require(rid not in seen_ids, f"DUPLICATE_EXACT_REQUEST_ID:{rid}")
+        seen_ids.add(rid)
+        supersedes = request["supersedes_request_sha256"]
+        require(
+            supersedes == previous_sha256,
+            (
+                "SAME_HEAD_SUPERSESSION_CHAIN_INVALID:"
+                f"{comment_id}:{supersedes!r}!={previous_sha256!r}"
+            ),
+        )
+        previous_sha256 = sha256_json(request)
+
+    candidates.reverse()
     return candidates
 
 
@@ -552,7 +605,13 @@ def dotted_get(value: Any, dotted: str) -> Any:
     return current
 
 
-def result_marker(request_id: str, head: str, request_comment: int) -> str:
+def result_marker(
+    request_id: str,
+    head: str,
+    request_comment: int,
+    request_sha256: str,
+) -> str:
+    require(sha256_hex(request_sha256), "RESULT_MARKER_REQUEST_SHA256")
     return (
         RESULT_MARKER_PREFIX
         + request_id
@@ -561,10 +620,18 @@ def result_marker(request_id: str, head: str, request_comment: int) -> str:
         + ":"
         + str(request_comment)
         + ":"
+        + request_sha256
+        + ":"
     )
 
 
-def t2_marker(request_id: str, head: str, auditor_comment: int) -> str:
+def t2_marker(
+    request_id: str,
+    head: str,
+    auditor_comment: int,
+    request_sha256: str,
+) -> str:
+    require(sha256_hex(request_sha256), "T2_MARKER_REQUEST_SHA256")
     return (
         T2_MARKER_PREFIX
         + request_id
@@ -572,5 +639,7 @@ def t2_marker(request_id: str, head: str, auditor_comment: int) -> str:
         + head
         + ":"
         + str(auditor_comment)
+        + ":"
+        + request_sha256
         + ":"
     )

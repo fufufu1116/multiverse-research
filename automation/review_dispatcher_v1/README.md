@@ -68,3 +68,10 @@ Round-3 fail-closed boundaries:
 - Candidate source/validator/secret-scan files may not traverse symlinks or escape the exact checkout.
 - Candidate unittest/validator subprocesses receive a minimal sanitized environment and are run in a dedicated process group that is terminated after completion.
 - PUBLIC_HTTP_NO_EFFECT resolves public addresses first and connects directly to one of those validated IPs while TLS authenticates the original hostname; no second DNS resolution is used for the reviewed connection.
+
+Round-4 request identity:
+- every request is canonically SHA256-bound independently of Git head/tree;
+- same-head exact-current replacements require an explicit immediate-predecessor `supersedes_request_sha256` chain;
+- unchained same-head replacements fail closed rather than silently becoming "newest";
+- Lab/Auditor results, publisher receipts, and T2 carry the exact request SHA256;
+- Auditor requests and T1 bind the exact upstream Lab request SHA256.

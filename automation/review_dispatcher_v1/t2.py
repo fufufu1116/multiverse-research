@@ -28,6 +28,7 @@ from automation.review_dispatcher_v1.model import (
     lane_result_comment_trusted,
     latest_exact_current_owner_request,
     result_marker,
+    sha256_json,
     t2_marker,
     validate_request,
 )
@@ -73,6 +74,14 @@ def publish_t2(
     validate_request(request)
 
     require(job["lane"] == "AUDITOR", "T2_REQUIRES_AUDITOR_LANE")
+    require(
+        job.get("request_sha256") == sha256_json(request),
+        "AUDITOR_REQUEST_SHA256_MISMATCH",
+    )
+    require(
+        artifact.get("request_sha256") == job["request_sha256"],
+        "AUDITOR_ARTIFACT_REQUEST_SHA256",
+    )
     require(artifact.get("verdict") == "PASS", "AUDITOR_NOT_PASS")
     require(artifact.get("findings") == [], "AUDITOR_FINDINGS")
     require(
@@ -96,6 +105,10 @@ def publish_t2(
     require(
         receipt.get("github_app_id") == AUDITOR_APP_ID,
         "AUDITOR_RECEIPT_APP",
+    )
+    require(
+        receipt.get("request_sha256") == job["request_sha256"],
+        "AUDITOR_RECEIPT_REQUEST_SHA256",
     )
 
     repo = job["repo"]
@@ -181,6 +194,12 @@ def publish_t2(
         latest_lab_request["execution_state"] == request["execution_state"],
         "LATEST_LAB_EXECUTION_STATE_MISMATCH",
     )
+    latest_lab_request_sha256 = sha256_json(latest_lab_request)
+    require(
+        request["upstream"]["lab_request_sha256"]
+        == latest_lab_request_sha256,
+        "LATEST_LAB_REQUEST_SHA256_MISMATCH",
+    )
 
     lab_comment = public_github(
         (
@@ -215,6 +234,10 @@ def publish_t2(
     require(
         lab_artifact.get("request_comment") == latest_lab_request_id,
         "LAB_UPSTREAM_REQUEST_COMMENT",
+    )
+    require(
+        lab_artifact.get("request_sha256") == latest_lab_request_sha256,
+        "LAB_UPSTREAM_REQUEST_SHA256",
     )
     require(
         lab_artifact.get("mode") == latest_lab_request["mode"],
@@ -267,6 +290,7 @@ def publish_t2(
         latest_lab_request["request_id"],
         job["head"],
         latest_lab_request_id,
+        latest_lab_request_sha256,
     )
     authentic_lab_results = [
         int(item["id"])
@@ -295,6 +319,10 @@ def publish_t2(
         "T1_LAB_BINDING_MISSING",
     )
     require(
+        latest_lab_request_sha256 in t1_body,
+        "T1_LAB_REQUEST_SHA256_MISSING",
+    )
+    require(
         job["head"] in t1_body,
         "T1_HEAD_BINDING_MISSING",
     )
@@ -316,6 +344,7 @@ def publish_t2(
         job["request_id"],
         job["head"],
         auditor_comment_id,
+        job["request_sha256"],
     )
     for comment in comments:
         if (
@@ -342,6 +371,8 @@ def publish_t2(
         "verdict": "PASS",
         "request_id": job["request_id"],
         "request_comment": job["request_comment"],
+        "request_sha256": job["request_sha256"],
+        "lab_request_sha256": latest_lab_request_sha256,
         "reviewed_repo": repo,
         "reviewed_pr": pr_number,
         "reviewed_head": job["head"],
@@ -379,6 +410,8 @@ def publish_t2(
             "",
             "FIXED_REVIEW_T2_VERDICT: PASS",
             f"REQUEST_ID: {job['request_id']}",
+            f"REQUEST_SHA256: {job['request_sha256']}",
+            f"LAB_REQUEST_SHA256: {latest_lab_request_sha256}",
             f"BOUND_TO_LAB_PASS: {lab_comment_id}",
             f"BOUND_TO_T1: {t1_comment_id}",
             f"BOUND_TO_AUDITOR_PASS: {auditor_comment_id}",
@@ -408,6 +441,7 @@ def publish_t2(
     return {
         "schema": T2_RECEIPT_SCHEMA,
         "request_id": job["request_id"],
+        "request_sha256": job["request_sha256"],
         "auditor_comment_id": auditor_comment_id,
         "t2_comment_id": result["id"],
         "reviewed_head": job["head"],

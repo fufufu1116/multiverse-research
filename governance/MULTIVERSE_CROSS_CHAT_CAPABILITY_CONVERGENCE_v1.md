@@ -81,3 +81,15 @@ Authority ceiling
 This Candidate grants no merge, canonical main mutation, ruleset mutation, workflow dispatch/rerun, provider mutation, Runtime activation, production, protected-data access, live business effect, or spend.
 
 Runtime remains OFF.
+
+Request identity and same-head supersession
+
+The exact Git head/tree is necessary but not sufficient to identify a review job. Every selected request has a canonical JSON SHA256 that is carried through the dispatcher job, result marker, durable review artifact, publisher receipt, and Auditor/T2 chain.
+
+For one exact lane/repo/PR/head/tree/base/main key:
+- the first request has no predecessor digest;
+- a later request is valid only when `supersedes_request_sha256` equals the canonical SHA256 of the immediately prior exact request;
+- an unchained same-head replacement fails closed;
+- an Auditor request binds the exact upstream Lab request SHA256, and T1 also binds that digest.
+
+This preserves newest-exact-current selection while preventing silent same-head recipe replacement or replay.
