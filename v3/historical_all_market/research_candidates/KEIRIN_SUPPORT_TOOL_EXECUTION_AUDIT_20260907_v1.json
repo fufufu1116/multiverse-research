@@ -1,0 +1,24 @@
+{
+  "record":"KEIRIN_SUPPORT_TOOL_EXECUTION_AUDIT_20260907_v1",
+  "status":"GITHUB_ACTIONS_SELFTEST_EXECUTION_PASS_RESEARCH_ONLY",
+  "scope":"RESEARCH_PRE_ONLY_TOOL_EXECUTION_EVIDENCE_NO_SUPPORT_AUTO_AUTHORITY",
+  "research_branch":"research/keirin-real-evidence-dual-lane-20260901-v1",
+  "workflow":".github/workflows/keirin-research-support-tool-selftest-v1.yml",
+  "workflow_commit":"a3b0811002bea35d70aceb4f29c048abff78c99f",
+  "workflow_run_id":34053822128,
+  "workflow_run_conclusion":"success",
+  "job_id":101541989949,
+  "job_conclusion":"success",
+  "executed_steps":[
+    {"name":"Receipt guard selftest","conclusion":"success","tool":"tools/keirin_support_receipt_guard_v1.py","tool_git_blob":"3105c38fb10f25846dbfa80fd2c6a952e6dd1425"},
+    {"name":"Full provenance validator selftest","conclusion":"success","tool":"tools/keirin_support_provenance_validator_v1.py","tool_git_blob":"5f0b49a83b619b8ac474891cfbd086f48b0f054e"}
+  ],
+  "material_interpretation":"Both support-side guard layers now have actual GitHub Actions execution evidence rather than static-review-only status. This does not create any formal support increment and does not prove Ito 2026-09-07 official same-race assignment.",
+  "render_environment_inventory_note":"Existing Render preprod no-effect services are connected to the canonical repository and can be considered for future persistent or remote validation where justified. No new Render resource was created in this audit.",
+  "support_increment_authorized_now":0,
+  "result_accessed":false,
+  "result_join_authorized":false,
+  "formula_fit_authorized":false,
+  "main_or_runtime_mutation":false,
+  "owner_action_required_now":false
+}
