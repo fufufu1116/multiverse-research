@@ -73,9 +73,9 @@ def build_stable_birth_proof_pair():
     fn_start=prod_helper_src.index('func v7r21PostDropThreadCreationStress(')
     fn_end=prod_helper_src.index('\nfunc v7r21DropIrreversibly(',fn_start)
     worker=prod_helper_src[fn_start:fn_end]
-    lock='\t\t\truntime.LockOSThread(); tid := syscall.Gettid()\n'
+    lock='\t\t\truntime.LockOSThread()\n\t\t\ttid := syscall.Gettid()\n'
     regain='\t\t\tattemptTID, e := v7r21AttemptAuthorityRegainOnCurrentLockedThread(uid)\n'
-    anchor='\t\t\tready <- proof{tid, e}; <-release; runtime.UnlockOSThread(); wg.Done()\n'
+    anchor='\t\t\tready <- proof{tid, e}\n\t\t\t<-release\n\t\t\truntime.UnlockOSThread()\n\t\t\twg.Done()\n'
     if worker.count(lock)!=1: raise SystemExit('stable birth helper locked-worker anchor changed')
     if worker.count(regain)!=1: raise SystemExit('stable birth helper regain anchor changed')
     if worker.count(anchor)!=1: raise SystemExit('stable birth helper publish-release anchor changed')
