@@ -26,6 +26,8 @@ from automation.review_dispatcher_v1.model import (
     fetch_all_pages,
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
+    latest_exact_current_owner_request,
+    result_marker,
     t2_marker,
     validate_request,
 )
@@ -155,6 +157,31 @@ def publish_t2(
     lab_comment_id = upstream["lab_pass_comment"]
     t1_comment_id = upstream["t1_comment"]
 
+    comments = fetch_all_pages(
+        public_github,
+        f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
+    )
+    latest_lab_request_id, latest_lab_request, _ = (
+        latest_exact_current_owner_request(
+            comments,
+            repo=repo,
+            pr=pr_number,
+            lane="LAB",
+            head=job["head"],
+            tree=job["tree"],
+            base=job["base"],
+            main=job["main"],
+        )
+    )
+    require(
+        latest_lab_request["proof_ceiling"] == request["proof_ceiling"],
+        "LATEST_LAB_PROOF_CEILING_MISMATCH",
+    )
+    require(
+        latest_lab_request["execution_state"] == request["execution_state"],
+        "LATEST_LAB_EXECUTION_STATE_MISMATCH",
+    )
+
     lab_comment = public_github(
         (
             f"https://api.github.com/repos/{repo}/issues/comments/"
@@ -181,6 +208,18 @@ def publish_t2(
         "LAB_UPSTREAM_RESULT_SCHEMA",
     )
     require(lab_artifact.get("lane") == "LAB", "LAB_UPSTREAM_LANE")
+    require(
+        lab_artifact.get("request_id") == latest_lab_request["request_id"],
+        "LAB_UPSTREAM_REQUEST_ID",
+    )
+    require(
+        lab_artifact.get("request_comment") == latest_lab_request_id,
+        "LAB_UPSTREAM_REQUEST_COMMENT",
+    )
+    require(
+        lab_artifact.get("mode") == latest_lab_request["mode"],
+        "LAB_UPSTREAM_MODE",
+    )
     require(lab_artifact.get("verdict") == "PASS", "LAB_UPSTREAM_VERDICT")
     require(lab_artifact.get("findings") == [], "LAB_UPSTREAM_FINDINGS")
     require(
@@ -224,6 +263,21 @@ def publish_t2(
         lab_producer.get("github_app_id") == LAB_APP_ID,
         "LAB_UPSTREAM_ARTIFACT_APP",
     )
+    lab_marker = result_marker(
+        latest_lab_request["request_id"],
+        job["head"],
+        latest_lab_request_id,
+    )
+    authentic_lab_results = [
+        int(item["id"])
+        for item in comments
+        if lab_marker in (item.get("body") or "")
+        and lane_result_comment_trusted(item, "LAB")
+    ]
+    require(
+        authentic_lab_results == [lab_comment_id],
+        "LAB_UPSTREAM_NOT_SINGLE_LATEST_RESULT",
+    )
 
     t1_comment = public_github(
         (
@@ -258,10 +312,6 @@ def publish_t2(
     )
     require("PASS" in t1_body, "T1_PASS_MARKER_MISSING")
 
-    comments = fetch_all_pages(
-        public_github,
-        f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
-    )
     marker = t2_marker(
         job["request_id"],
         job["head"],

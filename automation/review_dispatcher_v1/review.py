@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import json
 import os
 import re
+import signal
+import socket
+import ssl
 import subprocess
 import sys
 import time
-import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any, Callable
@@ -24,26 +27,48 @@ from automation.review_dispatcher_v1.model import (
     ReviewContractError,
     canonical_json,
     dotted_get,
+    fetch_all_pages,
     issue_comment_owner_trusted,
+    lane_result_comment_trusted,
+    latest_exact_current_owner_request,
     require,
-    resolve_public_https_url,
+    resolve_public_https_target,
+    result_marker,
+    safe_repo_path,
     validate_request,
 )
 
 ARTIFACT_SCHEMA = "MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1"
 
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(
+class _PinnedHTTPSConnection(http.client.HTTPSConnection):
+    def __init__(
         self,
-        req,
-        fp,
-        code,
-        msg,
-        headers,
-        newurl,
-    ):
-        raise ReviewContractError("HTTP_REDIRECT_DENIED")
+        host: str,
+        port: int,
+        connect_ip: str,
+        *,
+        timeout: int = 45,
+        context: ssl.SSLContext | None = None,
+    ) -> None:
+        super().__init__(
+            host,
+            port,
+            timeout=timeout,
+            context=context or ssl.create_default_context(),
+        )
+        self._connect_ip = connect_ip
+
+    def connect(self) -> None:
+        raw = socket.create_connection(
+            (self._connect_ip, self.port),
+            self.timeout,
+            self.source_address,
+        )
+        self.sock = self._context.wrap_socket(
+            raw,
+            server_hostname=self.host,
+        )
 
 
 def github_get(url: str) -> Any:
@@ -67,46 +92,51 @@ def endpoint(
     attempts: int = 6,
 ) -> tuple[int, Any]:
     last: Any = None
-    opener = urllib.request.build_opener(
-        urllib.request.ProxyHandler({}),
-        _NoRedirect(),
-    )
     for attempt in range(attempts):
-        resolve_public_https_url(base_url)
-        req = urllib.request.Request(
-            base_url + path,
-            method=method,
-            headers={
-                "Accept": "application/json",
-                "User-Agent": "multiverse-fixed-review-runner-v1",
-            },
+        host, port, addresses = resolve_public_https_target(base_url)
+        connect_ip = addresses[attempt % len(addresses)]
+        connection = _PinnedHTTPSConnection(
+            host,
+            port,
+            connect_ip,
+            timeout=45,
         )
         try:
-            with opener.open(req, timeout=45) as response:
-                raw = response.read().decode()
-                return response.status, json.loads(raw)
-        except ReviewContractError:
-            raise
-        except urllib.error.HTTPError as exc:
-            raw = exc.read().decode()
+            connection.request(
+                method,
+                path,
+                headers={
+                    "Accept": "application/json",
+                    "User-Agent": "multiverse-fixed-review-runner-v1",
+                },
+            )
+            response = connection.getresponse()
+            status = response.status
+            raw = response.read().decode()
+            if 300 <= status <= 399:
+                raise ReviewContractError("HTTP_REDIRECT_DENIED")
             try:
                 payload = json.loads(raw)
             except Exception:
                 payload = {"raw": raw}
             if (
-                exc.code in (502, 503, 504)
+                status in (502, 503, 504)
                 and attempt + 1 < attempts
             ):
-                last = (exc.code, payload)
+                last = (status, payload)
                 time.sleep(3)
                 continue
-            return exc.code, payload
+            return status, payload
+        except ReviewContractError:
+            raise
         except Exception as exc:
             last = repr(exc)
             if attempt + 1 < attempts:
                 time.sleep(3)
                 continue
             raise
+        finally:
+            connection.close()
     raise RuntimeError(f"HTTP_RETRIES_EXHAUSTED:{last!r}")
 
 
@@ -300,6 +330,46 @@ def _check_auditor_upstream(
     lab_comment_id = upstream["lab_pass_comment"]
     t1_comment_id = upstream["t1_comment"]
 
+    comments = fetch_all_pages(
+        fetch,
+        f"https://api.github.com/repos/{job['repo']}/issues/{job['pr']}/comments",
+    )
+    try:
+        latest_lab_request_id, latest_lab_request, _ = (
+            latest_exact_current_owner_request(
+                comments,
+                repo=job["repo"],
+                pr=job["pr"],
+                lane="LAB",
+                head=job["head"],
+                tree=job["tree"],
+                base=job["base"],
+                main=job["main"],
+            )
+        )
+        check(
+            "upstream_lab_result_bound_to_latest_request",
+            latest_lab_request_id > 0,
+            repr(latest_lab_request_id),
+        )
+        check(
+            "upstream_lab_request_proof_ceiling",
+            latest_lab_request["proof_ceiling"]
+            == job["request"]["proof_ceiling"],
+            repr(latest_lab_request["proof_ceiling"]),
+        )
+        check(
+            "upstream_lab_request_execution_state",
+            latest_lab_request["execution_state"]
+            == job["request"]["execution_state"],
+            repr(latest_lab_request["execution_state"]),
+        )
+    except Exception as exc:
+        checks["upstream_latest_lab_request"] = "FIX_REQUIRED"
+        findings.append(f"upstream_latest_lab_request: {exc}")
+        latest_lab_request_id = -1
+        latest_lab_request = {}
+
     lab_comment = fetch(
         f"https://api.github.com/repos/{job['repo']}/issues/comments/{lab_comment_id}"
     )
@@ -330,6 +400,9 @@ def _check_auditor_upstream(
             "schema_version": ARTIFACT_SCHEMA,
             "result_schema": RESULT_SCHEMA,
             "lane": "LAB",
+            "request_id": latest_lab_request.get("request_id"),
+            "request_comment": latest_lab_request_id,
+            "mode": latest_lab_request.get("mode"),
             "verdict": "PASS",
             "findings": [],
             "reviewed_repo": job["repo"],
@@ -360,6 +433,23 @@ def _check_auditor_upstream(
             repr(producer.get("github_app_id")),
         )
 
+        marker = result_marker(
+            latest_lab_request.get("request_id", ""),
+            job["head"],
+            latest_lab_request_id,
+        )
+        authentic_result_ids = [
+            int(item["id"])
+            for item in comments
+            if marker in (item.get("body") or "")
+            and lane_result_comment_trusted(item, "LAB")
+        ]
+        check(
+            "upstream_lab_single_authentic_latest_result",
+            authentic_result_ids == [lab_comment_id],
+            repr(authentic_result_ids),
+        )
+
     t1_comment = fetch(
         f"https://api.github.com/repos/{job['repo']}/issues/comments/{t1_comment_id}"
     )
@@ -384,6 +474,79 @@ def _check_auditor_upstream(
         )
 
 
+def _repo_file(repo_root: Path, rel: str) -> Path:
+    safe_repo_path(rel)
+    root = repo_root.resolve()
+    current = root
+    for part in Path(rel).parts:
+        current = current / part
+        require(not current.is_symlink(), f"REPO_PATH_SYMLINK_DENIED:{rel}")
+    try:
+        resolved = current.resolve(strict=True)
+    except FileNotFoundError as exc:
+        raise ReviewContractError(f"REPO_PATH_MISSING:{rel}") from exc
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise ReviewContractError(f"REPO_PATH_ESCAPE:{rel}") from exc
+    require(resolved.is_file(), f"REPO_PATH_NOT_FILE:{rel}")
+    return resolved
+
+
+def _candidate_env(repo_root: Path) -> dict[str, str]:
+    return {
+        "PATH": os.environ.get("PATH", "/usr/local/bin:/usr/bin:/bin"),
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PYTHONHASHSEED": "0",
+        "PYTHONNOUSERSITE": "1",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": str(repo_root.resolve()),
+    }
+
+
+def _run_candidate_process(
+    argv: list[str],
+    repo_root: Path,
+    *,
+    timeout: int = 180,
+) -> subprocess.CompletedProcess[str]:
+    process = subprocess.Popen(
+        argv,
+        cwd=str(repo_root),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=_candidate_env(repo_root),
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        stdout, stderr = process.communicate()
+        return subprocess.CompletedProcess(
+            argv,
+            124,
+            stdout,
+            stderr + "\nCANDIDATE_PROCESS_TIMEOUT",
+        )
+    finally:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    return subprocess.CompletedProcess(
+        argv,
+        int(process.returncode or 0),
+        stdout,
+        stderr,
+    )
+
+
 def _check_source_rules(
     repo_root: Path,
     job: dict[str, Any],
@@ -391,13 +554,13 @@ def _check_source_rules(
     findings: list[str],
 ) -> None:
     for rule in job["request"]["recipe"]["source_rules"]:
-        path = repo_root / rule["path"]
         name = f"source_exists:{rule['path']}"
-        if path.is_file():
+        try:
+            path = _repo_file(repo_root, rule["path"])
             checks[name] = "PASS"
-        else:
+        except ReviewContractError as exc:
             checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
+            findings.append(f"{name}: {exc}")
             continue
 
         text = path.read_text()
@@ -428,11 +591,18 @@ def _run_unittests(
     total = 0
     for rule in job["request"]["recipe"]["unittest_modules"]:
         module = rule["module"]
-        proc = subprocess.run(
+        module_path = module.replace(".", "/") + ".py"
+        try:
+            _repo_file(repo_root, module_path)
+        except ReviewContractError as exc:
+            checks[f"unittest_module_file:{module}"] = "FIX_REQUIRED"
+            findings.append(f"unittest_module_file:{module}: {exc}")
+            continue
+        checks[f"unittest_module_file:{module}"] = "PASS"
+
+        proc = _run_candidate_process(
             [sys.executable, "-m", "unittest", module, "-v"],
-            cwd=str(repo_root),
-            text=True,
-            capture_output=True,
+            repo_root,
         )
         if proc.stdout:
             print(proc.stdout)
@@ -476,13 +646,16 @@ def _run_validators(
     findings: list[str],
 ) -> None:
     for rule in job["request"]["recipe"]["validators"]:
-        path = repo_root / rule["path"]
         name = f"validator_exit:{rule['path']}"
-        proc = subprocess.run(
+        try:
+            path = _repo_file(repo_root, rule["path"])
+        except ReviewContractError as exc:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: {exc}")
+            continue
+        proc = _run_candidate_process(
             [sys.executable, str(path)],
-            cwd=str(repo_root),
-            text=True,
-            capture_output=True,
+            repo_root,
         )
         if proc.stdout:
             print(proc.stdout)
@@ -541,10 +714,11 @@ def _scan_secrets(
     paths = job["request"]["recipe"]["secret_scan_paths"]
     patterns = job["request"]["recipe"]["forbidden_patterns"]
     for rel in paths:
-        path = repo_root / rel
-        if not path.is_file():
+        try:
+            path = _repo_file(repo_root, rel)
+        except ReviewContractError as exc:
             checks[f"secret_scan_exists:{rel}"] = "FIX_REQUIRED"
-            findings.append(f"secret_scan_exists:{rel}: missing")
+            findings.append(f"secret_scan_exists:{rel}: {exc}")
             continue
         checks[f"secret_scan_exists:{rel}"] = "PASS"
         text = path.read_text()

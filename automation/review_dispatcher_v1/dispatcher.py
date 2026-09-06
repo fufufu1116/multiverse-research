@@ -8,12 +8,10 @@ from pathlib import Path
 from typing import Any
 
 from automation.review_dispatcher_v1.model import (
-    REQUEST_MARKER,
     ReviewContractError,
-    extract_request_from_comment,
     fetch_all_pages,
-    issue_comment_owner_trusted,
     lane_result_comment_trusted,
+    latest_exact_current_owner_request,
     require,
     result_marker,
     validate_request,
@@ -75,36 +73,16 @@ def discover_request(
         f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
     )
 
-    candidates: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
-
-    for comment in comments:
-        body = comment.get("body") or ""
-        if REQUEST_MARKER not in body:
-            continue
-        request = extract_request_from_comment(body)
-        if request is None:
-            continue
-        if request["lane"] != lane:
-            continue
-        if request["repo"] != repo:
-            continue
-        if request["pr"] != pr_number:
-            continue
-        if request["head"] != head:
-            continue
-        if request["tree"] != tree:
-            continue
-        if request["base"] != pr["base"]["sha"]:
-            continue
-        if request["main"] != main_sha:
-            continue
-        if not issue_comment_owner_trusted(comment, repo):
-            continue
-        candidates.append((int(comment["id"]), request, comment))
-
-    require(bool(candidates), "NO_EXACT_CURRENT_REVIEW_REQUEST")
-    candidates.sort(key=lambda item: item[0], reverse=True)
-    request_comment, request, comment = candidates[0]
+    request_comment, request, comment = latest_exact_current_owner_request(
+        comments,
+        repo=repo,
+        pr=pr_number,
+        lane=lane,
+        head=head,
+        tree=tree,
+        base=pr["base"]["sha"],
+        main=main_sha,
+    )
     validate_request(request)
 
     marker = result_marker(

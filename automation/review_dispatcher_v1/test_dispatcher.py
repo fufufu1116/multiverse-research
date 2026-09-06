@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import copy
 import json
+import os
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -15,6 +17,8 @@ from automation.review_dispatcher_v1.model import (
     dotted_get,
     extract_request_from_comment,
     fetch_all_pages,
+    latest_exact_current_owner_request,
+    resolve_public_https_target,
     result_marker,
     validate_request,
     validate_public_https_url,
@@ -433,45 +437,57 @@ class HardeningTests(unittest.TestCase):
             "FIX_REQUIRED",
         )
 
-    def test_16_auditor_upstream_requires_exact_lab_and_owner_t1(self):
-        request = lab_request("auditor-upstream")
-        request["lane"] = "AUDITOR"
-        request["upstream"] = {
+    def test_16_auditor_upstream_requires_latest_exact_lab_and_owner_t1(self):
+        auditor_request = lab_request("auditor-upstream")
+        auditor_request["lane"] = "AUDITOR"
+        auditor_request["upstream"] = {
             "lab_pass_comment": 123,
             "t1_comment": 456,
         }
+        latest_lab = lab_request("latest-lab")
+        latest_lab_comment_id = 111
+
         job = {
             "lane": "AUDITOR",
-            "repo": request["repo"],
-            "pr": request["pr"],
-            "head": request["head"],
-            "tree": request["tree"],
-            "base": request["base"],
-            "main": request["main"],
-            "request": request,
+            "repo": auditor_request["repo"],
+            "pr": auditor_request["pr"],
+            "head": auditor_request["head"],
+            "tree": auditor_request["tree"],
+            "base": auditor_request["base"],
+            "main": auditor_request["main"],
+            "request": auditor_request,
         }
         lab_artifact = {
             "schema_version": "MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1",
             "result_schema": "MULTIVERSE_FIXED_REVIEW_RESULT_v1",
             "lane": "LAB",
+            "request_id": latest_lab["request_id"],
+            "request_comment": latest_lab_comment_id,
+            "mode": latest_lab["mode"],
             "verdict": "PASS",
             "findings": [],
-            "reviewed_repo": request["repo"],
-            "reviewed_pr": request["pr"],
-            "reviewed_head": request["head"],
-            "reviewed_tree": request["tree"],
-            "reviewed_base": request["base"],
-            "reviewed_main": request["main"],
-            "proof_ceiling": request["proof_ceiling"],
-            "execution_state": request["execution_state"],
+            "reviewed_repo": auditor_request["repo"],
+            "reviewed_pr": auditor_request["pr"],
+            "reviewed_head": auditor_request["head"],
+            "reviewed_tree": auditor_request["tree"],
+            "reviewed_base": auditor_request["base"],
+            "reviewed_main": auditor_request["main"],
+            "proof_ceiling": auditor_request["proof_ceiling"],
+            "execution_state": auditor_request["execution_state"],
             "producer": {
                 "github_login": "multiverse-independent-lab[bot]",
                 "github_app_id": 4819755,
             },
         }
+        marker = result_marker(
+            latest_lab["request_id"],
+            auditor_request["head"],
+            latest_lab_comment_id,
+        )
         fence = chr(96) * 3
         lab_body = "\n".join(
             [
+                marker + "build -->",
                 fence + "json",
                 json.dumps(lab_artifact, sort_keys=True),
                 fence,
@@ -481,22 +497,33 @@ class HardeningTests(unittest.TestCase):
             [
                 "T1 PASS",
                 "123",
-                request["head"],
-                request["tree"],
-                request["base"],
-                request["main"],
+                auditor_request["head"],
+                auditor_request["tree"],
+                auditor_request["base"],
+                auditor_request["main"],
             ]
         )
+        comments = [
+            {
+                "id": latest_lab_comment_id,
+                "body": request_body(latest_lab),
+                "user": {"login": "fufufu1116"},
+            },
+            {
+                "id": 123,
+                "body": lab_body,
+                "user": {"login": "multiverse-independent-lab[bot]"},
+                "performed_via_github_app": {
+                    "slug": "multiverse-independent-lab",
+                },
+            },
+        ]
 
         def fake_fetch(url: str):
+            if "/issues/999/comments?per_page=100&page=1" in url:
+                return comments
             if url.endswith("/issues/comments/123"):
-                return {
-                    "user": {"login": "multiverse-independent-lab[bot]"},
-                    "performed_via_github_app": {
-                        "slug": "multiverse-independent-lab",
-                    },
-                    "body": lab_body,
-                }
+                return comments[1]
             if url.endswith("/issues/comments/456"):
                 return {
                     "user": {"login": "fufufu1116"},
@@ -517,18 +544,34 @@ class HardeningTests(unittest.TestCase):
             all(value == "PASS" for value in checks.values())
         )
 
-
-    def test_17_redirect_handler_fails_closed(self):
-        handler = review._NoRedirect()
-        with self.assertRaises(ReviewContractError):
-            handler.redirect_request(
-                None,
-                None,
-                302,
-                "Found",
-                {},
-                "https://example.com/redirected",
+    def test_17_pinned_https_connection_uses_validated_ip_and_sni(self):
+        raw = object()
+        wrapped = object()
+        context = mock.Mock()
+        context.wrap_socket.return_value = wrapped
+        with mock.patch.object(
+            review.socket,
+            "create_connection",
+            return_value=raw,
+        ) as create:
+            connection = review._PinnedHTTPSConnection(
+                "example.com",
+                443,
+                "8.8.8.8",
+                context=context,
             )
+            connection.connect()
+
+        create.assert_called_once_with(
+            ("8.8.8.8", 443),
+            45,
+            None,
+        )
+        context.wrap_socket.assert_called_once_with(
+            raw,
+            server_hostname="example.com",
+        )
+        self.assertIs(connection.sock, wrapped)
 
     def test_18_unittests_execute_out_of_process(self):
         job = {
@@ -550,11 +593,18 @@ class HardeningTests(unittest.TestCase):
         )
         checks = {}
         findings = []
-        with mock.patch.object(
-            review.subprocess,
-            "run",
-            return_value=proc,
-        ) as run:
+        with (
+            mock.patch.object(
+                review,
+                "_repo_file",
+                return_value=Path("automation/example/tests.py"),
+            ),
+            mock.patch.object(
+                review,
+                "_run_candidate_process",
+                return_value=proc,
+            ) as run,
+        ):
             count = review._run_unittests(
                 Path("."),
                 job,
@@ -579,6 +629,112 @@ class HardeningTests(unittest.TestCase):
                 "-v",
             ],
         )
+
+
+    def test_19_untrusted_malformed_request_marker_cannot_dos_dispatcher(self):
+        trusted = lab_request("trusted-request")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(trusted),
+                "user": {"login": "fufufu1116"},
+            },
+            {
+                "id": 20,
+                "body": REQUEST_MARKER + "\nnot-json",
+                "user": {"login": "attacker"},
+            },
+        ]
+        helper = DispatcherTests()
+        job = dispatcher.discover_request(
+            repo="fufufu1116/multiverse-research",
+            lane="LAB",
+            head=SHA_A,
+            fetch=helper.fake_fetch_factory(comments),
+        )
+        self.assertEqual(job["request_id"], "trusted-request")
+
+    def test_20_repo_file_rejects_symlink_escape(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            target = Path(tmp) / "outside.txt"
+            target.write_text("outside")
+            link = root / "inside.txt"
+            link.symlink_to(target)
+            with self.assertRaises(ReviewContractError):
+                review._repo_file(root, "inside.txt")
+
+    def test_21_candidate_env_strips_control_plane_variables(self):
+        with mock.patch.dict(
+            os.environ,
+            {
+                "PATH": "/usr/bin:/bin",
+                "BUILDKITE_AGENT_ACCESS_TOKEN": "secret",
+                "GITHUB_TOKEN": "secret",
+                "DATABASE_URL": "secret",
+            },
+            clear=True,
+        ):
+            env = review._candidate_env(Path("."))
+        self.assertNotIn("BUILDKITE_AGENT_ACCESS_TOKEN", env)
+        self.assertNotIn("GITHUB_TOKEN", env)
+        self.assertNotIn("DATABASE_URL", env)
+        self.assertIn("PYTHONPATH", env)
+
+    def test_22_latest_exact_current_owner_request_selects_newest(self):
+        first = lab_request("first")
+        second = lab_request("second")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(first),
+                "user": {"login": "fufufu1116"},
+            },
+            {
+                "id": 20,
+                "body": request_body(second),
+                "user": {"login": "fufufu1116"},
+            },
+        ]
+        cid, request, _ = latest_exact_current_owner_request(
+            comments,
+            repo=first["repo"],
+            pr=first["pr"],
+            lane="LAB",
+            head=first["head"],
+            tree=first["tree"],
+            base=first["base"],
+            main=first["main"],
+        )
+        self.assertEqual(cid, 20)
+        self.assertEqual(request["request_id"], "second")
+
+    def test_23_dns_target_rejects_private_resolution(self):
+        public_info = [
+            (review.socket.AF_INET, review.socket.SOCK_STREAM, 6, "", ("8.8.8.8", 443)),
+        ]
+        private_info = [
+            (review.socket.AF_INET, review.socket.SOCK_STREAM, 6, "", ("127.0.0.1", 443)),
+        ]
+        with mock.patch(
+            "automation.review_dispatcher_v1.model.socket.getaddrinfo",
+            return_value=public_info,
+        ):
+            host, port, addresses = resolve_public_https_target(
+                "https://example.com"
+            )
+        self.assertEqual(host, "example.com")
+        self.assertEqual(port, 443)
+        self.assertEqual(addresses, ("8.8.8.8",))
+
+        with mock.patch(
+            "automation.review_dispatcher_v1.model.socket.getaddrinfo",
+            return_value=private_info,
+        ):
+            with self.assertRaises(ReviewContractError):
+                resolve_public_https_target("https://example.com")
+
 
 
 if __name__ == "__main__":

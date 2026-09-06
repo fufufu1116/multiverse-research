@@ -206,9 +206,12 @@ def validate() -> dict:
     review_source = (ROOT / "review.py").read_text()
     for token in (
         '[sys.executable, "-m", "unittest", module, "-v"]',
-        "resolve_public_https_url(base_url)",
-        "_NoRedirect()",
-        "urllib.request.ProxyHandler({})",
+        "_run_candidate_process(",
+        "_candidate_env(",
+        "_repo_file(",
+        "latest_exact_current_owner_request(",
+        "resolve_public_https_target(base_url)",
+        "_PinnedHTTPSConnection(",
     ):
         name = f"review:hardening:{token[:32]}"
         if token in review_source:

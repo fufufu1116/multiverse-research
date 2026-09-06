@@ -62,3 +62,9 @@ Proof ceiling
 This proves a mechanically separated, immutable shared dispatch interface when independently reviewed and installed. It does not prove independent human or organizational ownership.
 
 No merge, main/ruleset mutation, workflow dispatch/rerun, Runtime activation, provider mutation, production, protected data, live effect, or spend authority is included.
+
+Round-3 fail-closed boundaries:
+- Auditor upstream must bind the newest exact-current Owner-authored Lab request and its single authentic Lab-App result; an older same-head Lab PASS is not sufficient.
+- Candidate source/validator/secret-scan files may not traverse symlinks or escape the exact checkout.
+- Candidate unittest/validator subprocesses receive a minimal sanitized environment and are run in a dedicated process group that is terminated after completion.
+- PUBLIC_HTTP_NO_EFFECT resolves public addresses first and connects directly to one of those validated IPs while TLS authenticates the original hostname; no second DNS resolution is used for the reviewed connection.

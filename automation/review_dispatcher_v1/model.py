@@ -171,7 +171,9 @@ def validate_public_https_url(value: Any) -> str:
     return value
 
 
-def resolve_public_https_url(value: Any) -> str:
+def resolve_public_https_target(
+    value: Any,
+) -> tuple[str, int, tuple[str, ...]]:
     value = validate_public_https_url(value)
     parsed = urlparse(value)
     host = parsed.hostname or ""
@@ -186,14 +188,19 @@ def resolve_public_https_url(value: Any) -> str:
         raise ReviewContractError("URL_DNS_RESOLUTION_FAILED") from exc
 
     addresses = {
-        item[4][0]
+        item[4][0].split("%", 1)[0]
         for item in infos
         if item and len(item) >= 5 and item[4]
     }
     require(bool(addresses), "URL_DNS_EMPTY")
     for raw in addresses:
-        ip = ipaddress.ip_address(raw.split("%", 1)[0])
+        ip = ipaddress.ip_address(raw)
         require(_address_allowed(ip), "PRIVATE_OR_SPECIAL_DNS_IP_DENIED")
+    return host, port, tuple(sorted(addresses))
+
+
+def resolve_public_https_url(value: Any) -> str:
+    resolve_public_https_target(value)
     return value
 
 
@@ -465,6 +472,66 @@ def extract_request_from_comment(body: str) -> dict[str, Any] | None:
     request = json.loads(match.group(1))
     validate_request(request)
     return request
+
+
+def exact_current_owner_requests(
+    comments: list[dict[str, Any]],
+    *,
+    repo: str,
+    pr: int,
+    lane: str,
+    head: str,
+    tree: str,
+    base: str,
+    main: str,
+) -> list[tuple[int, dict[str, Any], dict[str, Any]]]:
+    candidates: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
+    for comment in comments:
+        body = comment.get("body") or ""
+        if REQUEST_MARKER not in body:
+            continue
+        if not issue_comment_owner_trusted(comment, repo):
+            continue
+        request = extract_request_from_comment(body)
+        if request is None:
+            continue
+        if (
+            request["lane"] == lane
+            and request["repo"] == repo
+            and request["pr"] == pr
+            and request["head"] == head
+            and request["tree"] == tree
+            and request["base"] == base
+            and request["main"] == main
+        ):
+            candidates.append((int(comment["id"]), request, comment))
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    return candidates
+
+
+def latest_exact_current_owner_request(
+    comments: list[dict[str, Any]],
+    *,
+    repo: str,
+    pr: int,
+    lane: str,
+    head: str,
+    tree: str,
+    base: str,
+    main: str,
+) -> tuple[int, dict[str, Any], dict[str, Any]]:
+    candidates = exact_current_owner_requests(
+        comments,
+        repo=repo,
+        pr=pr,
+        lane=lane,
+        head=head,
+        tree=tree,
+        base=base,
+        main=main,
+    )
+    require(bool(candidates), f"NO_EXACT_CURRENT_{lane}_REQUEST")
+    return candidates[0]
 
 
 def dotted_get(value: Any, dotted: str) -> Any:
