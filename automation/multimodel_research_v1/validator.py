@@ -1,0 +1,163 @@
+from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+REPO_ROOT = ROOT.parents[1]
+
+REQUIRED = [
+    ROOT / "__init__.py",
+    ROOT / "model.py",
+    ROOT / "outcome.py",
+    ROOT / "aggregator.py",
+    ROOT / "synthetic_adapter.py",
+    ROOT / "test_phase_a.py",
+    ROOT / "README.md",
+]
+
+FORBIDDEN_PROVIDER_MARKERS = [
+    "anthropic_api_key",
+    "google_api_key",
+    "gemini_api_key",
+    "claude_api_key",
+    "api.anthropic.com",
+    "generativelanguage.googleapis.com",
+]
+
+FORBIDDEN_EXECUTION_MARKERS = [
+    "subprocess",
+    "os.system",
+    "eval(",
+    "exec(",
+]
+
+
+def validate() -> dict:
+    checks = {}
+    findings = []
+
+    def record(name, condition, detail=""):
+        if condition:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: {detail}")
+
+    for path in REQUIRED:
+        record(
+            f"file:{path.name}",
+            path.is_file(),
+            "missing",
+        )
+
+    for path in REQUIRED:
+        if path.suffix != ".py" or not path.is_file():
+            continue
+        try:
+            compile(path.read_text(), str(path), "exec")
+            record(f"compile:{path.name}", True)
+        except Exception as exc:
+            record(
+                f"compile:{path.name}",
+                False,
+                repr(exc),
+            )
+
+    package_text = "\n".join(
+        path.read_text()
+        for path in REQUIRED
+        if path.is_file()
+    ).lower()
+
+    for marker in FORBIDDEN_PROVIDER_MARKERS:
+        record(
+            f"no_live_provider:{marker}",
+            marker not in package_text,
+            marker,
+        )
+
+    for marker in FORBIDDEN_EXECUTION_MARKERS:
+        record(
+            f"no_dynamic_execution:{marker}",
+            marker not in (
+                (ROOT / "model.py").read_text()
+                + (ROOT / "aggregator.py").read_text()
+                + (ROOT / "synthetic_adapter.py").read_text()
+            ),
+            marker,
+        )
+
+    model = (ROOT / "model.py").read_text()
+    aggregator = (ROOT / "aggregator.py").read_text()
+    outcome = (ROOT / "outcome.py").read_text()
+
+    for token in (
+        "MULTIVERSE_RESEARCH_TASK_v1",
+        "MULTIVERSE_RESEARCH_RESULT_v1",
+        "FORBIDDEN_DYNAMIC_KEYS",
+        "ALLOWED_PRIMITIVES",
+        "INFRA_FAILURE",
+        "nonauthority",
+    ):
+        record(
+            f"model:{token}",
+            token in model,
+            token,
+        )
+
+    for token in (
+        "duplicate_acknowledgements",
+        "UNRESOLVED_DIVERGENCE",
+        "MECHANICAL_FALSIFICATION_TASK",
+        "vote_confers_authority",
+        "majority_confers_truth",
+        "adoption_authority",
+    ):
+        record(
+            f"aggregator:{token}",
+            token in aggregator,
+            token,
+        )
+
+    for token in (
+        '"PASS"',
+        '"FIX_REQUIRED"',
+        '"INFRA_FAILURE"',
+        "authoritative_pass",
+    ):
+        record(
+            f"outcome:{token}",
+            token in outcome,
+            token,
+        )
+
+    test_text = (ROOT / "test_phase_a.py").read_text()
+    test_count = len(
+        re.findall(
+            r"^\s+def test_\d+_",
+            test_text,
+            re.M,
+        )
+    )
+    record(
+        "exact_test_count",
+        test_count == 14,
+        f"{test_count} != 14",
+    )
+
+    return {
+        "schema": "MULTIVERSE_MULTIMODEL_PHASE_A_VALIDATOR_v1",
+        "verdict": "PASS" if not findings else "FIX_REQUIRED",
+        "checks": checks,
+        "findings": findings,
+        "live_provider_execution": False,
+        "provider_credentials": False,
+        "adoption_authority": False,
+        "runtime": "OFF",
+    }
+
+
+if __name__ == "__main__":
+    print(json.dumps(validate(), sort_keys=True))
