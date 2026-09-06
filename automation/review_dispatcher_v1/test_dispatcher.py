@@ -17,6 +17,7 @@ from automation.review_dispatcher_v1.model import (
     dotted_get,
     extract_request_from_comment,
     fetch_all_pages,
+    lane_result_comment_trusted,
     latest_exact_current_owner_request,
     resolve_public_https_target,
     result_marker,
@@ -306,7 +307,10 @@ class DispatcherTests(unittest.TestCase):
             {
                 "id": 30,
                 "body": marker + "build -->\nPASS",
-                "user": {"login": "multiverse-independent-lab[bot]"},
+                "user": {
+                    "login": "multiverse-independent-lab[bot]",
+                    "type": "Bot",
+                },
                 "performed_via_github_app": {
                     "slug": "multiverse-independent-lab",
                 },
@@ -410,7 +414,7 @@ class HardeningTests(unittest.TestCase):
         self.assertEqual(job["request_id"], "trusted-request")
         self.assertEqual(job["request_comment"], 10)
 
-    def test_15_requested_app_slug_requires_exact_attribution(self):
+    def test_15_lane_bot_app_slug_allows_nullable_outer_metadata(self):
         job = {
             "repo": "fufufu1116/multiverse-research",
             "request": {
@@ -429,7 +433,10 @@ class HardeningTests(unittest.TestCase):
 
         def fake_fetch(_url: str):
             return {
-                "user": {"login": "multiverse-independent-lab[bot]"},
+                "user": {
+                    "login": "multiverse-independent-lab[bot]",
+                    "type": "Bot",
+                },
                 "performed_via_github_app": None,
                 "body": "PASS",
             }
@@ -437,10 +444,10 @@ class HardeningTests(unittest.TestCase):
         checks = {}
         findings = []
         review._check_comments(job, fake_fetch, checks, findings)
-        self.assertTrue(findings)
+        self.assertEqual(findings, [])
         self.assertEqual(
             checks["comment:123:app_slug"],
-            "FIX_REQUIRED",
+            "PASS",
         )
 
     def test_16_auditor_upstream_requires_latest_exact_lab_and_owner_t1(self):
@@ -523,7 +530,10 @@ class HardeningTests(unittest.TestCase):
             {
                 "id": 123,
                 "body": lab_body,
-                "user": {"login": "multiverse-independent-lab[bot]"},
+                "user": {
+                    "login": "multiverse-independent-lab[bot]",
+                    "type": "Bot",
+                },
                 "performed_via_github_app": {
                     "slug": "multiverse-independent-lab",
                 },
@@ -843,6 +853,95 @@ class HardeningTests(unittest.TestCase):
         with self.assertRaises(ReviewContractError):
             validate_request(broken)
 
+
+
+    def test_28_lane_result_trust_accepts_present_exact_app(self):
+        comment = {
+            "user": {
+                "login": "multiverse-independent-lab[bot]",
+                "type": "Bot",
+            },
+            "performed_via_github_app": {
+                "slug": "multiverse-independent-lab",
+            },
+        }
+        self.assertTrue(
+            lane_result_comment_trusted(comment, "LAB")
+        )
+
+    def test_29_lane_result_trust_rejects_present_wrong_app(self):
+        comment = {
+            "user": {
+                "login": "multiverse-independent-lab[bot]",
+                "type": "Bot",
+            },
+            "performed_via_github_app": {
+                "slug": "wrong-app",
+            },
+        }
+        self.assertFalse(
+            lane_result_comment_trusted(comment, "LAB")
+        )
+
+    def test_30_lane_result_trust_rejects_non_bot_on_null_app(self):
+        comment = {
+            "user": {
+                "login": "multiverse-independent-lab[bot]",
+                "type": "User",
+            },
+            "performed_via_github_app": None,
+        }
+        self.assertFalse(
+            lane_result_comment_trusted(comment, "LAB")
+        )
+
+    def test_31_lane_result_trust_rejects_wrong_login_on_null_app(self):
+        comment = {
+            "user": {
+                "login": "attacker[bot]",
+                "type": "Bot",
+            },
+            "performed_via_github_app": None,
+        }
+        self.assertFalse(
+            lane_result_comment_trusted(comment, "LAB")
+        )
+
+    def test_32_generic_app_rule_still_requires_outer_attribution(self):
+        job = {
+            "repo": "fufufu1116/multiverse-research",
+            "request": {
+                "recipe": {
+                    "durable_comments": [
+                        {
+                            "id": 789,
+                            "login": "fufufu1116",
+                            "app_slug": "chatgpt-codex-connector",
+                            "body_contains": ["SAFE"],
+                        }
+                    ]
+                }
+            },
+        }
+
+        def fake_fetch(_url: str):
+            return {
+                "user": {
+                    "login": "fufufu1116",
+                    "type": "User",
+                },
+                "performed_via_github_app": None,
+                "body": "SAFE",
+            }
+
+        checks = {}
+        findings = []
+        review._check_comments(job, fake_fetch, checks, findings)
+        self.assertTrue(findings)
+        self.assertEqual(
+            checks["comment:789:app_slug"],
+            "FIX_REQUIRED",
+        )
 
 
 if __name__ == "__main__":
