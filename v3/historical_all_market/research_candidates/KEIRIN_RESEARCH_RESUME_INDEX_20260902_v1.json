@@ -6,16 +6,17 @@
   "first_rule":"Never infer CURRENT/NOW/LATEST from stored state. Fresh Read the research branch ref first.",
   "resume_sequence":[
     {"step":1,"action":"FRESH_READ_RESEARCH_BRANCH_REF"},
-    {"step":2,"action":"READ_CURRENT_STATE","path":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v63.json"},
+    {"step":2,"action":"READ_CURRENT_STATE","path":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v64.json"},
     {"step":3,"action":"READ_ACTIVE_EVENT_QUEUE","path":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"},
     {"step":4,"action":"READ_TOP_PREQUALIFIED_CANDIDATE","path":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v2.json"},
     {"step":5,"action":"READ_ITO0907_LIVE_STATUS","path":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_DAY1_PRE_MEMBERSHIP_STATUS_20260907_v1.json"},
-    {"step":6,"action":"READ_SUPPORT_RECEIPT_BUILDER_EXECUTION_AUDIT","path":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_RECEIPT_BUILDER_EXECUTION_AUDIT_20260907_v1.json"},
-    {"step":7,"action":"WORK_CONSERVING_CONTINUATION","rule":"Ito 2026-09-07 stays highest priority. Recheck positively navigated official same-race assignment. If positive, run full provenance validator, deterministic receipt builder, and duplicate-safe receipt guard against real evidence; create formal support receipt only if all conditions pass, then recompute adequacy gate. If not positive, do not increment support; discover and bind the frozen calendar-block/gate evaluator definition without inventing granularity, and continue other legal material lanes. Reuse connected research-only execution systems when they reduce static-only uncertainty."},
-    {"step":8,"action":"CONTINUE_WITH_FRESH_BINDING","rule":"If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+    {"step":6,"action":"READ_CALENDAR_BLOCK_DEFINITION_AUDIT","path":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_AUDIT_20260907_v1.json"},
+    {"step":7,"action":"READ_PARTIAL_GATE_EVALUATOR_EXECUTION_AUDIT","path":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_PARTIAL_EVALUATOR_EXECUTION_AUDIT_20260907_v1.json"},
+    {"step":8,"action":"WORK_CONSERVING_CONTINUATION","rule":"Ito 2026-09-07 stays highest-priority interrupt. If official same-race assignment becomes positive, run full provenance validator -> receipt builder -> receipt guard -> formal support receipt -> partial gate recomputation. Otherwise keep support unchanged, continue authoritative calendar-block definition discovery without inventing granularity, and improve other legal material lanes. Full gate PASS is prohibited while calendar granularity remains undefined."},
+    {"step":9,"action":"CONTINUE_WITH_FRESH_BINDING","rule":"If branch head drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
   ],
-  "current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v63.json",
-  "prior_current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v62.json",
+  "current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v64.json",
+  "prior_current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v63.json",
   "active_lane_pointers":{
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
     "TOP_PREQUALIFIED_CANDIDATE":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260905_v2.json",
@@ -23,10 +24,12 @@
     "SUPPORT_RECEIPT_GUARD":"tools/keirin_support_receipt_guard_v1.py",
     "SUPPORT_PROVENANCE_VALIDATOR":"tools/keirin_support_provenance_validator_v1.py",
     "SUPPORT_RECEIPT_BUILDER":"tools/keirin_support_receipt_builder_v1.py",
+    "SUPPORT_GATE_PARTIAL_EVALUATOR":"tools/keirin_support_gate_partial_evaluator_v1.py",
     "SUPPORT_TOOL_SELFTEST_WORKFLOW":".github/workflows/keirin-research-support-tool-selftest-v1.yml",
-    "SUPPORT_RECEIPT_BUILDER_EXECUTION_AUDIT":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_RECEIPT_BUILDER_EXECUTION_AUDIT_20260907_v1.json"
+    "CALENDAR_BLOCK_DEFINITION_AUDIT":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_AUDIT_20260907_v1.json",
+    "PARTIAL_GATE_EVALUATOR_EXECUTION_AUDIT":"v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_PARTIAL_EVALUATOR_EXECUTION_AUDIT_20260907_v1.json"
   },
-  "connected_systems_policy":{"github_actions":"RESEARCH_ONLY_EXECUTION_EVIDENCE_PATH_CONFIRMED","render":"EXISTING_PREPROD_NOEFFECT_RESOURCES_AVAILABLE_FOR_FUTURE_JUSTIFIED_REMOTE_VALIDATION","new_paid_resource_policy":"DO_NOT_CREATE_UNLESS_MATERIALLY_NEEDED_OR_OWNER_AUTHORIZED"},
+  "connected_systems_policy":{"github_actions":"RESEARCH_ONLY_EXECUTION_AND_CONFIRMED_RECEIPT_VALIDATION_PATH_CONFIRMED","render":"EXISTING_PREPROD_NOEFFECT_RESOURCES_AVAILABLE_FOR_FUTURE_JUSTIFIED_REMOTE_VALIDATION","new_paid_resource_policy":"DO_NOT_CREATE_UNLESS_MATERIALLY_NEEDED_OR_OWNER_AUTHORIZED"},
   "context_policy":{"chat":"WORKSPACE_NOT_AUTHORITY","github":"RESEARCH_STATE_AUTHORITY_WITHIN_RESEARCH_LANE","owner":"MUST_NOT_BE_PERMANENT_CONTEXT_COURIER"},
   "owner_action_required_now":false
 }
