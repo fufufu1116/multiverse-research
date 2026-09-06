@@ -1,7 +1,7 @@
 """Bounded PRE_PRODUCTION remote validation workload for the adopted PostgreSQL adapter.
 
 This module is repository-only preparation until a separate Owner execution authority is
-granted.  All non-secret authority gates are validated before psycopg is imported or the
+granted. All non-secret authority gates are validated before psycopg is imported or the
 DATABASE_URL environment variable is read.
 """
 from __future__ import annotations
@@ -29,6 +29,7 @@ PROOF_CEILING = "REMOTE_POSTGRES_ADAPTER_PREPRODUCTION_NO_EFFECT_EVIDENCE_ONLY"
 RUNTIME = "OFF"
 LEASE_TTL_SECONDS = 2
 REQUEST_KEY = "remote-postgres-adapter-noeffect-request-v1"
+FINAL_EVIDENCE_CHECKPOINT = "remote:final_evidence"
 PAYLOAD = {"kind": "synthetic_no_effect", "version": 1}
 CONFLICT_PAYLOAD = {"kind": "synthetic_no_effect", "version": 2}
 
@@ -48,7 +49,7 @@ class RemoteExecutionViolation(RuntimeError):
         self.code = code
 
 
-def _required(name: str, env: dict[str, str]) -> str:
+def _required(name: str, env: Any) -> str:
     value = env.get(name)
     if value is None or value == "":
         raise RemoteExecutionViolation(f"MISSING_{name}")
@@ -56,7 +57,8 @@ def _required(name: str, env: dict[str, str]) -> str:
 
 
 def validate_nonsecret_environment(env: dict[str, str] | None = None) -> dict[str, str]:
-    source = dict(os.environ if env is None else env)
+    # Do not copy the whole process environment: only named non-secret gates are read here.
+    source = os.environ if env is None else env
 
     exact = {
         "MULTIVERSE_TARGET_CLASS": TARGET_CLASS,
@@ -80,7 +82,7 @@ def validate_nonsecret_environment(env: dict[str, str] | None = None) -> dict[st
 
 
 def build_connection_factory() -> Callable[[], Any]:
-    # The authority gate above must be checked by main() before this function is reached.
+    # main() validates all non-secret authority gates before this function is reachable.
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
         raise RemoteExecutionViolation("DATABASE_URL_MISSING")
@@ -110,10 +112,17 @@ def run_bounded_drill(
     *,
     sleeper: Callable[[float], None] = time.sleep,
 ) -> dict[str, Any]:
+    store.initialize_schema()
+
+    # If a completed bounded drill already exists, a provider restart must not replay writes.
+    recovered = store.get_checkpoint(FINAL_EVIDENCE_CHECKPOINT)
+    if recovered is not None and recovered.value.get("complete") is True:
+        evidence = dict(recovered.value)
+        evidence["recovered_after_restart"] = True
+        return evidence
+
     identity_a = RuntimeIdentity("remote-worker-a", "remote-instance-a")
     identity_b = RuntimeIdentity("remote-worker-b", "remote-instance-b")
-
-    store.initialize_schema()
 
     lease_a = store.acquire_lease(
         identity_a,
@@ -201,7 +210,7 @@ def run_bounded_drill(
     if readiness_b["ready"] is not False:
         raise RemoteExecutionViolation("READINESS_B_UNEXPECTEDLY_TRUE")
 
-    return {
+    evidence = {
         "schema": SCHEMA,
         "target_class": TARGET_CLASS,
         "environment_class": ENVIRONMENT_CLASS,
@@ -209,6 +218,8 @@ def run_bounded_drill(
         "runtime_id": EXPECTED_RUNTIME_ID,
         "database_bound": True,
         "execution_authorized": True,
+        "complete": True,
+        "recovered_after_restart": False,
         "lease": {
             "worker_a_fence": lease_a.fence_token,
             "worker_b_fence": lease_b.fence_token,
@@ -219,6 +230,7 @@ def run_bounded_drill(
             "first_fence": checkpoint_a.fence_token,
             "second_fence": checkpoint_b.fence_token,
             "resume_visible": True,
+            "final_evidence_checkpoint_written": True,
         },
         "idempotency": {
             "first_applied": True,
@@ -248,6 +260,16 @@ def run_bounded_drill(
         "runtime": RUNTIME,
     }
 
+    # Durable evidence makes provider restarts non-replaying and recoverable.
+    store.checkpoint(
+        identity_b,
+        lease_b,
+        FINAL_EVIDENCE_CHECKPOINT,
+        evidence,
+    )
+
+    return evidence
+
 
 def execute_remote_validation() -> None:
     try:
@@ -263,7 +285,7 @@ def execute_remote_validation() -> None:
         evidence = run_bounded_drill(store)
         STATE["database_bound"] = True
         STATE["evidence"] = evidence
-        STATE["complete"] = True
+        STATE["complete"] = bool(evidence.get("complete"))
         STATE["ready"] = True
 
     except Exception as exc:
