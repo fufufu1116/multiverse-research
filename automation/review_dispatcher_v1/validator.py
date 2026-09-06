@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
-
-from automation.review_dispatcher_v1.model import validate_request
 
 ROOT = Path(__file__).resolve().parent
 REPO_ROOT = ROOT.parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from automation.review_dispatcher_v1.model import validate_request
 
 LAB_PIPELINE = (
     REPO_ROOT
