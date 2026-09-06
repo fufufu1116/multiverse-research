@@ -1,0 +1,316 @@
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import urllib.request
+from pathlib import Path
+from typing import Any
+
+from automation.review_dispatcher_v1.github_app import (
+    GitHubAppError,
+    github_json,
+    installation_token,
+)
+from automation.review_dispatcher_v1.model import (
+    AUDITOR_APP_ID,
+    AUDITOR_LOGIN,
+    LAB_LOGIN,
+    T2_SCHEMA,
+    ReviewContractError,
+    t2_marker,
+    validate_request,
+)
+
+T2_RECEIPT_SCHEMA = "MULTIVERSE_FIXED_T2_PUBLISH_RECEIPT_v1"
+
+
+def require(condition: bool, code: str) -> None:
+    if not condition:
+        raise ReviewContractError(code)
+
+
+def public_github(url: str) -> Any:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "multiverse-fixed-t2-v1",
+        },
+    )
+    with urllib.request.urlopen(req, timeout=30) as response:
+        return json.load(response)
+
+
+def json_block(body: str) -> dict[str, Any]:
+    fence = r"\x60\x60\x60"
+    match = re.search(
+        fence + r"json\s*(\{.*?\})\s*" + fence,
+        body,
+        re.S,
+    )
+    require(match is not None, "JSON_BLOCK_MISSING")
+    return json.loads(match.group(1))
+
+
+def publish_t2(
+    job: dict[str, Any],
+    artifact: dict[str, Any],
+    receipt: dict[str, Any],
+) -> dict[str, Any]:
+    request = job["request"]
+    validate_request(request)
+
+    require(job["lane"] == "AUDITOR", "T2_REQUIRES_AUDITOR_LANE")
+    require(artifact.get("verdict") == "PASS", "AUDITOR_NOT_PASS")
+    require(artifact.get("findings") == [], "AUDITOR_FINDINGS")
+    require(
+        artifact.get("reviewed_head") == job["head"],
+        "AUDITOR_HEAD_MISMATCH",
+    )
+    require(
+        artifact.get("reviewed_tree") == job["tree"],
+        "AUDITOR_TREE_MISMATCH",
+    )
+    require(
+        artifact.get("reviewed_main") == job["main"],
+        "AUDITOR_MAIN_MISMATCH",
+    )
+
+    auditor_comment_id = int(receipt["published_comment_id"])
+    require(
+        receipt.get("published_by") == AUDITOR_LOGIN,
+        "AUDITOR_RECEIPT_PRODUCER",
+    )
+    require(
+        receipt.get("github_app_id") == AUDITOR_APP_ID,
+        "AUDITOR_RECEIPT_APP",
+    )
+
+    repo = job["repo"]
+    pr_number = job["pr"]
+
+    pr = public_github(
+        f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+    )
+    main = public_github(
+        f"https://api.github.com/repos/{repo}/branches/main"
+    )
+    commit = public_github(
+        f"https://api.github.com/repos/{repo}/commits/{job['head']}"
+    )
+
+    require(pr["state"] == "open", "PR_NOT_OPEN")
+    require(pr["draft"] is True, "PR_NOT_DRAFT")
+    require(pr["merged"] is False, "PR_MERGED")
+    require(pr["head"]["sha"] == job["head"], "HEAD_DRIFT")
+    require(pr["base"]["sha"] == job["base"], "BASE_DRIFT")
+    require(
+        commit["commit"]["tree"]["sha"] == job["tree"],
+        "TREE_DRIFT",
+    )
+    require(main["commit"]["sha"] == job["main"], "MAIN_DRIFT")
+
+    auditor_comment = public_github(
+        (
+            f"https://api.github.com/repos/{repo}/issues/comments/"
+            f"{auditor_comment_id}"
+        )
+    )
+    require(
+        (auditor_comment.get("user") or {}).get("login")
+        == AUDITOR_LOGIN,
+        "AUDITOR_COMMENT_LOGIN",
+    )
+    outer_app = (
+        (auditor_comment.get("performed_via_github_app") or {}).get("slug")
+    )
+    require(
+        outer_app in (None, "multiverse-independent-auditor"),
+        "AUDITOR_COMMENT_APP",
+    )
+
+    published_artifact = json_block(
+        auditor_comment.get("body") or ""
+    )
+    require(
+        published_artifact == artifact,
+        "PUBLISHED_AUDITOR_ARTIFACT_DRIFT",
+    )
+
+    upstream = request["upstream"]
+    lab_comment_id = upstream["lab_pass_comment"]
+    t1_comment_id = upstream["t1_comment"]
+
+    lab_comment = public_github(
+        (
+            f"https://api.github.com/repos/{repo}/issues/comments/"
+            f"{lab_comment_id}"
+        )
+    )
+    require(
+        (lab_comment.get("user") or {}).get("login") == LAB_LOGIN,
+        "LAB_UPSTREAM_LOGIN",
+    )
+
+    t1_comment = public_github(
+        (
+            f"https://api.github.com/repos/{repo}/issues/comments/"
+            f"{t1_comment_id}"
+        )
+    )
+    t1_body = t1_comment.get("body") or ""
+    require(
+        str(lab_comment_id) in t1_body,
+        "T1_LAB_BINDING_MISSING",
+    )
+    require(
+        job["head"] in t1_body,
+        "T1_HEAD_BINDING_MISSING",
+    )
+    require(
+        job["tree"] in t1_body,
+        "T1_TREE_BINDING_MISSING",
+    )
+
+    comments = public_github(
+        (
+            f"https://api.github.com/repos/{repo}/issues/"
+            f"{pr_number}/comments?per_page=100"
+        )
+    )
+    marker = t2_marker(
+        job["request_id"],
+        job["head"],
+        auditor_comment_id,
+    )
+    for comment in comments:
+        if marker in (comment.get("body") or ""):
+            raise ReviewContractError(
+                f"CURRENT_T2_ALREADY_EXISTS:{comment['id']}"
+            )
+
+    private_key = os.environ.get(
+        "MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY"
+    )
+    require(bool(private_key), "AUDITOR_PRIVATE_KEY_MISSING")
+    token = installation_token(
+        repo=repo,
+        app_id=AUDITOR_APP_ID,
+        private_key=private_key,
+    )
+
+    t2_artifact = {
+        "schema_version": T2_SCHEMA,
+        "gate": "T2",
+        "verdict": "PASS",
+        "request_id": job["request_id"],
+        "request_comment": job["request_comment"],
+        "reviewed_repo": repo,
+        "reviewed_pr": pr_number,
+        "reviewed_head": job["head"],
+        "reviewed_tree": job["tree"],
+        "reviewed_base": job["base"],
+        "reviewed_main": job["main"],
+        "lab_pass_comment": lab_comment_id,
+        "t1_comment": t1_comment_id,
+        "auditor_pass_comment": auditor_comment_id,
+        "auditor_producer": AUDITOR_LOGIN,
+        "auditor_app_id": AUDITOR_APP_ID,
+        "proof_ceiling": request["proof_ceiling"],
+        "execution_state": request["execution_state"],
+        "nonauthority": request["nonauthority"],
+    }
+
+    fence = chr(96) * 3
+    body = "\n".join(
+        [
+            (
+                marker
+                + (os.environ.get("BUILDKITE_BUILD_ID") or "UNKNOWN")
+                + " -->"
+            ),
+            "",
+            "MULTIVERSE FIXED REVIEW DISPATCHER v1 — T2 RESULT",
+            "",
+            fence + "json",
+            json.dumps(
+                t2_artifact,
+                indent=2,
+                sort_keys=True,
+            ),
+            fence,
+            "",
+            "FIXED_REVIEW_T2_VERDICT: PASS",
+            f"REQUEST_ID: {job['request_id']}",
+            f"BOUND_TO_LAB_PASS: {lab_comment_id}",
+            f"BOUND_TO_T1: {t1_comment_id}",
+            f"BOUND_TO_AUDITOR_PASS: {auditor_comment_id}",
+            f"T2_REVIEWED_HEAD: {job['head']}",
+            f"T2_REVIEWED_TREE: {job['tree']}",
+            f"T2_REVIEWED_MAIN: {job['main']}",
+            f"PROOF_CEILING: {request['proof_ceiling']}",
+            f"EXECUTION_STATE: {request['execution_state']}",
+            "",
+            (
+                "T2 grants no authority beyond the request's explicit "
+                "nonauthority boundary."
+            ),
+        ]
+    )
+
+    result = github_json(
+        "POST",
+        (
+            f"https://api.github.com/repos/{repo}/issues/"
+            f"{pr_number}/comments"
+        ),
+        token,
+        {"body": body},
+    )
+
+    return {
+        "schema": T2_RECEIPT_SCHEMA,
+        "request_id": job["request_id"],
+        "auditor_comment_id": auditor_comment_id,
+        "t2_comment_id": result["id"],
+        "reviewed_head": job["head"],
+        "reviewed_tree": job["tree"],
+        "reviewed_main": job["main"],
+        "verdict": "PASS",
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--job", default="review_job.json")
+    parser.add_argument("--artifact", default="review_artifact.json")
+    parser.add_argument("--receipt", default="review_publish_receipt.json")
+    parser.add_argument("--output", default="t2_publish_receipt.json")
+    args = parser.parse_args()
+
+    job = json.loads(Path(args.job).read_text())
+    artifact = json.loads(Path(args.artifact).read_text())
+    receipt = json.loads(Path(args.receipt).read_text())
+
+    result = publish_t2(job, artifact, receipt)
+    Path(args.output).write_text(
+        json.dumps(
+            result,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (ReviewContractError, GitHubAppError) as exc:
+        print(f"T2_FIX_REQUIRED:{exc}")
+        raise SystemExit(1)
