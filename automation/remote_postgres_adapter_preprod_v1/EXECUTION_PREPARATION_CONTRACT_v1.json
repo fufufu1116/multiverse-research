@@ -35,6 +35,8 @@
     "schema_namespace": "mv_runtime_*_v1",
     "synthetic_checkpoint_only": true,
     "synthetic_idempotency_operation_only": true,
+    "final_evidence_checkpoint": true,
+    "provider_restart_replays_writes": false,
     "external_effect_executed": false,
     "http_state_changes_enabled": false
   },
@@ -48,6 +50,7 @@
     "stale_owner_rejection": true,
     "checkpoint_resume_visibility": true,
     "cross_owner_duplicate_suppression": true,
+    "restart_evidence_recovery": true,
     "readiness_false": true
   },
   "proof_ceiling": "REMOTE_POSTGRES_ADAPTER_PREPRODUCTION_EXECUTION_PREPARATION_ONLY",
