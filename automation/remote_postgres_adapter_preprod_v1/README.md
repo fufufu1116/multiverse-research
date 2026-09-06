@@ -12,7 +12,7 @@ After a separate exact Owner execution-authority gate, the workload may be deplo
 dedicated free PRE_PRODUCTION Render web service in Singapore against the existing free
 PostgreSQL instance `dpg-dadou0on74is73b09570-a`.
 
-The service validates all non-secret authority gates before reading the database connection
+The service validates named non-secret authority gates before reading the database connection
 secret or importing psycopg. The connection secret remains a runtime-only provider secret
 and is never printed or included in evidence.
 
@@ -29,7 +29,9 @@ The bounded drill uses only synthetic no-effect state:
 - stale worker A rejection;
 - resume checkpoint visibility;
 - cross-owner duplicate suppression;
-- readiness remains false.
+- readiness remains false;
+- write a final durable evidence checkpoint so a later provider restart recovers evidence
+  without replaying the drill.
 
 HTTP is read-only for `/health`, `/ready`, and `/evidence`; state-changing methods are
 denied.
