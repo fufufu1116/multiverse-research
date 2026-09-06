@@ -1,0 +1,88 @@
+name: MULTIVERSE Review Dispatcher v1 pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/review-dispatcher-cross-chat-convergence-v1-20260907-v1
+    paths:
+      - 'automation/review_dispatcher_v1/**'
+      - 'buildkite/review_dispatcher_v1/**'
+      - 'governance/MULTIVERSE_COMMON_OPERATING_BASELINE_v1.json'
+      - 'governance/MULTIVERSE_CROSS_CHAT_CAPABILITY_CONVERGENCE_v1.md'
+      - '.github/workflows/multiverse-review-dispatcher-v1-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Exact head and Fresh main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test -n "$FRESH_MAIN"
+          echo "DISPATCHER_CANDIDATE_HEAD=$GITHUB_SHA"
+          echo "DISPATCHER_FRESH_MAIN=$FRESH_MAIN"
+
+      - name: Python compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            automation/review_dispatcher_v1/model.py \
+            automation/review_dispatcher_v1/dispatcher.py \
+            automation/review_dispatcher_v1/review.py \
+            automation/review_dispatcher_v1/github_app.py \
+            automation/review_dispatcher_v1/publisher.py \
+            automation/review_dispatcher_v1/t2.py \
+            automation/review_dispatcher_v1/validator.py \
+            automation/review_dispatcher_v1/test_dispatcher.py
+
+      - name: Dispatcher unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            automation.review_dispatcher_v1.test_dispatcher \
+            -v
+
+      - name: Candidate validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python automation/review_dispatcher_v1/validator.py)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json
+          import sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["shared_pipeline_mutation_authorized"] is False
+          assert data["merge_authorized"] is False
+          assert data["main_mutation_authorized"] is False
+          assert data["runtime"] == "OFF"
+          PY
+
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "SHARED_BUILDKITE_PIPELINE_MUTATION=false"
+          echo "WORKFLOW_DISPATCH_USED=false"
+          echo "SECRETS_USED=false"
+          echo "PROVIDER_MUTATION=false"
+          echo "MERGE_AUTHORITY=false"
+          echo "MAIN_MUTATION_AUTHORITY=false"
+          echo "RUNTIME=OFF"
