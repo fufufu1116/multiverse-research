@@ -1,0 +1,25 @@
+{
+  "record":"KEIRIN_WORK_CONSERVING_MULTI_LANE_PROGRESS_POLICY_20260906_v1",
+  "status":"ADOPTED_RESEARCH_ONLY_NO_RESULT_NO_PRODUCTION_AUTHORITY",
+  "purpose":"Eliminate publication-wait as the primary research work state. When one external dependency is closed, automatically route effort to another legal material lane until all such lanes are genuinely exhausted.",
+  "binding_current_at_adoption":"KEIRIN_CURRENT_RESEARCH_STATE_20260905_v53",
+  "work_conserving_rule":"WAITING is not an admissible primary work state. A closed external dependency triggers immediate lane switching. BLOCKED is admissible only after every legal material lane below is exhausted or requires Owner authority.",
+  "lanes":[
+    {"lane":"A_PROSPECTIVE_CAPTURE","jp":"将来PRE取得","work":"Positive-navigation readiness, strict whole-Day1 PRE capture, candidate membership, official identity, contemporaneous same-race assignment, provenance, support receipt."},
+    {"lane":"B_EXISTING_EVIDENCE_MINING","jp":"既存証拠掘削","work":"Audit only already-captured pre-cutoff evidence under its original frozen contract; exact-name cross-circumference screening; no post-cutoff repair or reconstruction."},
+    {"lane":"C_GATE_DEFICIT_PLANNING","jp":"gate不足逆算","work":"Plan acquisition against the frozen adequacy gate rather than chronological waiting: 30 unique supported riders, 60 supported rows, >=2 venues and >=2 calendar blocks per circumference, concentration limits, identity mapping 1.0."},
+    {"lane":"D_TOOLING_AND_FAILURE_HARDENING","jp":"取得・検証ツール強化","work":"Self-tests, negative fixtures, duplicate protection, fail-closed ambiguity handling, resolver readiness, provenance validation and deterministic handoff state."}
+  ],
+  "priority_function":[
+    "Interrupt all lower lanes when an actual positive Day1 racecard appears before cutoff.",
+    "Otherwise choose the legal task with highest expected frozen-gate deficit reduction per external dependency.",
+    "Prefer distinct riders, underrepresented circumference venues and calendar blocks; avoid concentration that risks venue>0.60 or rider>0.10.",
+    "Candidate count alone is not progress once candidate supply exceeds the 30-rider gate floor; prioritize conversion readiness and coverage diversity.",
+    "Do not expand the event queue merely to create activity. Expansion requires a documented gate-coverage deficit that the current queue cannot plausibly satisfy."
+  ],
+  "current_gate_deficit_snapshot":{"formal_supported_unique_riders":1,"formal_supported_rows":2,"remaining_unique_floor":29,"remaining_rows_floor":58,"prequalified_unique_riders":43,"candidate_supply_bottleneck":false,"formal_conversion_bottleneck":true},
+  "queue_coverage_snapshot":{"events":13,"unique_venues":8,"333_or_333_33m_venues":4,"400m_venues":4,"venue_floor_structurally_covered_by_queue":true,"formal_venue_gate_not_yet_satisfied":true},
+  "stop_conditions":["OWNER_AUTHORITY_REQUIRED","ALL_LEGAL_MATERIAL_LANES_EXHAUSTED","HARD_BOUNDARY_WOULD_BE_CROSSED"],
+  "hard_boundaries":["NO_RESULT_JOIN_BEFORE_SUPPORT_GATE","NO_RACE_ID_OR_RACEDETAIL_URL_GUESSING","NO_POST_CUTOFF_PRE_RECONSTRUCTION","NO_FUZZY_IDENTITY","UNKNOWN_NE_ZERO","NO_S0_MUTATION","NO_MAIN_OR_RUNTIME_MUTATION","NO_REAL_MONEY_EXECUTION"],
+  "owner_action_required_now":false
+}
