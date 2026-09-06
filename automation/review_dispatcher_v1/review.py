@@ -8,7 +8,6 @@ import re
 import subprocess
 import sys
 import time
-import unittest
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -27,10 +26,24 @@ from automation.review_dispatcher_v1.model import (
     dotted_get,
     issue_comment_owner_trusted,
     require,
+    resolve_public_https_url,
     validate_request,
 )
 
 ARTIFACT_SCHEMA = "MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1"
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(
+        self,
+        req,
+        fp,
+        code,
+        msg,
+        headers,
+        newurl,
+    ):
+        raise ReviewContractError("HTTP_REDIRECT_DENIED")
 
 
 def github_get(url: str) -> Any:
@@ -54,7 +67,12 @@ def endpoint(
     attempts: int = 6,
 ) -> tuple[int, Any]:
     last: Any = None
+    opener = urllib.request.build_opener(
+        urllib.request.ProxyHandler({}),
+        _NoRedirect(),
+    )
     for attempt in range(attempts):
+        resolve_public_https_url(base_url)
         req = urllib.request.Request(
             base_url + path,
             method=method,
@@ -64,9 +82,11 @@ def endpoint(
             },
         )
         try:
-            with urllib.request.urlopen(req, timeout=45) as response:
+            with opener.open(req, timeout=45) as response:
                 raw = response.read().decode()
                 return response.status, json.loads(raw)
+        except ReviewContractError:
+            raise
         except urllib.error.HTTPError as exc:
             raw = exc.read().decode()
             try:
@@ -400,6 +420,7 @@ def _check_source_rules(
 
 
 def _run_unittests(
+    repo_root: Path,
     job: dict[str, Any],
     checks: dict[str, str],
     findings: list[str],
@@ -407,10 +428,26 @@ def _run_unittests(
     total = 0
     for rule in job["request"]["recipe"]["unittest_modules"]:
         module = rule["module"]
-        suite = unittest.defaultTestLoader.loadTestsFromName(module)
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
-        count = result.testsRun
-        total += count
+        proc = subprocess.run(
+            [sys.executable, "-m", "unittest", module, "-v"],
+            cwd=str(repo_root),
+            text=True,
+            capture_output=True,
+        )
+        if proc.stdout:
+            print(proc.stdout)
+        if proc.stderr:
+            print(proc.stderr, file=sys.stderr)
+
+        combined = "\n".join([proc.stdout or "", proc.stderr or ""])
+        matches = re.findall(
+            r"^Ran\s+(\d+)\s+tests?\s+in\s+",
+            combined,
+            re.M,
+        )
+        count = int(matches[0]) if len(matches) == 1 else -1
+        if count >= 0:
+            total += count
 
         name = f"unittest_count:{module}"
         if count == rule["count"]:
@@ -422,12 +459,12 @@ def _run_unittests(
             )
 
         name = f"unittest_result:{module}"
-        if result.wasSuccessful():
+        if proc.returncode == 0 and count >= 0:
             checks[name] = "PASS"
         else:
             checks[name] = "FIX_REQUIRED"
             findings.append(
-                f"{name}: failures={len(result.failures)} errors={len(result.errors)}"
+                f"{name}: exit={proc.returncode} summary_count={count}"
             )
     return total
 
@@ -716,7 +753,7 @@ def run_review(
     _check_subtrees(job, fetch, checks, findings)
     _check_comments(job, fetch, checks, findings)
     _check_source_rules(repo_root, job, checks, findings)
-    test_count = _run_unittests(job, checks, findings)
+    test_count = _run_unittests(repo_root, job, checks, findings)
     _run_validators(repo_root, job, checks, findings)
     _scan_secrets(repo_root, job, checks, findings)
     digests = _run_http(job, checks, findings, endpoint_fn)

@@ -3,6 +3,9 @@ from __future__ import annotations
 import copy
 import json
 import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest import mock
 
 from automation.review_dispatcher_v1 import dispatcher, review
 from automation.review_dispatcher_v1.model import (
@@ -136,9 +139,18 @@ class ModelTests(unittest.TestCase):
             validate_public_https_url("https://10.0.0.2/evidence")
 
         self.assertEqual(
-            validate_public_https_url("https://example.com/evidence"),
-            "https://example.com/evidence",
+            validate_public_https_url("https://example.com"),
+            "https://example.com",
         )
+
+        for unsafe in (
+            "https://user:pass@example.com",
+            "https://example.com?token=secret",
+            "https://example.com#fragment",
+            "https://example.com/base",
+        ):
+            with self.assertRaises(ReviewContractError):
+                validate_public_https_url(unsafe)
 
     def test_06_extract_request_marker_and_json(self):
         request = lab_request()
@@ -503,6 +515,69 @@ class HardeningTests(unittest.TestCase):
         self.assertEqual(findings, [])
         self.assertTrue(
             all(value == "PASS" for value in checks.values())
+        )
+
+
+    def test_17_redirect_handler_fails_closed(self):
+        handler = review._NoRedirect()
+        with self.assertRaises(ReviewContractError):
+            handler.redirect_request(
+                None,
+                None,
+                302,
+                "Found",
+                {},
+                "https://example.com/redirected",
+            )
+
+    def test_18_unittests_execute_out_of_process(self):
+        job = {
+            "request": {
+                "recipe": {
+                    "unittest_modules": [
+                        {
+                            "module": "automation.example.tests",
+                            "count": 3,
+                        }
+                    ]
+                }
+            }
+        }
+        proc = SimpleNamespace(
+            returncode=0,
+            stdout="",
+            stderr="Ran 3 tests in 0.001s\n\nOK\n",
+        )
+        checks = {}
+        findings = []
+        with mock.patch.object(
+            review.subprocess,
+            "run",
+            return_value=proc,
+        ) as run:
+            count = review._run_unittests(
+                Path("."),
+                job,
+                checks,
+                findings,
+            )
+
+        self.assertEqual(count, 3)
+        self.assertEqual(findings, [])
+        self.assertEqual(
+            checks["unittest_result:automation.example.tests"],
+            "PASS",
+        )
+        args = run.call_args.args[0]
+        self.assertEqual(
+            args,
+            [
+                review.sys.executable,
+                "-m",
+                "unittest",
+                "automation.example.tests",
+                "-v",
+            ],
         )
 
 

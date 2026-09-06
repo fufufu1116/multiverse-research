@@ -4,6 +4,7 @@ import hashlib
 import ipaddress
 import json
 import re
+import socket
 from pathlib import PurePosixPath
 from typing import Any, Callable
 from urllib.parse import urlparse
@@ -133,8 +134,19 @@ def safe_repo_path(value: Any) -> str:
     p = PurePosixPath(value)
     require(not p.is_absolute(), "ABSOLUTE_PATH_DENIED")
     require(".." not in p.parts, "PATH_TRAVERSAL_DENIED")
-    require("\\x00" not in value, "PATH_NUL_DENIED")
+    require("\x00" not in value, "PATH_NUL_DENIED")
     return value
+
+
+def _address_allowed(ip: ipaddress._BaseAddress) -> bool:
+    return not (
+        ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_multicast
+        or ip.is_reserved
+        or ip.is_unspecified
+    )
 
 
 def validate_public_https_url(value: Any) -> str:
@@ -142,23 +154,55 @@ def validate_public_https_url(value: Any) -> str:
     parsed = urlparse(value)
     require(parsed.scheme == "https", "HTTPS_REQUIRED")
     require(bool(parsed.hostname), "URL_HOST_REQUIRED")
-    host = parsed.hostname or ""
+    require(
+        parsed.username is None and parsed.password is None,
+        "URL_USERINFO_DENIED",
+    )
+    require(not parsed.query and not parsed.fragment, "URL_QUERY_FRAGMENT_DENIED")
+    require(parsed.path in ("", "/"), "URL_BASE_PATH_DENIED")
+    host = (parsed.hostname or "").lower()
     require(host not in {"localhost", "localhost.localdomain"}, "LOCALHOST_DENIED")
     try:
         ip = ipaddress.ip_address(host)
     except ValueError:
         ip = None
     if ip is not None:
-        require(
-            not (
-                ip.is_private
-                or ip.is_loopback
-                or ip.is_link_local
-                or ip.is_multicast
-                or ip.is_reserved
-            ),
-            "PRIVATE_OR_SPECIAL_IP_DENIED",
+        require(_address_allowed(ip), "PRIVATE_OR_SPECIAL_IP_DENIED")
+    return value
+
+
+def resolve_public_https_url(value: Any) -> str:
+    value = validate_public_https_url(value)
+    parsed = urlparse(value)
+    host = parsed.hostname or ""
+    port = parsed.port or 443
+    try:
+        infos = socket.getaddrinfo(
+            host,
+            port,
+            type=socket.SOCK_STREAM,
         )
+    except OSError as exc:
+        raise ReviewContractError("URL_DNS_RESOLUTION_FAILED") from exc
+
+    addresses = {
+        item[4][0]
+        for item in infos
+        if item and len(item) >= 5 and item[4]
+    }
+    require(bool(addresses), "URL_DNS_EMPTY")
+    for raw in addresses:
+        ip = ipaddress.ip_address(raw.split("%", 1)[0])
+        require(_address_allowed(ip), "PRIVATE_OR_SPECIAL_DNS_IP_DENIED")
+    return value
+
+
+def validate_http_path(value: Any) -> str:
+    require(isinstance(value, str) and value.startswith("/"), "HTTP_PATH")
+    require(not value.startswith("//"), "HTTP_NETWORK_PATH_DENIED")
+    require("\x00" not in value, "HTTP_PATH_NUL_DENIED")
+    require("?" not in value and "#" not in value, "HTTP_PATH_QUERY_FRAGMENT_DENIED")
+    require("\\" not in value, "HTTP_PATH_BACKSLASH_DENIED")
     return value
 
 
@@ -351,11 +395,7 @@ def validate_request(request: dict[str, Any]) -> dict[str, Any]:
                 == {"path", "status", "json_equals", "capture_digest_as"},
                 "HTTP_GET_SCHEMA",
             )
-            require(
-                isinstance(item["path"], str)
-                and item["path"].startswith("/"),
-                "HTTP_GET_PATH",
-            )
+            validate_http_path(item["path"])
             require(
                 isinstance(item["status"], int)
                 and 100 <= item["status"] <= 599,
@@ -384,11 +424,7 @@ def validate_request(request: dict[str, Any]) -> dict[str, Any]:
             },
             "HTTP_DENY_SCHEMA",
         )
-        require(
-            isinstance(deny["path"], str)
-            and deny["path"].startswith("/"),
-            "HTTP_DENY_PATH",
-        )
+        validate_http_path(deny["path"])
         require(
             isinstance(deny["methods"], list)
             and bool(deny["methods"]),
@@ -409,11 +445,7 @@ def validate_request(request: dict[str, Any]) -> dict[str, Any]:
             "HTTP_DENY_STATUS",
         )
         _validate_json_equals(deny["json_equals"], "HTTP_DENY_JSON_EQUALS")
-        require(
-            isinstance(deny["evidence_unchanged_path"], str)
-            and deny["evidence_unchanged_path"].startswith("/"),
-            "HTTP_EVIDENCE_PATH",
-        )
+        validate_http_path(deny["evidence_unchanged_path"])
 
     return request
 

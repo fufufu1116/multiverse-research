@@ -119,6 +119,10 @@ def publish_t2(
         "TREE_DRIFT",
     )
     require(main["commit"]["sha"] == job["main"], "MAIN_DRIFT")
+    require(
+        job.get("dispatcher_ref") == main["commit"]["sha"],
+        "DISPATCHER_REF_DRIFT",
+    )
 
     auditor_comment = public_github(
         (

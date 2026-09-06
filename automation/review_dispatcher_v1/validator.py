@@ -175,7 +175,8 @@ def validate() -> dict:
             "review.py",
             "review_job.json",
             "review_artifact.json",
-            "review_dispatcher_bundle.tgz",
+            "git init -q .mv_dispatcher_source",
+            "JOB_DISPATCHER_REF",
         ):
             name = f"{label}:required:{required}"
             if required in text:
@@ -184,11 +185,49 @@ def validate() -> dict:
                 checks[name] = "FIX_REQUIRED"
                 findings.append(f"{name}: missing")
 
+        bundle_name = "review_dispatcher_bundle.tgz"
+        if bundle_name in text:
+            checks[f"{label}:no_audit_executable_bundle_handoff"] = "FIX_REQUIRED"
+            findings.append(
+                f"{label}:no_audit_executable_bundle_handoff: found"
+            )
+        else:
+            checks[f"{label}:no_audit_executable_bundle_handoff"] = "PASS"
+
+        trusted_fetch = "git -C .mv_dispatcher_source fetch -q --depth=1 origin main"
+        if trusted_fetch in text:
+            checks[f"{label}:secret_step_fresh_canonical_fetch"] = "PASS"
+        else:
+            checks[f"{label}:secret_step_fresh_canonical_fetch"] = "FIX_REQUIRED"
+            findings.append(
+                f"{label}:secret_step_fresh_canonical_fetch: missing"
+            )
+
+    review_source = (ROOT / "review.py").read_text()
+    for token in (
+        '[sys.executable, "-m", "unittest", module, "-v"]',
+        "resolve_public_https_url(base_url)",
+        "_NoRedirect()",
+        "urllib.request.ProxyHandler({})",
+    ):
+        name = f"review:hardening:{token[:32]}"
+        if token in review_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: missing")
+
     if "--lane LAB" in lab:
         checks["lab:lane_fixed"] = "PASS"
     else:
         checks["lab:lane_fixed"] = "FIX_REQUIRED"
         findings.append("lab:lane_fixed: missing")
+
+    if lab.count("checkout:\n      skip: true") == 1:
+        checks["lab:publisher_checkout_skipped"] = "PASS"
+    else:
+        checks["lab:publisher_checkout_skipped"] = "FIX_REQUIRED"
+        findings.append("lab:publisher_checkout_skipped: count mismatch")
 
     if "MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY" in lab:
         checks["lab:publisher_key_present"] = "PASS"
@@ -201,6 +240,14 @@ def validate() -> dict:
     else:
         checks["auditor:lane_fixed"] = "FIX_REQUIRED"
         findings.append("auditor:lane_fixed: missing")
+
+    if auditor.count("checkout:\n      skip: true") == 2:
+        checks["auditor:publisher_t2_checkout_skipped"] = "PASS"
+    else:
+        checks["auditor:publisher_t2_checkout_skipped"] = "FIX_REQUIRED"
+        findings.append(
+            "auditor:publisher_t2_checkout_skipped: count mismatch"
+        )
 
     for required in (
         "MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY",

@@ -18,9 +18,6 @@ steps:
       git archive "$DISPATCHER_REF" automation/review_dispatcher_v1 \
         | tar -x -C .mv_dispatcher
 
-      tar -czf review_dispatcher_bundle.tgz \
-        -C .mv_dispatcher automation/review_dispatcher_v1
-
       PYTHONPATH=.mv_dispatcher \
         python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
         --lane LAB \
@@ -33,9 +30,6 @@ steps:
         --job review_job.json \
         --output review_artifact.json \
         --repo-root .
-
-      buildkite-agent artifact upload \
-        "review_dispatcher_bundle.tgz"
 
       buildkite-agent artifact upload \
         "review_job.json"
@@ -61,19 +55,25 @@ steps:
       set -euo pipefail
 
       buildkite-agent artifact download \
-        "review_dispatcher_bundle.tgz" .
-
-      buildkite-agent artifact download \
         "review_job.json" .
 
       buildkite-agent artifact download \
         "review_artifact.json" .
 
-      rm -rf .mv_dispatcher
-      mkdir -p .mv_dispatcher
+      rm -rf .mv_dispatcher .mv_dispatcher_source
+      git init -q .mv_dispatcher_source
+      git -C .mv_dispatcher_source remote add origin \
+        https://github.com/fufufu1116/multiverse-research.git
+      git -C .mv_dispatcher_source fetch -q --depth=1 origin main
 
-      tar -xzf review_dispatcher_bundle.tgz \
-        -C .mv_dispatcher
+      FRESH_DISPATCHER_REF="$(git -C .mv_dispatcher_source rev-parse FETCH_HEAD)"
+      JOB_DISPATCHER_REF="$(python3 -c 'import json; print(json.load(open("review_job.json"))["dispatcher_ref"])')"
+      test "$FRESH_DISPATCHER_REF" = "$JOB_DISPATCHER_REF"
+
+      mkdir -p .mv_dispatcher
+      git -C .mv_dispatcher_source archive \
+        "$FRESH_DISPATCHER_REF" automation/review_dispatcher_v1 \
+        | tar -x -C .mv_dispatcher
 
       PYTHONPATH=.mv_dispatcher \
         python3 .mv_dispatcher/automation/review_dispatcher_v1/publisher.py \

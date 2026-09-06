@@ -37,9 +37,9 @@ The request is declarative. It cannot contain arbitrary shell, YAML, Python, tok
 
 The audit/review step receives no Lab/Auditor GitHub App private key and no DATABASE_URL.
 
-The publisher step skips checkout and receives only the lane-specific GitHub App private key.
+The publisher step skips Candidate checkout, receives only the lane-specific GitHub App private key, and independently fetches the exact canonical dispatcher ref from Fresh canonical main. It does not execute a dispatcher bundle produced by the Candidate audit step.
 
-The Auditor T2 step skips checkout, verifies the freshly published exact Auditor artifact, rechecks upstream Lab/T1 binding, then publishes T2 using the Auditor identity.
+The Auditor T2 step also skips Candidate checkout, independently fetches the same exact canonical dispatcher ref, verifies the freshly published exact Auditor artifact, rechecks upstream Lab/T1 binding, then publishes T2 using the Auditor identity.
 
 Fixed pipeline installation
 
@@ -49,7 +49,9 @@ They intentionally contain no job-specific PR, head, tree, endpoint, evidence di
 
 After the dispatcher is separately reviewed/adopted and merged into canonical main, each shared Buildkite pipeline is installed once.
 
-Each build fetches dispatcher code from origin/main, while the Candidate checkout remains the branch/head being judged. This prevents a Candidate from silently replacing the dispatcher that judges it.
+Each secret-free audit step fetches dispatcher code from origin/main, while the Candidate checkout remains the branch/head being judged. Each later secret-bearing publisher/T2 step independently fetches Fresh canonical main and requires that ref to equal the job-bound dispatcher_ref. No executable dispatcher artifact crosses from Candidate execution into a secret-bearing step.
+
+PUBLIC_HTTP_NO_EFFECT requests additionally fail closed on URL userinfo/query/fragment injection, DNS resolution to private/special addresses, proxy use, and redirects. This prevents the public-HTTP review primitive from silently crossing into a private target boundary.
 
 Concurrency
 

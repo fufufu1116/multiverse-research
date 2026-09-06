@@ -93,6 +93,10 @@ def _fresh_verify(job: dict[str, Any]) -> list[dict[str, Any]]:
         "TREE_DRIFT",
     )
     require(main["commit"]["sha"] == job["main"], "MAIN_DRIFT")
+    require(
+        job.get("dispatcher_ref") == main["commit"]["sha"],
+        "DISPATCHER_REF_DRIFT",
+    )
 
     parsed = extract_request_from_comment(
         request_comment.get("body") or ""
