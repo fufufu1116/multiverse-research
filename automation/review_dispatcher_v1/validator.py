@@ -204,11 +204,19 @@ def validate() -> dict:
         else:
             checks[f"{label}:no_defective_origin_main_ref"] = "PASS"
 
-        runtime_var_pattern = re.compile(
-            r"(?<!\\$)\\$(?:DISPATCHER_REF|FRESH_DISPATCHER_REF|"
-            r"JOB_DISPATCHER_REF|BUILDKITE_COMMIT)\\b"
+        runtime_names = (
+            "DISPATCHER_REF",
+            "FRESH_DISPATCHER_REF",
+            "JOB_DISPATCHER_REF",
+            "BUILDKITE_COMMIT",
         )
-        unescaped_runtime_vars = runtime_var_pattern.findall(text)
+        unescaped_runtime_vars = []
+        for runtime_name in runtime_names:
+            escaped = "$$" + runtime_name
+            unescaped = "$" + runtime_name
+            if unescaped in text.replace(escaped, ""):
+                unescaped_runtime_vars.append(unescaped)
+
         if unescaped_runtime_vars:
             checks[f"{label}:runtime_shell_vars_escaped"] = "FIX_REQUIRED"
             findings.append(
@@ -218,18 +226,23 @@ def validate() -> dict:
         else:
             checks[f"{label}:runtime_shell_vars_escaped"] = "PASS"
 
+        for runtime_name in runtime_names:
+            escaped = "$$" + runtime_name
+            name = f"{label}:runtime_var_present:{runtime_name}"
+            if escaped in text:
+                checks[name] = "PASS"
+            else:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(f"{name}: missing")
+
         for required in (
-            'export MULTIVERSE_DISPATCHER_REF="$DISPATCHER_REF"',
-            'git archive "$DISPATCHER_REF"',
-            '--head "$BUILDKITE_COMMIT"',
-            'test "$FRESH_DISPATCHER_REF" = "$JOB_DISPATCHER_REF"',
-            '"$FRESH_DISPATCHER_REF" automation/review_dispatcher_v1',
-            'REVIEW_EXIT=0',
-            '|| REVIEW_EXIT="$?"',
-            'if [ -f review_artifact.json ]; then',
-            'exit "$REVIEW_EXIT"',
+            "rm -f .mv_review_pass",
+            "if PYTHONPATH=.mv_dispatcher",
+            "touch .mv_review_pass",
+            "if [ -f review_artifact.json ]; then",
+            "test -f .mv_review_pass",
         ):
-            name = f"{label}:runtime_required:{required[:32]}"
+            name = f"{label}:failure_artifact_required:{required[:32]}"
             if required in text:
                 checks[name] = "PASS"
             else:
@@ -244,12 +257,12 @@ def validate() -> dict:
             artifact_guard_index = text.index(
                 "if [ -f review_artifact.json ]; then"
             )
-            review_exit_index = text.index('exit "$REVIEW_EXIT"')
+            final_status_index = text.index("test -f .mv_review_pass")
             artifact_order_ok = (
                 review_index
                 < job_upload_index
                 < artifact_guard_index
-                < review_exit_index
+                < final_status_index
             )
         except ValueError:
             artifact_order_ok = False
