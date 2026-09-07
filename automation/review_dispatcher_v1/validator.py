@@ -341,6 +341,7 @@ def validate() -> dict:
         "github_branch_commit_sha(",
         'checks["fresh_binding_contract"]',
         "github_comment_id(",
+        'lane_result_outer_app_trusted(lab_comment, "LAB")',
     ):
         name = f"review:hardening:{token[:32]}"
         if token in review_source:
