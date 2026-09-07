@@ -9,7 +9,7 @@ steps:
       set -euo pipefail
 
       git fetch origin main
-      DISPATCHER_REF="$(git rev-parse origin/main)"
+      DISPATCHER_REF="$(git rev-parse FETCH_HEAD)"
       export MULTIVERSE_DISPATCHER_REF="$DISPATCHER_REF"
 
       rm -rf .mv_dispatcher
