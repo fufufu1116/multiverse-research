@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_GUARD_EXECUTION_AUDIT_20260907_v1",
+  "status": "PASS_LOCAL_SELFTEST_AND_REAL_REGISTRY_SHAPE_REPLAY_NO_GITHUB_ACTIONS_DISPATCH",
+  "observed_at_jst": "2026-09-07T20:08:41+09:00",
+  "tool_path": "tools/keirin_precutoff_witness_registry_guard_v1.py",
+  "tool_blob_sha": "e63c164176fac6caebfd1d2301917786a8714bd6",
+  "registry_path": "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+  "registry_blob_sha": "24773df1c3c74289b3bdca9ec8b66f625ed0e63e",
+  "python_selftest": {
+    "execution_surface": "chat_local_python_stdlib",
+    "status": "PASS",
+    "tests": {
+      "positive_pre_cutoff_pass": true,
+      "at_cutoff_fail_closed": true,
+      "duplicate_fail_closed": true,
+      "no_support_authority": true
+    }
+  },
+  "real_registry_shape_replay": {
+    "execution_surface": "connector_side_deterministic_shape_replay",
+    "status": "PASS",
+    "entry_count": 19,
+    "permanently_closed_entries": 1,
+    "positive_pre_cutoff_same_race_witnesses": 0,
+    "support_increment_authorized_now": 0
+  },
+  "github_actions_dispatch_or_rerun": false,
+  "reason_no_github_actions": "Current #93 migration lock / Resume binding does not authorize workflow dispatch or rerun from this research chat.",
+  "nonauthority": {
+    "support_auto_authority": false,
+    "result": false,
+    "payout": false,
+    "odds": false,
+    "prediction": false,
+    "main_mutation": false,
+    "runtime": false,
+    "shared_lab_auditor_steps_mutation": false
+  },
+  "owner_action_required_now": false
+}
