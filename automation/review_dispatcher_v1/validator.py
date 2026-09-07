@@ -204,6 +204,62 @@ def validate() -> dict:
         else:
             checks[f"{label}:no_defective_origin_main_ref"] = "PASS"
 
+        runtime_var_pattern = re.compile(
+            r"(?<!\\$)\\$(?:DISPATCHER_REF|FRESH_DISPATCHER_REF|"
+            r"JOB_DISPATCHER_REF|BUILDKITE_COMMIT)\\b"
+        )
+        unescaped_runtime_vars = runtime_var_pattern.findall(text)
+        if unescaped_runtime_vars:
+            checks[f"{label}:runtime_shell_vars_escaped"] = "FIX_REQUIRED"
+            findings.append(
+                f"{label}:runtime_shell_vars_escaped: "
+                + ",".join(unescaped_runtime_vars)
+            )
+        else:
+            checks[f"{label}:runtime_shell_vars_escaped"] = "PASS"
+
+        for required in (
+            'export MULTIVERSE_DISPATCHER_REF="$DISPATCHER_REF"',
+            'git archive "$DISPATCHER_REF"',
+            '--head "$BUILDKITE_COMMIT"',
+            'test "$FRESH_DISPATCHER_REF" = "$JOB_DISPATCHER_REF"',
+            '"$FRESH_DISPATCHER_REF" automation/review_dispatcher_v1',
+            'REVIEW_EXIT=0',
+            '|| REVIEW_EXIT="$?"',
+            'if [ -f review_artifact.json ]; then',
+            'exit "$REVIEW_EXIT"',
+        ):
+            name = f"{label}:runtime_required:{required[:32]}"
+            if required in text:
+                checks[name] = "PASS"
+            else:
+                checks[name] = "FIX_REQUIRED"
+                findings.append(f"{name}: missing")
+
+        try:
+            review_index = text.index("review.py")
+            job_upload_index = text.index(
+                'buildkite-agent artifact upload \\\n        "review_job.json"'
+            )
+            artifact_guard_index = text.index(
+                "if [ -f review_artifact.json ]; then"
+            )
+            review_exit_index = text.index('exit "$REVIEW_EXIT"')
+            artifact_order_ok = (
+                review_index
+                < job_upload_index
+                < artifact_guard_index
+                < review_exit_index
+            )
+        except ValueError:
+            artifact_order_ok = False
+
+        if artifact_order_ok:
+            checks[f"{label}:failure_artifact_order"] = "PASS"
+        else:
+            checks[f"{label}:failure_artifact_order"] = "FIX_REQUIRED"
+            findings.append(f"{label}:failure_artifact_order: invalid")
+
         bundle_name = "review_dispatcher_bundle.tgz"
         if bundle_name in text:
             checks[f"{label}:no_audit_executable_bundle_handoff"] = "FIX_REQUIRED"
