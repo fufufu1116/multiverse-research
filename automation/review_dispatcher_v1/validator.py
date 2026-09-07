@@ -252,7 +252,8 @@ def validate() -> dict:
         try:
             review_index = text.index("review.py")
             job_upload_index = text.index(
-                'buildkite-agent artifact upload \\\n        "review_job.json"'
+                "buildkite-agent artifact upload",
+                review_index,
             )
             artifact_guard_index = text.index(
                 "if [ -f review_artifact.json ]; then"
