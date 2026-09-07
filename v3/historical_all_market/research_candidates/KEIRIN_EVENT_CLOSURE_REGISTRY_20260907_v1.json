@@ -1,0 +1,23 @@
+{
+  "record": "KEIRIN_EVENT_CLOSURE_REGISTRY_20260907_v1",
+  "status": "DURABLE_FAIL_CLOSED_EVENT_CLOSURE_LEDGER_ACTIVE",
+  "observed_at_jst": "2026-09-07T20:08:41+09:00",
+  "closures": [
+    {
+      "event": "伊東_2026-09-07",
+      "candidate": "上川 直紀 / 015423",
+      "trusted_pit_cutoff_jst": "2026-09-07T08:00:00+09:00",
+      "closure_artifact": "KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
+      "closure_status": "PERMANENT_FAIL_CLOSED_NO_BACKFILL",
+      "formal_support_increment": 0,
+      "reason": "Contemporaneous official same-race assignment and full provenance were not positively completed before trusted cutoff."
+    }
+  ],
+  "nonclosed_priority_events": [
+    "奈良_2026-09-10",
+    "川崎_2026-09-10",
+    "豊橋_2026-09-11"
+  ],
+  "invariant": "Closed events are never re-opened by post-cutoff evidence. Automation and human research should skip closed events except for audit/recovery reads.",
+  "owner_action_required_now": false
+}
