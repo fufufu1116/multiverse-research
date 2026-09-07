@@ -597,6 +597,79 @@ class ContractTests(unittest.TestCase):
             },
         )
 
+    def test_36_aggregate_is_invariant_to_input_order(self):
+        values = [
+            result(
+                submission_id="z-retry",
+                provider="provider-a",
+                model="model-a",
+            ),
+            result(
+                submission_id="a-original",
+                provider="provider-a",
+                model="model-a",
+            ),
+            result(
+                submission_id="middle",
+                provider="provider-b",
+                model="model-b",
+                position="OPPOSE",
+                assertion="Contrarian.",
+            ),
+        ]
+        forward = aggregate_results(task(), values)
+        reverse = aggregate_results(task(), list(reversed(values)))
+        self.assertEqual(forward, reverse)
+        self.assertEqual(
+            forward["duplicate_acknowledgements"][0][
+                "duplicate_of_submission_id"
+            ],
+            "a-original",
+        )
+
+    def test_37_missing_requested_role_is_explicit(self):
+        aggregate = aggregate_results(
+            task(),
+            [result(submission_id="architecture-only")],
+        )
+        self.assertEqual(
+            aggregate["missing_requested_roles"],
+            ["security_challenge"],
+        )
+        self.assertFalse(
+            aggregate["requested_role_coverage_complete"]
+        )
+        self.assertEqual(
+            aggregate["roles_without_completed_result"],
+            ["security_challenge"],
+        )
+
+    def test_38_noncompleted_role_is_observed_but_not_completed(self):
+        values = [
+            result(submission_id="architecture-complete"),
+            result(
+                submission_id="security-infra",
+                provider="security-provider",
+                model="security-model",
+                role="security_challenge",
+                status="INFRA_FAILURE",
+            ),
+        ]
+        aggregate = aggregate_results(task(), values)
+        self.assertEqual(aggregate["missing_requested_roles"], [])
+        self.assertTrue(
+            aggregate["requested_role_coverage_complete"]
+        )
+        self.assertEqual(
+            aggregate["roles_without_completed_result"],
+            ["security_challenge"],
+        )
+        self.assertFalse(
+            aggregate[
+                "requested_role_completed_coverage_complete"
+            ]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
