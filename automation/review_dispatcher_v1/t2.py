@@ -148,11 +148,14 @@ def publish_t2(
         "DISPATCHER_REF_DRIFT",
     )
 
-    auditor_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{auditor_comment_id}"
-        )
+    auditor_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{auditor_comment_id}"
+            )
+        ),
+        "AUDITOR_COMMENT_RESPONSE_OBJECT",
     )
     require(
         (auditor_comment.get("user") or {}).get("login")
@@ -210,11 +213,14 @@ def publish_t2(
         "LATEST_LAB_REQUEST_SHA256_MISMATCH",
     )
 
-    lab_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{lab_comment_id}"
-        )
+    lab_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{lab_comment_id}"
+            )
+        ),
+        "LAB_COMMENT_RESPONSE_OBJECT",
     )
     require(
         (lab_comment.get("user") or {}).get("login") == LAB_LOGIN,
@@ -312,11 +318,14 @@ def publish_t2(
         "LAB_UPSTREAM_NOT_SINGLE_LATEST_RESULT",
     )
 
-    t1_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{t1_comment_id}"
-        )
+    t1_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{t1_comment_id}"
+            )
+        ),
+        "T1_COMMENT_RESPONSE_OBJECT",
     )
     require(
         issue_comment_owner_trusted(t1_comment, repo),
