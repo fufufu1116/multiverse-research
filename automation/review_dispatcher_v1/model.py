@@ -70,16 +70,33 @@ def issue_comment_owner_trusted(
     return (comment.get("user") or {}).get("login") == owner
 
 
+def lane_result_outer_app_trusted(
+    comment: dict[str, Any],
+    lane: str,
+) -> bool:
+    if lane == "LAB":
+        expected_app = LAB_APP_SLUG
+    elif lane == "AUDITOR":
+        expected_app = AUDITOR_APP_SLUG
+    else:
+        return False
+
+    app = comment.get("performed_via_github_app")
+    if app is None:
+        return True
+    if not isinstance(app, dict):
+        return False
+    return app.get("slug") == expected_app
+
+
 def lane_result_comment_trusted(
     comment: dict[str, Any],
     lane: str,
 ) -> bool:
     if lane == "LAB":
         expected_login = LAB_LOGIN
-        expected_app = LAB_APP_SLUG
     elif lane == "AUDITOR":
         expected_login = AUDITOR_LOGIN
-        expected_app = AUDITOR_APP_SLUG
     else:
         return False
 
@@ -89,12 +106,7 @@ def lane_result_comment_trusted(
     if login != expected_login or user_type != "Bot":
         return False
 
-    app = comment.get("performed_via_github_app")
-    if app is None:
-        return True
-    if not isinstance(app, dict):
-        return False
-    return app.get("slug") == expected_app
+    return lane_result_outer_app_trusted(comment, lane)
 
 
 def fetch_all_pages(
