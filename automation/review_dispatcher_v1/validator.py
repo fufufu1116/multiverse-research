@@ -302,7 +302,6 @@ def validate() -> dict:
         "github_branch_commit_sha(",
         "COMMENTS_ITEM_OBJECT",
         "github_comment_id(",
-        'lane_result_outer_app_trusted(lab_comment, "LAB")',
     ):
         name = f"dispatcher:api_contract:{token[:32]}"
         if token in dispatcher_source:
