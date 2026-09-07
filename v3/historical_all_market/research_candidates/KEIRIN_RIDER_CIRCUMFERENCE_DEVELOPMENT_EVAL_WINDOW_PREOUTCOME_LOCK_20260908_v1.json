@@ -1,0 +1,61 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1",
+  "status": "PREOUTCOME_CONTIGUOUS_DEVELOPMENT_EVAL_WINDOW_LOCKED_EXACT_CARDS_PENDING",
+  "created_jst": "2026-09-08T01:12+09:00",
+  "role": "DEVELOPMENT_EVALUATION_WINDOW_PRESPEC",
+  "window": {
+    "start_day1_date_jst": "2026-09-16",
+    "end_day1_date_jst": "2026-09-26",
+    "include": "Every Japanese keirin meeting whose official local Day1 date falls within the inclusive window, and every positively captured Day1 race from those meetings.",
+    "exclude": "Meetings whose Day1 falls outside the window. Do not include Day2/Day3 merely because they occur inside the dates.",
+    "venue_selection_by_rider_identity": false,
+    "grade_filter": "NONE",
+    "circumference_filter": [
+      "333_OR_333_33M",
+      "400M"
+    ]
+  },
+  "endpoint_basis": {
+    "start": "The first calendar date after the last planned support/fit-side future Day1 block on 2026-09-15.",
+    "end": "The calendar date immediately before the separately reserved final untouched evaluation begins on 2026-09-27.",
+    "prior_limited_overlap_knowledge_disclosure": "Earlier work had already observed isolated overlap facts for some specific future meetings. Those facts do not determine inclusion: the window includes all Day1 starts across all venues for every date 2026-09-16 through 2026-09-26."
+  },
+  "nested_fixed_diagnostic": {
+    "date": "2026-09-24",
+    "venue_set": "KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json",
+    "roster_intersection": "KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json",
+    "role": "NESTED_TIME_AND_FALLBACK_DIAGNOSTIC"
+  },
+  "exact_membership": "PENDING_FUTURE_PRE_CARDS",
+  "capture_rule": "Freeze each whole Day1 card from positive PRE evidence before opening its later outcome data. Keep source/transport failures explicit.",
+  "primary_population_rule": "All eligible races in the frozen window, including explicit baseline fallback for riders without a valid learned rider-circumference term.",
+  "diagnostics_required": [
+    "fraction_with_active_rider_term",
+    "fraction_using_baseline_fallback",
+    "coverage_by_circumference",
+    "coverage_by_date",
+    "coverage_by_venue"
+  ],
+  "final_untouched_holdout": [
+    {
+      "venue": "玉野",
+      "date": "2026-09-27",
+      "circumference_m": 400
+    },
+    {
+      "venue": "防府",
+      "date": "2026-09-29",
+      "circumference_m": 333
+    }
+  ],
+  "result_access_authorized": false,
+  "formula_fit_authorized": false,
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "NO_RESULT_ACCESS_BEFORE_SUPPORT_CALENDAR_AND_FORMULA_FREEZE",
+    "NO_RIDER_OVERLAP_BASED_MEETING_INCLUSION",
+    "NO_POST_RESULT_WINDOW_CHANGE",
+    "NO_S0_REFIT",
+    "NO_FINAL_HOLDOUT_USE"
+  ]
+}
