@@ -1,0 +1,114 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v78",
+  "status": "CHAT_INDEPENDENT_RESEARCH_SEP24_FIVE_VENUE_SET_FROZEN_EVAL_WINDOW_LOCKED_SUPPORT_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v77.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "CURRENT/NOW/LATEST must always be Fresh Read from GitHub. Fresh-read branch, Resume, #93 fixed request-only baseline, #152, canonical main and PR177 before claims or writes.",
+  "fresh_binding": {
+    "research_branch_head_before_write": "7380eb24c58353d8d3a2030f2773159d9d3f1c98",
+    "canonical_main": "b7ee4cbb758b0c09f3ab90bd243c638e3899d24d",
+    "migration_status": "RELEASED_SUPERSEDED_BY_FIXED_REQUEST_ONLY_BASELINE",
+    "migration_release_comment": 5572390676,
+    "serialization_baseline_comment": 5572636296,
+    "shared_lab_auditor_operating_model": "FIXED_REQUEST_ONLY_PIPELINES_NO_PER_JOB_STEPS_MUTATION",
+    "runtime": "OFF"
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_unique_riders": 29,
+    "remaining_pre_rows": 58,
+    "preserved_rider": {"name": "高橋 梨香", "registration": "015018"},
+    "preserved_receipt": "KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
+    "gate": "FAIL"
+  },
+  "post_firewall_support_lane": {
+    "candidate_count": 35,
+    "official_identity_resolved": 35,
+    "historical_2026_09_07_exact_day1_rows": 35,
+    "future_pre_manifest": "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "future_events": [
+      {"date": "2026-09-14", "venue": "伊東", "circumference": "333_OR_333_33", "candidates": 11},
+      {"date": "2026-09-14", "venue": "青森", "circumference": "400", "candidates": 4},
+      {"date": "2026-09-15", "venue": "防府", "circumference": "333_OR_333_33", "candidates": 20}
+    ],
+    "candidate_margin_vs_remaining_rider_floor": 6,
+    "raw_candidate_expansion_authorized_now": false,
+    "support_increment_now": 0
+  },
+  "development_eval_preparation": {
+    "window_lock": "KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json",
+    "window_day1_start_jst": "2026-09-16",
+    "window_day1_end_jst": "2026-09-26",
+    "selection_rule": "ALL_JAPANESE_KEIRIN_MEETINGS_WITH_OFFICIAL_LOCAL_DAY1_DATE_IN_INCLUSIVE_WINDOW",
+    "nested_sep24_venue_set": "KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json",
+    "nested_sep24_venue_count": 5,
+    "nested_sep24_venues": [
+      {"venue": "弥彦", "circumference_m": 400},
+      {"venue": "川崎", "circumference_m": 400},
+      {"venue": "奈良", "circumference_m": 333},
+      {"venue": "別府", "circumference_m": 400},
+      {"venue": "熊本", "circumference_m": 400}
+    ],
+    "nested_sep24_roster_intersection": "KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json",
+    "exact_name_intersection_current_35": 0,
+    "preserved_formal_rider_assignment_observed": {"rider": "高橋 梨香", "registration": "015018", "venue": "別府", "circumference_m": 400},
+    "exact_future_race_membership": "PENDING_PRE_CARD",
+    "selection_by_candidate_overlap": false,
+    "target_result_access_authorized": false,
+    "formula_fit_authorized": false
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "state": "OPEN_DRAFT_CURRENT_MAIN_BOUND_LAB_REQUEST_PUBLISHED_INDEPENDENT_RESULT_PENDING",
+    "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "exact_candidate_head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+    "current_main_bound_lab_request_comment": 5573150058,
+    "current_main_bound_request_sha256": "ff6f8ee5d8b4c68e27a7b38515b012e628147b34a2913919c4673a1af3b3aa9d",
+    "current_independent_lab_result": "PENDING",
+    "accepted_definition": "UNKNOWN",
+    "full_gate_pass_authorized": false,
+    "result_access_authorized": false
+  },
+  "scientific_plan": {
+    "S0": {"status": "FROZEN", "beta": 0.22260435254784533, "form": "S0_SCORE_ONLY_SOFTMAX"},
+    "result": "BLOCKED_UNTIL_FORMAL_SUPPORT_GATE_PASS_CALENDAR_DEFINITION_ADOPTION_AND_EXACT_FORMULA_FIT_EVAL_PRESPEC_FREEZE",
+    "formula_status": "PROPOSED_PRE_RESULT_NOT_FROZEN",
+    "development_eval_window": "2026-09-16..2026-09-26 ALL DAY1 STARTS",
+    "final_untouched_eval": [
+      {"date": "2026-09-27", "venue": "玉野", "circumference_m": 400, "day": "Day1"},
+      {"date": "2026-09-29", "venue": "防府", "circumference_m": 333, "day": "Day1"}
+    ]
+  },
+  "permanent_closures": [
+    {"event": "伊東 2026-09-07", "rider": "上川 直紀", "registration": "015423", "artifact": "KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json", "rule": "NEVER_REOPEN_OR_BACKFILL"}
+  ],
+  "priority_next": [
+    "Fresh-read branch, Resume, canonical main, #93/#152 and PR177 before every CURRENT/NOW claim.",
+    "Prioritize positive-navigation Day1 PRE for 2026-09-14 伊東/青森 and 2026-09-15 防府 before cutoff; exact identity -> contemporaneous official same-race -> provenance -> receipt/guard -> witness -> gate recompute.",
+    "Do not expand raw candidate supply while the existing 35-candidate margin remains sufficient.",
+    "Prebuild and harden capture/readiness for the full 2026-09-16..26 development-evaluation Day1-start window without opening target RESULT.",
+    "Fresh-read PR177 and consume only exact-current independent review evidence. Keep calendar dimensions UNKNOWN until separately reviewed/adopted.",
+    "Complete exact low-DOF formula, shrinkage, fallback, metric, bootstrap and advancement freeze readiness before any development RESULT join."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout": false,
+    "odds_as_feature": false,
+    "prediction_or_human_forecast": false,
+    "fuzzy_identity": false,
+    "current_dynamic_profile_backfill": false,
+    "post_cutoff_backfill": false,
+    "main_mutation": false,
+    "runtime_activation": false,
+    "per_job_shared_steps_mutation": false,
+    "workflow_dispatch_or_rerun_without_separate_authority": false,
+    "s0_refit": false,
+    "result_join_before_prespec_freeze": false
+  },
+  "owner_action_required_now": false,
+  "created_jst": "2026-09-08T01:20+09:00"
+}
