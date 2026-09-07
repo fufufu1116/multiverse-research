@@ -1,0 +1,109 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v76",
+  "status": "CHAT_INDEPENDENT_RESEARCH_35_HISTORICAL_SIDES_COMPLETE_FINAL_PRE_PENDING_FORMULA_FREEZE_READINESS_PREPARED_RESULT_BLOCKED",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v75.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh Read branch, Resume, #93, #152, canonical main and CURRENT before claims/writes.",
+  "fresh_binding": {
+    "research_branch_head_before_write": "7aea104ec51ea29c41f928432c9814108bf0a1cd",
+    "canonical_main": "b7ee4cbb758b0c09f3ab90bd243c638e3899d24d",
+    "migration_lock": "#93 comment 5561567913 ACTIVE",
+    "continuation_contract": "#93 comment 5562005183 ACTIVE",
+    "shared_steps_mutation_authorized": false,
+    "workflow_dispatch_or_rerun_authorized": false,
+    "runtime": "OFF"
+  },
+  "support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_rows": 2,
+    "target_unique_riders": 30,
+    "target_rows": 60,
+    "remaining_unique_riders": 29,
+    "remaining_rows": 58,
+    "gate": "FAIL",
+    "preserved_receipt": "KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json"
+  },
+  "accelerated_supply": {
+    "candidates": 35,
+    "exact_official_ids": 35,
+    "exact_2026_09_07_historical_rows": 35,
+    "unresolved_historical_rows": 0,
+    "candidate_margin_vs_remaining_rider_floor": 6,
+    "identity_artifact": "KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+    "historical_rows_artifact": "KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+    "capture_manifest": "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json"
+  },
+  "future_pre": {
+    "live_recheck": "KEIRIN_0914_0915_FINAL_DAY1_RACECARD_LIVE_RECHECK_20260907_v1.json",
+    "ito_2026_09_14": {
+      "candidates": 11,
+      "state": "FINAL_RIDER_LEVEL_DAY1_CARD_NOT_YET_POSITIVELY_OBSERVED"
+    },
+    "aomori_2026_09_14": {
+      "candidates": 4,
+      "state": "FINAL_RIDER_LEVEL_DAY1_CARD_NOT_YET_POSITIVELY_OBSERVED"
+    },
+    "hofu_2026_09_15": {
+      "candidates": 20,
+      "state": "FINAL_RIDER_LEVEL_DAY1_CARD_NOT_YET_POSITIVELY_OBSERVED"
+    },
+    "conversion_chain": [
+      "final Day1 PRE membership before cutoff",
+      "exact official ID",
+      "contemporaneous official same-race assignment",
+      "provenance PASS",
+      "support receipt",
+      "receipt guard",
+      "gate recompute"
+    ],
+    "post_cutoff_repair": false
+  },
+  "calendar_gate": {
+    "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "candidate_pr": 177,
+    "review_state": "PENDING_INDEPENDENT_RESULT",
+    "full_gate_pass_authorized": false
+  },
+  "accuracy_readiness": {
+    "frozen_baseline": {
+      "name": "S0_SCORE_ONLY_SOFTMAX",
+      "beta": 0.22260435254784533,
+      "mutation_allowed": false
+    },
+    "s0_101r_development_confirmation": {
+      "winner_log_loss_better_than_uniform": true,
+      "winner_brier_better_than_uniform": true,
+      "ordered_top3_log_loss_better_than_uniform": true,
+      "model_promotion": false
+    },
+    "readiness_checklist": "KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1.json",
+    "formula_frozen": false,
+    "result_access": "BLOCKED",
+    "next_after_support_and_calendar_pass": "Freeze exact low-DOF formula + shrinkage/fallback + fit/eval membership + one primary metric + race-cluster bootstrap + exact advancement criterion, hash the prespec, then join development RESULT target-only."
+  },
+  "priority_next": [
+    "Do not expand candidate supply while 35 covers the remaining 29 with margin 6.",
+    "Positive-navigation recheck only for final Day1 rider cards for 伊東/青森 2026-09-14 and 防府 2026-09-15.",
+    "Immediately convert every valid candidate when final PRE appears; close incomplete chains +0 at cutoff with no repair.",
+    "Consume PR #177 only if an exact-bound independent result appears.",
+    "Use idle time only for non-outcome prespec/tooling readiness; do not open RESULT or invent formula from outcomes."
+  ],
+  "hard_boundaries": {
+    "S0": "FROZEN",
+    "RESULT": "BLOCKED",
+    "formula": "NOT_FROZEN",
+    "payout": false,
+    "odds_as_feature": false,
+    "prediction_feature": false,
+    "human_forecast_feature": false,
+    "fuzzy_identity": false,
+    "firewall_rollback": false,
+    "main_mutation": false,
+    "runtime_activation": false,
+    "shared_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false,
+    "real_money_execution": false
+  },
+  "owner_action_required_now": false
+}
