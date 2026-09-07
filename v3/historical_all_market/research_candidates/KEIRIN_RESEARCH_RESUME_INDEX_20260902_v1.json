@@ -5,19 +5,69 @@
   "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
   "first_rule": "Never infer CURRENT/NOW/LATEST from stored state. Fresh Read the research branch ref and #93 convergence state first.",
   "resume_sequence": [
-    {"step": 1, "action": "FRESH_READ_RESEARCH_BRANCH_REF"},
-    {"step": 2, "action": "FRESH_READ_COMMON_GOVERNANCE_CONVERGENCE", "binding": "#93 comments 5572390676 and 5572636296; #152 CLOSED; fixed request-only dispatcher baseline", "rule": "Migration lock is released/superseded. Research chats may publish exact machine-readable review requests under T2.4 serialization, but must never per-job edit shared Lab/Auditor Steps or create unauthorized Build/Retry authority."},
-    {"step": 3, "action": "READ_CURRENT_STATE", "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v78.json"},
-    {"step": 4, "action": "READ_ACTIVE_EVENT_QUEUE", "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"},
-    {"step": 5, "action": "READ_POST_FIREWALL_SUPPORT_SET", "paths": ["v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json", "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json", "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json"]},
-    {"step": 6, "action": "READ_PERMANENT_CLOSURES", "path": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json"},
-    {"step": 7, "action": "READ_CALENDAR_REVIEW", "pr": 177, "current_lab_request_comment": 5573150058, "rule": "Consume only exact-current independent review evidence; calendar remains UNKNOWN until separately adopted."},
-    {"step": 8, "action": "READ_DEVELOPMENT_EVAL_PRELOCKS", "paths": ["v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json", "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json", "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json"]},
-    {"step": 9, "action": "WORK_CONSERVING_CONTINUATION", "rule": "Formal support remains 1 rider / 2 rows. Existing 35 exact-identity candidates have 35/35 exact 2026-09-07 historical Day1 rows; final fit-side future PRE counterparts remain 2026-09-14 伊東/青森 and 2026-09-15 防府. Do not expand raw candidate supply while 35 exceeds the remaining 29-rider floor. The Sep24 nested evaluation set is now frozen to five Day1-start venues (弥彦/川崎/奈良/別府/熊本), and the broader development evaluation window is prelocked to every Japanese meeting whose official local Day1 is 2026-09-16..26. Exact race membership remains future PRE-pending. PR177 current-main-bound Lab request remains pending; calendar dimensions stay UNKNOWN. RESULT remains blocked until actual support gate PASS, calendar adoption, and complete formula/fit/eval prespec freeze."},
-    {"step": 10, "action": "CONTINUE_WITH_FRESH_BINDING", "rule": "If branch head, canonical main or #93 convergence state drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+    {
+      "step": 1,
+      "action": "FRESH_READ_RESEARCH_BRANCH_REF"
+    },
+    {
+      "step": 2,
+      "action": "FRESH_READ_COMMON_GOVERNANCE_CONVERGENCE",
+      "binding": "#93 comments 5572390676 and 5572636296; #152 CLOSED; fixed request-only dispatcher baseline",
+      "rule": "Migration lock is released/superseded. Research chats may publish exact machine-readable review requests under T2.4 serialization, but must never per-job edit shared Lab/Auditor Steps or create unauthorized Build/Retry authority."
+    },
+    {
+      "step": 3,
+      "action": "READ_CURRENT_STATE",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v79.json"
+    },
+    {
+      "step": 4,
+      "action": "READ_ACTIVE_EVENT_QUEUE",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"
+    },
+    {
+      "step": 5,
+      "action": "READ_POST_FIREWALL_SUPPORT_SET",
+      "paths": [
+        "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "READ_PERMANENT_CLOSURES",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json"
+    },
+    {
+      "step": 7,
+      "action": "READ_CALENDAR_REVIEW",
+      "pr": 177,
+      "current_lab_request_comment": 5573150058,
+      "rule": "Consume only exact-current independent review evidence; calendar remains UNKNOWN until separately adopted."
+    },
+    {
+      "step": 8,
+      "action": "READ_DEVELOPMENT_EVAL_PRELOCKS",
+      "paths": [
+        "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json"
+      ]
+    },
+    {
+      "step": 9,
+      "action": "WORK_CONSERVING_CONTINUATION",
+      "rule": "Formal support remains 1 rider / 2 rows. Existing post-firewall pool is fully preconverted except for future final Day1 cards: 35/35 exact identities, 35/35 exact 2026-09-07 historical rows, 35/35 prebuilt witness placeholders, and 35/35 currently present in Sep14/Sep15 assen snapshots. Conversion matrix and readiness audit are frozen. At final PRE publication, fill exact future race/car/PRE provenance, run guards and formalize until exactly 30 riders / 60 rows. PR177 has no independent result after request comment 5573150058; calendar remains UNKNOWN. RESULT stays closed."
+    },
+    {
+      "step": 10,
+      "action": "CONTINUE_WITH_FRESH_BINDING",
+      "rule": "If branch head, canonical main or #93 convergence state drifted during recovery, repeat Fresh Read before any write or CURRENT claim."
+    }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v78.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v77.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v79.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v78.json",
   "active_lane_pointers": {
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
     "ITO0907_FAIL_CLOSED_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
@@ -37,7 +87,10 @@
     "RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1.json",
     "SEP24_DAY1_START_SET": "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json",
     "SEP24_DAY1_ROSTER_INTERSECTION": "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json",
-    "DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json"
+    "DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json",
+    "PRECONVERSION_READINESS_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1.json",
+    "SUPPORT_CONVERSION_MATRIX": "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "ASSEN_RECHECK_20260908": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_ASSEN_RECHECK_20260908_v1.json"
   },
   "common_governance_policy": {
     "migration_lock": "#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
