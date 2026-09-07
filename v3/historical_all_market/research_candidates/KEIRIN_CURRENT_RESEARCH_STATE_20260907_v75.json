@@ -1,0 +1,97 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v75",
+  "status": "CHAT_INDEPENDENT_RESEARCH_35_POST_FIREWALL_CANDIDATES_IDENTITY_AND_0907_HISTORICAL_SIDE_COMPLETE_FUTURE_PRE_ONLY_BLOCKER",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v74.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh Read research branch, Resume, #93, #152 and CURRENT before claims/writes.",
+  "fresh_binding": {
+    "research_branch_head_before_write": "b59618ca3017f617bfaca89add350aa44c1b10a8",
+    "canonical_main": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "migration_lock": "#93 comment 5561567913 ACTIVE",
+    "continuation_contract": "#93 comment 5562005183 ACTIVE",
+    "shared_steps_mutation_authorized": false,
+    "workflow_dispatch_or_rerun_authorized": false,
+    "runtime": "OFF"
+  },
+  "support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_rows": 2,
+    "target_unique_riders": 30,
+    "target_rows": 60,
+    "remaining_unique_riders": 29,
+    "remaining_rows": 58,
+    "gate": "FAIL",
+    "preserved_receipt": "KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json"
+  },
+  "post_firewall_pipeline": {
+    "firewall": "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260907_v4.json",
+    "first_new_selection_date": "2026-09-07",
+    "phase_lock": "KEIRIN_POST_FIREWALL_0907_HISTORICAL_SUPPORT_PHASE_LOCK_20260907_v1.json",
+    "overlap_screen": "KEIRIN_POST_FIREWALL_0907_TO_0914_0915_OVERLAP_SCREEN_20260907_v1.json",
+    "identity_coverage": "KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+    "historical_exact_rows": "KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+    "pre_capture_manifest": "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "candidates": 35,
+    "exact_official_ids": 35,
+    "exact_0907_historical_rows": 35,
+    "unresolved_historical_rows": 0,
+    "formal_increment_now": 0,
+    "theoretical_failure_margin_vs_remaining_rider_floor": 6
+  },
+  "future_conversion": {
+    "ito_2026_09_14": {
+      "circumference_m": 333,
+      "candidates": 11,
+      "state": "WAIT_FINAL_DAY1_RACECARD"
+    },
+    "aomori_2026_09_14": {
+      "circumference_m": 400,
+      "candidates": 4,
+      "state": "WAIT_FINAL_DAY1_RACECARD"
+    },
+    "hofu_2026_09_15": {
+      "circumference_m": 333,
+      "candidates": 20,
+      "state": "WAIT_FINAL_DAY1_RACECARD"
+    },
+    "chain": [
+      "final Day1 PRE membership before cutoff",
+      "exact official registration identity",
+      "contemporaneous official same-race assignment",
+      "provenance PASS",
+      "support receipt",
+      "receipt guard",
+      "gate recompute"
+    ],
+    "post_cutoff_repair": false
+  },
+  "calendar_gate": {
+    "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "candidate_pr": 177,
+    "review_state": "PENDING_INDEPENDENT_RESULT",
+    "full_gate_pass_authorized": false
+  },
+  "scientific_next": [
+    "Do not expand raw candidate supply while 35 candidates cover the remaining 29-rider floor with a six-rider margin.",
+    "Continuously check only positively navigable final Day1 racecards for 2026-09-14 伊東/青森 and 2026-09-15 防府; formalize every valid candidate immediately.",
+    "When support gate and calendar definition are both actually PASS, freeze low-DOF Rider x Circumference formula/shrinkage/fallback/eval/metric/bootstrap/advancement before RESULT join.",
+    "Keep 玉野 2026-09-27 and 防府 2026-09-29 untouched final evaluation."
+  ],
+  "hard_boundaries": {
+    "S0": "FROZEN beta=0.22260435254784533",
+    "RESULT": "BLOCKED",
+    "formula": "BLOCKED_NOT_FROZEN",
+    "payout": false,
+    "odds_as_feature": false,
+    "prediction": false,
+    "human_forecast_feature": false,
+    "fuzzy_identity": false,
+    "firewall_rollback": false,
+    "main_mutation": false,
+    "runtime_activation": false,
+    "shared_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false
+  },
+  "owner_action_required_now": false
+}
