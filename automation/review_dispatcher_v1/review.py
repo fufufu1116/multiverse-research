@@ -275,8 +275,11 @@ def _check_comments(
 ) -> None:
     for rule in job["request"]["recipe"]["durable_comments"]:
         cid = rule["id"]
-        comment = fetch(
-            f"https://api.github.com/repos/{job['repo']}/issues/comments/{cid}"
+        comment = required_object(
+            fetch(
+                f"https://api.github.com/repos/{job['repo']}/issues/comments/{cid}"
+            ),
+            "COMMENT_RESPONSE_OBJECT",
         )
         login = (comment.get("user") or {}).get("login")
         app_slug = (
@@ -412,8 +415,11 @@ def _check_auditor_upstream(
         latest_lab_request = {}
         latest_lab_request_sha256 = ""
 
-    lab_comment = fetch(
-        f"https://api.github.com/repos/{job['repo']}/issues/comments/{lab_comment_id}"
+    lab_comment = required_object(
+        fetch(
+            f"https://api.github.com/repos/{job['repo']}/issues/comments/{lab_comment_id}"
+        ),
+        "LAB_COMMENT_RESPONSE_OBJECT",
     )
     lab_login = (lab_comment.get("user") or {}).get("login")
     lab_app = (
@@ -505,8 +511,11 @@ def _check_auditor_upstream(
             repr(authentic_result_ids),
         )
 
-    t1_comment = fetch(
-        f"https://api.github.com/repos/{job['repo']}/issues/comments/{t1_comment_id}"
+    t1_comment = required_object(
+        fetch(
+            f"https://api.github.com/repos/{job['repo']}/issues/comments/{t1_comment_id}"
+        ),
+        "T1_COMMENT_RESPONSE_OBJECT",
     )
     check(
         "upstream_t1_owner",
