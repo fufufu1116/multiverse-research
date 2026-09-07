@@ -34,6 +34,7 @@ from automation.review_dispatcher_v1.model import (
     github_full_pr_binding,
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
+    lane_result_outer_app_trusted,
     latest_exact_current_owner_request,
     require,
     resolve_public_https_target,
@@ -422,9 +423,7 @@ def _check_auditor_upstream(
         "LAB_COMMENT_RESPONSE_OBJECT",
     )
     lab_login = (lab_comment.get("user") or {}).get("login")
-    lab_app = (
-        (lab_comment.get("performed_via_github_app") or {}).get("slug")
-    )
+    lab_app = lab_comment.get("performed_via_github_app")
     check(
         "upstream_lab_login",
         lab_login == LAB_LOGIN,
@@ -432,7 +431,7 @@ def _check_auditor_upstream(
     )
     check(
         "upstream_lab_app",
-        lab_app == LAB_APP_SLUG,
+        lane_result_outer_app_trusted(lab_comment, "LAB"),
         repr(lab_app),
     )
 
