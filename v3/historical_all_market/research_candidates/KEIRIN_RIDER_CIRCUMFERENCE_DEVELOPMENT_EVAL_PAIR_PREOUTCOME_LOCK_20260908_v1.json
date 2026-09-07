@@ -1,0 +1,103 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_PAIR_PREOUTCOME_LOCK_20260908_v1",
+  "status": "PREOUTCOME_LOCKED_DEVELOPMENT_EVALUATION_PAIR_CANDIDATE_NO_RESULT_AUTHORITY",
+  "scope": "RESEARCH_CANDIDATE_PRE_ONLY_DESIGN_NO_RESULT_JOIN_NO_MODEL_FIT_NO_PROMOTION",
+  "created_jst": "2026-09-08T00:45+09:00",
+  "observed_research_head_before_creation": "8f266471955ea4430ecacbc1d15e07adb8fc9836",
+  "bindings": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v76.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL_20260907_v1.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1.json"
+  ],
+  "selection_independence": {
+    "decision_basis": [
+      "The 2026-09-03 identifiability lock already named the Sep24 Nara/Kawasaki pair as an allowable later PRE-only time-stability/support block before selected Sep3 target outcomes were intentionally observed.",
+      "Both blocks start on 2026-09-24, strictly after the current Sep14/Sep15 development-fit candidate period and before the separately reserved untouched Sep27/Sep29 final pair.",
+      "The pair supplies both circumference levels: Nara 333/333.33 class and Kawasaki 400m."
+    ],
+    "prohibited_selection_inputs": [
+      "RESULT",
+      "finish_order",
+      "payout",
+      "odds",
+      "human_forecast_or_mark",
+      "observed_model_signal",
+      "candidate_overlap_count",
+      "expected_challenger_advantage"
+    ],
+    "rider_mix_used_to_choose_pair": false,
+    "outcome_conditioned_selection": false
+  },
+  "development_evaluation_candidate": {
+    "role": "STRICTLY_LATER_NONOVERLAPPING_DEVELOPMENT_EVALUATION_PAIR_CANDIDATE",
+    "blocks": [
+      {
+        "date": "2026-09-24",
+        "venue": "奈良",
+        "circumference_class": "333_OR_333_33M",
+        "circumference_m": 333.33,
+        "grade": "F2",
+        "membership_rule": "WHOLE_OFFICIAL_DAY1_BLOCK; exact races, cars, official registrations and point-in-time PRE fields must be frozen before RESULT access; transport/source failures retained fail-closed."
+      },
+      {
+        "date": "2026-09-24",
+        "venue": "川崎",
+        "circumference_class": "400M",
+        "circumference_m": 400,
+        "grade": "UNKNOWN_UNTIL_POSITIVE_OFFICIAL_PRE_BINDING",
+        "membership_rule": "WHOLE_OFFICIAL_DAY1_BLOCK; exact races, cars, official registrations and point-in-time PRE fields must be frozen before RESULT access; transport/source failures retained fail-closed."
+      }
+    ],
+    "exact_membership_frozen": false,
+    "reason_not_frozen_yet": "Final Day1 PRE cards are future/not yet positively captured.",
+    "result_access_authorized": false
+  },
+  "fit_side_relation": {
+    "current_fit_candidate_period": "2026-09-07 historical PRE side plus 2026-09-14 Ito/Aomori and 2026-09-15 Hofu final PRE side, subject to formal support and calendar gates.",
+    "exact_development_fit_membership_frozen": false,
+    "no_outcome_role_assignment_from_this_artifact": true
+  },
+  "final_untouched_holdout_preserved": [
+    {
+      "venue": "玉野",
+      "date": "2026-09-27",
+      "circumference_m": 400,
+      "role": "FINAL_UNTOUCHED_EVAL_NO_DEVELOPMENT_USE"
+    },
+    {
+      "venue": "防府",
+      "date": "2026-09-29",
+      "circumference_m": 333,
+      "role": "FINAL_UNTOUCHED_EVAL_NO_DEVELOPMENT_USE"
+    }
+  ],
+  "post_lock_allowed_pre_only_work": [
+    "After this pair-selection lock exists, measure candidate/identity coverage only as a diagnostic; do not swap the pair based on overlap.",
+    "Prebuild witness registry entries and exact-card capture templates.",
+    "Freeze exact Day1 membership only from positive PRE evidence when published."
+  ],
+  "freeze_dependencies": {
+    "formal_support_gate": "PENDING_CURRENT_1_RIDER_2_ROWS",
+    "calendar_definition_pr177": "UNKNOWN_PENDING_INDEPENDENT_REVIEW",
+    "formula_v1": "PROPOSED_NOT_FROZEN",
+    "future_sep14_sep15_pre": "PENDING"
+  },
+  "hard_boundaries": [
+    "NO_RESULT_JOIN",
+    "NO_PAYOUT",
+    "NO_ODDS_IN_OUTCOME_MODEL",
+    "NO_HUMAN_FORECAST_SELECTION",
+    "NO_RIDER_MIX_BASED_EVENT_SWAP",
+    "NO_POST_RESULT_ROLE_REASSIGNMENT",
+    "NO_S0_REFIT_OR_BETA_CHANGE",
+    "NO_CURRENT_PROFILE_DYNAMIC_BACKFILL",
+    "NO_RACE_ID_GUESSING",
+    "NO_PROTECTED_HOLDOUT",
+    "NO_MODEL_PROMOTION",
+    "NO_MAIN_OR_RUNTIME_MUTATION",
+    "NO_SHARED_LAB_AUDITOR_STEPS_EDIT",
+    "NO_WORKFLOW_DISPATCH_OR_RERUN"
+  ],
+  "owner_action_required_now": false
+}
