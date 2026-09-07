@@ -25,13 +25,14 @@ steps:
         --head "$$BUILDKITE_COMMIT" \
         --output review_job.json
 
-      REVIEW_EXIT=0
-      PYTHONPATH=.mv_dispatcher \
+      rm -f .mv_review_pass
+      if PYTHONPATH=.mv_dispatcher \
         python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
         --job review_job.json \
         --output review_artifact.json \
-        --repo-root . \
-        || REVIEW_EXIT="$?"
+        --repo-root .; then
+        touch .mv_review_pass
+      fi
 
       buildkite-agent artifact upload \
         "review_job.json"
@@ -41,7 +42,7 @@ steps:
           "review_artifact.json"
       fi
 
-      exit "$REVIEW_EXIT"
+      test -f .mv_review_pass
 
   - wait
 
