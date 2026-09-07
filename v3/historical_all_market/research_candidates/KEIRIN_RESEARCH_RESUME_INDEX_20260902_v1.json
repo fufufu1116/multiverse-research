@@ -12,13 +12,13 @@
     {
       "step": 2,
       "action": "FRESH_READ_COMMON_GOVERNANCE_CONVERGENCE",
-      "binding": "#93 comment 5561567913; #152; PR #153",
-      "rule": "Research chat must not edit, dispatch, or rerun shared MULTIVERSE Independent Lab/Auditor Buildkite Steps during migration lock."
+      "binding": "#93 comments 5572390676 and 5572636296; #152 CLOSED; fixed request-only dispatcher baseline",
+      "rule": "Migration lock is released/superseded. Research chats may publish exact machine-readable review requests under T2.4 serialization, but must never per-job edit shared Lab/Auditor Steps or create unauthorized Build/Retry authority."
     },
     {
       "step": 3,
       "action": "READ_CURRENT_STATE",
-      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v76.json"
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v77.json"
     },
     {
       "step": 4,
@@ -48,7 +48,7 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "Request-only dispatcher migration is complete per Fresh #93; never per-job edit shared Lab/Auditor Steps. Current formal support remains 1 rider / 2 rows. 35 post-firewall candidates have exact official identities and exact 2026-09-07 historical Day1 rows; future PRE counterparts are 2026-09-14 伊東/青森 and 2026-09-15 防府. Focus conversion, not candidate expansion. RESULT remains blocked until actual support gate PASS, calendar definition adoption, and formula/evaluation prespec freeze. Honor T2.4 same-target serialization."
+      "rule": "Fixed request-only dispatcher baseline is active. Current formal support remains 1 rider / 2 rows. The post-firewall 35 candidates have exact identities and 35/35 exact 2026-09-07 historical Day1 rows; final future PRE counterparts remain 2026-09-14 伊東/青森 and 2026-09-15 防府. PR177 has a current-main-bound serialized Lab request at comment 5573150058; calendar remains UNKNOWN pending independent review/adoption. Primary development evaluation is prelocked by the whole 2026-09-24 Day1-start date rule; exact venue/race membership remains PRE-pending. RESULT remains blocked until actual support gate PASS, calendar adoption, and complete formula/fit/eval prespec freeze."
     },
     {
       "step": 10,
@@ -56,8 +56,8 @@
       "rule": "If branch head or #93 convergence state drifted during recovery, repeat Fresh Read before any write or CURRENT claim."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v76.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v75.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v77.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v76.json",
   "active_lane_pointers": {
     "AUTOMATION_MIGRATION_LOCK_CONVERGENCE": "v3/historical_all_market/research_candidates/KEIRIN_AUTOMATION_MIGRATION_LOCK_CONVERGENCE_20260907_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
@@ -98,23 +98,33 @@
     "POST_FIREWALL_PHASE_LOCK": "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_0907_HISTORICAL_SUPPORT_PHASE_LOCK_20260907_v1.json",
     "POST_FIREWALL_OVERLAP_SCREEN": "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_0907_TO_0914_0915_OVERLAP_SCREEN_20260907_v1.json",
     "POST_FIREWALL_35_IDENTITY": "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
-    "FUTURE_0914_0915_PRE_MANIFEST": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json"
+    "FUTURE_0914_0915_PRE_MANIFEST": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL_20260907_v1.json",
+    "RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1.json",
+    "RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_PAIR_PREOUTCOME_LOCK": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_PAIR_PREOUTCOME_LOCK_20260908_v1.json",
+    "SEP24_PRELOCKED_PAIR_35_CANDIDATE_COVERAGE_DIAGNOSTIC": "v3/historical_all_market/research_candidates/KEIRIN_0924_PRELOCKED_PAIR_35_CANDIDATE_COVERAGE_DIAGNOSTIC_20260908_v1.json",
+    "RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_DATE_RULE": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_DATE_RULE_PREOUTCOME_LOCK_20260908_v1.json",
+    "CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_COMMENT": 5573150058,
+    "CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_SHA256": "ff6f8ee5d8b4c68e27a7b38515b012e628147b34a2913919c4673a1af3b3aa9d"
   },
   "common_governance_policy": {
-    "migration_lock": "#93 comment 5561567913",
+    "migration_lock": "#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
     "dispatcher_issue": 152,
-    "dispatcher_candidate_pr": 153,
-    "shared_lab_auditor_steps": "CONTROL_PLANE_SINGLE_WRITER_DO_NOT_EDIT_HERE",
+    "fixed_request_only_baseline": "#93 comment 5572390676",
+    "same_target_request_serialization": "#93 comment 5572636296",
+    "shared_lab_auditor_steps": "FIXED_COMMON_INFRASTRUCTURE_NEVER_PER_JOB_EDIT_HERE",
     "research_candidate_work": "ALLOWED",
-    "workflow_dispatch_or_rerun": "NOT_AUTHORIZED_BY_MIGRATION_LOCK",
-    "runtime": "OFF",
-    "pr_153_current": "MERGED_TO_CANONICAL_MAIN_REPOSITORY_PREPARATION_ONLY_FIXED_SHARED_PIPELINES_NOT_INSTALLED"
+    "machine_readable_review_request_publication": "ALLOWED_SUBJECT_TO_T2_4_SERIALIZATION",
+    "workflow_dispatch_or_rerun": "NOT_GRANTED_BY_REQUEST_PUBLICATION",
+    "merge_main_ruleset": "NO_AUTHORITY",
+    "runtime": "OFF"
   },
   "connected_systems_policy": {
-    "keirin_pre_automation": "ENABLED_HOURLY_CONDITION_WATCH_V70_REGISTRY_CLOSURE_EXACT_CARD_INTERRUPT_CONVERGED",
-    "github_actions": "NO_NEW_DISPATCH_OR_RERUN_UNDER_CURRENT_MIGRATION_LOCK_WITHOUT_SEPARATE_AUTHORITY",
+    "keirin_pre_automation": "ENABLED_HOURLY_CONDITION_WATCH_FOR_2026_09_14_15_PRE_CAPTURE",
+    "github_actions": "NO_NEW_DISPATCH_OR_RERUN_WITHOUT_SEPARATE_AUTHORITY",
     "render": "EXISTING_PREPROD_NOEFFECT_RESOURCES_AVAILABLE_FOR_FUTURE_JUSTIFIED_REMOTE_VALIDATION",
-    "new_paid_resource_policy": "DO_NOT_CREATE_UNLESS_MATERIALLY_NEEDED_OR_OWNER_AUTHORIZED"
+    "new_paid_resource_policy": "DO_NOT_CREATE_UNLESS_MATERIALLY_NEEDED_OR_OWNER_AUTHORIZED",
+    "fixed_lab_auditor": "REQUEST_ONLY_BASELINE_ACTIVE_SHARED_STEPS_IMMUTABLE"
   },
   "context_policy": {
     "chat": "WORKSPACE_NOT_AUTHORITY",
