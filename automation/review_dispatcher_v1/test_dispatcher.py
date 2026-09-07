@@ -9,7 +9,14 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
-from automation.review_dispatcher_v1 import dispatcher, github_app, review
+from automation.review_dispatcher_v1 import (
+    dispatcher,
+    github_app,
+    publisher,
+    review,
+    t2,
+    validator,
+)
 from automation.review_dispatcher_v1.model import (
     LAB_APP_SLUG,
     REQUEST_MARKER,
