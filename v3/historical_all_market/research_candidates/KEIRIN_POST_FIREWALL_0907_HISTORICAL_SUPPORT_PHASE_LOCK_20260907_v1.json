@@ -1,0 +1,95 @@
+{
+  "record": "KEIRIN_POST_FIREWALL_0907_HISTORICAL_SUPPORT_PHASE_LOCK_20260907_v1",
+  "status": "PRE_OVERLAP_WHOLE_DAY1_BLOCKS_FROZEN_POST_FIREWALL_NO_RESULT_SELECTION",
+  "scope": "RESEARCH_SUPPORT_POPULATION_SELECTION_ONLY_NO_RESULT_NO_MODEL_FIT",
+  "lock_jst": "2026-09-07T22:13:00+09:00",
+  "fresh_parent_head": "10fbd729de9ef449d5a471abec8a279132b453f8",
+  "bindings": [
+    "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260907_v4.json",
+    "KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1.json",
+    "KEIRIN_HISTORICAL_SUPPORT_ACCOUNTING_CORRECTION_AUDIT_20260907_v1.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json"
+  ],
+  "selection_rule": "Freeze every mechanically identified 2026-09-07 Day1 meeting from the KDreams 2026-09-07 aggregate that belongs to the 333/333.33 or 400 circumference contrast. Selection is made before any overlap computation from assen rosters and without using finish, payout, odds, forecast, comments or model performance.",
+  "day1_source": "https://keirin.kdreams.jp/kaisai/2026/09/07/",
+  "frozen_blocks": [
+    {
+      "date": "2026-09-07",
+      "venue": "伊東",
+      "grade": "F2",
+      "circumference_m": 333,
+      "day": "Day1",
+      "meeting_name": "前検コメはウィンチケット杯",
+      "circumference_source": "https://www.itokeirin.com/graderace/tsubaki72/bank.html"
+    },
+    {
+      "date": "2026-09-07",
+      "venue": "大垣",
+      "grade": "F1",
+      "circumference_m": 400,
+      "day": "Day1",
+      "meeting_name": "報知新聞社杯争奪戦　お市の方賞",
+      "circumference_source": "https://www.keirin-mobile.jp/Android/docomo/Content/velodrome/velodrome_info.php?vc=44"
+    },
+    {
+      "date": "2026-09-07",
+      "venue": "いわき平",
+      "grade": "F1",
+      "circumference_m": 400,
+      "day": "Day1",
+      "meeting_name": "デイリースポーツＢｅｔｉｍｏ杯",
+      "circumference_source": "https://tairakeirin.com/"
+    },
+    {
+      "date": "2026-09-07",
+      "venue": "弥彦",
+      "grade": "F2",
+      "circumference_m": 400,
+      "day": "Day1",
+      "meeting_name": "ＢＳＮ新潟放送賞",
+      "circumference_source": "https://www.yahikokeirin.com/index.php/guide-facilities"
+    }
+  ],
+  "prospective_counterpart_pool_preselected_before_overlap": [
+    {
+      "date": "2026-09-10",
+      "venue": "奈良",
+      "circumference_m": 333.33,
+      "role": "future strict PRE counterpart for 400m Sep7 riders"
+    },
+    {
+      "date": "2026-09-10",
+      "venue": "川崎",
+      "circumference_m": 400,
+      "role": "future strict PRE counterpart for Ito333 Sep7 riders"
+    },
+    {
+      "date": "2026-09-11",
+      "venue": "豊橋",
+      "circumference_m": 400,
+      "role": "future strict PRE counterpart for Ito333 Sep7 riders"
+    }
+  ],
+  "screening_policy": {
+    "historical_side": "KDreams assen may screen candidate names. Formal Sep7 historical side requires exact official registration identity and explicit historical racecard/entry/pre-race evidence under Owner historical-source trust policy.",
+    "future_side": "Assen is candidate-only. Formal support requires final Day1 PRE membership before cutoff, exact official registration identity, contemporaneous official same-race assignment and provenance PASS.",
+    "normalization_for_overlap": "Remove ASCII/fullwidth spaces only. Name overlap is candidate screening, never identity authority."
+  },
+  "permanent_closures_preserved": [
+    {
+      "event": "伊東 2026-09-07",
+      "rider": "上川 直紀",
+      "registration": "015423",
+      "artifact": "KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
+      "rule": "NEVER_REOPEN_THIS_CANDIDATE"
+    }
+  ],
+  "support_increment_authorized_now": 0,
+  "result_access_authorized": false,
+  "formula_fit_authorized": false,
+  "s0_mutation": false,
+  "main_or_runtime_mutation": false,
+  "shared_steps_mutation": false,
+  "workflow_dispatch_or_rerun": false,
+  "owner_action_required_now": false
+}
