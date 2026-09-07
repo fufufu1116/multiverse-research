@@ -1,0 +1,42 @@
+{
+  "record": "KEIRIN_OFFICIAL_HISTORICAL_SUPPORT_FAST_TRACK_20260907_v1",
+  "status": "ACTIVE_RESEARCH_FAST_TRACK_OFFICIAL_FIRST_NO_FUTURE_CARD_WAIT_REQUIRED_FOR_SCREENING",
+  "created_jst": "2026-09-07T20:43:40+09:00",
+  "binding": {
+    "research_branch_head_before_write": "07c6583eb6d9462cfbff5126ded6132f752f5c8e",
+    "canonical_main": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "migration_lock": "#93 comment 5561567913 ACTIVE",
+    "source_policy": "KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1.json"
+  },
+  "objective": "Replace wait-heavy future-only conversion with official-first historical screening across the already-known candidate pool, then resolve exact historical race rows from official sources in deterministic order.",
+  "priority_order": [
+    "Use KEIRIN.JP registration-number profiles for exact identity and recent historical meeting screening.",
+    "For each existing candidate, scan official recent meetings in displayed chronological order and identify the first usable meeting in the opposite circumference bucket.",
+    "Resolve the exact race/vehicle assignment from official race search/race pages or official venue pages.",
+    "Admit only fields explicitly presented as historical racecard/entry/pre-race information.",
+    "Build support row provenance without requiring the official historical page fetch itself to predate that historical race.",
+    "Deduplicate by official registration number x race date x venue x race number x car number.",
+    "Recompute support gate after each completed pair."
+  ],
+  "no_cherrypick_rule": "Candidate order comes from the pre-existing research candidate pool; official recent meetings are inspected in the order shown by KEIRIN.JP. Do not select a meeting based on finish, payout, odds or model performance.",
+  "result_policy": {
+    "result_may_be_used_for_screening": false,
+    "payout": false,
+    "odds": false,
+    "prediction": false,
+    "target_result_join_authorized": false
+  },
+  "prospective_lane": "CONTINUES_IN_PARALLEL_AS_CONFIRMATION_AND_FUTURE_DATA_PATH",
+  "expected_speed_change": "Candidate discovery and historical meeting proof move from waiting for future Day1 publication to immediate official-profile/race-search processing. Future exact cards are no longer the sole path to 30-rider support.",
+  "next_execution": [
+    "Batch-screen the 32 known distinct Tier1+Tier2 candidate identities against KEIRIN.JP recent histories.",
+    "Prioritize riders with an immediately visible opposite-circumference historical meeting.",
+    "Resolve exact official race rows and create historical support receipts where the official racecard/entry evidence is sufficient.",
+    "Expand beyond the 32 only if the 30-rider gate remains short after deterministic screening."
+  ],
+  "main_mutation": false,
+  "runtime": false,
+  "shared_steps_mutation": false,
+  "workflow_dispatch_or_rerun": false,
+  "owner_action_required_now": false
+}
