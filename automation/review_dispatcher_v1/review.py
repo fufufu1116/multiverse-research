@@ -28,11 +28,16 @@ from automation.review_dispatcher_v1.model import (
     canonical_json,
     dotted_get,
     fetch_all_pages,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
     latest_exact_current_owner_request,
     require,
     resolve_public_https_target,
+    required_object,
     result_marker,
     safe_repo_path,
     sha256_json,
@@ -154,13 +159,13 @@ def _fresh_binding(
     base = job["base"]
     main = job["main"]
 
-    pr = fetch(
+    pr_raw = fetch(
         f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
     )
-    commit = fetch(
+    commit_raw = fetch(
         f"https://api.github.com/repos/{repo}/commits/{head}"
     )
-    main_obj = fetch(
+    main_raw = fetch(
         f"https://api.github.com/repos/{repo}/branches/main"
     )
 
@@ -171,41 +176,27 @@ def _fresh_binding(
             checks[name] = "FIX_REQUIRED"
             findings.append(f"{name}: {detail}")
 
-    check(
-        "fresh_pr_head",
-        pr["head"]["sha"] == head,
-        repr(pr["head"]["sha"]),
-    )
-    check(
-        "fresh_pr_tree",
-        commit["commit"]["tree"]["sha"] == tree,
-        repr(commit["commit"]["tree"]["sha"]),
-    )
-    check(
-        "fresh_pr_base",
-        pr["base"]["sha"] == base,
-        repr(pr["base"]["sha"]),
-    )
-    check(
-        "fresh_main",
-        main_obj["commit"]["sha"] == main,
-        repr(main_obj["commit"]["sha"]),
-    )
-    check(
-        "pr_open",
-        pr["state"] == "open",
-        repr(pr["state"]),
-    )
-    check(
-        "pr_draft",
-        pr["draft"] is True,
-        repr(pr["draft"]),
-    )
-    check(
-        "pr_unmerged",
-        pr["merged"] is False,
-        repr(pr["merged"]),
-    )
+    try:
+        pr = github_full_pr_binding(
+            pr_raw,
+            expected_number=pr_number,
+            expected_head=head,
+        )
+        fresh_tree = github_commit_tree_sha(commit_raw)
+        fresh_main = github_branch_commit_sha(main_raw)
+    except ReviewContractError as exc:
+        checks["fresh_binding_contract"] = "FIX_REQUIRED"
+        findings.append(f"fresh_binding_contract: {exc}")
+        return
+
+    checks["fresh_binding_contract"] = "PASS"
+    check("fresh_pr_head", pr["head_sha"] == head, repr(pr["head_sha"]))
+    check("fresh_pr_tree", fresh_tree == tree, repr(fresh_tree))
+    check("fresh_pr_base", pr["base_sha"] == base, repr(pr["base_sha"]))
+    check("fresh_main", fresh_main == main, repr(fresh_main))
+    check("pr_open", pr["state"] == "open", repr(pr["state"]))
+    check("pr_draft", pr["draft"] is True, repr(pr["draft"]))
+    check("pr_unmerged", pr["merged"] is False, repr(pr["merged"]))
 
 
 def _check_secret_environment(
@@ -235,13 +226,36 @@ def _check_subtrees(
     expected = job["request"]["recipe"]["subtrees"]
     if not expected:
         return
-    tree = fetch(
-        f"https://api.github.com/repos/{job['repo']}/git/trees/{job['tree']}?recursive=1"
-    )
-    actual = {
-        item["path"]: item["sha"]
-        for item in tree.get("tree", [])
-    }
+
+    try:
+        tree_response = required_object(
+            fetch(
+                f"https://api.github.com/repos/{job['repo']}/git/trees/{job['tree']}?recursive=1"
+            ),
+            "TREE_RESPONSE_OBJECT",
+        )
+        items = tree_response.get("tree")
+        require(isinstance(items, list), "TREE_ITEMS_LIST")
+        actual: dict[str, str] = {}
+        for item in items:
+            require(isinstance(item, dict), "TREE_ITEM_OBJECT")
+            path = item.get("path")
+            sha = item.get("sha")
+            require(
+                isinstance(path, str) and bool(path),
+                "TREE_ITEM_PATH",
+            )
+            require(
+                isinstance(sha, str) and bool(sha),
+                "TREE_ITEM_SHA",
+            )
+            actual[path] = sha
+    except ReviewContractError as exc:
+        checks["subtree_response_contract"] = "FIX_REQUIRED"
+        findings.append(f"subtree_response_contract: {exc}")
+        return
+
+    checks["subtree_response_contract"] = "PASS"
     for path, sha in expected.items():
         name = f"subtree:{path}"
         if actual.get(path) == sha:
@@ -468,12 +482,23 @@ def _check_auditor_upstream(
             latest_lab_request_id,
             latest_lab_request_sha256,
         )
-        authentic_result_ids = [
-            int(item["id"])
-            for item in comments
-            if marker in (item.get("body") or "")
-            and lane_result_comment_trusted(item, "LAB")
-        ]
+        authentic_result_ids = []
+        for item in comments:
+            if (
+                marker in (item.get("body") or "")
+                and lane_result_comment_trusted(item, "LAB")
+            ):
+                try:
+                    authentic_result_ids.append(
+                        github_comment_id(
+                            item,
+                            "LAB_RESULT_COMMENT_ID",
+                        )
+                    )
+                except ReviewContractError as exc:
+                    findings.append(
+                        f"upstream_lab_result_comment_id: {exc}"
+                    )
         check(
             "upstream_lab_single_authentic_latest_result",
             authentic_result_ids == [lab_comment_id],
