@@ -1,12 +1,12 @@
 # MULTIVERSE Cross-Chat Capability Convergence v1
 
-Status: OWNER-ADOPTED REPOSITORY PREPARATION / CANONICALLY INTEGRATED / DISPATCHER HARDENING CANONICALLY INTEGRATED / FIXED SHARED-PIPELINE REINSTALLATION + ROUTING PROOF PENDING.
+Status: FIXED REQUEST-ONLY REVIEW BASELINE ACTIVE / DISPATCHER MIGRATION COMPLETE.
 
 Purpose
 
 This common operating layer prevents active MULTIVERSE chats from remaining on incompatible old shared procedures after the system improves.
 
-The durable rule is:
+The durable precedence rule is:
 
 Fresh canonical GitHub and the latest adopted common operating baseline outrank chat memory, old handoffs, and locally remembered common procedures.
 
@@ -33,8 +33,36 @@ Dispatcher hardening:
 - canonical integration: Issue #187 / completion `5571535293`
 - current canonical main: `b7ee4cbb758b0c09f3ab90bd243c638e3899d24d`
 - current canonical tree: `879d0a0e1cccd3a09735da52f41e02e9bf989cbe`
-- canonical tree equals the exact reviewed PR #182 tree.
-- PR #173-only extra import-time regression coverage is deferred to follow-up Issue #186.
+- canonical tree equals the exact reviewed PR #182 tree
+- PR #173-only extra import-time regression coverage is deferred to follow-up Issue #186
+
+Fixed request-only migration proof
+
+Isolated proof Candidate:
+- PR #193
+- exact proof head: `6ec0ac5d33e63cee48ead409af3ee1aef9a8d419`
+- exact proof tree: `4307079d9dbd9688ff9d6c8568aab4e5ead15530`
+- base/main/dispatcher ref: `b7ee4cbb758b0c09f3ab90bd243c638e3899d24d`
+
+Independent Lab:
+- request: `5571777874`
+- Build #44: SUCCESS
+- durable PASS: `5572011753`
+- T1 PASS: `5572061198`
+
+Independent Auditor:
+- request: `5572074572`
+- Build #691: SUCCESS
+- durable PASS: `5572202610`
+- T2 PASS: `5572205279`
+
+Migration completion:
+- technical completion: #189 / `5572241327`
+- temporary migration-lock release authority: #198 / `5572378841`
+- permanent baseline release: #93 / `5572390676`
+- Issue #152 completion: `5572421502`
+
+Request-only discovery, exact request binding, exact Lab/T1 upstream validation, durable App-produced lane results, and T2 all passed without per-job shared Steps replacement.
 
 Required resume behavior
 
@@ -44,28 +72,38 @@ Every active MULTIVERSE chat must:
 3. Read the latest adopted common operating baseline.
 4. Replace superseded common procedures with the latest adopted procedure.
 5. Preserve domain-specific research state unless separately superseded.
-6. Never ask the Owner to manually courier common protocol updates between chats.
-7. While migration lock `5561567913` remains active, research lanes must not edit shared Independent Lab/Auditor Steps.
+6. Never ask the Owner to manually courier common protocol updates between chats when GitHub durable state can carry them.
+7. Use durable machine-readable GitHub review requests for review routing.
+8. Never edit shared Independent Lab/Auditor Steps for a Candidate or job.
+9. Continue autonomously until a genuine Owner-action or authority boundary under #93 comment `5562005183`.
 
-Shared review infrastructure
+Permanent review infrastructure
 
-MULTIVERSE Independent Lab and MULTIVERSE Independent Auditor are shared infrastructure.
+`MULTIVERSE Independent Lab` and `MULTIVERSE Independent Auditor` are fixed shared infrastructure.
 
-During dispatcher migration they are single-writer control-plane managed.
+The permanent common route is:
 
-The repaired dispatcher implementation and repaired repository templates are now canonical through PR #182. This does NOT by itself prove the shared Buildkite Steps are updated to those repaired templates.
+`Research lane -> durable machine-readable GitHub review request -> fixed Independent Lab dispatcher -> T1 -> fixed Independent Auditor dispatcher -> T2 -> separate adoption authority`
 
-Therefore the current shared-infrastructure sequence is:
-- fixed shared-pipeline reinstallation under separate single-writer control-plane authority;
-- request-only routing proof with no per-job shared-Step edit;
-- only after proof, migration-lock release.
+Shared Steps are not per-chat scratch space.
 
-Research lanes continue to:
+Research lanes may:
 - prepare Candidates;
 - freeze exact heads/trees;
 - publish durable machine-readable review requests;
-- avoid shared Step mutation;
-- avoid Build/Retry unless separately authorized.
+- consume durable Lab/Auditor/T1/T2 evidence after Fresh Read.
+
+Research lanes must not:
+- replace or patch shared Lab/Auditor Steps for a Candidate or job;
+- silently replace a same-envelope request;
+- self-adopt;
+- treat Lab/Auditor/T1/T2 as merge or Runtime authority.
+
+Any future change to shared Lab/Auditor Steps requires:
+1. a separately reviewed infrastructure repair Candidate;
+2. independent Lab/T1/Auditor/T2 review as applicable;
+3. separate Owner adoption;
+4. separate bounded Owner shared-infrastructure mutation authority.
 
 Review request contract
 
@@ -90,7 +128,7 @@ For one exact lane/repo/PR/head/tree/base/main key:
 - the first request has no predecessor digest;
 - a later same-envelope request must bind the immediate predecessor request SHA256;
 - silent same-head replacement fails closed;
-- changing canonical main creates a different exact-current envelope and requires a newly bound request for the new main;
+- changing canonical main or Candidate lineage creates a different exact-current envelope;
 - Auditor binds the exact upstream Lab request SHA256 and T1 provenance.
 
 Migration sequence
@@ -100,16 +138,16 @@ Migration sequence
 - Phase 2.5 — initial canonical integration: COMPLETE via #158.
 - Phase 2.6 — dispatcher hardening review/adoption/integration: COMPLETE via PR #182 / #185 / #187.
 - Phase 2.7 — deferred import-time regression coverage follow-up: OPEN as #186.
-- Phase 3 — one-time reinstall of fixed Lab/Auditor shared-pipeline definitions from repaired canonical main: PENDING.
-- Phase 4 — prove a durable request routes without shared-Step editing: PENDING.
-- Phase 5 — release migration lock and prohibit legacy per-chat Step replacement: PENDING.
+- Phase 3 — fixed Lab/Auditor shared-pipeline reinstallation from repaired canonical main: COMPLETE.
+- Phase 4 — request-only routing proof with no per-job shared-Step edit: COMPLETE via PR #193.
+- Phase 5 — migration-lock release and permanent request-only baseline activation: COMPLETE via #198 / #93 `5572390676`.
 
 Owner workload target
 
-After proven installation, routine review YAML copy/paste count is zero.
+Routine per-job review YAML couriering is obsolete under the fixed request-only baseline.
 
 Authority ceiling
 
-This metadata sync grants no shared-pipeline installation/mutation, merge, canonical-main mutation, ruleset mutation, workflow dispatch/rerun, provider mutation, Runtime activation, production, protected-data access, live business effect, or spend.
+This metadata sync grants no shared-pipeline mutation, merge, canonical-main mutation, ruleset mutation, workflow dispatch/rerun, provider mutation, Runtime activation, production, protected-data access, live business effect, or spend.
 
 Runtime remains OFF.
