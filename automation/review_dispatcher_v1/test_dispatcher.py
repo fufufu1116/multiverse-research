@@ -9,7 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
-from automation.review_dispatcher_v1 import dispatcher, review
+from automation.review_dispatcher_v1 import dispatcher, github_app, review
 from automation.review_dispatcher_v1.model import (
     LAB_APP_SLUG,
     REQUEST_MARKER,
@@ -1236,6 +1236,86 @@ class HardeningTests(unittest.TestCase):
             with self.subTest(comment_payload=payload):
                 with self.assertRaises(ReviewContractError):
                     github_comment_id(payload)
+
+
+    def test_39_pagination_and_owner_request_comment_shapes_fail_closed(self):
+        def bad_page_fetch(_url: str):
+            return [{"id": 1}, "not-an-object"]
+
+        with self.assertRaises(ReviewContractError):
+            fetch_all_pages(
+                bad_page_fetch,
+                "https://api.github.com/repos/o/r/issues/1/comments",
+            )
+
+        request = lab_request("owner-comment-id-contract")
+        comments = [
+            {
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        with self.assertRaises(ReviewContractError):
+            latest_exact_current_owner_request(
+                comments,
+                repo=request["repo"],
+                pr=request["pr"],
+                lane=request["lane"],
+                head=request["head"],
+                tree=request["tree"],
+                base=request["base"],
+                main=request["main"],
+            )
+
+    def test_40_github_app_installation_and_token_shapes_fail_closed(self):
+        with mock.patch.object(
+            github_app,
+            "app_jwt",
+            return_value="jwt",
+        ):
+            with mock.patch.object(
+                github_app,
+                "github_json",
+                return_value={},
+            ):
+                with self.assertRaises(github_app.GitHubAppError):
+                    github_app.installation_token(
+                        repo="fufufu1116/multiverse-research",
+                        app_id=1,
+                        private_key="unused",
+                    )
+
+            with mock.patch.object(
+                github_app,
+                "github_json",
+                side_effect=[
+                    {"id": 123},
+                    {},
+                ],
+            ):
+                with self.assertRaises(github_app.GitHubAppError):
+                    github_app.installation_token(
+                        repo="fufufu1116/multiverse-research",
+                        app_id=1,
+                        private_key="unused",
+                    )
+
+            with mock.patch.object(
+                github_app,
+                "github_json",
+                side_effect=[
+                    {"id": 123},
+                    {"token": "installation-token"},
+                ],
+            ):
+                self.assertEqual(
+                    github_app.installation_token(
+                        repo="fufufu1116/multiverse-research",
+                        app_id=1,
+                        private_key="unused",
+                    ),
+                    "installation-token",
+                )
 
 
 if __name__ == "__main__":
