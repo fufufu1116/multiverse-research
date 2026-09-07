@@ -1,0 +1,227 @@
+{
+  "record": "KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v1",
+  "status": "CONFIRMED_THREE_NEW_CROSS_CIRCUMFERENCE_RIDERS_UNDER_OWNER_DIRECTED_OFFICIAL_HISTORICAL_SOURCE_TRUST_GATE_STILL_FAIL",
+  "scope": "RESEARCH_PRE_INFORMATION_SUPPORT_ACCOUNTING_NO_RESULT_NO_MODEL_REFIT",
+  "generated_jst": "2026-09-07",
+  "bindings": [
+    "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1.json",
+    "KEIRIN_OFFICIAL_HISTORICAL_SUPPORT_FAST_TRACK_20260907_v1.json",
+    "KEIRIN_OFFICIAL_PROFILE_CROSS_CIRCUMFERENCE_HISTORICAL_SCREEN_20260907_v1.json",
+    "KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv",
+    "KEIRIN_NARA_0910_KAWASAKI_HISTORICAL_OVERLAP_CANDIDATES_20260904_v4.json"
+  ],
+  "evidence_interpretation": "For historical support only, KEIRIN.JP official profile identity and meeting history is treated as authoritative proof that the exact registered rider participated in the historical meeting. Historical racecard transport may be fetched after the race; the racecard's explicitly labelled 出走表/直近4ヶ月 fields are treated as historical PRE fields. No outcome, payout, odds, prediction, comment or current-profile dynamic field is admitted to PRE.",
+  "riders": [
+    {
+      "rider": {
+        "name": "庄子 信弘",
+        "official_registration_number": "013604",
+        "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=013604",
+        "official_meeting_history_corroboration": [
+          "2026-08-20 富山F1",
+          "2026-08-30 川崎F1"
+        ],
+        "identity_status": "EXACT_OFFICIAL_REGISTRATION_PASS"
+      },
+      "supported_rows": {
+        "333m": {
+          "race_date": "2026-08-20",
+          "venue": "富山",
+          "circumference_m": 333,
+          "day": "Day1",
+          "race_no": 8,
+          "car_no": 4,
+          "class": "S2",
+          "style": "追",
+          "competition_score": 98.95,
+          "S": 4,
+          "B": 0,
+          "nige": 0,
+          "makuri": 0,
+          "sashi": 4,
+          "mark": 1,
+          "source_url": "https://keirin.kdreams.jp/toyama/racedetail/4620260820010008/",
+          "source_evidence_sha256": "4d006bcfac54615d9c6e41362a549052b013324af08deb2a51a08d3d8d618ed1"
+        },
+        "400m": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "circumference_m": 400,
+          "day": "Day1",
+          "race_no": 9,
+          "car_no": 7,
+          "class": "S2",
+          "source_url": "https://keirin.kdreams.jp/kawasaki/racedetail/3420260830010009/",
+          "source_file_sha256": "70e94c4ac0571992fa0e7b7e42871086d39a6d1288ab7a715a5800c9b0311d6b"
+        }
+      },
+      "decision": {
+        "same_official_registration_across_rows": true,
+        "both_day1": true,
+        "official_meeting_history_corroborated": true,
+        "historical_fetch_before_race_timestamp_required": false,
+        "cross_circumference_supported_rider": true,
+        "unique_rider_increment": 1,
+        "supported_row_increment": 2
+      }
+    },
+    {
+      "rider": {
+        "name": "畝木 聖",
+        "official_registration_number": "015463",
+        "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=015463",
+        "official_meeting_history_corroboration": [
+          "2026-04-12 富山F1",
+          "2026-08-30 川崎F1"
+        ],
+        "identity_status": "EXACT_OFFICIAL_REGISTRATION_PASS"
+      },
+      "supported_rows": {
+        "333m": {
+          "race_date": "2026-04-12",
+          "venue": "富山",
+          "circumference_m": 333,
+          "day": "Day1",
+          "race_no": 5,
+          "car_no": 1,
+          "class": "A1",
+          "style": "逃",
+          "competition_score": 94.25,
+          "S": 11,
+          "B": 9,
+          "nige": 3,
+          "makuri": 7,
+          "sashi": 4,
+          "mark": 1,
+          "source_url": "https://keirin.kdreams.jp/toyama/racedetail/4620260412010005/",
+          "source_evidence_sha256": "e75b89d52fbfc2bb0db8c0cfb3601e6eb04d73d7e1c5f6f0ed92b44a210fa026"
+        },
+        "400m": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "circumference_m": 400,
+          "day": "Day1",
+          "race_no": 10,
+          "car_no": 6,
+          "class": "S2",
+          "source_url": "https://keirin.kdreams.jp/kawasaki/racedetail/3420260830010010/",
+          "source_file_sha256": "2e991d90f81b6ec411ce43395f5fe500ad5c130ff43ebe3999b7ccdac071c2f8"
+        }
+      },
+      "decision": {
+        "same_official_registration_across_rows": true,
+        "both_day1": true,
+        "official_meeting_history_corroborated": true,
+        "historical_fetch_before_race_timestamp_required": false,
+        "cross_circumference_supported_rider": true,
+        "unique_rider_increment": 1,
+        "supported_row_increment": 2
+      }
+    },
+    {
+      "rider": {
+        "name": "松村 友和",
+        "official_registration_number": "013961",
+        "official_profile_url": "https://www.keirin.jp/pc/racerprofile?snum=013961",
+        "official_meeting_history_corroboration": [
+          "2026-03-19 防府G2",
+          "2026-08-30 川崎F1"
+        ],
+        "identity_status": "EXACT_OFFICIAL_REGISTRATION_PASS"
+      },
+      "supported_rows": {
+        "333m": {
+          "race_date": "2026-03-19",
+          "venue": "防府",
+          "circumference_m": 333,
+          "day": "Day1",
+          "race_no": 1,
+          "car_no": 6,
+          "class": "S2",
+          "style": "追",
+          "competition_score": 103.56,
+          "S": 9,
+          "B": 0,
+          "nige": 0,
+          "makuri": 0,
+          "sashi": 5,
+          "mark": 4,
+          "source_url": "https://keirin.kdreams.jp/hofu/racedetail/6320260319010001/",
+          "source_evidence_sha256": "9101a116d01a1bcfd99da5550af21f0f7330db1569c192d5aefcab750f9bcee0"
+        },
+        "400m": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "circumference_m": 400,
+          "day": "Day1",
+          "race_no": 9,
+          "car_no": 5,
+          "class": "S2",
+          "source_url": "https://keirin.kdreams.jp/kawasaki/racedetail/3420260830010009/",
+          "source_file_sha256": "70e94c4ac0571992fa0e7b7e42871086d39a6d1288ab7a715a5800c9b0311d6b"
+        }
+      },
+      "decision": {
+        "same_official_registration_across_rows": true,
+        "both_day1": true,
+        "official_meeting_history_corroborated": true,
+        "historical_fetch_before_race_timestamp_required": false,
+        "cross_circumference_supported_rider": true,
+        "unique_rider_increment": 1,
+        "supported_row_increment": 2
+      }
+    }
+  ],
+  "support_increment": {
+    "unique_riders": 3,
+    "rows": 6
+  },
+  "cumulative_support_after_receipt": {
+    "confirmed_unique_riders": 4,
+    "confirmed_rows": 8,
+    "target_unique_riders": 30,
+    "target_rows": 60,
+    "remaining_unique_riders": 26,
+    "remaining_rows": 52
+  },
+  "gate_diagnostic": {
+    "gate": "FAIL",
+    "confirmed_333_venues": [
+      "防府",
+      "富山"
+    ],
+    "confirmed_400_venues": [
+      "川崎"
+    ],
+    "unique_rider_floor_met": false,
+    "row_floor_met": false,
+    "minimum_two_333_venues_met": true,
+    "minimum_two_400_venues_met": false,
+    "calendar_definition": "UNKNOWN_PENDING_PR_177",
+    "full_gate_pass_authorized": false,
+    "maximum_single_rider_share_current": 0.25,
+    "maximum_single_rider_share_limit": 0.1,
+    "rider_concentration_pass": false
+  },
+  "exclusion_audit": {
+    "result_accessed_for_support_decision": false,
+    "target_result_accessed": false,
+    "payout_accessed": false,
+    "odds_used": false,
+    "prediction_used": false,
+    "human_comment_used": false,
+    "current_profile_dynamic_feature_backfill": false,
+    "outcome_aware_candidate_selection": false
+  },
+  "boundaries": {
+    "s0_mutation": false,
+    "formula_refit": false,
+    "main_mutation": false,
+    "runtime": false,
+    "shared_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false
+  },
+  "next": "Continue deterministic exact historical Day1 row resolution for the remaining Tier1 candidates using official profile meeting history as the base. Recompute the support counter after each receipt. Future racecards remain a parallel validation path only.",
+  "owner_action_required_now": false
+}
