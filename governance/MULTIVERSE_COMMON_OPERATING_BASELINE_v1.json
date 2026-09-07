@@ -1,10 +1,24 @@
 {
   "schema": "MULTIVERSE_COMMON_OPERATING_BASELINE_v1",
-  "status": "CANDIDATE_NOT_YET_ADOPTED",
-  "baseline_version": "2026-09-07.review-dispatcher-v1",
+  "status": "ADOPTED_REPOSITORY_PREPARATION_CANONICALLY_INTEGRATED_FIXED_PIPELINE_INSTALLATION_PENDING",
+  "baseline_version": "2026-09-07.review-dispatcher-v1.post-integration-sync",
   "canonical_repo": "fufufu1116/multiverse-research",
   "migration_issue": 152,
   "convergence_issue": 93,
+  "adoption": {
+    "issue": 156,
+    "decision_comment": 5564870064,
+    "receipt_comment": 5564871017,
+    "adopted_state": "IMMUTABLE_REVIEW_DISPATCHER_AND_CROSS_CHAT_CONVERGENCE_REPOSITORY_PREPARATION_ADOPTED"
+  },
+  "canonical_integration": {
+    "pr": 153,
+    "authority_issue": 158,
+    "completion_comment": 5564920334,
+    "merge_commit": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "canonical_tree": "c9d747647a693724d22b142547a3c1600b5c6150",
+    "reviewed_tree_exact_match": true
+  },
   "precedence": [
     "fresh_canonical_github",
     "latest_adopted_common_operating_baseline",
@@ -28,6 +42,8 @@
   },
   "shared_pipeline_policy": {
     "during_migration": "single_writer_control_plane_only",
+    "installation_state": "PENDING_OR_UNVERIFIED_UNDER_SINGLE_WRITER_CONTROL_PLANE",
+    "research_lane_may_edit_steps": false,
     "after_installation": "immutable_shared_pipeline_definition",
     "per_chat_step_replacement": "deprecated_after_installation",
     "per_job_binding_source": "exact_github_review_request_plus_request_sha256"
@@ -48,13 +64,16 @@
   "migration_lock": {
     "active_until_fixed_pipeline_installation_proved": true,
     "source_comment": 5561567913,
-    "existing_review_requests_preserved": true
+    "current_phase": "CANONICAL_INTEGRATION_COMPLETE_FIXED_PIPELINE_INSTALLATION_PENDING",
+    "existing_review_requests_preserved": true,
+    "release_requires": "FIXED_PIPELINE_INSTALLATION_PLUS_REQUEST_ONLY_ROUTING_PROOF"
   },
   "nonauthority": {
     "merge": false,
     "main_mutation": false,
     "ruleset_mutation": false,
     "workflow_dispatch_rerun": false,
+    "shared_pipeline_mutation": false,
     "runtime_activation": false,
     "provider_mutation": false,
     "production": false,

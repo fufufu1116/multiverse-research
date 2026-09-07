@@ -1,6 +1,6 @@
 # MULTIVERSE Cross-Chat Capability Convergence v1
 
-Status: CANDIDATE / NOT YET ADOPTED.
+Status: OWNER-ADOPTED REPOSITORY PREPARATION / CANONICALLY INTEGRATED / FIXED SHARED-PIPELINE INSTALLATION PENDING.
 
 Purpose
 
@@ -12,6 +12,20 @@ Fresh canonical GitHub and the latest adopted common operating baseline outrank 
 
 Domain knowledge is different. Keirin-specific research stays with Keirin. Core-specific implementation context stays with Core. Runtime-specific infrastructure context stays with Runtime. What converges is the shared operating interface.
 
+Durable adoption and canonical integration
+
+Repository preparation was Owner-adopted at Issue #156 and the exact independently reviewed PR #153 lineage was subsequently integrated into canonical main under Issue #158.
+
+Durable integration binding:
+- reviewed PR #153 head: `4a1e093690bedd9d3d5d8eebe6cb98493b7e8123`;
+- reviewed tree: `c9d747647a693724d22b142547a3c1600b5c6150`;
+- canonical merge commit: `8bb7def5a80217a80a7bf8f4ff5901b101afee63`;
+- canonical main tree at integration: the same exact reviewed tree;
+- repository-preparation adoption decision: #156 / `5564870064`;
+- canonical integration completion: #158 / `5564920334`.
+
+This means the repository-preparation operating model is adopted and canonical. It does not mean the fixed shared Buildkite pipeline installation has been proved complete.
+
 Required resume behavior
 
 Every active MULTIVERSE chat must, on resume:
@@ -22,6 +36,7 @@ Every active MULTIVERSE chat must, on resume:
 4. Replace superseded common procedures with the latest adopted procedure.
 5. Preserve domain-specific research state unless a separate domain artifact supersedes it.
 6. Never ask the Owner to manually courier common protocol updates between chats.
+7. While migration lock `5561567913` remains active, research lanes must not edit shared Independent Lab/Auditor Steps.
 
 Shared review infrastructure
 
@@ -29,7 +44,9 @@ MULTIVERSE Independent Lab and MULTIVERSE Independent Auditor are shared infrast
 
 During dispatcher migration they are single-writer control-plane managed.
 
-After fixed-dispatcher installation:
+Repository preparation and canonical integration are complete. Fixed shared-pipeline installation remains a separate single-writer control-plane action and is not performed by research/Candidate lanes.
+
+After fixed-dispatcher installation is durably proved:
 - their pipeline definitions are immutable per review job;
 - research chats do not replace Steps;
 - a research chat creates a durable machine-readable review request;
@@ -64,11 +81,12 @@ When a newer common baseline is adopted:
 
 Migration sequence
 
-Phase 1: repository Candidate.
-Phase 2: Independent Lab -> T1 -> Independent Auditor -> T2 -> Owner adoption.
-Phase 3: separate one-time authority to install the fixed Lab and Auditor pipeline definitions.
-Phase 4: prove a preserved pending review (PR148 LIVE evidence is the planned first target) routes without editing Steps.
-Phase 5: release the migration lock in Issue #93 and prohibit legacy per-chat Step replacement.
+- Phase 1 — repository Candidate: COMPLETE via PR #153.
+- Phase 2 — Independent Lab -> T1 -> Independent Auditor -> T2 -> Owner repository-preparation adoption: COMPLETE.
+- Phase 2.5 — exact reviewed PR #153 canonical-main integration: COMPLETE via #158.
+- Phase 3 — one-time fixed Lab/Auditor shared-pipeline installation under single-writer control-plane authority: PENDING OR NOT YET DURABLY VERIFIED COMPLETE.
+- Phase 4 — prove a preserved pending review routes from a durable request without any shared-Step editing: PENDING.
+- Phase 5 — release the migration lock in Issue #93 and prohibit legacy per-chat Step replacement: PENDING.
 
 Owner workload target
 
@@ -78,7 +96,7 @@ A New Build may still require selecting the Candidate branch until a later autom
 
 Authority ceiling
 
-This Candidate grants no merge, canonical main mutation, ruleset mutation, workflow dispatch/rerun, provider mutation, Runtime activation, production, protected-data access, live business effect, or spend.
+This adopted repository-preparation baseline and this metadata-sync Candidate grant no shared-pipeline installation/mutation, merge, canonical main mutation, ruleset mutation, workflow dispatch/rerun, provider mutation, Runtime activation, production, protected-data access, live business effect, or spend.
 
 Runtime remains OFF.
 
