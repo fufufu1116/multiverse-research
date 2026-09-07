@@ -120,13 +120,34 @@ def installation_token(
         f"https://api.github.com/repos/{repo}/installation",
         jwt,
     )
+    require(
+        isinstance(installation, dict),
+        "INSTALLATION_RESPONSE_OBJECT",
+    )
+    installation_id = installation.get("id")
+    require(
+        isinstance(installation_id, int)
+        and not isinstance(installation_id, bool)
+        and installation_id > 0,
+        "INSTALLATION_ID",
+    )
+
     token_result = github_json(
         "POST",
         (
             "https://api.github.com/app/installations/"
-            f"{installation['id']}/access_tokens"
+            f"{installation_id}/access_tokens"
         ),
         jwt,
         {},
     )
-    return token_result["token"]
+    require(
+        isinstance(token_result, dict),
+        "INSTALLATION_TOKEN_RESPONSE_OBJECT",
+    )
+    token = token_result.get("token")
+    require(
+        isinstance(token, str) and bool(token),
+        "INSTALLATION_TOKEN",
+    )
+    return token
