@@ -944,5 +944,19 @@ class HardeningTests(unittest.TestCase):
         )
 
 
+    def test_33_fixed_pipeline_bootstrap_uses_fetch_head(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        for relative in (
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml",
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml",
+        ):
+            text = (repo_root / relative).read_text()
+            fetch_index = text.index("git fetch origin main")
+            ref = 'DISPATCHER_REF="$(git rev-parse FETCH_HEAD)"'
+            ref_index = text.index(ref)
+            self.assertLess(fetch_index, ref_index)
+            self.assertNotIn("git rev-parse origin/main", text)
+
+
 if __name__ == "__main__":
     unittest.main()
