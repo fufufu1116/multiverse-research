@@ -95,6 +95,19 @@ But an incomplete review cannot become authoritative PASS.
 
 All non-COMPLETED advisory outcomes require an explicit uncertainty/reason, are preserved in aggregate metadata, and contribute to explicit status_counts coverage. INFRA_FAILURE remains separately indexed, while UNSUPPORTED and REFUSED are not silently dropped.
 
+Review routing baseline
+
+The common review interface is the fixed request-only dispatcher baseline activated on Issue #93.
+
+For this Candidate:
+- shared Independent Lab / Auditor Steps remain fixed common infrastructure;
+- per-job shared Steps replacement is prohibited;
+- review is requested through durable machine-readable GitHub metadata;
+- exact same-envelope request replacement must follow the immediate-predecessor SHA256 chain;
+- Lab -> T1 -> Auditor -> T2 remains separate from adoption authority.
+
+This section changes no Phase A research logic and grants no Build/Retry or adoption authority.
+
 Authority ceiling
 
 No live provider execution, credentials, spend, merge/main/ruleset mutation, workflow dispatch/rerun, Runtime activation, provider effect, production, protected data, or live business effect.
