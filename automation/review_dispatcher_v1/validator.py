@@ -302,6 +302,7 @@ def validate() -> dict:
         "github_branch_commit_sha(",
         "COMMENTS_ITEM_OBJECT",
         "github_comment_id(",
+        'lane_result_outer_app_trusted(lab_comment, "LAB")',
     ):
         name = f"dispatcher:api_contract:{token[:32]}"
         if token in dispatcher_source:
@@ -354,6 +355,7 @@ def validate() -> dict:
         'commit["commit"]',
         'main_obj["commit"]',
         'int(item["id"])',
+        "lab_app == LAB_APP_SLUG",
     ):
         name = f"review:no_raw_external_index:{forbidden}"
         if forbidden not in review_source:
@@ -401,6 +403,8 @@ def validate() -> dict:
         "github_branch_commit_sha(",
         "github_comment_id(",
         "required_positive_int(",
+        'lane_result_outer_app_trusted(auditor_comment, "AUDITOR")',
+        'lane_result_outer_app_trusted(lab_comment, "LAB")',
     ):
         name = f"t2:api_contract:{token[:32]}"
         if token in t2_source:
@@ -421,6 +425,8 @@ def validate() -> dict:
         "comment['id']",
         'result["id"]',
         'receipt["published_comment_id"]',
+        "outer_app == AUDITOR_APP_SLUG",
+        "lab_app == LAB_APP_SLUG",
     ):
         name = f"t2:no_raw_external_index:{forbidden}"
         if forbidden not in t2_source:
@@ -470,6 +476,9 @@ def validate() -> dict:
         "BRANCH_COMMIT_SHA",
         "def github_comment_id(",
         "PAGINATED_RESPONSE_ITEM_NOT_OBJECT",
+        "def lane_result_outer_app_trusted(",
+        "if app is None:",
+        "return lane_result_outer_app_trusted(comment, lane)",
     ):
         name = f"model:request_identity:{token[:32]}"
         if token in model_source:
