@@ -7,6 +7,7 @@ from automation.multimodel_research_v1.aggregator import aggregate_results
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
+    sha256_json,
     validate_result,
     validate_result_for_task,
     validate_task,
@@ -38,6 +39,7 @@ def task() -> dict:
         "schema": "MULTIVERSE_RESEARCH_TASK_v1",
         "task_id": "task-001",
         "snapshot_id": "snapshot-001",
+        "created_at": "2026-09-07T00:00:00Z",
         "domain": "core",
         "objective": "Challenge the dispatcher boundary.",
         "source_refs": [
@@ -45,6 +47,7 @@ def task() -> dict:
                 "kind": "SNAPSHOT_PACKET",
                 "ref": "packet-v1",
                 "sha256": "a" * 64,
+                "observed_at": "2026-09-07T00:00:00Z",
             }
         ],
         "allowed_primitives": [
@@ -114,8 +117,10 @@ def result(
     return {
         "schema": "MULTIVERSE_RESEARCH_RESULT_v1",
         "task_id": "task-001",
+        "task_sha256": sha256_json(task()),
         "submission_id": submission_id,
         "snapshot_id": "snapshot-001",
+        "produced_at": "2026-09-07T00:01:00Z",
         "model_identity": {
             "provider": provider,
             "model": model,
@@ -130,6 +135,16 @@ def result(
         ),
         "nonauthority": nonauthority(),
     }
+
+
+def bind_result_to_task(
+    value: dict,
+    bound_task: dict,
+) -> dict:
+    value["task_id"] = bound_task["task_id"]
+    value["snapshot_id"] = bound_task["snapshot_id"]
+    value["task_sha256"] = sha256_json(bound_task)
+    return value
 
 
 class ContractTests(unittest.TestCase):
@@ -323,14 +338,20 @@ class ContractTests(unittest.TestCase):
     def test_16_evidence_primitive_must_be_task_allowed(self):
         bound_task = task()
         bound_task["allowed_primitives"] = ["SOURCE_REF"]
-        value = result(submission_id="submission-primitive")
+        value = bind_result_to_task(
+            result(submission_id="submission-primitive"),
+            bound_task,
+        )
         with self.assertRaises(ResearchContractError):
             validate_result_for_task(bound_task, value)
 
     def test_17_source_ref_evidence_binds_declared_digest(self):
         bound_task = task()
         bound_task["allowed_primitives"] = ["SOURCE_REF"]
-        value = result(submission_id="submission-source")
+        value = bind_result_to_task(
+            result(submission_id="submission-source"),
+            bound_task,
+        )
         evidence = value["findings"][0]["evidence"]
         evidence["primitive"] = "SOURCE_REF"
         evidence["ref"] = "packet-v1"
@@ -348,7 +369,10 @@ class ContractTests(unittest.TestCase):
     def test_18_task_max_findings_is_enforced(self):
         bound_task = task()
         bound_task["constraints"]["max_findings"] = 1
-        value = result(submission_id="submission-findings")
+        value = bind_result_to_task(
+            result(submission_id="submission-findings"),
+            bound_task,
+        )
         second = copy.deepcopy(value["findings"][0])
         second["finding_id"] = "finding-002"
         second["claim_key"] = "claim-second"
@@ -359,7 +383,10 @@ class ContractTests(unittest.TestCase):
     def test_19_task_max_output_bytes_is_enforced(self):
         bound_task = task()
         bound_task["constraints"]["max_output_bytes"] = 1024
-        value = result(submission_id="submission-output")
+        value = bind_result_to_task(
+            result(submission_id="submission-output"),
+            bound_task,
+        )
         value["findings"][0]["assertion"] = "x" * 4000
         with self.assertRaises(ResearchContractError):
             validate_result_for_task(bound_task, value)
@@ -435,6 +462,59 @@ class ContractTests(unittest.TestCase):
     def test_25_empty_aggregate_is_rejected(self):
         with self.assertRaises(ResearchContractError):
             aggregate_results(task(), [])
+
+    def test_26_task_digest_rejects_reused_ids_with_changed_task(self):
+        changed_task = task()
+        changed_task["objective"] = "Changed objective under reused IDs."
+        stale_result = result(submission_id="stale-task-result")
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(changed_task, stale_result)
+
+    def test_27_duplicate_claim_key_in_one_result_is_rejected(self):
+        value = result(submission_id="duplicate-claim")
+        second = copy.deepcopy(value["findings"][0])
+        second["finding_id"] = "finding-002"
+        second["position"] = "OPPOSE"
+        value["findings"].append(second)
+        with self.assertRaises(ResearchContractError):
+            validate_result(value)
+
+    def test_28_task_source_and_result_timestamps_are_strict_utc(self):
+        bad_task = task()
+        bad_task["created_at"] = "2026-09-07 00:00:00"
+        with self.assertRaises(ResearchContractError):
+            validate_task(bad_task)
+
+        bad_source = task()
+        bad_source["source_refs"][0]["observed_at"] = "yesterday"
+        with self.assertRaises(ResearchContractError):
+            validate_task(bad_source)
+
+        bad_result = result(submission_id="bad-time")
+        bad_result["produced_at"] = "2026-09-07T00:01:00+09:00"
+        with self.assertRaises(ResearchContractError):
+            validate_result(bad_result)
+
+    def test_29_claim_provenance_carries_time_and_result_digest(self):
+        value = result(submission_id="claim-provenance")
+        aggregate = aggregate_results(task(), [value])
+        item = aggregate["claims"][0]["positions"]["SUPPORT"][0]
+        self.assertEqual(item["produced_at"], value["produced_at"])
+        self.assertEqual(
+            item["result_content_digest"],
+            result_content_digest(value),
+        )
+
+    def test_30_aggregate_binds_exact_task_digest(self):
+        bound_task = task()
+        aggregate = aggregate_results(
+            bound_task,
+            [result(submission_id="aggregate-task-digest")],
+        )
+        self.assertEqual(
+            aggregate["task_sha256"],
+            sha256_json(bound_task),
+        )
 
 
 if __name__ == "__main__":

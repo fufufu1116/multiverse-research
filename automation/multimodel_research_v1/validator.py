@@ -104,6 +104,10 @@ def validate() -> dict:
         "RESULT_EVIDENCE_PRIMITIVE_NOT_ALLOWED",
         "RESULT_MAX_FINDINGS_EXCEEDED",
         "RESULT_MAX_OUTPUT_BYTES_EXCEEDED",
+        "RESULT_TASK_SHA256_MISMATCH",
+        "DUPLICATE_CLAIM_KEY",
+        "produced_at",
+        "observed_at",
     ):
         record(
             f"model:{token}",
@@ -151,8 +155,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 25,
-        f"{test_count} != 25",
+        test_count == 30,
+        f"{test_count} != 30",
     )
 
     return {

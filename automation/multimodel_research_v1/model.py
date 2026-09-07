@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from datetime import datetime
 from typing import Any
 
 TASK_SCHEMA = "MULTIVERSE_RESEARCH_TASK_v1"
@@ -13,6 +14,7 @@ TASK_KEYS = {
     "schema",
     "task_id",
     "snapshot_id",
+    "created_at",
     "domain",
     "objective",
     "source_refs",
@@ -25,8 +27,10 @@ TASK_KEYS = {
 RESULT_KEYS = {
     "schema",
     "task_id",
+    "task_sha256",
     "submission_id",
     "snapshot_id",
+    "produced_at",
     "model_identity",
     "status",
     "findings",
@@ -150,6 +154,24 @@ def _text(value: Any, code: str, max_len: int = 20000) -> str:
     return value
 
 
+def _utc_timestamp(value: Any, code: str) -> str:
+    require(
+        isinstance(value, str)
+        and bool(
+            re.fullmatch(
+                r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z",
+                value,
+            )
+        ),
+        code,
+    )
+    try:
+        datetime.fromisoformat(value[:-1] + "+00:00")
+    except ValueError as exc:
+        raise ResearchContractError(code) from exc
+    return value
+
+
 def _nonauthority(value: Any) -> dict[str, bool]:
     require(
         isinstance(value, dict)
@@ -182,6 +204,7 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     require(task["schema"] == TASK_SCHEMA, "TASK_SCHEMA_VERSION")
     _identifier(task["task_id"], "TASK_ID")
     _identifier(task["snapshot_id"], "SNAPSHOT_ID")
+    _utc_timestamp(task["created_at"], "TASK_CREATED_AT")
     _identifier(task["domain"], "DOMAIN")
     _text(task["objective"], "OBJECTIVE")
 
@@ -192,11 +215,12 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     for item in refs:
         require(
             isinstance(item, dict)
-            and set(item) == {"kind", "ref", "sha256"},
+            and set(item) == {"kind", "ref", "sha256", "observed_at"},
             "SOURCE_REF_SCHEMA",
         )
         _identifier(item["kind"], "SOURCE_REF_KIND")
         ref = _text(item["ref"], "SOURCE_REF_REF", 4000)
+        _utc_timestamp(item["observed_at"], "SOURCE_REF_OBSERVED_AT")
         require(ref not in seen_source_refs, "DUPLICATE_SOURCE_REF")
         seen_source_refs.add(ref)
         digest = item["sha256"]
@@ -266,8 +290,14 @@ def validate_result(result: dict[str, Any]) -> dict[str, Any]:
     require(set(result) == RESULT_KEYS, "RESULT_SCHEMA_KEYS")
     require(result["schema"] == RESULT_SCHEMA, "RESULT_SCHEMA_VERSION")
     _identifier(result["task_id"], "RESULT_TASK_ID")
+    require(
+        isinstance(result["task_sha256"], str)
+        and bool(re.fullmatch(r"[0-9a-f]{64}", result["task_sha256"])),
+        "RESULT_TASK_SHA256",
+    )
     _identifier(result["submission_id"], "SUBMISSION_ID")
     _identifier(result["snapshot_id"], "RESULT_SNAPSHOT_ID")
+    _utc_timestamp(result["produced_at"], "RESULT_PRODUCED_AT")
 
     identity = result["model_identity"]
     require(
@@ -290,6 +320,7 @@ def validate_result(result: dict[str, Any]) -> dict[str, Any]:
         require(findings == [], "NONCOMPLETED_FINDINGS_MUST_BE_EMPTY")
 
     finding_ids: set[str] = set()
+    claim_keys: set[str] = set()
 
     for finding in findings:
         require(
@@ -308,7 +339,12 @@ def validate_result(result: dict[str, Any]) -> dict[str, Any]:
         )
         finding_ids.add(finding_id)
 
-        _identifier(finding["claim_key"], "CLAIM_KEY")
+        claim_key = _identifier(finding["claim_key"], "CLAIM_KEY")
+        require(
+            claim_key not in claim_keys,
+            "DUPLICATE_CLAIM_KEY",
+        )
+        claim_keys.add(claim_key)
         require(finding["position"] in POSITIONS, "FINDING_POSITION")
         require(finding["severity"] in SEVERITIES, "FINDING_SEVERITY")
         _text(finding["assertion"], "FINDING_ASSERTION")
@@ -374,6 +410,10 @@ def validate_result_for_task(
     require(
         result["snapshot_id"] == task["snapshot_id"],
         "RESULT_SNAPSHOT_ID_MISMATCH",
+    )
+    require(
+        result["task_sha256"] == sha256_json(task),
+        "RESULT_TASK_SHA256_MISMATCH",
     )
     require(
         result["model_identity"]["role"] in task["requested_roles"],

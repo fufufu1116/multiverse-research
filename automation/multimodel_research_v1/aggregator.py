@@ -63,9 +63,10 @@ def aggregate_results(
         else:
             by_identity[identity] = (digest, result)
 
+    unique_items = list(by_identity.values())
     unique_results = [
         item[1]
-        for item in by_identity.values()
+        for item in unique_items
     ]
 
     claim_positions: dict[
@@ -73,7 +74,7 @@ def aggregate_results(
         dict[str, list[dict[str, Any]]],
     ] = defaultdict(lambda: defaultdict(list))
 
-    for result in unique_results:
+    for result_digest, result in unique_items:
         if result["status"] != "COMPLETED":
             continue
 
@@ -86,6 +87,8 @@ def aggregate_results(
                 {
                     "submission_id": result["submission_id"],
                     "model_identity": result["model_identity"],
+                    "produced_at": result["produced_at"],
+                    "result_content_digest": result_digest,
                     "finding_id": finding["finding_id"],
                     "severity": finding["severity"],
                     "assertion": finding["assertion"],
@@ -150,10 +153,12 @@ def aggregate_results(
         {
             "submission_id": result["submission_id"],
             "model_identity": result["model_identity"],
+            "produced_at": result["produced_at"],
+            "result_content_digest": result_digest,
             "status": result["status"],
             "uncertainty_factors": result["uncertainty_factors"],
         }
-        for result in unique_results
+        for result_digest, result in unique_items
         if result["status"] != "COMPLETED"
     ]
 
