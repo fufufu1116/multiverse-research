@@ -292,6 +292,44 @@ def validate() -> dict:
                 f"{label}:secret_step_fresh_canonical_fetch: missing"
             )
 
+    dispatcher_source = (ROOT / "dispatcher.py").read_text()
+    for token in (
+        "PR_SUMMARY_ITEM_OBJECT",
+        "PR_SUMMARY_NUMBER",
+        'f"https://api.github.com/repos/{repo}/pulls/{pr_number}"',
+        "PR_RESPONSE_OBJECT",
+        "PR_DRAFT_BOOL",
+        "PR_MERGED_BOOL",
+        "PR_HEAD_SHA",
+        "PR_BASE_SHA",
+        "COMMIT_RESPONSE_OBJECT",
+        "COMMIT_TREE_SHA",
+        "MAIN_RESPONSE_OBJECT",
+        "MAIN_SHA",
+        "COMMENTS_ITEM_OBJECT",
+        "RESULT_COMMENT_ID",
+    ):
+        name = f"dispatcher:api_contract:{token[:32]}"
+        if token in dispatcher_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: missing")
+
+    for forbidden in (
+        'pr["merged"]',
+        'pr["draft"]',
+        'pr["state"]',
+        'commit["commit"]',
+        'main["commit"]',
+    ):
+        name = f"dispatcher:no_raw_external_index:{forbidden}"
+        if forbidden not in dispatcher_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: found")
+
     review_source = (ROOT / "review.py").read_text()
     for token in (
         '[sys.executable, "-m", "unittest", module, "-v"]',
