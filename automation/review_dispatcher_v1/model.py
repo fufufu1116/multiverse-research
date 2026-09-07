@@ -145,6 +145,101 @@ def sha256_hex(value: Any) -> bool:
     )
 
 
+def required_object(value: Any, code: str) -> dict[str, Any]:
+    require(isinstance(value, dict), code)
+    return value
+
+
+def required_positive_int(value: Any, code: str) -> int:
+    require(
+        isinstance(value, int)
+        and not isinstance(value, bool)
+        and value > 0,
+        code,
+    )
+    return value
+
+
+def required_sha40(value: Any, code: str) -> str:
+    require(sha40(value), code)
+    return value
+
+
+def required_nonempty_str(value: Any, code: str) -> str:
+    require(isinstance(value, str) and bool(value), code)
+    return value
+
+
+def github_full_pr_binding(
+    payload: Any,
+    *,
+    expected_number: int | None = None,
+    expected_head: str | None = None,
+) -> dict[str, Any]:
+    pr = required_object(payload, "PR_RESPONSE_OBJECT")
+
+    number = required_positive_int(pr.get("number"), "PR_NUMBER")
+    if expected_number is not None:
+        require(number == expected_number, "PR_NUMBER_DRIFT")
+
+    state = required_nonempty_str(pr.get("state"), "PR_STATE_STRING")
+    require(state == "open", "PR_NOT_OPEN")
+
+    draft = pr.get("draft")
+    require(isinstance(draft, bool), "PR_DRAFT_BOOL")
+    require(draft is True, "PR_NOT_DRAFT")
+
+    merged = pr.get("merged")
+    require(isinstance(merged, bool), "PR_MERGED_BOOL")
+    require(merged is False, "PR_ALREADY_MERGED")
+
+    head_obj = required_object(pr.get("head"), "PR_HEAD_OBJECT")
+    head_sha = required_sha40(head_obj.get("sha"), "PR_HEAD_SHA")
+    if expected_head is not None:
+        require(head_sha == expected_head, "PR_HEAD_DRIFT")
+    head_ref = required_nonempty_str(head_obj.get("ref"), "PR_HEAD_REF")
+
+    base_obj = required_object(pr.get("base"), "PR_BASE_OBJECT")
+    base_sha = required_sha40(base_obj.get("sha"), "PR_BASE_SHA")
+
+    return {
+        "number": number,
+        "state": state,
+        "draft": draft,
+        "merged": merged,
+        "head_sha": head_sha,
+        "head_ref": head_ref,
+        "base_sha": base_sha,
+    }
+
+
+def github_commit_tree_sha(payload: Any) -> str:
+    commit = required_object(payload, "COMMIT_RESPONSE_OBJECT")
+    commit_meta = required_object(
+        commit.get("commit"),
+        "COMMIT_METADATA_OBJECT",
+    )
+    tree_obj = required_object(
+        commit_meta.get("tree"),
+        "COMMIT_TREE_OBJECT",
+    )
+    return required_sha40(tree_obj.get("sha"), "COMMIT_TREE_SHA")
+
+
+def github_branch_commit_sha(payload: Any) -> str:
+    branch = required_object(payload, "BRANCH_RESPONSE_OBJECT")
+    commit = required_object(
+        branch.get("commit"),
+        "BRANCH_COMMIT_OBJECT",
+    )
+    return required_sha40(commit.get("sha"), "BRANCH_COMMIT_SHA")
+
+
+def github_comment_id(payload: Any, code: str = "COMMENT_ID") -> int:
+    comment = required_object(payload, "COMMENT_RESPONSE_OBJECT")
+    return required_positive_int(comment.get("id"), code)
+
+
 def safe_repo_path(value: Any) -> str:
     require(isinstance(value, str) and bool(value), "PATH_REQUIRED")
     p = PurePosixPath(value)
