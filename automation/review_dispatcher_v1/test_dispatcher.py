@@ -958,5 +958,50 @@ class HardeningTests(unittest.TestCase):
             self.assertNotIn("git rev-parse origin/main", text)
 
 
+    def test_34_fixed_pipeline_runtime_vars_escaped_and_failure_artifacts_retained(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        runtime_names = (
+            "DISPATCHER_REF",
+            "FRESH_DISPATCHER_REF",
+            "JOB_DISPATCHER_REF",
+            "BUILDKITE_COMMIT",
+        )
+        for relative in (
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml",
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml",
+        ):
+            text = (repo_root / relative).read_text()
+
+            for runtime_name in runtime_names:
+                escaped = "$" * 2 + runtime_name
+                unescaped = "$" + runtime_name
+                self.assertIn(escaped, text)
+                self.assertNotIn(
+                    unescaped,
+                    text.replace(escaped, ""),
+                )
+
+            for required in (
+                "rm -f .mv_review_pass",
+                "if PYTHONPATH=.mv_dispatcher",
+                "touch .mv_review_pass",
+                "if [ -f review_artifact.json ]; then",
+                "test -f .mv_review_pass",
+            ):
+                self.assertIn(required, text)
+
+            review_index = text.index("review.py")
+            job_upload_index = text.index(
+                'buildkite-agent artifact upload \\n        "review_job.json"'
+            )
+            artifact_guard_index = text.index(
+                "if [ -f review_artifact.json ]; then"
+            )
+            final_status_index = text.index("test -f .mv_review_pass")
+            self.assertLess(review_index, job_upload_index)
+            self.assertLess(job_upload_index, artifact_guard_index)
+            self.assertLess(artifact_guard_index, final_status_index)
+
+
 if __name__ == "__main__":
     unittest.main()
