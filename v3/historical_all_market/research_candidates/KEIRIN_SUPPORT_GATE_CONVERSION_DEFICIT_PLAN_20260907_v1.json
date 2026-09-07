@@ -1,0 +1,151 @@
+{
+  "record": "KEIRIN_SUPPORT_GATE_CONVERSION_DEFICIT_PLAN_20260907_v1",
+  "status": "PRE_ONLY_EXISTING_SUPPLY_CONVERSION_CAPACITY_QUANTIFIED_NO_RESULT_NO_SUPPORT_AUTHORITY",
+  "observed_binding": {
+    "research_branch_head": "2c9a9aba655952a9ac46336e01f1a7b5a0c6e278",
+    "canonical_main": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "migration_lock": "#93 comment 5561567913 ACTIVE",
+    "current_state": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v70.json"
+  },
+  "frozen_gate": {
+    "unique_supported_riders_target": 30,
+    "supported_rows_target": 60,
+    "min_venues_each_circumference": 2,
+    "min_calendar_blocks_each_circumference": 2,
+    "max_single_venue_share_supported_rows": 0.6,
+    "max_single_rider_share_supported_rows": 0.1,
+    "official_identity_mapping_rate": 1
+  },
+  "current_formal_support": {
+    "unique_riders": 1,
+    "supported_rows": 2,
+    "remaining_unique_riders": 29,
+    "remaining_rows": 58,
+    "gate": "FAIL"
+  },
+  "accounting_rule": "Capacity math is an upper-bound readiness calculation only. A distinct candidate contributes one new supported rider and two supported PRE race rows only if the full formal receipt chain passes for one valid 333/333.33 race and one valid 400 race. Candidate/prequalified status alone contributes zero.",
+  "tier1_20260910_0911": {
+    "candidates": [
+      {
+        "event": "奈良_2026-09-10",
+        "circumference": "333_OR_333_33M",
+        "known_exact_identity_candidates": 10
+      },
+      {
+        "event": "川崎_2026-09-10",
+        "circumference": "400M",
+        "known_exact_identity_candidates": 4
+      },
+      {
+        "event": "豊橋_2026-09-11",
+        "circumference": "400M",
+        "known_exact_identity_candidates": 4
+      }
+    ],
+    "known_distinct_candidate_capacity": 18,
+    "perfect_conversion_upper_bound": {
+      "formal_unique_riders_total": 19,
+      "formal_rows_total": 38
+    },
+    "deficit_even_if_all_convert": {
+      "unique_riders": 11,
+      "rows": 22
+    },
+    "conclusion": "TIER2_IS_STRUCTURALLY_REQUIRED_EVEN_UNDER_PERFECT_TIER1_CONVERSION"
+  },
+  "next_wave_through_20260918": {
+    "candidate_sets": [
+      {
+        "event": "伊東_2026-09-14",
+        "known_candidates": 3,
+        "incremental_unique_vs_tier1": 3,
+        "registrations": [
+          "015150",
+          "015616",
+          "015179"
+        ]
+      },
+      {
+        "event": "青森_2026-09-14",
+        "known_candidates": 2,
+        "incremental_unique_vs_tier1": 2,
+        "registrations": [
+          "015639",
+          "013936"
+        ]
+      },
+      {
+        "event": "防府_2026-09-15",
+        "known_candidates": 5,
+        "incremental_unique_vs_tier1": 5,
+        "registrations": [
+          "013355",
+          "015787",
+          "015610",
+          "014633",
+          "015734"
+        ]
+      },
+      {
+        "event": "武雄_2026-09-16",
+        "known_candidates": 0,
+        "incremental_unique_vs_tier1": 0,
+        "note": "Exhaustive Toyama historical overlap screen found zero; avoid conversion polling unless fresh legitimate evidence supersedes it."
+      },
+      {
+        "event": "川崎_2026-09-17",
+        "known_candidates": 2,
+        "incremental_unique_vs_tier1": 1,
+        "registrations": [
+          "014136",
+          "015042"
+        ],
+        "known_duplicate": "014136 金澤竜二 is already in Toyohashi 2026-09-11 pool; prioritize 015042 for the unique-rider floor if both remain valid."
+      },
+      {
+        "event": "富山_2026-09-18",
+        "known_candidates": 3,
+        "incremental_unique_vs_tier1": 3,
+        "registrations": [
+          "015537",
+          "014177",
+          "015645"
+        ],
+        "scope_note": "Count binds the exhaustive Aomori-1R historical screen only and does not claim all other Toyama candidate artifacts are absent."
+      }
+    ],
+    "known_incremental_unique_capacity_beyond_tier1": 14,
+    "cumulative_known_distinct_new_candidate_capacity_from_20260910_through_20260918": 32,
+    "perfect_conversion_upper_bound_including_current_formal": {
+      "formal_unique_riders_total": 33,
+      "formal_rows_total": 66
+    },
+    "minimum_new_distinct_conversions_needed_to_hit_rider_and_row_floors": 29,
+    "theoretical_distinct_candidate_failure_margin": 3,
+    "failure_margin_warning": "Not a forecast. Withdrawals, missing Day1 PRE membership, official same-race failure, provenance failure, duplication, cutoff misses, or other fail-closed conditions reduce the margin."
+  },
+  "diversity_implications": {
+    "venue_dimension": "Existing formal rows represent 防府 333 and 川崎 400. Formal 奈良 or 富山-side 333 plus formal 豊橋/青森 400 can establish the two-venue-per-circumference floor, subject to actual receipts.",
+    "concentration": "If all 32 distinct opportunities in this plan converted as one two-row pair each, supported rows would be 66 and the projected largest single-venue count from the listed pairings is 川崎 24/66 = 0.3636, below 0.60. Actual gate recomputation must use receipts.",
+    "rider_share": "With one two-row pair per distinct rider and 60+ supported rows, a single rider contributes about 0.0333 or less. Duplicate-rider extra rows are lower priority until the unique-rider floor is secured.",
+    "calendar": "Frozen sources strongly indicate day-block semantics, but authoritative calendar-block equality remains UNKNOWN. No projected calendar PASS has authority until PR #177 review/adoption resolves it."
+  },
+  "execution_order": [
+    "Exact positive Day1 racecard before trusted cutoff interrupts planning.",
+    "Prioritize distinct-rider conversions and missing venue diversity before duplicate-rider depth.",
+    "For each candidate run strict PRE -> exact official identity -> contemporaneous official same-race -> provenance -> receipt builder -> receipt guard -> witness registry -> partial gate recomputation.",
+    "Permanently close incomplete chains at cutoff with +0 and never backfill.",
+    "After each formal receipt recompute actual rider/row/venue/concentration dimensions; calendar remains UNKNOWN until separately adopted.",
+    "Do not expand candidate supply unless fresh actual deficits show the existing portfolio can no longer plausibly hit the frozen floor."
+  ],
+  "support_increment_authorized_now": 0,
+  "result_access_authorized": false,
+  "payout_access_authorized": false,
+  "odds_used": false,
+  "prediction_used": false,
+  "shared_lab_auditor_steps_mutation": false,
+  "workflow_dispatch_or_rerun": false,
+  "main_mutation": false,
+  "runtime_activation": false,
+  "owner_action_required_now": false
+}
