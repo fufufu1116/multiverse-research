@@ -17,6 +17,10 @@ from automation.review_dispatcher_v1.model import (
     dotted_get,
     extract_request_from_comment,
     fetch_all_pages,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     lane_result_comment_trusted,
     latest_exact_current_owner_request,
     resolve_public_https_target,
@@ -1150,6 +1154,88 @@ class HardeningTests(unittest.TestCase):
                         head=SHA_A,
                         fetch=fake_fetch,
                     )
+
+
+    def test_38_shared_github_response_normalizers_are_fail_closed(self):
+        full_pr = {
+            "number": 999,
+            "state": "open",
+            "draft": True,
+            "merged": False,
+            "head": {
+                "sha": SHA_A,
+                "ref": "agent/test",
+            },
+            "base": {
+                "sha": SHA_C,
+            },
+        }
+        binding = github_full_pr_binding(
+            full_pr,
+            expected_number=999,
+            expected_head=SHA_A,
+        )
+        self.assertEqual(binding["head_sha"], SHA_A)
+        self.assertEqual(binding["base_sha"], SHA_C)
+
+        self.assertEqual(
+            github_commit_tree_sha(
+                {"commit": {"tree": {"sha": SHA_B}}}
+            ),
+            SHA_B,
+        )
+        self.assertEqual(
+            github_branch_commit_sha(
+                {"commit": {"sha": SHA_D}}
+            ),
+            SHA_D,
+        )
+        self.assertEqual(
+            github_comment_id({"id": 123}),
+            123,
+        )
+
+        malformed_prs = (
+            {},
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "head": {"sha": SHA_A, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "merged": False,
+                "head": {"sha": "bad", "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+        )
+        for payload in malformed_prs:
+            with self.subTest(payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_full_pr_binding(
+                        payload,
+                        expected_number=999,
+                        expected_head=SHA_A,
+                    )
+
+        for payload in ({}, {"commit": {}}, {"commit": {"tree": {}}}):
+            with self.subTest(commit_payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_commit_tree_sha(payload)
+
+        for payload in ({}, {"commit": {}}):
+            with self.subTest(branch_payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_branch_commit_sha(payload)
+
+        for payload in ({}, {"id": 0}, {"id": "123"}):
+            with self.subTest(comment_payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_comment_id(payload)
 
 
 if __name__ == "__main__":
