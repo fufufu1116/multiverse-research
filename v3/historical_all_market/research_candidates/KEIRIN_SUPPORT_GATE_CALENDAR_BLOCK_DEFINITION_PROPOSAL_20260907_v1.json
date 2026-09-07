@@ -1,0 +1,33 @@
+{
+  "record": "KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_PROPOSAL_20260907_v1",
+  "status": "NONAUTHORITATIVE_RESEARCH_DEFINITION_PROPOSAL_REQUIRES_SEPARATE_REVIEW_AND_ADOPTION",
+  "scope": "RESEARCH_CANDIDATE_ONLY_NO_GATE_MUTATION_NO_RESULT",
+  "evidence_audit": "KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_EVIDENCE_AUDIT_20260907_v2.json",
+  "proposed_definition": {
+    "name": "LOCAL_DAY1_RACE_DATE",
+    "key_expression": "calendar_block = local race_date (JST) of the valid Day1 PRE race",
+    "distinct_count_rule": "For each circumference bucket, count distinct local Day1 race_date values among formal supported rows only.",
+    "same_date_multi_venue_rule": "Rows from multiple venues on the same local race date contribute one calendar block for the temporal-diversity dimension.",
+    "multi_date_same_venue_rule": "Valid formal supported rows from the same venue on different local Day1 race dates contribute distinct calendar blocks, subject to the separate venue-share and venue-count constraints.",
+    "source_population_rule": "Only formal support receipt rows that already pass PRE timing, exact official identity, same-race, provenance, duplicate guard, and circumference verification are eligible."
+  },
+  "rationale": [
+    "Parent prespec freezes population selection as WHOLE_ACCESSIBLE_MEETING_DAY_BLOCKS_IN_CHRONOLOGICAL_PRE_SOURCE_ORDER.",
+    "Final evaluation lock uses DAY1_WHOLE_ACCESSIBLE_BLOCK_PRELOCKED.",
+    "Acquisition extension repeatedly describes future whole-day PRE blocks.",
+    "A date-only calendar key keeps temporal diversity logically separate from the independently frozen venue-diversity requirement."
+  ],
+  "nonauthority": {
+    "accepted_definition": false,
+    "evaluator_change_authorized": false,
+    "full_gate_pass_authorized": false,
+    "threshold_change_authorized": false,
+    "result_access_authorized": false,
+    "main_mutation_authorized": false,
+    "shared_lab_auditor_steps_mutation_authorized": false,
+    "workflow_dispatch_or_rerun_authorized": false,
+    "runtime_activation_authorized": false
+  },
+  "adoption_requirement": "Before the partial evaluator can compute calendar dimensions or ever emit full PASS, this definition (or a reviewed replacement) must receive separate independent review/governance adoption under the fresh common operating baseline.",
+  "owner_action_required_now": false
+}
