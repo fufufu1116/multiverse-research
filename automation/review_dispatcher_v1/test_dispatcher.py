@@ -22,6 +22,7 @@ from automation.review_dispatcher_v1.model import (
     github_commit_tree_sha,
     github_full_pr_binding,
     lane_result_comment_trusted,
+    lane_result_outer_app_trusted,
     latest_exact_current_owner_request,
     resolve_public_https_target,
     result_marker,
@@ -1316,6 +1317,94 @@ class HardeningTests(unittest.TestCase):
                     ),
                     "installation-token",
                 )
+
+
+    def test_41_nullable_outer_app_helper_accepts_none_and_rejects_wrong_slug(self):
+        for lane, login, slug in (
+            ("LAB", "multiverse-independent-lab[bot]", "multiverse-independent-lab"),
+            ("AUDITOR", "multiverse-independent-auditor[bot]", "multiverse-independent-auditor"),
+        ):
+            base_comment = {
+                "user": {
+                    "login": login,
+                    "type": "Bot",
+                },
+                "performed_via_github_app": None,
+            }
+            self.assertTrue(
+                lane_result_outer_app_trusted(base_comment, lane)
+            )
+            self.assertTrue(
+                lane_result_comment_trusted(base_comment, lane)
+            )
+
+            exact = copy.deepcopy(base_comment)
+            exact["performed_via_github_app"] = {"slug": slug}
+            self.assertTrue(
+                lane_result_outer_app_trusted(exact, lane)
+            )
+            self.assertTrue(
+                lane_result_comment_trusted(exact, lane)
+            )
+
+            wrong = copy.deepcopy(base_comment)
+            wrong["performed_via_github_app"] = {"slug": "wrong-app"}
+            self.assertFalse(
+                lane_result_outer_app_trusted(wrong, lane)
+            )
+            self.assertFalse(
+                lane_result_comment_trusted(wrong, lane)
+            )
+
+            malformed = copy.deepcopy(base_comment)
+            malformed["performed_via_github_app"] = "wrong-type"
+            self.assertFalse(
+                lane_result_outer_app_trusted(malformed, lane)
+            )
+            self.assertFalse(
+                lane_result_comment_trusted(malformed, lane)
+            )
+
+    def test_42_review_and_t2_use_shared_nullable_outer_app_helper(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        review_source = (
+            repo_root
+            / "automation"
+            / "review_dispatcher_v1"
+            / "review.py"
+        ).read_text()
+        t2_source = (
+            repo_root
+            / "automation"
+            / "review_dispatcher_v1"
+            / "t2.py"
+        ).read_text()
+
+        self.assertIn(
+            'lane_result_outer_app_trusted(lab_comment, "LAB")',
+            review_source,
+        )
+        self.assertNotIn(
+            "lab_app == LAB_APP_SLUG",
+            review_source,
+        )
+
+        self.assertIn(
+            'lane_result_outer_app_trusted(auditor_comment, "AUDITOR")',
+            t2_source,
+        )
+        self.assertIn(
+            'lane_result_outer_app_trusted(lab_comment, "LAB")',
+            t2_source,
+        )
+        self.assertNotIn(
+            "outer_app == AUDITOR_APP_SLUG",
+            t2_source,
+        )
+        self.assertNotIn(
+            "lab_app == LAB_APP_SLUG",
+            t2_source,
+        )
 
 
 if __name__ == "__main__":
