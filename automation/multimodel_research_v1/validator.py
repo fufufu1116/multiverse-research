@@ -108,6 +108,9 @@ def validate() -> dict:
         "DUPLICATE_CLAIM_KEY",
         "produced_at",
         "observed_at",
+        "SOURCE_REF_OBSERVED_AFTER_TASK_CREATED",
+        "RESULT_PRODUCED_BEFORE_TASK_CREATED",
+        "NONCOMPLETED_REQUIRES_UNCERTAINTY",
     ):
         record(
             f"model:{token}",
@@ -126,6 +129,9 @@ def validate() -> dict:
         "task_sha256",
         "noncompleted_results",
         "unique_model_identity_count",
+        "SUPPORT_WITH_UNKNOWN",
+        "OPPOSE_WITH_UNKNOWN",
+        "status_counts",
     ):
         record(
             f"aggregator:{token}",
@@ -155,8 +161,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 30,
-        f"{test_count} != 30",
+        test_count == 35,
+        f"{test_count} != 35",
     )
 
     return {

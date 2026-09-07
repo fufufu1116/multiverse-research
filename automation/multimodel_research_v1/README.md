@@ -8,8 +8,8 @@ Create a provider-neutral advisory research layer for external or synthetic rese
 
 Phase A contains:
 
-- strict research task schema with UTC creation/source-observation provenance;
-- strict research result schema with UTC production provenance;
+- strict research task schema with UTC creation/source-observation provenance and source-observed-before-task ordering;
+- strict research result schema with UTC production provenance and result-produced-after-task ordering;
 - explicit canonical task-SHA256-to-result binding;
 - task-scoped role/evidence/finding-count/output-size enforcement;
 - explicit resource/network constraints;
@@ -73,7 +73,7 @@ Consensus
 
 Consensus is descriptive only.
 
-The aggregator may report support-only, oppose-only, unknown-only, or divergent claim groups.
+The aggregator may report support-only, oppose-only, support-with-unknown, oppose-with-unknown, unknown-only, or divergent claim groups. UNKNOWN participation is never hidden behind an *ONLY* label.
 
 A majority never confers truth or adoption authority.
 
@@ -89,7 +89,7 @@ An infrastructure error must not be misreported as a Candidate defect.
 
 But an incomplete review cannot become authoritative PASS.
 
-All non-COMPLETED advisory outcomes are preserved in aggregate metadata. INFRA_FAILURE remains separately indexed, while UNSUPPORTED and REFUSED are not silently dropped.
+All non-COMPLETED advisory outcomes require an explicit uncertainty/reason, are preserved in aggregate metadata, and contribute to explicit status_counts coverage. INFRA_FAILURE remains separately indexed, while UNSUPPORTED and REFUSED are not silently dropped.
 
 Authority ceiling
 

@@ -5,6 +5,7 @@ from typing import Any
 
 from automation.multimodel_research_v1.model import (
     AGGREGATE_SCHEMA,
+    RESULT_STATUSES,
     ResearchContractError,
     require,
     result_content_digest,
@@ -116,10 +117,18 @@ def aggregate_results(
 
         if support > 0 and oppose > 0:
             descriptive_label = "DIVERGENT"
-        elif support > 0 and oppose == 0:
-            descriptive_label = "SUPPORT_ONLY"
-        elif oppose > 0 and support == 0:
-            descriptive_label = "OPPOSE_ONLY"
+        elif support > 0:
+            descriptive_label = (
+                "SUPPORT_WITH_UNKNOWN"
+                if unknown > 0
+                else "SUPPORT_ONLY"
+            )
+        elif oppose > 0:
+            descriptive_label = (
+                "OPPOSE_WITH_UNKNOWN"
+                if unknown > 0
+                else "OPPOSE_ONLY"
+            )
         else:
             descriptive_label = "UNKNOWN_ONLY"
 
@@ -168,6 +177,15 @@ def aggregate_results(
         if item["status"] == "INFRA_FAILURE"
     ]
 
+    status_counts = {
+        status: sum(
+            1
+            for result in unique_results
+            if result["status"] == status
+        )
+        for status in sorted(RESULT_STATUSES)
+    }
+
     aggregate = {
         "schema": AGGREGATE_SCHEMA,
         "task_id": task["task_id"],
@@ -181,6 +199,7 @@ def aggregate_results(
         "unresolved_divergences": unresolved_divergences,
         "noncompleted_results": noncompleted_results,
         "infra_failures": infra_failures,
+        "status_counts": status_counts,
         "consensus_is_descriptive_only": True,
         "adoption_authority": False,
     }

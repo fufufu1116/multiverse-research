@@ -154,7 +154,7 @@ def _text(value: Any, code: str, max_len: int = 20000) -> str:
     return value
 
 
-def _utc_timestamp(value: Any, code: str) -> str:
+def _parse_utc_timestamp(value: Any, code: str) -> datetime:
     require(
         isinstance(value, str)
         and bool(
@@ -166,9 +166,13 @@ def _utc_timestamp(value: Any, code: str) -> str:
         code,
     )
     try:
-        datetime.fromisoformat(value[:-1] + "+00:00")
+        return datetime.fromisoformat(value[:-1] + "+00:00")
     except ValueError as exc:
         raise ResearchContractError(code) from exc
+
+
+def _utc_timestamp(value: Any, code: str) -> str:
+    _parse_utc_timestamp(value, code)
     return value
 
 
@@ -204,7 +208,10 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     require(task["schema"] == TASK_SCHEMA, "TASK_SCHEMA_VERSION")
     _identifier(task["task_id"], "TASK_ID")
     _identifier(task["snapshot_id"], "SNAPSHOT_ID")
-    _utc_timestamp(task["created_at"], "TASK_CREATED_AT")
+    task_created_at = _parse_utc_timestamp(
+        task["created_at"],
+        "TASK_CREATED_AT",
+    )
     _identifier(task["domain"], "DOMAIN")
     _text(task["objective"], "OBJECTIVE")
 
@@ -220,7 +227,14 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
         )
         _identifier(item["kind"], "SOURCE_REF_KIND")
         ref = _text(item["ref"], "SOURCE_REF_REF", 4000)
-        _utc_timestamp(item["observed_at"], "SOURCE_REF_OBSERVED_AT")
+        observed_at = _parse_utc_timestamp(
+            item["observed_at"],
+            "SOURCE_REF_OBSERVED_AT",
+        )
+        require(
+            observed_at <= task_created_at,
+            "SOURCE_REF_OBSERVED_AFTER_TASK_CREATED",
+        )
         require(ref not in seen_source_refs, "DUPLICATE_SOURCE_REF")
         seen_source_refs.add(ref)
         digest = item["sha256"]
@@ -390,6 +404,11 @@ def validate_result(result: dict[str, Any]) -> dict[str, Any]:
     )
     for item in uncertainty_factors:
         _text(item, "UNCERTAINTY_FACTOR", 4000)
+    if result["status"] != "COMPLETED":
+        require(
+            bool(uncertainty_factors),
+            "NONCOMPLETED_REQUIRES_UNCERTAINTY",
+        )
 
     _nonauthority(result["nonauthority"])
     _reject_dynamic_keys(result)
@@ -414,6 +433,17 @@ def validate_result_for_task(
     require(
         result["task_sha256"] == sha256_json(task),
         "RESULT_TASK_SHA256_MISMATCH",
+    )
+    require(
+        _parse_utc_timestamp(
+            result["produced_at"],
+            "RESULT_PRODUCED_AT",
+        )
+        >= _parse_utc_timestamp(
+            task["created_at"],
+            "TASK_CREATED_AT",
+        ),
+        "RESULT_PRODUCED_BEFORE_TASK_CREATED",
     )
     require(
         result["model_identity"]["role"] in task["requested_roles"],

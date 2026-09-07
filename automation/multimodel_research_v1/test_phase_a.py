@@ -516,6 +516,87 @@ class ContractTests(unittest.TestCase):
             sha256_json(bound_task),
         )
 
+    def test_31_source_observation_cannot_postdate_task_creation(self):
+        value = task()
+        value["source_refs"][0]["observed_at"] = "2026-09-07T00:00:01Z"
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_32_result_cannot_predate_task_creation(self):
+        bound_task = task()
+        value = bind_result_to_task(
+            result(submission_id="predates-task"),
+            bound_task,
+        )
+        value["produced_at"] = "2026-09-06T23:59:59Z"
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_33_noncompleted_result_requires_reason(self):
+        value = result(
+            submission_id="reasonless-infra",
+            status="INFRA_FAILURE",
+        )
+        value["uncertainty_factors"] = []
+        with self.assertRaises(ResearchContractError):
+            validate_result(value)
+
+    def test_34_unknown_presence_is_visible_in_descriptive_label(self):
+        support = result(
+            submission_id="support-with-unknown",
+            provider="support-provider",
+            model="support-model",
+            position="SUPPORT",
+        )
+        unknown = result(
+            submission_id="unknown-position",
+            provider="unknown-provider",
+            model="unknown-model",
+            position="UNKNOWN",
+        )
+        aggregate = aggregate_results(task(), [support, unknown])
+        self.assertEqual(
+            aggregate["claims"][0]["descriptive_label"],
+            "SUPPORT_WITH_UNKNOWN",
+        )
+
+    def test_35_status_counts_preserve_advisory_coverage(self):
+        values = [
+            result(
+                submission_id="completed-status",
+                provider="provider-completed",
+                model="model-completed",
+            ),
+            result(
+                submission_id="infra-status",
+                provider="provider-infra-count",
+                model="model-infra-count",
+                status="INFRA_FAILURE",
+            ),
+            result(
+                submission_id="unsupported-status",
+                provider="provider-unsupported-count",
+                model="model-unsupported-count",
+                status="UNSUPPORTED",
+            ),
+            result(
+                submission_id="refused-status",
+                provider="provider-refused-count",
+                model="model-refused-count",
+                status="REFUSED",
+            ),
+        ]
+        aggregate = aggregate_results(task(), values)
+        self.assertEqual(
+            aggregate["status_counts"],
+            {
+                "COMPLETED": 1,
+                "INFRA_FAILURE": 1,
+                "REFUSED": 1,
+                "UNSUPPORTED": 1,
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
