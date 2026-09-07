@@ -1,0 +1,134 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v71",
+  "status": "CHAT_INDEPENDENT_RESEARCH_FORMAL_CONVERSION_CAPACITY_AND_AUTOMATION_CONVERGED_PENDING_EXACT_DAY1_CARDS_AND_CALENDAR_REVIEW_FAIL_CLOSED",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v70.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh Read research branch and #93 convergence state before every CURRENT claim/write.",
+  "fresh_binding": {
+    "research_branch_head_before_write": "5970931c8a3644349e95d0ae9e684c8b497c1e9c",
+    "canonical_main": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "migration_lock": "#93 comment 5561567913 ACTIVE",
+    "shared_lab_auditor_steps_mutation_authorized": false,
+    "workflow_dispatch_or_rerun_authorized": false,
+    "runtime": "OFF"
+  },
+  "support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_unique_riders_floor": 29,
+    "remaining_pre_rows_floor": 58,
+    "increment_authorized_now": 0,
+    "gate": "FAIL"
+  },
+  "live_conversion_front": {
+    "tier1_live_recheck": "KEIRIN_TIER1_LIVE_RACECARD_RECHECK_20260907_v2.json",
+    "observed_at_jst": "2026-09-07T20:23:18+09:00",
+    "nara_0910": {
+      "candidates": 10,
+      "exact_identity": "PASS_10_OF_10",
+      "event_day_structure": "POSITIVE",
+      "rider_level_exact_day1_racecard": "NOT_POSITIVELY_RESOLVED"
+    },
+    "kawasaki_0910": {
+      "candidates": 4,
+      "exact_identity": "PASS_4_OF_4",
+      "event_day_structure": "POSITIVE",
+      "rider_level_exact_day1_racecard": "NOT_POSITIVELY_RESOLVED"
+    },
+    "toyohashi_0911": {
+      "candidates": 4,
+      "exact_identity": "PASS_4_OF_4",
+      "event_day_structure": "POSITIVE",
+      "rider_level_exact_day1_racecard": "NOT_POSITIVELY_RESOLVED"
+    },
+    "formal_support_increment_authorized_now": 0
+  },
+  "conversion_capacity": {
+    "artifact": "KEIRIN_SUPPORT_GATE_CONVERSION_DEFICIT_PLAN_20260907_v1.json",
+    "tier1_distinct_capacity": 18,
+    "perfect_tier1_total_upper_bound": {
+      "riders": 19,
+      "rows": 38
+    },
+    "deficit_after_perfect_tier1": {
+      "riders": 11,
+      "rows": 22
+    },
+    "conclusion": "TIER2_STRUCTURALLY_REQUIRED",
+    "incremental_unique_capacity_20260914_through_20260918": 14,
+    "cumulative_known_distinct_new_candidate_capacity_20260910_through_20260918": 32,
+    "perfect_upper_bound_including_current_formal": {
+      "riders": 33,
+      "rows": 66
+    },
+    "distinct_candidate_failure_margin_to_rider_row_floor": 3,
+    "caveat": "UPPER_BOUND_ONLY_ALL_FORMAL_SUPPORT_RULES_STILL_REQUIRED"
+  },
+  "automation": {
+    "artifact": "KEIRIN_AUTOMATION_V70_REGISTRY_CONVERGENCE_20260907_v1.json",
+    "id": "6a9a433e10b48191bf692653ebb8999f",
+    "title": "Keirin PRE 自動進行",
+    "state": "ENABLED_HOURLY_CONDITION_WATCH_UPDATED_IN_PLACE",
+    "duplicate_created": false,
+    "reads_witness_and_closure_registries": true,
+    "skips_permanent_closures": true,
+    "exact_card_interrupts_lower_lanes": true
+  },
+  "calendar_gate": {
+    "accepted_definition": "UNKNOWN",
+    "calendar_dimensions": "UNKNOWN",
+    "full_gate_pass_authorized": false,
+    "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "candidate_pr": 177,
+    "candidate_pr_head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+    "candidate_pr_tree": "35882f72d192f097568a4a5456d39267f8e74693",
+    "lab_request_comment_id": 5569882262,
+    "lab_request_sha256": "020dd95f8c7ac1ee48961f701d2fc0c602f14fe1565d83d7ec2e05ba4cb1e3bf",
+    "review_state": "OPEN_DRAFT_NO_INDEPENDENT_PASS_OR_FAIL_OBSERVED_AT_FRESH_RECHECK",
+    "routing": "DURABLE_REQUEST_ONLY_NO_DISPATCH_FROM_RESEARCH_CHAT"
+  },
+  "formal_conversion_infrastructure": {
+    "witness_registry": "KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "closure_registry": "KEIRIN_EVENT_CLOSURE_REGISTRY_20260907_v1.json",
+    "witness_guard": "tools/keirin_precutoff_witness_registry_guard_v1.py",
+    "provenance_validator": "tools/keirin_support_provenance_validator_v1.py",
+    "receipt_builder": "tools/keirin_support_receipt_builder_v1.py",
+    "receipt_guard": "tools/keirin_support_receipt_guard_v1.py",
+    "partial_gate_evaluator": "tools/keirin_support_gate_partial_evaluator_v1.py"
+  },
+  "priority_next": [
+    "Fresh positive-navigation check for exact rider-level Nara/Kawasaki 2026-09-10 Day1 cards; Toyohashi 2026-09-11 follows.",
+    "On pre-cutoff exact positive card, execute strict formal conversion immediately and recompute the partial gate after every receipt.",
+    "Prepare the structurally required next wave: Ito/Aomori 2026-09-14, Hofu 2026-09-15, skip Takeo 2026-09-16 under current zero-overlap screen unless superseded, Kawasaki 2026-09-17 with duplicate-aware priority, Toyama 2026-09-18.",
+    "Fresh-consume PR #177 independent review only if exact head/tree/request digest still bind; until adoption calendar remains UNKNOWN.",
+    "Do not expand candidate supply unless actual fail-closed losses consume the three-candidate theoretical capacity margin or another frozen gate dimension requires it."
+  ],
+  "ito_0907": {
+    "state": "PERMANENT_FAIL_CLOSED_NO_RECONSTRUCTION_OR_BACKFILL",
+    "formal_support_increment": 0
+  },
+  "hard_boundaries": {
+    "S0": "FROZEN",
+    "RESULT": "BLOCKED",
+    "formula": "BLOCKED",
+    "payout": false,
+    "odds": false,
+    "prediction": false,
+    "human_forecast_comments": false,
+    "historical_HFT": "FROZEN_EXHAUSTED_NO_EXPANSION",
+    "post_cutoff_pre_reconstruction": false,
+    "post_cutoff_same_race_backfill": false,
+    "fuzzy_name_matching": false,
+    "race_id_guessing": false,
+    "calendar_definition_invention": false,
+    "shared_buildkite_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false,
+    "main_mutation": false,
+    "runtime_activation": false
+  },
+  "material_change_from_v70": "Existing supply capacity is now quantified: Tier1 alone cannot meet the 30-rider/60-row floor even under perfect conversion, while known distinct candidates through 2026-09-18 provide 32 new-rider opportunities, enough in principle for the 29 required conversions with a three-candidate theoretical failure margin. The existing hourly Keirin PRE automation was updated in place to read witness/closure registries, skip permanent closures, and interrupt immediately on exact pre-cutoff Day1 cards. No support increment, shared Steps edit, workflow dispatch/rerun, main/runtime mutation, or RESULT access occurred.",
+  "owner_action_required_now": false
+}
