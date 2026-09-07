@@ -186,6 +186,24 @@ def validate() -> dict:
                 checks[name] = "FIX_REQUIRED"
                 findings.append(f"{name}: missing")
 
+        bootstrap_ref = 'DISPATCHER_REF="$(git rev-parse FETCH_HEAD)"'
+        if bootstrap_ref in text:
+            checks[f"{label}:bootstrap_ref_from_fetch_head"] = "PASS"
+        else:
+            checks[f"{label}:bootstrap_ref_from_fetch_head"] = "FIX_REQUIRED"
+            findings.append(
+                f"{label}:bootstrap_ref_from_fetch_head: missing"
+            )
+
+        defective_bootstrap_ref = 'git rev-parse origin/main'
+        if defective_bootstrap_ref in text:
+            checks[f"{label}:no_defective_origin_main_ref"] = "FIX_REQUIRED"
+            findings.append(
+                f"{label}:no_defective_origin_main_ref: found"
+            )
+        else:
+            checks[f"{label}:no_defective_origin_main_ref"] = "PASS"
+
         bundle_name = "review_dispatcher_bundle.tgz"
         if bundle_name in text:
             checks[f"{label}:no_audit_executable_bundle_handoff"] = "FIX_REQUIRED"
