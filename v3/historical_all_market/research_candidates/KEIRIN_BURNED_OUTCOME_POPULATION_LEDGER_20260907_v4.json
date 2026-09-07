@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260907_v4",
+  "status": "CONSERVATIVE_FIREWALL_ADVANCED_TO_2026_09_06_NEW_SELECTION_FROM_2026_09_07_ONLY",
+  "supersedes": "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v3.json",
+  "purpose": "Prevent Rider x Bank/Circumference research from selecting, fitting or evaluating newly constructed populations from dates whose outcomes have already been surfaced.",
+  "fresh_parent_head": "a548cdbd5c9332939437517407d3c75506cb80ec",
+  "prior_latest_confirmed_outcome_viewed_target_date": "2026-08-26",
+  "new_exposure_receipt": "KEIRIN_WEB_SEARCH_RESULT_EXPOSURE_RECEIPT_20260907_v1.json",
+  "latest_confirmed_outcome_viewed_target_date": "2026-09-06",
+  "conservative_new_affinity_date_firewall": {
+    "dates_on_or_before": "2026-09-06",
+    "classification": "NOT_ELIGIBLE_FOR_NEWLY_SELECTED_RIDER_AFFINITY_FIT_EVAL_OR_NEW_HISTORICAL_SUPPORT_POOL",
+    "first_possible_date": "2026-09-07",
+    "important": "This restriction applies to NEW population/support selection after the exposure. It does not retroactively revoke legitimate PRE-only support frozen before the later exposure."
+  },
+  "preserved_prelocked_support": {
+    "artifact": "KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
+    "rider": "高橋 梨香",
+    "registration": "015018",
+    "rows": 2,
+    "reason": "Both rows were selected/frozen under PRE-only rules before the 2026-09-07 web exposure; later contamination cannot rewrite that historical design decision."
+  },
+  "historical_official_source_policy": {
+    "artifact": "KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1.json",
+    "interpretation": "Relaxes historical official-page fetch-timing proof only. It does not roll the burned-outcome firewall backward and does not legalize outcome-aware historical support selection."
+  },
+  "firewall_monotonicity": "NEVER_MOVE_BACKWARD",
+  "future_refresh_rule": "Before any new historical population lock or RESULT extraction, Fresh Read the branch and advance again if a later explicit target outcome has been surfaced.",
+  "result_join_authorized": false,
+  "model_fit_authorized": false,
+  "hard_boundaries": [
+    "NO_FIREWALL_ROLLBACK",
+    "NO_NEW_SELECTION_FROM_2026_09_06_OR_EARLIER",
+    "NO_RESULT_AS_FEATURE",
+    "NO_PAYOUT",
+    "NO_ODDS_IN_OUTCOME_MODEL",
+    "NO_MAIN_OR_RUNTIME_MUTATION"
+  ],
+  "owner_action_required_now": false
+}
