@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1",
+  "status": "OWNER_DIRECTED_RESEARCH_SOURCE_SIMPLIFICATION_OFFICIAL_SITE_AUTHORITATIVE_FOR_HISTORICAL_PRE_FIELDS",
+  "created_jst": "2026-09-07T20:43:40+09:00",
+  "scope": "RESEARCH_HISTORICAL_SUPPORT_AND_SCREENING_ONLY_NO_MAIN_NO_RUNTIME",
+  "owner_direction": "For proof that historical rider/race information was the pre-race information, trust information presented by official sites as racecard/entry/pre-race information. Use official sites as the base source so acquisition is not blocked by proving the original fetch occurred before the historical race.",
+  "authoritative_sources": [
+    "KEIRIN.JP / JKA official pages",
+    "official velodrome/organizer pages when the venue/date/race binding is explicit"
+  ],
+  "historical_pre_acceptance_rule": {
+    "fetch_may_occur_after_race": true,
+    "pre_cutoff_capture_timestamp_required_for_historical_official_page": false,
+    "accepted_when": [
+      "source is official",
+      "race date, venue and rider identity are exact",
+      "field is explicitly presented in a racecard/entry/pre-race context",
+      "registration number is exact when available or is separately resolved from KEIRIN.JP by exact rider identity",
+      "result/payout/odds/forecast fields are not admitted into PRE features"
+    ],
+    "not_accepted": [
+      "current profile competition score/style/class silently backfilled into an old race",
+      "ambiguous rider identity",
+      "unofficial page used as sole authority for historical PRE semantics",
+      "result-derived or payout-derived fields reused as PRE"
+    ]
+  },
+  "current_profile_use": {
+    "allowed": [
+      "official registration number",
+      "official rider name",
+      "recent meeting participation/date/venue for screening",
+      "static identity facts"
+    ],
+    "prohibited_for_historical_feature_backfill": [
+      "current competition score",
+      "current class as if historical",
+      "current style as if historical",
+      "current home-bank or preference as historical race feature"
+    ]
+  },
+  "official_profile_capability_fresh_verified_2026_09_07": [
+    {
+      "rider": "高橋 梨香",
+      "registration": "015018",
+      "official_url": "https://www.keirin.jp/pc/racerprofile?snum=015018",
+      "observed_recent_meetings": [
+        "2026-09-04 防府",
+        "2026-08-30 川崎"
+      ],
+      "role": "demonstrates official identity plus historical meeting participation can be screened directly from KEIRIN.JP"
+    },
+    {
+      "rider": "上杉 嘉槻",
+      "registration": "015539",
+      "official_url": "https://www.keirin.jp/pc/racerprofile?snum=015539",
+      "role": "demonstrates official profile recent-history screening for an active candidate"
+    },
+    {
+      "rider": "田中 大我",
+      "registration": "015363",
+      "official_url": "https://www.keirin.jp/pc/racerprofile?snum=015363",
+      "role": "demonstrates official profile recent-history screening for an active candidate"
+    }
+  ],
+  "consequence": "Historical support acquisition no longer waits on proving that the historical official page itself was fetched before the historical PIT cutoff. Exact official historical race facts can be used for support screening/completion while target RESULT remains isolated.",
+  "unchanged_boundaries": [
+    "NO_RESULT_AS_PRE_FEATURE",
+    "NO_PAYOUT_AS_FEATURE",
+    "NO_ODDS_AS_FEATURE",
+    "NO_PREDICTION_OR_HUMAN_FORECAST_FEATURE",
+    "NO_FUZZY_IDENTITY_MATCH",
+    "NO_CURRENT_PROFILE_DYNAMIC_FEATURE_BACKFILL",
+    "NO_MAIN_MUTATION",
+    "NO_RUNTIME",
+    "NO_SHARED_LAB_AUDITOR_STEPS_MUTATION",
+    "NO_WORKFLOW_DISPATCH_OR_RERUN_UNDER_ACTIVE_MIGRATION_LOCK"
+  ],
+  "supersession_note": "This policy supersedes only the historical-source timing-proof requirement where an official source itself identifies the field as historical racecard/entry/pre-race information. It does not relax prospective pre-cutoff capture rules.",
+  "owner_action_required_now": false
+}
