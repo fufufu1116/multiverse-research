@@ -297,17 +297,11 @@ def validate() -> dict:
         "PR_SUMMARY_ITEM_OBJECT",
         "PR_SUMMARY_NUMBER",
         'f"https://api.github.com/repos/{repo}/pulls/{pr_number}"',
-        "PR_RESPONSE_OBJECT",
-        "PR_DRAFT_BOOL",
-        "PR_MERGED_BOOL",
-        "PR_HEAD_SHA",
-        "PR_BASE_SHA",
-        "COMMIT_RESPONSE_OBJECT",
-        "COMMIT_TREE_SHA",
-        "MAIN_RESPONSE_OBJECT",
-        "MAIN_SHA",
+        "github_full_pr_binding(",
+        "github_commit_tree_sha(",
+        "github_branch_commit_sha(",
         "COMMENTS_ITEM_OBJECT",
-        "RESULT_COMMENT_ID",
+        "github_comment_id(",
     ):
         name = f"dispatcher:api_contract:{token[:32]}"
         if token in dispatcher_source:
@@ -341,6 +335,11 @@ def validate() -> dict:
         "lab_request_sha256",
         "resolve_public_https_target(base_url)",
         "_PinnedHTTPSConnection(",
+        "github_full_pr_binding(",
+        "github_commit_tree_sha(",
+        "github_branch_commit_sha(",
+        'checks["fresh_binding_contract"]',
+        "github_comment_id(",
     ):
         name = f"review:hardening:{token[:32]}"
         if token in review_source:
@@ -349,11 +348,104 @@ def validate() -> dict:
             checks[name] = "FIX_REQUIRED"
             findings.append(f"{name}: missing")
 
+    for forbidden in (
+        'pr["merged"]',
+        'pr["draft"]',
+        'pr["state"]',
+        'commit["commit"]',
+        'main_obj["commit"]',
+        'int(item["id"])',
+    ):
+        name = f"review:no_raw_external_index:{forbidden}"
+        if forbidden not in review_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: found")
+
+    publisher_source = (ROOT / "publisher.py").read_text()
+    for token in (
+        "github_full_pr_binding(",
+        "github_commit_tree_sha(",
+        "github_branch_commit_sha(",
+        "github_comment_id(",
+        "COMMENTS_ITEM_OBJECT",
+    ):
+        name = f"publisher:api_contract:{token[:32]}"
+        if token in publisher_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: missing")
+
+    for forbidden in (
+        'pr["merged"]',
+        'pr["draft"]',
+        'pr["state"]',
+        'pr["head"]',
+        'pr["base"]',
+        'commit["commit"]',
+        'main["commit"]',
+        "comment['id']",
+        'result["id"]',
+    ):
+        name = f"publisher:no_raw_external_index:{forbidden}"
+        if forbidden not in publisher_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: found")
+
+    t2_source = (ROOT / "t2.py").read_text()
+    for token in (
+        "github_full_pr_binding(",
+        "github_commit_tree_sha(",
+        "github_branch_commit_sha(",
+        "github_comment_id(",
+        "required_positive_int(",
+    ):
+        name = f"t2:api_contract:{token[:32]}"
+        if token in t2_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: missing")
+
+    for forbidden in (
+        'pr["merged"]',
+        'pr["draft"]',
+        'pr["state"]',
+        'pr["head"]',
+        'pr["base"]',
+        'commit["commit"]',
+        'main["commit"]',
+        'int(item["id"])',
+        "comment['id']",
+        'result["id"]',
+        'receipt["published_comment_id"]',
+    ):
+        name = f"t2:no_raw_external_index:{forbidden}"
+        if forbidden not in t2_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: found")
+
     model_source = (ROOT / "model.py").read_text()
     for token in (
         "supersedes_request_sha256",
         "SAME_HEAD_SUPERSESSION_CHAIN_INVALID",
         "sha256_json(request)",
+        "def github_full_pr_binding(",
+        "PR_DRAFT_BOOL",
+        "PR_MERGED_BOOL",
+        "PR_HEAD_SHA",
+        "PR_BASE_SHA",
+        "def github_commit_tree_sha(",
+        "COMMIT_TREE_SHA",
+        "def github_branch_commit_sha(",
+        "BRANCH_COMMIT_SHA",
+        "def github_comment_id(",
     ):
         name = f"model:request_identity:{token[:32]}"
         if token in model_source:
