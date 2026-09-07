@@ -349,9 +349,8 @@ def validate() -> dict:
             findings.append(f"{name}: missing")
 
     for forbidden in (
-        'pr["merged"]',
-        'pr["draft"]',
-        'pr["state"]',
+        'pr["head"]',
+        'pr["base"]',
         'commit["commit"]',
         'main_obj["commit"]',
         'int(item["id"])',
