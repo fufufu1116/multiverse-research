@@ -31,6 +31,7 @@ from automation.review_dispatcher_v1.model import (
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
     latest_exact_current_owner_request,
+    required_object,
     required_positive_int,
     result_marker,
     sha256_json,
