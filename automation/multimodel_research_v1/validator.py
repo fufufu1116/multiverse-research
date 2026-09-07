@@ -100,6 +100,10 @@ def validate() -> dict:
         "ALLOWED_PRIMITIVES",
         "INFRA_FAILURE",
         "nonauthority",
+        "validate_result_for_task",
+        "RESULT_EVIDENCE_PRIMITIVE_NOT_ALLOWED",
+        "RESULT_MAX_FINDINGS_EXCEEDED",
+        "RESULT_MAX_OUTPUT_BYTES_EXCEEDED",
     ):
         record(
             f"model:{token}",
@@ -114,6 +118,10 @@ def validate() -> dict:
         "vote_confers_authority",
         "majority_confers_truth",
         "adoption_authority",
+        "MODEL_IDENTITY_CONTENT_CONFLICT",
+        "task_sha256",
+        "noncompleted_results",
+        "unique_model_identity_count",
     ):
         record(
             f"aggregator:{token}",
@@ -143,8 +151,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 14,
-        f"{test_count} != 14",
+        test_count == 25,
+        f"{test_count} != 25",
     )
 
     return {

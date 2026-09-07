@@ -10,6 +10,8 @@ Phase A contains:
 
 - strict research task schema;
 - strict research result schema;
+- explicit task-to-result binding;
+- task-scoped role/evidence/finding-count/output-size enforcement;
 - explicit resource/network constraints;
 - synthetic offline adapter;
 - exact-result idempotent duplicate acknowledgement;
@@ -50,7 +52,11 @@ Tasks contain declarative objectives and allowlisted evidence primitives. They d
 
 Results contain:
 - explicit model identity;
-- snapshot binding;
+- exact task/snapshot binding;
+- a role that must have been requested by the task;
+- evidence primitives constrained by the task allowlist;
+- task-bound finding-count and serialized-output budgets;
+- SOURCE_REF evidence bound to the task-declared source/digest;
 - status;
 - structured findings;
 - evidence references;
@@ -67,6 +73,8 @@ The aggregator may report support-only, oppose-only, unknown-only, or divergent 
 
 A majority never confers truth or adoption authority.
 
+Aggregate inputs are bound to one exact task/snapshot. One provider/model/role identity contributes at most one distinct result to a task: exact retry duplicates are acknowledged, while conflicting resubmissions from the same identity fail closed. This prevents one advisory identity from inflating descriptive position counts.
+
 Any support/oppose disagreement is retained as UNRESOLVED_DIVERGENCE and routed conceptually to a MECHANICAL_FALSIFICATION_TASK.
 
 Infrastructure failures
@@ -76,6 +84,8 @@ INFRA_FAILURE is distinct from FIX_REQUIRED.
 An infrastructure error must not be misreported as a Candidate defect.
 
 But an incomplete review cannot become authoritative PASS.
+
+All non-COMPLETED advisory outcomes are preserved in aggregate metadata. INFRA_FAILURE remains separately indexed, while UNSUPPORTED and REFUSED are not silently dropped.
 
 Authority ceiling
 

@@ -4,7 +4,7 @@ import copy
 from typing import Any
 
 from automation.multimodel_research_v1.model import (
-    validate_result,
+    validate_result_for_task,
     validate_task,
 )
 
@@ -19,12 +19,5 @@ class SyntheticAdvisoryAdapter:
         validate_task(task)
 
         result = copy.deepcopy(self._fixture_result)
-        validate_result(result)
-
-        if result["task_id"] != task["task_id"]:
-            raise ValueError("TASK_ID_MISMATCH")
-
-        if result["snapshot_id"] != task["snapshot_id"]:
-            raise ValueError("SNAPSHOT_ID_MISMATCH")
-
+        validate_result_for_task(task, result)
         return result

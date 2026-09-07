@@ -188,6 +188,7 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     refs = task["source_refs"]
     require(isinstance(refs, list) and bool(refs), "SOURCE_REFS")
     require(len(refs) <= 100, "SOURCE_REFS_LIMIT")
+    seen_source_refs: set[str] = set()
     for item in refs:
         require(
             isinstance(item, dict)
@@ -195,7 +196,9 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
             "SOURCE_REF_SCHEMA",
         )
         _identifier(item["kind"], "SOURCE_REF_KIND")
-        _text(item["ref"], "SOURCE_REF_REF", 4000)
+        ref = _text(item["ref"], "SOURCE_REF_REF", 4000)
+        require(ref not in seen_source_refs, "DUPLICATE_SOURCE_REF")
+        seen_source_refs.add(ref)
         digest = item["sha256"]
         require(
             digest is None
@@ -248,6 +251,10 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     require(len(roles) <= 16, "REQUESTED_ROLES_LIMIT")
     for role in roles:
         _identifier(role, "REQUESTED_ROLE")
+    require(
+        len(set(roles)) == len(roles),
+        "DUPLICATE_REQUESTED_ROLE",
+    )
 
     _nonauthority(task["nonauthority"])
     _reject_dynamic_keys(task)
@@ -350,6 +357,66 @@ def validate_result(result: dict[str, Any]) -> dict[str, Any]:
 
     _nonauthority(result["nonauthority"])
     _reject_dynamic_keys(result)
+    return result
+
+
+def validate_result_for_task(
+    task: dict[str, Any],
+    result: dict[str, Any],
+) -> dict[str, Any]:
+    validate_task(task)
+    validate_result(result)
+
+    require(
+        result["task_id"] == task["task_id"],
+        "RESULT_TASK_ID_MISMATCH",
+    )
+    require(
+        result["snapshot_id"] == task["snapshot_id"],
+        "RESULT_SNAPSHOT_ID_MISMATCH",
+    )
+    require(
+        result["model_identity"]["role"] in task["requested_roles"],
+        "RESULT_ROLE_NOT_REQUESTED",
+    )
+
+    constraints = task["constraints"]
+    require(
+        len(result["findings"]) <= constraints["max_findings"],
+        "RESULT_MAX_FINDINGS_EXCEEDED",
+    )
+    require(
+        len(canonical_json(result).encode())
+        <= constraints["max_output_bytes"],
+        "RESULT_MAX_OUTPUT_BYTES_EXCEEDED",
+    )
+
+    allowed_primitives = set(task["allowed_primitives"])
+    source_refs = {
+        item["ref"]: item
+        for item in task["source_refs"]
+    }
+
+    for finding in result["findings"]:
+        evidence = finding["evidence"]
+        primitive = evidence["primitive"]
+        require(
+            primitive in allowed_primitives,
+            "RESULT_EVIDENCE_PRIMITIVE_NOT_ALLOWED",
+        )
+        if primitive == "SOURCE_REF":
+            ref = evidence["ref"]
+            require(
+                ref in source_refs,
+                "RESULT_SOURCE_REF_NOT_DECLARED",
+            )
+            expected_digest = source_refs[ref]["sha256"]
+            if expected_digest is not None:
+                require(
+                    evidence["sha256"] == expected_digest,
+                    "RESULT_SOURCE_REF_SHA256_MISMATCH",
+                )
+
     return result
 
 

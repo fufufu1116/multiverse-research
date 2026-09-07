@@ -5,36 +5,68 @@ from typing import Any
 
 from automation.multimodel_research_v1.model import (
     AGGREGATE_SCHEMA,
+    ResearchContractError,
+    require,
     result_content_digest,
     sha256_json,
-    validate_result,
+    validate_result_for_task,
+    validate_task,
 )
 
 
-def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
+def _identity_key(result: dict[str, Any]) -> tuple[str, str, str]:
+    identity = result["model_identity"]
+    return (
+        identity["provider"],
+        identity["model"],
+        identity["role"],
+    )
+
+
+def aggregate_results(
+    task: dict[str, Any],
+    results: list[dict[str, Any]],
+) -> dict[str, Any]:
+    validate_task(task)
+    require(isinstance(results, list), "RESULTS_LIST")
+    require(bool(results), "RESULTS_REQUIRED")
+
     validated: list[dict[str, Any]] = []
-    by_digest: dict[str, dict[str, Any]] = {}
+    by_identity: dict[
+        tuple[str, str, str],
+        tuple[str, dict[str, Any]],
+    ] = {}
     duplicate_acknowledgements: list[dict[str, str]] = []
 
     for result in results:
-        validate_result(result)
+        validate_result_for_task(task, result)
         validated.append(result)
 
         digest = result_content_digest(result)
+        identity = _identity_key(result)
 
-        if digest in by_digest:
+        if identity in by_identity:
+            prior_digest, prior_result = by_identity[identity]
+            if digest != prior_digest:
+                raise ResearchContractError(
+                    "MODEL_IDENTITY_CONTENT_CONFLICT:"
+                    + ":".join(identity)
+                )
             duplicate_acknowledgements.append(
                 {
                     "submission_id": result["submission_id"],
                     "duplicate_of_submission_id":
-                        by_digest[digest]["submission_id"],
+                        prior_result["submission_id"],
                     "content_digest": digest,
                 }
             )
         else:
-            by_digest[digest] = result
+            by_identity[identity] = (digest, result)
 
-    unique_results = list(by_digest.values())
+    unique_results = [
+        item[1]
+        for item in by_identity.values()
+    ]
 
     claim_positions: dict[
         str,
@@ -114,23 +146,35 @@ def aggregate_results(results: list[dict[str, Any]]) -> dict[str, Any]:
                 }
             )
 
-    infra_failures = [
+    noncompleted_results = [
         {
             "submission_id": result["submission_id"],
             "model_identity": result["model_identity"],
+            "status": result["status"],
             "uncertainty_factors": result["uncertainty_factors"],
         }
         for result in unique_results
-        if result["status"] == "INFRA_FAILURE"
+        if result["status"] != "COMPLETED"
+    ]
+
+    infra_failures = [
+        item
+        for item in noncompleted_results
+        if item["status"] == "INFRA_FAILURE"
     ]
 
     aggregate = {
         "schema": AGGREGATE_SCHEMA,
+        "task_id": task["task_id"],
+        "snapshot_id": task["snapshot_id"],
+        "task_sha256": sha256_json(task),
+        "unique_model_identity_count": len(unique_results),
         "unique_submission_count": len(unique_results),
         "input_submission_count": len(validated),
         "duplicate_acknowledgements": duplicate_acknowledgements,
         "claims": claims,
         "unresolved_divergences": unresolved_divergences,
+        "noncompleted_results": noncompleted_results,
         "infra_failures": infra_failures,
         "consensus_is_descriptive_only": True,
         "adoption_authority": False,

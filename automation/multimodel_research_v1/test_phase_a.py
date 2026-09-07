@@ -8,6 +8,7 @@ from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
     validate_result,
+    validate_result_for_task,
     validate_task,
 )
 from automation.multimodel_research_v1.outcome import classify_review_outcome
@@ -182,7 +183,7 @@ class ContractTests(unittest.TestCase):
     def test_07_exact_duplicate_is_acknowledged(self):
         first = result(submission_id="submission-001")
         second = result(submission_id="submission-002")
-        aggregate = aggregate_results([first, second])
+        aggregate = aggregate_results(task(), [first, second])
 
         self.assertEqual(aggregate["input_submission_count"], 2)
         self.assertEqual(aggregate["unique_submission_count"], 1)
@@ -205,7 +206,7 @@ class ContractTests(unittest.TestCase):
             assertion="Boundary has a bypass.",
         )
 
-        aggregate = aggregate_results([support, oppose])
+        aggregate = aggregate_results(task(), [support, oppose])
 
         self.assertEqual(
             aggregate["claims"][0]["descriptive_label"],
@@ -242,7 +243,7 @@ class ContractTests(unittest.TestCase):
             )
         )
 
-        aggregate = aggregate_results(values)
+        aggregate = aggregate_results(task(), values)
         claim = aggregate["claims"][0]
 
         self.assertFalse(claim["vote_confers_authority"])
@@ -264,7 +265,7 @@ class ContractTests(unittest.TestCase):
             status="INFRA_FAILURE",
         )
 
-        aggregate = aggregate_results([completed, infra])
+        aggregate = aggregate_results(task(), [completed, infra])
         self.assertEqual(len(aggregate["infra_failures"]), 1)
         self.assertEqual(
             aggregate["infra_failures"][0]["submission_id"],
@@ -308,8 +309,132 @@ class ContractTests(unittest.TestCase):
 
         broken_task = task()
         broken_task["task_id"] = "task-other"
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ResearchContractError):
             adapter.run(broken_task)
+
+    def test_15_result_role_must_be_requested(self):
+        value = result(
+            submission_id="submission-role",
+            role="unrequested-role",
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(task(), value)
+
+    def test_16_evidence_primitive_must_be_task_allowed(self):
+        bound_task = task()
+        bound_task["allowed_primitives"] = ["SOURCE_REF"]
+        value = result(submission_id="submission-primitive")
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_17_source_ref_evidence_binds_declared_digest(self):
+        bound_task = task()
+        bound_task["allowed_primitives"] = ["SOURCE_REF"]
+        value = result(submission_id="submission-source")
+        evidence = value["findings"][0]["evidence"]
+        evidence["primitive"] = "SOURCE_REF"
+        evidence["ref"] = "packet-v1"
+        evidence["sha256"] = "a" * 64
+        self.assertEqual(
+            validate_result_for_task(bound_task, value),
+            value,
+        )
+
+        broken = copy.deepcopy(value)
+        broken["findings"][0]["evidence"]["sha256"] = "b" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, broken)
+
+    def test_18_task_max_findings_is_enforced(self):
+        bound_task = task()
+        bound_task["constraints"]["max_findings"] = 1
+        value = result(submission_id="submission-findings")
+        second = copy.deepcopy(value["findings"][0])
+        second["finding_id"] = "finding-002"
+        second["claim_key"] = "claim-second"
+        value["findings"].append(second)
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_19_task_max_output_bytes_is_enforced(self):
+        bound_task = task()
+        bound_task["constraints"]["max_output_bytes"] = 1024
+        value = result(submission_id="submission-output")
+        value["findings"][0]["assertion"] = "x" * 4000
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_20_aggregate_rejects_mixed_snapshot(self):
+        first = result(submission_id="submission-snapshot-a")
+        second = result(
+            submission_id="submission-snapshot-b",
+            provider="provider-b",
+            model="model-b",
+        )
+        second["snapshot_id"] = "snapshot-other"
+        with self.assertRaises(ResearchContractError):
+            aggregate_results(task(), [first, second])
+
+    def test_21_same_identity_conflicting_resubmission_fails_closed(self):
+        first = result(submission_id="submission-first")
+        second = result(
+            submission_id="submission-second",
+            assertion="Changed content from same identity.",
+        )
+        with self.assertRaises(ResearchContractError):
+            aggregate_results(task(), [first, second])
+
+    def test_22_noncompleted_statuses_are_preserved(self):
+        values = [
+            result(
+                submission_id="infra",
+                provider="provider-infra",
+                model="model-infra",
+                status="INFRA_FAILURE",
+            ),
+            result(
+                submission_id="unsupported",
+                provider="provider-unsupported",
+                model="model-unsupported",
+                status="UNSUPPORTED",
+            ),
+            result(
+                submission_id="refused",
+                provider="provider-refused",
+                model="model-refused",
+                status="REFUSED",
+            ),
+        ]
+        aggregate = aggregate_results(task(), values)
+        self.assertEqual(len(aggregate["noncompleted_results"]), 3)
+        self.assertEqual(
+            {
+                item["status"]
+                for item in aggregate["noncompleted_results"]
+            },
+            {"INFRA_FAILURE", "UNSUPPORTED", "REFUSED"},
+        )
+        self.assertEqual(len(aggregate["infra_failures"]), 1)
+
+    def test_23_duplicate_source_ref_is_rejected(self):
+        value = task()
+        value["source_refs"].append(
+            copy.deepcopy(value["source_refs"][0])
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_24_duplicate_requested_role_is_rejected(self):
+        value = task()
+        value["requested_roles"].append(
+            value["requested_roles"][0]
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_25_empty_aggregate_is_rejected(self):
+        with self.assertRaises(ResearchContractError):
+            aggregate_results(task(), [])
 
 
 if __name__ == "__main__":
