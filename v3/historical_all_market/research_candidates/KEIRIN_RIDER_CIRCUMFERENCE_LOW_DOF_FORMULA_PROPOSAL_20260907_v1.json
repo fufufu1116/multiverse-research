@@ -1,0 +1,102 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL_20260907_v1",
+  "status": "PRE_RESULT_NONAUTHORITATIVE_FORMULA_PROPOSAL_READY_FOR_FREEZE_AFTER_SUPPORT_AND_CALENDAR_GATES",
+  "scope": "RESEARCH_PRESPEC_PREPARATION_ONLY_NO_RESULT_JOIN_NO_MODEL_FIT",
+  "created_jst": "2026-09-07T22:41:00+09:00",
+  "fresh_parent_head": "3ffd0fa14e398bb228e55c5fabd3742d3233f788",
+  "bindings": [
+    "KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1.json",
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v75.json"
+  ],
+  "baseline": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "baseline_logit": "z_i = beta * competition_score_i",
+    "beta_change_allowed": false
+  },
+  "challenger": {
+    "name": "S0_PLUS_SHRUNK_RIDER_X_CIRCUMFERENCE_OFFSET_v1",
+    "circumference_code": {
+      "400": -1,
+      "333_OR_333_33": 1
+    },
+    "logit": "z_i = beta * competition_score_i + q_c * delta_r",
+    "race_probability": "p_i = exp(z_i) / sum_j exp(z_j) within the race",
+    "interpretation": "delta_r > 0 means the rider's development evidence favors 333/333.33 relative to 400 after conditioning on frozen S0 competition_score. The sign reverses for 400 through q_c.",
+    "high_cardinality_venue_terms": false,
+    "geometry_terms": false,
+    "home_bank_terms": false,
+    "style_interactions": false
+  },
+  "rider_support_rule": {
+    "active_term_requires": "At least one valid PRE-supported Day1 row in 333/333.33 and at least one valid PRE-supported Day1 row in 400 within the frozen development membership, exact official registration identity, and no missing competition_score.",
+    "sparse_raw_rate_allowed": false,
+    "unsupported_behavior": "Explicit S0_FALLBACK: delta_r is not estimated and the row uses frozen S0 only. This is an explicit model branch, not unknown-to-zero imputation.",
+    "support_gate_distinction": "The global 30-rider/60-row gate establishes adequacy for attempting the family; it does not imply every future rider is supported."
+  },
+  "estimator": {
+    "objective": "Minimize development winner negative log likelihood plus L2 penalty lambda * sum_r(delta_r^2), with beta fixed.",
+    "free_parameters": "One delta_r per supported rider; no intercept, no venue dummy, no beta refit.",
+    "optimization": "Deterministic convex optimization to numerical tolerance 1e-10 from all-zero initialization.",
+    "shrinkage_grid": [
+      1,
+      4,
+      16,
+      64
+    ],
+    "lambda_selection": "Choose lambda minimizing mean winner log loss in leave-one-calendar-block-out cross-validation over frozen development blocks only.",
+    "tie_rule": "If mean CV log loss ties within 1e-12, choose the largest lambda (strongest shrinkage).",
+    "final_fit": "After lambda selection, refit delta_r on all frozen development-fit races only. Final untouched evaluation never changes lambda or delta_r."
+  },
+  "metrics": {
+    "primary": "WINNER_LOG_LOSS",
+    "primary_direction": "lower challenger minus S0 is better; define improvement = S0_log_loss - challenger_log_loss, so positive is better",
+    "secondary": [
+      "WINNER_BRIER",
+      "ORDERED_TOP3_LOG_LOSS",
+      "ECE"
+    ],
+    "secondary_can_rescue_primary": false
+  },
+  "uncertainty": {
+    "unit": "RACE",
+    "bootstrap_replicates": 10000,
+    "seed": 20260907,
+    "method": "Resample frozen evaluation races with replacement; for each replicate compute mean per-race primary improvement challenger vs S0.",
+    "interval": "percentile 95% interval using 2.5th and 97.5th empirical percentiles",
+    "advancement_uncertainty_rule": "lower bound of the 95% bootstrap interval for primary improvement must be strictly > 0"
+  },
+  "development_advancement": {
+    "required_all": [
+      "mean primary improvement > 0 on the frozen later development-evaluation block",
+      "95% race-cluster bootstrap lower bound > 0",
+      "no single venue contributes more than 60% of supported evaluation rows",
+      "no single rider contributes more than 10% of supported evaluation rows",
+      "identity/source/missingness gates all PASS",
+      "report all negative venue/class/rider-frequency slices; none may be hidden"
+    ],
+    "tie_or_zero": "NO_ADVANCE",
+    "final_eval_action": "If development advancement passes, keep beta/lambda/delta_r and all rules locked and evaluate once on untouched 玉野 2026-09-27 400m plus 防府 2026-09-29 333m.",
+    "production_promotion": false
+  },
+  "missingness": {
+    "competition_score_missing": "Race is ineligible for challenger evaluation under this formula; do not impute zero or current values.",
+    "rider_identity_ambiguous": "Fail closed for rider-specific term; no fuzzy match.",
+    "unsupported_rider": "Use explicit S0_FALLBACK and report fallback fraction."
+  },
+  "freeze_preconditions": [
+    "formal support adequacy gate PASS including accepted calendar-block definition",
+    "exact development fit membership frozen PRE-only",
+    "exact later development evaluation membership frozen PRE-only",
+    "no development RESULT target joined before exact formula freeze"
+  ],
+  "result_access_authorized": false,
+  "formula_fit_authorized": false,
+  "formula_frozen": false,
+  "model_promotion_authorized": false,
+  "s0_mutation": false,
+  "main_or_runtime_mutation": false,
+  "owner_action_required_now": false
+}
