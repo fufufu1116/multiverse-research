@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1",
+  "status": "ALL_35_PRECONVERSION_COMPONENTS_READY_ONLY_FINAL_DAY1_PRE_AND_CALENDAR_GATE_REMAIN_EXTERNAL",
+  "created_jst": "2026-09-08T01:36:00+09:00",
+  "research_parent_head": "f96c4684fcf85e02502e1074cab6c8e094956b53",
+  "bindings": {
+    "current": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v78.json",
+    "identity": "KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+    "historical_rows": "KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+    "future_manifest": "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "witness_registry": "KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "conversion_matrix": "KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "assen_recheck": "KEIRIN_0914_0915_35_CANDIDATE_ASSEN_RECHECK_20260908_v1.json"
+  },
+  "readiness": {
+    "exact_official_identity": {
+      "ready": 35,
+      "total": 35
+    },
+    "historical_2026_09_07_exact_rows": {
+      "ready": 35,
+      "total": 35
+    },
+    "future_witness_entries_prebuilt": {
+      "ready": 35,
+      "total": 35
+    },
+    "current_assigned_roster_presence": {
+      "ready": 35,
+      "total": 35
+    },
+    "witness_registry_shape_guard": {
+      "status": "PASS",
+      "total_entries": 54,
+      "target_future_entries": 35,
+      "permanently_closed_entries": 1,
+      "positive_same_race_witnesses_now": 0,
+      "duplicate_event_registration": 0,
+      "invalid_registration": 0,
+      "support_authority_violation": 0
+    },
+    "final_day1_pre_assignment": {
+      "ready": 0,
+      "total": 35,
+      "status": "PENDING_FUTURE_PUBLICATION"
+    },
+    "formal_support_ready_now": 0
+  },
+  "event_capacity": [
+    {
+      "event": "伊東_2026-09-14",
+      "candidates": 11,
+      "circumference_m": 333
+    },
+    {
+      "event": "青森_2026-09-14",
+      "candidates": 4,
+      "circumference_m": 400
+    },
+    {
+      "event": "防府_2026-09-15",
+      "candidates": 20,
+      "circumference_m": 333
+    }
+  ],
+  "gate_math": {
+    "current_formal_riders": 1,
+    "current_formal_rows": 2,
+    "required_new_riders": 29,
+    "required_new_rows": 58,
+    "candidate_capacity": 35,
+    "failure_margin": 6,
+    "stop_rule": "Stop normal candidate conversion at exactly 30 unique formal riders / 60 formal rows."
+  },
+  "remaining_execution_chain": [
+    "Capture positive final Day1 PRE racecard for candidate.",
+    "Bind exact race_no/car_no/class/style/source/captured_at/cutoff/source hash.",
+    "Require exact official same-race identity and provenance PASS.",
+    "Run witness registry guard and provenance validator.",
+    "Build cross-circumference formal support receipt and receipt guard.",
+    "Recompute cumulative support and stop at 30 riders / 60 rows.",
+    "Keep calendar dimension UNKNOWN until independent PR177 review/adoption."
+  ],
+  "forbidden": [
+    "RESULT",
+    "PAYOUT",
+    "ODDS",
+    "HUMAN_FORECAST",
+    "FUZZY_IDENTITY",
+    "CURRENT_PROFILE_DYNAMIC_BACKFILL",
+    "S0_REFIT",
+    "MAIN_MUTATION",
+    "RUNTIME_ON"
+  ],
+  "result_access_authorized": false,
+  "support_increment_authorized_now": 0,
+  "owner_action_required_now": false
+}
