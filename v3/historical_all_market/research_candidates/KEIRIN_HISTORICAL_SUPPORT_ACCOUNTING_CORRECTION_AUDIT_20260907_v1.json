@@ -1,0 +1,64 @@
+{
+  "record": "KEIRIN_HISTORICAL_SUPPORT_ACCOUNTING_CORRECTION_AUDIT_20260907_v1",
+  "status": "V73_30R_60ROWS_REJECTED_FOR_FORMAL_GATE_ACCOUNTING_BURNED_PERIOD_REUSE_DETECTED_BASELINE_RESTORED_TO_PRELOCKED_1R_2ROWS",
+  "scope": "RESEARCH_ACCOUNTING_CORRECTION_NO_RESULT_NO_MODEL_FIT",
+  "fresh_parent_head": "a548cdbd5c9332939437517407d3c75506cb80ec",
+  "audited_artifacts": [
+    "KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v1.json",
+    "KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v2.json",
+    "KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v3.json",
+    "KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v4.json",
+    "KEIRIN_SUPPORT_GATE_NUMERIC_RECOMPUTE_20260907_v1.json",
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v73.json"
+  ],
+  "governing_rules": [
+    "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260903_v3.json",
+    "KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1.json",
+    "KEIRIN_WEB_SEARCH_RESULT_EXPOSURE_RECEIPT_20260907_v1.json",
+    "KEIRIN_BURNED_OUTCOME_POPULATION_LEDGER_20260907_v4.json"
+  ],
+  "finding": "Historical receipts v1-v4 treated the Owner historical-source timing simplification as if it also removed the pre-existing burned-outcome population firewall. It did not. Machine audit of all 30 riders showed only 高橋梨香 had a pair whose old-firewall rows were both >=2026-08-27, and her pair was independently legitimately frozen before the later 2026-09-07 exposure.",
+  "machine_audit": {
+    "riders_in_rejected_cumulative_receipts": 30,
+    "pairs_with_both_dates_ge_2026_08_27": 1,
+    "preserved_rider": {
+      "name": "高橋 梨香",
+      "registration": "015018",
+      "rows": [
+        {
+          "date": "2026-08-30",
+          "venue": "川崎",
+          "circumference_m": 400
+        },
+        {
+          "date": "2026-09-04",
+          "venue": "防府",
+          "circumference_m": 333
+        }
+      ]
+    },
+    "newly_counted_riders_rejected_from_gate": 29,
+    "newly_counted_rows_rejected_from_gate": 58
+  },
+  "corrected_formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_rows": 2,
+    "target_unique_riders": 30,
+    "target_rows": 60,
+    "remaining_unique_riders": 29,
+    "remaining_rows": 58,
+    "gate": "FAIL"
+  },
+  "disposition": {
+    "delete_or_rewrite_old_receipts": false,
+    "old_receipts_role": "AUDIT_HISTORY_ONLY_NOT_CURRENT_GATE_AUTHORITY",
+    "v73_numeric_30_60_role": "SUPERSEDED_INVALID_FOR_FORMAL_GATE_ACCOUNTING",
+    "official_historical_source_policy_remains_active": true,
+    "new_selection_date_floor": "2026-09-07"
+  },
+  "next": "Freeze a new post-firewall 2026-09-07 historical support phase from mechanically selected whole Day1 blocks, independent of overlaps/outcomes. Use historical official racecard/entry facts for the 2026-09-07 side and future strict PRE rules for later counterparts.",
+  "result_join_authorized": false,
+  "formula_fit_authorized": false,
+  "s0_mutation": false,
+  "owner_action_required_now": false
+}
