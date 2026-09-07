@@ -1,0 +1,76 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v73",
+  "status": "CHAT_INDEPENDENT_RESEARCH_SUPPORT_30_RIDERS_60_ROWS_REACHED_ALL_DEFINED_NONCALENDAR_GATES_PASS_CALENDAR_REVIEW_SOLE_SUPPORT_GATE_BLOCKER",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v72.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh Read research branch and #93 convergence state before every CURRENT claim/write.",
+  "fresh_binding": {
+    "research_branch_head_before_write": "7add23f6a5ed52a9faf0aff1e18f521c03066d25",
+    "canonical_main": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "migration_lock": "#93 comment 5561567913 ACTIVE",
+    "shared_lab_auditor_steps_mutation_authorized": false,
+    "workflow_dispatch_or_rerun_authorized": false,
+    "runtime": "OFF"
+  },
+  "support": {
+    "confirmed_unique_riders": 30,
+    "confirmed_pre_rows": 60,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_unique_riders_floor": 0,
+    "remaining_pre_rows_floor": 0,
+    "quantity_targets": "PASS",
+    "full_gate": "BLOCKED_CALENDAR_DEFINITION_UNKNOWN"
+  },
+  "historical_fast_track": {
+    "owner_directed_source_policy": "KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1.json",
+    "fast_track": "KEIRIN_OFFICIAL_HISTORICAL_SUPPORT_FAST_TRACK_20260907_v1.json",
+    "tier1_completion": [
+      "KEIRIN_TIER1_NARA_HISTORICAL_EXACT_ROW_COMPLETION_20260907_v1.json",
+      "KEIRIN_TIER1_KAWASAKI_TOYOHASHI_HISTORICAL_EXACT_ROW_COMPLETION_20260907_v1.json"
+    ],
+    "tier2_completion": "KEIRIN_TIER2_HISTORICAL_EXACT_ROW_COMPLETION_20260907_v1.json",
+    "cumulative_receipt": "KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v4.json",
+    "result_or_payout_used_for_selection": false,
+    "future_card_wait_required_for_count": false
+  },
+  "numeric_gate_recompute": {
+    "artifact": "KEIRIN_SUPPORT_GATE_NUMERIC_RECOMPUTE_20260907_v1.json",
+    "all_defined_noncalendar_dimensions_pass": true,
+    "calendar_accepted_definition": "UNKNOWN",
+    "full_gate_pass_authorized": false
+  },
+  "calendar_gate": {
+    "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "candidate_pr": 177,
+    "candidate_pr_head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+    "lab_request_comment_id": 5569882262,
+    "review_state": "PENDING_INDEPENDENT_RESULT",
+    "candidate_date_only_diagnostic_would_pass": true,
+    "evaluator_change_authorized": false,
+    "research_chat_dispatch": false
+  },
+  "priority_next": [
+    "Stop count-driven support acquisition: 30 riders / 60 rows is reached.",
+    "Fresh-read PR #177 and consume only an exact-bound independent review result. Calendar remains UNKNOWN otherwise.",
+    "When calendar definition is independently adopted, recompute the full support gate once.",
+    "Only after full support gate PASS may the separately frozen formula/result gate sequence be considered; do not open RESULT or refit S0 merely because the count target is reached."
+  ],
+  "hard_boundaries": {
+    "S0": "FROZEN",
+    "RESULT": "BLOCKED",
+    "formula": "BLOCKED",
+    "payout": false,
+    "odds_as_feature": false,
+    "prediction": false,
+    "human_forecast_comments": false,
+    "fuzzy_name_matching": false,
+    "shared_buildkite_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false,
+    "main_mutation": false,
+    "runtime_activation": false
+  },
+  "material_change_from_v72": "Owner-directed trust in official historical race information removed the historical fetch-before-race timing bottleneck. Existing candidates were converted through official identity/meeting history plus historical Day1 racecard rows. Support advanced from 1 rider / 2 rows to 30 riders / 60 rows. Every defined noncalendar numeric support gate now passes; the unresolved calendar-block definition is the sole remaining support-gate blocker.",
+  "owner_action_required_now": false
+}
