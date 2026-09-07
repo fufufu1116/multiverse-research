@@ -1,0 +1,48 @@
+{
+  "record": "KEIRIN_0924_PRELOCKED_PAIR_35_CANDIDATE_COVERAGE_DIAGNOSTIC_20260908_v1",
+  "status": "PRE_ONLY_DIAGNOSTIC_ZERO_35_CANDIDATE_OVERLAP_IN_NARA_KAWASAKI_ASSEN_NO_TARGET_ACCESS",
+  "scope": "RESEARCH_PRE_ONLY_COVERAGE_DIAGNOSTIC_NO_EVENT_SWAP_AUTHORITY_NO_TARGET_JOIN",
+  "observed_at_jst": "2026-09-08T00:54+09:00",
+  "pair_lock": "KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_PAIR_PREOUTCOME_LOCK_20260908_v1.json",
+  "candidate_identity_source": "KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+  "comparison_method": "Exact normalized rider-name equality after the event pair had already been prelocked; no fuzzy matching; no race outcomes used.",
+  "events": [
+    {
+      "venue": "奈良",
+      "date": "2026-09-24",
+      "circumference_m": 333.33,
+      "grade": "F2",
+      "source_url": "https://keirin.kdreams.jp/nara/assen/5320260924/",
+      "source_snapshot_note": "Page states information acquired as of 2026-09-07.",
+      "listed_riders": 49,
+      "overlap_with_35": 0,
+      "overlap_names": []
+    },
+    {
+      "venue": "川崎",
+      "date": "2026-09-24",
+      "circumference_m": 400,
+      "grade": "F2",
+      "source_url": "https://keirin.kdreams.jp/kawasaki/assen/3420260924/",
+      "source_snapshot_note": "Page states information acquired as of 2026-09-07.",
+      "listed_riders": 49,
+      "overlap_with_35": 0,
+      "overlap_names": []
+    }
+  ],
+  "interpretation": [
+    "If these two venues alone were the development evaluation population, all 35 current candidate riders would use explicit S0_FALLBACK in the observed assignment snapshot.",
+    "This does not justify hand-picking a replacement venue from rider overlap. It shows that a two-venue evaluation pair is too narrow for the rider-specific term.",
+    "Keep the pair as a PRE-only time-stability/fallback coverage diagnostic and define the primary development evaluation population by a broader deterministic calendar rule before inspecting additional rider overlaps."
+  ],
+  "target_access_authorized": false,
+  "support_increment_authorized": 0,
+  "owner_action_required_now": false,
+  "hard_boundaries": [
+    "NO_TARGET_JOIN",
+    "NO_FUZZY_MATCH",
+    "NO_EVENT_SWAP_OPTIMIZED_ON_OVERLAP",
+    "NO_S0_REFIT",
+    "NO_MAIN_OR_RUNTIME_MUTATION"
+  ]
+}
