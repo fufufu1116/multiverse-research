@@ -1,0 +1,131 @@
+{
+  "record": "KEIRIN_TIER1_NEXT_EVENT_READINESS_MATRIX_20260907_v1",
+  "status": "FRESH_LIVE_EVENT_STRUCTURE_POSITIVE_EXACT_DAY1_RACECARD_NOT_YET_POSITIVELY_LINKED",
+  "observed_at_jst": "2026-09-07T20:08:41+09:00",
+  "scope": "RESEARCH_PRE_ONLY_FORMAL_SUPPORT_CONVERSION_READINESS_NO_RESULT_NO_PAYOUT_NO_ODDS_NO_PREDICTION",
+  "fresh_bindings": {
+    "research_branch_head_before_write": "92ce8ec078e88ae761d4cc3dac1342467bd6cfb8",
+    "canonical_main": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "migration_lock": "#93 comment 5561567913",
+    "dispatcher_issue": 152,
+    "dispatcher_pr_153": "MERGED_TO_MAIN_REPOSITORY_PREPARATION_ONLY_FIXED_SHARED_PIPELINES_NOT_INSTALLED",
+    "runtime": "OFF"
+  },
+  "live_sources": [
+    {
+      "source": "KEIRIN.JP race schedule",
+      "url": "https://keirin.jp/sp/raceschedule",
+      "role": "official event schedule positive"
+    },
+    {
+      "source": "KDreams 2026-09-10 event list",
+      "url": "https://keirin.kdreams.jp/kaisai/2026/09/10/",
+      "role": "positive navigation/event and race skeleton readiness"
+    },
+    {
+      "source": "KDreams 2026-09-11 event list",
+      "url": "https://keirin.kdreams.jp/kaisai/2026/09/11/",
+      "role": "positive navigation/event and race skeleton readiness"
+    }
+  ],
+  "event_matrix": [
+    {
+      "priority": 1,
+      "venue": "奈良",
+      "event_start_date": "2026-09-10",
+      "circumference_class": "333_OR_333_33M",
+      "event_name": "７６周年記念平安賞ｉｎ奈良",
+      "candidate_count": 10,
+      "candidate_registrations": [
+        "015539",
+        "015363",
+        "014356",
+        "013604",
+        "013961",
+        "015896",
+        "015463",
+        "013803",
+        "015439",
+        "015356"
+      ],
+      "historical_side": "川崎 2026-08-30 frozen PRE",
+      "event_level_assen": "PASS",
+      "official_identity_mapping": "PASS_10_OF_10",
+      "kdreams_day1_event_structure": "POSITIVE",
+      "exact_positive_day1_racecard_href": "NOT_POSITIVELY_OBSERVED",
+      "prospective_day1_pre_membership": "PENDING_EXACT_RACECARD",
+      "official_same_race_assignment": "PENDING",
+      "prospective_provenance": "PENDING",
+      "displayed_first_race_deadline_jst_nonbinding": "2026-09-10T10:48:00+09:00",
+      "trusted_pit_cutoff_jst": null,
+      "formal_support_increment_authorized": 0
+    },
+    {
+      "priority": 2,
+      "venue": "川崎",
+      "event_start_date": "2026-09-10",
+      "circumference_class": "400M",
+      "event_name": "オッズパーク杯",
+      "candidate_count": 4,
+      "candidate_registrations": [
+        "014570",
+        "015618",
+        "015515",
+        "014062"
+      ],
+      "historical_side": "富山 2026-09-03 frozen PRE",
+      "event_level_assen": "PASS",
+      "official_identity_mapping": "PASS_4_OF_4",
+      "kdreams_day1_event_structure": "POSITIVE",
+      "exact_positive_day1_racecard_href": "NOT_POSITIVELY_OBSERVED",
+      "prospective_day1_pre_membership": "PENDING_EXACT_RACECARD",
+      "official_same_race_assignment": "PENDING",
+      "prospective_provenance": "PENDING",
+      "displayed_first_race_deadline_jst_nonbinding": "2026-09-10T16:04:00+09:00",
+      "trusted_pit_cutoff_jst": null,
+      "formal_support_increment_authorized": 0
+    },
+    {
+      "priority": 3,
+      "venue": "豊橋",
+      "event_start_date": "2026-09-11",
+      "circumference_class": "400M",
+      "event_name": "ＷＩＮＴＩＣＫＥＴ杯",
+      "candidate_count": 4,
+      "candidate_registrations": [
+        "014136",
+        "012879",
+        "013484",
+        "012681"
+      ],
+      "historical_side": "富山 2026-09-03 frozen PRE",
+      "event_level_assen": "PASS",
+      "official_identity_mapping": "PASS_4_OF_4",
+      "kdreams_day1_event_structure": "POSITIVE",
+      "exact_positive_day1_racecard_href": "NOT_POSITIVELY_OBSERVED",
+      "prospective_day1_pre_membership": "PENDING_EXACT_RACECARD",
+      "official_same_race_assignment": "PENDING",
+      "prospective_provenance": "PENDING",
+      "displayed_first_race_deadline_jst_nonbinding": "2026-09-11T20:35:00+09:00",
+      "trusted_pit_cutoff_jst": null,
+      "formal_support_increment_authorized": 0
+    }
+  ],
+  "interpretation": "Candidate supply and identity mapping are ready. The blocking edge is exact positively navigated Day1 racecard publication, followed immediately by PRE capture, contemporaneous official same-race assignment, provenance validation, receipt build/guard, and gate recomputation. Displayed KDreams first-race deadlines are readiness hints only; they are not promoted to trusted PIT cutoffs until the existing exact-card cutoff extractor/protocol establishes them.",
+  "interrupt_rule": "Any exact positively navigated Day1 racecard before its trusted PIT cutoff interrupts lower-priority tooling/research and starts formal conversion immediately.",
+  "hard_boundaries": {
+    "result": false,
+    "payout": false,
+    "odds": false,
+    "prediction": false,
+    "human_comments": false,
+    "race_id_guessing": false,
+    "post_cutoff_reconstruction": false,
+    "fuzzy_identity": false,
+    "shared_lab_auditor_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false,
+    "main_mutation": false,
+    "runtime_activation": false
+  },
+  "owner_action_required_now": false
+}
