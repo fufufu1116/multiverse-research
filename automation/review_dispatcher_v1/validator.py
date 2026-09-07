@@ -368,7 +368,6 @@ def validate() -> dict:
         "github_commit_tree_sha(",
         "github_branch_commit_sha(",
         "github_comment_id(",
-        "COMMENTS_ITEM_OBJECT",
     ):
         name = f"publisher:api_contract:{token[:32]}"
         if token in publisher_source:
@@ -430,6 +429,31 @@ def validate() -> dict:
             checks[name] = "FIX_REQUIRED"
             findings.append(f"{name}: found")
 
+    github_app_source = (ROOT / "github_app.py").read_text()
+    for token in (
+        "INSTALLATION_RESPONSE_OBJECT",
+        "INSTALLATION_ID",
+        "INSTALLATION_TOKEN_RESPONSE_OBJECT",
+        "INSTALLATION_TOKEN",
+    ):
+        name = f"github_app:api_contract:{token[:32]}"
+        if token in github_app_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: missing")
+
+    for forbidden in (
+        "installation['id']",
+        'token_result["token"]',
+    ):
+        name = f"github_app:no_raw_external_index:{forbidden}"
+        if forbidden not in github_app_source:
+            checks[name] = "PASS"
+        else:
+            checks[name] = "FIX_REQUIRED"
+            findings.append(f"{name}: found")
+
     model_source = (ROOT / "model.py").read_text()
     for token in (
         "supersedes_request_sha256",
@@ -445,6 +469,7 @@ def validate() -> dict:
         "def github_branch_commit_sha(",
         "BRANCH_COMMIT_SHA",
         "def github_comment_id(",
+        "PAGINATED_RESPONSE_ITEM_NOT_OBJECT",
     ):
         name = f"model:request_identity:{token[:32]}"
         if token in model_source:
