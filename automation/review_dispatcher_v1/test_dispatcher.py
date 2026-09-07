@@ -9,7 +9,14 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
-from automation.review_dispatcher_v1 import dispatcher, github_app, review
+from automation.review_dispatcher_v1 import (
+    dispatcher,
+    github_app,
+    publisher,
+    review,
+    t2,
+    validator,
+)
 from automation.review_dispatcher_v1.model import (
     LAB_APP_SLUG,
     REQUEST_MARKER,
@@ -1451,6 +1458,16 @@ class HardeningTests(unittest.TestCase):
         self.assertIn(lab_token, review_block)
         self.assertIn(lab_token, t2_block)
         self.assertIn(auditor_token, t2_block)
+
+
+    def test_44_import_time_modules_expose_expected_entrypoints(self):
+        self.assertTrue(callable(publisher.publish))
+        self.assertTrue(callable(publisher.main))
+        self.assertTrue(callable(t2.publish_t2))
+        self.assertTrue(callable(t2.main))
+        self.assertTrue(callable(validator.validate))
+
+
 
 
 if __name__ == "__main__":
