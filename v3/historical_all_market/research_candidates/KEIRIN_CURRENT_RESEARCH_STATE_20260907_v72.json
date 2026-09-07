@@ -1,0 +1,159 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v72",
+  "status": "CHAT_INDEPENDENT_RESEARCH_TIER1_AND_TIER2_FORMAL_CONVERSION_READY_EXTERNAL_CARD_AND_REVIEW_DEPENDENCIES_ONLY_FAIL_CLOSED",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v71.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh Read research branch and #93 convergence state before every CURRENT claim/write.",
+  "fresh_binding": {
+    "research_branch_head_before_write": "221a46cb47510fcaf695b2002d921eddffb57b54",
+    "canonical_main": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "migration_lock": "#93 comment 5561567913 ACTIVE",
+    "shared_lab_auditor_steps_mutation_authorized": false,
+    "workflow_dispatch_or_rerun_authorized": false,
+    "runtime": "OFF"
+  },
+  "support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_unique_riders_floor": 29,
+    "remaining_pre_rows_floor": 58,
+    "increment_authorized_now": 0,
+    "gate": "FAIL"
+  },
+  "tier1": {
+    "readiness": "KEIRIN_TIER1_NEXT_EVENT_READINESS_MATRIX_20260907_v1.json",
+    "latest_durable_live_recheck": "KEIRIN_TIER1_LIVE_RACECARD_RECHECK_20260907_v2.json",
+    "latest_additional_targeted_positive_navigation_recheck_jst": "2026-09-07T20:31+09:00",
+    "exact_candidate_day1_card_result": "NOT_POSITIVELY_RESOLVED",
+    "events": [
+      {
+        "event": "奈良_2026-09-10",
+        "candidates": 10
+      },
+      {
+        "event": "川崎_2026-09-10",
+        "candidates": 4
+      },
+      {
+        "event": "豊橋_2026-09-11",
+        "candidates": 4
+      }
+    ],
+    "distinct_capacity": 18,
+    "formal_increment_now": 0
+  },
+  "tier2": {
+    "readiness": "KEIRIN_TIER2_CONVERSION_READINESS_MATRIX_20260907_v1.json",
+    "purpose": "STRUCTURALLY_REQUIRED_BECAUSE_TIER1_PERFECT_CONVERSION_STILL_LEAVES_11_RIDERS_22_ROWS_SHORT",
+    "events": [
+      {
+        "event": "伊東_2026-09-14",
+        "candidates": 3,
+        "readiness": "PREQUALIFIED_EXACT_IDENTITIES_EVENT_AND_ASSEN_POSITIVE"
+      },
+      {
+        "event": "青森_2026-09-14",
+        "candidates": 2,
+        "readiness": "PREQUALIFIED_EXACT_IDENTITIES_EVENT_POSITIVE"
+      },
+      {
+        "event": "防府_2026-09-15",
+        "candidates": 5,
+        "readiness": "PREQUALIFIED_EXACT_IDENTITIES"
+      },
+      {
+        "event": "武雄_2026-09-16",
+        "candidates": 0,
+        "readiness": "SKIP_CURRENT_ZERO_OVERLAP_UNLESS_SUPERSEDED"
+      },
+      {
+        "event": "川崎_2026-09-17",
+        "candidates": 2,
+        "incremental_unique_vs_tier1": 1,
+        "readiness": "DUPLICATE_AWARE"
+      },
+      {
+        "event": "富山_2026-09-18",
+        "candidates": 3,
+        "readiness": "PREQUALIFIED_EXACT_IDENTITIES_AOMORI_1R_SCREEN_SCOPE"
+      }
+    ],
+    "incremental_unique_capacity_beyond_tier1": 14,
+    "formal_increment_now": 0
+  },
+  "conversion_capacity": {
+    "artifact": "KEIRIN_SUPPORT_GATE_CONVERSION_DEFICIT_PLAN_20260907_v1.json",
+    "known_distinct_new_candidate_capacity_through_20260918": 32,
+    "new_distinct_conversions_needed": 29,
+    "theoretical_failure_margin": 3,
+    "upper_bound_if_all_distinct_convert": {
+      "formal_riders": 33,
+      "formal_rows": 66
+    },
+    "warning": "READINESS_CAPACITY_ONLY_NOT_SUPPORT_OR_FORECAST"
+  },
+  "automation": {
+    "id": "6a9a433e10b48191bf692653ebb8999f",
+    "title": "Keirin PRE 自動進行",
+    "state": "ENABLED_HOURLY_CONDITION_WATCH",
+    "update": "RESUME_ACTIVE_POINTER_FOLLOWING_ENABLED_FIXED_FILENAME_DEPENDENCE_REMOVED_FOR_ACTIVE_LANES",
+    "reads_current_and_active_lane_pointers": true,
+    "skips_permanent_closures": true,
+    "tier1_tier2_aware": true,
+    "zero_overlap_skip_aware": true,
+    "exact_card_interrupts_lower_lanes": true,
+    "duplicate_created": false
+  },
+  "calendar_gate": {
+    "accepted_definition": "UNKNOWN",
+    "calendar_dimensions": "UNKNOWN",
+    "full_gate_pass_authorized": false,
+    "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "candidate_pr": 177,
+    "candidate_pr_head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+    "candidate_pr_tree": "35882f72d192f097568a4a5456d39267f8e74693",
+    "lab_request_comment_id": 5569882262,
+    "lab_request_sha256": "020dd95f8c7ac1ee48961f701d2fc0c602f14fe1565d83d7ec2e05ba4cb1e3bf",
+    "review_state": "PENDING_INDEPENDENT_RESULT",
+    "research_chat_dispatch": false
+  },
+  "external_dependencies_only": [
+    "Exact positive rider-level Day1 cards for active Tier1/Tier2 events before their trusted PIT cutoffs.",
+    "Exact-bound independent review/adoption result for PR #177 calendar definition."
+  ],
+  "work_conserving_state": "All currently identified material preparation lanes that do not require future racecard publication or independent review routing have been advanced: Ito closure, witness/closure hardening, Tier1 readiness, calendar evidence/proposal/routing, conversion-capacity math, Tier2 readiness, and Resume-following hourly automation.",
+  "priority_next": [
+    "At any exact positive pre-cutoff Day1 card, immediately execute the full formal receipt chain and recompute the partial gate.",
+    "Consume PR #177 review only after exact head/tree/request-digest Fresh verification; keep calendar UNKNOWN otherwise.",
+    "After each real closure or receipt, recompute the three-candidate capacity margin before any queue expansion.",
+    "If the margin is exhausted, expand only for a documented rider/row/venue/concentration deficit under the frozen gate."
+  ],
+  "ito_0907": {
+    "state": "PERMANENT_FAIL_CLOSED_NO_RECONSTRUCTION_OR_BACKFILL",
+    "formal_support_increment": 0
+  },
+  "hard_boundaries": {
+    "S0": "FROZEN",
+    "RESULT": "BLOCKED",
+    "formula": "BLOCKED",
+    "payout": false,
+    "odds": false,
+    "prediction": false,
+    "human_forecast_comments": false,
+    "historical_HFT": "FROZEN_EXHAUSTED_NO_EXPANSION",
+    "post_cutoff_pre_reconstruction": false,
+    "post_cutoff_same_race_backfill": false,
+    "fuzzy_name_matching": false,
+    "race_id_guessing": false,
+    "calendar_definition_invention": false,
+    "shared_buildkite_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false,
+    "main_mutation": false,
+    "runtime_activation": false
+  },
+  "material_change_from_v71": "The structurally required 2026-09-14 through 2026-09-18 next-wave candidates are now pre-seeded in a Tier2 conversion readiness matrix, including zero-overlap Takeo skip and Kawasaki duplicate-aware priority. The existing hourly automation now follows Resume active pointers rather than treating old fixed filenames as CURRENT authority. A fresh targeted positive-navigation recheck still did not resolve candidate-level Tier1 Day1 cards, so formal support remains +0.",
+  "owner_action_required_now": false
+}
