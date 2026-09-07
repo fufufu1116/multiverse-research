@@ -1,0 +1,160 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1",
+  "status": "NONAUTHORITATIVE_PRE_RESULT_READINESS_ONLY_FORMULA_NOT_FROZEN_RESULT_ACCESS_STILL_DENIED",
+  "scope": "RESEARCH_PRESPEC_READINESS_ONLY_NO_RESULT_JOIN_NO_MODEL_FIT_NO_PROMOTION",
+  "created_jst": "2026-09-07T22:33:00+09:00",
+  "fresh_parent_head": "3c996481c3d79ef46ccaa13b427a7a65444c5055",
+  "bindings": [
+    "KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_PRE_RESULT_GATE_STATUS_20260903_v1.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_PRE_ONLY_READINESS_20260902_v1.json",
+    "KEIRIN_S0_SECOND_FUTURE_PERIOD_101R_GATE_REPORT_20260902_v1.json",
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v75.json",
+    "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_PROPOSAL_20260907_v1.json"
+  ],
+  "objective": "Make the post-support transition to Rider x Circumference predictive testing immediate while preventing any result-driven choice of formula, shrinkage, missingness, membership, metric, bootstrap or advancement rule.",
+  "already_frozen_or_authoritatively_constrained": {
+    "baseline": {
+      "name": "S0_SCORE_ONLY_SOFTMAX",
+      "feature": "competition_score",
+      "beta": 0.22260435254784533,
+      "mutation_allowed": false
+    },
+    "scientific_question": "Does rider-specific or style-specific affinity to venue/bank physical characteristics add out-of-time probability information beyond frozen S0?",
+    "first_empirical_scope": "Low-DOF Rider x Circumference before detailed geometry/home-bank/high-cardinality venue effects.",
+    "population_selection": "Whole accessible meeting Day1 blocks in chronological PRE-source order; no outcome-conditioned inclusion.",
+    "outcome_separation": "Fit on a new unburned time block; evaluate on a strictly later non-overlapping block.",
+    "bootstrap_unit": "RACE_NOT_RIDER_ROW",
+    "sparse_policy": "NO_RAW_SMALL_PAIR_RATE_PROMOTION",
+    "final_untouched_eval": [
+      {
+        "venue": "玉野",
+        "date": "2026-09-27",
+        "circumference_m": 400
+      },
+      {
+        "venue": "防府",
+        "date": "2026-09-29",
+        "circumference_m": 333
+      }
+    ],
+    "forbidden": [
+      "S0_OR_BETA_CHANGE",
+      "RESULT_AS_FEATURE",
+      "PAYOUT",
+      "ODDS_IN_OUTCOME_MODEL",
+      "HUMAN_FORECAST_FEATURE",
+      "CURRENT_PROFILE_DYNAMIC_BACKFILL",
+      "UNKNOWN_TO_ZERO",
+      "POST_RESULT_VENUE_OR_ROLE_SELECTION",
+      "POST_RACE_PRE_RECONSTRUCTION",
+      "MODEL_PROMOTION_BEFORE_UNTOUCHED_EVAL",
+      "REAL_MONEY_EXECUTION"
+    ]
+  },
+  "baseline_evidence_only_not_promotion": {
+    "report": "KEIRIN_S0_SECOND_FUTURE_PERIOD_101R_GATE_REPORT_20260902_v1.json",
+    "successful_races": 101,
+    "winner_log_loss": {
+      "s0": 1.7662280455354444,
+      "uniform": 1.939805171636412,
+      "better": true
+    },
+    "winner_brier": {
+      "s0": 0.11561152702108583,
+      "uniform": 0.12310006510855168,
+      "better": true
+    },
+    "ordered_top3_log_loss": {
+      "s0": 4.943733434390621,
+      "uniform": 5.324944529215075,
+      "better": true
+    },
+    "calibration_ECE": 0.019538339457195613,
+    "interpretation": "S0 is a credible fixed baseline for challenger testing. This development confirmation is not untouched final validation and does not establish profitability or production readiness."
+  },
+  "must_be_frozen_before_any_development_result_join": [
+    {
+      "item": "EXACT_LOW_DOF_FORMULA",
+      "status": "UNFROZEN",
+      "required_decision": "Exact mathematical way Rider x Circumference enters S0 score/probability. No formula may be chosen after target outcomes are viewed."
+    },
+    {
+      "item": "RIDER_SUPPORT_THRESHOLD",
+      "status": "UNFROZEN_AT_FORMULA_LEVEL",
+      "required_decision": "Exact minimum support needed for a rider-specific term, distinct from the global 30-rider/60-row adequacy gate."
+    },
+    {
+      "item": "PARAMETER_ESTIMATION_AND_SHRINKAGE",
+      "status": "UNFROZEN",
+      "required_decision": "Exact estimator and shrinkage strength/selection procedure; no sparse raw-rate promotion."
+    },
+    {
+      "item": "UNSUPPORTED_AND_MISSINGNESS_FALLBACK",
+      "status": "UNFROZEN",
+      "required_decision": "Exact behavior for unsupported rider/circumference cases. Unknown may not become zero by silent imputation."
+    },
+    {
+      "item": "DEVELOPMENT_FIT_MEMBERSHIP",
+      "status": "PENDING_PRE_SUPPORT",
+      "required_decision": "Exact races/rows must be frozen from PRE-only support after all identity/source/missingness gates pass."
+    },
+    {
+      "item": "DEVELOPMENT_EVALUATION_MEMBERSHIP",
+      "status": "PENDING_PRE_SUPPORT",
+      "required_decision": "Strictly later non-overlapping exact races/rows, frozen before target results."
+    },
+    {
+      "item": "PRIMARY_PROBABILITY_METRIC",
+      "status": "UNFROZEN",
+      "required_decision": "Choose exactly one primary probability-quality metric before result join. Existing S0 reports contain winner log loss, winner Brier and ordered-top3 log loss, but the current affinity lineage does not yet authorize choosing among them from outcomes."
+    },
+    {
+      "item": "SECONDARY_METRICS_AND_CALIBRATION_DIAGNOSTICS",
+      "status": "UNFROZEN",
+      "required_decision": "Freeze reporting-only secondary metrics and calibration diagnostics; they cannot rescue a failed primary metric."
+    },
+    {
+      "item": "RACE_CLUSTER_BOOTSTRAP",
+      "status": "UNIT_FROZEN_METHOD_DETAILS_UNFROZEN",
+      "required_decision": "Race is the cluster unit; exact resampling count/interval construction and seed/reproducibility details must be frozen."
+    },
+    {
+      "item": "ADVANCEMENT_CRITERION",
+      "status": "DIRECTIONAL_RULE_FROZEN_NUMERIC_IMPLEMENTATION_INCOMPLETE",
+      "required_decision": "Must require prespecified direction on untouched evaluation, race-cluster uncertainty supporting nonzero improvement, no one-venue/one-rider explanation and source gates PASS. Exact operational threshold/tie handling must be frozen."
+    }
+  ],
+  "prerequisites_before_formula_freeze_execution": {
+    "formal_support_gate": "FAIL_CURRENT_1_RIDER_2_ROWS",
+    "support_target": "30 riders / 60 rows plus venue/calendar/concentration/identity requirements",
+    "post_firewall_ready_candidates": 35,
+    "historical_side_complete": "35/35",
+    "future_side": "WAIT_FINAL_DAY1_PRE_2026_09_14_ITO_AOMORI_AND_2026_09_15_HOFU",
+    "calendar_definition": "UNKNOWN_PENDING_PR_177",
+    "result_access": "DENY"
+  },
+  "execution_order_after_prerequisites_pass": [
+    "Freeze exact development fit and later evaluation membership from PRE-only data.",
+    "Freeze exact low-DOF Rider x Circumference formula.",
+    "Freeze rider-support threshold, estimator, shrinkage and missingness/fallback.",
+    "Freeze one primary metric, secondary diagnostics, race-cluster bootstrap implementation and exact advancement rule.",
+    "Hash/freeze the complete prespec before opening any development RESULT.",
+    "Join development RESULT as target only; never as a feature.",
+    "Compare challenger against the unchanged S0 on the frozen primary metric and report all negative slices.",
+    "Only if development advancement passes, keep parameters locked and run untouched 玉野 2026-09-27 / 防府 2026-09-29 final evaluation.",
+    "No production/model promotion or real-money claim from development evidence alone."
+  ],
+  "no_shortcut_rule": "Practical-speed goal does not authorize skipping support, calendar, formula-freeze or untouched-evaluation gates. The fastest defensible path is to pre-complete every non-outcome decision now so that RESULT join is a single deterministic next step when prerequisites pass.",
+  "result_join_authorized": false,
+  "formula_fit_authorized": false,
+  "formula_frozen": false,
+  "model_promotion_authorized": false,
+  "s0_mutation": false,
+  "main_or_runtime_mutation": false,
+  "shared_steps_mutation": false,
+  "workflow_dispatch_or_rerun": false,
+  "owner_action_required_now": false
+}
