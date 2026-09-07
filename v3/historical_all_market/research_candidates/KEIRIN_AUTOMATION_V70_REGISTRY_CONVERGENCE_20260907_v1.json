@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_AUTOMATION_V70_REGISTRY_CONVERGENCE_20260907_v1",
+  "status": "EXISTING_HOURLY_CONDITION_WATCH_UPDATED_IN_PLACE_REGISTRY_CLOSURE_AND_WORK_CONSERVING_CONVERGED",
+  "observed_at_jst": "2026-09-07T20:24:53+09:00",
+  "automation": {
+    "id": "6a9a433e10b48191bf692653ebb8999f",
+    "title": "Keirin PRE 自動進行",
+    "enabled": true,
+    "timing_mode": "condition_watch",
+    "cadence": "HOURLY",
+    "duplicate_created": false,
+    "updated_in_place": true
+  },
+  "fresh_run_contract": [
+    "Fresh Read research branch HEAD, Resume Index, #93 migration lock, Resume CURRENT, active queue, pre-cutoff witness registry, and event closure registry.",
+    "Skip PERMANENT_FAIL_CLOSED_NO_BACKFILL events except audit/recovery.",
+    "Prioritize Fresh queue; Nara/Kawasaki 2026-09-10 then Toyohashi 2026-09-11 under current binding.",
+    "Positive-navigation only; no race ID guessing.",
+    "On exact positive Day1 racecard before trusted cutoff, interrupt lower lanes and run cutoff extractor -> prospective PRE -> exact official identity -> contemporaneous KEIRIN.JP same-race -> provenance validator -> receipt builder -> receipt guard -> formal receipt -> witness registry -> partial gate recomputation.",
+    "At cutoff with incomplete chain, close permanently +0; no post-cutoff reconstruction/backfill.",
+    "Calendar block remains UNKNOWN until separate review/adoption; no full gate PASS.",
+    "If blocked, continue another lawful unfinished lane rather than WAIT.",
+    "Notify only on meaningful durable change, formal-support increment, or genuine Owner action."
+  ],
+  "boundaries": {
+    "shared_lab_auditor_steps_mutation": false,
+    "shared_dispatcher_operation": false,
+    "workflow_dispatch_or_rerun": false,
+    "main_mutation": false,
+    "production_mutation": false,
+    "runtime_activation": false,
+    "result": false,
+    "payout": false,
+    "odds": false,
+    "prediction": false,
+    "human_comments": false
+  },
+  "repo_binding": {
+    "research_branch_head_before_receipt": "3286ed5072a6f08d788d67ddac3d7d7d3db09555",
+    "migration_lock_comment": 5561567913,
+    "current_state_before_receipt": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v70.json"
+  },
+  "owner_action_required_now": false
+}
