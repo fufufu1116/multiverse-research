@@ -1,0 +1,110 @@
+{
+  "record": "KEIRIN_SUPPORT_GATE_NUMERIC_RECOMPUTE_20260907_v1",
+  "status": "ALL_DEFINED_NONCALENDAR_SUPPORT_GATE_DIMENSIONS_PASS_CALENDAR_DEFINITION_UNKNOWN_FULL_GATE_BLOCKED",
+  "generated_jst": "2026-09-07",
+  "binding": {
+    "research_branch_head_before_write": "7add23f6a5ed52a9faf0aff1e18f521c03066d25",
+    "cumulative_receipt": "KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v4.json",
+    "prespec": "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "calendar_candidate_pr": 177,
+    "calendar_candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "calendar_accepted_definition": "UNKNOWN"
+  },
+  "defined_dimensions": {
+    "unique_cross_circumference_supported_riders": {
+      "required_min": 30,
+      "observed": 30,
+      "pass": true
+    },
+    "supported_rider_race_rows": {
+      "required_min": 60,
+      "observed": 60,
+      "pass": true
+    },
+    "distinct_333_or_333_33_venues": {
+      "required_min": 2,
+      "observed_at_least": [
+        "防府",
+        "富山",
+        "伊東",
+        "奈良"
+      ],
+      "pass": true
+    },
+    "distinct_400_venues": {
+      "required_min": 2,
+      "observed_at_least": [
+        "川崎",
+        "青森",
+        "豊橋",
+        "函館",
+        "玉野",
+        "武雄"
+      ],
+      "pass": true
+    },
+    "maximum_single_venue_share": {
+      "required_max": 0.6,
+      "largest_identified_venue": "川崎",
+      "largest_identified_rows": 19,
+      "total_rows": 60,
+      "observed_share": 0.31666666666666665,
+      "pass": true
+    },
+    "maximum_single_rider_share": {
+      "required_max": 0.1,
+      "per_rider_rows": 2,
+      "total_rows": 60,
+      "observed_share": 0.03333333333333333,
+      "pass": true
+    },
+    "official_registration_number_mapping_rate": {
+      "required": 1,
+      "observed": 1,
+      "pass": true
+    }
+  },
+  "calendar_dimension": {
+    "required_min_distinct_blocks_per_circumference": 2,
+    "accepted_definition": "UNKNOWN",
+    "formal_pass": null,
+    "candidate_date_only_diagnostic": {
+      "definition": "LOCAL_DAY1_RACE_DATE",
+      "observed_333_dates_at_least": [
+        "2026-02-21",
+        "2026-03-19",
+        "2026-04-02",
+        "2026-04-12",
+        "2026-05-07",
+        "2026-06-07",
+        "2026-06-13",
+        "2026-06-28",
+        "2026-08-20",
+        "2026-08-23",
+        "2026-09-03",
+        "2026-09-04"
+      ],
+      "observed_400_dates_at_least": [
+        "2025-10-27",
+        "2026-03-10",
+        "2026-04-15",
+        "2026-06-17",
+        "2026-07-14",
+        "2026-07-23",
+        "2026-07-25",
+        "2026-08-20",
+        "2026-08-30"
+      ],
+      "would_meet_minimum_if_adopted": true,
+      "authority": "DIAGNOSTIC_ONLY_NOT_FORMAL_PASS"
+    }
+  },
+  "overall_decision": "FORMAL_FULL_GATE_NOT_YET_PASS_BECAUSE_ONE_REQUIRED_DIMENSION_HAS_NO_ACCEPTED_DEFINITION",
+  "acquisition_decision": "STOP_COUNT_DRIVEN_RIDER_ACQUISITION; 30/60 and all defined diversity/concentration floors are already met.",
+  "next": "Resolve exact-bound independent review/adoption for PR #177 or a superseding calendar-block definition. After adoption, recompute the full support gate once; do not collect more riders merely to increase count.",
+  "result_join_authorized": false,
+  "formula_fit_authorized": false,
+  "s0_mutation": false,
+  "main_or_runtime_mutation": false,
+  "owner_action_required_now": false
+}
