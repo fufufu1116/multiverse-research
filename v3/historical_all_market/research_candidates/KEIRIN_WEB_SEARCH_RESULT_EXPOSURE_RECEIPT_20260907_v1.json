@@ -1,0 +1,32 @@
+{
+  "record": "KEIRIN_WEB_SEARCH_RESULT_EXPOSURE_RECEIPT_20260907_v1",
+  "status": "CONSERVATIVE_OUTCOME_EXPOSURE_RECORDED_FIREWALL_MUST_ADVANCE",
+  "scope": "RESEARCH_CONTAMINATION_FIREWALL_ONLY_NO_RESULT_ANALYSIS_NO_MODEL_FIT",
+  "observed_jst": "2026-09-07T22:07:00+09:00",
+  "fresh_parent_head": "a548cdbd5c9332939437517407d3c75506cb80ec",
+  "exposure": {
+    "surface": "KEIRIN.JP-related web search result snippet",
+    "observation": "A search result exposed explicit winner/outcome information for the Aomori meeting 2026-09-03 through 2026-09-06, including a named winner. The information was not used for candidate selection, feature design, parameter tuning or model evaluation.",
+    "latest_target_date_implicated": "2026-09-06",
+    "exact_result_values_retained_for_research": false,
+    "payout_retained": false,
+    "odds_retained": false
+  },
+  "conservative_consequence": {
+    "previous_latest_confirmed_outcome_viewed_target_date": "2026-08-26",
+    "new_latest_confirmed_outcome_viewed_target_date": "2026-09-06",
+    "new_first_possible_unburned_date": "2026-09-07",
+    "retroactive_invalidation_of_legitimately_prelocked_pre_result_support": false,
+    "rule": "Advance the monotone firewall for NEW selection/fit/eval/support-pool construction. Do not retroactively invalidate a support row that was validly frozen and selected before this later exposure."
+  },
+  "hard_boundaries": [
+    "NO_USE_EXPOSED_OUTCOME_FOR_SELECTION",
+    "NO_USE_EXPOSED_OUTCOME_FOR_FEATURES",
+    "NO_PARAMETER_TUNING_FROM_EXPOSURE",
+    "NO_FIREWALL_ROLLBACK",
+    "NO_PAYOUT",
+    "NO_ODDS",
+    "NO_MAIN_OR_RUNTIME_MUTATION"
+  ],
+  "owner_action_required_now": false
+}
