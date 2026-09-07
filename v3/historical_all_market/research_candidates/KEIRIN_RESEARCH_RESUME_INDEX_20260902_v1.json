@@ -18,7 +18,7 @@
     {
       "step": 3,
       "action": "READ_CURRENT_STATE",
-      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v71.json"
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v73.json"
     },
     {
       "step": 4,
@@ -48,7 +48,7 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "Ito 2026-09-07 remains permanently fail-closed +0. Nara/Kawasaki 2026-09-10 and Toyohashi 2026-09-11 are the active exact-card conversion front. Tier1 has only 18 distinct candidates, so Tier2 is structurally required even under perfect Tier1 conversion. Known distinct new-candidate capacity through 2026-09-18 is 32 versus 29 needed, giving a theoretical three-candidate margin only; it is not formal support. Calendar definition remains UNKNOWN; LOCAL_DAY1_RACE_DATE is isolated in draft PR #177 pending exact-bound independent review. Automation is hourly, registry/closure-aware, and must not touch shared Lab/Auditor Steps or dispatch/rerun workflows. Continue lawful readiness and formal-conversion work without WAIT."
+      "rule": "Official-site-based historical fast track reached 30 cross-circumference riders / 60 rows. Stop count-driven acquisition. All defined noncalendar support-gate dimensions pass. Calendar block definition remains UNKNOWN and is now the sole support-gate blocker via draft PR #177 exact-bound review. Do not open RESULT/formula or touch shared Lab/Auditor Steps/workflow dispatch. Continue by consuming an exact-bound PR #177 review result if it appears; otherwise preserve fail-closed state and do not collect riders merely for count."
     },
     {
       "step": 10,
@@ -56,8 +56,8 @@
       "rule": "If branch head or #93 convergence state drifted during recovery, repeat Fresh Read before any write or CURRENT claim."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v71.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v70.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v73.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v72.json",
   "active_lane_pointers": {
     "AUTOMATION_MIGRATION_LOCK_CONVERGENCE": "v3/historical_all_market/research_candidates/KEIRIN_AUTOMATION_MIGRATION_LOCK_CONVERGENCE_20260907_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
@@ -81,7 +81,12 @@
     "CALENDAR_BLOCK_DEFINITION_CANDIDATE_PR": 177,
     "CALENDAR_BLOCK_DEFINITION_LAB_REQUEST_COMMENT": 5569882262,
     "SUPPORT_GATE_CONVERSION_DEFICIT_PLAN": "v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_CONVERSION_DEFICIT_PLAN_20260907_v1.json",
-    "AUTOMATION_V70_REGISTRY_CONVERGENCE": "v3/historical_all_market/research_candidates/KEIRIN_AUTOMATION_V70_REGISTRY_CONVERGENCE_20260907_v1.json"
+    "AUTOMATION_V70_REGISTRY_CONVERGENCE": "v3/historical_all_market/research_candidates/KEIRIN_AUTOMATION_V70_REGISTRY_CONVERGENCE_20260907_v1.json",
+    "OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY": "v3/historical_all_market/research_candidates/KEIRIN_OFFICIAL_SITE_HISTORICAL_SOURCE_TRUST_POLICY_20260907_v1.json",
+    "OFFICIAL_HISTORICAL_SUPPORT_FAST_TRACK": "v3/historical_all_market/research_candidates/KEIRIN_OFFICIAL_HISTORICAL_SUPPORT_FAST_TRACK_20260907_v1.json",
+    "HISTORICAL_SUPPORT_CUMULATIVE_RECEIPT": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_OFFICIAL_BASED_SUPPORT_BATCH_RECEIPT_20260907_v4.json",
+    "SUPPORT_GATE_NUMERIC_RECOMPUTE": "v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_NUMERIC_RECOMPUTE_20260907_v1.json",
+    "TIER2_HISTORICAL_EXACT_ROW_COMPLETION": "v3/historical_all_market/research_candidates/KEIRIN_TIER2_HISTORICAL_EXACT_ROW_COMPLETION_20260907_v1.json"
   },
   "common_governance_policy": {
     "migration_lock": "#93 comment 5561567913",
