@@ -33,42 +33,54 @@ def aggregate_results(
     require(bool(results), "RESULTS_REQUIRED")
 
     validated: list[dict[str, Any]] = []
-    by_identity: dict[
+    grouped: dict[
         tuple[str, str, str],
-        tuple[str, dict[str, Any]],
-    ] = {}
-    duplicate_acknowledgements: list[dict[str, str]] = []
+        list[tuple[str, dict[str, Any]]],
+    ] = defaultdict(list)
 
     for result in results:
         validate_result_for_task(task, result)
         validated.append(result)
+        grouped[_identity_key(result)].append(
+            (result_content_digest(result), result)
+        )
 
-        digest = result_content_digest(result)
-        identity = _identity_key(result)
+    duplicate_acknowledgements: list[dict[str, str]] = []
+    unique_items: list[tuple[str, dict[str, Any]]] = []
 
-        if identity in by_identity:
-            prior_digest, prior_result = by_identity[identity]
-            if digest != prior_digest:
-                raise ResearchContractError(
-                    "MODEL_IDENTITY_CONTENT_CONFLICT:"
-                    + ":".join(identity)
-                )
+    for identity in sorted(grouped):
+        entries = grouped[identity]
+        digests = {digest for digest, _ in entries}
+        if len(digests) != 1:
+            raise ResearchContractError(
+                "MODEL_IDENTITY_CONTENT_CONFLICT:"
+                + ":".join(identity)
+            )
+        digest = next(iter(digests))
+        ordered = sorted(
+            entries,
+            key=lambda item: item[1]["submission_id"],
+        )
+        canonical = ordered[0][1]
+        unique_items.append((digest, canonical))
+        for _, duplicate in ordered[1:]:
             duplicate_acknowledgements.append(
                 {
-                    "submission_id": result["submission_id"],
+                    "submission_id": duplicate["submission_id"],
                     "duplicate_of_submission_id":
-                        prior_result["submission_id"],
+                        canonical["submission_id"],
                     "content_digest": digest,
                 }
             )
-        else:
-            by_identity[identity] = (digest, result)
 
-    unique_items = list(by_identity.values())
-    unique_results = [
-        item[1]
-        for item in unique_items
-    ]
+    duplicate_acknowledgements.sort(
+        key=lambda item: (
+            item["duplicate_of_submission_id"],
+            item["submission_id"],
+            item["content_digest"],
+        )
+    )
+    unique_results = [item[1] for item in unique_items]
 
     claim_positions: dict[
         str,
@@ -132,14 +144,24 @@ def aggregate_results(
         else:
             descriptive_label = "UNKNOWN_ONLY"
 
+        ordered_positions = {}
+        for position, items in sorted(positions.items()):
+            ordered_positions[position] = sorted(
+                items,
+                key=lambda item: (
+                    item["model_identity"]["provider"],
+                    item["model_identity"]["model"],
+                    item["model_identity"]["role"],
+                    item["finding_id"],
+                    item["submission_id"],
+                ),
+            )
+
         claim = {
             "claim_key": claim_key,
             "descriptive_label": descriptive_label,
             "position_counts": counts,
-            "positions": {
-                position: items
-                for position, items in sorted(positions.items())
-            },
+            "positions": ordered_positions,
             "vote_confers_authority": False,
             "majority_confers_truth": False,
         }
@@ -158,18 +180,26 @@ def aggregate_results(
                 }
             )
 
-    noncompleted_results = [
-        {
-            "submission_id": result["submission_id"],
-            "model_identity": result["model_identity"],
-            "produced_at": result["produced_at"],
-            "result_content_digest": result_digest,
-            "status": result["status"],
-            "uncertainty_factors": result["uncertainty_factors"],
-        }
-        for result_digest, result in unique_items
-        if result["status"] != "COMPLETED"
-    ]
+    noncompleted_results = sorted(
+        [
+            {
+                "submission_id": result["submission_id"],
+                "model_identity": result["model_identity"],
+                "produced_at": result["produced_at"],
+                "result_content_digest": result_digest,
+                "status": result["status"],
+                "uncertainty_factors": result["uncertainty_factors"],
+            }
+            for result_digest, result in unique_items
+            if result["status"] != "COMPLETED"
+        ],
+        key=lambda item: (
+            item["model_identity"]["provider"],
+            item["model_identity"]["model"],
+            item["model_identity"]["role"],
+            item["submission_id"],
+        ),
+    )
 
     infra_failures = [
         item
@@ -186,6 +216,38 @@ def aggregate_results(
         for status in sorted(RESULT_STATUSES)
     }
 
+    requested_role_coverage = {}
+    missing_requested_roles = []
+    roles_without_completed_result = []
+    for role in task["requested_roles"]:
+        role_results = [
+            result
+            for result in unique_results
+            if result["model_identity"]["role"] == role
+        ]
+        completed_count = sum(
+            1
+            for result in role_results
+            if result["status"] == "COMPLETED"
+        )
+        requested_role_coverage[role] = {
+            "unique_identity_count": len(role_results),
+            "completed_count": completed_count,
+            "noncompleted_count": len(role_results) - completed_count,
+            "status_counts": {
+                status: sum(
+                    1
+                    for result in role_results
+                    if result["status"] == status
+                )
+                for status in sorted(RESULT_STATUSES)
+            },
+        }
+        if not role_results:
+            missing_requested_roles.append(role)
+        if completed_count == 0:
+            roles_without_completed_result.append(role)
+
     aggregate = {
         "schema": AGGREGATE_SCHEMA,
         "task_id": task["task_id"],
@@ -200,6 +262,12 @@ def aggregate_results(
         "noncompleted_results": noncompleted_results,
         "infra_failures": infra_failures,
         "status_counts": status_counts,
+        "requested_role_coverage": requested_role_coverage,
+        "missing_requested_roles": missing_requested_roles,
+        "roles_without_completed_result": roles_without_completed_result,
+        "requested_role_coverage_complete": not missing_requested_roles,
+        "requested_role_completed_coverage_complete":
+            not roles_without_completed_result,
         "consensus_is_descriptive_only": True,
         "adoption_authority": False,
     }

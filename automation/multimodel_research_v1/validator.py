@@ -132,6 +132,10 @@ def validate() -> dict:
         "SUPPORT_WITH_UNKNOWN",
         "OPPOSE_WITH_UNKNOWN",
         "status_counts",
+        "requested_role_coverage",
+        "missing_requested_roles",
+        "roles_without_completed_result",
+        "requested_role_coverage_complete",
     ):
         record(
             f"aggregator:{token}",
@@ -161,8 +165,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 35,
-        f"{test_count} != 35",
+        test_count == 38,
+        f"{test_count} != 38",
     )
 
     return {
