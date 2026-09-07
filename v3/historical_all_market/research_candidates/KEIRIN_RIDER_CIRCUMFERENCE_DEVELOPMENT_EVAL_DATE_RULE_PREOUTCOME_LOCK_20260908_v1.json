@@ -1,0 +1,73 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_DATE_RULE_PREOUTCOME_LOCK_20260908_v1",
+  "status": "PREOUTCOME_LOCKED_20260924_ALL_DAY1_STARTS_PRIMARY_DEVELOPMENT_EVAL_RULE_TARGET_ACCESS_DENIED",
+  "scope": "RESEARCH_PRESPEC_PRE_ONLY_NO_TARGET_JOIN_NO_MODEL_FIT_NO_PROMOTION",
+  "created_jst": "2026-09-08T00:54+09:00",
+  "supersedes_role_only": {
+    "artifact": "KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_PAIR_PREOUTCOME_LOCK_20260908_v1.json",
+    "change": "The Nara/Kawasaki pair remains a fixed PRE-only coverage/time-stability diagnostic, but is not sufficient as the sole primary development evaluation population."
+  },
+  "bindings": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v76.json",
+    "KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
+    "KEIRIN_RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL_20260907_v1.json",
+    "KEIRIN_0924_PRELOCKED_PAIR_35_CANDIDATE_COVERAGE_DIAGNOSTIC_20260908_v1.json"
+  ],
+  "selection_rule": {
+    "evaluation_date_jst": "2026-09-24",
+    "include": "Every Japanese keirin meeting whose official/local Day1 race date is 2026-09-24 and whose PRE racecard can be positively captured under the existing source/provenance rules.",
+    "race_membership": "All positively captured official Day1 races in every included meeting; transport/source failures are retained fail-closed rather than silently dropped.",
+    "circumference_scope": [
+      "333_OR_333_33M",
+      "400M"
+    ],
+    "exclude_by_rider_overlap": false,
+    "exclude_by_grade_or_class": false,
+    "exclude_by_expected_signal": false,
+    "exclude_by_venue": false,
+    "outcome_conditioned_inclusion": false,
+    "venue_set_exact_now": false,
+    "venue_set_freeze_rule": "Derive the complete venue set mechanically from the national schedule for meetings starting 2026-09-24, then freeze exact Day1 cards PRE-only as they become available. Do not add/remove a venue based on candidate overlap."
+  },
+  "rationale": [
+    "Sep24 was already named in the 2026-09-03 pre-result identifiability design as a later time-stability/support period.",
+    "Sep24 is strictly later than the current Sep14/Sep15 fit-candidate period and remains before the separately reserved Sep27/Sep29 final untouched pair.",
+    "Using the whole Day1-start date avoids a narrow two-venue population and prevents rider-mix-driven venue selection."
+  ],
+  "scoring_rule": {
+    "primary_population": "All eligible races in the frozen Sep24 Day1-start population, including explicit S0_FALLBACK rows for unsupported riders.",
+    "supported_rider_active_term_subset": "Report separately as a diagnostic only; it cannot rescue a failed all-race primary metric.",
+    "fallback_fraction": "Must be reported overall and by circumference.",
+    "zero_active_term_coverage": "If no challenger-active rows remain after PRE gates, development advancement is impossible and the rider-specific family is NO_ADVANCE for practical use; do not tune around it."
+  },
+  "exact_membership_state": "PENDING_FUTURE_FINAL_PRE_CARDS",
+  "target_access_authorized": false,
+  "formula_fit_authorized": false,
+  "final_untouched_holdout": [
+    {
+      "venue": "玉野",
+      "date": "2026-09-27",
+      "circumference_m": 400
+    },
+    {
+      "venue": "防府",
+      "date": "2026-09-29",
+      "circumference_m": 333
+    }
+  ],
+  "source_discovery": {
+    "national_schedule_url": "https://keirin.kdreams.jp/schedule/search/2026/09/",
+    "final_assignment_authority": "Positive PRE racecards / exact official identity chain under existing research rules"
+  },
+  "hard_boundaries": [
+    "NO_TARGET_JOIN_BEFORE_FORMAL_SUPPORT_AND_FORMULA_FREEZE",
+    "NO_RIDER_OVERLAP_BASED_VENUE_SELECTION",
+    "NO_POST_TARGET_MEMBERSHIP_CHANGE",
+    "NO_FUZZY_IDENTITY",
+    "NO_S0_REFIT",
+    "NO_MAIN_OR_RUNTIME_MUTATION",
+    "NO_SHARED_REVIEW_PIPELINE_EDIT",
+    "NO_WORKFLOW_RERUN"
+  ],
+  "owner_action_required_now": false
+}
