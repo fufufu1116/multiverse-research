@@ -18,7 +18,7 @@
     {
       "step": 3,
       "action": "READ_CURRENT_STATE",
-      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v68.json"
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v69.json"
     },
     {
       "step": 4,
@@ -38,7 +38,7 @@
     {
       "step": 7,
       "action": "READ_CALENDAR_BLOCK_DEFINITION_AUDIT",
-      "path": "v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_AUDIT_20260907_v1.json"
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_EVIDENCE_AUDIT_20260907_v2.json"
     },
     {
       "step": 8,
@@ -48,7 +48,7 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "Ito 2026-09-07 is permanently fail-closed with zero support increment. Nara 2026-09-10 and Kawasaki 2026-09-10 are the earliest active conversion opportunities; Toyohashi 2026-09-11 follows. Fresh positive exact Day1 racecard navigation before trusted cutoff interrupts lower lanes and starts the formal conversion chain. Pre-cutoff witnesses must enter the central registry; closed events must stay closed. Calendar granularity remains UNKNOWN and full gate PASS is prohibited. When exact cards are unavailable, continue calendar-definition evidence mining and research-only readiness hardening; never WAIT and never edit shared Lab/Auditor Steps."
+      "rule": "Ito 2026-09-07 remains permanently fail-closed +0. Earliest active formal-conversion events are Nara/Kawasaki 2026-09-10, then Toyohashi 2026-09-11. Exact positive Day1 racecard before trusted cutoff interrupts lower work and starts the strict formal chain. Use the central witness/closure registries. Calendar evidence now strongly supports a day-block interpretation, but no explicit authoritative equality exists: LOCAL_DAY1_RACE_DATE is a nonauthoritative proposal only, calendar dimensions stay UNKNOWN and full gate PASS is prohibited until separate review/adoption. When cards are unavailable, continue lawful review preparation/readiness; never WAIT and never edit shared Lab/Auditor Steps."
     },
     {
       "step": 10,
@@ -56,8 +56,8 @@
       "rule": "If branch head or #93 convergence state drifted during recovery, repeat Fresh Read before any write or CURRENT claim."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v68.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v67.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v69.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260907_v68.json",
   "active_lane_pointers": {
     "AUTOMATION_MIGRATION_LOCK_CONVERGENCE": "v3/historical_all_market/research_candidates/KEIRIN_AUTOMATION_MIGRATION_LOCK_CONVERGENCE_20260907_v1.json",
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
@@ -73,7 +73,9 @@
     "PRE_CUTOFF_WITNESS_REGISTRY": "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
     "EVENT_CLOSURE_REGISTRY": "v3/historical_all_market/research_candidates/KEIRIN_EVENT_CLOSURE_REGISTRY_20260907_v1.json",
     "PRE_CUTOFF_WITNESS_REGISTRY_GUARD": "tools/keirin_precutoff_witness_registry_guard_v1.py",
-    "PRE_CUTOFF_WITNESS_REGISTRY_GUARD_EXECUTION_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_GUARD_EXECUTION_AUDIT_20260907_v1.json"
+    "PRE_CUTOFF_WITNESS_REGISTRY_GUARD_EXECUTION_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_GUARD_EXECUTION_AUDIT_20260907_v1.json",
+    "CALENDAR_BLOCK_DEFINITION_EVIDENCE_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_EVIDENCE_AUDIT_20260907_v2.json",
+    "CALENDAR_BLOCK_DEFINITION_PROPOSAL": "v3/historical_all_market/research_candidates/KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_PROPOSAL_20260907_v1.json"
   },
   "common_governance_policy": {
     "migration_lock": "#93 comment 5561567913",
