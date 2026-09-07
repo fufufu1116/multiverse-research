@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1",
+  "status": "FUTURE_PRE_CAPTURE_READY_35_EXACT_IDENTITIES_HISTORICAL_SIDE_COMPLETE_ZERO_FORMAL_INCREMENT_UNTIL_FINAL_DAY1_PRE",
+  "scope": "RESEARCH_FUTURE_CAPTURE_READINESS_ONLY",
+  "fresh_parent_head": "0f5377dbe3cb71da89986eea5d444a85b77bfb4c",
+  "historical_completion": "KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+  "candidate_identity_coverage": "KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+  "event_groups": [
+    {
+      "event": "伊東 2026-09-14",
+      "circumference_m": 333,
+      "candidate_count": 11,
+      "registrations": [
+        "014537",
+        "015362",
+        "014151",
+        "014752",
+        "015725",
+        "015235",
+        "014794",
+        "015807",
+        "015476",
+        "013537",
+        "015697"
+      ],
+      "capture_state": "WAIT_FINAL_DAY1_RACECARD"
+    },
+    {
+      "event": "青森 2026-09-14",
+      "circumference_m": 400,
+      "candidate_count": 4,
+      "registrations": [
+        "015107",
+        "013845",
+        "015806",
+        "014242"
+      ],
+      "capture_state": "WAIT_FINAL_DAY1_RACECARD"
+    },
+    {
+      "event": "防府 2026-09-15",
+      "circumference_m": 333,
+      "candidate_count": 20,
+      "registrations": [
+        "015787",
+        "013618",
+        "012813",
+        "015366",
+        "013435",
+        "015734",
+        "014105",
+        "014641",
+        "014134",
+        "015246",
+        "015610",
+        "014017",
+        "013862",
+        "014394",
+        "013878",
+        "013438",
+        "014337",
+        "014633",
+        "015114",
+        "013942"
+      ],
+      "capture_state": "WAIT_FINAL_DAY1_RACECARD"
+    }
+  ],
+  "interrupt_rule": "The moment a final rider-level Day1 racecard becomes positively navigable before the trusted cutoff, stop lower-priority planning and run exact membership -> official registration -> contemporaneous official same-race -> provenance -> receipt -> guard -> gate recompute for every matching candidate in that event.",
+  "failure_rule": "Candidate absent/withdrawn/ambiguous/missing same-race/provenance at cutoff closes +0 and is never reconstructed post-cutoff.",
+  "capacity": {
+    "current_formal_riders": 1,
+    "remaining_required": 29,
+    "candidates_ready": 35,
+    "theoretical_failure_margin": 6
+  },
+  "support_increment_authorized_now": 0,
+  "result_join_authorized": false,
+  "formula_fit_authorized": false,
+  "owner_action_required_now": false
+}
