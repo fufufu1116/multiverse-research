@@ -474,18 +474,21 @@ def validate_result_for_task(
             primitive in allowed_primitives,
             "RESULT_EVIDENCE_PRIMITIVE_NOT_ALLOWED",
         )
-        if primitive == "SOURCE_REF":
+        if primitive in {"SOURCE_REF", "PUBLIC_EVIDENCE_REF"}:
             ref = evidence["ref"]
             require(
                 ref in source_refs,
-                "RESULT_SOURCE_REF_NOT_DECLARED",
+                "RESULT_EVIDENCE_REF_NOT_DECLARED",
             )
             expected_digest = source_refs[ref]["sha256"]
-            if expected_digest is not None:
-                require(
-                    evidence["sha256"] == expected_digest,
-                    "RESULT_SOURCE_REF_SHA256_MISMATCH",
-                )
+            require(
+                expected_digest is not None,
+                "RESULT_EVIDENCE_SOURCE_DIGEST_REQUIRED",
+            )
+            require(
+                evidence["sha256"] == expected_digest,
+                "RESULT_EVIDENCE_SOURCE_SHA256_MISMATCH",
+            )
 
     return result
 

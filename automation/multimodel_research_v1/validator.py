@@ -111,6 +111,8 @@ def validate() -> dict:
         "SOURCE_REF_OBSERVED_AFTER_TASK_CREATED",
         "RESULT_PRODUCED_BEFORE_TASK_CREATED",
         "NONCOMPLETED_REQUIRES_UNCERTAINTY",
+        "RESULT_EVIDENCE_SOURCE_DIGEST_REQUIRED",
+        "RESULT_EVIDENCE_SOURCE_SHA256_MISMATCH",
     ):
         record(
             f"model:{token}",
@@ -136,6 +138,7 @@ def validate() -> dict:
         "missing_requested_roles",
         "roles_without_completed_result",
         "requested_role_coverage_complete",
+        "DUPLICATE_SUBMISSION_ID",
     ):
         record(
             f"aggregator:{token}",
@@ -165,8 +168,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 38,
-        f"{test_count} != 38",
+        test_count == 41,
+        f"{test_count} != 41",
     )
 
     return {

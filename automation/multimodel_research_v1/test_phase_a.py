@@ -671,5 +671,57 @@ class ContractTests(unittest.TestCase):
         )
 
 
+    def test_39_duplicate_submission_id_is_rejected(self):
+        first = result(
+            submission_id="shared-submission",
+            provider="provider-a",
+            model="model-a",
+        )
+        second = result(
+            submission_id="shared-submission",
+            provider="provider-b",
+            model="model-b",
+        )
+        with self.assertRaises(ResearchContractError):
+            aggregate_results(task(), [first, second])
+
+    def test_40_source_ref_evidence_requires_task_digest(self):
+        bound_task = task()
+        bound_task["allowed_primitives"] = ["SOURCE_REF"]
+        bound_task["source_refs"][0]["sha256"] = None
+        value = bind_result_to_task(
+            result(submission_id="undigested-source"),
+            bound_task,
+        )
+        evidence = value["findings"][0]["evidence"]
+        evidence["primitive"] = "SOURCE_REF"
+        evidence["ref"] = "packet-v1"
+        evidence["sha256"] = None
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_41_public_evidence_must_be_declared_and_digested(self):
+        bound_task = task()
+        bound_task["allowed_primitives"] = ["PUBLIC_EVIDENCE_REF"]
+        value = bind_result_to_task(
+            result(submission_id="public-evidence"),
+            bound_task,
+        )
+        evidence = value["findings"][0]["evidence"]
+        evidence["primitive"] = "PUBLIC_EVIDENCE_REF"
+        evidence["ref"] = "packet-v1"
+        evidence["sha256"] = "a" * 64
+        self.assertEqual(
+            validate_result_for_task(bound_task, value),
+            value,
+        )
+
+        undeclared = copy.deepcopy(value)
+        undeclared["findings"][0]["evidence"]["ref"] = "other-ref"
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, undeclared)
+
+
+
 if __name__ == "__main__":
     unittest.main()

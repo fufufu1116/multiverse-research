@@ -37,9 +37,16 @@ def aggregate_results(
         tuple[str, str, str],
         list[tuple[str, dict[str, Any]]],
     ] = defaultdict(list)
+    seen_submission_ids: set[str] = set()
 
     for result in results:
         validate_result_for_task(task, result)
+        submission_id = result["submission_id"]
+        require(
+            submission_id not in seen_submission_ids,
+            "DUPLICATE_SUBMISSION_ID",
+        )
+        seen_submission_ids.add(submission_id)
         validated.append(result)
         grouped[_identity_key(result)].append(
             (result_content_digest(result), result)

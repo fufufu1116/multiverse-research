@@ -60,7 +60,7 @@ Results contain:
 - a role that must have been requested by the task;
 - evidence primitives constrained by the task allowlist;
 - task-bound finding-count and serialized-output budgets;
-- SOURCE_REF evidence bound to the task-declared source/digest;
+- SOURCE_REF / PUBLIC_EVIDENCE_REF evidence must be task-declared and carry the exact task-declared source digest;
 - status;
 - structured findings;
 - evidence references;
@@ -79,7 +79,7 @@ A majority never confers truth or adoption authority.
 
 Aggregate inputs are bound to one exact task/snapshot/task SHA256. One provider/model/role identity contributes at most one distinct result to a task: exact retry duplicates are acknowledged, while conflicting resubmissions from the same identity fail closed. Within that result, duplicate claim_key entries are rejected, so one identity contributes at most one position to each exact claim key. Claim and noncompleted aggregate entries retain produced_at and result-content-digest provenance.
 
-Aggregation is deterministic over the same logical result multiset: canonical duplicate representatives, duplicate acknowledgements, advisory identities, claim-position entries, and noncompleted entries are ordered independently of caller input order. This keeps aggregate_sha256 reproducible.
+Aggregation is deterministic over the same logical result multiset: canonical duplicate representatives, duplicate acknowledgements, advisory identities, claim-position entries, and noncompleted entries are ordered independently of caller input order. This keeps aggregate_sha256 reproducible. submission_id is unique within one exact task aggregate, so durable result references cannot alias across advisory identities.
 
 Requested-role coverage is explicit. The aggregate reports per-role unique/completed/noncompleted counts, missing_requested_roles, roles_without_completed_result, requested_role_coverage_complete, and requested_role_completed_coverage_complete. A descriptive claim label never implies that all requested research roles were observed or completed.
 
