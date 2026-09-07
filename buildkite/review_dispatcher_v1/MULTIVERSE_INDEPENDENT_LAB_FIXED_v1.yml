@@ -10,32 +10,38 @@ steps:
 
       git fetch origin main
       DISPATCHER_REF="$(git rev-parse FETCH_HEAD)"
-      export MULTIVERSE_DISPATCHER_REF="$DISPATCHER_REF"
+      export MULTIVERSE_DISPATCHER_REF="$$DISPATCHER_REF"
 
       rm -rf .mv_dispatcher
       mkdir -p .mv_dispatcher
 
-      git archive "$DISPATCHER_REF" automation/review_dispatcher_v1 \
+      git archive "$$DISPATCHER_REF" automation/review_dispatcher_v1 \
         | tar -x -C .mv_dispatcher
 
       PYTHONPATH=.mv_dispatcher \
         python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
         --lane LAB \
         --repo fufufu1116/multiverse-research \
-        --head "$BUILDKITE_COMMIT" \
+        --head "$$BUILDKITE_COMMIT" \
         --output review_job.json
 
+      REVIEW_EXIT=0
       PYTHONPATH=.mv_dispatcher \
         python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
         --job review_job.json \
         --output review_artifact.json \
-        --repo-root .
+        --repo-root . \
+        || REVIEW_EXIT="$?"
 
       buildkite-agent artifact upload \
         "review_job.json"
 
-      buildkite-agent artifact upload \
-        "review_artifact.json"
+      if [ -f review_artifact.json ]; then
+        buildkite-agent artifact upload \
+          "review_artifact.json"
+      fi
+
+      exit "$REVIEW_EXIT"
 
   - wait
 
@@ -68,11 +74,11 @@ steps:
 
       FRESH_DISPATCHER_REF="$(git -C .mv_dispatcher_source rev-parse FETCH_HEAD)"
       JOB_DISPATCHER_REF="$(python3 -c 'import json; print(json.load(open("review_job.json"))["dispatcher_ref"])')"
-      test "$FRESH_DISPATCHER_REF" = "$JOB_DISPATCHER_REF"
+      test "$$FRESH_DISPATCHER_REF" = "$$JOB_DISPATCHER_REF"
 
       mkdir -p .mv_dispatcher
       git -C .mv_dispatcher_source archive \
-        "$FRESH_DISPATCHER_REF" automation/review_dispatcher_v1 \
+        "$$FRESH_DISPATCHER_REF" automation/review_dispatcher_v1 \
         | tar -x -C .mv_dispatcher
 
       PYTHONPATH=.mv_dispatcher \
