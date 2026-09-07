@@ -110,6 +110,10 @@ def fetch_all_pages(
             f"{url}{separator}per_page=100&page={page}"
         )
         require(isinstance(batch, list), "PAGINATED_RESPONSE_NOT_LIST")
+        require(
+            all(isinstance(item, dict) for item in batch),
+            "PAGINATED_RESPONSE_ITEM_NOT_OBJECT",
+        )
         items.extend(batch)
         if len(batch) < 100:
             return items
@@ -616,7 +620,11 @@ def exact_current_owner_requests(
     main: str,
 ) -> list[tuple[int, dict[str, Any], dict[str, Any]]]:
     candidates: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
-    for comment in comments:
+    for raw_comment in comments:
+        comment = required_object(
+            raw_comment,
+            "COMMENT_RESPONSE_OBJECT",
+        )
         body = comment.get("body") or ""
         if REQUEST_MARKER not in body:
             continue
@@ -640,7 +648,16 @@ def exact_current_owner_requests(
             and request["main"] == main
         ):
             validate_request(request)
-            candidates.append((int(comment["id"]), request, comment))
+            candidates.append(
+                (
+                    github_comment_id(
+                        comment,
+                        "OWNER_REQUEST_COMMENT_ID",
+                    ),
+                    request,
+                    comment,
+                )
+            )
 
     candidates.sort(key=lambda item: item[0])
 
