@@ -1,0 +1,58 @@
+{
+  "record": "KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_EVIDENCE_AUDIT_20260907_v2",
+  "status": "STRONG_DAY_BLOCK_SEMANTIC_EVIDENCE_FOUND_BUT_NO_EXPLICIT_AUTHORITATIVE_EQUIVALENCE_FAIL_CLOSED",
+  "supersedes": "KEIRIN_SUPPORT_GATE_CALENDAR_BLOCK_DEFINITION_AUDIT_20260907_v1.json",
+  "scope": "RESEARCH_PRE_ONLY_GATE_SEMANTICS_AUDIT_NO_THRESHOLD_CHANGE_NO_RESULT",
+  "evidence": [
+    {
+      "artifact": "KEIRIN_RIDER_BANK_AFFINITY_RESEARCH_PRESPEC_20260902_v1.json",
+      "exact_field": "population.selection",
+      "text": "WHOLE_ACCESSIBLE_MEETING_DAY_BLOCKS_IN_CHRONOLOGICAL_PRE_SOURCE_ORDER",
+      "implication": "The parent research population is selected in whole meeting-day units and chronological PRE source order."
+    },
+    {
+      "artifact": "KEIRIN_RIDER_BANK_AFFINITY_IDENTIFIABILITY_AND_FINAL_EVAL_LOCK_20260903_v2.json",
+      "exact_field": "final_untouched_cross_venue_eval.blocks[*].eval_membership_rule",
+      "text": "DAY1_WHOLE_ACCESSIBLE_BLOCK_PRELOCKED; exact races/fields later frozen PRE-only",
+      "implication": "Later untouched blocks are explicitly Day1 whole-accessible blocks."
+    },
+    {
+      "artifact": "KEIRIN_SEP10_NARA_KAWASAKI_CROSS_CIRCUMFERENCE_PRE_EVENT_ACQUISITION_EXTENSION_20260903_v1.json",
+      "exact_fields": [
+        "reason",
+        "required_pre_event_sequence[0]",
+        "target_blocks"
+      ],
+      "text": [
+        "future whole-day PRE blocks",
+        "Freeze whole-day race membership from positive public PRE surfaces before each frozen cutoff",
+        "target blocks are bound by date + venue"
+      ],
+      "implication": "Support acquisition uses future whole-day PRE blocks and binds each planned block to an event date and venue."
+    },
+    {
+      "artifact": "KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+      "exact_field": "minimum_gate.minimum_distinct_calendar_blocks_per_circumference",
+      "text": "2",
+      "implication": "The support gate separately requires calendar diversity in addition to venue diversity."
+    }
+  ],
+  "unresolved_semantic_edge": "None of the audited frozen sources explicitly states an equality such as CALENDAR_BLOCK = RACE_DATE or CALENDAR_BLOCK = (VENUE,RACE_DATE). Therefore the prior audit's UNKNOWN finding cannot be silently converted into an accepted definition.",
+  "research_inference": {
+    "strongest_candidate": "LOCAL_DAY1_RACE_DATE",
+    "rationale": [
+      "It directly matches whole meeting-day / whole-day PRE selection language.",
+      "It preserves calendar diversity as a temporal dimension distinct from the separately frozen venue-diversity dimension.",
+      "It makes same-date multi-venue captures one calendar date rather than double-counting temporal diversity."
+    ],
+    "alternative": "VENUE_X_LOCAL_DAY1_RACE_DATE",
+    "concern": "This partially duplicates the separately required distinct-venue dimension and can overstate temporal diversity when two venues occur on the same date."
+  },
+  "decision": "KEEP_FROZEN_CALENDAR_DIMENSIONS_UNKNOWN_UNTIL_SEPARATE_DEFINITION_REVIEW_AND_ADOPTION",
+  "current_gate_effect": "NONE_CURRENT_GATE_ALREADY_FAILS_KNOWN_DIMENSIONS",
+  "full_gate_pass_authorized": false,
+  "threshold_lowering_authorized": false,
+  "result_accessed": false,
+  "support_increment_authorized_now": 0,
+  "owner_action_required_now": false
+}
