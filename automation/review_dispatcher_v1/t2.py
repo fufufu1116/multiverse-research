@@ -30,6 +30,7 @@ from automation.review_dispatcher_v1.model import (
     github_full_pr_binding,
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
+    lane_result_outer_app_trusted,
     latest_exact_current_owner_request,
     required_object,
     required_positive_int,
@@ -163,11 +164,9 @@ def publish_t2(
         == AUDITOR_LOGIN,
         "AUDITOR_COMMENT_LOGIN",
     )
-    outer_app = (
-        (auditor_comment.get("performed_via_github_app") or {}).get("slug")
-    )
+    outer_app = auditor_comment.get("performed_via_github_app")
     require(
-        outer_app == AUDITOR_APP_SLUG,
+        lane_result_outer_app_trusted(auditor_comment, "AUDITOR"),
         "AUDITOR_COMMENT_APP",
     )
 
@@ -227,10 +226,11 @@ def publish_t2(
         (lab_comment.get("user") or {}).get("login") == LAB_LOGIN,
         "LAB_UPSTREAM_LOGIN",
     )
-    lab_app = (
-        (lab_comment.get("performed_via_github_app") or {}).get("slug")
+    lab_app = lab_comment.get("performed_via_github_app")
+    require(
+        lane_result_outer_app_trusted(lab_comment, "LAB"),
+        "LAB_UPSTREAM_APP",
     )
-    require(lab_app == LAB_APP_SLUG, "LAB_UPSTREAM_APP")
 
     lab_artifact = json_block(lab_comment.get("body") or "")
     require(
