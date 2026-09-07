@@ -1,0 +1,162 @@
+{
+  "record": "KEIRIN_TIER2_CONVERSION_READINESS_MATRIX_20260907_v1",
+  "status": "PRE_ONLY_NEXT_WAVE_EXACT_IDENTITY_SEEDED_WAITING_FUTURE_EXACT_DAY1_CARDS_NO_SUPPORT_AUTHORITY",
+  "observed_at_jst": "2026-09-07",
+  "binding": {
+    "research_branch_head_before_write": "c719ac30e4326a640c2c0e0c11ddbba9234e13be",
+    "migration_lock_comment": 5561567913,
+    "current": "KEIRIN_CURRENT_RESEARCH_STATE_20260907_v71.json"
+  },
+  "purpose": "Pre-seed the structurally required post-Tier1 conversion wave so future exact Day1 card publication triggers formal conversion rather than new candidate discovery.",
+  "events": [
+    {
+      "priority": 1,
+      "event": "伊東_2026-09-14",
+      "circumference": "333_OR_333_33M",
+      "event_level_assigned_roster": "POSITIVE",
+      "fresh_public_schedule_status": "POSITIVE_2026-09-07",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "rider": "宮地 寧々",
+          "registration": "015150"
+        },
+        {
+          "rider": "齋藤 雄行",
+          "registration": "015616"
+        },
+        {
+          "rider": "皿屋 豊",
+          "registration": "015179"
+        }
+      ],
+      "historical_side": "川崎_2026-08-30_400M_FROZEN_PRE",
+      "day1_exact_card": "PENDING_FUTURE_POSITIVE_NAVIGATION",
+      "formal_increment": 0
+    },
+    {
+      "priority": 2,
+      "event": "青森_2026-09-14",
+      "circumference": "400M",
+      "event_level_assigned_roster": "POSITIVE",
+      "fresh_public_schedule_status": "POSITIVE_2026-09-07",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "rider": "松下 綾馬",
+          "registration": "015639"
+        },
+        {
+          "rider": "小埜 正義",
+          "registration": "013936"
+        }
+      ],
+      "historical_side": "富山_2026-09-03_333_OR_333_33M_FROZEN_PRE",
+      "day1_exact_card": "PENDING_FUTURE_POSITIVE_NAVIGATION",
+      "formal_increment": 0
+    },
+    {
+      "priority": 3,
+      "event": "防府_2026-09-15",
+      "circumference": "333_OR_333_33M",
+      "event_level_assigned_roster": "POSITIVE_IN_FROZEN_CANDIDATE_ARTIFACT",
+      "candidate_count": 5,
+      "candidates": [
+        {
+          "rider": "桑原 大志",
+          "registration": "013355"
+        },
+        {
+          "rider": "中村 龍吉",
+          "registration": "015787"
+        },
+        {
+          "rider": "永井 哉多",
+          "registration": "015610"
+        },
+        {
+          "rider": "田中 陽平",
+          "registration": "014633"
+        },
+        {
+          "rider": "岡崎 陸登",
+          "registration": "015734"
+        }
+      ],
+      "historical_side": "川崎_2026-08-30_400M_FROZEN_PRE",
+      "day1_exact_card": "PENDING_FUTURE_POSITIVE_NAVIGATION",
+      "formal_increment": 0
+    },
+    {
+      "priority": 4,
+      "event": "武雄_2026-09-16",
+      "circumference": "400M",
+      "candidate_count": 0,
+      "current_action": "SKIP_NO_OVERLAP_UNLESS_FRESH_LEGITIMATE_SUPERSESSION",
+      "source": "KEIRIN_TAKEO_0916_TOYAMA_HISTORICAL_OVERLAP_SCREEN_20260905_v1.json",
+      "formal_increment": 0
+    },
+    {
+      "priority": 5,
+      "event": "川崎_2026-09-17",
+      "circumference": "400M",
+      "candidate_count": 2,
+      "incremental_unique_vs_tier1": 1,
+      "candidates": [
+        {
+          "rider": "金澤 竜二",
+          "registration": "014136",
+          "duplicate_priority": "LOWER_ALREADY_TOYOHASHI_0911_POOL"
+        },
+        {
+          "rider": "高橋 泰裕",
+          "registration": "015042",
+          "duplicate_priority": "NEW_UNIQUE_PRIORITY"
+        }
+      ],
+      "historical_side": "富山_2026-09-03_333_OR_333_33M_FROZEN_PRE",
+      "day1_exact_card": "PENDING_FUTURE_POSITIVE_NAVIGATION",
+      "formal_increment": 0
+    },
+    {
+      "priority": 6,
+      "event": "富山_2026-09-18",
+      "circumference": "333_OR_333_33M",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "rider": "志田 龍星",
+          "registration": "015537"
+        },
+        {
+          "rider": "小堺 浩二",
+          "registration": "014177"
+        },
+        {
+          "rider": "室井 蓮太朗",
+          "registration": "015645"
+        }
+      ],
+      "historical_side": "青森_2026-09-03_400M_1R_FROZEN_PRE",
+      "day1_exact_card": "PENDING_FUTURE_POSITIVE_NAVIGATION",
+      "formal_increment": 0
+    }
+  ],
+  "known_incremental_unique_capacity_beyond_tier1": 14,
+  "trigger_contract": "On exact positively navigated Day1 rider card before trusted PIT cutoff, immediately run prospective PRE -> exact identity -> official same-race -> provenance -> receipt builder/guard -> witness registry -> partial gate recomputation. Candidate roster alone remains +0.",
+  "no_wait_policy": "Until cards publish, continue current earlier-event conversion front and exact-bound calendar-review consumption; do not repeatedly rescan zero-overlap Takeo or inflate the queue.",
+  "calendar_definition": "UNKNOWN_PENDING_PR_177_INDEPENDENT_REVIEW_AND_ADOPTION",
+  "hard_boundaries": {
+    "result": false,
+    "payout": false,
+    "odds": false,
+    "prediction": false,
+    "race_id_guessing": false,
+    "post_cutoff_backfill": false,
+    "shared_steps_mutation": false,
+    "workflow_dispatch_or_rerun": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false
+}
