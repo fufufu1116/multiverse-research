@@ -20,8 +20,13 @@ from automation.review_dispatcher_v1.model import (
     ReviewContractError,
     extract_request_from_comment,
     fetch_all_pages,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
+    required_object,
     result_marker,
     sha256_json,
     validate_request,
@@ -68,34 +73,38 @@ def _fresh_verify(job: dict[str, Any]) -> list[dict[str, Any]]:
     repo = job["repo"]
     pr_number = job["pr"]
 
-    pr = public_github(
-        f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+    pr = github_full_pr_binding(
+        public_github(
+            f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+        ),
+        expected_number=pr_number,
+        expected_head=job["head"],
     )
-    main = public_github(
-        f"https://api.github.com/repos/{repo}/branches/main"
-    )
-    commit = public_github(
-        f"https://api.github.com/repos/{repo}/commits/{job['head']}"
-    )
-    request_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{job['request_comment']}"
+    main_sha = github_branch_commit_sha(
+        public_github(
+            f"https://api.github.com/repos/{repo}/branches/main"
         )
     )
-
-    require(pr["state"] == "open", "PR_NOT_OPEN")
-    require(pr["draft"] is True, "PR_NOT_DRAFT")
-    require(pr["merged"] is False, "PR_MERGED")
-    require(pr["head"]["sha"] == job["head"], "HEAD_DRIFT")
-    require(pr["base"]["sha"] == job["base"], "BASE_DRIFT")
-    require(
-        commit["commit"]["tree"]["sha"] == job["tree"],
-        "TREE_DRIFT",
+    tree_sha = github_commit_tree_sha(
+        public_github(
+            f"https://api.github.com/repos/{repo}/commits/{job['head']}"
+        )
     )
-    require(main["commit"]["sha"] == job["main"], "MAIN_DRIFT")
+    request_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{job['request_comment']}"
+            )
+        ),
+        "REQUEST_COMMENT_RESPONSE_OBJECT",
+    )
+
+    require(pr["base_sha"] == job["base"], "BASE_DRIFT")
+    require(tree_sha == job["tree"], "TREE_DRIFT")
+    require(main_sha == job["main"], "MAIN_DRIFT")
     require(
-        job.get("dispatcher_ref") == main["commit"]["sha"],
+        job.get("dispatcher_ref") == main_sha,
         "DISPATCHER_REF_DRIFT",
     )
 
@@ -196,7 +205,13 @@ def publish(
             and lane_result_comment_trusted(comment, lane)
         ):
             raise ReviewContractError(
-                f"CURRENT_REQUEST_RESULT_ALREADY_EXISTS:{comment['id']}"
+                "CURRENT_REQUEST_RESULT_ALREADY_EXISTS:"
+                + str(
+                    github_comment_id(
+                        comment,
+                        "RESULT_COMMENT_ID",
+                    )
+                )
             )
 
     private_key = os.environ.get(secret_name)
@@ -270,7 +285,10 @@ def publish(
         "reviewed_head": job["head"],
         "reviewed_tree": job["tree"],
         "reviewed_main": job["main"],
-        "published_comment_id": result["id"],
+        "published_comment_id": github_comment_id(
+            result,
+            "PUBLISHED_COMMENT_ID",
+        ),
         "published_by": expected_login,
         "github_app_id": app_id,
         "verdict": "PASS",

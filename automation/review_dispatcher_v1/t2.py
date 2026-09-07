@@ -24,9 +24,16 @@ from automation.review_dispatcher_v1.model import (
     T2_SCHEMA,
     ReviewContractError,
     fetch_all_pages,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
+    lane_result_outer_app_trusted,
     latest_exact_current_owner_request,
+    required_object,
+    required_positive_int,
     result_marker,
     sha256_json,
     t2_marker,
@@ -97,7 +104,10 @@ def publish_t2(
         "AUDITOR_MAIN_MISMATCH",
     )
 
-    auditor_comment_id = int(receipt["published_comment_id"])
+    auditor_comment_id = required_positive_int(
+        receipt.get("published_comment_id"),
+        "AUDITOR_RECEIPT_COMMENT_ID",
+    )
     require(
         receipt.get("published_by") == AUDITOR_LOGIN,
         "AUDITOR_RECEIPT_PRODUCER",
@@ -114,47 +124,49 @@ def publish_t2(
     repo = job["repo"]
     pr_number = job["pr"]
 
-    pr = public_github(
+    pr_raw = public_github(
         f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
     )
-    main = public_github(
+    main_raw = public_github(
         f"https://api.github.com/repos/{repo}/branches/main"
     )
-    commit = public_github(
+    commit_raw = public_github(
         f"https://api.github.com/repos/{repo}/commits/{job['head']}"
     )
 
-    require(pr["state"] == "open", "PR_NOT_OPEN")
-    require(pr["draft"] is True, "PR_NOT_DRAFT")
-    require(pr["merged"] is False, "PR_MERGED")
-    require(pr["head"]["sha"] == job["head"], "HEAD_DRIFT")
-    require(pr["base"]["sha"] == job["base"], "BASE_DRIFT")
-    require(
-        commit["commit"]["tree"]["sha"] == job["tree"],
-        "TREE_DRIFT",
+    pr = github_full_pr_binding(
+        pr_raw,
+        expected_number=pr_number,
+        expected_head=job["head"],
     )
-    require(main["commit"]["sha"] == job["main"], "MAIN_DRIFT")
+    tree_sha = github_commit_tree_sha(commit_raw)
+    main_sha = github_branch_commit_sha(main_raw)
+
+    require(pr["base_sha"] == job["base"], "BASE_DRIFT")
+    require(tree_sha == job["tree"], "TREE_DRIFT")
+    require(main_sha == job["main"], "MAIN_DRIFT")
     require(
-        job.get("dispatcher_ref") == main["commit"]["sha"],
+        job.get("dispatcher_ref") == main_sha,
         "DISPATCHER_REF_DRIFT",
     )
 
-    auditor_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{auditor_comment_id}"
-        )
+    auditor_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{auditor_comment_id}"
+            )
+        ),
+        "AUDITOR_COMMENT_RESPONSE_OBJECT",
     )
     require(
         (auditor_comment.get("user") or {}).get("login")
         == AUDITOR_LOGIN,
         "AUDITOR_COMMENT_LOGIN",
     )
-    outer_app = (
-        (auditor_comment.get("performed_via_github_app") or {}).get("slug")
-    )
+    outer_app = auditor_comment.get("performed_via_github_app")
     require(
-        outer_app == AUDITOR_APP_SLUG,
+        lane_result_outer_app_trusted(auditor_comment, "AUDITOR"),
         "AUDITOR_COMMENT_APP",
     )
 
@@ -201,20 +213,24 @@ def publish_t2(
         "LATEST_LAB_REQUEST_SHA256_MISMATCH",
     )
 
-    lab_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{lab_comment_id}"
-        )
+    lab_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{lab_comment_id}"
+            )
+        ),
+        "LAB_COMMENT_RESPONSE_OBJECT",
     )
     require(
         (lab_comment.get("user") or {}).get("login") == LAB_LOGIN,
         "LAB_UPSTREAM_LOGIN",
     )
-    lab_app = (
-        (lab_comment.get("performed_via_github_app") or {}).get("slug")
+    lab_app = lab_comment.get("performed_via_github_app")
+    require(
+        lane_result_outer_app_trusted(lab_comment, "LAB"),
+        "LAB_UPSTREAM_APP",
     )
-    require(lab_app == LAB_APP_SLUG, "LAB_UPSTREAM_APP")
 
     lab_artifact = json_block(lab_comment.get("body") or "")
     require(
@@ -293,7 +309,7 @@ def publish_t2(
         latest_lab_request_sha256,
     )
     authentic_lab_results = [
-        int(item["id"])
+        github_comment_id(item, "LAB_RESULT_COMMENT_ID")
         for item in comments
         if lab_marker in (item.get("body") or "")
         and lane_result_comment_trusted(item, "LAB")
@@ -303,11 +319,14 @@ def publish_t2(
         "LAB_UPSTREAM_NOT_SINGLE_LATEST_RESULT",
     )
 
-    t1_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{t1_comment_id}"
-        )
+    t1_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{t1_comment_id}"
+            )
+        ),
+        "T1_COMMENT_RESPONSE_OBJECT",
     )
     require(
         issue_comment_owner_trusted(t1_comment, repo),
@@ -352,7 +371,13 @@ def publish_t2(
             and lane_result_comment_trusted(comment, "AUDITOR")
         ):
             raise ReviewContractError(
-                f"CURRENT_T2_ALREADY_EXISTS:{comment['id']}"
+                "CURRENT_T2_ALREADY_EXISTS:"
+                + str(
+                    github_comment_id(
+                        comment,
+                        "T2_COMMENT_ID",
+                    )
+                )
             )
 
     private_key = os.environ.get(
@@ -443,7 +468,10 @@ def publish_t2(
         "request_id": job["request_id"],
         "request_sha256": job["request_sha256"],
         "auditor_comment_id": auditor_comment_id,
-        "t2_comment_id": result["id"],
+        "t2_comment_id": github_comment_id(
+            result,
+            "PUBLISHED_T2_COMMENT_ID",
+        ),
         "reviewed_head": job["head"],
         "reviewed_tree": job["tree"],
         "reviewed_main": job["main"],

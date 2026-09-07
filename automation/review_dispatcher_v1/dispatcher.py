@@ -10,9 +10,14 @@ from typing import Any
 from automation.review_dispatcher_v1.model import (
     ReviewContractError,
     fetch_all_pages,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     lane_result_comment_trusted,
     latest_exact_current_owner_request,
     require,
+    required_positive_int,
     result_marker,
     sha256_json,
     validate_request,
@@ -39,14 +44,46 @@ def discover_pr(repo: str, head: str, fetch=github_get) -> dict[str, Any]:
         fetch,
         f"https://api.github.com/repos/{repo}/commits/{head}/pulls",
     )
-    exact = [
-        item
-        for item in pulls
-        if item.get("state") == "open"
-        and (item.get("head") or {}).get("sha") == head
-    ]
+
+    exact: list[dict[str, Any]] = []
+    for item in pulls:
+        require(isinstance(item, dict), "PR_SUMMARY_ITEM_OBJECT")
+        item_head = item.get("head")
+        if (
+            item.get("state") == "open"
+            and isinstance(item_head, dict)
+            and item_head.get("sha") == head
+        ):
+            exact.append(item)
+
     require(len(exact) == 1, f"EXACT_OPEN_PR_COUNT:{len(exact)}")
-    return exact[0]
+
+    summary = exact[0]
+    pr_number = required_positive_int(
+        summary.get("number"),
+        "PR_SUMMARY_NUMBER",
+    )
+
+    full_pr_raw = fetch(
+        f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+    )
+    return github_full_pr_binding(
+        full_pr_raw,
+        expected_number=pr_number,
+        expected_head=head,
+    )
+
+
+def _discover_tree_sha(repo: str, head: str, fetch=github_get) -> str:
+    return github_commit_tree_sha(
+        fetch(f"https://api.github.com/repos/{repo}/commits/{head}")
+    )
+
+
+def _discover_main_sha(repo: str, fetch=github_get) -> str:
+    return github_branch_commit_sha(
+        fetch(f"https://api.github.com/repos/{repo}/branches/main")
+    )
 
 
 def discover_request(
@@ -57,21 +94,17 @@ def discover_request(
     fetch=github_get,
 ) -> dict[str, Any]:
     pr = discover_pr(repo, head, fetch=fetch)
-    pr_number = int(pr["number"])
-
-    commit = fetch(
-        f"https://api.github.com/repos/{repo}/commits/{head}"
-    )
-    tree = commit["commit"]["tree"]["sha"]
-
-    main = fetch(
-        f"https://api.github.com/repos/{repo}/branches/main"
-    )
-    main_sha = main["commit"]["sha"]
+    pr_number = pr["number"]
+    tree = _discover_tree_sha(repo, head, fetch=fetch)
+    main_sha = _discover_main_sha(repo, fetch=fetch)
 
     comments = fetch_all_pages(
         fetch,
         f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
+    )
+    require(
+        all(isinstance(item, dict) for item in comments),
+        "COMMENTS_ITEM_OBJECT",
     )
 
     request_comment, request, comment = latest_exact_current_owner_request(
@@ -81,7 +114,7 @@ def discover_request(
         lane=lane,
         head=head,
         tree=tree,
-        base=pr["base"]["sha"],
+        base=pr["base_sha"],
         main=main_sha,
     )
     validate_request(request)
@@ -93,30 +126,34 @@ def discover_request(
         request_comment,
         request_sha256,
     )
-    duplicate_ids = [
-        int(item["id"])
-        for item in comments
-        if marker in (item.get("body") or "")
-        and lane_result_comment_trusted(item, lane)
-    ]
+
+    duplicate_ids: list[int] = []
+    for item in comments:
+        if (
+            marker in (item.get("body") or "")
+            and lane_result_comment_trusted(item, lane)
+        ):
+            duplicate_ids.append(
+                github_comment_id(
+                    item,
+                    "RESULT_COMMENT_ID",
+                )
+            )
+
     require(
         not duplicate_ids,
         "CURRENT_REQUEST_RESULT_ALREADY_EXISTS:"
         + ",".join(str(i) for i in duplicate_ids),
     )
 
-    require(pr["draft"] is True, "PR_NOT_DRAFT")
-    require(pr["merged"] is False, "PR_ALREADY_MERGED")
-    require(pr["state"] == "open", "PR_NOT_OPEN")
-
     return {
         "schema": JOB_SCHEMA,
         "repo": repo,
         "pr": pr_number,
-        "branch": (pr.get("head") or {}).get("ref"),
+        "branch": pr["head_ref"],
         "head": head,
         "tree": tree,
-        "base": pr["base"]["sha"],
+        "base": pr["base_sha"],
         "main": main_sha,
         "lane": lane,
         "request_id": request["request_id"],

@@ -70,16 +70,33 @@ def issue_comment_owner_trusted(
     return (comment.get("user") or {}).get("login") == owner
 
 
+def lane_result_outer_app_trusted(
+    comment: dict[str, Any],
+    lane: str,
+) -> bool:
+    if lane == "LAB":
+        expected_app = LAB_APP_SLUG
+    elif lane == "AUDITOR":
+        expected_app = AUDITOR_APP_SLUG
+    else:
+        return False
+
+    app = comment.get("performed_via_github_app")
+    if app is None:
+        return True
+    if not isinstance(app, dict):
+        return False
+    return app.get("slug") == expected_app
+
+
 def lane_result_comment_trusted(
     comment: dict[str, Any],
     lane: str,
 ) -> bool:
     if lane == "LAB":
         expected_login = LAB_LOGIN
-        expected_app = LAB_APP_SLUG
     elif lane == "AUDITOR":
         expected_login = AUDITOR_LOGIN
-        expected_app = AUDITOR_APP_SLUG
     else:
         return False
 
@@ -89,12 +106,7 @@ def lane_result_comment_trusted(
     if login != expected_login or user_type != "Bot":
         return False
 
-    app = comment.get("performed_via_github_app")
-    if app is None:
-        return True
-    if not isinstance(app, dict):
-        return False
-    return app.get("slug") == expected_app
+    return lane_result_outer_app_trusted(comment, lane)
 
 
 def fetch_all_pages(
@@ -110,6 +122,10 @@ def fetch_all_pages(
             f"{url}{separator}per_page=100&page={page}"
         )
         require(isinstance(batch, list), "PAGINATED_RESPONSE_NOT_LIST")
+        require(
+            all(isinstance(item, dict) for item in batch),
+            "PAGINATED_RESPONSE_ITEM_NOT_OBJECT",
+        )
         items.extend(batch)
         if len(batch) < 100:
             return items
@@ -143,6 +159,101 @@ def sha256_hex(value: Any) -> bool:
         and len(value) == 64
         and all(c in "0123456789abcdef" for c in value)
     )
+
+
+def required_object(value: Any, code: str) -> dict[str, Any]:
+    require(isinstance(value, dict), code)
+    return value
+
+
+def required_positive_int(value: Any, code: str) -> int:
+    require(
+        isinstance(value, int)
+        and not isinstance(value, bool)
+        and value > 0,
+        code,
+    )
+    return value
+
+
+def required_sha40(value: Any, code: str) -> str:
+    require(sha40(value), code)
+    return value
+
+
+def required_nonempty_str(value: Any, code: str) -> str:
+    require(isinstance(value, str) and bool(value), code)
+    return value
+
+
+def github_full_pr_binding(
+    payload: Any,
+    *,
+    expected_number: int | None = None,
+    expected_head: str | None = None,
+) -> dict[str, Any]:
+    pr = required_object(payload, "PR_RESPONSE_OBJECT")
+
+    number = required_positive_int(pr.get("number"), "PR_NUMBER")
+    if expected_number is not None:
+        require(number == expected_number, "PR_NUMBER_DRIFT")
+
+    state = required_nonempty_str(pr.get("state"), "PR_STATE_STRING")
+    require(state == "open", "PR_NOT_OPEN")
+
+    draft = pr.get("draft")
+    require(isinstance(draft, bool), "PR_DRAFT_BOOL")
+    require(draft is True, "PR_NOT_DRAFT")
+
+    merged = pr.get("merged")
+    require(isinstance(merged, bool), "PR_MERGED_BOOL")
+    require(merged is False, "PR_ALREADY_MERGED")
+
+    head_obj = required_object(pr.get("head"), "PR_HEAD_OBJECT")
+    head_sha = required_sha40(head_obj.get("sha"), "PR_HEAD_SHA")
+    if expected_head is not None:
+        require(head_sha == expected_head, "PR_HEAD_DRIFT")
+    head_ref = required_nonempty_str(head_obj.get("ref"), "PR_HEAD_REF")
+
+    base_obj = required_object(pr.get("base"), "PR_BASE_OBJECT")
+    base_sha = required_sha40(base_obj.get("sha"), "PR_BASE_SHA")
+
+    return {
+        "number": number,
+        "state": state,
+        "draft": draft,
+        "merged": merged,
+        "head_sha": head_sha,
+        "head_ref": head_ref,
+        "base_sha": base_sha,
+    }
+
+
+def github_commit_tree_sha(payload: Any) -> str:
+    commit = required_object(payload, "COMMIT_RESPONSE_OBJECT")
+    commit_meta = required_object(
+        commit.get("commit"),
+        "COMMIT_METADATA_OBJECT",
+    )
+    tree_obj = required_object(
+        commit_meta.get("tree"),
+        "COMMIT_TREE_OBJECT",
+    )
+    return required_sha40(tree_obj.get("sha"), "COMMIT_TREE_SHA")
+
+
+def github_branch_commit_sha(payload: Any) -> str:
+    branch = required_object(payload, "BRANCH_RESPONSE_OBJECT")
+    commit = required_object(
+        branch.get("commit"),
+        "BRANCH_COMMIT_OBJECT",
+    )
+    return required_sha40(commit.get("sha"), "BRANCH_COMMIT_SHA")
+
+
+def github_comment_id(payload: Any, code: str = "COMMENT_ID") -> int:
+    comment = required_object(payload, "COMMENT_RESPONSE_OBJECT")
+    return required_positive_int(comment.get("id"), code)
 
 
 def safe_repo_path(value: Any) -> str:
@@ -521,7 +632,11 @@ def exact_current_owner_requests(
     main: str,
 ) -> list[tuple[int, dict[str, Any], dict[str, Any]]]:
     candidates: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
-    for comment in comments:
+    for raw_comment in comments:
+        comment = required_object(
+            raw_comment,
+            "COMMENT_RESPONSE_OBJECT",
+        )
         body = comment.get("body") or ""
         if REQUEST_MARKER not in body:
             continue
@@ -545,7 +660,16 @@ def exact_current_owner_requests(
             and request["main"] == main
         ):
             validate_request(request)
-            candidates.append((int(comment["id"]), request, comment))
+            candidates.append(
+                (
+                    github_comment_id(
+                        comment,
+                        "OWNER_REQUEST_COMMENT_ID",
+                    ),
+                    request,
+                    comment,
+                )
+            )
 
     candidates.sort(key=lambda item: item[0])
 

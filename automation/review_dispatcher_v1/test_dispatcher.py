@@ -9,7 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
-from automation.review_dispatcher_v1 import dispatcher, review
+from automation.review_dispatcher_v1 import dispatcher, github_app, review
 from automation.review_dispatcher_v1.model import (
     LAB_APP_SLUG,
     REQUEST_MARKER,
@@ -17,7 +17,12 @@ from automation.review_dispatcher_v1.model import (
     dotted_get,
     extract_request_from_comment,
     fetch_all_pages,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     lane_result_comment_trusted,
+    lane_result_outer_app_trusted,
     latest_exact_current_owner_request,
     resolve_public_https_target,
     result_marker,
@@ -197,7 +202,6 @@ class DispatcherTests(unittest.TestCase):
                         "number": 999,
                         "state": "open",
                         "draft": True,
-                        "merged": False,
                         "head": {
                             "sha": pr_head,
                             "ref": "agent/test",
@@ -207,6 +211,20 @@ class DispatcherTests(unittest.TestCase):
                         },
                     }
                 ]
+            if url.endswith("/pulls/999"):
+                return {
+                    "number": 999,
+                    "state": "open",
+                    "draft": True,
+                    "merged": False,
+                    "head": {
+                        "sha": pr_head,
+                        "ref": "agent/test",
+                    },
+                    "base": {
+                        "sha": base,
+                    },
+                }
             if url.endswith(f"/commits/{pr_head}"):
                 return {
                     "commit": {
@@ -942,6 +960,497 @@ class HardeningTests(unittest.TestCase):
             checks["comment:789:app_slug"],
             "FIX_REQUIRED",
         )
+
+
+    def test_33_fixed_pipeline_bootstrap_uses_fetch_head(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        for relative in (
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml",
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml",
+        ):
+            text = (repo_root / relative).read_text()
+            fetch_index = text.index("git fetch origin main")
+            ref = 'DISPATCHER_REF="$(git rev-parse FETCH_HEAD)"'
+            ref_index = text.index(ref)
+            self.assertLess(fetch_index, ref_index)
+            self.assertNotIn("git rev-parse origin/main", text)
+
+
+    def test_34_fixed_pipeline_runtime_vars_escaped_and_failure_artifacts_retained(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        runtime_names = (
+            "DISPATCHER_REF",
+            "FRESH_DISPATCHER_REF",
+            "JOB_DISPATCHER_REF",
+            "BUILDKITE_COMMIT",
+        )
+        for relative in (
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml",
+            "buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml",
+        ):
+            text = (repo_root / relative).read_text()
+
+            for runtime_name in runtime_names:
+                escaped = "$" * 2 + runtime_name
+                unescaped = "$" + runtime_name
+                self.assertIn(escaped, text)
+                self.assertNotIn(
+                    unescaped,
+                    text.replace(escaped, ""),
+                )
+
+            for required in (
+                "rm -f .mv_review_pass",
+                "if PYTHONPATH=.mv_dispatcher",
+                "touch .mv_review_pass",
+                "if [ -f review_artifact.json ]; then",
+                "test -f .mv_review_pass",
+            ):
+                self.assertIn(required, text)
+
+            review_index = text.index("review.py")
+            job_upload_index = text.index(
+                "buildkite-agent artifact upload",
+                review_index,
+            )
+            artifact_guard_index = text.index(
+                "if [ -f review_artifact.json ]; then"
+            )
+            final_status_index = text.index("test -f .mv_review_pass")
+            self.assertLess(review_index, job_upload_index)
+            self.assertLess(job_upload_index, artifact_guard_index)
+            self.assertLess(artifact_guard_index, final_status_index)
+
+
+    def test_35_dispatcher_refetches_full_pr_when_summary_omits_merged(self):
+        request = lab_request("summary-full-pr")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        helper = DispatcherTests()
+        seen = []
+
+        base_fetch = helper.fake_fetch_factory(comments)
+
+        def fake_fetch(url: str):
+            seen.append(url)
+            return base_fetch(url)
+
+        job = dispatcher.discover_request(
+            repo="fufufu1116/multiverse-research",
+            lane="LAB",
+            head=SHA_A,
+            fetch=fake_fetch,
+        )
+        self.assertEqual(job["pr"], 999)
+        self.assertEqual(job["branch"], "agent/test")
+        self.assertTrue(
+            any(url.endswith("/pulls/999") for url in seen)
+        )
+
+    def test_36_full_pr_missing_or_malformed_required_fields_fails_closed(self):
+        request = lab_request("malformed-full-pr")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        helper = DispatcherTests()
+        base_fetch = helper.fake_fetch_factory(comments)
+
+        malformed = (
+            {},
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "head": {"sha": SHA_A, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": "true",
+                "merged": False,
+                "head": {"sha": SHA_A, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "merged": False,
+                "head": {"sha": SHA_B, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "merged": False,
+                "head": {"sha": SHA_A, "ref": ""},
+                "base": {"sha": SHA_C},
+            },
+        )
+
+        for full_pr in malformed:
+            with self.subTest(full_pr=full_pr):
+                def fake_fetch(url: str):
+                    if url.endswith("/pulls/999"):
+                        return full_pr
+                    return base_fetch(url)
+
+                with self.assertRaises(ReviewContractError):
+                    dispatcher.discover_request(
+                        repo="fufufu1116/multiverse-research",
+                        lane="LAB",
+                        head=SHA_A,
+                        fetch=fake_fetch,
+                    )
+
+    def test_37_malformed_commit_or_main_shape_fails_closed_without_keyerror(self):
+        request = lab_request("malformed-outer")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        helper = DispatcherTests()
+        base_fetch = helper.fake_fetch_factory(comments)
+
+        cases = (
+            ("commit", {}),
+            ("commit", {"commit": {}}),
+            ("commit", {"commit": {"tree": {}}}),
+            ("main", {}),
+            ("main", {"commit": {}}),
+        )
+        for kind, payload in cases:
+            with self.subTest(kind=kind, payload=payload):
+                def fake_fetch(url: str):
+                    if (
+                        kind == "commit"
+                        and url.endswith(f"/commits/{SHA_A}")
+                    ):
+                        return payload
+                    if (
+                        kind == "main"
+                        and url.endswith("/branches/main")
+                    ):
+                        return payload
+                    return base_fetch(url)
+
+                with self.assertRaises(ReviewContractError):
+                    dispatcher.discover_request(
+                        repo="fufufu1116/multiverse-research",
+                        lane="LAB",
+                        head=SHA_A,
+                        fetch=fake_fetch,
+                    )
+
+
+    def test_38_shared_github_response_normalizers_are_fail_closed(self):
+        full_pr = {
+            "number": 999,
+            "state": "open",
+            "draft": True,
+            "merged": False,
+            "head": {
+                "sha": SHA_A,
+                "ref": "agent/test",
+            },
+            "base": {
+                "sha": SHA_C,
+            },
+        }
+        binding = github_full_pr_binding(
+            full_pr,
+            expected_number=999,
+            expected_head=SHA_A,
+        )
+        self.assertEqual(binding["head_sha"], SHA_A)
+        self.assertEqual(binding["base_sha"], SHA_C)
+
+        self.assertEqual(
+            github_commit_tree_sha(
+                {"commit": {"tree": {"sha": SHA_B}}}
+            ),
+            SHA_B,
+        )
+        self.assertEqual(
+            github_branch_commit_sha(
+                {"commit": {"sha": SHA_D}}
+            ),
+            SHA_D,
+        )
+        self.assertEqual(
+            github_comment_id({"id": 123}),
+            123,
+        )
+
+        malformed_prs = (
+            {},
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "head": {"sha": SHA_A, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "merged": False,
+                "head": {"sha": "bad", "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+        )
+        for payload in malformed_prs:
+            with self.subTest(payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_full_pr_binding(
+                        payload,
+                        expected_number=999,
+                        expected_head=SHA_A,
+                    )
+
+        for payload in ({}, {"commit": {}}, {"commit": {"tree": {}}}):
+            with self.subTest(commit_payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_commit_tree_sha(payload)
+
+        for payload in ({}, {"commit": {}}):
+            with self.subTest(branch_payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_branch_commit_sha(payload)
+
+        for payload in ({}, {"id": 0}, {"id": "123"}):
+            with self.subTest(comment_payload=payload):
+                with self.assertRaises(ReviewContractError):
+                    github_comment_id(payload)
+
+
+    def test_39_pagination_and_owner_request_comment_shapes_fail_closed(self):
+        def bad_page_fetch(_url: str):
+            return [{"id": 1}, "not-an-object"]
+
+        with self.assertRaises(ReviewContractError):
+            fetch_all_pages(
+                bad_page_fetch,
+                "https://api.github.com/repos/o/r/issues/1/comments",
+            )
+
+        request = lab_request("owner-comment-id-contract")
+        comments = [
+            {
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        with self.assertRaises(ReviewContractError):
+            latest_exact_current_owner_request(
+                comments,
+                repo=request["repo"],
+                pr=request["pr"],
+                lane=request["lane"],
+                head=request["head"],
+                tree=request["tree"],
+                base=request["base"],
+                main=request["main"],
+            )
+
+    def test_40_github_app_installation_and_token_shapes_fail_closed(self):
+        with mock.patch.object(
+            github_app,
+            "app_jwt",
+            return_value="jwt",
+        ):
+            with mock.patch.object(
+                github_app,
+                "github_json",
+                return_value={},
+            ):
+                with self.assertRaises(github_app.GitHubAppError):
+                    github_app.installation_token(
+                        repo="fufufu1116/multiverse-research",
+                        app_id=1,
+                        private_key="unused",
+                    )
+
+            with mock.patch.object(
+                github_app,
+                "github_json",
+                side_effect=[
+                    {"id": 123},
+                    {},
+                ],
+            ):
+                with self.assertRaises(github_app.GitHubAppError):
+                    github_app.installation_token(
+                        repo="fufufu1116/multiverse-research",
+                        app_id=1,
+                        private_key="unused",
+                    )
+
+            with mock.patch.object(
+                github_app,
+                "github_json",
+                side_effect=[
+                    {"id": 123},
+                    {"token": "installation-token"},
+                ],
+            ):
+                self.assertEqual(
+                    github_app.installation_token(
+                        repo="fufufu1116/multiverse-research",
+                        app_id=1,
+                        private_key="unused",
+                    ),
+                    "installation-token",
+                )
+
+
+    def test_41_nullable_outer_app_helper_accepts_none_and_rejects_wrong_slug(self):
+        for lane, login, slug in (
+            ("LAB", "multiverse-independent-lab[bot]", "multiverse-independent-lab"),
+            ("AUDITOR", "multiverse-independent-auditor[bot]", "multiverse-independent-auditor"),
+        ):
+            base_comment = {
+                "user": {
+                    "login": login,
+                    "type": "Bot",
+                },
+                "performed_via_github_app": None,
+            }
+            self.assertTrue(
+                lane_result_outer_app_trusted(base_comment, lane)
+            )
+            self.assertTrue(
+                lane_result_comment_trusted(base_comment, lane)
+            )
+
+            exact = copy.deepcopy(base_comment)
+            exact["performed_via_github_app"] = {"slug": slug}
+            self.assertTrue(
+                lane_result_outer_app_trusted(exact, lane)
+            )
+            self.assertTrue(
+                lane_result_comment_trusted(exact, lane)
+            )
+
+            wrong = copy.deepcopy(base_comment)
+            wrong["performed_via_github_app"] = {"slug": "wrong-app"}
+            self.assertFalse(
+                lane_result_outer_app_trusted(wrong, lane)
+            )
+            self.assertFalse(
+                lane_result_comment_trusted(wrong, lane)
+            )
+
+            malformed = copy.deepcopy(base_comment)
+            malformed["performed_via_github_app"] = "wrong-type"
+            self.assertFalse(
+                lane_result_outer_app_trusted(malformed, lane)
+            )
+            self.assertFalse(
+                lane_result_comment_trusted(malformed, lane)
+            )
+
+    def test_42_review_and_t2_use_shared_nullable_outer_app_helper(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        review_source = (
+            repo_root
+            / "automation"
+            / "review_dispatcher_v1"
+            / "review.py"
+        ).read_text()
+        t2_source = (
+            repo_root
+            / "automation"
+            / "review_dispatcher_v1"
+            / "t2.py"
+        ).read_text()
+
+        self.assertIn(
+            'lane_result_outer_app_trusted(lab_comment, "LAB")',
+            review_source,
+        )
+        self.assertNotIn(
+            "lab_app == LAB_APP_SLUG",
+            review_source,
+        )
+
+        self.assertIn(
+            'lane_result_outer_app_trusted(auditor_comment, "AUDITOR")',
+            t2_source,
+        )
+        self.assertIn(
+            'lane_result_outer_app_trusted(lab_comment, "LAB")',
+            t2_source,
+        )
+        self.assertNotIn(
+            "outer_app == AUDITOR_APP_SLUG",
+            t2_source,
+        )
+        self.assertNotIn(
+            "lab_app == LAB_APP_SLUG",
+            t2_source,
+        )
+
+
+    def test_43_validator_assigns_nullable_app_tokens_to_correct_modules(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        validator_source = (
+            repo_root
+            / "automation"
+            / "review_dispatcher_v1"
+            / "validator.py"
+        ).read_text()
+
+        dispatcher_start = validator_source.index(
+            'dispatcher_source = (ROOT / "dispatcher.py").read_text()'
+        )
+        review_start = validator_source.index(
+            'review_source = (ROOT / "review.py").read_text()'
+        )
+        publisher_start = validator_source.index(
+            'publisher_source = (ROOT / "publisher.py").read_text()'
+        )
+        t2_start = validator_source.index(
+            't2_source = (ROOT / "t2.py").read_text()'
+        )
+        github_app_start = validator_source.index(
+            'github_app_source = (ROOT / "github_app.py").read_text()'
+        )
+
+        dispatcher_block = validator_source[
+            dispatcher_start:review_start
+        ]
+        review_block = validator_source[
+            review_start:publisher_start
+        ]
+        t2_block = validator_source[
+            t2_start:github_app_start
+        ]
+
+        lab_token = 'lane_result_outer_app_trusted(lab_comment, "LAB")'
+        auditor_token = (
+            'lane_result_outer_app_trusted(auditor_comment, "AUDITOR")'
+        )
+
+        self.assertNotIn(lab_token, dispatcher_block)
+        self.assertIn(lab_token, review_block)
+        self.assertIn(lab_token, t2_block)
+        self.assertIn(auditor_token, t2_block)
 
 
 if __name__ == "__main__":
