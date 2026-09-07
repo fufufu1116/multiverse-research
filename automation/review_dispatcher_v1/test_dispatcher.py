@@ -197,7 +197,6 @@ class DispatcherTests(unittest.TestCase):
                         "number": 999,
                         "state": "open",
                         "draft": True,
-                        "merged": False,
                         "head": {
                             "sha": pr_head,
                             "ref": "agent/test",
@@ -207,6 +206,20 @@ class DispatcherTests(unittest.TestCase):
                         },
                     }
                 ]
+            if url.endswith("/pulls/999"):
+                return {
+                    "number": 999,
+                    "state": "open",
+                    "draft": True,
+                    "merged": False,
+                    "head": {
+                        "sha": pr_head,
+                        "ref": "agent/test",
+                    },
+                    "base": {
+                        "sha": base,
+                    },
+                }
             if url.endswith(f"/commits/{pr_head}"):
                 return {
                     "commit": {
@@ -1002,6 +1015,141 @@ class HardeningTests(unittest.TestCase):
             self.assertLess(review_index, job_upload_index)
             self.assertLess(job_upload_index, artifact_guard_index)
             self.assertLess(artifact_guard_index, final_status_index)
+
+
+    def test_35_dispatcher_refetches_full_pr_when_summary_omits_merged(self):
+        request = lab_request("summary-full-pr")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        helper = DispatcherTests()
+        seen = []
+
+        base_fetch = helper.fake_fetch_factory(comments)
+
+        def fake_fetch(url: str):
+            seen.append(url)
+            return base_fetch(url)
+
+        job = dispatcher.discover_request(
+            repo="fufufu1116/multiverse-research",
+            lane="LAB",
+            head=SHA_A,
+            fetch=fake_fetch,
+        )
+        self.assertEqual(job["pr"], 999)
+        self.assertEqual(job["branch"], "agent/test")
+        self.assertTrue(
+            any(url.endswith("/pulls/999") for url in seen)
+        )
+
+    def test_36_full_pr_missing_or_malformed_required_fields_fails_closed(self):
+        request = lab_request("malformed-full-pr")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        helper = DispatcherTests()
+        base_fetch = helper.fake_fetch_factory(comments)
+
+        malformed = (
+            {},
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "head": {"sha": SHA_A, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": "true",
+                "merged": False,
+                "head": {"sha": SHA_A, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "merged": False,
+                "head": {"sha": SHA_B, "ref": "agent/test"},
+                "base": {"sha": SHA_C},
+            },
+            {
+                "number": 999,
+                "state": "open",
+                "draft": True,
+                "merged": False,
+                "head": {"sha": SHA_A, "ref": ""},
+                "base": {"sha": SHA_C},
+            },
+        )
+
+        for full_pr in malformed:
+            with self.subTest(full_pr=full_pr):
+                def fake_fetch(url: str):
+                    if url.endswith("/pulls/999"):
+                        return full_pr
+                    return base_fetch(url)
+
+                with self.assertRaises(ReviewContractError):
+                    dispatcher.discover_request(
+                        repo="fufufu1116/multiverse-research",
+                        lane="LAB",
+                        head=SHA_A,
+                        fetch=fake_fetch,
+                    )
+
+    def test_37_malformed_commit_or_main_shape_fails_closed_without_keyerror(self):
+        request = lab_request("malformed-outer")
+        comments = [
+            {
+                "id": 10,
+                "body": request_body(request),
+                "user": {"login": "fufufu1116"},
+            }
+        ]
+        helper = DispatcherTests()
+        base_fetch = helper.fake_fetch_factory(comments)
+
+        cases = (
+            ("commit", {}),
+            ("commit", {"commit": {}}),
+            ("commit", {"commit": {"tree": {}}}),
+            ("main", {}),
+            ("main", {"commit": {}}),
+        )
+        for kind, payload in cases:
+            with self.subTest(kind=kind, payload=payload):
+                def fake_fetch(url: str):
+                    if (
+                        kind == "commit"
+                        and url.endswith(f"/commits/{SHA_A}")
+                    ):
+                        return payload
+                    if (
+                        kind == "main"
+                        and url.endswith("/branches/main")
+                    ):
+                        return payload
+                    return base_fetch(url)
+
+                with self.assertRaises(ReviewContractError):
+                    dispatcher.discover_request(
+                        repo="fufufu1116/multiverse-research",
+                        lane="LAB",
+                        head=SHA_A,
+                        fetch=fake_fetch,
+                    )
 
 
 if __name__ == "__main__":
