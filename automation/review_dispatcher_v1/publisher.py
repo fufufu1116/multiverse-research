@@ -24,8 +24,13 @@ from automation.review_dispatcher_v1.model import (
     github_comment_id,
     github_commit_tree_sha,
     github_full_pr_binding,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     issue_comment_owner_trusted,
     lane_result_comment_trusted,
+    required_object,
     result_marker,
     sha256_json,
     validate_request,
@@ -72,29 +77,32 @@ def _fresh_verify(job: dict[str, Any]) -> list[dict[str, Any]]:
     repo = job["repo"]
     pr_number = job["pr"]
 
-    pr_raw = public_github(
-        f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
-    )
-    main_raw = public_github(
-        f"https://api.github.com/repos/{repo}/branches/main"
-    )
-    commit_raw = public_github(
-        f"https://api.github.com/repos/{repo}/commits/{job['head']}"
-    )
-    request_comment = public_github(
-        (
-            f"https://api.github.com/repos/{repo}/issues/comments/"
-            f"{job['request_comment']}"
-        )
-    )
-
     pr = github_full_pr_binding(
-        pr_raw,
+        public_github(
+            f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+        ),
         expected_number=pr_number,
         expected_head=job["head"],
     )
-    tree_sha = github_commit_tree_sha(commit_raw)
-    main_sha = github_branch_commit_sha(main_raw)
+    main_sha = github_branch_commit_sha(
+        public_github(
+            f"https://api.github.com/repos/{repo}/branches/main"
+        )
+    )
+    tree_sha = github_commit_tree_sha(
+        public_github(
+            f"https://api.github.com/repos/{repo}/commits/{job['head']}"
+        )
+    )
+    request_comment = required_object(
+        public_github(
+            (
+                f"https://api.github.com/repos/{repo}/issues/comments/"
+                f"{job['request_comment']}"
+            )
+        ),
+        "REQUEST_COMMENT_RESPONSE_OBJECT",
+    )
 
     require(pr["base_sha"] == job["base"], "BASE_DRIFT")
     require(tree_sha == job["tree"], "TREE_DRIFT")
@@ -122,10 +130,6 @@ def _fresh_verify(job: dict[str, Any]) -> list[dict[str, Any]]:
     comments = fetch_all_pages(
         public_github,
         f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments",
-    )
-    require(
-        all(isinstance(item, dict) for item in comments),
-        "COMMENTS_ITEM_OBJECT",
     )
     return comments
 
