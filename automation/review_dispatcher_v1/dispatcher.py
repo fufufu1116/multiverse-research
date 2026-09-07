@@ -10,12 +10,16 @@ from typing import Any
 from automation.review_dispatcher_v1.model import (
     ReviewContractError,
     fetch_all_pages,
+    github_branch_commit_sha,
+    github_comment_id,
+    github_commit_tree_sha,
+    github_full_pr_binding,
     lane_result_comment_trusted,
     latest_exact_current_owner_request,
     require,
+    required_positive_int,
     result_marker,
     sha256_json,
-    sha40,
     validate_request,
 )
 
@@ -33,31 +37,6 @@ def github_get(url: str) -> Any:
     )
     with urllib.request.urlopen(req, timeout=30) as response:
         return json.load(response)
-
-
-def _required_object(value: Any, code: str) -> dict[str, Any]:
-    require(isinstance(value, dict), code)
-    return value
-
-
-def _required_positive_int(value: Any, code: str) -> int:
-    require(
-        isinstance(value, int)
-        and not isinstance(value, bool)
-        and value > 0,
-        code,
-    )
-    return value
-
-
-def _required_sha(value: Any, code: str) -> str:
-    require(sha40(value), code)
-    return value
-
-
-def _required_nonempty_str(value: Any, code: str) -> str:
-    require(isinstance(value, str) and bool(value), code)
-    return value
 
 
 def discover_pr(repo: str, head: str, fetch=github_get) -> dict[str, Any]:
@@ -80,7 +59,7 @@ def discover_pr(repo: str, head: str, fetch=github_get) -> dict[str, Any]:
     require(len(exact) == 1, f"EXACT_OPEN_PR_COUNT:{len(exact)}")
 
     summary = exact[0]
-    pr_number = _required_positive_int(
+    pr_number = required_positive_int(
         summary.get("number"),
         "PR_SUMMARY_NUMBER",
     )
@@ -88,99 +67,22 @@ def discover_pr(repo: str, head: str, fetch=github_get) -> dict[str, Any]:
     full_pr_raw = fetch(
         f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
     )
-    full_pr = _required_object(full_pr_raw, "PR_RESPONSE_OBJECT")
-
-    full_number = _required_positive_int(
-        full_pr.get("number"),
-        "PR_NUMBER",
+    return github_full_pr_binding(
+        full_pr_raw,
+        expected_number=pr_number,
+        expected_head=head,
     )
-    require(full_number == pr_number, "PR_NUMBER_DRIFT")
-
-    state = _required_nonempty_str(
-        full_pr.get("state"),
-        "PR_STATE_STRING",
-    )
-    require(state == "open", "PR_NOT_OPEN")
-
-    draft = full_pr.get("draft")
-    require(isinstance(draft, bool), "PR_DRAFT_BOOL")
-    require(draft is True, "PR_NOT_DRAFT")
-
-    merged = full_pr.get("merged")
-    require(isinstance(merged, bool), "PR_MERGED_BOOL")
-    require(merged is False, "PR_ALREADY_MERGED")
-
-    head_obj = _required_object(
-        full_pr.get("head"),
-        "PR_HEAD_OBJECT",
-    )
-    head_sha = _required_sha(
-        head_obj.get("sha"),
-        "PR_HEAD_SHA",
-    )
-    require(head_sha == head, "PR_HEAD_DRIFT")
-    head_ref = _required_nonempty_str(
-        head_obj.get("ref"),
-        "PR_HEAD_REF",
-    )
-
-    base_obj = _required_object(
-        full_pr.get("base"),
-        "PR_BASE_OBJECT",
-    )
-    base_sha = _required_sha(
-        base_obj.get("sha"),
-        "PR_BASE_SHA",
-    )
-
-    return {
-        "number": pr_number,
-        "state": state,
-        "draft": draft,
-        "merged": merged,
-        "head_sha": head_sha,
-        "head_ref": head_ref,
-        "base_sha": base_sha,
-    }
 
 
 def _discover_tree_sha(repo: str, head: str, fetch=github_get) -> str:
-    commit_raw = fetch(
-        f"https://api.github.com/repos/{repo}/commits/{head}"
-    )
-    commit = _required_object(
-        commit_raw,
-        "COMMIT_RESPONSE_OBJECT",
-    )
-    commit_meta = _required_object(
-        commit.get("commit"),
-        "COMMIT_METADATA_OBJECT",
-    )
-    tree_obj = _required_object(
-        commit_meta.get("tree"),
-        "COMMIT_TREE_OBJECT",
-    )
-    return _required_sha(
-        tree_obj.get("sha"),
-        "COMMIT_TREE_SHA",
+    return github_commit_tree_sha(
+        fetch(f"https://api.github.com/repos/{repo}/commits/{head}")
     )
 
 
 def _discover_main_sha(repo: str, fetch=github_get) -> str:
-    main_raw = fetch(
-        f"https://api.github.com/repos/{repo}/branches/main"
-    )
-    main = _required_object(
-        main_raw,
-        "MAIN_RESPONSE_OBJECT",
-    )
-    main_commit = _required_object(
-        main.get("commit"),
-        "MAIN_COMMIT_OBJECT",
-    )
-    return _required_sha(
-        main_commit.get("sha"),
-        "MAIN_SHA",
+    return github_branch_commit_sha(
+        fetch(f"https://api.github.com/repos/{repo}/branches/main")
     )
 
 
@@ -232,8 +134,8 @@ def discover_request(
             and lane_result_comment_trusted(item, lane)
         ):
             duplicate_ids.append(
-                _required_positive_int(
-                    item.get("id"),
+                github_comment_id(
+                    item,
                     "RESULT_COMMENT_ID",
                 )
             )
