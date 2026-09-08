@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v21",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v20.json",
+  "status": "NEXTGEN5000_PRE_EXPANSION_987_NEW_RACES_COMPLETE_THIRD_BATCH_ACTIVE",
+  "branch_head_before_write": "5d60b237b00e22686800f60277e941102c50f7ab",
+  "inherited_findings": [
+    "88,200 3renhuku rule mass search: no rule positive in all six 250-race blocks",
+    "Q2 failure cluster does not show basic winner-ranking collapse",
+    "model-market mixture stress suggests roughly one-third model contribution near economic break-even",
+    "DEV2000 C and ECON_HOLDOUT1000 remain sealed"
+  ],
+  "nextgen5000": {
+    "locked_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "batch_2001_2500": {
+      "workflow_run_id": 34286882585,
+      "status": "SUCCESS",
+      "requested": 500,
+      "successful_pre_races": 493,
+      "rejected_fail_closed": 7,
+      "pre_rows": 3528,
+      "receipt": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_2001_2500_RECOVERY_RECEIPT_20260909_v1.json",
+      "preoutcome_freeze": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_BATCH2001_2500_PREOUTCOME_EVAL_FREEZE_20260909_v1.json"
+    },
+    "batch_2501_3000": {
+      "workflow_run_id": 34288111136,
+      "status": "SUCCESS",
+      "requested": 500,
+      "successful_pre_races": 494,
+      "rejected_fail_closed": 6,
+      "pre_rows": 3497,
+      "receipt": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_2501_3000_RECOVERY_RECEIPT_20260909_v1.json",
+      "preoutcome_freeze": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_BATCH2501_3000_PREOUTCOME_EVAL_FREEZE_20260909_v1.json"
+    },
+    "cumulative_beyond_DEV2000": {
+      "requested": 1000,
+      "successful_pre_races": 987,
+      "rejected_fail_closed": 13,
+      "pre_rows": 7025,
+      "outcomes_accessed_during_PRE": false
+    },
+    "batch_3001_3500": {
+      "workflow_run_id": 34288642577,
+      "status_at_checkpoint": "QUEUED",
+      "workflow": ".github/workflows/keirin-nextgen5000-pre-batch-3001-3500-v1.yml",
+      "outcome_access_during_pre": false
+    }
+  },
+  "owner_policy": {
+    "additional_historical_pre_collection_authorized_when_needed": true,
+    "PRE_first": true,
+    "outcome_isolation_until_prediction_and_rule_freeze": true,
+    "result_to_PRE_reconstruction": false
+  },
+  "today_20260909": {
+    "practical_prediction_changed": false,
+    "ticket_changed": false,
+    "answer_check_changed": false
+  },
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 89,
+    "formal_scientific_progress_percent": 60,
+    "profitability_proven": false
+  },
+  "formal_support": "1 rider / 2 PRE rows",
+  "formal_support_increment_now": 0,
+  "DEV2000_C_scoring_count": 0,
+  "ECON_HOLDOUT1000_opened": false,
+  "runtime": "OFF",
+  "main_mutation": false,
+  "owner_action_required_now": false
+}
