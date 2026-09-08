@@ -15,6 +15,7 @@ REQUIRED = [
     ROOT / "assignment.py",
     ROOT / "fanout.py",
     ROOT / "model_target.py",
+    ROOT / "capability.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -98,6 +99,7 @@ def validate() -> dict:
     assignment = (ROOT / "assignment.py").read_text()
     fanout = (ROOT / "fanout.py").read_text()
     model_target = (ROOT / "model_target.py").read_text()
+    capability = (ROOT / "capability.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -249,6 +251,27 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_CAPABILITY_POLICY_v1",
+        "validate_capability_policy",
+        "CAPABILITY_ASSIGNMENT_SHA256_MISMATCH",
+        "CAPABILITY_MODEL_TARGET_SHA256_MISMATCH",
+        "CAPABILITY_TOOLS_FORBIDDEN",
+        "CAPABILITY_PROVIDER_RETRIEVAL_FORBIDDEN",
+        "CAPABILITY_CODE_EXECUTION_FORBIDDEN",
+        "CAPABILITY_FILE_ACCESS_FORBIDDEN",
+        "CAPABILITY_PROVIDER_MEMORY_FORBIDDEN",
+        "CAPABILITY_FUNCTION_CALLING_FORBIDDEN",
+        "CAPABILITY_STRUCTURED_OUTPUT_JSON_REQUIRED",
+        "CAPABILITY_STREAMING_FORBIDDEN",
+        "capability_policy_sha256",
+    ):
+        record(
+            f"capability:{token}",
+            token in capability,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -270,8 +293,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 114,
-        f"{test_count} != 114",
+        test_count == 124,
+        f"{test_count} != 124",
     )
 
     return {

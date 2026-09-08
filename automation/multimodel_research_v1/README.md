@@ -128,6 +128,24 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Provider capability policy
+
+`MULTIVERSE_PROVIDER_CAPABILITY_POLICY_v1` binds the exact Assignment v1 and exact Model Target Policy v1 to the first-pilot capability ceiling.
+
+The first-pilot capability profile requires:
+- tools = NONE;
+- provider retrieval/search = NONE;
+- code execution = NONE;
+- file access = NONE;
+- provider memory = NONE;
+- function calling = NONE;
+- structured output = JSON_ONLY;
+- streaming = false.
+
+The policy is repository-only. It authorizes no provider call by itself.
+
+Any change to the bound model-target policy changes the capability binding and invalidates a stale capability policy.
+
 Fanout plan / batch completeness
 
 `MULTIVERSE_RESEARCH_FANOUT_PLAN_v1` is validated against the exact Assignment v1 objects it plans. It does not accept opaque hashes without assignment validation.

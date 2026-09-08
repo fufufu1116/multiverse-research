@@ -23,6 +23,10 @@ from automation.multimodel_research_v1.model_target import (
     validate_model_target_policy,
     validate_resolved_model_id,
 )
+from automation.multimodel_research_v1.capability import (
+    capability_policy_sha256,
+    validate_capability_policy,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -209,6 +213,36 @@ def model_target_policy(
         "experimental_allowed": False,
         "resolved_model_id_required": True,
         "stable_provider_api_required": True,
+        "nonauthority": nonauthority(),
+    }
+
+
+def capability_policy(
+    bound_task: dict,
+    bound_assignment: dict,
+    bound_model_target_policy: dict,
+) -> dict:
+    return {
+        "schema": "MULTIVERSE_PROVIDER_CAPABILITY_POLICY_v1",
+        "policy_id": "capability-policy-001",
+        "assignment_sha256": assignment_sha256(
+            bound_task,
+            bound_assignment,
+        ),
+        "model_target_policy_sha256":
+            model_target_policy_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+            ),
+        "tools": "NONE",
+        "provider_retrieval_search": "NONE",
+        "code_execution": "NONE",
+        "file_access": "NONE",
+        "provider_memory": "NONE",
+        "function_calling": "NONE",
+        "structured_output": "JSON_ONLY",
+        "streaming": False,
         "nonauthority": nonauthority(),
     }
 
@@ -2330,6 +2364,249 @@ class ContractTests(unittest.TestCase):
                 bound_task,
                 bound_assignment,
                 second,
+            ),
+        )
+
+
+    def test_115_valid_capability_policy(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        self.assertEqual(
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            ),
+            policy,
+        )
+
+    def test_116_capability_binds_exact_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        policy["assignment_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            )
+
+    def test_117_capability_binds_exact_model_target_policy(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        policy["model_target_policy_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            )
+
+    def test_118_capability_tools_are_forbidden(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        policy["tools"] = "ENABLED"
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            )
+
+    def test_119_capability_provider_retrieval_is_forbidden(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        policy["provider_retrieval_search"] = "ENABLED"
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            )
+
+    def test_120_capability_code_execution_is_forbidden(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        policy["code_execution"] = "ENABLED"
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            )
+
+    def test_121_capability_file_memory_function_surfaces_are_forbidden(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        for key in (
+            "file_access",
+            "provider_memory",
+            "function_calling",
+        ):
+            policy = capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+            )
+            policy[key] = "ENABLED"
+            with self.assertRaises(ResearchContractError):
+                validate_capability_policy(
+                    bound_task,
+                    bound_assignment,
+                    target_policy,
+                    policy,
+                )
+
+    def test_122_capability_requires_json_only_structured_output(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        policy["structured_output"] = "TEXT"
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            )
+
+    def test_123_capability_streaming_is_forbidden(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        policy["streaming"] = True
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                policy,
+            )
+
+    def test_124_model_target_change_invalidates_capability_policy(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        original_digest = capability_policy_sha256(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            policy,
+        )
+
+        changed_target = copy.deepcopy(target_policy)
+        changed_target[
+            "classification_evidence_sha256"
+        ] = "7" * 64
+
+        with self.assertRaises(ResearchContractError):
+            validate_capability_policy(
+                bound_task,
+                bound_assignment,
+                changed_target,
+                policy,
+            )
+
+        changed_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            changed_target,
+        )
+        self.assertNotEqual(
+            original_digest,
+            capability_policy_sha256(
+                bound_task,
+                bound_assignment,
+                changed_target,
+                changed_policy,
             ),
         )
 
