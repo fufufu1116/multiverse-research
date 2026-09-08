@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v17",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v16.json",
+  "status": "POST_CURRENT_DELTA_PRACTICAL_V2_FROZEN_AND_LONGSHOT_TAIL_DECOMPOSITION_COMPLETE",
+  "branch_head_before_write": "2d07119289caaa514890dc8f37454c3bfb701cac",
+  "included_receipts": [
+    "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_3RENHUKU_ODDS_TAIL_DECOMPOSITION_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v2.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v2.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_OWNER_PRACTICAL_CARD_20260909_v2.md"
+  ],
+  "preferred_future_components": {
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "multisite_final_racecard_normalizer": "tools/keirin_multisite_final_racecard_normalizer_v5.py",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v7.py",
+    "future_fit_membership_builder": "tools/keirin_future_fit_race_membership_builder_v1.py",
+    "low_dof_fitter": "tools/keirin_rider_circumference_low_dof_fitter_v1.py",
+    "formula_freezer": "tools/keirin_rider_circumference_formula_freezer_v2.py",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v3.py",
+    "model_ticket_comparison": "tools/keirin_model_ticket_comparison_v2.py",
+    "longshot_pipeline": "tools/keirin_longshot_shadow_pipeline_v2.py",
+    "longshot_validation": "tools/keirin_longshot_shadow_validation_gate_v2.py",
+    "longshot_evidence_sufficiency": "tools/keirin_longshot_evidence_sufficiency_v2.py",
+    "practical_odds_band_gate": "tools/keirin_practical_odds_band_purchase_gate_v1.py",
+    "burned_tail_decomposer": "tools/keirin_odds_cap_incremental_decomposer_v1.py"
+  },
+  "practical_v2_today": {
+    "status": "FROZEN_PRE_EVENT_EXPERIMENT",
+    "answer_check_changed": false,
+    "ticket_changed": false,
+    "probability_changed": false,
+    "stake_changed": false,
+    "no_hard_cap_rule_changed_after_freeze": false
+  },
+  "burned_ab_tail_finding": {
+    "comparable_rule_tail_above_20_bets": 27,
+    "incremental_return_units_approx": 0,
+    "incremental_roi_approx": -1,
+    "no_cap_combined_roi": 0.05,
+    "explanation": "No-cap +5% is carried by <=20x winners; the incremental >20x tail added approximately zero return.",
+    "future_promotion_status": "SHADOW_ONLY_PENDING_PROSPECTIVE_EVIDENCE"
+  },
+  "scientific_gate_change": false,
+  "formal_support": "1 rider / 2 PRE rows",
+  "support_increment_now": 0,
+  "calendar_block_gate": "UNKNOWN_PENDING_PR177",
+  "result_join_authorized_now": false,
+  "model_fit_authorized_now": false,
+  "C_opened": false,
+  "ECON_HOLDOUT1000_opened": false,
+  "owner_action_required_now": false,
+  "runtime": "OFF"
+}
