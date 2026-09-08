@@ -1,0 +1,54 @@
+{
+  "record": "KEIRIN_CTC_0914_0915_PREFLIGHT_EVIDENCE_20260908_v2",
+  "observed_at_jst": "2026-09-08T22:02:18+09:00",
+  "status": "FRESH_SCHEDULE_INDEX_CONFIRMED_DETAIL_BODY_CACHE_MISS_NONBLOCKING",
+  "source": "CTC official schedule index",
+  "schedule_url": "https://ctc.gr.jp/schedule/",
+  "official_schedule_page_statement": "This page exposes scheduled riders and rider performance information.",
+  "confirmed_events": [
+    {
+      "venue": "青森",
+      "track_code": 12,
+      "date_from": "2026-09-14",
+      "date_to": "2026-09-16",
+      "detail_id": "1220260914",
+      "detail_url": "https://ctc.gr.jp/schedule/detail.php?id=1220260914"
+    },
+    {
+      "venue": "伊東",
+      "track_code": 37,
+      "date_from": "2026-09-14",
+      "date_to": "2026-09-16",
+      "detail_id": "3720260914",
+      "detail_url": "https://ctc.gr.jp/schedule/detail.php?id=3720260914"
+    },
+    {
+      "venue": "防府",
+      "track_code": 63,
+      "date_from": "2026-09-15",
+      "date_to": "2026-09-17",
+      "detail_id": "6320260915",
+      "detail_url": "https://ctc.gr.jp/schedule/detail.php?id=6320260915"
+    }
+  ],
+  "fresh_web_observation": {
+    "schedule_index_status": "PASS",
+    "relevant_lines": "CTC schedule index lines 117-121 contain the three target events.",
+    "detail_link_resolution": "PASS",
+    "detail_body_fetch": "CACHE_MISS_IN_CURRENT_WEB_FETCHER",
+    "interpretation": "Do not treat cache miss as evidence that CTC data is absent."
+  },
+  "usage_policy": {
+    "event_and_roster_preflight": "ACCEPTED",
+    "exact_cutoff_timestamp_required": false,
+    "final_formal_support_requires_final_day1_assignment": true,
+    "result_page_reconstruction": false
+  },
+  "existing_roster_evidence": {
+    "aomori_target_matches": "4/4 from prior v1 evidence",
+    "ito": "continue preflight when detail body is retrievable",
+    "hofu": "continue preflight when detail body is retrievable"
+  },
+  "formal_support_increment_now": 0,
+  "runtime": false
+}
