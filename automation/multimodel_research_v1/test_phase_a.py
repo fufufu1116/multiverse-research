@@ -63,6 +63,10 @@ from automation.multimodel_research_v1.transport_binding import (
     transport_binding_sha256,
     validate_transport_binding,
 )
+from automation.multimodel_research_v1.observation_binding import (
+    provider_observation_binding_sha256,
+    validate_provider_observation_binding,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -6877,6 +6881,1202 @@ class ContractTests(unittest.TestCase):
             )
         self.assertIsInstance(first, str)
         self.assertEqual(len(first), 64)
+
+
+    def test_221_valid_gemini_observation_binding(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="gemini-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        binding = validate_provider_observation_binding(
+            provider="GOOGLE_GEMINI",
+            observation=observation,
+            task=bound_task,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            termination_record=record,
+            result=value,
+            receipt=receipt,
+        )
+        self.assertEqual(
+            binding["provider"],
+            "GOOGLE_GEMINI",
+        )
+
+    def test_222_valid_claude_observation_binding(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_claude_messages_response(
+            claude_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="claude-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        binding = validate_provider_observation_binding(
+            provider="ANTHROPIC_CLAUDE",
+            observation=observation,
+            task=bound_task,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            termination_record=record,
+            result=value,
+            receipt=receipt,
+        )
+        self.assertEqual(
+            binding["provider"],
+            "ANTHROPIC_CLAUDE",
+        )
+
+    def test_223_observation_normalized_state_must_match_termination(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="gemini-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        observation["normalized_state"] = "PROVIDER_EMPTY"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_observation_binding(
+                provider="GOOGLE_GEMINI",
+                observation=observation,
+                task=bound_task,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                termination_record=record,
+                result=value,
+                receipt=receipt,
+            )
+
+    def test_224_observation_response_id_must_match_records(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_claude_messages_response(
+            claude_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="claude-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        observation["provider_response_id"] = "other-response"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_observation_binding(
+                provider="ANTHROPIC_CLAUDE",
+                observation=observation,
+                task=bound_task,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                termination_record=record,
+                result=value,
+                receipt=receipt,
+            )
+
+    def test_225_observation_usage_counts_must_match_termination(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="gemini-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        observation["input_tokens"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_observation_binding(
+                provider="GOOGLE_GEMINI",
+                observation=observation,
+                task=bound_task,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                termination_record=record,
+                result=value,
+                receipt=receipt,
+            )
+
+    def test_226_observation_usage_digest_must_match_termination(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_claude_messages_response(
+            claude_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="claude-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        observation["usage_metadata_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_observation_binding(
+                provider="ANTHROPIC_CLAUDE",
+                observation=observation,
+                task=bound_task,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                termination_record=record,
+                result=value,
+                receipt=receipt,
+            )
+
+    def test_227_observation_response_digest_must_match_receipt(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="gemini-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        observation["provider_response_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_observation_binding(
+                provider="GOOGLE_GEMINI",
+                observation=observation,
+                task=bound_task,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                termination_record=record,
+                result=value,
+                receipt=receipt,
+            )
+
+    def test_228_observation_model_must_match_receipt(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_claude_messages_response(
+            claude_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="claude-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        observation["observed_model_id"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_observation_binding(
+                provider="ANTHROPIC_CLAUDE",
+                observation=observation,
+                task=bound_task,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                termination_record=record,
+                result=value,
+                receipt=receipt,
+            )
+
+    def test_229_observation_provider_schema_must_match(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="gemini-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        with self.assertRaises(ResearchContractError):
+            validate_provider_observation_binding(
+                provider="ANTHROPIC_CLAUDE",
+                observation=observation,
+                task=bound_task,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                termination_record=record,
+                result=value,
+                receipt=receipt,
+            )
+
+    def test_230_live_attested_gemini_chain_is_exactly_bound(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="gemini-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        digest = provider_observation_binding_sha256(
+            provider="GOOGLE_GEMINI",
+            observation=observation,
+            task=bound_task,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            termination_record=record,
+            result=value,
+            receipt=receipt,
+        )
+        self.assertEqual(len(digest), 64)
+
+    def test_231_live_attested_claude_chain_is_exactly_bound(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_claude_messages_response(
+            claude_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="claude-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        digest = provider_observation_binding_sha256(
+            provider="ANTHROPIC_CLAUDE",
+            observation=observation,
+            task=bound_task,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            termination_record=record,
+            result=value,
+            receipt=receipt,
+        )
+        self.assertEqual(len(digest), 64)
+
+    def test_232_unverified_receipt_must_preserve_observed_model_exactly(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = observation[
+            "provider_response_id"
+        ]
+        record["normalized_state"] = observation[
+            "normalized_state"
+        ]
+        record["input_tokens"] = observation["input_tokens"]
+        record["output_tokens"] = observation["output_tokens"]
+        record["usage_metadata_sha256"] = observation[
+            "usage_metadata_sha256"
+        ]
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="gemini-observation-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id=observation["observed_model_id"],
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            attestation_state="LIVE_PROVIDER_ID_UNVERIFIED",
+            observed_model_id="model-other",
+        )
+        receipt["provider_response_sha256"] = observation[
+            "provider_response_sha256"
+        ]
+        observation["observed_model_id"] = "model-other"
+        binding = validate_provider_observation_binding(
+            provider="GOOGLE_GEMINI",
+            observation=observation,
+            task=bound_task,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            termination_record=record,
+            result=value,
+            receipt=receipt,
+        )
+        self.assertEqual(
+            binding["observed_model_id"],
+            "model-other",
+        )
 
 
 if __name__ == "__main__":

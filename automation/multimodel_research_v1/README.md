@@ -128,6 +128,24 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Provider observation binding
+
+`MULTIVERSE_PROVIDER_OBSERVATION_BINDING_v1` closes the receive-side repository gap between a provider-specific parsed observation and the durable termination/receipt records.
+
+For Gemini and Claude it requires exact equality for:
+- provider response ID;
+- normalized termination state;
+- input/output usage counts;
+- exact usage metadata SHA256;
+- exact provider response SHA256;
+- exact observed model ID.
+
+The binding first validates the termination record and execution receipt, then proves that the provider parser observation is the same execution represented by those durable records.
+
+For `LIVE_PROVIDER_ID_UNVERIFIED`, model drift may be preserved, but the observation and receipt must still carry the same exact observed model ID. Unverified does not mean unbound.
+
+This layer performs no provider call and grants no authority.
+
 Provider transport binding
 
 `MULTIVERSE_PROVIDER_TRANSPORT_BINDING_v1` closes the repository-side gap between the abstract request envelope and the exact provider-specific payload.

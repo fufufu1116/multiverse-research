@@ -24,6 +24,7 @@ REQUIRED = [
     ROOT / "gemini_adapter.py",
     ROOT / "claude_adapter.py",
     ROOT / "transport_binding.py",
+    ROOT / "observation_binding.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -116,6 +117,7 @@ def validate() -> dict:
     gemini_adapter = (ROOT / "gemini_adapter.py").read_text()
     claude_adapter = (ROOT / "claude_adapter.py").read_text()
     transport_binding = (ROOT / "transport_binding.py").read_text()
+    observation_binding = (ROOT / "observation_binding.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -439,6 +441,25 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_OBSERVATION_BINDING_v1",
+        "validate_provider_observation_binding",
+        "OBSERVATION_RESPONSE_ID_TERMINATION_MISMATCH",
+        "OBSERVATION_RESPONSE_ID_RECEIPT_MISMATCH",
+        "OBSERVATION_NORMALIZED_STATE_MISMATCH",
+        "OBSERVATION_INPUT_TOKENS_MISMATCH",
+        "OBSERVATION_OUTPUT_TOKENS_MISMATCH",
+        "OBSERVATION_USAGE_SHA256_MISMATCH",
+        "OBSERVATION_RESPONSE_SHA256_MISMATCH",
+        "OBSERVATION_MODEL_ID_RECEIPT_MISMATCH",
+        "provider_observation_binding_sha256",
+    ):
+        record(
+            f"observation_binding:{token}",
+            token in observation_binding,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -460,8 +481,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 220,
-        f"{test_count} != 220",
+        test_count == 232,
+        f"{test_count} != 232",
     )
 
     return {
