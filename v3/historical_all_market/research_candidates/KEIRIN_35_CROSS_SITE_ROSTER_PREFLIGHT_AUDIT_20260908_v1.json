@@ -1,0 +1,136 @@
+{
+  "record": "KEIRIN_35_CROSS_SITE_ROSTER_PREFLIGHT_AUDIT_20260908_v1",
+  "observed_at_jst": "2026-09-08T22:06:00+09:00",
+  "status": "THREE_SITE_35_OF_35_ROSTER_CONVERGENCE_OFFICIAL_EVENT_SCHEDULE_CONFIRMED_FINAL_RACECARD_PENDING",
+  "purpose": "Prospectively confirm that the fixed 35-rider support-conversion front remains scheduled before final Day1 race assignments publish.",
+  "target_events": [
+    {
+      "venue": "伊東",
+      "date": "2026-09-14",
+      "target_count": 11,
+      "target_riders": [
+        "西村 光太",
+        "脇本 勇希",
+        "宿口 潤平",
+        "竹内 雄作",
+        "青木 瑞樹",
+        "嵯峨 昇喜郎",
+        "阿部 力也",
+        "塩島 嵩一朗",
+        "緒方 将樹",
+        "谷津田 将吾",
+        "熊崎 麻人"
+      ],
+      "ctc_match_count": 11,
+      "kdreams_match_count": 11,
+      "winticket_match_count": 11,
+      "final_race_assignment_status": "NOT_PUBLISHED",
+      "note": "WINTICKET explicitly states the race combinations are not yet decided."
+    },
+    {
+      "venue": "青森",
+      "date": "2026-09-14",
+      "target_count": 4,
+      "target_riders": [
+        "田頭 寛之",
+        "加賀美 智史",
+        "山本 天平",
+        "亀谷 隆一"
+      ],
+      "ctc_match_count": 4,
+      "kdreams_match_count": 4,
+      "winticket_match_count": 4,
+      "final_race_assignment_status": "NOT_PUBLISHED",
+      "note": "WINTICKET explicitly states the race combinations are not yet decided."
+    },
+    {
+      "venue": "防府",
+      "date": "2026-09-15",
+      "target_count": 20,
+      "target_riders": [
+        "中村 龍吉",
+        "櫻井 学",
+        "成清 貴之",
+        "張野 幸聖",
+        "中石 昌芳",
+        "岡崎 陸登",
+        "阿竹 智史",
+        "箱田 優樹",
+        "小野 大介",
+        "黒沢 征治",
+        "永井 哉多",
+        "大塚 玲",
+        "鈴木 伸之",
+        "不破 将登",
+        "松岡 健介",
+        "前反 祐一郎",
+        "佐々木 翔一",
+        "田中 陽平",
+        "谷口 友真",
+        "大西 健士"
+      ],
+      "ctc_match_count": 20,
+      "kdreams_match_count": 20,
+      "winticket_match_count": 20,
+      "final_race_assignment_status": "NOT_OBSERVED_ON_CHECKED_PAGES",
+      "note": "WINTICKET and KDreams expose the event/racecard shell, but no checked source supplied final rider-to-race/car assignments yet."
+    }
+  ],
+  "source_matrix": {
+    "ctc": {
+      "role": "primary prospective schedule/roster source",
+      "schedule_url": "https://ctc.gr.jp/schedule/",
+      "ito": "https://ctc.gr.jp/schedule/detail.php?id=3720260914",
+      "aomori": "https://ctc.gr.jp/schedule/detail.php?id=1220260914",
+      "hofu": "https://ctc.gr.jp/schedule/detail.php?id=6320260915",
+      "target_match_total": "35/35"
+    },
+    "rakuten_kdreams": {
+      "role": "independent scheduled-rider corroboration",
+      "ito": "https://keirin.kdreams.jp/ito/assen/3720260914/",
+      "aomori": "https://keirin.kdreams.jp/aomori/assen/1220260914/",
+      "hofu": "https://keirin.kdreams.jp/hofu/assen/6320260915/",
+      "target_match_total": "35/35"
+    },
+    "winticket": {
+      "role": "independent scheduled-rider and racecard-publication-state corroboration",
+      "ito_cyclists": "https://www.winticket.jp/keirin/ito/racecard/2026091437/cyclists",
+      "ito_races": "https://www.winticket.jp/keirin/ito/racecard/2026091437/races",
+      "aomori_cyclists": "https://www.winticket.jp/keirin/aomori/racecard/2026091412/cyclists",
+      "aomori_races": "https://www.winticket.jp/keirin/aomori/racecard/2026091412/races",
+      "hofu_cyclists": "https://www.winticket.jp/keirin/hofu/racecard/2026091563/cyclists",
+      "hofu_racecard_index": "https://www.winticket.jp/keirin/hofu/racecard",
+      "target_match_total": "35/35"
+    },
+    "keirin_jp": {
+      "role": "official event-schedule corroboration",
+      "url": "https://www.keirin.jp/pc/raceschedule",
+      "confirmed": [
+        "青森 2026-09-14〜09-16",
+        "伊東 2026-09-14〜09-16",
+        "防府 2026-09-15〜09-17"
+      ]
+    },
+    "chariloto": {
+      "role": "additional event-date corroboration only; not used for roster or PRE formalization",
+      "ito": "https://www.chariloto.com/keirin/results/37?year=2026",
+      "aomori": "https://www.chariloto.com/keirin/results/12",
+      "hofu": "https://www.chariloto.com/keirin/results/63"
+    }
+  },
+  "conclusion": {
+    "scheduled_rider_convergence": "35/35 across CTC + KDreams + WINTICKET",
+    "event_existence": "confirmed by CTC + KEIRIN.JP + WINTICKET; additionally visible on Chariloto event indexes",
+    "final_day1_race_assignment_ready_now": false,
+    "formal_support_increment_now": 0,
+    "operational_effect": "Do not rescan candidate identity/roster from scratch. Focus future checks on withdrawals/substitutions and publication of final Day1 race/car assignments."
+  },
+  "boundaries": {
+    "result_pages_used_for_pre_reconstruction": false,
+    "payouts_used": false,
+    "live_odds_used": false,
+    "predictions_used": false,
+    "human_comments_used": false,
+    "runtime": false
+  }
+}
