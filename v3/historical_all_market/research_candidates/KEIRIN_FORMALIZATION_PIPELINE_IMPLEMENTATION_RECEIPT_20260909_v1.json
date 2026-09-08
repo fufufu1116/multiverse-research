@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_FORMALIZATION_PIPELINE_IMPLEMENTATION_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "IMPLEMENTED_ONE_SHOT_LOCKED35_NORMALIZE_V5_FINALIZE_V7_PIPELINE",
+  "implementation": {
+    "pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "selftest_spec": "tools/keirin_35_formalization_pipeline_selftest_v1.py",
+    "normalizer": "tools/keirin_multisite_final_racecard_normalizer_v5.py",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v7.py"
+  },
+  "purpose": "Reduce 2026-09-14/15 manual work to supplying prospective six-source Day1 observations once; the pipeline validates the fixed 35 bindings, requires the canonical input shell to be pristine, normalizes source observations, finalizes in locked priority order, and stops at 29 new PASS.",
+  "locked_inputs": [
+    "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_35_FINAL_DAY1_PRE_INPUT_MANIFEST_20260908_v1.json"
+  ],
+  "hardening": [
+    "35 exact candidates / priorities 1..35 checked before normalization",
+    "order/matrix/shell registration binding checked",
+    "canonical shell must be pristine; stale populated final-assignment fields fail closed",
+    "six trusted source families remain hostname-bound through normalizer v5",
+    "same-source contradiction and cross-source contradiction remain fail closed",
+    "next-day-or-later post-event capture remains blocked through finalizer v7",
+    "fixed 015018 baseline and 29-new-pass stop semantics preserved"
+  ],
+  "selftest_spec_cases": 18,
+  "direct_selftest_execution": false,
+  "direct_execution_blocker": "isolated container cannot resolve github.com; shared workflow rerun is not authorized from this lane",
+  "shared_ci_rerun": false,
+  "automatic_auditor_status_on_head": "FAILURE_UNCLASSIFIED_NO_LOG",
+  "formal_support": "1 rider / 2 PRE rows",
+  "support_increment_now": 0,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
