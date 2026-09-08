@@ -1,0 +1,62 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v19",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v18.json",
+  "status": "DEV2000_RECOVERED_AB_REPLAY_EXPANDED_CONDITIONAL_CHALLENGER_FROZEN",
+  "branch_head_before_write": "a307dc2117920f981c561c12121dc7aa67cadae7",
+  "new_artifacts": [
+    "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_DRIVE_RECOVERY_AND_AB_REPLAY_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_CONDITIONAL_TICKET_REPLAY_FINDINGS_20260909_v1.json",
+    "tools/keirin_dev2000_conditional_replay_v1.py",
+    "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_GIRLS_MARKET_REPLAY_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_CONDITIONAL_SHADOW_CANDIDATE_FREEZE_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_VIRTUAL_FUTURE_REPLAY_PROTOCOL_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_DAY_CLUSTER_BOOTSTRAP_STABILITY_20260909_v1.json"
+  ],
+  "dev2000_recovery": {
+    "exact_historical_hash_matches": [
+      "price",
+      "probability",
+      "universe",
+      "settlement_A",
+      "settlement_B"
+    ],
+    "A_races": 1000,
+    "B_races": 500,
+    "C_races": 500,
+    "C_scoring_count": 0,
+    "C_settlement_downloaded": false
+  },
+  "current_best_interpretation": {
+    "primary_existing_candidate": "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+    "new_future_challenger": "NON_GIRLS_GAP_LT5_3RENHUKU_POOL3_EV10_CAP20_MAX2",
+    "challenger_burned_AB": {
+      "bets": 124,
+      "tickets": 146,
+      "roi": 0.2897260274,
+      "hit_rate": 0.1290322581,
+      "positive_week_fraction": 0.8
+    },
+    "challenger_bootstrap_ci95": [
+      -0.3107993605,
+      0.8685350493
+    ],
+    "three_rentan_third_spread": "NOT_PROMOTED; tested family had zero both-positive A/B specs",
+    "girls": "WINNER_RANKING_STRONG_BUT_NO_STABLE_SIMPLE_PROFIT_RULE"
+  },
+  "owner_hypotheses": {
+    "final_stage": "NOT_DIRECTLY_TESTABLE_FROM_CURRENT_DEV2000_PRE; add objective race_stage to new PRE",
+    "solo_rider": "NOT_DIRECTLY_TESTABLE_FROM_CURRENT_DEV2000_PRE; add objective line partition/solo_count",
+    "girls": "SUPPORTED_AS_HIGHER_RANKING_ACCURACY_IN_BURNED_A_AND_B; economics not supported",
+    "head_clear_companions_scatter": "SUPPORTED_DIAGNOSTICALLY_BY_SCORE_GAP; high top-score gap improves winner accuracy while exact top3 set rate falls"
+  },
+  "today_answer_check_changed": false,
+  "today_ticket_changed": false,
+  "formal_scientific_progress_percent": 60,
+  "formal_support": "1 rider / 2 PRE rows",
+  "scientific_gate_change": false,
+  "profitability_proven": false,
+  "runtime": "OFF",
+  "main_mutation": false
+}
