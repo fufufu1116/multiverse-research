@@ -59,6 +59,10 @@ from automation.multimodel_research_v1.claude_adapter import (
     parse_claude_messages_response,
     render_claude_messages_request,
 )
+from automation.multimodel_research_v1.transport_binding import (
+    transport_binding_sha256,
+    validate_transport_binding,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -6285,6 +6289,594 @@ class ContractTests(unittest.TestCase):
             observation["usage_metadata_sha256"],
             sha256_json(response["usage"]),
         )
+
+
+    def test_210_valid_gemini_transport_binding(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        binding = validate_transport_binding(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            schema,
+            render,
+        )
+        self.assertEqual(
+            binding["provider"],
+            "GOOGLE_GEMINI",
+        )
+        self.assertEqual(
+            binding["outbound_payload_sha256"],
+            sha256_json(render["body"]),
+        )
+
+    def test_211_valid_claude_transport_binding(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        binding = validate_transport_binding(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            schema,
+            render,
+        )
+        self.assertEqual(
+            binding["provider"],
+            "ANTHROPIC_CLAUDE",
+        )
+
+    def test_212_transport_binding_rejects_payload_digest_mismatch(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        envelope["outbound_payload_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_transport_binding(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                schema,
+                render,
+            )
+
+    def test_213_transport_binding_rejects_tampered_render(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        render["body"]["max_tokens"] = 999
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_transport_binding(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                schema,
+                render,
+            )
+
+    def test_214_transport_binding_rejects_unknown_provider(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        render["provider"] = "UNKNOWN_PROVIDER"
+        with self.assertRaises(ResearchContractError):
+            validate_transport_binding(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                schema,
+                render,
+            )
+
+    def test_215_cross_provider_canonical_prompt_bytes_match(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        gemini_assignment = assignment(
+            bound_task,
+            assignment_id="cross-gemini",
+            provider="google-gemini",
+            model="gemini-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        claude_assignment = assignment(
+            bound_task,
+            assignment_id="cross-claude",
+            provider="anthropic-claude",
+            model="claude-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        gemini_target = model_target_policy(
+            bound_task,
+            gemini_assignment,
+        )
+        claude_target = model_target_policy(
+            bound_task,
+            claude_assignment,
+        )
+        gemini_cap = capability_policy(
+            bound_task,
+            gemini_assignment,
+            gemini_target,
+        )
+        claude_cap = capability_policy(
+            bound_task,
+            claude_assignment,
+            claude_target,
+        )
+        gemini_render = render_gemini_interactions_v1(
+            bound_task,
+            gemini_assignment,
+            gemini_target,
+            gemini_cap,
+            prompt,
+            schema,
+        )
+        claude_render = render_claude_messages_request(
+            bound_task,
+            claude_assignment,
+            claude_target,
+            claude_cap,
+            prompt,
+            schema,
+        )
+        self.assertEqual(
+            gemini_render["body"]["input"],
+            claude_render["body"]["messages"][0]["content"],
+        )
+
+    def test_216_cross_provider_response_schema_matches_exactly(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        gemini_assignment = assignment(
+            bound_task,
+            assignment_id="schema-gemini",
+            provider="google-gemini",
+            model="gemini-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        claude_assignment = assignment(
+            bound_task,
+            assignment_id="schema-claude",
+            provider="anthropic-claude",
+            model="claude-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        gt = model_target_policy(bound_task, gemini_assignment)
+        ct = model_target_policy(bound_task, claude_assignment)
+        gc = capability_policy(bound_task, gemini_assignment, gt)
+        cc = capability_policy(bound_task, claude_assignment, ct)
+        gr = render_gemini_interactions_v1(
+            bound_task, gemini_assignment, gt, gc, prompt, schema
+        )
+        cr = render_claude_messages_request(
+            bound_task, claude_assignment, ct, cc, prompt, schema
+        )
+        self.assertEqual(
+            gr["body"]["response_format"]["schema"],
+            cr["body"]["output_config"]["format"]["schema"],
+        )
+
+    def test_217_cross_provider_both_are_nonstreaming_tool_free(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        ga = assignment(
+            bound_task,
+            assignment_id="policy-gemini",
+            provider="google-gemini",
+            model="gemini-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        ca = assignment(
+            bound_task,
+            assignment_id="policy-claude",
+            provider="anthropic-claude",
+            model="claude-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        gt = model_target_policy(bound_task, ga)
+        ct = model_target_policy(bound_task, ca)
+        gc = capability_policy(bound_task, ga, gt)
+        cc = capability_policy(bound_task, ca, ct)
+        gr = render_gemini_interactions_v1(
+            bound_task, ga, gt, gc, prompt, schema
+        )
+        cr = render_claude_messages_request(
+            bound_task, ca, ct, cc, prompt, schema
+        )
+        self.assertIs(gr["body"]["stream"], False)
+        self.assertIs(cr["body"]["stream"], False)
+        self.assertNotIn("tools", gr["body"])
+        self.assertNotIn("tools", cr["body"])
+
+    def test_218_provider_render_sha_differs_while_prompt_is_same(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        ga = assignment(
+            bound_task,
+            assignment_id="digest-gemini",
+            provider="google-gemini",
+            model="gemini-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        ca = assignment(
+            bound_task,
+            assignment_id="digest-claude",
+            provider="anthropic-claude",
+            model="claude-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        gt = model_target_policy(bound_task, ga)
+        ct = model_target_policy(bound_task, ca)
+        gc = capability_policy(bound_task, ga, gt)
+        cc = capability_policy(bound_task, ca, ct)
+        gr = render_gemini_interactions_v1(
+            bound_task, ga, gt, gc, prompt, schema
+        )
+        cr = render_claude_messages_request(
+            bound_task, ca, ct, cc, prompt, schema
+        )
+        self.assertNotEqual(
+            sha256_json(gr),
+            sha256_json(cr),
+        )
+        self.assertEqual(
+            gr["body"]["input"],
+            cr["body"]["messages"][0]["content"],
+        )
+
+    def test_219_schema_change_invalidates_stale_transport_binding(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        changed_schema = copy.deepcopy(schema)
+        changed_schema["properties"]["extra"] = {
+            "type": "string"
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_transport_binding(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                changed_schema,
+                render,
+            )
+
+    def test_220_transport_binding_digest_changes_with_exact_envelope(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        first = transport_binding_sha256(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            schema,
+            render,
+        )
+        changed_render = copy.deepcopy(render)
+        changed_render["body"]["messages"][0]["content"] = (
+            changed_render["body"]["messages"][0]["content"] + " "
+        )
+        changed_envelope = copy.deepcopy(envelope)
+        changed_envelope["outbound_payload_sha256"] = sha256_json(
+            changed_render["body"]
+        )
+        with self.assertRaises(ResearchContractError):
+            transport_binding_sha256(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                changed_envelope,
+                schema,
+                changed_render,
+            )
+        self.assertIsInstance(first, str)
+        self.assertEqual(len(first), 64)
 
 
 if __name__ == "__main__":

@@ -128,6 +128,24 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Provider transport binding
+
+`MULTIVERSE_PROVIDER_TRANSPORT_BINDING_v1` closes the repository-side gap between the abstract request envelope and the exact provider-specific payload.
+
+For Gemini and Claude it:
+- re-renders the exact provider request from the validated task/assignment/policies/prompt/schema;
+- requires the supplied render object to match that exact renderer output;
+- requires no credential material in the render;
+- computes SHA256 over the exact provider request body;
+- requires that SHA256 to equal `REQUEST_ENVELOPE.outbound_payload_sha256`;
+- binds the exact request-envelope SHA and exact render SHA.
+
+This lets the repository prove that the payload sealed in the request envelope is exactly the payload prepared for provider transport, without performing the transport itself.
+
+Cross-provider tests additionally prove that Gemini and Claude receive the same exact canonical provider-neutral prompt bytes and the same exact response schema, even though their API wrappers differ.
+
+Provider transport binding still authorizes no network call or credential use.
+
 Claude Messages offline transport adapter
 
 The repository also includes a **credential-free, network-free renderer/parser** for Anthropic Claude Messages.

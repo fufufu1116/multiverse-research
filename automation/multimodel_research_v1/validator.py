@@ -23,6 +23,7 @@ REQUIRED = [
     ROOT / "smoke_profile.py",
     ROOT / "gemini_adapter.py",
     ROOT / "claude_adapter.py",
+    ROOT / "transport_binding.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -114,6 +115,7 @@ def validate() -> dict:
     smoke_profile = (ROOT / "smoke_profile.py").read_text()
     gemini_adapter = (ROOT / "gemini_adapter.py").read_text()
     claude_adapter = (ROOT / "claude_adapter.py").read_text()
+    transport_binding = (ROOT / "transport_binding.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -421,6 +423,22 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_TRANSPORT_BINDING_v1",
+        "validate_transport_binding",
+        "TRANSPORT_RENDER_EXACT_MISMATCH",
+        "TRANSPORT_CREDENTIAL_MATERIAL_FORBIDDEN",
+        "TRANSPORT_OUTBOUND_PAYLOAD_SHA256_MISMATCH",
+        "transport_binding_sha256",
+        "GOOGLE_GEMINI",
+        "ANTHROPIC_CLAUDE",
+    ):
+        record(
+            f"transport_binding:{token}",
+            token in transport_binding,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -442,8 +460,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 209,
-        f"{test_count} != 209",
+        test_count == 220,
+        f"{test_count} != 220",
     )
 
     return {
