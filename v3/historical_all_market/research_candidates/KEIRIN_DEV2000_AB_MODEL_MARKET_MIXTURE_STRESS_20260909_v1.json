@@ -1,0 +1,102 @@
+{
+  "record": "KEIRIN_DEV2000_AB_MODEL_MARKET_MIXTURE_STRESS_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "MONTE_CARLO_STRESS_COMPLETE_EDGE_DEPENDS_ON_NONTRIVIAL_MODEL_TRUST",
+  "simulation": {
+    "worlds": "For each selected race, exact 3renhuku outcomes are sampled as mutually exclusive categories. True selected-ticket probabilities are mixtures of normalized market-implied probability and conservative min(A,B) model probability.",
+    "repetitions_per_mix_point": 50000,
+    "mix_lambda_definition": "p_true = (1-lambda)*p_market_normalized + lambda*p_conservative_model",
+    "lambda_grid": [
+      0,
+      0.25,
+      0.33,
+      0.4,
+      0.5,
+      0.75,
+      1
+    ],
+    "closing_odds_role": "hypothetical payout/value layer only",
+    "C_scoring_count": 0
+  },
+  "break_even_model_weight_approx": {
+    "center_1pt": 0.328,
+    "conditional_max2": 0.325,
+    "broad_non_girls_max2": 0.332
+  },
+  "conditional_max2_examples": [
+    {
+      "lambda": 0,
+      "mean_roi": -0.2572,
+      "probability_total_roi_positive": 0.1469,
+      "probability_all_6_blocks_positive": 0.00054
+    },
+    {
+      "lambda": 0.25,
+      "mean_roi": -0.0599,
+      "probability_total_roi_positive": 0.3951,
+      "probability_all_6_blocks_positive": 0.00516
+    },
+    {
+      "lambda": 0.33,
+      "mean_roi": 0.0036,
+      "probability_total_roi_positive": 0.4856,
+      "probability_all_6_blocks_positive": 0.00872
+    },
+    {
+      "lambda": 0.4,
+      "mean_roi": 0.0603,
+      "probability_total_roi_positive": 0.5659,
+      "probability_all_6_blocks_positive": 0.01252
+    },
+    {
+      "lambda": 0.5,
+      "mean_roi": 0.1398,
+      "probability_total_roi_positive": 0.6648,
+      "probability_all_6_blocks_positive": 0.02168
+    },
+    {
+      "lambda": 0.75,
+      "mean_roi": 0.337,
+      "probability_total_roi_positive": 0.8538,
+      "probability_all_6_blocks_positive": 0.05998
+    },
+    {
+      "lambda": 1,
+      "mean_roi": 0.5352,
+      "probability_total_roi_positive": 0.9492,
+      "probability_all_6_blocks_positive": 0.13046
+    }
+  ],
+  "broad_non_girls_max2_examples": [
+    {
+      "lambda": 0.33,
+      "mean_roi": -0.0019,
+      "probability_total_roi_positive": 0.4813,
+      "probability_all_6_blocks_positive": 0.00918
+    },
+    {
+      "lambda": 0.5,
+      "mean_roi": 0.1289,
+      "probability_total_roi_positive": 0.6831,
+      "probability_all_6_blocks_positive": 0.025
+    },
+    {
+      "lambda": 1,
+      "mean_roi": 0.516,
+      "probability_total_roi_positive": 0.9691,
+      "probability_all_6_blocks_positive": 0.17824
+    }
+  ],
+  "key_interpretation": [
+    "The apparent edge is not robust if the market is almost entirely right and the model contributes less than about one-third of the true probability signal.",
+    "Even if conservative model probabilities were exactly right, requiring every 250-race block to be profitable has low power: all-six-positive probability is only about 13% for the conditional candidate and 18% for the broader candidate.",
+    "Therefore 0/88,200 six-block winners is a serious warning against claiming a stable edge, but six-of-six positivity should not be the sole pass criterion.",
+    "Future validation should combine larger sample size, calibration, drawdown, concentration and block-bootstrap evidence."
+  ],
+  "hard_boundaries": {
+    "profitability_proven": false,
+    "C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "runtime": false
+  }
+}
