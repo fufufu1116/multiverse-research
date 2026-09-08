@@ -1,0 +1,154 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v103",
+  "date_jst": "2026-09-08",
+  "status": "CTC_PREFLIGHT_CONFIRMED_ALL_TARGET_EVENTS_AOMORI_4_OF_4_ROSTER_MATCH_ONE_SHOT_CUTOFF_GUARD_READY_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v102.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "d459683722de9f6461c81fcd47e348ec75c82db4",
+    "governance": "#93 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "canonical_main_observed": "ed9be13f8d1c5d6fcc7ab07761c0dfdc4255df98",
+    "pr177": {
+      "state": "OPEN_DRAFT",
+      "head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+      "latest_lab_request_comment": 5573150058,
+      "exact_current_request": false,
+      "progression_owner": "SOLE_MULTIVERSE_CONTROL_COMMANDER_PER_T2_5",
+      "keirin_action": "DO_NOT_PUBLISH_COMPETING_REBIND_REQUEST"
+    }
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_new_riders": 29,
+    "remaining_new_rows": 58,
+    "candidate_count": 35,
+    "failure_margin": 6,
+    "gate": "FAIL"
+  },
+  "accelerated_scan": {
+    "artifact": "KEIRIN_POST_FIREWALL_0907_TO_0913_ACCELERATED_DAY1_SCAN_AUDIT_20260908_v1.json",
+    "window": "2026-09-10 through 2026-09-13",
+    "valid_early_cross_circumference_conversions": 0,
+    "conclusion": "No valid earlier formal-support conversion was found. The 2026-09-14 Ito/Aomori and 2026-09-15 Hofu front is the earliest known viable bulk-conversion route.",
+    "corrections": [
+      "山田哲也 provisional hit retracted because Toyama roster contained 山田隼司.",
+      "森川剛 event-roster hit rejected because 2026-09-07 actual Day1 membership failed; he was a later substitute."
+    ],
+    "result_accessed": false,
+    "odds_accessed": false,
+    "payout_accessed": false
+  },
+  "one_shot_formalization": {
+    "order": "KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "matrix": "KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "registry": "KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "input_manifest": "KEIRIN_35_FINAL_DAY1_PRE_INPUT_MANIFEST_20260908_v1.json",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v1.py",
+    "selftest": "tools/keirin_35_formal_support_finalizer_selftest_v1.py",
+    "behavior": [
+      "Process priorities 1..35 only.",
+      "Fail closed on missing/ambiguous/late PRE evidence.",
+      "Skip failed candidates without relaxing standards.",
+      "Stop immediately after 29 new PASS.",
+      "Six candidate failures are tolerable; seven leave only 28 and target stays unmet.",
+      "No RESULT/PAYOUT/ODDS/human forecast use.",
+      "Before delegating any future PRE row to v1, require exact locked event-level trusted cutoff binding with source URL, SHA-256, source capture time, +09:00 timestamps, and row cutoff equality."
+    ],
+    "event_targets": [
+      {
+        "venue": "伊東",
+        "date": "2026-09-14",
+        "candidates": 11,
+        "circumference_bucket": "333_OR_333_33M"
+      },
+      {
+        "venue": "青森",
+        "date": "2026-09-14",
+        "candidates": 4,
+        "circumference_bucket": "400M"
+      },
+      {
+        "venue": "防府",
+        "date": "2026-09-15",
+        "candidates": 20,
+        "circumference_bucket": "333_OR_333_33M"
+      }
+    ],
+    "final_day1_pre_rows_ready_now": 0,
+    "support_increment_now": 0,
+    "cutoff_binding_guard": "tools/keirin_35_formal_support_finalizer_cutoff_guard_v1.py",
+    "cutoff_binding_guard_selftest": "tools/keirin_35_formal_support_finalizer_cutoff_guard_selftest_v1.py",
+    "cutoff_binding_manifest": "v3/historical_all_market/research_candidates/KEIRIN_35_TRUSTED_CUTOFF_BINDING_MANIFEST_20260908_v1.json",
+    "cutoff_binding_status": "PENDING_PROSPECTIVE_TRUSTED_CUTOFF_CAPTURE",
+    "cutoff_binding_required_before_finalizer": true
+  },
+  "support_gate_semantics": {
+    "maximum_single_venue_share_denominator": "ALL_SUPPORTED_ROWS_GLOBAL",
+    "threshold": 0.6,
+    "calendar_block_dimension": "UNKNOWN_PENDING_PR177"
+  },
+  "line_architecture_engineering": {
+    "state": "IMPLEMENTED_SELFTEST_PASS_NOT_FITTED_NOT_VALIDATED",
+    "line_relation_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+    "c1_n1_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v1.py"
+  },
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "post_cutoff_reconstruction": false,
+    "main_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "shared_lab_auditor_steps_mutation": false,
+    "self_adoption": false,
+    "runtime": false
+  },
+  "work_conserving_next": [
+    "Use CTC schedule/detail pages immediately as prospective event/roster preflight evidence; do not wait for Sep14 to reconfirm facts already published.",
+    "Continue prospectively capturing CTC/official schedule changes for Ito Sep14, Aomori Sep14, and Hofu Sep15.",
+    "Lock exact trusted cutoff provenance once a source publishes an exact cutoff timestamp; event/roster evidence alone must not be misused as cutoff evidence.",
+    "At final Day1 PRE publication, fill exact race/car/PRE fields, pass the cutoff-binding guard, then run the one-shot v1 finalizer in locked priority order.",
+    "Do not loosen evidence rules to manufacture 30/60.",
+    "Observe PR177/Control durable result only; do not compete with Control."
+  ],
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "cutoff_binding_hardening": {
+    "status": "IMPLEMENTED_SYNTHETIC_GUARD_TEST_PASS_BINDINGS_PENDING",
+    "receipt": "v3/historical_all_market/research_candidates/KEIRIN_TRUSTED_CUTOFF_BINDING_GUARD_IMPLEMENTATION_RECEIPT_20260908_v1.json",
+    "gap_closed": "trusted_pit_cutoff_jst can no longer be accepted as an unbound row-supplied timestamp",
+    "event_bindings": [
+      "伊東_2026-09-14",
+      "青森_2026-09-14",
+      "防府_2026-09-15"
+    ],
+    "support_increment_now": 0,
+    "result_accessed": false,
+    "owner_action_required_now": false
+  },
+  "ctc_preflight": {
+    "artifact": "v3/historical_all_market/research_candidates/KEIRIN_CTC_0914_0915_PREFLIGHT_EVIDENCE_20260908_v1.json",
+    "event_existence_confirmed": [
+      "青森_2026-09-14",
+      "伊東_2026-09-14",
+      "防府_2026-09-15"
+    ],
+    "aomori_target_candidates": 4,
+    "aomori_scheduled_roster_matches": 4,
+    "aomori_match_rate": "4/4",
+    "accepted_use": "event existence + scheduled roster preflight",
+    "still_missing_for_formalization": [
+      "exact trusted pit cutoff timestamp binding",
+      "final Day1 PRE same-race row",
+      "race number and car number"
+    ],
+    "formal_support_increment_now": 0
+  }
+}
