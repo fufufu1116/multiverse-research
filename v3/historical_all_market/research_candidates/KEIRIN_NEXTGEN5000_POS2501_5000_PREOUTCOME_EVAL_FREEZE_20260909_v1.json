@@ -1,0 +1,69 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_POS2501_5000_PREOUTCOME_EVAL_FREEZE_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_ANY_POS2501_5000_OUTCOME_OR_PAYOUT_ACCESS",
+  "relation_to_prior_freeze": "Extends the exact same price-independent falsification rule already frozen for positions 2001..2500. No parameter or threshold change.",
+  "evaluation_population": {
+    "universe": "exact locked NEXTGEN5000 sha256 dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "positions": "2501..5000",
+    "races": 2500,
+    "relation_to_DEV2000": "outside first 2000 locked positions",
+    "result_or_payout_accessed_for_these_2500": false
+  },
+  "primary_questions": [
+    "Does the frozen winner-ranking signal reproduce outside DEV2000 across a materially larger historical mother sample?",
+    "Does the simple price-independent 3renhuku structural challenger reproduce without historical odds race-selection?",
+    "Do Girls retain materially higher winner-ranking accuracy out of time?",
+    "Do score-gap effects on head-vs-companion predictability reproduce?",
+    "Does the selected-ticket performance survive larger-sample chronological block, drawdown and return-concentration checks?"
+  ],
+  "price_independent_ticket_challenger": {
+    "id": "NON_GIRLS_GAP_LT3_CONF40_TOP3_3RENHUKU_1PT_NO_PRICE_FILTER",
+    "frozen_model_lineage": "exact DEV2000 candidate_a plus b1a_reconstituted_v1 ranking/confidence semantics; no model refit",
+    "rule": [
+      "non-Girls race",
+      "top PRE competition score minus second PRE score < 3.0",
+      "candidate_a and b1a_reconstituted_v1 agree on top1",
+      "conservative top1 probability >= 0.40",
+      "one 3renhuku ticket = consensus conservative top3 set",
+      "no odds, payout or result is used to decide whether the race is selected",
+      "flat hypothetical stake 100 yen after selection freeze"
+    ],
+    "thresholds_changed_from_2001_2500_freeze": false
+  },
+  "predeclared_metrics": [
+    "candidate_a top1 hit rate",
+    "model-agreement top1 hit rate",
+    "winner in top3 coverage",
+    "exact top3 set hit rate",
+    "selected ticket count and hit rate",
+    "hypothetical settlement ROI using outcome-side payout only after PRE-side selection is materialized and frozen",
+    "largest single return share",
+    "chronological 100-race and 250-race block stability",
+    "maximum drawdown in flat-100-yen selected-ticket sequence",
+    "Girls versus non-Girls winner-ranking accuracy",
+    "score-gap bins for winner-hit versus exact-top3 companion coverage"
+  ],
+  "pass_interpretation": {
+    "rule": "No single metric auto-promotes the candidate.",
+    "stronger_evidence": "Positive or near-positive economics must coexist with preserved ranking signal, reasonable return concentration, tolerable drawdown and stability across multiple chronological blocks.",
+    "failure": "Negative/concentrated outcome is retained as falsification. No rescue-tuning on positions 2501..5000 after any outcome is joined."
+  },
+  "owner_policy": {
+    "additional_historical_pre_collection_authorized": true,
+    "strict_order": "PRE-only acquisition -> PRE-only prediction/selection materialization -> immutable selection freeze -> isolated outcome/payout join -> scoring",
+    "missing_pre": "fail-close; never reconstruct missing PRE from result/payout pages"
+  },
+  "hard_boundaries": {
+    "historical_odds_required": false,
+    "positions_2501_5000_outcomes_accessed_at_freeze": false,
+    "positions_2501_5000_payouts_accessed_at_freeze": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment": 0,
+    "model_promotion": false,
+    "real_money_execution": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
