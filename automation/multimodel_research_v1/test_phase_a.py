@@ -7,6 +7,12 @@ from automation.multimodel_research_v1.aggregator import (
     aggregate_results,
     aggregate_results_v2,
 )
+from automation.multimodel_research_v1.assignment import (
+    assignment_sha256,
+    result_v2_content_digest,
+    validate_assignment,
+    validate_result_v2_for_assignment,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -82,6 +88,69 @@ def task_v2() -> dict:
             "observed_at": "2026-09-07T00:00:00Z",
         }
     ]
+    return value
+
+
+def assignment(
+    bound_task: dict | None = None,
+    *,
+    assignment_id: str = "assignment-001",
+    provider: str = "synthetic",
+    model: str = "model-a",
+    role: str = "architecture_challenge",
+    execution_mode: str = "SYNTHETIC_OFFLINE",
+) -> dict:
+    if bound_task is None:
+        bound_task = task_v2()
+    live = execution_mode == "LIVE_ADVISORY"
+    return {
+        "schema": "MULTIVERSE_RESEARCH_ASSIGNMENT_v1",
+        "assignment_id": assignment_id,
+        "task_sha256": sha256_json(bound_task),
+        "snapshot_id": bound_task["snapshot_id"],
+        "created_at": "2026-09-07T00:00:30Z",
+        "target_provider": provider,
+        "target_model": model,
+        "requested_role": role,
+        "adapter_sha256": "9" * 64,
+        "execution_mode": execution_mode,
+        "research_network_access": "NONE",
+        "provider_transport_policy_ref": (
+            "provider-transport-001"
+            if live
+            else "NONE"
+        ),
+        "max_compute_seconds": 120,
+        "max_output_bytes": 50000,
+        "attestation_required": live,
+        "nonauthority": nonauthority(),
+    }
+
+
+def result_v2(
+    bound_task: dict,
+    bound_assignment: dict,
+    *,
+    submission_id: str = "result-v2-001",
+    status: str = "COMPLETED",
+    position: str = "SUPPORT",
+) -> dict:
+    value = bind_result_to_task(
+        result(
+            submission_id=submission_id,
+            provider=bound_assignment["target_provider"],
+            model=bound_assignment["target_model"],
+            role=bound_assignment["requested_role"],
+            status=status,
+            position=position,
+        ),
+        bound_task,
+    )
+    value["schema"] = "MULTIVERSE_RESEARCH_RESULT_v2"
+    value["assignment_sha256"] = assignment_sha256(
+        bound_task,
+        bound_assignment,
+    )
     return value
 
 
@@ -1331,6 +1400,277 @@ class ContractTests(unittest.TestCase):
         self.assertNotEqual(
             v1["aggregate_sha256"],
             v2["aggregate_sha256"],
+        )
+
+
+    def test_75_valid_synthetic_assignment(self):
+        bound_task = task_v2()
+        value = assignment(bound_task)
+        self.assertEqual(
+            validate_assignment(bound_task, value),
+            value,
+        )
+
+    def test_76_assignment_requires_task_v2(self):
+        bound_task = task()
+        value = assignment(task_v2())
+        value["task_sha256"] = sha256_json(bound_task)
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(bound_task, value)
+
+    def test_77_assignment_binds_exact_task_digest(self):
+        bound_task = task_v2()
+        value = assignment(bound_task)
+        value["task_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(bound_task, value)
+
+    def test_78_assignment_role_must_be_requested(self):
+        bound_task = task_v2()
+        value = assignment(
+            bound_task,
+            role="unrequested-role",
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(bound_task, value)
+
+    def test_79_assignment_snapshot_must_match_task(self):
+        bound_task = task_v2()
+        value = assignment(bound_task)
+        value["snapshot_id"] = "snapshot-other"
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(bound_task, value)
+
+    def test_80_assignment_cannot_widen_compute_or_output(self):
+        bound_task = task_v2()
+        too_much_compute = assignment(bound_task)
+        too_much_compute["max_compute_seconds"] = (
+            bound_task["constraints"]["max_compute_seconds"] + 1
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(
+                bound_task,
+                too_much_compute,
+            )
+
+        too_much_output = assignment(bound_task)
+        too_much_output["max_output_bytes"] = (
+            bound_task["constraints"]["max_output_bytes"] + 1
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(
+                bound_task,
+                too_much_output,
+            )
+
+    def test_81_assignment_cannot_widen_research_network(self):
+        bound_task = task_v2()
+        bound_task["constraints"]["network_access"] = "NONE"
+        value = assignment(bound_task)
+        value["research_network_access"] = "PUBLIC_READ_ONLY"
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(bound_task, value)
+
+    def test_82_synthetic_assignment_forbids_provider_transport(self):
+        bound_task = task_v2()
+        value = assignment(bound_task)
+        value[
+            "provider_transport_policy_ref"
+        ] = "provider-transport-001"
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(bound_task, value)
+
+    def test_83_live_assignment_requires_transport_and_attestation(self):
+        bound_task = task_v2()
+        valid = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-a",
+            execution_mode="LIVE_ADVISORY",
+        )
+        self.assertEqual(
+            validate_assignment(bound_task, valid),
+            valid,
+        )
+
+        missing_transport = copy.deepcopy(valid)
+        missing_transport[
+            "provider_transport_policy_ref"
+        ] = "NONE"
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(
+                bound_task,
+                missing_transport,
+            )
+
+        missing_attestation = copy.deepcopy(valid)
+        missing_attestation["attestation_required"] = False
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(
+                bound_task,
+                missing_attestation,
+            )
+
+    def test_84_assignment_cannot_predate_task(self):
+        bound_task = task_v2()
+        value = assignment(bound_task)
+        value["created_at"] = "2026-09-06T23:59:59Z"
+        with self.assertRaises(ResearchContractError):
+            validate_assignment(bound_task, value)
+
+    def test_85_valid_result_v2_binds_exact_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        self.assertEqual(
+            validate_result_v2_for_assignment(
+                bound_task,
+                bound_assignment,
+                value,
+            ),
+            value,
+        )
+
+    def test_86_result_v2_rejects_wrong_assignment_digest(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        value["assignment_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_result_v2_for_assignment(
+                bound_task,
+                bound_assignment,
+                value,
+            )
+
+    def test_87_result_v2_identity_must_match_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        for key, replacement in (
+            ("provider", "provider-other"),
+            ("model", "model-other"),
+            ("role", "security_challenge"),
+        ):
+            value = result_v2(
+                bound_task,
+                bound_assignment,
+                submission_id=f"identity-{key}",
+            )
+            value["model_identity"][key] = replacement
+            with self.assertRaises(ResearchContractError):
+                validate_result_v2_for_assignment(
+                    bound_task,
+                    bound_assignment,
+                    value,
+                )
+
+    def test_88_result_v2_cannot_predate_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        value["produced_at"] = "2026-09-07T00:00:29Z"
+        with self.assertRaises(ResearchContractError):
+            validate_result_v2_for_assignment(
+                bound_task,
+                bound_assignment,
+                value,
+            )
+
+    def test_89_assignment_mutation_invalidates_bound_result(self):
+        bound_task = task_v2()
+        first_assignment = assignment(bound_task)
+        value = result_v2(
+            bound_task,
+            first_assignment,
+        )
+        changed_assignment = copy.deepcopy(
+            first_assignment
+        )
+        changed_assignment["target_model"] = "model-b"
+        self.assertNotEqual(
+            assignment_sha256(
+                bound_task,
+                first_assignment,
+            ),
+            assignment_sha256(
+                bound_task,
+                changed_assignment,
+            ),
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_result_v2_for_assignment(
+                bound_task,
+                changed_assignment,
+                value,
+            )
+
+    def test_90_result_v1_historical_path_remains_unchanged(self):
+        bound_task = task_v2()
+        value = bind_result_to_task(
+            result(submission_id="historical-v1-result"),
+            bound_task,
+        )
+        self.assertEqual(
+            validate_result_for_task(bound_task, value),
+            value,
+        )
+
+    def test_91_result_v2_digest_ignores_submission_id_but_binds_assignment(self):
+        bound_task = task_v2()
+        first_assignment = assignment(bound_task)
+        first = result_v2(
+            bound_task,
+            first_assignment,
+            submission_id="result-v2-first",
+        )
+        second = result_v2(
+            bound_task,
+            first_assignment,
+            submission_id="result-v2-second",
+        )
+        self.assertEqual(
+            result_v2_content_digest(
+                bound_task,
+                first_assignment,
+                first,
+            ),
+            result_v2_content_digest(
+                bound_task,
+                first_assignment,
+                second,
+            ),
+        )
+
+        second_assignment = assignment(
+            bound_task,
+            assignment_id="assignment-002",
+            model="model-b",
+        )
+        changed = result_v2(
+            bound_task,
+            second_assignment,
+            submission_id="result-v2-third",
+        )
+        self.assertNotEqual(
+            result_v2_content_digest(
+                bound_task,
+                first_assignment,
+                first,
+            ),
+            result_v2_content_digest(
+                bound_task,
+                second_assignment,
+                changed,
+            ),
         )
 
 
