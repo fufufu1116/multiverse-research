@@ -162,6 +162,18 @@ Cross-provider tests require Gemini and Claude to receive the same exact canonic
 
 This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
 
+Dual-provider fanout completeness rehearsal
+
+`MULTIVERSE_DUAL_PROVIDER_FANOUT_REHEARSAL_v1` places the dated Gemini and Claude assignments into one exact two-assignment Fanout Plan v1 and exercises batch completeness with RESULT v2 fixtures.
+
+It proves two cases:
+- full batch: 2 planned, 2 observed terminal results, 2 completed, 0 missing, all planned observed/completed;
+- missing-response batch: 2 planned, 1 observed/completed, exactly 1 missing, and both completeness flags remain false.
+
+The exact assignment SHA256 set, fanout-plan SHA256, and both batch-summary SHA256 values are retained. A missing provider can therefore never be silently treated as a complete two-provider research batch.
+
+All results are synthetic; no provider call or provider authority is created.
+
 Dual-provider offline research disagreement
 
 `MULTIVERSE_DUAL_PROVIDER_OFFLINE_RESEARCH_v1` runs the dated Gemini and Claude catalog candidates through the same provider-neutral task/prompt contract and then exercises Aggregate v2 with intentionally opposed synthetic findings.

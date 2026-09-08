@@ -37,6 +37,7 @@ REQUIRED = [
     ROOT / "pilot_roundtrip.py",
     ROOT / "rehearsal_convergence.py",
     ROOT / "dual_provider_research.py",
+    ROOT / "dual_provider_fanout.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -179,6 +180,7 @@ def validate() -> dict:
     pilot_roundtrip = (ROOT / "pilot_roundtrip.py").read_text()
     rehearsal_convergence = (ROOT / "rehearsal_convergence.py").read_text()
     dual_provider_research = (ROOT / "dual_provider_research.py").read_text()
+    dual_provider_fanout = (ROOT / "dual_provider_fanout.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -817,6 +819,26 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_DUAL_PROVIDER_FANOUT_REHEARSAL_v1",
+        "build_dual_provider_fanout_rehearsal",
+        "validate_dual_provider_fanout_rehearsal",
+        "validate_fanout_plan",
+        "summarize_fanout_results",
+        "DUAL_FANOUT_FULL_PLANNED_COUNT",
+        "DUAL_FANOUT_MISSING_ASSIGNMENT_COUNT",
+        "DUAL_FANOUT_MISSING_OBSERVED_FLAG",
+        "DUAL_FANOUT_MISSING_COMPLETED_FLAG",
+        "DUAL_FANOUT_FORBIDDEN_TRUE",
+        "DUAL_FANOUT_RUNTIME_NOT_OFF",
+        "dual_provider_fanout_rehearsal_sha256",
+    ):
+        record(
+            f"dual_provider_fanout:{token}",
+            token in dual_provider_fanout,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -838,8 +860,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 396,
-        f"{test_count} != 396",
+        test_count == 408,
+        f"{test_count} != 408",
     )
 
     return {

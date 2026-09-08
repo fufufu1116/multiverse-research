@@ -136,6 +136,11 @@ from automation.multimodel_research_v1.dual_provider_research import (
     dual_provider_offline_research_sha256,
     validate_dual_provider_offline_research,
 )
+from automation.multimodel_research_v1.dual_provider_fanout import (
+    build_dual_provider_fanout_rehearsal,
+    dual_provider_fanout_rehearsal_sha256,
+    validate_dual_provider_fanout_rehearsal,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -12781,6 +12786,120 @@ class ContractTests(unittest.TestCase):
         first = dual_provider_offline_research_sha256(*args)
         cloned = tuple(copy.deepcopy(item) for item in args)
         second = dual_provider_offline_research_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def _dual_provider_fanout_fixture(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        record = build_dual_provider_fanout_rehearsal(
+            bound_task,
+            snapshot,
+            schema,
+        )
+        return bound_task, snapshot, schema, record
+
+    def test_397_valid_dual_provider_fanout_rehearsal(self):
+        args = self._dual_provider_fanout_fixture()
+        self.assertEqual(
+            validate_dual_provider_fanout_rehearsal(*args),
+            args[-1],
+        )
+
+    def test_398_dual_fanout_plans_exactly_two_assignments(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["full_planned_assignment_count"], 2)
+        self.assertEqual(value["provider_count"], 2)
+
+    def test_399_dual_fanout_uses_exact_catalog_model_ids(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["gemini_model_id"], "gemini-3.8-flash")
+        self.assertEqual(
+            value["claude_model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_400_dual_fanout_full_batch_observes_two_results(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["full_observed_terminal_result_count"],
+            2,
+        )
+        self.assertEqual(value["full_completed_assignment_count"], 2)
+
+    def test_401_dual_fanout_full_batch_has_no_missing_assignment(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["full_missing_assignment_count"], 0)
+        self.assertIs(value["full_all_planned_observed"], True)
+        self.assertIs(value["full_all_planned_completed"], True)
+
+    def test_402_dual_fanout_missing_demo_detects_one_missing(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["missing_demo_observed_terminal_result_count"],
+            1,
+        )
+        self.assertEqual(
+            value["missing_demo_missing_assignment_count"],
+            1,
+        )
+
+    def test_403_dual_fanout_missing_demo_never_claims_complete(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertIs(
+            value["missing_demo_all_planned_observed"],
+            False,
+        )
+        self.assertIs(
+            value["missing_demo_all_planned_completed"],
+            False,
+        )
+
+    def test_404_dual_fanout_assignment_digests_are_distinct(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertNotEqual(
+            value["gemini_assignment_sha256"],
+            value["claude_assignment_sha256"],
+        )
+
+    def test_405_dual_fanout_plan_and_batches_are_digest_bound(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        for key in (
+            "fanout_plan_sha256",
+            "full_batch_sha256",
+            "missing_demo_batch_sha256",
+        ):
+            self.assertEqual(len(value[key]), 64)
+
+    def test_406_dual_fanout_binds_one_provider_neutral_prompt(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            len(value["provider_neutral_prompt_sha256"]),
+            64,
+        )
+
+    def test_407_dual_fanout_grants_no_authority(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(value[key], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_408_dual_fanout_digest_is_deterministic(self):
+        args = self._dual_provider_fanout_fixture()
+        first = dual_provider_fanout_rehearsal_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_fanout_rehearsal_sha256(*cloned)
         self.assertEqual(first, second)
 
 
