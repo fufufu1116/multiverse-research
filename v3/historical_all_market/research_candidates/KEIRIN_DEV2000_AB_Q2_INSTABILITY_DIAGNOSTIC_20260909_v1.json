@@ -1,0 +1,125 @@
+{
+  "record": "KEIRIN_DEV2000_AB_Q2_INSTABILITY_DIAGNOSTIC_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "DIAGNOSTIC_Q2_ZERO_HIT_CLUSTER_NOT_YET_REGIME_SHIFT",
+  "scope": "Descriptive burned A+B diagnosis only; no rule tuning.",
+  "six_block_population_summary": {
+    "Q1": {
+      "date_range": [
+        "2026-03-01",
+        "2026-03-04"
+      ],
+      "girls_share": 0.072,
+      "mean_field": 7.204,
+      "mean_score_gap": 2.51196,
+      "mean_score_std": 4.91077,
+      "mean_escape_count": 1.776,
+      "model_top1_agreement": 0.78,
+      "mean_conservative_top1": 0.33714,
+      "candidateA_top1_hit": 0.4498
+    },
+    "Q2": {
+      "date_range": [
+        "2026-03-04",
+        "2026-03-08"
+      ],
+      "girls_share": 0.032,
+      "mean_field": 7.212,
+      "mean_score_gap": 2.50676,
+      "mean_score_std": 4.19294,
+      "mean_escape_count": 1.94,
+      "model_top1_agreement": 0.78,
+      "mean_conservative_top1": 0.33377,
+      "candidateA_top1_hit": 0.4498
+    },
+    "Q3": {
+      "date_range": [
+        "2026-03-21",
+        "2026-03-24"
+      ],
+      "girls_share": 0.06,
+      "mean_field": 7.112,
+      "mean_score_gap": 2.26608,
+      "mean_score_std": 3.14789,
+      "mean_escape_count": 2.04,
+      "model_top1_agreement": 0.804,
+      "mean_conservative_top1": 0.34616,
+      "candidateA_top1_hit": 0.4096
+    },
+    "Q4": {
+      "date_range": [
+        "2026-03-24",
+        "2026-03-27"
+      ],
+      "girls_share": 0.088,
+      "mean_field": 6.948,
+      "mean_score_gap": 2.08872,
+      "mean_score_std": 3.34811,
+      "mean_escape_count": 1.796,
+      "model_top1_agreement": 0.852,
+      "mean_conservative_top1": 0.34871,
+      "candidateA_top1_hit": 0.48
+    },
+    "Q5": {
+      "date_range": [
+        "2026-03-27",
+        "2026-03-31"
+      ],
+      "girls_share": 0.12,
+      "mean_field": 7.16,
+      "mean_score_gap": 2.28308,
+      "mean_score_std": 3.67343,
+      "mean_escape_count": 2.104,
+      "model_top1_agreement": 0.852,
+      "mean_conservative_top1": 0.34799,
+      "candidateA_top1_hit": 0.432
+    },
+    "Q6": {
+      "date_range": [
+        "2026-03-31",
+        "2026-04-03"
+      ],
+      "girls_share": 0.08,
+      "mean_field": 7.188,
+      "mean_score_gap": 2.5148,
+      "mean_score_std": 3.8091,
+      "mean_escape_count": 1.856,
+      "model_top1_agreement": 0.82,
+      "mean_conservative_top1": 0.36286,
+      "candidateA_top1_hit": 0.48
+    }
+  },
+  "representative_5of6_rule": {
+    "rule": "entropy>=0.75; confidence>=0.35; top3_1; EV>=10%; odds 5..20",
+    "Q2": {
+      "bets": 9,
+      "hits": 0,
+      "roi": -1,
+      "model_expected_hits": 1.3967,
+      "normalized_market_expected_hits": 0.9032,
+      "mean_conservative_ticket_probability": 0.1552,
+      "mean_odds": 11.64
+    },
+    "zero_hit_probability": {
+      "under_conservative_model": 0.2142,
+      "under_normalized_market": 0.3825
+    },
+    "interpretation": "Zero hits in nine bets is unpleasant but not statistically surprising enough to diagnose a structural regime break by itself."
+  },
+  "model_signal_check": {
+    "Q2_candidateA_top1_hit_rate": 0.4498,
+    "Q1_candidateA_top1_hit_rate": 0.4498,
+    "conclusion": "Q2 did not show a collapse in the basic winner-ranking signal. Failure is concentrated further downstream in sparse selected 3renhuku tickets."
+  },
+  "decision": [
+    "Do not add date/Q2/venue rescue filters from this burned diagnosis.",
+    "Treat 6-of-6 positivity as an intentionally harsh falsification; with sparse block bets it can reject a genuinely positive but volatile process.",
+    "Use larger independent historical/prospective samples to distinguish variance from structural instability."
+  ],
+  "hard_boundaries": {
+    "C_scoring_count": 0,
+    "profitability_claim": false,
+    "retuning": false,
+    "runtime": false
+  }
+}
