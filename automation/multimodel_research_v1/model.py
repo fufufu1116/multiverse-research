@@ -6,11 +6,13 @@ import re
 from datetime import datetime
 from typing import Any
 
-TASK_SCHEMA = "MULTIVERSE_RESEARCH_TASK_v1"
+TASK_SCHEMA_V1 = "MULTIVERSE_RESEARCH_TASK_v1"
+TASK_SCHEMA_V2 = "MULTIVERSE_RESEARCH_TASK_v2"
+TASK_SCHEMA = TASK_SCHEMA_V1
 RESULT_SCHEMA = "MULTIVERSE_RESEARCH_RESULT_v1"
 AGGREGATE_SCHEMA = "MULTIVERSE_RESEARCH_AGGREGATE_v1"
 
-TASK_KEYS = {
+TASK_V1_KEYS = {
     "schema",
     "task_id",
     "snapshot_id",
@@ -22,6 +24,16 @@ TASK_KEYS = {
     "constraints",
     "requested_roles",
     "nonauthority",
+}
+
+TASK_V2_KEYS = TASK_V1_KEYS | {"evidence_manifest"}
+TASK_KEYS = TASK_V1_KEYS
+
+EVIDENCE_MANIFEST_KEYS = {
+    "primitive",
+    "ref",
+    "sha256",
+    "observed_at",
 }
 
 RESULT_KEYS = {
@@ -204,8 +216,13 @@ def _reject_dynamic_keys(value: Any) -> None:
 
 def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     require(isinstance(task, dict), "TASK_OBJECT")
-    require(set(task) == TASK_KEYS, "TASK_SCHEMA_KEYS")
-    require(task["schema"] == TASK_SCHEMA, "TASK_SCHEMA_VERSION")
+    schema = task.get("schema")
+    if schema == TASK_SCHEMA_V1:
+        require(set(task) == TASK_V1_KEYS, "TASK_SCHEMA_KEYS")
+    elif schema == TASK_SCHEMA_V2:
+        require(set(task) == TASK_V2_KEYS, "TASK_SCHEMA_KEYS")
+    else:
+        raise ResearchContractError("TASK_SCHEMA_VERSION")
     _identifier(task["task_id"], "TASK_ID")
     _identifier(task["snapshot_id"], "SNAPSHOT_ID")
     task_created_at = _parse_utc_timestamp(
@@ -257,6 +274,54 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
         len(set(primitives)) == len(primitives),
         "DUPLICATE_PRIMITIVE",
     )
+
+    if schema == TASK_SCHEMA_V2:
+        manifest = task["evidence_manifest"]
+        require(
+            isinstance(manifest, list) and bool(manifest),
+            "TASK_EVIDENCE_MANIFEST",
+        )
+        require(
+            len(manifest) <= 500,
+            "TASK_EVIDENCE_MANIFEST_LIMIT",
+        )
+        seen_manifest_keys: set[tuple[str, str]] = set()
+        for item in manifest:
+            require(
+                isinstance(item, dict)
+                and set(item) == EVIDENCE_MANIFEST_KEYS,
+                "TASK_EVIDENCE_MANIFEST_SCHEMA",
+            )
+            primitive = item["primitive"]
+            require(
+                primitive in primitives,
+                "TASK_EVIDENCE_MANIFEST_PRIMITIVE_NOT_ALLOWED",
+            )
+            ref = _text(
+                item["ref"],
+                "TASK_EVIDENCE_MANIFEST_REF",
+                4000,
+            )
+            manifest_key = (primitive, ref)
+            require(
+                manifest_key not in seen_manifest_keys,
+                "DUPLICATE_TASK_EVIDENCE_MANIFEST_ENTRY",
+            )
+            seen_manifest_keys.add(manifest_key)
+            digest = item["sha256"]
+            require(
+                isinstance(digest, str)
+                and bool(re.fullmatch(r"[0-9a-f]{64}", digest)),
+                "TASK_EVIDENCE_MANIFEST_SHA256_REQUIRED",
+            )
+            observed_at = _parse_utc_timestamp(
+                item["observed_at"],
+                "TASK_EVIDENCE_MANIFEST_OBSERVED_AT",
+            )
+            require(
+                observed_at <= task_created_at,
+                "TASK_EVIDENCE_MANIFEST_OBSERVED_AFTER_TASK_CREATED",
+            )
 
     constraints = task["constraints"]
     require(
@@ -466,6 +531,12 @@ def validate_result_for_task(
         item["ref"]: item
         for item in task["source_refs"]
     }
+    evidence_manifest = {}
+    if task["schema"] == TASK_SCHEMA_V2:
+        evidence_manifest = {
+            (item["primitive"], item["ref"]): item
+            for item in task["evidence_manifest"]
+        }
 
     for finding in result["findings"]:
         evidence = finding["evidence"]
@@ -474,7 +545,20 @@ def validate_result_for_task(
             primitive in allowed_primitives,
             "RESULT_EVIDENCE_PRIMITIVE_NOT_ALLOWED",
         )
-        if primitive in {"SOURCE_REF", "PUBLIC_EVIDENCE_REF"}:
+        if task["schema"] == TASK_SCHEMA_V2:
+            manifest_key = (primitive, evidence["ref"])
+            require(
+                manifest_key in evidence_manifest,
+                "RESULT_EVIDENCE_MANIFEST_NOT_DECLARED",
+            )
+            expected_digest = evidence_manifest[
+                manifest_key
+            ]["sha256"]
+            require(
+                evidence["sha256"] == expected_digest,
+                "RESULT_EVIDENCE_MANIFEST_SHA256_MISMATCH",
+            )
+        elif primitive in {"SOURCE_REF", "PUBLIC_EVIDENCE_REF"}:
             ref = evidence["ref"]
             require(
                 ref in source_refs,
