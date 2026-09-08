@@ -174,6 +174,19 @@ The exact assignment SHA256 set, fanout-plan SHA256, and both batch-summary SHA2
 
 All results are synthetic; no provider call or provider authority is created.
 
+Federation generation-lock strengthening
+
+The top-level federation evidence additionally requires one exact provider generation across every participating layer.
+
+For each provider:
+- per-provider full rehearsal `pilot_matrix_sha256`;
+- dual-provider Fanout `*_matrix_sha256`;
+- dual-provider comparison research `*_matrix_sha256`;
+
+must be exactly identical.
+
+The provider-neutral prompt SHA256 used by Fanout and comparison research must also match exactly and is retained at federation level. This prevents individually valid send/receive, Fanout, and comparison objects from different provider/model/prompt generations being assembled into one apparently valid two-provider rehearsal.
+
 Dual-provider full federation rehearsal
 
 `MULTIVERSE_DUAL_PROVIDER_FEDERATION_REHEARSAL_v1` converges the repository-only two-provider research path into one exact top-level evidence object.

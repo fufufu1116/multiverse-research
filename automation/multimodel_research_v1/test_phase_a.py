@@ -13080,5 +13080,51 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(first, second)
 
 
+    def test_429_federation_binds_provider_neutral_prompt_digest(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(
+            len(value["provider_neutral_prompt_sha256"]),
+            64,
+        )
+
+    def test_430_federation_binds_gemini_matrix_digest(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["gemini_matrix_sha256"]), 64)
+
+    def test_431_federation_binds_claude_matrix_digest(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["claude_matrix_sha256"]), 64)
+
+    def test_432_federation_provider_matrix_digests_are_distinct(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertNotEqual(
+            value["gemini_matrix_sha256"],
+            value["claude_matrix_sha256"],
+        )
+
+    def test_433_federation_matrix_binding_coexists_with_full_batch(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["full_batch_complete"], True)
+        self.assertEqual(value["provider_count"], 2)
+
+    def test_434_federation_matrix_binding_coexists_with_disagreement(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["disagreement_detected"], True)
+        self.assertIs(
+            value["agreement_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_435_federation_matrix_binding_preserves_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["provider_call_authorized"], False)
+        self.assertIs(value["credential_authorized"], False)
+        self.assertIs(value["spend_authorized"], False)
+
+    def test_436_federation_matrix_binding_preserves_runtime_off(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(value["runtime"], "OFF")
+
+
 if __name__ == "__main__":
     unittest.main()

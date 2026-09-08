@@ -53,6 +53,9 @@ FEDERATION_KEYS = {
     "checked_at",
     "gemini_model_id",
     "claude_model_id",
+    "provider_neutral_prompt_sha256",
+    "gemini_matrix_sha256",
+    "claude_matrix_sha256",
     "gemini_rehearsal_sha256",
     "claude_rehearsal_sha256",
     "dual_provider_fanout_sha256",
@@ -250,6 +253,23 @@ def build_dual_provider_federation_rehearsal(
         "FEDERATION_CLAUDE_MODEL_MISMATCH",
     )
     require(
+        gemini_rehearsal["pilot_matrix_sha256"]
+        == fanout["gemini_matrix_sha256"]
+        == research["gemini_matrix_sha256"],
+        "FEDERATION_GEMINI_MATRIX_MISMATCH",
+    )
+    require(
+        claude_rehearsal["pilot_matrix_sha256"]
+        == fanout["claude_matrix_sha256"]
+        == research["claude_matrix_sha256"],
+        "FEDERATION_CLAUDE_MATRIX_MISMATCH",
+    )
+    require(
+        fanout["provider_neutral_prompt_sha256"]
+        == research["provider_neutral_prompt_sha256"],
+        "FEDERATION_PROMPT_SHA256_MISMATCH",
+    )
+    require(
         fanout["full_all_planned_completed"] is True,
         "FEDERATION_FULL_BATCH_NOT_COMPLETE",
     )
@@ -281,6 +301,18 @@ def build_dual_provider_federation_rehearsal(
         "checked_at": CHECKED_AT,
         "gemini_model_id": gemini_matrix["assignment"]["target_model"],
         "claude_model_id": claude_matrix["assignment"]["target_model"],
+        "provider_neutral_prompt_sha256":
+            fanout["provider_neutral_prompt_sha256"],
+        "gemini_matrix_sha256":
+            gemini_rehearsal["pilot_matrix_sha256"],
+        "claude_matrix_sha256":
+            claude_rehearsal["pilot_matrix_sha256"],
+        "provider_neutral_prompt_sha256":
+            fanout["provider_neutral_prompt_sha256"],
+        "gemini_matrix_sha256":
+            gemini_rehearsal["pilot_matrix_sha256"],
+        "claude_matrix_sha256":
+            claude_rehearsal["pilot_matrix_sha256"],
         "gemini_rehearsal_sha256": sha256_json(gemini_rehearsal),
         "claude_rehearsal_sha256": sha256_json(claude_rehearsal),
         "dual_provider_fanout_sha256":

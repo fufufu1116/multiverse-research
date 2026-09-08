@@ -852,6 +852,9 @@ def validate() -> dict:
         "FEDERATION_PRELIVE_HEAD_MISMATCH",
         "FEDERATION_PRELIVE_SEAL_MISMATCH",
         "FEDERATION_CHECKED_AT_MISMATCH",
+        "FEDERATION_GEMINI_MATRIX_MISMATCH",
+        "FEDERATION_CLAUDE_MATRIX_MISMATCH",
+        "FEDERATION_PROMPT_SHA256_MISMATCH",
         "FEDERATION_FULL_BATCH_NOT_COMPLETE",
         "FEDERATION_MISSING_PROVIDER_ACCEPTED",
         "FEDERATION_DISAGREEMENT_NOT_DETECTED",
@@ -889,8 +892,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 428,
-        f"{test_count} != 428",
+        test_count == 436,
+        f"{test_count} != 436",
     )
 
     return {
