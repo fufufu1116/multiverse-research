@@ -1,0 +1,41 @@
+{
+  "record": "KEIRIN_TRUSTED_CUTOFF_BINDING_GUARD_IMPLEMENTATION_RECEIPT_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_SYNTHETIC_GUARD_TEST_PASS_PRE_ONLY",
+  "scope": "RESEARCH_PRE_ONLY_CUTOFF_PROVENANCE_HARDENING_NO_RESULT_NO_PAYOUT_NO_ODDS_NO_PREDICTION",
+  "implementation": {
+    "guard": "tools/keirin_35_formal_support_finalizer_cutoff_guard_v1.py",
+    "guard_commit": "872c1ebc172d01f2bed850d3668c0f4ff02ab88f",
+    "selftest": "tools/keirin_35_formal_support_finalizer_cutoff_guard_selftest_v1.py",
+    "selftest_commit": "dc2b904822a5f838e0f9fc729d41337b0ddb4d08",
+    "cutoff_manifest": "v3/historical_all_market/research_candidates/KEIRIN_35_TRUSTED_CUTOFF_BINDING_MANIFEST_20260908_v1.json",
+    "cutoff_manifest_commit": "f4cbedc2c852c8d15dc427f192ed72b303e20dd9"
+  },
+  "closed_gap": "The v1 finalizer compared captured_at_jst to a supplied trusted_pit_cutoff_jst but did not independently bind that cutoff timestamp to a prospectively captured source record. The new guard requires an exact event-level locked binding with source URL, SHA-256 and pre-cutoff source capture time before delegation to v1.",
+  "synthetic_guard_test": {
+    "execution_scope": "ISOLATED_NEW_GUARD_LOGIC_WITH_PREEXISTING_V1_INTERFACE_STUBBED",
+    "status": "PASS",
+    "cases": {
+      "valid_binding": "PASS",
+      "tampered_row_cutoff": "FAIL_CLOSED_PASS",
+      "row_captured_after_bound_cutoff": "FAIL_CLOSED_PASS",
+      "unlocked_binding": "FAIL_CLOSED_PASS",
+      "cutoff_source_captured_after_cutoff": "FAIL_CLOSED_PASS",
+      "non_jst_timestamp": "FAIL_CLOSED_PASS"
+    },
+    "full_repository_runtime_execution": "NOT_CLAIMED"
+  },
+  "event_bindings_prebuilt": [
+    "伊東_2026-09-14",
+    "青森_2026-09-14",
+    "防府_2026-09-15"
+  ],
+  "current_binding_status": "PENDING_PROSPECTIVE_TRUSTED_CUTOFF_CAPTURE",
+  "formal_support_increment_now": 0,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "runtime": false,
+  "owner_action_required_now": false
+}
