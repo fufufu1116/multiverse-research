@@ -1,0 +1,164 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v94",
+  "status": "PRE_ONLY_RESEARCH_CANDIDATE_FRONT_LONGSHOT_ENGINEERING_HARDENED_WITH_MISCALE_AND_EVIDENCE_SUFFICIENCY_GUARDS_T2_5_BOUNDARY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v93.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "0c4947ba508981df52db71a5c048084beb174d8a",
+    "prior_current": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v93.json",
+    "governance": "#93 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE"
+  },
+  "longshot_candidate": {
+    "design": "KEIRIN_LONGSHOT_SHADOW_LANE_DESIGN_20260908_v1.json",
+    "guard": "tools/keirin_longshot_shadow_guard_v1.py",
+    "selector": "tools/keirin_longshot_shadow_selector_v1.py",
+    "validation_gate": "tools/keirin_longshot_shadow_validation_gate_v1.py",
+    "evidence_sufficiency": "tools/keirin_longshot_evidence_sufficiency_v1.py",
+    "synthetic_boundary_audit": "KEIRIN_LONGSHOT_SHADOW_GUARD_SYNTHETIC_AUDIT_20260908_v1.json",
+    "misscale_stress_audit": "KEIRIN_LONGSHOT_PROBABILITY_MISCALE_STRESS_AUDIT_20260908_v1.json",
+    "regimes": [
+      {
+        "id": "CORE",
+        "odds": "<=20x",
+        "min_ratio": 1.1,
+        "min_ev": 0.1,
+        "risk_units": 1,
+        "break_even_overestimate_factor": 1.1
+      },
+      {
+        "id": "MID_HOLE",
+        "odds": "20-80x",
+        "min_ratio": 1.35,
+        "min_ev": 0.35,
+        "risk_units": 0.5,
+        "break_even_overestimate_factor": 1.35
+      },
+      {
+        "id": "LONGSHOT",
+        "odds": "80-300x",
+        "min_ratio": 1.75,
+        "min_ev": 0.75,
+        "risk_units": 0.25,
+        "break_even_overestimate_factor": 1.75
+      },
+      {
+        "id": "EXTREME_LONGSHOT",
+        "odds": ">300x",
+        "min_ratio": 2.5,
+        "min_ev": 1.5,
+        "risk_units": 0.1,
+        "break_even_overestimate_factor": 2.5
+      }
+    ],
+    "anti_overconfidence": {
+      "principle": "Higher-odds regimes must tolerate materially larger probability overestimation before edge disappears.",
+      "analytic_stress": "PASS",
+      "note": "This is engineering robustness only and does not prove real calibration."
+    },
+    "one_ticket_cap": "At most one qualified longshot elementary ticket per race",
+    "anti_jackpot_validation": {
+      "common": [
+        "ROI > 0",
+        "Leave-largest-hit-out ROI > 0",
+        "Largest hit share of total profit <= 50%",
+        "At least 8 calendar weeks",
+        "At least 5 actual hits",
+        "At least 5 expected hits under frozen conservative probabilities"
+      ],
+      "expected_hit_examples": [
+        {
+          "average_ticket_probability": 0.05,
+          "decisions_for_5_expected_hits": 100
+        },
+        {
+          "average_ticket_probability": 0.02,
+          "decisions_for_5_expected_hits": 250
+        },
+        {
+          "average_ticket_probability": 0.01,
+          "decisions_for_5_expected_hits": 500
+        },
+        {
+          "average_ticket_probability": 0.005,
+          "decisions_for_5_expected_hits": 1000
+        },
+        {
+          "average_ticket_probability": 0.002,
+          "decisions_for_5_expected_hits": 2500
+        },
+        {
+          "average_ticket_probability": 0.001,
+          "decisions_for_5_expected_hits": 5000
+        }
+      ],
+      "interpretation": "An isolated huge payout cannot satisfy evidence sufficiency by itself."
+    },
+    "access_state": {
+      "result": false,
+      "payout": false,
+      "odds": false,
+      "prediction": false,
+      "live_effect": false,
+      "real_money_execution": false
+    },
+    "parameter_status": "PROPOSED_NOT_VALIDATED"
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "candidate_count": 35,
+    "gate": "FAIL"
+  },
+  "intended_front": {
+    "future_events": [
+      {
+        "venue": "伊東",
+        "date": "2026-09-14",
+        "candidates": 11,
+        "circumference_m": 333
+      },
+      {
+        "venue": "青森",
+        "date": "2026-09-14",
+        "candidates": 4,
+        "circumference_m": 400
+      },
+      {
+        "venue": "防府",
+        "date": "2026-09-15",
+        "candidates": 20,
+        "circumference_m": 333
+      }
+    ],
+    "final_day1_pre_assignment": "0/35 PENDING_FUTURE_PUBLICATION",
+    "expand_candidate_supply": false
+  },
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "FUZZY_IDENTITY": "BLOCKED",
+    "CURRENT_PROFILE_DYNAMIC_BACKFILL": "BLOCKED",
+    "POST_CUTOFF_RECONSTRUCTION": "BLOCKED",
+    "main_mutation": false,
+    "shared_lab_auditor_steps_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "runtime": false,
+    "spend": false,
+    "live_effect": false
+  },
+  "work_conserving_next": [
+    "Keep Sep14/Sep15 formal-support readiness intact.",
+    "Continue only outcome-free/synthetic hardening of longshot candidate while ODDS/RESULT/PREDICTION remain blocked.",
+    "Add deterministic candidate ranking/risk aggregation tests so multiple qualified longshots cannot expand race exposure.",
+    "Do not publish competing review-cycle requests; PR177 frozen progression remains Control-only."
+  ],
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
