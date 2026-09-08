@@ -154,5 +154,111 @@ class PublisherResilienceIntegrationTests(unittest.TestCase):
         original.assert_not_called()
 
 
+    def test_07_post_publish_visibility_delay_converges_without_repost(self):
+        j = job()
+        a = artifact(j)
+        posted = trusted_result(20, j, a)
+        receipt = {"published_comment_id": 20}
+        with mock.patch.object(
+            publisher,
+            "_fresh_verify",
+            side_effect=[[], [], [posted]],
+        ), mock.patch.object(
+            publisher,
+            "_original_publish",
+            return_value=receipt,
+        ) as original, mock.patch.object(
+            publisher.time,
+            "sleep",
+        ) as sleep:
+            self.assertIs(publisher.publish(j, a), receipt)
+        original.assert_called_once_with(j, a)
+        sleep.assert_called_once_with(
+            publisher.POST_WRITE_VISIBILITY_DELAY_SECONDS
+        )
+
+    def test_08_post_publish_visibility_deadline_fails_without_repost(self):
+        j = job()
+        a = artifact(j)
+        receipt = {"published_comment_id": 20}
+        with mock.patch.object(
+            publisher,
+            "POST_WRITE_VISIBILITY_MAX_READS",
+            3,
+        ), mock.patch.object(
+            publisher,
+            "_fresh_verify",
+            side_effect=[[], [], [], []],
+        ), mock.patch.object(
+            publisher,
+            "_original_publish",
+            return_value=receipt,
+        ) as original, mock.patch.object(
+            publisher.time,
+            "sleep",
+        ) as sleep:
+            with self.assertRaisesRegex(
+                ReviewContractError,
+                "POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED",
+            ):
+                publisher.publish(j, a)
+        original.assert_called_once_with(j, a)
+        self.assertEqual(sleep.call_count, 2)
+
+    def test_09_delayed_earlier_canonical_result_beats_own_later_post(self):
+        j = job()
+        a = artifact(j)
+        first = trusted_result(10, j, a)
+        later = trusted_result(20, j, a)
+        receipt = {"published_comment_id": 20}
+        with mock.patch.object(
+            publisher,
+            "_fresh_verify",
+            side_effect=[[], [], [first, later]],
+        ), mock.patch.object(
+            publisher,
+            "_original_publish",
+            return_value=receipt,
+        ) as original, mock.patch.object(
+            publisher.time,
+            "sleep",
+        ):
+            with self.assertRaisesRegex(
+                ReviewContractError,
+                "NONCANONICAL_DUPLICATE_RESULT",
+            ):
+                publisher.publish(j, a)
+        original.assert_called_once_with(j, a)
+
+    def test_10_post_publish_visibility_reread_rechecks_request_freshness(self):
+        j = job()
+        a = artifact(j)
+        receipt = {"published_comment_id": 20}
+        with mock.patch.object(
+            publisher,
+            "_fresh_verify",
+            side_effect=[
+                [],
+                [],
+                ReviewContractError(
+                    "PUBLISH_REQUEST_NO_LONGER_CANONICAL_COMMENT"
+                ),
+            ],
+        ), mock.patch.object(
+            publisher,
+            "_original_publish",
+            return_value=receipt,
+        ) as original, mock.patch.object(
+            publisher.time,
+            "sleep",
+        ):
+            with self.assertRaisesRegex(
+                ReviewContractError,
+                "PUBLISH_REQUEST_NO_LONGER_CANONICAL_COMMENT",
+            ):
+                publisher.publish(j, a)
+        original.assert_called_once_with(j, a)
+
+
 if __name__ == "__main__":
     unittest.main()
