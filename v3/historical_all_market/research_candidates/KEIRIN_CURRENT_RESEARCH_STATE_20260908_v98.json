@@ -1,0 +1,87 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v98",
+  "date_jst": "2026-09-08",
+  "status": "LINE_RELATION_ENCODER_IMPLEMENTED_EXTERNAL_ARCHITECTURE_SYNTHESIZED_FORMAL_GATE_1R_2ROWS_T2_5",
+  "supersedes": [
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v96.json",
+    "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v97.json"
+  ],
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "02be8b483842447586c7fb8dc1dc3bc7ecbefa6f",
+    "canonical_main_observed": "7de6e791a9003805d92a3b9973acf852b7cfaac1",
+    "governance": "#93 comment 5573337206 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "pr177": {
+      "state": "OPEN_DRAFT",
+      "head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+      "independent_result_after_request_5573150058": "NONE_OBSERVED"
+    }
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "candidate_count": 35,
+    "remaining_new_riders": 29,
+    "remaining_new_rows": 58,
+    "gate": "FAIL"
+  },
+  "support_gate_semantics": {
+    "venue_share_artifact": "KEIRIN_SUPPORT_GATE_VENUE_SHARE_SEMANTICS_RESOLUTION_20260908_v1.json",
+    "maximum_single_venue_share_denominator": "ALL_SUPPORTED_ROWS_GLOBAL",
+    "threshold": 0.6,
+    "circumference_local_reordering_required": false,
+    "remaining_unknown": "calendar-block granularity / adopted definition via PR177"
+  },
+  "architecture_synthesis": {
+    "artifact": "KEIRIN_EXTERNAL_ARCHITECTURE_SYNTHESIS_20260908_v1.json",
+    "conclusion": "Most external architecture suggestions already map to existing Multiverse designs; unify and validate instead of spawning redundant families.",
+    "ordered_top3_control": "Plackett-Luce already implemented",
+    "line_aware_candidate": "C1 line-aware utility + PL already drafted",
+    "conditional_order_candidate": "N1 conditional rank2/rank3 chain already drafted",
+    "market_residual_candidate": "already drafted but ODDS remains blocked",
+    "chronological_validation": "already foundational"
+  },
+  "line_relation_encoder": {
+    "implementation": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+    "selftest": "v3/historical_all_market/new_lineage/line_relation_features_selftest_v1.py",
+    "receipt": "KEIRIN_LINE_RELATION_ENCODER_IMPLEMENTATION_RECEIPT_20260908_v1.json",
+    "state": "ENGINEERING_IMPLEMENTED_SELFTEST_PASS_NOT_FITTED_NOT_VALIDATED",
+    "purpose": "Convert admitted PRE line topology into deterministic low-DOF own/pair/rank3 relations for later C1/N1 evaluation.",
+    "outcome_access": false,
+    "odds_access": false
+  },
+  "unified_progression_path": [
+    "Finish formal 30 riders / 60 PRE rows and calendar-block gate without RESULT access.",
+    "Freeze/evaluate low-DOF Rider x circumference candidate against S0.",
+    "Continue prospective expected-line provenance so real line snapshots are usable at decision cutoff.",
+    "Bind deterministic line relation encoder into C1/N1 candidate implementation without fitting outcomes yet.",
+    "After proper authorization and chronological membership freeze, compare C0 PL vs C1 line-aware PL vs N1 conditional ordered-top3 on proper probability scores.",
+    "Only after probability architecture survives, separately open point-in-time market baseline/residual research.",
+    "Only after flat/fixed-risk economic edge survives, evaluate ticket structures and later bankroll sizing."
+  ],
+  "explicit_deprioritization": [
+    "deep neural network as primary next model",
+    "graph neural network as primary next model",
+    "complex latent transition model before simple line relations are tested",
+    "Kelly sizing before probability and flat-risk validation",
+    "additional synthetic threshold tuning"
+  ],
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "POST_CUTOFF_RECONSTRUCTION": "BLOCKED",
+    "main_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "self_adoption": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "runtime": "OFF"
+}
