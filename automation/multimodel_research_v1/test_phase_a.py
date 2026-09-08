@@ -141,6 +141,11 @@ from automation.multimodel_research_v1.dual_provider_fanout import (
     dual_provider_fanout_rehearsal_sha256,
     validate_dual_provider_fanout_rehearsal,
 )
+from automation.multimodel_research_v1.federation_rehearsal import (
+    build_dual_provider_federation_rehearsal,
+    dual_provider_federation_rehearsal_sha256,
+    validate_dual_provider_federation_rehearsal,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -12957,6 +12962,113 @@ class ContractTests(unittest.TestCase):
         first = dual_provider_offline_research_sha256(*args)
         cloned = tuple(copy.deepcopy(item) for item in args)
         second = dual_provider_offline_research_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def _federation_rehearsal_fixture(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        record = build_dual_provider_federation_rehearsal(
+            bound_task,
+            snapshot,
+            schema,
+        )
+        return bound_task, snapshot, schema, record
+
+    def test_417_valid_dual_provider_federation_rehearsal(self):
+        args = self._federation_rehearsal_fixture()
+        self.assertEqual(
+            validate_dual_provider_federation_rehearsal(*args),
+            args[-1],
+        )
+
+    def test_418_federation_binds_two_providers_and_models(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(value["provider_count"], 2)
+        self.assertEqual(value["provider_model_count"], 2)
+
+    def test_419_federation_binds_exact_catalog_model_ids(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(value["gemini_model_id"], "gemini-3.8-flash")
+        self.assertEqual(
+            value["claude_model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_420_federation_binds_frozen_prelive_candidate(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(
+            value["prelive_candidate_head"],
+            "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+        )
+        self.assertEqual(
+            value["prelive_candidate_seal_blob"],
+            "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+
+    def test_421_federation_binds_both_provider_rehearsals(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["gemini_rehearsal_sha256"]), 64)
+        self.assertEqual(len(value["claude_rehearsal_sha256"]), 64)
+        self.assertNotEqual(
+            value["gemini_rehearsal_sha256"],
+            value["claude_rehearsal_sha256"],
+        )
+
+    def test_422_federation_binds_fanout_and_research(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["dual_provider_fanout_sha256"]), 64)
+        self.assertEqual(len(value["dual_provider_research_sha256"]), 64)
+
+    def test_423_federation_requires_full_batch_complete(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["full_batch_complete"], True)
+        self.assertIs(value["missing_provider_fails_complete"], True)
+
+    def test_424_federation_preserves_disagreement_and_agreement_logic(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["disagreement_detected"], True)
+        self.assertIs(
+            value["agreement_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_425_federation_preserves_mechanical_falsification_route(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(
+            value["mechanical_falsification_route_preserved"],
+            True,
+        )
+
+    def test_426_federation_grants_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(value[key], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_427_federation_rejects_cross_bundle_tamper(self):
+        args = list(self._federation_rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["dual_provider_fanout_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_federation_rehearsal(*args)
+
+    def test_428_federation_digest_is_deterministic(self):
+        args = self._federation_rehearsal_fixture()
+        first = dual_provider_federation_rehearsal_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_federation_rehearsal_sha256(*cloned)
         self.assertEqual(first, second)
 
 

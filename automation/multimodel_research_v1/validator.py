@@ -38,6 +38,7 @@ REQUIRED = [
     ROOT / "rehearsal_convergence.py",
     ROOT / "dual_provider_research.py",
     ROOT / "dual_provider_fanout.py",
+    ROOT / "federation_rehearsal.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -181,6 +182,7 @@ def validate() -> dict:
     rehearsal_convergence = (ROOT / "rehearsal_convergence.py").read_text()
     dual_provider_research = (ROOT / "dual_provider_research.py").read_text()
     dual_provider_fanout = (ROOT / "dual_provider_fanout.py").read_text()
+    federation_rehearsal = (ROOT / "federation_rehearsal.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -844,6 +846,28 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_DUAL_PROVIDER_FEDERATION_REHEARSAL_v1",
+        "build_dual_provider_federation_rehearsal",
+        "validate_dual_provider_federation_rehearsal",
+        "FEDERATION_PRELIVE_HEAD_MISMATCH",
+        "FEDERATION_PRELIVE_SEAL_MISMATCH",
+        "FEDERATION_CHECKED_AT_MISMATCH",
+        "FEDERATION_FULL_BATCH_NOT_COMPLETE",
+        "FEDERATION_MISSING_PROVIDER_ACCEPTED",
+        "FEDERATION_DISAGREEMENT_NOT_DETECTED",
+        "FEDERATION_AGREEMENT_MISLABELED",
+        "MECHANICAL_FALSIFICATION_TASK",
+        "FEDERATION_FORBIDDEN_TRUE",
+        "FEDERATION_RUNTIME_NOT_OFF",
+        "dual_provider_federation_rehearsal_sha256",
+    ):
+        record(
+            f"federation_rehearsal:{token}",
+            token in federation_rehearsal,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -865,8 +889,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 416,
-        f"{test_count} != 416",
+        test_count == 428,
+        f"{test_count} != 428",
     )
 
     return {

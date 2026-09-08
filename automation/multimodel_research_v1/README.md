@@ -174,6 +174,22 @@ The exact assignment SHA256 set, fanout-plan SHA256, and both batch-summary SHA2
 
 All results are synthetic; no provider call or provider authority is created.
 
+Dual-provider full federation rehearsal
+
+`MULTIVERSE_DUAL_PROVIDER_FEDERATION_REHEARSAL_v1` converges the repository-only two-provider research path into one exact top-level evidence object.
+
+It binds:
+- frozen pre-live PR #256 head + seal;
+- one Control-clock/freshness generation;
+- Gemini full offline launch/receive/cost rehearsal;
+- Claude full offline launch/receive/cost rehearsal;
+- the exact two-provider Fanout completeness rehearsal;
+- the exact two-provider agreement/disagreement research object.
+
+The top-level record requires both providers/models, full-batch completion, missing-provider fail-closed behavior, correct disagreement detection, correct agreement non-divergence, and the mechanical-falsification route for unresolved disagreement.
+
+The federation record remains fully synthetic and grants no provider-call, credential, spend, live-execution, adoption, or Runtime authority.
+
 Dual-provider agreement/disagreement discrimination
 
 The dual-provider offline research now exercises a matched control case in addition to the intentional disagreement.
