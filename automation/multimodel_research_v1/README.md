@@ -109,6 +109,25 @@ TASK_v1 cannot be assigned under this contract.
 
 Historical RESULT_v1 validation remains unchanged.
 
+Model target policy
+
+`MULTIVERSE_MODEL_TARGET_POLICY_v1` validates the exact model target for one Assignment v1 before any live provider transport is permitted by later layers.
+
+The first-pilot profile accepts only `PINNED_OR_STABLE` model classification. Alias, preview, experimental, and unknown classifications fail closed.
+
+The classification must carry an exact evidence reference and SHA256. This package does not infer provider model stability from a model-name string alone.
+
+The policy requires:
+- alias_allowed = false;
+- preview_allowed = false;
+- experimental_allowed = false;
+- resolved_model_id_required = true;
+- stable_provider_api_required = true.
+
+Observed provider model identity must exactly match the requested model ID under this first-pilot contract.
+
+Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
+
 Fanout plan / batch completeness
 
 `MULTIVERSE_RESEARCH_FANOUT_PLAN_v1` is validated against the exact Assignment v1 objects it plans. It does not accept opaque hashes without assignment validation.

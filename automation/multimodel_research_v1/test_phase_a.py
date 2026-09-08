@@ -18,6 +18,11 @@ from automation.multimodel_research_v1.fanout import (
     summarize_fanout_results,
     validate_fanout_plan,
 )
+from automation.multimodel_research_v1.model_target import (
+    model_target_policy_sha256,
+    validate_model_target_policy,
+    validate_resolved_model_id,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -176,6 +181,34 @@ def fanout_plan(
         "snapshot_id": bound_task["snapshot_id"],
         "created_at": "2026-09-07T00:00:45Z",
         "assignment_sha256s": hashes,
+        "nonauthority": nonauthority(),
+    }
+
+
+def model_target_policy(
+    bound_task: dict,
+    bound_assignment: dict,
+    *,
+    classification: str = "PINNED_OR_STABLE",
+) -> dict:
+    return {
+        "schema": "MULTIVERSE_MODEL_TARGET_POLICY_v1",
+        "policy_id": "model-target-policy-001",
+        "assignment_sha256": assignment_sha256(
+            bound_task,
+            bound_assignment,
+        ),
+        "provider": bound_assignment["target_provider"],
+        "requested_model_id": bound_assignment["target_model"],
+        "model_id_classification": classification,
+        "classification_evidence_ref":
+            "provider-model-catalog-snapshot-001",
+        "classification_evidence_sha256": "8" * 64,
+        "alias_allowed": False,
+        "preview_allowed": False,
+        "experimental_allowed": False,
+        "resolved_model_id_required": True,
+        "stable_provider_api_required": True,
         "nonauthority": nonauthority(),
     }
 
@@ -2120,6 +2153,183 @@ class ContractTests(unittest.TestCase):
                 bound_task,
                 changed,
                 changed_plan,
+            ),
+        )
+
+
+    def test_106_valid_model_target_policy(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+        )
+        policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        self.assertEqual(
+            validate_model_target_policy(
+                bound_task,
+                bound_assignment,
+                policy,
+            ),
+            policy,
+        )
+
+    def test_107_model_target_policy_binds_exact_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy["assignment_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_model_target_policy(
+                bound_task,
+                bound_assignment,
+                policy,
+            )
+
+    def test_108_model_target_provider_and_model_match_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        for key, value in (
+            ("provider", "provider-other"),
+            ("requested_model_id", "model-other"),
+        ):
+            policy = model_target_policy(
+                bound_task,
+                bound_assignment,
+            )
+            policy[key] = value
+            with self.assertRaises(ResearchContractError):
+                validate_model_target_policy(
+                    bound_task,
+                    bound_assignment,
+                    policy,
+                )
+
+    def test_109_model_target_alias_is_rejected(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+            classification="ALIAS",
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_model_target_policy(
+                bound_task,
+                bound_assignment,
+                policy,
+            )
+
+    def test_110_model_target_preview_experimental_unknown_rejected(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        for classification in (
+            "PREVIEW",
+            "EXPERIMENTAL",
+            "UNKNOWN",
+        ):
+            policy = model_target_policy(
+                bound_task,
+                bound_assignment,
+                classification=classification,
+            )
+            with self.assertRaises(ResearchContractError):
+                validate_model_target_policy(
+                    bound_task,
+                    bound_assignment,
+                    policy,
+                )
+
+    def test_111_model_target_policy_cannot_weaken_first_pilot_flags(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        for key, weakened in (
+            ("alias_allowed", True),
+            ("preview_allowed", True),
+            ("experimental_allowed", True),
+            ("resolved_model_id_required", False),
+            ("stable_provider_api_required", False),
+        ):
+            policy = model_target_policy(
+                bound_task,
+                bound_assignment,
+            )
+            policy[key] = weakened
+            with self.assertRaises(ResearchContractError):
+                validate_model_target_policy(
+                    bound_task,
+                    bound_assignment,
+                    policy,
+                )
+
+    def test_112_model_target_classification_evidence_digest_required(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy["classification_evidence_sha256"] = None
+        with self.assertRaises(ResearchContractError):
+            validate_model_target_policy(
+                bound_task,
+                bound_assignment,
+                policy,
+            )
+
+    def test_113_resolved_model_id_must_match_requested_model(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+        )
+        policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        self.assertEqual(
+            validate_resolved_model_id(
+                bound_task,
+                bound_assignment,
+                policy,
+                "model-stable-001",
+            ),
+            "model-stable-001",
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_resolved_model_id(
+                bound_task,
+                bound_assignment,
+                policy,
+                "model-other",
+            )
+
+    def test_114_model_target_policy_digest_binds_evidence(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        first = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        second = copy.deepcopy(first)
+        second["classification_evidence_sha256"] = "7" * 64
+        self.assertNotEqual(
+            model_target_policy_sha256(
+                bound_task,
+                bound_assignment,
+                first,
+            ),
+            model_target_policy_sha256(
+                bound_task,
+                bound_assignment,
+                second,
             ),
         )
 

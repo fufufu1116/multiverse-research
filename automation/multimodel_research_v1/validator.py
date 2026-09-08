@@ -14,6 +14,7 @@ REQUIRED = [
     ROOT / "aggregator.py",
     ROOT / "assignment.py",
     ROOT / "fanout.py",
+    ROOT / "model_target.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -96,6 +97,7 @@ def validate() -> dict:
     outcome = (ROOT / "outcome.py").read_text()
     assignment = (ROOT / "assignment.py").read_text()
     fanout = (ROOT / "fanout.py").read_text()
+    model_target = (ROOT / "model_target.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -224,6 +226,29 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_MODEL_TARGET_POLICY_v1",
+        "validate_model_target_policy",
+        "MODEL_TARGET_ASSIGNMENT_SHA256_MISMATCH",
+        "MODEL_TARGET_PROVIDER_MISMATCH",
+        "MODEL_TARGET_MODEL_ID_MISMATCH",
+        "MODEL_TARGET_ALIAS_FORBIDDEN",
+        "MODEL_TARGET_PREVIEW_FORBIDDEN",
+        "MODEL_TARGET_EXPERIMENTAL_FORBIDDEN",
+        "MODEL_TARGET_RESOLVED_ID_REQUIRED",
+        "MODEL_TARGET_STABLE_API_REQUIRED",
+        "MODEL_TARGET_NOT_PINNED_OR_STABLE",
+        "classification_evidence_sha256",
+        "validate_resolved_model_id",
+        "OBSERVED_MODEL_ID_MISMATCH",
+        "model_target_policy_sha256",
+    ):
+        record(
+            f"model_target:{token}",
+            token in model_target,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -245,8 +270,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 105,
-        f"{test_count} != 105",
+        test_count == 114,
+        f"{test_count} != 114",
     )
 
     return {
