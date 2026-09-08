@@ -13322,6 +13322,7 @@ class ContractTests(unittest.TestCase):
         return (
             bound_task,
             bound_assignment,
+            provider,
             observation,
             ingestion,
         )
@@ -13548,6 +13549,7 @@ class ContractTests(unittest.TestCase):
                 args[0],
                 args[1],
                 args[2],
+                args[3],
                 tampered,
             )
 
