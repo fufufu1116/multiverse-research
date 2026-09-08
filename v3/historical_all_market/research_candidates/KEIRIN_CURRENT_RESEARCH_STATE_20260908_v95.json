@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v95",
+  "status": "LONGSHOT_CANDIDATE_INTERNALLY_COHERENT_EXTERNAL_PROSPECTIVE_VALIDATION_BLOCKED_FORMAL_GATE_1R_2ROWS_T2_5",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v94.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "525d5065f329084ea82f9c161ec4ba576f1cb31b",
+    "prior_current": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v94.json",
+    "governance": "#93 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE"
+  },
+  "longshot_candidate": {
+    "readiness": "KEIRIN_LONGSHOT_CANDIDATE_INTERNAL_READINESS_20260908_v1.json",
+    "state": "INTERNAL_ENGINEERING_COHERENT_NOT_REVIEW_FROZEN",
+    "design": "KEIRIN_LONGSHOT_SHADOW_LANE_DESIGN_20260908_v1.json",
+    "end_to_end_pipeline": "tools/keirin_longshot_shadow_pipeline_v1.py",
+    "risk_aggregator": "tools/keirin_shadow_risk_aggregator_v1.py",
+    "evidence_sufficiency": "tools/keirin_longshot_evidence_sufficiency_v1.py",
+    "validation_gate": "tools/keirin_longshot_shadow_validation_gate_v1.py",
+    "parameter_status": "PROPOSED_NOT_VALIDATED",
+    "stop_ad_hoc_threshold_tuning": true
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "candidate_count": 35,
+    "gate": "FAIL",
+    "expand_candidate_supply": false
+  },
+  "intended_front": {
+    "future_events": [
+      {
+        "venue": "伊東",
+        "date": "2026-09-14",
+        "candidates": 11,
+        "circumference_m": 333
+      },
+      {
+        "venue": "青森",
+        "date": "2026-09-14",
+        "candidates": 4,
+        "circumference_m": 400
+      },
+      {
+        "venue": "防府",
+        "date": "2026-09-15",
+        "candidates": 20,
+        "circumference_m": 333
+      }
+    ],
+    "final_day1_pre_assignment": "0/35 PENDING_FUTURE_PUBLICATION"
+  },
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "FUZZY_IDENTITY": "BLOCKED",
+    "CURRENT_PROFILE_DYNAMIC_BACKFILL": "BLOCKED",
+    "POST_CUTOFF_RECONSTRUCTION": "BLOCKED",
+    "main_mutation": false,
+    "shared_lab_auditor_steps_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "runtime": false,
+    "spend": false,
+    "live_effect": false
+  },
+  "work_conserving_next": [
+    "Do not keep tuning longshot thresholds on synthetic thought experiments; internal candidate mechanics are coherent enough for now.",
+    "Keep Sep14/Sep15 formal-support readiness intact and Fresh Read official PRE opportunities when they become available under existing authority.",
+    "Observe PR177 exact-current durable evidence only; progression remains Control-only.",
+    "When a future authority state permits prospective PRE prediction+odds capture, apply the longshot pipeline without changing the proposed thresholds after outcome access."
+  ],
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
