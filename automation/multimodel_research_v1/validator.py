@@ -30,6 +30,7 @@ REQUIRED = [
     ROOT / "provider_catalog.py",
     ROOT / "pilot_dry_run.py",
     ROOT / "catalog_freshness.py",
+    ROOT / "time_attestation.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -165,6 +166,7 @@ def validate() -> dict:
     provider_catalog = (ROOT / "provider_catalog.py").read_text()
     pilot_dry_run = (ROOT / "pilot_dry_run.py").read_text()
     catalog_freshness = (ROOT / "catalog_freshness.py").read_text()
+    time_attestation = (ROOT / "time_attestation.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -657,6 +659,29 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+        "MULTIVERSE_CATALOG_FRESHNESS_TIME_BINDING_v1",
+        "CONTROL_RUNTIME_CLOCK",
+        "MAX_RECORDING_DELAY_SECONDS = 60",
+        "validate_execution_time_attestation",
+        "TIME_ATTESTATION_RECORDED_BEFORE_ATTESTED",
+        "TIME_ATTESTATION_RECORDING_DELAY_EXCEEDED",
+        "TIME_ATTESTATION_FORBIDDEN_TRUE",
+        "build_catalog_freshness_time_binding",
+        "validate_catalog_freshness_time_binding",
+        "FRESHNESS_TIME_NOT_EXACT",
+        "FRESHNESS_TIME_CATALOG_SHA256_MISMATCH",
+        "FRESHNESS_TIME_ATTESTATION_SHA256_MISMATCH",
+        "FRESHNESS_TIME_FORBIDDEN_TRUE",
+        "catalog_freshness_time_binding_sha256",
+    ):
+        record(
+            f"time_attestation:{token}",
+            token in time_attestation,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -678,8 +703,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 300,
-        f"{test_count} != 300",
+        test_count == 312,
+        f"{test_count} != 312",
     )
 
     return {
