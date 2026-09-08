@@ -44,6 +44,10 @@ from automation.multimodel_research_v1.receipt import (
     execution_receipt_sha256,
     validate_execution_receipt,
 )
+from automation.multimodel_research_v1.smoke_profile import (
+    live_smoke_profile_sha256,
+    validate_live_smoke_profile,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -442,6 +446,64 @@ def execution_receipt(
             ],
         "receipt_created_at": "2026-09-07T00:01:05Z",
         "attestation_state": attestation_state,
+        "nonauthority": nonauthority(),
+    }
+
+
+def live_smoke_profile(
+    bound_task: dict,
+    assignments: list[dict],
+    bound_fanout_plan: dict,
+    bound_assignment: dict,
+    bound_model_target_policy: dict,
+    bound_capability_policy: dict,
+    bound_prompt: dict,
+    bound_request_envelope: dict,
+) -> dict:
+    return {
+        "schema": "MULTIVERSE_LIVE_PROVIDER_SMOKE_PROFILE_v1",
+        "profile_id": "live-smoke-profile-001",
+        "fanout_plan_sha256": fanout_plan_sha256(
+            bound_task,
+            assignments,
+            bound_fanout_plan,
+        ),
+        "assignment_sha256": assignment_sha256(
+            bound_task,
+            bound_assignment,
+        ),
+        "model_target_policy_sha256":
+            model_target_policy_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+            ),
+        "capability_policy_sha256":
+            capability_policy_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+                bound_capability_policy,
+            ),
+        "request_envelope_sha256":
+            request_envelope_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+                bound_capability_policy,
+                bound_prompt,
+                bound_request_envelope,
+            ),
+        "planned_provider_count": 1,
+        "planned_assignment_count": 1,
+        "max_attempts_per_assignment": 1,
+        "data_ceiling": "SYNTHETIC_ONLY",
+        "structured_output": "JSON_ONLY",
+        "streaming": False,
+        "protected_data": False,
+        "live_business_effect": False,
+        "runtime_activation": False,
+        "adoption_authority": False,
         "nonauthority": nonauthority(),
     }
 
@@ -4362,6 +4424,740 @@ class ContractTests(unittest.TestCase):
                 second,
                 second_receipt,
             ),
+        )
+
+
+    def test_161_valid_live_smoke_profile(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        self.assertEqual(
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                profile,
+            ),
+            profile,
+        )
+
+    def test_162_smoke_requires_exactly_one_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        second = assignment(
+            bound_task,
+            assignment_id="smoke-second",
+            provider="provider-b",
+            model="model-b",
+            role="security_challenge",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment, second]
+        plan = fanout_plan(bound_task, assignments)
+        with self.assertRaises(ResearchContractError):
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                profile,
+            )
+
+    def test_163_smoke_requires_one_provider_and_one_assignment_count(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        profile["planned_provider_count"] = 2
+        with self.assertRaises(ResearchContractError):
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                profile,
+            )
+
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        profile["planned_assignment_count"] = 2
+        with self.assertRaises(ResearchContractError):
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                profile,
+            )
+
+    def test_164_smoke_requires_single_attempt(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        profile["max_attempts_per_assignment"] = 2
+        with self.assertRaises(ResearchContractError):
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                profile,
+            )
+
+    def test_165_smoke_requires_synthetic_only_data(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        profile["data_ceiling"] = "PUBLIC"
+        with self.assertRaises(ResearchContractError):
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                profile,
+            )
+
+    def test_166_smoke_binds_exact_fanout_and_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        for key in (
+            "fanout_plan_sha256",
+            "assignment_sha256",
+        ):
+            broken = copy.deepcopy(profile)
+            broken[key] = "0" * 64
+            with self.assertRaises(ResearchContractError):
+                validate_live_smoke_profile(
+                    bound_task,
+                    assignments,
+                    plan,
+                    bound_assignment,
+                    target_policy,
+                    cap_policy,
+                    prompt,
+                    envelope,
+                    broken,
+                )
+
+    def test_167_smoke_binds_exact_policies_and_request(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        for key in (
+            "model_target_policy_sha256",
+            "capability_policy_sha256",
+            "request_envelope_sha256",
+        ):
+            broken = copy.deepcopy(profile)
+            broken[key] = "0" * 64
+            with self.assertRaises(ResearchContractError):
+                validate_live_smoke_profile(
+                    bound_task,
+                    assignments,
+                    plan,
+                    bound_assignment,
+                    target_policy,
+                    cap_policy,
+                    prompt,
+                    envelope,
+                    broken,
+                )
+
+    def test_168_smoke_requires_json_and_nonstreaming(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        broken = copy.deepcopy(profile)
+        broken["structured_output"] = "TEXT"
+        with self.assertRaises(ResearchContractError):
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                broken,
+            )
+
+        broken = copy.deepcopy(profile)
+        broken["streaming"] = True
+        with self.assertRaises(ResearchContractError):
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                broken,
+            )
+
+    def test_169_smoke_forbids_protected_business_runtime_adoption_effects(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        for key in (
+            "protected_data",
+            "live_business_effect",
+            "runtime_activation",
+            "adoption_authority",
+        ):
+            broken = copy.deepcopy(profile)
+            broken[key] = True
+            with self.assertRaises(ResearchContractError):
+                validate_live_smoke_profile(
+                    bound_task,
+                    assignments,
+                    plan,
+                    bound_assignment,
+                    target_policy,
+                    cap_policy,
+                    prompt,
+                    envelope,
+                    broken,
+                )
+
+    def test_170_smoke_profile_digest_binds_request_envelope(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        original_digest = live_smoke_profile_sha256(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            profile,
+        )
+        changed_envelope = copy.deepcopy(envelope)
+        changed_envelope[
+            "outbound_payload_sha256"
+        ] = "3" * 64
+        changed_profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            changed_envelope,
+        )
+        self.assertNotEqual(
+            original_digest,
+            live_smoke_profile_sha256(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                changed_envelope,
+                changed_profile,
+            ),
+        )
+
+    def test_171_end_to_end_contract_chain_validates_without_provider_call(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        profile = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="e2e-contract-result",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            attestation_state="LIVE_PROVIDER_ID_UNVERIFIED",
+            observed_model_id=None,
+        )
+
+        self.assertEqual(
+            validate_live_smoke_profile(
+                bound_task,
+                assignments,
+                plan,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                profile,
+            ),
+            profile,
+        )
+        self.assertEqual(
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            ),
+            receipt,
+        )
+        self.assertEqual(
+            receipt["attestation_state"],
+            "LIVE_PROVIDER_ID_UNVERIFIED",
         )
 
 

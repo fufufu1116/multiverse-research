@@ -20,6 +20,7 @@ REQUIRED = [
     ROOT / "request_envelope.py",
     ROOT / "termination.py",
     ROOT / "receipt.py",
+    ROOT / "smoke_profile.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -108,6 +109,7 @@ def validate() -> dict:
     request_envelope = (ROOT / "request_envelope.py").read_text()
     termination = (ROOT / "termination.py").read_text()
     receipt = (ROOT / "receipt.py").read_text()
+    smoke_profile = (ROOT / "smoke_profile.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -348,6 +350,27 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_LIVE_PROVIDER_SMOKE_PROFILE_v1",
+        "validate_live_smoke_profile",
+        "SMOKE_EXACTLY_ONE_ASSIGNMENT_REQUIRED",
+        "SMOKE_EXACTLY_ONE_PROVIDER_REQUIRED",
+        "SMOKE_SINGLE_ATTEMPT_REQUIRED",
+        "SMOKE_SYNTHETIC_ONLY_REQUIRED",
+        "SMOKE_JSON_ONLY_REQUIRED",
+        "SMOKE_STREAMING_FORBIDDEN",
+        "SMOKE_PROTECTED_DATA_FORBIDDEN",
+        "SMOKE_LIVE_BUSINESS_EFFECT_FORBIDDEN",
+        "SMOKE_RUNTIME_ACTIVATION_FORBIDDEN",
+        "SMOKE_ADOPTION_AUTHORITY_FORBIDDEN",
+        "live_smoke_profile_sha256",
+    ):
+        record(
+            f"smoke_profile:{token}",
+            token in smoke_profile,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -369,8 +392,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 160,
-        f"{test_count} != 160",
+        test_count == 171,
+        f"{test_count} != 171",
     )
 
     return {

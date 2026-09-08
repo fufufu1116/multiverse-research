@@ -3,7 +3,7 @@ name: MULTIVERSE Multi-Model Federation Phase A pre-Lab
 on:
   push:
     branches:
-      - agent/multimodel-termination-receipt-v1-research-20260908
+      - agent/multimodel-live-smoke-profile-v1-research-20260908
     paths:
       - 'automation/multimodel_research_v1/**'
       - '.github/workflows/multiverse-multimodel-research-phase-a-prelab.yml'
@@ -45,6 +45,7 @@ jobs:
             automation/multimodel_research_v1/request_envelope.py \
             automation/multimodel_research_v1/termination.py \
             automation/multimodel_research_v1/receipt.py \
+            automation/multimodel_research_v1/smoke_profile.py \
             automation/multimodel_research_v1/synthetic_adapter.py \
             automation/multimodel_research_v1/test_phase_a.py \
             automation/multimodel_research_v1/validator.py

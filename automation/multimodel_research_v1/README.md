@@ -128,6 +128,28 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Minimum live-provider smoke profile
+
+`MULTIVERSE_LIVE_PROVIDER_SMOKE_PROFILE_v1` binds the exact repository-side chain for the first separately authorized provider call.
+
+The profile requires:
+- exactly one provider;
+- exactly one assignment;
+- exactly one attempt;
+- synthetic-only data;
+- JSON-only structured output;
+- non-streaming;
+- no protected data;
+- no live business effect;
+- no Runtime activation;
+- no adoption authority.
+
+It binds the exact fanout plan, assignment, model-target policy, capability policy, and request envelope.
+
+The repository test suite includes an end-to-end **contract simulation** that validates the entire chain through an unverified receipt without making any real provider API call. It must not be interpreted as live-provider proof or identity attestation.
+
+Actual provider transport remains a separate authority boundary.
+
 Termination normalization and execution receipt
 
 `MULTIVERSE_PROVIDER_TERMINATION_RECORD_v1` normalizes provider-native completion outcomes while preserving the provider-native reason, response identifier when available, usage counts, exact usage-metadata digest, and response-received time.
