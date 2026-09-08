@@ -128,6 +128,16 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Execution-time attestation binding
+
+`MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1` represents a time observation produced by the later Control execution boundary. Repository validation requires its source to be `CONTROL_RUNTIME_CLOCK`, binds a source-observation SHA256, and limits recording delay to 60 seconds.
+
+`MULTIVERSE_CATALOG_FRESHNESS_TIME_BINDING_v1` requires the catalog freshness receipt's `checked_at` to exactly equal the attested Control-runtime time.
+
+This prevents a later live preparation from making an old catalog appear fresh merely by supplying an arbitrary earlier checked_at value.
+
+The repository contract does not prove that a clock source is trustworthy by itself. Trust in the source must come from the separately authorized Control execution boundary. The attestation and binding grant no provider-call, credential, spend, live-execution, adoption, or Runtime authority.
+
 Catalog freshness guard
 
 `MULTIVERSE_PROVIDER_CATALOG_FRESHNESS_v1` requires the provider/model/pricing snapshot used for a later live call to have been checked within the previous 24 hours.
