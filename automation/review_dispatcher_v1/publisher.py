@@ -47,14 +47,17 @@ def _canonical_comment_or_none(comments, *, lane, marker):
 
 def _await_published_result_canonical(
     job,
+    artifact,
     *,
     marker,
     published_comment_id,
+    receipt,
 ):
+    missed_visibility = False
     for read_index in range(POST_WRITE_VISIBILITY_MAX_READS):
         comments = _fresh_verify(job)
         try:
-            return assert_published_result_is_canonical(
+            assert_published_result_is_canonical(
                 comments,
                 lane=job["lane"],
                 marker=marker,
@@ -63,6 +66,25 @@ def _await_published_result_canonical(
         except _legacy.ReviewContractError as exc:
             if str(exc) != "NO_TRUSTED_RESULT_FOR_MARKER":
                 raise
+            missed_visibility = True
+        else:
+            if not missed_visibility:
+                return receipt
+            recovered = _recover_existing(
+                job,
+                artifact,
+                comments,
+                marker,
+            )
+            if recovered is None:
+                raise _legacy.ReviewContractError(
+                    "POST_WRITE_CANONICAL_RESULT_DISAPPEARED"
+                )
+            _legacy.require(
+                recovered["published_comment_id"] == published_comment_id,
+                "POST_WRITE_RECEIPT_COMMENT_ID_DRIFT",
+            )
+            return recovered
 
         if read_index + 1 < POST_WRITE_VISIBILITY_MAX_READS:
             time.sleep(POST_WRITE_VISIBILITY_DELAY_SECONDS)
@@ -147,12 +169,13 @@ def publish(job, artifact):
             ) from exc
         return recovered
 
-    _await_published_result_canonical(
+    return _await_published_result_canonical(
         job,
+        artifact,
         marker=marker,
         published_comment_id=receipt["published_comment_id"],
+        receipt=receipt,
     )
-    return receipt
 
 
 _legacy._fresh_verify = _fresh_verify
