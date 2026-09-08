@@ -1,0 +1,22 @@
+{
+  "record": "KEIRIN_CALENDAR_SHADOW_READINESS_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "PR177_CANDIDATE_DEFINITION_PRECOMPUTED_ANY29_GUARANTEED_IF_ADOPTED",
+  "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+  "authority": "RESEARCH_SHADOW_ONLY_NO_ADOPTION_NO_GATE_PASS_AUTHORITY",
+  "proof": "v3/historical_all_market/research_candidates/KEIRIN_LOCAL_DAY1_RACE_DATE_ANY29_SHADOW_PROOF_20260909_v1.json",
+  "evaluator": "tools/keirin_support_gate_local_day1_calendar_shadow_v1.py",
+  "selftest_spec": "tools/keirin_support_gate_local_day1_calendar_shadow_selftest_v1.py",
+  "conclusion": "If PR177 independently adopts LOCAL_DAY1_RACE_DATE, every possible 29-success subset of the locked 35 necessarily satisfies minimum_distinct_calendar_blocks_per_circumference >= 2, because the fixed 015018 baseline contributes an earlier distinct date in each circumference and every candidate contributes one later support date in each circumference.",
+  "full_gate_pass_now": false,
+  "definition_adopted_now": false,
+  "direct_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "formal_support": "1 rider / 2 PRE rows",
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
