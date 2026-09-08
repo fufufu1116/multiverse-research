@@ -36,6 +36,14 @@ from automation.multimodel_research_v1.request_envelope import (
     request_envelope_sha256,
     validate_request_envelope,
 )
+from automation.multimodel_research_v1.termination import (
+    termination_record_sha256,
+    validate_termination_record,
+)
+from automation.multimodel_research_v1.receipt import (
+    execution_receipt_sha256,
+    validate_execution_receipt,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -326,6 +334,114 @@ def request_envelope(
             ),
         ),
         "outbound_payload_sha256": "4" * 64,
+        "nonauthority": nonauthority(),
+    }
+
+
+def termination_record(
+    bound_task: dict,
+    bound_assignment: dict,
+    bound_model_target_policy: dict,
+    bound_capability_policy: dict,
+    bound_prompt: dict,
+    bound_request_envelope: dict,
+    *,
+    normalized_state: str = "COMPLETED",
+) -> dict:
+    response_id = (
+        None
+        if normalized_state == "TRANSPORT_FAILURE"
+        else "provider-response-001"
+    )
+    return {
+        "schema": "MULTIVERSE_PROVIDER_TERMINATION_RECORD_v1",
+        "assignment_sha256": assignment_sha256(
+            bound_task,
+            bound_assignment,
+        ),
+        "request_envelope_sha256":
+            request_envelope_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+                bound_capability_policy,
+                bound_prompt,
+                bound_request_envelope,
+            ),
+        "provider_response_id": response_id,
+        "native_reason": normalized_state.lower(),
+        "normalized_state": normalized_state,
+        "input_tokens": 10,
+        "output_tokens": 20,
+        "usage_metadata_sha256": "2" * 64,
+        "response_received_at": "2026-09-07T00:00:55Z",
+        "nonauthority": nonauthority(),
+    }
+
+
+def execution_receipt(
+    bound_task: dict,
+    bound_assignment: dict,
+    bound_model_target_policy: dict,
+    bound_capability_policy: dict,
+    bound_prompt: dict,
+    bound_request_envelope: dict,
+    bound_termination_record: dict,
+    bound_result: dict,
+    *,
+    attestation_state: str = "LIVE_ATTESTED",
+    observed_model_id: str | None = None,
+) -> dict:
+    if observed_model_id is None and (
+        attestation_state == "LIVE_ATTESTED"
+    ):
+        observed_model_id = bound_assignment["target_model"]
+    return {
+        "schema": "MULTIVERSE_PROVIDER_EXECUTION_RECEIPT_v1",
+        "receipt_id": "provider-receipt-001",
+        "task_sha256": sha256_json(bound_task),
+        "assignment_sha256": assignment_sha256(
+            bound_task,
+            bound_assignment,
+        ),
+        "request_envelope_sha256":
+            request_envelope_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+                bound_capability_policy,
+                bound_prompt,
+                bound_request_envelope,
+            ),
+        "termination_record_sha256":
+            termination_record_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+                bound_capability_policy,
+                bound_prompt,
+                bound_request_envelope,
+                bound_termination_record,
+            ),
+        "submission_id": bound_result["submission_id"],
+        "observed_provider":
+            bound_assignment["target_provider"],
+        "observed_model_id": observed_model_id,
+        "provider_response_id":
+            bound_termination_record[
+                "provider_response_id"
+            ],
+        "provider_response_sha256": "1" * 64,
+        "result_sha256": sha256_json(bound_result),
+        "adapter_sha256":
+            bound_assignment["adapter_sha256"],
+        "request_started_at": "2026-09-07T00:00:45Z",
+        "response_received_at":
+            bound_termination_record[
+                "response_received_at"
+            ],
+        "receipt_created_at": "2026-09-07T00:01:05Z",
+        "attestation_state": attestation_state,
         "nonauthority": nonauthority(),
     }
 
@@ -3253,6 +3369,998 @@ class ContractTests(unittest.TestCase):
                 cap_policy,
                 prompt,
                 second,
+            ),
+        )
+
+
+    def test_145_valid_completed_termination_record(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        self.assertEqual(
+            validate_termination_record(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+            ),
+            record,
+        )
+
+    def test_146_termination_binds_exact_request_envelope(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["request_envelope_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_termination_record(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+            )
+
+    def test_147_termination_response_cannot_predate_request(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["response_received_at"] = "2026-09-07T00:00:39Z"
+        with self.assertRaises(ResearchContractError):
+            validate_termination_record(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+            )
+
+    def test_148_transport_failure_may_have_no_provider_response_id(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            normalized_state="TRANSPORT_FAILURE",
+        )
+        self.assertIsNone(record["provider_response_id"])
+        self.assertEqual(
+            validate_termination_record(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+            ),
+            record,
+        )
+
+    def test_149_completed_termination_requires_provider_response_id(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["provider_response_id"] = None
+        with self.assertRaises(ResearchContractError):
+            validate_termination_record(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+            )
+
+    def test_150_termination_usage_cannot_be_negative(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        record["input_tokens"] = -1
+        with self.assertRaises(ResearchContractError):
+            validate_termination_record(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+            )
+
+    def test_151_valid_live_attested_execution_receipt(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="receipt-completed",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+        )
+        self.assertEqual(
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            ),
+            receipt,
+        )
+
+    def test_152_receipt_binds_exact_result_digest(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="receipt-result-digest",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+        )
+        receipt["result_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            )
+
+    def test_153_receipt_provider_response_digest_required(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+        )
+        receipt["provider_response_sha256"] = None
+        with self.assertRaises(ResearchContractError):
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            )
+
+    def test_154_receipt_adapter_must_match_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+        )
+        receipt["adapter_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            )
+
+    def test_155_receipt_timestamps_are_monotonic(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+        )
+        receipt["receipt_created_at"] = "2026-09-07T00:00:59Z"
+        with self.assertRaises(ResearchContractError):
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            )
+
+    def test_156_live_attested_receipt_requires_exact_model_id(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            observed_model_id="model-other",
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            )
+
+    def test_157_unverified_receipt_preserves_but_does_not_attest_model(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+            attestation_state="LIVE_PROVIDER_ID_UNVERIFIED",
+            observed_model_id="model-other",
+        )
+        self.assertEqual(
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            ),
+            receipt,
+        )
+        self.assertEqual(
+            receipt["attestation_state"],
+            "LIVE_PROVIDER_ID_UNVERIFIED",
+        )
+
+    def test_158_termination_state_must_match_result_status(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        cases = (
+            ("PROVIDER_BLOCKED", "REFUSED"),
+            ("TRANSPORT_FAILURE", "INFRA_FAILURE"),
+            ("PROVIDER_TRUNCATED", "INFRA_FAILURE"),
+        )
+        for termination_state, result_status in cases:
+            record = termination_record(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                normalized_state=termination_state,
+            )
+            value = result_v2(
+                bound_task,
+                bound_assignment,
+                submission_id=f"mapping-{termination_state}",
+                status=result_status,
+            )
+            receipt = execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                attestation_state="LIVE_PROVIDER_ID_UNVERIFIED",
+                observed_model_id=None,
+            )
+            self.assertEqual(
+                validate_execution_receipt(
+                    bound_task,
+                    bound_assignment,
+                    target_policy,
+                    cap_policy,
+                    prompt,
+                    envelope,
+                    record,
+                    value,
+                    receipt,
+                ),
+                receipt,
+            )
+
+    def test_159_receipt_response_id_must_match_termination(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        value = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            value,
+        )
+        receipt["provider_response_id"] = "provider-response-other"
+        with self.assertRaises(ResearchContractError):
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                value,
+                receipt,
+            )
+
+    def test_160_result_substitution_changes_receipt_binding(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        record = termination_record(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        first = result_v2(
+            bound_task,
+            bound_assignment,
+            submission_id="receipt-first",
+        )
+        receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            first,
+        )
+        original_receipt_digest = execution_receipt_sha256(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            first,
+            receipt,
+        )
+        second = copy.deepcopy(first)
+        second["submission_id"] = "receipt-second"
+        with self.assertRaises(ResearchContractError):
+            validate_execution_receipt(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                second,
+                receipt,
+            )
+        second_receipt = execution_receipt(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            record,
+            second,
+        )
+        self.assertNotEqual(
+            original_receipt_digest,
+            execution_receipt_sha256(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+                record,
+                second,
+                second_receipt,
             ),
         )
 

@@ -128,6 +128,39 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Termination normalization and execution receipt
+
+`MULTIVERSE_PROVIDER_TERMINATION_RECORD_v1` normalizes provider-native completion outcomes while preserving the provider-native reason, response identifier when available, usage counts, exact usage-metadata digest, and response-received time.
+
+Normalized states:
+- COMPLETED;
+- PROVIDER_REFUSED;
+- PROVIDER_BLOCKED;
+- PROVIDER_TRUNCATED;
+- PROVIDER_EMPTY;
+- TRANSPORT_FAILURE.
+
+Transport failure may legitimately have no provider response ID. Other normalized states require one.
+
+`MULTIVERSE_PROVIDER_EXECUTION_RECEIPT_v1` binds the complete execution chain:
+- exact task;
+- exact assignment;
+- exact request envelope;
+- exact termination record;
+- exact submission ID;
+- observed provider/model identity;
+- provider response ID and response-content SHA256;
+- exact final RESULT_v2 SHA256;
+- exact adapter SHA256;
+- monotonic request/response/result/receipt timestamps;
+- attestation state.
+
+`LIVE_ATTESTED` requires the observed model ID to match the exact requested stable/pinned model target. `LIVE_PROVIDER_ID_UNVERIFIED` may preserve an advisory response but explicitly does not authenticate the provider model identity.
+
+Termination-to-result mapping is fail-closed. Refusal/block maps to REFUSED; truncation/empty/transport failure maps to INFRA_FAILURE; only completed provider termination can map to COMPLETED.
+
+Receipt binding proves execution provenance only. It grants no truth or adoption authority.
+
 Provider-neutral prompt and request envelope
 
 `MULTIVERSE_PROVIDER_NEUTRAL_PROMPT_v1` contains no provider/model target. The same exact TASK_v2 + requested role + response-schema digest produces the same canonical research prompt regardless of which provider/model assignment receives it.

@@ -18,6 +18,8 @@ REQUIRED = [
     ROOT / "capability.py",
     ROOT / "prompting.py",
     ROOT / "request_envelope.py",
+    ROOT / "termination.py",
+    ROOT / "receipt.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -104,6 +106,8 @@ def validate() -> dict:
     capability = (ROOT / "capability.py").read_text()
     prompting = (ROOT / "prompting.py").read_text()
     request_envelope = (ROOT / "request_envelope.py").read_text()
+    termination = (ROOT / "termination.py").read_text()
+    receipt = (ROOT / "receipt.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -311,6 +315,39 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_TERMINATION_RECORD_v1",
+        "validate_termination_record",
+        "TERMINATION_REQUEST_SHA256_MISMATCH",
+        "TRANSPORT_FAILURE",
+        "TERMINATION_USAGE_METADATA_SHA256",
+        "TERMINATION_RESPONSE_BEFORE_REQUEST",
+        "termination_record_sha256",
+    ):
+        record(
+            f"termination:{token}",
+            token in termination,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_EXECUTION_RECEIPT_v1",
+        "validate_execution_receipt",
+        "LIVE_ATTESTED",
+        "LIVE_PROVIDER_ID_UNVERIFIED",
+        "RECEIPT_RESULT_SHA256_MISMATCH",
+        "RECEIPT_PROVIDER_RESPONSE_SHA256",
+        "RECEIPT_ADAPTER_SHA256_MISMATCH",
+        "RECEIPT_RESPONSE_TIME_MISMATCH",
+        "RECEIPT_TERMINATION_RESULT_STATUS_MISMATCH",
+        "execution_receipt_sha256",
+    ):
+        record(
+            f"receipt:{token}",
+            token in receipt,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -332,8 +369,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 144,
-        f"{test_count} != 144",
+        test_count == 160,
+        f"{test_count} != 160",
     )
 
     return {
