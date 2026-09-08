@@ -1,0 +1,27 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v2",
+  "status": "CURRENT_POINTER_V106",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "canonical_main_observed": "ed9be13f8d1c5d6fcc7ab07761c0dfdc4255df98",
+  "research_head_observed_before_resume_write": "a43d66f40df55af2e5de90a36874899fee186655",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v106.json",
+  "critical_pointers": {
+    "formal_conversion_order": "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "conversion_matrix": "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "finalizer_v2": "tools/keirin_35_formal_support_finalizer_v2.py",
+    "ctc_preflight_v2": "v3/historical_all_market/research_candidates/KEIRIN_CTC_0914_0915_PREFLIGHT_EVIDENCE_20260908_v2.json",
+    "ticket_design_v2": "v3/historical_all_market/research_candidates/KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v2.json",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v1.py",
+    "model_ticket_bridge": "tools/keirin_model_ticket_comparison_v1.py",
+    "manual_odds_gate": "tools/keirin_manual_odds_purchase_gate_v1.py"
+  },
+  "hard_boundaries": {
+    "formal_support_result_reconstruction": false,
+    "live_odds_required_for_simulation": false,
+    "exact_cutoff_timestamp_blocking": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "resume_rule": "Fresh-read canonical main, this research branch HEAD, CURRENT v106 and PR177 before treating any CURRENT/NOW/LATEST field as authoritative."
+}
