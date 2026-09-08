@@ -1,0 +1,114 @@
+{
+  "record": "KEIRIN_DEV2000_AB_GIRLS_MARKET_REPLAY_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "BURNED_AB_GIRLS_DIAGNOSTIC_COMPLETE_NO_PROFIT_RULE",
+  "data": {
+    "A_races": 1000,
+    "B_races": 500,
+    "girls_A": 63,
+    "girls_B": 50,
+    "girls_AB": 113,
+    "C_scoring_count": 0
+  },
+  "ranking_signal": {
+    "candidate_a_top1_hit": {
+      "A": 0.6507936508,
+      "B": 0.76,
+      "AB": 0.6991150442
+    },
+    "candidate_a_winner_in_top3": {
+      "AB": 0.9557522124
+    },
+    "model_agreement_top1_hit": {
+      "AB": 0.7238095238
+    },
+    "non_girls_candidate_a_top1_hit": {
+      "A": 0.4354322305,
+      "B": 0.4222222222,
+      "AB": 0.431146359
+    }
+  },
+  "market_replay": {
+    "tested_markets": [
+      "2shatan",
+      "2shahuku",
+      "3renhuku",
+      "3rentan"
+    ],
+    "tested_confidence": [
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ],
+    "tested_ev_filters": [
+      null,
+      0.1,
+      0.2
+    ],
+    "tested_caps": [
+      null,
+      10,
+      20
+    ],
+    "both_positive_A_B_rules_with_minimum_counts": 0,
+    "closest_simple_examples": [
+      {
+        "market": "2shahuku",
+        "confidence": 0.5,
+        "A": {
+          "bets": 11,
+          "roi": -0.0181818182
+        },
+        "B": {
+          "bets": 11,
+          "roi": 0.1181818182
+        },
+        "AB": {
+          "bets": 22,
+          "hit_rate": 0.5454545455,
+          "roi": 0.05
+        }
+      },
+      {
+        "market": "2shatan",
+        "confidence": 0.45,
+        "A": {
+          "bets": 24,
+          "roi": -0.0708333333
+        },
+        "B": {
+          "bets": 30,
+          "roi": 0.0333333333
+        },
+        "AB": {
+          "bets": 54,
+          "hit_rate": 0.4814814815,
+          "roi": -0.012962963
+        }
+      },
+      {
+        "market": "3renhuku",
+        "confidence": 0.4,
+        "A_B_combined_baseline": {
+          "bets": 66,
+          "hit_rate": 0.3636363636,
+          "roi": -0.2863636364
+        }
+      }
+    ],
+    "tiny_sample_warning": "A one-race EV-filtered 3renhuku win existed in the grid and is explicitly rejected as meaningless."
+  },
+  "interpretation": [
+    "Girls races were substantially easier to rank for winner probability in both A and B.",
+    "That predictability did not translate into a stable positive A/B betting rule in the tested simple ticket families.",
+    "Treat Girls as a separate prediction regime and likely NO_BET/value-scarce regime until prospective economics support a rule."
+  ],
+  "hard_boundaries": {
+    "C_scoring_count": 0,
+    "profitability_claim": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
