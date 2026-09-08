@@ -1,0 +1,616 @@
+{
+  "record": "KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2",
+  "status": "FROZEN_PRE_ONLY_GENERALIZED_CHALLENGER_RIDER_FIRST_STYLE_FALLBACK_NO_RESULT_FIT",
+  "date_jst": "2026-09-08",
+  "supersedes_for_development_experiment": "KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+  "purpose": "Increase practical coverage without using outcomes. Exact rider deltas remain first priority; unsupported riders receive a weak current-PRE-style x circumference fallback learned only from the 30-rider / 60-row PRE pair input.",
+  "input_artifact": "KEIRIN_RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT_20260908_v1.json",
+  "baseline": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "beta_frozen": true
+  },
+  "rider_level": {
+    "source_model": "KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+    "supported_riders": 30,
+    "lookup": [
+      {
+        "official_registration_number": "012681",
+        "rider_name": "辻 力",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 75.333
+        },
+        "support_400": {
+          "race_date": "2026-06-25",
+          "venue": "青森",
+          "competition_score": 69.93
+        },
+        "raw_half_score_difference": 2.7015,
+        "clipped_half_score_difference": 2.7015,
+        "delta_logit": 0.120273131682
+      },
+      {
+        "official_registration_number": "012879",
+        "rider_name": "石井 毅",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 78.583
+        },
+        "support_400": {
+          "race_date": "2026-06-17",
+          "venue": "青森",
+          "competition_score": 73.75
+        },
+        "raw_half_score_difference": 2.4165,
+        "clipped_half_score_difference": 2.4165,
+        "delta_logit": 0.107584683586
+      },
+      {
+        "official_registration_number": "013355",
+        "rider_name": "桑原 大志",
+        "support_333": {
+          "race_date": "2026-04-02",
+          "venue": "伊東",
+          "competition_score": 108.615
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 110.53
+        },
+        "raw_half_score_difference": -0.9575,
+        "clipped_half_score_difference": -0.9575,
+        "delta_logit": -0.042628733513
+      },
+      {
+        "official_registration_number": "013484",
+        "rider_name": "表 大暁",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 81.625
+        },
+        "support_400": {
+          "race_date": "2026-04-04",
+          "venue": "豊橋",
+          "competition_score": 79.83
+        },
+        "raw_half_score_difference": 0.8975,
+        "clipped_half_score_difference": 0.8975,
+        "delta_logit": 0.039957481282
+      },
+      {
+        "official_registration_number": "013604",
+        "rider_name": "庄子 信弘",
+        "support_333": {
+          "race_date": "2026-08-20",
+          "venue": "富山",
+          "competition_score": 98.95
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 99.57
+        },
+        "raw_half_score_difference": -0.31,
+        "clipped_half_score_difference": -0.31,
+        "delta_logit": -0.013801469858
+      },
+      {
+        "official_registration_number": "013803",
+        "rider_name": "三ツ石 康洋",
+        "support_333": {
+          "race_date": "2026-06-08",
+          "venue": "防府",
+          "competition_score": 91.04
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 92.92
+        },
+        "raw_half_score_difference": -0.94,
+        "clipped_half_score_difference": -0.94,
+        "delta_logit": -0.041849618279
+      },
+      {
+        "official_registration_number": "013936",
+        "rider_name": "小埜 正義",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 90.8
+        },
+        "support_400": {
+          "race_date": "2026-07-25",
+          "venue": "武雄",
+          "competition_score": 91.96
+        },
+        "raw_half_score_difference": -0.58,
+        "clipped_half_score_difference": -0.58,
+        "delta_logit": -0.025822104896
+      },
+      {
+        "official_registration_number": "013961",
+        "rider_name": "松村 友和",
+        "support_333": {
+          "race_date": "2026-03-19",
+          "venue": "防府",
+          "competition_score": 103.56
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 103.3
+        },
+        "raw_half_score_difference": 0.13,
+        "clipped_half_score_difference": 0.13,
+        "delta_logit": 0.005787713166
+      },
+      {
+        "official_registration_number": "014062",
+        "rider_name": "齋藤 昌弘",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 76.32
+        },
+        "support_400": {
+          "race_date": "2026-07-14",
+          "venue": "函館",
+          "competition_score": 72.16
+        },
+        "raw_half_score_difference": 2.08,
+        "clipped_half_score_difference": 2.08,
+        "delta_logit": 0.09260341066
+      },
+      {
+        "official_registration_number": "014136",
+        "rider_name": "金澤 竜二",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 93.38
+        },
+        "support_400": {
+          "race_date": "2026-07-23",
+          "venue": "青森",
+          "competition_score": 94.7
+        },
+        "raw_half_score_difference": -0.66,
+        "clipped_half_score_difference": -0.66,
+        "delta_logit": -0.029383774536
+      },
+      {
+        "official_registration_number": "014356",
+        "rider_name": "佐藤 一伸",
+        "support_333": {
+          "race_date": "2026-04-18",
+          "venue": "伊東",
+          "competition_score": 106.51
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 109.87
+        },
+        "raw_half_score_difference": -1.68,
+        "clipped_half_score_difference": -1.68,
+        "delta_logit": -0.074795062456
+      },
+      {
+        "official_registration_number": "014570",
+        "rider_name": "松澤 敬輔",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 93.208
+        },
+        "support_400": {
+          "race_date": "2025-10-27",
+          "venue": "青森",
+          "competition_score": 90.14
+        },
+        "raw_half_score_difference": 1.534,
+        "clipped_half_score_difference": 1.534,
+        "delta_logit": 0.068295015362
+      },
+      {
+        "official_registration_number": "014633",
+        "rider_name": "田中 陽平",
+        "support_333": {
+          "race_date": "2026-06-07",
+          "venue": "伊東",
+          "competition_score": 98.136
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 98.1
+        },
+        "raw_half_score_difference": 0.018,
+        "clipped_half_score_difference": 0.018,
+        "delta_logit": 0.000801375669
+      },
+      {
+        "official_registration_number": "015018",
+        "rider_name": "高橋 梨香",
+        "support_333": {
+          "race_date": "2026-09-04",
+          "venue": "防府",
+          "competition_score": 53.88
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 53.17
+        },
+        "raw_half_score_difference": 0.355,
+        "clipped_half_score_difference": 0.355,
+        "delta_logit": 0.015804909031
+      },
+      {
+        "official_registration_number": "015042",
+        "rider_name": "高橋 泰裕",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 91.2
+        },
+        "support_400": {
+          "race_date": "2026-03-10",
+          "venue": "豊橋",
+          "competition_score": 87
+        },
+        "raw_half_score_difference": 2.1,
+        "clipped_half_score_difference": 2.1,
+        "delta_logit": 0.09349382807
+      },
+      {
+        "official_registration_number": "015150",
+        "rider_name": "宮地 寧々",
+        "support_333": {
+          "race_date": "2026-06-28",
+          "venue": "伊東",
+          "competition_score": 50.346
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 50.07
+        },
+        "raw_half_score_difference": 0.138,
+        "clipped_half_score_difference": 0.138,
+        "delta_logit": 0.00614388013
+      },
+      {
+        "official_registration_number": "015179",
+        "rider_name": "皿屋 豊",
+        "support_333": {
+          "race_date": "2026-08-23",
+          "venue": "防府",
+          "competition_score": 105
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 104.67
+        },
+        "raw_half_score_difference": 0.165,
+        "clipped_half_score_difference": 0.165,
+        "delta_logit": 0.007345943634
+      },
+      {
+        "official_registration_number": "015356",
+        "rider_name": "杉浦 侑吾",
+        "support_333": {
+          "race_date": "2026-07-25",
+          "venue": "奈良",
+          "competition_score": 111.45
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 111.25
+        },
+        "raw_half_score_difference": 0.1,
+        "clipped_half_score_difference": 0.1,
+        "delta_logit": 0.004452087051
+      },
+      {
+        "official_registration_number": "015363",
+        "rider_name": "田中 大我",
+        "support_333": {
+          "race_date": "2026-06-13",
+          "venue": "伊東",
+          "competition_score": 101.16
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 102.63
+        },
+        "raw_half_score_difference": -0.735,
+        "clipped_half_score_difference": -0.735,
+        "delta_logit": -0.032722839825
+      },
+      {
+        "official_registration_number": "015439",
+        "rider_name": "佐々木 眞也",
+        "support_333": {
+          "race_date": "2026-06-07",
+          "venue": "伊東",
+          "competition_score": 111.43
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 111.55
+        },
+        "raw_half_score_difference": -0.06,
+        "clipped_half_score_difference": -0.06,
+        "delta_logit": -0.002671252231
+      },
+      {
+        "official_registration_number": "015463",
+        "rider_name": "畝木 聖",
+        "support_333": {
+          "race_date": "2026-04-12",
+          "venue": "富山",
+          "competition_score": 94.25
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 92.73
+        },
+        "raw_half_score_difference": 0.76,
+        "clipped_half_score_difference": 0.76,
+        "delta_logit": 0.033835861587
+      },
+      {
+        "official_registration_number": "015515",
+        "rider_name": "平山 優太",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 81.458
+        },
+        "support_400": {
+          "race_date": "2026-04-30",
+          "venue": "函館",
+          "competition_score": 81.05
+        },
+        "raw_half_score_difference": 0.204,
+        "clipped_half_score_difference": 0.204,
+        "delta_logit": 0.009082257584
+      },
+      {
+        "official_registration_number": "015539",
+        "rider_name": "上杉 嘉槻",
+        "support_333": {
+          "race_date": "2026-04-02",
+          "venue": "伊東",
+          "competition_score": 94.18
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 95.38
+        },
+        "raw_half_score_difference": -0.6,
+        "clipped_half_score_difference": -0.6,
+        "delta_logit": -0.026712522306
+      },
+      {
+        "official_registration_number": "015610",
+        "rider_name": "永井 哉多",
+        "support_333": {
+          "race_date": "2026-02-21",
+          "venue": "防府",
+          "competition_score": 94.87
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 96.46
+        },
+        "raw_half_score_difference": -0.795,
+        "clipped_half_score_difference": -0.795,
+        "delta_logit": -0.035394092055
+      },
+      {
+        "official_registration_number": "015616",
+        "rider_name": "齋藤 雄行",
+        "support_333": {
+          "race_date": "2026-08-23",
+          "venue": "防府",
+          "competition_score": 93.35
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 93.47
+        },
+        "raw_half_score_difference": -0.06,
+        "clipped_half_score_difference": -0.06,
+        "delta_logit": -0.002671252231
+      },
+      {
+        "official_registration_number": "015618",
+        "rider_name": "高本 和也",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 90.055
+        },
+        "support_400": {
+          "race_date": "2026-04-15",
+          "venue": "豊橋",
+          "competition_score": 90.88
+        },
+        "raw_half_score_difference": -0.4125,
+        "clipped_half_score_difference": -0.4125,
+        "delta_logit": -0.018364859085
+      },
+      {
+        "official_registration_number": "015639",
+        "rider_name": "松下 綾馬",
+        "support_333": {
+          "race_date": "2026-09-03",
+          "venue": "富山",
+          "competition_score": 86.333
+        },
+        "support_400": {
+          "race_date": "2026-08-20",
+          "venue": "玉野",
+          "competition_score": 85.29
+        },
+        "raw_half_score_difference": 0.5215,
+        "clipped_half_score_difference": 0.5215,
+        "delta_logit": 0.023217633971
+      },
+      {
+        "official_registration_number": "015734",
+        "rider_name": "岡崎 陸登",
+        "support_333": {
+          "race_date": "2026-06-13",
+          "venue": "伊東",
+          "competition_score": 89.33
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 89.48
+        },
+        "raw_half_score_difference": -0.075,
+        "clipped_half_score_difference": -0.075,
+        "delta_logit": -0.003339065288
+      },
+      {
+        "official_registration_number": "015787",
+        "rider_name": "中村 龍吉",
+        "support_333": {
+          "race_date": "2026-05-07",
+          "venue": "奈良",
+          "competition_score": 94.42
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 99.11
+        },
+        "raw_half_score_difference": -2.345,
+        "clipped_half_score_difference": -2.345,
+        "delta_logit": -0.104401441345
+      },
+      {
+        "official_registration_number": "015896",
+        "rider_name": "丸山 留依",
+        "support_333": {
+          "race_date": "2026-06-13",
+          "venue": "伊東",
+          "competition_score": 103.68
+        },
+        "support_400": {
+          "race_date": "2026-08-30",
+          "venue": "川崎",
+          "competition_score": 104.2
+        },
+        "raw_half_score_difference": -0.26,
+        "clipped_half_score_difference": -0.26,
+        "delta_logit": -0.011575426332
+      }
+    ],
+    "priority": "USE_RIDER_DELTA_WHEN_EXACT_OFFICIAL_REGISTRATION_IS_IN_LOOKUP"
+  },
+  "style_fallback": {
+    "current_pre_field": "style",
+    "eligible_styles": [
+      "逃",
+      "追",
+      "両"
+    ],
+    "construction": "For each supported rider, h=(PRE_score333-PRE_score400)/2. Group by the rider's available PRE style from the frozen support pair, take the group median h, then shrink with rho=n/(n+20). delta_style=beta*rho*median(h).",
+    "prior_strength": 20,
+    "tuned_on_outcomes": false,
+    "lookup": {
+      "逃": {
+        "n_riders": 11,
+        "median_half_score_difference": -0.26,
+        "shrinkage_rho": 0.354838709677,
+        "delta_logit": -0.020537046719
+      },
+      "追": {
+        "n_riders": 10,
+        "median_half_score_difference": 0.51375,
+        "shrinkage_rho": 0.333333333333,
+        "delta_logit": 0.038120995374
+      },
+      "両": {
+        "n_riders": 8,
+        "median_half_score_difference": 0.039,
+        "shrinkage_rho": 0.285714285714,
+        "delta_logit": 0.0024804485
+      }
+    },
+    "unknown_style_behavior": "EXACT_S0_FALLBACK"
+  },
+  "formula": {
+    "circumference_code": {
+      "400": -1,
+      "333_OR_333_33": 1
+    },
+    "precedence": [
+      "If exact rider delta exists: z=beta*score + q*delta_rider",
+      "Else if current PRE style is 逃/追/両: z=beta*score + q*delta_style",
+      "Else: z=beta*score"
+    ],
+    "probability": "softmax within race"
+  },
+  "safeguards": {
+    "outcomes_used": false,
+    "payout_used": false,
+    "odds_used": false,
+    "human_forecast_used": false,
+    "current_profile_backfill_used": false,
+    "style_source_must_be_current_race_PRE": true,
+    "s0_refit": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "diagnostics": {
+    "style_lookup": {
+      "逃": {
+        "n_riders": 11,
+        "median_half_score_difference": -0.26,
+        "shrinkage_rho": 0.354838709677,
+        "delta_logit": -0.020537046719
+      },
+      "追": {
+        "n_riders": 10,
+        "median_half_score_difference": 0.51375,
+        "shrinkage_rho": 0.333333333333,
+        "delta_logit": 0.038120995374
+      },
+      "両": {
+        "n_riders": 8,
+        "median_half_score_difference": 0.039,
+        "shrinkage_rho": 0.285714285714,
+        "delta_logit": 0.0024804485
+      }
+    },
+    "style_fallback_max_abs_delta": 0.038120995374,
+    "expected_behavior": "Small generalized shifts; rider-specific delta overrides style fallback."
+  },
+  "authority": {
+    "development_simulation_ready": true,
+    "accuracy_improvement_claim": false,
+    "production_promotion": false,
+    "result_join_authorized": false
+  },
+  "owner_action_required_now": false
+}
