@@ -545,6 +545,8 @@ def build_provider_pilot_roundtrip_unchecked(
         "provider_response_id":
             observation["provider_response_id"],
         "normalized_state": observation["normalized_state"],
+        "input_tokens": observation["input_tokens"],
+        "output_tokens": observation["output_tokens"],
         "attestation_state": receipt["attestation_state"],
         "synthetic_only": True,
         "live_provider_execution": False,
