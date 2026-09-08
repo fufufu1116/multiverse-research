@@ -35,6 +35,15 @@ DUAL_PROVIDER_KEYS = {
     "agreement_cross_model_divergence",
     "agreement_cross_provider_divergence",
     "agreement_unresolved_divergence_count",
+    "refusal_aggregate_sha256",
+    "refusal_descriptive_label",
+    "refusal_cross_model_divergence",
+    "refusal_cross_provider_divergence",
+    "refusal_observed_provider_count",
+    "refusal_completed_provider_count",
+    "refusal_noncompleted_result_count",
+    "refusal_refused_status_count",
+    "refusal_unresolved_divergence_count",
     "descriptive_label",
     "cross_model_divergence",
     "cross_provider_divergence",
@@ -82,6 +91,7 @@ def _result(
     position: str,
     assertion: str,
     claim_key: str,
+    status: str = "COMPLETED",
 ) -> dict[str, Any]:
     assignment = matrix["assignment"]
     return {
@@ -96,7 +106,7 @@ def _result(
             "model": assignment["target_model"],
             "role": assignment["requested_role"],
         },
-        "status": "COMPLETED",
+        "status": status,
         "findings": [
             {
                 "finding_id": f"{submission_id}-finding-001",
@@ -119,6 +129,68 @@ def _result(
         ],
         "nonauthority": dict(task["nonauthority"]),
     }
+
+
+def _refusal_control(
+    task: dict[str, Any],
+    gemini: dict[str, Any],
+    claude: dict[str, Any],
+    gemini_result: dict[str, Any],
+    claim_key: str,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    claude_refusal_result = _result(
+        task,
+        claude,
+        submission_id="dual-provider-claude-refusal-001",
+        position="OPPOSE",
+        assertion="Synthetic Claude refusal carries no completed opinion.",
+        claim_key=claim_key,
+        status="REFUSED",
+    )
+    refusal_aggregate = aggregate_results_v2(
+        task,
+        [gemini_result, claude_refusal_result],
+    )
+    refusal_claims = [
+        item
+        for item in refusal_aggregate["claims"]
+        if item["claim_key"] == claim_key
+    ]
+    require(len(refusal_claims) == 1, "DUAL_PROVIDER_REFUSAL_CLAIM_COUNT")
+    refusal_claim = refusal_claims[0]
+    require(
+        refusal_claim["descriptive_label"] == "SUPPORT_ONLY",
+        "DUAL_PROVIDER_REFUSAL_LABEL",
+    )
+    require(
+        refusal_claim["cross_model_divergence"] is False,
+        "DUAL_PROVIDER_REFUSAL_CROSS_MODEL",
+    )
+    require(
+        refusal_claim["cross_provider_divergence"] is False,
+        "DUAL_PROVIDER_REFUSAL_CROSS_PROVIDER",
+    )
+    require(
+        refusal_aggregate["observed_unique_provider_count"] == 2,
+        "DUAL_PROVIDER_REFUSAL_OBSERVED_PROVIDER_COUNT",
+    )
+    require(
+        refusal_aggregate["completed_unique_provider_count"] == 1,
+        "DUAL_PROVIDER_REFUSAL_COMPLETED_PROVIDER_COUNT",
+    )
+    require(
+        len(refusal_aggregate["noncompleted_results"]) == 1,
+        "DUAL_PROVIDER_REFUSAL_NONCOMPLETED_COUNT",
+    )
+    require(
+        refusal_aggregate["status_counts"]["REFUSED"] == 1,
+        "DUAL_PROVIDER_REFUSAL_STATUS_COUNT",
+    )
+    require(
+        refusal_aggregate["unresolved_divergences"] == [],
+        "DUAL_PROVIDER_REFUSAL_UNRESOLVED",
+    )
+    return claude_refusal_result, refusal_aggregate, refusal_claim
 
 
 def build_dual_provider_offline_research(
@@ -261,6 +333,18 @@ def build_dual_provider_offline_research(
         "DUAL_PROVIDER_AGREEMENT_UNRESOLVED",
     )
 
+    (
+        claude_refusal_result,
+        refusal_aggregate,
+        refusal_claim,
+    ) = _refusal_control(
+        task,
+        gemini,
+        claude,
+        gemini_result,
+        claim_key,
+    )
+
     record = {
         "schema": DUAL_PROVIDER_SCHEMA,
         "research_id": "dual-provider-offline-research-001",
@@ -298,6 +382,42 @@ def build_dual_provider_offline_research(
             agreement_claim["cross_provider_divergence"],
         "agreement_unresolved_divergence_count":
             len(agreement_aggregate["unresolved_divergences"]),
+        "refusal_aggregate_sha256":
+            refusal_aggregate["aggregate_sha256"],
+        "refusal_descriptive_label":
+            refusal_claim["descriptive_label"],
+        "refusal_cross_model_divergence":
+            refusal_claim["cross_model_divergence"],
+        "refusal_cross_provider_divergence":
+            refusal_claim["cross_provider_divergence"],
+        "refusal_observed_provider_count":
+            refusal_aggregate["observed_unique_provider_count"],
+        "refusal_completed_provider_count":
+            refusal_aggregate["completed_unique_provider_count"],
+        "refusal_noncompleted_result_count":
+            len(refusal_aggregate["noncompleted_results"]),
+        "refusal_refused_status_count":
+            refusal_aggregate["status_counts"]["REFUSED"],
+        "refusal_unresolved_divergence_count":
+            len(refusal_aggregate["unresolved_divergences"]),
+        "refusal_aggregate_sha256":
+            refusal_aggregate["aggregate_sha256"],
+        "refusal_descriptive_label":
+            refusal_claim["descriptive_label"],
+        "refusal_cross_model_divergence":
+            refusal_claim["cross_model_divergence"],
+        "refusal_cross_provider_divergence":
+            refusal_claim["cross_provider_divergence"],
+        "refusal_observed_provider_count":
+            refusal_aggregate["observed_unique_provider_count"],
+        "refusal_completed_provider_count":
+            refusal_aggregate["completed_unique_provider_count"],
+        "refusal_noncompleted_result_count":
+            len(refusal_aggregate["noncompleted_results"]),
+        "refusal_refused_status_count":
+            refusal_aggregate["status_counts"]["REFUSED"],
+        "refusal_unresolved_divergence_count":
+            len(refusal_aggregate["unresolved_divergences"]),
         "descriptive_label": claim["descriptive_label"],
         "cross_model_divergence": claim["cross_model_divergence"],
         "cross_provider_divergence":
@@ -393,6 +513,17 @@ def build_dual_provider_offline_research_unchecked(
         item for item in agreement_aggregate["claims"]
         if item["claim_key"] == claim_key
     ][0]
+    (
+        claude_refusal_result,
+        refusal_aggregate,
+        refusal_claim,
+    ) = _refusal_control(
+        task,
+        gemini,
+        claude,
+        gemini_result,
+        claim_key,
+    )
     return {
         "schema": DUAL_PROVIDER_SCHEMA,
         "research_id": "dual-provider-offline-research-001",

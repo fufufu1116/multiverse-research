@@ -63,6 +63,7 @@ FEDERATION_KEYS = {
     "full_batch_complete",
     "missing_provider_fails_complete",
     "provider_failure_fails_complete",
+    "provider_refusal_not_mislabeled_divergent",
     "disagreement_detected",
     "agreement_not_mislabeled_divergent",
     "mechanical_falsification_route_preserved",
@@ -295,6 +296,18 @@ def build_dual_provider_federation_rehearsal(
         "FEDERATION_AGREEMENT_MISLABELED",
     )
     require(
+        research["refusal_descriptive_label"] == "SUPPORT_ONLY",
+        "FEDERATION_REFUSAL_LABEL",
+    )
+    require(
+        research["refusal_cross_provider_divergence"] is False,
+        "FEDERATION_REFUSAL_MISLABELED_DIVERGENT",
+    )
+    require(
+        research["refusal_completed_provider_count"] == 1,
+        "FEDERATION_REFUSAL_COMPLETED_PROVIDER_COUNT",
+    )
+    require(
         research["required_next_action"]
         == "MECHANICAL_FALSIFICATION_TASK",
         "FEDERATION_FALSIFICATION_ROUTE",
@@ -335,6 +348,7 @@ def build_dual_provider_federation_rehearsal(
         "full_batch_complete": True,
         "missing_provider_fails_complete": True,
         "provider_failure_fails_complete": True,
+        "provider_refusal_not_mislabeled_divergent": True,
         "disagreement_detected": True,
         "agreement_not_mislabeled_divergent": True,
         "mechanical_falsification_route_preserved": True,
@@ -417,6 +431,10 @@ def build_dual_provider_federation_rehearsal_unchecked(
         "provider_failure_fails_complete":
             fanout["failure_demo_all_planned_observed"]
             and not fanout["failure_demo_all_planned_completed"],
+        "provider_refusal_not_mislabeled_divergent":
+            research["refusal_descriptive_label"] == "SUPPORT_ONLY"
+            and not research["refusal_cross_provider_divergence"]
+            and research["refusal_completed_provider_count"] == 1,
         "disagreement_detected":
             research["cross_provider_divergence"],
         "agreement_not_mislabeled_divergent":

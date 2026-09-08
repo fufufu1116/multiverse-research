@@ -815,6 +815,13 @@ def validate() -> dict:
         "DUAL_PROVIDER_AGREEMENT_CROSS_MODEL",
         "DUAL_PROVIDER_AGREEMENT_CROSS_PROVIDER",
         "DUAL_PROVIDER_AGREEMENT_UNRESOLVED",
+        "DUAL_PROVIDER_REFUSAL_LABEL",
+        "DUAL_PROVIDER_REFUSAL_CROSS_MODEL",
+        "DUAL_PROVIDER_REFUSAL_CROSS_PROVIDER",
+        "DUAL_PROVIDER_REFUSAL_OBSERVED_PROVIDER_COUNT",
+        "DUAL_PROVIDER_REFUSAL_COMPLETED_PROVIDER_COUNT",
+        "DUAL_PROVIDER_REFUSAL_STATUS_COUNT",
+        "DUAL_PROVIDER_REFUSAL_UNRESOLVED",
         "DUAL_PROVIDER_FORBIDDEN_TRUE",
         "DUAL_PROVIDER_RUNTIME_NOT_OFF",
         "dual_provider_offline_research_sha256",
@@ -866,6 +873,9 @@ def validate() -> dict:
         "FEDERATION_FAILED_PROVIDER_ACCEPTED",
         "FEDERATION_DISAGREEMENT_NOT_DETECTED",
         "FEDERATION_AGREEMENT_MISLABELED",
+        "FEDERATION_REFUSAL_LABEL",
+        "FEDERATION_REFUSAL_MISLABELED_DIVERGENT",
+        "FEDERATION_REFUSAL_COMPLETED_PROVIDER_COUNT",
         "MECHANICAL_FALSIFICATION_TASK",
         "FEDERATION_FORBIDDEN_TRUE",
         "FEDERATION_RUNTIME_NOT_OFF",
@@ -899,8 +909,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 448,
-        f"{test_count} != 448",
+        test_count == 460,
+        f"{test_count} != 460",
     )
 
     return {

@@ -218,6 +218,21 @@ The top-level record requires both providers/models, full-batch completion, miss
 
 The federation record remains fully synthetic and grants no provider-call, credential, spend, live-execution, adoption, or Runtime authority.
 
+Provider refusal is not disagreement
+
+The two-provider comparison now includes a refusal control.
+
+With Gemini COMPLETED/SUPPORT and Claude REFUSED while carrying a synthetic OPPOSE-shaped finding payload:
+- both providers are observed;
+- only Gemini counts as a completed provider;
+- one result is non-completed / REFUSED;
+- the claim remains `SUPPORT_ONLY`;
+- cross-model divergence remains false;
+- cross-provider divergence remains false;
+- unresolved divergence count remains zero.
+
+This proves that provider refusal or inability to answer is not silently converted into an opposing research opinion.
+
 Dual-provider agreement/disagreement discrimination
 
 The dual-provider offline research now exercises a matched control case in addition to the intentional disagreement.

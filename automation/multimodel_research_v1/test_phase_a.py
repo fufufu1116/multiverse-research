@@ -13203,5 +13203,76 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(value["runtime"], "OFF")
 
 
+    def test_449_dual_provider_refusal_observes_two_providers(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["refusal_observed_provider_count"], 2)
+
+    def test_450_dual_provider_refusal_completes_only_one_provider(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["refusal_completed_provider_count"], 1)
+        self.assertEqual(value["refusal_noncompleted_result_count"], 1)
+
+    def test_451_dual_provider_refusal_records_refused_status(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["refusal_refused_status_count"], 1)
+
+    def test_452_dual_provider_refusal_is_support_only(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["refusal_descriptive_label"],
+            "SUPPORT_ONLY",
+        )
+
+    def test_453_dual_provider_refusal_is_not_cross_provider_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(
+            value["refusal_cross_provider_divergence"],
+            False,
+        )
+
+    def test_454_dual_provider_refusal_is_not_cross_model_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["refusal_cross_model_divergence"], False)
+
+    def test_455_dual_provider_refusal_has_no_unresolved_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["refusal_unresolved_divergence_count"],
+            0,
+        )
+
+    def test_456_dual_provider_refusal_aggregate_digest_is_bound(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(len(value["refusal_aggregate_sha256"]), 64)
+
+    def test_457_federation_refusal_is_not_mislabeled_divergent(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(
+            value["provider_refusal_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_458_federation_refusal_guard_coexists_with_disagreement(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["disagreement_detected"], True)
+        self.assertIs(
+            value["provider_refusal_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_459_federation_rejects_refusal_guard_tamper(self):
+        args = list(self._federation_rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["provider_refusal_not_mislabeled_divergent"] = False
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_federation_rehearsal(*args)
+
+    def test_460_refusal_guard_preserves_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["provider_call_authorized"], False)
+        self.assertIs(value["spend_authorized"], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+
 if __name__ == "__main__":
     unittest.main()
