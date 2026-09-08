@@ -12903,5 +12903,62 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(first, second)
 
 
+    def test_409_dual_provider_agreement_is_support_only(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["agreement_descriptive_label"],
+            "SUPPORT_ONLY",
+        )
+
+    def test_410_dual_provider_agreement_has_no_cross_provider_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(
+            value["agreement_cross_provider_divergence"],
+            False,
+        )
+
+    def test_411_dual_provider_agreement_has_no_cross_model_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(
+            value["agreement_cross_model_divergence"],
+            False,
+        )
+
+    def test_412_dual_provider_agreement_has_no_unresolved_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["agreement_unresolved_divergence_count"],
+            0,
+        )
+
+    def test_413_disagreement_and_agreement_aggregates_are_distinct(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertNotEqual(
+            value["aggregate_sha256"],
+            value["agreement_aggregate_sha256"],
+        )
+
+    def test_414_agreement_aggregate_digest_is_bound(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            len(value["agreement_aggregate_sha256"]),
+            64,
+        )
+
+    def test_415_dual_provider_rejects_agreement_state_tamper(self):
+        args = list(self._dual_provider_research_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["agreement_cross_provider_divergence"] = True
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_offline_research(*args)
+
+    def test_416_dual_provider_agreement_comparison_is_deterministic(self):
+        args = self._dual_provider_research_fixture()
+        first = dual_provider_offline_research_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_offline_research_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
 if __name__ == "__main__":
     unittest.main()

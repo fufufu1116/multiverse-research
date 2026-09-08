@@ -30,6 +30,11 @@ DUAL_PROVIDER_KEYS = {
     "gemini_result_sha256",
     "claude_result_sha256",
     "aggregate_sha256",
+    "agreement_aggregate_sha256",
+    "agreement_descriptive_label",
+    "agreement_cross_model_divergence",
+    "agreement_cross_provider_divergence",
+    "agreement_unresolved_divergence_count",
     "descriptive_label",
     "cross_model_divergence",
     "cross_provider_divergence",
@@ -222,6 +227,40 @@ def build_dual_provider_offline_research(
         "DUAL_PROVIDER_VOTE_AUTHORITY_FORBIDDEN",
     )
 
+    claude_agreement_result = _result(
+        task,
+        claude,
+        submission_id="dual-provider-claude-agreement-001",
+        position="SUPPORT",
+        assertion="Synthetic Claude agreement position supports the test claim.",
+        claim_key=claim_key,
+    )
+    agreement_aggregate = aggregate_results_v2(
+        task,
+        [gemini_result, claude_agreement_result],
+    )
+    agreement_claim = [
+        item
+        for item in agreement_aggregate["claims"]
+        if item["claim_key"] == claim_key
+    ][0]
+    require(
+        agreement_claim["descriptive_label"] == "SUPPORT_ONLY",
+        "DUAL_PROVIDER_AGREEMENT_LABEL",
+    )
+    require(
+        agreement_claim["cross_model_divergence"] is False,
+        "DUAL_PROVIDER_AGREEMENT_CROSS_MODEL",
+    )
+    require(
+        agreement_claim["cross_provider_divergence"] is False,
+        "DUAL_PROVIDER_AGREEMENT_CROSS_PROVIDER",
+    )
+    require(
+        agreement_aggregate["unresolved_divergences"] == [],
+        "DUAL_PROVIDER_AGREEMENT_UNRESOLVED",
+    )
+
     record = {
         "schema": DUAL_PROVIDER_SCHEMA,
         "research_id": "dual-provider-offline-research-001",
@@ -249,6 +288,16 @@ def build_dual_provider_offline_research(
         "gemini_result_sha256": sha256_json(gemini_result),
         "claude_result_sha256": sha256_json(claude_result),
         "aggregate_sha256": aggregate["aggregate_sha256"],
+        "agreement_aggregate_sha256":
+            agreement_aggregate["aggregate_sha256"],
+        "agreement_descriptive_label":
+            agreement_claim["descriptive_label"],
+        "agreement_cross_model_divergence":
+            agreement_claim["cross_model_divergence"],
+        "agreement_cross_provider_divergence":
+            agreement_claim["cross_provider_divergence"],
+        "agreement_unresolved_divergence_count":
+            len(agreement_aggregate["unresolved_divergences"]),
         "descriptive_label": claim["descriptive_label"],
         "cross_model_divergence": claim["cross_model_divergence"],
         "cross_provider_divergence":
@@ -328,6 +377,22 @@ def build_dual_provider_offline_research_unchecked(
         item for item in aggregate["unresolved_divergences"]
         if item["claim_key"] == claim_key
     ][0]
+    claude_agreement_result = _result(
+        task,
+        claude,
+        submission_id="dual-provider-claude-agreement-001",
+        position="SUPPORT",
+        assertion="Synthetic Claude agreement position supports the test claim.",
+        claim_key=claim_key,
+    )
+    agreement_aggregate = aggregate_results_v2(
+        task,
+        [gemini_result, claude_agreement_result],
+    )
+    agreement_claim = [
+        item for item in agreement_aggregate["claims"]
+        if item["claim_key"] == claim_key
+    ][0]
     return {
         "schema": DUAL_PROVIDER_SCHEMA,
         "research_id": "dual-provider-offline-research-001",
@@ -357,6 +422,16 @@ def build_dual_provider_offline_research_unchecked(
         "gemini_result_sha256": sha256_json(gemini_result),
         "claude_result_sha256": sha256_json(claude_result),
         "aggregate_sha256": aggregate["aggregate_sha256"],
+        "agreement_aggregate_sha256":
+            agreement_aggregate["aggregate_sha256"],
+        "agreement_descriptive_label":
+            agreement_claim["descriptive_label"],
+        "agreement_cross_model_divergence":
+            agreement_claim["cross_model_divergence"],
+        "agreement_cross_provider_divergence":
+            agreement_claim["cross_provider_divergence"],
+        "agreement_unresolved_divergence_count":
+            len(agreement_aggregate["unresolved_divergences"]),
         "descriptive_label": claim["descriptive_label"],
         "cross_model_divergence": claim["cross_model_divergence"],
         "cross_provider_divergence":

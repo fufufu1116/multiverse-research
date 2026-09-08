@@ -808,6 +808,11 @@ def validate() -> dict:
         "cross_provider_divergence",
         "UNRESOLVED_DIVERGENCE",
         "MECHANICAL_FALSIFICATION_TASK",
+        "SUPPORT_ONLY",
+        "DUAL_PROVIDER_AGREEMENT_LABEL",
+        "DUAL_PROVIDER_AGREEMENT_CROSS_MODEL",
+        "DUAL_PROVIDER_AGREEMENT_CROSS_PROVIDER",
+        "DUAL_PROVIDER_AGREEMENT_UNRESOLVED",
         "DUAL_PROVIDER_FORBIDDEN_TRUE",
         "DUAL_PROVIDER_RUNTIME_NOT_OFF",
         "dual_provider_offline_research_sha256",
@@ -860,8 +865,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 408,
-        f"{test_count} != 408",
+        test_count == 416,
+        f"{test_count} != 416",
     )
 
     return {

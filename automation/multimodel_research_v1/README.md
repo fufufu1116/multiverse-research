@@ -174,6 +174,16 @@ The exact assignment SHA256 set, fanout-plan SHA256, and both batch-summary SHA2
 
 All results are synthetic; no provider call or provider authority is created.
 
+Dual-provider agreement/disagreement discrimination
+
+The dual-provider offline research now exercises a matched control case in addition to the intentional disagreement.
+
+With the same exact task, prompt, providers, and model IDs:
+- SUPPORT + OPPOSE must be `DIVERGENT`, with cross-model/cross-provider divergence and an unresolved mechanical-falsification route;
+- SUPPORT + SUPPORT must be `SUPPORT_ONLY`, with cross-model divergence false, cross-provider divergence false, and zero unresolved divergences.
+
+This demonstrates that the comparison layer detects structural disagreement without manufacturing divergence merely because two different providers participated.
+
 Dual-provider offline research disagreement
 
 `MULTIVERSE_DUAL_PROVIDER_OFFLINE_RESEARCH_v1` runs the dated Gemini and Claude catalog candidates through the same provider-neutral task/prompt contract and then exercises Aggregate v2 with intentionally opposed synthetic findings.
