@@ -21,6 +21,7 @@ REQUIRED = [
     ROOT / "termination.py",
     ROOT / "receipt.py",
     ROOT / "smoke_profile.py",
+    ROOT / "gemini_adapter.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -110,6 +111,7 @@ def validate() -> dict:
     termination = (ROOT / "termination.py").read_text()
     receipt = (ROOT / "receipt.py").read_text()
     smoke_profile = (ROOT / "smoke_profile.py").read_text()
+    gemini_adapter = (ROOT / "gemini_adapter.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -371,6 +373,29 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_GEMINI_INTERACTIONS_V1_RENDER_v1",
+        "MULTIVERSE_GEMINI_INTERACTIONS_V1_OBSERVATION_v1",
+        "render_gemini_interactions_v1",
+        '"api_version": "v1"',
+        '"sdk_surface": "interactions.create"',
+        '"store": False',
+        '"stream": False',
+        '"background": False',
+        "GEMINI_RESPONSE_SCHEMA_SHA256_MISMATCH",
+        "parse_gemini_interactions_v1_response",
+        "PROVIDER_EMPTY",
+        "PROVIDER_TRUNCATED",
+        "TRANSPORT_FAILURE",
+        "provider_response_sha256",
+        "usage_metadata_sha256",
+    ):
+        record(
+            f"gemini_adapter:{token}",
+            token in gemini_adapter,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -392,8 +417,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 171,
-        f"{test_count} != 171",
+        test_count == 190,
+        f"{test_count} != 190",
     )
 
     return {

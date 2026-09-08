@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import unittest
 
 from automation.multimodel_research_v1.aggregator import (
@@ -47,6 +48,11 @@ from automation.multimodel_research_v1.receipt import (
 from automation.multimodel_research_v1.smoke_profile import (
     live_smoke_profile_sha256,
     validate_live_smoke_profile,
+)
+from automation.multimodel_research_v1.gemini_adapter import (
+    gemini_render_sha256,
+    parse_gemini_interactions_v1_response,
+    render_gemini_interactions_v1,
 )
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
@@ -505,6 +511,46 @@ def live_smoke_profile(
         "runtime_activation": False,
         "adoption_authority": False,
         "nonauthority": nonauthority(),
+    }
+
+
+def response_schema() -> dict:
+    return {
+        "type": "object",
+        "properties": {
+            "status": {"type": "string"},
+        },
+        "required": ["status"],
+        "additionalProperties": False,
+    }
+
+
+def gemini_response(
+    *,
+    status: str = "completed",
+    model: str = "model-stable-001",
+    text: str = '{"status":"ok"}',
+) -> dict:
+    return {
+        "id": "gemini-response-001",
+        "status": status,
+        "model": model,
+        "usage": {
+            "total_tokens": 30,
+            "total_input_tokens": 10,
+            "total_output_tokens": 20,
+        },
+        "steps": [
+            {
+                "type": "model_output",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": text,
+                    }
+                ],
+            }
+        ],
     }
 
 
@@ -5158,6 +5204,550 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(
             receipt["attestation_state"],
             "LIVE_PROVIDER_ID_UNVERIFIED",
+        )
+
+
+    def test_172_valid_gemini_v1_render(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        rendered = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        self.assertEqual(rendered["api_version"], "v1")
+        self.assertEqual(
+            rendered["sdk_surface"],
+            "interactions.create",
+        )
+
+    def test_173_gemini_render_requires_live_assignment(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        offline_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="SYNTHETIC_OFFLINE",
+        )
+        offline_target = model_target_policy(
+            bound_task,
+            offline_assignment,
+        )
+        offline_cap = capability_policy(
+            bound_task,
+            offline_assignment,
+            offline_target,
+        )
+        with self.assertRaises(ResearchContractError):
+            render_gemini_interactions_v1(
+                bound_task,
+                offline_assignment,
+                offline_target,
+                offline_cap,
+                prompt,
+                schema,
+            )
+
+    def test_174_gemini_render_is_stateless_nonstreaming_background_false(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        body = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )["body"]
+        self.assertIs(body["store"], False)
+        self.assertIs(body["stream"], False)
+        self.assertIs(body["background"], False)
+
+    def test_175_gemini_render_contains_no_tools(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        body = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )["body"]
+        self.assertNotIn("tools", body)
+
+    def test_176_gemini_render_requires_json_response_format(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        response_format = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )["body"]["response_format"]
+        self.assertEqual(
+            response_format["mime_type"],
+            "application/json",
+        )
+        self.assertEqual(
+            response_format["schema"],
+            schema,
+        )
+
+    def test_177_gemini_response_schema_must_match_prompt_digest(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        changed = copy.deepcopy(schema)
+        changed["properties"]["extra"] = {
+            "type": "string"
+        }
+        with self.assertRaises(ResearchContractError):
+            render_gemini_interactions_v1(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                changed,
+            )
+
+    def test_178_gemini_render_uses_exact_assignment_model(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        rendered = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        self.assertEqual(
+            rendered["body"]["model"],
+            bound_assignment["target_model"],
+        )
+
+    def test_179_gemini_render_input_is_exact_canonical_prompt(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        rendered = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        self.assertEqual(
+            rendered["body"]["input"],
+            json.dumps(
+                prompt,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ),
+        )
+
+    def test_180_gemini_render_contains_no_credential_material(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        rendered = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        self.assertIs(
+            rendered["credential_material_included"],
+            False,
+        )
+        rendered_text = json.dumps(rendered)
+        self.assertNotIn("api_key", rendered_text.lower())
+        self.assertNotIn("authorization", rendered_text.lower())
+
+    def test_181_gemini_render_digest_changes_with_prompt_binding(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        bound_task["requested_roles"] = [
+            "architecture_challenge",
+            "security_challenge",
+        ]
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        first = gemini_render_sha256(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        changed_task = copy.deepcopy(bound_task)
+        changed_task["objective"] = "Changed objective."
+        changed_prompt = build_provider_neutral_prompt(
+            changed_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        changed_assignment = assignment(
+            changed_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        changed_target = model_target_policy(
+            changed_task,
+            changed_assignment,
+        )
+        changed_cap = capability_policy(
+            changed_task,
+            changed_assignment,
+            changed_target,
+        )
+        second = gemini_render_sha256(
+            changed_task,
+            changed_assignment,
+            changed_target,
+            changed_cap,
+            changed_prompt,
+            schema,
+        )
+        self.assertNotEqual(first, second)
+
+    def test_182_parse_completed_gemini_response(self):
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response()
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "COMPLETED",
+        )
+        self.assertEqual(
+            observation["provider_response_id"],
+            "gemini-response-001",
+        )
+        self.assertEqual(
+            observation["observed_model_id"],
+            "model-stable-001",
+        )
+        self.assertEqual(observation["input_tokens"], 10)
+        self.assertEqual(observation["output_tokens"], 20)
+
+    def test_183_parse_completed_empty_gemini_response(self):
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(text="")
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "PROVIDER_EMPTY",
+        )
+
+    def test_184_parse_incomplete_gemini_response(self):
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(status="incomplete")
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "PROVIDER_TRUNCATED",
+        )
+
+    def test_185_parse_failed_or_cancelled_gemini_response(self):
+        for status in ("failed", "cancelled"):
+            observation = (
+                parse_gemini_interactions_v1_response(
+                    gemini_response(status=status)
+                )
+            )
+            self.assertEqual(
+                observation["normalized_state"],
+                "TRANSPORT_FAILURE",
+            )
+
+    def test_186_parse_rejects_nonterminal_gemini_status(self):
+        for status in ("in_progress", "requires_action"):
+            with self.assertRaises(ResearchContractError):
+                parse_gemini_interactions_v1_response(
+                    gemini_response(status=status)
+                )
+
+    def test_187_parse_requires_response_id_and_model(self):
+        for key in ("id", "model"):
+            response = gemini_response()
+            response.pop(key)
+            with self.assertRaises(ResearchContractError):
+                parse_gemini_interactions_v1_response(
+                    response
+                )
+
+    def test_188_parse_rejects_negative_usage(self):
+        response = gemini_response()
+        response["usage"]["total_output_tokens"] = -1
+        with self.assertRaises(ResearchContractError):
+            parse_gemini_interactions_v1_response(response)
+
+    def test_189_parse_preserves_observed_model_drift_for_receipt_check(self):
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(model="model-other")
+        )
+        self.assertEqual(
+            observation["observed_model_id"],
+            "model-other",
+        )
+
+    def test_190_parse_digests_exact_provider_response_and_usage(self):
+        response = gemini_response()
+        observation = parse_gemini_interactions_v1_response(
+            response
+        )
+        self.assertEqual(
+            observation["provider_response_sha256"],
+            sha256_json(response),
+        )
+        self.assertEqual(
+            observation["usage_metadata_sha256"],
+            sha256_json(response["usage"]),
         )
 
 

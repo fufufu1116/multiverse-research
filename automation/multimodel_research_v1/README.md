@@ -128,6 +128,43 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Gemini stable-v1 offline transport adapter
+
+The repository includes a **credential-free, network-free renderer/parser** for the first Google Gemini smoke candidate.
+
+The renderer targets the stable Gemini Interactions API v1 surface and binds:
+- exact assignment model;
+- exact canonical provider-neutral prompt JSON;
+- exact JSON response schema;
+- api_version = v1;
+- store = false;
+- stream = false;
+- background = false;
+- no tools field;
+- fixed first-smoke max output token ceiling;
+- no credential material.
+
+The parser preserves:
+- provider response ID;
+- observed model ID;
+- native terminal status;
+- normalized termination state;
+- output text;
+- input/output token counts;
+- exact usage metadata SHA256;
+- exact raw provider response SHA256.
+
+Current Gemini status normalization for the bounded unary smoke profile:
+- completed + text -> COMPLETED;
+- completed + empty output -> PROVIDER_EMPTY;
+- incomplete -> PROVIDER_TRUNCATED;
+- failed/cancelled -> TRANSPORT_FAILURE;
+- in_progress/requires_action -> reject as nonterminal.
+
+The parser deliberately preserves observed model drift rather than silently rewriting it; the execution receipt/model-target validator is responsible for fail-closing a LIVE_ATTESTED mismatch.
+
+This adapter performs no API call and contains no credential value or credential transport implementation.
+
 Minimum live-provider smoke profile
 
 `MULTIVERSE_LIVE_PROVIDER_SMOKE_PROFILE_v1` binds the exact repository-side chain for the first separately authorized provider call.
