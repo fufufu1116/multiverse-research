@@ -6,7 +6,6 @@ from pathlib import Path
 from automation.review_dispatcher_v1 import validator_legacy_v1 as _legacy
 
 ROOT = Path(__file__).resolve().parent
-REPO_ROOT = ROOT.parents[1]
 
 LEGACY_MODEL_TOKENS = (
     "supersedes_request_sha256",
@@ -38,17 +37,9 @@ ARBITRATION_TOKENS = (
     "generations.setdefault(predecessor, []).append",
     "winner = generation[0]",
     "SUPERSESSION_COMMENT_ORDER_INVALID",
-    "ORPHANED_OR_LOER_DERIVED_SUPERSESSION",
+    "ORPHANED_OR_LOSER_DERIVED_SUPERSESSION",
     "DUPLICATE_EXACT_REQUEST_ID",
 )
-
-# Backward-compatible spelling for the actual v6 source token.
-ARBITRATION_REQUIRED_ALTERNATIVES = {
-    "ORPHANED_OR_LOER_DERIVED_SUPERSESSION": (
-        "ORPHANED_OR_LOER_DERIVED_SUPERSESSION",
-        "ORPHANED_OR_LOSER_DERIVED_SUPERSESSION",
-    )
-}
 
 
 def _record_token(
@@ -60,8 +51,7 @@ def _record_token(
     token: str,
 ) -> None:
     name = f"{scope}:{token[:32]}"
-    alternatives = ARBITRATION_REQUIRED_ALTERNATIVES.get(token, (token,))
-    if any(item in source for item in alternatives):
+    if token in source:
         checks[name] = "PASS"
     else:
         checks[name] = "FIX_REQUIRED"
