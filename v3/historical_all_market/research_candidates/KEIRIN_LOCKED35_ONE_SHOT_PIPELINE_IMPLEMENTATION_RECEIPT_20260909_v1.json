@@ -1,0 +1,35 @@
+{
+  "record": "KEIRIN_LOCKED35_ONE_SHOT_PIPELINE_IMPLEMENTATION_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "IMPLEMENTED_PRISTINE_LOCKED35_ONE_SHOT_FORMALIZATION_PIPELINE",
+  "implementation": {
+    "pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "selftest_spec": "tools/keirin_35_formalization_pipeline_selftest_v1.py",
+    "normalizer": "tools/keirin_multisite_final_racecard_normalizer_v5.py",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v7.py"
+  },
+  "guarantees": [
+    "loads and binds canonical locked order/matrix/witness registry/pristine 35-row shell",
+    "requires exactly 35 locked candidates and exact priority order 1..35",
+    "requires order/matrix/shell registration sets to match",
+    "rejects any stale pre-populated mutable final-assignment field in the canonical shell",
+    "normalizes observations through multisite normalizer v5 before finalization",
+    "finalizes through finalizer v7 and preserves stop-after-29-new-PASS semantics",
+    "does not accept a caller-supplied already-filled finalizer manifest",
+    "does not access network, RESULT, PAYOUT, ODDS, PREDICTION or human comments"
+  ],
+  "selftest_spec_note": "Selftest source contains synthetic deterministic assertions including empty, 35-ready, six-missing, seven-missing, stale-shell, bad-host, same-family conflict, late-capture and six-source consensus cases.",
+  "direct_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "execution_claim": "NO_PASS_CLAIM_FROM_FILE_EXISTENCE",
+  "residual_integrity_item": "source_sha256 is downstream format-validated; raw capture payload/artifact cryptographic binding is being separately audited before introducing any new formal blocker.",
+  "scientific_gate_change": false,
+  "formal_support": "1 rider / 2 PRE rows",
+  "support_increment_now": 0,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
