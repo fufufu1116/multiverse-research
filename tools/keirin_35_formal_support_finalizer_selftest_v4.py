@@ -37,7 +37,7 @@ def fixture(n=35):
         })
         matrix.append({
             "priority":i,"rider_name":f"R{i}","official_registration_number":reg,
-            "historical_support":{
+            "historical_row":{
                 "race_date":"2098-12-15","venue":"H400_A" if i%2 else "H400_B",
                 "circumference_m":400,"day":"Day1","race_no":1,"car_no":1,
                 "class":"S1","style":"追","source_url":"https://example.invalid/racecard"
