@@ -1,0 +1,49 @@
+{
+  "record": "KEIRIN_TICKET_LAYER_HARDENING_RECEIPT_20260908_v3",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_STRICT_TICKET_ECONOMICS_AND_FAIR_MODEL_COMPARISON_ISOLATED_REPRO_PASS",
+  "implementation": {
+    "portfolio_builder": "tools/keirin_ticket_portfolio_builder_v3.py",
+    "portfolio_selftest_spec": "tools/keirin_ticket_portfolio_builder_selftest_v3.py",
+    "model_comparison": "tools/keirin_model_ticket_comparison_v2.py",
+    "model_comparison_selftest_spec": "tools/keirin_model_ticket_comparison_selftest_v2.py",
+    "manual_threshold_retained": "tools/keirin_manual_odds_purchase_gate_v2.py"
+  },
+  "defects_closed": [
+    "money and size inputs no longer rely on int() truncation/coercion; exact integers are required and bool is rejected",
+    "Keirin car numbers must be exact integers in 1..9",
+    "uniform minimum-odds economics are recomputed from the exact source probability distribution rather than a rounded display snapshot",
+    "forged or stale structure hit-probability metadata fails closed",
+    "named-model comparison requires complete ordered-top3 support and the exact same car universe",
+    "model names must be exact nonempty strings so numeric/string coercion cannot hide collisions",
+    "all compared models must expose the same frozen ticket-structure family"
+  ],
+  "isolated_reproduction": {
+    "seven_car_complete_ordered_top3_count": 210,
+    "probability_mass": 1,
+    "box_counts": {
+      "3_car": 6,
+      "4_car": 24,
+      "5_car": 60
+    },
+    "fixed_first_three_second_candidates_all_third_count": 15,
+    "uniform_top5_exact_hit_probability": 0.02380952380952381,
+    "uniform_top5_minimum_decimal_odds_for_10pct_required_roi": 231,
+    "strict_integer_input_checks": "PASS",
+    "same_car_universe_check": "PASS",
+    "forged_probability_snapshot_check": "PASS"
+  },
+  "direct_checked_in_selftest_execution": false,
+  "direct_execution_blocker": "isolated container DNS could not resolve raw.githubusercontent.com",
+  "shared_ci_rerun": false,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "live_odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "result_dependent_tuning": false,
+  "automated_bet_execution": false,
+  "scientific_gate_change": false,
+  "formal_support_increment_now": 0,
+  "runtime": false
+}
