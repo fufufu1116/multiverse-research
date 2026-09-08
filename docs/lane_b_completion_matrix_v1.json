@@ -1,0 +1,90 @@
+{
+  "schema": "MULTIVERSE_LANE_B_COMPLETION_MATRIX_v1",
+  "lane": "Research Lane B — Core / Automation Hardening",
+  "goal": "Multiple chats can safely progress the fixed review control plane without collision, stale-result adoption, retry deadlock, or routine Owner traffic control.",
+  "completion_rule": "Every critical row must be ADOPTED_PROVEN and combined_fault_replay must PASS before the major Lane B goal is complete.",
+  "credit": {
+    "ADOPTED_PROVEN": 1.0,
+    "FROZEN_CANDIDATE": 0.65,
+    "OPEN_INTEGRATION": 0.0
+  },
+  "rows": [
+    {
+      "id": "stale_binding_rejection",
+      "critical": true,
+      "state": "ADOPTED_PROVEN",
+      "evidence": "canonical main 9883783b712ebc09bd59390b76377902fc2a3e29 fixed dispatcher/review/T2 fresh head-tree-main binding",
+      "note": "Old head/tree/main is rejected fail-closed."
+    },
+    {
+      "id": "same_generation_request_collision",
+      "critical": true,
+      "state": "FROZEN_CANDIDATE",
+      "evidence": "PR #225 freeze 5582761033",
+      "note": "Earliest trusted Owner request comment wins each predecessor generation."
+    },
+    {
+      "id": "publish_time_request_supersession",
+      "critical": true,
+      "state": "FROZEN_CANDIDATE",
+      "evidence": "PR #227 freeze 5582850580",
+      "note": "Old job cannot publish after a newer canonical request appears."
+    },
+    {
+      "id": "concurrent_result_publication",
+      "critical": true,
+      "state": "FROZEN_CANDIDATE",
+      "evidence": "PR #232 freeze 5583590582",
+      "note": "Earliest trusted exact result comment is canonical."
+    },
+    {
+      "id": "result_receipt_loss_recovery",
+      "critical": true,
+      "state": "FROZEN_CANDIDATE",
+      "evidence": "PR #234 freeze 5583633419",
+      "note": "Canonical exact PASS can reconstruct a lost publish receipt."
+    },
+    {
+      "id": "downstream_canonical_result_consumption",
+      "critical": true,
+      "state": "FROZEN_CANDIDATE",
+      "evidence": "PR #236 freeze 5583674556",
+      "note": "Later duplicate PASS no longer blocks T2 when canonical result is referenced."
+    },
+    {
+      "id": "t2_receipt_loss_recovery",
+      "critical": true,
+      "state": "FROZEN_CANDIDATE",
+      "evidence": "PR #237 freeze 5583709232",
+      "note": "Canonical exact T2 can reconstruct a lost T2 receipt."
+    },
+    {
+      "id": "fixed_shared_steps_immutability",
+      "critical": true,
+      "state": "ADOPTED_PROVEN",
+      "evidence": "#93 permanent request-only dispatcher baseline",
+      "note": "Research lanes do not edit shared Independent Lab/Auditor Steps."
+    },
+    {
+      "id": "owner_courier_elimination",
+      "critical": true,
+      "state": "ADOPTED_PROVEN",
+      "evidence": "#93 durable GitHub request-only operating protocol",
+      "note": "Routine Owner forwarding/copy-paste is not required."
+    },
+    {
+      "id": "runtime_off_invariant",
+      "critical": true,
+      "state": "ADOPTED_PROVEN",
+      "evidence": "canonical operating boundary",
+      "note": "Hardening research grants no Runtime or live-effect authority."
+    },
+    {
+      "id": "combined_fault_replay",
+      "critical": true,
+      "state": "OPEN_INTEGRATION",
+      "evidence": "Issue #239 closure gate",
+      "note": "After the frozen primitives are integrated/adopted, run one combined collision/supersession/crash/retry replay and require PASS."
+    }
+  ]
+}
