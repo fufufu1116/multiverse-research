@@ -171,8 +171,10 @@ class PublisherResilienceIntegrationTests(unittest.TestCase):
             publisher.time,
             "sleep",
         ) as sleep:
-            self.assertIs(publisher.publish(j, a), receipt)
+            recovered = publisher.publish(j, a)
         original.assert_called_once_with(j, a)
+        self.assertTrue(recovered["recovered"])
+        self.assertEqual(recovered["published_comment_id"], 20)
         sleep.assert_called_once_with(
             publisher.POST_WRITE_VISIBILITY_DELAY_SECONDS
         )
