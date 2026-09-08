@@ -1,0 +1,157 @@
+{
+  "record": "KEIRIN_BURNED_AB_3RENHUKU_CONF40_EV10_ODDS_CAP_SWEEP_20260908_v1",
+  "status": "BURNED_DEVELOPMENT_CAP_SWEEP_COMPLETE_NO_LIVE_RULE_CHANGE",
+  "generated_jst": "2026-09-08",
+  "purpose": "Explain the 20x cap and test whether it is a theoretical boundary or a development-risk control. Uses burned A+B only; does not touch C/HOLDOUT or live outcomes.",
+  "common_rule": "Candidate A and B1a agree top1; conservative top1 probability >=0.40; choose one 3renhuku ticket from consensus top3; conservative ticket EV >=10%; flat ¥100 per selected race.",
+  "data": {
+    "A_races": 1000,
+    "B_races": 500,
+    "C_used": false,
+    "ECON_HOLDOUT1000_used": false
+  },
+  "sweep": [
+    {
+      "odds_cap": 5,
+      "A_bets": 1,
+      "A_roi": -1,
+      "B_bets": 1,
+      "B_roi": 1.5,
+      "AB_bets": 2,
+      "AB_roi": 0.25
+    },
+    {
+      "odds_cap": 7,
+      "A_bets": 11,
+      "A_roi": -0.381818,
+      "B_bets": 5,
+      "B_roi": -0.5,
+      "AB_bets": 16,
+      "AB_roi": -0.41875
+    },
+    {
+      "odds_cap": 10,
+      "A_bets": 29,
+      "A_roi": -0.213793,
+      "B_bets": 18,
+      "B_roi": 0.083333,
+      "AB_bets": 47,
+      "AB_roi": -0.1
+    },
+    {
+      "odds_cap": 12,
+      "A_bets": 39,
+      "A_roi": -0.128205,
+      "B_bets": 22,
+      "B_roi": 0.422727,
+      "AB_bets": 61,
+      "AB_roi": 0.070492
+    },
+    {
+      "odds_cap": 15,
+      "A_bets": 47,
+      "A_roi": 0.289362,
+      "B_bets": 29,
+      "B_roi": 0.510345,
+      "AB_bets": 76,
+      "AB_roi": 0.373684
+    },
+    {
+      "odds_cap": 20,
+      "A_bets": 56,
+      "A_roi": 0.082143,
+      "B_bets": 33,
+      "B_roi": 0.854545,
+      "AB_bets": 89,
+      "AB_roi": 0.368539
+    },
+    {
+      "odds_cap": 25,
+      "A_bets": 65,
+      "A_roi": -0.067692,
+      "B_bets": 33,
+      "B_roi": 0.854545,
+      "AB_bets": 98,
+      "AB_roi": 0.242857
+    },
+    {
+      "odds_cap": 30,
+      "A_bets": 69,
+      "A_roi": -0.121739,
+      "B_bets": 38,
+      "B_roi": 0.610526,
+      "AB_bets": 107,
+      "AB_roi": 0.138318
+    },
+    {
+      "odds_cap": 40,
+      "A_bets": 74,
+      "A_roi": -0.181081,
+      "B_bets": 39,
+      "B_roi": 0.569231,
+      "AB_bets": 113,
+      "AB_roi": 0.077876
+    },
+    {
+      "odds_cap": 75,
+      "A_bets": 76,
+      "A_roi": -0.202632,
+      "B_bets": 40,
+      "B_roi": 0.53,
+      "AB_bets": 116,
+      "AB_roi": 0.05
+    },
+    {
+      "odds_cap": null,
+      "A_bets": 76,
+      "A_roi": -0.202632,
+      "B_bets": 40,
+      "B_roi": 0.53,
+      "AB_bets": 116,
+      "AB_roi": 0.05
+    }
+  ],
+  "interpretation": [
+    "20x is not a theoretical truth. It is a development-derived risk-control boundary.",
+    "The strongest two-sided burned A/B region is approximately 15x-20x. At 15x, A and B are both positive with 76 bets; at 20x, A and B are both positive with 89 bets.",
+    "Above 20x, A turns negative at 25x and worsens as the cap is relaxed, while B remains positive. This segment divergence is a warning that additional longshot exposure is unstable.",
+    "Removing the cap entirely leaves only +5% combined ROI while A is -20.3%; that is not acceptable evidence of stable edge.",
+    "Do not change the already-live 20x rule before tonight's outcomes. The 15x figure is diagnostic sensitivity, not a post-hoc replacement."
+  ],
+  "break_even_math": {
+    "rule": "For decimal odds O, true ticket probability p must satisfy p*O > 1 for positive expected return.",
+    "examples": [
+      {
+        "odds": 6.3,
+        "break_even_probability": 0.15873015873015872
+      },
+      {
+        "odds": 15,
+        "break_even_probability": 0.06666666666666667
+      },
+      {
+        "odds": 20,
+        "break_even_probability": 0.05
+      },
+      {
+        "odds": 30,
+        "break_even_probability": 0.03333333333333333
+      },
+      {
+        "odds": 50,
+        "break_even_probability": 0.02
+      }
+    ],
+    "note": "At high odds the break-even probability is tiny, so a small absolute probability overestimate can create a fake large EV. This is why tail calibration matters."
+  },
+  "hard_boundaries": {
+    "live_20x_rule_changed": false,
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "real_money_execution": false,
+    "profitability_claim": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false
+}
