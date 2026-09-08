@@ -1,0 +1,69 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260909_v29",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_DELTA_V21_NEXTGEN5000_THIRD_BATCH_ACTIVE",
+  "date_jst": "2026-09-09",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "branch_head_before_write": "7a5e518b285dafff6b098149b50847bebda2f514",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v21.json",
+  "critical_pointers": {
+    "practical_v2_profile": "v3/historical_all_market/research_candidates/KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v2.json",
+    "today_pre_decision": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v2.json",
+    "dev2000_recovery": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_DRIVE_RECOVERY_AND_AB_REPLAY_20260909_v1.json",
+    "mass_grid": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_MASS_3RENHUKU_GRID_88200_20260909_v1.json",
+    "q2_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_Q2_INSTABILITY_DIAGNOSTIC_20260909_v1.json",
+    "model_market_stress": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_MODEL_MARKET_MIXTURE_STRESS_20260909_v1.json",
+    "nextgen5000_recovery": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_UNIVERSE_RECOVERY_20260909_v1.json",
+    "batch_2001_2500_receipt": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_2001_2500_RECOVERY_RECEIPT_20260909_v1.json",
+    "batch_2001_2500_freeze": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_BATCH2001_2500_PREOUTCOME_EVAL_FREEZE_20260909_v1.json",
+    "batch_2501_3000_receipt": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_2501_3000_RECOVERY_RECEIPT_20260909_v1.json",
+    "batch_2501_3000_freeze": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_BATCH2501_3000_PREOUTCOME_EVAL_FREEZE_20260909_v1.json",
+    "nextgen5000_pre_tool": "tools/keirin_nextgen5000_pre_bulk_recovery_v1.py",
+    "virtual_future_protocol": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_VIRTUAL_FUTURE_REPLAY_PROTOCOL_20260909_v1.json",
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "formal_support_finalizer": "tools/keirin_35_formal_support_finalizer_v7.py"
+  },
+  "current_summary": {
+    "practical_engineering": "100% complete; owner-assisted only; Runtime OFF",
+    "today_answer_check": "UNCHANGED_AND_FROZEN",
+    "simulation_exploration_percent": 89,
+    "formal_scientific_progress_percent": 60,
+    "formal_support": "1 rider / 2 PRE rows",
+    "profitability_proven": false,
+    "dev2000": "A+B 1500 burned/replayable; C 500 protected/unscored",
+    "massive_search": "88,200 3renhuku rules; no six-of-six 250-race positive rule; no victory-equation claim",
+    "nextgen5000": "exact result-independent locked 5000 recovered",
+    "expansion_complete": "positions 2001..3000 requested 1000; 987 usable PRE races; 7025 PRE rows; 13 fail-closed rejects; zero outcome access during PRE collection",
+    "next_expansion": "positions 3001..3500 run 34288642577 launched and queued at v29 checkpoint",
+    "protected_holdouts": "DEV2000 C and ECON_HOLDOUT1000 sealed"
+  },
+  "fixed_owner_policy": {
+    "historical_sample_expansion": "AUTHORIZED_WHEN_NEEDED",
+    "mandatory_order": "PRE-FIRST",
+    "outcome_store": "ISOLATED_UNTIL_PREDICTION_AND_EVALUATION_FREEZE",
+    "result_to_pre_reconstruction": "FORBIDDEN",
+    "owner_operation_required_for_collection": false
+  },
+  "next_without_owner": [
+    "Fresh-read workflow run 34288642577. If success, create receipt for 3001..3500 and freeze its evaluation before any outcome access.",
+    "Continue PRE-only expansion through remaining locked NEXTGEN5000 positions when useful, fail-closing ambiguous rows.",
+    "Do not open outcomes for a batch until its PRE predictions/selections/evaluation rule are materialized and frozen.",
+    "Score the frozen 2001..2500 and 2501..3000 challengers only without posthoc rescue.",
+    "Use later untouched batches to test any new hypotheses discovered from scored earlier batches.",
+    "Continue formal prospective 30/60 support acquisition separately; retrospective exploratory PRE does not increment formal support.",
+    "Keep today's 京王閣 practical prediction and answer-check unchanged."
+  ],
+  "prohibitions": [
+    "NO_DEV2000_C_RESCUE_TUNING_OR_SCORING",
+    "NO_ECON_HOLDOUT1000_OPEN",
+    "NO_RESULT_OR_PAYOUT_TO_PRE_RECONSTRUCTION",
+    "NO_OUTCOME_BEFORE_BATCH_FREEZE",
+    "NO_POSTHOC_RESCUE_ON_SAME_BATCH",
+    "NO_AUTOMATIC_BETTING",
+    "NO_RUNTIME_ENABLE",
+    "NO_RESEARCH_LANE_CANONICAL_MAIN_MUTATION",
+    "NO_PROFITABILITY_CLAIM_FROM_SEARCHED_OR_BURNED_DATA_ALONE"
+  ],
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later, Resume v29 or later, its delta, NEXTGEN5000 batch workflow states, and active Keirin automations before treating any checkpoint as current."
+}
