@@ -166,6 +166,7 @@ def main():
         o["page_kind"]="final_day1_racecard"
         o["status"]="ACTIVE"
         observations.append(o)
+    for row in shell["rows"]:
         row["race_no"]=None
         row["car_no"]=None
         row["class"]=None
