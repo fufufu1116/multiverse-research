@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_LONGSHOT_END_TO_END_SYNTHETIC_PIPELINE_AUDIT_20260908_v1",
+  "status": "PASS_BY_CONSTRUCTION_SYNTHETIC_END_TO_END_NO_EXTERNAL_DATA",
+  "date_jst": "2026-09-08",
+  "purpose": "Exercise the full proposed hole workflow from ticket qualification through one-ticket selection and race-level risk aggregation without live odds, predictions, outcomes, or payouts.",
+  "pipeline": "tools/keirin_longshot_shadow_pipeline_v1.py",
+  "component_bindings": [
+    "tools/keirin_longshot_shadow_guard_v1.py",
+    "tools/keirin_longshot_shadow_selector_v1.py",
+    "tools/keirin_shadow_risk_aggregator_v1.py",
+    "tools/keirin_longshot_evidence_sufficiency_v1.py",
+    "tools/keirin_longshot_shadow_validation_gate_v1.py"
+  ],
+  "synthetic_scenario": {
+    "core": {
+      "ticket": "CORE",
+      "requested_risk_units": 1
+    },
+    "hole_candidates": [
+      {
+        "ticket": "MID",
+        "odds": 30,
+        "p_conservative": 0.05,
+        "band": "MID_HOLE",
+        "ratio": 1.5,
+        "ev": 0.5,
+        "qualifies": true
+      },
+      {
+        "ticket": "LONG_FAIL",
+        "odds": 150,
+        "p_conservative": 0.01,
+        "band": "LONGSHOT",
+        "ratio": 1.5,
+        "ev": 0.5,
+        "qualifies": false
+      },
+      {
+        "ticket": "EXTREME",
+        "odds": 500,
+        "p_conservative": 0.006,
+        "band": "EXTREME_LONGSHOT",
+        "ratio": 3,
+        "ev": 2,
+        "qualifies": true
+      }
+    ],
+    "selected_hole": "EXTREME",
+    "reason": "Highest guarded probability ratio among qualifying hole tickets.",
+    "requested_risk": {
+      "CORE": 1,
+      "EXTREME_LONGSHOT": 0.1,
+      "total": 1.1
+    },
+    "normalized_risk": {
+      "scale": 0.9090909090909091,
+      "CORE": 0.9090909090909091,
+      "EXTREME_LONGSHOT": 0.09090909090909091,
+      "total": 1
+    }
+  },
+  "assertions": [
+    "At most one hole ticket survives selection.",
+    "A nonqualifying 150x ticket is rejected despite being a large payout opportunity.",
+    "A qualifying 500x synthetic ticket is retained rather than blanket-banned.",
+    "CORE plus hole exposure is proportionally compressed to the one-unit race cap.",
+    "No real-money mapping exists.",
+    "Prospective validation remains separately blocked until authorized."
+  ],
+  "governance": {
+    "live_odds_used": false,
+    "live_prediction_used": false,
+    "result_used": false,
+    "payout_used": false,
+    "real_money_execution": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false
+}
