@@ -1,0 +1,124 @@
+{
+  "record": "KEIRIN_BURNED_AB_3RENHUKU_ODDS_TAIL_DECOMPOSITION_20260909_v1",
+  "status": "BURNED_DEVELOPMENT_TAIL_DECOMPOSITION_COMPLETE_TODAY_PROSPECTIVE_SETTLEMENT_UNCHANGED",
+  "date_jst": "2026-09-09",
+  "purpose": "Decompose the existing cumulative 3renhuku conf40 EV10 odds-cap sweep into incremental odds segments. This diagnoses where the combined ROI is coming from and prevents the no-cap cumulative result from hiding tail losses.",
+  "source": {
+    "artifact": "KEIRIN_BURNED_AB_3RENHUKU_CONF40_EV10_ODDS_CAP_SWEEP_20260908_v1.json",
+    "data_role": "BURNED_DIAGNOSTIC_DEV_ONLY",
+    "A_races": 1000,
+    "B_races": 500,
+    "C_used": false,
+    "ECON_HOLDOUT1000_used": false,
+    "common_rule": "Candidate A and B1a agree top1; conservative top1 probability >=0.40; one consensus-top3 3renhuku ticket; conservative ticket EV >=10%; flat 100 yen."
+  },
+  "method": {
+    "cumulative_return_units": "bets * (1 + roi)",
+    "incremental_return_units": "return_at_higher_cap - return_at_lower_cap",
+    "incremental_roi": "incremental_return_units / incremental_bets - 1",
+    "note": "Published sweep ROI values are rounded, so return differences are interpreted at settlement reporting precision. The >20 tail is effectively zero-return in both A and B."
+  },
+  "key_decomposition": {
+    "at_or_below_15": {
+      "A": {
+        "bets": 47,
+        "roi": 0.289362,
+        "return_units_approx": 60.6
+      },
+      "B": {
+        "bets": 29,
+        "roi": 0.510345,
+        "return_units_approx": 43.8
+      },
+      "AB": {
+        "bets": 76,
+        "return_units_approx": 104.4,
+        "roi_approx": 0.373684
+      }
+    },
+    "above_15_through_20": {
+      "A": {
+        "incremental_bets": 9,
+        "incremental_return_units_approx": 0,
+        "incremental_roi_approx": -1
+      },
+      "B": {
+        "incremental_bets": 4,
+        "incremental_return_units_approx": 17.4,
+        "incremental_roi_approx": 3.35
+      },
+      "AB": {
+        "incremental_bets": 13,
+        "incremental_return_units_approx": 17.4,
+        "incremental_roi_approx": 0.338462
+      }
+    },
+    "above_20": {
+      "A": {
+        "incremental_bets": 20,
+        "incremental_return_units_approx": 0,
+        "incremental_roi_approx": -1
+      },
+      "B": {
+        "incremental_bets": 7,
+        "incremental_return_units_approx": 0,
+        "incremental_roi_approx": -1
+      },
+      "AB": {
+        "incremental_bets": 27,
+        "incremental_return_units_approx": 0,
+        "incremental_roi_approx": -1
+      }
+    },
+    "no_cap_total": {
+      "A": {
+        "bets": 76,
+        "roi": -0.202632
+      },
+      "B": {
+        "bets": 40,
+        "roi": 0.53
+      },
+      "AB": {
+        "bets": 116,
+        "roi": 0.05
+      },
+      "explanation": "The +5% no-cap combined ROI is inherited from <=20x winners; the added >20x tickets contributed approximately zero return and diluted the edge."
+    }
+  },
+  "interpretation": [
+    "20x is still not a theoretical probability boundary.",
+    "But the burned A+B evidence does not support promoting >20x to practical real-money use: in the comparable frozen rule, all 27 incremental >20x selections produced approximately zero return.",
+    "Therefore a no-hard-cap concept may remain scientifically interesting, but >20x must be treated as a separate longshot validation problem rather than assumed beneficial from EV algebra alone.",
+    "The correct next test is prospective band validation with frozen PRE probability and PRE odds, not further tuning on burned A+B."
+  ],
+  "decision": {
+    "today_20260909_prospective_v2_freeze_changed": false,
+    "today_answer_check_changed": false,
+    "future_longshot_promotion": "NOT_PROVEN_SHADOW_ONLY_PENDING_PROSPECTIVE_EVIDENCE",
+    "future_core_practical_rule": "<=20x remains the only burned-A/B-supported practical neighborhood until new prospective evidence says otherwise",
+    "threshold_optimization_now": "STOP_AD_HOC_TUNING"
+  },
+  "evidence_gate_for_future_promotion": {
+    "use_existing": "tools/keirin_longshot_evidence_sufficiency_v2.py",
+    "minimum_expected_hits_per_longshot_band": 5,
+    "minimum_actual_hits_per_longshot_band": 5,
+    "minimum_calendar_weeks_per_longshot_band": 8,
+    "anti_jackpot_requirement": "must also pass longshot validation gate; one jackpot cannot establish stable edge"
+  },
+  "tooling": {
+    "decomposer": "tools/keirin_odds_cap_incremental_decomposer_v1.py",
+    "selftest": "tools/keirin_odds_cap_incremental_decomposer_selftest_v1.py"
+  },
+  "hard_boundaries": {
+    "today_results_used": false,
+    "today_payouts_used": false,
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_30_60_support_changed": false,
+    "main_mutation": false,
+    "runtime": false,
+    "real_money_execution": false
+  },
+  "owner_action_required_now": false
+}
