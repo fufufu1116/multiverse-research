@@ -1,0 +1,46 @@
+{
+  "record": "KEIRIN_FUTURE_FIT_RACECARD_CAPTURE_CONTRACT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "IMPLEMENTED_FUTURE_SIDE_FULL_RACE_PRE_CAPTURE_FOR_POST_SUPPORT_FIT_READINESS",
+  "builder": "tools/keirin_future_fit_race_membership_builder_v1.py",
+  "selftest_spec": "tools/keirin_future_fit_race_membership_builder_selftest_v1.py",
+  "purpose": "When 2026-09-14/15 final Day1 cards appear, capture full PRE rosters for every unique future race containing a formally supported locked rider, so 30/60 support formalization and future-side model-fit membership can be frozen in the same pass.",
+  "required_full_race_fields": {
+    "race": [
+      "race_date",
+      "venue",
+      "circumference_m",
+      "day",
+      "race_no",
+      "source_family",
+      "source_url",
+      "source_sha256",
+      "captured_at_jst"
+    ],
+    "rider": [
+      "car_no",
+      "official_registration_number",
+      "rider_name",
+      "competition_score",
+      "class",
+      "style"
+    ]
+  },
+  "rules": [
+    "Only races referenced by confirmed future support receipts are required.",
+    "All cars in each required race must be captured from PRE racecard evidence, not only the locked support rider.",
+    "competition_score must be positive finite; zero/missing is fail closed.",
+    "Trusted six-source hostname binding applies.",
+    "RESULT/PAYOUT/ODDS/PREDICTION/comments/rank fields fail closed.",
+    "Next-day-or-later reconstruction fails closed.",
+    "This contract freezes future-side PRE membership only; it does not by itself authorize formula freeze or RESULT join."
+  ],
+  "direct_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "formula_fit_authorized_now": false,
+  "result_join_authorized_now": false,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "runtime": false
+}
