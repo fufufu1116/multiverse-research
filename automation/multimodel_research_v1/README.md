@@ -162,6 +162,21 @@ Cross-provider tests require Gemini and Claude to receive the same exact canonic
 
 This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
 
+Catalog-model synthetic response round-trip
+
+`MULTIVERSE_PROVIDER_PILOT_ROUNDTRIP_v1` takes each dated catalog model through the receive-side chain using a fully synthetic provider response and no network call.
+
+For Gemini and Claude it proves offline:
+- the exact catalog model ID is preserved by the provider parser;
+- normalized completion and usage metadata are recorded;
+- a termination record is bound to the exact request;
+- RESULT v2 is bound to the exact Assignment v1;
+- an execution receipt uses `LIVE_ATTESTED` model identity against the pinned/stable model target;
+- the parsed observation is bound to the termination/result/receipt chain;
+- all major artifacts have deterministic SHA256 identities.
+
+`LIVE_ATTESTED` here describes the simulated receipt contract only. `synthetic_only=true` and `live_provider_execution=false`; no provider, credential, spend, adoption, or Runtime authority is created.
+
 Provider launch evidence convergence
 
 `MULTIVERSE_PROVIDER_LAUNCH_EVIDENCE_v1` binds the catalog-bound full offline provider matrix to the pre-execution freshness/time/Candidate evidence bundle.

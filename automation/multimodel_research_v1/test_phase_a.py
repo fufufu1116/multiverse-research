@@ -121,6 +121,11 @@ from automation.multimodel_research_v1.launch_evidence import (
     provider_launch_evidence_sha256,
     validate_provider_launch_evidence,
 )
+from automation.multimodel_research_v1.pilot_roundtrip import (
+    build_provider_pilot_roundtrip,
+    provider_pilot_roundtrip_sha256,
+    validate_provider_pilot_roundtrip,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -12187,6 +12192,257 @@ class ContractTests(unittest.TestCase):
         first = provider_launch_evidence_sha256(*args)
         cloned = tuple(copy.deepcopy(item) for item in args)
         second = provider_launch_evidence_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def test_349_gemini_roundtrip_uses_catalog_model_id(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertEqual(value["model_id"], "gemini-3.8-flash")
+        self.assertEqual(value["normalized_state"], "COMPLETED")
+
+    def test_350_claude_roundtrip_uses_catalog_model_id(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        self.assertEqual(
+            value["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+        self.assertEqual(value["normalized_state"], "COMPLETED")
+
+    def test_351_roundtrip_is_live_attested_but_synthetic_only(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = build_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(value["attestation_state"], "LIVE_ATTESTED")
+            self.assertIs(value["synthetic_only"], True)
+            self.assertIs(value["live_provider_execution"], False)
+
+    def test_352_roundtrip_binds_matrix_response_and_receipt_digests(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        for key in (
+            "pilot_matrix_sha256",
+            "simulated_provider_response_sha256",
+            "provider_observation_sha256",
+            "termination_record_sha256",
+            "result_sha256",
+            "execution_receipt_sha256",
+            "observation_binding_sha256",
+        ):
+            self.assertEqual(len(value[key]), 64)
+
+    def test_353_roundtrip_exact_validation_accepts_both_providers(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = build_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                validate_provider_pilot_roundtrip(
+                    task_v2(),
+                    snapshot,
+                    provider,
+                    response_schema(),
+                    value,
+                ),
+                value,
+            )
+
+    def test_354_roundtrip_rejects_model_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        value["model_id"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                "GOOGLE_GEMINI",
+                response_schema(),
+                value,
+            )
+
+    def test_355_roundtrip_rejects_receipt_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        value["execution_receipt_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                "ANTHROPIC_CLAUDE",
+                response_schema(),
+                value,
+            )
+
+    def test_356_roundtrip_grants_no_provider_or_spend_authority(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertIs(value["provider_credentials"], False)
+        self.assertIs(value["spend_authorized"], False)
+        self.assertIs(value["adoption_authority"], False)
+
+    def test_357_roundtrip_runtime_remains_off(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_358_roundtrip_provider_digests_are_distinct(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        gemini = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        claude = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        self.assertNotEqual(
+            gemini["simulated_provider_response_sha256"],
+            claude["simulated_provider_response_sha256"],
+        )
+        self.assertNotEqual(
+            gemini["observation_binding_sha256"],
+            claude["observation_binding_sha256"],
+        )
+
+    def test_359_roundtrip_rejects_observation_binding_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        value["observation_binding_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                "GOOGLE_GEMINI",
+                response_schema(),
+                value,
+            )
+
+    def test_360_roundtrip_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        value = build_provider_pilot_roundtrip(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        first = provider_pilot_roundtrip_sha256(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+            value,
+        )
+        second = provider_pilot_roundtrip_sha256(
+            copy.deepcopy(bound_task),
+            copy.deepcopy(snapshot),
+            "ANTHROPIC_CLAUDE",
+            copy.deepcopy(schema),
+            copy.deepcopy(value),
+        )
         self.assertEqual(first, second)
 
 

@@ -34,6 +34,7 @@ REQUIRED = [
     ROOT / "time_attestation.py",
     ROOT / "pre_execution_bundle.py",
     ROOT / "launch_evidence.py",
+    ROOT / "pilot_roundtrip.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -173,6 +174,7 @@ def validate() -> dict:
     time_attestation = (ROOT / "time_attestation.py").read_text()
     pre_execution_bundle = (ROOT / "pre_execution_bundle.py").read_text()
     launch_evidence = (ROOT / "launch_evidence.py").read_text()
+    pilot_roundtrip = (ROOT / "pilot_roundtrip.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -749,6 +751,26 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_PILOT_ROUNDTRIP_v1",
+        "build_provider_pilot_roundtrip",
+        "validate_provider_pilot_roundtrip",
+        "parse_gemini_interactions_v1_response",
+        "parse_claude_messages_response",
+        "validate_termination_record",
+        "validate_result_v2_for_assignment",
+        "validate_execution_receipt",
+        "validate_provider_observation_binding",
+        "LIVE_ATTESTED",
+        "PILOT_ROUNDTRIP_EXACT_MISMATCH",
+        "provider_pilot_roundtrip_sha256",
+    ):
+        record(
+            f"pilot_roundtrip:{token}",
+            token in pilot_roundtrip,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -770,8 +792,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 348,
-        f"{test_count} != 348",
+        test_count == 360,
+        f"{test_count} != 360",
     )
 
     return {
