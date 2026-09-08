@@ -13,6 +13,7 @@ REQUIRED = [
     ROOT / "outcome.py",
     ROOT / "aggregator.py",
     ROOT / "assignment.py",
+    ROOT / "fanout.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -94,6 +95,7 @@ def validate() -> dict:
     aggregator = (ROOT / "aggregator.py").read_text()
     outcome = (ROOT / "outcome.py").read_text()
     assignment = (ROOT / "assignment.py").read_text()
+    fanout = (ROOT / "fanout.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -200,6 +202,28 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_RESEARCH_FANOUT_PLAN_v1",
+        "MULTIVERSE_RESEARCH_BATCH_SUMMARY_v1",
+        "validate_fanout_plan",
+        "DUPLICATE_FANOUT_ASSIGNMENT_ID",
+        "DUPLICATE_FANOUT_LOGICAL_TARGET",
+        "FANOUT_PLAN_ASSIGNMENT_SET_MISMATCH",
+        "FANOUT_PLAN_CREATED_BEFORE_ASSIGNMENT",
+        "summarize_fanout_results",
+        "FANOUT_RESULT_NOT_PLANNED",
+        "DUPLICATE_FANOUT_RESULT_FOR_ASSIGNMENT",
+        "missing_assignment_sha256s",
+        "all_planned_observed",
+        "all_planned_completed",
+        "fanout_plan_sha256",
+    ):
+        record(
+            f"fanout:{token}",
+            token in fanout,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -221,8 +245,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 91,
-        f"{test_count} != 91",
+        test_count == 105,
+        f"{test_count} != 105",
     )
 
     return {

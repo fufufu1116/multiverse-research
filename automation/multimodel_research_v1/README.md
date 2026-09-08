@@ -109,6 +109,32 @@ TASK_v1 cannot be assigned under this contract.
 
 Historical RESULT_v1 validation remains unchanged.
 
+Fanout plan / batch completeness
+
+`MULTIVERSE_RESEARCH_FANOUT_PLAN_v1` is validated against the exact Assignment v1 objects it plans. It does not accept opaque hashes without assignment validation.
+
+The plan binds one exact task/snapshot to a canonical sorted set of exact assignment SHA256 values.
+
+Fanout v1 fails closed on:
+- duplicate assignment IDs;
+- duplicate assignment SHA256 values;
+- duplicate logical provider/model/role targets;
+- plan/assignment-set mismatch;
+- plan creation before any included assignment.
+
+The same provider/model may be assigned different requested roles; those are distinct advisory identities but remain one provider/model for Aggregate v2 diversity accounting.
+
+`MULTIVERSE_RESEARCH_BATCH_SUMMARY_v1` distinguishes:
+- planned assignments;
+- observed terminal results;
+- completed assignments;
+- noncompleted observed assignments;
+- exact missing assignment SHA256 values.
+
+An INFRA_FAILURE/REFUSED/UNSUPPORTED result counts as observed but never as completed. An unplanned result or a second result for the same assignment fails closed.
+
+Batch completeness is descriptive only and grants no adoption authority.
+
 Consensus
 
 Consensus is descriptive only.

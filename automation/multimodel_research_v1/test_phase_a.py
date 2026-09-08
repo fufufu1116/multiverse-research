@@ -13,6 +13,11 @@ from automation.multimodel_research_v1.assignment import (
     validate_assignment,
     validate_result_v2_for_assignment,
 )
+from automation.multimodel_research_v1.fanout import (
+    fanout_plan_sha256,
+    summarize_fanout_results,
+    validate_fanout_plan,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -152,6 +157,27 @@ def result_v2(
         bound_assignment,
     )
     return value
+
+
+def fanout_plan(
+    bound_task: dict,
+    assignments: list[dict],
+    *,
+    plan_id: str = "fanout-plan-001",
+) -> dict:
+    hashes = sorted(
+        assignment_sha256(bound_task, item)
+        for item in assignments
+    )
+    return {
+        "schema": "MULTIVERSE_RESEARCH_FANOUT_PLAN_v1",
+        "plan_id": plan_id,
+        "task_sha256": sha256_json(bound_task),
+        "snapshot_id": bound_task["snapshot_id"],
+        "created_at": "2026-09-07T00:00:45Z",
+        "assignment_sha256s": hashes,
+        "nonauthority": nonauthority(),
+    }
 
 
 def finding(
@@ -1670,6 +1696,430 @@ class ContractTests(unittest.TestCase):
                 bound_task,
                 second_assignment,
                 changed,
+            ),
+        )
+
+
+    def test_92_valid_fanout_plan_binds_valid_assignments(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="fanout-a",
+                provider="provider-a",
+                model="model-a",
+                role="architecture_challenge",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="fanout-b",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        self.assertEqual(
+            validate_fanout_plan(
+                bound_task,
+                assignments,
+                plan,
+            ),
+            plan,
+        )
+
+    def test_93_fanout_plan_hashes_must_be_canonical_order(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="order-a",
+                provider="provider-a",
+                model="model-a",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="order-b",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        plan["assignment_sha256s"] = list(
+            reversed(plan["assignment_sha256s"])
+        )
+        if plan["assignment_sha256s"] != sorted(
+            plan["assignment_sha256s"]
+        ):
+            with self.assertRaises(ResearchContractError):
+                validate_fanout_plan(
+                    bound_task,
+                    assignments,
+                    plan,
+                )
+
+    def test_94_fanout_rejects_duplicate_assignment_ids(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="same-assignment",
+                provider="provider-a",
+                model="model-a",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="same-assignment",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        with self.assertRaises(ResearchContractError):
+            validate_fanout_plan(
+                bound_task,
+                assignments,
+                plan,
+            )
+
+    def test_95_fanout_rejects_duplicate_logical_target(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="sample-a",
+                provider="provider-a",
+                model="model-a",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="sample-b",
+                provider="provider-a",
+                model="model-a",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        with self.assertRaises(ResearchContractError):
+            validate_fanout_plan(
+                bound_task,
+                assignments,
+                plan,
+            )
+
+    def test_96_fanout_allows_same_model_in_different_roles(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="role-a",
+                provider="provider-a",
+                model="model-a",
+                role="architecture_challenge",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="role-b",
+                provider="provider-a",
+                model="model-a",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        self.assertEqual(
+            validate_fanout_plan(
+                bound_task,
+                assignments,
+                plan,
+            ),
+            plan,
+        )
+
+    def test_97_fanout_plan_binds_exact_assignment_set(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="exact-a",
+                provider="provider-a",
+                model="model-a",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="exact-b",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        plan["assignment_sha256s"] = plan[
+            "assignment_sha256s"
+        ][:-1]
+        with self.assertRaises(ResearchContractError):
+            validate_fanout_plan(
+                bound_task,
+                assignments,
+                plan,
+            )
+
+    def test_98_fanout_plan_cannot_predate_assignment(self):
+        bound_task = task_v2()
+        assignments = [assignment(bound_task)]
+        assignments[0]["created_at"] = (
+            "2026-09-07T00:00:50Z"
+        )
+        plan = fanout_plan(bound_task, assignments)
+        with self.assertRaises(ResearchContractError):
+            validate_fanout_plan(
+                bound_task,
+                assignments,
+                plan,
+            )
+
+    def test_99_fanout_missing_assignment_is_explicit(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="missing-a",
+                provider="provider-a",
+                model="model-a",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="missing-b",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        first_result = result_v2(
+            bound_task,
+            assignments[0],
+            submission_id="only-first",
+        )
+        summary = summarize_fanout_results(
+            bound_task,
+            assignments,
+            plan,
+            [first_result],
+        )
+        self.assertEqual(
+            summary["planned_assignment_count"],
+            2,
+        )
+        self.assertEqual(
+            summary["observed_terminal_result_count"],
+            1,
+        )
+        self.assertEqual(
+            len(summary["missing_assignment_sha256s"]),
+            1,
+        )
+        self.assertFalse(summary["all_planned_observed"])
+        self.assertFalse(summary["all_planned_completed"])
+
+    def test_100_fanout_all_planned_completed_is_explicit(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="complete-a",
+                provider="provider-a",
+                model="model-a",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="complete-b",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        results = [
+            result_v2(
+                bound_task,
+                assignments[0],
+                submission_id="complete-result-a",
+            ),
+            result_v2(
+                bound_task,
+                assignments[1],
+                submission_id="complete-result-b",
+            ),
+        ]
+        summary = summarize_fanout_results(
+            bound_task,
+            assignments,
+            plan,
+            results,
+        )
+        self.assertTrue(summary["all_planned_observed"])
+        self.assertTrue(summary["all_planned_completed"])
+        self.assertEqual(
+            summary["completed_assignment_count"],
+            2,
+        )
+
+    def test_101_fanout_infra_failure_is_observed_not_completed(self):
+        bound_task = task_v2()
+        assignments = [assignment(bound_task)]
+        plan = fanout_plan(bound_task, assignments)
+        failed = result_v2(
+            bound_task,
+            assignments[0],
+            submission_id="fanout-infra",
+            status="INFRA_FAILURE",
+        )
+        summary = summarize_fanout_results(
+            bound_task,
+            assignments,
+            plan,
+            [failed],
+        )
+        self.assertTrue(summary["all_planned_observed"])
+        self.assertFalse(summary["all_planned_completed"])
+        self.assertEqual(
+            summary["completed_assignment_count"],
+            0,
+        )
+        self.assertEqual(
+            summary["status_counts"]["INFRA_FAILURE"],
+            1,
+        )
+
+    def test_102_fanout_rejects_unplanned_result(self):
+        bound_task = task_v2()
+        planned = assignment(
+            bound_task,
+            assignment_id="planned",
+            provider="provider-a",
+            model="model-a",
+        )
+        unplanned = assignment(
+            bound_task,
+            assignment_id="unplanned",
+            provider="provider-b",
+            model="model-b",
+        )
+        plan = fanout_plan(bound_task, [planned])
+        value = result_v2(
+            bound_task,
+            unplanned,
+            submission_id="unplanned-result",
+        )
+        with self.assertRaises(ResearchContractError):
+            summarize_fanout_results(
+                bound_task,
+                [planned],
+                plan,
+                [value],
+            )
+
+    def test_103_fanout_rejects_duplicate_result_for_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        plan = fanout_plan(
+            bound_task,
+            [bound_assignment],
+        )
+        results = [
+            result_v2(
+                bound_task,
+                bound_assignment,
+                submission_id="duplicate-a",
+            ),
+            result_v2(
+                bound_task,
+                bound_assignment,
+                submission_id="duplicate-b",
+            ),
+        ]
+        with self.assertRaises(ResearchContractError):
+            summarize_fanout_results(
+                bound_task,
+                [bound_assignment],
+                plan,
+                results,
+            )
+
+    def test_104_fanout_batch_summary_is_input_order_invariant(self):
+        bound_task = task_v2()
+        assignments = [
+            assignment(
+                bound_task,
+                assignment_id="batch-a",
+                provider="provider-a",
+                model="model-a",
+            ),
+            assignment(
+                bound_task,
+                assignment_id="batch-b",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+            ),
+        ]
+        plan = fanout_plan(bound_task, assignments)
+        results = [
+            result_v2(
+                bound_task,
+                assignments[0],
+                submission_id="batch-result-a",
+            ),
+            result_v2(
+                bound_task,
+                assignments[1],
+                submission_id="batch-result-b",
+                status="REFUSED",
+            ),
+        ]
+        forward = summarize_fanout_results(
+            bound_task,
+            assignments,
+            plan,
+            results,
+        )
+        reverse = summarize_fanout_results(
+            bound_task,
+            assignments,
+            plan,
+            list(reversed(results)),
+        )
+        self.assertEqual(forward, reverse)
+
+    def test_105_assignment_mutation_invalidates_fanout_plan(self):
+        bound_task = task_v2()
+        assignments = [assignment(bound_task)]
+        plan = fanout_plan(bound_task, assignments)
+        original_plan_sha = fanout_plan_sha256(
+            bound_task,
+            assignments,
+            plan,
+        )
+        changed = [copy.deepcopy(assignments[0])]
+        changed[0]["target_model"] = "model-b"
+        with self.assertRaises(ResearchContractError):
+            validate_fanout_plan(
+                bound_task,
+                changed,
+                plan,
+            )
+        changed_plan = fanout_plan(
+            bound_task,
+            changed,
+            plan_id="fanout-plan-002",
+        )
+        self.assertNotEqual(
+            original_plan_sha,
+            fanout_plan_sha256(
+                bound_task,
+                changed,
+                changed_plan,
             ),
         )
 
