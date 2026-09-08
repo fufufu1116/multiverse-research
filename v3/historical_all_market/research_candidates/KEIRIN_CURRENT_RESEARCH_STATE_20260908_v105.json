@@ -1,0 +1,204 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v105",
+  "date_jst": "2026-09-08",
+  "status": "CTC_PRELIGHT_ACTIVE_TICKET_PORTFOLIO_LAYER_IMPLEMENTED_RELAXED_TIME_FINALIZER_V2_READY_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v104.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "d459683722de9f6461c81fcd47e348ec75c82db4",
+    "governance": "#93 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "canonical_main_observed": "ed9be13f8d1c5d6fcc7ab07761c0dfdc4255df98",
+    "pr177": {
+      "state": "OPEN_DRAFT",
+      "head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+      "latest_lab_request_comment": 5573150058,
+      "exact_current_request": false,
+      "progression_owner": "SOLE_MULTIVERSE_CONTROL_COMMANDER_PER_T2_5",
+      "keirin_action": "DO_NOT_PUBLISH_COMPETING_REBIND_REQUEST"
+    }
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_new_riders": 29,
+    "remaining_new_rows": 58,
+    "candidate_count": 35,
+    "failure_margin": 6,
+    "gate": "FAIL"
+  },
+  "accelerated_scan": {
+    "artifact": "KEIRIN_POST_FIREWALL_0907_TO_0913_ACCELERATED_DAY1_SCAN_AUDIT_20260908_v1.json",
+    "window": "2026-09-10 through 2026-09-13",
+    "valid_early_cross_circumference_conversions": 0,
+    "conclusion": "No valid earlier formal-support conversion was found. The 2026-09-14 Ito/Aomori and 2026-09-15 Hofu front is the earliest known viable bulk-conversion route.",
+    "corrections": [
+      "山田哲也 provisional hit retracted because Toyama roster contained 山田隼司.",
+      "森川剛 event-roster hit rejected because 2026-09-07 actual Day1 membership failed; he was a later substitute."
+    ],
+    "result_accessed": false,
+    "odds_accessed": false,
+    "payout_accessed": false
+  },
+  "one_shot_formalization": {
+    "order": "KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "matrix": "KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "registry": "KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "input_manifest": "KEIRIN_35_FINAL_DAY1_PRE_INPUT_MANIFEST_20260908_v1.json",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v2.py",
+    "selftest": "tools/keirin_35_formal_support_finalizer_selftest_v2.py",
+    "behavior": [
+      "Process priorities 1..35 only.",
+      "Require exact registration/name/date/venue/Day1/circumference/race_no/car_no/class/style.",
+      "Require a final Day1 racecard/schedule evidence page with source URL, SHA-256 and capture timestamp.",
+      "Do not use RESULT/PAYOUT/ODDS/prediction/human-comment pages to reconstruct PRE.",
+      "Exact pit/cutoff timestamp is not a blocking requirement under owner direction 2026-09-08.",
+      "Skip failed candidates without relaxing identity or Day1 race-assignment requirements.",
+      "Stop immediately after 29 new PASS."
+    ],
+    "event_targets": [
+      {
+        "venue": "伊東",
+        "date": "2026-09-14",
+        "candidates": 11,
+        "circumference_bucket": "333_OR_333_33M"
+      },
+      {
+        "venue": "青森",
+        "date": "2026-09-14",
+        "candidates": 4,
+        "circumference_bucket": "400M"
+      },
+      {
+        "venue": "防府",
+        "date": "2026-09-15",
+        "candidates": 20,
+        "circumference_bucket": "333_OR_333_33M"
+      }
+    ],
+    "final_day1_pre_rows_ready_now": 0,
+    "support_increment_now": 0,
+    "cutoff_binding_guard": "tools/keirin_35_formal_support_finalizer_cutoff_guard_v1.py",
+    "cutoff_binding_guard_selftest": "tools/keirin_35_formal_support_finalizer_cutoff_guard_selftest_v1.py",
+    "cutoff_binding_manifest": "v3/historical_all_market/research_candidates/KEIRIN_35_TRUSTED_CUTOFF_BINDING_MANIFEST_20260908_v1.json",
+    "cutoff_binding_status": "OPTIONAL_AUDIT_HARDENING_NOT_BLOCKING",
+    "cutoff_binding_required_before_finalizer": false,
+    "finalizer_v1_retained": "tools/keirin_35_formal_support_finalizer_v1.py"
+  },
+  "support_gate_semantics": {
+    "maximum_single_venue_share_denominator": "ALL_SUPPORTED_ROWS_GLOBAL",
+    "threshold": 0.6,
+    "calendar_block_dimension": "UNKNOWN_PENDING_PR177"
+  },
+  "line_architecture_engineering": {
+    "state": "IMPLEMENTED_SELFTEST_PASS_NOT_FITTED_NOT_VALIDATED",
+    "line_relation_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+    "c1_n1_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v1.py"
+  },
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED_AS_MODEL_INPUT_NOT_REQUIRED; FUTURE_PURCHASE_ONLY_OWNER_MANUAL_CHECK",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "post_cutoff_reconstruction": false,
+    "main_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "shared_lab_auditor_steps_mutation": false,
+    "self_adoption": false,
+    "runtime": false
+  },
+  "work_conserving_next": [
+    "Continue CTC roster preflight for Ito Sep14 and Hofu Sep15; do not wait for exact cutoff timestamps.",
+    "When final Day1 race assignments publish, capture exact race/car/class/style/source and run finalizer v2 toward 30 riders / 60 PRE rows.",
+    "Keep RESULT/PAYOUT/ODDS/human forecasts out of the PRE formal-support lane until its gate permits outcome work.",
+    "Wire C0/C1/N1 ordered-top3 probability output into the new ticket portfolio builder so buying structures can be compared from frozen model probabilities without live odds.",
+    "Use fixed total race budget as the primary denominator; compare single, top-N, box and fixed-first formation structures without cherry-picking.",
+    "At purchase time only, owner manually checks current odds against model-derived minimum acceptable odds.",
+    "Observe PR177/Control durable result only; do not compete with Control."
+  ],
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "cutoff_binding_hardening": {
+    "status": "OPTIONAL_AUDIT_LAYER_SUPERSEDED_AS_MANDATORY_GATE_BY_OWNER_DIRECTION",
+    "receipt": "v3/historical_all_market/research_candidates/KEIRIN_TRUSTED_CUTOFF_BINDING_GUARD_IMPLEMENTATION_RECEIPT_20260908_v1.json",
+    "gap_closed": "trusted_pit_cutoff_jst can no longer be accepted as an unbound row-supplied timestamp",
+    "event_bindings": [
+      "伊東_2026-09-14",
+      "青森_2026-09-14",
+      "防府_2026-09-15"
+    ],
+    "support_increment_now": 0,
+    "result_accessed": false,
+    "owner_action_required_now": false,
+    "required_for_formalization": false,
+    "note": "Retained for optional provenance auditing; no longer blocks v2 formalization."
+  },
+  "ctc_preflight": {
+    "artifact": "v3/historical_all_market/research_candidates/KEIRIN_CTC_0914_0915_PREFLIGHT_EVIDENCE_20260908_v1.json",
+    "event_existence_confirmed": [
+      "青森_2026-09-14",
+      "伊東_2026-09-14",
+      "防府_2026-09-15"
+    ],
+    "aomori_target_candidates": 4,
+    "aomori_scheduled_roster_matches": 4,
+    "aomori_match_rate": "4/4",
+    "accepted_use": "event existence + scheduled roster preflight; use published CTC detail pages immediately",
+    "still_missing_for_formalization": [
+      "final Day1 race assignment with exact race number and car number",
+      "class/style if not yet present on the final racecard"
+    ],
+    "formal_support_increment_now": 0,
+    "detail_urls": {
+      "青森_2026-09-14": "https://ctc.gr.jp/schedule/detail.php?id=1220260914",
+      "伊東_2026-09-14": "https://ctc.gr.jp/schedule/detail.php?id=3720260914",
+      "防府_2026-09-15": "https://ctc.gr.jp/schedule/detail.php?id=6320260915"
+    }
+  },
+  "purchase_execution_policy": {
+    "artifact": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_CTC_AND_MANUAL_ODDS_POLICY_20260908_v1.json",
+    "model_simulation_live_odds_required": false,
+    "real_time_odds_scraping_required": false,
+    "owner_manual_check_at_purchase_time": true,
+    "tool": "tools/keirin_manual_odds_purchase_gate_v1.py",
+    "formula": "minimum_purchase_odds=(1+required_roi_margin)/model_probability rounded upward to display step",
+    "display_template": "現在オッズが X.X倍以上なら購入候補、未満なら見送り",
+    "example": "model probability 7.2%, required ROI 10% => 15.3倍以上なら購入候補",
+    "universal_fixed_15_3_threshold": false
+  },
+  "owner_policy_update_20260908": {
+    "artifact": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_CTC_AND_MANUAL_ODDS_POLICY_20260908_v1.json",
+    "exact_cutoff_timestamp_blocking": false,
+    "ctc_use_now": true,
+    "live_odds_model_input": false,
+    "owner_manual_purchase_odds_gate": true
+  },
+  "ticket_construction_engineering": {
+    "state": "IMPLEMENTED_PRE_ONLY_SELFTEST_SPEC_READY_NOT_RESULT_VALIDATED",
+    "design": "v3/historical_all_market/research_candidates/KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v2.json",
+    "builder": "tools/keirin_ticket_portfolio_builder_v1.py",
+    "selftest": "tools/keirin_ticket_portfolio_builder_selftest_v1.py",
+    "structures": [
+      "2車単 単点",
+      "2車複 単点",
+      "3連単 上位N点",
+      "3連単 N車BOX",
+      "3連単 1着固定・2着複数・3着全"
+    ],
+    "primary_budget_policy": "FIXED_TOTAL_RACE_BUDGET_EQUAL_100YEN_UNITS",
+    "secondary_budget_policy": "FIXED_TOTAL_RACE_BUDGET_MODEL_PROPORTIONAL_100YEN_UNITS",
+    "live_odds_required": false,
+    "output_when_model_probability_available": [
+      "ticket set",
+      "combination count",
+      "model hit probability",
+      "coverage per combination",
+      "stake by ticket",
+      "minimum acceptable odds for required ROI"
+    ]
+  }
+}
