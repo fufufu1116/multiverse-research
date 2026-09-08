@@ -33,6 +33,7 @@ REQUIRED = [
     ROOT / "catalog_freshness.py",
     ROOT / "time_attestation.py",
     ROOT / "pre_execution_bundle.py",
+    ROOT / "launch_evidence.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -171,6 +172,7 @@ def validate() -> dict:
     catalog_freshness = (ROOT / "catalog_freshness.py").read_text()
     time_attestation = (ROOT / "time_attestation.py").read_text()
     pre_execution_bundle = (ROOT / "pre_execution_bundle.py").read_text()
+    launch_evidence = (ROOT / "launch_evidence.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -727,6 +729,26 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_LAUNCH_EVIDENCE_v1",
+        "build_provider_launch_evidence",
+        "validate_provider_launch_evidence",
+        "LAUNCH_EVIDENCE_PROVIDER_MISMATCH",
+        "LAUNCH_EVIDENCE_MODEL_MISMATCH",
+        "LAUNCH_EVIDENCE_INPUT_CEILING_MISMATCH",
+        "LAUNCH_EVIDENCE_OUTPUT_CEILING_MISMATCH",
+        "LAUNCH_EVIDENCE_COST_CEILING_MISMATCH",
+        "REPOSITORY_EVIDENCE_ALIGNED_AUTHORITY_ABSENT",
+        "LAUNCH_EVIDENCE_FORBIDDEN_TRUE",
+        "LAUNCH_EVIDENCE_RUNTIME_NOT_OFF",
+        "provider_launch_evidence_sha256",
+    ):
+        record(
+            f"launch_evidence:{token}",
+            token in launch_evidence,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -748,8 +770,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 336,
-        f"{test_count} != 336",
+        test_count == 348,
+        f"{test_count} != 348",
     )
 
     return {

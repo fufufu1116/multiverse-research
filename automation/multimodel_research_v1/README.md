@@ -162,6 +162,16 @@ Cross-provider tests require Gemini and Claude to receive the same exact canonic
 
 This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
 
+Provider launch evidence convergence
+
+`MULTIVERSE_PROVIDER_LAUNCH_EVIDENCE_v1` binds the catalog-bound full offline provider matrix to the pre-execution freshness/time/Candidate evidence bundle.
+
+This closes the repository-side cross-generation gap between the exact real provider/model request path and the exact frozen Candidate head/seal, catalog freshness, Control-runtime time attestation, and pilot resource ceilings.
+
+The launch evidence requires the same provider/model, input/output token ceilings, one-attempt ceiling, and catalog-derived maximum cost across both chains. Mixing a valid Gemini matrix with a valid Claude bundle, or mixing different token/cost generations, fails closed.
+
+Its state is `REPOSITORY_EVIDENCE_ALIGNED_AUTHORITY_ABSENT`: repository evidence is aligned, but provider-call, credential, spend, live-execution, adoption, and Runtime authority remain false/OFF.
+
 Provider pre-execution evidence bundle
 
 `MULTIVERSE_PROVIDER_PRE_EXECUTION_BUNDLE_v1` closes a repository-side generation-mixing gap immediately before any separately authorized provider call.

@@ -116,6 +116,11 @@ from automation.multimodel_research_v1.pre_execution_bundle import (
     provider_pre_execution_bundle_sha256,
     validate_provider_pre_execution_bundle,
 )
+from automation.multimodel_research_v1.launch_evidence import (
+    build_provider_launch_evidence,
+    provider_launch_evidence_sha256,
+    validate_provider_launch_evidence,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -11914,6 +11919,275 @@ class ContractTests(unittest.TestCase):
                 "output_config"
             ]["format"]["schema"],
         )
+
+
+    def _pre_execution_bundle_fixture_with_limits(
+        self,
+        provider,
+        *,
+        max_input_tokens=32768,
+        max_output_tokens=4096,
+    ):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            provider,
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            max_input_tokens=max_input_tokens,
+            max_output_tokens=max_output_tokens,
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        pilot_binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                plan["prelive_candidate_head"],
+            "prelive_candidate_seal_blob":
+                plan["prelive_candidate_seal_blob"],
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        time_binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        bundle = build_provider_pre_execution_bundle(
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+        )
+        return (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        )
+
+    def _launch_evidence_fixture(self, provider="GOOGLE_GEMINI"):
+        (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        ) = self._pre_execution_bundle_fixture(provider)
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            provider,
+            schema,
+        )
+        evidence = build_provider_launch_evidence(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        )
+        return (
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            evidence,
+        )
+
+    def test_337_valid_gemini_launch_evidence(self):
+        args = self._launch_evidence_fixture("GOOGLE_GEMINI")
+        self.assertEqual(
+            validate_provider_launch_evidence(*args),
+            args[-1],
+        )
+        self.assertEqual(args[-1]["model_id"], "gemini-3.8-flash")
+
+    def test_338_valid_claude_launch_evidence(self):
+        args = self._launch_evidence_fixture("ANTHROPIC_CLAUDE")
+        self.assertEqual(
+            validate_provider_launch_evidence(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_339_launch_evidence_rejects_provider_generation_mix(self):
+        gemini = list(self._launch_evidence_fixture("GOOGLE_GEMINI"))
+        claude = self._launch_evidence_fixture("ANTHROPIC_CLAUDE")
+        gemini[3] = claude[3]
+        with self.assertRaises(ResearchContractError):
+            build_provider_launch_evidence(*gemini[:-1])
+
+    def test_340_launch_evidence_rejects_model_tamper(self):
+        args = list(self._launch_evidence_fixture("GOOGLE_GEMINI"))
+        args[3] = copy.deepcopy(args[3])
+        args[3]["assignment"]["target_model"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_341_launch_evidence_rejects_input_ceiling_mix(self):
+        (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        ) = self._pre_execution_bundle_fixture_with_limits(
+            "GOOGLE_GEMINI",
+            max_input_tokens=16384,
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "GOOGLE_GEMINI",
+            schema,
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_launch_evidence(
+                bound_task,
+                snapshot,
+                schema,
+                matrix,
+                plan,
+                freshness,
+                pilot_binding,
+                attestation,
+                time_binding,
+                bundle,
+            )
+
+    def test_342_launch_evidence_rejects_output_ceiling_mix(self):
+        (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        ) = self._pre_execution_bundle_fixture_with_limits(
+            "ANTHROPIC_CLAUDE",
+            max_output_tokens=2048,
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_launch_evidence(
+                bound_task,
+                snapshot,
+                schema,
+                matrix,
+                plan,
+                freshness,
+                pilot_binding,
+                attestation,
+                time_binding,
+                bundle,
+            )
+
+    def test_343_launch_evidence_rejects_matrix_digest_tamper(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pilot_matrix_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_344_launch_evidence_rejects_pre_execution_digest_tamper(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pre_execution_bundle_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_345_launch_evidence_rejects_authority_escalation(self):
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+            "adoption_authority",
+        ):
+            args = list(self._launch_evidence_fixture())
+            args[-1] = copy.deepcopy(args[-1])
+            args[-1][key] = True
+            with self.assertRaises(ResearchContractError):
+                validate_provider_launch_evidence(*args)
+
+    def test_346_launch_evidence_requires_runtime_off(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["runtime"] = "ON"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_347_launch_evidence_requires_aligned_state(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["repository_evidence_aligned"] = False
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_348_launch_evidence_digest_is_deterministic(self):
+        args = self._launch_evidence_fixture()
+        first = provider_launch_evidence_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_launch_evidence_sha256(*cloned)
+        self.assertEqual(first, second)
 
 
 if __name__ == "__main__":
