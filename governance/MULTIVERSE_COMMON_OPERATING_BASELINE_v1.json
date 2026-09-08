@@ -1,10 +1,59 @@
 {
   "schema": "MULTIVERSE_COMMON_OPERATING_BASELINE_v1",
-  "status": "CANDIDATE_NOT_YET_ADOPTED",
-  "baseline_version": "2026-09-07.review-dispatcher-v1",
+  "status": "FIXED_REQUEST_ONLY_REVIEW_BASELINE_ACTIVE",
+  "baseline_version": "2026-09-07.review-dispatcher-v1.request-only-baseline-active",
   "canonical_repo": "fufufu1116/multiverse-research",
   "migration_issue": 152,
   "convergence_issue": 93,
+  "repository_preparation_adoption": {
+    "issue": 156,
+    "decision_comment": 5564870064,
+    "adopted_state": "IMMUTABLE_REVIEW_DISPATCHER_AND_CROSS_CHAT_CONVERGENCE_REPOSITORY_PREPARATION_ADOPTED"
+  },
+  "initial_canonical_integration": {
+    "pr": 153,
+    "authority_issue": 158,
+    "completion_comment": 5564920334,
+    "merge_commit": "8bb7def5a80217a80a7bf8f4ff5901b101afee63",
+    "canonical_tree": "c9d747647a693724d22b142547a3c1600b5c6150"
+  },
+  "dispatcher_hardening": {
+    "repair_issue": 181,
+    "pr": 182,
+    "reviewed_head": "337185b63d2badec4e2bb5b6b0d13c49765d19f1",
+    "reviewed_tree": "879d0a0e1cccd3a09735da52f41e02e9bf989cbe",
+    "lab_pass_comment": 5570979079,
+    "t1_pass_comment": 5571006210,
+    "auditor_pass_comment": 5571163859,
+    "t2_pass_comment": 5571166316,
+    "technical_closure_comment": 5571205048,
+    "adoption_issue": 185,
+    "adoption_comment": 5571470468,
+    "integration_issue": 187,
+    "integration_completion_comment": 5571535293,
+    "canonical_main": "b7ee4cbb758b0c09f3ab90bd243c638e3899d24d",
+    "canonical_tree": "879d0a0e1cccd3a09735da52f41e02e9bf989cbe",
+    "reviewed_tree_exact_match": true,
+    "deferred_import_time_regression_followup_issue": 186
+  },
+  "request_only_migration_proof": {
+    "proof_pr": 193,
+    "lab_request_comment": 5571777874,
+    "lab_pass_comment": 5572011753,
+    "lab_build": 44,
+    "t1_pass_comment": 5572061198,
+    "auditor_request_comment": 5572074572,
+    "auditor_pass_comment": 5572202610,
+    "auditor_build": 691,
+    "t2_pass_comment": 5572205279,
+    "technical_completion_comment": 5572241327,
+    "migration_release_issue": 198,
+    "migration_release_authority_comment": 5572378841,
+    "common_baseline_release_comment": 5572390676,
+    "migration_issue_completion_comment": 5572421502,
+    "request_only_routing_proven": true,
+    "per_job_shared_steps_edit_required": false
+  },
   "precedence": [
     "fresh_canonical_github",
     "latest_adopted_common_operating_baseline",
@@ -21,15 +70,19 @@
   "common_interfaces": {
     "candidate_intake": "single_adoption_intake",
     "review_submission": "durable_machine_readable_request",
-    "independent_lab": "fixed_shared_dispatcher_after_installation",
-    "independent_auditor": "fixed_shared_dispatcher_after_installation",
+    "independent_lab": "fixed_shared_request_only_dispatcher",
+    "independent_auditor": "fixed_shared_request_only_dispatcher",
+    "review_chain": "LAB_TO_T1_TO_AUDITOR_TO_T2_TO_SEPARATE_ADOPTION",
     "owner_courier": "not_required_for_routine_review_yaml",
     "self_adoption": false
   },
   "shared_pipeline_policy": {
-    "during_migration": "single_writer_control_plane_only",
-    "after_installation": "immutable_shared_pipeline_definition",
-    "per_chat_step_replacement": "deprecated_after_installation",
+    "migration_state": "COMPLETE",
+    "installation_state": "FIXED_REINSTALLED_AND_REQUEST_ONLY_ROUTING_PROVEN",
+    "research_lane_may_edit_steps": false,
+    "shared_steps_are_common_infrastructure": true,
+    "per_chat_step_replacement": "PROHIBITED",
+    "future_shared_steps_change_requires_reviewed_adopted_infrastructure_repair_and_owner_authority": true,
     "per_job_binding_source": "exact_github_review_request_plus_request_sha256"
   },
   "review_request": {
@@ -46,15 +99,21 @@
     "auditor_upstream_lab_request_sha256_required": true
   },
   "migration_lock": {
-    "active_until_fixed_pipeline_installation_proved": true,
     "source_comment": 5561567913,
-    "existing_review_requests_preserved": true
+    "released": true,
+    "released_by_issue": 198,
+    "release_authority_comment": 5572378841,
+    "release_baseline_comment": 5572390676,
+    "state": "RELEASED_SUPERSEDED_BY_FIXED_REQUEST_ONLY_BASELINE",
+    "permanent_shared_steps_policy": "NO_PER_JOB_EDIT",
+    "existing_review_requests_preserved_only_if_exact_lineage_current": true
   },
   "nonauthority": {
     "merge": false,
     "main_mutation": false,
     "ruleset_mutation": false,
     "workflow_dispatch_rerun": false,
+    "shared_pipeline_mutation": false,
     "runtime_activation": false,
     "provider_mutation": false,
     "production": false,
