@@ -1,0 +1,93 @@
+{
+  "record": "KEIRIN_HISTORICAL_VIRTUAL_FUTURE_REPLAY_PROTOCOL_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "READY_FOR_NEW_HISTORICAL_PRE_FIRST_REPLAY_COLLECTION",
+  "objective": "Treat historical races as if they are future races by physically/logically separating information available before the race from outcomes and payouts, then replaying chronologically.",
+  "lanes": {
+    "PRE_VAULT": {
+      "allowed": [
+        "historical racecard snapshot proven to represent pre-race values",
+        "rider identity and car number",
+        "competition score at that race",
+        "class/grade",
+        "style",
+        "field size",
+        "venue/bank/circumference",
+        "race stage when objectively sourced",
+        "Girls flag/class",
+        "objective line partition and solo-rider count when objectively sourced",
+        "pre-race recent-form statistics whose cutoff is proven before the race",
+        "timestamped PRE odds for purchase-gate research only"
+      ],
+      "prohibited": [
+        "result",
+        "finish order",
+        "payout",
+        "post-race review",
+        "result-inferred line",
+        "current rider profile backfilled into historical race without point-in-time proof"
+      ]
+    },
+    "OUTCOME_ESCROW": {
+      "isolated_until_prediction_freeze": true,
+      "fields": [
+        "finish order",
+        "settlement/payout",
+        "official result status"
+      ],
+      "rule": "Prediction and buy/no-buy decisions must be hash-frozen before this lane is joined."
+    }
+  },
+  "chronological_replay": {
+    "principle": "At replay date T, only PRE and outcomes from dates strictly earlier than T may influence any adaptive model state.",
+    "recommended_blocks": "walk-forward chronological blocks; preserve a final untouched block for scientific evaluation",
+    "no_random_future_leakage": true,
+    "same_day_cross_leakage": "No use of later-race results to predict an earlier-start-time race; if same-day adaptive updates are studied, order strictly by official start time and preregister it."
+  },
+  "hypotheses_to_add": [
+    {
+      "id": "FINAL_STAGE",
+      "question": "Are final races less predictable or economically different after controlling for field-strength parity?",
+      "requires": "objective race_stage"
+    },
+    {
+      "id": "SOLO_RIDER",
+      "question": "Does solo-rider presence increase placement dispersion or create 2nd/3rd value?",
+      "requires": "objective PRE line partition and solo_count"
+    },
+    {
+      "id": "GIRLS",
+      "question": "Does individual-strength predictability remain high out of time and which market, if any, retains value?",
+      "requires": "Girls/L1 classification"
+    },
+    {
+      "id": "FIELD_PARITY",
+      "question": "Does score-gap/dispersion identify when head prediction is easier while companion positions scatter?",
+      "requires": "PRE competition scores only"
+    },
+    {
+      "id": "TICKET_STRUCTURE",
+      "question": "Which of 3renhuku 1pt, conditional max2, and 3rentan third-spread wins on recovery, drawdown, and stability?",
+      "requires": "frozen candidate definitions"
+    }
+  ],
+  "evaluation_metrics": [
+    "top1 hit rate",
+    "winner top3 coverage",
+    "exact top3 set hit",
+    "ticket hit rate",
+    "ROI/recovery",
+    "maximum drawdown",
+    "weekly and monthly ROI",
+    "largest single-hit share",
+    "bet count",
+    "NO_BET rate"
+  ],
+  "promotion_rule": "No candidate becomes a practical profit rule from burned or newly searched historical data alone. Candidate must be frozen and reproduce on later untouched/prospective data.",
+  "protected_boundaries": {
+    "DEV2000_C": "SEALED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": false,
+    "main_mutation": false
+  }
+}
