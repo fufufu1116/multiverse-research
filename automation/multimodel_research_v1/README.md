@@ -138,6 +138,23 @@ This prevents a later live preparation from making an old catalog appear fresh m
 
 The repository contract does not prove that a clock source is trustworthy by itself. Trust in the source must come from the separately authorized Control execution boundary. The attestation and binding grant no provider-call, credential, spend, live-execution, adoption, or Runtime authority.
 
+Provider pre-execution evidence bundle
+
+`MULTIVERSE_PROVIDER_PRE_EXECUTION_BUNDLE_v1` closes a repository-side generation-mixing gap immediately before any separately authorized provider call.
+
+It binds one exact chain:
+- frozen pre-live Candidate head and seal blob;
+- one exact first-provider pilot dry-run plan;
+- one exact provider/model catalog snapshot;
+- one exact catalog freshness receipt;
+- one exact pilot/freshness binding;
+- one exact Control-runtime time attestation;
+- one exact catalog-freshness/time binding.
+
+The bundle fails closed if a valid object from a different Candidate head, seal, provider/model, catalog generation, or attested check time is mixed into the chain.
+
+The bundle is evidence only. It keeps provider-call, credential, spend, live-execution, adoption, and Runtime authority false/OFF. Trust in `CONTROL_RUNTIME_CLOCK` still comes only from a separately authorized Control execution boundary.
+
 Catalog freshness guard
 
 `MULTIVERSE_PROVIDER_CATALOG_FRESHNESS_v1` requires the provider/model/pricing snapshot used for a later live call to have been checked within the previous 24 hours.

@@ -105,6 +105,11 @@ from automation.multimodel_research_v1.time_attestation import (
     validate_catalog_freshness_time_binding,
     validate_execution_time_attestation,
 )
+from automation.multimodel_research_v1.pre_execution_bundle import (
+    build_provider_pre_execution_bundle,
+    provider_pre_execution_bundle_sha256,
+    validate_provider_pre_execution_bundle,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -11430,6 +11435,163 @@ class ContractTests(unittest.TestCase):
             copy.deepcopy(attestation),
             copy.deepcopy(binding),
         )
+        self.assertEqual(first, second)
+
+
+    def _pre_execution_bundle_fixture(self, provider="GOOGLE_GEMINI"):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            provider,
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        pilot_binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                plan["prelive_candidate_head"],
+            "prelive_candidate_seal_blob":
+                plan["prelive_candidate_seal_blob"],
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        time_binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        bundle = build_provider_pre_execution_bundle(
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+        )
+        return (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        )
+
+    def test_313_valid_provider_pre_execution_bundle(self):
+        args = self._pre_execution_bundle_fixture()
+        self.assertEqual(
+            validate_provider_pre_execution_bundle(*args),
+            args[-1],
+        )
+        self.assertIs(args[-1]["evidence_chain_complete"], True)
+
+    def test_314_pre_execution_rejects_candidate_head_mix(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[4] = copy.deepcopy(args[4])
+        args[4]["prelive_candidate_head"] = "0" * 40
+        with self.assertRaises(ResearchContractError):
+            build_provider_pre_execution_bundle(*args[:6])
+
+    def test_315_pre_execution_rejects_candidate_seal_mix(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[4] = copy.deepcopy(args[4])
+        args[4]["prelive_candidate_seal_blob"] = "0" * 40
+        with self.assertRaises(ResearchContractError):
+            build_provider_pre_execution_bundle(*args[:6])
+
+    def test_316_pre_execution_rejects_provider_binding_mix(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[3] = copy.deepcopy(args[3])
+        args[3]["provider"] = "ANTHROPIC_CLAUDE"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_317_pre_execution_rejects_pilot_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pilot_dry_run_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_318_pre_execution_rejects_freshness_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["catalog_freshness_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_319_pre_execution_rejects_time_attestation_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["time_attestation_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_320_pre_execution_rejects_freshness_time_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["catalog_freshness_time_binding_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_321_pre_execution_rejects_checked_at_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["checked_at"] = "2026-09-08T11:30:01Z"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_322_pre_execution_rejects_authority_escalation(self):
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+            "adoption_authority",
+        ):
+            args = list(self._pre_execution_bundle_fixture())
+            args[-1] = copy.deepcopy(args[-1])
+            args[-1][key] = True
+            with self.assertRaises(ResearchContractError):
+                validate_provider_pre_execution_bundle(*args)
+
+    def test_323_pre_execution_requires_runtime_off(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["runtime"] = "ON"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_324_pre_execution_bundle_digest_is_deterministic(self):
+        args = self._pre_execution_bundle_fixture()
+        first = provider_pre_execution_bundle_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_pre_execution_bundle_sha256(*cloned)
         self.assertEqual(first, second)
 
 

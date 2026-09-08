@@ -31,6 +31,7 @@ REQUIRED = [
     ROOT / "pilot_dry_run.py",
     ROOT / "catalog_freshness.py",
     ROOT / "time_attestation.py",
+    ROOT / "pre_execution_bundle.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -167,6 +168,7 @@ def validate() -> dict:
     pilot_dry_run = (ROOT / "pilot_dry_run.py").read_text()
     catalog_freshness = (ROOT / "catalog_freshness.py").read_text()
     time_attestation = (ROOT / "time_attestation.py").read_text()
+    pre_execution_bundle = (ROOT / "pre_execution_bundle.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -682,6 +684,28 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_PRE_EXECUTION_BUNDLE_v1",
+        "build_provider_pre_execution_bundle",
+        "validate_provider_pre_execution_bundle",
+        "PRE_EXECUTION_PRELIVE_HEAD_MISMATCH",
+        "PRE_EXECUTION_PRELIVE_SEAL_MISMATCH",
+        "PRE_EXECUTION_CATALOG_SNAPSHOT_SHA256_MISMATCH",
+        "PRE_EXECUTION_PILOT_SHA256_MISMATCH",
+        "PRE_EXECUTION_FRESHNESS_SHA256_MISMATCH",
+        "PRE_EXECUTION_PILOT_FRESHNESS_SHA256_MISMATCH",
+        "PRE_EXECUTION_TIME_ATTESTATION_SHA256_MISMATCH",
+        "PRE_EXECUTION_FRESHNESS_TIME_SHA256_MISMATCH",
+        "PRE_EXECUTION_FORBIDDEN_TRUE",
+        "PRE_EXECUTION_RUNTIME_NOT_OFF",
+        "provider_pre_execution_bundle_sha256",
+    ):
+        record(
+            f"pre_execution_bundle:{token}",
+            token in pre_execution_bundle,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -703,8 +727,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 312,
-        f"{test_count} != 312",
+        test_count == 324,
+        f"{test_count} != 324",
     )
 
     return {
