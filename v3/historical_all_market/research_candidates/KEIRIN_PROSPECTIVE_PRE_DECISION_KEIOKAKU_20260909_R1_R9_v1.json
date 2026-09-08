@@ -1,0 +1,637 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v1",
+  "status": "FROZEN_PRE_EVENT_OWNER_ASSISTED_DECISIONS_VALID_ODDS_PENDING_FOR_SINGLE_CONFIDENCE_PASS",
+  "captured_jst": "2026-09-09T06:14:43+09:00",
+  "source_branch_head_before_write": "cb424ed3b49e8ca702c5cd9847d28e8c5f5d1bbf",
+  "event": {
+    "date": "2026-09-09",
+    "venue": "京王閣",
+    "circumference_m": 400,
+    "meeting": "F2 前検日コメならウィンチケット杯 2日目",
+    "races": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "source_policy": {
+    "provider": "Rakuten KDreamS",
+    "racecard_list_url": "https://keirin.kdreams.jp/keiokaku/racecard/27202609080200/",
+    "used_fields": [
+      "car_no",
+      "rider_name",
+      "style",
+      "competition_score",
+      "scheduled_start"
+    ],
+    "publisher_prediction_marks_used": false,
+    "human_comments_used": false,
+    "today_results_accessed": false,
+    "today_payouts_accessed": false
+  },
+  "model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+    "baseline_beta": 0.22260435254784533,
+    "circumference_code": -1,
+    "exact_rider_lookup_matches": 0,
+    "style_fallback_used": true,
+    "thresholds_changed_after_20260908_results": false
+  },
+  "decision_rule": {
+    "confidence": "S0 and challenger agree top1 AND min(top1 probability)>=0.40",
+    "ticket": "one 3renhuku ticket using frozen top3 ranking",
+    "value": "conservative ticket probability * current decimal odds - 1 >= 0.10",
+    "odds_cap": 20,
+    "stake": "100 yen flat per selected race",
+    "valid_odds": "Owner checks current PRE odds at purchase time; missing/placeholder/below minimum/above cap => NO_BET"
+  },
+  "input_snapshot": [
+    {
+      "race_no": 1,
+      "start_jst": "20:40",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020001/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "沢田勇治",
+          "style": "両",
+          "competition_score": 73.73
+        },
+        {
+          "car_no": 2,
+          "rider_name": "相樂修",
+          "style": "両",
+          "competition_score": 70.5
+        },
+        {
+          "car_no": 3,
+          "rider_name": "野見泰要",
+          "style": "逃",
+          "competition_score": 70.34
+        },
+        {
+          "car_no": 4,
+          "rider_name": "時松正",
+          "style": "追",
+          "competition_score": 70
+        },
+        {
+          "car_no": 5,
+          "rider_name": "篠田樹",
+          "style": "逃",
+          "competition_score": 69.44
+        },
+        {
+          "car_no": 6,
+          "rider_name": "伊藤司",
+          "style": "逃",
+          "competition_score": 65.46
+        },
+        {
+          "car_no": 7,
+          "rider_name": "落合豊",
+          "style": "追",
+          "competition_score": 64
+        }
+      ]
+    },
+    {
+      "race_no": 2,
+      "start_jst": "21:00",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020002/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "齊藤宏樹",
+          "style": "逃",
+          "competition_score": 74.46
+        },
+        {
+          "car_no": 2,
+          "rider_name": "内海雅夫",
+          "style": "追",
+          "competition_score": 72.81
+        },
+        {
+          "car_no": 3,
+          "rider_name": "深井高志",
+          "style": "追",
+          "competition_score": 70
+        },
+        {
+          "car_no": 4,
+          "rider_name": "田村光昭",
+          "style": "追",
+          "competition_score": 69.85
+        },
+        {
+          "car_no": 5,
+          "rider_name": "佐川拓也",
+          "style": "両",
+          "competition_score": 69.08
+        },
+        {
+          "car_no": 6,
+          "rider_name": "矢田晋",
+          "style": "両",
+          "competition_score": 67.21
+        },
+        {
+          "car_no": 7,
+          "rider_name": "山内大作",
+          "style": "追",
+          "competition_score": 64.37
+        }
+      ]
+    },
+    {
+      "race_no": 3,
+      "start_jst": "21:20",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020003/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "榊枝天旺",
+          "style": "逃",
+          "competition_score": 76.73
+        },
+        {
+          "car_no": 2,
+          "rider_name": "倉松涼",
+          "style": "両",
+          "competition_score": 76.61
+        },
+        {
+          "car_no": 3,
+          "rider_name": "宮道良輔",
+          "style": "逃",
+          "competition_score": 75.25
+        },
+        {
+          "car_no": 4,
+          "rider_name": "川上真二郎",
+          "style": "追",
+          "competition_score": 73.66
+        },
+        {
+          "car_no": 5,
+          "rider_name": "加藤大輔",
+          "style": "追",
+          "competition_score": 73.03
+        },
+        {
+          "car_no": 6,
+          "rider_name": "富永昌久",
+          "style": "追",
+          "competition_score": 67.44
+        },
+        {
+          "car_no": 7,
+          "rider_name": "藤田晃英",
+          "style": "追",
+          "competition_score": 66.59
+        }
+      ]
+    },
+    {
+      "race_no": 4,
+      "start_jst": "21:40",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020004/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "横溝貫太",
+          "style": "逃",
+          "competition_score": 78.85
+        },
+        {
+          "car_no": 2,
+          "rider_name": "大竹野裕樹",
+          "style": "両",
+          "competition_score": 78.48
+        },
+        {
+          "car_no": 3,
+          "rider_name": "中秀平",
+          "style": "逃",
+          "competition_score": 74.25
+        },
+        {
+          "car_no": 4,
+          "rider_name": "山崎功也",
+          "style": "追",
+          "competition_score": 73.77
+        },
+        {
+          "car_no": 5,
+          "rider_name": "鳥丸晃順",
+          "style": "追",
+          "competition_score": 72.14
+        },
+        {
+          "car_no": 6,
+          "rider_name": "藤本龍也",
+          "style": "両",
+          "competition_score": 67.46
+        },
+        {
+          "car_no": 7,
+          "rider_name": "齋藤仁",
+          "style": "追",
+          "competition_score": 66.96
+        }
+      ]
+    },
+    {
+      "race_no": 5,
+      "start_jst": "22:00",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020005/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "鶴淳志",
+          "style": "逃",
+          "competition_score": 85.88
+        },
+        {
+          "car_no": 2,
+          "rider_name": "水書義弘",
+          "style": "追",
+          "competition_score": 85.66
+        },
+        {
+          "car_no": 3,
+          "rider_name": "芳野匠",
+          "style": "追",
+          "competition_score": 85.6
+        },
+        {
+          "car_no": 4,
+          "rider_name": "河野要",
+          "style": "追",
+          "competition_score": 84
+        },
+        {
+          "car_no": 5,
+          "rider_name": "長野和弘",
+          "style": "追",
+          "competition_score": 81.45
+        },
+        {
+          "car_no": 6,
+          "rider_name": "日当泰之",
+          "style": "両",
+          "competition_score": 80.42
+        },
+        {
+          "car_no": 7,
+          "rider_name": "小山峻汰",
+          "style": "逃",
+          "competition_score": 79.33
+        }
+      ]
+    },
+    {
+      "race_no": 6,
+      "start_jst": "22:20",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020006/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "池田浩士",
+          "style": "追",
+          "competition_score": 87.04
+        },
+        {
+          "car_no": 2,
+          "rider_name": "戸塚涼介",
+          "style": "逃",
+          "competition_score": 84.61
+        },
+        {
+          "car_no": 3,
+          "rider_name": "川野深",
+          "style": "逃",
+          "competition_score": 84.47
+        },
+        {
+          "car_no": 4,
+          "rider_name": "渡辺聖",
+          "style": "追",
+          "competition_score": 82.71
+        },
+        {
+          "car_no": 5,
+          "rider_name": "四元慎也",
+          "style": "追",
+          "competition_score": 82.37
+        },
+        {
+          "car_no": 6,
+          "rider_name": "連佛康浩",
+          "style": "追",
+          "competition_score": 78.11
+        },
+        {
+          "car_no": 7,
+          "rider_name": "松根真",
+          "style": "追",
+          "competition_score": 77.92
+        }
+      ]
+    },
+    {
+      "race_no": 7,
+      "start_jst": "22:40",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020007/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "尾崎剛",
+          "style": "追",
+          "competition_score": 94.95
+        },
+        {
+          "car_no": 2,
+          "rider_name": "太刀川一成",
+          "style": "追",
+          "competition_score": 92.55
+        },
+        {
+          "car_no": 3,
+          "rider_name": "中村隆生",
+          "style": "逃",
+          "competition_score": 91.42
+        },
+        {
+          "car_no": 4,
+          "rider_name": "吉竹尚城",
+          "style": "逃",
+          "competition_score": 89.4
+        },
+        {
+          "car_no": 5,
+          "rider_name": "佐藤雅彦",
+          "style": "追",
+          "competition_score": 88.23
+        },
+        {
+          "car_no": 6,
+          "rider_name": "佐々木吉徳",
+          "style": "逃",
+          "competition_score": 84.3
+        },
+        {
+          "car_no": 7,
+          "rider_name": "國廣哲治",
+          "style": "追",
+          "competition_score": 82.19
+        }
+      ]
+    },
+    {
+      "race_no": 8,
+      "start_jst": "23:00",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020008/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "守谷陽介",
+          "style": "両",
+          "competition_score": 95.71
+        },
+        {
+          "car_no": 2,
+          "rider_name": "長野魅切",
+          "style": "逃",
+          "competition_score": 93.5
+        },
+        {
+          "car_no": 3,
+          "rider_name": "岩本純",
+          "style": "両",
+          "competition_score": 88.95
+        },
+        {
+          "car_no": 4,
+          "rider_name": "貝原涼太",
+          "style": "逃",
+          "competition_score": 86.55
+        },
+        {
+          "car_no": 5,
+          "rider_name": "須賀和彦",
+          "style": "追",
+          "competition_score": 85.41
+        },
+        {
+          "car_no": 6,
+          "rider_name": "本田拓也",
+          "style": "追",
+          "competition_score": 81
+        },
+        {
+          "car_no": 7,
+          "rider_name": "齋藤宗徳",
+          "style": "逃",
+          "competition_score": 80.23
+        }
+      ]
+    },
+    {
+      "race_no": 9,
+      "start_jst": "23:20",
+      "source_url": "https://keirin.kdreams.jp/keiokaku/racedetail/2720260908020009/",
+      "riders": [
+        {
+          "car_no": 1,
+          "rider_name": "菊地圭",
+          "style": "逃",
+          "competition_score": 93.72
+        },
+        {
+          "car_no": 2,
+          "rider_name": "桑原亮",
+          "style": "追",
+          "competition_score": 93.27
+        },
+        {
+          "car_no": 3,
+          "rider_name": "小野裕次",
+          "style": "追",
+          "competition_score": 90.81
+        },
+        {
+          "car_no": 4,
+          "rider_name": "寺沼伊織",
+          "style": "両",
+          "competition_score": 89.9
+        },
+        {
+          "car_no": 5,
+          "rider_name": "山崎駿哉",
+          "style": "逃",
+          "competition_score": 87.14
+        },
+        {
+          "car_no": 6,
+          "rider_name": "樋口瑛土",
+          "style": "追",
+          "competition_score": 82.06
+        },
+        {
+          "car_no": 7,
+          "rider_name": "森飛龍",
+          "style": "逃",
+          "competition_score": 78.61
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "race_no": 1,
+      "start_jst": "20:40",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.327247570594,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.111519757453,
+      "minimum_purchase_odds_10pct_roi": 9.9,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    },
+    {
+      "race_no": 2,
+      "start_jst": "21:00",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.330213807535,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.136455249906,
+      "minimum_purchase_odds_10pct_roi": 8.1,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    },
+    {
+      "race_no": 3,
+      "start_jst": "21:20",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.258546823826,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.177738320014,
+      "minimum_purchase_odds_10pct_roi": 6.2,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    },
+    {
+      "race_no": 4,
+      "start_jst": "21:40",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.335850440376,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.222035504327,
+      "minimum_purchase_odds_10pct_roi": 5,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    },
+    {
+      "race_no": 5,
+      "start_jst": "22:00",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.224612908003,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.136963214603,
+      "minimum_purchase_odds_10pct_roi": 8.1,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    },
+    {
+      "race_no": 6,
+      "start_jst": "22:20",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.310641837852,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.153327197812,
+      "minimum_purchase_odds_10pct_roi": 7.2,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    },
+    {
+      "race_no": 7,
+      "start_jst": "22:40",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.362428231903,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.225770576568,
+      "minimum_purchase_odds_10pct_roi": 4.9,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    },
+    {
+      "race_no": 8,
+      "start_jst": "23:00",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.465661545555,
+      "confidence_gate_0_40": true,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.342756614995,
+      "minimum_purchase_odds_10pct_roi": 3.3,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "WAIT_FOR_VALID_PRE_ODDS"
+    },
+    {
+      "race_no": 9,
+      "start_jst": "23:20",
+      "agreed_top1_car": 1,
+      "conservative_top1_probability": 0.312939187154,
+      "confidence_gate_0_40": false,
+      "three_renhuku_ticket": "1=2=3",
+      "conservative_ticket_probability": 0.237108953437,
+      "minimum_purchase_odds_10pct_roi": 4.7,
+      "maximum_purchase_odds": 20,
+      "action_before_valid_odds": "NO_BET"
+    }
+  ],
+  "summary": {
+    "races": 9,
+    "confidence_pass_count": 1,
+    "confidence_pass_races": [
+      8
+    ],
+    "current_valid_odds_available": false,
+    "odds_observation": "At capture, KDreamS R8 3renhuku page showed placeholder 9999.9 values; no valid price frozen.",
+    "current_pre_stake_yen": 0
+  },
+  "owner_interface": {
+    "sole_current_candidate": {
+      "race_no": 8,
+      "start_jst": "23:00",
+      "ticket": "1=2=3",
+      "minimum_purchase_odds": 3.3,
+      "maximum_purchase_odds": 20,
+      "stake_yen": 100
+    },
+    "instruction": "At purchase time, if current R8 1=2=3 3renhuku odds are >=3.3 and <=20.0, BUY_CANDIDATE 100 yen; otherwise NO_BET. All other R1-R7/R9 are NO_BET under the frozen confidence gate."
+  },
+  "anti_hindsight": {
+    "thresholds_retained_from_20260908_freeze": true,
+    "previous_day_results_not_used_to_change_today_thresholds": true,
+    "no_today_result_or_payout_used": true,
+    "no_post_result_ticket_change": true
+  },
+  "formal_support_effect": 0,
+  "runtime": false,
+  "automated_bet_execution": false
+}
