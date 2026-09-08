@@ -59,7 +59,7 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "Same-day development lane is now complete: 30 riders / 60 retrospective PRE-only rows with 60/60 numeric competition scores, plus frozen non-outcome-fitted S0+Rider×Circumference challenger and executable predictor. This DOES NOT restore those 29 burned-period riders to formal support authority: prospective formal support remains 1 rider / 2 rows and the Sep14/Sep15 35-candidate path stays active. Do not wait on Sep14/15 to use the development challenger. Keep RESULT closed for fit/tuning; preserve Sep27 Tamano + Sep29 Hofu untouched."
+      "rule": "Same-day development lane is complete and execution-tested: 30 riders / 60 PRE-only rows, frozen S0+Rider×Circumference challenger, executable predictor, and PASS dry run on Kawasaki 2026-08-30 9R with no target result access. Development 30/60 is not formal support authority; formal remains 1 rider / 2 rows and Sep14/Sep15 35-candidate path continues."
     },
     {
       "step": 10,
@@ -67,8 +67,8 @@
       "rule": "Fresh-read after recovery. If branch/main/PR177 changed, rebind before writes. Never collapse DEVELOPMENT 30/60 into FORMAL 1/2; they are deliberately separate authorities."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v81.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v80.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v82.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v81.json",
   "active_lane_pointers": {
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
     "ITO0907_FAIL_CLOSED_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
@@ -96,7 +96,8 @@
     "RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT": "v3/historical_all_market/research_candidates/KEIRIN_RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT_20260908_v1.json",
     "HFT_SCORE_SEMANTIC_CORRECTION": "v3/historical_all_market/research_candidates/KEIRIN_HFT_PRE_SCORE_COLUMN_SEMANTIC_CORRECTION_20260908_v1.json",
     "PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
-    "PRE_ONLY_RIDER_CIRCUMFERENCE_PREDICTOR": "tools/keirin_pre_only_rider_circumference_predictor_v1.py"
+    "PRE_ONLY_RIDER_CIRCUMFERENCE_PREDICTOR": "tools/keirin_pre_only_rider_circumference_predictor_v1.py",
+    "PRE_ONLY_DRY_RUN_KAWASAKI_20260830_R9": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_DRY_RUN_KAWASAKI_20260830_R9_20260908_v1.json"
   },
   "common_governance_policy": {
     "migration_lock": "#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
