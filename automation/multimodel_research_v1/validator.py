@@ -95,6 +95,7 @@ def validate() -> dict:
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
+        "MULTIVERSE_RESEARCH_TASK_v2",
         "MULTIVERSE_RESEARCH_RESULT_v1",
         "FORBIDDEN_DYNAMIC_KEYS",
         "ALLOWED_PRIMITIVES",
@@ -113,6 +114,12 @@ def validate() -> dict:
         "NONCOMPLETED_REQUIRES_UNCERTAINTY",
         "RESULT_EVIDENCE_SOURCE_DIGEST_REQUIRED",
         "RESULT_EVIDENCE_SOURCE_SHA256_MISMATCH",
+        "evidence_manifest",
+        "TASK_EVIDENCE_MANIFEST_SHA256_REQUIRED",
+        "TASK_EVIDENCE_MANIFEST_OBSERVED_AFTER_TASK_CREATED",
+        "DUPLICATE_TASK_EVIDENCE_MANIFEST_ENTRY",
+        "RESULT_EVIDENCE_MANIFEST_NOT_DECLARED",
+        "RESULT_EVIDENCE_MANIFEST_SHA256_MISMATCH",
     ):
         record(
             f"model:{token}",
@@ -168,8 +175,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 41,
-        f"{test_count} != 41",
+        test_count == 59,
+        f"{test_count} != 59",
     )
 
     return {
