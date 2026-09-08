@@ -1,0 +1,45 @@
+name: Keirin NEXTGEN5000 S0 Coverage Selection Freeze v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-s0-coverage-selection-freeze-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download all PRE-only S0 materializations
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p in/a in/b out
+          gh run download 34292786280 -n keirin-nextgen5000-s0-preoutcome-2001-3500-v1 -D in/a
+          gh run download 34292961111 -n keirin-nextgen5000-s0-preoutcome-3501-5000-v1 -D in/b
+      - name: Apply frozen coverage-only choice rule
+        run: |
+          args=()
+          for f in in/a/*.json in/b/*.json; do args+=(--input "$f"); done
+          python tools/keirin_nextgen5000_s0_coverage_selector_v1.py "${args[@]}" --out out/KEIRIN_NEXTGEN5000_S0_PREOUTCOME_COVERAGE_SELECTION_FREEZE_20260909_v1.json
+      - name: Assert no outcome access
+        run: |
+          python - <<'PY'
+          import json
+          x=json.load(open('out/KEIRIN_NEXTGEN5000_S0_PREOUTCOME_COVERAGE_SELECTION_FREEZE_20260909_v1.json',encoding='utf-8'))
+          assert x['safeguards']['result_accessed'] is False
+          assert x['safeguards']['payout_accessed'] is False
+          assert x['safeguards']['performance_metric_used_to_choose_threshold'] is False
+          print('PASS',x['status'],x['chosen_rule'],x['selected_count'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-s0-coverage-selection-freeze-v1
+          path: out/
+          retention-days: 30
