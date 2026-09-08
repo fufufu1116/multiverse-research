@@ -1,0 +1,41 @@
+{
+  "record": "KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v2",
+  "observed_at_jst": "2026-09-08T22:06:00+09:00",
+  "status": "SIX_SOURCE_WATCH_SET_ALL_THREE_TARGET_FINAL_ASSIGNMENTS_EXPLICITLY_PENDING_ON_WINTICKET",
+  "supersedes": "v3/historical_all_market/research_candidates/KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v1.json",
+  "target_publication_state": {
+    "伊東_2026-09-14": {
+      "event_confirmed": true,
+      "scheduled_roster_confirmed": true,
+      "winticket_final_assignment": "NOT_DECIDED_EXPLICIT",
+      "target_count": 11
+    },
+    "青森_2026-09-14": {
+      "event_confirmed": true,
+      "scheduled_roster_confirmed": true,
+      "winticket_final_assignment": "NOT_DECIDED_EXPLICIT",
+      "target_count": 4
+    },
+    "防府_2026-09-15": {
+      "event_confirmed": true,
+      "scheduled_roster_confirmed": true,
+      "winticket_final_assignment": "NOT_DECIDED_EXPLICIT",
+      "target_count": 20
+    }
+  },
+  "source_roles": {
+    "CTC": "prospective schedule + scheduled roster",
+    "KDREAMS": "scheduled roster + future final racecard corroboration",
+    "WINTICKET": "scheduled roster + explicit final-assignment publication state",
+    "KEIRIN.JP": "official event schedule corroboration",
+    "CHARILOTO": "supplemental target date/Day1 corroboration",
+    "ODDSPARK": "supplemental all-race race_no/car_no corroboration after target racecard publication"
+  },
+  "normalization_tool": "tools/keirin_multisite_final_racecard_normalizer_v1.py",
+  "conflict_policy": "FAIL_CLOSED_NO_SOURCE_PREFERENCE_ARBITRATION",
+  "exact_cutoff_timestamp_required": false,
+  "result_page_reconstruction": false,
+  "live_odds_required": false,
+  "formal_support_increment_now": 0,
+  "runtime": false
+}
