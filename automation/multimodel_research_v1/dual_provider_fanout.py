@@ -106,24 +106,28 @@ def _result_v2(
             "role": assignment["requested_role"],
         },
         "status": status,
-        "findings": [
-            {
-                "finding_id": f"{submission_id}-finding-001",
-                "claim_key": "dual-provider-fanout-completion",
-                "position": "UNKNOWN",
-                "severity": "INFO",
-                "assertion":
-                    "Synthetic terminal result returned for planned assignment.",
-                "evidence": _synthetic_evidence(task),
-                "confidence": 0.5,
-                "uncertainty":
-                    "Synthetic completion fixture only; no live provider.",
-                "recommendation":
-                    "Require all planned assignments before complete-batch claims.",
-                "validation_plan":
-                    "Compare planned and observed assignment SHA256 sets.",
-            }
-        ],
+        "findings": (
+    
+                {
+                    "finding_id": f"{submission_id}-finding-001",
+                    "claim_key": "dual-provider-fanout-completion",
+                    "position": "UNKNOWN",
+                    "severity": "INFO",
+                    "assertion":
+                        "Synthetic terminal result returned for planned assignment.",
+                    "evidence": _synthetic_evidence(task),
+                    "confidence": 0.5,
+                    "uncertainty":
+                        "Synthetic completion fixture only; no live provider.",
+                    "recommendation":
+                        "Require all planned assignments before complete-batch claims.",
+                    "validation_plan":
+                        "Compare planned and observed assignment SHA256 sets.",
+                }
+            ],
+            if status == "COMPLETED"
+            else []
+        ),
         "uncertainty_factors": [
             "Synthetic result used only to exercise fanout accounting."
         ],

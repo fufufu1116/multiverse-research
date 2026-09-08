@@ -107,23 +107,27 @@ def _result(
             "role": assignment["requested_role"],
         },
         "status": status,
-        "findings": [
-            {
-                "finding_id": f"{submission_id}-finding-001",
-                "claim_key": claim_key,
-                "position": position,
-                "severity": "INFO",
-                "assertion": assertion,
-                "evidence": _synthetic_evidence(task),
-                "confidence": 0.5,
-                "uncertainty":
-                    "Synthetic disagreement fixture only; no live provider.",
-                "recommendation":
-                    "Route unresolved cross-provider disagreement to mechanical falsification.",
-                "validation_plan":
-                    "Run an independently specified falsification task.",
-            }
-        ],
+        "findings": (
+    
+                {
+                    "finding_id": f"{submission_id}-finding-001",
+                    "claim_key": claim_key,
+                    "position": position,
+                    "severity": "INFO",
+                    "assertion": assertion,
+                    "evidence": _synthetic_evidence(task),
+                    "confidence": 0.5,
+                    "uncertainty":
+                        "Synthetic disagreement fixture only; no live provider.",
+                    "recommendation":
+                        "Route unresolved cross-provider disagreement to mechanical falsification.",
+                    "validation_plan":
+                        "Run an independently specified falsification task.",
+                }
+            ],
+            if status == "COMPLETED"
+            else []
+        ),
         "uncertainty_factors": [
             "Synthetic provider positions are intentionally opposed."
         ],
