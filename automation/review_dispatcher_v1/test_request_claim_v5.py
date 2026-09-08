@@ -110,7 +110,10 @@ class RequestClaimV5Tests(unittest.TestCase):
             acquire_claim(request=copy.deepcopy(req), claimant="sole-control-2", nonce="nonce-sole-control-0002", create_commit=p.create_commit, create_branch=p.create_branch)
 
     def test_03_new_predecessor_creates_new_generation(self):
-        self.assertNotEqual(claim_ref(request("a", None)), claim_ref(request("b", "1" * 64)))
+        self.assertNotEqual(
+            claim_ref(request("request-a", None)),
+            claim_ref(request("request-b", "1" * 64)),
+        )
 
     def test_04_exact_claim_verifies(self):
         p = FakeProvider()
