@@ -1,0 +1,85 @@
+{
+  "record": "KEIRIN_CONDITIONAL_SHADOW_CANDIDATE_FREEZE_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "POSTHOC_BURNED_AB_CHALLENGERS_FROZEN_FOR_FUTURE_PROSPECTIVE_ONLY",
+  "reason": "Convert new burned A+B findings into a small immutable future test set before any new race outcomes are used.",
+  "candidates": [
+    {
+      "id": "CENTER_3RENHUKU_CONF40_EV10_CAP20_1PT",
+      "role": "EXISTING_PRIMARY_DEVELOPMENT_REFERENCE",
+      "rule": "top1 agreement; conservative top1 >=0.40; consensus top3 3renhuku; conservative ticket EV >=10%; odds <=20x; one point; flat 100 yen",
+      "burned_AB": {
+        "bets": 89,
+        "hit_rate": 0.1348314607,
+        "roi": 0.3685393258
+      },
+      "promotion_status": "PROSPECTIVE_REPLICATION_REQUIRED"
+    },
+    {
+      "id": "NON_GIRLS_GAP_LT5_3RENHUKU_POOL3_EV10_CAP20_MAX2",
+      "role": "NEW_CONDITIONAL_CHALLENGER",
+      "rule": [
+        "non-Girls race",
+        "top PRE competition score minus second PRE score <5.0",
+        "S0/candidate models agree top1",
+        "conservative top1 probability >=0.40",
+        "form 3renhuku candidates with fixed top1 and combinations among next three ranked riders",
+        "each ticket conservative EV >=10%",
+        "each ticket odds <=20x",
+        "keep at most two eligible tickets ranked by conservative model probability",
+        "100 yen per ticket"
+      ],
+      "burned_AB": {
+        "A": {
+          "bet_races": 80,
+          "tickets": 93,
+          "roi": 0.2032258065
+        },
+        "B": {
+          "bet_races": 44,
+          "tickets": 53,
+          "roi": 0.441509434
+        },
+        "AB": {
+          "bet_races": 124,
+          "tickets": 146,
+          "hit_rate": 0.1290322581,
+          "roi": 0.2897260274,
+          "average_points": 1.1774193548,
+          "largest_single_return_share": 0.0939989379,
+          "positive_week_fraction": 0.8
+        }
+      },
+      "promotion_status": "POSTHOC_DISCOVERED_SHADOW_ONLY_UNTIL_NEW_PROSPECTIVE_REPLICATION"
+    },
+    {
+      "id": "GIRLS_NO_BET_ECONOMICS_DIAGNOSTIC",
+      "role": "SEPARATE_REGIME_CONTROL",
+      "rule": "Do not infer profit from high winner accuracy. Record predictions, but no new real-money rule from burned A+B.",
+      "burned_AB": {
+        "girls_races": 113,
+        "candidate_a_top1_hit_rate": 0.6991150442,
+        "both_positive_simple_market_rules": 0
+      },
+      "promotion_status": "NO_BET_CONTROL"
+    },
+    {
+      "id": "3RENTAN_THIRD_SPREAD_DIAGNOSTIC_ONLY",
+      "role": "OWNER_PATTERN_CHALLENGER_CONTROL",
+      "burned_AB": {
+        "best_tested_combined_roi": -0.1325849515,
+        "best_tested_combined_hit_rate": 0.2718446602,
+        "both_positive_A_B_rules": 0
+      },
+      "promotion_status": "DO_NOT_PROMOTE"
+    }
+  ],
+  "anti_hindsight": [
+    "Do not modify these candidate definitions after future outcomes.",
+    "Do not use missing PRE odds reconstructed from payout pages.",
+    "Do not open Segment C to choose among candidates.",
+    "Do not change today's 2026-09-09 answer-check or frozen ticket."
+  ],
+  "runtime": false,
+  "real_money_execution": false
+}
