@@ -126,6 +126,11 @@ from automation.multimodel_research_v1.pilot_roundtrip import (
     provider_pilot_roundtrip_sha256,
     validate_provider_pilot_roundtrip,
 )
+from automation.multimodel_research_v1.provider_result_ingestion import (
+    build_provider_result_ingestion,
+    provider_result_ingestion_sha256,
+    validate_provider_result_ingestion,
+)
 from automation.multimodel_research_v1.rehearsal_convergence import (
     build_provider_rehearsal_convergence,
     provider_rehearsal_convergence_sha256,
@@ -13272,6 +13277,280 @@ class ContractTests(unittest.TestCase):
         self.assertIs(value["provider_call_authorized"], False)
         self.assertIs(value["spend_authorized"], False)
         self.assertEqual(value["runtime"], "OFF")
+
+
+    def _provider_result_ingestion_fixture(
+        self,
+        provider="GOOGLE_GEMINI",
+    ):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider=provider,
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        output_text = json.dumps(
+            provider_result,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        if provider == "GOOGLE_GEMINI":
+            observation = parse_gemini_interactions_v1_response(
+                gemini_response(
+                    model=bound_assignment["target_model"],
+                    text=output_text,
+                )
+            )
+        else:
+            observation = parse_claude_messages_response(
+                claude_response(
+                    model=bound_assignment["target_model"],
+                    text=output_text,
+                )
+            )
+        ingestion = build_provider_result_ingestion(
+            bound_task,
+            bound_assignment,
+            provider,
+            observation,
+        )
+        return (
+            bound_task,
+            bound_assignment,
+            observation,
+            ingestion,
+        )
+
+    def test_461_provider_result_ingestion_accepts_gemini_result_v2(self):
+        args = self._provider_result_ingestion_fixture(
+            "GOOGLE_GEMINI"
+        )
+        self.assertEqual(
+            validate_provider_result_ingestion(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["result"]["assignment_sha256"],
+            assignment_sha256(args[0], args[1]),
+        )
+
+    def test_462_provider_result_ingestion_accepts_claude_result_v2(self):
+        args = self._provider_result_ingestion_fixture(
+            "ANTHROPIC_CLAUDE"
+        )
+        self.assertEqual(
+            validate_provider_result_ingestion(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["observed_model_id"],
+            "model-stable-001",
+        )
+
+    def test_463_provider_result_ingestion_rejects_malformed_json(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text='{"schema":',
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_464_provider_result_ingestion_rejects_markdown_wrapped_json(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="ANTHROPIC_CLAUDE",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        output_text = "~~~json\n" + json.dumps(provider_result) + "\n~~~"
+        observation = parse_claude_messages_response(
+            claude_response(
+                model="model-stable-001",
+                text=output_text,
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "ANTHROPIC_CLAUDE",
+                observation,
+            )
+
+    def test_465_provider_result_ingestion_rejects_duplicate_json_keys(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text='{"schema":"x","schema":"y"}',
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_466_provider_result_ingestion_rejects_other_assignment(self):
+        bound_task = task_v2()
+        expected_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        other_assignment = assignment(
+            bound_task,
+            assignment_id="assignment-other",
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            other_assignment,
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text=json.dumps(provider_result),
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                expected_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_467_provider_result_ingestion_rejects_observed_model_drift(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-other",
+                text=json.dumps(provider_result),
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_468_provider_result_ingestion_enforces_assignment_output_limit(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="ANTHROPIC_CLAUDE",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        bound_assignment["max_output_bytes"] = 1024
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        provider_result["uncertainty_factors"] = ["x" * 2000]
+        observation = parse_claude_messages_response(
+            claude_response(
+                model="model-stable-001",
+                text=json.dumps(provider_result),
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "ANTHROPIC_CLAUDE",
+                observation,
+            )
+
+    def test_469_provider_result_ingestion_rejects_nonfinite_json_constant(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text='{"confidence":NaN}',
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_470_provider_result_ingestion_digest_and_exact_record_are_stable(self):
+        args = self._provider_result_ingestion_fixture(
+            "GOOGLE_GEMINI"
+        )
+        first = provider_result_ingestion_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_result_ingestion_sha256(*cloned)
+        self.assertEqual(first, second)
+
+        tampered = copy.deepcopy(args[-1])
+        tampered["output_bytes"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_result_ingestion(
+                args[0],
+                args[1],
+                args[2],
+                tampered,
+            )
+
 
 
 if __name__ == "__main__":
