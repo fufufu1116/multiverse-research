@@ -1,0 +1,22 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v9",
+  "status": "CURRENT_POINTER_V113",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v113.json",
+  "critical_pointers": {
+    "normalizer": "tools/keirin_multisite_final_racecard_normalizer_v2.py",
+    "formalizer": "tools/keirin_35_formal_support_finalizer_v4.py",
+    "formalizer_selftest": "tools/keirin_35_formal_support_finalizer_selftest_v4.py",
+    "selftest_correction": "v3/historical_all_market/research_candidates/KEIRIN_FORMAL_SUPPORT_FINALIZER_SELFTEST_CORRECTION_20260908_v1.json",
+    "watch_set": "v3/historical_all_market/research_candidates/KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v2.json"
+  },
+  "current_summary": {
+    "formal_support": "1 rider / 2 PRE rows",
+    "fixed_candidates": "35/35",
+    "selftest_fixture": "production-shaped repair complete",
+    "local_logic_reproduction": "PASS 10/10",
+    "runtime": "OFF"
+  },
+  "resume_rule": "Fresh-read branch HEAD, this CURRENT pointer or later successor, PR177, and existing Keirin automation before treating state as current."
+}
