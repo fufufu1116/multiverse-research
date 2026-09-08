@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_CTC_0914_0915_PREFLIGHT_EVIDENCE_20260908_v1",
+  "date_jst": "2026-09-08",
+  "observed_at_jst": "2026-09-08T21:27:44+09:00",
+  "status": "PREFLIGHT_EVENT_AND_AOMORI_ROSTER_CONFIRMED_NO_FORMAL_SUPPORT_INCREMENT",
+  "source_family": "競輪公式投票CTC",
+  "scope": "PRE_ONLY_EVENT_EXISTENCE_AND_SCHEDULED_ROSTER_NO_RESULT_NO_PAYOUT_NO_ODDS_NO_PREDICTION_NO_HUMAN_COMMENTS",
+  "sources": [
+    {
+      "url": "https://ctc.gr.jp/schedule/",
+      "supports": [
+        "青森 2026-09-14 through 2026-09-16 scheduled",
+        "伊東 2026-09-14 through 2026-09-16 scheduled",
+        "防府 2026-09-15 through 2026-09-17 scheduled"
+      ],
+      "source_byte_sha256_not_claimed": true
+    },
+    {
+      "url": "https://ctc.gr.jp/schedule/detail.php?id=1220260914",
+      "event": "青森_2026-09-14",
+      "supports": [
+        "開催期間 2026-09-14 through 2026-09-16",
+        "target rider 田頭 寛之 listed in 出場予定選手",
+        "target rider 加賀美 智史 listed in 出場予定選手",
+        "target rider 山本 天平 listed in 出場予定選手",
+        "target rider 亀谷 隆一 listed in 出場予定選手"
+      ],
+      "source_byte_sha256_not_claimed": true
+    }
+  ],
+  "aomori_target_overlap": {
+    "target_candidates": 4,
+    "scheduled_roster_matches": 4,
+    "matched": [
+      {
+        "rider_name": "田頭 寛之",
+        "official_registration_number": "015107"
+      },
+      {
+        "rider_name": "加賀美 智史",
+        "official_registration_number": "013845"
+      },
+      {
+        "rider_name": "山本 天平",
+        "official_registration_number": "015806"
+      },
+      {
+        "rider_name": "亀谷 隆一",
+        "official_registration_number": "014242"
+      }
+    ],
+    "conclusion": "4/4 Aomori Sep14 research targets are already present on the CTC scheduled-rider page."
+  },
+  "interpretation": {
+    "accepted_for": "Prospective event existence and scheduled-roster preflight evidence.",
+    "not_sufficient_for": [
+      "trusted_pit_cutoff_jst because exact cutoff timestamp is not shown on this page",
+      "final Day1 PRE same-race positive witness",
+      "final race number",
+      "final car number",
+      "formal 30/60 support promotion"
+    ],
+    "formal_support_increment_now": 0
+  },
+  "hard_boundaries": {
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_accessed": false,
+    "prediction_accessed": false,
+    "human_comments_used": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false
+}
