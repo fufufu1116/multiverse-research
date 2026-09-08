@@ -1,0 +1,31 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v10",
+  "status": "CURRENT_POINTER_V114",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "critical_pointers": {
+    "multisite_watch_set": "v3/historical_all_market/research_candidates/KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v2.json",
+    "normalizer": "tools/keirin_multisite_final_racecard_normalizer_v2.py",
+    "normalizer_selftest": "tools/keirin_multisite_final_racecard_normalizer_selftest_v2.py",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v5.py",
+    "finalizer_selftest_spec": "tools/keirin_35_formal_support_finalizer_selftest_v5.py",
+    "finalizer_receipt": "v3/historical_all_market/research_candidates/KEIRIN_FORMAL_SUPPORT_FINALIZER_IMPLEMENTATION_RECEIPT_20260908_v5.json",
+    "any29_gate_preflight": "v3/historical_all_market/research_candidates/KEIRIN_ANY29_UNAMBIGUOUS_SUPPORT_GATE_PREFLIGHT_20260908_v1.json",
+    "formal_order": "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json"
+  },
+  "current_summary": {
+    "formal_support": "1 rider / 2 PRE rows",
+    "fixed_candidates": "35/35",
+    "source_watch_families": 6,
+    "normalizer": "v2 hardened",
+    "finalizer": "v5 unambiguous support-gate semantics hardened",
+    "any29_max_venue_share": "35% <= 60%",
+    "any29_max_rider_share": "3.33% <= 10%",
+    "any29_minimum_venues_each_circumference": 2,
+    "calendar_block_gate": "PENDING_PR177",
+    "complete_support_gate_pass_now": false,
+    "runtime": "OFF"
+  },
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later successor, PR177, and the single active Keirin automation before treating any handoff state as current."
+}
