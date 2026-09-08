@@ -35,6 +35,7 @@ REQUIRED = [
     ROOT / "pre_execution_bundle.py",
     ROOT / "launch_evidence.py",
     ROOT / "pilot_roundtrip.py",
+    ROOT / "provider_result_ingestion.py",
     ROOT / "rehearsal_convergence.py",
     ROOT / "dual_provider_research.py",
     ROOT / "dual_provider_fanout.py",
@@ -179,6 +180,9 @@ def validate() -> dict:
     pre_execution_bundle = (ROOT / "pre_execution_bundle.py").read_text()
     launch_evidence = (ROOT / "launch_evidence.py").read_text()
     pilot_roundtrip = (ROOT / "pilot_roundtrip.py").read_text()
+    provider_result_ingestion = (
+        ROOT / "provider_result_ingestion.py"
+    ).read_text()
     rehearsal_convergence = (ROOT / "rehearsal_convergence.py").read_text()
     dual_provider_research = (ROOT / "dual_provider_research.py").read_text()
     dual_provider_fanout = (ROOT / "dual_provider_fanout.py").read_text()
@@ -779,6 +783,25 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_RESULT_INGESTION_v1",
+        "build_provider_result_ingestion",
+        "validate_provider_result_ingestion",
+        "provider_result_ingestion_sha256",
+        "PROVIDER_RESULT_JSON_DUPLICATE_KEY",
+        "PROVIDER_RESULT_JSON_NONFINITE",
+        "PROVIDER_RESULT_JSON_INVALID",
+        "PROVIDER_RESULT_ASSIGNMENT_OUTPUT_LIMIT_EXCEEDED",
+        "PROVIDER_RESULT_OBSERVED_MODEL_MISMATCH",
+        "validate_result_v2_for_assignment",
+        "result_v2_content_digest",
+    ):
+        record(
+            f"provider_result_ingestion:{token}",
+            token in provider_result_ingestion,
+            token,
+        )
+
+    for token in (
         "MULTIVERSE_PROVIDER_REHEARSAL_CONVERGENCE_v1",
         "build_provider_rehearsal_convergence",
         "validate_provider_rehearsal_convergence",
@@ -909,8 +932,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 460,
-        f"{test_count} != 460",
+        test_count == 470,
+        f"{test_count} != 470",
     )
 
     return {
