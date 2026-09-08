@@ -1,0 +1,77 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v99",
+  "date_jst": "2026-09-08",
+  "status": "C1_N1_LINE_ARCHITECTURE_BRIDGE_IMPLEMENTED_FORMAL_GATE_1R_2ROWS_T2_5",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v98.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "0fae4a93a8ce22ee44ef1ca889b80da3d4a51320",
+    "canonical_main_observed": "7de6e791a9003805d92a3b9973acf852b7cfaac1",
+    "governance": "#93 comment 5573337206 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "pr177": {
+      "state": "OPEN_DRAFT",
+      "head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+      "independent_result_after_request_5573150058": "NONE_OBSERVED"
+    }
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "candidate_count": 35,
+    "remaining_new_riders": 29,
+    "remaining_new_rows": 58,
+    "gate": "FAIL"
+  },
+  "support_gate_semantics": {
+    "maximum_single_venue_share_denominator": "ALL_SUPPORTED_ROWS_GLOBAL",
+    "threshold": 0.6,
+    "circumference_local_reordering_required": false,
+    "remaining_unknown": "calendar-block definition via PR177"
+  },
+  "external_architecture_synthesis": "KEIRIN_EXTERNAL_ARCHITECTURE_SYNTHESIS_20260908_v1.json",
+  "line_architecture_engineering": {
+    "line_relation_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+    "line_relation_receipt": "KEIRIN_LINE_RELATION_ENCODER_IMPLEMENTATION_RECEIPT_20260908_v1.json",
+    "c1_n1_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v1.py",
+    "c1_n1_adapter_receipt": "KEIRIN_C1_N1_LINE_ADAPTER_IMPLEMENTATION_RECEIPT_20260908_v1.json",
+    "state": "ENGINEERING_IMPLEMENTED_SELFTEST_PASS_NOT_FITTED_NOT_VALIDATED",
+    "zero_coefficient_equivalence": {
+      "field_size": 7,
+      "ordered_top3_outcomes": 210,
+      "c1_equals_n1": true,
+      "max_absolute_difference": 0
+    },
+    "interpretation": "Future line-relation effects can be tested without changing the downstream ordered-top3 generator semantics."
+  },
+  "architecture_order": [
+    "C0 = frozen PL control",
+    "C1 = admitted PRE own-line features + same PL generator",
+    "N1 = same C1 P1 basis plus PRE-only conditional rank2/rank3 line relations",
+    "market residual family only after separately authorized point-in-time odds transport"
+  ],
+  "unified_progression_path": [
+    "Finish 30 riders / 60 PRE rows and calendar-block gate without RESULT access.",
+    "Freeze/evaluate low-DOF Rider x circumference against S0.",
+    "Continue prospective expected-line capture/provenance.",
+    "Keep C1/N1 coefficients unfitted until chronological membership and outcome-access authority are frozen.",
+    "Then compare C0 vs C1 vs N1 using log loss/calibration before any ROI-based selection.",
+    "Only after probability architecture passes, separately open market baseline/residual research.",
+    "Only after fixed-risk edge passes, evaluate ticket structures and later bankroll sizing."
+  ],
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "main_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "self_adoption": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "runtime": "OFF"
+}
