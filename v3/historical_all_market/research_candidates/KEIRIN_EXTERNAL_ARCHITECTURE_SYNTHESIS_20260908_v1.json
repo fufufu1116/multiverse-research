@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_EXTERNAL_ARCHITECTURE_SYNTHESIS_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "OUTCOME_AGNOSTIC_SYNTHESIS_NO_NEW_DATA_ACCESS",
+  "trigger": "Owner supplied external Claude opinion on keirin AI architecture, line structure, joint ranking, odds, market residuals, chronological validation, and EV-based ticketing.",
+  "authority_note": "External opinion is hypothesis input only, not canonical evidence or adoption authority.",
+  "mapping": [
+    {
+      "external_idea": "Directly model ordered finishing dependence instead of relying only on independent winner probabilities.",
+      "existing_multiverse_state": "ALREADY_DESIGNED",
+      "evidence": [
+        "v3/historical_all_market/new_lineage/top3_architecture_core_v1.py",
+        "v3/historical_all_market/governance/NEW_LINEAGE_C0_C1_N1_PROBABILITY_ARCHITECTURE_DRAFT_v1.md",
+        "v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py"
+      ],
+      "conclusion": "Do not reinvent PL. Keep C0 PL as control, C1 line-aware utility+PL, and N1 conditional rank-2/rank-3 chain as the clean architecture ladder."
+    },
+    {
+      "external_idea": "Treat line formation/order as a structured sequence/graph-like object.",
+      "existing_multiverse_state": "ALREADY_IDENTIFIED_CORE_GAP",
+      "evidence": [
+        "v3/historical_all_market/governance/KEIRIN_STRUCTURE_FEATURE_CANDIDATE_AUDIT_v1.md",
+        "v3/historical_all_market/research_candidates/KEIRIN_EXPECTED_LINE_PROSPECTIVE_CAPTURE_20260901_v4.json",
+        "v3/historical_all_market/governance/KEIRIN_LONG_LINE_TOPOLOGY_SUPPORT_PREREG_20260820_v1.json"
+      ],
+      "conclusion": "Primary implementation remains low-DOF explicit relations first (line_group, line_position, line_size, singleton, same_line, ahead/behind). Graph neural networks are deferred until simple relational terms fail or clearly underfit with adequate data."
+    },
+    {
+      "external_idea": "Use real-time/pre-decision odds as information.",
+      "existing_multiverse_state": "DESIGNED_LATER_FAMILY_BUT_CURRENTLY_BLOCKED",
+      "evidence": [
+        "v3/historical_all_market/governance/NEXT_LINEAGE_MARKET_BASELINE_RESIDUAL_ARCHITECTURE_DRAFT_v1.json"
+      ],
+      "conclusion": "Market should be baseline, not opponent. Future odds inputs require a frozen pre-decision timestamp and transport semantics. Current ODDS boundary remains BLOCKED."
+    },
+    {
+      "external_idea": "Remove takeout / infer market-implied probability and detect model-vs-market edge.",
+      "existing_multiverse_state": "ALREADY_DESIGNED",
+      "evidence": [
+        "v3/historical_all_market/governance/NEXT_LINEAGE_MARKET_BASELINE_RESIDUAL_ARCHITECTURE_DRAFT_v1.json",
+        "v3/historical_all_market/governance/STAGE3_TICKET_FILTER_FAMILY_PREREG_v1.md"
+      ],
+      "conclusion": "Use coherent market baseline/residual comparison only after point-in-time market data is authorized. Edge thresholds must be frozen before settlement/outcome evaluation."
+    },
+    {
+      "external_idea": "Strict chronological train/test separation.",
+      "existing_multiverse_state": "FOUNDATIONAL_RULE_ALREADY_ACTIVE",
+      "evidence": [
+        "v3/historical_all_market/governance/NEW_LINEAGE_C0_C1_N1_PROBABILITY_ARCHITECTURE_DRAFT_v1.md",
+        "v3/historical_all_market/governance/NEXT_LINEAGE_MARKET_BASELINE_RESIDUAL_ARCHITECTURE_DRAFT_v1.json"
+      ],
+      "conclusion": "Preserve chronological/blocked evaluation, burned-outcome firewall, and untouched final holdouts."
+    },
+    {
+      "external_idea": "Expected-value ticket selection and Kelly sizing.",
+      "existing_multiverse_state": "PARTLY_DESIGNED_BUT_BANKROLL_OPTIMIZATION_DEFERRED",
+      "evidence": [
+        "v3/historical_all_market/governance/STAGE3_TICKET_FILTER_FAMILY_PREREG_v1.md",
+        "v3/historical_all_market/governance/NEXT_LINEAGE_MARKET_BASELINE_RESIDUAL_ARCHITECTURE_DRAFT_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v1.json"
+      ],
+      "conclusion": "First prove probability quality and flat/fixed-risk edge. Kelly or adaptive sizing is later-stage only after untouched validation; do not use bankroll sizing to rescue a weak probability model."
+    }
+  ],
+  "delta_after_synthesis": {
+    "highest_value_missing_real_evidence": [
+      "Prospectively proven line snapshots at prediction cutoff across enough races.",
+      "Chronological real validation of C1 vs C0 and N1 vs C1 on proper probability scores.",
+      "Point-in-time market snapshots if/when ODDS access is authorized.",
+      "Prospective validation of ticket construction under fixed total race risk."
+    ],
+    "not_priority_now": [
+      "Deep neural networks",
+      "Graph neural networks",
+      "Complex latent race-transition models",
+      "Kelly sizing",
+      "More synthetic threshold tuning"
+    ]
+  },
+  "recommended_order": [
+    "Finish formal Rider x circumference support gate without RESULT access.",
+    "Resolve calendar block gate via PR177/Control.",
+    "Freeze/evaluate low-DOF Rider x circumference candidate against S0.",
+    "In parallel, make line provenance/data transport prospectively robust.",
+    "Then test C0 PL vs C1 line-aware PL vs N1 conditional ordered-top3 on chronological untouched data.",
+    "Only after probability architecture survives, open separately authorized market-baseline residual/edge research.",
+    "Only after flat/fixed-risk edge survives, evaluate ticket structures and later bankroll sizing."
+  ],
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "runtime": false,
+    "main_mutation": false,
+    "self_adoption": false
+  }
+}
