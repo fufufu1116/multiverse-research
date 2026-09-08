@@ -1,0 +1,22 @@
+{
+  "record": "KEIRIN_SUPPORT_GATE_VENUE_SHARE_SEMANTICS_RESOLUTION_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "RESOLVED_FROM_FROZEN_PRESPEC_AND_EVALUATOR_CODE",
+  "question": "Does maximum_single_venue_share_of_supported_rows <= 0.60 use all supported rows globally or a separate denominator inside each circumference bucket?",
+  "source_prespec": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+  "source_evaluator": "tools/keirin_support_gate_partial_evaluator_v1.py",
+  "resolution": "GLOBAL_SUPPORTED_ROW_DENOMINATOR",
+  "implementation_evidence": [
+    "venue_counts = Counter(r['venue'] for r in rows)",
+    "n_rows = len(rows)",
+    "max_venue_share = max(venue_counts.values()) / n_rows if n_rows else 0.0"
+  ],
+  "circumference_specific_checks_present_separately": [
+    "minimum_distinct_development_venues_per_circumference",
+    "minimum_distinct_calendar_blocks_per_circumference"
+  ],
+  "implication": "The prior concern that 29 arbitrary valid candidates could fail solely because one circumference bucket exceeds 60% at a venue was based on a denominator interpretation not used by the frozen evaluator. The 0.60 concentration check is global across all supported rows.",
+  "remaining_unknown": "Calendar-block granularity remains unresolved until the adopted definition is available; the evaluator intentionally returns UNKNOWN for calendar-block dimensions.",
+  "no_result_access": true,
+  "owner_action_required_now": false
+}
