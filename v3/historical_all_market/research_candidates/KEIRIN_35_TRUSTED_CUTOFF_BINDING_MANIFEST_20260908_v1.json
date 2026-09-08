@@ -1,0 +1,49 @@
+{
+  "record": "KEIRIN_35_TRUSTED_CUTOFF_BINDING_MANIFEST_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "PREBUILT_PENDING_PROSPECTIVE_TRUSTED_CUTOFF_CAPTURE_FAIL_CLOSED",
+  "purpose": "Bind each Sep14/Sep15 bulk-formalization event to a prospectively captured trusted pit cutoff before any future PRE row can be delegated to the 35-rider finalizer.",
+  "event_bindings": [
+    {
+      "venue": "伊東",
+      "race_date": "2026-09-14",
+      "status": "PENDING_TRUSTED_PRE_CUTOFF_CAPTURE",
+      "trusted_pit_cutoff_jst": null,
+      "cutoff_source_url": null,
+      "cutoff_source_sha256": null,
+      "cutoff_source_captured_at_jst": null
+    },
+    {
+      "venue": "青森",
+      "race_date": "2026-09-14",
+      "status": "PENDING_TRUSTED_PRE_CUTOFF_CAPTURE",
+      "trusted_pit_cutoff_jst": null,
+      "cutoff_source_url": null,
+      "cutoff_source_sha256": null,
+      "cutoff_source_captured_at_jst": null
+    },
+    {
+      "venue": "防府",
+      "race_date": "2026-09-15",
+      "status": "PENDING_TRUSTED_PRE_CUTOFF_CAPTURE",
+      "trusted_pit_cutoff_jst": null,
+      "cutoff_source_url": null,
+      "cutoff_source_sha256": null,
+      "cutoff_source_captured_at_jst": null
+    }
+  ],
+  "promotion_rule": "An event binding may become LOCKED_TRUSTED_PRE_CUTOFF only from a prospectively captured trusted source with exact JST cutoff timestamp, source URL, source SHA-256, and source capture timestamp no later than the cutoff.",
+  "fail_closed_rules": [
+    "Missing binding => reject all affected future PRE rows.",
+    "Binding not LOCKED_TRUSTED_PRE_CUTOFF => reject.",
+    "Row cutoff differs from bound cutoff => reject.",
+    "Row capture after bound cutoff => reject.",
+    "Cutoff-source capture after cutoff => reject.",
+    "Non-JST (+09:00) timestamps => reject."
+  ],
+  "result_access_authorized": false,
+  "payout_access_authorized": false,
+  "odds_access_authorized": false,
+  "prediction_access_authorized": false,
+  "owner_action_required_now": false
+}
