@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v97",
+  "date_jst": "2026-09-08",
+  "status": "EXTERNAL_ARCHITECTURE_SYNTHESIZED_VENUE_SHARE_RESOLVED_FORMAL_GATE_1R_2ROWS_T2_5",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v96.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "8a25a00e023eacdf343372ede5ef8f61b0ab43ab",
+    "canonical_main_observed": "7de6e791a9003805d92a3b9973acf852b7cfaac1",
+    "governance": "#93 comment 5573337206 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "pr177": {
+      "state": "OPEN_DRAFT",
+      "head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+      "independent_result_after_request_5573150058": "NONE_OBSERVED"
+    }
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "candidate_count": 35,
+    "remaining_new_riders": 29,
+    "remaining_new_rows": 58,
+    "gate": "FAIL"
+  },
+  "venue_share_resolution": {
+    "artifact": "KEIRIN_SUPPORT_GATE_VENUE_SHARE_SEMANTICS_RESOLUTION_20260908_v1.json",
+    "denominator": "ALL_SUPPORTED_ROWS_GLOBAL",
+    "threshold": 0.6,
+    "implication": "No circumference-local 60% denominator. Keep deterministic 35-rider conversion order; no diversity-driven reorder is needed solely for this dimension."
+  },
+  "external_architecture_synthesis": {
+    "artifact": "KEIRIN_EXTERNAL_ARCHITECTURE_SYNTHESIS_20260908_v1.json",
+    "key_findings": [
+      "Plackett-Luce ordered top3 control already exists.",
+      "C1 line-aware PL and N1 conditional rank-2/rank-3 architecture already exist as design candidates.",
+      "Line structure is already classified as the main active-model structural gap.",
+      "Market-as-baseline residual architecture already exists but real ODDS access remains blocked.",
+      "Strict chronological evaluation is already foundational.",
+      "EV ticket filtering exists; Kelly/adaptive sizing remains deliberately later-stage."
+    ],
+    "priority_delta": "Unify the existing scattered designs into one progression path rather than inventing a new model family."
+  },
+  "unified_progression_path": [
+    "Finish 30 riders / 60 PRE rows and calendar-block gate without RESULT access.",
+    "Freeze and evaluate low-DOF Rider x circumference against S0.",
+    "Make expected-line PRE provenance/transport robust enough for chronological real validation.",
+    "Evaluate C0 PL vs C1 line-aware PL vs N1 conditional ordered-top3 using proper probability scores.",
+    "Only after probability architecture survives, separately authorize point-in-time market baseline/residual research.",
+    "Only after flat/fixed-risk economic edge survives, evaluate ticket structures and later bankroll sizing."
+  ],
+  "explicit_deprioritization": [
+    "deep neural network primary architecture",
+    "graph neural network primary architecture",
+    "complex latent race-transition model",
+    "Kelly sizing before probability validation",
+    "additional synthetic threshold tuning"
+  ],
+  "ticket_construction": {
+    "design": "KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v1.json",
+    "state": "PROPOSED_PRE_OUTCOME_NOT_VALIDATED",
+    "primary_comparison": "FIXED_TOTAL_RACE_RISK"
+  },
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "POST_CUTOFF_RECONSTRUCTION": "BLOCKED",
+    "main_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "self_adoption": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "runtime": "OFF"
+}
