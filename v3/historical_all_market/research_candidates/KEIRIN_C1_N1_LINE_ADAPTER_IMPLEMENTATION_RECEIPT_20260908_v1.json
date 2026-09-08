@@ -1,0 +1,29 @@
+{
+  "record": "KEIRIN_C1_N1_LINE_ADAPTER_IMPLEMENTATION_RECEIPT_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_SELFTEST_PASS_NO_OUTCOME_ACCESS",
+  "implementation": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v1.py",
+  "selftest": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_selftest_v1.py",
+  "implementation_commit": "b2b84aaba828c4a8d690de579a84e21d92b8ceea",
+  "selftest_commit": "9170ee6639c6b8df4b1c3d56101003f048448759",
+  "dependency_line_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+  "dependency_top3_core": "v3/historical_all_market/new_lineage/top3_architecture_core_v1.py",
+  "purpose": "Connect PRE-only deterministic line features to C1 runner utility and N1 conditional rank2/rank3 logits without fitting any coefficient.",
+  "invariants_tested": {
+    "seven_rider_ordered_top3_outcomes": 210,
+    "zero_line_coefficients_C1_equals_N1": true,
+    "zero_coefficient_max_absolute_difference": 0,
+    "C1_probability_mass": 1,
+    "N1_probability_mass": 1,
+    "nonzero_relation_coefficients_create_distribution_difference": true
+  },
+  "scientific_interpretation": "Architecture bridge only. Zero-coefficient equivalence isolates future line-relation effects from generator changes. No statement of predictive improvement is made.",
+  "fitted_coefficients": false,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "model_promotion": false,
+  "runtime": false,
+  "owner_action_required_now": false
+}
