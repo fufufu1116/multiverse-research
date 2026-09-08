@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_LOW_DOF_FITTER_IMPLEMENTATION_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "IMPLEMENTED_DETERMINISTIC_AUTH_GATED_LOW_DOF_RIDER_CIRCUMFERENCE_FITTER",
+  "implementation": {
+    "fitter": "tools/keirin_rider_circumference_low_dof_fitter_v1.py",
+    "selftest_spec": "tools/keirin_rider_circumference_low_dof_fitter_selftest_v1.py",
+    "proposal": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL_20260907_v1.json"
+  },
+  "frozen_math": {
+    "baseline_beta": 0.22260435254784533,
+    "formula": "z_i = beta*competition_score_i + q_c*delta_r",
+    "circumference_code": {
+      "400": -1,
+      "333_OR_333_33": 1
+    },
+    "objective": "winner negative log likelihood + lambda * sum(delta_r^2)",
+    "lambda_grid": [
+      1,
+      4,
+      16,
+      64
+    ],
+    "cv": "leave-one-LOCAL_DAY1_RACE_DATE-out; minimize mean winner log loss; ties within 1e-12 choose largest lambda",
+    "optimizer": "deterministic Newton with backtracking; gradient infinity-norm tolerance 1e-10; zero initialization"
+  },
+  "firewall": "Static support/calendar/formula/membership/result authorization is checked before touching the outcome-bearing race payload.",
+  "independent_synthetic_reproduction": {
+    "races": 8,
+    "calendar_blocks": 4,
+    "lambda_1_delta_A": 0.9198510744905786,
+    "lambda_1_delta_B": -0.9198510744905787,
+    "lambda_1_gradient_inf_norm": 3.70536934468646e-15,
+    "s0_mean_winner_log_loss": 1.098612288668111,
+    "lambda_1_challenger_mean_winner_log_loss": 0.4430454588073225,
+    "cv_mean_log_loss_by_lambda": {
+      "1": 0.5089731841594798,
+      "4": 0.8276753356777249,
+      "16": 1.0129641385069341,
+      "64": 1.075712841483515
+    },
+    "expected_best_lambda": 1
+  },
+  "direct_checked_in_selftest_execution": false,
+  "independent_math_reproduction": true,
+  "real_result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "result_join_authorized_now": false,
+  "formula_fit_authorized_now": false,
+  "runtime": false
+}
