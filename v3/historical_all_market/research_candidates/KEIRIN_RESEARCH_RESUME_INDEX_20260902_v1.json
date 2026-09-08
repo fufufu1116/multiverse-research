@@ -4,8 +4,8 @@
   "canonical_repo": "fufufu1116/multiverse-research",
   "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
   "first_rule": "Never infer CURRENT/NOW/LATEST from stored state, chat, handoff, or automation history. Fresh Read research branch HEAD, canonical main, #93 latest adopted baseline, Resume, CURRENT, active queue, and PR177 every run.",
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v93.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v92.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v94.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v93.json",
   "resume_sequence": [
     {
       "step": 1,
@@ -67,12 +67,12 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "CURRENT v93: longshot candidate hardened outcome-free under T2.5. Regimes CORE<=20x, MID_HOLE20-80x, LONGSHOT80-300x, EXTREME>300x use stronger probability-ratio/EV requirements and smaller risk at higher odds. Synthetic boundary audit PASS. Selector caps longshot exposure to max one elementary ticket per race. Proposed anti-jackpot validation requires positive ROI, positive leave-largest-hit-out ROI, <=50% largest-hit share of profit, >=8 weeks, plus regime-specific decision/hit minimums. No live odds/result/payout/prediction access. Formal support remains 1/2 with 35-candidate Sep14/Sep15 front unchanged."
+      "rule": "CURRENT v94: longshot candidate remains PRE/outcome-free only under T2.5. Added analytic probability-misscale stress and expected-hit evidence sufficiency. CORE/MID/LONGSHOT/EXTREME threshold ratios tolerate approximately 10%/35%/75%/150% probability overestimation at break-even. Stable-pass cannot rely on one jackpot: require positive ROI, positive leave-largest-hit-out ROI, <=50% largest-hit profit share, >=8 weeks, >=5 actual hits, and >=5 expected hits under frozen conservative probabilities. No live odds/result/payout/prediction access."
     },
     {
       "step": 10,
       "action": "STRICT_FORMAL_CONVERSION",
-      "rule": "Fresh-read before writes. Real prospective longshot scoring is blocked by CURRENT ODDS/RESULT/PREDICTION boundaries; do not bypass. Continue only lawful PRE/synthetic hardening until authority changes. PR177 exact-frozen review progression remains Control-only."
+      "rule": "Fresh-read before writes. Continue outcome-free engineering only. Next: deterministic risk aggregation so simultaneous CORE/longshot candidates cannot inflate per-race exposure. Formal Sep14/Sep15 front unchanged; PR177 frozen progression Control-only."
     },
     {
       "step": 11,
@@ -91,7 +91,9 @@
     "LONGSHOT_SHADOW_GUARD": "tools/keirin_longshot_shadow_guard_v1.py",
     "LONGSHOT_SHADOW_SELECTOR": "tools/keirin_longshot_shadow_selector_v1.py",
     "LONGSHOT_SHADOW_VALIDATION_GATE": "tools/keirin_longshot_shadow_validation_gate_v1.py",
-    "LONGSHOT_SHADOW_SYNTHETIC_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_LONGSHOT_SHADOW_GUARD_SYNTHETIC_AUDIT_20260908_v1.json"
+    "LONGSHOT_SHADOW_SYNTHETIC_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_LONGSHOT_SHADOW_GUARD_SYNTHETIC_AUDIT_20260908_v1.json",
+    "LONGSHOT_MISSCALE_STRESS": "v3/historical_all_market/research_candidates/KEIRIN_LONGSHOT_PROBABILITY_MISCALE_STRESS_AUDIT_20260908_v1.json",
+    "LONGSHOT_EVIDENCE_SUFFICIENCY": "tools/keirin_longshot_evidence_sufficiency_v1.py"
   },
   "common_governance_policy": {
     "migration_lock": "RELEASED_SUPERSEDED_BY_5572390676",
