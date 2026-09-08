@@ -551,26 +551,27 @@ def validate_result_for_task(
                 manifest_key in evidence_manifest,
                 "RESULT_EVIDENCE_MANIFEST_NOT_DECLARED",
             )
-            expected_digest = evidence_manifest[
+            manifest_digest = evidence_manifest[
                 manifest_key
             ]["sha256"]
             require(
-                evidence["sha256"] == expected_digest,
+                evidence["sha256"] == manifest_digest,
                 "RESULT_EVIDENCE_MANIFEST_SHA256_MISMATCH",
             )
-        elif primitive in {"SOURCE_REF", "PUBLIC_EVIDENCE_REF"}:
+
+        if primitive in {"SOURCE_REF", "PUBLIC_EVIDENCE_REF"}:
             ref = evidence["ref"]
             require(
                 ref in source_refs,
                 "RESULT_EVIDENCE_REF_NOT_DECLARED",
             )
-            expected_digest = source_refs[ref]["sha256"]
+            source_digest = source_refs[ref]["sha256"]
             require(
-                expected_digest is not None,
+                source_digest is not None,
                 "RESULT_EVIDENCE_SOURCE_DIGEST_REQUIRED",
             )
             require(
-                evidence["sha256"] == expected_digest,
+                evidence["sha256"] == source_digest,
                 "RESULT_EVIDENCE_SOURCE_SHA256_MISMATCH",
             )
 
