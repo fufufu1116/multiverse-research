@@ -1,0 +1,101 @@
+{
+  "record": "KEIRIN_DEV2000_DRIVE_RECOVERY_AND_AB_REPLAY_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "DEV2000_RECOVERED_FROM_DRIVE_AB_REPLAY_ACTIVE_C_REMAINS_UNSCORED",
+  "purpose": "Recover the original DEV2000 historical fixtures from Google Drive and resume burned A+B diagnostic replay without using Segment C for selection or scoring.",
+  "recovered_files": [
+    {
+      "name": "DEV2000_UNIVERSE_v1.csv",
+      "rows": 2000,
+      "sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+      "historical_hash_match": true
+    },
+    {
+      "name": "DEV2000_ALL_MARKET_PRICE_CATALOGS_v2.jsonl",
+      "rows": 2000,
+      "sha256": "2ca98097f74e5282fdc9c91629083f39bef4dafb94a1fc4f7e510acadefc407b",
+      "historical_hash_match": true
+    },
+    {
+      "name": "DEV2000_ALL_MARKET_TICKET_PROBABILITIES_PL_v1.jsonl",
+      "rows": 4000,
+      "sha256": "6348d9af2a535578cf454afca52ea2c944cb6c50cab87f6e6ffa75149880b526",
+      "historical_hash_match": true
+    },
+    {
+      "name": "DEV2000_RESULT_ONLY_v3.jsonl",
+      "rows": 2000,
+      "sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+      "historical_hash_match": "NOT_REASSERTED_NO_PRIOR_HASH_IN_CURRENT_RECOVERY_NOTE"
+    },
+    {
+      "name": "PRE_STRUCTURED.jsonl.gz",
+      "rows": 2000,
+      "sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+      "historical_hash_match": "NOT_REASSERTED"
+    },
+    {
+      "name": "DEV2000_SETTLEMENT_A_v1.jsonl",
+      "rows": 1000,
+      "sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+      "historical_hash_match": true
+    },
+    {
+      "name": "DEV2000_SETTLEMENT_B_v1.jsonl",
+      "rows": 500,
+      "sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72",
+      "historical_hash_match": true
+    }
+  ],
+  "partition": {
+    "A": {
+      "dev_index": "1..1000",
+      "races": 1000,
+      "role": "BURNED_DEVELOPMENT_DIAGNOSTIC"
+    },
+    "B": {
+      "dev_index": "1001..1500",
+      "races": 500,
+      "role": "BURNED_DEVELOPMENT_DIAGNOSTIC_ALREADY_USED"
+    },
+    "C": {
+      "dev_index": "1501..2000",
+      "races": 500,
+      "role": "PROTECTED_UNTOUCHED_FOR_CURRENT_RESEARCH"
+    }
+  },
+  "c_boundary": {
+    "settlement_c_downloaded": false,
+    "settlement_c_parsed": false,
+    "c_scoring_count": 0,
+    "c_outcome_json_decoded": false,
+    "note": "Combined 2000-row containers were recovered for integrity and availability, but replay code JSON-decoded only race_ids belonging to A+B. Non-A/B rows were skipped without outcome/model/price parsing."
+  },
+  "replay_integrity": {
+    "ab_settlement_dev_indices_exact_1_to_1500": true,
+    "ab_universe_membership_exact": true,
+    "ab_result_rows_decoded": 1500,
+    "ab_price_rows_decoded": 1500,
+    "ab_probability_rows_decoded": 3000,
+    "ab_pre_rows_decoded": 1500
+  },
+  "recovered_drive_families": [
+    "MULTIVERSE_DEV2000_PRE_COLLECTION_v3_TURBO_LITE",
+    "MULTIVERSE_DEV2000_PREDICTION_LOCK_v3_IPHONE_LITE",
+    "MULTIVERSE_DEV2000_RESULT_COLLECTION_v3_HARDENED",
+    "MULTIVERSE_DEV2000_UNIVERSE_RECOVERY",
+    "MULTIVERSE_ALL_MARKET_STAGE0_PRICE_RECOVERY_v2",
+    "MULTIVERSE_ALL_MARKET_STAGE1_PL_PROBABILITY_v1",
+    "MULTIVERSE_ALL_MARKET_STAGE7_SETTLEMENT_EVAL_v1"
+  ],
+  "scientific_interpretation": "The original ~2000-race dataset was not lost. The exact historically audited A/B price, probability, universe and settlement fixtures are recoverable and hash-consistent. This materially restores high-throughput virtual-future diagnostics.",
+  "hard_boundaries": {
+    "current_today_answer_check_changed": false,
+    "today_ticket_changed": false,
+    "C_opened_for_scoring": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "profitability_claim": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
