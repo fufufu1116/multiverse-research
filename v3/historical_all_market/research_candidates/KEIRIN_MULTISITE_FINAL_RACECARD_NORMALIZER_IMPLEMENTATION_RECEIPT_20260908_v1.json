@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_MULTISITE_FINAL_RACECARD_NORMALIZER_IMPLEMENTATION_RECEIPT_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_CORE_LOGIC_DIRECT_TEST_PASS_FULL_REPOSITORY_SELFTEST_NOT_EXECUTED",
+  "implementation": {
+    "tool": "tools/keirin_multisite_final_racecard_normalizer_v1.py",
+    "tool_commit": "357941c81d31f4bc5eb650170c09b551a189613a",
+    "selftest": "tools/keirin_multisite_final_racecard_normalizer_selftest_v1.py",
+    "selftest_commit": "9e716c3897acf8696042bd062b43a957532aa130"
+  },
+  "intended_sources": [
+    "CTC",
+    "KDREAMS",
+    "WINTICKET",
+    "KEIRIN.JP",
+    "CHARILOTO",
+    "ODDSPARK"
+  ],
+  "behavior": [
+    "Exact locked rider/event identity required.",
+    "Final Day1 race number, car number, class and style required.",
+    "Trusted source URL, SHA-256 and timezone-aware capture timestamp required.",
+    "Result/payout/odds/prediction namespaces rejected.",
+    "Duplicate same-family/source observation fails closed.",
+    "Withdrawal or substitution fails closed.",
+    "Independent sources agreeing exactly are retained as corroborations.",
+    "Any cross-source assignment conflict fails closed; no source-preference arbitration.",
+    "Exact pit/cutoff timestamp is not required."
+  ],
+  "direct_core_logic_test": {
+    "status": "PASS",
+    "cases": [
+      "two-source exact agreement",
+      "race number conflict",
+      "car number conflict",
+      "class conflict",
+      "style conflict",
+      "forbidden result namespace",
+      "withdrawal",
+      "identity mismatch"
+    ]
+  },
+  "full_repository_selftest": {
+    "status": "NOT_EXECUTED",
+    "reason": "Current container could not resolve github.com for repository clone; do not claim repository-runtime PASS from that environment."
+  },
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "formal_support_increment_now": 0,
+  "runtime": false
+}
