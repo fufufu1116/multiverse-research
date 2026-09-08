@@ -32,7 +32,6 @@ from automation.multimodel_research_v1.pre_execution_bundle import (
 )
 from automation.multimodel_research_v1.rehearsal_convergence import (
     build_provider_rehearsal_convergence,
-    provider_rehearsal_convergence_sha256,
 )
 from automation.multimodel_research_v1.time_attestation import (
     build_catalog_freshness_time_binding,
@@ -259,160 +258,7 @@ def build_dual_provider_federation_rehearsal(
         "checked_at": CHECKED_AT,
         "gemini_model_id": gemini_matrix["assignment"]["target_model"],
         "claude_model_id": claude_matrix["assignment"]["target_model"],
-        "gemini_rehearsal_sha256":
-            provider_rehearsal_convergence_sha256(
-                task,
-                snapshot,
-                response_schema,
-                gemini_matrix,
-                build_first_provider_pilot_dry_run(
-                    snapshot,
-                    "GOOGLE_GEMINI",
-                    prelive_candidate_head=PRELIVE_HEAD,
-                    prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                ),
-                build_catalog_freshness_receipt(
-                    snapshot,
-                    checked_at=CHECKED_AT,
-                ),
-                build_pilot_freshness_binding(
-                    snapshot,
-                    build_first_provider_pilot_dry_run(
-                        snapshot,
-                        "GOOGLE_GEMINI",
-                        prelive_candidate_head=PRELIVE_HEAD,
-                        prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                    ),
-                    build_catalog_freshness_receipt(
-                        snapshot,
-                        checked_at=CHECKED_AT,
-                    ),
-                ),
-                _time_attestation(),
-                build_catalog_freshness_time_binding(
-                    snapshot,
-                    build_catalog_freshness_receipt(
-                        snapshot,
-                        checked_at=CHECKED_AT,
-                    ),
-                    _time_attestation(),
-                ),
-                build_provider_pre_execution_bundle(
-                    snapshot,
-                    build_first_provider_pilot_dry_run(
-                        snapshot,
-                        "GOOGLE_GEMINI",
-                        prelive_candidate_head=PRELIVE_HEAD,
-                        prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                    ),
-                    build_catalog_freshness_receipt(
-                        snapshot,
-                        checked_at=CHECKED_AT,
-                    ),
-                    build_pilot_freshness_binding(
-                        snapshot,
-                        build_first_provider_pilot_dry_run(
-                            snapshot,
-                            "GOOGLE_GEMINI",
-                            prelive_candidate_head=PRELIVE_HEAD,
-                            prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                        ),
-                        build_catalog_freshness_receipt(
-                            snapshot,
-                            checked_at=CHECKED_AT,
-                        ),
-                    ),
-                    _time_attestation(),
-                    build_catalog_freshness_time_binding(
-                        snapshot,
-                        build_catalog_freshness_receipt(
-                            snapshot,
-                            checked_at=CHECKED_AT,
-                        ),
-                        _time_attestation(),
-                    ),
-                ),
-                build_provider_launch_evidence(
-                    task,
-                    snapshot,
-                    response_schema,
-                    gemini_matrix,
-                    build_first_provider_pilot_dry_run(
-                        snapshot,
-                        "GOOGLE_GEMINI",
-                        prelive_candidate_head=PRELIVE_HEAD,
-                        prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                    ),
-                    build_catalog_freshness_receipt(
-                        snapshot,
-                        checked_at=CHECKED_AT,
-                    ),
-                    build_pilot_freshness_binding(
-                        snapshot,
-                        build_first_provider_pilot_dry_run(
-                            snapshot,
-                            "GOOGLE_GEMINI",
-                            prelive_candidate_head=PRELIVE_HEAD,
-                            prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                        ),
-                        build_catalog_freshness_receipt(
-                            snapshot,
-                            checked_at=CHECKED_AT,
-                        ),
-                    ),
-                    _time_attestation(),
-                    build_catalog_freshness_time_binding(
-                        snapshot,
-                        build_catalog_freshness_receipt(
-                            snapshot,
-                            checked_at=CHECKED_AT,
-                        ),
-                        _time_attestation(),
-                    ),
-                    build_provider_pre_execution_bundle(
-                        snapshot,
-                        build_first_provider_pilot_dry_run(
-                            snapshot,
-                            "GOOGLE_GEMINI",
-                            prelive_candidate_head=PRELIVE_HEAD,
-                            prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                        ),
-                        build_catalog_freshness_receipt(
-                            snapshot,
-                            checked_at=CHECKED_AT,
-                        ),
-                        build_pilot_freshness_binding(
-                            snapshot,
-                            build_first_provider_pilot_dry_run(
-                                snapshot,
-                                "GOOGLE_GEMINI",
-                                prelive_candidate_head=PRELIVE_HEAD,
-                                prelive_candidate_seal_blob=PRELIVE_SEAL_BLOB,
-                            ),
-                            build_catalog_freshness_receipt(
-                                snapshot,
-                                checked_at=CHECKED_AT,
-                            ),
-                        ),
-                        _time_attestation(),
-                        build_catalog_freshness_time_binding(
-                            snapshot,
-                            build_catalog_freshness_receipt(
-                                snapshot,
-                                checked_at=CHECKED_AT,
-                            ),
-                            _time_attestation(),
-                        ),
-                    ),
-                ),
-                build_provider_pilot_roundtrip(
-                    task,
-                    snapshot,
-                    "GOOGLE_GEMINI",
-                    response_schema,
-                ),
-                gemini_rehearsal,
-            ),
+        "gemini_rehearsal_sha256": sha256_json(gemini_rehearsal),
         "claude_rehearsal_sha256": sha256_json(claude_rehearsal),
         "dual_provider_fanout_sha256":
             dual_provider_fanout_rehearsal_sha256(
@@ -442,10 +288,6 @@ def build_dual_provider_federation_rehearsal(
         "adoption_authority": False,
         "runtime": "OFF",
     }
-    # Claude and Gemini rehearsal objects are deterministic; use direct
-    # object digests for the federation-level cross-provider envelope.
-    record["gemini_rehearsal_sha256"] = sha256_json(gemini_rehearsal)
-    record["claude_rehearsal_sha256"] = sha256_json(claude_rehearsal)
     return validate_dual_provider_federation_rehearsal(
         task,
         snapshot,
