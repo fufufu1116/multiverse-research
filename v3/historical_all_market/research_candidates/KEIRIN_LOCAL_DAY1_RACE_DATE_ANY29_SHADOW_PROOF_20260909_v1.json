@@ -1,0 +1,66 @@
+{
+  "record": "KEIRIN_LOCAL_DAY1_RACE_DATE_ANY29_SHADOW_PROOF_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "SHADOW_PROOF_PASS_IF_AND_ONLY_IF_PR177_ADOPTS_LOCAL_DAY1_RACE_DATE",
+  "authority": "NONAUTHORITATIVE_RESEARCH_PRECOMPUTATION_DOES_NOT_ADOPT_PR177",
+  "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+  "source_review_candidate": "PR #177 head 70efda2cc6919d7624c8b955c9bc57148a44249a",
+  "frozen_threshold": "minimum_distinct_calendar_blocks_per_circumference = 2",
+  "bindings": [
+    "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_SUPPORT_ADEQUACY_GATE_PRESPEC_20260903_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_HOFU_KAWASAKI_CROSS_CIRCUMFERENCE_SUPPORT_RECEIPT_20260904_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_ANY29_UNAMBIGUOUS_SUPPORT_GATE_PREFLIGHT_20260908_v1.json"
+  ],
+  "proof": {
+    "baseline": {
+      "400": {
+        "date": "2026-08-30",
+        "venue": "川崎",
+        "registration": "015018"
+      },
+      "333_OR_333_33": {
+        "date": "2026-09-04",
+        "venue": "防府",
+        "registration": "015018"
+      }
+    },
+    "candidate_333_row_dates": {
+      "2026-09-07": 4,
+      "2026-09-14": 11,
+      "2026-09-15": 20,
+      "total_candidates_with_exactly_one_333_row": 35
+    },
+    "candidate_400_row_dates": {
+      "2026-09-07": 31,
+      "2026-09-14": 4,
+      "total_candidates_with_exactly_one_400_row": 35
+    },
+    "any29_333_argument": "Every selected candidate contributes exactly one 333/333.33m support row dated 2026-09-07, 2026-09-14, or 2026-09-15. Together with the fixed baseline 333m row dated 2026-09-04, any 29-success subset has at least two distinct LOCAL_DAY1_RACE_DATE values.",
+    "any29_400_argument": "Every selected candidate contributes exactly one 400m support row dated 2026-09-07 or 2026-09-14. Together with the fixed baseline 400m row dated 2026-08-30, any 29-success subset has at least two distinct LOCAL_DAY1_RACE_DATE values.",
+    "minimum_distinct_dates_guaranteed": {
+      "400": 2,
+      "333_OR_333_33": 2
+    },
+    "conclusion": "If LOCAL_DAY1_RACE_DATE is independently adopted as the canonical calendar-block definition, the calendar-block >=2 gate is guaranteed PASS for every possible 29-success subset of the locked 35."
+  },
+  "combined_with_existing_any29_preflight": {
+    "unique_riders_30": true,
+    "supported_rows_60": true,
+    "distinct_venues_per_circumference_ge_2": true,
+    "max_single_venue_share_le_0_60": true,
+    "max_single_rider_share_le_0_10": true,
+    "exact_identity_mapping_1_0": true,
+    "calendar_blocks_per_circumference_ge_2": "GUARANTEED_ONLY_UNDER_FUTURE_ADOPTION_OF_LOCAL_DAY1_RACE_DATE"
+  },
+  "complete_support_gate_pass_now": false,
+  "calendar_definition_adopted_now": false,
+  "formal_support_increment_now": 0,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
