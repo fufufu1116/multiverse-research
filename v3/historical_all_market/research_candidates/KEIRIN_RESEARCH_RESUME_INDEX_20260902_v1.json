@@ -1,26 +1,111 @@
 {
-  "record":"KEIRIN_RESEARCH_RESUME_INDEX_20260902_v1",
-  "status":"CHAT_INDEPENDENT_FRESH_RESUME_ENTRYPOINT_RESEARCH_CANDIDATE",
-  "canonical_repo":"fufufu1116/multiverse-research",
-  "research_branch":"research/keirin-real-evidence-dual-lane-20260901-v1",
-  "first_rule":"Never infer CURRENT/NOW/LATEST from stored state, chat, handoff, or automation history. Fresh Read research branch HEAD, canonical main, #93 latest adopted baseline, Resume, CURRENT, active queue, and PR177 every run.",
-  "current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v91.json",
-  "prior_current_state_pointer":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v90.json",
-  "resume_sequence":[
-    {"step":1,"action":"FRESH_READ_RESEARCH_BRANCH_REF_AND_CANONICAL_MAIN"},
-    {"step":2,"action":"FRESH_READ_COMMON_GOVERNANCE","binding":"#93 5572390676 request-only migration release + #93 5572636296 T2.4 same-target serialization + #93 5573337206 T2.5 single Control role registry; #152 CLOSED/COMPLETED","rule":"Never edit/replace shared MULTIVERSE Independent Lab/Auditor Steps per job. Keirin is Research/Candidate only; after exact freeze, sole MULTIVERSE CONTROL / Commander owns review-cycle progression until FIX_REQUIRED return or terminal decision."},
-    {"step":3,"action":"READ_CURRENT_STATE","path":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v91.json"},
-    {"step":4,"action":"READ_ACTIVE_EVENT_QUEUE","path":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"},
-    {"step":5,"action":"READ_35_CANDIDATE_SUPPORT_FRONT","paths":["v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json","v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json","v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json","v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json","v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1.json","v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json","v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_ASSEN_RECHECK_20260908_v1.json"]},
-    {"step":6,"action":"READ_WITNESS_AND_SUPPORT_TOOLS","paths":["v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json","tools/keirin_precutoff_witness_registry_guard_v1.py","tools/keirin_support_provenance_validator_v1.py","tools/keirin_support_receipt_builder_v1.py","tools/keirin_support_receipt_guard_v1.py","tools/keirin_support_gate_partial_evaluator_v1.py"]},
-    {"step":7,"action":"READ_PERMANENT_CLOSURES","path":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json"},
-    {"step":8,"action":"FRESH_READ_CALENDAR_REVIEW","pr":177,"latest_exact_current_lab_request_comment":5573150058,"rule":"Consume only exact-current independent evidence. PR177 is already exact-frozen; under T2.5 Keirin must not publish competing Owner gates, T1, Auditor requests, or same-envelope machine requests. Leave progression to sole Control. Calendar remains UNKNOWN and full gate PASS prohibited until separately reviewed and adopted."},
-    {"step":9,"action":"WORK_CONSERVING_CONTINUATION","rule":"Priority front is 35 exact-identity candidates: 伊東/青森 2026-09-14 and 防府 2026-09-15. Positive final Day1 PRE before cutoff interrupts lower work. Until then, only lawful PRE/support readiness hardening and exact-current PR177 review-state Fresh Reads. Do not expand candidate supply while 35 gives a six-rider margin over the 29 new riders required."},
-    {"step":10,"action":"STRICT_FORMAL_CONVERSION","rule":"Fresh binding -> positive-navigation Day1 PRE membership -> exact official registration identity -> contemporaneous official same-race assignment before cutoff -> provenance validator -> witness guard -> receipt builder -> receipt guard -> partial gate evaluator -> material CURRENT/Resume update. If any required proof is missing by cutoff, increment=0 and fail-closed; no reconstruction/backfill."},
-    {"step":11,"action":"PRESERVE_HARD_BOUNDARIES","rule":"Never use RESULT, payout, odds, forecasts/predictions, human comments, fuzzy identity, current-profile dynamic backfill, or post-cutoff reconstruction. S0/HFT frozen. Runtime OFF. No main/provider/protected-data/live-effect/spend mutation."}
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260902_v1",
+  "status": "CHAT_INDEPENDENT_FRESH_RESUME_ENTRYPOINT_RESEARCH_CANDIDATE",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "first_rule": "Never infer CURRENT/NOW/LATEST from stored state, chat, handoff, or automation history. Fresh Read research branch HEAD, canonical main, #93 latest adopted baseline, Resume, CURRENT, active queue, and PR177 every run.",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v92.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v91.json",
+  "resume_sequence": [
+    {
+      "step": 1,
+      "action": "FRESH_READ_RESEARCH_BRANCH_REF_AND_CANONICAL_MAIN"
+    },
+    {
+      "step": 2,
+      "action": "FRESH_READ_COMMON_GOVERNANCE",
+      "binding": "#93 5572390676 request-only migration release + #93 5572636296 T2.4 same-target serialization + #93 5573337206 T2.5 single Control role registry; #152 CLOSED/COMPLETED",
+      "rule": "Never edit/replace shared MULTIVERSE Independent Lab/Auditor Steps per job. Keirin is Research/Candidate only; after exact freeze, sole MULTIVERSE CONTROL / Commander owns review-cycle progression until FIX_REQUIRED return or terminal decision."
+    },
+    {
+      "step": 3,
+      "action": "READ_CURRENT_STATE",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v91.json"
+    },
+    {
+      "step": 4,
+      "action": "READ_ACTIVE_EVENT_QUEUE",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"
+    },
+    {
+      "step": 5,
+      "action": "READ_35_CANDIDATE_SUPPORT_FRONT",
+      "paths": [
+        "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_ASSEN_RECHECK_20260908_v1.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "READ_WITNESS_AND_SUPPORT_TOOLS",
+      "paths": [
+        "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+        "tools/keirin_precutoff_witness_registry_guard_v1.py",
+        "tools/keirin_support_provenance_validator_v1.py",
+        "tools/keirin_support_receipt_builder_v1.py",
+        "tools/keirin_support_receipt_guard_v1.py",
+        "tools/keirin_support_gate_partial_evaluator_v1.py"
+      ]
+    },
+    {
+      "step": 7,
+      "action": "READ_PERMANENT_CLOSURES",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json"
+    },
+    {
+      "step": 8,
+      "action": "FRESH_READ_CALENDAR_REVIEW",
+      "pr": 177,
+      "latest_exact_current_lab_request_comment": 5573150058,
+      "rule": "Consume only exact-current independent evidence. PR177 is already exact-frozen; under T2.5 Keirin must not publish competing Owner gates, T1, Auditor requests, or same-envelope machine requests. Leave progression to sole Control. Calendar remains UNKNOWN and full gate PASS prohibited until separately reviewed and adopted."
+    },
+    {
+      "step": 9,
+      "action": "WORK_CONSERVING_CONTINUATION",
+      "rule": "CURRENT v92: under T2.5 Keirin remains Research/Candidate only. Longshot engineering candidate added outcome-free: CORE <=20x, MID_HOLE 20-80x, LONGSHOT 80-300x, EXTREME >300x with monotonically stronger required probability advantage and smaller shadow risk. No live odds/result/payout/prediction access occurred; parameters are PROPOSED_NOT_VALIDATED. Formal support remains 1 rider/2 rows and 35-candidate Sep14/Sep15 front remains unchanged."
+    },
+    {
+      "step": 10,
+      "action": "STRICT_FORMAL_CONVERSION",
+      "rule": "Fresh-read before writes. While CURRENT hard-boundaries block ODDS/RESULT/PREDICTION, refine the longshot candidate only with outcome-free/synthetic engineering checks. Do not self-freeze into a review cycle or publish competing requests; PR177 progression is Control-only."
+    },
+    {
+      "step": 11,
+      "action": "PRESERVE_HARD_BOUNDARIES",
+      "rule": "Never use RESULT, payout, odds, forecasts/predictions, human comments, fuzzy identity, current-profile dynamic backfill, or post-cutoff reconstruction. S0/HFT frozen. Runtime OFF. No main/provider/protected-data/live-effect/spend mutation."
+    }
   ],
-  "active_lane_pointers":{"PROSPECTIVE_SUPPORT_EVENT_QUEUE":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json","PRECONVERSION_READINESS":"v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1.json","PRE_CUTOFF_WITNESS_REGISTRY":"v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json","CALENDAR_BLOCK_DEFINITION_CANDIDATE_PR":177,"CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_COMMENT":5573150058,"COMMON_CONTROL_ROLE_REGISTRY_COMMENT":5573337206},
-  "common_governance_policy":{"migration_lock":"RELEASED_SUPERSEDED_BY_5572390676","same_target_request_serialization":"ACTIVE_5572636296","single_control_role_registry":"ACTIVE_5573337206","keirin_role":"RESEARCH_CANDIDATE_ONLY","frozen_review_cycle_progression":"CONTROL_ONLY_UNTIL_FIX_REQUIRED_OR_TERMINAL_DECISION","shared_lab_auditor_steps":"FIXED_COMMON_INFRASTRUCTURE_NEVER_PER_JOB_EDIT","machine_readable_review_request_publication":"RESEARCH_PRE_FREEZE_ONLY_OR_CONTROL_ROUTED_AFTER_FREEZE_PER_T2_5","workflow_dispatch_or_rerun":"NOT_GRANTED","merge_main_ruleset":"NO_AUTHORITY","runtime":"OFF"},
-  "context_policy":{"chat":"WORKSPACE_NOT_AUTHORITY","github":"RESEARCH_STATE_AUTHORITY_WITHIN_RESEARCH_LANE","latest_durable_common_baseline":"SUPERSEDES_CHAT_LOCAL_SHARED_PROCEDURES"},
-  "owner_action_required_now":false
+  "active_lane_pointers": {
+    "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
+    "PRECONVERSION_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1.json",
+    "PRE_CUTOFF_WITNESS_REGISTRY": "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "CALENDAR_BLOCK_DEFINITION_CANDIDATE_PR": 177,
+    "CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_COMMENT": 5573150058,
+    "COMMON_CONTROL_ROLE_REGISTRY_COMMENT": 5573337206,
+    "LONGSHOT_SHADOW_LANE_DESIGN": "v3/historical_all_market/research_candidates/KEIRIN_LONGSHOT_SHADOW_LANE_DESIGN_20260908_v1.json",
+    "LONGSHOT_SHADOW_GUARD": "tools/keirin_longshot_shadow_guard_v1.py"
+  },
+  "common_governance_policy": {
+    "migration_lock": "RELEASED_SUPERSEDED_BY_5572390676",
+    "same_target_request_serialization": "ACTIVE_5572636296",
+    "single_control_role_registry": "ACTIVE_5573337206",
+    "keirin_role": "RESEARCH_CANDIDATE_ONLY",
+    "frozen_review_cycle_progression": "CONTROL_ONLY_UNTIL_FIX_REQUIRED_OR_TERMINAL_DECISION",
+    "shared_lab_auditor_steps": "FIXED_COMMON_INFRASTRUCTURE_NEVER_PER_JOB_EDIT",
+    "machine_readable_review_request_publication": "RESEARCH_PRE_FREEZE_ONLY_OR_CONTROL_ROUTED_AFTER_FREEZE_PER_T2_5",
+    "workflow_dispatch_or_rerun": "NOT_GRANTED",
+    "merge_main_ruleset": "NO_AUTHORITY",
+    "runtime": "OFF"
+  },
+  "context_policy": {
+    "chat": "WORKSPACE_NOT_AUTHORITY",
+    "github": "RESEARCH_STATE_AUTHORITY_WITHIN_RESEARCH_LANE",
+    "latest_durable_common_baseline": "SUPERSEDES_CHAT_LOCAL_SHARED_PROCEDURES"
+  },
+  "owner_action_required_now": false
 }
