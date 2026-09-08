@@ -1,0 +1,56 @@
+{
+  "record": "KEIRIN_LONGSHOT_CANDIDATE_INTERNAL_READINESS_20260908_v1",
+  "status": "INTERNAL_ENGINEERING_COHERENT_EXTERNAL_PROSPECTIVE_VALIDATION_BLOCKED",
+  "date_jst": "2026-09-08",
+  "purpose": "Summarize whether the longshot shadow research candidate is internally coherent enough to stop adding ad-hoc mechanics before external prospective validation authority exists.",
+  "components": {
+    "band_design": "KEIRIN_LONGSHOT_SHADOW_LANE_DESIGN_20260908_v1.json",
+    "qualification_guard": "tools/keirin_longshot_shadow_guard_v1.py",
+    "one_ticket_selector": "tools/keirin_longshot_shadow_selector_v1.py",
+    "race_risk_aggregator": "tools/keirin_shadow_risk_aggregator_v1.py",
+    "end_to_end_pipeline": "tools/keirin_longshot_shadow_pipeline_v1.py",
+    "evidence_sufficiency": "tools/keirin_longshot_evidence_sufficiency_v1.py",
+    "anti_jackpot_validation": "tools/keirin_longshot_shadow_validation_gate_v1.py",
+    "synthetic_boundary_audit": "KEIRIN_LONGSHOT_SHADOW_GUARD_SYNTHETIC_AUDIT_20260908_v1.json",
+    "probability_misscale_audit": "KEIRIN_LONGSHOT_PROBABILITY_MISCALE_STRESS_AUDIT_20260908_v1.json",
+    "risk_aggregation_audit": "KEIRIN_SHADOW_RISK_AGGREGATION_SYNTHETIC_AUDIT_20260908_v1.json",
+    "end_to_end_synthetic_audit": "KEIRIN_LONGSHOT_END_TO_END_SYNTHETIC_PIPELINE_AUDIT_20260908_v1.json"
+  },
+  "internally_fixed_concepts": [
+    "No blanket ban on >20x tickets.",
+    "Odds regimes CORE<=20x, MID_HOLE 20-80x, LONGSHOT 80-300x, EXTREME_LONGSHOT >300x.",
+    "Higher odds require monotonically stronger probability-ratio and raw-EV thresholds.",
+    "At most one qualified hole elementary ticket per race.",
+    "Combined CORE+hole research exposure is proportionally capped at one race-risk unit.",
+    "No stable-pass from one jackpot: positive leave-largest-hit-out ROI, >=5 actual hits, >=5 expected hits, >=8 weeks, and largest-hit profit share <=50%.",
+    "No Kelly, martingale, loss chasing, or real-money mapping before edge validation."
+  ],
+  "deliberately_not_fixed_as_truth": [
+    "The numerical regime thresholds are proposed engineering starting points, not validated optimal values.",
+    "Risk-unit-to-yen conversion is intentionally undefined.",
+    "No market-specific longshot preference is declared yet.",
+    "No profitability claim exists."
+  ],
+  "external_blockers": [
+    "CURRENT v94 hard boundary blocks ODDS access.",
+    "CURRENT v94 hard boundary blocks PREDICTION access.",
+    "CURRENT v94 hard boundary blocks RESULT access.",
+    "CURRENT v94 hard boundary blocks PAYOUT access.",
+    "Prospective validation authority is therefore unavailable in this lane now."
+  ],
+  "recommendation": {
+    "mutation_state": "STOP_AD_HOC_THRESHOLD_TUNING",
+    "next_when_authorized": "Use the frozen-in-principle pipeline prospectively on PRE-only prediction+odds snapshots, store decisions before results, then validate by band without changing thresholds after outcomes.",
+    "review_freeze_now": false,
+    "reason": "Real prospective validation cannot currently be executed, and CURRENT v94 explicitly keeps these parameters PROPOSED_NOT_VALIDATED."
+  },
+  "governance": {
+    "T2_5_role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "review_progression_after_exact_freeze": "CONTROL_ONLY",
+    "shared_steps_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false
+}
