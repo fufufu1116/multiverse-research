@@ -1,0 +1,101 @@
+{
+  "record": "KEIRIN_ANY29_UNAMBIGUOUS_SUPPORT_GATE_PREFLIGHT_20260908_v1",
+  "date_jst": "2026-09-08",
+  "scope": "PRE_ONLY_FIXED_35_COMBINATORIAL_GATE_PREFLIGHT_NO_RESULT_NO_PAYOUT_NO_ODDS_NO_PREDICTION",
+  "bindings": {
+    "order": "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "matrix": "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "baseline_manifest": "v3/historical_all_market/research_candidates/KEIRIN_35_FINAL_DAY1_PRE_INPUT_MANIFEST_20260908_v1.json",
+    "target_new_pass": 29,
+    "total_supported_rows_at_target": 60
+  },
+  "canonical_gate_dimensions_checked": {
+    "max_single_venue_share_global_threshold": 0.6,
+    "max_single_rider_share_global_threshold": 0.1,
+    "minimum_distinct_venues_per_circumference": 2,
+    "identity_mapping": "EXACT_BY_LOCKED_REGISTRATION_AND_FINALIZER_VALIDATION"
+  },
+  "proofs": {
+    "first_29_all_pass": {
+      "max_single_venue": "防府",
+      "max_single_venue_rows": 15,
+      "max_single_venue_share": 0.25,
+      "max_single_rider_rows": 2,
+      "max_single_rider_share": 0.03333333333333333,
+      "venues_333": [
+        "伊東",
+        "防府"
+      ],
+      "venues_400": [
+        "川崎",
+        "大垣",
+        "いわき平",
+        "青森"
+      ]
+    },
+    "priorities_7_through_35_pass": {
+      "max_single_venue": "防府",
+      "max_single_venue_rows": 21,
+      "max_single_venue_share": 0.35,
+      "max_single_rider_rows": 2,
+      "max_single_rider_share": 0.03333333333333333,
+      "venues_333": [
+        "伊東",
+        "防府"
+      ],
+      "venues_400": [
+        "川崎",
+        "大垣",
+        "いわき平",
+        "弥彦",
+        "青森"
+      ]
+    },
+    "exact_worst_single_venue_over_any_29_of_35": {
+      "venue": "防府",
+      "rows": 21,
+      "share": 0.35,
+      "method": "For each venue, rank each locked candidate by its additive historical+future row contribution to that venue, select the top 29 contributions, add the fixed baseline rows, and take the maximum over all venues.",
+      "conclusion": "0.35 <= 0.60; single-venue global-share gate cannot fail for any 29-success subset of the locked 35."
+    },
+    "rider_share_any_29": {
+      "max_rows_per_registration": 2,
+      "total_rows": 60,
+      "max_share": 0.03333333333333333,
+      "conclusion": "0.03333333333333333 <= 0.10; rider-share gate cannot fail."
+    },
+    "circumference_333_venue_minimum_any_29": {
+      "future_333_candidates": 31,
+      "future_333_venue_counts": {
+        "伊東": 11,
+        "防府": 20
+      },
+      "maximum_failures": 6,
+      "minimum_selected_future_333_candidates": 25,
+      "largest_single_future_333_venue_count": 20,
+      "conclusion": "Any 29-success subset must include both 伊東 and 防府 on the 333m side, so >=2 venues is guaranteed."
+    },
+    "circumference_400_venue_minimum_any_29": {
+      "historical_400_rows_among_31_future_333_candidates": 31,
+      "historical_400_venue_counts": {
+        "大垣": 11,
+        "いわき平": 19,
+        "弥彦": 1
+      },
+      "minimum_selected_from_these_31_when_29_of_35_succeed": 25,
+      "largest_single_historical_400_venue_count": 19,
+      "fixed_baseline_400_venue": "川崎",
+      "conclusion": "Any 29-success subset necessarily contains historical 400m rows from more than one venue; the fixed Kawasaki baseline further corroborates >=2 venues."
+    }
+  },
+  "unambiguous_gate_preflight": "GUARANTEED_PASS_IF_ANY_29_LOCKED_CANDIDATES_FORMALLY_PASS",
+  "calendar_block_dimension": "NOT_EVALUATED_AS_CANONICAL_GATE_PENDING_PR177",
+  "complete_support_gate_pass_now": false,
+  "formal_support_increment_now": 0,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
