@@ -1,0 +1,36 @@
+{
+  "record": "KEIRIN_FORMAL_SUPPORT_FINALIZER_IMPLEMENTATION_RECEIPT_20260908_v4",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_SOURCE_FILTER_REGRESSION_PASS_8_OF_8_FULL_SELFTEST_FILE_ADDED_NOT_SHARED_CI_RUN",
+  "supersedes": "tools/keirin_35_formal_support_finalizer_v3.py",
+  "implementation": "tools/keirin_35_formal_support_finalizer_v4.py",
+  "selftest": "tools/keirin_35_formal_support_finalizer_selftest_v4.py",
+  "defects_closed": [
+    "Safe oddspark.com final racecard hostname no longer false-fails merely because hostname contains 'odds'.",
+    "Explicit English payout namespace is now fail-closed.",
+    "Explicit comment/comments namespaces are now fail-closed."
+  ],
+  "isolated_source_filter_regression": {
+    "result": "PASS_8_OF_8",
+    "cases": [
+      "safe oddspark.com final racecard accepted",
+      "actual odds namespace rejected",
+      "result role rejected",
+      "prediction path rejected",
+      "official Day1 racecard accepted",
+      "CTC Day1 racecard accepted",
+      "payout namespace rejected",
+      "comment namespace rejected"
+    ]
+  },
+  "full_finalizer_selftest_file_added": true,
+  "full_finalizer_selftest_shared_ci_run": false,
+  "workflow_dispatch_rerun": false,
+  "formal_support_increment_now": 0,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "live_odds_used_as_model_input": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
