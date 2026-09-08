@@ -1,0 +1,130 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v92",
+  "status": "PRE_ONLY_RESEARCH_CANDIDATE_FRONT_WITH_LONGSHOT_SHADOW_ENGINEERING_CANDIDATE_T2_5_BOUNDARY",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v91.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "694016e27fcfb6dc4143177b07045b515858cbad",
+    "prior_current": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v91.json",
+    "governance": "#93 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE"
+  },
+  "governance_boundary": {
+    "control_handoff": "Research owns mutation before exact freeze; Control owns progression after exact freeze.",
+    "pr177_frozen_cycle": "CONTROL_ONLY_PROGRESSION",
+    "shared_steps_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "gate": "FAIL",
+    "candidate_count": 35,
+    "candidate_failure_margin": 6,
+    "expand_candidate_supply": false
+  },
+  "longshot_engineering_candidate": {
+    "design": "KEIRIN_LONGSHOT_SHADOW_LANE_DESIGN_20260908_v1.json",
+    "guard_tool": "tools/keirin_longshot_shadow_guard_v1.py",
+    "status": "PRE_FREEZE_ENGINEERING_CANDIDATE",
+    "purpose": "Keep medium-hole and large-hole opportunities available without using one undifferentiated odds regime.",
+    "regimes": [
+      {
+        "id": "CORE",
+        "odds": "<=20x",
+        "min_ratio": 1.1,
+        "min_ev": 0.1,
+        "risk_units": 1
+      },
+      {
+        "id": "MID_HOLE",
+        "odds": "20-80x",
+        "min_ratio": 1.35,
+        "min_ev": 0.35,
+        "risk_units": 0.5
+      },
+      {
+        "id": "LONGSHOT",
+        "odds": "80-300x",
+        "min_ratio": 1.75,
+        "min_ev": 0.75,
+        "risk_units": 0.25
+      },
+      {
+        "id": "EXTREME_LONGSHOT",
+        "odds": ">300x",
+        "min_ratio": 2.5,
+        "min_ev": 1.5,
+        "risk_units": 0.1
+      }
+    ],
+    "probability_guard": "min(S0 ticket probability, challenger ticket probability)",
+    "race_ticket_cap": "max 1 longshot elementary ticket per race per lane",
+    "jackpot_resistance": [
+      "No promotion from one isolated winning ticket",
+      "Report ROI separately by price regime",
+      "Leave-largest-hit-out ROI must not turn negative for stable-pass status",
+      "No martingale or loss-chasing"
+    ],
+    "live_odds_accessed": false,
+    "result_accessed": false,
+    "payout_accessed": false,
+    "prediction_accessed": false,
+    "parameter_status": "PROPOSED_NOT_VALIDATED"
+  },
+  "intended_front": {
+    "candidate_count": 35,
+    "future_events": [
+      {
+        "venue": "伊東",
+        "date": "2026-09-14",
+        "candidates": 11,
+        "circumference_m": 333
+      },
+      {
+        "venue": "青森",
+        "date": "2026-09-14",
+        "candidates": 4,
+        "circumference_m": 400
+      },
+      {
+        "venue": "防府",
+        "date": "2026-09-15",
+        "candidates": 20,
+        "circumference_m": 333
+      }
+    ],
+    "final_day1_pre_assignment": "0/35 PENDING_FUTURE_PUBLICATION"
+  },
+  "hard_boundaries": {
+    "S0": "FROZEN",
+    "historical_HFT": "FROZEN",
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "FUZZY_IDENTITY": "BLOCKED",
+    "CURRENT_PROFILE_DYNAMIC_BACKFILL": "BLOCKED",
+    "POST_CUTOFF_RECONSTRUCTION": "BLOCKED",
+    "main_mutation": false,
+    "shared_lab_auditor_steps_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "runtime": false,
+    "spend": false,
+    "live_effect": false
+  },
+  "work_conserving_next": [
+    "Keep Sep14/Sep15 formal-support readiness intact and Fresh Read before any material action.",
+    "Refine longshot engineering candidate only with outcome-free/synthetic checks while ODDS/RESULT/PREDICTION are blocked.",
+    "Do not publish review requests or freeze a review cycle for the longshot candidate until the research candidate is internally coherent.",
+    "Observe PR177 durable evidence only; progression belongs to Control."
+  ],
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
