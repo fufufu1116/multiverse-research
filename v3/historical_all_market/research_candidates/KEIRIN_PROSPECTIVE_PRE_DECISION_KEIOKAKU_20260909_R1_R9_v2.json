@@ -1,0 +1,50 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v2",
+  "status": "PRE_EVENT_RULE_UPDATE_NO_HARD_ODDS_CAP_FROZEN_BEFORE_20260909_OUTCOMES",
+  "supersedes_for_purchase_decision": "KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v1",
+  "source_snapshot_reused_exactly": "KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v1",
+  "date_jst": "2026-09-09",
+  "fresh_branch_head_before_write": "6303b060f70f33cb3b4b27b52eef31e7e3c2bc68",
+  "change_scope": "Purchase-price gate only. Racecard rows, model, probabilities, confidence threshold, ticket construction and flat stake are unchanged.",
+  "unchanged": {
+    "confidence_gate": "S0/challenger same top1 AND conservative top1 >=0.40",
+    "sole_confidence_pass_race": 8,
+    "ticket": "R8 3renhuku 1=2=3",
+    "conservative_ticket_probability": 0.342756614995,
+    "stake_yen": 100,
+    "other_races": "R1-R7 and R9 remain NO_BET because base confidence gate failed"
+  },
+  "new_odds_gate": {
+    "hard_maximum_odds": null,
+    "core": "<=20x requires guarded EV >=10%",
+    "mid_hole": ">20x to 80x requires guarded EV >=35%",
+    "longshot": ">80x to 300x requires guarded EV >=75% plus cross-source odds corroboration",
+    "extreme": ">300x requires guarded EV >=150% plus cross-source odds corroboration and anomaly/placeholder fail-close",
+    "current_r8_numeric_effect": "Any valid R8 1=2=3 odds >=3.3 clears the numerical threshold under the frozen p=0.342756614995; high-odds data-quality requirements still apply."
+  },
+  "owner_interface": {
+    "race_no": 8,
+    "start_jst": "23:00",
+    "ticket": "3連複 1=2=3",
+    "probability": 0.342756614995,
+    "stake_yen": 100,
+    "decision": [
+      "valid odds <3.3 => NO_BET",
+      "valid odds 3.3-80.0 => BUY_CANDIDATE 100円",
+      "valid odds >80.0 => BUY_CANDIDATE 100円 only after independent current PRE odds corroboration",
+      "missing/stale/placeholder/ambiguous odds => NO_BET_UNVERIFIED"
+    ],
+    "no_odds_ceiling": true
+  },
+  "anti_hindsight": {
+    "today_results_accessed": false,
+    "today_payouts_accessed": false,
+    "ticket_changed": false,
+    "model_probability_changed": false,
+    "confidence_threshold_changed": false,
+    "stake_increased": false
+  },
+  "formal_support_effect": 0,
+  "automated_bet_execution": false,
+  "runtime": false
+}
