@@ -175,8 +175,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 59,
-        f"{test_count} != 59",
+        test_count == 61,
+        f"{test_count} != 61",
     )
 
     return {
