@@ -85,9 +85,378 @@ Results contain:
 - validation plan;
 - explicit nonauthority.
 
+Assignment / Result v2 boundary
+
+`MULTIVERSE_RESEARCH_ASSIGNMENT_v1` binds one exact TASK_v2 to one advisory target:
+- exact task SHA256 and snapshot;
+- exact provider/model/role;
+- exact adapter digest;
+- assignment creation time;
+- execution mode;
+- research-network ceiling;
+- provider transport policy reference;
+- compute/output ceilings that may narrow but never widen the task;
+- attestation requirement;
+- explicit nonauthority.
+
+TASK_v1 cannot be assigned under this contract.
+
+`SYNTHETIC_OFFLINE` forbids provider transport and live attestation.
+
+`LIVE_ADVISORY` is only a declarative repository contract at this stage. It requires an explicit provider-transport policy reference and attestation requirement, but this package still performs no live provider execution.
+
+`MULTIVERSE_RESEARCH_RESULT_v2` adds exact assignment SHA256 binding. Result provider/model/role must match the exact assignment, and the result cannot predate assignment creation.
+
+Historical RESULT_v1 validation remains unchanged.
+
+Model target policy
+
+`MULTIVERSE_MODEL_TARGET_POLICY_v1` validates the exact model target for one Assignment v1 before any live provider transport is permitted by later layers.
+
+The first-pilot profile accepts only `PINNED_OR_STABLE` model classification. Alias, preview, experimental, and unknown classifications fail closed.
+
+The classification must carry an exact evidence reference and SHA256. This package does not infer provider model stability from a model-name string alone.
+
+The policy requires:
+- alias_allowed = false;
+- preview_allowed = false;
+- experimental_allowed = false;
+- resolved_model_id_required = true;
+- stable_provider_api_required = true.
+
+Observed provider model identity must exactly match the requested model ID under this first-pilot contract.
+
+Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
+
+Dated provider model catalog snapshot
+
+`PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json` records the official-provider facts used to choose bounded first-smoke candidates on 2026-09-08.
+
+Smoke candidates:
+- Google Gemini: `gemini-3.8-flash` — stable/GA, structured JSON supported.
+- Anthropic Claude: `claude-haiku-4-5-20251001` — pinned dated model ID, structured JSON supported.
+
+The snapshot stores price rates as integer USD micro-units per million tokens and official documentation references.
+
+At the first-smoke ceilings of 32768 input tokens and 4096 output tokens:
+- Gemini 3.8 Flash estimated maximum token charge: USD 0.039936 under the observed introductory rates.
+- Claude Haiku 4.5 estimated maximum token charge: USD 0.053248 under the observed current rates.
+
+These are repository-side estimates, not spend authorization and not a bill prediction. Provider pricing may change, so a live execution must Fresh-check pricing and authority before transport.
+
+Live provider readiness report
+
+`MULTIVERSE_LIVE_PROVIDER_READINESS_REPORT_v1` converts the fully validated repository-side preparation chain into one explicit readiness state:
+
+`READY_FOR_SEPARATE_PROVIDER_AUTHORITY`
+
+A readiness report means the repository contract is ready for a separately authorized smoke call. It explicitly records:
+- repository_contract_ready = true;
+- provider_call_authorized = false;
+- credential_authorized = false;
+- spend_authorized = false;
+- live_execution_performed = false;
+- Runtime = OFF;
+- adoption_authority = false.
+
+The report binds the exact smoke-profile SHA, provider-transport-binding SHA, and execution-preparation SHA.
+
+Any attempt to turn one of the authority/execution fields true inside the repository report fails closed.
+
+Live execution preparation guard
+
+`MULTIVERSE_LIVE_PROVIDER_EXECUTION_PREP_v1` is the last repository-only guard before an actual provider call.
+
+It binds the exact smoke profile and exact provider transport binding, then constrains the proposed first call to:
+- one exact provider host;
+- one exact provider operation;
+- provider-API-only network scope;
+- external credential handle reference only;
+- no credential material in the repository;
+- exactly one attempt;
+- input token ceiling <= 32768;
+- output token ceiling <= 4096;
+- proposed cost ceiling <= USD 1.00;
+- Runtime OFF;
+- no live business effect;
+- no protected data.
+
+Provider targets:
+- Google Gemini -> `generativelanguage.googleapis.com`, stable-v1 interaction creation;
+- Anthropic Claude -> `api.anthropic.com`, Messages v1 creation.
+
+The preparation object explicitly requires separate provider-call, credential, and spend authority. It cannot grant those authorities itself.
+
+Validator distinction:
+- credential identifiers and network-client execution markers remain forbidden;
+- provider hostnames may appear only as declarative allowlist data in the execution-preparation guard, tests, validator, or documentation;
+- provider adapters/bindings remain renderer/parser-only and contain no provider hostname transport target or network client invocation.
+
+Provider observation binding
+
+`MULTIVERSE_PROVIDER_OBSERVATION_BINDING_v1` closes the receive-side repository gap between a provider-specific parsed observation and the durable termination/receipt records.
+
+For Gemini and Claude it requires exact equality for:
+- provider response ID;
+- normalized termination state;
+- input/output usage counts;
+- exact usage metadata SHA256;
+- exact provider response SHA256;
+- exact observed model ID.
+
+The binding first validates the termination record and execution receipt, then proves that the provider parser observation is the same execution represented by those durable records.
+
+For `LIVE_PROVIDER_ID_UNVERIFIED`, model drift may be preserved, but the observation and receipt must still carry the same exact observed model ID. Unverified does not mean unbound.
+
+This layer performs no provider call and grants no authority.
+
+Provider transport binding
+
+`MULTIVERSE_PROVIDER_TRANSPORT_BINDING_v1` closes the repository-side gap between the abstract request envelope and the exact provider-specific payload.
+
+For Gemini and Claude it:
+- re-renders the exact provider request from the validated task/assignment/policies/prompt/schema;
+- requires the supplied render object to match that exact renderer output;
+- requires no credential material in the render;
+- computes SHA256 over the exact provider request body;
+- requires that SHA256 to equal `REQUEST_ENVELOPE.outbound_payload_sha256`;
+- binds the exact request-envelope SHA and exact render SHA.
+
+This lets the repository prove that the payload sealed in the request envelope is exactly the payload prepared for provider transport, without performing the transport itself.
+
+Cross-provider tests additionally prove that Gemini and Claude receive the same exact canonical provider-neutral prompt bytes and the same exact response schema, even though their API wrappers differ.
+
+Provider transport binding still authorizes no network call or credential use.
+
+Claude Messages offline transport adapter
+
+The repository also includes a **credential-free, network-free renderer/parser** for Anthropic Claude Messages.
+
+The renderer binds:
+- exact assignment model;
+- exact canonical provider-neutral prompt JSON;
+- exact JSON response schema through `output_config.format.type = json_schema`;
+- fixed first-smoke max_tokens;
+- stream = false;
+- no tools or MCP servers;
+- no credential material.
+
+The Claude Messages API is treated as stateless: the full canonical prompt is sent in the user message for the bounded single-turn smoke.
+
+The parser preserves:
+- provider message ID;
+- observed model ID;
+- native stop reason;
+- normalized termination state;
+- output text;
+- input/output tokens;
+- exact usage metadata SHA256;
+- exact raw response SHA256.
+
+Bounded stop normalization:
+- end_turn + text -> COMPLETED;
+- end_turn + empty -> PROVIDER_EMPTY;
+- refusal or refusal stop details -> PROVIDER_REFUSED;
+- max_tokens / model_context_window_exceeded / stop_sequence -> PROVIDER_TRUNCATED;
+- tool_use / pause_turn -> fail closed because the first-pilot capability policy forbids tool execution.
+
+If provider usage metadata reports any nonzero server-tool execution, parsing fails closed.
+
+This adapter performs no API call and contains no credential value or credential transport implementation.
+
+Gemini stable-v1 offline transport adapter
+
+The repository includes a **credential-free, network-free renderer/parser** for the first Google Gemini smoke candidate.
+
+The renderer targets the stable Gemini Interactions API v1 surface and binds:
+- exact assignment model;
+- exact canonical provider-neutral prompt JSON;
+- exact JSON response schema;
+- api_version = v1;
+- store = false;
+- stream = false;
+- background = false;
+- no tools field;
+- fixed first-smoke max output token ceiling;
+- no credential material.
+
+The parser preserves:
+- provider response ID;
+- observed model ID;
+- native terminal status;
+- normalized termination state;
+- output text;
+- input/output token counts;
+- exact usage metadata SHA256;
+- exact raw provider response SHA256.
+
+Current Gemini status normalization for the bounded unary smoke profile:
+- completed + text -> COMPLETED;
+- completed + empty output -> PROVIDER_EMPTY;
+- incomplete -> PROVIDER_TRUNCATED;
+- failed/cancelled -> TRANSPORT_FAILURE;
+- in_progress/requires_action -> reject as nonterminal.
+
+The parser deliberately preserves observed model drift rather than silently rewriting it; the execution receipt/model-target validator is responsible for fail-closing a LIVE_ATTESTED mismatch.
+
+This adapter performs no API call and contains no credential value or credential transport implementation.
+
+Minimum live-provider smoke profile
+
+`MULTIVERSE_LIVE_PROVIDER_SMOKE_PROFILE_v1` binds the exact repository-side chain for the first separately authorized provider call.
+
+The profile requires:
+- exactly one provider;
+- exactly one assignment;
+- exactly one attempt;
+- synthetic-only data;
+- JSON-only structured output;
+- non-streaming;
+- no protected data;
+- no live business effect;
+- no Runtime activation;
+- no adoption authority.
+
+It binds the exact fanout plan, assignment, model-target policy, capability policy, and request envelope.
+
+The repository test suite includes an end-to-end **contract simulation** that validates the entire chain through an unverified receipt without making any real provider API call. It must not be interpreted as live-provider proof or identity attestation.
+
+Actual provider transport remains a separate authority boundary.
+
+Termination normalization and execution receipt
+
+`MULTIVERSE_PROVIDER_TERMINATION_RECORD_v1` normalizes provider-native completion outcomes while preserving the provider-native reason, response identifier when available, usage counts, exact usage-metadata digest, and response-received time.
+
+Normalized states:
+- COMPLETED;
+- PROVIDER_REFUSED;
+- PROVIDER_BLOCKED;
+- PROVIDER_TRUNCATED;
+- PROVIDER_EMPTY;
+- TRANSPORT_FAILURE.
+
+Transport failure may legitimately have no provider response ID. Other normalized states require one.
+
+`MULTIVERSE_PROVIDER_EXECUTION_RECEIPT_v1` binds the complete execution chain:
+- exact task;
+- exact assignment;
+- exact request envelope;
+- exact termination record;
+- exact submission ID;
+- observed provider/model identity;
+- provider response ID and response-content SHA256;
+- exact final RESULT_v2 SHA256;
+- exact adapter SHA256;
+- monotonic request/response/result/receipt timestamps;
+- attestation state.
+
+`LIVE_ATTESTED` requires the observed model ID to match the exact requested stable/pinned model target. `LIVE_PROVIDER_ID_UNVERIFIED` may preserve an advisory response but explicitly does not authenticate the provider model identity.
+
+Termination-to-result mapping is fail-closed. Refusal/block maps to REFUSED; truncation/empty/transport failure maps to INFRA_FAILURE; only completed provider termination can map to COMPLETED.
+
+Receipt binding proves execution provenance only. It grants no truth or adoption authority.
+
+Provider-neutral prompt and request envelope
+
+`MULTIVERSE_PROVIDER_NEUTRAL_PROMPT_v1` contains no provider/model target. The same exact TASK_v2 + requested role + response-schema digest produces the same canonical research prompt regardless of which provider/model assignment receives it.
+
+The prompt binds:
+- exact task SHA256;
+- exact snapshot;
+- exact requested role;
+- exact objective;
+- deterministic evidence-manifest view;
+- exact response-schema SHA256;
+- explicit nonauthority.
+
+`MULTIVERSE_PROVIDER_REQUEST_ENVELOPE_v1` is the first live-transport preparation contract. It requires a LIVE_ADVISORY Assignment but performs no provider call itself.
+
+The envelope binds:
+- exact task and assignment;
+- exact model-target policy;
+- exact capability policy;
+- exact provider-neutral prompt;
+- exact provider transport policy reference;
+- exact outbound payload SHA256;
+- first-smoke synthetic-only objective/egress classification;
+- classification evidence reference and SHA256;
+- exact egress evidence set equal to the task evidence manifest.
+
+The first smoke profile rejects non-synthetic objective/egress declarations. Classification is itself a bound provenance assertion; this repository layer does not independently inspect semantic data sensitivity.
+
+Provider capability policy
+
+`MULTIVERSE_PROVIDER_CAPABILITY_POLICY_v1` binds the exact Assignment v1 and exact Model Target Policy v1 to the first-pilot capability ceiling.
+
+The first-pilot capability profile requires:
+- tools = NONE;
+- provider retrieval/search = NONE;
+- code execution = NONE;
+- file access = NONE;
+- provider memory = NONE;
+- function calling = NONE;
+- structured output = JSON_ONLY;
+- streaming = false.
+
+The policy is repository-only. It authorizes no provider call by itself.
+
+Any change to the bound model-target policy changes the capability binding and invalidates a stale capability policy.
+
+Fanout plan / batch completeness
+
+`MULTIVERSE_RESEARCH_FANOUT_PLAN_v1` is validated against the exact Assignment v1 objects it plans. It does not accept opaque hashes without assignment validation.
+
+The plan binds one exact task/snapshot to a canonical sorted set of exact assignment SHA256 values.
+
+Fanout v1 fails closed on:
+- duplicate assignment IDs;
+- duplicate assignment SHA256 values;
+- duplicate logical provider/model/role targets;
+- plan/assignment-set mismatch;
+- plan creation before any included assignment.
+
+The same provider/model may be assigned different requested roles; those are distinct advisory identities but remain one provider/model for Aggregate v2 diversity accounting.
+
+`MULTIVERSE_RESEARCH_BATCH_SUMMARY_v1` distinguishes:
+- planned assignments;
+- observed terminal results;
+- completed assignments;
+- noncompleted observed assignments;
+- exact missing assignment SHA256 values.
+
+An INFRA_FAILURE/REFUSED/UNSUPPORTED result counts as observed but never as completed. An unplanned result or a second result for the same assignment fails closed.
+
+Batch completeness is descriptive only and grants no adoption authority.
+
 Consensus
 
 Consensus is descriptive only.
+
+Aggregate v2 diversity accounting
+
+`MULTIVERSE_RESEARCH_AGGREGATE_v1` remains unchanged for historical compatibility.
+
+`MULTIVERSE_RESEARCH_AGGREGATE_v2` adds explicit diversity accounting without treating provider/model/role advisory identities as independent models.
+
+Aggregate v2 separates observed from completed diversity:
+- observed/completed provider-model-role advisory identities;
+- observed/completed provider-model identities;
+- observed/completed providers.
+
+A non-COMPLETED advisory result may increase observed coverage but never completed research diversity.
+
+At claim level, Aggregate v2 separates:
+- advisory identity position counts;
+- provider/model position-presence counts;
+- provider position-presence counts;
+- role-conditioned divergence inside one provider/model;
+- cross-model divergence;
+- cross-provider divergence.
+
+Position-presence counts are not votes and may overlap when one provider/model takes different positions in different requested roles.
+
+The historical descriptive label remains advisory-identity scoped. Aggregate v2 explicitly records `descriptive_label_scope = ADVISORY_IDENTITY`.
+
 
 The aggregator may report support-only, oppose-only, support-with-unknown, oppose-with-unknown, unknown-only, or divergent claim groups. UNKNOWN participation is never hidden behind an *ONLY* label.
 
