@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v84",
+  "status": "GENERALIZED_PRE_ONLY_MODEL_COVERAGE_23R_183ROWS_PASS_ZERO_TOP1_CHANGES_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v83.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Development model coverage and formal prospective support remain separate authorities.",
+  "baseline": {
+    "S0": "competition-score-only softmax",
+    "beta": 0.22260435254784533,
+    "refit": false
+  },
+  "development_model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+    "rule": "Exact rider delta first; otherwise current-PRE style fallback; otherwise exact S0 fallback.",
+    "exact_rider_count": 30,
+    "style_fallback": {
+      "逃": -0.020537046719,
+      "追": 0.038120995374,
+      "両": 0.0024804485
+    },
+    "result_fitted_parameters": 0,
+    "predictor": "tools/keirin_pre_only_rider_or_style_predictor_v2.py"
+  },
+  "generalized_dry_run": {
+    "artifact": "KEIRIN_PRE_ONLY_GENERALIZED_COVERAGE_DRY_RUN_23R_183ROWS_20260908_v1.json",
+    "races": 23,
+    "rider_rows": 183,
+    "exact_rider_delta_appearances": 11,
+    "style_fallback_appearances": 172,
+    "pure_s0_appearances": 0,
+    "rank_change_races": 4,
+    "top1_change_races": 0,
+    "maximum_absolute_probability_shift_pp": 1.123412,
+    "target_results_accessed": false,
+    "accuracy_claim": false
+  },
+  "interpretation": [
+    "The prior rider-only model had zero practical coverage on Aomori and Takeo because none of the 30 riders appeared.",
+    "The style fallback removes that zero-coverage failure using only PRE-derived circumference differences.",
+    "The generalized model remains conservative: 23/23 S0 top1 selections stay unchanged; only close internal rankings move in 4 races."
+  ],
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "gate": "FAIL",
+    "prospective_35_candidate_path_retained": true
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "accepted_definition": "UNKNOWN",
+    "independent_result": "PENDING"
+  },
+  "evaluation_plan": {
+    "prospective_development_window": "2026-09-16..2026-09-26 ALL DAY1 STARTS",
+    "final_untouched": [
+      {
+        "date": "2026-09-27",
+        "venue": "玉野",
+        "circumference_m": 400
+      },
+      {
+        "date": "2026-09-29",
+        "venue": "防府",
+        "circumference_m": 333
+      }
+    ],
+    "frozen_now": [
+      "S0 beta",
+      "rider delta construction",
+      "style fallback construction",
+      "style prior strength 20",
+      "precedence rider > style > S0",
+      "no post-outcome tuning"
+    ]
+  },
+  "priority_next": [
+    "Use the generalized frozen model on new PRE racecards and save predictions before results.",
+    "Measure practical coverage, rank changes, and probability changes prospectively without tuning.",
+    "After frozen evaluation membership closes, compare S0 and challenger on outcomes; do not select cases after seeing results.",
+    "Keep Sep14/Sep15 formal-support conversion lane running in parallel."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout": false,
+    "odds_as_feature": false,
+    "human_forecast": false,
+    "outcome_tuning": false,
+    "post_cutoff_pre_backfill": false,
+    "s0_refit": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
