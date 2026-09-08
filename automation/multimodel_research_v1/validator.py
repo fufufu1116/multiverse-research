@@ -35,6 +35,8 @@ REQUIRED = [
     ROOT / "pre_execution_bundle.py",
     ROOT / "launch_evidence.py",
     ROOT / "pilot_roundtrip.py",
+    ROOT / "pilot_roundtrip_v2.py",
+    ROOT / "provider_result_schema.py",
     ROOT / "provider_result_ingestion.py",
     ROOT / "rehearsal_convergence.py",
     ROOT / "dual_provider_research.py",
@@ -180,6 +182,8 @@ def validate() -> dict:
     pre_execution_bundle = (ROOT / "pre_execution_bundle.py").read_text()
     launch_evidence = (ROOT / "launch_evidence.py").read_text()
     pilot_roundtrip = (ROOT / "pilot_roundtrip.py").read_text()
+    pilot_roundtrip_v2 = (ROOT / "pilot_roundtrip_v2.py").read_text()
+    provider_result_schema = (ROOT / "provider_result_schema.py").read_text()
     provider_result_ingestion = (
         ROOT / "provider_result_ingestion.py"
     ).read_text()
@@ -783,6 +787,37 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_PILOT_ROUNDTRIP_v2",
+        "build_provider_pilot_roundtrip_v2",
+        "validate_provider_pilot_roundtrip_v2",
+        "provider_pilot_roundtrip_v2_sha256",
+        "result_from_provider_output",
+        "provider_result_ingestion_sha256",
+        "PILOT_ROUNDTRIP_V2_RESULT_NOT_FROM_PROVIDER_OUTPUT",
+    ):
+        record(
+            f"pilot_roundtrip_v2:{token}",
+            token in pilot_roundtrip_v2,
+            token,
+        )
+
+    for token in (
+        "build_result_v2_response_schema",
+        "validate_result_v2_response_schema",
+        "result_v2_response_schema_sha256",
+        "RESULT_V2_RESPONSE_SCHEMA_EXACT_MISMATCH",
+        "assignment_sha256",
+        "additionalProperties",
+        "model_identity",
+        "assignment_sha256",
+    ):
+        record(
+            f"provider_result_schema:{token}",
+            token in provider_result_schema,
+            token,
+        )
+
+    for token in (
         "MULTIVERSE_PROVIDER_RESULT_INGESTION_v1",
         "build_provider_result_ingestion",
         "validate_provider_result_ingestion",
@@ -932,8 +967,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 470,
-        f"{test_count} != 470",
+        test_count == 478,
+        f"{test_count} != 478",
     )
 
     return {
