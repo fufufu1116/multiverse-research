@@ -1,0 +1,94 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_PRE_2001_2500_RECOVERY_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "PASS_WITH_7_FAIL_CLOSED_REJECTIONS",
+  "source_workflow": {
+    "workflow": ".github/workflows/keirin-nextgen5000-pre-batch-2001-2500-v1.yml",
+    "run_id": 34286882585,
+    "conclusion": "success",
+    "artifact_id": 10079952588,
+    "artifact_name": "keirin-nextgen5000-pre-2001-2500-v1",
+    "artifact_retention_days": 30
+  },
+  "locked_universe": {
+    "name": "NEXTGEN_5000_UNIVERSE.csv",
+    "sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "positions": "2001..2500",
+    "requested_races": 500
+  },
+  "recovery": {
+    "successful_races": 493,
+    "rejected_races": 7,
+    "pre_rows": 3528,
+    "evidence_role": "RETROSPECTIVE_PRE_DEVELOPMENT_ONLY_UNPROVEN_PIT",
+    "raw_mixed_html_written": false,
+    "result_fields_emitted": false,
+    "payout_fields_emitted": false,
+    "odds_fields_emitted": false,
+    "forecast_or_comment_fields_emitted": false,
+    "formal_support_increment_authorized": false,
+    "model_promotion_authorized": false
+  },
+  "rejected": [
+    {
+      "position": 2053,
+      "race_date": "2026-03-28",
+      "race_id": "4520260328010012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2137,
+      "race_date": "2026-03-29",
+      "race_id": "4520260328020012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2210,
+      "race_date": "2026-03-30",
+      "race_id": "4520260328030012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2258,
+      "race_date": "2026-03-31",
+      "race_id": "4520260328040012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2375,
+      "race_date": "2026-04-02",
+      "race_id": "3720260402010012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2467,
+      "race_date": "2026-04-03",
+      "race_id": "3720260402020010",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2468,
+      "race_date": "2026-04-03",
+      "race_id": "3720260402020011",
+      "reason": "FAIL-CLOSED:car_continuity"
+    }
+  ],
+  "interpretation": [
+    "The first expansion batch adds 493 usable PRE-only retrospective races beyond DEV2000 positions 1..2000.",
+    "Seven ambiguous/non-contiguous active-car cases were rejected instead of reconstructed.",
+    "No outcome/payout/odds information was used or emitted during PRE acquisition.",
+    "These rows increase exploratory simulation capacity but do not alter the formal 30/60 scientific support count."
+  ],
+  "owner_policy": {
+    "additional_historical_collection_authorized_when_needed": true,
+    "mandatory_separation": "PRE first; outcomes/results/payouts isolated until predictions and selection rules are frozen.",
+    "no_result_reconstruction_into_pre": true
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
