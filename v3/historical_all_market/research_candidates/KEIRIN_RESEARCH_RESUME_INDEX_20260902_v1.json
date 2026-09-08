@@ -5,61 +5,116 @@
   "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
   "first_rule": "Never infer CURRENT/NOW/LATEST from stored state. Fresh Read the research branch ref and #93 convergence state first.",
   "resume_sequence": [
-    {"step":1,"action":"FRESH_READ_RESEARCH_BRANCH_REF"},
-    {"step":2,"action":"FRESH_READ_COMMON_GOVERNANCE_CONVERGENCE","binding":"#93 comments 5572390676 and 5572636296; #152 CLOSED; fixed request-only dispatcher baseline","rule":"Migration lock is released/superseded. Research chats may publish exact machine-readable review requests under T2.4 serialization, but must never per-job edit shared Lab/Auditor Steps or create unauthorized Build/Retry authority."},
-    {"step":3,"action":"READ_CURRENT_STATE","path":"v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v80.json"},
-    {"step":4,"action":"READ_ACTIVE_EVENT_QUEUE","path":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"},
-    {"step":5,"action":"READ_POST_FIREWALL_SUPPORT_SET","paths":["v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json","v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json","v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json","v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json"]},
-    {"step":6,"action":"READ_PERMANENT_CLOSURES","path":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json"},
-    {"step":7,"action":"READ_CALENDAR_REVIEW","pr":177,"current_lab_request_comment":5573150058,"rule":"Consume only exact-current independent review evidence; calendar remains UNKNOWN until separately adopted."},
-    {"step":8,"action":"READ_DEVELOPMENT_EVAL_PRELOCKS","paths":["v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json","v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json","v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json"]},
-    {"step":9,"action":"WORK_CONSERVING_CONTINUATION","rule":"Formal support remains 1 rider / 2 rows. Existing post-firewall pool is fully preconverted except for future final Day1 cards: 35/35 exact identities, 35/35 exact 2026-09-07 historical rows, 35/35 prebuilt witness placeholders, and 35/35 currently present in Sep14/Sep15 assen snapshots. Conversion matrix/readiness audit plus deterministic candidate order are frozen before final cards. At final PRE publication, process priorities 1..35, fill exact future race/car/PRE provenance, run guards and formalize; fail-closed rows continue to the next priority and normal conversion stops immediately after 29 new PASS for cumulative 30 riders / 60 rows. PR177 has no independent result after request comment 5573150058; calendar remains UNKNOWN. RESULT stays closed."},
-    {"step":10,"action":"CONTINUE_WITH_FRESH_BINDING","rule":"If branch head, canonical main or #93 convergence state drifted during recovery, repeat Fresh Read before any write or CURRENT claim."}
+    {
+      "step": 1,
+      "action": "FRESH_READ_RESEARCH_BRANCH_REF"
+    },
+    {
+      "step": 2,
+      "action": "FRESH_READ_COMMON_GOVERNANCE_CONVERGENCE",
+      "binding": "#93 comments 5572390676 and 5572636296; #152 CLOSED; fixed request-only dispatcher baseline",
+      "rule": "Migration lock is released/superseded. Research chats may publish exact machine-readable review requests under T2.4 serialization, but must never per-job edit shared Lab/Auditor Steps or create unauthorized Build/Retry authority."
+    },
+    {
+      "step": 3,
+      "action": "READ_CURRENT_STATE",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v80.json"
+    },
+    {
+      "step": 4,
+      "action": "READ_ACTIVE_EVENT_QUEUE",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json"
+    },
+    {
+      "step": 5,
+      "action": "READ_POST_FIREWALL_SUPPORT_SET",
+      "paths": [
+        "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "READ_PERMANENT_CLOSURES",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json"
+    },
+    {
+      "step": 7,
+      "action": "READ_CALENDAR_REVIEW",
+      "pr": 177,
+      "current_lab_request_comment": 5573150058,
+      "rule": "Consume only exact-current independent review evidence; calendar remains UNKNOWN until separately adopted."
+    },
+    {
+      "step": 8,
+      "action": "READ_DEVELOPMENT_EVAL_PRELOCKS",
+      "paths": [
+        "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json",
+        "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json"
+      ]
+    },
+    {
+      "step": 9,
+      "action": "WORK_CONSERVING_CONTINUATION",
+      "rule": "Same-day development lane is now complete: 30 riders / 60 retrospective PRE-only rows with 60/60 numeric competition scores, plus frozen non-outcome-fitted S0+Rider×Circumference challenger and executable predictor. This DOES NOT restore those 29 burned-period riders to formal support authority: prospective formal support remains 1 rider / 2 rows and the Sep14/Sep15 35-candidate path stays active. Do not wait on Sep14/15 to use the development challenger. Keep RESULT closed for fit/tuning; preserve Sep27 Tamano + Sep29 Hofu untouched."
+    },
+    {
+      "step": 10,
+      "action": "CONTINUE_WITH_FRESH_BINDING",
+      "rule": "Fresh-read after recovery. If branch/main/PR177 changed, rebind before writes. Never collapse DEVELOPMENT 30/60 into FORMAL 1/2; they are deliberately separate authorities."
+    }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v80.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v79.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v81.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v80.json",
   "active_lane_pointers": {
-    "PROSPECTIVE_SUPPORT_EVENT_QUEUE":"v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
-    "ITO0907_FAIL_CLOSED_FREEZE":"v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
-    "POST_FIREWALL_35_IDENTITY":"v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
-    "POST_FIREWALL_35_HISTORICAL_ROWS":"v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
-    "FUTURE_0914_0915_PRE_MANIFEST":"v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
-    "DETERMINISTIC_FORMAL_CONVERSION_ORDER":"v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
-    "SUPPORT_RECEIPT_GUARD":"tools/keirin_support_receipt_guard_v1.py",
-    "SUPPORT_PROVENANCE_VALIDATOR":"tools/keirin_support_provenance_validator_v1.py",
-    "SUPPORT_RECEIPT_BUILDER":"tools/keirin_support_receipt_builder_v1.py",
-    "SUPPORT_GATE_PARTIAL_EVALUATOR":"tools/keirin_support_gate_partial_evaluator_v1.py",
-    "PRE_CUTOFF_WITNESS_REGISTRY":"v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
-    "PRE_CUTOFF_WITNESS_REGISTRY_GUARD":"tools/keirin_precutoff_witness_registry_guard_v1.py",
-    "CALENDAR_BLOCK_DEFINITION_CANDIDATE_PR":177,
-    "CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_COMMENT":5573150058,
-    "CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_SHA256":"ff6f8ee5d8b4c68e27a7b38515b012e628147b34a2913919c4673a1af3b3aa9d",
-    "RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL":"v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL_20260907_v1.json",
-    "RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS":"v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1.json",
-    "SEP24_DAY1_START_SET":"v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json",
-    "SEP24_DAY1_ROSTER_INTERSECTION":"v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json",
-    "DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK":"v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json",
-    "PRECONVERSION_READINESS_AUDIT":"v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1.json",
-    "SUPPORT_CONVERSION_MATRIX":"v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
-    "ASSEN_RECHECK_20260908":"v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_ASSEN_RECHECK_20260908_v1.json"
+    "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
+    "ITO0907_FAIL_CLOSED_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
+    "POST_FIREWALL_35_IDENTITY": "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+    "POST_FIREWALL_35_HISTORICAL_ROWS": "v3/historical_all_market/research_candidates/KEIRIN_POST_FIREWALL_35_HISTORICAL_0907_EXACT_ROW_COMPLETION_20260907_v1.json",
+    "FUTURE_0914_0915_PRE_MANIFEST": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "DETERMINISTIC_FORMAL_CONVERSION_ORDER": "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "SUPPORT_RECEIPT_GUARD": "tools/keirin_support_receipt_guard_v1.py",
+    "SUPPORT_PROVENANCE_VALIDATOR": "tools/keirin_support_provenance_validator_v1.py",
+    "SUPPORT_RECEIPT_BUILDER": "tools/keirin_support_receipt_builder_v1.py",
+    "SUPPORT_GATE_PARTIAL_EVALUATOR": "tools/keirin_support_gate_partial_evaluator_v1.py",
+    "PRE_CUTOFF_WITNESS_REGISTRY": "v3/historical_all_market/research_candidates/KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "PRE_CUTOFF_WITNESS_REGISTRY_GUARD": "tools/keirin_precutoff_witness_registry_guard_v1.py",
+    "CALENDAR_BLOCK_DEFINITION_CANDIDATE_PR": 177,
+    "CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_COMMENT": 5573150058,
+    "CALENDAR_BLOCK_DEFINITION_CURRENT_LAB_REQUEST_SHA256": "ff6f8ee5d8b4c68e27a7b38515b012e628147b34a2913919c4673a1af3b3aa9d",
+    "RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_LOW_DOF_FORMULA_PROPOSAL_20260907_v1.json",
+    "RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZE_READINESS_CHECKLIST_20260907_v1.json",
+    "SEP24_DAY1_START_SET": "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json",
+    "SEP24_DAY1_ROSTER_INTERSECTION": "v3/historical_all_market/research_candidates/KEIRIN_0924_DAY1_START_ROSTER_INTERSECTION_RECEIPT_20260908_v1.json",
+    "DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json",
+    "PRECONVERSION_READINESS_AUDIT": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_PRECONVERSION_READINESS_AUDIT_20260908_v1.json",
+    "SUPPORT_CONVERSION_MATRIX": "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "ASSEN_RECHECK_20260908": "v3/historical_all_market/research_candidates/KEIRIN_0914_0915_35_CANDIDATE_ASSEN_RECHECK_20260908_v1.json",
+    "RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT": "v3/historical_all_market/research_candidates/KEIRIN_RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT_20260908_v1.json",
+    "HFT_SCORE_SEMANTIC_CORRECTION": "v3/historical_all_market/research_candidates/KEIRIN_HFT_PRE_SCORE_COLUMN_SEMANTIC_CORRECTION_20260908_v1.json",
+    "PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+    "PRE_ONLY_RIDER_CIRCUMFERENCE_PREDICTOR": "tools/keirin_pre_only_rider_circumference_predictor_v1.py"
   },
   "common_governance_policy": {
-    "migration_lock":"#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
-    "dispatcher_issue":152,
-    "fixed_request_only_baseline":"#93 comment 5572390676",
-    "same_target_request_serialization":"#93 comment 5572636296",
-    "shared_lab_auditor_steps":"FIXED_COMMON_INFRASTRUCTURE_NEVER_PER_JOB_EDIT_HERE",
-    "research_candidate_work":"ALLOWED",
-    "machine_readable_review_request_publication":"ALLOWED_SUBJECT_TO_T2_4_SERIALIZATION",
-    "workflow_dispatch_or_rerun":"NOT_GRANTED_BY_REQUEST_PUBLICATION",
-    "merge_main_ruleset":"NO_AUTHORITY",
-    "runtime":"OFF"
+    "migration_lock": "#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
+    "dispatcher_issue": 152,
+    "fixed_request_only_baseline": "#93 comment 5572390676",
+    "same_target_request_serialization": "#93 comment 5572636296",
+    "shared_lab_auditor_steps": "FIXED_COMMON_INFRASTRUCTURE_NEVER_PER_JOB_EDIT_HERE",
+    "research_candidate_work": "ALLOWED",
+    "machine_readable_review_request_publication": "ALLOWED_SUBJECT_TO_T2_4_SERIALIZATION",
+    "workflow_dispatch_or_rerun": "NOT_GRANTED_BY_REQUEST_PUBLICATION",
+    "merge_main_ruleset": "NO_AUTHORITY",
+    "runtime": "OFF"
   },
   "context_policy": {
-    "chat":"WORKSPACE_NOT_AUTHORITY",
-    "github":"RESEARCH_STATE_AUTHORITY_WITHIN_RESEARCH_LANE",
-    "latest_durable_common_baseline":"SUPERSEDES_CHAT_LOCAL_SHARED_PROCEDURES",
-    "owner":"MUST_NOT_BE_PERMANENT_CONTEXT_COURIER"
+    "chat": "WORKSPACE_NOT_AUTHORITY",
+    "github": "RESEARCH_STATE_AUTHORITY_WITHIN_RESEARCH_LANE",
+    "latest_durable_common_baseline": "SUPERSEDES_CHAT_LOCAL_SHARED_PROCEDURES",
+    "owner": "MUST_NOT_BE_PERMANENT_CONTEXT_COURIER"
   },
   "owner_action_required_now": false
 }
