@@ -1,0 +1,244 @@
+{
+  "record": "KEIRIN_LONGSHOT_PROBABILITY_MISCALE_STRESS_AUDIT_20260908_v1",
+  "status": "PASS_ANALYTIC_SYNTHETIC_STRESS_NO_OUTCOME_DATA",
+  "date_jst": "2026-09-08",
+  "purpose": "Quantify how much probability overestimation each proposed odds regime can tolerate at its minimum guarded-edge threshold before true expected return turns non-positive.",
+  "method": {
+    "market_implied_probability": "p_mkt = 1 / O",
+    "qualification_ratio": "R = p_conservative / p_mkt = p_conservative * O",
+    "misscale_assumption": "true_probability = p_conservative / F, where F>=1 is model overestimation factor",
+    "true_expected_roi_at_threshold": "ROI_true = R/F - 1",
+    "break_even": "F = R"
+  },
+  "bands": [
+    {
+      "band": "CORE",
+      "threshold_ratio": 1.1,
+      "tolerated_probability_overestimate_factor_at_break_even": 1.1,
+      "tolerated_probability_overestimate_percent": 10.000000000000009,
+      "stress": [
+        {
+          "assumed_overestimate_factor": 1,
+          "true_expected_roi_at_threshold": 0.10000000000000009,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.1,
+          "true_expected_roi_at_threshold": 0,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 1.2,
+          "true_expected_roi_at_threshold": -0.08333333333333326,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 1.35,
+          "true_expected_roi_at_threshold": -0.18518518518518512,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 1.5,
+          "true_expected_roi_at_threshold": -0.2666666666666666,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 1.75,
+          "true_expected_roi_at_threshold": -0.37142857142857133,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 2,
+          "true_expected_roi_at_threshold": -0.44999999999999996,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 2.5,
+          "true_expected_roi_at_threshold": -0.5599999999999999,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 3,
+          "true_expected_roi_at_threshold": -0.6333333333333333,
+          "remains_positive": false
+        }
+      ]
+    },
+    {
+      "band": "MID_HOLE",
+      "threshold_ratio": 1.35,
+      "tolerated_probability_overestimate_factor_at_break_even": 1.35,
+      "tolerated_probability_overestimate_percent": 35.00000000000001,
+      "stress": [
+        {
+          "assumed_overestimate_factor": 1,
+          "true_expected_roi_at_threshold": 0.3500000000000001,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.1,
+          "true_expected_roi_at_threshold": 0.2272727272727273,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.2,
+          "true_expected_roi_at_threshold": 0.12500000000000022,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.35,
+          "true_expected_roi_at_threshold": 0,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 1.5,
+          "true_expected_roi_at_threshold": -0.09999999999999998,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 1.75,
+          "true_expected_roi_at_threshold": -0.22857142857142854,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 2,
+          "true_expected_roi_at_threshold": -0.32499999999999996,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 2.5,
+          "true_expected_roi_at_threshold": -0.45999999999999996,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 3,
+          "true_expected_roi_at_threshold": -0.55,
+          "remains_positive": false
+        }
+      ]
+    },
+    {
+      "band": "LONGSHOT",
+      "threshold_ratio": 1.75,
+      "tolerated_probability_overestimate_factor_at_break_even": 1.75,
+      "tolerated_probability_overestimate_percent": 75,
+      "stress": [
+        {
+          "assumed_overestimate_factor": 1,
+          "true_expected_roi_at_threshold": 0.75,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.1,
+          "true_expected_roi_at_threshold": 0.5909090909090908,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.2,
+          "true_expected_roi_at_threshold": 0.4583333333333335,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.35,
+          "true_expected_roi_at_threshold": 0.2962962962962963,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.5,
+          "true_expected_roi_at_threshold": 0.16666666666666674,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.75,
+          "true_expected_roi_at_threshold": 0,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 2,
+          "true_expected_roi_at_threshold": -0.125,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 2.5,
+          "true_expected_roi_at_threshold": -0.30000000000000004,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 3,
+          "true_expected_roi_at_threshold": -0.41666666666666663,
+          "remains_positive": false
+        }
+      ]
+    },
+    {
+      "band": "EXTREME_LONGSHOT",
+      "threshold_ratio": 2.5,
+      "tolerated_probability_overestimate_factor_at_break_even": 2.5,
+      "tolerated_probability_overestimate_percent": 150,
+      "stress": [
+        {
+          "assumed_overestimate_factor": 1,
+          "true_expected_roi_at_threshold": 1.5,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.1,
+          "true_expected_roi_at_threshold": 1.2727272727272725,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.2,
+          "true_expected_roi_at_threshold": 1.0833333333333335,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.35,
+          "true_expected_roi_at_threshold": 0.8518518518518516,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.5,
+          "true_expected_roi_at_threshold": 0.6666666666666667,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 1.75,
+          "true_expected_roi_at_threshold": 0.4285714285714286,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 2,
+          "true_expected_roi_at_threshold": 0.25,
+          "remains_positive": true
+        },
+        {
+          "assumed_overestimate_factor": 2.5,
+          "true_expected_roi_at_threshold": 0,
+          "remains_positive": false
+        },
+        {
+          "assumed_overestimate_factor": 3,
+          "true_expected_roi_at_threshold": -0.16666666666666663,
+          "remains_positive": false
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "CORE is intentionally fragile and should be treated as the low-odds lane: at the minimum threshold it only tolerates about 10% probability overestimation before edge disappears.",
+    "MID_HOLE at threshold tolerates about 35% overestimation.",
+    "LONGSHOT at threshold tolerates about 75% overestimation.",
+    "EXTREME_LONGSHOT at threshold tolerates a 2.5x probability overestimate before break-even.",
+    "This does not prove calibration. It proves that the proposed thresholds become more conservative as odds increase.",
+    "A candidate barely over a threshold has little extra safety beyond the stated factor; stronger observed probability ratio gives proportionally more cushion."
+  ],
+  "governance": {
+    "outcome_data_used": false,
+    "live_odds_used": false,
+    "prediction_data_used": false,
+    "payout_data_used": false,
+    "runtime": false,
+    "real_money_execution": false
+  },
+  "owner_action_required_now": false
+}
