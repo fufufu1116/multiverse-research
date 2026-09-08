@@ -104,10 +104,21 @@ def validate() -> dict:
             marker,
         )
 
+    network_surface_paths = [
+        path
+        for path in REQUIRED
+        if (
+            path.suffix == ".py"
+            and path.is_file()
+            and path.name not in {
+                "validator.py",
+                "test_phase_a.py",
+            }
+        )
+    ]
     python_text = "\n".join(
         path.read_text().lower()
-        for path in REQUIRED
-        if path.suffix == ".py" and path.is_file()
+        for path in network_surface_paths
     )
 
     for marker in FORBIDDEN_NETWORK_EXECUTION_MARKERS:
