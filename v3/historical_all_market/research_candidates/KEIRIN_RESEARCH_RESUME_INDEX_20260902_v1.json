@@ -59,16 +59,16 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "Live prospective test is now active. Seibuen 2026-09-08 R6-R11 (6 races / 42 riders, 400m) were frozen at 13:44 JST before the first included 18:04 race. All 42 use style fallback in this batch; no exact 30-rider delta appears. S0 and challenger have identical top1 in all six races. Do not rewrite predictions or tune the model. After all six races finish, join only result labels needed for winner hit, actual-winner probability/rank, log loss and Brier; ignore odds/payouts. Formal support remains 1 rider / 2 rows independently."
+      "rule": "Current v86: live Seibuen R6-R11 accuracy predictions remain frozen and untouched. Separate buying-strategy lane used only burned DEV2000 A+B (1500 races), never C/HOLDOUT, to compare markets/point counts/stakes. Main finding: more points raise hit rate but usually worsen ROI; high-hit wide can still steadily lose; raw longshot EV is unstable; stake sizing cannot rescue negative edge. Frozen shadow candidates are NO_BET, 3renhuku top3 1pt conf40, development-discovered 3renhuku 1pt conf40+EV>=10%+odds<=20, and wide axis1 3pt conf40 negative-edge control. Flat ¥100 shadow only; no Kelly/real-money execution/profit claim."
     },
     {
       "step": 10,
       "action": "CONTINUE_WITH_FRESH_BINDING",
-      "rule": "Fresh-read after recovery. If branch/main/PR177 changed, rebind before writes. Never collapse DEVELOPMENT 30/60 into FORMAL 1/2; they are deliberately separate authorities."
+      "rule": "Fresh-read before writes. Never use current Segment C or ECON_HOLDOUT1000 to choose/rescue betting rules. Keep betting economics separate from tonight Seibuen prediction-accuracy evaluation and from formal 1/2 support lane."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v85.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v84.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v86.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v85.json",
   "active_lane_pointers": {
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
     "ITO0907_FAIL_CLOSED_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
@@ -103,7 +103,11 @@
     "PRE_ONLY_RIDER_OR_STYLE_MODEL": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
     "PRE_ONLY_GENERALIZED_23R_COVERAGE": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_GENERALIZED_COVERAGE_DRY_RUN_23R_183ROWS_20260908_v1.json",
     "PRE_ONLY_RIDER_OR_STYLE_PREDICTOR": "tools/keirin_pre_only_rider_or_style_predictor_v2.py",
-    "PROSPECTIVE_SEIBUEN_20260908_R6_R11": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_PREDICTION_SEIBUEN_20260908_R6_R11_v1.json"
+    "PROSPECTIVE_SEIBUEN_20260908_R6_R11": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_PREDICTION_SEIBUEN_20260908_R6_R11_v1.json",
+    "BURNED_AB_BUY_STRATEGY_SIMULATION": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_BUY_STRATEGY_SIMULATION_20260908_v1.json",
+    "SHADOW_BUY_CANDIDATE_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_SHADOW_BUY_CANDIDATE_FREEZE_20260908_v1.json",
+    "ALL_MARKET_PROJECTOR": "tools/keirin_pre_only_all_market_projector_v1.py",
+    "BURNED_AB_BUY_STRATEGY_SIMULATOR": "tools/keirin_burned_ab_buy_strategy_simulator_v1.py"
   },
   "common_governance_policy": {
     "migration_lock": "#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
