@@ -1,0 +1,141 @@
+{
+  "record": "KEIRIN_POST_FIREWALL_0907_TO_0913_ACCELERATED_DAY1_SCAN_AUDIT_20260908_v1",
+  "status": "ACCELERATED_PRE_ONLY_SCAN_THROUGH_20260913_NO_VALID_EARLY_CROSS_CIRCUMFERENCE_CONVERSION_FOUND",
+  "observed_jst": "2026-09-08",
+  "scope": "RESEARCH_CANDIDATE_DISCOVERY_ONLY_NO_RESULT_NO_FORMAL_SUPPORT_INCREMENT",
+  "fresh_binding": {
+    "research_head_before_write": "a2284a24b83ad40d8e2d5708916c8422e838773b",
+    "canonical_main_observed": "ed9be13f8d1c5d6fcc7ab07761c0dfdc4255df98",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "governance": "#93 T2.5 single Control role active; no competing PR177 rebind from Keirin lane",
+    "runtime": "OFF"
+  },
+  "deterministic_scan_rule": {
+    "historical_population": "actual 2026-09-07 Day1 riders from the frozen 333/333.33m and 400m meetings",
+    "counterpart_window": "future Day1-start meetings 2026-09-10 through 2026-09-13 in the opposite frozen circumference bucket",
+    "candidate_screen": "exact rider-name plus period/official identity validation; no fuzzy matching",
+    "authority_upgrade": "event-level assen overlap is candidate-only; historical actual Day1 membership must be proven before any candidate can become eligible",
+    "forbidden": [
+      "finish/result-driven selection",
+      "payout",
+      "odds",
+      "human forecast/comment",
+      "post-cutoff PRE repair",
+      "fuzzy identity"
+    ]
+  },
+  "checks": [
+    {
+      "date": "2026-09-10",
+      "venue": "奈良",
+      "circumference_bucket": "333_OR_333_33M",
+      "historical_side": "2026-09-07 400m frozen blocks",
+      "result": "ZERO_VALID_OVERLAP",
+      "basis": "prior exhaustive whole-assen screen",
+      "source_artifact": "KEIRIN_POST_FIREWALL_0907_TO_0914_0915_OVERLAP_SCREEN_20260907_v1.json"
+    },
+    {
+      "date": "2026-09-10",
+      "venue": "富山",
+      "circumference_bucket": "333_OR_333_33M",
+      "historical_side": "2026-09-07 大垣/いわき平/弥彦 400m",
+      "result": "ZERO_VALID_OVERLAP_AFTER_FULL_ROSTER_RECHECK",
+      "public_source": "https://www.winticket.jp/keirin/toyama/racecard/2026091046/cyclists",
+      "note": "A prior provisional 山田哲也 hit was rejected: the Toyama roster contains 山田隼司, not 山田哲也."
+    },
+    {
+      "date": "2026-09-11",
+      "venue": "豊橋",
+      "circumference_bucket": "400M",
+      "historical_side": "2026-09-07 伊東 333m",
+      "result": "ZERO_VALID_OVERLAP",
+      "basis": "prior exhaustive whole-assen screen",
+      "source_artifact": "KEIRIN_POST_FIREWALL_0907_TO_0914_0915_OVERLAP_SCREEN_20260907_v1.json"
+    },
+    {
+      "date": "2026-09-12",
+      "venue": "松山",
+      "circumference_bucket": "400M",
+      "historical_side": "2026-09-07 伊東 333m actual Day1 A1/A2",
+      "result": "ZERO_VALID_OVERLAP_CLASS_INCOMPATIBLE",
+      "note": "Observed event structure is A3/Challenge, incompatible with the frozen Ito A1/A2 historical population."
+    },
+    {
+      "date": "2026-09-12",
+      "venue": "佐世保",
+      "circumference_bucket": "400M",
+      "historical_side": "2026-09-07 伊東 333m",
+      "result": "ZERO_EXACT_A1_A2_ASSEN_OVERLAP",
+      "public_source": "https://keirin.kdreams.jp/sasebo/assen/8520260912/"
+    },
+    {
+      "date": "2026-09-13",
+      "venue": "岐阜",
+      "circumference_bucket": "400M",
+      "historical_side": "2026-09-07 伊東 333m",
+      "result": "ZERO_VALID_OVERLAP_AFTER_DAY1_MEMBERSHIP_GUARD",
+      "rejected_event_roster_hit": {
+        "rider": "森川剛",
+        "registration": "014021",
+        "period": 89,
+        "reason": "2026-09-08 Ito source explicitly marks him 補充出走; event-level assen presence is not 2026-09-07 actual Day1 membership"
+      },
+      "public_source": "https://www.winticket.jp/keirin/gifu/racecard/2026091343/cyclists"
+    },
+    {
+      "date": "2026-09-13",
+      "venue": "大垣",
+      "circumference_bucket": "400M",
+      "historical_side": "2026-09-07 伊東 333m actual Day1 A1/A2",
+      "result": "NO_ELIGIBLE_A1_A2_COUNTERPART_IDENTIFIED_CLASS_STRUCTURE_INCOMPATIBLE",
+      "public_source": "https://keirin.kdreams.jp/ogaki/racenews/4420260913/",
+      "note": "Current series preview is centered on 129期/A級チャレンジ riders and its reference races are A級チ; no eligible A1/A2 counterpart component was identified for the frozen Ito A1/A2 population."
+    },
+    {
+      "date": "2026-09-13",
+      "venue": "大宮",
+      "circumference_bucket": "EXCLUDED_500M",
+      "result": "OUT_OF_FROZEN_CIRCUMFERENCE_CONTRAST"
+    }
+  ],
+  "correction_ledger": [
+    {
+      "provisional_hit": "山田哲也 / 014749",
+      "correction": "RETRACTED_BEFORE_ANY_RECEIPT_OR_SUPPORT_INCREMENT",
+      "reason": "Toyama 2026-09-10 roster row was 山田隼司, a different rider."
+    },
+    {
+      "provisional_hit": "森川剛 / 014021",
+      "correction": "REJECTED_BEFORE_ANY_RECEIPT_OR_SUPPORT_INCREMENT",
+      "reason": "Event-level Ito roster presence was insufficient; 2026-09-08 source explicitly showed 補充出走, so 2026-09-07 actual Day1 membership failed."
+    }
+  ],
+  "hardened_candidate_rule": [
+    "event-level roster overlap",
+    "exact official identity",
+    "historical ACTUAL Day1 race membership",
+    "future final Day1 PRE membership before cutoff",
+    "contemporaneous official same-race assignment",
+    "provenance/receipt guard PASS"
+  ],
+  "formal_support": {
+    "before": {
+      "riders": 1,
+      "rows": 2
+    },
+    "increment": 0,
+    "after": {
+      "riders": 1,
+      "rows": 2
+    }
+  },
+  "conclusion": "No valid earlier formal-support conversion was identified in the accelerated 2026-09-10 through 2026-09-13 scan. The existing 2026-09-14 Ito/Aomori and 2026-09-15 Hofu 35-candidate portfolio remains the earliest known viable bulk conversion front.",
+  "result_access_authorized": false,
+  "result_values_used": false,
+  "payout_used": false,
+  "odds_used": false,
+  "prediction_used": false,
+  "main_mutation": false,
+  "runtime_activation": false,
+  "owner_action_required_now": false
+}
