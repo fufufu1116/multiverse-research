@@ -1,0 +1,72 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260909_v28",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_DELTA_V20_NEXTGEN5000_EXPANSION_ACTIVE",
+  "date_jst": "2026-09-09",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "branch_head_before_write": "73a8d5d6d23f3eb569bcdd4c71eae89fc030d4cc",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v20.json",
+  "critical_pointers": {
+    "practical_v2_profile": "v3/historical_all_market/research_candidates/KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v2.json",
+    "today_pre_decision": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v2.json",
+    "today_owner_card": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_PRACTICAL_CARD_20260909_v2.md",
+    "dev2000_recovery": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_DRIVE_RECOVERY_AND_AB_REPLAY_20260909_v1.json",
+    "dev2000_mass_grid": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_MASS_3RENHUKU_GRID_88200_20260909_v1.json",
+    "q2_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_Q2_INSTABILITY_DIAGNOSTIC_20260909_v1.json",
+    "model_market_stress": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_MODEL_MARKET_MIXTURE_STRESS_20260909_v1.json",
+    "conditional_shadow_freeze": "v3/historical_all_market/research_candidates/KEIRIN_CONDITIONAL_SHADOW_CANDIDATE_FREEZE_20260909_v1.json",
+    "nextgen5000_recovery": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_UNIVERSE_RECOVERY_20260909_v1.json",
+    "nextgen5000_eval_freeze_2001_2500": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_BATCH2001_2500_PREOUTCOME_EVAL_FREEZE_20260909_v1.json",
+    "nextgen5000_pre_receipt_2001_2500": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_2001_2500_RECOVERY_RECEIPT_20260909_v1.json",
+    "nextgen5000_pre_tool": "tools/keirin_nextgen5000_pre_bulk_recovery_v1.py",
+    "historical_virtual_future_protocol": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_VIRTUAL_FUTURE_REPLAY_PROTOCOL_20260909_v1.json",
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "formal_support_finalizer": "tools/keirin_35_formal_support_finalizer_v7.py"
+  },
+  "current_summary": {
+    "practical_engineering": "100% complete; Runtime OFF; owner-assisted only",
+    "today_answer_check": "UNCHANGED_AND_FROZEN",
+    "simulation_exploration_percent": 88,
+    "formal_scientific_progress_percent": 60,
+    "formal_support": "1 rider / 2 PRE rows",
+    "profitability_proven": false,
+    "dev2000": "A=1000 and B=500 recovered/replayable; C=500 remains unscored",
+    "mass_search": "88,200 3renhuku rules; zero rules positive across all six 250-race blocks; no victory-equation claim",
+    "primary_development_market": "3renhuku",
+    "three_rentan": "third-spread raises hits but remains economically inferior in tested A+B family",
+    "girls": "winner ranking substantially stronger, no stable simple profit rule found",
+    "score_gap": "large head gap improves winner prediction while exact top3 companion set can scatter",
+    "nextgen5000": "locked 5000 result-independent universe exactly reproduced; PRE expansion active",
+    "batch_2001_2500": "493/500 PRE races recovered, 3528 PRE rows, seven fail-closed rejects, no outcomes used",
+    "batch_2501_3000": "workflow run 34288111136 active at v28 checkpoint",
+    "protected_holdouts": "DEV2000 C and ECON_HOLDOUT1000 sealed"
+  },
+  "fixed_owner_policy": {
+    "additional_historical_data": "AUTHORIZED_WHEN_NEEDED",
+    "collection_order": "PRE-FIRST",
+    "outcome_handling": "ISOLATE_RESULT_AND_PAYOUT_UNTIL_PREDICTION_AND_RULE_FREEZE",
+    "missing_pre": "DO_NOT_RECONSTRUCT_FROM_RESULT_OR_PAYOUT",
+    "owner_operation_required_for_collection": false,
+    "runtime": "OFF"
+  },
+  "next_without_owner": [
+    "Fresh-read workflow run 34288111136; if successful, record 2501..3000 PRE recovery receipt and continue with 3001..3500 as useful without accessing outcomes.",
+    "For each expansion batch, freeze evaluation/prediction rules before any outcome or payout join.",
+    "Apply the pre-frozen 2001..2500 evaluation only after PRE-side prediction/selection is materialized; do not rescue-tune on its outcomes.",
+    "Expand historical mother sample toward the exact locked 5000 where PRE provenance passes the strict parser; reject ambiguous rows fail-closed.",
+    "Use new data to test race-stage, Girls, score-gap and ticket-structure hypotheses; objective solo/line fields require separate provenance.",
+    "Continue formal prospective 30/60 support acquisition independently; do not relabel exploratory historical rows as formal support."
+  ],
+  "prohibitions": [
+    "NO_DEV2000_C_RESCUE_TUNING_OR_SCORING",
+    "NO_ECON_HOLDOUT1000_OPEN",
+    "NO_RESULT_TO_PRE_RECONSTRUCTION",
+    "NO_POSTHOC_RESCUE_ON_NEW500",
+    "NO_AUTOMATIC_BETTING",
+    "NO_RUNTIME_ENABLE",
+    "NO_CANONICAL_MAIN_MUTATION_FROM_RESEARCH_LANE",
+    "NO_PROFITABILITY_CLAIM_BEFORE_PROSPECTIVE_OR_UNTOUCHED_REPLICATION"
+  ],
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later successor, Resume v28 or later successor, its delta, NEXTGEN5000 batch workflow states, and active Keirin automations before treating any checkpoint as current."
+}
