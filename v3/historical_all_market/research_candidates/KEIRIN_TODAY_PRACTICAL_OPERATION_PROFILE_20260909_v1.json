@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v1",
+  "status": "OWNER_ASSISTED_PRACTICAL_V1_READY_TODAY_PROFITABILITY_NOT_YET_PROVEN",
+  "date_jst": "2026-09-09",
+  "purpose": "Finish a usable same-day decision-support path without waiting for the later formal 30/60 scientific gate. Keep formal science separate and unchanged.",
+  "functional_readiness": {
+    "pre_racecard_to_probability": true,
+    "probability_to_ticket": true,
+    "ticket_to_minimum_odds": true,
+    "no_bet_first_class": true,
+    "owner_manual_odds_check": true,
+    "automated_betting": false,
+    "runtime": false
+  },
+  "fixed_operating_rule": {
+    "model": "S0 beta 0.22260435254784533 plus frozen PRE-only challenger",
+    "confidence_gate": "S0/challenger same top1 and conservative top1 >=0.40",
+    "practical_market": "3renhuku top3 one point",
+    "value_gate": "conservative ticket probability * current odds - 1 >=0.10",
+    "odds_ceiling": 20,
+    "stake_yen": 100,
+    "maximum_tickets_per_race": 1,
+    "staking_escalation": false,
+    "kelly": false,
+    "martingale": false,
+    "longshot_over_20x": "research/shadow only; not practical V1"
+  },
+  "evidence_summary": {
+    "burned_ab": {
+      "races": 1500,
+      "protected_dev_c_used": false,
+      "protected_econ_holdout_used": false,
+      "confidence_only_3renhuku_ab_roi": -0.02306,
+      "ev10_cap20_ab_roi": 0.368539,
+      "warning": "Development-selected A+B evidence; not a validated profit claim."
+    },
+    "prospective_20260908_keiokaku": {
+      "frozen_ev_buy_count": 1,
+      "frozen_ev_hits": 0,
+      "stake_yen": 100,
+      "return_yen": 0,
+      "roi": -1,
+      "base_confidence_ticket_count": 3,
+      "base_confidence_hits": 1,
+      "base_confidence_stake_yen": 300,
+      "base_confidence_return_yen": 410,
+      "base_confidence_roi": 0.3666666667,
+      "note": "R4 base ticket hit despite EV rejection; R1 and R8 base tickets missed. Tiny sample; thresholds are not changed from this."
+    },
+    "prospective_20260908_seibuen": {
+      "races": 6,
+      "frozen_bets": 0,
+      "top1_hits_s0": 0,
+      "top1_hits_challenger": 0,
+      "actual_winner_in_model_top3": 5,
+      "exact_top3_3renhuku_hits": 1,
+      "s0_avg_winner_logloss": 1.9011913622,
+      "challenger_avg_winner_logloss": 1.8918521634,
+      "uniform_7car_logloss": 1.9459101491,
+      "s0_avg_brier": 0.1243056145,
+      "challenger_avg_brier": 0.1240468022,
+      "uniform_7car_brier": 0.1224489796,
+      "interpretation": "Mixed forward evidence. Abstention worked as designed; accuracy evidence is not a clean pass."
+    }
+  },
+  "today_forward_test": {
+    "artifact": "KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v1.json",
+    "races": 9,
+    "confidence_pass_count": 1,
+    "sole_candidate": "Keiokaku R8 3renhuku 1=2=3",
+    "minimum_odds": 3.3,
+    "maximum_odds": 20,
+    "stake_yen": 100,
+    "other_races": "NO_BET"
+  },
+  "completion_definition": {
+    "practical_owner_assisted_decision_support": "READY",
+    "long_run_profitability_proven": "NO",
+    "formal_30_unique_riders_60_pre_rows": "UNCHANGED_NOT_RELABELED",
+    "protected_holdouts_opened": "NO"
+  },
+  "next_same_day_proof": "After Sep 9 results are complete, settle the exact frozen 9-race decision artifact without changing thresholds or tickets.",
+  "formal_support_effect": 0,
+  "main_mutation": false,
+  "runtime": false
+}
