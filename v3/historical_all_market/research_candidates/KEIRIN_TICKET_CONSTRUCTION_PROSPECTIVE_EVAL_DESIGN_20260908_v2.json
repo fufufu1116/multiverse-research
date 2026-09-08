@@ -1,0 +1,56 @@
+{
+  "record": "KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v2",
+  "status": "IMPLEMENTED_PRE_ONLY_TICKET_PORTFOLIO_LAYER_SELFTEST_SPEC_READY",
+  "supersedes": "v3/historical_all_market/research_candidates/KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v1.json",
+  "date_jst": "2026-09-08",
+  "purpose": "Compare buying structures, number of combinations, and fixed-race-budget allocation without requiring live odds during model research.",
+  "implementation": {
+    "builder": "tools/keirin_ticket_portfolio_builder_v1.py",
+    "selftest": "tools/keirin_ticket_portfolio_builder_selftest_v1.py",
+    "existing_counter": "tools/keirin_ticket_structure_counter_v1.py",
+    "manual_purchase_gate": "tools/keirin_manual_odds_purchase_gate_v1.py"
+  },
+  "supported_structures": [
+    "2車単 単点",
+    "2車複 単点",
+    "3連単 上位N点",
+    "3連単 N車BOX",
+    "3連単 1着固定・2着複数・3着全"
+  ],
+  "model_side_metrics": [
+    "model hit probability of the ticket set",
+    "combination count",
+    "coverage probability per combination",
+    "conservative equal-stake minimum decimal odds for requested ROI margin"
+  ],
+  "capital_allocation": {
+    "primary": "FIXED_TOTAL_RACE_BUDGET_EQUAL",
+    "secondary": "FIXED_TOTAL_RACE_BUDGET_MODEL_PROPORTIONAL",
+    "unit_yen": 100,
+    "reason": "Compare structures without rewarding a structure merely for spending more per race."
+  },
+  "minimum_odds_rules": {
+    "single_ticket": "minimum odds = (1 + required ROI) / model probability",
+    "multi_ticket_equal_stake": "uniform minimum odds = number of tickets * (1 + required ROI) / total model hit probability",
+    "allocated_budget": "uniform minimum odds = total stake * (1 + required ROI) / sum(model probability_i * stake_i)",
+    "interpretation": "A conservative screening threshold. Live odds remain an owner-side purchase-time check; if individual selected-ticket odds vary below the uniform threshold, recalculate rather than blindly buy."
+  },
+  "owner_output_target": [
+    "買い目",
+    "点数",
+    "1レース総予算",
+    "各点の100円単位配分",
+    "モデル的中確率",
+    "最低購入オッズ",
+    "現在オッズが閾値以上なら購入候補、未満なら見送り"
+  ],
+  "boundaries": {
+    "live_odds_model_input": false,
+    "odds_scraping_required": false,
+    "result_access": false,
+    "payout_access": false,
+    "automated_bet_execution": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
