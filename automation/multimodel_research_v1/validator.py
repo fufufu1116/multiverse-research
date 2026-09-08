@@ -610,10 +610,10 @@ def validate() -> dict:
         "catalog_entry_sha256",
         "adapter_source_sha256",
         "outbound_payload_sha256",
-        "READY_FOR_SEPARATE_PROVIDER_AUTHORITY",
-        "provider_call_authorized",
-        "credential_authorized",
-        "spend_authorized",
+        "build_live_provider_readiness_report",
+        "validate_live_provider_readiness_report",
+        "live_execution_prep_sha256",
+        "transport_binding_sha256",
     ):
         record(
             f"pilot_matrix:{token}",
