@@ -1,0 +1,31 @@
+{
+  "record": "KEIRIN_POST_EVENT_RECONSTRUCTION_GUARD_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "IMPLEMENTED_UNAMBIGUOUS_NEXT_DAY_OR_LATER_PRE_RECONSTRUCTION_BLOCK",
+  "implementation": {
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v7.py",
+    "selftest_spec": "tools/keirin_35_formal_support_finalizer_selftest_v7.py",
+    "predecessor": "tools/keirin_35_formal_support_finalizer_v6.py"
+  },
+  "policy_binding": {
+    "owner_policy_exact_cutoff_timestamp_blocking": false,
+    "hard_boundary_post_cutoff_reconstruction": false,
+    "implemented_rule": "captured timestamp converted to JST; JST calendar date later than bound race_date fails that candidate row closed",
+    "same_day_capture_allowed": true,
+    "exact_pit_cutoff_timestamp_required": false,
+    "no_new_exact_cutoff_gate": true
+  },
+  "residual_boundary": "Same-day exact cutoff cannot be inferred when owner policy does not require exact cutoff. Acquisition must therefore remain prospective and must not reconstruct PRE from RESULT/PAYOUT/ODDS/PREDICTION/comment surfaces.",
+  "selftest_spec_cases": 10,
+  "direct_selftest_execution": false,
+  "reason_direct_execution_not_claimed": "Current chat-local container cannot resolve raw.githubusercontent.com and Research role does not authorize workflow dispatch/rerun.",
+  "shared_ci_rerun": false,
+  "formal_support_increment_now": 0,
+  "formal_support": "1 rider / 2 PRE rows",
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
