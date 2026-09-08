@@ -835,6 +835,11 @@ def validate() -> dict:
         "DUAL_FANOUT_MISSING_ASSIGNMENT_COUNT",
         "DUAL_FANOUT_MISSING_OBSERVED_FLAG",
         "DUAL_FANOUT_MISSING_COMPLETED_FLAG",
+        "DUAL_FANOUT_FAILURE_OBSERVED_COUNT",
+        "DUAL_FANOUT_FAILURE_COMPLETED_COUNT",
+        "DUAL_FANOUT_FAILURE_NONCOMPLETED_COUNT",
+        "DUAL_FANOUT_FAILURE_REFUSED_COUNT",
+        "DUAL_FANOUT_FAILURE_COMPLETED_FLAG",
         "DUAL_FANOUT_FORBIDDEN_TRUE",
         "DUAL_FANOUT_RUNTIME_NOT_OFF",
         "dual_provider_fanout_rehearsal_sha256",
@@ -857,6 +862,8 @@ def validate() -> dict:
         "FEDERATION_PROMPT_SHA256_MISMATCH",
         "FEDERATION_FULL_BATCH_NOT_COMPLETE",
         "FEDERATION_MISSING_PROVIDER_ACCEPTED",
+        "FEDERATION_FAILURE_NOT_OBSERVED",
+        "FEDERATION_FAILED_PROVIDER_ACCEPTED",
         "FEDERATION_DISAGREEMENT_NOT_DETECTED",
         "FEDERATION_AGREEMENT_MISLABELED",
         "MECHANICAL_FALSIFICATION_TASK",
@@ -892,8 +899,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 436,
-        f"{test_count} != 436",
+        test_count == 448,
+        f"{test_count} != 448",
     )
 
     return {

@@ -162,6 +162,21 @@ Cross-provider tests require Gemini and Claude to receive the same exact canonic
 
 This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
 
+Dual-provider terminal-failure accounting
+
+The Fanout rehearsal now distinguishes a missing provider from a provider that returned a terminal non-completed result.
+
+A synthetic REFUSED case proves:
+- 2 assignments planned;
+- 2 terminal results observed;
+- 1 completed;
+- 1 non-completed / REFUSED;
+- 0 missing;
+- all_planned_observed = true;
+- all_planned_completed = false.
+
+The federation-level guard requires this observed-but-failed provider case to remain incomplete. Receiving a terminal provider result therefore cannot be confused with successful research completion.
+
 Dual-provider fanout completeness rehearsal
 
 `MULTIVERSE_DUAL_PROVIDER_FANOUT_REHEARSAL_v1` places the dated Gemini and Claude assignments into one exact two-assignment Fanout Plan v1 and exercises batch completeness with RESULT v2 fixtures.

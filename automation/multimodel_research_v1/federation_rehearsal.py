@@ -62,6 +62,7 @@ FEDERATION_KEYS = {
     "dual_provider_research_sha256",
     "full_batch_complete",
     "missing_provider_fails_complete",
+    "provider_failure_fails_complete",
     "disagreement_detected",
     "agreement_not_mislabeled_divergent",
     "mechanical_falsification_route_preserved",
@@ -278,6 +279,14 @@ def build_dual_provider_federation_rehearsal(
         "FEDERATION_MISSING_PROVIDER_ACCEPTED",
     )
     require(
+        fanout["failure_demo_all_planned_observed"] is True,
+        "FEDERATION_FAILURE_NOT_OBSERVED",
+    )
+    require(
+        fanout["failure_demo_all_planned_completed"] is False,
+        "FEDERATION_FAILED_PROVIDER_ACCEPTED",
+    )
+    require(
         research["cross_provider_divergence"] is True,
         "FEDERATION_DISAGREEMENT_NOT_DETECTED",
     )
@@ -325,6 +334,7 @@ def build_dual_provider_federation_rehearsal(
             ),
         "full_batch_complete": True,
         "missing_provider_fails_complete": True,
+        "provider_failure_fails_complete": True,
         "disagreement_detected": True,
         "agreement_not_mislabeled_divergent": True,
         "mechanical_falsification_route_preserved": True,
@@ -404,6 +414,9 @@ def build_dual_provider_federation_rehearsal_unchecked(
             fanout["full_all_planned_completed"],
         "missing_provider_fails_complete":
             not fanout["missing_demo_all_planned_completed"],
+        "provider_failure_fails_complete":
+            fanout["failure_demo_all_planned_observed"]
+            and not fanout["failure_demo_all_planned_completed"],
         "disagreement_detected":
             research["cross_provider_divergence"],
         "agreement_not_mislabeled_divergent":

@@ -47,6 +47,14 @@ DUAL_FANOUT_KEYS = {
     "missing_demo_missing_assignment_count",
     "missing_demo_all_planned_observed",
     "missing_demo_all_planned_completed",
+    "failure_demo_batch_sha256",
+    "failure_demo_observed_terminal_result_count",
+    "failure_demo_completed_assignment_count",
+    "failure_demo_noncompleted_assignment_count",
+    "failure_demo_missing_assignment_count",
+    "failure_demo_refused_count",
+    "failure_demo_all_planned_observed",
+    "failure_demo_all_planned_completed",
     "synthetic_only",
     "provider_call_authorized",
     "credential_authorized",
@@ -83,6 +91,7 @@ def _result_v2(
     assignment: dict[str, Any],
     *,
     submission_id: str,
+    status: str = "COMPLETED",
 ) -> dict[str, Any]:
     return {
         "schema": "MULTIVERSE_RESEARCH_RESULT_v2",
@@ -96,7 +105,7 @@ def _result_v2(
             "model": assignment["target_model"],
             "role": assignment["requested_role"],
         },
-        "status": "COMPLETED",
+        "status": status,
         "findings": [
             {
                 "finding_id": f"{submission_id}-finding-001",
@@ -192,6 +201,18 @@ def _build_inputs(
         plan,
         [gemini_result],
     )
+    claude_refused_result = _result_v2(
+        task,
+        claude["assignment"],
+        submission_id="dual-fanout-claude-refused-001",
+        status="REFUSED",
+    )
+    failure_summary = summarize_fanout_results(
+        task,
+        assignments,
+        plan,
+        [gemini_result, claude_refused_result],
+    )
 
     require(
         full_summary["planned_assignment_count"] == 2,
@@ -238,6 +259,34 @@ def _build_inputs(
         missing_summary["all_planned_completed"] is False,
         "DUAL_FANOUT_MISSING_COMPLETED_FLAG",
     )
+    require(
+        failure_summary["observed_terminal_result_count"] == 2,
+        "DUAL_FANOUT_FAILURE_OBSERVED_COUNT",
+    )
+    require(
+        failure_summary["completed_assignment_count"] == 1,
+        "DUAL_FANOUT_FAILURE_COMPLETED_COUNT",
+    )
+    require(
+        failure_summary["noncompleted_assignment_count"] == 1,
+        "DUAL_FANOUT_FAILURE_NONCOMPLETED_COUNT",
+    )
+    require(
+        failure_summary["missing_assignment_sha256s"] == [],
+        "DUAL_FANOUT_FAILURE_MISSING",
+    )
+    require(
+        failure_summary["status_counts"]["REFUSED"] == 1,
+        "DUAL_FANOUT_FAILURE_REFUSED_COUNT",
+    )
+    require(
+        failure_summary["all_planned_observed"] is True,
+        "DUAL_FANOUT_FAILURE_OBSERVED_FLAG",
+    )
+    require(
+        failure_summary["all_planned_completed"] is False,
+        "DUAL_FANOUT_FAILURE_COMPLETED_FLAG",
+    )
     return {
         "gemini": gemini,
         "claude": claude,
@@ -245,6 +294,7 @@ def _build_inputs(
         "plan": plan,
         "full_summary": full_summary,
         "missing_summary": missing_summary,
+        "failure_summary": failure_summary,
     }
 
 
@@ -263,6 +313,7 @@ def build_dual_provider_fanout_rehearsal(
     plan = values["plan"]
     full = values["full_summary"]
     missing = values["missing_summary"]
+    failure = values["failure_summary"]
     record = {
         "schema": DUAL_FANOUT_SCHEMA,
         "rehearsal_id": "dual-provider-fanout-rehearsal-001",
@@ -320,6 +371,36 @@ def build_dual_provider_fanout_rehearsal(
             missing["all_planned_observed"],
         "missing_demo_all_planned_completed":
             missing["all_planned_completed"],
+        "failure_demo_batch_sha256": failure["batch_sha256"],
+        "failure_demo_observed_terminal_result_count":
+            failure["observed_terminal_result_count"],
+        "failure_demo_completed_assignment_count":
+            failure["completed_assignment_count"],
+        "failure_demo_noncompleted_assignment_count":
+            failure["noncompleted_assignment_count"],
+        "failure_demo_missing_assignment_count":
+            len(failure["missing_assignment_sha256s"]),
+        "failure_demo_refused_count":
+            failure["status_counts"]["REFUSED"],
+        "failure_demo_all_planned_observed":
+            failure["all_planned_observed"],
+        "failure_demo_all_planned_completed":
+            failure["all_planned_completed"],
+        "failure_demo_batch_sha256": failure["batch_sha256"],
+        "failure_demo_observed_terminal_result_count":
+            failure["observed_terminal_result_count"],
+        "failure_demo_completed_assignment_count":
+            failure["completed_assignment_count"],
+        "failure_demo_noncompleted_assignment_count":
+            failure["noncompleted_assignment_count"],
+        "failure_demo_missing_assignment_count":
+            len(failure["missing_assignment_sha256s"]),
+        "failure_demo_refused_count":
+            failure["status_counts"]["REFUSED"],
+        "failure_demo_all_planned_observed":
+            failure["all_planned_observed"],
+        "failure_demo_all_planned_completed":
+            failure["all_planned_completed"],
         "synthetic_only": True,
         "provider_call_authorized": False,
         "credential_authorized": False,
@@ -346,6 +427,7 @@ def build_dual_provider_fanout_rehearsal_unchecked(
     claude = values["claude"]
     full = values["full_summary"]
     missing = values["missing_summary"]
+    failure = values["failure_summary"]
     return {
         "schema": DUAL_FANOUT_SCHEMA,
         "rehearsal_id": "dual-provider-fanout-rehearsal-001",

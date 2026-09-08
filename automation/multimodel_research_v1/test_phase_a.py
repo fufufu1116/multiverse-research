@@ -13126,5 +13126,82 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(value["runtime"], "OFF")
 
 
+    def test_437_dual_fanout_failure_demo_observes_both_results(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["failure_demo_observed_terminal_result_count"],
+            2,
+        )
+        self.assertIs(value["failure_demo_all_planned_observed"], True)
+
+    def test_438_dual_fanout_failure_demo_completes_only_one(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["failure_demo_completed_assignment_count"],
+            1,
+        )
+        self.assertEqual(
+            value["failure_demo_noncompleted_assignment_count"],
+            1,
+        )
+
+    def test_439_dual_fanout_failure_demo_has_no_missing_result(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["failure_demo_missing_assignment_count"],
+            0,
+        )
+
+    def test_440_dual_fanout_failure_demo_records_refusal(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["failure_demo_refused_count"], 1)
+
+    def test_441_dual_fanout_failure_demo_never_claims_complete(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertIs(
+            value["failure_demo_all_planned_completed"],
+            False,
+        )
+
+    def test_442_dual_fanout_failure_batch_digest_is_bound(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(len(value["failure_demo_batch_sha256"]), 64)
+
+    def test_443_dual_fanout_rejects_failure_completion_tamper(self):
+        args = list(self._dual_provider_fanout_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["failure_demo_all_planned_completed"] = True
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_fanout_rehearsal(*args)
+
+    def test_444_dual_fanout_failure_demo_preserves_no_authority(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertIs(value["provider_call_authorized"], False)
+        self.assertIs(value["spend_authorized"], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_445_federation_requires_provider_failure_to_fail_complete(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["provider_failure_fails_complete"], True)
+
+    def test_446_federation_failure_guard_coexists_with_full_success(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["full_batch_complete"], True)
+        self.assertIs(value["provider_failure_fails_complete"], True)
+
+    def test_447_federation_rejects_provider_failure_guard_tamper(self):
+        args = list(self._federation_rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["provider_failure_fails_complete"] = False
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_federation_rehearsal(*args)
+
+    def test_448_federation_failure_guard_preserves_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["live_provider_execution"], False)
+        self.assertIs(value["adoption_authority"], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+
 if __name__ == "__main__":
     unittest.main()
