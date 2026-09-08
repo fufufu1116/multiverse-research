@@ -1,0 +1,85 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_PRE_2001_5000_COMPLETE_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "COMPLETE_2964_OF_3000_PRE_ONLY_RACES_36_FAIL_CLOSED",
+  "locked_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+  "population": {
+    "positions": "2001..5000",
+    "requested_races": 3000,
+    "successful_pre_races": 2964,
+    "rejected_fail_closed": 36,
+    "pre_rows": 20975
+  },
+  "batches": [
+    {
+      "positions": "2001..2500",
+      "run_id": 34286882585,
+      "successful": 493,
+      "rejected": 7,
+      "pre_rows": 3528,
+      "artifact_id": 10079952588
+    },
+    {
+      "positions": "2501..3000",
+      "run_id": 34288111136,
+      "successful": 494,
+      "rejected": 6,
+      "pre_rows": 3497
+    },
+    {
+      "positions": "3001..3500",
+      "run_id": 34288642577,
+      "successful": 495,
+      "rejected": 5,
+      "pre_rows": 3442,
+      "artifact_id": 10080608943
+    },
+    {
+      "positions": "3501..4000",
+      "run_id": 34292544797,
+      "successful": 494,
+      "rejected": 6,
+      "pre_rows": 3479,
+      "artifact_id": 10082001687,
+      "artifact_digest": "sha256:9b0c5f217d1abe1e75e1d5c6d9a015378d516980d1b7e8ca503b5ee7323e5b65"
+    },
+    {
+      "positions": "4001..4500",
+      "run_id": 34292547961,
+      "successful": 500,
+      "rejected": 0,
+      "pre_rows": 3554,
+      "artifact_id": 10082009893,
+      "artifact_digest": "sha256:9e3efce447eea98194de7a392ef7eaf244664cd2f39ea08b32afb1f301c96fae"
+    },
+    {
+      "positions": "4501..5000",
+      "run_id": 34292550169,
+      "successful": 488,
+      "rejected": 12,
+      "pre_rows": 3475,
+      "artifact_id": 10081985539,
+      "artifact_digest": "sha256:6df99cc4d566f8212e2af137561742e3658ee36e8c7071d924de3e509f711bc5"
+    }
+  ],
+  "safeguards": {
+    "raw_mixed_html_persisted": false,
+    "result_fields_emitted": false,
+    "payout_fields_emitted": false,
+    "odds_fields_emitted": false,
+    "forecast_or_comment_fields_emitted": false,
+    "missing_or_ambiguous_pre": "FAIL_CLOSED_NO_RECONSTRUCTION",
+    "formal_support_increment_authorized": false,
+    "model_promotion_authorized": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "interpretation": [
+    "A new result-independent retrospective PRE mother sample outside DEV2000 has been expanded by 2964 usable races.",
+    "The 36 rejected races remain excluded rather than reconstructed from outcome-side pages.",
+    "This expansion materially increases development/replication power but does not alter the formal prospective 30/60 support count.",
+    "Outcome access for these races remains blocked until PRE-only per-race predictions/selections are materialized and frozen."
+  ]
+}
