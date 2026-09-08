@@ -1,0 +1,38 @@
+{
+  "record": "KEIRIN_HFT_PRE_SCORE_COLUMN_SEMANTIC_CORRECTION_20260908_v1",
+  "status": "COMPETITION_SCORE_HEADER_SEMANTIC_BUG_CONFIRMED_FIELD_PROHIBITED_FOR_MODEL_USE",
+  "date_jst": "2026-09-08",
+  "affected_artifact": "KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv",
+  "finding": {
+    "column_name": "competition_score",
+    "observed_values_examples": [
+      3.69,
+      3.77,
+      3.92,
+      3.93
+    ],
+    "interpretation": "Values are gear-ratio-like and are not keirin competition scores. The header/field semantics are wrong for model use.",
+    "consequence": "Never use this CSV column as competition_score in S0 or Rider x Circumference calculations."
+  },
+  "repair_rule": {
+    "historical_receipt_scores_already_in_normal_competition_score_range": "RETAIN",
+    "rows_with_missing_score": "RECOVER_FROM_THE_BOUND_HISTORICAL_PRE_RACECARD_ENTRY_SURFACE_BY_EXACT_DATE_VENUE_RACE_CAR_AND_RIDER",
+    "result_sections_allowed": false,
+    "payout_allowed": false,
+    "odds_allowed": false,
+    "human_forecast_allowed": false,
+    "current_profile_dynamic_backfill_allowed": false
+  },
+  "validation": {
+    "existing_numeric_scores_in_30R_60ROW_receipt_union": 34,
+    "existing_numeric_min": 50.346,
+    "existing_numeric_max": 111.45,
+    "missing_scores_before_recovery": 26,
+    "score_recovery_target": 26
+  },
+  "formal_support_effect": 0,
+  "formal_support_counter_unchanged": "1_RIDER_2_ROWS",
+  "runtime": false,
+  "main_mutation": false,
+  "owner_action_required_now": false
+}
