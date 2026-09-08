@@ -1,0 +1,165 @@
+{
+  "record": "KEIRIN_PRE_ONLY_BATCH_DRY_RUN_TOYAMA_20260903_DAY1_R1_R7_20260908_v1",
+  "status": "PASS_7_RACE_PRE_ONLY_BATCH_EXECUTION_ONE_INTERNAL_RANK_SWAP_NO_TOP1_CHANGE",
+  "date_jst": "2026-09-08",
+  "purpose": "Batch sanity-check the frozen rider x circumference challenger on a fully frozen PRE-only Day1 snapshot without opening target results.",
+  "source": {
+    "artifact": "KEIRIN_TOYAMA_DAY1_PRE_ALLOWLIST_WITNESS_SNAPSHOT_20260903_v1.json",
+    "event": "富山 2026-09-03 Day1 R1-R7",
+    "circumference_bucket": "333_OR_333_33",
+    "races": 7,
+    "rows": 49,
+    "result_or_payout_observed_in_snapshot": false
+  },
+  "model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+    "predictor": "tools/keirin_pre_only_rider_circumference_predictor_v1.py",
+    "beta": 0.22260435254784533,
+    "tuned_on_results": false
+  },
+  "summary": {
+    "races_run": 7,
+    "rider_rows_run": 49,
+    "supported_rider_appearances": 11,
+    "races_with_at_least_one_supported_rider": 7,
+    "races_with_any_rank_change": 1,
+    "races_with_top1_change": 0,
+    "rank_change_rate": 0.14285714285714285,
+    "top1_change_rate": 0,
+    "largest_absolute_probability_shift_pp": 0.85389,
+    "largest_shift_rider": "松澤 敬輔",
+    "interpretation": "The frozen correction is conservative: it usually shifts probability mass by less than one percentage point and only changes rank where S0 competitors are close."
+  },
+  "races": [
+    {
+      "race_no": 1,
+      "supported": [
+        "松下 綾馬"
+      ],
+      "rank_changed": false,
+      "top1_s0": "高橋 義秋",
+      "top1_challenger": "高橋 義秋",
+      "largest_shift": {
+        "rider": "松下 綾馬",
+        "pp": 0.392225
+      }
+    },
+    {
+      "race_no": 2,
+      "supported": [
+        "表 大暁",
+        "石井 毅"
+      ],
+      "rank_changed": false,
+      "top1_s0": "戸邉 捺希",
+      "top1_challenger": "戸邉 捺希",
+      "largest_shift": {
+        "rider": "石井 毅",
+        "pp": 0.479971
+      }
+    },
+    {
+      "race_no": 3,
+      "supported": [
+        "辻 力"
+      ],
+      "rank_changed": false,
+      "top1_s0": "中釜 健次",
+      "top1_challenger": "中釜 健次",
+      "largest_shift": {
+        "rider": "辻 力",
+        "pp": 0.3071
+      }
+    },
+    {
+      "race_no": 4,
+      "supported": [
+        "平山 優太"
+      ],
+      "rank_changed": false,
+      "top1_s0": "松山 桂輔",
+      "top1_challenger": "松山 桂輔",
+      "largest_shift": {
+        "rider": "平山 優太",
+        "pp": 0.063985
+      }
+    },
+    {
+      "race_no": 5,
+      "supported": [
+        "齋藤 昌弘"
+      ],
+      "rank_changed": false,
+      "top1_s0": "石川 雅望",
+      "top1_challenger": "石川 雅望",
+      "largest_shift": {
+        "rider": "齋藤 昌弘",
+        "pp": 0.204074
+      }
+    },
+    {
+      "race_no": 6,
+      "supported": [
+        "小埜 正義",
+        "高本 和也"
+      ],
+      "rank_changed": false,
+      "top1_s0": "小埜 正義",
+      "top1_challenger": "小埜 正義",
+      "largest_shift": {
+        "rider": "小埜 正義",
+        "pp": -0.366703
+      }
+    },
+    {
+      "race_no": 7,
+      "supported": [
+        "松澤 敬輔",
+        "高橋 泰裕",
+        "金澤 竜二"
+      ],
+      "rank_changed": true,
+      "top1_s0": "野口 正則",
+      "top1_challenger": "野口 正則",
+      "rank_swap": {
+        "s0_2": "金澤 竜二",
+        "s0_3": "松澤 敬輔",
+        "challenger_2": "松澤 敬輔",
+        "challenger_3": "金澤 竜二"
+      },
+      "largest_shift": {
+        "rider": "松澤 敬輔",
+        "pp": 0.85389
+      }
+    }
+  ],
+  "notable_case": {
+    "race_no": 7,
+    "finding": "S0 ranks 金澤竜二 2nd and 松澤敬輔 3rd; challenger reverses them while keeping 野口正則 1st.",
+    "s0_probabilities": {
+      "野口正則": 0.197473395965,
+      "金澤竜二": 0.166663924172,
+      "松澤敬輔": 0.160403322012
+    },
+    "challenger_probabilities": {
+      "野口正則": 0.194255486416,
+      "松澤敬輔": 0.168942223388,
+      "金澤竜二": 0.159200743205
+    },
+    "target_result_accessed": false
+  },
+  "exclusions": {
+    "target_result_accessed": false,
+    "payout": false,
+    "odds": false,
+    "human_forecast": false,
+    "tuning_after_observation": false
+  },
+  "authority": {
+    "execution_sanity_pass": true,
+    "accuracy_improvement_claim": false,
+    "production_promotion": false,
+    "formal_support_effect": 0
+  },
+  "owner_action_required_now": false
+}
