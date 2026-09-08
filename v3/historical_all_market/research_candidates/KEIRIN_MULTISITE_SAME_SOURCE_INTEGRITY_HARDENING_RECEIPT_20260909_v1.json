@@ -1,0 +1,37 @@
+{
+  "record": "KEIRIN_MULTISITE_SAME_SOURCE_INTEGRITY_HARDENING_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "IMPLEMENTED_SAME_SOURCE_ORDER_INDEPENDENT_CONFLICT_HARDENING",
+  "implementation": {
+    "normalizer": "tools/keirin_multisite_final_racecard_normalizer_v4.py",
+    "selftest_spec": "tools/keirin_multisite_final_racecard_normalizer_selftest_v4.py",
+    "predecessor": "tools/keirin_multisite_final_racecard_normalizer_v3.py"
+  },
+  "defects_closed": [
+    "same source family cannot count as multiple corroborating sources",
+    "conflicting valid assignments within one source family fail the locked candidate closed instead of keeping the first observation",
+    "identical same-family observations are deterministically deduplicated",
+    "an invalid same-family observation cannot suppress a later valid final racecard solely because of input order",
+    "KEIRIN.JP alias spellings remain one source family"
+  ],
+  "preserved_contracts": [
+    "six trusted source families unchanged",
+    "cross-family assignment conflict remains fail closed",
+    "withdrawal/substitution remains candidate-level fail closed",
+    "v3 exact-integer race_no/car_no policy preserved",
+    "no new hostname-to-source-family formal blocker invented",
+    "multi-source agreement remains audit hardening rather than a new minimum formal-support requirement"
+  ],
+  "selftest_spec_cases": 15,
+  "direct_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "formal_support_increment_now": 0,
+  "formal_support": "1 rider / 2 PRE rows",
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "result_join_authorized_now": false,
+  "runtime": false
+}
