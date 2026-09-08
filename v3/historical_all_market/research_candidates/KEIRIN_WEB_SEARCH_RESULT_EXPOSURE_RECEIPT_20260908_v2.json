@@ -1,0 +1,52 @@
+{
+  "record": "KEIRIN_WEB_SEARCH_RESULT_EXPOSURE_RECEIPT_20260908_v2",
+  "status": "INCIDENTAL_SEARCH_RESULT_ODDS_PREDICTION_NAMESPACE_EXPOSURE_RECORDED_AND_DISCARDED_NO_RESEARCH_USE",
+  "observed_jst": "2026-09-08",
+  "binding": {
+    "research_head_before_write": "f2171d93d01eca6469a6773fba994e7aee5d6ddb",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "runtime": "OFF"
+  },
+  "purpose": "Document incidental web-search snippets that surfaced result/odds/prediction namespaces while resolving PRE-only schedule/roster questions.",
+  "exposures": [
+    {
+      "context": "Search for 2026-09-07 Ito actual Day1 membership and future overlap validation.",
+      "surfaced": "result/odds/prediction-linked search results/snippets alongside roster sources",
+      "action": "DISCARDED_FOR_CANDIDATE_SELECTION_AND_FEATURE_EVIDENCE"
+    },
+    {
+      "context": "Search for 2026-09-13 Ogaki event class structure.",
+      "surfaced": "generic result namespace and unrelated prediction pages in search results",
+      "action": "DISCARDED; class-structure conclusion uses series preview/schedule evidence only"
+    }
+  ],
+  "non_use_assertions": {
+    "outcome_values_persisted": false,
+    "payout_values_persisted": false,
+    "odds_values_persisted": false,
+    "prediction_values_persisted": false,
+    "candidate_selected_from_finish_or_payout": false,
+    "model_fit_from_exposed_values": false,
+    "burned_outcome_firewall_rolled_back": false
+  },
+  "affected_provisional_candidates": [
+    {
+      "rider": "山田哲也",
+      "registration": "014749",
+      "final_status": "RETRACTED",
+      "revalidation_basis": "exact roster-name distinction; Toyama listed 山田隼司",
+      "result_or_prediction_used": false
+    },
+    {
+      "rider": "森川剛",
+      "registration": "014021",
+      "final_status": "REJECTED",
+      "revalidation_basis": "supplementary-entry status showed event-level roster was not historical actual Day1 membership",
+      "result_or_prediction_used": false
+    }
+  ],
+  "formal_support_increment": 0,
+  "main_mutation": false,
+  "runtime_activation": false,
+  "owner_action_required_now": false
+}
