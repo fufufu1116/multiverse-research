@@ -1,0 +1,52 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_FORMULA_FREEZER_RECEIPT_20260909_v2",
+  "date_jst": "2026-09-09",
+  "status": "IMPLEMENTED_RECURSIVE_PRE_ONLY_FIREWALL_PARENT_BLOBS_FRESH_MATCH_SELFTEST_SPEC_ADDED",
+  "implementation": {
+    "freezer": "tools/keirin_rider_circumference_formula_freezer_v2.py",
+    "selftest_spec": "tools/keirin_rider_circumference_formula_freezer_selftest_v2.py",
+    "predecessor": "tools/keirin_rider_circumference_formula_freezer_v1.py"
+  },
+  "fresh_parent_blob_verification": {
+    "formula_proposal": "3c1d74ce7690137e41ba833066dc51b1672c5fe3",
+    "eval_window": "a185a19f9554618a1da83ab05e6674530e2a27d0",
+    "eval_math": "290351d1f8954d7158649e3482f41d7289da2b5d",
+    "readiness": "a6694fb6f4f2bb4a8518b2bd0f29386202e19b7c",
+    "all_match_embedded_v1_bindings": true
+  },
+  "defects_closed": [
+    "PRE-only fit/evaluation membership can no longer carry nested winner/result/payout/odds/prediction/comment/finish/rank fields unnoticed",
+    "explicit access/governance flags are allowed only in safe states before formula freeze",
+    "result_still_closed=true remains an allowed positive safety gate rather than a false-positive RESULT namespace",
+    "formula/result/model-promotion authority cannot already be active before formula freeze"
+  ],
+  "preserved_contracts": [
+    "formula ID unchanged",
+    "S0 beta unchanged at 0.22260435254784533",
+    "lambda grid unchanged [1,4,16,64]",
+    "LOCAL_DAY1_RACE_DATE remains required",
+    "v1 parent Blob bindings preserved",
+    "evaluation window 2026-09-16..2026-09-26 preserved",
+    "freezer still grants no RESULT join, no model fit, no runtime"
+  ],
+  "selftest_spec_cases": 27,
+  "direct_checked_in_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "pr177_state_at_receipt": {
+    "state": "OPEN_DRAFT",
+    "head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+    "mergeable": true,
+    "mergeable_state": "unstable",
+    "independent_result_after_request_5573150058": false
+  },
+  "formal_support": "1 rider / 2 PRE rows",
+  "formula_freeze_authorized_now": false,
+  "result_join_authorized_now": false,
+  "model_fit_authorized_now": false,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
