@@ -1,0 +1,92 @@
+{
+  "record": "KEIRIN_PRE_ONLY_GENERALIZED_COVERAGE_DRY_RUN_23R_183ROWS_20260908_v1",
+  "status": "PASS_GENERALIZED_PRE_ONLY_COVERAGE_23_RACES_183_ROWS_FOUR_INTERNAL_RANK_SWAPS_ZERO_TOP1_CHANGES",
+  "date_jst": "2026-09-08",
+  "purpose": "Test the frozen rider-first/style-fallback circumference challenger across multiple PRE-only racecards from both circumference buckets without target outcomes.",
+  "model": "KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+  "predictor": "tools/keirin_pre_only_rider_or_style_predictor_v2.py",
+  "included_batches": [
+    {
+      "event": "富山 2026-09-03 Day1 R1-R7",
+      "circumference": "333_OR_333_33",
+      "races": 7,
+      "rider_rows": 49,
+      "exact_rider_delta_appearances": 11,
+      "style_fallback_appearances": 38,
+      "pure_s0_appearances": 0,
+      "rank_change_races": 1,
+      "top1_change_races": 0,
+      "notable": "R7 金澤竜二 2位 / 松澤敬輔 3位 -> 松澤敬輔 2位 / 金澤竜二 3位"
+    },
+    {
+      "event": "青森 2026-09-03 Day1 eligible PRE races",
+      "circumference": "400",
+      "races": 11,
+      "rider_rows": 99,
+      "exact_rider_delta_appearances": 0,
+      "style_fallback_appearances": 99,
+      "pure_s0_appearances": 0,
+      "rank_change_races": 2,
+      "top1_change_races": 0,
+      "notable": [
+        "R2 木村弘と川越勇星の5位/6位が入れ替わり",
+        "R9 荒川達郎と土屋壮登の4位/5位が入れ替わり"
+      ],
+      "excluded": "R5 zero competition_score fail-closed; no repair"
+    },
+    {
+      "event": "武雄 2026-09-03 Day1 style-preserved PRE subset R1,R9-R12",
+      "circumference": "400",
+      "races": 5,
+      "rider_rows": 35,
+      "exact_rider_delta_appearances": 0,
+      "style_fallback_appearances": 35,
+      "pure_s0_appearances": 0,
+      "rank_change_races": 1,
+      "top1_change_races": 0,
+      "notable": "R10 芦澤辰弘 2位 / 岸田剛 3位 -> 岸田剛 2位 / 芦澤辰弘 3位",
+      "exclusion_reason": "Only races with style frozen in PRE witness are included; do not post-cutoff backfill style for R3-R8."
+    }
+  ],
+  "aggregate": {
+    "races": 23,
+    "rider_rows": 183,
+    "exact_rider_delta_appearances": 11,
+    "style_fallback_appearances": 172,
+    "pure_s0_appearances": 0,
+    "rank_change_races": 4,
+    "rank_change_rate": 0.17391304347826086,
+    "top1_change_races": 0,
+    "top1_change_rate": 0,
+    "maximum_absolute_probability_shift_pp": 1.123412,
+    "maximum_shift_case": "青森 R4 松本秀之介",
+    "interpretation": "Generalized fallback removes the practical zero-coverage problem while remaining conservative: all 23 S0 top1 selections stay unchanged and only close internal ranks move."
+  },
+  "style_fallback": {
+    "逃": {
+      "delta_logit": -0.020537046719
+    },
+    "追": {
+      "delta_logit": 0.038120995374
+    },
+    "両": {
+      "delta_logit": 0.0024804485
+    }
+  },
+  "safeguards": {
+    "target_results_accessed": false,
+    "payouts": false,
+    "odds": false,
+    "human_forecasts": false,
+    "outcome_tuning": false,
+    "s0_refit": false,
+    "post_cutoff_style_backfill": false
+  },
+  "authority": {
+    "execution_and_coverage_claim": true,
+    "accuracy_improvement_claim": false,
+    "production_promotion": false,
+    "formal_support_effect": 0
+  },
+  "owner_action_required_now": false
+}
