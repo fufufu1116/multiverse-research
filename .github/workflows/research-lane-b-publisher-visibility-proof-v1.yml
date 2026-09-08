@@ -19,14 +19,16 @@ jobs:
       - name: Checkout exact proof branch
         uses: actions/checkout@v4
         with:
+          ref: f4c8573a0e54f9ea26241461dd48e804724a9a9e
           fetch-depth: 0
 
       - name: Exact head
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          echo "PROOF_HEAD=$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "f4c8573a0e54f9ea26241461dd48e804724a9a9e"
+          echo "CANDIDATE_HEAD=$(git rev-parse HEAD)"
+          echo "WORKFLOW_TRIGGER_SHA=$GITHUB_SHA"
 
       - name: Compile dispatcher
         shell: bash
