@@ -779,6 +779,10 @@ def validate() -> dict:
         "REHEARSAL_PROVIDER_MISMATCH",
         "REHEARSAL_MODEL_MISMATCH",
         "REHEARSAL_MATRIX_SHA256_MISMATCH",
+        "estimate_smoke_cost_usd_micros",
+        "REHEARSAL_INPUT_TOKENS_EXCEED_PREFLIGHT",
+        "REHEARSAL_OUTPUT_TOKENS_EXCEED_PREFLIGHT",
+        "REHEARSAL_SIMULATED_COST_EXCEEDS_PREFLIGHT",
         "FULL_OFFLINE_REHEARSAL_ALIGNED_AUTHORITY_ABSENT",
         "REHEARSAL_FORBIDDEN_TRUE",
         "REHEARSAL_RUNTIME_NOT_OFF",
@@ -812,8 +816,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 372,
-        f"{test_count} != 372",
+        test_count == 384,
+        f"{test_count} != 384",
     )
 
     return {

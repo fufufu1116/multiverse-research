@@ -50,6 +50,8 @@ PILOT_ROUNDTRIP_KEYS = {
     "observation_binding_sha256",
     "provider_response_id",
     "normalized_state",
+    "input_tokens",
+    "output_tokens",
     "attestation_state",
     "synthetic_only",
     "live_provider_execution",
@@ -422,6 +424,8 @@ def build_provider_pilot_roundtrip(
         "provider_response_id":
             observation["provider_response_id"],
         "normalized_state": observation["normalized_state"],
+        "input_tokens": observation["input_tokens"],
+        "output_tokens": observation["output_tokens"],
         "attestation_state": receipt["attestation_state"],
         "synthetic_only": True,
         "live_provider_execution": False,

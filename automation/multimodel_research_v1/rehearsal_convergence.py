@@ -11,6 +11,9 @@ from automation.multimodel_research_v1.pilot_roundtrip import (
     provider_pilot_roundtrip_sha256,
     validate_provider_pilot_roundtrip,
 )
+from automation.multimodel_research_v1.provider_catalog import (
+    estimate_smoke_cost_usd_micros,
+)
 
 REHEARSAL_SCHEMA = "MULTIVERSE_PROVIDER_REHEARSAL_CONVERGENCE_v1"
 
@@ -26,6 +29,11 @@ REHEARSAL_KEYS = {
     "pilot_roundtrip_sha256",
     "observation_binding_sha256",
     "checked_at",
+    "input_tokens",
+    "output_tokens",
+    "simulated_usage_cost_usd_micros",
+    "estimated_max_cost_usd_micros",
+    "within_preflight_cost_ceiling",
     "rehearsal_state",
     "synthetic_only",
     "repository_evidence_aligned",
@@ -99,6 +107,25 @@ def _validated_context(
         launch_evidence["repository_evidence_aligned"] is True,
         "REHEARSAL_LAUNCH_EVIDENCE_NOT_ALIGNED",
     )
+    require(
+        roundtrip["input_tokens"] <= launch_evidence["max_input_tokens"],
+        "REHEARSAL_INPUT_TOKENS_EXCEED_PREFLIGHT",
+    )
+    require(
+        roundtrip["output_tokens"] <= launch_evidence["max_output_tokens"],
+        "REHEARSAL_OUTPUT_TOKENS_EXCEED_PREFLIGHT",
+    )
+    simulated_cost = estimate_smoke_cost_usd_micros(
+        catalog_snapshot,
+        provider,
+        roundtrip["input_tokens"],
+        roundtrip["output_tokens"],
+    )
+    require(
+        simulated_cost
+        <= launch_evidence["estimated_max_cost_usd_micros"],
+        "REHEARSAL_SIMULATED_COST_EXCEEDS_PREFLIGHT",
+    )
 
     return {
         "provider": provider,
@@ -134,6 +161,12 @@ def _validated_context(
         "observation_binding_sha256":
             roundtrip["observation_binding_sha256"],
         "checked_at": launch_evidence["checked_at"],
+        "input_tokens": roundtrip["input_tokens"],
+        "output_tokens": roundtrip["output_tokens"],
+        "simulated_usage_cost_usd_micros": simulated_cost,
+        "estimated_max_cost_usd_micros":
+            launch_evidence["estimated_max_cost_usd_micros"],
+        "within_preflight_cost_ceiling": True,
     }
 
 

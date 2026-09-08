@@ -12605,5 +12605,81 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(first, second)
 
 
+    def test_373_rehearsal_gemini_usage_counts_are_bound(self):
+        value = self._rehearsal_fixture("GOOGLE_GEMINI")[-1]
+        self.assertEqual(value["input_tokens"], 10)
+        self.assertEqual(value["output_tokens"], 20)
+
+    def test_374_rehearsal_claude_usage_counts_are_bound(self):
+        value = self._rehearsal_fixture("ANTHROPIC_CLAUDE")[-1]
+        self.assertEqual(value["input_tokens"], 10)
+        self.assertEqual(value["output_tokens"], 20)
+
+    def test_375_rehearsal_gemini_simulated_usage_cost(self):
+        value = self._rehearsal_fixture("GOOGLE_GEMINI")[-1]
+        self.assertEqual(value["simulated_usage_cost_usd_micros"], 83)
+
+    def test_376_rehearsal_claude_simulated_usage_cost(self):
+        value = self._rehearsal_fixture("ANTHROPIC_CLAUDE")[-1]
+        self.assertEqual(value["simulated_usage_cost_usd_micros"], 110)
+
+    def test_377_rehearsal_usage_cost_stays_below_preflight_ceiling(self):
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = self._rehearsal_fixture(provider)[-1]
+            self.assertIs(value["within_preflight_cost_ceiling"], True)
+            self.assertLessEqual(
+                value["simulated_usage_cost_usd_micros"],
+                value["estimated_max_cost_usd_micros"],
+            )
+
+    def test_378_rehearsal_max_cost_matches_launch_evidence(self):
+        args = self._rehearsal_fixture("GOOGLE_GEMINI")
+        self.assertEqual(
+            args[-1]["estimated_max_cost_usd_micros"],
+            args[-3]["estimated_max_cost_usd_micros"],
+        )
+
+    def test_379_rehearsal_rejects_roundtrip_input_usage_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-2] = copy.deepcopy(args[-2])
+        args[-2]["input_tokens"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_380_rehearsal_rejects_roundtrip_output_usage_tamper(self):
+        args = list(self._rehearsal_fixture("ANTHROPIC_CLAUDE"))
+        args[-2] = copy.deepcopy(args[-2])
+        args[-2]["output_tokens"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_381_rehearsal_rejects_simulated_cost_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["simulated_usage_cost_usd_micros"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_382_rehearsal_rejects_max_cost_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["estimated_max_cost_usd_micros"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_383_rehearsal_cost_accounting_grants_no_spend_authority(self):
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = self._rehearsal_fixture(provider)[-1]
+            self.assertIs(value["spend_authorized"], False)
+            self.assertIs(value["live_provider_execution"], False)
+
+    def test_384_rehearsal_cost_bound_digest_is_deterministic(self):
+        args = self._rehearsal_fixture("GOOGLE_GEMINI")
+        first = provider_rehearsal_convergence_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_rehearsal_convergence_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
 if __name__ == "__main__":
     unittest.main()

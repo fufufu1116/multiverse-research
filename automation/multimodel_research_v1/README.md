@@ -162,6 +162,20 @@ Cross-provider tests require Gemini and Claude to receive the same exact canonic
 
 This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
 
+Synthetic usage-cost reconciliation
+
+The full offline rehearsal also binds the parsed synthetic response usage counts to the dated provider catalog and recomputes a **simulation-only** usage cost.
+
+Current synthetic fixture:
+- input tokens: 10;
+- output tokens: 20;
+- Gemini catalog estimate: 83 USD micros;
+- Claude catalog estimate: 110 USD micros.
+
+The recomputed value must remain below the preflight maximum-cost estimate already bound by launch evidence. Input/output usage must also stay within the launch token ceilings.
+
+This is not a provider invoice, billing proof, or spend authorization. It is only a deterministic repository-side check that the simulated observed usage is consistent with the same dated pricing snapshot and preflight ceilings.
+
 Full offline rehearsal convergence
 
 `MULTIVERSE_PROVIDER_REHEARSAL_CONVERGENCE_v1` binds the send-side launch evidence to the receive-side synthetic round-trip for one exact provider/model generation.
