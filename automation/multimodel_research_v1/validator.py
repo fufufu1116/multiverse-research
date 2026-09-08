@@ -26,6 +26,7 @@ REQUIRED = [
     ROOT / "transport_binding.py",
     ROOT / "observation_binding.py",
     ROOT / "execution_prep.py",
+    ROOT / "readiness.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -156,6 +157,7 @@ def validate() -> dict:
     transport_binding = (ROOT / "transport_binding.py").read_text()
     observation_binding = (ROOT / "observation_binding.py").read_text()
     execution_prep = (ROOT / "execution_prep.py").read_text()
+    readiness = (ROOT / "readiness.py").read_text()
 
     transport_code = (
         gemini_adapter
@@ -536,6 +538,25 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_LIVE_PROVIDER_READINESS_REPORT_v1",
+        "READY_FOR_SEPARATE_PROVIDER_AUTHORITY",
+        "build_live_provider_readiness_report",
+        "validate_live_provider_readiness_report",
+        "provider_call_authorized",
+        "credential_authorized",
+        "spend_authorized",
+        "live_execution_performed",
+        "READINESS_FORBIDDEN_TRUE",
+        "READINESS_RUNTIME_NOT_OFF",
+        "live_provider_readiness_sha256",
+    ):
+        record(
+            f"readiness:{token}",
+            token in readiness,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -557,8 +578,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 247,
-        f"{test_count} != 247",
+        test_count == 257,
+        f"{test_count} != 257",
     )
 
     return {

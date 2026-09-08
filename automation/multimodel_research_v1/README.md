@@ -128,6 +128,25 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Live provider readiness report
+
+`MULTIVERSE_LIVE_PROVIDER_READINESS_REPORT_v1` converts the fully validated repository-side preparation chain into one explicit readiness state:
+
+`READY_FOR_SEPARATE_PROVIDER_AUTHORITY`
+
+A readiness report means the repository contract is ready for a separately authorized smoke call. It explicitly records:
+- repository_contract_ready = true;
+- provider_call_authorized = false;
+- credential_authorized = false;
+- spend_authorized = false;
+- live_execution_performed = false;
+- Runtime = OFF;
+- adoption_authority = false.
+
+The report binds the exact smoke-profile SHA, provider-transport-binding SHA, and execution-preparation SHA.
+
+Any attempt to turn one of the authority/execution fields true inside the repository report fails closed.
+
 Live execution preparation guard
 
 `MULTIVERSE_LIVE_PROVIDER_EXECUTION_PREP_v1` is the last repository-only guard before an actual provider call.

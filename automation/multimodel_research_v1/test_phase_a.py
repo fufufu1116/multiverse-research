@@ -72,6 +72,11 @@ from automation.multimodel_research_v1.execution_prep import (
     live_execution_prep_sha256,
     validate_live_execution_prep,
 )
+from automation.multimodel_research_v1.readiness import (
+    build_live_provider_readiness_report,
+    live_provider_readiness_sha256,
+    validate_live_provider_readiness_report,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -9306,6 +9311,868 @@ class ContractTests(unittest.TestCase):
             "client.messages.create(",
         ):
             self.assertNotIn(marker, source)
+
+
+    def test_248_build_gemini_live_readiness_report(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        report = build_live_provider_readiness_report(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        self.assertEqual(
+            report["provider"],
+            "GOOGLE_GEMINI",
+        )
+        self.assertTrue(report["repository_contract_ready"])
+
+    def test_249_build_claude_live_readiness_report(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        report = build_live_provider_readiness_report(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        self.assertEqual(
+            report["provider"],
+            "ANTHROPIC_CLAUDE",
+        )
+
+    def test_250_readiness_state_is_separate_authority_only(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        report = build_live_provider_readiness_report(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        self.assertEqual(
+            report["readiness_state"],
+            "READY_FOR_SEPARATE_PROVIDER_AUTHORITY",
+        )
+
+    def test_251_readiness_never_grants_provider_credential_or_spend_authority(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        report = build_live_provider_readiness_report(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+        ):
+            self.assertIs(report[key], False)
+
+    def test_252_readiness_never_claims_live_execution(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        report = build_live_provider_readiness_report(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        self.assertIs(
+            report["live_execution_performed"],
+            False,
+        )
+
+    def test_253_readiness_runtime_remains_off(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        report = build_live_provider_readiness_report(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        self.assertEqual(report["runtime"], "OFF")
+
+    def test_254_readiness_rejects_tampered_execution_prep(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        prep["allowed_host"] = "example.com"
+        with self.assertRaises(ResearchContractError):
+            build_live_provider_readiness_report(
+                task=bound_task,
+                assignments=assignments,
+                fanout_plan=plan,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                smoke_profile=smoke,
+                response_schema=schema,
+                render=render,
+                execution_prep=prep,
+            )
+
+    def test_255_readiness_report_validation_fails_if_authority_is_fabricated(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        report = build_live_provider_readiness_report(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        report["provider_call_authorized"] = True
+        with self.assertRaises(ResearchContractError):
+            validate_live_provider_readiness_report(report)
+
+    def test_256_readiness_digest_is_deterministic(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_gemini_interactions_v1(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        kwargs = dict(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        self.assertEqual(
+            live_provider_readiness_sha256(**kwargs),
+            live_provider_readiness_sha256(**kwargs),
+        )
+
+    def test_257_readiness_digest_changes_if_exact_transport_changes(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        assignments = [bound_assignment]
+        plan = fanout_plan(bound_task, assignments)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        render = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = sha256_json(
+            render["body"]
+        )
+        smoke = live_smoke_profile(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+        )
+        prep = live_execution_prep(
+            bound_task,
+            assignments,
+            plan,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            envelope,
+            smoke,
+            schema,
+            render,
+        )
+        original = live_provider_readiness_sha256(
+            task=bound_task,
+            assignments=assignments,
+            fanout_plan=plan,
+            assignment=bound_assignment,
+            model_target_policy=target_policy,
+            capability_policy=cap_policy,
+            prompt=prompt,
+            request_envelope=envelope,
+            smoke_profile=smoke,
+            response_schema=schema,
+            render=render,
+            execution_prep=prep,
+        )
+        changed_render = copy.deepcopy(render)
+        changed_render["body"]["max_tokens"] = 2048
+        with self.assertRaises(ResearchContractError):
+            live_provider_readiness_sha256(
+                task=bound_task,
+                assignments=assignments,
+                fanout_plan=plan,
+                assignment=bound_assignment,
+                model_target_policy=target_policy,
+                capability_policy=cap_policy,
+                prompt=prompt,
+                request_envelope=envelope,
+                smoke_profile=smoke,
+                response_schema=schema,
+                render=changed_render,
+                execution_prep=prep,
+            )
+        self.assertEqual(len(original), 64)
 
 
 if __name__ == "__main__":
