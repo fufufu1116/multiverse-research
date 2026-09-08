@@ -1,0 +1,36 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260909_v26",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_DELTA_V18",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v18.json",
+  "critical_pointers": {
+    "practical_completion": "v3/historical_all_market/research_candidates/KEIRIN_PRACTICAL_IMPLEMENTATION_COMPLETION_20260909_v1.json",
+    "market_scorecard": "v3/historical_all_market/research_candidates/KEIRIN_MARKET_SELECTION_SCORECARD_20260909_v1.json",
+    "three_rentan_third_spread": "tools/keirin_3rentan_third_spread_simulator_v1.py",
+    "practical_v2_profile": "v3/historical_all_market/research_candidates/KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v2.json",
+    "today_pre_decision": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v2.json",
+    "burned_longshot_tail_audit": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_3RENHUKU_ODDS_TAIL_DECOMPOSITION_20260909_v1.json",
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v7.py"
+  },
+  "current_summary": {
+    "practical_owner_free_engineering": "100% complete",
+    "formal_scientific_progress_percent": 60,
+    "formal_support": "1 rider / 2 PRE rows",
+    "primary_market": "3renhuku one-point value candidate",
+    "three_rentan_owner_pattern": "challenger implemented; exact burned replay pending raw fixture availability",
+    "longshot_over20": "not promoted; shadow-only pending prospective evidence",
+    "today_answer_check": "unchanged/frozen",
+    "protected_holdouts": "C and ECON_HOLDOUT1000 unopened",
+    "profitability_proven": false,
+    "runtime": "OFF"
+  },
+  "next_without_owner": {
+    "immediate": "Collect/settle only pre-frozen prospective evidence when it becomes available; do not retune after outcomes.",
+    "formal": "Continue 30/60 PRE support acquisition under existing gate.",
+    "challenger": "Run 3rentan third-spread replay if the original burned A+B raw fixture bundle becomes available without opening protected holdouts."
+  },
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later successor, Resume v26 or later successor, its post-current delta, active prospective freezes and automations before treating state as current."
+}
