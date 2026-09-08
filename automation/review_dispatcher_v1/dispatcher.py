@@ -22,6 +22,7 @@ from automation.review_dispatcher_v1.model import (
     sha256_json,
     validate_request,
 )
+from automation.review_dispatcher_v1.request_claim_v4 import verify_request_claim
 
 JOB_SCHEMA = "MULTIVERSE_FIXED_REVIEW_JOB_v1"
 
@@ -119,6 +120,7 @@ def discover_request(
     )
     validate_request(request)
     request_sha256 = sha256_json(request)
+    claim = verify_request_claim(request=request, fetch=fetch)
 
     marker = result_marker(
         request["request_id"],
@@ -160,6 +162,8 @@ def discover_request(
         "request_comment": request_comment,
         "request_sha256": request_sha256,
         "request_comment_author": (comment.get("user") or {}).get("login"),
+        "request_claim_ref": claim["claim_ref"],
+        "request_claim_blob_sha1": claim["claim_blob_sha1"],
         "request": request,
         "dispatcher_ref": os.environ.get(
             "MULTIVERSE_DISPATCHER_REF",
@@ -221,6 +225,8 @@ def main() -> int:
                 "request_id": job["request_id"],
                 "request_comment": job["request_comment"],
                 "request_sha256": job["request_sha256"],
+                "request_claim_ref": job["request_claim_ref"],
+                "request_claim_blob_sha1": job["request_claim_blob_sha1"],
                 "lane": job["lane"],
                 "pr": job["pr"],
                 "head": job["head"],
