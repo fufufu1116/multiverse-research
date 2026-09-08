@@ -25,6 +25,7 @@ REQUIRED = [
     ROOT / "claude_adapter.py",
     ROOT / "transport_binding.py",
     ROOT / "observation_binding.py",
+    ROOT / "execution_prep.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -118,6 +119,7 @@ def validate() -> dict:
     claude_adapter = (ROOT / "claude_adapter.py").read_text()
     transport_binding = (ROOT / "transport_binding.py").read_text()
     observation_binding = (ROOT / "observation_binding.py").read_text()
+    execution_prep = (ROOT / "execution_prep.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -460,6 +462,28 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_LIVE_PROVIDER_EXECUTION_PREP_v1",
+        "validate_live_execution_prep",
+        "generativelanguage.googleapis.com",
+        "api.anthropic.com",
+        "EXECUTION_PREP_HOST_MISMATCH",
+        "EXECUTION_PREP_OPERATION_MISMATCH",
+        "EXECUTION_PREP_CREDENTIAL_MATERIAL_FORBIDDEN",
+        "EXECUTION_PREP_SINGLE_ATTEMPT_REQUIRED",
+        "EXECUTION_PREP_INPUT_TOKEN_CEILING",
+        "EXECUTION_PREP_OUTPUT_TOKEN_CEILING",
+        "EXECUTION_PREP_COST_CEILING",
+        "EXECUTION_PREP_AUTHORITY_REQUIRED",
+        "EXECUTION_PREP_RUNTIME_FORBIDDEN",
+        "live_execution_prep_sha256",
+    ):
+        record(
+            f"execution_prep:{token}",
+            token in execution_prep,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -481,8 +505,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 232,
-        f"{test_count} != 232",
+        test_count == 245,
+        f"{test_count} != 245",
     )
 
     return {

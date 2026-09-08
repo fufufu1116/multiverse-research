@@ -128,6 +128,30 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Live execution preparation guard
+
+`MULTIVERSE_LIVE_PROVIDER_EXECUTION_PREP_v1` is the last repository-only guard before an actual provider call.
+
+It binds the exact smoke profile and exact provider transport binding, then constrains the proposed first call to:
+- one exact provider host;
+- one exact provider operation;
+- provider-API-only network scope;
+- external credential handle reference only;
+- no credential material in the repository;
+- exactly one attempt;
+- input token ceiling <= 32768;
+- output token ceiling <= 4096;
+- proposed cost ceiling <= USD 1.00;
+- Runtime OFF;
+- no live business effect;
+- no protected data.
+
+Provider targets:
+- Google Gemini -> `generativelanguage.googleapis.com`, stable-v1 interaction creation;
+- Anthropic Claude -> `api.anthropic.com`, Messages v1 creation.
+
+The preparation object explicitly requires separate provider-call, credential, and spend authority. It cannot grant those authorities itself.
+
 Provider observation binding
 
 `MULTIVERSE_PROVIDER_OBSERVATION_BINDING_v1` closes the receive-side repository gap between a provider-specific parsed observation and the durable termination/receipt records.
