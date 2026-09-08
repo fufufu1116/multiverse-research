@@ -107,7 +107,7 @@ def _result_v2(
         },
         "status": status,
         "findings": (
-    
+            [
                 {
                     "finding_id": f"{submission_id}-finding-001",
                     "claim_key": "dual-provider-fanout-completion",
@@ -124,7 +124,7 @@ def _result_v2(
                     "validation_plan":
                         "Compare planned and observed assignment SHA256 sets.",
                 }
-            ],
+            ]
             if status == "COMPLETED"
             else []
         ),

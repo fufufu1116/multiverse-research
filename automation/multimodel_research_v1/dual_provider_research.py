@@ -108,7 +108,7 @@ def _result(
         },
         "status": status,
         "findings": (
-    
+            [
                 {
                     "finding_id": f"{submission_id}-finding-001",
                     "claim_key": claim_key,
@@ -124,7 +124,7 @@ def _result(
                     "validation_plan":
                         "Run an independently specified falsification task.",
                 }
-            ],
+            ]
             if status == "COMPLETED"
             else []
         ),
