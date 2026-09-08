@@ -1,0 +1,41 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_EVALUATOR_FIREWALL_HARDENING_20260908_v2",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_AUTHORIZATION_BEFORE_RESULT_PAYLOAD_ACCESS",
+  "implementation": {
+    "evaluator": "tools/keirin_rider_circumference_development_evaluator_v2.py",
+    "selftest_spec": "tools/keirin_rider_circumference_development_evaluator_selftest_v2.py",
+    "metric_math_source": "tools/keirin_rider_circumference_development_evaluator_v1.py"
+  },
+  "defect_closed": "v1 normalized outcome-bearing races before checking result_join_authorized. v2 validates all static authorization gates before touching the race payload.",
+  "firewall_order": [
+    "validate formal support/calendar/formula/membership/result/source/final-holdout authorization",
+    "validate frozen S0 beta and authorization hashes/IDs",
+    "only then touch outcome-bearing race payload",
+    "reject payout/odds/prediction/comment/extra-result fields",
+    "normalize exact development-window races",
+    "verify exact frozen race-id membership",
+    "apply unchanged frozen v1 metric math"
+  ],
+  "blocked_call_contract": "When any static authorization gate is false, the race payload must not be type-checked, iterated, indexed, or otherwise inspected.",
+  "synthetic_selftest_spec": {
+    "poison_payload_short_circuit": true,
+    "blocked_result_join_expected_error": "authorization_gate_not_true:result_join_authorized",
+    "blocked_formal_support_expected_error": "authorization_gate_not_true:formal_support_gate_pass",
+    "s0_beta_mutation_short_circuit": true,
+    "non_target_post_decision_fields_fail_closed": [
+      "odds_snapshot",
+      "human_comment",
+      "finish_order",
+      "payout"
+    ]
+  },
+  "direct_checked_in_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "real_result_accessed": false,
+  "payout_accessed": false,
+  "live_odds_accessed": false,
+  "prediction_execution_authorized_now": false,
+  "result_join_authorized_now": false,
+  "runtime": false
+}
