@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_RIDER_CIRCUMFERENCE_EVALUATION_MATH_FREEZE_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "PREOUTCOME_EVALUATION_MATH_FROZEN_IMPLEMENTED_SYNTHETIC_REPRO_PASS_REAL_TARGET_ACCESS_DENIED",
+  "implementation": {
+    "evaluator": "tools/keirin_rider_circumference_development_evaluator_v1.py",
+    "selftest_spec": "tools/keirin_rider_circumference_development_evaluator_selftest_v1.py",
+    "development_window_lock": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_DEVELOPMENT_EVAL_WINDOW_PREOUTCOME_LOCK_20260908_v1.json",
+    "calibration_prespec": "v3/historical_all_market/research_candidates/KEIRIN_S0_POST_200R_CALIBRATION_RANKING_DIAGNOSTIC_PRESPEC_20260902_v1.json"
+  },
+  "frozen_math": {
+    "primary_metric": "WINNER_LOG_LOSS",
+    "primary_improvement": "S0_LOG_LOSS_MINUS_CHALLENGER_LOG_LOSS",
+    "secondary_winner_brier": "MEAN_OVER_RACES_OF_SUM_OVER_CARS_(P_MINUS_Y)^2",
+    "calibration_unit": "CAR_LEVEL_BINARY_WINNER_EVENT",
+    "calibration_bins": [
+      [
+        0,
+        0.1
+      ],
+      [
+        0.1,
+        0.15
+      ],
+      [
+        0.15,
+        0.2
+      ],
+      [
+        0.2,
+        0.25
+      ],
+      [
+        0.25,
+        0.3
+      ],
+      [
+        0.3,
+        0.4
+      ],
+      [
+        0.4,
+        1.0000000001
+      ]
+    ],
+    "calibration_bin_rule": "LEFT_CLOSED_RIGHT_OPEN_LAST_EFFECTIVELY_INCLUSIVE",
+    "calibration_min_interpretive_bin_n": 20,
+    "small_bins": "REPORT_BUT_DO_NOT_MERGE_POSTHOC",
+    "bootstrap_unit": "RACE",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20260907,
+    "bootstrap_interval": "PERCENTILE_95",
+    "bootstrap_percentile_interpolation": "LINEAR_POSITION_(N-1)*Q",
+    "development_window": "2026-09-16..2026-09-26 ALL DAY1 STARTS"
+  },
+  "future_execution_gates": [
+    "formal_support_gate_pass",
+    "calendar_definition_adopted",
+    "formula_frozen",
+    "development_membership_frozen_preoutcome",
+    "result_join_authorized",
+    "source_gates_pass",
+    "final_untouched_holdout_excluded",
+    "exact frozen race-id membership match",
+    "S0 beta remains 0.22260435254784533"
+  ],
+  "isolated_reproduction": {
+    "synthetic_races": 20,
+    "s0_winner_log_loss": 0.916290731874155,
+    "challenger_winner_log_loss": 0.6931471805599453,
+    "primary_improvement": 0.2231435513142097,
+    "s0_winner_brier": 0.5,
+    "challenger_winner_brier": 0.34500000000000003,
+    "bootstrap_lower_2_5": 0.2231435513142097,
+    "bootstrap_upper_97_5": 0.2231435513142097
+  },
+  "full_advancement_decision_implemented": false,
+  "reason_full_advancement_not_implemented": "Additional frozen source/concentration/negative-slice requirements remain separate; secondary metrics cannot rescue failed primary.",
+  "direct_checked_in_selftest_execution": false,
+  "real_result_accessed": false,
+  "payout_accessed": false,
+  "live_odds_accessed": false,
+  "prediction_execution_authorized_now": false,
+  "formula_fit_authorized_now": false,
+  "runtime": false
+}
