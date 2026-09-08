@@ -1,0 +1,56 @@
+{
+  "record": "KEIRIN_LINE_RELATION_ENCODER_IMPLEMENTATION_RECEIPT_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_SELFTEST_PASS_NO_OUTCOME_ACCESS",
+  "implementation": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+  "selftest": "v3/historical_all_market/new_lineage/line_relation_features_selftest_v1.py",
+  "implementation_commit": "8079ada5f28383f1e60e86daf2f63a991b56a13e",
+  "selftest_commit": "ea98ddd04977bc314d0bf66ca179e8a808396f05",
+  "purpose": "Provide a deterministic low-DOF bridge from admitted PRE line topology to C1/N1 runner/pair/rank3 relation features.",
+  "encoded_own_features": [
+    "line_position_index",
+    "line_size",
+    "is_singleton",
+    "is_line_head",
+    "is_bante",
+    "is_third",
+    "is_rear_position_3plus",
+    "num_lines"
+  ],
+  "encoded_pair_features": [
+    "same_line",
+    "within_line_position_relation_known",
+    "position_delta_candidate_minus_context",
+    "candidate_directly_ahead_of_context",
+    "candidate_directly_behind_context",
+    "candidate_is_line_head_of_context",
+    "context_is_line_head_of_candidate",
+    "candidate_is_singleton",
+    "context_is_singleton",
+    "candidate_line_size",
+    "context_line_size"
+  ],
+  "encoded_rank3_context": "Candidate-to-first and candidate-to-second pair relations plus first_second_same_line.",
+  "fail_closed_checks": [
+    "at least three runners",
+    "unique positive car numbers",
+    "nonempty line groups",
+    "positive declared line sizes",
+    "contiguous zero-based line positions",
+    "declared size equals observed group membership",
+    "singleton iff line_size equals 1",
+    "cross-line position delta neutralized rather than inventing numeric relation"
+  ],
+  "local_execution": {
+    "status": "PASS",
+    "method": "Executed the exact source body used for the GitHub implementation write against a 7-rider synthetic PRE-only fixture and fail-closed malformed-topology case.",
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_accessed": false,
+    "network_access": false
+  },
+  "scientific_status": "ENGINEERING_COMPONENT_ONLY_NOT_A_FITTED_OR_VALIDATED_MODEL",
+  "coefficients_fitted": false,
+  "model_promotion": false,
+  "owner_action_required_now": false
+}
