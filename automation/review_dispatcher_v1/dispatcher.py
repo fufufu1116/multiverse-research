@@ -120,7 +120,11 @@ def discover_request(
     )
     validate_request(request)
     request_sha256 = sha256_json(request)
-    claim = verify_request_claim(request=request, fetch=fetch)
+
+    dispatcher_ref = os.environ.get("MULTIVERSE_DISPATCHER_REF", "")
+    claim = None
+    if dispatcher_ref:
+        claim = verify_request_claim(request=request, fetch=fetch)
 
     marker = result_marker(
         request["request_id"],
@@ -162,13 +166,10 @@ def discover_request(
         "request_comment": request_comment,
         "request_sha256": request_sha256,
         "request_comment_author": (comment.get("user") or {}).get("login"),
-        "request_claim_ref": claim["claim_ref"],
-        "request_claim_blob_sha1": claim["claim_blob_sha1"],
+        "request_claim_ref": claim["claim_ref"] if claim else "",
+        "request_claim_blob_sha1": claim["claim_blob_sha1"] if claim else "",
         "request": request,
-        "dispatcher_ref": os.environ.get(
-            "MULTIVERSE_DISPATCHER_REF",
-            "",
-        ),
+        "dispatcher_ref": dispatcher_ref,
     }
 
 
@@ -210,6 +211,10 @@ def main() -> int:
         or ""
     )
     require(bool(head), "BUILD_COMMIT_REQUIRED")
+    require(
+        bool(os.environ.get("MULTIVERSE_DISPATCHER_REF", "")),
+        "DISPATCHER_REF_REQUIRED_FOR_CLAIM_ENFORCEMENT",
+    )
 
     job = discover_request(
         repo=args.repo,
