@@ -1,115 +1,94 @@
 from __future__ import annotations
 
 import json
-import re
-import sys
 from pathlib import Path
+
+from automation.review_dispatcher_v1 import validator_legacy_v1 as _legacy
 
 ROOT = Path(__file__).resolve().parent
 REPO_ROOT = ROOT.parents[1]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
 
-from automation.review_dispatcher_v1.model import validate_request
-
-LAB_PIPELINE = (
-    REPO_ROOT
-    / "buildkite"
-    / "review_dispatcher_v1"
-    / "MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml"
-)
-AUDITOR_PIPELINE = (
-    REPO_ROOT
-    / "buildkite"
-    / "review_dispatcher_v1"
-    / "MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml"
-)
-BASELINE = (
-    REPO_ROOT
-    / "governance"
-    / "MULTIVERSE_COMMON_OPERATING_BASELINE_v1.json"
-)
-CONVERGENCE = (
-    REPO_ROOT
-    / "governance"
-    / "MULTIVERSE_CROSS_CHAT_CAPABILITY_CONVERGENCE_v1.md"
+LEGACY_MODEL_TOKENS = (
+    "supersedes_request_sha256",
+    "SAME_HEAD_SUPERSESSION_CHAIN_INVALID",
+    "sha256_json(request)",
+    "def github_full_pr_binding(",
+    "PR_DRAFT_BOOL",
+    "PR_MERGED_BOOL",
+    "PR_HEAD_SHA",
+    "PR_BASE_SHA",
+    "def github_commit_tree_sha(",
+    "COMMIT_TREE_SHA",
+    "def github_branch_commit_sha(",
+    "BRANCH_COMMIT_SHA",
+    "def github_comment_id(",
+    "PAGINATED_RESPONSE_ITEM_NOT_OBJECT",
+    "def lane_result_outer_app_trusted(",
+    "if app is None:",
+    "return lane_result_outer_app_trusted(comment, lane)",
 )
 
-SHA40_RE = re.compile(r"(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])")
+WRAPPER_TOKENS = (
+    "from automation.review_dispatcher_v1 import model_legacy_v1 as _legacy",
+    "exact_current_owner_requests_v6",
+    "latest_exact_current_owner_request_v6",
+)
+
+ARBITRATION_TOKENS = (
+    "generations.setdefault(predecessor, []).append",
+    "winner = generation[0]",
+    "SUPERSESSION_COMMENT_ORDER_INVALID",
+    "ORPHANED_OR_LOER_DERIVED_SUPERSESSION",
+    "DUPLICATE_EXACT_REQUEST_ID",
+)
+
+# Backward-compatible spelling for the actual v6 source token.
+ARBITRATION_REQUIRED_ALTERNATIVES = {
+    "ORPHANED_OR_LOER_DERIVED_SUPERSESSION": (
+        "ORPHANED_OR_LOER_DERIVED_SUPERSESSION",
+        "ORPHANED_OR_LOSER_DERIVED_SUPERSESSION",
+    )
+}
 
 
-def _nonauthority() -> dict:
-    return {
-        "provider_resource_mutation": False,
-        "deploy": False,
-        "database_mutation": False,
-        "provider_effect_enablement": False,
-        "runtime_activation_bridge_enablement": False,
-        "runtime_activation": False,
-        "production_credentials": False,
-        "production_deployment": False,
-        "protected_data": False,
-        "live_business_effect": False,
-        "additional_spend": False,
-        "merge": False,
-        "main_mutation": False,
-        "ruleset_mutation": False,
-        "workflow_dispatch_rerun": False,
-    }
-
-
-def _sample_request() -> dict:
-    return {
-        "schema": "MULTIVERSE_REVIEW_REQUEST_v1",
-        "request_id": "validator-sample",
-        "lane": "LAB",
-        "mode": "REPOSITORY_ONLY",
-        "repo": "fufufu1116/multiverse-research",
-        "pr": 1,
-        "head": "a" * 40,
-        "tree": "b" * 40,
-        "base": "c" * 40,
-        "main": "d" * 40,
-        "proof_ceiling": "VALIDATOR_SAMPLE_ONLY",
-        "execution_state": "VALIDATOR_SAMPLE",
-        "supersedes_request_sha256": None,
-        "recipe": {
-            "subtrees": {},
-            "durable_comments": [],
-            "source_rules": [],
-            "unittest_modules": [],
-            "validators": [],
-            "secret_scan_paths": [],
-            "forbidden_patterns": [],
-            "http": None,
-        },
-        "upstream": {},
-        "nonauthority": _nonauthority(),
-    }
+def _record_token(
+    checks: dict[str, str],
+    findings: list[str],
+    *,
+    scope: str,
+    source: str,
+    token: str,
+) -> None:
+    name = f"{scope}:{token[:32]}"
+    alternatives = ARBITRATION_REQUIRED_ALTERNATIVES.get(token, (token,))
+    if any(item in source for item in alternatives):
+        checks[name] = "PASS"
+    else:
+        checks[name] = "FIX_REQUIRED"
+        findings.append(f"{name}: missing")
 
 
 def validate() -> dict:
-    findings: list[str] = []
-    checks: dict[str, str] = {}
-
-    required_files = [
-        ROOT / "__init__.py",
-        ROOT / "model.py",
-        ROOT / "dispatcher.py",
-        ROOT / "review.py",
-        ROOT / "github_app.py",
-        ROOT / "publisher.py",
-        ROOT / "t2.py",
-        ROOT / "test_dispatcher.py",
-        ROOT / "README.md",
-        LAB_PIPELINE,
-        AUDITOR_PIPELINE,
-        BASELINE,
-        CONVERGENCE,
+    result = _legacy.validate()
+    checks = dict(result.get("checks") or {})
+    findings = [
+        item
+        for item in (result.get("findings") or [])
+        if not item.startswith("model:request_identity:")
     ]
+    for name in list(checks):
+        if name.startswith("model:request_identity:"):
+            del checks[name]
 
+    required_files = (
+        ROOT / "model_legacy_v1.py",
+        ROOT / "request_arbitration_v6.py",
+        ROOT / "test_request_arbitration_v6.py",
+        ROOT / "test_dispatcher_legacy_v1.py",
+        ROOT / "validator_legacy_v1.py",
+    )
     for path in required_files:
-        name = f"file:{path.relative_to(REPO_ROOT)}"
+        name = f"v6:file:{path.name}"
         if path.is_file():
             checks[name] = "PASS"
         else:
@@ -118,14 +97,15 @@ def validate() -> dict:
 
     for path in (
         ROOT / "model.py",
-        ROOT / "dispatcher.py",
-        ROOT / "review.py",
-        ROOT / "github_app.py",
-        ROOT / "publisher.py",
-        ROOT / "t2.py",
+        ROOT / "model_legacy_v1.py",
+        ROOT / "request_arbitration_v6.py",
+        ROOT / "test_request_arbitration_v6.py",
         ROOT / "test_dispatcher.py",
+        ROOT / "test_dispatcher_legacy_v1.py",
+        ROOT / "validator.py",
+        ROOT / "validator_legacy_v1.py",
     ):
-        name = f"compile:{path.name}"
+        name = f"v6:compile:{path.name}"
         try:
             compile(path.read_text(), str(path), "exec")
             checks[name] = "PASS"
@@ -133,483 +113,55 @@ def validate() -> dict:
             checks[name] = "FIX_REQUIRED"
             findings.append(f"{name}: {exc!r}")
 
-    try:
-        validate_request(_sample_request())
-        checks["sample_request_validation"] = "PASS"
-    except Exception as exc:
-        checks["sample_request_validation"] = "FIX_REQUIRED"
-        findings.append(f"sample_request_validation: {exc!r}")
-
-    lab = LAB_PIPELINE.read_text()
-    auditor = AUDITOR_PIPELINE.read_text()
-
-    for label, text in (
-        ("lab", lab),
-        ("auditor", auditor),
-    ):
-        if SHA40_RE.search(text):
-            checks[f"{label}:no_job_specific_sha"] = "FIX_REQUIRED"
-            findings.append(
-                f"{label}:no_job_specific_sha: fixed pipeline contains SHA40"
-            )
-        else:
-            checks[f"{label}:no_job_specific_sha"] = "PASS"
-
-        for forbidden in (
-            "onrender.com",
-            "DATABASE_URL",
-            "reviewed_pr =",
-            "reviewed_head =",
-            "request_comment =",
-        ):
-            name = f"{label}:no_job_constant:{forbidden}"
-            if forbidden not in text:
-                checks[name] = "PASS"
-            else:
-                checks[name] = "FIX_REQUIRED"
-                findings.append(f"{name}: found")
-
-        for required in (
-            "git fetch origin main",
-            "git archive",
-            "dispatcher.py",
-            "review.py",
-            "review_job.json",
-            "review_artifact.json",
-            "git init -q .mv_dispatcher_source",
-            "JOB_DISPATCHER_REF",
-        ):
-            name = f"{label}:required:{required}"
-            if required in text:
-                checks[name] = "PASS"
-            else:
-                checks[name] = "FIX_REQUIRED"
-                findings.append(f"{name}: missing")
-
-        bootstrap_ref = 'DISPATCHER_REF="$(git rev-parse FETCH_HEAD)"'
-        if bootstrap_ref in text:
-            checks[f"{label}:bootstrap_ref_from_fetch_head"] = "PASS"
-        else:
-            checks[f"{label}:bootstrap_ref_from_fetch_head"] = "FIX_REQUIRED"
-            findings.append(
-                f"{label}:bootstrap_ref_from_fetch_head: missing"
-            )
-
-        defective_bootstrap_ref = 'git rev-parse origin/main'
-        if defective_bootstrap_ref in text:
-            checks[f"{label}:no_defective_origin_main_ref"] = "FIX_REQUIRED"
-            findings.append(
-                f"{label}:no_defective_origin_main_ref: found"
-            )
-        else:
-            checks[f"{label}:no_defective_origin_main_ref"] = "PASS"
-
-        runtime_names = (
-            "DISPATCHER_REF",
-            "FRESH_DISPATCHER_REF",
-            "JOB_DISPATCHER_REF",
-            "BUILDKITE_COMMIT",
-        )
-        unescaped_runtime_vars = []
-        for runtime_name in runtime_names:
-            escaped = "$$" + runtime_name
-            unescaped = "$" + runtime_name
-            if unescaped in text.replace(escaped, ""):
-                unescaped_runtime_vars.append(unescaped)
-
-        if unescaped_runtime_vars:
-            checks[f"{label}:runtime_shell_vars_escaped"] = "FIX_REQUIRED"
-            findings.append(
-                f"{label}:runtime_shell_vars_escaped: "
-                + ",".join(unescaped_runtime_vars)
-            )
-        else:
-            checks[f"{label}:runtime_shell_vars_escaped"] = "PASS"
-
-        for runtime_name in runtime_names:
-            escaped = "$$" + runtime_name
-            name = f"{label}:runtime_var_present:{runtime_name}"
-            if escaped in text:
-                checks[name] = "PASS"
-            else:
-                checks[name] = "FIX_REQUIRED"
-                findings.append(f"{name}: missing")
-
-        for required in (
-            "rm -f .mv_review_pass",
-            "if PYTHONPATH=.mv_dispatcher",
-            "touch .mv_review_pass",
-            "if [ -f review_artifact.json ]; then",
-            "test -f .mv_review_pass",
-        ):
-            name = f"{label}:failure_artifact_required:{required[:32]}"
-            if required in text:
-                checks[name] = "PASS"
-            else:
-                checks[name] = "FIX_REQUIRED"
-                findings.append(f"{name}: missing")
-
-        try:
-            review_index = text.index("review.py")
-            job_upload_index = text.index(
-                "buildkite-agent artifact upload",
-                review_index,
-            )
-            artifact_guard_index = text.index(
-                "if [ -f review_artifact.json ]; then"
-            )
-            final_status_index = text.index("test -f .mv_review_pass")
-            artifact_order_ok = (
-                review_index
-                < job_upload_index
-                < artifact_guard_index
-                < final_status_index
-            )
-        except ValueError:
-            artifact_order_ok = False
-
-        if artifact_order_ok:
-            checks[f"{label}:failure_artifact_order"] = "PASS"
-        else:
-            checks[f"{label}:failure_artifact_order"] = "FIX_REQUIRED"
-            findings.append(f"{label}:failure_artifact_order: invalid")
-
-        bundle_name = "review_dispatcher_bundle.tgz"
-        if bundle_name in text:
-            checks[f"{label}:no_audit_executable_bundle_handoff"] = "FIX_REQUIRED"
-            findings.append(
-                f"{label}:no_audit_executable_bundle_handoff: found"
-            )
-        else:
-            checks[f"{label}:no_audit_executable_bundle_handoff"] = "PASS"
-
-        trusted_fetch = "git -C .mv_dispatcher_source fetch -q --depth=1 origin main"
-        if trusted_fetch in text:
-            checks[f"{label}:secret_step_fresh_canonical_fetch"] = "PASS"
-        else:
-            checks[f"{label}:secret_step_fresh_canonical_fetch"] = "FIX_REQUIRED"
-            findings.append(
-                f"{label}:secret_step_fresh_canonical_fetch: missing"
-            )
-
-    dispatcher_source = (ROOT / "dispatcher.py").read_text()
-    for token in (
-        "PR_SUMMARY_ITEM_OBJECT",
-        "PR_SUMMARY_NUMBER",
-        'f"https://api.github.com/repos/{repo}/pulls/{pr_number}"',
-        "github_full_pr_binding(",
-        "github_commit_tree_sha(",
-        "github_branch_commit_sha(",
-        "COMMENTS_ITEM_OBJECT",
-        "github_comment_id(",
-    ):
-        name = f"dispatcher:api_contract:{token[:32]}"
-        if token in dispatcher_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
-
-    for forbidden in (
-        'pr["merged"]',
-        'pr["draft"]',
-        'pr["state"]',
-        'commit["commit"]',
-        'main["commit"]',
-    ):
-        name = f"dispatcher:no_raw_external_index:{forbidden}"
-        if forbidden not in dispatcher_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: found")
-
-    review_source = (ROOT / "review.py").read_text()
-    for token in (
-        '[sys.executable, "-m", "unittest", module, "-v"]',
-        "_run_candidate_process(",
-        "_candidate_env(",
-        "_repo_file(",
-        "latest_exact_current_owner_request(",
-        "request_sha256",
-        "lab_request_sha256",
-        "resolve_public_https_target(base_url)",
-        "_PinnedHTTPSConnection(",
-        "github_full_pr_binding(",
-        "github_commit_tree_sha(",
-        "github_branch_commit_sha(",
-        'checks["fresh_binding_contract"]',
-        "github_comment_id(",
-        'lane_result_outer_app_trusted(lab_comment, "LAB")',
-    ):
-        name = f"review:hardening:{token[:32]}"
-        if token in review_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
-
-    for forbidden in (
-        'pr["head"]',
-        'pr["base"]',
-        'commit["commit"]',
-        'main_obj["commit"]',
-        'int(item["id"])',
-        "lab_app == LAB_APP_SLUG",
-    ):
-        name = f"review:no_raw_external_index:{forbidden}"
-        if forbidden not in review_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: found")
-
-    publisher_source = (ROOT / "publisher.py").read_text()
-    for token in (
-        "github_full_pr_binding(",
-        "github_commit_tree_sha(",
-        "github_branch_commit_sha(",
-        "github_comment_id(",
-    ):
-        name = f"publisher:api_contract:{token[:32]}"
-        if token in publisher_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
-
-    for forbidden in (
-        'pr["merged"]',
-        'pr["draft"]',
-        'pr["state"]',
-        'pr["head"]',
-        'pr["base"]',
-        'commit["commit"]',
-        'main["commit"]',
-        "comment['id']",
-        'result["id"]',
-    ):
-        name = f"publisher:no_raw_external_index:{forbidden}"
-        if forbidden not in publisher_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: found")
-
-    t2_source = (ROOT / "t2.py").read_text()
-    for token in (
-        "github_full_pr_binding(",
-        "github_commit_tree_sha(",
-        "github_branch_commit_sha(",
-        "github_comment_id(",
-        "required_positive_int(",
-        'lane_result_outer_app_trusted(auditor_comment, "AUDITOR")',
-        'lane_result_outer_app_trusted(lab_comment, "LAB")',
-    ):
-        name = f"t2:api_contract:{token[:32]}"
-        if token in t2_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
-
-    for forbidden in (
-        'pr["merged"]',
-        'pr["draft"]',
-        'pr["state"]',
-        'pr["head"]',
-        'pr["base"]',
-        'commit["commit"]',
-        'main["commit"]',
-        'int(item["id"])',
-        "comment['id']",
-        'result["id"]',
-        'receipt["published_comment_id"]',
-        "outer_app == AUDITOR_APP_SLUG",
-        "lab_app == LAB_APP_SLUG",
-    ):
-        name = f"t2:no_raw_external_index:{forbidden}"
-        if forbidden not in t2_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: found")
-
-    github_app_source = (ROOT / "github_app.py").read_text()
-    for token in (
-        "INSTALLATION_RESPONSE_OBJECT",
-        "INSTALLATION_ID",
-        "INSTALLATION_TOKEN_RESPONSE_OBJECT",
-        "INSTALLATION_TOKEN",
-    ):
-        name = f"github_app:api_contract:{token[:32]}"
-        if token in github_app_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
-
-    for forbidden in (
-        "installation['id']",
-        'token_result["token"]',
-    ):
-        name = f"github_app:no_raw_external_index:{forbidden}"
-        if forbidden not in github_app_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: found")
-
-    model_source = (ROOT / "model.py").read_text()
-    for token in (
-        "supersedes_request_sha256",
-        "SAME_HEAD_SUPERSESSION_CHAIN_INVALID",
-        "sha256_json(request)",
-        "def github_full_pr_binding(",
-        "PR_DRAFT_BOOL",
-        "PR_MERGED_BOOL",
-        "PR_HEAD_SHA",
-        "PR_BASE_SHA",
-        "def github_commit_tree_sha(",
-        "COMMIT_TREE_SHA",
-        "def github_branch_commit_sha(",
-        "BRANCH_COMMIT_SHA",
-        "def github_comment_id(",
-        "PAGINATED_RESPONSE_ITEM_NOT_OBJECT",
-        "def lane_result_outer_app_trusted(",
-        "if app is None:",
-        "return lane_result_outer_app_trusted(comment, lane)",
-    ):
-        name = f"model:request_identity:{token[:32]}"
-        if token in model_source:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
-
-    if "--lane LAB" in lab:
-        checks["lab:lane_fixed"] = "PASS"
-    else:
-        checks["lab:lane_fixed"] = "FIX_REQUIRED"
-        findings.append("lab:lane_fixed: missing")
-
-    if lab.count("checkout:\n      skip: true") == 1:
-        checks["lab:publisher_checkout_skipped"] = "PASS"
-    else:
-        checks["lab:publisher_checkout_skipped"] = "FIX_REQUIRED"
-        findings.append("lab:publisher_checkout_skipped: count mismatch")
-
-    if "MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY" in lab:
-        checks["lab:publisher_key_present"] = "PASS"
-    else:
-        checks["lab:publisher_key_present"] = "FIX_REQUIRED"
-        findings.append("lab:publisher_key_present: missing")
-
-    if "--lane AUDITOR" in auditor:
-        checks["auditor:lane_fixed"] = "PASS"
-    else:
-        checks["auditor:lane_fixed"] = "FIX_REQUIRED"
-        findings.append("auditor:lane_fixed: missing")
-
-    if auditor.count("checkout:\n      skip: true") == 2:
-        checks["auditor:publisher_t2_checkout_skipped"] = "PASS"
-    else:
-        checks["auditor:publisher_t2_checkout_skipped"] = "FIX_REQUIRED"
-        findings.append(
-            "auditor:publisher_t2_checkout_skipped: count mismatch"
+    legacy_source = (ROOT / "model_legacy_v1.py").read_text()
+    for token in LEGACY_MODEL_TOKENS:
+        _record_token(
+            checks,
+            findings,
+            scope="model_legacy:request_identity",
+            source=legacy_source,
+            token=token,
         )
 
-    for required in (
-        "MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY",
-        "publisher.py",
-        "t2.py",
-        "t2_publish_receipt.json",
-    ):
-        name = f"auditor:required:{required}"
-        if required in auditor:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
+    wrapper_source = (ROOT / "model.py").read_text()
+    for token in WRAPPER_TOKENS:
+        _record_token(
+            checks,
+            findings,
+            scope="model_wrapper:v6",
+            source=wrapper_source,
+            token=token,
+        )
 
-    baseline = json.loads(BASELINE.read_text())
-    expected_baseline = {
-        "schema": "MULTIVERSE_COMMON_OPERATING_BASELINE_v1",
-        "status": "CANDIDATE_NOT_YET_ADOPTED",
-        "baseline_version": "2026-09-07.review-dispatcher-v1",
-        "migration_issue": 152,
-        "convergence_issue": 93,
-        "runtime": "OFF",
-    }
-    for key, expected in expected_baseline.items():
-        name = f"baseline:{key}"
-        if baseline.get(key) == expected:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(
-                f"{name}: {baseline.get(key)!r} != {expected!r}"
-            )
+    arbitration_source = (ROOT / "request_arbitration_v6.py").read_text()
+    for token in ARBITRATION_TOKENS:
+        _record_token(
+            checks,
+            findings,
+            scope="request_arbitration_v6",
+            source=arbitration_source,
+            token=token,
+        )
 
-    policy = baseline.get("shared_pipeline_policy") or {}
-    if (
-        policy.get("during_migration")
-        == "single_writer_control_plane_only"
-        and policy.get("after_installation")
-        == "immutable_shared_pipeline_definition"
-        and policy.get("per_chat_step_replacement")
-        == "deprecated_after_installation"
-    ):
-        checks["baseline:pipeline_policy"] = "PASS"
-    else:
-        checks["baseline:pipeline_policy"] = "FIX_REQUIRED"
-        findings.append("baseline:pipeline_policy: mismatch")
-
-    resume = baseline.get("resume_contract") or {}
-    if (
-        resume.get("fresh_read_required") is True
-        and resume.get("read_convergence_issue_93") is True
-        and resume.get("consume_latest_adopted_common_baseline") is True
-        and resume.get("stale_local_common_procedure_must_yield") is True
-    ):
-        checks["baseline:resume_contract"] = "PASS"
-    else:
-        checks["baseline:resume_contract"] = "FIX_REQUIRED"
-        findings.append("baseline:resume_contract: mismatch")
-
-    nonauth = baseline.get("nonauthority") or {}
-    if nonauth and all(value is False for value in nonauth.values()):
-        checks["baseline:nonauthority"] = "PASS"
-    else:
-        checks["baseline:nonauthority"] = "FIX_REQUIRED"
-        findings.append("baseline:nonauthority: not all false")
-
-    convergence = CONVERGENCE.read_text()
+    test_wrapper = (ROOT / "test_dispatcher.py").read_text()
     for token in (
-        "latest adopted common operating baseline",
-        "older chats must stop using the superseded common interface",
-        "research chats do not replace Steps",
-        "routine review YAML copy/paste count is zero",
-        "Runtime remains OFF",
+        "class HardeningTests(_legacy.HardeningTests)",
+        "self.assertEqual(cid, 10)",
+        'self.assertEqual(request["request_id"], "first-chain")',
     ):
-        name = f"convergence:{token[:30]}"
-        if token in convergence:
-            checks[name] = "PASS"
-        else:
-            checks[name] = "FIX_REQUIRED"
-            findings.append(f"{name}: missing")
+        _record_token(
+            checks,
+            findings,
+            scope="test_dispatcher:v6_compat",
+            source=test_wrapper,
+            token=token,
+        )
 
-    return {
-        "schema": "MULTIVERSE_REVIEW_DISPATCHER_VALIDATOR_v1",
-        "verdict": "PASS" if not findings else "FIX_REQUIRED",
-        "checks": checks,
-        "findings": findings,
-        "migration_issue": 152,
-        "shared_pipeline_mutation_authorized": False,
-        "merge_authorized": False,
-        "main_mutation_authorized": False,
-        "runtime": "OFF",
-    }
+    result = dict(result)
+    result["checks"] = checks
+    result["findings"] = findings
+    result["verdict"] = "PASS" if not findings else "FIX_REQUIRED"
+    return result
 
 
 if __name__ == "__main__":
