@@ -947,5 +947,61 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(forward, reverse)
 
 
+    def test_60_task_v2_source_ref_requires_declared_source_provenance(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"] = ["SOURCE_REF"]
+        bound_task["evidence_manifest"][0].update(
+            {
+                "primitive": "SOURCE_REF",
+                "ref": "manifest-only-source",
+                "sha256": "b" * 64,
+            }
+        )
+        value = bind_result_to_task(
+            result(submission_id="v2-source-not-in-source-refs"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"].update(
+            {
+                "primitive": "SOURCE_REF",
+                "ref": "manifest-only-source",
+                "sha256": "b" * 64,
+            }
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_61_task_v2_public_evidence_requires_manifest_and_source_digest(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"] = ["PUBLIC_EVIDENCE_REF"]
+        bound_task["evidence_manifest"][0].update(
+            {
+                "primitive": "PUBLIC_EVIDENCE_REF",
+                "ref": "packet-v1",
+                "sha256": "a" * 64,
+            }
+        )
+        value = bind_result_to_task(
+            result(submission_id="v2-public-exact"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"].update(
+            {
+                "primitive": "PUBLIC_EVIDENCE_REF",
+                "ref": "packet-v1",
+                "sha256": "a" * 64,
+            }
+        )
+        self.assertEqual(
+            validate_result_for_task(bound_task, value),
+            value,
+        )
+
+        broken = copy.deepcopy(value)
+        broken["findings"][0]["evidence"]["sha256"] = "c" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, broken)
+
+
 if __name__ == "__main__":
     unittest.main()
