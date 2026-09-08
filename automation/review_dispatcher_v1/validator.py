@@ -12,6 +12,17 @@ PUBLISHER_LEGACY_REQUIRED = (
     "github_branch_commit_sha(",
     "github_comment_id(",
 )
+PUBLISHER_LEGACY_FORBIDDEN = (
+    'pr["merged"]',
+    'pr["draft"]',
+    'pr["state"]',
+    'pr["head"]',
+    'pr["base"]',
+    'commit["commit"]',
+    'main["commit"]',
+    "comment['id']",
+    'result["id"]',
+)
 PUBLISHER_WRAPPER_REQUIRED = (
     "assert_job_request_still_canonical(",
     "assert_published_result_is_canonical(",
@@ -25,6 +36,21 @@ T2_LEGACY_REQUIRED = (
     "required_positive_int(",
     'lane_result_outer_app_trusted(auditor_comment, "AUDITOR")',
     'lane_result_outer_app_trusted(lab_comment, "LAB")',
+)
+T2_LEGACY_FORBIDDEN = (
+    'pr["merged"]',
+    'pr["draft"]',
+    'pr["state"]',
+    'pr["head"]',
+    'pr["base"]',
+    'commit["commit"]',
+    'main["commit"]',
+    'int(item["id"])',
+    "comment['id']",
+    'result["id"]',
+    'receipt["published_comment_id"]',
+    "outer_app == AUDITOR_APP_SLUG",
+    "lab_app == LAB_APP_SLUG",
 )
 T2_WRAPPER_REQUIRED = (
     "assert_referenced_result_is_canonical(",
@@ -54,6 +80,16 @@ def _record_tokens(checks, findings, *, scope, source, tokens):
         else:
             checks[key] = "FIX_REQUIRED"
             findings.append(f"{key}: missing")
+
+
+def _record_forbidden(checks, findings, *, scope, source, tokens):
+    for token in tokens:
+        key = f"{scope}:no_raw:{token[:32]}"
+        if token not in source:
+            checks[key] = "PASS"
+        else:
+            checks[key] = "FIX_REQUIRED"
+            findings.append(f"{key}: found")
 
 
 def validate() -> dict:
@@ -94,41 +130,18 @@ def validate() -> dict:
             checks[f"integrated_arch:compile:{name}"] = "FIX_REQUIRED"
             findings.append(f"integrated_arch:compile:{name}: {exc!r}")
 
-    _record_tokens(
-        checks,
-        findings,
-        scope="integrated:publisher_legacy",
-        source=(ROOT / "publisher_legacy_v1.py").read_text(),
-        tokens=PUBLISHER_LEGACY_REQUIRED,
-    )
-    _record_tokens(
-        checks,
-        findings,
-        scope="integrated:publisher_wrapper",
-        source=(ROOT / "publisher.py").read_text(),
-        tokens=PUBLISHER_WRAPPER_REQUIRED,
-    )
-    _record_tokens(
-        checks,
-        findings,
-        scope="integrated:t2_legacy",
-        source=(ROOT / "t2_legacy_v1.py").read_text(),
-        tokens=T2_LEGACY_REQUIRED,
-    )
-    _record_tokens(
-        checks,
-        findings,
-        scope="integrated:t2_wrapper",
-        source=(ROOT / "t2.py").read_text(),
-        tokens=T2_WRAPPER_REQUIRED,
-    )
+    publisher_legacy = (ROOT / "publisher_legacy_v1.py").read_text()
+    t2_legacy = (ROOT / "t2_legacy_v1.py").read_text()
+
+    _record_tokens(checks, findings, scope="integrated:publisher_legacy", source=publisher_legacy, tokens=PUBLISHER_LEGACY_REQUIRED)
+    _record_forbidden(checks, findings, scope="integrated:publisher_legacy", source=publisher_legacy, tokens=PUBLISHER_LEGACY_FORBIDDEN)
+    _record_tokens(checks, findings, scope="integrated:publisher_wrapper", source=(ROOT / "publisher.py").read_text(), tokens=PUBLISHER_WRAPPER_REQUIRED)
+    _record_tokens(checks, findings, scope="integrated:t2_legacy", source=t2_legacy, tokens=T2_LEGACY_REQUIRED)
+    _record_forbidden(checks, findings, scope="integrated:t2_legacy", source=t2_legacy, tokens=T2_LEGACY_FORBIDDEN)
+    _record_tokens(checks, findings, scope="integrated:t2_wrapper", source=(ROOT / "t2.py").read_text(), tokens=T2_WRAPPER_REQUIRED)
 
     replay_source = (ROOT / "combined_fault_replay_v1.py").read_text()
-    for token in (
-        "canonical_result",
-        "canonical_t2",
-        "receipt",
-    ):
+    for token in ("canonical_result", "canonical_t2", "receipt"):
         key = f"integrated:replay:{token}"
         if token in replay_source:
             checks[key] = "PASS"
