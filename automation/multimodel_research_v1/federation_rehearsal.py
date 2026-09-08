@@ -307,12 +307,6 @@ def build_dual_provider_federation_rehearsal(
             gemini_rehearsal["pilot_matrix_sha256"],
         "claude_matrix_sha256":
             claude_rehearsal["pilot_matrix_sha256"],
-        "provider_neutral_prompt_sha256":
-            fanout["provider_neutral_prompt_sha256"],
-        "gemini_matrix_sha256":
-            gemini_rehearsal["pilot_matrix_sha256"],
-        "claude_matrix_sha256":
-            claude_rehearsal["pilot_matrix_sha256"],
         "gemini_rehearsal_sha256": sha256_json(gemini_rehearsal),
         "claude_rehearsal_sha256": sha256_json(claude_rehearsal),
         "dual_provider_fanout_sha256":
@@ -390,6 +384,12 @@ def build_dual_provider_federation_rehearsal_unchecked(
         "checked_at": CHECKED_AT,
         "gemini_model_id": gemini_matrix["assignment"]["target_model"],
         "claude_model_id": claude_matrix["assignment"]["target_model"],
+        "provider_neutral_prompt_sha256":
+            fanout["provider_neutral_prompt_sha256"],
+        "gemini_matrix_sha256":
+            gemini_rehearsal["pilot_matrix_sha256"],
+        "claude_matrix_sha256":
+            claude_rehearsal["pilot_matrix_sha256"],
         "gemini_rehearsal_sha256": sha256_json(gemini_rehearsal),
         "claude_rehearsal_sha256": sha256_json(claude_rehearsal),
         "dual_provider_fanout_sha256":
