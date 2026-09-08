@@ -36,6 +36,7 @@ REQUIRED = [
     ROOT / "launch_evidence.py",
     ROOT / "pilot_roundtrip.py",
     ROOT / "rehearsal_convergence.py",
+    ROOT / "dual_provider_research.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -177,6 +178,7 @@ def validate() -> dict:
     launch_evidence = (ROOT / "launch_evidence.py").read_text()
     pilot_roundtrip = (ROOT / "pilot_roundtrip.py").read_text()
     rehearsal_convergence = (ROOT / "rehearsal_convergence.py").read_text()
+    dual_provider_research = (ROOT / "dual_provider_research.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -795,6 +797,26 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_DUAL_PROVIDER_OFFLINE_RESEARCH_v1",
+        "build_dual_provider_offline_research",
+        "validate_dual_provider_offline_research",
+        "aggregate_results_v2",
+        "DIVERGENT",
+        "cross_model_divergence",
+        "cross_provider_divergence",
+        "UNRESOLVED_DIVERGENCE",
+        "MECHANICAL_FALSIFICATION_TASK",
+        "DUAL_PROVIDER_FORBIDDEN_TRUE",
+        "DUAL_PROVIDER_RUNTIME_NOT_OFF",
+        "dual_provider_offline_research_sha256",
+    ):
+        record(
+            f"dual_provider_research:{token}",
+            token in dual_provider_research,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -816,8 +838,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 384,
-        f"{test_count} != 384",
+        test_count == 396,
+        f"{test_count} != 396",
     )
 
     return {

@@ -162,6 +162,24 @@ Cross-provider tests require Gemini and Claude to receive the same exact canonic
 
 This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
 
+Dual-provider offline research disagreement
+
+`MULTIVERSE_DUAL_PROVIDER_OFFLINE_RESEARCH_v1` runs the dated Gemini and Claude catalog candidates through the same provider-neutral task/prompt contract and then exercises Aggregate v2 with intentionally opposed synthetic findings.
+
+It proves repository-only that:
+- two distinct providers and two distinct provider/model identities are counted;
+- both use the same exact provider-neutral prompt;
+- the dated model IDs remain exact;
+- SUPPORT vs OPPOSE across the two providers becomes `DIVERGENT`;
+- `cross_model_divergence=true`;
+- `cross_provider_divergence=true`;
+- same-role disagreement across different providers is not mislabeled role-conditioned divergence;
+- disagreement remains `UNRESOLVED_DIVERGENCE`;
+- the required next action is `MECHANICAL_FALSIFICATION_TASK`;
+- neither majority nor vote confers truth or adoption authority.
+
+The positions are intentionally synthetic. This demonstrates cross-model/cross-provider comparison mechanics only; it is not a claim about the providers' real opinions and performs no provider call.
+
 Synthetic usage-cost reconciliation
 
 The full offline rehearsal also binds the parsed synthetic response usage counts to the dated provider catalog and recomputes a **simulation-only** usage cost.

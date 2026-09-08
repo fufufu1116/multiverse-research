@@ -131,6 +131,11 @@ from automation.multimodel_research_v1.rehearsal_convergence import (
     provider_rehearsal_convergence_sha256,
     validate_provider_rehearsal_convergence,
 )
+from automation.multimodel_research_v1.dual_provider_research import (
+    build_dual_provider_offline_research,
+    dual_provider_offline_research_sha256,
+    validate_dual_provider_offline_research,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -12678,6 +12683,104 @@ class ContractTests(unittest.TestCase):
         first = provider_rehearsal_convergence_sha256(*args)
         cloned = tuple(copy.deepcopy(item) for item in args)
         second = provider_rehearsal_convergence_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def _dual_provider_research_fixture(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        record = build_dual_provider_offline_research(
+            bound_task,
+            snapshot,
+            schema,
+        )
+        return bound_task, snapshot, schema, record
+
+    def test_385_valid_dual_provider_offline_research(self):
+        args = self._dual_provider_research_fixture()
+        self.assertEqual(
+            validate_dual_provider_offline_research(*args),
+            args[-1],
+        )
+
+    def test_386_dual_provider_exact_provider_counts(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["provider_count"], 2)
+        self.assertEqual(value["provider_model_count"], 2)
+
+    def test_387_dual_provider_uses_catalog_model_ids(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["gemini_model_id"], "gemini-3.8-flash")
+        self.assertEqual(
+            value["claude_model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_388_dual_provider_binds_same_prompt_digest(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            len(value["provider_neutral_prompt_sha256"]),
+            64,
+        )
+
+    def test_389_dual_provider_detects_cross_provider_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["cross_provider_divergence"], True)
+
+    def test_390_dual_provider_detects_cross_model_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["cross_model_divergence"], True)
+
+    def test_391_dual_provider_not_role_conditioned_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["role_conditioned_divergence"], False)
+
+    def test_392_dual_provider_disagreement_is_descriptive_only(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["descriptive_label"], "DIVERGENT")
+        self.assertIs(value["majority_confers_truth"], False)
+        self.assertIs(value["vote_confers_authority"], False)
+
+    def test_393_dual_provider_routes_to_mechanical_falsification(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["unresolved_divergence_status"],
+            "UNRESOLVED_DIVERGENCE",
+        )
+        self.assertEqual(
+            value["required_next_action"],
+            "MECHANICAL_FALSIFICATION_TASK",
+        )
+
+    def test_394_dual_provider_rejects_aggregate_digest_tamper(self):
+        args = list(self._dual_provider_research_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["aggregate_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_offline_research(*args)
+
+    def test_395_dual_provider_grants_no_authority(self):
+        value = self._dual_provider_research_fixture()[-1]
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(value[key], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_396_dual_provider_digest_is_deterministic(self):
+        args = self._dual_provider_research_fixture()
+        first = dual_provider_offline_research_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_offline_research_sha256(*cloned)
         self.assertEqual(first, second)
 
 
