@@ -1,0 +1,138 @@
+{
+  "record": "KEIRIN_PRE_ONLY_DRY_RUN_KAWASAKI_20260830_R9_20260908_v1",
+  "status": "PASS_EXECUTION_SANITY_CHECK_REAL_PRE_RACECARD_NO_TARGET_RESULT_ACCESS",
+  "date_jst": "2026-09-08",
+  "purpose": "Sanity-check the frozen PRE-only rider x circumference challenger on one real 400m racecard. This is not an accuracy evaluation.",
+  "race": {
+    "date": "2026-08-30",
+    "venue": "川崎",
+    "circumference_m": 400,
+    "race_no": 9,
+    "class": "S級予選",
+    "source_url": "https://keirin.kdreams.jp/kawasaki/racedetail/3420260830010009/",
+    "allowed_fields_used": [
+      "car_no",
+      "rider_name",
+      "competition_score"
+    ],
+    "target_result_accessed": false,
+    "payout_used": false,
+    "odds_used": false,
+    "human_forecast_used": false
+  },
+  "model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+    "predictor": "tools/keirin_pre_only_rider_circumference_predictor_v1.py",
+    "beta": 0.22260435254784533,
+    "circumference_bucket": "400"
+  },
+  "predictions": [
+    {
+      "car_no": 1,
+      "reg": "015363",
+      "name": "田中 大我",
+      "score": 102.63,
+      "s0": 0.1159332,
+      "challenger": 0.1135574,
+      "change_pt": -0.23758,
+      "s0_rank": 3,
+      "challenger_rank": 3,
+      "supported": true
+    },
+    {
+      "car_no": 2,
+      "reg": "014356",
+      "name": "佐藤 一伸",
+      "score": 109.87,
+      "s0": 0.58095289,
+      "challenger": 0.5934994,
+      "change_pt": 1.25465,
+      "s0_rank": 1,
+      "challenger_rank": 1,
+      "supported": true
+    },
+    {
+      "car_no": 3,
+      "reg": "014221",
+      "name": "古川 尚耶",
+      "score": 98.05,
+      "s0": 0.04182466,
+      "challenger": 0.03964868,
+      "change_pt": -0.217598,
+      "s0_rank": 6,
+      "challenger_rank": 6,
+      "supported": false
+    },
+    {
+      "car_no": 4,
+      "reg": "015787",
+      "name": "中村 龍吉",
+      "score": 99.11,
+      "s0": 0.05295523,
+      "challenger": 0.05572449,
+      "change_pt": 0.276926,
+      "s0_rank": 5,
+      "challenger_rank": 5,
+      "supported": true
+    },
+    {
+      "car_no": 5,
+      "reg": "013961",
+      "name": "松村 友和",
+      "score": 103.3,
+      "s0": 0.13458004,
+      "challenger": 0.12684208,
+      "change_pt": -0.773796,
+      "s0_rank": 2,
+      "challenger_rank": 2,
+      "supported": true
+    },
+    {
+      "car_no": 6,
+      "reg": "015616",
+      "name": "齋藤 雄行",
+      "score": 93.47,
+      "s0": 0.01508888,
+      "challenger": 0.01434212,
+      "change_pt": -0.074676,
+      "s0_rank": 7,
+      "challenger_rank": 7,
+      "supported": true
+    },
+    {
+      "car_no": 7,
+      "reg": "013604",
+      "name": "庄子 信弘",
+      "score": 99.57,
+      "s0": 0.05866509,
+      "challenger": 0.05638582,
+      "change_pt": -0.227927,
+      "s0_rank": 4,
+      "challenger_rank": 4,
+      "supported": true
+    }
+  ],
+  "summary": {
+    "supported_riders": 6,
+    "s0_fallback_riders": 1,
+    "rank_order_changed": false,
+    "largest_positive_probability_shift": {
+      "rider": "佐藤 一伸",
+      "change_percentage_points": 1.25465
+    },
+    "largest_negative_probability_shift": {
+      "rider": "松村 友和",
+      "change_percentage_points": -0.773796
+    },
+    "challenger_probability_sum": 0.9999999900000001,
+    "s0_probability_sum": 0.99999999
+  },
+  "interpretation": [
+    "The challenger executes on a real racecard and changes probability mass without changing the S0 beta.",
+    "Six of seven riders use frozen rider-specific circumference deltas; 古川尚耶 uses exact S0 fallback because he is outside the 30-rider lookup.",
+    "No claim is made that the challenger is more accurate; target result remains unopened in this dry run."
+  ],
+  "formal_support_effect": 0,
+  "runtime": false,
+  "owner_action_required_now": false
+}
