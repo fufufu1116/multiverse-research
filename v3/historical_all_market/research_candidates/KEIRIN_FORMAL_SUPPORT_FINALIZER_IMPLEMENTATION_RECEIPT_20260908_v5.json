@@ -1,0 +1,39 @@
+{
+  "record": "KEIRIN_FORMAL_SUPPORT_FINALIZER_IMPLEMENTATION_RECEIPT_20260908_v5",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_UNAMBIGUOUS_GATE_SEMANTICS_HARDENED_STATIC_PREFLIGHT_PASS_FULL_V5_PYTHON_SELFTEST_SPEC_NOT_SHARED_CI_RUN",
+  "supersedes": "tools/keirin_35_formal_support_finalizer_v4.py",
+  "implementation": "tools/keirin_35_formal_support_finalizer_v5.py",
+  "selftest_spec": "tools/keirin_35_formal_support_finalizer_selftest_v5.py",
+  "fixed_35_preflight": "v3/historical_all_market/research_candidates/KEIRIN_ANY29_UNAMBIGUOUS_SUPPORT_GATE_PREFLIGHT_20260908_v1.json",
+  "changes": [
+    "29 new formal PASS riders are no longer sufficient by themselves to emit a complete support-gate PASS-like status.",
+    "At 30 riders / 60 rows, finalizer v5 explicitly enforces global max single-venue share <=0.60.",
+    "At 30 riders / 60 rows, finalizer v5 explicitly enforces global max single-rider share <=0.10.",
+    "At 30 riders / 60 rows, finalizer v5 explicitly enforces at least two venues for both the 400m and 333/333.33m buckets.",
+    "The calendar-block gate remains UNKNOWN_PENDING_ADOPTED_PR177_DEFINITION, so complete_support_gate_pass remains false.",
+    "The six-site normalizer v2 -> unresolved manifest shell -> finalizer v5 bridge is included in the selftest specification.",
+    "Pathological venue concentration is included as a fail-closed selftest case."
+  ],
+  "fixed_35_combinatorial_preflight": {
+    "any_29_max_single_venue_share": 0.35,
+    "threshold": 0.6,
+    "any_29_max_single_rider_share": 0.03333333333333333,
+    "rider_threshold": 0.1,
+    "minimum_venues_333_guaranteed": 2,
+    "minimum_venues_400_guaranteed": 2,
+    "conclusion": "UNAMBIGUOUS_GATE_GUARANTEED_PASS_IF_ANY_29_LOCKED_CANDIDATES_FORMALLY_PASS"
+  },
+  "selftest_spec_case_count": 13,
+  "selftest_fixture": "PRODUCTION_SHAPED_HISTORICAL_ROW_AND_BASELINE_REGISTRATION_NUMBER",
+  "full_v5_python_selftest_executed_in_shared_ci": false,
+  "shared_workflow_dispatch_rerun": false,
+  "formal_support_increment_now": 0,
+  "calendar_block_canonical_gate": "PENDING_PR177_CONTROL_ONLY",
+  "result_accessed": false,
+  "payout_accessed": false,
+  "live_odds_used_as_model_input": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "runtime": false
+}
