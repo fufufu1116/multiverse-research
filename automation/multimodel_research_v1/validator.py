@@ -35,6 +35,7 @@ REQUIRED = [
     ROOT / "pre_execution_bundle.py",
     ROOT / "launch_evidence.py",
     ROOT / "pilot_roundtrip.py",
+    ROOT / "rehearsal_convergence.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -175,6 +176,7 @@ def validate() -> dict:
     pre_execution_bundle = (ROOT / "pre_execution_bundle.py").read_text()
     launch_evidence = (ROOT / "launch_evidence.py").read_text()
     pilot_roundtrip = (ROOT / "pilot_roundtrip.py").read_text()
+    rehearsal_convergence = (ROOT / "rehearsal_convergence.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -771,6 +773,24 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_REHEARSAL_CONVERGENCE_v1",
+        "build_provider_rehearsal_convergence",
+        "validate_provider_rehearsal_convergence",
+        "REHEARSAL_PROVIDER_MISMATCH",
+        "REHEARSAL_MODEL_MISMATCH",
+        "REHEARSAL_MATRIX_SHA256_MISMATCH",
+        "FULL_OFFLINE_REHEARSAL_ALIGNED_AUTHORITY_ABSENT",
+        "REHEARSAL_FORBIDDEN_TRUE",
+        "REHEARSAL_RUNTIME_NOT_OFF",
+        "provider_rehearsal_convergence_sha256",
+    ):
+        record(
+            f"rehearsal_convergence:{token}",
+            token in rehearsal_convergence,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -792,8 +812,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 360,
-        f"{test_count} != 360",
+        test_count == 372,
+        f"{test_count} != 372",
     )
 
     return {

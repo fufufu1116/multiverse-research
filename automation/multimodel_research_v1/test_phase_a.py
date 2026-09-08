@@ -126,6 +126,11 @@ from automation.multimodel_research_v1.pilot_roundtrip import (
     provider_pilot_roundtrip_sha256,
     validate_provider_pilot_roundtrip,
 )
+from automation.multimodel_research_v1.rehearsal_convergence import (
+    build_provider_rehearsal_convergence,
+    provider_rehearsal_convergence_sha256,
+    validate_provider_rehearsal_convergence,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -12443,6 +12448,160 @@ class ContractTests(unittest.TestCase):
             copy.deepcopy(schema),
             copy.deepcopy(value),
         )
+        self.assertEqual(first, second)
+
+
+    def _rehearsal_fixture(self, provider="GOOGLE_GEMINI"):
+        (
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            launch,
+        ) = self._launch_evidence_fixture(provider)
+        roundtrip = build_provider_pilot_roundtrip(
+            bound_task,
+            snapshot,
+            provider,
+            schema,
+        )
+        record = build_provider_rehearsal_convergence(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            launch,
+            roundtrip,
+        )
+        return (
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            launch,
+            roundtrip,
+            record,
+        )
+
+    def test_361_valid_gemini_full_offline_rehearsal(self):
+        args = self._rehearsal_fixture("GOOGLE_GEMINI")
+        self.assertEqual(
+            validate_provider_rehearsal_convergence(*args),
+            args[-1],
+        )
+        self.assertEqual(args[-1]["model_id"], "gemini-3.8-flash")
+
+    def test_362_valid_claude_full_offline_rehearsal(self):
+        args = self._rehearsal_fixture("ANTHROPIC_CLAUDE")
+        self.assertEqual(
+            validate_provider_rehearsal_convergence(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_363_rehearsal_binds_one_exact_pilot_matrix_generation(self):
+        args = self._rehearsal_fixture()
+        self.assertEqual(
+            args[-1]["pilot_matrix_sha256"],
+            args[-2]["pilot_matrix_sha256"],
+        )
+        self.assertEqual(
+            args[-1]["pilot_matrix_sha256"],
+            args[-3]["pilot_matrix_sha256"],
+        )
+
+    def test_364_rehearsal_rejects_provider_mix(self):
+        gemini = list(self._rehearsal_fixture("GOOGLE_GEMINI"))
+        claude = self._rehearsal_fixture("ANTHROPIC_CLAUDE")
+        gemini[-2] = claude[-2]
+        with self.assertRaises(ResearchContractError):
+            build_provider_rehearsal_convergence(*gemini[:-1])
+
+    def test_365_rehearsal_rejects_model_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-2] = copy.deepcopy(args[-2])
+        args[-2]["model_id"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_366_rehearsal_rejects_launch_digest_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["launch_evidence_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_367_rehearsal_rejects_roundtrip_digest_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pilot_roundtrip_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_368_rehearsal_preserves_candidate_head_and_seal(self):
+        args = self._rehearsal_fixture()
+        self.assertEqual(
+            args[-1]["prelive_candidate_head"],
+            "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+        )
+        self.assertEqual(
+            args[-1]["prelive_candidate_seal_blob"],
+            "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+
+    def test_369_rehearsal_grants_no_authority(self):
+        args = self._rehearsal_fixture()
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(args[-1][key], False)
+
+    def test_370_rehearsal_runtime_remains_off(self):
+        args = self._rehearsal_fixture()
+        self.assertEqual(args[-1]["runtime"], "OFF")
+
+    def test_371_rehearsal_provider_records_are_distinct(self):
+        gemini = self._rehearsal_fixture("GOOGLE_GEMINI")[-1]
+        claude = self._rehearsal_fixture("ANTHROPIC_CLAUDE")[-1]
+        self.assertNotEqual(
+            gemini["pilot_roundtrip_sha256"],
+            claude["pilot_roundtrip_sha256"],
+        )
+        self.assertNotEqual(
+            gemini["observation_binding_sha256"],
+            claude["observation_binding_sha256"],
+        )
+
+    def test_372_rehearsal_digest_is_deterministic(self):
+        args = self._rehearsal_fixture("ANTHROPIC_CLAUDE")
+        first = provider_rehearsal_convergence_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_rehearsal_convergence_sha256(*cloned)
         self.assertEqual(first, second)
 
 

@@ -162,6 +162,22 @@ Cross-provider tests require Gemini and Claude to receive the same exact canonic
 
 This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
 
+Full offline rehearsal convergence
+
+`MULTIVERSE_PROVIDER_REHEARSAL_CONVERGENCE_v1` binds the send-side launch evidence to the receive-side synthetic round-trip for one exact provider/model generation.
+
+It requires:
+- the same provider and exact model ID on both sides;
+- the same exact provider pilot matrix SHA256;
+- the frozen pre-live Candidate head and seal from launch evidence;
+- the exact launch-evidence SHA256;
+- the exact synthetic-roundtrip SHA256;
+- the final provider-observation-binding SHA256.
+
+This prevents a valid pre-execution proof for one provider/model generation from being paired with a valid synthetic receive-side proof from another generation.
+
+State remains `FULL_OFFLINE_REHEARSAL_ALIGNED_AUTHORITY_ABSENT`: synthetic only, repository evidence aligned, provider-call/credential/spend/live-execution/adoption authority false, Runtime OFF.
+
 Catalog-model synthetic response round-trip
 
 `MULTIVERSE_PROVIDER_PILOT_ROUNDTRIP_v1` takes each dated catalog model through the receive-side chain using a fully synthetic provider response and no network call.
