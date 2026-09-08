@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_FORMAL_SUPPORT_FINALIZER_SELFTEST_CORRECTION_20260908_v1",
+  "date_jst": "2026-09-08",
+  "status": "CHECKED_IN_V4_SELFTEST_FIXTURE_REPAIRED_PRODUCTION_SHAPED_10_CASE_LOCAL_LOGIC_REPRODUCTION_PASS",
+  "scope": "PRE-only research-lane test integrity correction; no formal support increment",
+  "implementation": "tools/keirin_35_formal_support_finalizer_v4.py",
+  "selftest": "tools/keirin_35_formal_support_finalizer_selftest_v4.py",
+  "corrected_defects": [
+    "matrix fixture now uses historical_row, matching the real KEIRIN_35_SUPPORT_CONVERSION_MATRIX schema",
+    "baseline_supported_rows now use registration_number, matching the real final Day1 input manifest schema",
+    "comment namespace rejection is explicitly tested",
+    "prediction namespace rejection is explicitly tested"
+  ],
+  "clarification_of_prior_claim": "The earlier PASS_8_OF_8 receipt was an isolated source-filter regression claim and did not prove that the checked-in full selftest fixture could execute end-to-end. The checked-in fixture shape is now corrected.",
+  "local_logic_reproduction": {
+    "result": "PASS_10_OF_10",
+    "cases": [
+      "all 35 valid stops exactly after 29 new PASS",
+      "first 6 unavailable still reaches 29",
+      "first 7 unavailable stops at 28 and target remains unmet",
+      "RESULT namespace rejected",
+      "actual ODDS namespace rejected",
+      "PAYOUT namespace rejected",
+      "COMMENT namespace rejected",
+      "PREDICTION namespace rejected",
+      "safe oddspark.com final racecard hostname accepted",
+      "exact cutoff field not required"
+    ],
+    "note": "Executed as an isolated logic reproduction against the same production-shaped fixture semantics; no shared CI/workflow rerun was performed."
+  },
+  "shared_ci_run": false,
+  "workflow_dispatch_rerun": false,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "formal_support_increment_now": 0,
+  "runtime": false
+}
