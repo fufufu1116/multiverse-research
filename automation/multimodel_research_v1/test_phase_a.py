@@ -90,6 +90,14 @@ from automation.multimodel_research_v1.pilot_dry_run import (
     first_provider_pilot_dry_run_sha256,
     validate_first_provider_pilot_dry_run,
 )
+from automation.multimodel_research_v1.catalog_freshness import (
+    build_catalog_freshness_receipt,
+    build_pilot_freshness_binding,
+    catalog_freshness_sha256,
+    pilot_freshness_binding_sha256,
+    validate_catalog_freshness_receipt,
+    validate_pilot_freshness_binding,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -10743,6 +10751,301 @@ class ContractTests(unittest.TestCase):
                 claude,
             ),
         )
+
+
+    def test_287_valid_same_day_catalog_freshness_receipt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        self.assertEqual(
+            validate_catalog_freshness_receipt(snapshot, freshness),
+            freshness,
+        )
+        self.assertLessEqual(freshness["age_seconds"], 86400)
+
+    def test_288_catalog_snapshot_older_than_24h_is_rejected(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                snapshot,
+                checked_at="2026-09-09T11:05:01Z",
+            )
+
+    def test_289_catalog_freshness_check_cannot_predate_snapshot(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                snapshot,
+                checked_at="2026-09-08T11:04:59Z",
+            )
+
+    def test_290_catalog_freshness_requires_strict_utc(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                snapshot,
+                checked_at="2026-09-08T20:30:00+09:00",
+            )
+
+    def test_291_expired_pricing_window_is_rejected(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        changed = copy.deepcopy(snapshot)
+        changed["entries"][0]["pricing_valid_through"] = "2026-09-07"
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                changed,
+                checked_at="2026-09-08T11:30:00Z",
+            )
+
+    def test_292_catalog_mutation_invalidates_freshness_receipt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        changed = copy.deepcopy(snapshot)
+        changed["entries"][0][
+            "input_usd_micros_per_million_tokens"
+        ] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_catalog_freshness_receipt(changed, freshness)
+
+    def test_293_catalog_freshness_grants_no_authority(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+        ):
+            self.assertIs(freshness[key], False)
+
+    def test_294_catalog_freshness_runtime_remains_off(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        self.assertEqual(freshness["runtime"], "OFF")
+
+    def test_295_catalog_freshness_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        self.assertEqual(
+            catalog_freshness_sha256(snapshot, freshness),
+            catalog_freshness_sha256(
+                snapshot,
+                copy.deepcopy(freshness),
+            ),
+        )
+
+    def test_296_valid_gemini_pilot_freshness_binding(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        self.assertEqual(
+            validate_pilot_freshness_binding(
+                snapshot,
+                plan,
+                freshness,
+                binding,
+            ),
+            binding,
+        )
+
+    def test_297_valid_claude_pilot_freshness_binding(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        self.assertEqual(binding["provider"], "ANTHROPIC_CLAUDE")
+        self.assertEqual(
+            binding["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_298_pilot_freshness_binding_rejects_plan_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        binding["pilot_dry_run_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_pilot_freshness_binding(
+                snapshot,
+                plan,
+                freshness,
+                binding,
+            )
+
+    def test_299_pilot_freshness_binding_rejects_receipt_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        binding["catalog_freshness_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_pilot_freshness_binding(
+                snapshot,
+                plan,
+                freshness,
+                binding,
+            )
+
+    def test_300_pilot_freshness_binding_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        first = pilot_freshness_binding_sha256(
+            snapshot,
+            plan,
+            freshness,
+            binding,
+        )
+        second = pilot_freshness_binding_sha256(
+            snapshot,
+            copy.deepcopy(plan),
+            copy.deepcopy(freshness),
+            copy.deepcopy(binding),
+        )
+        self.assertEqual(first, second)
 
 
 if __name__ == "__main__":
