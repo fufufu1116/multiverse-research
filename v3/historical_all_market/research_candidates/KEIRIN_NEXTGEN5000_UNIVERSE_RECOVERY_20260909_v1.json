@@ -1,0 +1,59 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_UNIVERSE_RECOVERY_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "EXACT_5000_UNIVERSE_RECOVERED_AND_REPRODUCED_PRE_ACQUISITION_NEXT",
+  "recovered_archive": {
+    "artifact_name": "MULTIVERSE_NEXTGEN_5000_UNIVERSE_ARTIFACT.zip",
+    "artifact_sha256": "b222c2ab306aa53f25fdef6bf0b88cac9ec70f432ab48c60920f662765b5221f",
+    "candidate_universe_rows": 9201,
+    "candidate_universe_sha256": "9b8fc60bfd55eb12a4989112b3fa4eee1e2bb6a214946edd79a739296a9aed7c",
+    "locked_universe_rows": 5000,
+    "locked_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "selection_policy": "date_venue_race_ascending_first_5000_result_independent",
+    "candidate_date_window": [
+      "2026-03-01",
+      "2026-06-30"
+    ],
+    "locked_5000_last_race_date": "2026-05-06",
+    "sim100_excluded": true,
+    "training_eligibility": false,
+    "post_access": false,
+    "scoring_performed": false
+  },
+  "exact_reproduction": {
+    "archived_daily_racecard_pages": 122,
+    "rediscovered_candidate_rows": 9201,
+    "candidate_sha_match": true,
+    "reproduced_first5000_sha_match": true,
+    "implication": "The universe can be regenerated from daily racecard href discovery without result-dependent selection."
+  },
+  "prior_governance_context": {
+    "historical5000_formal_status": "FORMALLY_BLOCKED_FAIL_CLOSED",
+    "reason": "Point-in-time PRE/source-rights provenance was not sufficient for formal scientific admission.",
+    "current_use": "EXPLORATORY_DEVELOPMENT_EXPANSION_ONLY",
+    "formal_support_increment": 0,
+    "note": "Recovery of the universe does not override the old formal-source gate."
+  },
+  "current_source_spotcheck": {
+    "historical_kdreams_racedetail_pages_still_accessible": true,
+    "historical_race_stage_visible": true,
+    "historical_race_specific_competition_score_and_recent_form_visible": true,
+    "mixed_page_contains_post_event_sections": true,
+    "mitigation": "Strict PRE-only parser emits only the pre-race rider table; raw mixed HTML is not retained by the new bulk recovery tool."
+  },
+  "next_batch": {
+    "positions": "2001..2500 of locked 5000",
+    "count": 500,
+    "overlap_with_DEV2000": "none by position",
+    "purpose": "Increase exploratory PRE sample beyond DEV2000 before any outcome join.",
+    "outcome_access_during_PRE_acquisition": false
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_scientific_promotion": false,
+    "result_or_payout_used_for_universe_selection": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
