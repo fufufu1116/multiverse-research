@@ -1,0 +1,41 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260909_v27",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_DELTA_V19",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v19.json",
+  "critical_pointers": {
+    "dev2000_recovery": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_DRIVE_RECOVERY_AND_AB_REPLAY_20260909_v1.json",
+    "replay_findings": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_CONDITIONAL_TICKET_REPLAY_FINDINGS_20260909_v1.json",
+    "conditional_replay_tool": "tools/keirin_dev2000_conditional_replay_v1.py",
+    "conditional_freeze": "v3/historical_all_market/research_candidates/KEIRIN_CONDITIONAL_SHADOW_CANDIDATE_FREEZE_20260909_v1.json",
+    "girls_replay": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_GIRLS_MARKET_REPLAY_20260909_v1.json",
+    "bootstrap_stability": "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_DAY_CLUSTER_BOOTSTRAP_STABILITY_20260909_v1.json",
+    "virtual_future_protocol": "v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_VIRTUAL_FUTURE_REPLAY_PROTOCOL_20260909_v1.json",
+    "practical_v2_profile": "v3/historical_all_market/research_candidates/KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v2.json",
+    "today_pre_decision": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_DECISION_KEIOKAKU_20260909_R1_R9_v2.json",
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py"
+  },
+  "current_summary": {
+    "practical_owner_free_engineering": "100% complete",
+    "simulation_dataset": "DEV2000 exact historical A+B fixtures recovered from Drive and replayable",
+    "new_challenger": "non-Girls, PRE top-score gap <5, 3renhuku pool3, EV>=10%, <=20x, max2 points",
+    "new_challenger_status": "burned-development shadow only; prospective replication required",
+    "girls": "113 A+B races show much higher winner-ranking accuracy but no stable simple positive-A/B market rule",
+    "three_rentan": "third-spread improves hit rate but remains economically inferior in tested A+B family",
+    "formal_scientific_progress_percent": 60,
+    "formal_support": "1 rider / 2 PRE rows",
+    "today_answer_check": "unchanged/frozen",
+    "protected_holdouts": "DEV2000 C and ECON_HOLDOUT1000 sealed",
+    "profitability_proven": false,
+    "runtime": "OFF"
+  },
+  "next_without_owner": [
+    "Use the conditional shadow freeze on new prospective races without retuning.",
+    "Extend historical PRE acquisition under the virtual-future protocol with explicit race_stage and objective line/solo fields.",
+    "Keep gathering formal 30/60 PRE support independently.",
+    "Do not use DEV2000 C to rescue or select the new challenger."
+  ],
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later successor, Resume v27 or later successor, delta v19 or later successor, active same-day prospective freezes and automations before treating state as current."
+}
