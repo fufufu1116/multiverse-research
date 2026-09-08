@@ -1,0 +1,225 @@
+{
+  "record": "KEIRIN_DEV2000_AB_CONDITIONAL_TICKET_REPLAY_FINDINGS_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "BURNED_AB_DIAGNOSTIC_REPLAY_COMPLETE_NEW_CHALLENGERS_REQUIRE_PROSPECTIVE_FREEZE",
+  "source": "KEIRIN_DEV2000_DRIVE_RECOVERY_AND_AB_REPLAY_20260909_v1",
+  "scope": "A=1000 + B=500 burned historical races only; no C scoring",
+  "key_findings": [
+    {
+      "id": "THREE_RENTAN_THIRD_SPREAD_NOT_YET_ECONOMIC",
+      "description": "Owner-style 1st-fixed / narrow-2nd / wide-3rd structures raise hit rate but did not produce a both-positive A/B rule in the tested family.",
+      "tested_family": {
+        "second_group_sizes": [
+          1,
+          2,
+          3
+        ],
+        "third_pool_sizes": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "confidence": 0.4,
+        "portfolio_ev_min": [
+          null,
+          0.1,
+          0.2
+        ],
+        "flat_stake_yen_per_ticket": 100
+      },
+      "best_combined_example": {
+        "structure": "1st fixed; 2nd top2 group; 3rd top3 pool; 4 tickets",
+        "A": {
+          "bet_races": 254,
+          "hit_rate": 0.2637795276,
+          "roi": -0.1781496063,
+          "recovery": 0.8218503937
+        },
+        "B": {
+          "bet_races": 158,
+          "hit_rate": 0.2848101266,
+          "roi": -0.059335443,
+          "recovery": 0.940664557
+        },
+        "AB": {
+          "bet_races": 412,
+          "hit_rate": 0.2718446602,
+          "roi": -0.1325849515,
+          "recovery": 0.8674150485,
+          "average_points": 4
+        }
+      },
+      "both_positive_A_B_spec_count": 0,
+      "conclusion": "Do not replace 3renhuku with 3rentan third-spread on current evidence."
+    },
+    {
+      "id": "GIRLS_STRENGTH_SIGNAL_STRONG_BUT_VALUE_NOT_AUTOMATIC",
+      "girls_races": 113,
+      "non_girls_races": 1387,
+      "candidate_a_top1_hit_rate": {
+        "girls": 0.6991150442,
+        "non_girls": 0.431146359,
+        "girls_A": 0.6507936508,
+        "girls_B": 0.76,
+        "non_girls_A": 0.4354322305,
+        "non_girls_B": 0.4222222222
+      },
+      "candidate_a_winner_in_top3_rate": {
+        "girls": 0.9557522124,
+        "non_girls": 0.7692862293
+      },
+      "model_agreement_top1_hit_rate": {
+        "girls": 0.7238095238,
+        "non_girls": 0.4610564011
+      },
+      "three_renhuku_conf40_baseline": {
+        "girls": {
+          "selected_bets": 66,
+          "hit_rate": 0.3636363636,
+          "roi": -0.2863636364,
+          "recovery": 0.7136363636
+        },
+        "non_girls": {
+          "selected_bets": 346,
+          "hit_rate": 0.1994219653,
+          "roi": 0.0271676301,
+          "recovery": 1.0271676301
+        }
+      },
+      "three_renhuku_ev10_cap20": {
+        "girls_selected_bets": 0,
+        "non_girls_selected_bets": 89
+      },
+      "interpretation": "Girls races are materially easier for winner ranking in this burned sample, consistent with a more individual-strength-dominant regime. The market also appears to price that predictability, so higher accuracy alone did not create betting value."
+    },
+    {
+      "id": "SCORE_GAP_SEPARATES_WINNER_PREDICTABILITY_FROM_TOP3_ECONOMICS",
+      "non_girls_top_score_minus_second_score_bins": [
+        {
+          "gap": "<1",
+          "races": 396,
+          "top1_hit_rate": 0.3964646465,
+          "winner_top3_coverage": 0.7272727273
+        },
+        {
+          "gap": "1-3",
+          "races": 567,
+          "top1_hit_rate": 0.3880070547,
+          "winner_top3_coverage": 0.7619047619
+        },
+        {
+          "gap": "3-5",
+          "races": 279,
+          "top1_hit_rate": 0.4910394265,
+          "winner_top3_coverage": 0.8028673835
+        },
+        {
+          "gap": ">=5",
+          "races": 145,
+          "top1_hit_rate": 0.5793103448,
+          "winner_top3_coverage": 0.8482758621
+        }
+      ],
+      "high_confidence_exact_top3_set_hit_rate": [
+        {
+          "gap": "<1",
+          "selected": 29,
+          "hit_rate": 0.275862069
+        },
+        {
+          "gap": "1-3",
+          "selected": 124,
+          "hit_rate": 0.2741935484
+        },
+        {
+          "gap": "3-5",
+          "selected": 109,
+          "hit_rate": 0.1559633028
+        },
+        {
+          "gap": ">=5",
+          "selected": 84,
+          "hit_rate": 0.119047619
+        }
+      ],
+      "interpretation": "As the top score separates, winner prediction improves but the exact accompanying top3 set becomes harder. This is a concrete burned-data analogue of 'head is clearer while 2nd/3rd scatter'."
+    },
+    {
+      "id": "SIMPLE_3RENHUKU_CENTER_REPRODUCED_EXACTLY",
+      "rule": "top1 agreement; conservative top1 >=0.40; one consensus top3 3renhuku ticket; ticket EV >=10%; odds <=20x",
+      "A": {
+        "bets": 56,
+        "hit_rate": 0.1071428571,
+        "roi": 0.0821428571,
+        "recovery": 1.0821428571
+      },
+      "B": {
+        "bets": 33,
+        "hit_rate": 0.1818181818,
+        "roi": 0.8545454545,
+        "recovery": 1.8545454545
+      },
+      "AB": {
+        "bets": 89,
+        "hit_rate": 0.1348314607,
+        "roi": 0.3685393258,
+        "recovery": 1.3685393258
+      },
+      "status": "REPRODUCED_FROM_RECOVERED_RAW_FIXTURES"
+    },
+    {
+      "id": "POSTHOC_CONDITIONAL_3RENHUKU_CHALLENGER",
+      "warning": "Discovered after inspecting burned A+B; must not be called validated or silently replace the frozen practical rule.",
+      "condition": "non-girls; top PRE score minus second PRE score <5; model top1 agreement; conservative top1 >=0.40",
+      "ticket_generation": "top1 plus combinations from next 3 ranked riders; each ticket requires conservative EV >=10% and odds <=20x; keep at most 2 eligible tickets ranked by conservative probability; flat 100 yen each",
+      "A": {
+        "bet_races": 80,
+        "tickets": 93,
+        "average_points": 1.1625,
+        "hit_rate": 0.1125,
+        "roi": 0.2032258065,
+        "recovery": 1.2032258065
+      },
+      "B": {
+        "bet_races": 44,
+        "tickets": 53,
+        "average_points": 1.2045454545,
+        "hit_rate": 0.1590909091,
+        "roi": 0.441509434,
+        "recovery": 1.441509434
+      },
+      "AB": {
+        "bet_races": 124,
+        "tickets": 146,
+        "average_points": 1.1774193548,
+        "hit_rate": 0.1290322581,
+        "roi": 0.2897260274,
+        "recovery": 1.2897260274,
+        "largest_single_return_share": 0.0939989379,
+        "positive_week_fraction": 0.8
+      },
+      "interpretation": "Promising stability-shaped development challenger: more opportunities and lower single-hit concentration than the 89-bet center candidate, while both A and B remain positive. Prospective freeze required before any promotion."
+    }
+  ],
+  "rejected_or_not_ready": [
+    "3rentan third-spread as primary market",
+    "girls accuracy as a direct profit rule",
+    "score-gap segmentation as validated edge",
+    "any use of Segment C to choose among these candidates"
+  ],
+  "next_research": [
+    "Freeze a small set of conditional 3renhuku challengers before new prospective outcomes.",
+    "Add explicit race_stage and objective line/single-rider fields to new PRE capture so finals and solo-rider hypotheses can be tested directly rather than inferred.",
+    "Run future virtual-future replay on newly collected historical PRE snapshots with outcomes physically/logically segregated.",
+    "Keep current same-day answer-check unchanged."
+  ],
+  "hard_boundaries": {
+    "C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "profitability_proven": false,
+    "today_rule_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
