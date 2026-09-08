@@ -59,7 +59,7 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "Development model generalized without outcomes. Exact rider delta is used for the 30 supported riders; otherwise current-race PRE style fallback (逃/追/両) applies; unknown style falls back to S0. 23 PRE-only races / 183 rider rows across Toyama333, Aomori400 and Takeo400 style-preserved subset ran with 4 internal rank swaps and 0 top1 changes. No target results accessed. Formal support remains 1 rider / 2 rows independently."
+      "rule": "Live prospective test is now active. Seibuen 2026-09-08 R6-R11 (6 races / 42 riders, 400m) were frozen at 13:44 JST before the first included 18:04 race. All 42 use style fallback in this batch; no exact 30-rider delta appears. S0 and challenger have identical top1 in all six races. Do not rewrite predictions or tune the model. After all six races finish, join only result labels needed for winner hit, actual-winner probability/rank, log loss and Brier; ignore odds/payouts. Formal support remains 1 rider / 2 rows independently."
     },
     {
       "step": 10,
@@ -67,8 +67,8 @@
       "rule": "Fresh-read after recovery. If branch/main/PR177 changed, rebind before writes. Never collapse DEVELOPMENT 30/60 into FORMAL 1/2; they are deliberately separate authorities."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v84.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v83.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v85.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v84.json",
   "active_lane_pointers": {
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
     "ITO0907_FAIL_CLOSED_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
@@ -102,7 +102,8 @@
     "PRE_ONLY_BATCH_PREDICTOR": "tools/keirin_pre_only_batch_predictor_v1.py",
     "PRE_ONLY_RIDER_OR_STYLE_MODEL": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
     "PRE_ONLY_GENERALIZED_23R_COVERAGE": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_GENERALIZED_COVERAGE_DRY_RUN_23R_183ROWS_20260908_v1.json",
-    "PRE_ONLY_RIDER_OR_STYLE_PREDICTOR": "tools/keirin_pre_only_rider_or_style_predictor_v2.py"
+    "PRE_ONLY_RIDER_OR_STYLE_PREDICTOR": "tools/keirin_pre_only_rider_or_style_predictor_v2.py",
+    "PROSPECTIVE_SEIBUEN_20260908_R6_R11": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_PRE_PREDICTION_SEIBUEN_20260908_R6_R11_v1.json"
   },
   "common_governance_policy": {
     "migration_lock": "#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
