@@ -1,0 +1,63 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_S0_COVERAGE_THRESHOLD_SELECTION_PRESPEC_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_ANY_NEXTGEN5000_OUTCOME_ACCESS",
+  "purpose": "Choose an S0-only price-independent ticket-selection threshold using PRE-side coverage only, not performance.",
+  "population": "Usable PRE-only races from exact locked NEXTGEN5000 positions 2001..5000; expected approximately 2964 races after fail-closed exclusions.",
+  "model": {
+    "name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "beta_frozen": true
+  },
+  "candidate_family": {
+    "girls": false,
+    "gap_threshold_priority": [
+      3,
+      5,
+      null
+    ],
+    "top1_probability_thresholds_desc": [
+      0.4,
+      0.38,
+      0.36,
+      0.34,
+      0.32,
+      0.3,
+      0.28,
+      0.26,
+      0.24,
+      0.22,
+      0.2
+    ],
+    "ticket": "one 3renhuku ticket = S0 top3 set",
+    "odds_filter": null,
+    "result_filter": null,
+    "payout_filter": null,
+    "stake_yen_after_selection_freeze": 100
+  },
+  "deterministic_choice_rule": [
+    "Split usable PRE races chronologically into an earlier half and later half by race_date then race_id.",
+    "For gap threshold <3 first, scan probability thresholds from 0.40 downward.",
+    "Choose the first (strictest) threshold with at least 200 selected races total AND at least 75 selected races in each half.",
+    "If no <3 candidate qualifies, repeat the same scan with gap <5.",
+    "If still none qualifies, repeat with no score-gap restriction.",
+    "If no candidate reaches coverage requirements, declare NO_S0_COVERAGE_RULE rather than lower probability below 0.20."
+  ],
+  "reason_for_coverage_targets": "Targets are chosen before outcome access to yield enough selections for block-level hit-rate and stability diagnostics while preserving a reasonably selective rule.",
+  "anti_hindsight": {
+    "nextgen5000_outcomes_accessed": false,
+    "nextgen5000_payouts_accessed": false,
+    "thresholds_selected_from_roi": false,
+    "thresholds_selected_from_hit_rate": false,
+    "thresholds_selected_from_results": false,
+    "selection_count_only": true
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment": 0,
+    "model_promotion": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
