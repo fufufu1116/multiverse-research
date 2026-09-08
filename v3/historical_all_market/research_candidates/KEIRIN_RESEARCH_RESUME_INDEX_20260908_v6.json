@@ -1,0 +1,29 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v6",
+  "status": "CURRENT_POINTER_V110",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v110.json",
+  "critical_pointers": {
+    "multisite_watch_set": "v3/historical_all_market/research_candidates/KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v2.json",
+    "normalizer": "tools/keirin_multisite_final_racecard_normalizer_v2.py",
+    "normalizer_selftest": "tools/keirin_multisite_final_racecard_normalizer_selftest_v2.py",
+    "normalizer_receipt": "v3/historical_all_market/research_candidates/KEIRIN_MULTISITE_FINAL_RACECARD_NORMALIZER_IMPLEMENTATION_RECEIPT_20260908_v2.json",
+    "formalizer_v2": "tools/keirin_35_formal_support_finalizer_v2.py",
+    "formal_order": "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v1.py",
+    "model_ticket_bridge": "tools/keirin_model_ticket_comparison_v1.py",
+    "manual_odds_gate": "tools/keirin_manual_odds_purchase_gate_v1.py"
+  },
+  "current_summary": {
+    "source_watch_families": 6,
+    "normalizer": "v2 hardened, isolated selftest 12/12",
+    "fixed_scheduled_roster": "35/35 converged across CTC + KDreams + WINTICKET",
+    "final_assignment_state": "pending; no new formal row available at this checkpoint",
+    "formal_support": "1 rider / 2 PRE rows",
+    "exact_cutoff_blocking": false,
+    "live_odds_model_input": false,
+    "runtime": "OFF"
+  },
+  "resume_rule": "Fresh-read research branch HEAD, CURRENT v110 or later pointer, PR177, and the multisite watch set before treating CURRENT/NOW/LATEST as authoritative."
+}
