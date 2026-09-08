@@ -77,6 +77,13 @@ from automation.multimodel_research_v1.readiness import (
     live_provider_readiness_sha256,
     validate_live_provider_readiness_report,
 )
+from automation.multimodel_research_v1.provider_catalog import (
+    catalog_entry,
+    catalog_entry_sha256,
+    estimate_smoke_cost_usd_micros,
+    validate_first_smoke_candidate,
+    validate_provider_catalog,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -10173,6 +10180,229 @@ class ContractTests(unittest.TestCase):
                 execution_prep=prep,
             )
         self.assertEqual(len(original), 64)
+
+
+    def test_258_provider_catalog_snapshot_validates(self):
+        snapshot = json.loads(
+            (
+                Path(__file__).with_name(
+                    "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+                )
+            ).read_text()
+        )
+        self.assertEqual(
+            validate_provider_catalog(snapshot),
+            snapshot,
+        )
+
+    def test_259_provider_catalog_has_exact_two_providers(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        self.assertEqual(
+            {
+                item["provider"]
+                for item in snapshot["entries"]
+            },
+            {"GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"},
+        )
+
+    def test_260_gemini_catalog_candidate_is_current_stable_id(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        entry = catalog_entry(snapshot, "GOOGLE_GEMINI")
+        self.assertEqual(entry["model_id"], "gemini-3.8-flash")
+        self.assertEqual(
+            entry["classification"],
+            "PINNED_OR_STABLE",
+        )
+        self.assertTrue(entry["structured_json"])
+
+    def test_261_claude_catalog_candidate_is_pinned_haiku_id(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        entry = catalog_entry(snapshot, "ANTHROPIC_CLAUDE")
+        self.assertEqual(
+            entry["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+        self.assertEqual(
+            entry["classification"],
+            "PINNED_OR_STABLE",
+        )
+
+    def test_262_catalog_evidence_refs_are_official_domains(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        validate_provider_catalog(snapshot)
+        for entry in snapshot["entries"]:
+            for ref in entry["official_evidence_refs"]:
+                if entry["provider"] == "GOOGLE_GEMINI":
+                    self.assertIn("ai.google.dev/", ref)
+                else:
+                    self.assertIn("platform.claude.com/", ref)
+
+    def test_263_gemini_smoke_max_cost_estimate(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        self.assertEqual(
+            estimate_smoke_cost_usd_micros(
+                snapshot,
+                "GOOGLE_GEMINI",
+                32768,
+                4096,
+            ),
+            39936,
+        )
+
+    def test_264_claude_smoke_max_cost_estimate(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        self.assertEqual(
+            estimate_smoke_cost_usd_micros(
+                snapshot,
+                "ANTHROPIC_CLAUDE",
+                32768,
+                4096,
+            ),
+            53248,
+        )
+
+    def test_265_both_smoke_candidates_are_under_one_dollar_ceiling(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            candidate = validate_first_smoke_candidate(
+                snapshot,
+                provider,
+            )
+            self.assertLessEqual(
+                candidate["estimated_max_cost_usd_micros"],
+                1_000_000,
+            )
+            self.assertIs(candidate["spend_authority"], False)
+
+    def test_266_unknown_catalog_provider_rejected(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(RuntimeError):
+            catalog_entry(snapshot, "OTHER_PROVIDER")
+
+    def test_267_catalog_tampered_price_changes_entry_digest(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        first = catalog_entry_sha256(
+            snapshot,
+            "GOOGLE_GEMINI",
+        )
+        changed = copy.deepcopy(snapshot)
+        changed["entries"][0][
+            "input_usd_micros_per_million_tokens"
+        ] += 1
+        second = catalog_entry_sha256(
+            changed,
+            "GOOGLE_GEMINI",
+        )
+        self.assertNotEqual(first, second)
+
+    def test_268_catalog_candidate_evidence_sha_can_bind_model_target_policy(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        entry = catalog_entry(snapshot, "GOOGLE_GEMINI")
+        bound_assignment = assignment(
+            bound_task,
+            provider="google-gemini",
+            model=entry["model_id"],
+            execution_mode="LIVE_ADVISORY",
+        )
+        policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        policy["classification_evidence_ref"] = (
+            "provider-model-catalog-20260908:GOOGLE_GEMINI"
+        )
+        policy["classification_evidence_sha256"] = (
+            catalog_entry_sha256(snapshot, "GOOGLE_GEMINI")
+        )
+        self.assertEqual(
+            validate_model_target_policy(
+                bound_task,
+                bound_assignment,
+                policy,
+            ),
+            policy,
+        )
+
+    def test_269_catalog_smoke_cost_ceiling_fails_closed(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_first_smoke_candidate(
+                snapshot,
+                "ANTHROPIC_CLAUDE",
+                max_cost_usd_micros=10,
+            )
+
+    def test_270_catalog_nonauthority_all_false(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        self.assertTrue(
+            all(
+                value is False
+                for value in snapshot["nonauthority"].values()
+            )
+        )
+
+    def test_271_catalog_snapshot_digest_is_deterministic(self):
+        path = Path(__file__).with_name(
+            "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+        )
+        first = json.loads(path.read_text())
+        second = json.loads(path.read_text())
+        self.assertEqual(
+            sha256_json(first),
+            sha256_json(second),
+        )
 
 
 if __name__ == "__main__":

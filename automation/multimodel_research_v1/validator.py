@@ -27,6 +27,8 @@ REQUIRED = [
     ROOT / "observation_binding.py",
     ROOT / "execution_prep.py",
     ROOT / "readiness.py",
+    ROOT / "provider_catalog.py",
+    ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -158,6 +160,13 @@ def validate() -> dict:
     observation_binding = (ROOT / "observation_binding.py").read_text()
     execution_prep = (ROOT / "execution_prep.py").read_text()
     readiness = (ROOT / "readiness.py").read_text()
+    provider_catalog = (ROOT / "provider_catalog.py").read_text()
+    provider_catalog_snapshot = json.loads(
+        (
+            ROOT
+            / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+        ).read_text()
+    )
 
     transport_code = (
         gemini_adapter
@@ -557,6 +566,41 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_MODEL_CATALOG_SNAPSHOT_v1",
+        "validate_provider_catalog",
+        "catalog_entry_sha256",
+        "estimate_smoke_cost_usd_micros",
+        "validate_first_smoke_candidate",
+        "CATALOG_SMOKE_COST_EXCEEDS_CEILING",
+    ):
+        record(
+            f"provider_catalog:{token}",
+            token in provider_catalog,
+            token,
+        )
+
+    for provider, model_id in (
+        ("GOOGLE_GEMINI", "gemini-3.8-flash"),
+        ("ANTHROPIC_CLAUDE", "claude-haiku-4-5-20251001"),
+    ):
+        matches = [
+            item
+            for item in provider_catalog_snapshot["entries"]
+            if item["provider"] == provider
+        ]
+        record(
+            f"provider_catalog_snapshot:{provider}:one_entry",
+            len(matches) == 1,
+            provider,
+        )
+        if matches:
+            record(
+                f"provider_catalog_snapshot:{provider}:model_id",
+                matches[0]["model_id"] == model_id,
+                matches[0]["model_id"],
+            )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -578,8 +622,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 257,
-        f"{test_count} != 257",
+        test_count == 271,
+        f"{test_count} != 271",
     )
 
     return {

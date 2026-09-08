@@ -128,6 +128,22 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Dated provider model catalog snapshot
+
+`PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json` records the official-provider facts used to choose bounded first-smoke candidates on 2026-09-08.
+
+Smoke candidates:
+- Google Gemini: `gemini-3.8-flash` — stable/GA, structured JSON supported.
+- Anthropic Claude: `claude-haiku-4-5-20251001` — pinned dated model ID, structured JSON supported.
+
+The snapshot stores price rates as integer USD micro-units per million tokens and official documentation references.
+
+At the first-smoke ceilings of 32768 input tokens and 4096 output tokens:
+- Gemini 3.8 Flash estimated maximum token charge: USD 0.039936 under the observed introductory rates.
+- Claude Haiku 4.5 estimated maximum token charge: USD 0.053248 under the observed current rates.
+
+These are repository-side estimates, not spend authorization and not a bill prediction. Provider pricing may change, so a live execution must Fresh-check pricing and authority before transport.
+
 Live provider readiness report
 
 `MULTIVERSE_LIVE_PROVIDER_READINESS_REPORT_v1` converts the fully validated repository-side preparation chain into one explicit readiness state:
