@@ -1,8 +1,8 @@
-# Research Lane B Completion / Exit Gate v1 — Current-Main Update
+# Research Lane B Completion / Exit Gate v2 — Final Convergence Candidate
 
 Lane B major goal: make the fixed review control plane safe for multiple chats without collision, stale-result adoption, retry deadlock, or routine Owner traffic control.
 
-The completion matrix remains intentionally stricter than “Candidate exists”. A critical row is complete only when it is `ADOPTED_PROVEN`. A frozen Candidate receives partial progress credit but never makes the major goal complete.
+The completion matrix remains stricter than “Candidate exists”. A critical row is complete only when it is `ADOPTED_PROVEN`. A frozen Candidate receives partial progress credit but never makes the major goal complete.
 
 Current mechanically computed state:
 
@@ -13,15 +13,17 @@ Current mechanically computed state:
 - progress: 77.73%
 - major goal complete: false
 
-What changed from the prior 71.82% matrix:
+Current final convergence lineage:
 
-- `combined_fault_replay` is no longer an untouched integration row.
-- PR #242 created the pre-adoption combined fault replay harness.
-- PR #250 integrated publisher freshness, concurrent result canonicalization, and result receipt recovery.
-- PR #252 integrated canonical Lab-result consumption, duplicate T2 convergence, and T2 receipt recovery.
-- PR #255 composes those integration surfaces with the combined replay harness on one current-main tree.
+- request arbitration v6: PR #225, composed into PR #258;
+- publisher resilience: PR #250, composed into PR #258;
+- T2 resilience: PR #252, composed into PR #258;
+- completion matrix / exit gate: PR #257, composed into PR #258;
+- pre-adoption combined fault replay: PR #242, now accompanied in PR #258 by tests that import and execute actual `model`, `publisher`, and `t2` module APIs.
 
-This advances `combined_fault_replay` from `OPEN_INTEGRATION` to `FROZEN_CANDIDATE`, but does **not** satisfy the exit gate. The final row becomes `ADOPTED_PROVEN` only after the relevant integration is independently reviewed/adopted and the combined replay passes against that adopted lineage.
+PR #258 is the current final pre-adoption convergence Candidate. PR #255 is superseded and must not be progressed.
+
+This does **not** satisfy the exit gate. The seven frozen rows become complete only after the integrated lineage is independently reviewed/adopted and the combined fault replay passes against that adopted lineage.
 
 Handoff invariant:
 

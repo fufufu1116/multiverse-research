@@ -3,88 +3,18 @@
   "lane": "Research Lane B — Core / Automation Hardening",
   "goal": "Multiple chats can safely progress the fixed review control plane without collision, stale-result adoption, retry deadlock, or routine Owner traffic control.",
   "completion_rule": "Every critical row must be ADOPTED_PROVEN and combined_fault_replay must PASS against adopted integrated lineage before the major Lane B goal is complete.",
-  "credit": {
-    "ADOPTED_PROVEN": 1.0,
-    "FROZEN_CANDIDATE": 0.65,
-    "OPEN_INTEGRATION": 0.0
-  },
+  "credit": {"ADOPTED_PROVEN": 1.0, "FROZEN_CANDIDATE": 0.65, "OPEN_INTEGRATION": 0.0},
   "rows": [
-    {
-      "id": "stale_binding_rejection",
-      "critical": true,
-      "state": "ADOPTED_PROVEN",
-      "evidence": "canonical main ed9be13f8d1c5d6fcc7ab07761c0dfdc4255df98 carries adopted fixed dispatcher fresh head-tree-main binding",
-      "note": "Old head/tree/main is rejected fail-closed."
-    },
-    {
-      "id": "same_generation_request_collision",
-      "critical": true,
-      "state": "FROZEN_CANDIDATE",
-      "evidence": "PR #225 repaired current freeze 5583952862",
-      "note": "Earliest trusted Owner request comment wins each predecessor generation; repaired head awaits Control review."
-    },
-    {
-      "id": "publish_time_request_supersession",
-      "critical": true,
-      "state": "FROZEN_CANDIDATE",
-      "evidence": "PR #227 repaired current freeze 5583993973; integrated by PR #250",
-      "note": "Old job cannot publish after a newer canonical request appears."
-    },
-    {
-      "id": "concurrent_result_publication",
-      "critical": true,
-      "state": "FROZEN_CANDIDATE",
-      "evidence": "PR #232 primitive; current integration PR #250 freeze 5584142315",
-      "note": "Earliest trusted exact result comment is canonical and later duplicates are non-consumable."
-    },
-    {
-      "id": "result_receipt_loss_recovery",
-      "critical": true,
-      "state": "FROZEN_CANDIDATE",
-      "evidence": "PR #234 primitive; current integration PR #250 freeze 5584142315",
-      "note": "Canonical exact PASS can reconstruct a lost publish receipt without republish."
-    },
-    {
-      "id": "downstream_canonical_result_consumption",
-      "critical": true,
-      "state": "FROZEN_CANDIDATE",
-      "evidence": "PR #236 primitive; current integration PR #252 freeze 5584240821",
-      "note": "Later duplicate Lab PASS is non-consumable and does not block T2 when canonical result is referenced."
-    },
-    {
-      "id": "t2_receipt_loss_recovery",
-      "critical": true,
-      "state": "FROZEN_CANDIDATE",
-      "evidence": "PR #237 primitive; current integration PR #252 freeze 5584240821",
-      "note": "Canonical exact T2 can reconstruct a lost T2 receipt and duplicate T2 converges to one canonical comment."
-    },
-    {
-      "id": "fixed_shared_steps_immutability",
-      "critical": true,
-      "state": "ADOPTED_PROVEN",
-      "evidence": "#93 permanent request-only dispatcher baseline",
-      "note": "Research lanes do not edit shared Independent Lab/Auditor Steps."
-    },
-    {
-      "id": "owner_courier_elimination",
-      "critical": true,
-      "state": "ADOPTED_PROVEN",
-      "evidence": "#93 durable GitHub request-only operating protocol",
-      "note": "Routine Owner forwarding/copy-paste is not required."
-    },
-    {
-      "id": "runtime_off_invariant",
-      "critical": true,
-      "state": "ADOPTED_PROVEN",
-      "evidence": "canonical operating boundary",
-      "note": "Hardening research grants no Runtime or live-effect authority."
-    },
-    {
-      "id": "combined_fault_replay",
-      "critical": true,
-      "state": "FROZEN_CANDIDATE",
-      "evidence": "PR #242 pre-adoption replay harness composed into current integration PR #255 freeze 5584365273",
-      "note": "Pre-adoption combined replay preparation is frozen; final completion still requires replay against independently reviewed and adopted integrated lineage."
-    }
+    {"id":"stale_binding_rejection","critical":true,"state":"ADOPTED_PROVEN","evidence":"canonical main ed9be13f8d1c5d6fcc7ab07761c0dfdc4255df98 carries adopted fixed dispatcher fresh head-tree-main binding","note":"Old head/tree/main is rejected fail-closed."},
+    {"id":"same_generation_request_collision","critical":true,"state":"FROZEN_CANDIDATE","evidence":"PR #225 repaired arbitration is composed into current final convergence PR #258","note":"Earliest trusted Owner request comment wins each predecessor generation; final composed Candidate awaits Control review."},
+    {"id":"publish_time_request_supersession","critical":true,"state":"FROZEN_CANDIDATE","evidence":"PR #227 repair / PR #250 integration are composed into current final convergence PR #258","note":"Old job cannot publish after a newer canonical request appears."},
+    {"id":"concurrent_result_publication","critical":true,"state":"FROZEN_CANDIDATE","evidence":"PR #232 primitive / PR #250 integration are composed into current final convergence PR #258","note":"Earliest trusted exact result comment is canonical and later duplicates are non-consumable."},
+    {"id":"result_receipt_loss_recovery","critical":true,"state":"FROZEN_CANDIDATE","evidence":"PR #234 primitive / PR #250 integration are composed into current final convergence PR #258","note":"Canonical exact PASS can reconstruct a lost publish receipt without republish."},
+    {"id":"downstream_canonical_result_consumption","critical":true,"state":"FROZEN_CANDIDATE","evidence":"PR #236 primitive / PR #252 integration are composed into current final convergence PR #258","note":"Later duplicate Lab PASS is non-consumable and does not block T2 when canonical result is referenced."},
+    {"id":"t2_receipt_loss_recovery","critical":true,"state":"FROZEN_CANDIDATE","evidence":"PR #237 primitive / PR #252 integration are composed into current final convergence PR #258","note":"Canonical exact T2 can reconstruct a lost T2 receipt and duplicate T2 converges to one canonical comment."},
+    {"id":"fixed_shared_steps_immutability","critical":true,"state":"ADOPTED_PROVEN","evidence":"#93 permanent request-only dispatcher baseline","note":"Research lanes do not edit shared Independent Lab/Auditor Steps."},
+    {"id":"owner_courier_elimination","critical":true,"state":"ADOPTED_PROVEN","evidence":"#93 durable GitHub request-only operating protocol","note":"Routine Owner forwarding/copy-paste is not required."},
+    {"id":"runtime_off_invariant","critical":true,"state":"ADOPTED_PROVEN","evidence":"canonical operating boundary","note":"Hardening research grants no Runtime or live-effect authority."},
+    {"id":"combined_fault_replay","critical":true,"state":"FROZEN_CANDIDATE","evidence":"PR #242 replay is composed with actual model/publisher/T2 module replay into current final convergence PR #258","note":"Pre-adoption combined replay preparation is frozen in the current final lineage; completion still requires replay PASS against independently reviewed and adopted integrated lineage."}
   ]
 }
