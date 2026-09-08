@@ -53,6 +53,20 @@ Task boundary
 
 Tasks contain declarative objectives and allowlisted evidence primitives. They do not contain executable shell/YAML/Python/credential fields.
 
+Task v2 evidence manifest hardening
+
+This research draft adds `MULTIVERSE_RESEARCH_TASK_v2` while preserving the historical v1 contract unchanged.
+
+TASK_v2 adds an explicit `evidence_manifest`. Each manifest entry binds:
+- exact evidence primitive;
+- exact ref;
+- required non-null SHA256;
+- strict UTC observed_at not after task creation.
+
+For TASK_v2, an allowed primitive type alone is not evidence authorization. Every COMPLETED finding must match one exact task-manifest `(primitive, ref, sha256)` entry. Undeclared refs, primitive substitution, null digests, and digest drift fail closed.
+
+TASK_v1 remains historical/synthetic compatibility only and is not silently reinterpreted. Any future live-provider Phase B work must use TASK_v2 or a stronger later contract plus separate provider assignment/attestation boundaries.
+
 Results contain:
 - explicit model identity;
 - exact task/snapshot binding plus canonical task SHA256;
