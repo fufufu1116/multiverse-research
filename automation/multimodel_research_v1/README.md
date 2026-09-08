@@ -128,6 +128,33 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+First-provider pilot dry-run plan
+
+`MULTIVERSE_FIRST_PROVIDER_PILOT_DRY_RUN_v1` is a repository-only preparation object for the later, separately authorized Phase B first-provider pilot.
+
+It binds:
+- exact frozen pre-live Candidate head and seal blob;
+- exact dated provider catalog snapshot SHA256;
+- exact selected provider/model catalog entry;
+- exactly one provider, one planned call, and one attempt;
+- exact input/output token ceilings;
+- exact catalog-derived maximum cost estimate;
+- synthetic-only data;
+- JSON-only output.
+
+It explicitly requires provider-call, credential, and spend authority while keeping all three authorization fields false.
+
+It also requires:
+- no network execution in repository;
+- no credential material in repository;
+- live_execution_performed = false;
+- Runtime OFF;
+- adoption_authority = false.
+
+`build_pilot_candidate_matrix` exposes both current bounded candidates for comparison without selecting either one and without creating selection or spend authority.
+
+This dry-run object is advisory research only. It is not an Owner Gate, machine review request, provider call, credential grant, or spend authorization.
+
 Dated provider model catalog snapshot
 
 `PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json` records the official-provider facts used to choose bounded first-smoke candidates on 2026-09-08.

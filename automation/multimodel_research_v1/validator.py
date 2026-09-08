@@ -28,6 +28,7 @@ REQUIRED = [
     ROOT / "execution_prep.py",
     ROOT / "readiness.py",
     ROOT / "provider_catalog.py",
+    ROOT / "pilot_dry_run.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -161,6 +162,7 @@ def validate() -> dict:
     execution_prep = (ROOT / "execution_prep.py").read_text()
     readiness = (ROOT / "readiness.py").read_text()
     provider_catalog = (ROOT / "provider_catalog.py").read_text()
+    pilot_dry_run = (ROOT / "pilot_dry_run.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -601,6 +603,34 @@ def validate() -> dict:
             )
 
     for token in (
+        "MULTIVERSE_FIRST_PROVIDER_PILOT_DRY_RUN_v1",
+        "PHASE_B_FIRST_PROVIDER_PILOT_PREPARATION_ONLY",
+        "build_first_provider_pilot_dry_run",
+        "validate_first_provider_pilot_dry_run",
+        "PILOT_CATALOG_SNAPSHOT_SHA256_MISMATCH",
+        "PILOT_MODEL_ID_MISMATCH",
+        "PILOT_CATALOG_ENTRY_SHA256_MISMATCH",
+        "PILOT_COST_ESTIMATE_MISMATCH",
+        "PILOT_EXACTLY_ONE_PROVIDER",
+        "PILOT_EXACTLY_ONE_CALL",
+        "PILOT_EXACTLY_ONE_ATTEMPT",
+        "PILOT_SYNTHETIC_ONLY",
+        "PILOT_JSON_ONLY",
+        "PILOT_NETWORK_EXECUTION_FORBIDDEN",
+        "PILOT_CREDENTIAL_MATERIAL_FORBIDDEN",
+        "PILOT_AUTHORITY_REQUIRED",
+        "PILOT_FORBIDDEN_TRUE",
+        "PILOT_RUNTIME_NOT_OFF",
+        "build_pilot_candidate_matrix",
+        "first_provider_pilot_dry_run_sha256",
+    ):
+        record(
+            f"pilot_dry_run:{token}",
+            token in pilot_dry_run,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -622,8 +652,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 271,
-        f"{test_count} != 271",
+        test_count == 286,
+        f"{test_count} != 286",
     )
 
     return {

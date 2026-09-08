@@ -84,6 +84,12 @@ from automation.multimodel_research_v1.provider_catalog import (
     validate_first_smoke_candidate,
     validate_provider_catalog,
 )
+from automation.multimodel_research_v1.pilot_dry_run import (
+    build_first_provider_pilot_dry_run,
+    build_pilot_candidate_matrix,
+    first_provider_pilot_dry_run_sha256,
+    validate_first_provider_pilot_dry_run,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -10402,6 +10408,340 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(
             sha256_json(first),
             sha256_json(second),
+        )
+
+
+    def test_272_valid_gemini_first_provider_pilot_dry_run(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            ),
+            plan,
+        )
+        self.assertEqual(
+            plan["model_id"],
+            "gemini-3.8-flash",
+        )
+
+    def test_273_valid_claude_first_provider_pilot_dry_run(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            ),
+            plan,
+        )
+        self.assertEqual(
+            plan["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_274_pilot_requires_exact_prelive_head_sha(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_first_provider_pilot_dry_run(
+                snapshot,
+                "GOOGLE_GEMINI",
+                prelive_candidate_head="not-a-sha",
+                prelive_candidate_seal_blob=
+                    "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            )
+
+    def test_275_pilot_requires_exact_prelive_seal_blob_sha(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_first_provider_pilot_dry_run(
+                snapshot,
+                "GOOGLE_GEMINI",
+                prelive_candidate_head=
+                    "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+                prelive_candidate_seal_blob="not-a-sha",
+            )
+
+    def test_276_pilot_model_must_match_catalog(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        plan["model_id"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            )
+
+    def test_277_pilot_binds_exact_catalog_snapshot_digest(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        plan["catalog_snapshot_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            )
+
+    def test_278_pilot_cost_estimate_is_exact_and_bounded(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            plan["estimated_max_cost_usd_micros"],
+            53248,
+        )
+        self.assertLessEqual(
+            plan["estimated_max_cost_usd_micros"],
+            1_000_000,
+        )
+
+    def test_279_pilot_is_exactly_one_provider_call_attempt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            plan["planned_provider_count"],
+            1,
+        )
+        self.assertEqual(plan["planned_call_count"], 1)
+        self.assertEqual(plan["max_attempts"], 1)
+
+    def test_280_pilot_is_synthetic_json_only(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            plan["data_ceiling"],
+            "SYNTHETIC_ONLY",
+        )
+        self.assertEqual(
+            plan["structured_output"],
+            "JSON_ONLY",
+        )
+
+    def test_281_pilot_requires_authority_without_granting_it(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        for key in (
+            "provider_call_authority_required",
+            "credential_authority_required",
+            "spend_authority_required",
+        ):
+            self.assertIs(plan[key], True)
+
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+        ):
+            self.assertIs(plan[key], False)
+
+    def test_282_pilot_never_claims_execution_runtime_or_adoption(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertIs(
+            plan["network_execution_in_repository"],
+            False,
+        )
+        self.assertIs(
+            plan["credential_material_in_repository"],
+            False,
+        )
+        self.assertIs(
+            plan["live_execution_performed"],
+            False,
+        )
+        self.assertIs(plan["adoption_authority"], False)
+        self.assertEqual(plan["runtime"], "OFF")
+
+    def test_283_pilot_phase_fails_closed(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        plan["phase"] = "PHASE_C_SECOND_PROVIDER"
+        with self.assertRaises(ResearchContractError):
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            )
+
+    def test_284_pilot_candidate_matrix_contains_both_providers(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_pilot_candidate_matrix(snapshot)
+        self.assertEqual(
+            {row["provider"] for row in matrix},
+            {"GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"},
+        )
+
+    def test_285_pilot_candidate_matrix_grants_no_selection_or_spend(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_pilot_candidate_matrix(snapshot)
+        for row in matrix:
+            self.assertIs(row["selection_authority"], False)
+            self.assertIs(row["selected"], False)
+            self.assertIs(row["spend_authority"], False)
+
+    def test_286_pilot_digest_is_deterministic_and_provider_specific(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        first = first_provider_pilot_dry_run_sha256(
+            snapshot,
+            plan,
+        )
+        second = first_provider_pilot_dry_run_sha256(
+            snapshot,
+            copy.deepcopy(plan),
+        )
+        self.assertEqual(first, second)
+
+        claude = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertNotEqual(
+            first,
+            first_provider_pilot_dry_run_sha256(
+                snapshot,
+                claude,
+            ),
         )
 
 
