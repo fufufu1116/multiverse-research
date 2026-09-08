@@ -1,0 +1,117 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v88",
+  "status": "LIVE_PROSPECTIVE_SHADOW_ECONOMICS_ACTIVE_KEIOKAKU_R8_ONE_EV_CANDIDATE_SEIBUEN_ALL_NO_BET_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v87.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Accuracy, shadow economics, and formal support remain separate lanes.",
+  "live_accuracy_lane": {
+    "seibuen_prediction_artifact": "KEIRIN_PROSPECTIVE_PRE_PREDICTION_SEIBUEN_20260908_R6_R11_v1.json",
+    "event": "西武園 2026-09-08 R6-R11",
+    "races": 6,
+    "result_accessed": false,
+    "predictions_immutable": true
+  },
+  "live_shadow_economics": {
+    "seibuen": {
+      "artifact": "KEIRIN_PROSPECTIVE_SHADOW_BUY_DECISION_SEIBUEN_20260908_R6_R11_v1.json",
+      "races": 6,
+      "confidence_pass_races": 0,
+      "shadow_bet_races": 0,
+      "total_shadow_stake_yen": 0,
+      "interpretation": "All frozen rules abstain."
+    },
+    "keiokaku": {
+      "artifact": "KEIRIN_PROSPECTIVE_SHADOW_BUY_DECISION_KEIOKAKU_20260908_R1_R9_v1.json",
+      "event": "京王閣 2026-09-08 R1-R9",
+      "races": 9,
+      "confidence_pass_races": 3,
+      "confidence_pass_race_numbers": [
+        1,
+        4,
+        8
+      ],
+      "ev10_cap20_pass_races": 1,
+      "ev_candidate": {
+        "race_no": 8,
+        "start_jst": "23:00",
+        "ticket": "3連複 1=2=3",
+        "riders": [
+          "寺沼 伊織",
+          "貝原 涼太",
+          "川野 深"
+        ],
+        "conservative_top1_probability": 0.42015436934732403,
+        "conservative_ticket_probability": 0.18859505147523625,
+        "observed_odds": 6.3,
+        "observed_at": "2026-09-08T12:06:00+09:00",
+        "expected_value": 0.18814882429398838,
+        "shadow_stake_yen": 100
+      },
+      "confidence_pass_ev_rejected": [
+        {
+          "race_no": 1,
+          "ticket": "1=2=3",
+          "odds": 2.6,
+          "expected_value": -0.4175276573582648
+        },
+        {
+          "race_no": 4,
+          "ticket": "1=2=3",
+          "odds": 5.3,
+          "expected_value": -0.10926305743852238
+        }
+      ],
+      "result_accessed": false,
+      "payout_accessed": false
+    }
+  },
+  "buy_strategy_research": {
+    "burned_grid": "KEIRIN_BURNED_AB_BUY_STRATEGY_SIMULATION_20260908_v1.json",
+    "neighborhood": "KEIRIN_BURNED_AB_3RENHUKU_1PT_NEIGHBORHOOD_ROBUSTNESS_20260908_v1.json",
+    "frozen_candidates": "KEIRIN_SHADOW_BUY_CANDIDATE_FREEZE_20260908_v1.json",
+    "projector": "tools/keirin_pre_only_all_market_projector_v1.py",
+    "simulator": "tools/keirin_burned_ab_buy_strategy_simulator_v1.py",
+    "C_used": false,
+    "ECON_HOLDOUT1000_used": false,
+    "real_money_execution": false,
+    "profitability_claim": false
+  },
+  "tonight_evaluation": {
+    "seibuen_accuracy_check": "SCHEDULED",
+    "keiokaku_shadow_economics_check": "SCHEDULED_AFTER_R9",
+    "rules_rewritable_before_result": false,
+    "odds_reconstruction_after_result": false
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "gate": "FAIL",
+    "prospective_35_candidate_path_retained": true
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "accepted_definition": "UNKNOWN",
+    "independent_result": "PENDING"
+  },
+  "priority_next": [
+    "Do not change Seibuen or Keiokaku frozen prediction/buy decisions before outcomes.",
+    "After Seibuen completes, score S0 vs challenger accuracy only.",
+    "After Keiokaku completes, settle frozen shadow economics including R8 3renhuku 1=2=3 ¥100 and report R1/R4 rejected-ticket counterfactuals without rewriting rules.",
+    "Continue using flat ¥100 shadow stakes until a prospective edge exists; no Kelly/bankroll optimization yet.",
+    "Keep Segment C and ECON_HOLDOUT1000 sealed and formal support lane independent."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout_as_feature": false,
+    "threshold_rewrite_after_result": false,
+    "force_bet": false,
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "real_money_execution": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
