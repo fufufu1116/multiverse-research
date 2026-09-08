@@ -147,12 +147,13 @@ def validate() -> dict:
     ))
 
     replay_test = (ROOT / "test_integrated_resilience_convergence_v1.py").read_text()
-    _record_tokens(checks, findings, "final:actual_module_replay", replay_test, (
+    _record_tokens(checks, findings, "final:actual_public_path_replay", replay_test, (
         "from automation.review_dispatcher_v1 import model, publisher, t2",
         "model.latest_exact_current_owner_request(",
-        "publisher._canonical_comment_or_none(",
-        "publisher._validate_recovery_artifact(",
-        "t2._canonical_t2_comment_or_none(",
+        "publisher.publish(",
+        "t2.publish_t2(",
+        "mock.patch.object(publisher",
+        "mock.patch.object(t2",
     ))
 
     matrix_path = REPO_ROOT / "docs" / "lane_b_completion_matrix_v1.json"
