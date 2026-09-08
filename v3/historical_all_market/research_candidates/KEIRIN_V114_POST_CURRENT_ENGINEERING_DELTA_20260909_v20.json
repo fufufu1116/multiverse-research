@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v20",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v19.json",
+  "status": "POST_CURRENT_DELTA_MASS_SIMULATION_AND_NEXTGEN5000_PRE_EXPANSION_ACTIVE",
+  "branch_head_before_write": "daf36fd3f081da0423778af0df64b4da5d87538a",
+  "new_evidence": [
+    "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_MASS_3RENHUKU_GRID_88200_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_Q2_INSTABILITY_DIAGNOSTIC_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_DEV2000_AB_MODEL_MARKET_MIXTURE_STRESS_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_UNIVERSE_RECOVERY_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_BATCH2001_2500_PREOUTCOME_EVAL_FREEZE_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_2001_2500_RECOVERY_RECEIPT_20260909_v1.json"
+  ],
+  "new_tools_and_workflows": [
+    "tools/keirin_nextgen5000_pre_bulk_recovery_v1.py",
+    ".github/workflows/keirin-nextgen5000-pre-batch-2001-2500-v1.yml",
+    ".github/workflows/keirin-nextgen5000-pre-batch-2501-3000-v1.yml"
+  ],
+  "mass_search": {
+    "tested_3renhuku_rules": 88200,
+    "positive_all_three_500race_splits_min30": 87,
+    "positive_all_six_250race_blocks": 0,
+    "positive_at_least_five_of_six": 177,
+    "dominant_failed_block_among_top100_5of6": "Q2 (86/100)",
+    "verdict": "NO_VICTORY_EQUATION_CLAIM"
+  },
+  "q2_diagnosis": {
+    "winner_ranking_collapse": false,
+    "representative_selected_bets": 9,
+    "representative_hits": 0,
+    "zero_hit_probability_under_conservative_model": 0.2142,
+    "zero_hit_probability_under_normalized_market": 0.3825,
+    "verdict": "SPARSE_TICKET_VARIANCE_PLAUSIBLE_NO_DATE_SPECIFIC_RESCUE_TUNING"
+  },
+  "model_market_stress": {
+    "approximate_break_even_model_weight": 0.33,
+    "six_of_six_positive_is_low_power_even_if_model_correct": true,
+    "verdict": "FUTURE_PASS_MUST_USE_LARGER_SAMPLE_PLUS_CALIBRATION_DRAWDOWN_CONCENTRATION_AND_BLOCK_BOOTSTRAP"
+  },
+  "nextgen5000": {
+    "candidate_universe_rows": 9201,
+    "locked_universe_rows": 5000,
+    "locked_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "result_independent_universe_reproduction": true,
+    "batch_2001_2500": {
+      "requested": 500,
+      "successful_pre_races": 493,
+      "rejected_fail_closed": 7,
+      "pre_rows": 3528,
+      "outcome_access_during_pre": false,
+      "status": "COMPLETE"
+    },
+    "batch_2501_3000": {
+      "workflow_run_id": 34288111136,
+      "status_at_checkpoint": "IN_PROGRESS",
+      "outcome_access_during_pre": false
+    }
+  },
+  "owner_authorization": {
+    "collect_additional_historical_pre_when_needed": true,
+    "rule": "Keep PRE and outcome/result/payout stores separated. Freeze simulation/prediction/selection before outcome join. Do not use result pages to reconstruct missing PRE.",
+    "implication": "Mother sample expansion can continue owner-free under these constraints."
+  },
+  "today_20260909": {
+    "prediction_changed": false,
+    "ticket_changed": false,
+    "purchase_gate_changed": false,
+    "answer_check_changed": false
+  },
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 88,
+    "formal_scientific_progress_percent": 60,
+    "profitability_proven": false
+  },
+  "formal_support": "1 rider / 2 PRE rows",
+  "formal_support_increment_now": 0,
+  "scientific_gate_change": false,
+  "DEV2000_C_scoring_count": 0,
+  "ECON_HOLDOUT1000_opened": false,
+  "runtime": "OFF",
+  "main_mutation": false,
+  "owner_action_required_now": false
+}
