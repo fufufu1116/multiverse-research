@@ -1,0 +1,30 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v15",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v14.json",
+  "status": "POST_CURRENT_DELTA_LOW_DOF_FITTER_PREBUILT",
+  "included_receipts": [
+    "v3/historical_all_market/research_candidates/KEIRIN_FORMALIZATION_PIPELINE_IMPLEMENTATION_RECEIPT_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_CALENDAR_SHADOW_READINESS_RECEIPT_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_FUTURE_FIT_RACECARD_CAPTURE_CONTRACT_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_LOW_DOF_FITTER_IMPLEMENTATION_RECEIPT_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_EVALUATION_MATH_FREEZE_20260908_v1.json"
+  ],
+  "preferred_future_components": {
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "future_fit_membership_builder": "tools/keirin_future_fit_race_membership_builder_v1.py",
+    "low_dof_fitter": "tools/keirin_rider_circumference_low_dof_fitter_v1.py",
+    "calendar_shadow_evaluator": "tools/keirin_support_gate_local_day1_calendar_shadow_v1.py",
+    "circumference_development_evaluator": "tools/keirin_rider_circumference_development_evaluator_v2.py",
+    "line_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v2.py",
+    "line_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v2.py",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v3.py"
+  },
+  "scientific_gate_change": false,
+  "formal_support": "1 rider / 2 PRE rows",
+  "real_fit_executed": false,
+  "result_join_authorized_now": false,
+  "model_fit_authorized_now": false,
+  "runtime": "OFF"
+}
