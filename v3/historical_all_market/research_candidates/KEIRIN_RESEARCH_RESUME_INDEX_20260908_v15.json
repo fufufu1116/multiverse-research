@@ -1,0 +1,29 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v15",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_ENGINEERING_DELTA_V6",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v6.json",
+  "critical_pointers": {
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v5.py",
+    "circumference_predictor": "tools/keirin_pre_only_rider_or_style_predictor_v3.py",
+    "circumference_development_evaluator": "tools/keirin_rider_circumference_development_evaluator_v1.py",
+    "evaluation_math_freeze": "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_EVALUATION_MATH_FREEZE_20260908_v1.json",
+    "line_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v2.py",
+    "line_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v2.py",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v3.py",
+    "model_ticket_comparison": "tools/keirin_model_ticket_comparison_v2.py",
+    "longshot_pipeline": "tools/keirin_longshot_shadow_pipeline_v2.py",
+    "longshot_validation": "tools/keirin_longshot_shadow_validation_gate_v2.py"
+  },
+  "current_summary": {
+    "formal_support": "1 rider / 2 PRE rows",
+    "formal_gate": "unchanged; calendar definition still pending Control-side PR177 review",
+    "evaluation_math": "pre-outcome primary/secondary/bootstrap math frozen",
+    "result_join": "not authorized",
+    "model_fit": "not authorized",
+    "runtime": "OFF"
+  },
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later successor, this delta or later successor, PR177/calendar review state, and the single active Keirin automation before treating state as current."
+}
