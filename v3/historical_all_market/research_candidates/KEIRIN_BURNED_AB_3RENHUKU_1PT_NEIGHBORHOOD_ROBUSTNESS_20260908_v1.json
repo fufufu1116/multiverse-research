@@ -1,0 +1,136 @@
+{
+  "record": "KEIRIN_BURNED_AB_3RENHUKU_1PT_NEIGHBORHOOD_ROBUSTNESS_20260908_v1",
+  "status": "BURNED_DEVELOPMENT_NEIGHBORHOOD_SCREEN_COMPLETE_PROSPECTIVE_REPLICATION_REQUIRED",
+  "generated_jst": "2026-09-08",
+  "purpose": "Check whether the development-discovered 3renhuku 1-point confidence/EV/odds-cap candidate is an isolated grid accident or has a nearby positive region on already-burned A+B only.",
+  "data_role": "BURNED_DIAGNOSTIC_DEV_ONLY",
+  "data": {
+    "A_races": 1000,
+    "B_races": 500,
+    "C_used": false,
+    "ECON_HOLDOUT1000_used": false
+  },
+  "common_rule": "Candidate A and B1a agree top1; choose one 3renhuku ticket from the consensus top3; flat ¥100 per selected race.",
+  "selected_center": {
+    "confidence_min": 0.4,
+    "ev_min": 0.1,
+    "odds_cap": 20
+  },
+  "selected_center_metrics": {
+    "A": {
+      "bet_races": 56,
+      "roi": 0.08214285714285707
+    },
+    "B": {
+      "bet_races": 33,
+      "roi": 0.8545454545454545
+    },
+    "AB": {
+      "bet_races": 89,
+      "roi": 0.36853932584269655
+    }
+  },
+  "nearby_positive_examples": [
+    {
+      "confidence_min": 0.4,
+      "ev_min": 0.1,
+      "odds_cap": 15,
+      "A_bets": 47,
+      "A_roi": 0.2893617021,
+      "B_bets": 29,
+      "B_roi": 0.5103448276,
+      "AB_roi": 0.3736842105
+    },
+    {
+      "confidence_min": 0.4,
+      "ev_min": 0.15,
+      "odds_cap": 15,
+      "A_bets": 40,
+      "A_roi": 0.515,
+      "B_bets": 24,
+      "B_roi": 0.3833333333,
+      "AB_roi": 0.465625
+    },
+    {
+      "confidence_min": 0.4,
+      "ev_min": 0.15,
+      "odds_cap": 20,
+      "A_bets": 49,
+      "A_roi": 0.2367346939,
+      "B_bets": 28,
+      "B_roi": 0.8071428571,
+      "AB_roi": 0.4441558442
+    },
+    {
+      "confidence_min": 0.4,
+      "ev_min": 0.2,
+      "odds_cap": 15,
+      "A_bets": 35,
+      "A_roi": 0.3514285714,
+      "B_bets": 21,
+      "B_roi": 0.580952381,
+      "AB_roi": 0.4375
+    },
+    {
+      "confidence_min": 0.425,
+      "ev_min": 0.15,
+      "odds_cap": 15,
+      "A_bets": 32,
+      "A_roi": 0.18125,
+      "B_bets": 19,
+      "B_roi": 0.1263157895,
+      "AB_roi": 0.1607843137
+    },
+    {
+      "confidence_min": 0.375,
+      "ev_min": 0.15,
+      "odds_cap": 15,
+      "A_bets": 55,
+      "A_roi": 0.1018181818,
+      "B_bets": 28,
+      "B_roi": 0.4464285714,
+      "AB_roi": 0.2180722892
+    }
+  ],
+  "instability_edges": [
+    {
+      "confidence_min": 0.45,
+      "ev_min": 0.1,
+      "odds_cap": 15,
+      "A_bets": 28,
+      "A_roi": -0.525,
+      "B_bets": 16,
+      "B_roi": 1,
+      "AB_roi": 0.0295454545
+    },
+    {
+      "confidence_min": 0.35,
+      "ev_min": 0.1,
+      "odds_cap": 20,
+      "A_bets": 96,
+      "A_roi": -0.134375,
+      "B_bets": 49,
+      "B_roi": 0.3979591837,
+      "AB_roi": 0.0455172414
+    }
+  ],
+  "interpretation": [
+    "The 0.40/EV10%/20x candidate is not a single isolated cell: nearby 0.375-0.425 confidence and 15-20x cap settings contain multiple cells with positive A and B ROI.",
+    "The region is not globally robust. Moving confidence to 0.45 or relaxing lower-confidence/20x combinations can make A negative.",
+    "Because the neighborhood itself was inspected on burned A+B, none of these results validate profitability. They only justify keeping a parsimonious center candidate for prospective replication."
+  ],
+  "freeze_consequence": {
+    "prospective_candidate_unchanged": "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+    "do_not_move_to_best_grid_cell": true,
+    "reason": "Avoid additional selection on the burned surface; retain the previously frozen simple center rule."
+  },
+  "hard_boundaries": {
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "real_money_execution": false,
+    "profitability_claim": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false
+}
