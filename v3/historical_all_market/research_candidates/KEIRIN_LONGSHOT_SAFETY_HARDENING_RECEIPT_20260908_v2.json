@@ -1,0 +1,54 @@
+{
+  "record": "KEIRIN_LONGSHOT_SAFETY_HARDENING_RECEIPT_20260908_v2",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_ANTI_JACKPOT_EXPECTED_HIT_GATE_AND_FINITE_NUMERIC_SAFETY_ISOLATED_REPRO_PASS",
+  "implementation": {
+    "guard": "tools/keirin_longshot_shadow_guard_v2.py",
+    "selector": "tools/keirin_longshot_shadow_selector_v2.py",
+    "risk_aggregator": "tools/keirin_shadow_risk_aggregator_v2.py",
+    "evidence_sufficiency": "tools/keirin_longshot_evidence_sufficiency_v2.py",
+    "validation_gate": "tools/keirin_longshot_shadow_validation_gate_v2.py",
+    "pipeline": "tools/keirin_longshot_shadow_pipeline_v2.py",
+    "safety_selftest_spec": "tools/keirin_longshot_shadow_safety_selftest_v2.py"
+  },
+  "defects_closed": [
+    "stable longshot pass now requires at least five expected hits under frozen conservative probabilities, not only five observed hits",
+    "non-finite probability, odds, risk, stake, return, cap and evidence inputs fail closed instead of propagating NaN/Inf",
+    "unsupported validation bands fail closed instead of disappearing from diagnostics",
+    "duplicate elementary longshot ticket rows fail closed",
+    "risk aggregation verifies finite scale and allocation and enforces the one-race risk cap",
+    "validation now reports weekly and monthly ROI, maximum drawdown and maximum consecutive losing decisions"
+  ],
+  "isolated_reproduction": {
+    "lucky_case": {
+      "decisions": 100,
+      "actual_hits": 10,
+      "expected_hits": 0.1,
+      "roi": 1,
+      "leave_largest_hit_out_roi": 0.8181818181818181,
+      "largest_hit_share_of_profit": 0.19,
+      "calendar_weeks": 10,
+      "stable_pass": false
+    },
+    "sufficient_case": {
+      "decisions": 100,
+      "actual_hits": 10,
+      "expected_hits": 5,
+      "roi": 1,
+      "leave_largest_hit_out_roi": 0.8181818181818181,
+      "largest_hit_share_of_profit": 0.19,
+      "calendar_weeks": 10,
+      "stable_pass": true
+    }
+  },
+  "thresholds_changed_from_outcomes": false,
+  "direct_checked_in_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "live_odds_accessed": false,
+  "prediction_accessed": false,
+  "human_comments_accessed": false,
+  "real_money_authorized": false,
+  "runtime": false
+}
