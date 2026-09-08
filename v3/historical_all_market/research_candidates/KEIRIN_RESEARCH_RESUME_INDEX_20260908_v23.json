@@ -1,0 +1,30 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v23",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_ENGINEERING_DELTA_V15",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v15.json",
+  "critical_pointers": {
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "future_fit_membership_builder": "tools/keirin_future_fit_race_membership_builder_v1.py",
+    "low_dof_fitter": "tools/keirin_rider_circumference_low_dof_fitter_v1.py",
+    "calendar_shadow_evaluator": "tools/keirin_support_gate_local_day1_calendar_shadow_v1.py",
+    "circumference_development_evaluator": "tools/keirin_rider_circumference_development_evaluator_v2.py",
+    "line_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v2.py",
+    "line_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v2.py",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v3.py",
+    "model_ticket_comparison": "tools/keirin_model_ticket_comparison_v2.py",
+    "longshot_pipeline": "tools/keirin_longshot_shadow_pipeline_v2.py"
+  },
+  "current_summary": {
+    "formal_support": "1 rider / 2 PRE rows",
+    "support_and_fit_capture": "9/14-15 one-pass support + full-race PRE capture prepared",
+    "calendar_shadow": "any29 guaranteed under LOCAL_DAY1_RACE_DATE if independently adopted",
+    "low_dof_fitter": "implemented and independently reproduced on synthetic data; real fitting remains authorization-blocked",
+    "result_join": "not authorized",
+    "model_fit": "not authorized",
+    "runtime": "OFF"
+  },
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later successor, this Resume/delta or later successor, PR177/calendar authority, and the single active Keirin automation before treating state as current."
+}
