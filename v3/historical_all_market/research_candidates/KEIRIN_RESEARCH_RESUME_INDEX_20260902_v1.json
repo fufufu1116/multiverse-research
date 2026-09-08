@@ -4,8 +4,8 @@
   "canonical_repo": "fufufu1116/multiverse-research",
   "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
   "first_rule": "Never infer CURRENT/NOW/LATEST from stored state, chat, handoff, or automation history. Fresh Read research branch HEAD, canonical main, #93 latest adopted baseline, Resume, CURRENT, active queue, and PR177 every run.",
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v103.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v102.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v104.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v103.json",
   "resume_sequence": [
     {
       "step": 1,
@@ -20,7 +20,7 @@
     {
       "step": 3,
       "action": "READ_CURRENT_STATE",
-      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v103.json"
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v104.json"
     },
     {
       "step": 4,
@@ -77,7 +77,7 @@
     {
       "step": 11,
       "action": "PRESERVE_HARD_BOUNDARIES",
-      "rule": "Never use RESULT, payout, odds, forecasts/predictions, human comments, fuzzy identity, current-profile dynamic backfill, or post-cutoff reconstruction. S0/HFT frozen. Runtime OFF. No main/provider/protected-data/live-effect/spend mutation."
+      "rule": "Never use RESULT, payout, forecasts/predictions, human comments, fuzzy identity, current-profile dynamic backfill, or result-page reconstruction for PRE. Exact pit cutoff is no longer a blocking requirement. Live odds are not a model/simulation input; future purchase execution uses owner-manual current-odds comparison against a frozen model-derived minimum odds threshold. S0/HFT frozen. Runtime OFF."
     }
   ],
   "active_lane_pointers": {
@@ -110,7 +110,10 @@
     "FORMAL_SUPPORT_FINALIZER_CUTOFF_GUARD": "tools/keirin_35_formal_support_finalizer_cutoff_guard_v1.py",
     "TRUSTED_CUTOFF_BINDING_MANIFEST": "v3/historical_all_market/research_candidates/KEIRIN_35_TRUSTED_CUTOFF_BINDING_MANIFEST_20260908_v1.json",
     "TRUSTED_CUTOFF_GUARD_RECEIPT": "v3/historical_all_market/research_candidates/KEIRIN_TRUSTED_CUTOFF_BINDING_GUARD_IMPLEMENTATION_RECEIPT_20260908_v1.json",
-    "CTC_0914_0915_PREFLIGHT": "v3/historical_all_market/research_candidates/KEIRIN_CTC_0914_0915_PREFLIGHT_EVIDENCE_20260908_v1.json"
+    "CTC_0914_0915_PREFLIGHT": "v3/historical_all_market/research_candidates/KEIRIN_CTC_0914_0915_PREFLIGHT_EVIDENCE_20260908_v1.json",
+    "FORMAL_SUPPORT_FINALIZER_V2": "tools/keirin_35_formal_support_finalizer_v2.py",
+    "MANUAL_ODDS_PURCHASE_GATE": "tools/keirin_manual_odds_purchase_gate_v1.py",
+    "OWNER_CTC_AND_MANUAL_ODDS_POLICY": "v3/historical_all_market/research_candidates/KEIRIN_OWNER_CTC_AND_MANUAL_ODDS_POLICY_20260908_v1.json"
   },
   "common_governance_policy": {
     "migration_lock": "RELEASED_SUPERSEDED_BY_5572390676",
@@ -136,5 +139,6 @@
   "resume_note_20260908_v99": "Fresh sync to CURRENT v99. Added deterministic PRE-only line relation encoder plus C1/N1 logit adapter. Selftest shows exact zero-line-coefficient equivalence across all 210 ordered top3 outcomes in a 7-rider fixture (max abs diff 0.0), preserving clean C0/C1/N1 architecture comparison semantics. External Claude architecture ideas largely map to existing Multiverse designs; priority is unified validation, not redundant new families. Venue-share 0.60 denominator resolved globally across all supported rows. Formal support 1 rider/2 rows, target 30/60, 35 candidates. PR177 remains OPEN DRAFT with no independent result after request 5573150058. RESULT/PAYOUT/ODDS/PREDICTION blocked; Runtime OFF.",
   "resume_note_20260908_v101": "CURRENT v101: accelerated PRE-only scan through Sep13 found zero valid earlier cross-circumference formal conversions. Sep14 Ito/Aomori + Sep15 Hofu remains earliest known viable bulk front. One-shot 35-rider finalizer is prepared: locked priorities 1..35, fail closed, skip failures, stop immediately after 29 new PASS; six failures tolerable, seven leaves target unmet. Formal support remains 1 rider/2 rows. PR177 stale-main progression remains Control-only. RESULT/PAYOUT/ODDS/PREDICTION blocked; Runtime OFF.",
   "resume_note_20260908_v102": "CURRENT v102: added fail-closed event-level trusted cutoff binding in front of the 35-rider finalizer. Future PRE rows cannot delegate to v1 until Ito/Aomori Sep14 and Hofu Sep15 each have a prospectively captured LOCKED_TRUSTED_PRE_CUTOFF with exact +09:00 cutoff, source URL, SHA-256, and source capture time no later than cutoff; row cutoff must match exactly and row capture must be pre-cutoff. Synthetic new-guard cases pass; full repository runtime execution is not claimed. Formal support remains 1 rider/2 rows. PR177 progression Control-only. RESULT/PAYOUT/ODDS/PREDICTION blocked; Runtime OFF.",
-  "resume_note_20260908_v103": "CURRENT v103: CTC can be used now for prospective event/roster preflight. CTC schedule confirms target events Aomori/Ito Sep14 and Hofu Sep15; Aomori detail page already lists all 4/4 Aomori target riders (田頭寛之, 加賀美智史, 山本天平, 亀谷隆一). This does NOT yet bind exact trusted pit cutoff or provide final Day1 PRE/race/car rows, so formal support stays 1 rider/2 rows. Continue preflight capture now; use exact cutoff source later; RESULT/PAYOUT/ODDS/PREDICTION/HUMAN COMMENTS blocked."
+  "resume_note_20260908_v103": "CURRENT v103: CTC can be used now for prospective event/roster preflight. CTC schedule confirms target events Aomori/Ito Sep14 and Hofu Sep15; Aomori detail page already lists all 4/4 Aomori target riders (田頭寛之, 加賀美智史, 山本天平, 亀谷隆一). This does NOT yet bind exact trusted pit cutoff or provide final Day1 PRE/race/car rows, so formal support stays 1 rider/2 rows. Continue preflight capture now; use exact cutoff source later; RESULT/PAYOUT/ODDS/PREDICTION/HUMAN COMMENTS blocked.",
+  "resume_note_20260908_v104": "CURRENT v104: Owner explicitly accepts CTC schedule/detail as immediate prospective evidence and does not want exact pit/cutoff timestamp to block progress. Finalizer v2 keeps exact identity/Day1 race assignment/source hash/capture requirements but removes exact cutoff as a mandatory gate; result-page reconstruction remains prohibited. Live odds are not required for model simulation. Added manual purchase odds gate: frozen model probability + required ROI margin -> minimum acceptable displayed odds; owner manually checks current odds at purchase time (e.g. p=7.2%, +10% required ROI => 15.3x minimum). Formal support remains 1 rider/2 rows until final Day1 race/car assignments publish."
 }
