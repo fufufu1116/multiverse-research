@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v82",
+  "status": "SAME_DAY_PRE_ONLY_MODEL_DRY_RUN_PASS_REAL_RACECARD_30R_60ROWS_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v81.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Development 30/60 and formal 1/2 are separate authorities.",
+  "same_day_development": {
+    "input_artifact": "KEIRIN_RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT_20260908_v1.json",
+    "unique_riders": 30,
+    "pre_rows": 60,
+    "frozen_model": "KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+    "predictor": "tools/keirin_pre_only_rider_circumference_predictor_v1.py",
+    "dry_run": "KEIRIN_PRE_ONLY_DRY_RUN_KAWASAKI_20260830_R9_20260908_v1.json",
+    "dry_run_status": "PASS_EXECUTION_SANITY_CHECK",
+    "dry_run_target_result_accessed": false
+  },
+  "dry_run_summary": {
+    "race": "川崎 2026-08-30 9R 400m",
+    "supported_riders": 6,
+    "fallback_riders": 1,
+    "s0_top": {
+      "rider": "佐藤 一伸",
+      "probability": 0.58095289
+    },
+    "challenger_top": {
+      "rider": "佐藤 一伸",
+      "probability": 0.5934994
+    },
+    "largest_positive_shift_pp": {
+      "rider": "佐藤 一伸",
+      "value": 1.25465
+    },
+    "largest_negative_shift_pp": {
+      "rider": "松村 友和",
+      "value": -0.773796
+    },
+    "rank_order_changed": false,
+    "accuracy_claim": false
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "prospective_35_candidate_path_retained": true,
+    "future_events": [
+      {
+        "date": "2026-09-14",
+        "venue": "伊東",
+        "candidates": 11
+      },
+      {
+        "date": "2026-09-14",
+        "venue": "青森",
+        "candidates": 4
+      },
+      {
+        "date": "2026-09-15",
+        "venue": "防府",
+        "candidates": 20
+      }
+    ]
+  },
+  "next": [
+    "Run the frozen challenger only on PRE racecards; never tune beta/rho/clip/deltas from observed outcomes.",
+    "Capture prospective Sep16-Sep26 development window and compare S0 vs challenger under frozen rules.",
+    "Keep Sep27 Tamano + Sep29 Hofu untouched for final evaluation.",
+    "Keep formal 35-candidate path running in parallel."
+  ],
+  "hard_boundaries": {
+    "target_result_access": false,
+    "odds_as_feature": false,
+    "payout": false,
+    "human_forecast": false,
+    "s0_refit": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
