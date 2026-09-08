@@ -1,0 +1,126 @@
+{
+  "record": "KEIRIN_SHADOW_BUY_CANDIDATE_FREEZE_20260908_v1",
+  "status": "DEVELOPMENT_DERIVED_SHADOW_BUY_CANDIDATES_FROZEN_FOR_PROSPECTIVE_REPLICATION_NO_PROFIT_CLAIM",
+  "generated_jst": "2026-09-08",
+  "purpose": "Freeze a small behaviorally distinct set of shadow-buy rules after burned A+B development simulation, before future prospective outcome evaluation. These are research candidates only; not real-money instructions.",
+  "source_research": "KEIRIN_BURNED_AB_BUY_STRATEGY_SIMULATION_20260908_v1.json",
+  "probability_source": {
+    "current_model": "KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+    "projection_tool": "tools/keirin_pre_only_all_market_projector_v1.py",
+    "rule": "All ticket probabilities must be derived from one coherent ordered-top3 probability object. S0 and challenger are both retained for comparison."
+  },
+  "development_disclosure": {
+    "burned_A_races": 1000,
+    "burned_B_races": 500,
+    "grid_search_performed": true,
+    "consequence": "Any rule selected because it looked favorable in A+B is development-derived and requires new prospective replication. A+B profitability cannot validate it.",
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false
+  },
+  "shadow_candidates": [
+    {
+      "id": "NO_BET",
+      "role": "NULL_BENCHMARK",
+      "decision": "Always abstain.",
+      "stake_yen": 0
+    },
+    {
+      "id": "3RENHUKU_TOP3_1PT_CONF40",
+      "role": "LOW_COMPLEXITY_PROBABILITY_BENCHMARK",
+      "market": "3renhuku",
+      "conditions": [
+        "S0 and challenger must agree on the top1 rider",
+        "min(S0 top1 probability, challenger top1 probability) >= 0.40"
+      ],
+      "ticket": "One unordered 3renhuku ticket using the common top1 plus the next two riders under the frozen ranking rule.",
+      "shadow_stake": "100 yen flat per selected race",
+      "odds_required": false,
+      "burned_AB_context": {
+        "bet_races": 412,
+        "A_roi": -0.15197,
+        "B_roi": 0.18418,
+        "AB_roi": -0.02306,
+        "AB_hit_rate": 0.22573
+      },
+      "interpretation": "Near-break-even combined burned development benchmark but unstable by segment; not a profit rule."
+    },
+    {
+      "id": "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+      "role": "DEVELOPMENT_DISCOVERED_VALUE_CANDIDATE",
+      "market": "3renhuku",
+      "conditions": [
+        "All conditions of 3RENHUKU_TOP3_1PT_CONF40",
+        "Timestamp-proven PRE decimal odds for the exact ticket must be available before the declared decision cutoff",
+        "ticket_probability * observed_decimal_odds - 1 >= 0.10",
+        "observed_decimal_odds <= 20.0"
+      ],
+      "probability_for_EV": "Use the conservative minimum of the frozen S0-derived and challenger-derived ticket probabilities for selection.",
+      "ticket": "Same one unordered top3 ticket.",
+      "shadow_stake": "100 yen flat per selected race",
+      "missing_or_late_odds": "NO_BET",
+      "burned_AB_context": {
+        "note": "Grid-discovered on burned A+B; therefore especially requires prospective replication.",
+        "A_bet_races": 56,
+        "A_roi": 0.0821,
+        "B_bet_races": 33,
+        "B_roi": 0.8545,
+        "AB_roi": 0.3685
+      },
+      "interpretation": "Promising development signal only. The favorable A+B result is selection-biased by the search process and is not a validated edge."
+    },
+    {
+      "id": "WIDE_AXIS1_3PT_CONF40",
+      "role": "HIGH_HIT_RATE_NEGATIVE_EDGE_CONTROL",
+      "market": "wide",
+      "conditions": [
+        "S0 and challenger must agree on top1",
+        "min(S0 top1 probability, challenger top1 probability) >= 0.40"
+      ],
+      "tickets": "Three wide tickets pairing the common top1 with the next three riders.",
+      "shadow_stake": "100 yen per elementary ticket, 300 yen total per selected race",
+      "odds_required": false,
+      "burned_AB_context": {
+        "AB_hit_rate": 0.85922,
+        "AB_roi": -0.15097
+      },
+      "interpretation": "Deliberately retained as a high-hit-rate control showing that frequent hits do not imply positive economics."
+    }
+  ],
+  "staking_freeze": {
+    "primary_policy": "FLAT_100_YEN_PER_ELEMENTARY_TICKET_SHADOW_ONLY",
+    "kelly_allowed": false,
+    "bankroll_percentage_allowed": false,
+    "martingale_allowed": false,
+    "reason": "Burned A+B showed stake sizing magnifies drawdown and cannot rescue negative edge. Edge quality is tested before bankroll optimization."
+  },
+  "prospective_evaluation_metrics": [
+    "decision_count",
+    "executed_shadow_ticket_count",
+    "hit_rate",
+    "total_shadow_stake",
+    "total_shadow_return",
+    "ROI",
+    "weekly_ROI",
+    "monthly_ROI",
+    "maximum_drawdown",
+    "largest_single_hit_share_of_profit",
+    "market concentration",
+    "NO_BET rate"
+  ],
+  "anti_hindsight": [
+    "Do not change candidate definitions after seeing a prospective race result.",
+    "Do not reconstruct missing PRE odds from payout/result pages.",
+    "Do not add winning tickets or drop losing tickets after settlement.",
+    "Do not change stake size based on prospective outcomes.",
+    "Do not use current Segment C or ECON_HOLDOUT1000 to choose or rescue candidates."
+  ],
+  "authority": {
+    "shadow_research_ready": true,
+    "real_money_execution": false,
+    "automated_bet_placement": false,
+    "profitability_claim": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false
+}
