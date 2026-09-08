@@ -1,0 +1,151 @@
+{
+  "record": "KEIRIN_MARKET_SELECTION_SCORECARD_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "DEVELOPMENT_SCORECARD_FROZEN_PROSPECTIVE_VALIDATION_PENDING",
+  "branch_head_before_write": "a09f869349bf3129ad973f363c95e52d57909af1",
+  "purpose": "Choose the practical market/ticket family by recovery, stability and simplicity rather than hit rate alone.",
+  "ranking_principle": [
+    "Recovery rate is primary.",
+    "A and B both positive is stronger than combined-only positivity.",
+    "High hit rate with negative recovery is not promoted.",
+    "Point expansion must justify its extra spend.",
+    "Prospective evidence outranks burned-development optimization."
+  ],
+  "candidates": [
+    {
+      "rank": 1,
+      "id": "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+      "role": "PRIMARY_DEVELOPMENT_CANDIDATE",
+      "burned_AB": {
+        "races_used": 1500,
+        "selected_bets": 89,
+        "A_roi": 0.082143,
+        "B_roi": 0.854545,
+        "AB_roi": 0.368539
+      },
+      "interpreted_recovery_percent": {
+        "A": 108.2143,
+        "B": 185.4545,
+        "AB": 136.8539
+      },
+      "strengths": [
+        "one point only",
+        "A and B both positive in the selected development neighborhood",
+        "neighboring 15-20x cells also contain positive A/B examples"
+      ],
+      "weaknesses": [
+        "development-selected on burned A+B",
+        "prospective replication still too small",
+        "20x+ longshot promotion not supported by burned tail"
+      ],
+      "practical_status": "PRIMARY_SHADOW_AND_OWNER_ASSISTED_CANDIDATE_NOT_PROFIT_PROVEN"
+    },
+    {
+      "rank": 2,
+      "id": "3RENHUKU_TOP3_1PT_CONF40",
+      "role": "LOW_COMPLEXITY_BASELINE",
+      "burned_AB": {
+        "selected_bets": 412,
+        "hit_rate": 0.22573,
+        "A_roi": -0.15197,
+        "B_roi": 0.18418,
+        "AB_roi": -0.02306
+      },
+      "interpreted_recovery_percent": {
+        "AB": 97.694
+      },
+      "practical_status": "BENCHMARK_NOT_PROFIT_RULE"
+    },
+    {
+      "rank": 3,
+      "id": "3RENTAN_FIXED_FIRST_NARROW_SECOND_WIDE_THIRD",
+      "role": "OWNER_PATTERN_CHALLENGER",
+      "implementation": {
+        "simulator": "tools/keirin_3rentan_third_spread_simulator_v1.py",
+        "selftest": "tools/keirin_3rentan_third_spread_simulator_selftest_v1.py",
+        "first": "consensus top1 fixed",
+        "second_group_sizes": [
+          1,
+          2
+        ],
+        "third_pool_sizes": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "optional_guarded_portfolio_ev_min": [
+          null,
+          0.1
+        ]
+      },
+      "existing_generic_3rentan_context": [
+        {
+          "approx_points": 2,
+          "hit_rate": 0.1408,
+          "roi": -0.189,
+          "recovery_percent": 81.1
+        },
+        {
+          "approx_points": 6,
+          "hit_rate": 0.3204,
+          "roi": -0.255,
+          "recovery_percent": 74.5
+        },
+        {
+          "approx_points": 12,
+          "hit_rate": 0.4417,
+          "roi": -0.3071,
+          "recovery_percent": 69.29
+        },
+        {
+          "approx_points": 20,
+          "hit_rate": 0.551,
+          "roi": -0.4154,
+          "recovery_percent": 58.46
+        },
+        {
+          "approx_points": 29,
+          "hit_rate": 0.6141,
+          "roi": -0.4197,
+          "recovery_percent": 58.03
+        }
+      ],
+      "key_question": "Can widening mainly third place preserve much of the hit-rate gain without the severe recovery decay seen in symmetric point expansion?",
+      "current_blocker": "The raw DEV2000 A+B fixture files referenced by the existing simulator are not present in the current Git tree, so the new exact replay cannot honestly be reported yet.",
+      "practical_status": "CHALLENGER_TOOL_READY_REPLAY_PENDING"
+    },
+    {
+      "rank": 4,
+      "id": "WIDE_AXIS1_3PT_CONF40",
+      "role": "HIGH_HIT_NEGATIVE_RECOVERY_CONTROL",
+      "burned_AB": {
+        "hit_rate": 0.85922,
+        "roi": -0.15097,
+        "recovery_percent": 84.903,
+        "positive_weeks": "0/5"
+      },
+      "practical_status": "REJECT_AS_PRIMARY_PROFIT_CANDIDATE"
+    }
+  ],
+  "longshot_boundary": {
+    "comparable_incremental_above_20_bets": 27,
+    "incremental_return_approx": 0,
+    "incremental_roi_approx": -1,
+    "status": "SHADOW_ONLY_PENDING_PROSPECTIVE_EVIDENCE"
+  },
+  "current_decision": {
+    "primary_market": "3renhuku",
+    "primary_structure": "top3 one point",
+    "owner_pattern_3rentan": "retain as challenger and evaluate, but do not replace 3renhuku until recovery/stability evidence wins",
+    "wide": "control only"
+  },
+  "scientific_boundaries": {
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "profit_claim": false,
+    "today_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
