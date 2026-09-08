@@ -1,0 +1,77 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v89",
+  "status": "LIVE_KEIOKAKU_R8_SHADOW_EV_CANDIDATE_ODDS_CAP_RATIONALE_AUDITED_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v88.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Live decisions remain immutable; cap analysis is burned-development diagnostics only.",
+  "live": {
+    "seibuen_accuracy": "FROZEN_PENDING_RESULT",
+    "keiokaku_shadow": {
+      "artifact": "KEIRIN_PROSPECTIVE_SHADOW_BUY_DECISION_KEIOKAKU_20260908_R1_R9_v1.json",
+      "ev_candidate": "R8 3連複 1=2=3, shadow ¥100, observed odds 6.3",
+      "rule_changed_after_capture": false
+    }
+  },
+  "odds_cap_audit": {
+    "artifact": "KEIRIN_BURNED_AB_3RENHUKU_CONF40_EV10_ODDS_CAP_SWEEP_20260908_v1.json",
+    "conclusion": "20x is not theoretical; 15x-20x is the strongest two-sided burned A/B region under the fixed conf40+EV10 one-point rule. Above 20x, A turns negative from 25x onward while B remains positive, signaling unstable longshot exposure.",
+    "key_points": [
+      {
+        "cap": 15,
+        "A_roi": 0.289362,
+        "B_roi": 0.510345,
+        "AB_roi": 0.373684,
+        "AB_bets": 76
+      },
+      {
+        "cap": 20,
+        "A_roi": 0.082143,
+        "B_roi": 0.854545,
+        "AB_roi": 0.368539,
+        "AB_bets": 89
+      },
+      {
+        "cap": 25,
+        "A_roi": -0.067692,
+        "B_roi": 0.854545,
+        "AB_roi": 0.242857,
+        "AB_bets": 98
+      },
+      {
+        "cap": null,
+        "A_roi": -0.202632,
+        "B_roi": 0.53,
+        "AB_roi": 0.05,
+        "AB_bets": 116
+      }
+    ],
+    "live_rule_change": false
+  },
+  "economic_target": {
+    "mathematical_condition": "For decimal odds O and true ticket probability p, positive expected return requires p*O>1.",
+    "prospective_goal": "Demonstrate >100% return prospectively with stable calendar performance and controlled concentration, not merely on burned data.",
+    "current_profitability_claim": false
+  },
+  "next": [
+    "Do not change cap20 or live Keiokaku R8 decision before outcome.",
+    "After future prospective samples accumulate, compare cap15 and cap20 only as preregistered sensitivity; do not pick whichever wins after seeing outcomes.",
+    "Improve ticket-probability calibration and no-bet selectivity before any bankroll scaling.",
+    "Keep flat ¥100 shadow stake until positive edge is prospectively replicated."
+  ],
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "gate": "FAIL",
+    "prospective_35_candidate_path_retained": true
+  },
+  "hard_boundaries": {
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "real_money_execution": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
