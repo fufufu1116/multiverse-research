@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_LONGSHOT_SHADOW_GUARD_SYNTHETIC_AUDIT_20260908_v1",
+  "status": "PASS_SYNTHETIC_BOUNDARY_AND_MONOTONICITY_CHECKS",
+  "date_jst": "2026-09-08",
+  "scope": "Synthetic engineering only. No live odds, predictions, results, payouts, or human forecasts accessed.",
+  "design": "KEIRIN_LONGSHOT_SHADOW_LANE_DESIGN_20260908_v1.json",
+  "tool": "tools/keirin_longshot_shadow_guard_v1.py",
+  "checks": {
+    "monotone_required_ratio": true,
+    "monotone_required_ev": true,
+    "monotone_decreasing_risk": true,
+    "boundary_20x": "PASS_CORE_AT_20_MID_HOLE_ABOVE_20",
+    "boundary_80x": "PASS_MID_HOLE_AT_80_LONGSHOT_ABOVE_80",
+    "boundary_300x": "PASS_LONGSHOT_AT_300_EXTREME_ABOVE_300"
+  },
+  "synthetic_cases": [
+    {
+      "odds": 20,
+      "p_conservative": 0.06,
+      "band": "CORE",
+      "ratio": 1.2,
+      "ev": 0.2,
+      "qualifies": true
+    },
+    {
+      "odds": 20.01,
+      "p_conservative": 0.06,
+      "band": "MID_HOLE",
+      "ratio": 1.2006,
+      "ev": 0.2006,
+      "qualifies": false
+    },
+    {
+      "odds": 80,
+      "p_conservative": 0.02,
+      "band": "MID_HOLE",
+      "ratio": 1.6,
+      "ev": 0.6,
+      "qualifies": true
+    },
+    {
+      "odds": 80.01,
+      "p_conservative": 0.02,
+      "band": "LONGSHOT",
+      "ratio": 1.6002,
+      "ev": 0.6002,
+      "qualifies": false
+    },
+    {
+      "odds": 300,
+      "p_conservative": 0.006,
+      "band": "LONGSHOT",
+      "ratio": 1.8,
+      "ev": 0.8,
+      "qualifies": true
+    },
+    {
+      "odds": 300.01,
+      "p_conservative": 0.006,
+      "band": "EXTREME_LONGSHOT",
+      "ratio": 1.80006,
+      "ev": 0.80006,
+      "qualifies": false
+    },
+    {
+      "odds": 500,
+      "p_conservative": 0.006,
+      "band": "EXTREME_LONGSHOT",
+      "ratio": 3,
+      "ev": 2,
+      "qualifies": true
+    },
+    {
+      "odds": 150,
+      "p_conservative": 0.01,
+      "band": "LONGSHOT",
+      "ratio": 1.5,
+      "ev": 0.5,
+      "qualifies": false
+    },
+    {
+      "odds": 150,
+      "p_conservative": 0.012,
+      "band": "LONGSHOT",
+      "ratio": 1.8,
+      "ev": 0.8,
+      "qualifies": true
+    }
+  ],
+  "interpretation": "Higher-odds regimes do not inherit looser CORE thresholds. Crossing a regime boundary immediately raises the evidence requirement and reduces shadow risk.",
+  "authority": {
+    "research_only": true,
+    "validated_profit_edge": false,
+    "real_money_execution": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false
+}
