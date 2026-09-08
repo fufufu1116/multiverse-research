@@ -1,0 +1,111 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v86",
+  "status": "LIVE_SEIBUEN_PREDICTIONS_FROZEN_BUY_STRATEGY_RESEARCH_READY_SHADOW_CANDIDATES_FROZEN_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v85.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Live prediction evaluation, betting-strategy development, and formal support accounting remain separate authorities.",
+  "baseline": {
+    "S0": "competition-score-only softmax",
+    "beta": 0.22260435254784533,
+    "refit": false
+  },
+  "generalized_model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+    "precedence": "RIDER > STYLE > S0",
+    "result_fitted_parameters": 0
+  },
+  "live_prospective_prediction": {
+    "artifact": "KEIRIN_PROSPECTIVE_PRE_PREDICTION_SEIBUEN_20260908_R6_R11_v1.json",
+    "event": "西武園 2026-09-08 R6-R11",
+    "races": 6,
+    "rider_rows": 42,
+    "prediction_rewrite_after_capture": false,
+    "result_accessed": false,
+    "postrace_comparison_automation": "SCHEDULED_SEPARATELY",
+    "economics_separate": true
+  },
+  "burned_betting_research": {
+    "artifact": "KEIRIN_BURNED_AB_BUY_STRATEGY_SIMULATION_20260908_v1.json",
+    "development_races": 1500,
+    "A_races": 1000,
+    "B_races": 500,
+    "C_used": false,
+    "ECON_HOLDOUT1000_used": false,
+    "role": "BURNED_DIAGNOSTIC_DEV_ONLY",
+    "principal_findings": [
+      "More ticket points raise hit rate but generally reduce capital efficiency.",
+      "High-hit-rate wide strategies can steadily lose money.",
+      "Raw longshot EV can look profitable in aggregate while being jackpot/tail dominated and unstable A vs B.",
+      "Stake sizing cannot rescue negative edge; edge is tested with flat ¥100 first.",
+      "A simple 3renhuku one-point high-confidence benchmark is near break-even on combined A+B but unstable by segment."
+    ]
+  },
+  "betting_tools": {
+    "all_market_projector": "tools/keirin_pre_only_all_market_projector_v1.py",
+    "burned_ab_simulator": "tools/keirin_burned_ab_buy_strategy_simulator_v1.py",
+    "supported_markets": [
+      "3rentan",
+      "3renhuku",
+      "2shatan",
+      "2shahuku",
+      "wide"
+    ]
+  },
+  "shadow_buy_freeze": {
+    "artifact": "KEIRIN_SHADOW_BUY_CANDIDATE_FREEZE_20260908_v1.json",
+    "candidate_ids": [
+      "NO_BET",
+      "3RENHUKU_TOP3_1PT_CONF40",
+      "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+      "WIDE_AXIS1_3PT_CONF40"
+    ],
+    "primary_stake_policy": "FLAT_100_YEN_PER_ELEMENTARY_TICKET_SHADOW_ONLY",
+    "kelly_allowed": false,
+    "bankroll_percentage_allowed": false,
+    "real_money_execution": false,
+    "profitability_claim": false,
+    "development_grid_disclosure": true
+  },
+  "interpretation": {
+    "most_promising_exploratory_candidate": "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+    "warning": "Its favorable burned A+B numbers were discovered by searching A+B and therefore are not validation. It needs new prospective replication.",
+    "benchmark_candidate": "3RENHUKU_TOP3_1PT_CONF40",
+    "high_hit_negative_control": "WIDE_AXIS1_3PT_CONF40"
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "gate": "FAIL",
+    "prospective_35_candidate_path_retained": true
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "accepted_definition": "UNKNOWN",
+    "independent_result": "PENDING"
+  },
+  "priority_next": [
+    "Keep the frozen Seibuen R6-R11 accuracy predictions unchanged until tonight's outcome join.",
+    "Use current model all-market projection tooling for future PRE cards so ticket probabilities come from one coherent sporting probability object.",
+    "Evaluate only the frozen shadow-buy candidate set prospectively; do not rescue rules after outcomes.",
+    "Do not open Segment C or ECON_HOLDOUT1000 for buying-rule selection.",
+    "Keep formal Sep14/Sep15 support lane independent."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout_as_feature": false,
+    "late_odds_reconstruction": false,
+    "human_forecast": false,
+    "prediction_rewrite": false,
+    "outcome_tuning": false,
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "real_money_execution": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
