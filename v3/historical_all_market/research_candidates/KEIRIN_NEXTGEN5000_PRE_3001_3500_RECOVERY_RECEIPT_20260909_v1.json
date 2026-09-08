@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_PRE_3001_3500_RECOVERY_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "PASS_WITH_5_FAIL_CLOSED_REJECTIONS",
+  "source_workflow": {
+    "workflow": ".github/workflows/keirin-nextgen5000-pre-batch-3001-3500-v1.yml",
+    "run_id": 34288642577,
+    "conclusion": "success",
+    "artifact_id": 10080608943,
+    "artifact_name": "keirin-nextgen5000-pre-3001-3500-v1",
+    "artifact_digest": "sha256:d125273eb425b5050d2047fcd6bb2a62efd0ad47c51ee7919ffad9d3832ea196",
+    "artifact_retention_days": 30
+  },
+  "locked_universe": {
+    "name": "NEXTGEN_5000_UNIVERSE.csv",
+    "sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "positions": "3001..3500",
+    "requested_races": 500
+  },
+  "recovery": {
+    "successful_races": 495,
+    "rejected_races": 5,
+    "pre_rows": 3442,
+    "evidence_role": "RETROSPECTIVE_PRE_DEVELOPMENT_ONLY_UNPROVEN_PIT",
+    "raw_mixed_html_written": false,
+    "result_fields_emitted": false,
+    "payout_fields_emitted": false,
+    "odds_fields_emitted": false,
+    "forecast_or_comment_fields_emitted": false,
+    "formal_support_increment_authorized": false,
+    "model_promotion_authorized": false
+  },
+  "cumulative_expansion_2001_3500": {
+    "requested_races": 1500,
+    "successful_pre_races": 1482,
+    "rejected_fail_closed": 18,
+    "pre_rows": 10467
+  },
+  "owner_policy": {
+    "additional_historical_collection_authorized_when_needed": true,
+    "mandatory_separation": "PRE first; outcomes/results/payouts isolated until predictions and selection rules are frozen.",
+    "no_result_reconstruction_into_pre": true
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
