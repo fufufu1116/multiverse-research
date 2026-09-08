@@ -1,0 +1,31 @@
+{
+  "record": "KEIRIN_LINE_MODEL_HARDENING_RECEIPT_20260908_v2",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_PRE_ONLY_FIREWALL_AND_DISTRIBUTION_INTEGRITY_ISOLATED_REPRO_PASS",
+  "implementation": {
+    "encoder": "v3/historical_all_market/new_lineage/line_relation_features_v2.py",
+    "encoder_selftest": "v3/historical_all_market/new_lineage/line_relation_features_selftest_v2.py",
+    "adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v2.py",
+    "adapter_selftest": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_selftest_v2.py"
+  },
+  "hardening": [
+    "post-decision field-name contamination fails closed before topology admission",
+    "public probability paths revalidate topology and state-map integrity",
+    "ordered-top3 outputs require distinct cars, finite bounded probabilities, exact expected combination count, and unit mass",
+    "raw PRE-row entry point enforces the input firewall"
+  ],
+  "isolated_reproduction": {
+    "seven_rider_top3_count_each_model": 210,
+    "probability_mass_each_model": 1,
+    "zero_line_coefficients_models_equal_within_1e_12": true,
+    "deterministic_repeat": true,
+    "malformed_topology_fail_closed": true,
+    "nonfinite_utility_fail_closed": true,
+    "post_decision_field_contamination_fail_closed": true
+  },
+  "checked_in_selftest_files_direct_execution": false,
+  "shared_ci_rerun": false,
+  "coefficients_fitted": false,
+  "formal_support_increment_now": 0,
+  "runtime": false
+}
