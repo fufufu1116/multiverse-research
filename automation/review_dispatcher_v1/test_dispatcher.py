@@ -38,6 +38,47 @@ class HardeningTests(_legacy.HardeningTests):
         self.assertEqual(cid, 10)
         self.assertEqual(request["request_id"], "first-chain")
 
+    def test_42_review_and_t2_use_shared_nullable_outer_app_helper(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        review_source = (
+            repo_root
+            / "automation"
+            / "review_dispatcher_v1"
+            / "review.py"
+        ).read_text()
+        t2_source = (
+            repo_root
+            / "automation"
+            / "review_dispatcher_v1"
+            / "t2_legacy_v1.py"
+        ).read_text()
+
+        self.assertIn(
+            'lane_result_outer_app_trusted(lab_comment, "LAB")',
+            review_source,
+        )
+        self.assertNotIn(
+            "lab_app == LAB_APP_SLUG",
+            review_source,
+        )
+
+        self.assertIn(
+            'lane_result_outer_app_trusted(auditor_comment, "AUDITOR")',
+            t2_source,
+        )
+        self.assertIn(
+            'lane_result_outer_app_trusted(lab_comment, "LAB")',
+            t2_source,
+        )
+        self.assertNotIn(
+            "outer_app == AUDITOR_APP_SLUG",
+            t2_source,
+        )
+        self.assertNotIn(
+            "lab_app == LAB_APP_SLUG",
+            t2_source,
+        )
+
     def test_43_validator_assigns_nullable_app_tokens_to_correct_modules(self):
         repo_root = Path(__file__).resolve().parents[2]
         validator_source = (
