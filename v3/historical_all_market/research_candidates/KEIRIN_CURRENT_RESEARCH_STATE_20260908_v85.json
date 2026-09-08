@@ -1,0 +1,100 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v85",
+  "status": "PROSPECTIVE_SEIBUEN_6R_42RIDER_PREDICTIONS_FROZEN_BEFORE_RESULT_GENERALIZED_MODEL_READY_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v84.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Prospective prediction evaluation, development model, and formal support accounting remain separate authorities.",
+  "baseline": {
+    "S0": "competition-score-only softmax",
+    "beta": 0.22260435254784533,
+    "refit": false
+  },
+  "generalized_model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+    "precedence": "RIDER > STYLE > S0",
+    "result_fitted_parameters": 0,
+    "style_fallback_delta_logit": {
+      "逃": -0.020537046719,
+      "追": 0.038120995374,
+      "両": 0.0024804485
+    }
+  },
+  "historical_execution_checks": {
+    "generalized_dry_run": "KEIRIN_PRE_ONLY_GENERALIZED_COVERAGE_DRY_RUN_23R_183ROWS_20260908_v1.json",
+    "races": 23,
+    "rider_rows": 183,
+    "rank_change_races": 4,
+    "top1_change_races": 0,
+    "target_results_accessed": false
+  },
+  "live_prospective_prediction": {
+    "artifact": "KEIRIN_PROSPECTIVE_PRE_PREDICTION_SEIBUEN_20260908_R6_R11_v1.json",
+    "capture_session_started_jst": "2026-09-08T13:44:07+09:00",
+    "event": "西武園 2026-09-08 F2 東京スポーツ杯 最終日 R6-R11",
+    "circumference_m": 400,
+    "races": 6,
+    "rider_rows": 42,
+    "all_predictions_frozen_before_first_included_race": true,
+    "first_included_race_start_jst": "18:04",
+    "last_included_race_start_jst": "20:16",
+    "exact_rider_delta_appearances": 0,
+    "style_fallback_appearances": 42,
+    "rank_change_races_vs_s0": 0,
+    "top1_change_races_vs_s0": 0,
+    "result_accessed": false,
+    "top1_by_race": {
+      "6": "坂本 匡洋",
+      "7": "南儀 拓海",
+      "8": "須藤 悟",
+      "9": "近藤 圭佑",
+      "10": "那須 萌美",
+      "11": "橋本 智昭"
+    }
+  },
+  "frozen_postrace_evaluation": {
+    "metrics": [
+      "winner hit/miss",
+      "probability assigned to actual winner",
+      "winner log loss",
+      "winner Brier",
+      "actual-winner predicted rank",
+      "aggregate S0 vs challenger"
+    ],
+    "prediction_rewrite_after_capture": false,
+    "parameter_tuning_before_join": false,
+    "odds_or_payout_required": false
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "gate": "FAIL",
+    "prospective_35_candidate_path_retained": true
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "accepted_definition": "UNKNOWN",
+    "independent_result": "PENDING"
+  },
+  "priority_next": [
+    "Do not modify the frozen Seibuen R6-R11 predictions or model before result comparison.",
+    "After all six races finish, join only winner/result labels needed for the frozen accuracy metrics; ignore odds and payouts.",
+    "Write one immutable S0-vs-challenger comparison artifact and advance CURRENT/Resume only after Fresh-read collision checks.",
+    "Continue Sep14/Sep15 formal-support lane independently."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout": false,
+    "odds_as_feature": false,
+    "human_forecast": false,
+    "outcome_tuning": false,
+    "prediction_rewrite_after_capture": false,
+    "s0_refit": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
