@@ -1,0 +1,27 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v7",
+  "status": "CURRENT_POINTER_V111",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v111.json",
+  "critical_pointers": {
+    "multisite_watch_set": "v3/historical_all_market/research_candidates/KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v2.json",
+    "normalizer": "tools/keirin_multisite_final_racecard_normalizer_v2.py",
+    "normalizer_selftest": "tools/keirin_multisite_final_racecard_normalizer_selftest_v2.py",
+    "formalizer": "tools/keirin_35_formal_support_finalizer_v3.py",
+    "formalizer_selftest": "tools/keirin_35_formal_support_finalizer_selftest_v3.py",
+    "formalizer_receipt": "v3/historical_all_market/research_candidates/KEIRIN_FORMAL_SUPPORT_FINALIZER_IMPLEMENTATION_RECEIPT_20260908_v3.json",
+    "formal_order": "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json"
+  },
+  "current_summary": {
+    "source_watch_families": 6,
+    "normalizer": "v2 hardened",
+    "finalizer": "v3 source-filter hardened",
+    "finalizer_source_filter_regression": "PASS 6/6 isolated helper test",
+    "fixed_scheduled_roster": "35/35",
+    "final_assignment_state": "pending; no new formal row available at this checkpoint",
+    "formal_support": "1 rider / 2 PRE rows",
+    "runtime": "OFF"
+  },
+  "resume_rule": "Fresh-read research branch HEAD and CURRENT v111 or later, PR177, and existing Keirin automation before treating any handoff state as current."
+}
