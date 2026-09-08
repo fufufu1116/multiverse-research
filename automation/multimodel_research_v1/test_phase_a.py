@@ -12966,19 +12966,27 @@ class ContractTests(unittest.TestCase):
 
 
     def _federation_rehearsal_fixture(self):
-        snapshot = json.loads(
-            Path(__file__).with_name(
-                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
-            ).read_text()
+        cached = getattr(
+            self.__class__,
+            "_federation_rehearsal_cache",
+            None,
         )
-        bound_task = task_v2()
-        schema = response_schema()
-        record = build_dual_provider_federation_rehearsal(
-            bound_task,
-            snapshot,
-            schema,
-        )
-        return bound_task, snapshot, schema, record
+        if cached is None:
+            snapshot = json.loads(
+                Path(__file__).with_name(
+                    "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+                ).read_text()
+            )
+            bound_task = task_v2()
+            schema = response_schema()
+            record = build_dual_provider_federation_rehearsal(
+                bound_task,
+                snapshot,
+                schema,
+            )
+            cached = (bound_task, snapshot, schema, record)
+            self.__class__._federation_rehearsal_cache = cached
+        return tuple(copy.deepcopy(item) for item in cached)
 
     def test_417_valid_dual_provider_federation_rehearsal(self):
         args = self._federation_rehearsal_fixture()
