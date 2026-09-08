@@ -1,0 +1,52 @@
+name: Keirin NEXTGEN5000 PRE Batch 2501-3000 v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-pre-batch-2501-3000-v1.yml'
+permissions:
+  contents: read
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install parser dependency
+        run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: Compile
+        run: python -m py_compile tools/keirin_nextgen5000_pre_bulk_recovery_v1.py
+      - name: Recover exact locked universe and acquire PRE-only next 500
+        run: |
+          mkdir -p nextgen5000_pre_batch
+          python tools/keirin_nextgen5000_pre_bulk_recovery_v1.py \
+            --start-position 2501 \
+            --end-position 3000 \
+            --workers 8 \
+            --pre-csv nextgen5000_pre_batch/NEXTGEN5000_PRE_2501_3000_v1.csv \
+            --receipt nextgen5000_pre_batch/NEXTGEN5000_PRE_2501_3000_RECEIPT_v1.json
+      - name: Assert no post-event fields in PRE output
+        run: |
+          python - <<'PY'
+          import csv, json
+          p='nextgen5000_pre_batch/NEXTGEN5000_PRE_2501_3000_v1.csv'
+          rows=list(csv.DictReader(open(p,encoding='utf-8')))
+          forbidden={'result','finish','payout','settlement','odds','forecast','prediction','tips','comment','narabiyoso','roi','ev'}
+          assert rows
+          assert not (forbidden & {k.lower() for k in rows[0]})
+          r=json.load(open('nextgen5000_pre_batch/NEXTGEN5000_PRE_2501_3000_RECEIPT_v1.json'))
+          assert r['locked_5000_sha256']=='dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781'
+          assert r['formal_support_increment_authorized'] is False
+          assert r['model_promotion_authorized'] is False
+          print('PASS',r['successful_races'],r['pre_rows'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: keirin-nextgen5000-pre-2501-3000-v1
+          path: nextgen5000_pre_batch/
+          retention-days: 30
