@@ -1,0 +1,94 @@
+{
+  "record": "KEIRIN_LONGSHOT_SHADOW_LANE_DESIGN_20260908_v1",
+  "status": "PRE_FREEZE_ENGINEERING_CANDIDATE_NO_LIVE_ODDS_NO_RESULT_ACCESS",
+  "date_jst": "2026-09-08",
+  "purpose": "Preserve medium-hole and large-hole opportunities without treating all prices as one regime. This design is a research candidate only and does not access or score live odds/results under CURRENT v91.",
+  "governance_binding": {
+    "current": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v91.json",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "result_access": false,
+    "payout_access": false,
+    "odds_access": false,
+    "prediction_access": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "principle": [
+    "Do not ban odds above 20x.",
+    "Separate price regimes because a small absolute probability error is much more dangerous at very high odds.",
+    "Require stronger model-vs-market evidence as the odds band rises.",
+    "Keep longshot exposure sparse: at most one elementary longshot ticket per race per lane.",
+    "Never chase losses or enlarge stake after losses.",
+    "Validation must reward repeated edge, not one jackpot."
+  ],
+  "proposed_price_regimes": [
+    {
+      "id": "CORE",
+      "decimal_odds_range": "1.0 <= O <= 20",
+      "implied_probability_range": "p_market >= 5%",
+      "minimum_probability_ratio": "p_conservative / p_market >= 1.10",
+      "minimum_raw_ev": "10%",
+      "shadow_risk_units": 1
+    },
+    {
+      "id": "MID_HOLE",
+      "decimal_odds_range": "20 < O <= 80",
+      "implied_probability_range": "1.25% <= p_market < 5%",
+      "minimum_probability_ratio": "p_conservative / p_market >= 1.35",
+      "minimum_raw_ev": "35%",
+      "shadow_risk_units": 0.5
+    },
+    {
+      "id": "LONGSHOT",
+      "decimal_odds_range": "80 < O <= 300",
+      "implied_probability_range": "0.333% <= p_market < 1.25%",
+      "minimum_probability_ratio": "p_conservative / p_market >= 1.75",
+      "minimum_raw_ev": "75%",
+      "shadow_risk_units": 0.25
+    },
+    {
+      "id": "EXTREME_LONGSHOT",
+      "decimal_odds_range": "O > 300",
+      "implied_probability_range": "p_market < 0.333%",
+      "minimum_probability_ratio": "p_conservative / p_market >= 2.50",
+      "minimum_raw_ev": "150%",
+      "shadow_risk_units": 0.1,
+      "extra_rule": "Research-only until sufficient prospective calibration exists; no promotion from a single hit."
+    }
+  ],
+  "probability_guard": {
+    "conservative_probability": "min(S0-derived ticket probability, challenger-derived ticket probability)",
+    "market_probability": "1 / decimal_odds",
+    "no_hindsight": "all inputs must be timestamped before the declared decision cutoff when odds access is separately authorized",
+    "missing_or_late_input": "NO_BET"
+  },
+  "race_level_controls": {
+    "maximum_longshot_tickets_per_race": 1,
+    "maximum_total_shadow_risk_units_per_race": 1,
+    "precedence": "If multiple bands qualify, rank by guarded_edge_ratio but respect total risk cap; do not add tickets merely to increase hit coverage.",
+    "force_bet": false
+  },
+  "future_validation_requirements": {
+    "flat_or_fixed_shadow_risk_first": true,
+    "kelly_before_edge_validation": false,
+    "metrics": [
+      "ROI by price regime",
+      "hit rate by price regime",
+      "weekly/monthly ROI",
+      "maximum drawdown",
+      "maximum consecutive losing decisions",
+      "largest single-hit share of total profit",
+      "leave-largest-hit-out ROI",
+      "decision count by regime",
+      "profit concentration by regime"
+    ],
+    "anti_jackpot_gate": [
+      "A candidate cannot be called stable if total profit becomes negative after removing its largest hit.",
+      "A candidate cannot be promoted on one isolated winning ticket.",
+      "Mid/longshot/extreme regimes must be reported separately rather than pooled into one flattering ROI."
+    ]
+  },
+  "parameter_status": "PROPOSED_NOT_VALIDATED",
+  "rationale": "The thresholds are deliberately monotone with odds: higher-payout tickets require a larger probability advantage and receive less shadow risk. They are engineering starting points, not claims of optimality.",
+  "owner_action_required_now": false
+}
