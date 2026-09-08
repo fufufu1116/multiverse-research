@@ -1,0 +1,96 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v83",
+  "status": "PRE_ONLY_BATCH_EXECUTION_READY_TOYAMA_7R_PASS_ONE_RANK_SWAP_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v82.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Development 30/60 and formal 1/2 remain separate.",
+  "development_input": {
+    "artifact": "KEIRIN_RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT_20260908_v1.json",
+    "unique_riders": 30,
+    "pre_rows": 60,
+    "numeric_scores": 60
+  },
+  "frozen_model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+    "model_name": "S0_PLUS_PRE_ONLY_SHRUNK_RIDER_CIRCUMFERENCE_DELTA_v1",
+    "result_fitted_parameters": 0,
+    "s0_beta_refit": false
+  },
+  "executable": {
+    "single_race_predictor": "tools/keirin_pre_only_rider_circumference_predictor_v1.py",
+    "batch_predictor": "tools/keirin_pre_only_batch_predictor_v1.py",
+    "batch_output": [
+      "S0 probability",
+      "challenger probability",
+      "probability-point change",
+      "S0 rank",
+      "challenger rank",
+      "rank-change flag",
+      "top1-change flag"
+    ]
+  },
+  "batch_dry_run": {
+    "artifact": "KEIRIN_PRE_ONLY_BATCH_DRY_RUN_TOYAMA_20260903_DAY1_R1_R7_20260908_v1.json",
+    "source_snapshot": "KEIRIN_TOYAMA_DAY1_PRE_ALLOWLIST_WITNESS_SNAPSHOT_20260903_v1.json",
+    "event": "富山 2026-09-03 Day1 R1-R7 333m",
+    "races": 7,
+    "rider_rows": 49,
+    "supported_rider_appearances": 11,
+    "races_with_supported_rider": 7,
+    "rank_change_races": 1,
+    "top1_change_races": 0,
+    "notable_rank_swap": "R7: S0 金澤竜二 2nd / 松澤敬輔 3rd -> challenger 松澤敬輔 2nd / 金澤竜二 3rd",
+    "largest_absolute_probability_shift_pp": 0.85389,
+    "accuracy_claim": false,
+    "target_result_accessed": false
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "gate": "FAIL",
+    "prospective_35_candidate_path_retained": true
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "state": "OPEN_DRAFT",
+    "independent_result_after_comment_5573150058": "NONE",
+    "accepted_definition": "UNKNOWN"
+  },
+  "evaluation_plan": {
+    "prospective_development_window": "2026-09-16..2026-09-26 ALL DAY1 STARTS",
+    "final_untouched": [
+      {
+        "date": "2026-09-27",
+        "venue": "玉野",
+        "circumference_m": 400
+      },
+      {
+        "date": "2026-09-29",
+        "venue": "防府",
+        "circumference_m": 333
+      }
+    ],
+    "no_tuning_after_outcome": true
+  },
+  "priority_next": [
+    "Use the batch predictor on future PRE snapshots without changing beta/rho/clip/deltas.",
+    "Continue accumulating prospective PRE-only predictions through Sep16-Sep26, then compare against S0 only after the frozen membership is complete.",
+    "Keep Sep27 Tamano and Sep29 Hofu untouched for final evaluation.",
+    "Continue the Sep14/Sep15 prospective formal-support lane in parallel; do not conflate it with development 30/60."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout": false,
+    "odds_as_feature": false,
+    "human_forecast": false,
+    "result_tuning": false,
+    "s0_refit": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
