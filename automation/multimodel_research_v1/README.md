@@ -128,6 +128,23 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Catalog freshness guard
+
+`MULTIVERSE_PROVIDER_CATALOG_FRESHNESS_v1` requires the provider/model/pricing snapshot used for a later live call to have been checked within the previous 24 hours.
+
+It fails closed if:
+- the check time is before the snapshot time;
+- the snapshot is older than 24 hours;
+- the configured freshness window is wider than 24 hours;
+- an explicit provider pricing-valid-through date has expired;
+- the snapshot contents change after the freshness receipt was made.
+
+`MULTIVERSE_FIRST_PROVIDER_PILOT_FRESHNESS_BINDING_v1` binds one exact pilot dry-run plan to one exact fresh-catalog receipt.
+
+Freshness never authorizes the provider call, credentials, spend, or live execution. Runtime remains OFF.
+
+If the 24-hour window has elapsed, official provider information must be observed again and a new dated snapshot/freshness receipt produced before later live transport preparation.
+
 First-provider pilot dry-run plan
 
 `MULTIVERSE_FIRST_PROVIDER_PILOT_DRY_RUN_v1` is a repository-only preparation object for the later, separately authorized Phase B first-provider pilot.
