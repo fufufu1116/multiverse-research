@@ -1,0 +1,116 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v101",
+  "date_jst": "2026-09-08",
+  "status": "EARLIEST_BULK_FORMALIZATION_FRONT_CONFIRMED_0914_0915_ONE_SHOT_FINALIZER_READY_PR177_CONTROL_ONLY_FORMAL_GATE_1R_2ROWS_T2_5",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v100.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_binding": {
+    "research_head_before_write": "d459683722de9f6461c81fcd47e348ec75c82db4",
+    "governance": "#93 T2.5 SINGLE CONTROL ROLE REGISTRY ACTIVE",
+    "role": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+    "canonical_main_observed": "ed9be13f8d1c5d6fcc7ab07761c0dfdc4255df98",
+    "pr177": {
+      "state": "OPEN_DRAFT",
+      "head": "70efda2cc6919d7624c8b955c9bc57148a44249a",
+      "latest_lab_request_comment": 5573150058,
+      "exact_current_request": false,
+      "progression_owner": "SOLE_MULTIVERSE_CONTROL_COMMANDER_PER_T2_5",
+      "keirin_action": "DO_NOT_PUBLISH_COMPETING_REBIND_REQUEST"
+    }
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_new_riders": 29,
+    "remaining_new_rows": 58,
+    "candidate_count": 35,
+    "failure_margin": 6,
+    "gate": "FAIL"
+  },
+  "accelerated_scan": {
+    "artifact": "KEIRIN_POST_FIREWALL_0907_TO_0913_ACCELERATED_DAY1_SCAN_AUDIT_20260908_v1.json",
+    "window": "2026-09-10 through 2026-09-13",
+    "valid_early_cross_circumference_conversions": 0,
+    "conclusion": "No valid earlier formal-support conversion was found. The 2026-09-14 Ito/Aomori and 2026-09-15 Hofu front is the earliest known viable bulk-conversion route.",
+    "corrections": [
+      "山田哲也 provisional hit retracted because Toyama roster contained 山田隼司.",
+      "森川剛 event-roster hit rejected because 2026-09-07 actual Day1 membership failed; he was a later substitute."
+    ],
+    "result_accessed": false,
+    "odds_accessed": false,
+    "payout_accessed": false
+  },
+  "one_shot_formalization": {
+    "order": "KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "matrix": "KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "registry": "KEIRIN_PRE_CUTOFF_WITNESS_REGISTRY_20260907_v1.json",
+    "input_manifest": "KEIRIN_35_FINAL_DAY1_PRE_INPUT_MANIFEST_20260908_v1.json",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v1.py",
+    "selftest": "tools/keirin_35_formal_support_finalizer_selftest_v1.py",
+    "behavior": [
+      "Process priorities 1..35 only.",
+      "Fail closed on missing/ambiguous/late PRE evidence.",
+      "Skip failed candidates without relaxing standards.",
+      "Stop immediately after 29 new PASS.",
+      "Six candidate failures are tolerable; seven leave only 28 and target stays unmet.",
+      "No RESULT/PAYOUT/ODDS/human forecast use."
+    ],
+    "event_targets": [
+      {
+        "venue": "伊東",
+        "date": "2026-09-14",
+        "candidates": 11,
+        "circumference_bucket": "333_OR_333_33M"
+      },
+      {
+        "venue": "青森",
+        "date": "2026-09-14",
+        "candidates": 4,
+        "circumference_bucket": "400M"
+      },
+      {
+        "venue": "防府",
+        "date": "2026-09-15",
+        "candidates": 20,
+        "circumference_bucket": "333_OR_333_33M"
+      }
+    ],
+    "final_day1_pre_rows_ready_now": 0,
+    "support_increment_now": 0
+  },
+  "support_gate_semantics": {
+    "maximum_single_venue_share_denominator": "ALL_SUPPORTED_ROWS_GLOBAL",
+    "threshold": 0.6,
+    "calendar_block_dimension": "UNKNOWN_PENDING_PR177"
+  },
+  "line_architecture_engineering": {
+    "state": "IMPLEMENTED_SELFTEST_PASS_NOT_FITTED_NOT_VALIDATED",
+    "line_relation_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+    "c1_n1_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v1.py"
+  },
+  "hard_boundaries": {
+    "RESULT": "BLOCKED",
+    "PAYOUT": "BLOCKED",
+    "ODDS": "BLOCKED",
+    "PREDICTION": "BLOCKED",
+    "HUMAN_COMMENTS": "BLOCKED",
+    "post_cutoff_reconstruction": false,
+    "main_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "shared_lab_auditor_steps_mutation": false,
+    "self_adoption": false,
+    "runtime": false
+  },
+  "work_conserving_next": [
+    "Keep scanning only if new official PRE information materially changes the earliest-front conclusion.",
+    "At final Day1 PRE publication, fill only allowed manifest fields and run one-shot finalizer in locked priority order.",
+    "Do not loosen evidence rules to manufacture 30/60.",
+    "Observe PR177/Control durable result only; do not compete with Control.",
+    "After formal 30/60 and adopted calendar-block rule, freeze/evaluate Rider x circumference before later C1/N1 and market layers."
+  ],
+  "owner_action_required_now": false,
+  "runtime": "OFF"
+}
