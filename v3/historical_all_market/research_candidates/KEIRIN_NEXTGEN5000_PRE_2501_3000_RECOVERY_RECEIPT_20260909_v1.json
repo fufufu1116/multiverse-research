@@ -1,0 +1,88 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_PRE_2501_3000_RECOVERY_RECEIPT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "PASS_WITH_6_FAIL_CLOSED_REJECTIONS",
+  "source_workflow": {
+    "workflow": ".github/workflows/keirin-nextgen5000-pre-batch-2501-3000-v1.yml",
+    "run_id": 34288111136,
+    "conclusion": "success",
+    "artifact_id": 10080372595,
+    "artifact_name": "keirin-nextgen5000-pre-2501-3000-v1",
+    "artifact_digest": "sha256:aaea375d47a14bc95fc065f86719ebcf5e6647187a2a9c5975dccd966d7fed3f",
+    "artifact_retention_days": 30
+  },
+  "locked_universe": {
+    "sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "positions": "2501..3000",
+    "requested_races": 500
+  },
+  "recovery": {
+    "successful_races": 494,
+    "rejected_races": 6,
+    "pre_rows": 3497,
+    "evidence_role": "RETROSPECTIVE_PRE_DEVELOPMENT_ONLY_UNPROVEN_PIT",
+    "raw_mixed_html_written": false,
+    "result_fields_emitted": false,
+    "payout_fields_emitted": false,
+    "odds_fields_emitted": false,
+    "forecast_or_comment_fields_emitted": false,
+    "formal_support_increment_authorized": false,
+    "model_promotion_authorized": false
+  },
+  "rejected": [
+    {
+      "position": 2543,
+      "race_date": "2026-04-04",
+      "race_id": "3720260402030011",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2626,
+      "race_date": "2026-04-05",
+      "race_id": "3720260402040012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2900,
+      "race_date": "2026-04-09",
+      "race_id": "2620260409010012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2980,
+      "race_date": "2026-04-10",
+      "race_id": "2620260409020009",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2981,
+      "race_date": "2026-04-10",
+      "race_id": "2620260409020010",
+      "reason": "FAIL-CLOSED:car_continuity"
+    },
+    {
+      "position": 2983,
+      "race_date": "2026-04-10",
+      "race_id": "2620260409020012",
+      "reason": "FAIL-CLOSED:car_continuity"
+    }
+  ],
+  "cumulative_expansion_beyond_DEV2000": {
+    "batches": [
+      "2001..2500",
+      "2501..3000"
+    ],
+    "requested_races": 1000,
+    "successful_pre_races": 987,
+    "rejected_fail_closed": 13,
+    "pre_rows": 7025,
+    "outcomes_accessed_during_pre": false
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
