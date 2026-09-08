@@ -128,6 +128,30 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Catalog-bound pilot matrix
+
+`MULTIVERSE_PROVIDER_PILOT_MATRIX_v1` is a post-freeze research-only integration layer that threads one dated catalog candidate through the complete offline pre-live chain.
+
+For each provider it binds:
+- exact dated catalog model ID;
+- exact catalog-entry SHA256 as model-classification evidence;
+- exact SHA256 of the provider adapter source file;
+- exact Assignment v1;
+- exact single-assignment Fanout Plan v1;
+- exact Model Target Policy v1;
+- exact no-tools Capability Policy v1;
+- exact provider-neutral prompt;
+- exact provider-specific rendered request body;
+- exact outbound payload SHA256;
+- exact single-attempt synthetic-only smoke profile;
+- exact cost estimate from the dated catalog;
+- exact live-execution preparation guard;
+- readiness = READY_FOR_SEPARATE_PROVIDER_AUTHORITY while provider-call, credential, spend, and live-execution fields remain false.
+
+Cross-provider tests require Gemini and Claude to receive the same exact canonical prompt bytes and response schema while preserving their provider-specific wrappers.
+
+This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
+
 Dated provider model catalog snapshot
 
 `PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json` records the official-provider facts used to choose bounded first-smoke candidates on 2026-09-08.

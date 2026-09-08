@@ -29,6 +29,7 @@ REQUIRED = [
     ROOT / "readiness.py",
     ROOT / "provider_catalog.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
+    ROOT / "pilot_matrix.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -161,6 +162,7 @@ def validate() -> dict:
     execution_prep = (ROOT / "execution_prep.py").read_text()
     readiness = (ROOT / "readiness.py").read_text()
     provider_catalog = (ROOT / "provider_catalog.py").read_text()
+    pilot_matrix = (ROOT / "pilot_matrix.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -601,6 +603,25 @@ def validate() -> dict:
             )
 
     for token in (
+        "MULTIVERSE_PROVIDER_PILOT_MATRIX_v1",
+        "build_provider_pilot_matrix",
+        "validate_provider_pilot_matrix",
+        "provider_pilot_matrix_sha256",
+        "catalog_entry_sha256",
+        "adapter_source_sha256",
+        "outbound_payload_sha256",
+        "READY_FOR_SEPARATE_PROVIDER_AUTHORITY",
+        "provider_call_authorized",
+        "credential_authorized",
+        "spend_authorized",
+    ):
+        record(
+            f"pilot_matrix:{token}",
+            token in pilot_matrix,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -622,8 +643,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 271,
-        f"{test_count} != 271",
+        test_count == 283,
+        f"{test_count} != 283",
     )
 
     return {

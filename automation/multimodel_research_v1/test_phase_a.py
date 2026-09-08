@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 import unittest
@@ -83,6 +84,11 @@ from automation.multimodel_research_v1.provider_catalog import (
     estimate_smoke_cost_usd_micros,
     validate_first_smoke_candidate,
     validate_provider_catalog,
+)
+from automation.multimodel_research_v1.pilot_matrix import (
+    build_provider_pilot_matrix,
+    provider_pilot_matrix_sha256,
+    validate_provider_pilot_matrix,
 )
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
@@ -10402,6 +10408,321 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(
             sha256_json(first),
             sha256_json(second),
+        )
+
+
+    def test_272_build_gemini_catalog_pilot_matrix(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_provider_pilot_matrix(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertEqual(
+            matrix["assignment"]["target_model"],
+            "gemini-3.8-flash",
+        )
+        self.assertEqual(
+            matrix["render"]["body"]["model"],
+            "gemini-3.8-flash",
+        )
+
+    def test_273_build_claude_catalog_pilot_matrix(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_provider_pilot_matrix(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        self.assertEqual(
+            matrix["assignment"]["target_model"],
+            "claude-haiku-4-5-20251001",
+        )
+        self.assertEqual(
+            matrix["render"]["body"]["model"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_274_pilot_matrix_binds_catalog_entry_to_model_policy(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                matrix["model_target_policy"][
+                    "classification_evidence_sha256"
+                ],
+                catalog_entry_sha256(snapshot, provider),
+            )
+
+    def test_275_pilot_matrix_binds_exact_adapter_source_sha256(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider, filename in (
+            ("GOOGLE_GEMINI", "gemini_adapter.py"),
+            ("ANTHROPIC_CLAUDE", "claude_adapter.py"),
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            source_digest = hashlib.sha256(
+                Path(__file__).with_name(filename).read_bytes()
+            ).hexdigest()
+            self.assertEqual(
+                matrix["adapter_source_sha256"],
+                source_digest,
+            )
+            self.assertEqual(
+                matrix["assignment"]["adapter_sha256"],
+                source_digest,
+            )
+
+    def test_276_pilot_matrix_outbound_digest_matches_exact_render_body(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                matrix["request_envelope"][
+                    "outbound_payload_sha256"
+                ],
+                sha256_json(matrix["render"]["body"]),
+            )
+
+    def test_277_pilot_matrix_smoke_and_prep_remain_single_attempt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                matrix["smoke_profile"][
+                    "max_attempts_per_assignment"
+                ],
+                1,
+            )
+            self.assertEqual(
+                matrix["execution_prep"]["max_attempts"],
+                1,
+            )
+
+    def test_278_pilot_matrix_readiness_is_ready_but_unauthorized(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            report = matrix["readiness_report"]
+            self.assertEqual(
+                report["readiness_state"],
+                "READY_FOR_SEPARATE_PROVIDER_AUTHORITY",
+            )
+            self.assertIs(
+                report["provider_call_authorized"],
+                False,
+            )
+            self.assertIs(
+                report["credential_authorized"],
+                False,
+            )
+            self.assertIs(
+                report["spend_authorized"],
+                False,
+            )
+            self.assertIs(
+                report["live_execution_performed"],
+                False,
+            )
+            self.assertEqual(report["runtime"], "OFF")
+
+    def test_279_pilot_matrix_uses_catalog_cost_estimate(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            candidate = validate_first_smoke_candidate(
+                snapshot,
+                provider,
+            )
+            self.assertEqual(
+                matrix["execution_prep"][
+                    "proposed_max_cost_usd_micros"
+                ],
+                candidate[
+                    "estimated_max_cost_usd_micros"
+                ],
+            )
+
+    def test_280_pilot_matrix_exact_validation_rejects_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_provider_pilot_matrix(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        matrix["assignment"]["target_model"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                response_schema(),
+                matrix,
+            )
+
+    def test_281_pilot_matrix_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        first = provider_pilot_matrix_sha256(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+        )
+        second = provider_pilot_matrix_sha256(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+        )
+        self.assertEqual(first, second)
+
+    def test_282_pilot_matrix_provider_payloads_share_exact_prompt_bytes(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        gemini = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "GOOGLE_GEMINI",
+            schema,
+        )
+        claude = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        self.assertEqual(
+            gemini["render"]["body"]["input"],
+            claude["render"]["body"]["messages"][0]["content"],
+        )
+
+    def test_283_pilot_matrix_provider_payloads_share_exact_response_schema(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        gemini = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "GOOGLE_GEMINI",
+            schema,
+        )
+        claude = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        self.assertEqual(
+            gemini["render"]["body"][
+                "response_format"
+            ]["schema"],
+            claude["render"]["body"][
+                "output_config"
+            ]["format"]["schema"],
         )
 
 
