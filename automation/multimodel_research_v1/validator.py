@@ -12,6 +12,7 @@ REQUIRED = [
     ROOT / "model.py",
     ROOT / "outcome.py",
     ROOT / "aggregator.py",
+    ROOT / "assignment.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -92,6 +93,7 @@ def validate() -> dict:
     model = (ROOT / "model.py").read_text()
     aggregator = (ROOT / "aggregator.py").read_text()
     outcome = (ROOT / "outcome.py").read_text()
+    assignment = (ROOT / "assignment.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -171,6 +173,33 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_RESEARCH_ASSIGNMENT_v1",
+        "MULTIVERSE_RESEARCH_RESULT_v2",
+        "validate_assignment",
+        "ASSIGNMENT_REQUIRES_TASK_V2",
+        "ASSIGNMENT_TASK_SHA256_MISMATCH",
+        "ASSIGNMENT_ROLE_NOT_REQUESTED",
+        "ASSIGNMENT_RESEARCH_NETWORK_WIDENED",
+        "ASSIGNMENT_MAX_COMPUTE_WIDENED",
+        "ASSIGNMENT_MAX_OUTPUT_WIDENED",
+        "SYNTHETIC_ASSIGNMENT_PROVIDER_TRANSPORT_FORBIDDEN",
+        "LIVE_ASSIGNMENT_PROVIDER_TRANSPORT_REQUIRED",
+        "LIVE_ASSIGNMENT_ATTESTATION_REQUIRED",
+        "validate_result_v2_for_assignment",
+        "RESULT_V2_ASSIGNMENT_SHA256_MISMATCH",
+        "RESULT_V2_PROVIDER_MISMATCH",
+        "RESULT_V2_MODEL_MISMATCH",
+        "RESULT_V2_ROLE_MISMATCH",
+        "RESULT_V2_PRODUCED_BEFORE_ASSIGNMENT",
+        "result_v2_content_digest",
+    ):
+        record(
+            f"assignment:{token}",
+            token in assignment,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -192,8 +221,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 74,
-        f"{test_count} != 74",
+        test_count == 91,
+        f"{test_count} != 91",
     )
 
     return {

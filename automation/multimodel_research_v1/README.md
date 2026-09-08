@@ -85,6 +85,30 @@ Results contain:
 - validation plan;
 - explicit nonauthority.
 
+Assignment / Result v2 boundary
+
+`MULTIVERSE_RESEARCH_ASSIGNMENT_v1` binds one exact TASK_v2 to one advisory target:
+- exact task SHA256 and snapshot;
+- exact provider/model/role;
+- exact adapter digest;
+- assignment creation time;
+- execution mode;
+- research-network ceiling;
+- provider transport policy reference;
+- compute/output ceilings that may narrow but never widen the task;
+- attestation requirement;
+- explicit nonauthority.
+
+TASK_v1 cannot be assigned under this contract.
+
+`SYNTHETIC_OFFLINE` forbids provider transport and live attestation.
+
+`LIVE_ADVISORY` is only a declarative repository contract at this stage. It requires an explicit provider-transport policy reference and attestation requirement, but this package still performs no live provider execution.
+
+`MULTIVERSE_RESEARCH_RESULT_v2` adds exact assignment SHA256 binding. Result provider/model/role must match the exact assignment, and the result cannot predate assignment creation.
+
+Historical RESULT_v1 validation remains unchanged.
+
 Consensus
 
 Consensus is descriptive only.
