@@ -65,6 +65,8 @@ TASK_v2 adds an explicit `evidence_manifest`. Each manifest entry binds:
 
 For TASK_v2, an allowed primitive type alone is not evidence authorization. Every COMPLETED finding must match one exact task-manifest `(primitive, ref, sha256)` entry. Undeclared refs, primitive substitution, null digests, and digest drift fail closed.
 
+For `SOURCE_REF` and `PUBLIC_EVIDENCE_REF`, TASK_v2 also validates at task-creation time that the manifest ref exists in `source_refs`, has a non-null source digest, and carries the exact same digest. This prevents an internally inconsistent task from being sent to an advisory provider.
+
 TASK_v1 remains historical/synthetic compatibility only and is not silently reinterpreted. Any future live-provider Phase B work must use TASK_v2 or a stronger later contract plus separate provider assignment/attestation boundaries.
 
 Results contain:

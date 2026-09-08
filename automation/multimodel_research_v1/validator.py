@@ -120,6 +120,9 @@ def validate() -> dict:
         "DUPLICATE_TASK_EVIDENCE_MANIFEST_ENTRY",
         "RESULT_EVIDENCE_MANIFEST_NOT_DECLARED",
         "RESULT_EVIDENCE_MANIFEST_SHA256_MISMATCH",
+        "TASK_EVIDENCE_SOURCE_REF_NOT_DECLARED",
+        "TASK_EVIDENCE_SOURCE_DIGEST_REQUIRED",
+        "TASK_EVIDENCE_SOURCE_SHA256_MISMATCH",
     ):
         record(
             f"model:{token}",
@@ -175,8 +178,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 61,
-        f"{test_count} != 61",
+        test_count == 64,
+        f"{test_count} != 64",
     )
 
     return {

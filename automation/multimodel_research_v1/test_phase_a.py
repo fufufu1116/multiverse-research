@@ -1003,5 +1003,44 @@ class ContractTests(unittest.TestCase):
             validate_result_for_task(bound_task, broken)
 
 
+    def test_62_task_v2_source_manifest_must_reference_source_refs(self):
+        value = task_v2()
+        value["allowed_primitives"] = ["SOURCE_REF"]
+        value["evidence_manifest"][0].update(
+            {
+                "primitive": "SOURCE_REF",
+                "ref": "manifest-only-source",
+                "sha256": "b" * 64,
+            }
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_63_task_v2_source_manifest_digest_must_match_source_refs(self):
+        value = task_v2()
+        value["allowed_primitives"] = ["SOURCE_REF"]
+        value["evidence_manifest"][0].update(
+            {
+                "primitive": "SOURCE_REF",
+                "ref": "packet-v1",
+                "sha256": "b" * 64,
+            }
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_64_task_v2_exact_source_manifest_validates_at_task_time(self):
+        value = task_v2()
+        value["allowed_primitives"] = ["SOURCE_REF"]
+        value["evidence_manifest"][0].update(
+            {
+                "primitive": "SOURCE_REF",
+                "ref": "packet-v1",
+                "sha256": "a" * 64,
+            }
+        )
+        self.assertEqual(validate_task(value), value)
+
+
 if __name__ == "__main__":
     unittest.main()

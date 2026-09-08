@@ -236,6 +236,7 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     require(isinstance(refs, list) and bool(refs), "SOURCE_REFS")
     require(len(refs) <= 100, "SOURCE_REFS_LIMIT")
     seen_source_refs: set[str] = set()
+    source_ref_digests: dict[str, str | None] = {}
     for item in refs:
         require(
             isinstance(item, dict)
@@ -263,6 +264,7 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
             ),
             "SOURCE_REF_SHA256",
         )
+        source_ref_digests[ref] = digest
 
     primitives = task["allowed_primitives"]
     require(isinstance(primitives, list) and bool(primitives), "ALLOWED_PRIMITIVES")
@@ -322,6 +324,20 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
                 observed_at <= task_created_at,
                 "TASK_EVIDENCE_MANIFEST_OBSERVED_AFTER_TASK_CREATED",
             )
+            if primitive in {"SOURCE_REF", "PUBLIC_EVIDENCE_REF"}:
+                require(
+                    ref in source_ref_digests,
+                    "TASK_EVIDENCE_SOURCE_REF_NOT_DECLARED",
+                )
+                source_digest = source_ref_digests[ref]
+                require(
+                    source_digest is not None,
+                    "TASK_EVIDENCE_SOURCE_DIGEST_REQUIRED",
+                )
+                require(
+                    digest == source_digest,
+                    "TASK_EVIDENCE_SOURCE_SHA256_MISMATCH",
+                )
 
     constraints = task["constraints"]
     require(
