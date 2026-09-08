@@ -36,8 +36,20 @@ FORBIDDEN_PROVIDER_MARKERS = [
     "google_api_key",
     "gemini_api_key",
     "claude_api_key",
-    "api.anthropic.com",
-    "generativelanguage.googleapis.com",
+]
+
+FORBIDDEN_NETWORK_EXECUTION_MARKERS = [
+    "requests.",
+    "httpx.",
+    "urllib.request",
+    "aiohttp.",
+    "socket.",
+    "http.client",
+    "urlopen(",
+    "client.interactions.create(",
+    "client.messages.create(",
+    "anthropic(",
+    "genai.client(",
 ]
 
 FORBIDDEN_EXECUTION_MARKERS = [
@@ -87,8 +99,21 @@ def validate() -> dict:
 
     for marker in FORBIDDEN_PROVIDER_MARKERS:
         record(
-            f"no_live_provider:{marker}",
+            f"no_provider_credentials:{marker}",
             marker not in package_text,
+            marker,
+        )
+
+    python_text = "\n".join(
+        path.read_text().lower()
+        for path in REQUIRED
+        if path.suffix == ".py" and path.is_file()
+    )
+
+    for marker in FORBIDDEN_NETWORK_EXECUTION_MARKERS:
+        record(
+            f"no_network_execution:{marker}",
+            marker not in python_text,
             marker,
         )
 
@@ -120,6 +145,22 @@ def validate() -> dict:
     transport_binding = (ROOT / "transport_binding.py").read_text()
     observation_binding = (ROOT / "observation_binding.py").read_text()
     execution_prep = (ROOT / "execution_prep.py").read_text()
+
+    transport_code = (
+        gemini_adapter
+        + claude_adapter
+        + transport_binding
+        + observation_binding
+    ).lower()
+    for host in (
+        "generativelanguage.googleapis.com",
+        "api.anthropic.com",
+    ):
+        record(
+            f"host_declared_only_outside_transport_code:{host}",
+            host not in transport_code,
+            host,
+        )
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -505,8 +546,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 245,
-        f"{test_count} != 245",
+        test_count == 247,
+        f"{test_count} != 247",
     )
 
     return {

@@ -152,6 +152,11 @@ Provider targets:
 
 The preparation object explicitly requires separate provider-call, credential, and spend authority. It cannot grant those authorities itself.
 
+Validator distinction:
+- credential identifiers and network-client execution markers remain forbidden;
+- provider hostnames may appear only as declarative allowlist data in the execution-preparation guard, tests, validator, or documentation;
+- provider adapters/bindings remain renderer/parser-only and contain no provider hostname transport target or network client invocation.
+
 Provider observation binding
 
 `MULTIVERSE_PROVIDER_OBSERVATION_BINDING_v1` closes the receive-side repository gap between a provider-specific parsed observation and the durable termination/receipt records.

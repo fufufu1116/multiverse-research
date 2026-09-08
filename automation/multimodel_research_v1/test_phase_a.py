@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+from pathlib import Path
 import unittest
 
 from automation.multimodel_research_v1.aggregator import (
@@ -9254,6 +9255,57 @@ class ContractTests(unittest.TestCase):
             prep=prep,
         )
         self.assertEqual(len(digest), 64)
+
+
+    def test_246_execution_prep_declares_hosts_without_network_client_code(self):
+        prep_source = (
+            Path(__file__).with_name("execution_prep.py")
+            .read_text()
+            .lower()
+        )
+        self.assertIn(
+            "generativelanguage.googleapis.com",
+            prep_source,
+        )
+        self.assertIn("api.anthropic.com", prep_source)
+        for marker in (
+            "requests.",
+            "httpx.",
+            "urllib.request",
+            "aiohttp.",
+            "socket.",
+            "http.client",
+            "urlopen(",
+            "client.interactions.create(",
+            "client.messages.create(",
+        ):
+            self.assertNotIn(marker, prep_source)
+
+    def test_247_provider_adapters_remain_renderer_parser_only(self):
+        root = Path(__file__).parent
+        source = (
+            (root / "gemini_adapter.py").read_text()
+            + (root / "claude_adapter.py").read_text()
+            + (root / "transport_binding.py").read_text()
+            + (root / "observation_binding.py").read_text()
+        ).lower()
+        self.assertNotIn(
+            "generativelanguage.googleapis.com",
+            source,
+        )
+        self.assertNotIn("api.anthropic.com", source)
+        for marker in (
+            "requests.",
+            "httpx.",
+            "urllib.request",
+            "aiohttp.",
+            "socket.",
+            "http.client",
+            "urlopen(",
+            "client.interactions.create(",
+            "client.messages.create(",
+        ):
+            self.assertNotIn(marker, source)
 
 
 if __name__ == "__main__":
