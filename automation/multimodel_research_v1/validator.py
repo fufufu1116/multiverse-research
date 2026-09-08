@@ -28,6 +28,7 @@ REQUIRED = [
     ROOT / "execution_prep.py",
     ROOT / "readiness.py",
     ROOT / "provider_catalog.py",
+    ROOT / "pilot_matrix.py",
     ROOT / "pilot_dry_run.py",
     ROOT / "catalog_freshness.py",
     ROOT / "time_attestation.py",
@@ -165,6 +166,7 @@ def validate() -> dict:
     execution_prep = (ROOT / "execution_prep.py").read_text()
     readiness = (ROOT / "readiness.py").read_text()
     provider_catalog = (ROOT / "provider_catalog.py").read_text()
+    pilot_matrix = (ROOT / "pilot_matrix.py").read_text()
     pilot_dry_run = (ROOT / "pilot_dry_run.py").read_text()
     catalog_freshness = (ROOT / "catalog_freshness.py").read_text()
     time_attestation = (ROOT / "time_attestation.py").read_text()
@@ -684,6 +686,25 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_PILOT_MATRIX_v1",
+        "build_provider_pilot_matrix",
+        "validate_provider_pilot_matrix",
+        "provider_pilot_matrix_sha256",
+        "catalog_entry_sha256",
+        "adapter_source_sha256",
+        "outbound_payload_sha256",
+        "build_live_provider_readiness_report",
+        "validate_live_provider_readiness_report",
+        "live_execution_prep_sha256",
+        "transport_binding_sha256",
+    ):
+        record(
+            f"pilot_matrix:{token}",
+            token in pilot_matrix,
+            token,
+        )
+
+    for token in (
         "MULTIVERSE_PROVIDER_PRE_EXECUTION_BUNDLE_v1",
         "build_provider_pre_execution_bundle",
         "validate_provider_pre_execution_bundle",
@@ -727,8 +748,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 324,
-        f"{test_count} != 324",
+        test_count == 336,
+        f"{test_count} != 336",
     )
 
     return {

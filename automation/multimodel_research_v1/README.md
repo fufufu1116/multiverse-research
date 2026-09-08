@@ -138,6 +138,30 @@ This prevents a later live preparation from making an old catalog appear fresh m
 
 The repository contract does not prove that a clock source is trustworthy by itself. Trust in the source must come from the separately authorized Control execution boundary. The attestation and binding grant no provider-call, credential, spend, live-execution, adoption, or Runtime authority.
 
+Catalog-bound pilot matrix
+
+`MULTIVERSE_PROVIDER_PILOT_MATRIX_v1` is a post-freeze research-only integration layer that threads one dated catalog candidate through the complete offline pre-live chain.
+
+For each provider it binds:
+- exact dated catalog model ID;
+- exact catalog-entry SHA256 as model-classification evidence;
+- exact SHA256 of the provider adapter source file;
+- exact Assignment v1;
+- exact single-assignment Fanout Plan v1;
+- exact Model Target Policy v1;
+- exact no-tools Capability Policy v1;
+- exact provider-neutral prompt;
+- exact provider-specific rendered request body;
+- exact outbound payload SHA256;
+- exact single-attempt synthetic-only smoke profile;
+- exact cost estimate from the dated catalog;
+- exact live-execution preparation guard;
+- readiness = READY_FOR_SEPARATE_PROVIDER_AUTHORITY while provider-call, credential, spend, and live-execution fields remain false.
+
+Cross-provider tests require Gemini and Claude to receive the same exact canonical prompt bytes and response schema while preserving their provider-specific wrappers.
+
+This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
+
 Provider pre-execution evidence bundle
 
 `MULTIVERSE_PROVIDER_PRE_EXECUTION_BUNDLE_v1` closes a repository-side generation-mixing gap immediately before any separately authorized provider call.
