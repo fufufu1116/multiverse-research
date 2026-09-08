@@ -1,0 +1,234 @@
+{
+  "record": "KEIRIN_BURNED_AB_BUY_STRATEGY_SIMULATION_20260908_v1",
+  "status": "BURNED_AB_EXPLORATORY_BUY_STRATEGY_GRID_COMPLETE_C_AND_ECON_HOLDOUT_UNTOUCHED",
+  "generated_jst": "2026-09-08",
+  "purpose": "Use already-burned historical DEV2000 A+B as development-only fixtures to study ticket type, point count, no-bet filters, and stake sizing. This is not validation of the current S0/generalized model and is not a profitability claim.",
+  "fresh_binding": {
+    "research_head_before_write": "e68d71a486b8456b051e0a2c3f9d311e3661bb7f",
+    "current_pointer": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v85.json"
+  },
+  "data": {
+    "price_catalog": "DEV2000_ALL_MARKET_PRICE_CATALOGS_v2.jsonl",
+    "ticket_probability_catalog": "DEV2000_ALL_MARKET_TICKET_PROBABILITIES_PL_v1.jsonl",
+    "result_catalog": "DEV2000_RESULT_ONLY_v3.jsonl",
+    "settlement_A": "DEV2000_SETTLEMENT_A_v1.jsonl",
+    "settlement_B": "DEV2000_SETTLEMENT_B_v1.jsonl",
+    "A_races": 1000,
+    "B_races": 500,
+    "used_races": 1500,
+    "markets": [
+      "3rentan",
+      "3renhuku",
+      "2shatan",
+      "2shahuku",
+      "wide"
+    ],
+    "C_used": false,
+    "ECON_HOLDOUT1000_used": false,
+    "role": "BURNED_DIAGNOSTIC_DEV_ONLY"
+  },
+  "simulation_conventions": {
+    "primary_edge_test": "¥100 flat per elementary ticket, path-independent",
+    "wide_price_for_EV": "conservative low end of displayed range",
+    "consensus_probability_for_EV": "min(candidate_a,b1a_reconstituted_v1)",
+    "result_settlement": "actual frozen settlement yen per ¥100",
+    "real_money_execution": false
+  },
+  "main_findings": [
+    {
+      "finding": "POINT_EXPANSION_RAISES_HIT_RATE_BUT_DOES_NOT_CREATE_EDGE",
+      "evidence": {
+        "gate": "candidate_a and b1a agree top1; conservative top1 probability >=0.40",
+        "wide_axis1": [
+          {
+            "points": 1,
+            "AB_hit_rate": 0.5704,
+            "AB_roi": -0.1653
+          },
+          {
+            "points": 2,
+            "AB_hit_rate": 0.7597,
+            "AB_roi": -0.1638
+          },
+          {
+            "points": 3,
+            "AB_hit_rate": 0.8592,
+            "AB_roi": -0.151
+          },
+          {
+            "points": 4,
+            "AB_hit_rate": 0.8932,
+            "AB_roi": -0.2063
+          },
+          {
+            "points_approx": 5.9,
+            "AB_hit_rate": 0.9078,
+            "AB_roi": -0.1742
+          }
+        ],
+        "three_rentan_axis1": [
+          {
+            "points": 2,
+            "AB_hit_rate": 0.1408,
+            "AB_roi": -0.189
+          },
+          {
+            "points": 6,
+            "AB_hit_rate": 0.3204,
+            "AB_roi": -0.255
+          },
+          {
+            "points": 12,
+            "AB_hit_rate": 0.4417,
+            "AB_roi": -0.3071
+          },
+          {
+            "points_approx": 19.92,
+            "AB_hit_rate": 0.551,
+            "AB_roi": -0.4154
+          },
+          {
+            "points_approx": 28.98,
+            "AB_hit_rate": 0.6141,
+            "AB_roi": -0.4197
+          }
+        ]
+      }
+    },
+    {
+      "finding": "SIMPLE_HIGH_CONFIDENCE_3RENHUKU_ONE_POINT_IS_NEAR_BREAKEVEN_ON_COMBINED_BURNED_AB_BUT_UNSTABLE_BY_SEGMENT",
+      "rule": "candidate_a and b1a agree top1; conservative top1 >=0.40; buy exactly one 3renhuku ticket consisting of the top3 consensus riders",
+      "evidence": {
+        "A": {
+          "bet_races": 254,
+          "hit_rate": 0.19685,
+          "roi": -0.15197,
+          "max_drawdown": 0.07484
+        },
+        "B": {
+          "bet_races": 158,
+          "hit_rate": 0.27215,
+          "roi": 0.18418,
+          "max_drawdown": 0.015
+        },
+        "AB": {
+          "bet_races": 412,
+          "hit_rate": 0.22573,
+          "roi": -0.02306,
+          "largest_single_hit_share_of_gross_return": 0.04323
+        },
+        "weekly_positive_fraction": "2/5",
+        "monthly_roi": {
+          "2026-03": -0.051,
+          "2026-04": 0.093
+        }
+      },
+      "interpretation": "Useful as a low-complexity candidate/benchmark, not evidence of a stable profitable edge."
+    },
+    {
+      "finding": "HIGH_HIT_RATE_WIDE_CAN_HIDE_STEADY_CAPITAL_DECAY",
+      "rule": "same confidence gate; top1-wide to next three consensus riders, 3 points",
+      "evidence": {
+        "A": {
+          "hit_rate": 0.83465,
+          "roi": -0.16352
+        },
+        "B": {
+          "hit_rate": 0.89873,
+          "roi": -0.1308
+        },
+        "AB": {
+          "hit_rate": 0.85922,
+          "roi": -0.15097
+        },
+        "positive_weeks": "0/5"
+      }
+    },
+    {
+      "finding": "RAW_TAIL_EV_IS_REJECTED_AS_UNSTABLE",
+      "example_rule": "highest conservative raw-EV 2shatan ticket, one point, no odds cap, EV >= 25%",
+      "evidence": {
+        "A": {
+          "bet_races": 999,
+          "roi": 0.68639,
+          "hit_rate": 0.00501,
+          "largest_single_hit_share_of_gross_return": 0.42399
+        },
+        "B": {
+          "bet_races": 500,
+          "roi": -0.9658,
+          "hit_rate": 0.002,
+          "largest_single_hit_share_of_gross_return": 1
+        },
+        "AB": {
+          "roi": 0.13529
+        }
+      },
+      "interpretation": "Positive combined ROI is jackpot/tail dominated and fails stability. Do not use raw longshot EV as a buy rule."
+    },
+    {
+      "finding": "STAKE_SIZING_CANNOT_RESCUE_NEGATIVE_EDGE",
+      "examples": [
+        {
+          "rule": "3renhuku one-point confidence>=0.40",
+          "flat100": {
+            "A_roi": -0.15197,
+            "B_roi": 0.18418,
+            "A_max_drawdown": 0.07484,
+            "B_max_drawdown": 0.015
+          },
+          "risk1pct": {
+            "A_roi": -0.16889,
+            "B_roi": 0.14891,
+            "A_max_drawdown": 0.51914,
+            "B_max_drawdown": 0.13268
+          }
+        },
+        {
+          "rule": "wide three-point confidence>=0.40",
+          "flat100": {
+            "A_roi": -0.16352,
+            "B_roi": -0.1308,
+            "A_max_drawdown": 0.12891,
+            "B_max_drawdown": 0.06499
+          },
+          "race1000_equal": {
+            "A_roi": -0.16862,
+            "B_roi": -0.12633,
+            "A_max_drawdown": 0.43564,
+            "B_max_drawdown": 0.20979
+          }
+        }
+      ],
+      "kelly_warning": "Fractional-Kelly variants on the same burned data can flip from large A loss to large B gain; this is instability, not validation."
+    }
+  ],
+  "immediate_design_decisions": {
+    "edge_validation_first": "Keep ¥100 flat per elementary ticket until a buy rule shows stable edge. Do not optimize bankroll before edge.",
+    "no_bet_is_first_class": true,
+    "point_count_is_a_risk_control_not_an_accuracy_goal": true,
+    "high_odds_tail_raw_ev": "REJECT_AS_DEFAULT",
+    "current_candidate_benchmarks": [
+      "NO_BET",
+      "3RENHUKU_TOP3_ONE_POINT_HIGH_CONFIDENCE_BENCHMARK",
+      "WIDE_AXIS1_1_TO_3_POINT_HIGH_HIT_BENCHMARK"
+    ],
+    "candidate_status": "EXPLORATORY_ONLY_NOT_FROZEN_FOR_PROFIT_CLAIM"
+  },
+  "next": [
+    "Build a reusable buy-strategy simulator that consumes probability, market-price and settlement objects without touching C.",
+    "Project the current S0/generalized race logits into one coherent ordered-top3 object so 3rentan/3renhuku/2shatan/2shahuku/wide probabilities are available from the current model.",
+    "Freeze a small, behaviorally distinct shadow-buy candidate set before using future race outcomes.",
+    "Keep tonight's Seibuen S0-vs-generalized accuracy evaluation separate from betting economics."
+  ],
+  "hard_boundaries": {
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "current_live_Seibuen_predictions_modified": false,
+    "real_money_execution": false,
+    "profitability_claim": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false
+}
