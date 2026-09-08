@@ -1,0 +1,103 @@
+{
+  "record": "KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v1",
+  "observed_at_jst": "2026-09-08T22:06:00+09:00",
+  "status": "ACTIVE_RESEARCH_WATCH_SET_FINAL_ASSIGNMENT_PENDING",
+  "sources": [
+    {
+      "family": "CTC",
+      "role": [
+        "event schedule",
+        "scheduled rider roster",
+        "future final racecard if exposed"
+      ],
+      "trust_use": "PRIMARY_PROSPECTIVE",
+      "target_urls": [
+        "https://ctc.gr.jp/schedule/detail.php?id=3720260914",
+        "https://ctc.gr.jp/schedule/detail.php?id=1220260914",
+        "https://ctc.gr.jp/schedule/detail.php?id=6320260915"
+      ]
+    },
+    {
+      "family": "KDREAMS",
+      "role": [
+        "scheduled rider roster",
+        "final Day1 racecard"
+      ],
+      "trust_use": "INDEPENDENT_CORROBORATION",
+      "target_urls": [
+        "https://keirin.kdreams.jp/ito/assen/3720260914/",
+        "https://keirin.kdreams.jp/aomori/assen/1220260914/",
+        "https://keirin.kdreams.jp/hofu/assen/6320260915/"
+      ]
+    },
+    {
+      "family": "WINTICKET",
+      "role": [
+        "scheduled rider roster",
+        "final race assignment publication state"
+      ],
+      "trust_use": "INDEPENDENT_CORROBORATION",
+      "target_urls": [
+        "https://www.winticket.jp/keirin/ito/racecard/2026091437/races",
+        "https://www.winticket.jp/keirin/aomori/racecard/2026091412/races",
+        "https://www.winticket.jp/keirin/hofu/racecard/2026091563/races"
+      ],
+      "current_state": {
+        "伊東_2026-09-14": "explicitly states race combinations are not yet decided",
+        "青森_2026-09-14": "explicitly states race combinations are not yet decided",
+        "防府_2026-09-15": "target page known; current fetch cache miss, no final assignment claimed"
+      }
+    },
+    {
+      "family": "KEIRIN.JP",
+      "role": [
+        "official event schedule",
+        "rider profile schedule corroboration"
+      ],
+      "trust_use": "OFFICIAL_SCHEDULE_CORROBORATION",
+      "target_url": "https://www.keirin.jp/pc/raceschedule"
+    },
+    {
+      "family": "CHARILOTO",
+      "role": [
+        "event date/day corroboration",
+        "supplemental final racecard watch if available"
+      ],
+      "trust_use": "SUPPLEMENTAL",
+      "target_urls": [
+        "https://www.chariloto.com/keirin/results/37?year=2026",
+        "https://www.chariloto.com/keirin/results/12",
+        "https://www.chariloto.com/keirin/results/63"
+      ],
+      "current_state": {
+        "伊東_2026-09-14": "G3 midnight Day1 listed",
+        "青森_2026-09-14": "F2 midnight Day1 listed",
+        "防府_2026-09-15": "F1 Day1 listed"
+      }
+    },
+    {
+      "family": "ODDSPARK",
+      "role": [
+        "supplemental full-racecard race_no/car_no corroboration after target page publishes"
+      ],
+      "trust_use": "SUPPLEMENTAL_RACECARD",
+      "capability_evidence": "Historical AllRaceList pages expose race number, class, car number and rider name in one page.",
+      "future_target_publication_observed_now": false
+    }
+  ],
+  "normalization": {
+    "tool": "tools/keirin_multisite_final_racecard_normalizer_v1.py",
+    "policy": [
+      "One valid trusted final Day1 racecard observation may normalize a row.",
+      "Two or more independent source families that agree exactly increase corroboration count.",
+      "Any disagreement on race_no/car_no/class/style or locked identity/event fails closed.",
+      "Withdrawal/substitution observations fail closed.",
+      "Do not choose a preferred source to resolve a conflict."
+    ]
+  },
+  "formal_support_increment_now": 0,
+  "exact_cutoff_timestamp_required": false,
+  "result_page_reconstruction": false,
+  "live_odds_required": false,
+  "runtime": false
+}
