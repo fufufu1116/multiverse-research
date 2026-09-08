@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v9",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v8.json",
+  "status": "POST_CURRENT_DELTA_MULTISITE_SAME_SOURCE_V4_HARDENED",
+  "included_receipts": [
+    "v3/historical_all_market/research_candidates/KEIRIN_LINE_MODEL_HARDENING_RECEIPT_20260908_v2.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_TICKET_LAYER_HARDENING_RECEIPT_20260908_v3.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_LONGSHOT_SAFETY_HARDENING_RECEIPT_20260908_v2.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_CIRCUMFERENCE_PREDICTOR_HARDENING_RECEIPT_20260908_v3.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_EVALUATION_MATH_FREEZE_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_RIDER_CIRCUMFERENCE_EVALUATOR_FIREWALL_HARDENING_20260908_v2.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_FINAL_PRE_PIPELINE_HARDENING_RECEIPT_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_MULTISITE_SAME_SOURCE_INTEGRITY_HARDENING_RECEIPT_20260909_v1.json"
+  ],
+  "preferred_future_components": {
+    "multisite_final_racecard_normalizer": "tools/keirin_multisite_final_racecard_normalizer_v4.py",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v6.py",
+    "circumference_predictor": "tools/keirin_pre_only_rider_or_style_predictor_v3.py",
+    "circumference_development_evaluator": "tools/keirin_rider_circumference_development_evaluator_v2.py",
+    "line_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v2.py",
+    "line_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v2.py",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v3.py",
+    "model_ticket_comparison": "tools/keirin_model_ticket_comparison_v2.py",
+    "longshot_pipeline": "tools/keirin_longshot_shadow_pipeline_v2.py",
+    "longshot_validation": "tools/keirin_longshot_shadow_validation_gate_v2.py"
+  },
+  "multisite_integrity": {
+    "corroboration_unit": "DISTINCT_TRUSTED_SOURCE_FAMILY",
+    "same_source_same_assignment": "DETERMINISTIC_DEDUP",
+    "same_source_conflicting_valid_assignment": "FAIL_CLOSED",
+    "invalid_then_valid_same_source": "VALID_RACECARD_NOT_ERASED_BY_INPUT_ORDER",
+    "hostname_family_formal_blocker_added": false
+  },
+  "scientific_gate_change": false,
+  "formal_support": "1 rider / 2 PRE rows",
+  "support_increment_now": 0,
+  "calendar_block_gate": "UNKNOWN_PENDING_PR177",
+  "result_join_authorized_now": false,
+  "model_fit_authorized_now": false,
+  "owner_action_required_now": false,
+  "runtime": "OFF"
+}
