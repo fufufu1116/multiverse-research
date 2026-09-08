@@ -89,6 +89,32 @@ Consensus
 
 Consensus is descriptive only.
 
+Aggregate v2 diversity accounting
+
+`MULTIVERSE_RESEARCH_AGGREGATE_v1` remains unchanged for historical compatibility.
+
+`MULTIVERSE_RESEARCH_AGGREGATE_v2` adds explicit diversity accounting without treating provider/model/role advisory identities as independent models.
+
+Aggregate v2 separates observed from completed diversity:
+- observed/completed provider-model-role advisory identities;
+- observed/completed provider-model identities;
+- observed/completed providers.
+
+A non-COMPLETED advisory result may increase observed coverage but never completed research diversity.
+
+At claim level, Aggregate v2 separates:
+- advisory identity position counts;
+- provider/model position-presence counts;
+- provider position-presence counts;
+- role-conditioned divergence inside one provider/model;
+- cross-model divergence;
+- cross-provider divergence.
+
+Position-presence counts are not votes and may overlap when one provider/model takes different positions in different requested roles.
+
+The historical descriptive label remains advisory-identity scoped. Aggregate v2 explicitly records `descriptive_label_scope = ADVISORY_IDENTITY`.
+
+
 The aggregator may report support-only, oppose-only, support-with-unknown, oppose-with-unknown, unknown-only, or divergent claim groups. UNKNOWN participation is never hidden behind an *ONLY* label.
 
 A majority never confers truth or adoption authority.

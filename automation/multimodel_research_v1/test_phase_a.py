@@ -3,7 +3,10 @@ from __future__ import annotations
 import copy
 import unittest
 
-from automation.multimodel_research_v1.aggregator import aggregate_results
+from automation.multimodel_research_v1.aggregator import (
+    aggregate_results,
+    aggregate_results_v2,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -1040,6 +1043,295 @@ class ContractTests(unittest.TestCase):
             }
         )
         self.assertEqual(validate_task(value), value)
+
+
+    def test_65_aggregate_v1_shape_remains_unchanged(self):
+        value = aggregate_results(
+            task(),
+            [result(submission_id="v1-shape")],
+        )
+        self.assertEqual(
+            value["schema"],
+            "MULTIVERSE_RESEARCH_AGGREGATE_v1",
+        )
+        self.assertIn("unique_model_identity_count", value)
+        self.assertNotIn(
+            "observed_unique_provider_model_count",
+            value,
+        )
+
+    def test_66_v2_same_model_two_roles_not_two_models(self):
+        values = [
+            result(
+                submission_id="same-model-architecture",
+                provider="provider-a",
+                model="model-a",
+                role="architecture_challenge",
+            ),
+            result(
+                submission_id="same-model-security",
+                provider="provider-a",
+                model="model-a",
+                role="security_challenge",
+            ),
+        ]
+        value = aggregate_results_v2(task(), values)
+        claim = value["claims"][0]
+        self.assertEqual(
+            value["observed_unique_advisory_identity_count"],
+            2,
+        )
+        self.assertEqual(
+            value["observed_unique_provider_model_count"],
+            1,
+        )
+        self.assertEqual(
+            value["observed_unique_provider_count"],
+            1,
+        )
+        self.assertEqual(
+            claim["advisory_identity_position_counts"][
+                "SUPPORT"
+            ],
+            2,
+        )
+        self.assertEqual(
+            claim["provider_model_position_presence_counts"][
+                "SUPPORT"
+            ],
+            1,
+        )
+
+    def test_67_v2_observed_and_completed_diversity_are_separate(self):
+        values = [
+            result(
+                submission_id="completed-provider",
+                provider="provider-a",
+                model="model-a",
+                role="architecture_challenge",
+            ),
+            result(
+                submission_id="failed-provider",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+                status="INFRA_FAILURE",
+            ),
+        ]
+        value = aggregate_results_v2(task(), values)
+        self.assertEqual(
+            value["observed_unique_provider_model_count"],
+            2,
+        )
+        self.assertEqual(
+            value["completed_unique_provider_model_count"],
+            1,
+        )
+        self.assertEqual(
+            value["observed_unique_provider_count"],
+            2,
+        )
+        self.assertEqual(
+            value["completed_unique_provider_count"],
+            1,
+        )
+
+    def test_68_v2_role_conditioned_divergence_is_not_cross_model(self):
+        values = [
+            result(
+                submission_id="same-model-support",
+                provider="provider-a",
+                model="model-a",
+                role="architecture_challenge",
+                position="SUPPORT",
+            ),
+            result(
+                submission_id="same-model-oppose",
+                provider="provider-a",
+                model="model-a",
+                role="security_challenge",
+                position="OPPOSE",
+                assertion="Role-conditioned opposition.",
+            ),
+        ]
+        claim = aggregate_results_v2(
+            task(),
+            values,
+        )["claims"][0]
+        self.assertTrue(
+            claim["role_conditioned_divergence"]
+        )
+        self.assertFalse(
+            claim["cross_model_divergence"]
+        )
+        self.assertFalse(
+            claim["cross_provider_divergence"]
+        )
+
+    def test_69_v2_two_models_same_provider_are_cross_model_only(self):
+        values = [
+            result(
+                submission_id="model-a-support",
+                provider="provider-a",
+                model="model-a",
+                position="SUPPORT",
+            ),
+            result(
+                submission_id="model-b-oppose",
+                provider="provider-a",
+                model="model-b",
+                position="OPPOSE",
+                assertion="Second model opposes.",
+            ),
+        ]
+        claim = aggregate_results_v2(
+            task(),
+            values,
+        )["claims"][0]
+        self.assertTrue(
+            claim["cross_model_divergence"]
+        )
+        self.assertFalse(
+            claim["cross_provider_divergence"]
+        )
+
+    def test_70_v2_two_providers_are_cross_provider_divergent(self):
+        values = [
+            result(
+                submission_id="provider-a-support",
+                provider="provider-a",
+                model="model-a",
+                position="SUPPORT",
+            ),
+            result(
+                submission_id="provider-b-oppose",
+                provider="provider-b",
+                model="model-b",
+                position="OPPOSE",
+                assertion="Second provider opposes.",
+            ),
+        ]
+        claim = aggregate_results_v2(
+            task(),
+            values,
+        )["claims"][0]
+        self.assertTrue(
+            claim["cross_model_divergence"]
+        )
+        self.assertTrue(
+            claim["cross_provider_divergence"]
+        )
+
+    def test_71_v2_unknown_second_model_does_not_fake_cross_model_divergence(self):
+        values = [
+            result(
+                submission_id="role-support",
+                provider="provider-a",
+                model="model-a",
+                role="architecture_challenge",
+                position="SUPPORT",
+            ),
+            result(
+                submission_id="role-oppose",
+                provider="provider-a",
+                model="model-a",
+                role="security_challenge",
+                position="OPPOSE",
+                assertion="Same model role opposition.",
+            ),
+            result(
+                submission_id="unknown-second-model",
+                provider="provider-a",
+                model="model-b",
+                role="architecture_challenge",
+                position="UNKNOWN",
+                assertion="Second model is uncertain.",
+            ),
+        ]
+        claim = aggregate_results_v2(
+            task(),
+            values,
+        )["claims"][0]
+        self.assertTrue(
+            claim["role_conditioned_divergence"]
+        )
+        self.assertFalse(
+            claim["cross_model_divergence"]
+        )
+
+    def test_72_v2_exact_retry_duplicate_does_not_inflate_diversity(self):
+        first = result(
+            submission_id="retry-original",
+            provider="provider-a",
+            model="model-a",
+        )
+        second = result(
+            submission_id="retry-copy",
+            provider="provider-a",
+            model="model-a",
+        )
+        value = aggregate_results_v2(
+            task(),
+            [first, second],
+        )
+        self.assertEqual(
+            value["observed_unique_advisory_identity_count"],
+            1,
+        )
+        self.assertEqual(
+            value["observed_unique_provider_model_count"],
+            1,
+        )
+        self.assertEqual(
+            value["observed_unique_provider_count"],
+            1,
+        )
+
+    def test_73_v2_aggregate_is_input_order_invariant(self):
+        values = [
+            result(
+                submission_id="order-a",
+                provider="provider-a",
+                model="model-a",
+                role="architecture_challenge",
+                position="SUPPORT",
+            ),
+            result(
+                submission_id="order-b",
+                provider="provider-b",
+                model="model-b",
+                role="security_challenge",
+                position="OPPOSE",
+                assertion="Order invariant opposition.",
+            ),
+        ]
+        forward = aggregate_results_v2(task(), values)
+        reverse = aggregate_results_v2(
+            task(),
+            list(reversed(values)),
+        )
+        self.assertEqual(forward, reverse)
+
+    def test_74_v2_has_distinct_schema_and_digest(self):
+        values = [
+            result(
+                submission_id="schema-digest",
+            )
+        ]
+        v1 = aggregate_results(task(), values)
+        v2 = aggregate_results_v2(task(), values)
+        self.assertEqual(
+            v2["schema"],
+            "MULTIVERSE_RESEARCH_AGGREGATE_v2",
+        )
+        self.assertNotIn(
+            "unique_model_identity_count",
+            v2,
+        )
+        self.assertNotEqual(
+            v1["aggregate_sha256"],
+            v2["aggregate_sha256"],
+        )
 
 
 if __name__ == "__main__":
