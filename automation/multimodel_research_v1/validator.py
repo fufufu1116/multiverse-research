@@ -97,6 +97,7 @@ def validate() -> dict:
         "MULTIVERSE_RESEARCH_TASK_v1",
         "MULTIVERSE_RESEARCH_TASK_v2",
         "MULTIVERSE_RESEARCH_RESULT_v1",
+        "MULTIVERSE_RESEARCH_AGGREGATE_v2",
         "FORBIDDEN_DYNAMIC_KEYS",
         "ALLOWED_PRIMITIVES",
         "INFRA_FAILURE",
@@ -149,6 +150,19 @@ def validate() -> dict:
         "roles_without_completed_result",
         "requested_role_coverage_complete",
         "DUPLICATE_SUBMISSION_ID",
+        "aggregate_results_v2",
+        "observed_unique_advisory_identity_count",
+        "completed_unique_advisory_identity_count",
+        "observed_unique_provider_model_count",
+        "completed_unique_provider_model_count",
+        "observed_unique_provider_count",
+        "completed_unique_provider_count",
+        "provider_model_position_presence_counts",
+        "provider_position_presence_counts",
+        "role_conditioned_divergence",
+        "cross_model_divergence",
+        "cross_provider_divergence",
+        "descriptive_label_scope",
     ):
         record(
             f"aggregator:{token}",
@@ -178,8 +192,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 64,
-        f"{test_count} != 64",
+        test_count == 74,
+        f"{test_count} != 74",
     )
 
     return {
