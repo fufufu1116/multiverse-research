@@ -1,0 +1,43 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v18",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v17.json",
+  "status": "POST_CURRENT_DELTA_PRACTICAL_ENGINEERING_COMPLETE_MARKET_SCORECARD_AND_3RENTAN_THIRD_SPREAD_READY",
+  "branch_head_before_write": "58d77b4dcbdfedf54602d730869de936f7b72114",
+  "new_artifacts": [
+    "tools/keirin_3rentan_third_spread_simulator_v1.py",
+    "tools/keirin_3rentan_third_spread_simulator_selftest_v1.py",
+    "v3/historical_all_market/research_candidates/KEIRIN_MARKET_SELECTION_SCORECARD_20260909_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_PRACTICAL_IMPLEMENTATION_COMPLETION_20260909_v1.json"
+  ],
+  "practical_track": {
+    "owner_free_engineering_percent": 100,
+    "primary_market": "3renhuku",
+    "primary_candidate": "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+    "challenger": "3RENTAN_FIXED_FIRST_NARROW_SECOND_WIDE_THIRD",
+    "challenger_replay_status": "TOOL_READY_RAW_BURNED_FIXTURE_NOT_IN_CURRENT_GIT_TREE",
+    "wide_status": "HIGH_HIT_NEGATIVE_RECOVERY_CONTROL"
+  },
+  "evidence_summary": {
+    "three_renhuku_primary_dev_AB_bets": 89,
+    "three_renhuku_primary_dev_AB_roi": 0.368539,
+    "three_renhuku_primary_A_roi": 0.082143,
+    "three_renhuku_primary_B_roi": 0.854545,
+    "three_renhuku_baseline_AB_hit_rate": 0.22573,
+    "three_renhuku_baseline_AB_roi": -0.02306,
+    "generic_three_rentan_point_expansion": "hit rate rises from 14.08% toward 61.41% while recovery degrades from 81.1% toward about 58%",
+    "longshot_above20": "27 comparable incremental bets, approximately zero return; shadow-only"
+  },
+  "today_settlement_changed": false,
+  "today_ticket_changed": false,
+  "formal_scientific_progress_percent": 60,
+  "formal_support": "1 rider / 2 PRE rows",
+  "support_increment_now": 0,
+  "scientific_gate_change": false,
+  "profitability_proven": false,
+  "C_opened": false,
+  "ECON_HOLDOUT1000_opened": false,
+  "runtime": "OFF",
+  "main_mutation": false
+}
