@@ -1,0 +1,96 @@
+{
+  "record": "KEIRIN_DEV2000_AB_DAY_CLUSTER_BOOTSTRAP_STABILITY_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "BURNED_AB_STABILITY_DIAGNOSTIC_COMPLETE_CI_CROSSES_ZERO",
+  "method": {
+    "cluster_unit": "race_date",
+    "bootstrap_replicates": 20000,
+    "seed": 20260909,
+    "statistic": "ROI = total return / total stake - 1",
+    "reason": "Avoid treating many bets from the same day as fully independent and expose jackpot/day concentration."
+  },
+  "center_1pt": {
+    "observed": {
+      "bets": 89,
+      "roi": 0.3685393258
+    },
+    "AB": {
+      "days": 21,
+      "bootstrap_mean_roi": 0.3460270184,
+      "median_roi": 0.3488095238,
+      "ci95": [
+        -0.487654321,
+        1.1642218218
+      ],
+      "bootstrap_probability_roi_positive": 0.79205
+    },
+    "A": {
+      "days": 14,
+      "ci95": [
+        -1,
+        0.9491525424
+      ],
+      "bootstrap_probability_roi_positive": 0.5364
+    },
+    "B": {
+      "days": 7,
+      "ci95": [
+        -0.73,
+        2.175
+      ],
+      "bootstrap_probability_roi_positive": 0.8556
+    },
+    "maximum_drawdown_on_100k_flat_replay": 0.0324739225
+  },
+  "conditional_challenger": {
+    "id": "NON_GIRLS_GAP_LT5_3RENHUKU_POOL3_EV10_CAP20_MAX2",
+    "observed": {
+      "bets": 124,
+      "tickets": 146,
+      "roi": 0.2897260274
+    },
+    "AB": {
+      "days": 19,
+      "bootstrap_mean_roi": 0.2779205136,
+      "median_roi": 0.2768613001,
+      "ci95": [
+        -0.3107993605,
+        0.8685350493
+      ],
+      "bootstrap_probability_roi_positive": 0.82395
+    },
+    "A": {
+      "days": 12,
+      "ci95": [
+        -0.3938567126,
+        0.6972247024
+      ],
+      "bootstrap_probability_roi_positive": 0.7639
+    },
+    "B": {
+      "days": 7,
+      "ci95": [
+        -0.827835432,
+        1.6444444444
+      ],
+      "bootstrap_probability_roi_positive": 0.715
+    },
+    "maximum_drawdown_on_100k_flat_replay": 0.0295566502,
+    "largest_single_return_share": 0.0939989379,
+    "positive_week_fraction": 0.8
+  },
+  "interpretation": [
+    "The conditional challenger is less concentrated in one return event and has slightly lower replay drawdown than the center candidate.",
+    "Its day-cluster bootstrap probability of positive ROI is higher than the center in AB, but the 95% interval still includes materially negative ROI.",
+    "Neither candidate has statistical support strong enough for a profitability claim from burned A+B.",
+    "Prospective replication remains mandatory; do not unlock Segment C to narrow this interval."
+  ],
+  "hard_boundaries": {
+    "C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "profitability_proven": false,
+    "today_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
