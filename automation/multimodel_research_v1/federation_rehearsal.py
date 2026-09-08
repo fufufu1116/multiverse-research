@@ -168,6 +168,29 @@ def _provider_rehearsal(
     return matrix, rehearsal
 
 
+
+def _validate_record_envelope(record: dict[str, Any]) -> None:
+    require(
+        isinstance(record, dict) and set(record) == FEDERATION_KEYS,
+        "FEDERATION_SCHEMA_KEYS",
+    )
+    require(
+        record["schema"] == FEDERATION_SCHEMA,
+        "FEDERATION_SCHEMA_VERSION",
+    )
+    for key in (
+        "provider_call_authorized",
+        "credential_authorized",
+        "spend_authorized",
+        "live_provider_execution",
+        "adoption_authority",
+    ):
+        require(
+            record[key] is False,
+            f"FEDERATION_FORBIDDEN_TRUE:{key}",
+        )
+    require(record["runtime"] == "OFF", "FEDERATION_RUNTIME_NOT_OFF")
+
 def build_dual_provider_federation_rehearsal(
     task: dict[str, Any],
     snapshot: dict[str, Any],
@@ -288,12 +311,8 @@ def build_dual_provider_federation_rehearsal(
         "adoption_authority": False,
         "runtime": "OFF",
     }
-    return validate_dual_provider_federation_rehearsal(
-        task,
-        snapshot,
-        response_schema,
-        record,
-    )
+    _validate_record_envelope(record)
+    return record
 
 
 def validate_dual_provider_federation_rehearsal(
@@ -302,32 +321,13 @@ def validate_dual_provider_federation_rehearsal(
     response_schema: dict[str, Any],
     record: dict[str, Any],
 ) -> dict[str, Any]:
-    require(
-        isinstance(record, dict) and set(record) == FEDERATION_KEYS,
-        "FEDERATION_SCHEMA_KEYS",
-    )
-    require(
-        record["schema"] == FEDERATION_SCHEMA,
-        "FEDERATION_SCHEMA_VERSION",
-    )
+    _validate_record_envelope(record)
     expected = build_dual_provider_federation_rehearsal_unchecked(
         task,
         snapshot,
         response_schema,
     )
     require(record == expected, "FEDERATION_EXACT_MISMATCH")
-    for key in (
-        "provider_call_authorized",
-        "credential_authorized",
-        "spend_authorized",
-        "live_provider_execution",
-        "adoption_authority",
-    ):
-        require(
-            record[key] is False,
-            f"FEDERATION_FORBIDDEN_TRUE:{key}",
-        )
-    require(record["runtime"] == "OFF", "FEDERATION_RUNTIME_NOT_OFF")
     return record
 
 
