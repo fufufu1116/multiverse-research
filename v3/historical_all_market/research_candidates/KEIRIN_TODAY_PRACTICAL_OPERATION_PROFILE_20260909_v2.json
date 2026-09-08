@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v2",
+  "status": "OWNER_ASSISTED_PRACTICAL_V2_NO_HARD_ODDS_CAP_READY_PROFITABILITY_NOT_YET_PROVEN",
+  "supersedes_for_future_pre_event_decisions": "KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v1",
+  "date_jst": "2026-09-09",
+  "fresh_branch_head_before_write": "6303b060f70f33cb3b4b27b52eef31e7e3c2bc68",
+  "change_reason": "Owner correctly challenged the hard 20x ceiling: if the frozen probability is credible, higher decimal odds increase expected return. Replace the hard ceiling with stricter band-specific evidence margins while preserving flat stake and no hindsight.",
+  "functional_readiness": {
+    "pre_racecard_to_probability": true,
+    "probability_to_ticket": true,
+    "ticket_to_manual_odds_gate": true,
+    "no_bet_first_class": true,
+    "automated_betting": false,
+    "runtime": false
+  },
+  "fixed_model_and_selection": {
+    "model": "S0 beta 0.22260435254784533 plus frozen PRE-only challenger",
+    "top1_confidence_gate": "S0/challenger agree top1 and conservative top1 probability >=0.40",
+    "practical_market": "3renhuku frozen top3 one point",
+    "conservative_ticket_probability": "min(S0 ticket probability, challenger ticket probability)",
+    "stake_yen": 100,
+    "maximum_tickets_per_race": 1,
+    "kelly": false,
+    "martingale": false,
+    "loss_chasing": false
+  },
+  "odds_policy": {
+    "hard_odds_ceiling": null,
+    "principle": "Higher odds are never rejected merely because they are high. The purchase test is guarded expected value under the frozen conservative probability.",
+    "bands": [
+      {
+        "name": "CORE",
+        "odds": "1.0-20.0",
+        "minimum_expected_roi": 0.1,
+        "minimum_probability_multiple_vs_market": 1.1
+      },
+      {
+        "name": "MID_HOLE",
+        "odds": ">20.0-80.0",
+        "minimum_expected_roi": 0.35,
+        "minimum_probability_multiple_vs_market": 1.35
+      },
+      {
+        "name": "LONGSHOT",
+        "odds": ">80.0-300.0",
+        "minimum_expected_roi": 0.75,
+        "minimum_probability_multiple_vs_market": 1.75,
+        "extra_data_quality": "cross-source current PRE odds corroboration required"
+      },
+      {
+        "name": "EXTREME_LONGSHOT",
+        "odds": ">300.0",
+        "minimum_expected_roi": 1.5,
+        "minimum_probability_multiple_vs_market": 2.5,
+        "extra_data_quality": "cross-source current PRE odds corroboration required; placeholder/anomalous display fails closed"
+      }
+    ],
+    "formula": "guarded_expected_roi = conservative_ticket_probability * current_decimal_odds - 1",
+    "tool": "tools/keirin_practical_odds_band_purchase_gate_v1.py",
+    "selftest": "tools/keirin_practical_odds_band_purchase_gate_selftest_v1.py"
+  },
+  "today_r8_effect": {
+    "frozen_ticket": "京王閣 2026-09-09 R8 3連複 1=2=3",
+    "frozen_conservative_ticket_probability": 0.342756614995,
+    "core_minimum_odds_for_10pct": 3.3,
+    "old_20x_rejection_removed": true,
+    "interpretation": "For this unusually high frozen probability, every valid price >=3.3 satisfies the numerical band margin; >80x additionally requires independent current-odds corroboration because such a large model-market disagreement may be a data-quality anomaly.",
+    "stake_yen": 100
+  },
+  "scientific_boundaries": {
+    "formal_30_60_support_changed": false,
+    "protected_dev_c_opened": false,
+    "protected_econ_holdout_opened": false,
+    "today_results_used": false,
+    "today_payouts_used": false,
+    "model_refit": false,
+    "main_mutation": false,
+    "runtime": false
+  },
+  "profitability_claim": false
+}
