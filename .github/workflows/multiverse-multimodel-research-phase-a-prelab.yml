@@ -1,0 +1,68 @@
+name: MULTIVERSE Multi-Model Federation Phase A pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/multimodel-task-v2-evidence-manifest-current-main-v1-20260908
+    paths:
+      - 'automation/multimodel_research_v1/**'
+      - '.github/workflows/multiverse-multimodel-research-phase-a-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  phase-a:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout exact Candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Exact head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "PHASE_A_HEAD=$GITHUB_SHA"
+
+      - name: Compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            automation/multimodel_research_v1/model.py \
+            automation/multimodel_research_v1/outcome.py \
+            automation/multimodel_research_v1/aggregator.py \
+            automation/multimodel_research_v1/synthetic_adapter.py \
+            automation/multimodel_research_v1/test_phase_a.py \
+            automation/multimodel_research_v1/validator.py
+
+      - name: Unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            automation.multimodel_research_v1.test_phase_a \
+            -v
+
+      - name: Validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python automation/multimodel_research_v1/validator.py)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json
+          import sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          PY
