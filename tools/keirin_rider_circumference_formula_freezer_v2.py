@@ -33,6 +33,10 @@ LAMBDA_GRID=v1.LAMBDA_GRID
 
 # Exact governance/access flags may legitimately appear in PRE artifacts as
 # explicit False safeguards. True is always rejected pre-freeze.
+_TRUE_GOVERNANCE_KEYS={
+    "result_still_closed",
+}
+
 _FALSE_ONLY_KEYS={
     "result_accessed",
     "target_result_accessed",
@@ -72,6 +76,13 @@ def _recursive_pre_only_firewall(obj:Any,label:str,path:str="root")->None:
         for raw_key,value in obj.items():
             key=str(raw_key)
             child=f"{path}.{key}"
+
+            if key in _TRUE_GOVERNANCE_KEYS:
+                if value is not True:
+                    raise FormulaFreezeError(
+                        f"pre_freeze_governance_flag_must_be_true:{label}:{child}"
+                    )
+                continue
 
             if key in _FALSE_ONLY_KEYS:
                 if value is not False:
