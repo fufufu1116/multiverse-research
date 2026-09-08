@@ -1,0 +1,34 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260908_v21",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_ENGINEERING_DELTA_V13",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260908_v13.json",
+  "critical_pointers": {
+    "formalization_pipeline": "tools/keirin_35_formalization_pipeline_v1.py",
+    "observation_intake_template": "v3/historical_all_market/research_candidates/KEIRIN_35_FINAL_DAY1_OBSERVATION_INTAKE_TEMPLATE_20260909_v1.json",
+    "multisite_final_racecard_normalizer": "tools/keirin_multisite_final_racecard_normalizer_v5.py",
+    "finalizer": "tools/keirin_35_formal_support_finalizer_v7.py",
+    "calendar_shadow_proof": "v3/historical_all_market/research_candidates/KEIRIN_LOCAL_DAY1_RACE_DATE_ANY29_SHADOW_PROOF_20260909_v1.json",
+    "calendar_shadow_evaluator": "tools/keirin_support_gate_local_day1_calendar_shadow_v1.py",
+    "circumference_predictor": "tools/keirin_pre_only_rider_or_style_predictor_v3.py",
+    "circumference_development_evaluator": "tools/keirin_rider_circumference_development_evaluator_v2.py",
+    "line_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v2.py",
+    "line_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v2.py",
+    "ticket_builder": "tools/keirin_ticket_portfolio_builder_v3.py",
+    "model_ticket_comparison": "tools/keirin_model_ticket_comparison_v2.py",
+    "longshot_pipeline": "tools/keirin_longshot_shadow_pipeline_v2.py"
+  },
+  "current_summary": {
+    "formal_support": "1 rider / 2 PRE rows",
+    "final_pre_pipeline": "one-shot capture -> normalizer v5 -> finalizer v7 -> stop at 29 new PASS",
+    "noncalendar_any29_gate": "GUARANTEED_PASS_IF_ANY29_FORMALLY_PASS",
+    "calendar_shadow": "LOCAL_DAY1_RACE_DATE also GUARANTEED_PASS for any29 if independently adopted by PR177/Control",
+    "calendar_definition_adopted_now": false,
+    "result_join": "not authorized",
+    "model_fit": "not authorized",
+    "runtime": "OFF"
+  },
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later successor, this Resume/delta or later successor, PR177/calendar authority, and the single active Keirin automation before treating state as current."
+}
