@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_FIXED35_BINDING_RECHECK_20260909_v1",
+  "observed_jst": "2026-09-09T00:46:00+09:00",
+  "status": "PASS_CONNECTOR_REPLAY_35_OF_35_ORDER_MATRIX_MANIFEST_EXACT_BINDING",
+  "inputs": [
+    "v3/historical_all_market/research_candidates/KEIRIN_35_FORMAL_CONVERSION_ORDER_PRELOCK_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_35_SUPPORT_CONVERSION_MATRIX_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_35_FINAL_DAY1_PRE_INPUT_MANIFEST_20260908_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_FINAL_DAY1_MULTISITE_WATCH_SET_20260908_v2.json"
+  ],
+  "checks": {
+    "candidate_count": 35,
+    "priority_range": "1..35",
+    "priority_missing": 0,
+    "priority_duplicates": 0,
+    "official_registration_duplicates": 0,
+    "rider_name_duplicates": 0,
+    "invalid_registration_numbers": 0,
+    "order_matrix_manifest_one_to_one_binding": "PASS_35_OF_35",
+    "compared_fields": [
+      "priority/order",
+      "rider_name",
+      "official_registration_number",
+      "future race_date",
+      "future venue",
+      "future circumference bucket"
+    ],
+    "event_distribution": {
+      "伊東_2026-09-14_333_OR_333_33": 11,
+      "青森_2026-09-14_400": 4,
+      "防府_2026-09-15_333_OR_333_33": 20
+    },
+    "manifest_rows": 35,
+    "baseline_supported_rows": 2,
+    "baseline_registration_number": "015018",
+    "baseline_venues": [
+      "川崎",
+      "防府"
+    ],
+    "baseline_circumference_m": [
+      400,
+      333
+    ]
+  },
+  "execution_surface": "Fresh GitHub connector read + deterministic in-chat field replay",
+  "github_actions_dispatch_or_rerun": false,
+  "formal_support_increment_now": 0,
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_accessed": false,
+  "runtime": false
+}
