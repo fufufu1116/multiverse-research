@@ -68,6 +68,20 @@ def task() -> dict:
     }
 
 
+def task_v2() -> dict:
+    value = copy.deepcopy(task())
+    value["schema"] = "MULTIVERSE_RESEARCH_TASK_v2"
+    value["evidence_manifest"] = [
+        {
+            "primitive": "NORMALIZED_JSON_SHA256",
+            "ref": "synthetic-evidence",
+            "sha256": "b" * 64,
+            "observed_at": "2026-09-07T00:00:00Z",
+        }
+    ]
+    return value
+
+
 def finding(
     *,
     finding_id: str,
@@ -721,6 +735,216 @@ class ContractTests(unittest.TestCase):
         with self.assertRaises(ResearchContractError):
             validate_result_for_task(bound_task, undeclared)
 
+
+
+    def test_42_valid_task_v2_exact_manifest(self):
+        value = task_v2()
+        self.assertEqual(validate_task(value), value)
+
+    def test_43_task_v2_manifest_unknown_primitive_rejected(self):
+        value = task_v2()
+        value["evidence_manifest"][0]["primitive"] = "NOT_ALLOWED"
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_44_task_v2_duplicate_primitive_ref_rejected(self):
+        value = task_v2()
+        duplicate = copy.deepcopy(value["evidence_manifest"][0])
+        duplicate["sha256"] = "c" * 64
+        value["evidence_manifest"].append(duplicate)
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_45_task_v2_manifest_null_digest_rejected(self):
+        value = task_v2()
+        value["evidence_manifest"][0]["sha256"] = None
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_46_task_v2_manifest_cannot_postdate_task(self):
+        value = task_v2()
+        value["evidence_manifest"][0][
+            "observed_at"
+        ] = "2026-09-07T00:00:01Z"
+        with self.assertRaises(ResearchContractError):
+            validate_task(value)
+
+    def test_47_task_v2_exact_normalized_json_evidence_passes(self):
+        bound_task = task_v2()
+        value = bind_result_to_task(
+            result(submission_id="v2-exact-json"),
+            bound_task,
+        )
+        self.assertEqual(
+            validate_result_for_task(bound_task, value),
+            value,
+        )
+
+    def test_48_task_v2_undeclared_evidence_ref_rejected(self):
+        bound_task = task_v2()
+        value = bind_result_to_task(
+            result(submission_id="v2-undeclared-ref"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"]["ref"] = "other-evidence"
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_49_task_v2_evidence_digest_mismatch_rejected(self):
+        bound_task = task_v2()
+        value = bind_result_to_task(
+            result(submission_id="v2-digest-mismatch"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"]["sha256"] = "c" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_50_task_v2_same_ref_wrong_primitive_rejected(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"].append("UNITTEST_RESULT")
+        value = bind_result_to_task(
+            result(submission_id="v2-wrong-primitive"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"]["primitive"] = "UNITTEST_RESULT"
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_51_task_v2_exact_synthetic_fixture_passes(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"] = ["SYNTHETIC_FIXTURE"]
+        bound_task["evidence_manifest"][0][
+            "primitive"
+        ] = "SYNTHETIC_FIXTURE"
+        value = bind_result_to_task(
+            result(submission_id="v2-synthetic"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"][
+            "primitive"
+        ] = "SYNTHETIC_FIXTURE"
+        self.assertEqual(
+            validate_result_for_task(bound_task, value),
+            value,
+        )
+
+    def test_52_task_v2_undeclared_unittest_result_rejected(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"].append("UNITTEST_RESULT")
+        value = bind_result_to_task(
+            result(submission_id="v2-unittest"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"].update(
+            {
+                "primitive": "UNITTEST_RESULT",
+                "ref": "unittest-run-001",
+                "sha256": "d" * 64,
+            }
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_53_task_v2_undeclared_validator_result_rejected(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"].append("VALIDATOR_RESULT")
+        value = bind_result_to_task(
+            result(submission_id="v2-validator"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"].update(
+            {
+                "primitive": "VALIDATOR_RESULT",
+                "ref": "validator-run-001",
+                "sha256": "e" * 64,
+            }
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_54_task_v2_undeclared_subtree_hash_rejected(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"].append("SUBTREE_HASH")
+        value = bind_result_to_task(
+            result(submission_id="v2-subtree"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"].update(
+            {
+                "primitive": "SUBTREE_HASH",
+                "ref": "subtree-001",
+                "sha256": "f" * 64,
+            }
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_55_task_v2_undeclared_exact_lineage_rejected(self):
+        bound_task = task_v2()
+        bound_task["allowed_primitives"].append("EXACT_LINEAGE")
+        value = bind_result_to_task(
+            result(submission_id="v2-lineage"),
+            bound_task,
+        )
+        value["findings"][0]["evidence"].update(
+            {
+                "primitive": "EXACT_LINEAGE",
+                "ref": "lineage-001",
+                "sha256": "1" * 64,
+            }
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(bound_task, value)
+
+    def test_56_task_v1_historical_evidence_semantics_unchanged(self):
+        bound_task = task()
+        value = bind_result_to_task(
+            result(submission_id="v1-historical"),
+            bound_task,
+        )
+        self.assertEqual(
+            validate_result_for_task(bound_task, value),
+            value,
+        )
+
+    def test_57_v1_result_cannot_replay_against_task_v2(self):
+        stale = result(submission_id="v1-stale-against-v2")
+        with self.assertRaises(ResearchContractError):
+            validate_result_for_task(task_v2(), stale)
+
+    def test_58_task_v2_manifest_mutation_changes_task_digest(self):
+        first = task_v2()
+        second = copy.deepcopy(first)
+        second["evidence_manifest"][0]["sha256"] = "c" * 64
+        self.assertNotEqual(
+            sha256_json(first),
+            sha256_json(second),
+        )
+
+    def test_59_task_v2_aggregation_remains_input_order_invariant(self):
+        bound_task = task_v2()
+        first = bind_result_to_task(
+            result(
+                submission_id="v2-order-a",
+                provider="provider-a",
+                model="model-a",
+            ),
+            bound_task,
+        )
+        second = bind_result_to_task(
+            result(
+                submission_id="v2-order-b",
+                provider="provider-b",
+                model="model-b",
+                position="OPPOSE",
+                assertion="Contrarian v2 result.",
+            ),
+            bound_task,
+        )
+        forward = aggregate_results(bound_task, [first, second])
+        reverse = aggregate_results(bound_task, [second, first])
+        self.assertEqual(forward, reverse)
 
 
 if __name__ == "__main__":
