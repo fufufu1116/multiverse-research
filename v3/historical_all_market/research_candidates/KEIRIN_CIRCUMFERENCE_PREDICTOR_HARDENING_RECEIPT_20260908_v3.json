@@ -1,0 +1,46 @@
+{
+  "record": "KEIRIN_CIRCUMFERENCE_PREDICTOR_HARDENING_RECEIPT_20260908_v3",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_PRE_ONLY_PREDICTOR_INTEGRITY_HARDENED_MODEL_CANDIDATE_STRUCTURE_CHECK_PASS",
+  "implementation": {
+    "predictor": "tools/keirin_pre_only_rider_or_style_predictor_v3.py",
+    "selftest_spec": "tools/keirin_pre_only_rider_or_style_predictor_selftest_v3.py",
+    "candidate_model": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json"
+  },
+  "defects_closed": [
+    "frozen S0 beta mutation is rejected",
+    "duplicate rider lookup registrations are rejected instead of last-write-wins overwrite",
+    "duplicate race car numbers and duplicate exact registrations are rejected",
+    "RESULT/PAYOUT/ODDS/PREDICTION/HUMAN-COMMENT field-name contamination in race inputs fails closed",
+    "declared circumference bucket and circumference meters must agree",
+    "non-finite model deltas, competition scores, logits and probability outputs fail closed",
+    "Keirin race car domain is constrained to exact integer car numbers 1..9"
+  ],
+  "candidate_model_structure_check": {
+    "baseline_name": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "beta_frozen": true,
+    "rider_lookup_rows": 30,
+    "unique_registrations": 30,
+    "duplicate_registrations": 0,
+    "invalid_registrations": 0,
+    "nonfinite_rider_deltas": 0,
+    "style_keys": [
+      "逃",
+      "追",
+      "両"
+    ],
+    "nonfinite_style_deltas": 0,
+    "note": "This is a candidate-model integrity check only and is not a formal 30/60 support-gate claim."
+  },
+  "direct_checked_in_selftest_execution": false,
+  "shared_ci_rerun": false,
+  "formal_support": "1 rider / 2 PRE rows",
+  "result_accessed": false,
+  "payout_accessed": false,
+  "odds_accessed": false,
+  "prediction_execution_authorized_now": false,
+  "human_comments_accessed": false,
+  "model_fit_authorized_now": false,
+  "runtime": false
+}
