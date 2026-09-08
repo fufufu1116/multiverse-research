@@ -128,6 +128,34 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Provider-neutral prompt and request envelope
+
+`MULTIVERSE_PROVIDER_NEUTRAL_PROMPT_v1` contains no provider/model target. The same exact TASK_v2 + requested role + response-schema digest produces the same canonical research prompt regardless of which provider/model assignment receives it.
+
+The prompt binds:
+- exact task SHA256;
+- exact snapshot;
+- exact requested role;
+- exact objective;
+- deterministic evidence-manifest view;
+- exact response-schema SHA256;
+- explicit nonauthority.
+
+`MULTIVERSE_PROVIDER_REQUEST_ENVELOPE_v1` is the first live-transport preparation contract. It requires a LIVE_ADVISORY Assignment but performs no provider call itself.
+
+The envelope binds:
+- exact task and assignment;
+- exact model-target policy;
+- exact capability policy;
+- exact provider-neutral prompt;
+- exact provider transport policy reference;
+- exact outbound payload SHA256;
+- first-smoke synthetic-only objective/egress classification;
+- classification evidence reference and SHA256;
+- exact egress evidence set equal to the task evidence manifest.
+
+The first smoke profile rejects non-synthetic objective/egress declarations. Classification is itself a bound provenance assertion; this repository layer does not independently inspect semantic data sensitivity.
+
 Provider capability policy
 
 `MULTIVERSE_PROVIDER_CAPABILITY_POLICY_v1` binds the exact Assignment v1 and exact Model Target Policy v1 to the first-pilot capability ceiling.

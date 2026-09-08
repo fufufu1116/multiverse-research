@@ -16,6 +16,8 @@ REQUIRED = [
     ROOT / "fanout.py",
     ROOT / "model_target.py",
     ROOT / "capability.py",
+    ROOT / "prompting.py",
+    ROOT / "request_envelope.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -100,6 +102,8 @@ def validate() -> dict:
     fanout = (ROOT / "fanout.py").read_text()
     model_target = (ROOT / "model_target.py").read_text()
     capability = (ROOT / "capability.py").read_text()
+    prompting = (ROOT / "prompting.py").read_text()
+    request_envelope = (ROOT / "request_envelope.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -272,6 +276,41 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_NEUTRAL_PROMPT_v1",
+        "build_provider_neutral_prompt",
+        "PROMPT_REQUIRES_TASK_V2",
+        "PROMPT_ROLE_NOT_REQUESTED",
+        "PROMPT_EXACT_BINDING_MISMATCH",
+        "provider_neutral_prompt_sha256",
+    ):
+        record(
+            f"prompting:{token}",
+            token in prompting,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_REQUEST_ENVELOPE_v1",
+        "validate_request_envelope",
+        "REQUEST_REQUIRES_LIVE_ASSIGNMENT",
+        "REQUEST_ASSIGNMENT_SHA256_MISMATCH",
+        "REQUEST_MODEL_TARGET_SHA256_MISMATCH",
+        "REQUEST_CAPABILITY_SHA256_MISMATCH",
+        "REQUEST_PROMPT_SHA256_MISMATCH",
+        "REQUEST_PROVIDER_TRANSPORT_POLICY_MISMATCH",
+        "REQUEST_OBJECTIVE_NOT_SYNTHETIC",
+        "REQUEST_CLASSIFICATION_EVIDENCE_SHA256",
+        "REQUEST_EGRESS_MANIFEST_MISMATCH",
+        "REQUEST_OUTBOUND_PAYLOAD_SHA256",
+        "request_envelope_sha256",
+    ):
+        record(
+            f"request_envelope:{token}",
+            token in request_envelope,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -293,8 +332,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 124,
-        f"{test_count} != 124",
+        test_count == 144,
+        f"{test_count} != 144",
     )
 
     return {

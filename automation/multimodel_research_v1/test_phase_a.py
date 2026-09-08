@@ -27,6 +27,15 @@ from automation.multimodel_research_v1.capability import (
     capability_policy_sha256,
     validate_capability_policy,
 )
+from automation.multimodel_research_v1.prompting import (
+    build_provider_neutral_prompt,
+    provider_neutral_prompt_sha256,
+    validate_provider_neutral_prompt,
+)
+from automation.multimodel_research_v1.request_envelope import (
+    request_envelope_sha256,
+    validate_request_envelope,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -243,6 +252,80 @@ def capability_policy(
         "function_calling": "NONE",
         "structured_output": "JSON_ONLY",
         "streaming": False,
+        "nonauthority": nonauthority(),
+    }
+
+
+def provider_neutral_prompt(
+    bound_task: dict,
+    role: str = "architecture_challenge",
+) -> dict:
+    return build_provider_neutral_prompt(
+        bound_task,
+        role,
+        "6" * 64,
+    )
+
+
+def request_envelope(
+    bound_task: dict,
+    bound_assignment: dict,
+    bound_model_target_policy: dict,
+    bound_capability_policy: dict,
+    bound_prompt: dict,
+) -> dict:
+    return {
+        "schema": "MULTIVERSE_PROVIDER_REQUEST_ENVELOPE_v1",
+        "request_id": "provider-request-001",
+        "task_sha256": sha256_json(bound_task),
+        "assignment_sha256": assignment_sha256(
+            bound_task,
+            bound_assignment,
+        ),
+        "model_target_policy_sha256":
+            model_target_policy_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+            ),
+        "capability_policy_sha256":
+            capability_policy_sha256(
+                bound_task,
+                bound_assignment,
+                bound_model_target_policy,
+                bound_capability_policy,
+            ),
+        "provider_neutral_prompt_sha256":
+            provider_neutral_prompt_sha256(
+                bound_task,
+                bound_prompt,
+            ),
+        "provider_transport_policy_ref":
+            bound_assignment[
+                "provider_transport_policy_ref"
+            ],
+        "created_at": "2026-09-07T00:00:40Z",
+        "objective_classification": "SYNTHETIC",
+        "classification_evidence_ref":
+            "synthetic-data-attestation-001",
+        "classification_evidence_sha256": "5" * 64,
+        "egress_items": sorted(
+            [
+                {
+                    "primitive": item["primitive"],
+                    "ref": item["ref"],
+                    "sha256": item["sha256"],
+                    "classification": "SYNTHETIC",
+                }
+                for item in bound_task["evidence_manifest"]
+            ],
+            key=lambda item: (
+                item["primitive"],
+                item["ref"],
+                item["sha256"],
+            ),
+        ),
+        "outbound_payload_sha256": "4" * 64,
         "nonauthority": nonauthority(),
     }
 
@@ -2607,6 +2690,569 @@ class ContractTests(unittest.TestCase):
                 bound_assignment,
                 changed_target,
                 changed_policy,
+            ),
+        )
+
+
+    def test_125_provider_neutral_prompt_is_provider_independent(self):
+        bound_task = task_v2()
+        first_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-a",
+        )
+        second_assignment = assignment(
+            bound_task,
+            assignment_id="assignment-provider-b",
+            provider="provider-b",
+            model="model-b",
+        )
+        first_prompt = provider_neutral_prompt(
+            bound_task,
+            first_assignment["requested_role"],
+        )
+        second_prompt = provider_neutral_prompt(
+            bound_task,
+            second_assignment["requested_role"],
+        )
+        self.assertEqual(first_prompt, second_prompt)
+        self.assertEqual(
+            provider_neutral_prompt_sha256(
+                bound_task,
+                first_prompt,
+            ),
+            provider_neutral_prompt_sha256(
+                bound_task,
+                second_prompt,
+            ),
+        )
+
+    def test_126_prompt_role_must_be_requested(self):
+        bound_task = task_v2()
+        with self.assertRaises(ResearchContractError):
+            build_provider_neutral_prompt(
+                bound_task,
+                "unrequested-role",
+                "6" * 64,
+            )
+
+    def test_127_prompt_binds_exact_task_objective_and_digest(self):
+        bound_task = task_v2()
+        prompt = provider_neutral_prompt(bound_task)
+        self.assertEqual(
+            prompt["task_sha256"],
+            sha256_json(bound_task),
+        )
+        self.assertEqual(
+            prompt["objective"],
+            bound_task["objective"],
+        )
+        changed = copy.deepcopy(bound_task)
+        changed["objective"] = "Changed objective."
+        changed_prompt = provider_neutral_prompt(changed)
+        self.assertNotEqual(
+            provider_neutral_prompt_sha256(
+                bound_task,
+                prompt,
+            ),
+            provider_neutral_prompt_sha256(
+                changed,
+                changed_prompt,
+            ),
+        )
+
+    def test_128_prompt_response_schema_digest_is_bound(self):
+        bound_task = task_v2()
+        first = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            "6" * 64,
+        )
+        second = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            "7" * 64,
+        )
+        self.assertNotEqual(
+            provider_neutral_prompt_sha256(
+                bound_task,
+                first,
+            ),
+            provider_neutral_prompt_sha256(
+                bound_task,
+                second,
+            ),
+        )
+
+    def test_129_prompt_contains_exact_sorted_evidence_manifest(self):
+        bound_task = task_v2()
+        prompt = provider_neutral_prompt(bound_task)
+        expected = sorted(
+            copy.deepcopy(bound_task["evidence_manifest"]),
+            key=lambda item: (
+                item["primitive"],
+                item["ref"],
+                item["sha256"],
+                item["observed_at"],
+            ),
+        )
+        self.assertEqual(
+            prompt["evidence_manifest"],
+            expected,
+        )
+
+    def test_130_prompt_has_no_provider_or_model_target_fields(self):
+        bound_task = task_v2()
+        prompt = provider_neutral_prompt(bound_task)
+        self.assertNotIn("provider", prompt)
+        self.assertNotIn("model", prompt)
+        self.assertNotIn("assignment_sha256", prompt)
+
+    def test_131_prompt_exact_binding_rejects_mutation(self):
+        bound_task = task_v2()
+        prompt = provider_neutral_prompt(bound_task)
+        prompt["objective"] = "Tampered."
+        with self.assertRaises(ResearchContractError):
+            validate_provider_neutral_prompt(
+                bound_task,
+                prompt,
+            )
+
+    def test_132_prompt_nonauthority_is_preserved(self):
+        bound_task = task_v2()
+        prompt = provider_neutral_prompt(bound_task)
+        self.assertEqual(
+            prompt["nonauthority"],
+            bound_task["nonauthority"],
+        )
+
+    def test_133_valid_synthetic_only_request_envelope(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="provider-a",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(
+            bound_task,
+            bound_assignment["requested_role"],
+        )
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        self.assertEqual(
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            ),
+            envelope,
+        )
+
+    def test_134_request_envelope_requires_live_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(bound_task)
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_135_request_envelope_binds_exact_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["assignment_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_136_request_envelope_binds_model_and_capability_policies(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        for key in (
+            "model_target_policy_sha256",
+            "capability_policy_sha256",
+        ):
+            envelope = request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+            )
+            envelope[key] = "0" * 64
+            with self.assertRaises(ResearchContractError):
+                validate_request_envelope(
+                    bound_task,
+                    bound_assignment,
+                    target_policy,
+                    cap_policy,
+                    prompt,
+                    envelope,
+                )
+
+    def test_137_request_envelope_binds_exact_prompt(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope[
+            "provider_neutral_prompt_sha256"
+        ] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_138_request_transport_policy_must_match_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope[
+            "provider_transport_policy_ref"
+        ] = "provider-transport-other"
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_139_request_cannot_predate_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["created_at"] = "2026-09-07T00:00:29Z"
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_140_request_first_smoke_requires_synthetic_classification(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["objective_classification"] = "PUBLIC"
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_141_request_classification_evidence_digest_required(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope[
+            "classification_evidence_sha256"
+        ] = None
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_142_request_egress_must_exactly_match_task_manifest(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["egress_items"][0]["ref"] = "other-ref"
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_143_request_outbound_payload_digest_required(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        envelope = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        envelope["outbound_payload_sha256"] = None
+        with self.assertRaises(ResearchContractError):
+            validate_request_envelope(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                envelope,
+            )
+
+    def test_144_request_digest_binds_exact_outbound_payload(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        prompt = provider_neutral_prompt(bound_task)
+        first = request_envelope(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+        )
+        second = copy.deepcopy(first)
+        second["outbound_payload_sha256"] = "3" * 64
+        self.assertNotEqual(
+            request_envelope_sha256(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                first,
+            ),
+            request_envelope_sha256(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                second,
             ),
         )
 
