@@ -98,6 +98,13 @@ from automation.multimodel_research_v1.catalog_freshness import (
     validate_catalog_freshness_receipt,
     validate_pilot_freshness_binding,
 )
+from automation.multimodel_research_v1.time_attestation import (
+    build_catalog_freshness_time_binding,
+    catalog_freshness_time_binding_sha256,
+    execution_time_attestation_sha256,
+    validate_catalog_freshness_time_binding,
+    validate_execution_time_attestation,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -11043,6 +11050,384 @@ class ContractTests(unittest.TestCase):
             snapshot,
             copy.deepcopy(plan),
             copy.deepcopy(freshness),
+            copy.deepcopy(binding),
+        )
+        self.assertEqual(first, second)
+
+
+    def test_301_valid_control_time_attestation(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        self.assertEqual(
+            validate_execution_time_attestation(attestation),
+            attestation,
+        )
+
+    def test_302_time_attestation_requires_control_runtime_clock(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "USER_SUPPLIED_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_303_time_attestation_requires_source_digest(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "bad",
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_304_time_attestation_cannot_be_recorded_before_attested(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:29:59Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_305_time_attestation_recording_delay_is_bounded(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:31:01Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_306_time_attestation_grants_no_authority(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+        ):
+            broken = copy.deepcopy(attestation)
+            broken[key] = True
+            with self.assertRaises(ResearchContractError):
+                validate_execution_time_attestation(broken)
+
+    def test_307_valid_catalog_freshness_time_binding(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        self.assertEqual(
+            validate_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+                binding,
+            ),
+            binding,
+        )
+
+    def test_308_freshness_checked_at_must_exactly_match_attested_at(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:01Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+            )
+
+    def test_309_freshness_time_binding_rejects_catalog_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        binding["catalog_freshness_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+                binding,
+            )
+
+    def test_310_freshness_time_binding_rejects_attestation_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        binding["time_attestation_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+                binding,
+            )
+
+    def test_311_time_attestation_digest_is_deterministic(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        self.assertEqual(
+            execution_time_attestation_sha256(attestation),
+            execution_time_attestation_sha256(
+                copy.deepcopy(attestation)
+            ),
+        )
+
+    def test_312_freshness_time_binding_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        first = catalog_freshness_time_binding_sha256(
+            snapshot,
+            freshness,
+            attestation,
+            binding,
+        )
+        second = catalog_freshness_time_binding_sha256(
+            snapshot,
+            copy.deepcopy(freshness),
+            copy.deepcopy(attestation),
             copy.deepcopy(binding),
         )
         self.assertEqual(first, second)
