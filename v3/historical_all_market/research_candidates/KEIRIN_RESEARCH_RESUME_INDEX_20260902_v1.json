@@ -59,16 +59,16 @@
     {
       "step": 9,
       "action": "WORK_CONSERVING_CONTINUATION",
-      "rule": "Current v87: Seibuen R6-R11 prediction artifact stays frozen. Frozen shadow-buy set was prospectively applied at 14:16 JST and all 6 races are NO_BET because conservative top1 confidence is below 0.40 (max 35.11%). No odds needed after base gate failure; total shadow stake ¥0. Burned A+B neighborhood screen shows the 3renhuku 1pt conf40+EV10%+20x candidate sits inside a limited positive neighborhood, but 0.45 confidence and some looser settings fail A. Do not move to the best burned-data cell; retain frozen center candidate for future prospective replication."
+      "rule": "Current v88: Seibuen R6-R11 remains a frozen accuracy test and all frozen shadow-buy rules are NO_BET. Keiokaku 2026-09-08 R1-R9 has a separate frozen live shadow-economics test: confidence passes R1/R4/R8, but only R8 passes the development-frozen 3renhuku conf40 + EV>=10% + odds<=20 rule. Frozen R8 shadow ticket is 3renhuku 1=2=3 (寺沼伊織/貝原涼太/川野深), model ticket probability 18.8595%, observed PRE odds 6.3 at 12:06 JST, EV +18.8149%, stake ¥100 shadow only. R1/R4 rejected for negative EV. Do not rewrite after results."
     },
     {
       "step": 10,
       "action": "CONTINUE_WITH_FRESH_BINDING",
-      "rule": "Fresh-read before writes. Preserve live all-NO-BET decision after outcomes. Never lower confidence just to force a bet. C/HOLDOUT remain sealed; economics separate from accuracy and formal support."
+      "rule": "Fresh-read before writes. Tonight score Seibuen accuracy separately; after Keiokaku R9, settle the frozen shadow economics. Keep C/HOLDOUT sealed, no Kelly, no real-money execution, formal support independent."
     }
   ],
-  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v87.json",
-  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v86.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v88.json",
+  "prior_current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v87.json",
   "active_lane_pointers": {
     "PROSPECTIVE_SUPPORT_EVENT_QUEUE": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SUPPORT_EVENT_QUEUE_20260907_v7.json",
     "ITO0907_FAIL_CLOSED_FREEZE": "v3/historical_all_market/research_candidates/KEIRIN_ITO_0907_POST_CUTOFF_FAIL_CLOSED_FREEZE_20260907_v1.json",
@@ -109,7 +109,8 @@
     "ALL_MARKET_PROJECTOR": "tools/keirin_pre_only_all_market_projector_v1.py",
     "BURNED_AB_BUY_STRATEGY_SIMULATOR": "tools/keirin_burned_ab_buy_strategy_simulator_v1.py",
     "LIVE_SEIBUEN_SHADOW_BUY_DECISION": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SHADOW_BUY_DECISION_SEIBUEN_20260908_R6_R11_v1.json",
-    "THREERENHUKU_NEIGHBORHOOD_ROBUSTNESS": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_3RENHUKU_1PT_NEIGHBORHOOD_ROBUSTNESS_20260908_v1.json"
+    "THREERENHUKU_NEIGHBORHOOD_ROBUSTNESS": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_3RENHUKU_1PT_NEIGHBORHOOD_ROBUSTNESS_20260908_v1.json",
+    "LIVE_KEIOKAKU_SHADOW_BUY_DECISION": "v3/historical_all_market/research_candidates/KEIRIN_PROSPECTIVE_SHADOW_BUY_DECISION_KEIOKAKU_20260908_R1_R9_v1.json"
   },
   "common_governance_policy": {
     "migration_lock": "#93 comment 5561567913 — RELEASED/SUPERSEDED by #93 comment 5572390676",
