@@ -29,6 +29,7 @@ REQUIRED = [
     ROOT / "readiness.py",
     ROOT / "provider_catalog.py",
     ROOT / "pilot_dry_run.py",
+    ROOT / "catalog_freshness.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -163,6 +164,7 @@ def validate() -> dict:
     readiness = (ROOT / "readiness.py").read_text()
     provider_catalog = (ROOT / "provider_catalog.py").read_text()
     pilot_dry_run = (ROOT / "pilot_dry_run.py").read_text()
+    catalog_freshness = (ROOT / "catalog_freshness.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -631,6 +633,30 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_PROVIDER_CATALOG_FRESHNESS_v1",
+        "MULTIVERSE_FIRST_PROVIDER_PILOT_FRESHNESS_BINDING_v1",
+        "MAX_EXECUTION_CATALOG_AGE_SECONDS = 86400",
+        "build_catalog_freshness_receipt",
+        "validate_catalog_freshness_receipt",
+        "CATALOG_FRESHNESS_CHECK_BEFORE_SNAPSHOT",
+        "CATALOG_SNAPSHOT_STALE",
+        "CATALOG_PRICING_WINDOW_EXPIRED",
+        "CATALOG_FRESHNESS_SNAPSHOT_SHA256_MISMATCH",
+        "CATALOG_FRESHNESS_FORBIDDEN_TRUE",
+        "build_pilot_freshness_binding",
+        "validate_pilot_freshness_binding",
+        "PILOT_FRESHNESS_PLAN_SHA256_MISMATCH",
+        "PILOT_FRESHNESS_RECEIPT_SHA256_MISMATCH",
+        "PILOT_FRESHNESS_FORBIDDEN_TRUE",
+        "pilot_freshness_binding_sha256",
+    ):
+        record(
+            f"catalog_freshness:{token}",
+            token in catalog_freshness,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -652,8 +678,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 286,
-        f"{test_count} != 286",
+        test_count == 300,
+        f"{test_count} != 300",
     )
 
     return {
