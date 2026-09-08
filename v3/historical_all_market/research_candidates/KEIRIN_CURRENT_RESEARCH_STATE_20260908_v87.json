@@ -1,0 +1,89 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v87",
+  "status": "LIVE_SEIBUEN_PREDICTIONS_FROZEN_ALL_SHADOW_BUY_RULES_NO_BET_ROBUSTNESS_SCREEN_COMPLETE_FORMAL_GATE_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v86.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "Fresh GitHub remains CURRENT authority. Prediction accuracy, shadow economics, and formal support are separate lanes.",
+  "live_prediction": {
+    "artifact": "KEIRIN_PROSPECTIVE_PRE_PREDICTION_SEIBUEN_20260908_R6_R11_v1.json",
+    "event": "西武園 2026-09-08 R6-R11",
+    "races": 6,
+    "rider_rows": 42,
+    "result_accessed": false,
+    "prediction_rewrite": false
+  },
+  "live_shadow_buy_decision": {
+    "artifact": "KEIRIN_PROSPECTIVE_SHADOW_BUY_DECISION_SEIBUEN_20260908_R6_R11_v1.json",
+    "decision_time_jst": "2026-09-08T14:16:00+09:00",
+    "races": 6,
+    "confidence_pass_races": 0,
+    "shadow_bet_races": 0,
+    "no_bet_races": 6,
+    "total_shadow_stake_yen": 0,
+    "maximum_conservative_top1_probability": 0.3510769534932852,
+    "interpretation": "All frozen buy candidates abstain because the 0.40 confidence gate fails before odds are needed."
+  },
+  "buy_strategy_development": {
+    "base_artifact": "KEIRIN_BURNED_AB_BUY_STRATEGY_SIMULATION_20260908_v1.json",
+    "neighborhood_artifact": "KEIRIN_BURNED_AB_3RENHUKU_1PT_NEIGHBORHOOD_ROBUSTNESS_20260908_v1.json",
+    "burned_races": 1500,
+    "C_used": false,
+    "ECON_HOLDOUT1000_used": false,
+    "findings": [
+      "The selected 3renhuku one-point candidate is not a single isolated A+B grid cell; nearby 0.375-0.425 confidence / 15-20x cap cells contain multiple A-and-B-positive examples.",
+      "The surface is not globally robust: confidence 0.45 and some lower-confidence/20x settings make A negative.",
+      "Do not move to the best burned-data cell. Keep the already frozen simple center rule for prospective replication.",
+      "Point expansion increases hit rate but usually worsens capital efficiency; stake sizing is not used to rescue negative edge."
+    ]
+  },
+  "frozen_shadow_candidates": {
+    "artifact": "KEIRIN_SHADOW_BUY_CANDIDATE_FREEZE_20260908_v1.json",
+    "ids": [
+      "NO_BET",
+      "3RENHUKU_TOP3_1PT_CONF40",
+      "3RENHUKU_TOP3_1PT_CONF40_EV10_CAP20",
+      "WIDE_AXIS1_3PT_CONF40"
+    ],
+    "stake": "¥100 flat per elementary ticket, shadow only",
+    "parameters_changed_after_live_decision": false,
+    "real_money_execution": false,
+    "profitability_claim": false
+  },
+  "tooling": {
+    "current_model_all_market_projector": "tools/keirin_pre_only_all_market_projector_v1.py",
+    "burned_ab_buy_simulator": "tools/keirin_burned_ab_buy_strategy_simulator_v1.py"
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "gate": "FAIL",
+    "prospective_35_candidate_path_retained": true
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "accepted_definition": "UNKNOWN",
+    "independent_result": "PENDING"
+  },
+  "priority_next": [
+    "Keep Seibuen R6-R11 prediction and all-NO-BET shadow decisions immutable until postrace evaluation.",
+    "After results, score prediction accuracy separately from economics; zero-stake races remain legitimate NO_BET outcomes.",
+    "Apply the frozen shadow candidate set to later PRE cards without changing the 0.40/EV10%/20x rule after outcomes.",
+    "If a future card passes confidence, capture the exact PRE odds before cutoff and freeze the shadow ticket before result.",
+    "Keep C and ECON_HOLDOUT1000 sealed; keep formal Sep14/Sep15 support lane independent."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout_as_feature": false,
+    "late_odds_reconstruction": false,
+    "force_bet": false,
+    "threshold_rewrite_after_result": false,
+    "C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "real_money_execution": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
