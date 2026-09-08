@@ -128,6 +128,42 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Claude Messages offline transport adapter
+
+The repository also includes a **credential-free, network-free renderer/parser** for Anthropic Claude Messages.
+
+The renderer binds:
+- exact assignment model;
+- exact canonical provider-neutral prompt JSON;
+- exact JSON response schema through `output_config.format.type = json_schema`;
+- fixed first-smoke max_tokens;
+- stream = false;
+- no tools or MCP servers;
+- no credential material.
+
+The Claude Messages API is treated as stateless: the full canonical prompt is sent in the user message for the bounded single-turn smoke.
+
+The parser preserves:
+- provider message ID;
+- observed model ID;
+- native stop reason;
+- normalized termination state;
+- output text;
+- input/output tokens;
+- exact usage metadata SHA256;
+- exact raw response SHA256.
+
+Bounded stop normalization:
+- end_turn + text -> COMPLETED;
+- end_turn + empty -> PROVIDER_EMPTY;
+- refusal or refusal stop details -> PROVIDER_REFUSED;
+- max_tokens / model_context_window_exceeded / stop_sequence -> PROVIDER_TRUNCATED;
+- tool_use / pause_turn -> fail closed because the first-pilot capability policy forbids tool execution.
+
+If provider usage metadata reports any nonzero server-tool execution, parsing fails closed.
+
+This adapter performs no API call and contains no credential value or credential transport implementation.
+
 Gemini stable-v1 offline transport adapter
 
 The repository includes a **credential-free, network-free renderer/parser** for the first Google Gemini smoke candidate.

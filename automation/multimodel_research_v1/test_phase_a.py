@@ -54,6 +54,11 @@ from automation.multimodel_research_v1.gemini_adapter import (
     parse_gemini_interactions_v1_response,
     render_gemini_interactions_v1,
 )
+from automation.multimodel_research_v1.claude_adapter import (
+    claude_render_sha256,
+    parse_claude_messages_response,
+    render_claude_messages_request,
+)
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
     result_content_digest,
@@ -551,6 +556,33 @@ def gemini_response(
                 ],
             }
         ],
+    }
+
+
+def claude_response(
+    *,
+    stop_reason: str = "end_turn",
+    model: str = "model-stable-001",
+    text: str = '{"status":"ok"}',
+) -> dict:
+    return {
+        "id": "claude-response-001",
+        "type": "message",
+        "role": "assistant",
+        "model": model,
+        "content": [
+            {
+                "type": "text",
+                "text": text,
+            }
+        ],
+        "stop_reason": stop_reason,
+        "stop_sequence": None,
+        "stop_details": None,
+        "usage": {
+            "input_tokens": 10,
+            "output_tokens": 20,
+        },
     }
 
 
@@ -5740,6 +5772,510 @@ class ContractTests(unittest.TestCase):
         response = gemini_response()
         observation = parse_gemini_interactions_v1_response(
             response
+        )
+        self.assertEqual(
+            observation["provider_response_sha256"],
+            sha256_json(response),
+        )
+        self.assertEqual(
+            observation["usage_metadata_sha256"],
+            sha256_json(response["usage"]),
+        )
+
+
+    def test_191_valid_claude_messages_render(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        rendered = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        self.assertEqual(
+            rendered["sdk_surface"],
+            "messages.create",
+        )
+        self.assertIs(rendered["stateless"], True)
+
+    def test_192_claude_render_requires_live_assignment(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        offline_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="SYNTHETIC_OFFLINE",
+        )
+        offline_target = model_target_policy(
+            bound_task,
+            offline_assignment,
+        )
+        offline_cap = capability_policy(
+            bound_task,
+            offline_assignment,
+            offline_target,
+        )
+        with self.assertRaises(ResearchContractError):
+            render_claude_messages_request(
+                bound_task,
+                offline_assignment,
+                offline_target,
+                offline_cap,
+                prompt,
+                schema,
+            )
+
+    def test_193_claude_render_is_nonstreaming_and_has_no_tools(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        body = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )["body"]
+        self.assertIs(body["stream"], False)
+        self.assertNotIn("tools", body)
+        self.assertNotIn("mcp_servers", body)
+
+    def test_194_claude_render_uses_json_schema_output_config(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        body = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )["body"]
+        self.assertEqual(
+            body["output_config"]["format"]["type"],
+            "json_schema",
+        )
+        self.assertEqual(
+            body["output_config"]["format"]["schema"],
+            schema,
+        )
+
+    def test_195_claude_response_schema_must_match_prompt_digest(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        changed = copy.deepcopy(schema)
+        changed["properties"]["extra"] = {
+            "type": "string"
+        }
+        with self.assertRaises(ResearchContractError):
+            render_claude_messages_request(
+                bound_task,
+                bound_assignment,
+                target_policy,
+                cap_policy,
+                prompt,
+                changed,
+            )
+
+    def test_196_claude_render_uses_exact_assignment_model(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        body = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )["body"]
+        self.assertEqual(
+            body["model"],
+            bound_assignment["target_model"],
+        )
+
+    def test_197_claude_render_message_is_exact_canonical_prompt(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        body = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )["body"]
+        self.assertEqual(
+            body["messages"],
+            [
+                {
+                    "role": "user",
+                    "content": json.dumps(
+                        prompt,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                        ensure_ascii=False,
+                    ),
+                }
+            ],
+        )
+
+    def test_198_claude_render_contains_no_credential_material(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        rendered = render_claude_messages_request(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        self.assertIs(
+            rendered["credential_material_included"],
+            False,
+        )
+        rendered_text = json.dumps(rendered)
+        self.assertNotIn("api_key", rendered_text.lower())
+        self.assertNotIn("authorization", rendered_text.lower())
+
+    def test_199_claude_render_digest_changes_with_prompt_binding(self):
+        bound_task = task_v2()
+        schema = response_schema()
+        prompt = build_provider_neutral_prompt(
+            bound_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        bound_assignment = assignment(
+            bound_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        target_policy = model_target_policy(
+            bound_task,
+            bound_assignment,
+        )
+        cap_policy = capability_policy(
+            bound_task,
+            bound_assignment,
+            target_policy,
+        )
+        first = claude_render_sha256(
+            bound_task,
+            bound_assignment,
+            target_policy,
+            cap_policy,
+            prompt,
+            schema,
+        )
+        changed_task = copy.deepcopy(bound_task)
+        changed_task["objective"] = "Changed objective."
+        changed_prompt = build_provider_neutral_prompt(
+            changed_task,
+            "architecture_challenge",
+            sha256_json(schema),
+        )
+        changed_assignment = assignment(
+            changed_task,
+            provider="anthropic-claude",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        changed_target = model_target_policy(
+            changed_task,
+            changed_assignment,
+        )
+        changed_cap = capability_policy(
+            changed_task,
+            changed_assignment,
+            changed_target,
+        )
+        second = claude_render_sha256(
+            changed_task,
+            changed_assignment,
+            changed_target,
+            changed_cap,
+            changed_prompt,
+            schema,
+        )
+        self.assertNotEqual(first, second)
+
+    def test_200_parse_completed_claude_response(self):
+        observation = parse_claude_messages_response(
+            claude_response()
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "COMPLETED",
+        )
+        self.assertEqual(
+            observation["provider_response_id"],
+            "claude-response-001",
+        )
+        self.assertEqual(observation["input_tokens"], 10)
+        self.assertEqual(observation["output_tokens"], 20)
+
+    def test_201_parse_empty_claude_end_turn(self):
+        observation = parse_claude_messages_response(
+            claude_response(text="")
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "PROVIDER_EMPTY",
+        )
+
+    def test_202_parse_claude_refusal_stop_reason(self):
+        observation = parse_claude_messages_response(
+            claude_response(stop_reason="refusal")
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "PROVIDER_REFUSED",
+        )
+
+    def test_203_parse_claude_refusal_stop_details(self):
+        response = claude_response()
+        response["stop_details"] = {
+            "type": "refusal",
+            "category": "policy",
+        }
+        observation = parse_claude_messages_response(
+            response
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "PROVIDER_REFUSED",
+        )
+
+    def test_204_parse_claude_truncation_reasons(self):
+        for reason in (
+            "max_tokens",
+            "model_context_window_exceeded",
+            "stop_sequence",
+        ):
+            observation = parse_claude_messages_response(
+                claude_response(stop_reason=reason)
+            )
+            self.assertEqual(
+                observation["normalized_state"],
+                "PROVIDER_TRUNCATED",
+            )
+
+    def test_205_parse_claude_tool_or_pause_stop_fails_closed(self):
+        for reason in ("tool_use", "pause_turn"):
+            with self.assertRaises(RuntimeError):
+                parse_claude_messages_response(
+                    claude_response(stop_reason=reason)
+                )
+
+    def test_206_parse_claude_rejects_unexpected_server_tool_use(self):
+        response = claude_response()
+        response["usage"]["server_tool_use"] = {
+            "web_search_requests": 1,
+        }
+        with self.assertRaises(ResearchContractError):
+            parse_claude_messages_response(response)
+
+    def test_207_parse_claude_allows_zero_server_tool_use_metadata(self):
+        response = claude_response()
+        response["usage"]["server_tool_use"] = {
+            "web_search_requests": 0,
+            "web_fetch_requests": 0,
+        }
+        observation = parse_claude_messages_response(
+            response
+        )
+        self.assertEqual(
+            observation["normalized_state"],
+            "COMPLETED",
+        )
+
+    def test_208_parse_claude_requires_id_model_and_nonnegative_usage(self):
+        for key in ("id", "model"):
+            response = claude_response()
+            response.pop(key)
+            with self.assertRaises(ResearchContractError):
+                parse_claude_messages_response(response)
+
+        response = claude_response()
+        response["usage"]["output_tokens"] = -1
+        with self.assertRaises(ResearchContractError):
+            parse_claude_messages_response(response)
+
+    def test_209_parse_claude_preserves_model_and_exact_digests(self):
+        response = claude_response(
+            model="model-other"
+        )
+        observation = parse_claude_messages_response(
+            response
+        )
+        self.assertEqual(
+            observation["observed_model_id"],
+            "model-other",
         )
         self.assertEqual(
             observation["provider_response_sha256"],

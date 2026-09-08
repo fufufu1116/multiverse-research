@@ -22,6 +22,7 @@ REQUIRED = [
     ROOT / "receipt.py",
     ROOT / "smoke_profile.py",
     ROOT / "gemini_adapter.py",
+    ROOT / "claude_adapter.py",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
     ROOT / "README.md",
@@ -112,6 +113,7 @@ def validate() -> dict:
     receipt = (ROOT / "receipt.py").read_text()
     smoke_profile = (ROOT / "smoke_profile.py").read_text()
     gemini_adapter = (ROOT / "gemini_adapter.py").read_text()
+    claude_adapter = (ROOT / "claude_adapter.py").read_text()
 
     for token in (
         "MULTIVERSE_RESEARCH_TASK_v1",
@@ -396,6 +398,29 @@ def validate() -> dict:
         )
 
     for token in (
+        "MULTIVERSE_CLAUDE_MESSAGES_RENDER_v1",
+        "MULTIVERSE_CLAUDE_MESSAGES_OBSERVATION_v1",
+        "render_claude_messages_request",
+        '"sdk_surface": "messages.create"',
+        '"stateless": True',
+        '"stream": False',
+        '"type": "json_schema"',
+        "CLAUDE_RESPONSE_SCHEMA_SHA256_MISMATCH",
+        "parse_claude_messages_response",
+        "PROVIDER_REFUSED",
+        "PROVIDER_EMPTY",
+        "PROVIDER_TRUNCATED",
+        "CLAUDE_UNEXPECTED_SERVER_TOOL_USE",
+        "provider_response_sha256",
+        "usage_metadata_sha256",
+    ):
+        record(
+            f"claude_adapter:{token}",
+            token in claude_adapter,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -417,8 +442,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 190,
-        f"{test_count} != 190",
+        test_count == 209,
+        f"{test_count} != 209",
     )
 
     return {
