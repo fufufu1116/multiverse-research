@@ -15,13 +15,13 @@ v4 = importlib.import_module("keirin_35_formal_support_finalizer_v4")
 def fixture(n=35):
     order=[]; matrix=[]; registry=[]; rows=[]; baseline=[
         {
-            "rider_name":"BASE","official_registration_number":"000001",
+            "rider_name":"BASE","registration_number":"000001",
             "race_date":"2098-12-01","venue":"BASE400",
             "circumference_m":400,"day":"Day1","race_no":1,"car_no":1,
             "class":"S1","style":"追","source_url":"https://example.invalid/racecard"
         },
         {
-            "rider_name":"BASE","official_registration_number":"000001",
+            "rider_name":"BASE","registration_number":"000001",
             "race_date":"2098-12-02","venue":"BASE333",
             "circumference_m":333,"day":"Day1","race_no":1,"car_no":1,
             "class":"S1","style":"追","source_url":"https://example.invalid/racecard"
@@ -114,9 +114,27 @@ def main():
         for d in payoutout["decisions"]
     )
 
+    true_comment=deepcopy(manifest)
+    true_comment["rows"][0]["source_url"]="https://example.invalid/comments"
+    true_comment["rows"][0]["source_namespace"]="comments"
+    commentout=v4.finalize(order,matrix,registry,true_comment)
+    assert any(
+        d.get("priority")==1 and d.get("reason")=="SOURCE_NOT_FINAL_DAY1_RACECARD_OR_FORBIDDEN_NAMESPACE"
+        for d in commentout["decisions"]
+    )
+
+    true_prediction=deepcopy(manifest)
+    true_prediction["rows"][0]["source_url"]="https://example.invalid/prediction"
+    true_prediction["rows"][0]["source_namespace"]="prediction"
+    predictionout=v4.finalize(order,matrix,registry,true_prediction)
+    assert any(
+        d.get("priority")==1 and d.get("reason")=="SOURCE_NOT_FINAL_DAY1_RACECARD_OR_FORBIDDEN_NAMESPACE"
+        for d in predictionout["decisions"]
+    )
+
     assert "trusted_pit_cutoff_jst" not in manifest["rows"][0]
 
-    print("PASS 8/8")
+    print("PASS 10/10")
     return 0
 
 
