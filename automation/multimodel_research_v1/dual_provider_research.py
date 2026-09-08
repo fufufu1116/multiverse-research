@@ -404,24 +404,6 @@ def build_dual_provider_offline_research(
             refusal_aggregate["status_counts"]["REFUSED"],
         "refusal_unresolved_divergence_count":
             len(refusal_aggregate["unresolved_divergences"]),
-        "refusal_aggregate_sha256":
-            refusal_aggregate["aggregate_sha256"],
-        "refusal_descriptive_label":
-            refusal_claim["descriptive_label"],
-        "refusal_cross_model_divergence":
-            refusal_claim["cross_model_divergence"],
-        "refusal_cross_provider_divergence":
-            refusal_claim["cross_provider_divergence"],
-        "refusal_observed_provider_count":
-            refusal_aggregate["observed_unique_provider_count"],
-        "refusal_completed_provider_count":
-            refusal_aggregate["completed_unique_provider_count"],
-        "refusal_noncompleted_result_count":
-            len(refusal_aggregate["noncompleted_results"]),
-        "refusal_refused_status_count":
-            refusal_aggregate["status_counts"]["REFUSED"],
-        "refusal_unresolved_divergence_count":
-            len(refusal_aggregate["unresolved_divergences"]),
         "descriptive_label": claim["descriptive_label"],
         "cross_model_divergence": claim["cross_model_divergence"],
         "cross_provider_divergence":
@@ -567,6 +549,24 @@ def build_dual_provider_offline_research_unchecked(
             agreement_claim["cross_provider_divergence"],
         "agreement_unresolved_divergence_count":
             len(agreement_aggregate["unresolved_divergences"]),
+        "refusal_aggregate_sha256":
+            refusal_aggregate["aggregate_sha256"],
+        "refusal_descriptive_label":
+            refusal_claim["descriptive_label"],
+        "refusal_cross_model_divergence":
+            refusal_claim["cross_model_divergence"],
+        "refusal_cross_provider_divergence":
+            refusal_claim["cross_provider_divergence"],
+        "refusal_observed_provider_count":
+            refusal_aggregate["observed_unique_provider_count"],
+        "refusal_completed_provider_count":
+            refusal_aggregate["completed_unique_provider_count"],
+        "refusal_noncompleted_result_count":
+            len(refusal_aggregate["noncompleted_results"]),
+        "refusal_refused_status_count":
+            refusal_aggregate["status_counts"]["REFUSED"],
+        "refusal_unresolved_divergence_count":
+            len(refusal_aggregate["unresolved_divergences"]),
         "descriptive_label": claim["descriptive_label"],
         "cross_model_divergence": claim["cross_model_divergence"],
         "cross_provider_divergence":

@@ -390,21 +390,6 @@ def build_dual_provider_fanout_rehearsal(
             failure["all_planned_observed"],
         "failure_demo_all_planned_completed":
             failure["all_planned_completed"],
-        "failure_demo_batch_sha256": failure["batch_sha256"],
-        "failure_demo_observed_terminal_result_count":
-            failure["observed_terminal_result_count"],
-        "failure_demo_completed_assignment_count":
-            failure["completed_assignment_count"],
-        "failure_demo_noncompleted_assignment_count":
-            failure["noncompleted_assignment_count"],
-        "failure_demo_missing_assignment_count":
-            len(failure["missing_assignment_sha256s"]),
-        "failure_demo_refused_count":
-            failure["status_counts"]["REFUSED"],
-        "failure_demo_all_planned_observed":
-            failure["all_planned_observed"],
-        "failure_demo_all_planned_completed":
-            failure["all_planned_completed"],
         "synthetic_only": True,
         "provider_call_authorized": False,
         "credential_authorized": False,
@@ -481,6 +466,21 @@ def build_dual_provider_fanout_rehearsal_unchecked(
             missing["all_planned_observed"],
         "missing_demo_all_planned_completed":
             missing["all_planned_completed"],
+        "failure_demo_batch_sha256": failure["batch_sha256"],
+        "failure_demo_observed_terminal_result_count":
+            failure["observed_terminal_result_count"],
+        "failure_demo_completed_assignment_count":
+            failure["completed_assignment_count"],
+        "failure_demo_noncompleted_assignment_count":
+            failure["noncompleted_assignment_count"],
+        "failure_demo_missing_assignment_count":
+            len(failure["missing_assignment_sha256s"]),
+        "failure_demo_refused_count":
+            failure["status_counts"]["REFUSED"],
+        "failure_demo_all_planned_observed":
+            failure["all_planned_observed"],
+        "failure_demo_all_planned_completed":
+            failure["all_planned_completed"],
         "synthetic_only": True,
         "provider_call_authorized": False,
         "credential_authorized": False,
