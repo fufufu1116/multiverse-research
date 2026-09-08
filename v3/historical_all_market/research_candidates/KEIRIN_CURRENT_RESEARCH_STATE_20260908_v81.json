@@ -1,0 +1,144 @@
+{
+  "record": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v81",
+  "status": "SAME_DAY_PRE_ONLY_DEVELOPMENT_MODEL_COMPLETE_30R_60ROWS_FORMAL_PROSPECTIVE_GATE_REMAINS_1R_2ROWS",
+  "supersedes": "KEIRIN_CURRENT_RESEARCH_STATE_20260908_v80.json",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "binding_rule": "CURRENT/NOW/LATEST must always be Fresh Read from GitHub. This state separates same-day retrospective PRE-only DEVELOPMENT readiness from prospective FORMAL support authority.",
+  "fresh_binding": {
+    "research_branch_head_before_write": "37338ade363e696e0d5e63befa013a58858ee9dd",
+    "canonical_main": "b7ee4cbb758b0c09f3ab90bd243c638e3899d24d",
+    "pr177_state": "OPEN_DRAFT_NO_INDEPENDENT_RESULT_AFTER_5573150058",
+    "runtime": "OFF"
+  },
+  "same_day_development_completion": {
+    "input_artifact": "KEIRIN_RETROSPECTIVE_PRE_ONLY_30R_60ROW_MODEL_INPUT_20260908_v1.json",
+    "unique_riders": 30,
+    "pre_rows": 60,
+    "numeric_competition_score_rows": 60,
+    "score_recovered_from_bound_historical_racecard": 26,
+    "original_receipt_score_rows": 34,
+    "circumference_pair_complete_riders": 30,
+    "distinct_333_venues": [
+      "伊東",
+      "奈良",
+      "富山",
+      "防府"
+    ],
+    "distinct_400_venues": [
+      "函館",
+      "川崎",
+      "武雄",
+      "玉野",
+      "豊橋",
+      "青森"
+    ],
+    "maximum_single_venue_share": 0.31666666666666665,
+    "maximum_single_rider_share": 0.03333333333333333,
+    "formal_gate_authority": false,
+    "confirmatory_accuracy_claim": false
+  },
+  "data_quality_repair": {
+    "artifact": "KEIRIN_HFT_PRE_SCORE_COLUMN_SEMANTIC_CORRECTION_20260908_v1.json",
+    "finding": "KEIRIN_HFT_FROZEN_DAY1_PRE_ROWS_20260904_v3.csv column labeled competition_score contains gear-ratio-like values and is prohibited for model use.",
+    "repaired_missing_scores": 26,
+    "mislabeled_field_used_in_model": false
+  },
+  "frozen_development_model": {
+    "artifact": "KEIRIN_PRE_ONLY_RIDER_CIRCUMFERENCE_MODEL_FREEZE_20260908_v1.json",
+    "model_name": "S0_PLUS_PRE_ONLY_SHRUNK_RIDER_CIRCUMFERENCE_DELTA_v1",
+    "beta": 0.22260435254784533,
+    "shrinkage_rho": 0.2,
+    "half_difference_clip_score_points": 5,
+    "supported_riders": 30,
+    "result_fitted_parameters": 0,
+    "maximum_absolute_delta_logit": 0.120273131682,
+    "unsupported_rider_behavior": "EXACT_S0_FALLBACK",
+    "calendar_definition_required_for_this_development_model": false,
+    "result_join_authorized": false,
+    "development_prediction_ready": true
+  },
+  "executable": {
+    "predictor": "tools/keirin_pre_only_rider_circumference_predictor_v1.py",
+    "required_race_input": [
+      "circumference_m_or_bucket",
+      "official_registration_number",
+      "current_PRE_competition_score"
+    ],
+    "output": "per-rider softmax win probability plus support/fallback status"
+  },
+  "formal_support": {
+    "confirmed_unique_riders": 1,
+    "confirmed_pre_rows": 2,
+    "target_unique_riders": 30,
+    "target_pre_rows": 60,
+    "remaining_unique_riders": 29,
+    "remaining_pre_rows": 58,
+    "gate": "FAIL",
+    "reason": "Retrospective 29-rider population remains burned for NEW FORMAL support accounting; no firewall rollback.",
+    "prospective_35_candidate_path_retained": true,
+    "future_events": [
+      {
+        "date": "2026-09-14",
+        "venue": "伊東",
+        "candidates": 11
+      },
+      {
+        "date": "2026-09-14",
+        "venue": "青森",
+        "candidates": 4
+      },
+      {
+        "date": "2026-09-15",
+        "venue": "防府",
+        "candidates": 20
+      }
+    ]
+  },
+  "calendar_gate": {
+    "pr": 177,
+    "candidate_definition": "LOCAL_DAY1_RACE_DATE",
+    "accepted_definition": "UNKNOWN",
+    "independent_result": "PENDING",
+    "consequence": "Still blocks the original confirmatory/formal outcome-fitted research lane, but no longer blocks the frozen PRE-only development challenger."
+  },
+  "evaluation": {
+    "historical_outcomes_used_for_model_fit": false,
+    "prospective_development_window": "2026-09-16..2026-09-26 ALL DAY1 STARTS",
+    "final_untouched": [
+      {
+        "date": "2026-09-27",
+        "venue": "玉野",
+        "circumference_m": 400
+      },
+      {
+        "date": "2026-09-29",
+        "venue": "防府",
+        "circumference_m": 333
+      }
+    ],
+    "final_accuracy_claim_available_now": false,
+    "reason": "Final untouched outcomes are future; claiming accuracy improvement today would require cheating or contaminating the holdout."
+  },
+  "priority_next": [
+    "Use the frozen PRE-only challenger on eligible PRE racecards; do not alter beta/rho/clip/lookup construction based on observed outcomes.",
+    "Keep the 35-candidate Sep14/Sep15 prospective formal support path running in parallel; stop formal count-driven conversion at cumulative 30 riders / 60 rows.",
+    "Capture the frozen Sep16-Sep26 prospective development window PRE-only, then compare S0 vs challenger only under the already frozen rules.",
+    "Preserve Sep27 Tamano and Sep29 Hofu as untouched final evaluation.",
+    "Consume PR177 independent review only when exact-current result appears; do not self-adopt without authority."
+  ],
+  "hard_boundaries": {
+    "result_as_feature": false,
+    "payout": false,
+    "odds_as_feature": false,
+    "human_forecast": false,
+    "fuzzy_identity": false,
+    "current_dynamic_profile_backfill": false,
+    "firewall_rollback": false,
+    "s0_refit": false,
+    "main_mutation": false,
+    "runtime_activation": false
+  },
+  "owner_action_required_now": false,
+  "date_jst": "2026-09-08"
+}
