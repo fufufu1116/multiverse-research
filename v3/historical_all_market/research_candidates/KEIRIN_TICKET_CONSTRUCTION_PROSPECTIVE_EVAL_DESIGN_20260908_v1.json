@@ -1,0 +1,113 @@
+{
+  "record": "KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v1",
+  "status": "PROPOSED_PRE_OUTCOME_TICKET_LAYER_DESIGN_NO_MARKET_OR_RESULT_ACCESS",
+  "date_jst": "2026-09-08",
+  "purpose": "Separate prediction quality from ticket construction so a high hit rate or headline payout cannot hide the cost of many combinations.",
+  "core_principle": [
+    "The prediction model and ticket-expression layer are evaluated separately.",
+    "Every candidate buying structure is defined before result access.",
+    "No ticket structure may be selected retrospectively because it happened to win.",
+    "Abstention is a valid action when no structure clears its future authorized edge rule."
+  ],
+  "structures": [
+    {
+      "id": "QUINELLA_SINGLE",
+      "japanese": "2車複 単点",
+      "example": "1-2",
+      "combinations_formula": "1",
+      "field_size_7_example": 1
+    },
+    {
+      "id": "EXACTA_SINGLE",
+      "japanese": "2車単 単点",
+      "example": "1-2",
+      "combinations_formula": "1",
+      "field_size_7_example": 1
+    },
+    {
+      "id": "TRIFECTA_FIXED_FIRST_SECOND3_ALL",
+      "japanese": "3連単 1着固定・2着3人・3着全",
+      "example": "1-235-全",
+      "combinations_formula": "3 * (field_size - 2), assuming fixed first is not in the second group",
+      "field_size_7_example": 15,
+      "unit_100yen_total_stake_example_yen": 1500
+    },
+    {
+      "id": "TRIFECTA_BOX_3",
+      "japanese": "3連単 3車BOX",
+      "combinations_formula": "n*(n-1)*(n-2)",
+      "combinations": 6,
+      "unit_100yen_total_stake_example_yen": 600
+    },
+    {
+      "id": "TRIFECTA_BOX_4",
+      "japanese": "3連単 4車BOX",
+      "combinations": 24,
+      "unit_100yen_total_stake_example_yen": 2400
+    },
+    {
+      "id": "TRIFECTA_BOX_5",
+      "japanese": "3連単 5車BOX",
+      "combinations": 60,
+      "unit_100yen_total_stake_example_yen": 6000
+    }
+  ],
+  "denominator_policy": {
+    "primary_comparison": {
+      "name": "FIXED_TOTAL_RACE_RISK",
+      "rule": "Each race receives the same total research risk budget; if a structure has multiple combinations, the budget is split across those combinations.",
+      "reason": "Prevents a 24-point or 60-point structure from appearing better merely because much more stake was deployed."
+    },
+    "secondary_replication": {
+      "name": "FIXED_UNIT_PER_COMBINATION",
+      "rule": "Also report what happens under equal stake per combination, with total race stake explicitly shown.",
+      "reason": "Matches how many real-world advertised or published ticket examples are naturally interpreted, but must not be mixed with the primary denominator."
+    }
+  },
+  "future_metrics_when_authorized": [
+    "total stake",
+    "total return",
+    "ROI = total return / total stake",
+    "profit/loss",
+    "hit rate",
+    "number of races entered",
+    "number of combinations purchased",
+    "average combinations per entered race",
+    "largest single hit share of total profit",
+    "leave-largest-hit-out ROI",
+    "calendar-block stability",
+    "maximum drawdown"
+  ],
+  "advertisement_claim_audit_template": [
+    "exact evaluation period",
+    "whether the claim is maximum month, average, cumulative, or selected period",
+    "bet type",
+    "prediction class/confidence filter",
+    "which races were eligible or omitted",
+    "whether the result is historical backtest or forward/live publication",
+    "stake denominator: per combination or per race",
+    "number of combinations per race",
+    "whether stake sizing changed by confidence/odds",
+    "whether all published recommendations are included",
+    "whether the largest hit dominates the profit"
+  ],
+  "anti_cherry_pick_rules": [
+    "Freeze structures and ranking-to-ticket mapping before outcomes.",
+    "Report every eligible race including no-hit races.",
+    "Do not switch between quinella, exacta, trio, trifecta, BOX, or formation after seeing results.",
+    "If several structures are compared prospectively, keep all of them in the report rather than publishing only the winner.",
+    "A positive result driven by one jackpot must also pass leave-largest-hit-out and evidence-sufficiency checks."
+  ],
+  "tooling": "tools/keirin_ticket_structure_counter_v1.py",
+  "boundaries": {
+    "ODDS": false,
+    "PREDICTION": false,
+    "RESULT": false,
+    "PAYOUT": false,
+    "real_money_execution": false,
+    "runtime": false,
+    "main_mutation": false
+  },
+  "parameter_status": "DESIGN_ONLY_NOT_VALIDATED",
+  "owner_action_required_now": false
+}
