@@ -1,0 +1,51 @@
+name: Keirin NEXTGEN5000 S0 PREOUTCOME Materialize 2001-3500 v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-s0-materialize-2001-3500-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download completed PRE-only artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p inputs/2001_2500 inputs/2501_3000 inputs/3001_3500
+          gh run download 34286882585 -n keirin-nextgen5000-pre-2001-2500-v1 -D inputs/2001_2500
+          gh run download 34288111136 -n keirin-nextgen5000-pre-2501-3000-v1 -D inputs/2501_3000
+          gh run download 34288642577 -n keirin-nextgen5000-pre-3001-3500-v1 -D inputs/3001_3500
+      - name: Compile materializer
+        run: python -m py_compile tools/keirin_nextgen5000_s0_preoutcome_materializer_v1.py
+      - name: Materialize outcome-blind selections
+        run: |
+          mkdir -p out
+          python tools/keirin_nextgen5000_s0_preoutcome_materializer_v1.py --pre-csv inputs/2001_2500/NEXTGEN5000_PRE_2001_2500_v1.csv --out out/NEXTGEN5000_S0_PREOUTCOME_2001_2500_v1.json
+          python tools/keirin_nextgen5000_s0_preoutcome_materializer_v1.py --pre-csv inputs/2501_3000/NEXTGEN5000_PRE_2501_3000_v1.csv --out out/NEXTGEN5000_S0_PREOUTCOME_2501_3000_v1.json
+          python tools/keirin_nextgen5000_s0_preoutcome_materializer_v1.py --pre-csv inputs/3001_3500/NEXTGEN5000_PRE_3001_3500_v1.csv --out out/NEXTGEN5000_S0_PREOUTCOME_3001_3500_v1.json
+      - name: Assert outcome blindness and summarize
+        run: |
+          python - <<'PY'
+          import glob,json
+          total={'races':0,'rider_rows':0,'girls_races':0,'selected_races':0}
+          for p in glob.glob('out/*.json'):
+              x=json.load(open(p,encoding='utf-8'))
+              s=x['safeguards']
+              assert s['result_accessed'] is False and s['payout_accessed'] is False and s['odds_accessed'] is False
+              for k in total: total[k]+=x['summary'][k]
+          print('PASS',json.dumps(total,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-s0-preoutcome-2001-3500-v1
+          path: out/
+          retention-days: 30
