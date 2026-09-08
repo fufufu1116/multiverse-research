@@ -1,0 +1,119 @@
+{
+  "record": "KEIRIN_SHADOW_RISK_AGGREGATION_SYNTHETIC_AUDIT_20260908_v1",
+  "status": "PASS_SYNTHETIC_PROPORTIONAL_CAP_DESIGN",
+  "date_jst": "2026-09-08",
+  "purpose": "Prevent simultaneous core and hole candidates from increasing total per-race shadow exposure beyond one risk unit while preserving their relative requested risk weights.",
+  "tool": "tools/keirin_shadow_risk_aggregator_v1.py",
+  "rule": {
+    "race_total_cap": 1,
+    "if_requested_total_le_cap": "Keep requested allocations unchanged.",
+    "if_requested_total_gt_cap": "Multiply every requested allocation by cap/requested_total.",
+    "real_money_mapping": "UNDEFINED_AND_NOT_AUTHORIZED"
+  },
+  "examples": [
+    {
+      "case": "CORE only",
+      "requested": [
+        {
+          "lane": "CORE",
+          "risk": 1
+        }
+      ],
+      "allocated": [
+        {
+          "lane": "CORE",
+          "risk": 1
+        }
+      ],
+      "total": 1
+    },
+    {
+      "case": "CORE + MID_HOLE",
+      "requested": [
+        {
+          "lane": "CORE",
+          "risk": 1
+        },
+        {
+          "lane": "MID_HOLE",
+          "risk": 0.5
+        }
+      ],
+      "scale": 0.6666666666666666,
+      "allocated": [
+        {
+          "lane": "CORE",
+          "risk": 0.6666666666666666
+        },
+        {
+          "lane": "MID_HOLE",
+          "risk": 0.3333333333333333
+        }
+      ],
+      "total": 1
+    },
+    {
+      "case": "CORE + EXTREME_LONGSHOT",
+      "requested": [
+        {
+          "lane": "CORE",
+          "risk": 1
+        },
+        {
+          "lane": "EXTREME_LONGSHOT",
+          "risk": 0.1
+        }
+      ],
+      "scale": 0.9090909090909091,
+      "allocated": [
+        {
+          "lane": "CORE",
+          "risk": 0.9090909090909091
+        },
+        {
+          "lane": "EXTREME_LONGSHOT",
+          "risk": 0.09090909090909091
+        }
+      ],
+      "total": 1
+    },
+    {
+      "case": "LONGSHOT + EXTREME without CORE",
+      "requested": [
+        {
+          "lane": "LONGSHOT",
+          "risk": 0.25
+        },
+        {
+          "lane": "EXTREME_LONGSHOT",
+          "risk": 0.1
+        }
+      ],
+      "allocated": [
+        {
+          "lane": "LONGSHOT",
+          "risk": 0.25
+        },
+        {
+          "lane": "EXTREME_LONGSHOT",
+          "risk": 0.1
+        }
+      ],
+      "total": 0.35
+    }
+  ],
+  "interpretation": [
+    "A hole candidate can coexist with a core candidate without causing uncontrolled race-level exposure growth.",
+    "The aggregator does not decide which ticket is good; it only caps combined research risk after qualification.",
+    "No yen stake is defined here. Risk units remain research-only."
+  ],
+  "governance": {
+    "live_odds_used": false,
+    "prediction_used": false,
+    "result_used": false,
+    "payout_used": false,
+    "real_money_execution": false,
+    "runtime": false
+  },
+  "owner_action_required_now": false
+}
