@@ -1,0 +1,35 @@
+{
+  "record": "KEIRIN_FORMAL_SUPPORT_FINALIZER_IMPLEMENTATION_RECEIPT_20260908_v3",
+  "date_jst": "2026-09-08",
+  "status": "IMPLEMENTED_SOURCE_FILTER_REGRESSION_PASS_6_OF_6_FULL_SELFTEST_FILE_ADDED_NOT_SHARED_CI_RUN",
+  "supersedes_finalizer": "tools/keirin_35_formal_support_finalizer_v2.py",
+  "implementation": "tools/keirin_35_formal_support_finalizer_v3.py",
+  "selftest": "tools/keirin_35_formal_support_finalizer_selftest_v3.py",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "defect_closed": "v2 scanned source_url hostname for forbidden token 'odds', so a safe oddspark.com final Day1 racecard could be falsely rejected after passing the multisite normalizer.",
+  "correction": [
+    "Preserve the existing final Day1 racecard role allowlist.",
+    "Do not scan the URL hostname for forbidden namespace tokens.",
+    "Scan source namespace, source title, and URL path/query/fragment instead.",
+    "Keep real odds/result/payout/prediction namespaces fail-closed.",
+    "No RESULT/PAYOUT/live odds model input/PREDICTION/human comments were used."
+  ],
+  "isolated_regression_test": {
+    "scope": "source-filter helper behavior",
+    "cases": 6,
+    "result": "PASS_6_OF_6",
+    "includes": [
+      "safe oddspark.com Day1 racecard accepted",
+      "true OddsPark odds namespace rejected",
+      "result role rejected",
+      "prediction path rejected",
+      "official Day1 racecard accepted",
+      "CTC Day1 racecard accepted"
+    ]
+  },
+  "full_finalizer_selftest_file_added": true,
+  "full_finalizer_selftest_executed_in_shared_ci": false,
+  "shared_workflow_rerun": false,
+  "formal_support_increment_now": 0,
+  "runtime": false
+}
