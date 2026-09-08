@@ -1,0 +1,48 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_BATCH2501_3000_PREOUTCOME_EVAL_FREEZE_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_ANY_BATCH2501_3000_OUTCOME_ACCESS",
+  "inheritance": "Exact same price-independent challenger and metrics as KEIRIN_NEXTGEN5000_BATCH2001_2500_PREOUTCOME_EVAL_FREEZE_20260909_v1; no thresholds changed after seeing batch2001_2500 PRE.",
+  "evaluation_population": {
+    "universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "positions": "2501..3000",
+    "requested_races": 500,
+    "successfully_recovered_pre_races": 494,
+    "result_or_payout_accessed": false
+  },
+  "challenger": {
+    "id": "NON_GIRLS_GAP_LT3_CONF40_TOP3_3RENHUKU_1PT_NO_PRICE_FILTER",
+    "rule": [
+      "non-Girls race",
+      "top PRE competition score minus second PRE score <3.0",
+      "candidate_a and b1a_reconstituted_v1 agree top1",
+      "conservative top1 probability >=0.40",
+      "one 3renhuku ticket = consensus conservative top3 set",
+      "no odds/result/payout used to select race",
+      "flat hypothetical 100 yen"
+    ],
+    "thresholds_changed": false
+  },
+  "metrics": [
+    "candidate_a top1 hit rate",
+    "model-agreement top1 hit rate",
+    "winner in top3 coverage",
+    "exact top3 set hit rate",
+    "selected ticket count and hit rate",
+    "hypothetical settlement ROI after selection freeze",
+    "largest single return share",
+    "chronological 100-race block stability"
+  ],
+  "anti_hindsight": [
+    "No rescue-tuning using this batch outcome.",
+    "Any new hypothesis discovered later must be frozen as a new candidate and tested on later untouched data.",
+    "Do not reconstruct missing PRE from outcome/payout."
+  ],
+  "hard_boundaries": {
+    "outcome_accessed": false,
+    "payout_accessed": false,
+    "DEV2000_C_scoring_count": 0,
+    "formal_support_increment": 0,
+    "runtime": false
+  }
+}
