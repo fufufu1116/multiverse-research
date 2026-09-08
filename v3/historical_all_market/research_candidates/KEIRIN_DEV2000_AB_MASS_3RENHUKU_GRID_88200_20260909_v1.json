@@ -1,0 +1,152 @@
+{
+  "record": "KEIRIN_DEV2000_AB_MASS_3RENHUKU_GRID_88200_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "BURNED_AB_MASS_SEARCH_COMPLETE_NO_SIX_BLOCK_STABLE_RULE",
+  "source": {
+    "A_races": 1000,
+    "B_races": 500,
+    "C_scoring_count": 0,
+    "recovered_fixture": "KEIRIN_DEV2000_DRIVE_RECOVERY_AND_AB_REPLAY_20260909_v1.json"
+  },
+  "search_space": {
+    "feature_masks": 73,
+    "policy_variants": 300,
+    "tested_rules": 88200,
+    "market": "3renhuku",
+    "features": [
+      "Girls/non-Girls",
+      "top PRE score gap",
+      "score standard deviation",
+      "number of 逃 riders",
+      "model probability entropy/concentration",
+      "top1 probability separation",
+      "top rider style",
+      "field size",
+      "class group",
+      "selected two-way PRE-only interactions"
+    ],
+    "policy_axes": {
+      "ticket_structures": [
+        "top3_1",
+        "pool3",
+        "pool4"
+      ],
+      "confidence": [
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5
+      ],
+      "ev_min": [
+        0,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "odds_min": [
+        null,
+        3,
+        5
+      ],
+      "odds_max": [
+        10,
+        15,
+        20,
+        30,
+        null
+      ],
+      "max_tickets": [
+        1,
+        2
+      ]
+    }
+  },
+  "three_500_race_split_screen": {
+    "split_names": [
+      "A1=1..500",
+      "A2=501..1000",
+      "B=1001..1500"
+    ],
+    "positive_all_three_min10_rules": 1011,
+    "positive_all_three_min20_rules": 441,
+    "positive_all_three_min30_rules": 87,
+    "interpretation": "Many apparently profitable rules survive coarse 500-race splits, so coarse A/B positivity alone is insufficient protection against search overfitting."
+  },
+  "examples_not_promoted": [
+    {
+      "rule": "gap_lt3; confidence>=0.35; top3_1; EV>=0; odds<=30",
+      "AB": {
+        "bets": 113,
+        "roi": 0.3354,
+        "hit_rate": 0.1593
+      },
+      "note": "simple and broad relative to many grid winners, but still posthoc and not six-block stable"
+    },
+    {
+      "rule": "non_girls_gap_lt5_escape_ge2; confidence>=0.40; pool3 max1; EV>=10%; odds 5..20",
+      "AB": {
+        "bets": 95,
+        "roi": 0.5442
+      },
+      "note": "strong burned aggregate, still search-selected"
+    }
+  ],
+  "six_250_race_falsification": {
+    "blocks": [
+      {
+        "id": "Q1",
+        "dev_index": "1..250"
+      },
+      {
+        "id": "Q2",
+        "dev_index": "251..500"
+      },
+      {
+        "id": "Q3",
+        "dev_index": "501..750"
+      },
+      {
+        "id": "Q4",
+        "dev_index": "751..1000"
+      },
+      {
+        "id": "Q5",
+        "dev_index": "1001..1250"
+      },
+      {
+        "id": "Q6",
+        "dev_index": "1251..1500"
+      }
+    ],
+    "minimum_bet_races_per_block": 8,
+    "rules_positive_in_all_6": 0,
+    "rules_positive_in_at_least_5_of_6": 177,
+    "top100_single_failed_block_counts": {
+      "Q2": 86,
+      "Q1": 11,
+      "Q3": 3,
+      "Q4": 0,
+      "Q5": 0,
+      "Q6": 0
+    },
+    "interpretation": [
+      "No searched rule earns a victory-equation label.",
+      "The recurrence of Q2 failure among top 5/6 rules is diagnostic, not a license to add a Q2-specific rescue condition.",
+      "Further segmentation must explain instability, not tune it away on the same burned data."
+    ]
+  },
+  "decision": {
+    "profit_rule_promoted": false,
+    "same_day_rule_changed": false,
+    "search_winner_auto_freeze": false,
+    "next": "Diagnose Q2 and perform probability-world stress simulation; then expand real PRE sample beyond DEV2000."
+  },
+  "hard_boundaries": {
+    "C_opened_for_scoring": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
