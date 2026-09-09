@@ -183,7 +183,8 @@ class IntegratedResilienceConvergenceTests(unittest.TestCase):
             trusted_result(201, t2_marker, "AUDITOR"),
         ]
         t2_result = {"t2_comment_id": 200}
-        with mock.patch.object(t2, "_all_comments", side_effect=[t2_pre, t2_post]), \
+        with mock.patch.object(t2, "_all_comments", return_value=t2_pre), \
+             mock.patch.object(t2, "_fresh_t2_verify", return_value=t2_post), \
              mock.patch.object(t2, "_original_publish_t2", return_value=t2_result):
             final = t2.publish_t2(job, artifact, published)
         self.assertEqual(final["t2_comment_id"], 200)
@@ -196,7 +197,8 @@ class IntegratedResilienceConvergenceTests(unittest.TestCase):
                 publisher.publish(job, artifact)
 
         loser_t2 = {"t2_comment_id": 201}
-        with mock.patch.object(t2, "_all_comments", side_effect=[t2_pre, t2_post]), \
+        with mock.patch.object(t2, "_all_comments", return_value=t2_pre), \
+             mock.patch.object(t2, "_fresh_t2_verify", return_value=t2_post), \
              mock.patch.object(t2, "_original_publish_t2", return_value=loser_t2):
             with self.assertRaises(model.ReviewContractError):
                 t2.publish_t2(job, artifact, published)
