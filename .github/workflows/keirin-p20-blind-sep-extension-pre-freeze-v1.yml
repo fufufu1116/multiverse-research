@@ -1,0 +1,98 @@
+name: Keirin P20 Blind Sep Extension PRE Freeze v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-p20-blind-sep-extension-pre-freeze-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  collect:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {start: 1, end: 500}
+          - {start: 501, end: 607}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: Download Sep1-8 locked universe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p lock out
+          gh run download 34307215542 -n keirin-sep01-08-result-blind-universe-v1 -D lock
+      - name: Recover Sep PRE only
+        run: |
+          python tools/keirin_sep01_08_2026_locked_pre_bulk_recovery_v1.py \
+            --universe-csv lock/KEIRIN_SEP01_08_2026_RESULT_BLIND_UNIVERSE_v1.csv \
+            --start-position ${{ matrix.start }} --end-position ${{ matrix.end }} \
+            --workers 10 --min-success-rate 0.90 \
+            --pre-csv out/PRE_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --receipt out/PRE_${{ matrix.start }}_${{ matrix.end }}_RECEIPT.json
+      - name: Materialize CandidateAB outcome-blind
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py \
+            --pre-csv out/PRE_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --out out/CANDIDATE_AB_${{ matrix.start }}_${{ matrix.end }}.json
+      - name: Assert no outcome access
+        run: |
+          python - <<'PY'
+          import glob,json
+          r=json.load(open(glob.glob('out/*RECEIPT.json')[0],encoding='utf-8'))
+          m=json.load(open(glob.glob('out/CANDIDATE_AB_*.json')[0],encoding='utf-8'))
+          assert r['result_fields_emitted'] is False and r['payout_fields_emitted'] is False and r['odds_fields_emitted'] is False
+          assert m['safeguards']['result_accessed'] is False and m['safeguards']['payout_accessed'] is False and m['safeguards']['odds_accessed'] is False
+          print('PASS_SEP_BATCH',r['start_position'],r['end_position'],r['successful_races'],r['pre_rows'],m['summary'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-p20-sep-pre-${{ matrix.start }}-${{ matrix.end }}
+          path: out/
+          retention-days: 30
+  freeze:
+    needs: collect
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download base Jul-Aug freeze and Sep blind materials
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p base in out
+          gh run download 34307083090 -n keirin-julaug2026-girls-gap3-p20-preoutcome-freeze-v1 -D base
+          gh run download "${GITHUB_RUN_ID}" -n keirin-p20-sep-pre-1-500 -D in/1_500
+          gh run download "${GITHUB_RUN_ID}" -n keirin-p20-sep-pre-501-607 -D in/501_607
+      - name: Freeze combined P20 sample before outcomes
+        run: |
+          args=()
+          for f in in/*/CANDIDATE_AB_*.json; do args+=(--extension-input "$f"); done
+          python tools/keirin_julaug_sep08_p20_extended_preoutcome_freezer_v1.py \
+            --extension-spec v3/historical_all_market/research_candidates/KEIRIN_JULAUG2026_P20_SAMPLE_SIZE_EXTENSION_SEP01_08_20260909_v1.json \
+            --base-freeze base/KEIRIN_JULAUG2026_GIRLS_GAP3_3RENTAN_P20_PREOUTCOME_FREEZE_20260909_v1.json \
+            "${args[@]}" \
+            --out out/KEIRIN_JULAUG_SEP08_GIRLS_GAP3_3RENTAN_P20_PREOUTCOME_FREEZE_20260909_v1.json
+      - name: Assert blind extended freeze
+        run: |
+          python - <<'PY'
+          import json
+          p='out/KEIRIN_JULAUG_SEP08_GIRLS_GAP3_3RENTAN_P20_PREOUTCOME_FREEZE_20260909_v1.json'
+          x=json.load(open(p,encoding='utf-8'));s=x['safeguards'];z=x['summary']
+          assert s['result_accessed'] is False and s['payout_accessed'] is False and s['odds_accessed'] is False
+          assert z['selected_girls_gap_ge3_races']>=80,z
+          print('PASS_EXTENDED_P20_FREEZE',json.dumps(z,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-julaug-sep08-p20-preoutcome-freeze-v1
+          path: out/
+          retention-days: 30
