@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_CANDIDATE_A_B1A_RECONSTITUTED_V1_REPRODUCTION_FREEZE_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "EXACT_DEV2000_FROZEN_MODEL_REPRODUCTION_CONSTANTS_RECOVERED_BEFORE_NEXTGEN5000_OUTCOMES",
+  "source_drive": {
+    "b1a_model_name": "B1A_RECONSTITUTED_v1_MODEL.json",
+    "b1a_model_sha256": "f5c0f1226a7552cb1f807e559f9409773b532934502f6a2ae5bb9b302a730481",
+    "b1a_spec_sha256": "a5c896f6d56a55c0f10859b356b91a9b8756bdc90305da8c94b2a3a66c1490b3",
+    "b1a_implementation_sha256": "10e2ae81380c98df52845646cdc7a288f022ffac3a226004651e8abb80ade28b",
+    "prediction_lock_sha256": "9e91c9f6d13f63777de9f29a16bb5086419daae9d830dd644e2fb2b267789ac6",
+    "candidate_a_prediction_lock_sha256": "2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada"
+  },
+  "candidate_a": {
+    "within_race_standardization": "population z-score ddof=0; if sd=0 use sd=1",
+    "feature_coefficients": {
+      "score": 0.55,
+      "win_rate": 0.18,
+      "quinella_rate": 0.12,
+      "trio_rate": 0.08,
+      "B": 0.04,
+      "S": 0.03
+    },
+    "temperature": 1.15,
+    "formula": "base_logit=(0.55*z(score)+0.18*z(win_rate)+0.12*z(quinella_rate)+0.08*z(trio_rate)+0.04*z(B)+0.03*z(S))/1.15; probability=softmax within race"
+  },
+  "b1a_reconstituted_v1": {
+    "residual_form": "candidate_a_logit + style/class one-hot beta",
+    "beta": {
+      "style_逃": 0.26909662735448,
+      "style_追": -0.3773237125550861,
+      "style_両": 0.10822708520060681,
+      "class_SS": 1.0770873580301035,
+      "class_S1": -0.12658801568020364,
+      "class_S2": -0.9504993423499002,
+      "class_A1": 0.10862511799550383,
+      "class_A2": -0.10862511799550574,
+      "class_A3": 4.991005121158697e-16,
+      "class_L1": -1.446593378458555e-16
+    },
+    "styles": [
+      "逃",
+      "追",
+      "両"
+    ],
+    "classes": [
+      "SS",
+      "S1",
+      "S2",
+      "A1",
+      "A2",
+      "A3",
+      "L1"
+    ],
+    "refit_for_nextgen5000": false
+  },
+  "frozen_nextgen5000_falsification_rule": {
+    "id": "NON_GIRLS_GAP_LT3_CONF40_TOP3_3RENHUKU_1PT_NO_PRICE_FILTER",
+    "conditions": [
+      "race is non-Girls",
+      "top PRE competition score - second PRE competition score < 3.0",
+      "Candidate_A and B1a_RECONSTITUTED_v1 top1 agree",
+      "conservative top1 probability = min(model probabilities for agreed top1) >= 0.40"
+    ],
+    "ranking": "rank cars by min(Candidate_A win probability, B1a win probability), descending; tie by car number",
+    "ticket": "one 3renhuku ticket = conservative top3 set",
+    "ticket_probability": "min(Candidate_A Plackett-Luce 3renhuku probability, B1a Plackett-Luce 3renhuku probability)",
+    "odds_filter": null,
+    "stake_yen": 100
+  },
+  "safeguards": {
+    "NEXTGEN5000_outcome_accessed": false,
+    "NEXTGEN5000_payout_accessed": false,
+    "model_refit": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment": 0,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
