@@ -1,0 +1,65 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v22",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v21.json",
+  "status": "NEXTGEN5000_CORRECTED_PRE_V2_2860_FROZEN_PRIMARY_OUTCOME_SCORING_ACTIVE",
+  "critical_correction": {
+    "invalidated_parser": "tools/keirin_nextgen5000_pre_bulk_recovery_v1.py",
+    "invalidation_record": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_V1_SCORE_SEMANTIC_INVALIDATION_20260909_v1.json",
+    "reason": "v1 confused gear ratio with competition score",
+    "corrected_parser": "tools/keirin_nextgen5000_pre_bulk_recovery_v2.py",
+    "parser_v2_selftest": "PASS",
+    "parser_v2_live_smoke": "PASS",
+    "result_or_payout_used_to_fix_parser": false
+  },
+  "historical_simulation_pool": {
+    "full_burned_answer_check_ready": {
+      "races": 1500,
+      "source": "DEV2000 A=1000 + B=500",
+      "role": "BURNED_DEVELOPMENT_DIAGNOSTIC",
+      "outcomes_available": true,
+      "payouts_available": true
+    },
+    "new_corrected_unseen": {
+      "races": 2860,
+      "requested_positions": "NEXTGEN5000 2001..5000",
+      "pre_rows": 20311,
+      "corrected_PRE_v2": true,
+      "Candidate_A_B1a_predictions_frozen": true,
+      "top1_agreement_races": 2404,
+      "conf40_agreement_races": 933,
+      "selected_3renhuku_races": 335,
+      "primary_process_quarantine_count": 1,
+      "outcomes_status": "PRIMARY_COLLECTION_ACTIVE_AFTER_AGGREGATE_FREEZE",
+      "payouts_status": "PRIMARY_COLLECTION_ACTIVE_AFTER_AGGREGATE_FREEZE"
+    },
+    "total_distinct_research_races": 4360,
+    "fully_answer_check_ready_before_current_collection": 1500,
+    "note": "The 2860 new races were kept outcome-blind until corrected PRE v2 and Candidate_A/B1a predictions/selections were frozen."
+  },
+  "frozen_evaluation": {
+    "aggregate_run_id": 34297933454,
+    "aggregate_artifact_id": 10083830407,
+    "aggregate_artifact_digest": "sha256:09643ad943f8d0386fb3e75833ceffd41fdae9fe59d093cf9a0ab63292f7cb45",
+    "primary_outcome_payout_run_id": 34298025327,
+    "sporting_prespec": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_EVAL_PRESPEC_20260909_v1.json",
+    "economic_prespec": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_CANDIDATE_AB_PRICE_INDEPENDENT_ECON_PRESPEC_20260909_v1.json"
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support": "1 rider / 2 PRE rows",
+    "formal_support_increment_now": 0,
+    "today_20260909_answer_check_changed": false,
+    "runtime": "OFF",
+    "main_mutation": false,
+    "profitability_proven": false
+  },
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 91,
+    "formal_scientific_progress_percent": 60
+  },
+  "owner_action_required_now": false
+}
