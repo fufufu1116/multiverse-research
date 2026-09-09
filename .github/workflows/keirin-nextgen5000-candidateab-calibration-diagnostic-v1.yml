@@ -1,0 +1,37 @@
+name: Keirin NEXTGEN5000 CandidateAB Calibration Diagnostic v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-candidateab-calibration-diagnostic-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download frozen predictions and filtered outcomes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p pred scored out
+          gh run download 34297933454 \
+            -n keirin-nextgen5000-candidateab-aggregate-freeze-corrected-v2 -D pred
+          gh run download 34298784761 \
+            -n keirin-nextgen5000-candidateab-sporting-score-corrected-v2 -D scored
+      - name: Run calibration diagnostic
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_calibration_diagnostic_v1.py \
+            --prediction pred/KEIRIN_NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_AGGREGATE_FREEZE_20260909_v1.json \
+            --outcome scored/NEXTGEN5000_PRIMARY_OUTCOME_FILTERED.csv \
+            --out out/KEIRIN_NEXTGEN5000_CANDIDATE_AB_CALIBRATION_DIAGNOSTIC_v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-candidateab-calibration-diagnostic-v1
+          path: out/
+          retention-days: 30
