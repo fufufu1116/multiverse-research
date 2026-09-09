@@ -1,0 +1,42 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_PRE_V1_SCORE_SEMANTIC_INVALIDATION_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "INVALIDATE_V1_SCORE_DERIVED_ANALYTICS_BEFORE_ANY_NEXTGEN5000_OUTCOME_ACCESS",
+  "discovery": {
+    "issue": "keirin_nextgen5000_pre_bulk_recovery_v1.py selected the first decimal-looking value after class/style as competition_score.",
+    "actual_semantics": "On KDreams PRE rows, the first such decimal is gear ratio (e.g. 3.92); competition score follows it (e.g. 88.20).",
+    "impact": "competition_score in v1 NEXTGEN5000 PRE batches 2001..5000 is semantically wrong; S0 probabilities, top-score gaps, S0 materializations and coverage-selection outputs derived from it are invalid for analytic evaluation.",
+    "outcome_contamination": false
+  },
+  "preserved_for_audit_only": [
+    "Locked NEXTGEN5000 universe identity and SHA",
+    "race_id/race_date/source URL transport discovery",
+    "workflow execution receipts and fail-closed transport behavior",
+    "raw v1 artifacts as immutable audit evidence"
+  ],
+  "invalidated_as_model_evidence": [
+    "KEIRIN_NEXTGEN5000_PRE_2001_5000_COMPLETE_RECEIPT_20260909_v1.json numeric PRE model-input interpretation",
+    "all v1 NEXTGEN5000 PRE competition_score values",
+    "all S0 PREOUTCOME materializations derived from those values",
+    "KEIRIN_NEXTGEN5000_S0_PREOUTCOME_COVERAGE_SELECTION_FREEZE_20260909_v1 and its NO_S0_COVERAGE_RULE conclusion",
+    "any candidate count/probability/gap conclusion derived from v1 score parsing"
+  ],
+  "correction_plan": [
+    "Implement PRE bulk parser v2 with semantic column-order validation.",
+    "Parse gear ratio separately and do not substitute it for score.",
+    "Capture competition_score plus win_rate, quinella_rate and trio_rate needed to reproduce frozen Candidate_A/B1a.",
+    "Reacquire positions 2001..5000 PRE-only with no outcome/payout/odds access.",
+    "Materialize corrected Candidate_A/B1a predictions and selections before any NEXTGEN5000 outcome access."
+  ],
+  "safeguards": {
+    "NEXTGEN5000_outcomes_opened": false,
+    "NEXTGEN5000_payouts_opened": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "profitability_claim": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
