@@ -1,0 +1,52 @@
+{
+  "record": "KEIRIN_JULAUG2026_P20_SAMPLE_SIZE_EXTENSION_SEP01_08_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_JULAUG_OR_EXTENSION_OUTCOME_PAYOUT_ACCESS",
+  "base_prespec": "v3/historical_all_market/research_candidates/KEIRIN_JULAUG2026_GIRLS_GAP3_3RENTAN_P20_CALIBRATION_PRESPEC_20260909_v1.json",
+  "base_freeze": {
+    "run_id": 34307083090,
+    "artifact_id": 10087027665,
+    "artifact_digest": "sha256:cfaaafe91a34e8852775bf65d976841d1a2ccfd5f69e8fd4919871d0f2a39bbb",
+    "materialized_races": 4634,
+    "girls_races": 397,
+    "selected_races": 79,
+    "outcome_accessed": false,
+    "payout_accessed": false,
+    "odds_accessed": false
+  },
+  "reason": "Primary calibration prespec requires at least 80 selected races. Blind PRE freeze yielded 79. Extension is triggered only by pre-outcome sample size.",
+  "extension_period": {
+    "date_start": "2026-09-01",
+    "date_end": "2026-09-08",
+    "discovery_scope": "date-level racecard index only first; then PRE-only detail parsing",
+    "overlap_with_base_julaug": false
+  },
+  "rule_unchanged": {
+    "girls_only": true,
+    "top_score_gap_min_inclusive": 3,
+    "market": "3rentan",
+    "ticket": "conservative_rank[0]-conservative_rank[1]-conservative_rank[2]",
+    "exact_order_probability": 0.2,
+    "fair_decimal_odds": 5,
+    "ev10_min_decimal_odds": 5.5,
+    "stake_yen": 100,
+    "model_refit": false
+  },
+  "evaluation_unchanged": {
+    "minimum_selected_races": 80,
+    "primary_calibration_test": "0.20 inside 95% Wilson CI",
+    "secondary_absolute_error_max": 0.05
+  },
+  "stopping_rule": "Use all successfully materialized PRE races from 2026-09-01 through 2026-09-08, freeze combined selections, then open outcomes. No further extension in this lineage. If still below 80, report insufficient sample.",
+  "hard_boundaries": {
+    "no_rule_change": true,
+    "no_probability_change": true,
+    "no_outcome_or_payout_access_before_extended_freeze": true,
+    "profitability_proven": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
