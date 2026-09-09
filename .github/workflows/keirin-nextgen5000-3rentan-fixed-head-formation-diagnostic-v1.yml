@@ -1,0 +1,48 @@
+name: Keirin NEXTGEN5000 3Rentan Fixed Head Formation Diagnostic v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-3rentan-fixed-head-formation-diagnostic-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download frozen predictions and all-market payouts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p pred payout out natural
+          gh run download 34297933454 -n keirin-nextgen5000-candidateab-aggregate-freeze-corrected-v2 -D pred
+          gh run download 34304005124 -n keirin-nextgen5000-all-market-natural-strategy-diagnostic-v1 -D natural
+          for r in 2001-2500 2501-3000 3001-3500 3501-4000 4001-4500 4501-5000; do
+            gh run download 34299610502 -n keirin-nextgen5000-all-market-payout-$r -D payout/$r
+          done
+      - name: Print natural GIRLS market comparison
+        run: |
+          python - <<'PY'
+          import json,glob
+          p=glob.glob('natural/*.json')[0]; x=json.load(open(p,encoding='utf-8'))
+          for k,v in x['strategies'].items():
+              print('NATURAL_GIRLS',k,json.dumps(v['regimes']['GIRLS'],sort_keys=True))
+          PY
+      - name: Run fixed-head formation diagnostic
+        run: |
+          args=()
+          for f in payout/*/NEXTGEN5000_ALL_MARKET_PAYOUT_*.csv; do args+=(--payout "$f"); done
+          python tools/keirin_nextgen5000_3rentan_fixed_head_under_box_diagnostic_v1.py \
+            --prediction pred/KEIRIN_NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_AGGREGATE_FREEZE_20260909_v1.json \
+            "${args[@]}" \
+            --out out/KEIRIN_NEXTGEN5000_3RENTAN_FIXED_HEAD_UNDER_BOX_DIAGNOSTIC_v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-3rentan-fixed-head-formation-diagnostic-v1
+          path: out/
+          retention-days: 30
