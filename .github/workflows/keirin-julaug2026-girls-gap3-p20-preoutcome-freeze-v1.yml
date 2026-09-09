@@ -1,0 +1,50 @@
+name: Keirin JulAug2026 GirlsGap3 P20 PREOUTCOME Freeze v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-julaug2026-girls-gap3-p20-preoutcome-freeze-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download ten outcome-blind CandidateAB artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p in out
+          for r in 1-500 501-1000 1001-1500 1501-2000 2001-2500 2501-3000 3001-3500 3501-4000 4001-4500 4501-4768; do
+            gh run download 34306742869 -n keirin-julaug-pre-$r -D in/$r
+          done
+      - name: Freeze P20 candidate before Jul-Aug outcomes
+        run: |
+          args=()
+          for f in in/*/CANDIDATE_AB_*.json; do args+=(--input "$f"); done
+          python tools/keirin_julaug2026_girls_gap3_p20_preoutcome_freezer_v1.py \
+            --prespec v3/historical_all_market/research_candidates/KEIRIN_JULAUG2026_GIRLS_GAP3_3RENTAN_P20_CALIBRATION_PRESPEC_20260909_v1.json \
+            "${args[@]}" \
+            --out out/KEIRIN_JULAUG2026_GIRLS_GAP3_3RENTAN_P20_PREOUTCOME_FREEZE_20260909_v1.json
+      - name: Assert blind freeze
+        run: |
+          python - <<'PY'
+          import json
+          p='out/KEIRIN_JULAUG2026_GIRLS_GAP3_3RENTAN_P20_PREOUTCOME_FREEZE_20260909_v1.json'
+          x=json.load(open(p,encoding='utf-8'));s=x['safeguards'];z=x['summary']
+          assert z['materialized_races']==4634,z
+          assert z['girls_races']==397,z
+          assert s['result_accessed'] is False and s['payout_accessed'] is False and s['odds_accessed'] is False
+          assert s['model_refit'] is False
+          print('PASS_JULAUG_BLIND_FREEZE',json.dumps(z,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-julaug2026-girls-gap3-p20-preoutcome-freeze-v1
+          path: out/
+          retention-days: 30
