@@ -1,0 +1,76 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v23",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v22.json",
+  "status": "CORRECTED_NEXTGEN5000_FULL_SCORING_COMPLETE_PRICE_INDEPENDENT_RULE_FALSIFIED_PRICE_GATE_INTERPRETATION_STRENGTHENED",
+  "historical_pool": {
+    "total_research_races_with_PRE_prediction_inputs": 4360,
+    "old_burned_full_races": 1500,
+    "new_corrected_prediction_races": 2860,
+    "new_strict_ordered_sporting_scored_races": 2823,
+    "total_strict_ordered_sporting_pool_if_combined": 4323,
+    "selected_new_3renhuku_payout_complete_races": 335
+  },
+  "new_sample_sporting": {
+    "candidate_a_top1_hit_rate": 0.45093871767623095,
+    "b1a_top1_hit_rate": 0.4385405596882749,
+    "agreed_top1_hit_rate": 0.47892074198988194,
+    "winner_in_top3_rate": 0.7927736450584485,
+    "exact_top3_set_hit_rate": 0.15586255756287637,
+    "girls_candidate_a_top1_hit_rate": 0.7457627118644068
+  },
+  "new_sample_economic": {
+    "frozen_price_independent_rule": "NON_GIRLS_GAP_LT3_CONF40_TOP3_3RENHUKU_1PT_NO_PRICE_FILTER",
+    "bets": 335,
+    "hits": 62,
+    "hit_rate": 0.18507462686567164,
+    "stake_yen": 33500,
+    "return_yen": 28430,
+    "net_yen": -5070,
+    "roi": -0.1513432835820896,
+    "recovery_rate": 0.8486567164179104,
+    "first_half_roi": -0.11916167664670663,
+    "second_half_roi": -0.18333333333333335,
+    "maximum_drawdown_yen": 9810
+  },
+  "calibration": {
+    "selected_mean_predicted_ticket_probability": 0.17140485940815503,
+    "selected_observed_hit_rate": 0.18562874251497005,
+    "all_mean_predicted_ticket_probability": 0.1597404802921977,
+    "all_observed_exact_top3_rate": 0.15586255756287637,
+    "conclusion": "ticket probability approximately calibrated; price-independent purchase failure is not explained by global probability overconfidence"
+  },
+  "interpretation": [
+    "Winner-ranking signal reproduces on the corrected new sample.",
+    "Girls remain substantially easier for winner ranking.",
+    "Price-independent one-ticket 3renhuku selection fails economically on the new sample.",
+    "Prediction remains odds-independent; purchase requires a minimum-odds gate.",
+    "Existing owner-assisted practical V2 price-gate semantics remain unchanged; no retrospective rescue on NEXTGEN5000 2001..5000."
+  ],
+  "evidence_pointers": {
+    "sporting_result": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_RESULT_20260909_v1.json",
+    "economic_result": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_SELECTED335_ECON_RESULT_20260909_v1.json",
+    "price_gate_interpretation": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRACTICAL_PRICE_GATE_INTERPRETATION_20260909_v1.json",
+    "calibration_run_id": 34298951566,
+    "calibration_artifact_id": 10084185984,
+    "sporting_run_id": 34298784761,
+    "economic_run_id": 34298244673
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support": "1 rider / 2 PRE rows",
+    "formal_support_increment_now": 0,
+    "profitability_proven": false,
+    "today_20260909_answer_check_changed": false,
+    "runtime": "OFF",
+    "main_mutation": false
+  },
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 93,
+    "formal_scientific_progress_percent": 60
+  },
+  "owner_action_required_now": false
+}
