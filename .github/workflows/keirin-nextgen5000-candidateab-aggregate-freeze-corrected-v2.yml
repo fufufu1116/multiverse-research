@@ -1,0 +1,58 @@
+name: Keirin NEXTGEN5000 CandidateAB Aggregate Freeze Corrected v2
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-candidateab-aggregate-freeze-corrected-v2.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download six corrected prediction artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p in out
+          gh run download 34293807593 -n keirin-nextgen5000-corrected-v2-2001-2500 -D in/2001_2500
+          gh run download 34294246603 -n keirin-nextgen5000-corrected-v2-retry-2501-3000 -D in/2501_3000
+          gh run download 34293807593 -n keirin-nextgen5000-corrected-v2-3001-3500 -D in/3001_3500
+          gh run download 34293807593 -n keirin-nextgen5000-corrected-v2-3501-4000 -D in/3501_4000
+          gh run download 34293807593 -n keirin-nextgen5000-corrected-v2-4001-4500 -D in/4001_4500
+          gh run download 34294246603 -n keirin-nextgen5000-corrected-v2-retry-4501-5000 -D in/4501_5000
+      - name: Freeze one aggregate prediction and selection list
+        run: |
+          args=()
+          for f in in/*/NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_*.json; do args+=(--input "$f"); done
+          python tools/keirin_nextgen5000_candidate_ab_aggregate_freeze_v1.py \
+            "${args[@]}" \
+            --out out/KEIRIN_NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_AGGREGATE_FREEZE_20260909_v1.json
+      - name: Assert aggregate totals and firewalls
+        run: |
+          python - <<'PY'
+          import json
+          p='out/KEIRIN_NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_AGGREGATE_FREEZE_20260909_v1.json'
+          x=json.load(open(p,encoding='utf-8'))
+          s=x['summary']
+          assert s['materialized_races']==2860, s
+          assert s['rider_rows']==20311, s
+          assert s['top1_agreement_races']==2404, s
+          assert s['conf40_agreement_races']==933, s
+          assert s['selected_races_all']==335, s
+          assert x['safeguards']['result_accessed'] is False
+          assert x['safeguards']['payout_accessed'] is False
+          assert x['safeguards']['odds_accessed'] is False
+          assert x['safeguards']['model_refit'] is False
+          print('PASS',json.dumps(s,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-candidateab-aggregate-freeze-corrected-v2
+          path: out/
+          retention-days: 30
