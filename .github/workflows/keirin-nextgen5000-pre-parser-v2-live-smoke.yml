@@ -1,0 +1,45 @@
+name: Keirin NEXTGEN5000 PRE Parser v2 Live Smoke 2001-2005
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-pre-parser-v2-live-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: Acquire five PRE-only races with v2
+        run: |
+          mkdir -p out
+          python tools/keirin_nextgen5000_pre_bulk_recovery_v2.py \
+            --start-position 2001 --end-position 2005 --workers 5 \
+            --pre-csv out/NEXTGEN5000_PRE_V2_SMOKE_2001_2005.csv \
+            --receipt out/NEXTGEN5000_PRE_V2_SMOKE_2001_2005_RECEIPT.json
+      - name: Semantic assertions
+        run: |
+          python - <<'PY'
+          import csv,json
+          rows=list(csv.DictReader(open('out/NEXTGEN5000_PRE_V2_SMOKE_2001_2005.csv',encoding='utf-8')))
+          assert rows
+          assert all(40 <= float(r['competition_score']) <= 130 for r in rows)
+          assert all(2 <= float(r['gear_ratio']) <= 5 for r in rows)
+          assert all(float(r['competition_score']) != float(r['gear_ratio']) for r in rows)
+          assert all(0 <= float(r['win_rate']) <= 100 for r in rows)
+          assert all(0 <= float(r['quinella_rate']) <= 100 for r in rows)
+          assert all(0 <= float(r['trio_rate']) <= 100 for r in rows)
+          first=rows[0]
+          print('PASS',len(rows),{k:first[k] for k in ['race_id','rider_name_raw','gear_ratio','competition_score','S','B','win_rate','quinella_rate','trio_rate']})
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-pre-v2-smoke-2001-2005
+          path: out/
+          retention-days: 30
