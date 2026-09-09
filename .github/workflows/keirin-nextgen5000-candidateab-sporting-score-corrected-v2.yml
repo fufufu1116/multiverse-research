@@ -1,0 +1,61 @@
+name: Keirin NEXTGEN5000 CandidateAB Sporting Score Corrected v2
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-candidateab-sporting-score-corrected-v2.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download aggregate prediction freeze and six outcome artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p pred outcome out
+          gh run download 34297933454 \
+            -n keirin-nextgen5000-candidateab-aggregate-freeze-corrected-v2 -D pred
+          gh run download 34298025327 -n keirin-nextgen5000-primary-outcome-payout-2001-2500 -D outcome/2001_2500
+          gh run download 34298025327 -n keirin-nextgen5000-primary-outcome-payout-2501-3000 -D outcome/2501_3000
+          gh run download 34298025327 -n keirin-nextgen5000-primary-outcome-payout-3001-3500 -D outcome/3001_3500
+          gh run download 34298025327 -n keirin-nextgen5000-primary-outcome-payout-3501-4000 -D outcome/3501_4000
+          gh run download 34298025327 -n keirin-nextgen5000-primary-outcome-payout-4001-4500 -D outcome/4001_4500
+          gh run download 34298025327 -n keirin-nextgen5000-primary-outcome-payout-4501-5000 -D outcome/4501_5000
+      - name: Apply fixed process quarantine
+        run: |
+          args=()
+          for f in outcome/*/NEXTGEN5000_OUTCOME_*.csv; do args+=(--input "$f"); done
+          python tools/keirin_nextgen5000_outcome_quarantine_filter_v1.py \
+            "${args[@]}" \
+            --out out/NEXTGEN5000_PRIMARY_OUTCOME_FILTERED.csv \
+            --receipt out/NEXTGEN5000_PRIMARY_OUTCOME_FILTER_RECEIPT.json
+      - name: Score sporting metrics
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_sporting_scorer_v1.py \
+            --prediction pred/KEIRIN_NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_AGGREGATE_FREEZE_20260909_v1.json \
+            --outcome out/NEXTGEN5000_PRIMARY_OUTCOME_FILTERED.csv \
+            --out out/KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_SCORE_v1.json
+      - name: Print headline metrics
+        run: |
+          python - <<'PY'
+          import json
+          x=json.load(open('out/KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_SCORE_v1.json',encoding='utf-8'))
+          print('PASS_ALL',json.dumps(x['metrics']['ALL'],sort_keys=True))
+          print('GIRLS',json.dumps(x['metrics']['GIRLS'],sort_keys=True))
+          print('NON_GIRLS',json.dumps(x['metrics']['NON_GIRLS'],sort_keys=True))
+          for k in ['GAP_<1','GAP_1-3','GAP_3-5','GAP_>=5']:
+              print(k,json.dumps(x['metrics'][k],sort_keys=True))
+          print('BLOCKS',json.dumps(x['chronological_250race_blocks'],sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-candidateab-sporting-score-corrected-v2
+          path: out/
+          retention-days: 30
