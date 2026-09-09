@@ -37,9 +37,9 @@ def parse(b,url,expected_date):
     c1=matches[0][1]
     m=re.fullmatch(r'([1-9])-([1-9])-([1-9])([0-9,]+)円\([^)]*\)',compact(c1[5]))
     if not m: raise ValueError(f'FAIL-CLOSED:3rentan={compact(c1[5])!r}')
-    a,b,c,p=m.groups()
-    return {'race_id':rid,'race_date':rdate,'winning_3rentan_ticket':f'{a}-{b}-{c}',
-            'payout_yen_per_100':int(p.replace(',','')),'source_url':url,
+    car1,car2,car3,pay=m.groups()
+    return {'race_id':rid,'race_date':rdate,'winning_3rentan_ticket':f'{car1}-{car2}-{car3}',
+            'payout_yen_per_100':int(pay.replace(',','')),'source_url':url,
             'source_file_sha256':pre.sha256_bytes(b),'evidence_role':ROLE}
 
 def acquire(rid,rdate,url,timeout):
