@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v24",
+  "date_jst": "2026-09-09",
+  "base_current": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "supersedes_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v23.json",
+  "status": "SUCCESSOR_GIRLS_GAP3_ECONOMIC_REPLICATION_FAILED_P20_CALIBRATION_ONLY_PASS_PRICE_VALUE_RESEARCH_NEXT",
+  "latest_major_results": {
+    "mar_jun_successor_untouched": {
+      "preoutcome_selected_bets": 81,
+      "hits": 15,
+      "hit_rate": 0.18518518518518517,
+      "stake_yen": 8100,
+      "return_yen": 6850,
+      "net_yen": -1250,
+      "recovery_rate": 0.845679012345679,
+      "roi": -0.154320987654321,
+      "first_half_recovery_rate": 0.7975,
+      "second_half_recovery_rate": 0.8926829268292683,
+      "primary_replication_pass": false,
+      "robustness_support": false,
+      "conclusion": "GIRLS + top_score_gap>=3 + conservative top123 3rentan 1pt did not replicate economically."
+    },
+    "julaug_sep_p20_calibration": {
+      "preoutcome_materialized_races": 5212,
+      "girls_races": 442,
+      "preoutcome_selected_bets": 92,
+      "hits": 13,
+      "hit_rate": 0.14130434782608695,
+      "stake_yen": 9200,
+      "return_yen": 5930,
+      "net_yen": -3270,
+      "recovery_rate": 0.6445652173913043,
+      "roi": -0.35543478260869565,
+      "first_half_recovery_rate": 0.5456521739130434,
+      "second_half_recovery_rate": 0.7434782608695653,
+      "p20_primary_calibration_pass": true,
+      "p20_secondary_pass": false,
+      "conclusion": "P20 hit-rate calibration criterion passed, but economic performance was decisively negative."
+    }
+  },
+  "interpretation": [
+    "The repeated untouched tests reject the simple GIRLS + score-gap>=3 + 3rentan top123 one-point rule as an economic winner.",
+    "The failure is not merely a hit-rate collapse; observed hit rates remain plausible relative to the rough P20 target while realized payouts are too low.",
+    "Next research should optimize value selection at purchase stage (price versus calibrated probability) rather than further rescue-tuning the same structural rule.",
+    "No same-sample rescue is authorized on the burned successor samples."
+  ],
+  "new_result_blind_universe": {
+    "julaug_candidate_races": 4768,
+    "julaug_lock_sha256": "8ba2d9d66e90d486eaa8d311e55a6ae71773aa4f84bd4e32d7cdc0e6181fa8db",
+    "julaug_pre_materialized_races": 4634,
+    "sep01_08_candidate_races": 607,
+    "sep01_08_pre_materialized_races": 578,
+    "combined_materialized_races": 5212
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support": "1 rider / 2 PRE rows",
+    "formal_support_increment_now": 0,
+    "profitability_proven": false,
+    "today_20260909_answer_check_changed": false,
+    "runtime": "OFF",
+    "main_mutation": false
+  },
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 98,
+    "formal_scientific_progress_percent": 60
+  },
+  "owner_action_required_now": false
+}
