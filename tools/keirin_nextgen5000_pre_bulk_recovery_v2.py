@@ -217,8 +217,10 @@ def main():
     ap.add_argument('--timeout',type=int,default=25)
     ap.add_argument('--pre-csv',required=True)
     ap.add_argument('--receipt',required=True)
+    ap.add_argument('--min-success-rate',type=float,default=0.90)
     a=ap.parse_args()
     if not 1<=a.start_position<=a.end_position<=5000: raise SystemExit('invalid position range')
+    if not 0.50 <= a.min_success_rate <= 1.0: raise SystemExit('invalid min success rate')
 
     locked=rediscover_locked(a.timeout)
     selected=[(i+1,locked[i]) for i in range(a.start_position-1,a.end_position)]
@@ -253,7 +255,7 @@ def main():
     }
     Path(a.receipt).write_text(json.dumps(receipt,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in receipt.items() if k not in {'accepted','rejected'}},ensure_ascii=False,sort_keys=True))
-    return 0 if len(accepted)>=int(0.95*len(selected)) else 3
+    return 0 if len(accepted) >= a.min_success_rate*len(selected) else 3
 
 if __name__=='__main__':
     raise SystemExit(main())
