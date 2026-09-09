@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260909_v30",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_DELTA_V22_CORRECTED_NEXTGEN5000_SCORING_ACTIVE",
+  "date_jst": "2026-09-09",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v22.json",
+  "current_summary": {
+    "practical_engineering": "100% complete; owner-assisted only; Runtime OFF",
+    "today_answer_check": "UNCHANGED_AND_FROZEN",
+    "formal_scientific_progress_percent": 60,
+    "formal_support": "1 rider / 2 PRE rows",
+    "profitability_proven": false,
+    "historical_research_pool_races": 4360,
+    "fully_answer_check_ready_burned_races": 1500,
+    "corrected_new_unseen_races": 2860,
+    "corrected_new_pre_rows": 20311,
+    "corrected_new_selected_3renhuku_races": 335,
+    "nextgen5000_primary_outcome_payout_collection": "ACTIVE_AFTER_PREOUTCOME_AGGREGATE_FREEZE",
+    "protected_holdouts": "DEV2000 C and ECON_HOLDOUT1000 sealed"
+  },
+  "critical_pointers": {
+    "v1_invalidation": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_V1_SCORE_SEMANTIC_INVALIDATION_20260909_v1.json",
+    "corrected_pre_tool": "tools/keirin_nextgen5000_pre_bulk_recovery_v2.py",
+    "model_reproduction_freeze": "v3/historical_all_market/research_candidates/KEIRIN_CANDIDATE_A_B1A_RECONSTITUTED_V1_REPRODUCTION_FREEZE_20260909_v1.json",
+    "aggregate_freeze_artifact_run": 34297933454,
+    "outcome_payout_run": 34298025327,
+    "sporting_prespec": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_EVAL_PRESPEC_20260909_v1.json",
+    "economic_prespec": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_CANDIDATE_AB_PRICE_INDEPENDENT_ECON_PRESPEC_20260909_v1.json",
+    "process_quarantine": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_ACCIDENTAL_SINGLE_RACE_OUTCOME_EXPOSURE_QUARANTINE_20260909_v1.json"
+  },
+  "next_without_owner": [
+    "Fresh-read workflow run 34298025327 and collect all completed outcome/payout artifacts.",
+    "Apply the fixed one-race process quarantine to sporting outcome labels.",
+    "Score Candidate_A/B1a sporting metrics with the frozen scorer; no posthoc rescue.",
+    "Score the frozen 335-race price-independent 3renhuku selection with flat 100 yen and payout-only data.",
+    "Record hit rate, ROI, maximum drawdown, largest-return concentration, largest-hit-removed ROI and chronological half stability.",
+    "Only after those results, design new hypotheses on a later untouched sample; do not rescue-tune positions 2001..5000.",
+    "Continue formal 30/60 support collection independently."
+  ],
+  "prohibitions": [
+    "NO_USE_OF_INVALID_V1_SCORE_ANALYTICS",
+    "NO_DEV2000_C_RESCUE_TUNING_OR_SCORING",
+    "NO_ECON_HOLDOUT1000_OPEN",
+    "NO_RESULT_TO_PRE_RECONSTRUCTION",
+    "NO_POSTHOC_RESCUE_ON_NEXTGEN5000_2001_5000",
+    "NO_AUTOMATIC_BETTING",
+    "NO_RUNTIME_ENABLE",
+    "NO_RESEARCH_LANE_MAIN_MUTATION"
+  ],
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later, Resume v30 or later, Delta v22 or later, outcome/payout run 34298025327, and active Keirin automations before treating state as current."
+}
