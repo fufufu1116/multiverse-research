@@ -1,0 +1,71 @@
+name: Keirin NEXTGEN5000 Corrected PRE v2 + CandidateAB Freeze 2001-5000
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-nextgen5000-corrected-pre-v2-candidateab-2001-5000.yml'
+permissions:
+  contents: read
+jobs:
+  acquire-and-freeze:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {start: 2001, end: 2500}
+          - {start: 2501, end: 3000}
+          - {start: 3001, end: 3500}
+          - {start: 3501, end: 4000}
+          - {start: 4001, end: 4500}
+          - {start: 4501, end: 5000}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: Compile corrected PRE and frozen CandidateAB tools
+        run: |
+          python -m py_compile \
+            tools/keirin_nextgen5000_pre_bulk_recovery_v2.py \
+            tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py
+      - name: Reacquire corrected PRE-only batch
+        run: |
+          mkdir -p out
+          python tools/keirin_nextgen5000_pre_bulk_recovery_v2.py \
+            --start-position ${{ matrix.start }} \
+            --end-position ${{ matrix.end }} \
+            --workers 8 \
+            --pre-csv out/NEXTGEN5000_PRE_V2_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --receipt out/NEXTGEN5000_PRE_V2_${{ matrix.start }}_${{ matrix.end }}_RECEIPT.json
+      - name: Freeze Candidate A + B1a predictions before outcomes
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py \
+            --pre-csv out/NEXTGEN5000_PRE_V2_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --out out/NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_${{ matrix.start }}_${{ matrix.end }}.json
+      - name: Semantic and firewall assertions
+        run: |
+          python - <<'PY'
+          import csv,json,glob
+          pre=glob.glob('out/NEXTGEN5000_PRE_V2_*.csv')[0]
+          pred=glob.glob('out/NEXTGEN5000_CANDIDATE_AB_PREOUTCOME_*.json')[0]
+          rows=list(csv.DictReader(open(pre,encoding='utf-8')))
+          assert rows
+          assert all(40<=float(r['competition_score'])<=130 for r in rows)
+          assert all(2<=float(r['gear_ratio'])<=5 for r in rows)
+          assert all(float(r['competition_score'])!=float(r['gear_ratio']) for r in rows)
+          assert all(0<=float(r['win_rate'])<=100 and 0<=float(r['quinella_rate'])<=100 and 0<=float(r['trio_rate'])<=100 for r in rows)
+          x=json.load(open(pred,encoding='utf-8'))
+          s=x['safeguards']
+          assert s['result_accessed'] is False and s['payout_accessed'] is False and s['odds_accessed'] is False
+          assert s['model_refit'] is False
+          print('PASS_PRE_ROWS',len(rows))
+          print('PASS_PRED_SUMMARY',json.dumps(x['summary'],sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nextgen5000-corrected-v2-${{ matrix.start }}-${{ matrix.end }}
+          path: out/
+          retention-days: 30
