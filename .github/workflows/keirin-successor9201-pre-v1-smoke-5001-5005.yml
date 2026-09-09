@@ -1,0 +1,44 @@
+name: Keirin Successor9201 PRE v1 Smoke 5001-5005
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-successor9201-pre-v1-smoke-5001-5005.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: PRE-only smoke
+        run: |
+          mkdir -p out
+          python tools/keirin_successor9201_pre_bulk_recovery_v1.py \
+            --start-position 5001 --end-position 5005 --workers 2 --min-success-rate 0.80 \
+            --pre-csv out/PRE_5001_5005.csv --receipt out/PRE_5001_5005_RECEIPT.json
+      - name: Materialize CandidateAB outcome-blind
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py \
+            --pre-csv out/PRE_5001_5005.csv \
+            --out out/CANDIDATE_AB_5001_5005.json
+      - name: Assert firewalls
+        run: |
+          python - <<'PY'
+          import json
+          r=json.load(open('out/PRE_5001_5005_RECEIPT.json',encoding='utf-8'))
+          m=json.load(open('out/CANDIDATE_AB_5001_5005.json',encoding='utf-8'))
+          assert r['result_fields_emitted'] is False
+          assert r['payout_fields_emitted'] is False
+          assert r['odds_fields_emitted'] is False
+          assert m['safeguards']['result_accessed'] is False
+          assert m['safeguards']['payout_accessed'] is False
+          assert m['safeguards']['odds_accessed'] is False
+          print('PASS_PRE',r['successful_races'],r['pre_rows'])
+          print('PASS_MAT',m['summary'])
+          PY
