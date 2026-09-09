@@ -1,0 +1,27 @@
+name: Keirin Successor Two Reject Receipt Inspect v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-successor-two-reject-receipt-inspect-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download retry artifact and print receipt rejects
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p in
+          gh run download 34306193731 -n keirin-successor-girls-gap3-untouched-score-retry-v2 -D in
+          python - <<'PY'
+          import json,glob
+          p=glob.glob('in/*RECEIPT.json')[0]
+          x=json.load(open(p,encoding='utf-8'))
+          print('RECEIPT',json.dumps(x,ensure_ascii=False,sort_keys=True))
+          PY
