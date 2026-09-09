@@ -1,0 +1,103 @@
+name: Keirin Successor GirlsGap3 Untouched PRE Freeze 5001-9000 v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-successor-girls-gap3-untouched-pre-freeze-5001-9000-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  collect:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {start: 5001, end: 5500}
+          - {start: 5501, end: 6000}
+          - {start: 6001, end: 6500}
+          - {start: 6501, end: 7000}
+          - {start: 7001, end: 7500}
+          - {start: 7501, end: 8000}
+          - {start: 8001, end: 8500}
+          - {start: 8501, end: 9000}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: Recover successor PRE only
+        run: |
+          mkdir -p out
+          python tools/keirin_successor9201_pre_bulk_recovery_v1.py \
+            --start-position ${{ matrix.start }} --end-position ${{ matrix.end }} \
+            --workers 10 --min-success-rate 0.90 \
+            --pre-csv out/PRE_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --receipt out/PRE_${{ matrix.start }}_${{ matrix.end }}_RECEIPT.json
+      - name: Materialize frozen CandidateAB
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py \
+            --pre-csv out/PRE_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --out out/CANDIDATE_AB_${{ matrix.start }}_${{ matrix.end }}.json
+      - name: Assert PRE firewalls
+        run: |
+          python - <<'PY'
+          import glob,json
+          r=json.load(open(glob.glob('out/*RECEIPT.json')[0],encoding='utf-8'))
+          m=json.load(open(glob.glob('out/CANDIDATE_AB_*.json')[0],encoding='utf-8'))
+          assert r['result_fields_emitted'] is False
+          assert r['payout_fields_emitted'] is False
+          assert r['odds_fields_emitted'] is False
+          assert m['safeguards']['result_accessed'] is False
+          assert m['safeguards']['payout_accessed'] is False
+          assert m['safeguards']['odds_accessed'] is False
+          print('PASS_BATCH',r['start_position'],r['end_position'],r['successful_races'],r['pre_rows'],m['summary'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-successor-pre-${{ matrix.start }}-${{ matrix.end }}
+          path: out/
+          retention-days: 30
+
+  freeze:
+    needs: collect
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download all PRE materialization artifacts from this run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p in out
+          for r in 5001-5500 5501-6000 6001-6500 6501-7000 7001-7500 7501-8000 8001-8500 8501-9000; do
+            gh run download "${GITHUB_RUN_ID}" -n keirin-successor-pre-$r -D in/$r
+          done
+      - name: Freeze pre-registered girls gap3 candidate before outcomes
+        run: |
+          args=()
+          for f in in/*/CANDIDATE_AB_*.json; do args+=(--input "$f"); done
+          python tools/keirin_successor_girls_gap3_3rentan_preoutcome_freezer_v1.py \
+            --prespec v3/historical_all_market/research_candidates/KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_PRESPEC_20260909_v1.json \
+            "${args[@]}" \
+            --out out/KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_PREOUTCOME_FREEZE_20260909_v1.json
+      - name: Assert aggregate remains outcome blind
+        run: |
+          python - <<'PY'
+          import json
+          p='out/KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_PREOUTCOME_FREEZE_20260909_v1.json'
+          x=json.load(open(p,encoding='utf-8'));s=x['safeguards'];z=x['summary']
+          assert z['materialized_races']>=3600,z
+          assert s['result_accessed'] is False and s['payout_accessed'] is False and s['odds_accessed'] is False
+          assert s['model_refit'] is False
+          print('PASS_SUCCESSOR_FREEZE',json.dumps(z,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-successor-girls-gap3-preoutcome-freeze-v1
+          path: out/
+          retention-days: 30
