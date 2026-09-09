@@ -1,0 +1,79 @@
+{
+  "record": "KEIRIN_JULAUG2026_GIRLS_GAP3_3RENTAN_P20_CALIBRATION_PRESPEC_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_JULAUG_OUTCOME_OR_PAYOUT_ACCESS",
+  "origin_evidence": {
+    "discovery_burned": {
+      "races": 80,
+      "hits": 17,
+      "hit_rate": 0.2125,
+      "recovery_rate": 1.37625,
+      "role": "POSTHOC_DISCOVERY"
+    },
+    "first_untouched_successor": {
+      "races": 81,
+      "hits": 15,
+      "hit_rate": 0.18518518518518517,
+      "recovery_rate": 0.845679012345679,
+      "role": "PRE_REGISTERED_REPLICATION_FAIL_ECONOMICALLY"
+    },
+    "combined_descriptive": {
+      "races": 161,
+      "hits": 32,
+      "hit_rate": 0.19875776397515527,
+      "stake_yen": 16100,
+      "return_yen": 17860,
+      "recovery_rate": 1.1093167701863353
+    },
+    "caution": "Combined economic number includes the posthoc discovery sample and is not an unbiased profitability estimate."
+  },
+  "frozen_rule": {
+    "girls_only": true,
+    "top_score_gap_min_inclusive": 3,
+    "market": "3rentan",
+    "ticket": "conservative_rank[0]-conservative_rank[1]-conservative_rank[2]",
+    "points": 1,
+    "stake_yen": 100,
+    "model_refit": false
+  },
+  "frozen_probability_model": {
+    "type": "REGIME_CONSTANT",
+    "exact_order_probability": 0.2,
+    "rationale": "Rounded from 32/161 across two non-overlapping Mar-Jun samples; avoids unstable raw Plackett-Luce exact-order probability.",
+    "raw_plackett_luce_probability_for_purchase_gate": false,
+    "fair_decimal_odds": 5,
+    "ev10_min_decimal_odds": 5.5
+  },
+  "julaug_universe": {
+    "lock": "v3/historical_all_market/research_candidates/KEIRIN_JULAUG2026_RESULT_BLIND_UNIVERSE_LOCK_20260909_v1.json",
+    "candidate_races": 4768,
+    "canonical_csv_sha256": "8ba2d9d66e90d486eaa8d311e55a6ae71773aa4f84bd4e32d7cdc0e6181fa8db"
+  },
+  "evaluation": {
+    "minimum_selected_races": 80,
+    "primary_calibration_test": "0.20 must lie inside the 95% Wilson confidence interval for observed hit rate",
+    "secondary_absolute_error_max": 0.05,
+    "report": [
+      "selected_races",
+      "hits",
+      "observed_hit_rate",
+      "absolute_calibration_error",
+      "95% Wilson interval",
+      "chronological_half_hit_rates"
+    ],
+    "economic_recovery_report": "descriptive flat100 only; no profitability promotion from final payout because no timestamped PRE odds",
+    "live_purchase_candidate_gate_if_calibration_passes": "odds >= 5.5 for +10% nominal EV margin; requires actual current PRE odds at purchase time",
+    "no_same_sample_recalibration": true
+  },
+  "hard_boundaries": {
+    "no_julaug_outcome_access_before_selection_freeze": true,
+    "no_historical_final_odds_as_PRE_odds": true,
+    "profitability_proven": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
