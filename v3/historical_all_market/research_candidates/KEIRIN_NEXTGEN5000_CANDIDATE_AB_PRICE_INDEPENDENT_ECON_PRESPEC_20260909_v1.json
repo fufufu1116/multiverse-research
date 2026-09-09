@@ -1,0 +1,41 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_CANDIDATE_AB_PRICE_INDEPENDENT_ECON_PRESPEC_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_PRIMARY_NEXTGEN5000_OUTCOME_PAYOUT_ACCESS",
+  "scope": "Economic falsification of the already-frozen price-independent one-ticket 3renhuku rule only. This is not the live odds-gated V2 policy.",
+  "selection_rule": "NON_GIRLS_GAP_LT3_CONF40_TOP3_3RENHUKU_1PT_NO_PRICE_FILTER",
+  "stake_policy": "flat 100 yen per pre-frozen selected race; no Kelly, no martingale, no stake escalation",
+  "return_rule": "If frozen 3renhuku ticket equals official winning 3renhuku combination, return official payout per 100 yen; otherwise return 0.",
+  "primary_metrics": [
+    "selected bet count",
+    "ticket hit count and hit rate",
+    "total stake, total return, net yen and ROI",
+    "maximum chronological drawdown in yen",
+    "largest single return as share of total return",
+    "ROI after removing the single largest winning return",
+    "chronological first-half versus second-half ROI"
+  ],
+  "low_power_rule": "If fewer than 30 selected bets remain after process quarantine/fail-closed exclusions, label economic result LOW_POWER regardless of ROI sign.",
+  "jackpot_rule": "A positive ROI with >50% of total return from one hit is labeled CONCENTRATED and cannot support a profitability claim.",
+  "process_quarantine": [
+    "8320260327010001"
+  ],
+  "interpretation": [
+    "No historical closing-odds filter is applied; selection was frozen before payout access.",
+    "This evaluates whether the structural rule itself has favorable realized settlement under flat 100 yen, not whether the current live odds gate is calibrated.",
+    "Positive ROI alone does not prove future profitability; negative ROI falsifies this exact price-independent strategy on this sample.",
+    "No rule rescue or threshold adjustment on positions 2001..5000 after payout access."
+  ],
+  "safeguards": {
+    "primary_NEXTGEN5000_payouts_accessed_at_freeze": false,
+    "primary_NEXTGEN5000_outcomes_accessed_at_freeze": false,
+    "one_process_exposed_race_quarantined": true,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "model_promotion": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
