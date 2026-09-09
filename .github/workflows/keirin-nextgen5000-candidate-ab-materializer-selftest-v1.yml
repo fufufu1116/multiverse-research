@@ -1,0 +1,20 @@
+name: keirin-nextgen5000-candidate-ab-materializer-selftest-v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - 'tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py'
+      - 'tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_selftest_v1.py'
+      - '.github/workflows/keirin-nextgen5000-candidate-ab-materializer-selftest-v1.yml'
+permissions:
+  contents: read
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m py_compile tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_selftest_v1.py
+      - run: python tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_selftest_v1.py
