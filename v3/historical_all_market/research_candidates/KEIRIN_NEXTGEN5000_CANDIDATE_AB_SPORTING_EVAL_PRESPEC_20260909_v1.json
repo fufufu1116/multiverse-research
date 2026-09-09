@@ -1,0 +1,41 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_EVAL_PRESPEC_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_NEXTGEN5000_OUTCOME_ACCESS",
+  "prediction_lineage": "KEIRIN_CANDIDATE_A_B1A_RECONSTITUTED_V1_REPRODUCTION_FREEZE_20260909_v1",
+  "corrected_pre_parser": "tools/keirin_nextgen5000_pre_bulk_recovery_v2.py",
+  "scorer": "tools/keirin_nextgen5000_candidate_ab_sporting_scorer_v1.py",
+  "population": "Corrected usable PRE-only rows from exact locked NEXTGEN5000 positions 2001..5000, fail-closed exclusions retained.",
+  "primary_metrics": [
+    "Candidate_A top1 hit rate",
+    "B1a_RECONSTITUTED_v1 top1 hit rate",
+    "top1 model agreement rate and agreed-top1 hit rate",
+    "conservative winner-in-top3 rate",
+    "conservative exact top3-set hit rate",
+    "Candidate_A and B1a multiclass logloss and Brier",
+    "frozen NON_GIRLS_GAP_LT3_CONF40_TOP3_3RENHUKU_1PT_NO_PRICE_FILTER selected count and ticket hit rate"
+  ],
+  "subgroup_metrics": [
+    "Girls versus non-Girls",
+    "top PRE score gap bins <1, 1-3, 3-5, >=5",
+    "chronological non-overlapping 250-race blocks"
+  ],
+  "interpretation_rules": [
+    "No single positive subgroup or block promotes the model.",
+    "Negative results are retained; no rescue tuning on positions 2001..5000 after outcomes open.",
+    "Sporting accuracy does not prove betting profitability.",
+    "Economic/payout evaluation, if later run, must use the already-frozen selected ticket list and a separately frozen payout interface."
+  ],
+  "safeguards": {
+    "NEXTGEN5000_outcomes_accessed_at_freeze": false,
+    "NEXTGEN5000_payouts_accessed_at_freeze": false,
+    "NEXTGEN5000_odds_accessed_at_freeze": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "model_promotion": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
