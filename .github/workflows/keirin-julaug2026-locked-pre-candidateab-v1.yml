@@ -1,0 +1,67 @@
+name: Keirin JulAug2026 Locked PRE + CandidateAB Freeze Inputs v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-julaug2026-locked-pre-candidateab-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  collect:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {start: 1, end: 500}
+          - {start: 501, end: 1000}
+          - {start: 1001, end: 1500}
+          - {start: 1501, end: 2000}
+          - {start: 2001, end: 2500}
+          - {start: 2501, end: 3000}
+          - {start: 3001, end: 3500}
+          - {start: 3501, end: 4000}
+          - {start: 4001, end: 4500}
+          - {start: 4501, end: 4768}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: Download exact locked result-blind universe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p lock out
+          gh run download 34306276745 -n keirin-julaug2026-result-blind-universe-v1 -D lock
+      - name: Recover corrected PRE only
+        run: |
+          python tools/keirin_julaug2026_locked_pre_bulk_recovery_v1.py \
+            --universe-csv lock/KEIRIN_JULAUG2026_RESULT_BLIND_UNIVERSE_v1.csv \
+            --start-position ${{ matrix.start }} --end-position ${{ matrix.end }} \
+            --workers 10 --min-success-rate 0.90 \
+            --pre-csv out/PRE_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --receipt out/PRE_${{ matrix.start }}_${{ matrix.end }}_RECEIPT.json
+      - name: Materialize CandidateAB outcome-blind
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py \
+            --pre-csv out/PRE_${{ matrix.start }}_${{ matrix.end }}.csv \
+            --out out/CANDIDATE_AB_${{ matrix.start }}_${{ matrix.end }}.json
+      - name: Assert no outcome access
+        run: |
+          python - <<'PY'
+          import glob,json
+          r=json.load(open(glob.glob('out/*RECEIPT.json')[0],encoding='utf-8'))
+          m=json.load(open(glob.glob('out/CANDIDATE_AB_*.json')[0],encoding='utf-8'))
+          assert r['result_fields_emitted'] is False and r['payout_fields_emitted'] is False and r['odds_fields_emitted'] is False
+          assert m['safeguards']['result_accessed'] is False and m['safeguards']['payout_accessed'] is False and m['safeguards']['odds_accessed'] is False
+          print('PASS_JULAUG_BATCH',r['start_position'],r['end_position'],r['successful_races'],r['pre_rows'],m['summary'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-julaug-pre-${{ matrix.start }}-${{ matrix.end }}
+          path: out/
+          retention-days: 30
