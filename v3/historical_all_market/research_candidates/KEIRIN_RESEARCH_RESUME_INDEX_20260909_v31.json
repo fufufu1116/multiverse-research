@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260909_v31",
+  "status": "CURRENT_V114_WITH_POST_CURRENT_DELTA_V23_CORRECTED_NEXTGEN5000_FULL_SCORING_COMPLETE",
+  "date_jst": "2026-09-09",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v23.json",
+  "current_summary": {
+    "practical_engineering": "100% complete; owner-assisted only; Runtime OFF",
+    "today_answer_check": "UNCHANGED_AND_FROZEN",
+    "formal_scientific_progress_percent": 60,
+    "formal_support": "1 rider / 2 PRE rows",
+    "profitability_proven": false,
+    "historical_research_pool_races": 4360,
+    "strict_ordered_sporting_scored_pool_races": 4323,
+    "new_corrected_prediction_races": 2860,
+    "new_corrected_sporting_scored_races": 2823,
+    "frozen_selected_new_bets": 335,
+    "frozen_selected_new_roi": -0.1513432835820896,
+    "ticket_probability_calibration": "approximately calibrated; selected predicted 17.14% vs observed 18.56%",
+    "core_next_problem": "ticket/market choice and purchase price, not simple winner-ranking collapse",
+    "protected_holdouts": "DEV2000 C and ECON_HOLDOUT1000 sealed"
+  },
+  "next_without_owner": [
+    "Use the burned corrected NEXTGEN5000 result only for hypothesis discovery; do not rescue-tune positions 2001..5000.",
+    "Explore alternative market/ticket structures that exploit the reproduced winner-ranking signal, especially strong-head regimes, and label all such findings post-outcome diagnostic.",
+    "Freeze any new market/ticket candidate before acquiring outcomes on a later untouched historical sample.",
+    "Use the result-independent candidate universe beyond locked NEXTGEN5000 only under a new explicit universe/preoutcome freeze before opening outcomes.",
+    "Continue prospective timestamped PRE odds collection to validate the owner-assisted minimum-odds purchase gate.",
+    "Continue formal 30/60 support acquisition independently."
+  ],
+  "critical_pointers": {
+    "correction": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRE_V1_SCORE_SEMANTIC_INVALIDATION_20260909_v1.json",
+    "sporting_result": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_RESULT_20260909_v1.json",
+    "economic_result": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_SELECTED335_ECON_RESULT_20260909_v1.json",
+    "price_gate_interpretation": "v3/historical_all_market/research_candidates/KEIRIN_NEXTGEN5000_PRACTICAL_PRICE_GATE_INTERPRETATION_20260909_v1.json",
+    "calibration_run_id": 34298951566
+  },
+  "prohibitions": [
+    "NO_USE_OF_INVALID_V1_SCORE_ANALYTICS",
+    "NO_POSTHOC_RESCUE_ON_NEXTGEN5000_2001_5000",
+    "NO_DEV2000_C_RESCUE_TUNING_OR_SCORING",
+    "NO_ECON_HOLDOUT1000_OPEN",
+    "NO_AUTOMATIC_BETTING",
+    "NO_RUNTIME_ENABLE",
+    "NO_RESEARCH_LANE_MAIN_MUTATION",
+    "NO_PROFITABILITY_CLAIM"
+  ],
+  "resume_rule": "Fresh-read branch HEAD, CURRENT v114 or later, Resume v31 or later, Delta v23 or later, active Keirin automations, and any successor untouched-universe freeze before treating state as current."
+}
