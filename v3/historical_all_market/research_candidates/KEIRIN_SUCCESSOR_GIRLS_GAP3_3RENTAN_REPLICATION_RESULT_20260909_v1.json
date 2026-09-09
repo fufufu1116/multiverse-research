@@ -1,0 +1,84 @@
+{
+  "record": "KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_REPLICATION_RESULT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "SUCCESSOR_REPLICATION_FAIL",
+  "candidate_rule": "GIRLS + top_score_gap >= 3.0 + conservative rank1-rank2-rank3 3rentan 1pt flat100",
+  "discovery_sample": {
+    "role": "BURNED_POST_OUTCOME_DIAGNOSTIC",
+    "races": 80,
+    "hits": 17,
+    "hit_rate": 0.2125,
+    "recovery_rate": 1.37625,
+    "first_half_recovery_rate": 1.0925,
+    "second_half_recovery_rate": 1.66
+  },
+  "untouched_successor": {
+    "prespec": "v3/historical_all_market/research_candidates/KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_PRESPEC_20260909_v1.json",
+    "sample_size_extension": "v3/historical_all_market/research_candidates/KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_SAMPLE_SIZE_EXTENSION_20260909_v1.json",
+    "preoutcome_freeze_run_id": 34305251240,
+    "preoutcome_freeze_artifact_id": 10086476937,
+    "preoutcome_freeze_artifact_digest": "sha256:0fc0a1adb009b7daff004ad6249ae8272b018c2081b2cd3667fc9cb884d2fed4",
+    "materialized_races": 4003,
+    "girls_races": 337,
+    "selected_races": 81,
+    "result_or_payout_access_before_freeze": false
+  },
+  "final_score": {
+    "run_id": 34306581283,
+    "artifact_id": 10086895496,
+    "artifact_digest": "sha256:83b3803377dce2926f573e1b994cd7b107d8ff2e232e9961f974884efb3ff44e",
+    "complete_settlement_races": 81,
+    "multiple_official_settlement_races": 2,
+    "rejected_races": 0,
+    "bets": 81,
+    "hits": 15,
+    "hit_rate": 0.18518518518518517,
+    "stake_yen": 8100,
+    "return_yen": 6850,
+    "net_yen": -1250,
+    "recovery_rate": 0.845679012345679,
+    "roi": -0.154320987654321,
+    "maximum_drawdown_yen": 1750,
+    "largest_single_return_yen": 690,
+    "largest_single_return_share": 0.10072992700729927,
+    "first_half": {
+      "bets": 40,
+      "hits": 6,
+      "recovery_rate": 0.7975,
+      "roi": -0.2025,
+      "net_yen": -810
+    },
+    "second_half": {
+      "bets": 41,
+      "hits": 9,
+      "recovery_rate": 0.8926829268292683,
+      "roi": -0.10731707317073169,
+      "net_yen": -440
+    },
+    "primary_replication_pass": false,
+    "robustness_support": false
+  },
+  "interpretation": [
+    "The burned discovery ROI did not replicate on the pre-registered untouched successor.",
+    "Hit rate remained nontrivial, but realized payout was insufficient for break-even.",
+    "Both chronological halves were negative, so the candidate is rejected as a price-independent strategy.",
+    "No same-sample rescue or threshold adjustment is authorized.",
+    "Future work should separate sporting probability from purchase price and test any new rule on a different untouched universe."
+  ],
+  "next_untouched_universe": {
+    "record": "v3/historical_all_market/research_candidates/KEIRIN_JULAUG2026_RESULT_BLIND_UNIVERSE_LOCK_20260909_v1.json",
+    "candidate_races": 4768,
+    "result_blind": true
+  },
+  "hard_boundaries": {
+    "candidate_promoted": false,
+    "profitability_proven": false,
+    "same_sample_rescue": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
