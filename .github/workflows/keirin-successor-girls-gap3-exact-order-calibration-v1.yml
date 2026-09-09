@@ -1,0 +1,35 @@
+name: Keirin Successor GirlsGap3 Exact Order Calibration v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-successor-girls-gap3-exact-order-calibration-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Download exact freeze and complete settlements
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p freeze settle out
+          gh run download 34305251240 -n keirin-successor-girls-gap3-preoutcome-freeze-extended-v1 -D freeze
+          gh run download 34306581283 -n keirin-successor-girls-gap3-complete-settlement-score-v3 -D settle
+      - name: Run exact-order calibration audit
+        run: |
+          python tools/keirin_successor_girls_gap3_3rentan_exact_order_calibration_v1.py \
+            --freeze freeze/KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_PREOUTCOME_FREEZE_EXTENDED_20260909_v1.json \
+            --payout settle/SUCCESSOR_SELECTED_3RENTAN_ALL_SETTLEMENTS.csv \
+            --out out/KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_EXACT_ORDER_CALIBRATION_DIAGNOSTIC_v1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-successor-girls-gap3-exact-order-calibration-v1
+          path: out/
+          retention-days: 30
