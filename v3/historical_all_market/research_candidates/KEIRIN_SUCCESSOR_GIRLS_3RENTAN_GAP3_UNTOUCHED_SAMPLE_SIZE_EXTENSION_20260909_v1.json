@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_SAMPLE_SIZE_EXTENSION_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_ANY_SUCCESSOR_OUTCOME_OR_PAYOUT_ACCESS",
+  "original_prespec": "v3/historical_all_market/research_candidates/KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_PRESPEC_20260909_v1.json",
+  "original_preoutcome_freeze": {
+    "run_id": 34304724946,
+    "artifact_id": 10086355198,
+    "artifact_digest": "sha256:94f77c9dfa181ce54e7c669fdf6888e8b3022443618891d6606b2eb279b1e22b",
+    "materialized_races": 3808,
+    "selected_races": 79,
+    "result_accessed": false,
+    "payout_accessed": false,
+    "odds_accessed": false
+  },
+  "reason": "Original prespec required at least 80 selected bets for a primary decision. PRE-only freeze produced 79 selected bets. Extension is based solely on pre-outcome sample size, not observed outcomes or payouts.",
+  "extension_universe": {
+    "same_locked_candidate_universe_count": 9201,
+    "same_locked_candidate_sha256": "9b8fc60bfd55eb12a4989112b3fa4eee1e2bb6a214946edd79a739296a9aed7c",
+    "positions_start": 9001,
+    "positions_end": 9201,
+    "requested_positions": 201,
+    "overlap_with_original_positions_5001_9000": 0
+  },
+  "candidate_rule_unchanged": {
+    "market": "3rentan",
+    "girls_only": true,
+    "top_score_gap_min_inclusive": 3,
+    "ordered_ticket": "conservative_rank[0]-conservative_rank[1]-conservative_rank[2]",
+    "points_per_selected_race": 1,
+    "stake_yen_per_point": 100,
+    "odds_used": false,
+    "model_refit": false
+  },
+  "evaluation_unchanged": {
+    "minimum_selected_bets_for_primary_decision": 80,
+    "primary_replication_pass": "combined selected_bets >= 80 AND recovery_rate > 1.0",
+    "robustness_support": "both chronological half recovery rates > 1.0 AND largest_single_return_share <= 0.25"
+  },
+  "stopping_rule": "Use all successfully materialized PRE races in positions 9001..9201, freeze combined selections, then open outcomes. No further universe extension is authorized in this lineage; if combined selected count remains below 80, report INSUFFICIENT_SAMPLE.",
+  "hard_boundaries": {
+    "outcome_or_payout_access_before_extension_freeze": false,
+    "no_rule_change": true,
+    "no_threshold_change": true,
+    "no_model_refit": true,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment": 0,
+    "today_20260909_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
