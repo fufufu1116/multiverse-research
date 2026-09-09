@@ -1,0 +1,54 @@
+{
+  "schema": "MULTIVERSE_PROVIDER_MODEL_CATALOG_SNAPSHOT_v1",
+  "snapshot_id": "provider-model-catalog-20260908",
+  "observed_at": "2026-09-08T11:05:00Z",
+  "currency": "USD",
+  "pricing_basis": "PER_MILLION_TOKENS",
+  "entries": [
+    {
+      "provider": "GOOGLE_GEMINI",
+      "model_id": "gemini-3.8-flash",
+      "classification": "PINNED_OR_STABLE",
+      "lifecycle": "GA",
+      "structured_json": true,
+      "input_usd_micros_per_million_tokens": 750000,
+      "output_usd_micros_per_million_tokens": 3750000,
+      "pricing_valid_through": "2026-12-31",
+      "official_evidence_refs": [
+        "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash",
+        "https://ai.google.dev/gemini-api/docs/latest-model",
+        "https://ai.google.dev/gemini-api/docs/deprecations"
+      ]
+    },
+    {
+      "provider": "ANTHROPIC_CLAUDE",
+      "model_id": "claude-haiku-4-5-20251001",
+      "classification": "PINNED_OR_STABLE",
+      "lifecycle": "CURRENT",
+      "structured_json": true,
+      "input_usd_micros_per_million_tokens": 1000000,
+      "output_usd_micros_per_million_tokens": 5000000,
+      "pricing_valid_through": null,
+      "official_evidence_refs": [
+        "https://platform.claude.com/docs/en/models/overview",
+        "https://platform.claude.com/docs/en/models/haiku-4-5/migration-guide",
+        "https://platform.claude.com/docs/en/about-claude/pricing",
+        "https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions",
+        "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+      ]
+    }
+  ],
+  "nonauthority": {
+    "adoption": false,
+    "merge": false,
+    "main_mutation": false,
+    "ruleset_mutation": false,
+    "workflow_dispatch_rerun": false,
+    "runtime_activation": false,
+    "provider_effect": false,
+    "production": false,
+    "protected_data": false,
+    "live_business_effect": false,
+    "spend": false
+  }
+}
