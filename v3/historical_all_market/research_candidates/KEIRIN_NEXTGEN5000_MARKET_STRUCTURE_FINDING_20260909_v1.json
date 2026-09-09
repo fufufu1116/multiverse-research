@@ -1,0 +1,127 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_MARKET_STRUCTURE_FINDING_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "BURNED_DIAGNOSTIC_FINDING_FROZEN_SUCCESSOR_REPLICATION_ACTIVE",
+  "sample": {
+    "prediction_races": 2860,
+    "all_market_payout_overlap_races": 2839,
+    "role": "POST_OUTCOME_BURNED_DIAGNOSTIC_ONLY"
+  },
+  "natural_one_point_or_simple_market_results": {
+    "2shahuku_top12_1pt": {
+      "hit_rate": 0.24269108841141246,
+      "recovery_rate": 0.6921098978513561
+    },
+    "2shatan_top1_top2_1pt": {
+      "hit_rate": 0.147234941880944,
+      "recovery_rate": 0.6796759422331807
+    },
+    "wide_top12_1pt": {
+      "hit_rate": 0.45227192673476574,
+      "recovery_rate": 0.7542092286016203
+    },
+    "wide_top13_1pt": {
+      "hit_rate": 0.34836209933075024,
+      "recovery_rate": 0.7648115533638605
+    },
+    "wide_top12_top13_2pt": {
+      "hit_rate": 0.6445931666079605,
+      "recovery_rate": 0.7595103909827404
+    },
+    "3renhuku_top123_1pt": {
+      "hit_rate": 0.15604085945755547,
+      "recovery_rate": 0.7284255019373018
+    },
+    "3rentan_top1_top2_top3_1pt": {
+      "hit_rate": 0.04543853469531525,
+      "recovery_rate": 0.6094047199718211
+    }
+  },
+  "girls_natural": {
+    "races": 236,
+    "3rentan_top1_top2_top3_1pt": {
+      "hits": 36,
+      "hit_rate": 0.15254237288135594,
+      "recovery_rate": 0.9584745762711865,
+      "roi": -0.041525423728813515
+    },
+    "wide_top13_1pt": {
+      "hit_rate": 0.5042372881355932,
+      "recovery_rate": 0.8601694915254238
+    },
+    "conclusion": "Among finite natural market mappings, GIRLS 3rentan top123 1pt was closest to break-even."
+  },
+  "third_place_dispersion": {
+    "conditional_on_actual_winner_predicted_rank1_n": 1279,
+    "finish2_predicted_rank_le3_rate": 0.5903049257232212,
+    "finish3_predicted_rank_le3_rate": 0.4042220484753714,
+    "finish2_predicted_rank_le5_rate": 0.8803752931978108,
+    "finish3_predicted_rank_le5_rate": 0.7498045347928068,
+    "conditional_winner_rank1_and_second_rank2_n": 418,
+    "third_rank3_only_rate": 0.30861244019138756,
+    "third_rank_le4_rate": 0.5789473684210527,
+    "third_rank_le5_rate": 0.7535885167464115,
+    "third_rank_le6_rate": 0.8971291866028708,
+    "interpretation": "Owner intuition that third place is more dispersed than second place is supported on this burned sample."
+  },
+  "third_place_only_spread_economics": {
+    "interpretation": "Expanding only third-place candidates raises hit rate but does not improve recovery sufficiently to cover added ticket cost.",
+    "all_races": {
+      "1pt": {
+        "hit_rate": 0.04543853469531525,
+        "recovery_rate": 0.6094047199718211
+      },
+      "2pt": {
+        "hit_rate": 0.08524128214159915,
+        "recovery_rate": 0.6392215568862275
+      },
+      "3pt": {
+        "hit_rate": 0.11095456146530469,
+        "recovery_rate": 0.6184102383468357
+      },
+      "4pt": {
+        "hit_rate": 0.13208876364917224,
+        "recovery_rate": 0.5982770807563174
+      },
+      "about5pt": {
+        "hit_rate": 0.1454737583656217,
+        "recovery_rate": 0.6478347863370015
+      }
+    }
+  },
+  "promising_burned_candidate": {
+    "rule": "GIRLS + top_score_gap >= 3.0 + 3rentan conservative rank1-rank2-rank3 1pt",
+    "races": 80,
+    "hits": 17,
+    "hit_rate": 0.2125,
+    "recovery_rate": 1.37625,
+    "roi": 0.37625,
+    "first_half": {
+      "races": 40,
+      "recovery_rate": 1.0925
+    },
+    "second_half": {
+      "races": 40,
+      "recovery_rate": 1.66
+    },
+    "status": "NOT_PROMOTED_BURNED_ONLY",
+    "successor_prespec": "v3/historical_all_market/research_candidates/KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_PRESPEC_20260909_v1.json"
+  },
+  "evidence_runs": {
+    "all_market_natural": 34304005124,
+    "third_place_spread": 34304104473,
+    "fixed_head_formation": 34304223512,
+    "girls_coarse_audit": 34304343677,
+    "successor_pre_freeze_active": 34304724946
+  },
+  "hard_boundaries": {
+    "no_same_sample_promotion": true,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "profitability_proven": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
