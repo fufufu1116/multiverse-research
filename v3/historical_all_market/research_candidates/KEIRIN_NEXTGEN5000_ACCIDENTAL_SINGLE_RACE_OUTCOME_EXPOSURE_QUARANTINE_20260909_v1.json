@@ -1,0 +1,35 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_ACCIDENTAL_SINGLE_RACE_OUTCOME_EXPOSURE_QUARANTINE_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "ONE_RACE_PROCESS_QUARANTINE_PRIMARY_UNTOUCHED_VALIDATION_EXCLUDES_IT",
+  "exposed_race": {
+    "race_id": "8320260327010001",
+    "race_date": "2026-03-27",
+    "venue": "久留米",
+    "reason": "During PRE parser semantic verification, a deeper view of the same KDreams race-detail page exposed the result/payout section.",
+    "exposure_scope": "single race result and payout became visible"
+  },
+  "timing_and_firewall": {
+    "corrected_parser_v2_committed_before_exposure": true,
+    "candidate_ab_reproduction_constants_frozen_before_exposure": true,
+    "candidate_ab_numeric_selftest_fixture_for_this_pre_created_before_exposure": true,
+    "sporting_scorer_committed_before_exposure": true,
+    "sporting_eval_prespec_committed_before_exposure": true,
+    "no_threshold_or_model_change_from_exposed_result": true
+  },
+  "mandatory_handling": [
+    "Exclude race_id 8320260327010001 from primary untouched NEXTGEN5000 sporting and economic validation.",
+    "May retain it only as process/audit data, clearly labeled exposed.",
+    "Do not use its result or payout to alter model weights, confidence threshold, gap threshold, ticket construction, payout parser policy or staking.",
+    "All other NEXTGEN5000 outcomes remain unopened until corrected PRE v2 Candidate_A/B1a materializations are frozen."
+  ],
+  "safeguards": {
+    "primary_validation_contamination_prevented_by_exclusion": true,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
