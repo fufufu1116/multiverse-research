@@ -1,0 +1,39 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_PRACTICAL_PRICE_GATE_INTERPRETATION_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "NEW_SAMPLE_SUPPORTS_PRICE_AWARE_PURCHASE_GATE_RAW_TICKET_PROBABILITY_NOT_GLOBALLY_SHRUNK",
+  "evidence": {
+    "corrected_sporting_races": 2823,
+    "frozen_selected_sporting_races": 334,
+    "frozen_selected_payout_complete_races": 335,
+    "selected_mean_predicted_ticket_probability": 0.17140485940815503,
+    "selected_observed_ticket_hit_rate": 0.18562874251497005,
+    "selected_observed_to_predicted_ratio": 1.0829841298311422,
+    "all_mean_predicted_ticket_probability": 0.1597404802921977,
+    "all_observed_exact_top3_rate": 0.15586255756287637,
+    "all_observed_to_predicted_ratio": 0.9757236066761047,
+    "price_independent_selected_roi": -0.1513432835820896
+  },
+  "interpretation": [
+    "The conservative 3renhuku ticket probability is approximately calibrated on this burned new sample; there is no evidence here for a global downward probability shrink solely to repair calibration.",
+    "Buying every structurally selected ticket without regard to price loses about 15.1% ROI.",
+    "Therefore price is a necessary purchase-stage gate even when prediction remains odds-independent.",
+    "For core-range purchases, break-even decimal odds remain 1/p and a +10% EV margin remains 1.10/p; round upward for the owner-facing minimum-odds display.",
+    "This does not prove that the +10% margin is optimal or profitable prospectively. It preserves the existing owner-assisted V2 logic while new timestamped PRE odds evidence accumulates.",
+    "Longshot >20x promotion remains shadow-only pending its separate prospective evidence gate."
+  ],
+  "today_20260909": {
+    "practical_v2_prediction_changed": false,
+    "ticket_changed": false,
+    "answer_check_changed": false,
+    "purchase_gate_semantics_changed": false
+  },
+  "hard_boundaries": {
+    "historical_odds_used_for_prediction": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "profitability_proven": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
