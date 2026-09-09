@@ -121,6 +121,7 @@ def main():
     ap.add_argument('--out-csv',required=True)
     ap.add_argument('--receipt',required=True)
     ap.add_argument('--pre-freeze-attestation',required=True,choices=['YES'])
+    ap.add_argument('--min-success-rate',type=float,default=0.90)
     a=ap.parse_args()
     if not 2001<=a.start_position<=a.end_position<=5000: raise SystemExit('invalid range')
     locked=rediscover_locked(a.timeout)
