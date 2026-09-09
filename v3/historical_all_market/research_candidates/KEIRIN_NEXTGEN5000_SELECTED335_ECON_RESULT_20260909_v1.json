@@ -1,0 +1,65 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_SELECTED335_ECON_RESULT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_PRICE_INDEPENDENT_3RENHUKU_RULE_FAILS_NEW_SAMPLE_ECONOMICALLY",
+  "source": {
+    "aggregate_freeze_run_id": 34297933454,
+    "economic_run_id": 34298244673,
+    "economic_artifact_id": 10084012147,
+    "economic_artifact_digest": "sha256:bcb591d36ed751ef6139817adf28b370fc593c9be8dc83b518378a206cdf8773"
+  },
+  "frozen_rule": "NON_GIRLS_GAP_LT3_CONF40_TOP3_3RENHUKU_1PT_NO_PRICE_FILTER",
+  "sample": {
+    "preselected_bets": 335,
+    "payout_rows_recovered": 335,
+    "payout_rejects": 0,
+    "stake_yen_per_race": 100
+  },
+  "overall": {
+    "bets": 335,
+    "hits": 62,
+    "hit_rate": 0.18507462686567164,
+    "stake_yen": 33500,
+    "return_yen": 28430,
+    "net_yen": -5070,
+    "roi": -0.1513432835820896,
+    "recovery_rate": 0.8486567164179104,
+    "maximum_drawdown_yen": 9810,
+    "largest_single_return_yen": 2200,
+    "largest_single_return_share": 0.07738304607808653,
+    "roi_omitting_largest_winning_bet_entirely": -0.21467065868263469
+  },
+  "chronological_halves": {
+    "first_half": {
+      "bets": 167,
+      "hits": 34,
+      "hit_rate": 0.20359281437125748,
+      "roi": -0.11916167664670663,
+      "net_yen": -1990
+    },
+    "second_half": {
+      "bets": 168,
+      "hits": 28,
+      "hit_rate": 0.16666666666666666,
+      "roi": -0.18333333333333335,
+      "net_yen": -3080
+    }
+  },
+  "interpretation": [
+    "The exact frozen price-independent one-ticket 3renhuku rule does not reproduce an economic edge on the corrected new sample.",
+    "Both chronological halves are negative, so the loss is not confined to only one half.",
+    "Largest single return is only 7.74% of total return; this negative result is not explained by jackpot concentration.",
+    "This falsifies this exact price-independent strategy on this sample; it does not falsify the sporting model or an odds-aware purchase rule.",
+    "Do not rescue-tune positions 2001..5000 after this result. Any replacement hypothesis must be frozen on another untouched sample."
+  ],
+  "hard_boundaries": {
+    "odds_used_for_selection": false,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment": 0,
+    "profitability_proven": false,
+    "today_20260909_answer_check_changed": false,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
