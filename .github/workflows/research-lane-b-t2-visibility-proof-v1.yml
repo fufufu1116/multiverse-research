@@ -19,14 +19,14 @@ jobs:
       - name: Checkout exact Candidate
         uses: actions/checkout@v4
         with:
-          ref: 6efe2174782d145b3246b26e76c7f3ea681f253c
+          ref: 59e06d695ec118ee360ebd755f5cbfa60cc396ee
           fetch-depth: 0
 
       - name: Exact head
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "6efe2174782d145b3246b26e76c7f3ea681f253c"
+          test "$(git rev-parse HEAD)" = "59e06d695ec118ee360ebd755f5cbfa60cc396ee"
           echo "CANDIDATE_HEAD=$(git rev-parse HEAD)"
           echo "WORKFLOW_TRIGGER_SHA=$GITHUB_SHA"
 
