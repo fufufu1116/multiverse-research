@@ -1,0 +1,57 @@
+name: Keirin Successor GirlsGap3 PRE Extension 9001-9201 v1
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - '.github/workflows/keirin-successor-girls-gap3-pre-extension-9001-9201-v1.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  extend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install --disable-pip-version-check beautifulsoup4
+      - name: Recover extension PRE only
+        run: |
+          mkdir -p out base
+          python tools/keirin_successor9201_pre_bulk_recovery_v1.py \
+            --start-position 9001 --end-position 9201 --workers 10 --min-success-rate 0.90 \
+            --pre-csv out/PRE_9001_9201.csv --receipt out/PRE_9001_9201_RECEIPT.json
+      - name: Materialize extension CandidateAB
+        run: |
+          python tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py \
+            --pre-csv out/PRE_9001_9201.csv \
+            --out out/CANDIDATE_AB_9001_9201.json
+      - name: Download original blind freeze
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 34304724946 -n keirin-successor-girls-gap3-preoutcome-freeze-v1 -D base
+      - name: Freeze combined successor before any outcomes
+        run: |
+          python tools/keirin_successor_girls_gap3_extended_preoutcome_freezer_v1.py \
+            --extension-spec v3/historical_all_market/research_candidates/KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_SAMPLE_SIZE_EXTENSION_20260909_v1.json \
+            --base-freeze base/KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_PREOUTCOME_FREEZE_20260909_v1.json \
+            --extension-materialization out/CANDIDATE_AB_9001_9201.json \
+            --out out/KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_PREOUTCOME_FREEZE_EXTENDED_20260909_v1.json
+      - name: Assert blind combined freeze
+        run: |
+          python - <<'PY'
+          import json
+          p='out/KEIRIN_SUCCESSOR_GIRLS_GAP3_3RENTAN_PREOUTCOME_FREEZE_EXTENDED_20260909_v1.json'
+          x=json.load(open(p,encoding='utf-8'));s=x['safeguards'];z=x['summary']
+          assert s['result_accessed'] is False and s['payout_accessed'] is False and s['odds_accessed'] is False
+          assert s['model_refit'] is False
+          print('PASS_EXTENDED_BLIND_FREEZE',json.dumps(z,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keirin-successor-girls-gap3-preoutcome-freeze-extended-v1
+          path: out/
+          retention-days: 30
