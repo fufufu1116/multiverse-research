@@ -28,6 +28,20 @@ REQUIRED = [
     ROOT / "execution_prep.py",
     ROOT / "readiness.py",
     ROOT / "provider_catalog.py",
+    ROOT / "pilot_matrix.py",
+    ROOT / "pilot_dry_run.py",
+    ROOT / "catalog_freshness.py",
+    ROOT / "time_attestation.py",
+    ROOT / "pre_execution_bundle.py",
+    ROOT / "launch_evidence.py",
+    ROOT / "pilot_roundtrip.py",
+    ROOT / "pilot_roundtrip_v2.py",
+    ROOT / "provider_result_schema.py",
+    ROOT / "provider_result_ingestion.py",
+    ROOT / "rehearsal_convergence.py",
+    ROOT / "dual_provider_research.py",
+    ROOT / "dual_provider_fanout.py",
+    ROOT / "federation_rehearsal.py",
     ROOT / "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json",
     ROOT / "synthetic_adapter.py",
     ROOT / "test_phase_a.py",
@@ -161,6 +175,22 @@ def validate() -> dict:
     execution_prep = (ROOT / "execution_prep.py").read_text()
     readiness = (ROOT / "readiness.py").read_text()
     provider_catalog = (ROOT / "provider_catalog.py").read_text()
+    pilot_matrix = (ROOT / "pilot_matrix.py").read_text()
+    pilot_dry_run = (ROOT / "pilot_dry_run.py").read_text()
+    catalog_freshness = (ROOT / "catalog_freshness.py").read_text()
+    time_attestation = (ROOT / "time_attestation.py").read_text()
+    pre_execution_bundle = (ROOT / "pre_execution_bundle.py").read_text()
+    launch_evidence = (ROOT / "launch_evidence.py").read_text()
+    pilot_roundtrip = (ROOT / "pilot_roundtrip.py").read_text()
+    pilot_roundtrip_v2 = (ROOT / "pilot_roundtrip_v2.py").read_text()
+    provider_result_schema = (ROOT / "provider_result_schema.py").read_text()
+    provider_result_ingestion = (
+        ROOT / "provider_result_ingestion.py"
+    ).read_text()
+    rehearsal_convergence = (ROOT / "rehearsal_convergence.py").read_text()
+    dual_provider_research = (ROOT / "dual_provider_research.py").read_text()
+    dual_provider_fanout = (ROOT / "dual_provider_fanout.py").read_text()
+    federation_rehearsal = (ROOT / "federation_rehearsal.py").read_text()
     provider_catalog_snapshot = json.loads(
         (
             ROOT
@@ -601,6 +631,321 @@ def validate() -> dict:
             )
 
     for token in (
+        "MULTIVERSE_FIRST_PROVIDER_PILOT_DRY_RUN_v1",
+        "PHASE_B_FIRST_PROVIDER_PILOT_PREPARATION_ONLY",
+        "build_first_provider_pilot_dry_run",
+        "validate_first_provider_pilot_dry_run",
+        "PILOT_CATALOG_SNAPSHOT_SHA256_MISMATCH",
+        "PILOT_MODEL_ID_MISMATCH",
+        "PILOT_CATALOG_ENTRY_SHA256_MISMATCH",
+        "PILOT_COST_ESTIMATE_MISMATCH",
+        "PILOT_EXACTLY_ONE_PROVIDER",
+        "PILOT_EXACTLY_ONE_CALL",
+        "PILOT_EXACTLY_ONE_ATTEMPT",
+        "PILOT_SYNTHETIC_ONLY",
+        "PILOT_JSON_ONLY",
+        "PILOT_NETWORK_EXECUTION_FORBIDDEN",
+        "PILOT_CREDENTIAL_MATERIAL_FORBIDDEN",
+        "PILOT_AUTHORITY_REQUIRED",
+        "PILOT_FORBIDDEN_TRUE",
+        "PILOT_RUNTIME_NOT_OFF",
+        "build_pilot_candidate_matrix",
+        "first_provider_pilot_dry_run_sha256",
+    ):
+        record(
+            f"pilot_dry_run:{token}",
+            token in pilot_dry_run,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_CATALOG_FRESHNESS_v1",
+        "MULTIVERSE_FIRST_PROVIDER_PILOT_FRESHNESS_BINDING_v1",
+        "MAX_EXECUTION_CATALOG_AGE_SECONDS = 86400",
+        "build_catalog_freshness_receipt",
+        "validate_catalog_freshness_receipt",
+        "CATALOG_FRESHNESS_CHECK_BEFORE_SNAPSHOT",
+        "CATALOG_SNAPSHOT_STALE",
+        "CATALOG_PRICING_WINDOW_EXPIRED",
+        "CATALOG_FRESHNESS_SNAPSHOT_SHA256_MISMATCH",
+        "CATALOG_FRESHNESS_FORBIDDEN_TRUE",
+        "build_pilot_freshness_binding",
+        "validate_pilot_freshness_binding",
+        "PILOT_FRESHNESS_PLAN_SHA256_MISMATCH",
+        "PILOT_FRESHNESS_RECEIPT_SHA256_MISMATCH",
+        "PILOT_FRESHNESS_FORBIDDEN_TRUE",
+        "pilot_freshness_binding_sha256",
+    ):
+        record(
+            f"catalog_freshness:{token}",
+            token in catalog_freshness,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+        "MULTIVERSE_CATALOG_FRESHNESS_TIME_BINDING_v1",
+        "CONTROL_RUNTIME_CLOCK",
+        "MAX_RECORDING_DELAY_SECONDS = 60",
+        "validate_execution_time_attestation",
+        "TIME_ATTESTATION_RECORDED_BEFORE_ATTESTED",
+        "TIME_ATTESTATION_RECORDING_DELAY_EXCEEDED",
+        "TIME_ATTESTATION_FORBIDDEN_TRUE",
+        "build_catalog_freshness_time_binding",
+        "validate_catalog_freshness_time_binding",
+        "FRESHNESS_TIME_NOT_EXACT",
+        "FRESHNESS_TIME_CATALOG_SHA256_MISMATCH",
+        "FRESHNESS_TIME_ATTESTATION_SHA256_MISMATCH",
+        "FRESHNESS_TIME_FORBIDDEN_TRUE",
+        "catalog_freshness_time_binding_sha256",
+    ):
+        record(
+            f"time_attestation:{token}",
+            token in time_attestation,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_PILOT_MATRIX_v1",
+        "build_provider_pilot_matrix",
+        "validate_provider_pilot_matrix",
+        "provider_pilot_matrix_sha256",
+        "catalog_entry_sha256",
+        "adapter_source_sha256",
+        "outbound_payload_sha256",
+        "build_live_provider_readiness_report",
+        "validate_live_provider_readiness_report",
+        "live_execution_prep_sha256",
+        "transport_binding_sha256",
+    ):
+        record(
+            f"pilot_matrix:{token}",
+            token in pilot_matrix,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_PRE_EXECUTION_BUNDLE_v1",
+        "build_provider_pre_execution_bundle",
+        "validate_provider_pre_execution_bundle",
+        "PRE_EXECUTION_PRELIVE_HEAD_MISMATCH",
+        "PRE_EXECUTION_PRELIVE_SEAL_MISMATCH",
+        "PRE_EXECUTION_CATALOG_SNAPSHOT_SHA256_MISMATCH",
+        "PRE_EXECUTION_PILOT_SHA256_MISMATCH",
+        "PRE_EXECUTION_FRESHNESS_SHA256_MISMATCH",
+        "PRE_EXECUTION_PILOT_FRESHNESS_SHA256_MISMATCH",
+        "PRE_EXECUTION_TIME_ATTESTATION_SHA256_MISMATCH",
+        "PRE_EXECUTION_FRESHNESS_TIME_SHA256_MISMATCH",
+        "PRE_EXECUTION_FORBIDDEN_TRUE",
+        "PRE_EXECUTION_RUNTIME_NOT_OFF",
+        "provider_pre_execution_bundle_sha256",
+    ):
+        record(
+            f"pre_execution_bundle:{token}",
+            token in pre_execution_bundle,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_LAUNCH_EVIDENCE_v1",
+        "build_provider_launch_evidence",
+        "validate_provider_launch_evidence",
+        "LAUNCH_EVIDENCE_PROVIDER_MISMATCH",
+        "LAUNCH_EVIDENCE_MODEL_MISMATCH",
+        "LAUNCH_EVIDENCE_INPUT_CEILING_MISMATCH",
+        "LAUNCH_EVIDENCE_OUTPUT_CEILING_MISMATCH",
+        "LAUNCH_EVIDENCE_COST_CEILING_MISMATCH",
+        "REPOSITORY_EVIDENCE_ALIGNED_AUTHORITY_ABSENT",
+        "LAUNCH_EVIDENCE_FORBIDDEN_TRUE",
+        "LAUNCH_EVIDENCE_RUNTIME_NOT_OFF",
+        "provider_launch_evidence_sha256",
+    ):
+        record(
+            f"launch_evidence:{token}",
+            token in launch_evidence,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_PILOT_ROUNDTRIP_v1",
+        "build_provider_pilot_roundtrip",
+        "validate_provider_pilot_roundtrip",
+        "parse_gemini_interactions_v1_response",
+        "parse_claude_messages_response",
+        "validate_termination_record",
+        "validate_result_v2_for_assignment",
+        "validate_execution_receipt",
+        "validate_provider_observation_binding",
+        "LIVE_ATTESTED",
+        "PILOT_ROUNDTRIP_EXACT_MISMATCH",
+        "provider_pilot_roundtrip_sha256",
+    ):
+        record(
+            f"pilot_roundtrip:{token}",
+            token in pilot_roundtrip,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_PILOT_ROUNDTRIP_v2",
+        "build_provider_pilot_roundtrip_v2",
+        "validate_provider_pilot_roundtrip_v2",
+        "provider_pilot_roundtrip_v2_sha256",
+        "result_from_provider_output",
+        "provider_result_ingestion_sha256",
+        "PILOT_ROUNDTRIP_V2_RESULT_NOT_FROM_PROVIDER_OUTPUT",
+    ):
+        record(
+            f"pilot_roundtrip_v2:{token}",
+            token in pilot_roundtrip_v2,
+            token,
+        )
+
+    for token in (
+        "build_result_v2_response_schema",
+        "validate_result_v2_response_schema",
+        "result_v2_response_schema_sha256",
+        "RESULT_V2_RESPONSE_SCHEMA_EXACT_MISMATCH",
+        "assignment_sha256",
+        "additionalProperties",
+        "model_identity",
+        "assignment_sha256",
+    ):
+        record(
+            f"provider_result_schema:{token}",
+            token in provider_result_schema,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_RESULT_INGESTION_v1",
+        "build_provider_result_ingestion",
+        "validate_provider_result_ingestion",
+        "provider_result_ingestion_sha256",
+        "PROVIDER_RESULT_JSON_DUPLICATE_KEY",
+        "PROVIDER_RESULT_JSON_NONFINITE",
+        "PROVIDER_RESULT_JSON_INVALID",
+        "PROVIDER_RESULT_ASSIGNMENT_OUTPUT_LIMIT_EXCEEDED",
+        "PROVIDER_RESULT_OBSERVED_MODEL_MISMATCH",
+        "validate_result_v2_for_assignment",
+        "result_v2_content_digest",
+    ):
+        record(
+            f"provider_result_ingestion:{token}",
+            token in provider_result_ingestion,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_PROVIDER_REHEARSAL_CONVERGENCE_v1",
+        "build_provider_rehearsal_convergence",
+        "validate_provider_rehearsal_convergence",
+        "REHEARSAL_PROVIDER_MISMATCH",
+        "REHEARSAL_MODEL_MISMATCH",
+        "REHEARSAL_MATRIX_SHA256_MISMATCH",
+        "estimate_smoke_cost_usd_micros",
+        "REHEARSAL_INPUT_TOKENS_EXCEED_PREFLIGHT",
+        "REHEARSAL_OUTPUT_TOKENS_EXCEED_PREFLIGHT",
+        "REHEARSAL_SIMULATED_COST_EXCEEDS_PREFLIGHT",
+        "FULL_OFFLINE_REHEARSAL_ALIGNED_AUTHORITY_ABSENT",
+        "REHEARSAL_FORBIDDEN_TRUE",
+        "REHEARSAL_RUNTIME_NOT_OFF",
+        "provider_rehearsal_convergence_sha256",
+    ):
+        record(
+            f"rehearsal_convergence:{token}",
+            token in rehearsal_convergence,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_DUAL_PROVIDER_OFFLINE_RESEARCH_v1",
+        "build_dual_provider_offline_research",
+        "validate_dual_provider_offline_research",
+        "aggregate_results_v2",
+        "DIVERGENT",
+        "cross_model_divergence",
+        "cross_provider_divergence",
+        "UNRESOLVED_DIVERGENCE",
+        "MECHANICAL_FALSIFICATION_TASK",
+        "SUPPORT_ONLY",
+        "DUAL_PROVIDER_AGREEMENT_LABEL",
+        "DUAL_PROVIDER_AGREEMENT_CROSS_MODEL",
+        "DUAL_PROVIDER_AGREEMENT_CROSS_PROVIDER",
+        "DUAL_PROVIDER_AGREEMENT_UNRESOLVED",
+        "DUAL_PROVIDER_REFUSAL_LABEL",
+        "DUAL_PROVIDER_REFUSAL_CROSS_MODEL",
+        "DUAL_PROVIDER_REFUSAL_CROSS_PROVIDER",
+        "DUAL_PROVIDER_REFUSAL_OBSERVED_PROVIDER_COUNT",
+        "DUAL_PROVIDER_REFUSAL_COMPLETED_PROVIDER_COUNT",
+        "DUAL_PROVIDER_REFUSAL_STATUS_COUNT",
+        "DUAL_PROVIDER_REFUSAL_UNRESOLVED",
+        "DUAL_PROVIDER_FORBIDDEN_TRUE",
+        "DUAL_PROVIDER_RUNTIME_NOT_OFF",
+        "dual_provider_offline_research_sha256",
+    ):
+        record(
+            f"dual_provider_research:{token}",
+            token in dual_provider_research,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_DUAL_PROVIDER_FANOUT_REHEARSAL_v1",
+        "build_dual_provider_fanout_rehearsal",
+        "validate_dual_provider_fanout_rehearsal",
+        "validate_fanout_plan",
+        "summarize_fanout_results",
+        "DUAL_FANOUT_FULL_PLANNED_COUNT",
+        "DUAL_FANOUT_MISSING_ASSIGNMENT_COUNT",
+        "DUAL_FANOUT_MISSING_OBSERVED_FLAG",
+        "DUAL_FANOUT_MISSING_COMPLETED_FLAG",
+        "DUAL_FANOUT_FAILURE_OBSERVED_COUNT",
+        "DUAL_FANOUT_FAILURE_COMPLETED_COUNT",
+        "DUAL_FANOUT_FAILURE_NONCOMPLETED_COUNT",
+        "DUAL_FANOUT_FAILURE_REFUSED_COUNT",
+        "DUAL_FANOUT_FAILURE_COMPLETED_FLAG",
+        "DUAL_FANOUT_FORBIDDEN_TRUE",
+        "DUAL_FANOUT_RUNTIME_NOT_OFF",
+        "dual_provider_fanout_rehearsal_sha256",
+    ):
+        record(
+            f"dual_provider_fanout:{token}",
+            token in dual_provider_fanout,
+            token,
+        )
+
+    for token in (
+        "MULTIVERSE_DUAL_PROVIDER_FEDERATION_REHEARSAL_v1",
+        "build_dual_provider_federation_rehearsal",
+        "validate_dual_provider_federation_rehearsal",
+        "FEDERATION_PRELIVE_HEAD_MISMATCH",
+        "FEDERATION_PRELIVE_SEAL_MISMATCH",
+        "FEDERATION_CHECKED_AT_MISMATCH",
+        "FEDERATION_GEMINI_MATRIX_MISMATCH",
+        "FEDERATION_CLAUDE_MATRIX_MISMATCH",
+        "FEDERATION_PROMPT_SHA256_MISMATCH",
+        "FEDERATION_FULL_BATCH_NOT_COMPLETE",
+        "FEDERATION_MISSING_PROVIDER_ACCEPTED",
+        "FEDERATION_FAILURE_NOT_OBSERVED",
+        "FEDERATION_FAILED_PROVIDER_ACCEPTED",
+        "FEDERATION_DISAGREEMENT_NOT_DETECTED",
+        "FEDERATION_AGREEMENT_MISLABELED",
+        "FEDERATION_REFUSAL_LABEL",
+        "FEDERATION_REFUSAL_MISLABELED_DIVERGENT",
+        "FEDERATION_REFUSAL_COMPLETED_PROVIDER_COUNT",
+        "MECHANICAL_FALSIFICATION_TASK",
+        "FEDERATION_FORBIDDEN_TRUE",
+        "FEDERATION_RUNTIME_NOT_OFF",
+        "dual_provider_federation_rehearsal_sha256",
+    ):
+        record(
+            f"federation_rehearsal:{token}",
+            token in federation_rehearsal,
+            token,
+        )
+
+    for token in (
         '"PASS"',
         '"FIX_REQUIRED"',
         '"INFRA_FAILURE"',
@@ -622,8 +967,8 @@ def validate() -> dict:
     )
     record(
         "exact_test_count",
-        test_count == 271,
-        f"{test_count} != 271",
+        test_count == 478,
+        f"{test_count} != 478",
     )
 
     return {
