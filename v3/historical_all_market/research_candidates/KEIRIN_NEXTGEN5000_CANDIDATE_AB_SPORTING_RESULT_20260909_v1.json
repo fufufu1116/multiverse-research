@@ -1,0 +1,90 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_CANDIDATE_AB_SPORTING_RESULT_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "CORRECTED_NEW_SAMPLE_SPORTING_SCORE_COMPLETE_PRICE_INDEPENDENT_TICKET_RULE_ECON_FAIL_SEPARATELY_RECORDED",
+  "source": {
+    "aggregate_prediction_run_id": 34297933454,
+    "outcome_payout_run_id": 34298025327,
+    "sporting_score_run_id": 34298784761,
+    "sporting_artifact_id": 10084125559,
+    "sporting_artifact_digest": "sha256:296de1201913b2d49173a5628ac0841312e729c7c4b527442495a9d200bc9b16"
+  },
+  "primary_sample": {
+    "corrected_prediction_races": 2860,
+    "primary_sporting_scored_races": 2823,
+    "process_quarantine_race_id": "8320260327010001",
+    "selected_races_scored": 334
+  },
+  "all": {
+    "candidate_a_top1_hit_rate": 0.45093871767623095,
+    "b1a_top1_hit_rate": 0.4385405596882749,
+    "model_top1_agreement_rate": 0.8402408784980517,
+    "agreed_top1_hit_rate": 0.47892074198988194,
+    "consensus_winner_in_top3_rate": 0.7927736450584485,
+    "consensus_exact_top3_set_hit_rate": 0.15586255756287637,
+    "selected_ticket_hit_rate": 0.18562874251497005,
+    "candidate_a_mean_logloss": 1.528465889721484,
+    "b1a_mean_logloss": 1.5060377617522256
+  },
+  "girls": {
+    "races": 236,
+    "candidate_a_top1_hit_rate": 0.7457627118644068,
+    "b1a_top1_hit_rate": 0.7245762711864406,
+    "agreed_top1_hit_rate": 0.7456140350877193,
+    "winner_in_top3_rate": 0.940677966101695,
+    "exact_top3_set_hit_rate": 0.288135593220339
+  },
+  "non_girls": {
+    "races": 2587,
+    "candidate_a_top1_hit_rate": 0.42404329339002705,
+    "b1a_top1_hit_rate": 0.4124468496327793,
+    "agreed_top1_hit_rate": 0.4505597014925373,
+    "winner_in_top3_rate": 0.7792810204870506,
+    "exact_top3_set_hit_rate": 0.14379590258987243
+  },
+  "score_gap_pattern": [
+    {
+      "gap": "<1",
+      "races": 882,
+      "agreed_top1_hit_rate": 0.37482319660537483,
+      "winner_in_top3_rate": 0.753968253968254,
+      "selected_ticket_hit_rate": 0.23636363636363636
+    },
+    {
+      "gap": "1-3",
+      "races": 1126,
+      "agreed_top1_hit_rate": 0.45,
+      "winner_in_top3_rate": 0.7824156305506217,
+      "selected_ticket_hit_rate": 0.17562724014336917
+    },
+    {
+      "gap": "3-5",
+      "races": 574,
+      "agreed_top1_hit_rate": 0.556640625,
+      "winner_in_top3_rate": 0.8257839721254355
+    },
+    {
+      "gap": ">=5",
+      "races": 241,
+      "agreed_top1_hit_rate": 0.7381974248927039,
+      "winner_in_top3_rate": 0.9045643153526971
+    }
+  ],
+  "interpretation": [
+    "Winner-ranking signal reproduces materially: Candidate_A top1 ~45.1%, agreed-top1 ~47.9% overall.",
+    "Girls are much easier for winner ranking (~74.6% Candidate_A top1), reproducing the prior burned-data pattern.",
+    "Larger top-score gaps strongly improve winner prediction, but exact top3-set hit rate does not improve similarly; this reproduces the 'head clearer, companions scatter' pattern.",
+    "The frozen non-Girls gap<3 conf40 one-ticket 3renhuku selection hits ~18.6% but economically loses ~15.1% ROI on 335 payout-complete selections.",
+    "Therefore the main weakness is not simple winner ranking collapse; ticket construction/probability calibration/price interaction remain the primary next research targets."
+  ],
+  "hard_boundaries": {
+    "no_posthoc_rescue_on_positions_2001_5000": true,
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "profitability_proven": false,
+    "today_20260909_answer_check_changed": false,
+    "formal_support_increment": 0,
+    "runtime": false,
+    "main_mutation": false
+  }
+}
