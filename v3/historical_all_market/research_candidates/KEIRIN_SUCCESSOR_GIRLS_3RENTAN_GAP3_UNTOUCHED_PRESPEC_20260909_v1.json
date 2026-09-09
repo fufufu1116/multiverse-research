@@ -1,0 +1,70 @@
+{
+  "record": "KEIRIN_SUCCESSOR_GIRLS_3RENTAN_GAP3_UNTOUCHED_PRESPEC_20260909_v1",
+  "date_jst": "2026-09-09",
+  "status": "FROZEN_BEFORE_SUCCESSOR_PRE_AND_OUTCOME_ACCESS",
+  "origin": {
+    "burned_discovery_sample": "NEXTGEN5000 positions 2001..5000; corrected PRE; post-outcome diagnostic only",
+    "burned_finding": {
+      "rule": "GIRLS + top_score_gap >= 3.0 + 3rentan conservative rank1-rank2-rank3 1pt",
+      "races": 80,
+      "hits": 17,
+      "hit_rate": 0.2125,
+      "recovery_rate": 1.37625,
+      "first_half_recovery_rate": 1.0925,
+      "second_half_recovery_rate": 1.66
+    },
+    "interpretation": "PROMISING_BURNED_DIAGNOSTIC_ONLY_NOT_PROMOTED"
+  },
+  "untouched_successor_universe": {
+    "discovery_source": "KDreams racecard pages 2026-03-01 through 2026-06-30",
+    "locked_candidate_count": 9201,
+    "locked_candidate_sha256": "9b8fc60bfd55eb12a4989112b3fa4eee1e2bb6a214946edd79a739296a9aed7c",
+    "positions_start": 5001,
+    "positions_end": 9000,
+    "requested_positions": 4000,
+    "overlap_with_prior_nextgen5000_positions_1_5000": 0,
+    "outcome_access_before_prediction_freeze": false
+  },
+  "frozen_model": {
+    "lineage": "Candidate_A + B1a_RECONSTITUTED_v1",
+    "materializer": "tools/keirin_nextgen5000_candidate_ab_preoutcome_materializer_v1.py",
+    "model_refit": false
+  },
+  "frozen_candidate_rule": {
+    "market": "3rentan",
+    "girls_only": true,
+    "top_score_gap_min_inclusive": 3,
+    "top1_agreement_required": false,
+    "top1_probability_threshold": null,
+    "ordered_ticket": "conservative_rank[0]-conservative_rank[1]-conservative_rank[2]",
+    "points_per_selected_race": 1,
+    "stake_yen_per_point": 100,
+    "odds_used_for_prediction": false,
+    "historical_odds_gate": false
+  },
+  "evaluation": {
+    "primary_endpoint": "recovery_rate",
+    "secondary": [
+      "hit_rate",
+      "net_yen",
+      "maximum_drawdown_yen",
+      "largest_single_return_share",
+      "chronological_half_recovery_rates"
+    ],
+    "minimum_selected_bets_for_primary_decision": 80,
+    "primary_replication_pass": "selected_bets >= 80 AND recovery_rate > 1.0",
+    "robustness_support": "both chronological half recovery rates > 1.0 AND largest_single_return_share <= 0.25",
+    "no_posthoc_threshold_change": true,
+    "no_same_sample_rescue": true
+  },
+  "hard_boundaries": {
+    "DEV2000_C_scoring_count": 0,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment": 0,
+    "today_20260909_answer_check_changed": false,
+    "runtime": false,
+    "automatic_betting": false,
+    "main_mutation": false,
+    "profitability_proven": false
+  }
+}
