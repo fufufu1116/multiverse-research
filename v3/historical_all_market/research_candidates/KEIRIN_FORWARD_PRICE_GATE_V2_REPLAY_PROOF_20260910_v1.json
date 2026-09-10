@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_FORWARD_PRICE_GATE_V2_REPLAY_PROOF_20260910_v1",
+  "status": "REPLAYABLE_ENGINEERING_PROOF_PASS_NO_ECONOMIC_SUPPORT_INCREMENT",
+  "date_jst": "2026-09-10",
+  "fresh_branch_head_before_write": "69c37f47caa6f84add62c6e3f371e31382de824a",
+  "authority": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "old_general_practical_gate": "tools/keirin_practical_odds_band_purchase_gate_v1.py",
+  "new_forward_gate": "tools/keirin_forward_price_value_gate_v2.py",
+  "test_file": "tools/test_keirin_forward_price_value_gate_v2.py",
+  "problem_fixed": "The older practical v1 gate could return BUY_CANDIDATE above 20x when numerical thresholds passed. The forward prespec makes every price above 20x SHADOW_ONLY. v2 enforces the stricter forward authority without rewriting historical v1 behavior.",
+  "local_replay": {
+    "test_count": 13,
+    "passed": 13,
+    "failed": 0,
+    "result": "PASS",
+    "execution_note": "Deterministic local Python unittest replay; this is engineering validation, not CI, formal support, or economic evidence."
+  },
+  "r5_reference_probability": {
+    "event": "2026-09-11 Takeo R5",
+    "frozen_ticket": "1=2=3",
+    "conservative_ticket_probability": 0.179212765529,
+    "observed_pre_odds": null,
+    "note": "The values below are boundary test scenarios only and are not claimed as observed market prices."
+  },
+  "boundary_replay_examples": [
+    {
+      "scenario_odds": 6.1,
+      "band": "CORE",
+      "guarded_expected_roi": 0.09319786972690003,
+      "probability_multiple_vs_market": 1.0931978697269,
+      "decision": "NO_BET"
+    },
+    {
+      "scenario_odds": 6.2,
+      "band": "CORE",
+      "guarded_expected_roi": 0.11111914627980002,
+      "probability_multiple_vs_market": 1.1111191462798,
+      "decision": "BUY_CANDIDATE_100YEN"
+    },
+    {
+      "scenario_odds": 20.0,
+      "band": "CORE",
+      "decision": "BUY_CANDIDATE_100YEN_IF_PRICE_IS_GENUINE_CURRENT_PRE"
+    },
+    {
+      "scenario_odds": 20.1,
+      "band": "MID_HOLE",
+      "decision": "SHADOW_ONLY_REGARDLESS_OF_NUMERICAL_VALUE"
+    },
+    {
+      "scenario_odds": 80.1,
+      "band": "LONGSHOT",
+      "without_second_source": "NO_BET_UNVERIFIED",
+      "with_second_source": "SHADOW_ONLY"
+    },
+    {
+      "scenario_odds": 300.1,
+      "band": "EXTREME_LONGSHOT",
+      "second_source_only": "NO_BET_UNVERIFIED",
+      "second_source_plus_anomaly_check": "SHADOW_ONLY"
+    },
+    {
+      "scenario_odds": 9999.9,
+      "without_explicit_genuine_verification": "NO_BET_UNVERIFIED",
+      "fully_verified": "SHADOW_ONLY_NEVER_BUY"
+    }
+  ],
+  "invariants_tested": [
+    "CORE below threshold returns NO_BET",
+    "CORE above threshold can return BUY_CANDIDATE_100YEN",
+    "20.0x remains CORE",
+    ">20.0x never returns BUY_CANDIDATE",
+    ">80.0x requires second independent PRE source for a valid shadow observation",
+    ">300.0x requires anomaly check in addition to second source",
+    "9999.9 fails closed unless explicitly verified genuine",
+    "stale price fails closed",
+    "conservative probability is min(S0, challenger)",
+    "invalid odds are rejected",
+    "automatic execution remains false",
+    "runtime remains OFF"
+  ],
+  "evidence_effect": {
+    "prospective_model_observation_increment": 0,
+    "valid_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
