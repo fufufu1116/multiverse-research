@@ -1,0 +1,150 @@
+{
+  "record": "KEIRIN_FORWARD_MULTI_VENUE_ACQUISITION_GATE_20260910_v1",
+  "status": "ACTIVE_FORWARD_MULTI_VENUE_RESULT_BLIND_ACQUISITION_FAIL_CLOSED",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_branch_head_before_write": "6cdbb2789b9def2b7468cf1426cada54cacd701e",
+  "resume_binding": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v35.json",
+  "prespec_binding": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "model_binding": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+  "purpose": "Advance from single-venue pilot observations into a cross-venue prospective acquisition phase without lowering evidence quality or reconstructing tomorrow's cards from today's outcomes.",
+  "target_date": "2026-09-11",
+  "schedule_discovery": {
+    "verified_venues": ["四日市", "高知", "武雄", "川崎", "富山", "奈良", "前橋", "豊橋"],
+    "source": "WINTICKET public 2026-09-11 racecard index",
+    "url": "https://www.winticket.jp/keirin/racecard/20260911",
+    "target_date_index_present": true
+  },
+  "acquisition_state": [
+    {
+      "venue": "武雄",
+      "meeting_day": "final_day",
+      "race_count": 7,
+      "full_pre_cards_already_frozen": [1, 4, 5],
+      "next_priority": [6, 7],
+      "public_program_confirms_r6_r7": true,
+      "individual_complete_r6_r7_table_retrieved_in_this_phase": false,
+      "action": "WAIT_FOR_COMPLETE_PUBLIC_PRE_TABLE_DO_NOT_INFER_FROM_DAY2_RESULTS",
+      "sources": [
+        "https://keirin.tokyo-sports.co.jp/list/race/20260910_30680",
+        "https://www.keirin.city.takeo.lg.jp/news/",
+        "https://keirin.kdreams.jp/kaisai/2026/09/11/"
+      ]
+    },
+    {
+      "venue": "富山",
+      "meeting_day": "day2",
+      "girls_meeting": true,
+      "day1_program_confirms_girls_races": [5, 6],
+      "day2_complete_individual_girls_table_retrieved_in_this_phase": false,
+      "action": "PRIORITY_ACQUIRE_EXACT_DAY2_GIRLS_CARD_ONLY_AFTER_PUBLICATION",
+      "sources": [
+        "https://keirin.kdreams.jp/toyama/raceprogram/4620260910/",
+        "https://www.winticket.jp/keirin/racecard/20260911"
+      ]
+    },
+    {
+      "venue": "川崎",
+      "meeting_day": "day2",
+      "girls_meeting": true,
+      "day2_event_index_present": true,
+      "day2_complete_individual_girls_table_retrieved_in_this_phase": false,
+      "action": "PRIORITY_ACQUIRE_EXACT_DAY2_GIRLS_CARD_ONLY_AFTER_PUBLICATION",
+      "sources": [
+        "https://keirin.kdreams.jp/kawasaki/",
+        "https://www.winticket.jp/keirin/racecard/20260911"
+      ]
+    },
+    {
+      "venue": "四日市",
+      "meeting_day": "final_day",
+      "girls_meeting": true,
+      "day2_public_program_confirms_girls_r6_r7": true,
+      "final_day_complete_individual_girls_table_retrieved_in_this_phase": false,
+      "action": "ACQUIRE_FINAL_DAY_CARD_WHEN_COMPLETE_DO_NOT_DERIVE_FINAL_ASSIGNMENTS_FROM_PRIOR_RESULTS",
+      "sources": [
+        "https://keirin.kdreams.jp/yokkaichi/assen/4820260909/",
+        "https://keirin.kdreams.jp/yokkaichi/raceprogram/4820260909/",
+        "https://www.winticket.jp/keirin/racecard/20260911"
+      ]
+    },
+    {
+      "venue": "高知",
+      "meeting_day": "final_day",
+      "event_index_present": true,
+      "complete_target_card_retrieved_in_this_phase": false,
+      "action": "SECONDARY_AFTER_HIGH_VALUE_PRIORITY_VENUES"
+    },
+    {
+      "venue": "奈良",
+      "meeting_day": "day2_G3",
+      "event_index_present": true,
+      "complete_target_card_retrieved_in_this_phase": false,
+      "action": "SECONDARY_STRATUM_AFTER_PRIORITY_VENUES"
+    },
+    {
+      "venue": "前橋",
+      "meeting_day": "day1_midnight",
+      "event_index_present": true,
+      "complete_target_card_retrieved_in_this_phase": false,
+      "action": "WAIT_FOR_DAY1_CARD_PUBLICATION_NO_INFERENCE"
+    },
+    {
+      "venue": "豊橋",
+      "meeting_day": "day1_midnight",
+      "event_index_present": true,
+      "complete_target_card_retrieved_in_this_phase": false,
+      "action": "WAIT_FOR_DAY1_CARD_PUBLICATION_NO_INFERENCE"
+    }
+  ],
+  "hard_acquisition_gate": {
+    "required_fields_before_model_freeze": [
+      "race_date",
+      "venue",
+      "race_no",
+      "race_class",
+      "scheduled_start",
+      "distance",
+      "bank_circumference",
+      "all_car_numbers",
+      "all_rider_names",
+      "all_rider_styles",
+      "all_competition_scores"
+    ],
+    "partial_card_allowed": false,
+    "infer_from_previous_day_result": false,
+    "use_target_result_or_payout": false,
+    "use_publisher_prediction_marks": false,
+    "use_human_prediction_comments": false,
+    "missing_required_field_action": "NO_MODEL_OBSERVATION_YET"
+  },
+  "fixed_model_and_price_sequence": [
+    "Acquire complete public PRE racecard while target result/payout blind.",
+    "Compute frozen S0 and challenger probabilities with unchanged model.",
+    "Require identical top1 and conservative top1 probability >= 0.40.",
+    "If confidence FAIL, freeze NO_BET and do not request odds.",
+    "If confidence PASS, freeze exact top3 3renhuku ticket in GitHub before any target price retrieval.",
+    "Only after the prediction commit, acquire genuine timestamped PRE odds for that exact ticket.",
+    "CORE <=20x can be a manual BUY_CANDIDATE only if the fixed guarded-value gate passes; >20x remains SHADOW_ONLY.",
+    "Missing, stale, ambiguous, placeholder or unverifiable odds fail closed to NO_BET_UNVERIFIED."
+  ],
+  "strata_only_not_rule_modifiers": ["girls", "final", "solo_or_line_structure", "venue"],
+  "evidence_effect": {
+    "prospective_model_observation_increment": 0,
+    "valid_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "owner_action_required_now": false
+}
