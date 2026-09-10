@@ -1,0 +1,57 @@
+{
+  "schema": "MULTIVERSE_RUNTIME_CONVERGENCE_PROVENANCE_LEDGER_v1",
+  "issue": 133,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "rule": "Superseded FIX_REQUIRED or FALSE artifacts are provenance only and can never satisfy a current PASS gate.",
+  "target_environment": {
+    "historical_auditor_fix_required": 5539861914,
+    "historical_t2_false": 5539864256,
+    "final_auditor_pass": 5539981243,
+    "final_t2_pass": 5539983128,
+    "adoption_comment": 5540202938
+  },
+  "remote_single_host": {
+    "historical_lab_fix_required": 5549303073,
+    "lab_harness_diagnosis": 5549307535,
+    "historical_auditor_fix_required": [
+      5549374380,
+      5549429587,
+      5549466321
+    ],
+    "auditor_harness_diagnoses": [
+      5549394755,
+      5549435626,
+      5549472195
+    ],
+    "historical_t2_false": [
+      5549430483,
+      5549467102
+    ],
+    "final_lab_pass": 5549319552,
+    "final_auditor_pass": 5549576649,
+    "final_t2_pass": 5549577440,
+    "adoption_comment": 5549590213
+  },
+  "multi_host_preparation": {
+    "historical_auditor_fix_required": 5553097766,
+    "historical_t2_false": 5553098746,
+    "final_lab_pass": 5553046385,
+    "final_t1_pass": 5553052044,
+    "final_auditor_pass": 5553173778,
+    "final_t2_pass": 5553174713,
+    "adoption_comment": 5553228829
+  },
+  "real_multi_host": {
+    "failed_drill_v1_diagnosis": 5554083946,
+    "historical_lab_fix_required": 5554796185,
+    "lab_repair_diagnosis": 5554804209,
+    "historical_auditor_fix_required": 5554889220,
+    "auditor_harness_diagnosis": 5554895398,
+    "final_lab_pass": 5554830144,
+    "final_t1_pass": 5554838793,
+    "final_auditor_pass": 5554934917,
+    "final_t2_pass": 5554935885,
+    "adoption_comment": 5554954156
+  },
+  "runtime": "OFF"
+}
