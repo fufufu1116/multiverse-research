@@ -1,0 +1,119 @@
+{
+  "record": "KEIRIN_STRONGEST_WINNING_PATH_CANDIDATE_SYNTHESIS_20260910_v1",
+  "status": "BEST_CURRENT_CANDIDATE_NOT_PROVEN",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_branch_head_before_write": "f837deac0f3cd8e51af8a9d3791c6ae3bda90d3c",
+  "purpose": "Freeze the strongest currently supportable winning-path candidate without changing the preregistered forward lane, consuming protected holdouts, or claiming profitability before genuine prospective price evidence exists.",
+  "authority_inputs": [
+    "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v36.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_GATE_V2_REPLAY_PROOF_20260910_v1.json",
+    "v3/historical_all_market/research_candidates/KEIRIN_TICKET_CONSTRUCTION_PROSPECTIVE_EVAL_DESIGN_20260908_v2.json"
+  ],
+  "current_evidence_state": {
+    "prospective_model_observations": 3,
+    "valid_genuine_pre_price_observations": 0,
+    "economic_support": 0,
+    "profitability_proven": false
+  },
+  "best_current_candidate": {
+    "name": "SELECTIVE_SCORE_DOMINANCE_CONSERVATIVE_SINGLE_3RENHUKU_CORE_VALUE_LANE",
+    "race_selection": [
+      "Use only complete reproducible PRE racecards before target result visibility.",
+      "Require the frozen S0/challenger top1 confidence gate exactly as preregistered: same top1 and conservative top1 probability >= 0.40.",
+      "Do not use Girls/final/solo/venue/class as purchase modifiers yet; log them as strata only."
+    ],
+    "ticket": "Freeze exactly one highest-ranked top3 3renhuku ticket before any price lookup.",
+    "ticket_probability": "Use min(S0 ticket probability, challenger ticket probability).",
+    "price": [
+      "Require genuine current timestamped PRE odds after prediction freeze.",
+      "Only 1.0x-20.0x is eligible for a manual buy candidate in the current forward authority.",
+      "Current preregistered numeric CORE condition is p_ticket * decimal_odds >= 1.10.",
+      ">20.0x remains SHADOW_ONLY and never a manual buy candidate under the current forward authority."
+    ],
+    "stake": "At most BUY_CANDIDATE_100YEN for Owner manual action; no automatic execution, no Kelly, no martingale, no loss chasing.",
+    "reason_this_is_currently_strongest": [
+      "It concentrates on the strongest PRE-only score signal rather than broad race participation.",
+      "It keeps ticket count at one, avoiding probability dilution from adding lower-ranked combinations before price-specific evidence exists.",
+      "It rejects unverified prices and longshot-driven purchase behavior.",
+      "It preserves anti-hindsight ordering and can be falsified prospectively."
+    ]
+  },
+  "structural_findings": {
+    "redundant_numeric_value_checks": {
+      "finding": "The current expected-ROI and probability-multiple thresholds are algebraically equivalent within each band, not two independent confirmations.",
+      "proof": "expected_roi = p*odds-1 and probability_multiple_vs_market = p/(1/odds)=p*odds. Therefore expected_roi>=0.10 iff p*odds>=1.10, exactly the same as probability_multiple>=1.10 in CORE; the same equality holds for the paired thresholds in the other bands.",
+      "current_preregistered_lane_changed": false,
+      "reason_no_change_now": "Changing a frozen threshold after observations begin would create threshold drift/hindsight risk.",
+      "future_unseen_lane": "A later separately preregistered challenger should replace the redundant second numeric check with a genuinely independent uncertainty/calibration or evidence-quality criterion, learned without scored prospective outcomes."
+    },
+    "fallback_consensus_is_not_independent_model_consensus": {
+      "finding": "When exact rider lookup is absent, the challenger is only a small style/circumference perturbation of the same competition-score S0 signal, so same-top1 agreement is primarily a stability check rather than independent-model corroboration.",
+      "style_delta_range": {
+        "min": -0.020537046719,
+        "max": 0.038120995374,
+        "max_pairwise_logit_spread": 0.058658042093
+      },
+      "beta": 0.22260435254784533,
+      "equivalent_competition_score_spread_points_for_abs_q_1": 0.263508976025,
+      "r5_example": "Takeo 2026-09-11 R5 had zero exact-rider matches; S0 and challenger rankings were identical and top1 moved only from 0.540234324130 to 0.546389824251.",
+      "current_preregistered_lane_changed": false,
+      "future_logging_recommendation": "Record challenger support mode and exact-rider lookup coverage so later unseen evidence can distinguish true rider-supported corrections from fallback-only stability."
+    },
+    "core_purchase_feasibility_floor": {
+      "finding": "A conservative ticket probability below 0.055 cannot qualify for a CORE manual buy candidate at any allowed CORE price, because the maximum CORE odds is 20.0 and the fixed value requirement is p*odds>=1.10.",
+      "derivation": "1.10/20.0 = 0.055",
+      "decision_semantics_changed": false,
+      "use": "Engineering shortcut/diagnostic only. It can identify CORE-impossible tickets without changing any preregistered decision. Shadow-data collection policy remains separate."
+    },
+    "single_ticket_concentration": {
+      "finding": "Under the existing equal-budget uniform-odds screening formula, adding combinations whose individual model probability is lower than the current best ticket lowers average model probability per combination and therefore cannot improve the uniform minimum-odds requirement absent compensating price differences.",
+      "implication": "Keep the one-point 3renhuku as the cleanest current model-side candidate until genuine ticket-specific PRE prices support a different portfolio rule.",
+      "not_a_profit_claim": true
+    }
+  },
+  "r5_sanity_check": {
+    "event": "2026-09-11 Takeo R5",
+    "ticket": "1=2=3",
+    "conservative_ticket_probability": 0.179212765529,
+    "exact_core_threshold_odds": 6.137955612442124,
+    "display_step_example": "6.2x",
+    "maximum_core_odds": 20.0,
+    "actual_verified_pre_odds": null,
+    "actual_decision": "NO_BET_UNVERIFIED"
+  },
+  "falsification_requirements_before_any_strongest_or_profitable_claim": [
+    "Accumulate genuine prospective PRE price observations after immutable prediction freezes.",
+    "Measure purchase rate, hit rate, stake, return, net, recovery/ROI, longest losing streak and maximum drawdown.",
+    "Measure largest-winner and top3-winner profit concentration and recovery excluding the largest winning payout.",
+    "Report Girls/final/solo/venue/class strata without promoting a subgroup from the same scored sample.",
+    "Require a later unseen period to reproduce any discovered edge without threshold retuning.",
+    "Do not use protected DEV2000 C or ECON_HOLDOUT1000 without their separate legitimate gate."
+  ],
+  "scientific_effect": {
+    "formal_v114_changed": false,
+    "formal_support_increment": 0,
+    "economic_support_increment": 0,
+    "profitability_claim": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "result_or_payout_access_for_this_synthesis": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "next_without_owner": [
+    "Preserve the current forward prespec unchanged for prospective evidence collection.",
+    "Add support-mode and CORE-feasibility diagnostics only in a non-decision-changing research layer if implementation work continues.",
+    "When legitimate future evidence is available, test whether the selective one-point CORE lane remains positive after drawdown and winner-concentration controls.",
+    "Only after sufficient clean evidence should a separately preregistered independent robustness challenger be considered."
+  ],
+  "owner_action_required_now": false
+}
