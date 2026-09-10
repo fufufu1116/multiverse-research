@@ -1,0 +1,38 @@
+{
+  "record": "KEIRIN_NEXTGEN5000_HOLDOUT_COLLISION_DIAGNOSTIC_20260911_v1",
+  "status": "NEXTGEN5000_AUTO_REBUILD_NOT_ELIGIBLE_AS_FINAL_UNTOUCHED_HOLDOUT",
+  "scope": "RESEARCH_GOVERNANCE_AND_PROVENANCE_ONLY",
+  "fresh_parent_head": "9ced947f79d992a498894536e60ad034e854b468",
+  "finding": {
+    "nextgen5000_lineage": "B1a provenance binds to NEXTGEN5000 parent universe and an AUTO_REBUILD/shards lineage.",
+    "auto_rebuild_shard_count": 5,
+    "observed_shard_000": {
+      "opened": true,
+      "reason": "The artifact was followed from PRE-shard provenance while checking whether a result-free holdout could be reconstructed.",
+      "safety_discovery": "The artifact is not PRE-only: its records contain both pre and result fields, including finishing positions.",
+      "action_after_discovery": "Stopped immediately; shards 001-004 were not opened in this investigation."
+    },
+    "b1a_training_provenance": {
+      "standard_n": 974,
+      "interpretation": "The AUTO_REBUILD lineage is development/model-building evidence, not a scientifically clean final holdout source."
+    },
+    "holdout_decision": "Do not use AUTO_REBUILD shards, including unopened shards 001-004, to manufacture or claim a final untouched 1000-race validation set."
+  },
+  "forward_validation_route": {
+    "historical_shortcut": "REJECTED",
+    "preferred_route": "Prospective pre-result capture on future racecards with model/rule freeze before results, followed by result join only after the capture cutoff.",
+    "existing_preparation_evidence": [
+      "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+      "KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json"
+    ],
+    "formal_science_increment_now": 0
+  },
+  "protected_data": {
+    "DEV2000_segment_C": "UNTOUCHED_BY_THIS_WORK",
+    "ECON_HOLDOUT1000": "SEALED",
+    "auto_rebuild_shards_001_004": "NOT_OPENED_BY_THIS_INVESTIGATION"
+  },
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
