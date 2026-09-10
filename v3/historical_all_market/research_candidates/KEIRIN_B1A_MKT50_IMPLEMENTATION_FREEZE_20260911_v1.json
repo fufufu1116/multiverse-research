@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_B1A_MKT50_IMPLEMENTATION_FREEZE_20260911_v1",
+  "status": "PASS_IMPLEMENTATION_AND_SYNTHETIC_VALIDATION_READY_BEFORE_UNTOUCHED_OPEN",
+  "candidate": "B1a_MKT50_v1",
+  "preregistration": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_LINEAGE_MARKET_SHRINKAGE_PREREG_20260911_v1.json",
+  "source_head_before_implementation": "febf792b000a056004cf0b5e2575b1674ae122b8",
+  "artifacts": {
+    "implementation": "v3/historical_all_market/research_candidates/b1a_mkt50_v1.py",
+    "implementation_sha256": "c88d1fc460841c1ff14efe5ff487f38ba5aa7b7f1072d99dd045c38348d8d676",
+    "implementation_test": "v3/historical_all_market/research_candidates/test_b1a_mkt50_v1.py",
+    "implementation_test_sha256": "56cf72d9f9896cc365bc59f39578ff19a85f9c9f2103b8d2f317c08a8a2c3b65",
+    "untouched_validator": "v3/historical_all_market/research_candidates/keirin_b1a_mkt50_untouched_validator_v1.py",
+    "untouched_validator_sha256": "443efc558e4178a27764c521e9c3c29788069db7be7c7412c54dbaaf06bc33c1",
+    "validator_test": "v3/historical_all_market/research_candidates/test_keirin_b1a_mkt50_untouched_validator_v1.py",
+    "validator_test_sha256": "9cf8804dbfe0240a9d2996fef5c40dfc590ef9386d4581c0bea4494377e35a15"
+  },
+  "synthetic_tests": {
+    "implementation": "PASS 7/7",
+    "validator": "PASS 1/1",
+    "result_or_payout_data_used": false
+  },
+  "frozen_semantics": {
+    "winner_layer": "B1a_RECONSTITUTED_v1 unchanged",
+    "ticket_markets": ["3rentan", "2shatan"],
+    "model_weight": 0.5,
+    "market_weight": 0.5,
+    "eps": 1e-15,
+    "market_shape": "normalize inverse decimal odds within race+market",
+    "competition_score_threshold": 0.4,
+    "weight_cli_override": false,
+    "threshold_cli_override": false
+  },
+  "validator_fail_closed": [
+    "unsupported market",
+    "empty or invalid probability distribution",
+    "ticket universe mismatch",
+    "duplicate race+market",
+    "invalid winner set",
+    "invalid decimal odds"
+  ],
+  "promotion_rules_frozen": {
+    "ticket_log_loss": "candidate must strictly improve versus raw B1a",
+    "high_odds_tail": "candidate log-calibration error must improve; zero observed hits => INCONCLUSIVE",
+    "economic_min_hits": 20,
+    "single_win_gross_return_share_max": 0.5,
+    "roi_secondary_only": true
+  },
+  "governance": {
+    "segment_C": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  }
+}
