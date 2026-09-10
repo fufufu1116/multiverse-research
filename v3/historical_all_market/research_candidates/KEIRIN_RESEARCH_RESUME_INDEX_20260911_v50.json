@@ -1,0 +1,37 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v50",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v49.json",
+  "current_status": "NEXT_LINEAGE_B1A_MKT50_PREREGISTERED_BEFORE_UNTOUCHED_VALIDATION",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "c387fba7d25e636cc089364e1e6dd4e79e74d98e",
+  "new_artifact": "v3/historical_all_market/research_candidates/KEIRIN_NEXT_LINEAGE_MARKET_SHRINKAGE_PREREG_20260911_v1.json",
+  "next_candidate": {
+    "name": "B1a_MKT50_v1",
+    "winner_layer": "B1a_RECONSTITUTED_v1 unchanged",
+    "ticket_layer": "50/50 geometric pooling of model ticket probability and takeout-normalized market shape probability for 3rentan/2shatan",
+    "pooling_weight_tuned_on_burned_AB": false,
+    "competition_score_threshold": 0.40
+  },
+  "why_this_candidate": [
+    "Burned A+B winner calibration showed B1a materially improved probability quality without a meaningful Top1 accuracy gain or loss versus Candidate A.",
+    "Burned A+B ticket diagnostics showed the dominant economic failure was severe model overconfidence in high-odds exact-order tickets where model and market disagreed strongly.",
+    "The next lineage therefore preserves the B1a winner layer and changes only the ticket economic-probability layer.",
+    "A fixed 0.50 pooling weight was preregistered rather than selected by an A+B tuning grid."
+  ],
+  "acceptance_gates_frozen_before_untouched_data": true,
+  "primary_scientific_gate": "Untouched ticket log loss must strictly improve versus raw B1a baseline; calibration-tail error must also improve or be declared inconclusive if no hits occur.",
+  "economic_guardrail": "ROI is secondary and cannot rescue failed calibration; sparse-hit ROI does not establish profitability.",
+  "governance": {
+    "segment_C": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "no_new_live_effect": true
+  },
+  "next_action": [
+    "Implement and self-test the preregistered B1a_MKT50_v1 transform using synthetic/result-free fixtures only.",
+    "Bind implementation hash to the preregistration.",
+    "Prepare an untouched-validation harness that cannot alter the 0.50 weight or competition threshold.",
+    "Do not open Segment C or ECON_HOLDOUT1000 without separate explicit authorization."
+  ]
+}
