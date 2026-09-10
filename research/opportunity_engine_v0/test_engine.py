@@ -145,5 +145,61 @@ class OpportunityEngineTests(unittest.TestCase):
         self.assertEqual(result.revenue_route, RevenueRoute.INTERNAL_ASSET)
 
 
+class PacketTests(unittest.TestCase):
+    def _mapping(self):
+        c = candidate()
+        return {
+            "name": c.name,
+            "evidence_verified": c.evidence_verified,
+            "buyer_clarity": c.buyer_clarity,
+            "attention": c.attention,
+            "purchase_intent": c.purchase_intent,
+            "why_now": c.why_now,
+            "why_not_before": c.why_not_before,
+            "competitor_pressure": c.competitor_pressure,
+            "incumbent_crush_risk": c.incumbent_crush_risk,
+            "ai_substitutability": c.ai_substitutability,
+            "proprietary_edge": c.proprietary_edge,
+            "action_completion": c.action_completion,
+            "reusable_asset": c.reusable_asset,
+            "distribution": c.distribution,
+            "legal_risk": c.legal_risk,
+            "human_burden": c.human_burden,
+            "initial_cost_yen": c.initial_cost_yen,
+            "build_days": c.build_days,
+            "demand_life_days": c.demand_life_days,
+            "expected_profit_low_yen": c.expected_profit_low_yen,
+            "expected_profit_base_yen": c.expected_profit_base_yen,
+            "expected_profit_high_yen": c.expected_profit_high_yen,
+            "deceptive_tactics_required": c.deceptive_tactics_required,
+            "unverified_personal_claims_required": c.unverified_personal_claims_required,
+            "future_steps": list(c.future_steps),
+            "exit_trigger": c.exit_trigger,
+            "competitor_research": {
+                "direct_competitors_checked": True,
+                "substitutes_checked": True,
+                "bigtech_replacement_checked": True,
+                "why_not_already_common_explained": True,
+                "existing_systems_to_reuse": ["existing-search"],
+                "notes": [],
+            },
+        }
+
+    def test_packet_loader_is_strict(self):
+        from research.opportunity_engine_v0.packet import candidate_from_mapping
+
+        payload = self._mapping()
+        payload["invented_field"] = "must fail"
+        with self.assertRaises(ValueError):
+            candidate_from_mapping(payload)
+
+    def test_packet_evaluates_without_ui_or_external_calls(self):
+        from research.opportunity_engine_v0.packet import evaluate_packet
+
+        result = evaluate_packet(self._mapping())
+        self.assertIn(result["decision"], {"WATCH", "MICRO_TEST", "BUILD_CANDIDATE"})
+        self.assertIsInstance(result["score"], int)
+
+
 if __name__ == "__main__":
     unittest.main()
