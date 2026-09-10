@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_FORWARD_PRE_SOURCE_INTEGRITY_CROSSCHECK_TAKEO_20260911_R1_R4_R5_v1",
+  "status": "RESEARCH_ONLY_FORWARD_PRE_SOURCE_REACQUISITION_AND_INDEXING_CROSSCHECK",
+  "captured_jst": "2026-09-10T20:50:23+09:00",
+  "fresh_branch_head_immediately_before_write": "5891049940d6c68484c5d1d32ffe3802b6b9b0f7",
+  "scope": {
+    "target_date": "2026-09-11",
+    "venue": "武雄",
+    "target_races": [1, 4, 5],
+    "purpose": "Reacquire already-frozen forward racecard inputs from public indexed sources and record current retrieval coverage without changing any prediction, threshold, ticket, stake or support count."
+  },
+  "crosschecks": [
+    {
+      "race_no": 1,
+      "frozen_artifact": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRE_FREEZE_TAKEO_20260911_R1_v1.json",
+      "frozen_commit": "41ac070c660e00e35dd90db710565d1b45bf616b",
+      "primary_reacquired_source": "https://www.oddspark.com/keirin/RaceList.do?joCode=84&kaisaiBi=20260911&raceNo=1",
+      "secondary_reacquired_source": "https://keirin.tokyo-sports.co.jp/list/race/20260910_30680",
+      "secondary_source_independent_of_original_provider": true,
+      "observed_start_jst": "08:30",
+      "observed_rider_count": 6,
+      "observed_car_order": ["臼井 昌巨", "佐藤 康恭", "志村 正洋", "横瀬 聡", "亀井 宏佳", "川添 輝彦"],
+      "key_scores_match_frozen_snapshot": true,
+      "race_identity_match": true
+    },
+    {
+      "race_no": 4,
+      "frozen_artifact": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R4_v1.json",
+      "frozen_commit": "9a1f282de3a5603c40ed89ec5f4aa23da98d08a4",
+      "primary_reacquired_source": "https://www.oddspark.com/keirin/RaceList.do?joCode=84&kaisaiBi=20260911&raceNo=4",
+      "observed_start_jst": "09:32",
+      "observed_rider_count": 7,
+      "observed_car_order": ["財満 伊織", "大室 翔", "森川 康輔", "光岡 義洋", "真崎 章徳", "原 司", "高嶋 一朗"],
+      "key_scores_match_frozen_snapshot": true,
+      "race_identity_match": true
+    },
+    {
+      "race_no": 5,
+      "frozen_artifact": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R5_v1.json",
+      "frozen_commit": "b9984681dd863cac78d9f3a678ce1e2fff8349a2",
+      "primary_reacquired_source": "https://www.oddspark.com/keirin/RaceList.do?joCode=84&kaisaiBi=20260911&raceNo=5",
+      "observed_start_jst": "09:53",
+      "observed_rider_count": 6,
+      "observed_car_order": ["岸川 哲也", "松丸 裕紀", "黒崎 直行", "金田 健一郎", "小川 佑希也", "重 一徳"],
+      "key_scores_match_frozen_snapshot": true,
+      "race_identity_match": true
+    }
+  ],
+  "remaining_indexed_card_acquisition": {
+    "requested_races": [2, 3, 6, 7],
+    "state_at_capture": "NOT_YET_SUFFICIENTLY_RETRIEVABLE_AS_COMPLETE_CURRENT_20260911_CARDS_THROUGH_THE_INDEXED_PUBLIC_SEARCH_PATH_USED_IN_THIS_SESSION",
+    "policy": "Do not reconstruct car numbers or complete cards from prior-day results, partial rider profiles, prediction articles or inference. Freeze only when a complete current target-date card is directly retrievable."
+  },
+  "anti_hindsight": {
+    "target_date_results_accessed": false,
+    "target_date_payouts_accessed": false,
+    "reacquisition_changed_predictions": false,
+    "reacquisition_changed_confidence_gate": false,
+    "reacquisition_changed_ticket_rule": false,
+    "reacquisition_changed_price_rule": false,
+    "reacquisition_changed_stake_rule": false
+  },
+  "evidence_effect": {
+    "prospective_model_observation_increment": 0,
+    "valid_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false,
+    "reproducibility_engineering_note": "R1 is independently crosschecked by a second public publisher; R4/R5 were successfully reacquired from their original public provider."
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
