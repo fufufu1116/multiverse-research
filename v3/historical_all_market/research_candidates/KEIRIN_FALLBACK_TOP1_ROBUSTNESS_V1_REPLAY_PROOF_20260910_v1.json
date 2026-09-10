@@ -1,0 +1,92 @@
+{
+  "record": "KEIRIN_FALLBACK_TOP1_ROBUSTNESS_V1_REPLAY_PROOF_20260910_v1",
+  "status": "REPLAYABLE_ENGINEERING_PROOF_PASS_NO_DECISION_OR_ECONOMIC_SUPPORT_INCREMENT",
+  "date_jst": "2026-09-10",
+  "fresh_head_before_write": "c7713762406cd50e2fc8c717f541291cc2a4549a",
+  "authority_model": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+  "tool": "tools/keirin_fallback_top1_robustness_v1.py",
+  "test": "tools/test_keirin_fallback_top1_robustness_v1.py",
+  "purpose": "Result-blind diagnostic proving whether the S0 top1 identity is invariant to the full supported style-fallback perturbation range for |q|<=1. It does not change the frozen confidence gate, ticket rule, price gate, stake, or any purchase decision.",
+  "local_replay": {
+    "test_count": 12,
+    "passed": 12,
+    "failed": 0,
+    "result": "PASS",
+    "execution_note": "Deterministic local Python unittest replay; engineering evidence only, not CI, economic evidence, formal support, or profitability evidence."
+  },
+  "theorem": {
+    "s0_logit": "z_i = beta * competition_score_i",
+    "fallback_logit": "z'_i = beta * competition_score_i + q * delta_style_i",
+    "beta": 0.22260435254784533,
+    "delta_min": -0.020537046719,
+    "delta_max": 0.038120995374,
+    "abs_q_bound": 1.0,
+    "maximum_pairwise_fallback_logit_spread": 0.058658042093000004,
+    "required_strict_score_gap": 0.26350806451725767,
+    "sufficient_condition": "If the S0 top-score gap to the runner-up is strictly greater than 0.26350806451725767 points, the S0 top1 identity cannot be reversed by any supported style fallback assignment within |q|<=1.",
+    "interpretation_limit": "This is only a ranking-stability result. It is not independent-model corroboration, calibration evidence, hit-rate evidence, price evidence, or profitability evidence."
+  },
+  "takeo_20260911_r5_reference": {
+    "source_pre_record": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R5_v1.json",
+    "s0_top_car": 1,
+    "nearest_score_challenger_car": 3,
+    "top_score": 79.875,
+    "second_score": 74.0,
+    "score_gap": 5.875,
+    "required_score_gap": 0.26350806451725767,
+    "gap_multiple_vs_requirement": 22.29533282316388,
+    "base_logit_gap": 1.3078005712185914,
+    "worst_case_logit_margin_after_supported_fallback": 1.2491425291255913,
+    "robust_top1_under_supported_fallback": true,
+    "confidence_gate_pass": true,
+    "actual_verified_pre_odds": null,
+    "actual_decision": "NO_BET_UNVERIFIED",
+    "economic_support_increment": 0
+  },
+  "takeo_20260911_r4_anti_overreach_check": {
+    "source_pre_record": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R4_v1.json",
+    "s0_top_car": 3,
+    "nearest_score_challenger_car": 1,
+    "top_score": 76.75,
+    "second_score": 73.166,
+    "score_gap": 3.584000000000003,
+    "required_score_gap": 0.26350806451725767,
+    "gap_multiple_vs_requirement": 13.601101759696922,
+    "base_logit_gap": 0.7978139995314784,
+    "worst_case_logit_margin_after_supported_fallback": 0.7391559574384784,
+    "robust_top1_under_supported_fallback": true,
+    "conservative_top1_probability": 0.381057720912,
+    "frozen_confidence_gate_minimum": 0.40,
+    "confidence_gate_pass": false,
+    "decision_remains": "NO_BET_CONFIDENCE_GATE_FAIL",
+    "why_this_matters": "The diagnostic can report stable top1 while the frozen confidence gate still fails. Therefore robustness is not a hidden purchase override and does not convert stability into a bet."
+  },
+  "invariants_tested": [
+    "Reference required score gap is reproduced exactly.",
+    "Takeo R5 is robust under the supported fallback bound.",
+    "Exact boundary equality is not labeled strictly robust.",
+    "A value just above the boundary is robust.",
+    "A tied top score is not robust.",
+    "Zero q bound reduces the required gap to zero while still requiring a positive lead.",
+    "Invalid beta, reversed delta range, negative q bound, non-finite scores and too few scores fail closed.",
+    "Input ordering does not change the result.",
+    "No decision rule is changed.",
+    "No result, payout, odds, network fetch, spend or automatic execution is performed by the diagnostic."
+  ],
+  "evidence_effect": {
+    "prospective_model_observation_increment": 0,
+    "valid_genuine_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
