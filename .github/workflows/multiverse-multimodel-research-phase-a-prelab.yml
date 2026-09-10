@@ -1,9 +1,9 @@
-name: MULTIVERSE Multi-Model Federation Phase A pre-Lab
+name: MULTIVERSE Multi-Model Federation Phase A/B pre-Lab
 
 on:
   push:
     branches:
-      - agent/multimodel-post-pr280-later-research-478-freshmain-v1-20260909
+      - agent/multimodel-phase-b-current-canonical-launch-generation-20260910-v1
     paths:
       - 'automation/multimodel_research_v1/**'
       - '.github/workflows/multiverse-multimodel-research-phase-a-prelab.yml'
@@ -12,9 +12,9 @@ permissions:
   contents: read
 
 jobs:
-  phase-a:
+  phase-a-b:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
 
     steps:
       - name: Checkout exact Candidate
@@ -27,7 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          echo "PHASE_A_HEAD=$GITHUB_SHA"
+          echo "PHASE_A_B_HEAD=$GITHUB_SHA"
 
       - name: Compile
         shell: bash
@@ -60,13 +60,20 @@ jobs:
             automation/multimodel_research_v1/pre_execution_bundle.py \
             automation/multimodel_research_v1/launch_evidence.py \
             automation/multimodel_research_v1/pilot_roundtrip.py \
+            automation/multimodel_research_v1/pilot_roundtrip_v2.py \
+            automation/multimodel_research_v1/provider_result_schema.py \
+            automation/multimodel_research_v1/provider_result_ingestion.py \
             automation/multimodel_research_v1/rehearsal_convergence.py \
             automation/multimodel_research_v1/dual_provider_research.py \
             automation/multimodel_research_v1/dual_provider_fanout.py \
             automation/multimodel_research_v1/federation_rehearsal.py \
+            automation/multimodel_research_v1/launch_generation.py \
+            automation/multimodel_research_v1/phase_b_launch_chain.py \
             automation/multimodel_research_v1/synthetic_adapter.py \
             automation/multimodel_research_v1/test_phase_a.py \
-            automation/multimodel_research_v1/validator.py
+            automation/multimodel_research_v1/test_phase_b_launch_generation.py \
+            automation/multimodel_research_v1/validator.py \
+            automation/multimodel_research_v1/phase_b_validator.py
 
       - name: Unit tests
         shell: bash
@@ -74,15 +81,20 @@ jobs:
           set -euo pipefail
           python -m unittest \
             automation.multimodel_research_v1.test_phase_a \
+            automation.multimodel_research_v1.test_phase_b_launch_generation \
             -v
 
-      - name: Validator
+      - name: Validators
         shell: bash
         run: |
           set -euo pipefail
-          OUT="$(python automation/multimodel_research_v1/validator.py)"
-          echo "$OUT"
-          python - "$OUT" <<'PY'
+          for VALIDATOR in \
+            automation/multimodel_research_v1/validator.py \
+            automation/multimodel_research_v1/phase_b_validator.py
+          do
+            OUT="$(python "$VALIDATOR")"
+            echo "$OUT"
+            python - "$OUT" <<'PY'
           import json
           import sys
           data = json.loads(sys.argv[1])
@@ -93,3 +105,4 @@ jobs:
           assert data["adoption_authority"] is False
           assert data["runtime"] == "OFF"
           PY
+          done
