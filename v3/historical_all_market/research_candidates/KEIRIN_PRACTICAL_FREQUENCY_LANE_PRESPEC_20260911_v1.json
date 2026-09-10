@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_PRACTICAL_FREQUENCY_LANE_PRESPEC_20260911_v1",
+  "status": "FROZEN_PRACTICAL_FREQUENCY_CHALLENGER_PRESPEC_NOT_PROVEN",
+  "created_jst": "2026-09-11T00:02:38+09:00",
+  "purpose": "Preserve the strict 0.40 scientific lane while separately testing a practical lane intended to produce several candidate races per day without forcing negative-value purchases.",
+  "owner_goal_binding": {
+    "target_candidate_frequency": "approximately 3 to 5 candidate races per day",
+    "hard_minimum_purchase_guarantee": false,
+    "reason": "Price/value veto remains allowed; candidate frequency is a research target, not permission to buy a poor-value race."
+  },
+  "strict_lane_preserved": {
+    "confidence_minimum": 0.40,
+    "mutated": false,
+    "role": "clean scientific control"
+  },
+  "challenger_policies_to_compare": [
+    {
+      "name": "PRACTICAL_CONFIDENCE_35",
+      "selection": "same top1 in baseline and challenger, conservative top1 probability >= 0.35"
+    },
+    {
+      "name": "PRACTICAL_CONFIDENCE_30",
+      "selection": "same top1 in baseline and challenger, conservative top1 probability >= 0.30"
+    },
+    {
+      "name": "DAILY_TOP3",
+      "selection": "among clean complete racecards for the day, rank by conservative top1 probability and retain top 3 after model freeze"
+    },
+    {
+      "name": "DAILY_TOP5",
+      "selection": "among clean complete racecards for the day, rank by conservative top1 probability and retain top 5 after model freeze"
+    }
+  ],
+  "ticket_rule": {
+    "bet_type": "3renhuku",
+    "ticket_count_per_selected_race": 1,
+    "ticket": "highest-ranked top3 cars under the frozen model, fixed before any target odds lookup"
+  },
+  "price_rule": {
+    "genuine_timestamped_pre_odds_required": true,
+    "core_max_odds": 20.0,
+    "minimum_probability_times_odds": 1.10,
+    "above_core": "shadow-only under existing price-gate rules",
+    "unverified_price": "NO_BET_UNVERIFIED",
+    "purpose": "Do not achieve daily frequency by blindly buying races with insufficient model-implied value."
+  },
+  "comparison_metrics": [
+    "average candidate races per day",
+    "average price-qualified manual candidates per day",
+    "hit rate",
+    "recovery rate / ROI",
+    "maximum consecutive losses",
+    "maximum drawdown",
+    "winner and payout concentration",
+    "venue/class/day robustness"
+  ],
+  "anti_overfit_rules": {
+    "do_not_rewrite_strict_40_percent_history": true,
+    "do_not_tune_threshold_from_future_result_after_seeing_result": true,
+    "do_not_use_user_hypotheses_as_purchase_modifiers_yet": true,
+    "final_solo_girls_may_be_recorded_as_strata_only": true,
+    "protected_holdouts_remain_closed": true
+  },
+  "promotion_rule": "No practical challenger becomes the main winning path from frequency alone. It must show acceptable frequency and later reproducible economic evidence without dependence on one or a few extreme payouts.",
+  "execution_boundary": {
+    "maximum_output": "BUY_CANDIDATE_100YEN",
+    "owner_manual_only": true,
+    "automatic_betting": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false
+  },
+  "fresh_branch_head_observed_immediately_before_write": "ce8e49fb90f328252f2c07c91afa8d5a7b42654b"
+}
