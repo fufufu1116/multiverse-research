@@ -60,6 +60,8 @@ A small candidate is acceptable only when at least one is true:
 
 A candidate must not be mistaken for a durable livelihood when its credible ceiling is below the configured sustaining-profit threshold.
 
+The higher layers are not assumed to come from merely stacking many weak tactical opportunities. Promotion requires evidence that a repeatable pattern exists and that scale does not secretly depend on proportional owner labor, sales calls, inventory or a team.
+
 ## Human-burden guardrail
 
 Scale forecasts must explicitly reveal whether the forecast eventually requires:
