@@ -1,0 +1,73 @@
+{
+  "schema": "MULTIVERSE_RUNTIME_POSTGRES_ADAPTER_CANDIDATE_SEAL_v1",
+  "issue": 139,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "canonical_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "branch": "agent/runtime-postgres-adapter-v1-20260906-v1",
+  "adopted_activation_integration_parent": {
+    "pr": 137,
+    "head": "efe180d91ff4fd2149c4d0cfba1af6821269602d",
+    "tree": "af99595781224844d2867392e7aa3ce4d41a92bf",
+    "owner_gate": 138,
+    "owner_adoption_comment": 5557340887
+  },
+  "runtime_readiness_reassessment_comment": 5557349957,
+  "pre_seal_head": "b4461ea499088ca4da4230fde2c544f178ecefa3",
+  "pre_seal_tree": "5bdf0bbe58043d23f0fcf46dfbd5c6c46dc02f6b",
+  "proof_ceiling": "RUNTIME_POSTGRES_ADAPTER_REPOSITORY_IMPLEMENTATION_ONLY",
+  "implementation_state": "POSTGRES_ADAPTER_IMPLEMENTED_NOT_REMOTE_VALIDATED",
+  "activation_ready": false,
+  "runtime": "OFF",
+  "candidate_side_preseal_tests": {
+    "executed": true,
+    "result": "PASS_10_OF_10",
+    "independent_review_authority": false,
+    "note": "Candidate-side local execution only; Independent Lab exact-head execution remains required."
+  },
+  "blob_shas": {
+    "__init__.py": "c017c719660a04cceaaaf2c0d068b679b2bcbde3",
+    "postgres_adapter.py": "4211f4a690690bb173e84b5665962c6c0c84e649",
+    "postgres_runtime_bridge.py": "cfa3ce0095ed4ed8b200db27aef461bcf1403007",
+    "fake_dbapi.py": "1dd4ee51e51d1b622eec9d7ab230553dd64ea4b2",
+    "test_postgres_adapter.py": "47e31d4bba2abc22f5e51f6a9dd903e993df7443",
+    "POSTGRES_ADAPTER_CONTRACT_v1.json": "b1cb7420ea6e970c24ee8ba035c36445ef3f255f",
+    "validator.py": "1232c964357350f284c1134cd71ddec7b8f57194",
+    "README.md": "aa5c7e6b8a150a4fd6a9f27cc6c8bc5bc1a7ec7a"
+  },
+  "adapter_boundaries": {
+    "connection_factory_injected": true,
+    "connection_string_handling": false,
+    "postgres_driver_import": false,
+    "network_dialing_in_candidate": false,
+    "database_time_authority": "clock_timestamp()",
+    "control_row_locking": "FOR UPDATE",
+    "remote_validation_required": true
+  },
+  "activation_gates": {
+    "kill_switch_default_engaged": true,
+    "provider_effect_adapter_enabled": false,
+    "runtime_activation_bridge_enabled": false
+  },
+  "required_review_path": [
+    "INDEPENDENT_LAB",
+    "T1",
+    "INDEPENDENT_AUDITOR",
+    "T2",
+    "SEPARATE_OWNER_DECISION"
+  ],
+  "authority": {
+    "additional_spend": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "network_effect": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "provider_resource_mutation": false,
+    "remote_postgres_execution": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "workflow_dispatch_rerun": false
+  }
+}

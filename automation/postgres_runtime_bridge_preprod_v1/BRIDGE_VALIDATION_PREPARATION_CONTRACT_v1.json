@@ -1,0 +1,59 @@
+{
+  "activation_ready": false,
+  "authority": {
+    "additional_spend": false,
+    "database_mutation": false,
+    "deploy": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "provider_effect_enablement": false,
+    "provider_resource_mutation": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "runtime_activation_bridge_enablement": false,
+    "workflow_dispatch_rerun": false
+  },
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "execution_state": "BRIDGE_REMOTE_VALIDATION_NOT_AUTHORIZED",
+  "issue": 147,
+  "parent_remote_lineage": {
+    "head": "a7add3fa6b4c579fec1b032d4ab2f26da37d9b3a",
+    "live_evidence_sha256": "683063778a4bfa8d36ad4251862e1f121234587bd2ba11af498b7310e6b9ac32",
+    "owner_evidence_adoption_comment": 5558510095,
+    "owner_evidence_adoption_gate": 146,
+    "pr": 143,
+    "tree": "c6dca851dde6f2b1102c2b074478a0ba4d7b445f"
+  },
+  "proof_ceiling": "POSTGRES_RUNTIME_BRIDGE_PREPRODUCTION_VALIDATION_PREPARATION_ONLY",
+  "provider_effect_adapter_enabled": false,
+  "remote_postgres_execution": false,
+  "runtime": "OFF",
+  "runtime_activation_bridge_enabled": false,
+  "schema": "MULTIVERSE_POSTGRES_RUNTIME_BRIDGE_PREPROD_VALIDATION_PREPARATION_CONTRACT_v1",
+  "target": {
+    "environment_class": "PRE_PRODUCTION",
+    "postgres_id": "dpg-dadou0on74is73b09570-a",
+    "provider": "RENDER",
+    "region": "singapore",
+    "service_plan_ceiling": "free"
+  },
+  "validation_surface": {
+    "bridge_class": "PreparedPostgresRuntimeBridge",
+    "checkpoint_resume": true,
+    "cross_owner_duplicate_suppression": true,
+    "external_effect_executed": false,
+    "fence_monotonicity": true,
+    "payload_conflict_rejection": true,
+    "restart_recovery_without_replay": true,
+    "same_owner_duplicate_suppression": true,
+    "session_prepare": true,
+    "session_renew": true,
+    "stale_owner_rejection": true
+  }
+}

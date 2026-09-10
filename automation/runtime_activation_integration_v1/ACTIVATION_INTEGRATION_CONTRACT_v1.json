@@ -1,0 +1,105 @@
+{
+  "schema": "MULTIVERSE_RUNTIME_ACTIVATION_INTEGRATION_CONTRACT_v1",
+  "issue": 136,
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "canonical_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "adopted_convergence": {
+    "pr": 134,
+    "head": "6778bbfada03dd70ffe47b1e715c470b6a671585",
+    "tree": "538b98c6cd7d98207cf96871af620f43f42f629e",
+    "owner_gate": 135,
+    "owner_adoption_comment": 5555227138,
+    "proof_ceiling": "RUNTIME_CONVERGENCE_REPOSITORY_PREPARATION_ONLY"
+  },
+  "proof_ceiling": "RUNTIME_ACTIVATION_INTEGRATION_REPOSITORY_PREPARATION_ONLY",
+  "integration_state": "ACTIVATION_INTEGRATION_PREPARATION_NOT_ACTIVATABLE",
+  "activation_ready": false,
+  "runtime": "OFF",
+  "runtime_supervisor_source": {
+    "path": "automation/runtime_v1",
+    "subtree": "d93e7d86347d5766eeffac3bd604e66f8aee0177",
+    "mode": "SEALED_DRY_RUN",
+    "existing_control_store": "LOCAL_SQLITE_SEALED"
+  },
+  "distributed_evidence_source": {
+    "path": "automation/remote_multihost_render_v1",
+    "subtree": "1a25ea3ce8dbd61b2eff1f64f448bd787619b9dc",
+    "store_family": "RENDER_POSTGRESQL",
+    "observed_fence_sequence": [1, 2, 3],
+    "operation_count": 1,
+    "duplicate_external_effect": false
+  },
+  "prepared_binding": {
+    "control_store_semantics": "DISTRIBUTED_LEASE_FENCE_IDEMPOTENCY_REFERENCE_MODEL",
+    "database_time_authority": true,
+    "worker_instance_binding": true,
+    "monotonic_fence_required": true,
+    "stale_owner_rejection": true,
+    "stale_fence_rejection": true,
+    "lease_expiry_rejection": true,
+    "fence_bound_checkpoints": true,
+    "restart_successor_requires_new_fence": true,
+    "same_key_same_payload_duplicate_suppression": true,
+    "same_key_different_payload_conflict_rejection": true,
+    "provider_execution_in_candidate_tests": false
+  },
+  "postgres_adapter": {
+    "status": "STATIC_CONTRACT_ONLY",
+    "network_connection_in_candidate_tests": false,
+    "remote_schema_mutation": false,
+    "future_adapter_review_required": true,
+    "future_remote_validation_required": true
+  },
+  "activation_gates": {
+    "kill_switch_default_engaged": true,
+    "provider_effect_adapter_enabled": false,
+    "runtime_activation_bridge_enabled": false
+  },
+  "authority": {
+    "additional_spend": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "network_effect": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "provider_resource_mutation": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "workflow_dispatch_rerun": false
+  },
+  "rollback": {
+    "provider_action_in_this_lane": false,
+    "exact_lineage_binding_required": true,
+    "adopted_convergence_head_is_recovery_reference": true
+  },
+  "governance": {
+    "runtime_readiness_reassessment_comment": 5554965156,
+    "cross_lab_t2_comment": 5535401492,
+    "owner_convergence_adoption_comment": 5555227138,
+    "required_review_path": [
+      "CANDIDATE_FREEZE",
+      "INDEPENDENT_LAB",
+      "T1",
+      "INDEPENDENT_AUDITOR",
+      "T2",
+      "SEPARATE_OWNER_DECISION"
+    ]
+  },
+  "not_proven": [
+    "REMOTE_POSTGRES_RUNTIME_ADAPTER_EXECUTION",
+    "RUNTIME_ACTIVATION_READY",
+    "RUNTIME_ACTIVATION",
+    "PROVIDER_EFFECT_ADAPTER_ENABLEMENT",
+    "PRODUCTION_CREDENTIALS",
+    "PRODUCTION_DEPLOYMENT",
+    "LIVE_BUSINESS_EFFECTS",
+    "PROTECTED_KEIRIN_DATA",
+    "PAID_OR_ADDITIONAL_SPEND",
+    "HTTP_SLO",
+    "NETWORK_PARTITION_SLO",
+    "POSTGRES_HIGH_AVAILABILITY"
+  ]
+}

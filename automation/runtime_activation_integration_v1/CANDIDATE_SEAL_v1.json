@@ -1,0 +1,58 @@
+{
+  "schema": "MULTIVERSE_RUNTIME_ACTIVATION_INTEGRATION_CANDIDATE_SEAL_v1",
+  "issue": 136,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "canonical_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "branch": "agent/runtime-activation-integration-preparation-v1-20260906-v1",
+  "adopted_convergence_parent": {
+    "pr": 134,
+    "head": "6778bbfada03dd70ffe47b1e715c470b6a671585",
+    "tree": "538b98c6cd7d98207cf96871af620f43f42f629e",
+    "owner_adoption_comment": 5555227138
+  },
+  "pre_seal_head": "ffece81d91c3573be763fc09827bc748817ee088",
+  "pre_seal_tree": "0032874569de74ab2dbd2820d251d5867913ad3d",
+  "proof_ceiling": "RUNTIME_ACTIVATION_INTEGRATION_REPOSITORY_PREPARATION_ONLY",
+  "integration_state": "ACTIVATION_INTEGRATION_PREPARATION_NOT_ACTIVATABLE",
+  "runtime_activation_ready": false,
+  "independent_review_ready": true,
+  "deterministic_tests_present": true,
+  "deterministic_tests_executed_before_seal": false,
+  "deterministic_test_result": "PENDING_EXACT_HEAD_INDEPENDENT_EXECUTION",
+  "test_target_blob_shas": {
+    "ACTIVATION_INTEGRATION_CONTRACT_v1.json": "d8a6b1e2b13be252b77d69714817b0a3aaed88f5",
+    "activation_integration_validator.py": "59886448166f0c5c53e424974bf737b08796abc2",
+    "distributed_control.py": "607a987f2b90b4e8636458ff67144d37643e3efb",
+    "postgres_contract.py": "27f5000afa593558b3a66a66bffeca33d15cbe65",
+    "runtime_activation_bridge.py": "08815a28e5312355e052f3e9ec29a7cfdb769d7c",
+    "test_runtime_activation_integration.py": "02010d640044bf8014666600dbc8b1773d9ff94a"
+  },
+  "execution_note": "The test suite and validator are present and blob-bound. This ChatGPT runtime could not clone/download the exact GitHub head for local execution. No PASS is claimed from Candidate self-execution; Independent Lab must execute the exact frozen head.",
+  "activation_gates": {
+    "kill_switch_default_engaged": true,
+    "provider_effect_adapter_enabled": false,
+    "runtime_activation_bridge_enabled": false
+  },
+  "required_review_path": [
+    "INDEPENDENT_LAB",
+    "T1",
+    "INDEPENDENT_AUDITOR",
+    "T2",
+    "SEPARATE_OWNER_DECISION"
+  ],
+  "authority": {
+    "additional_spend": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "network_effect": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "provider_resource_mutation": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "workflow_dispatch_rerun": false
+  },
+  "runtime": "OFF"
+}

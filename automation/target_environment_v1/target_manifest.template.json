@@ -1,0 +1,37 @@
+{
+  "schema_version": "MULTIVERSE_TARGET_ENVIRONMENT_MANIFEST_v1",
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "adopted_runtime_head": "8685193cc6d592a36ea78bc7a8647ceadce13ae6",
+  "adopted_deployment_head": "722465fda607198858e48f66ec9b936430ff3d6a",
+  "runtime": "OFF",
+  "target_id": "OWNER_OR_TARGET_AUTHORITY_MUST_BIND",
+  "environment_class": "PRE_PRODUCTION",
+  "artifact_sha256": "BIND_EXACT_ARTIFACT_SHA256",
+  "rollback_artifact_sha256": "BIND_EXACT_ROLLBACK_SHA256",
+  "evidence_refs": {
+    "credential_scope": "EVIDENCE_REF:BIND",
+    "credential_provisioning": "EVIDENCE_REF:BIND",
+    "credential_rotation": "EVIDENCE_REF:BIND",
+    "credential_revocation": "EVIDENCE_REF:BIND",
+    "provider_idempotency": "EVIDENCE_REF:BIND",
+    "duplicate_request_control": "EVIDENCE_REF:BIND",
+    "state_store_binding": "EVIDENCE_REF:BIND",
+    "backup_restore": "EVIDENCE_REF:BIND",
+    "crash_restart_recovery": "EVIDENCE_REF:BIND",
+    "host_model": "EVIDENCE_REF:BIND",
+    "lease_fencing": "EVIDENCE_REF:BIND",
+    "health_readiness": "EVIDENCE_REF:BIND",
+    "logs_metrics_alerts": "EVIDENCE_REF:BIND",
+    "kill_switch": "EVIDENCE_REF:BIND",
+    "rollback_execution": "EVIDENCE_REF:BIND"
+  },
+  "authority": {
+    "network_enabled": false,
+    "external_effect_enabled": false,
+    "spend_enabled": false,
+    "protected_keirin_data_enabled": false,
+    "production_credentials_enabled": false,
+    "runtime_activation": false
+  },
+  "proof_ceiling": "Template only. Placeholder values are not evidence and must never be treated as a PASS artifact."
+}
