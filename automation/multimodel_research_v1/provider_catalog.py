@@ -71,12 +71,27 @@ def validate_provider_catalog(
         snapshot["schema"] == CATALOG_SCHEMA,
         "CATALOG_SCHEMA_VERSION",
     )
-    require(
-        snapshot["snapshot_id"]
-        == "provider-model-catalog-20260908",
-        "CATALOG_SNAPSHOT_ID",
+
+    snapshot_id = snapshot["snapshot_id"]
+    snapshot_match = (
+        re.fullmatch(
+            r"provider-model-catalog-(\d{8})",
+            snapshot_id,
+        )
+        if isinstance(snapshot_id, str)
+        else None
     )
-    _parse_utc(snapshot["observed_at"], "CATALOG_OBSERVED_AT")
+    require(snapshot_match is not None, "CATALOG_SNAPSHOT_ID")
+    observed_at = _parse_utc(
+        snapshot["observed_at"],
+        "CATALOG_OBSERVED_AT",
+    )
+    require(
+        observed_at.strftime("%Y%m%d")
+        == snapshot_match.group(1),
+        "CATALOG_SNAPSHOT_ID_DATE_MISMATCH",
+    )
+
     require(
         snapshot["currency"] == "USD",
         "CATALOG_CURRENCY",
