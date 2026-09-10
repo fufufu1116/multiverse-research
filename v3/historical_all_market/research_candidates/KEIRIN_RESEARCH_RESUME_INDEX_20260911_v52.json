@@ -1,0 +1,57 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v52",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v51.json",
+  "current_status": "SEGMENT_C_ONE_SHOT_UNTOUCHED_CALIBRATION_EXECUTED_PRIMARY_AND_TAIL_PASS_ECONOMIC_SELECTION_NOT_PREREGISTERED",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "abfc5df0f8e01804f01897648416237a6137597c",
+  "authorization": "実行結果まで進めて — interpreted narrowly as authorization to execute the frozen Segment C untouched validation only; ECON_HOLDOUT1000 remained sealed.",
+  "new_artifact": "v3/historical_all_market/research_candidates/KEIRIN_B1A_MKT50_SEGMENT_C_UNTOUCHED_VALIDATION_20260911_v1.json",
+  "verified_bindings": {
+    "settlement_C_sha256": "252d8f15bcf5b872bf9948a20c7cc6f506176d7fe0977685029f9fc6e1417d07",
+    "price_catalog_sha256": "2ca98097f74e5282fdc9c91629083f39bef4dafb94a1fc4f7e510acadefc407b",
+    "ticket_probability_catalog_sha256": "6348d9af2a535578cf454afca52ea2c944cb6c50cab87f6e6ffa75149880b526",
+    "candidate_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "validator_git_blob": "41826457cea49445fff8cc91c847d491ae690b79"
+  },
+  "untouched_C_results": {
+    "races": 500,
+    "race_market_rows": 1000,
+    "raw_B1a_ticket_log_loss": 4.004356952272108,
+    "B1a_MKT50_ticket_log_loss": 3.5155942465661787,
+    "log_loss_improvement": 0.48876270570592917,
+    "primary_gate": "PASS",
+    "odds_300x_plus_observed_winners": 44,
+    "tail_expected_raw": 143.61945295575393,
+    "tail_expected_candidate": 99.5658107294468,
+    "tail_log_calibration_error_raw": 1.1829774797868327,
+    "tail_log_calibration_error_candidate": 0.816629205974505,
+    "tail_gate": "PASS",
+    "3rentan_raw_log_loss": 4.841090049795035,
+    "3rentan_candidate_log_loss": 4.231531284299396,
+    "2shatan_raw_log_loss": 3.16762385474918,
+    "2shatan_candidate_log_loss": 2.799657208832962
+  },
+  "scientific_interpretation": [
+    "The preregistered fixed 50/50 market-shrinkage candidate generalized positively to previously untouched Segment C on the primary ticket log-loss gate.",
+    "The >=300x high-odds tail calibration gate also improved on Segment C.",
+    "Both 3rentan and 2shatan log loss improved independently in descriptive market splits.",
+    "Segment C is now consumed. It must never be used to tune the pooling weight, epsilon, competition threshold, or validation gates.",
+    "A full promotion decision cannot be claimed because v51 froze the evaluator but not a unique external selected-ticket ledger builder for B1a_MKT50_v1; constructing that selection rule after C outcomes were opened would be post-hoc and scientifically invalid.",
+    "No profitability claim is justified from the current C run."
+  ],
+  "governance": {
+    "segment_C": "OPENED_AND_SCORED_ONCE_20260911",
+    "segment_C_retuning_forbidden": true,
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  },
+  "next_action": [
+    "Do not modify B1a_MKT50_v1 using Segment C outcomes.",
+    "Treat the calibration result as a successful untouched scientific replication for the ticket-probability layer.",
+    "Before any final economic holdout, freeze a complete economic selection-ledger builder using only preregistered logic and no further Segment C tuning.",
+    "Do not open ECON_HOLDOUT1000 without separate explicit authorization.",
+    "Do not claim full production profitability or 100% formal scientific validation yet."
+  ]
+}
