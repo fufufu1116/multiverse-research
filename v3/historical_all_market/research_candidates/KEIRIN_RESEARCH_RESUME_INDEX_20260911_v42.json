@@ -1,0 +1,20 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v42",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v41.json",
+  "latest_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_PREONLY_PROBABILITY_RECONSTRUCTION_PATH_DIAGNOSTIC_20260911_v1.json",
+  "checkpoint_parent_head": "d81b84b4703a9a67525b7e8895c3a3df38225367",
+  "checkpoint_parent_tree": "3b46f2a22b10ac04e6fab7e94a418e3109682926",
+  "governance_boundary": "BURNED_AB_AND_OUTCOME_INDEPENDENT_PROBABILITY_ENGINEERING_ONLY_NO_DEV2000_C_NO_ECON_HOLDOUT1000_NO_NEW_RESULT_OR_PAYOUT_ACCESS",
+  "owner_spend": false,
+  "credentials_used": false,
+  "live_effect": false,
+  "runtime": "OFF",
+  "automatic_betting": "OFF",
+  "frozen_control": {
+    "competition_score_threshold": 0.40,
+    "lower_thresholds_research_only": [0.35, 0.30]
+  },
+  "current_conclusion": "Stage1 ticket-probability transform is independently reproducible from immutable winner-probability input plus market-structure-only data and is not the blocker. The missing link is provenance or allowed PRE-only reproduction of the immutable 14,255-row winner-probability CSV containing candidate_a_win_prob and b1a_reconstituted_v1_win_prob.",
+  "next_step": "Trace the immutable prediction SHA/provenance and upstream PRE-only producer/model state. If recoverable without protected data, reproduce winner probabilities and probability-side invariants before any calibration. Do not open new RESULT/PAYOUT merely to complete calibration."
+}
