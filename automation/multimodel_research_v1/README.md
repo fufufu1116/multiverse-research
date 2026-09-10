@@ -128,6 +128,255 @@ Observed provider model identity must exactly match the requested model ID under
 
 Model-target policy proves only target/provenance constraints. It does not prove truth, model quality, or fully reproducible provider serving infrastructure.
 
+Execution-time attestation binding
+
+`MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1` represents a time observation produced by the later Control execution boundary. Repository validation requires its source to be `CONTROL_RUNTIME_CLOCK`, binds a source-observation SHA256, and limits recording delay to 60 seconds.
+
+`MULTIVERSE_CATALOG_FRESHNESS_TIME_BINDING_v1` requires the catalog freshness receipt's `checked_at` to exactly equal the attested Control-runtime time.
+
+This prevents a later live preparation from making an old catalog appear fresh merely by supplying an arbitrary earlier checked_at value.
+
+The repository contract does not prove that a clock source is trustworthy by itself. Trust in the source must come from the separately authorized Control execution boundary. The attestation and binding grant no provider-call, credential, spend, live-execution, adoption, or Runtime authority.
+
+Catalog-bound pilot matrix
+
+`MULTIVERSE_PROVIDER_PILOT_MATRIX_v1` is a post-freeze research-only integration layer that threads one dated catalog candidate through the complete offline pre-live chain.
+
+For each provider it binds:
+- exact dated catalog model ID;
+- exact catalog-entry SHA256 as model-classification evidence;
+- exact SHA256 of the provider adapter source file;
+- exact Assignment v1;
+- exact single-assignment Fanout Plan v1;
+- exact Model Target Policy v1;
+- exact no-tools Capability Policy v1;
+- exact provider-neutral prompt;
+- exact provider-specific rendered request body;
+- exact outbound payload SHA256;
+- exact single-attempt synthetic-only smoke profile;
+- exact cost estimate from the dated catalog;
+- exact live-execution preparation guard;
+- readiness = READY_FOR_SEPARATE_PROVIDER_AUTHORITY while provider-call, credential, spend, and live-execution fields remain false.
+
+Cross-provider tests require Gemini and Claude to receive the same exact canonical prompt bytes and response schema while preserving their provider-specific wrappers.
+
+This layer performs no network call and grants no provider, credential, spend, adoption, or Runtime authority.
+
+Dual-provider terminal-failure accounting
+
+The Fanout rehearsal now distinguishes a missing provider from a provider that returned a terminal non-completed result.
+
+A synthetic REFUSED case proves:
+- 2 assignments planned;
+- 2 terminal results observed;
+- 1 completed;
+- 1 non-completed / REFUSED;
+- 0 missing;
+- all_planned_observed = true;
+- all_planned_completed = false.
+
+The federation-level guard requires this observed-but-failed provider case to remain incomplete. Receiving a terminal provider result therefore cannot be confused with successful research completion.
+
+Dual-provider fanout completeness rehearsal
+
+`MULTIVERSE_DUAL_PROVIDER_FANOUT_REHEARSAL_v1` places the dated Gemini and Claude assignments into one exact two-assignment Fanout Plan v1 and exercises batch completeness with RESULT v2 fixtures.
+
+It proves two cases:
+- full batch: 2 planned, 2 observed terminal results, 2 completed, 0 missing, all planned observed/completed;
+- missing-response batch: 2 planned, 1 observed/completed, exactly 1 missing, and both completeness flags remain false.
+
+The exact assignment SHA256 set, fanout-plan SHA256, and both batch-summary SHA256 values are retained. A missing provider can therefore never be silently treated as a complete two-provider research batch.
+
+All results are synthetic; no provider call or provider authority is created.
+
+Federation generation-lock strengthening
+
+The top-level federation evidence additionally requires one exact provider generation across every participating layer.
+
+For each provider:
+- per-provider full rehearsal `pilot_matrix_sha256`;
+- dual-provider Fanout `*_matrix_sha256`;
+- dual-provider comparison research `*_matrix_sha256`;
+
+must be exactly identical.
+
+The provider-neutral prompt SHA256 used by Fanout and comparison research must also match exactly and is retained at federation level. This prevents individually valid send/receive, Fanout, and comparison objects from different provider/model/prompt generations being assembled into one apparently valid two-provider rehearsal.
+
+Dual-provider full federation rehearsal
+
+`MULTIVERSE_DUAL_PROVIDER_FEDERATION_REHEARSAL_v1` converges the repository-only two-provider research path into one exact top-level evidence object.
+
+It binds:
+- frozen pre-live PR #256 head + seal;
+- one Control-clock/freshness generation;
+- Gemini full offline launch/receive/cost rehearsal;
+- Claude full offline launch/receive/cost rehearsal;
+- the exact two-provider Fanout completeness rehearsal;
+- the exact two-provider agreement/disagreement research object.
+
+The top-level record requires both providers/models, full-batch completion, missing-provider fail-closed behavior, correct disagreement detection, correct agreement non-divergence, and the mechanical-falsification route for unresolved disagreement.
+
+The federation record remains fully synthetic and grants no provider-call, credential, spend, live-execution, adoption, or Runtime authority.
+
+Provider refusal is not disagreement
+
+The two-provider comparison now includes a refusal control.
+
+With Gemini COMPLETED/SUPPORT and Claude REFUSED while carrying a synthetic OPPOSE-shaped finding payload:
+- both providers are observed;
+- only Gemini counts as a completed provider;
+- one result is non-completed / REFUSED;
+- the claim remains `SUPPORT_ONLY`;
+- cross-model divergence remains false;
+- cross-provider divergence remains false;
+- unresolved divergence count remains zero.
+
+This proves that provider refusal or inability to answer is not silently converted into an opposing research opinion.
+
+Dual-provider agreement/disagreement discrimination
+
+The dual-provider offline research now exercises a matched control case in addition to the intentional disagreement.
+
+With the same exact task, prompt, providers, and model IDs:
+- SUPPORT + OPPOSE must be `DIVERGENT`, with cross-model/cross-provider divergence and an unresolved mechanical-falsification route;
+- SUPPORT + SUPPORT must be `SUPPORT_ONLY`, with cross-model divergence false, cross-provider divergence false, and zero unresolved divergences.
+
+This demonstrates that the comparison layer detects structural disagreement without manufacturing divergence merely because two different providers participated.
+
+Dual-provider offline research disagreement
+
+`MULTIVERSE_DUAL_PROVIDER_OFFLINE_RESEARCH_v1` runs the dated Gemini and Claude catalog candidates through the same provider-neutral task/prompt contract and then exercises Aggregate v2 with intentionally opposed synthetic findings.
+
+It proves repository-only that:
+- two distinct providers and two distinct provider/model identities are counted;
+- both use the same exact provider-neutral prompt;
+- the dated model IDs remain exact;
+- SUPPORT vs OPPOSE across the two providers becomes `DIVERGENT`;
+- `cross_model_divergence=true`;
+- `cross_provider_divergence=true`;
+- same-role disagreement across different providers is not mislabeled role-conditioned divergence;
+- disagreement remains `UNRESOLVED_DIVERGENCE`;
+- the required next action is `MECHANICAL_FALSIFICATION_TASK`;
+- neither majority nor vote confers truth or adoption authority.
+
+The positions are intentionally synthetic. This demonstrates cross-model/cross-provider comparison mechanics only; it is not a claim about the providers' real opinions and performs no provider call.
+
+Synthetic usage-cost reconciliation
+
+The full offline rehearsal also binds the parsed synthetic response usage counts to the dated provider catalog and recomputes a **simulation-only** usage cost.
+
+Current synthetic fixture:
+- input tokens: 10;
+- output tokens: 20;
+- Gemini catalog estimate: 83 USD micros;
+- Claude catalog estimate: 110 USD micros.
+
+The recomputed value must remain below the preflight maximum-cost estimate already bound by launch evidence. Input/output usage must also stay within the launch token ceilings.
+
+This is not a provider invoice, billing proof, or spend authorization. It is only a deterministic repository-side check that the simulated observed usage is consistent with the same dated pricing snapshot and preflight ceilings.
+
+Full offline rehearsal convergence
+
+`MULTIVERSE_PROVIDER_REHEARSAL_CONVERGENCE_v1` binds the send-side launch evidence to the receive-side synthetic round-trip for one exact provider/model generation.
+
+It requires:
+- the same provider and exact model ID on both sides;
+- the same exact provider pilot matrix SHA256;
+- the frozen pre-live Candidate head and seal from launch evidence;
+- the exact launch-evidence SHA256;
+- the exact synthetic-roundtrip SHA256;
+- the final provider-observation-binding SHA256.
+
+This prevents a valid pre-execution proof for one provider/model generation from being paired with a valid synthetic receive-side proof from another generation.
+
+State remains `FULL_OFFLINE_REHEARSAL_ALIGNED_AUTHORITY_ABSENT`: synthetic only, repository evidence aligned, provider-call/credential/spend/live-execution/adoption authority false, Runtime OFF.
+
+Catalog-model synthetic response round-trip
+
+`MULTIVERSE_PROVIDER_PILOT_ROUNDTRIP_v1` takes each dated catalog model through the receive-side chain using a fully synthetic provider response and no network call.
+
+For Gemini and Claude it proves offline:
+- the exact catalog model ID is preserved by the provider parser;
+- normalized completion and usage metadata are recorded;
+- a termination record is bound to the exact request;
+- RESULT v2 is bound to the exact Assignment v1;
+- an execution receipt uses `LIVE_ATTESTED` model identity against the pinned/stable model target;
+- the parsed observation is bound to the termination/result/receipt chain;
+- all major artifacts have deterministic SHA256 identities.
+
+`LIVE_ATTESTED` here describes the simulated receipt contract only. `synthetic_only=true` and `live_provider_execution=false`; no provider, credential, spend, adoption, or Runtime authority is created.
+
+Provider launch evidence convergence
+
+`MULTIVERSE_PROVIDER_LAUNCH_EVIDENCE_v1` binds the catalog-bound full offline provider matrix to the pre-execution freshness/time/Candidate evidence bundle.
+
+This closes the repository-side cross-generation gap between the exact real provider/model request path and the exact frozen Candidate head/seal, catalog freshness, Control-runtime time attestation, and pilot resource ceilings.
+
+The launch evidence requires the same provider/model, input/output token ceilings, one-attempt ceiling, and catalog-derived maximum cost across both chains. Mixing a valid Gemini matrix with a valid Claude bundle, or mixing different token/cost generations, fails closed.
+
+Its state is `REPOSITORY_EVIDENCE_ALIGNED_AUTHORITY_ABSENT`: repository evidence is aligned, but provider-call, credential, spend, live-execution, adoption, and Runtime authority remain false/OFF.
+
+Provider pre-execution evidence bundle
+
+`MULTIVERSE_PROVIDER_PRE_EXECUTION_BUNDLE_v1` closes a repository-side generation-mixing gap immediately before any separately authorized provider call.
+
+It binds one exact chain:
+- frozen pre-live Candidate head and seal blob;
+- one exact first-provider pilot dry-run plan;
+- one exact provider/model catalog snapshot;
+- one exact catalog freshness receipt;
+- one exact pilot/freshness binding;
+- one exact Control-runtime time attestation;
+- one exact catalog-freshness/time binding.
+
+The bundle fails closed if a valid object from a different Candidate head, seal, provider/model, catalog generation, or attested check time is mixed into the chain.
+
+The bundle is evidence only. It keeps provider-call, credential, spend, live-execution, adoption, and Runtime authority false/OFF. Trust in `CONTROL_RUNTIME_CLOCK` still comes only from a separately authorized Control execution boundary.
+
+Catalog freshness guard
+
+`MULTIVERSE_PROVIDER_CATALOG_FRESHNESS_v1` requires the provider/model/pricing snapshot used for a later live call to have been checked within the previous 24 hours.
+
+It fails closed if:
+- the check time is before the snapshot time;
+- the snapshot is older than 24 hours;
+- the configured freshness window is wider than 24 hours;
+- an explicit provider pricing-valid-through date has expired;
+- the snapshot contents change after the freshness receipt was made.
+
+`MULTIVERSE_FIRST_PROVIDER_PILOT_FRESHNESS_BINDING_v1` binds one exact pilot dry-run plan to one exact fresh-catalog receipt.
+
+Freshness never authorizes the provider call, credentials, spend, or live execution. Runtime remains OFF.
+
+If the 24-hour window has elapsed, official provider information must be observed again and a new dated snapshot/freshness receipt produced before later live transport preparation.
+
+First-provider pilot dry-run plan
+
+`MULTIVERSE_FIRST_PROVIDER_PILOT_DRY_RUN_v1` is a repository-only preparation object for the later, separately authorized Phase B first-provider pilot.
+
+It binds:
+- exact frozen pre-live Candidate head and seal blob;
+- exact dated provider catalog snapshot SHA256;
+- exact selected provider/model catalog entry;
+- exactly one provider, one planned call, and one attempt;
+- exact input/output token ceilings;
+- exact catalog-derived maximum cost estimate;
+- synthetic-only data;
+- JSON-only output.
+
+It explicitly requires provider-call, credential, and spend authority while keeping all three authorization fields false.
+
+It also requires:
+- no network execution in repository;
+- no credential material in repository;
+- live_execution_performed = false;
+- Runtime OFF;
+- adoption_authority = false.
+
+`build_pilot_candidate_matrix` exposes both current bounded candidates for comparison without selecting either one and without creating selection or spend authority.
+
+This dry-run object is advisory research only. It is not an Owner Gate, machine review request, provider call, credential grant, or spend authorization.
+
 Dated provider model catalog snapshot
 
 `PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json` records the official-provider facts used to choose bounded first-smoke candidates on 2026-09-08.

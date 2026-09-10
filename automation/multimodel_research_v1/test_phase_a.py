@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 import unittest
@@ -83,6 +84,82 @@ from automation.multimodel_research_v1.provider_catalog import (
     estimate_smoke_cost_usd_micros,
     validate_first_smoke_candidate,
     validate_provider_catalog,
+)
+from automation.multimodel_research_v1.pilot_matrix import (
+    build_provider_pilot_matrix,
+    provider_pilot_matrix_sha256,
+    validate_provider_pilot_matrix,
+)
+from automation.multimodel_research_v1.pilot_dry_run import (
+    build_first_provider_pilot_dry_run,
+    build_pilot_candidate_matrix,
+    first_provider_pilot_dry_run_sha256,
+    validate_first_provider_pilot_dry_run,
+)
+from automation.multimodel_research_v1.catalog_freshness import (
+    build_catalog_freshness_receipt,
+    build_pilot_freshness_binding,
+    catalog_freshness_sha256,
+    pilot_freshness_binding_sha256,
+    validate_catalog_freshness_receipt,
+    validate_pilot_freshness_binding,
+)
+from automation.multimodel_research_v1.time_attestation import (
+    build_catalog_freshness_time_binding,
+    catalog_freshness_time_binding_sha256,
+    execution_time_attestation_sha256,
+    validate_catalog_freshness_time_binding,
+    validate_execution_time_attestation,
+)
+from automation.multimodel_research_v1.pre_execution_bundle import (
+    build_provider_pre_execution_bundle,
+    provider_pre_execution_bundle_sha256,
+    validate_provider_pre_execution_bundle,
+)
+from automation.multimodel_research_v1.launch_evidence import (
+    build_provider_launch_evidence,
+    provider_launch_evidence_sha256,
+    validate_provider_launch_evidence,
+)
+from automation.multimodel_research_v1.pilot_roundtrip import (
+    build_provider_pilot_roundtrip,
+    provider_pilot_roundtrip_sha256,
+    validate_provider_pilot_roundtrip,
+)
+from automation.multimodel_research_v1.pilot_roundtrip_v2 import (
+    build_provider_pilot_roundtrip_v2,
+    provider_pilot_roundtrip_v2_sha256,
+    validate_provider_pilot_roundtrip_v2,
+)
+from automation.multimodel_research_v1.provider_result_schema import (
+    build_result_v2_response_schema,
+    result_v2_response_schema_sha256,
+    validate_result_v2_response_schema,
+)
+from automation.multimodel_research_v1.provider_result_ingestion import (
+    build_provider_result_ingestion,
+    provider_result_ingestion_sha256,
+    validate_provider_result_ingestion,
+)
+from automation.multimodel_research_v1.rehearsal_convergence import (
+    build_provider_rehearsal_convergence,
+    provider_rehearsal_convergence_sha256,
+    validate_provider_rehearsal_convergence,
+)
+from automation.multimodel_research_v1.dual_provider_research import (
+    build_dual_provider_offline_research,
+    dual_provider_offline_research_sha256,
+    validate_dual_provider_offline_research,
+)
+from automation.multimodel_research_v1.dual_provider_fanout import (
+    build_dual_provider_fanout_rehearsal,
+    dual_provider_fanout_rehearsal_sha256,
+    validate_dual_provider_fanout_rehearsal,
+)
+from automation.multimodel_research_v1.federation_rehearsal import (
+    build_dual_provider_federation_rehearsal,
+    dual_provider_federation_rehearsal_sha256,
+    validate_dual_provider_federation_rehearsal,
 )
 from automation.multimodel_research_v1.model import (
     ResearchContractError,
@@ -10403,6 +10480,3263 @@ class ContractTests(unittest.TestCase):
             sha256_json(first),
             sha256_json(second),
         )
+
+
+    def test_272_valid_gemini_first_provider_pilot_dry_run(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            ),
+            plan,
+        )
+        self.assertEqual(
+            plan["model_id"],
+            "gemini-3.8-flash",
+        )
+
+    def test_273_valid_claude_first_provider_pilot_dry_run(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            ),
+            plan,
+        )
+        self.assertEqual(
+            plan["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_274_pilot_requires_exact_prelive_head_sha(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_first_provider_pilot_dry_run(
+                snapshot,
+                "GOOGLE_GEMINI",
+                prelive_candidate_head="not-a-sha",
+                prelive_candidate_seal_blob=
+                    "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            )
+
+    def test_275_pilot_requires_exact_prelive_seal_blob_sha(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_first_provider_pilot_dry_run(
+                snapshot,
+                "GOOGLE_GEMINI",
+                prelive_candidate_head=
+                    "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+                prelive_candidate_seal_blob="not-a-sha",
+            )
+
+    def test_276_pilot_model_must_match_catalog(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        plan["model_id"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            )
+
+    def test_277_pilot_binds_exact_catalog_snapshot_digest(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        plan["catalog_snapshot_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            )
+
+    def test_278_pilot_cost_estimate_is_exact_and_bounded(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            plan["estimated_max_cost_usd_micros"],
+            53248,
+        )
+        self.assertLessEqual(
+            plan["estimated_max_cost_usd_micros"],
+            1_000_000,
+        )
+
+    def test_279_pilot_is_exactly_one_provider_call_attempt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            plan["planned_provider_count"],
+            1,
+        )
+        self.assertEqual(plan["planned_call_count"], 1)
+        self.assertEqual(plan["max_attempts"], 1)
+
+    def test_280_pilot_is_synthetic_json_only(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertEqual(
+            plan["data_ceiling"],
+            "SYNTHETIC_ONLY",
+        )
+        self.assertEqual(
+            plan["structured_output"],
+            "JSON_ONLY",
+        )
+
+    def test_281_pilot_requires_authority_without_granting_it(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        for key in (
+            "provider_call_authority_required",
+            "credential_authority_required",
+            "spend_authority_required",
+        ):
+            self.assertIs(plan[key], True)
+
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+        ):
+            self.assertIs(plan[key], False)
+
+    def test_282_pilot_never_claims_execution_runtime_or_adoption(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertIs(
+            plan["network_execution_in_repository"],
+            False,
+        )
+        self.assertIs(
+            plan["credential_material_in_repository"],
+            False,
+        )
+        self.assertIs(
+            plan["live_execution_performed"],
+            False,
+        )
+        self.assertIs(plan["adoption_authority"], False)
+        self.assertEqual(plan["runtime"], "OFF")
+
+    def test_283_pilot_phase_fails_closed(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        plan["phase"] = "PHASE_C_SECOND_PROVIDER"
+        with self.assertRaises(ResearchContractError):
+            validate_first_provider_pilot_dry_run(
+                snapshot,
+                plan,
+            )
+
+    def test_284_pilot_candidate_matrix_contains_both_providers(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_pilot_candidate_matrix(snapshot)
+        self.assertEqual(
+            {row["provider"] for row in matrix},
+            {"GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"},
+        )
+
+    def test_285_pilot_candidate_matrix_grants_no_selection_or_spend(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_pilot_candidate_matrix(snapshot)
+        for row in matrix:
+            self.assertIs(row["selection_authority"], False)
+            self.assertIs(row["selected"], False)
+            self.assertIs(row["spend_authority"], False)
+
+    def test_286_pilot_digest_is_deterministic_and_provider_specific(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        first = first_provider_pilot_dry_run_sha256(
+            snapshot,
+            plan,
+        )
+        second = first_provider_pilot_dry_run_sha256(
+            snapshot,
+            copy.deepcopy(plan),
+        )
+        self.assertEqual(first, second)
+
+        claude = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        self.assertNotEqual(
+            first,
+            first_provider_pilot_dry_run_sha256(
+                snapshot,
+                claude,
+            ),
+        )
+
+
+    def test_287_valid_same_day_catalog_freshness_receipt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        self.assertEqual(
+            validate_catalog_freshness_receipt(snapshot, freshness),
+            freshness,
+        )
+        self.assertLessEqual(freshness["age_seconds"], 86400)
+
+    def test_288_catalog_snapshot_older_than_24h_is_rejected(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                snapshot,
+                checked_at="2026-09-09T11:05:01Z",
+            )
+
+    def test_289_catalog_freshness_check_cannot_predate_snapshot(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                snapshot,
+                checked_at="2026-09-08T11:04:59Z",
+            )
+
+    def test_290_catalog_freshness_requires_strict_utc(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                snapshot,
+                checked_at="2026-09-08T20:30:00+09:00",
+            )
+
+    def test_291_expired_pricing_window_is_rejected(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        changed = copy.deepcopy(snapshot)
+        changed["entries"][0]["pricing_valid_through"] = "2026-09-07"
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_receipt(
+                changed,
+                checked_at="2026-09-08T11:30:00Z",
+            )
+
+    def test_292_catalog_mutation_invalidates_freshness_receipt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        changed = copy.deepcopy(snapshot)
+        changed["entries"][0][
+            "input_usd_micros_per_million_tokens"
+        ] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_catalog_freshness_receipt(changed, freshness)
+
+    def test_293_catalog_freshness_grants_no_authority(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+        ):
+            self.assertIs(freshness[key], False)
+
+    def test_294_catalog_freshness_runtime_remains_off(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        self.assertEqual(freshness["runtime"], "OFF")
+
+    def test_295_catalog_freshness_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        self.assertEqual(
+            catalog_freshness_sha256(snapshot, freshness),
+            catalog_freshness_sha256(
+                snapshot,
+                copy.deepcopy(freshness),
+            ),
+        )
+
+    def test_296_valid_gemini_pilot_freshness_binding(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        self.assertEqual(
+            validate_pilot_freshness_binding(
+                snapshot,
+                plan,
+                freshness,
+                binding,
+            ),
+            binding,
+        )
+
+    def test_297_valid_claude_pilot_freshness_binding(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        self.assertEqual(binding["provider"], "ANTHROPIC_CLAUDE")
+        self.assertEqual(
+            binding["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_298_pilot_freshness_binding_rejects_plan_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        binding["pilot_dry_run_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_pilot_freshness_binding(
+                snapshot,
+                plan,
+                freshness,
+                binding,
+            )
+
+    def test_299_pilot_freshness_binding_rejects_receipt_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        binding["catalog_freshness_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_pilot_freshness_binding(
+                snapshot,
+                plan,
+                freshness,
+                binding,
+            )
+
+    def test_300_pilot_freshness_binding_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            "GOOGLE_GEMINI",
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        first = pilot_freshness_binding_sha256(
+            snapshot,
+            plan,
+            freshness,
+            binding,
+        )
+        second = pilot_freshness_binding_sha256(
+            snapshot,
+            copy.deepcopy(plan),
+            copy.deepcopy(freshness),
+            copy.deepcopy(binding),
+        )
+        self.assertEqual(first, second)
+
+
+    def test_301_valid_control_time_attestation(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        self.assertEqual(
+            validate_execution_time_attestation(attestation),
+            attestation,
+        )
+
+    def test_302_time_attestation_requires_control_runtime_clock(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "USER_SUPPLIED_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_303_time_attestation_requires_source_digest(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "bad",
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_304_time_attestation_cannot_be_recorded_before_attested(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:29:59Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_305_time_attestation_recording_delay_is_bounded(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:31:01Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            validate_execution_time_attestation(attestation)
+
+    def test_306_time_attestation_grants_no_authority(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+        ):
+            broken = copy.deepcopy(attestation)
+            broken[key] = True
+            with self.assertRaises(ResearchContractError):
+                validate_execution_time_attestation(broken)
+
+    def test_307_valid_catalog_freshness_time_binding(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        self.assertEqual(
+            validate_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+                binding,
+            ),
+            binding,
+        )
+
+    def test_308_freshness_checked_at_must_exactly_match_attested_at(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:01Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        with self.assertRaises(ResearchContractError):
+            build_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+            )
+
+    def test_309_freshness_time_binding_rejects_catalog_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        binding["catalog_freshness_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+                binding,
+            )
+
+    def test_310_freshness_time_binding_rejects_attestation_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        binding["time_attestation_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_catalog_freshness_time_binding(
+                snapshot,
+                freshness,
+                attestation,
+                binding,
+            )
+
+    def test_311_time_attestation_digest_is_deterministic(self):
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        self.assertEqual(
+            execution_time_attestation_sha256(attestation),
+            execution_time_attestation_sha256(
+                copy.deepcopy(attestation)
+            ),
+        )
+
+    def test_312_freshness_time_binding_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            "prelive_candidate_seal_blob":
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        first = catalog_freshness_time_binding_sha256(
+            snapshot,
+            freshness,
+            attestation,
+            binding,
+        )
+        second = catalog_freshness_time_binding_sha256(
+            snapshot,
+            copy.deepcopy(freshness),
+            copy.deepcopy(attestation),
+            copy.deepcopy(binding),
+        )
+        self.assertEqual(first, second)
+
+
+    def _pre_execution_bundle_fixture(self, provider="GOOGLE_GEMINI"):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            provider,
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        pilot_binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                plan["prelive_candidate_head"],
+            "prelive_candidate_seal_blob":
+                plan["prelive_candidate_seal_blob"],
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        time_binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        bundle = build_provider_pre_execution_bundle(
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+        )
+        return (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        )
+
+    def test_313_valid_provider_pre_execution_bundle(self):
+        args = self._pre_execution_bundle_fixture()
+        self.assertEqual(
+            validate_provider_pre_execution_bundle(*args),
+            args[-1],
+        )
+        self.assertIs(args[-1]["evidence_chain_complete"], True)
+
+    def test_314_pre_execution_rejects_candidate_head_mix(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[4] = copy.deepcopy(args[4])
+        args[4]["prelive_candidate_head"] = "0" * 40
+        with self.assertRaises(ResearchContractError):
+            build_provider_pre_execution_bundle(*args[:6])
+
+    def test_315_pre_execution_rejects_candidate_seal_mix(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[4] = copy.deepcopy(args[4])
+        args[4]["prelive_candidate_seal_blob"] = "0" * 40
+        with self.assertRaises(ResearchContractError):
+            build_provider_pre_execution_bundle(*args[:6])
+
+    def test_316_pre_execution_rejects_provider_binding_mix(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[3] = copy.deepcopy(args[3])
+        args[3]["provider"] = "ANTHROPIC_CLAUDE"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_317_pre_execution_rejects_pilot_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pilot_dry_run_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_318_pre_execution_rejects_freshness_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["catalog_freshness_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_319_pre_execution_rejects_time_attestation_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["time_attestation_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_320_pre_execution_rejects_freshness_time_digest_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["catalog_freshness_time_binding_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_321_pre_execution_rejects_checked_at_tamper(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["checked_at"] = "2026-09-08T11:30:01Z"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_322_pre_execution_rejects_authority_escalation(self):
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+            "adoption_authority",
+        ):
+            args = list(self._pre_execution_bundle_fixture())
+            args[-1] = copy.deepcopy(args[-1])
+            args[-1][key] = True
+            with self.assertRaises(ResearchContractError):
+                validate_provider_pre_execution_bundle(*args)
+
+    def test_323_pre_execution_requires_runtime_off(self):
+        args = list(self._pre_execution_bundle_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["runtime"] = "ON"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pre_execution_bundle(*args)
+
+    def test_324_pre_execution_bundle_digest_is_deterministic(self):
+        args = self._pre_execution_bundle_fixture()
+        first = provider_pre_execution_bundle_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_pre_execution_bundle_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def test_325_build_gemini_catalog_pilot_matrix(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_provider_pilot_matrix(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertEqual(
+            matrix["assignment"]["target_model"],
+            "gemini-3.8-flash",
+        )
+        self.assertEqual(
+            matrix["render"]["body"]["model"],
+            "gemini-3.8-flash",
+        )
+
+    def test_326_build_claude_catalog_pilot_matrix(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_provider_pilot_matrix(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        self.assertEqual(
+            matrix["assignment"]["target_model"],
+            "claude-haiku-4-5-20251001",
+        )
+        self.assertEqual(
+            matrix["render"]["body"]["model"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_327_pilot_matrix_binds_catalog_entry_to_model_policy(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                matrix["model_target_policy"][
+                    "classification_evidence_sha256"
+                ],
+                catalog_entry_sha256(snapshot, provider),
+            )
+
+    def test_328_pilot_matrix_binds_exact_adapter_source_sha256(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider, filename in (
+            ("GOOGLE_GEMINI", "gemini_adapter.py"),
+            ("ANTHROPIC_CLAUDE", "claude_adapter.py"),
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            source_digest = hashlib.sha256(
+                Path(__file__).with_name(filename).read_bytes()
+            ).hexdigest()
+            self.assertEqual(
+                matrix["adapter_source_sha256"],
+                source_digest,
+            )
+            self.assertEqual(
+                matrix["assignment"]["adapter_sha256"],
+                source_digest,
+            )
+
+    def test_329_pilot_matrix_outbound_digest_matches_exact_render_body(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                matrix["request_envelope"][
+                    "outbound_payload_sha256"
+                ],
+                sha256_json(matrix["render"]["body"]),
+            )
+
+    def test_330_pilot_matrix_smoke_and_prep_remain_single_attempt(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                matrix["smoke_profile"][
+                    "max_attempts_per_assignment"
+                ],
+                1,
+            )
+            self.assertEqual(
+                matrix["execution_prep"]["max_attempts"],
+                1,
+            )
+
+    def test_331_pilot_matrix_readiness_is_ready_but_unauthorized(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            report = matrix["readiness_report"]
+            self.assertEqual(
+                report["readiness_state"],
+                "READY_FOR_SEPARATE_PROVIDER_AUTHORITY",
+            )
+            self.assertIs(
+                report["provider_call_authorized"],
+                False,
+            )
+            self.assertIs(
+                report["credential_authorized"],
+                False,
+            )
+            self.assertIs(
+                report["spend_authorized"],
+                False,
+            )
+            self.assertIs(
+                report["live_execution_performed"],
+                False,
+            )
+            self.assertEqual(report["runtime"], "OFF")
+
+    def test_332_pilot_matrix_uses_catalog_cost_estimate(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in (
+            "GOOGLE_GEMINI",
+            "ANTHROPIC_CLAUDE",
+        ):
+            matrix = build_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            candidate = validate_first_smoke_candidate(
+                snapshot,
+                provider,
+            )
+            self.assertEqual(
+                matrix["execution_prep"][
+                    "proposed_max_cost_usd_micros"
+                ],
+                candidate[
+                    "estimated_max_cost_usd_micros"
+                ],
+            )
+
+    def test_333_pilot_matrix_exact_validation_rejects_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        matrix = build_provider_pilot_matrix(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        matrix["assignment"]["target_model"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_matrix(
+                task_v2(),
+                snapshot,
+                response_schema(),
+                matrix,
+            )
+
+    def test_334_pilot_matrix_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        first = provider_pilot_matrix_sha256(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+        )
+        second = provider_pilot_matrix_sha256(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+        )
+        self.assertEqual(first, second)
+
+    def test_335_pilot_matrix_provider_payloads_share_exact_prompt_bytes(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        gemini = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "GOOGLE_GEMINI",
+            schema,
+        )
+        claude = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        self.assertEqual(
+            gemini["render"]["body"]["input"],
+            claude["render"]["body"]["messages"][0]["content"],
+        )
+
+    def test_336_pilot_matrix_provider_payloads_share_exact_response_schema(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        gemini = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "GOOGLE_GEMINI",
+            schema,
+        )
+        claude = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        self.assertEqual(
+            gemini["render"]["body"][
+                "response_format"
+            ]["schema"],
+            claude["render"]["body"][
+                "output_config"
+            ]["format"]["schema"],
+        )
+
+
+    def _pre_execution_bundle_fixture_with_limits(
+        self,
+        provider,
+        *,
+        max_input_tokens=32768,
+        max_output_tokens=4096,
+    ):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        plan = build_first_provider_pilot_dry_run(
+            snapshot,
+            provider,
+            prelive_candidate_head=
+                "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+            prelive_candidate_seal_blob=
+                "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+            max_input_tokens=max_input_tokens,
+            max_output_tokens=max_output_tokens,
+        )
+        freshness = build_catalog_freshness_receipt(
+            snapshot,
+            checked_at="2026-09-08T11:30:00Z",
+        )
+        pilot_binding = build_pilot_freshness_binding(
+            snapshot,
+            plan,
+            freshness,
+        )
+        attestation = {
+            "schema": "MULTIVERSE_EXECUTION_TIME_ATTESTATION_v1",
+            "attestation_id": "control-time-001",
+            "source": "CONTROL_RUNTIME_CLOCK",
+            "source_ref": "control-runtime-clock-001",
+            "source_observation_sha256": "c" * 64,
+            "attested_at": "2026-09-08T11:30:00Z",
+            "recorded_at": "2026-09-08T11:30:05Z",
+            "prelive_candidate_head":
+                plan["prelive_candidate_head"],
+            "prelive_candidate_seal_blob":
+                plan["prelive_candidate_seal_blob"],
+            "provider_call_authorized": False,
+            "credential_authorized": False,
+            "spend_authorized": False,
+            "live_execution_performed": False,
+            "runtime": "OFF",
+        }
+        time_binding = build_catalog_freshness_time_binding(
+            snapshot,
+            freshness,
+            attestation,
+        )
+        bundle = build_provider_pre_execution_bundle(
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+        )
+        return (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        )
+
+    def _launch_evidence_fixture(self, provider="GOOGLE_GEMINI"):
+        (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        ) = self._pre_execution_bundle_fixture(provider)
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            provider,
+            schema,
+        )
+        evidence = build_provider_launch_evidence(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        )
+        return (
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            evidence,
+        )
+
+    def test_337_valid_gemini_launch_evidence(self):
+        args = self._launch_evidence_fixture("GOOGLE_GEMINI")
+        self.assertEqual(
+            validate_provider_launch_evidence(*args),
+            args[-1],
+        )
+        self.assertEqual(args[-1]["model_id"], "gemini-3.8-flash")
+
+    def test_338_valid_claude_launch_evidence(self):
+        args = self._launch_evidence_fixture("ANTHROPIC_CLAUDE")
+        self.assertEqual(
+            validate_provider_launch_evidence(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_339_launch_evidence_rejects_provider_generation_mix(self):
+        gemini = list(self._launch_evidence_fixture("GOOGLE_GEMINI"))
+        claude = self._launch_evidence_fixture("ANTHROPIC_CLAUDE")
+        gemini[3] = claude[3]
+        with self.assertRaises(ResearchContractError):
+            build_provider_launch_evidence(*gemini[:-1])
+
+    def test_340_launch_evidence_rejects_model_tamper(self):
+        args = list(self._launch_evidence_fixture("GOOGLE_GEMINI"))
+        args[3] = copy.deepcopy(args[3])
+        args[3]["assignment"]["target_model"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_341_launch_evidence_rejects_input_ceiling_mix(self):
+        (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        ) = self._pre_execution_bundle_fixture_with_limits(
+            "GOOGLE_GEMINI",
+            max_input_tokens=16384,
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "GOOGLE_GEMINI",
+            schema,
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_launch_evidence(
+                bound_task,
+                snapshot,
+                schema,
+                matrix,
+                plan,
+                freshness,
+                pilot_binding,
+                attestation,
+                time_binding,
+                bundle,
+            )
+
+    def test_342_launch_evidence_rejects_output_ceiling_mix(self):
+        (
+            snapshot,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+        ) = self._pre_execution_bundle_fixture_with_limits(
+            "ANTHROPIC_CLAUDE",
+            max_output_tokens=2048,
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        matrix = build_provider_pilot_matrix(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_launch_evidence(
+                bound_task,
+                snapshot,
+                schema,
+                matrix,
+                plan,
+                freshness,
+                pilot_binding,
+                attestation,
+                time_binding,
+                bundle,
+            )
+
+    def test_343_launch_evidence_rejects_matrix_digest_tamper(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pilot_matrix_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_344_launch_evidence_rejects_pre_execution_digest_tamper(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pre_execution_bundle_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_345_launch_evidence_rejects_authority_escalation(self):
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_execution_performed",
+            "adoption_authority",
+        ):
+            args = list(self._launch_evidence_fixture())
+            args[-1] = copy.deepcopy(args[-1])
+            args[-1][key] = True
+            with self.assertRaises(ResearchContractError):
+                validate_provider_launch_evidence(*args)
+
+    def test_346_launch_evidence_requires_runtime_off(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["runtime"] = "ON"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_347_launch_evidence_requires_aligned_state(self):
+        args = list(self._launch_evidence_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["repository_evidence_aligned"] = False
+        with self.assertRaises(ResearchContractError):
+            validate_provider_launch_evidence(*args)
+
+    def test_348_launch_evidence_digest_is_deterministic(self):
+        args = self._launch_evidence_fixture()
+        first = provider_launch_evidence_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_launch_evidence_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def test_349_gemini_roundtrip_uses_catalog_model_id(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertEqual(value["model_id"], "gemini-3.8-flash")
+        self.assertEqual(value["normalized_state"], "COMPLETED")
+
+    def test_350_claude_roundtrip_uses_catalog_model_id(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        self.assertEqual(
+            value["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+        self.assertEqual(value["normalized_state"], "COMPLETED")
+
+    def test_351_roundtrip_is_live_attested_but_synthetic_only(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = build_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(value["attestation_state"], "LIVE_ATTESTED")
+            self.assertIs(value["synthetic_only"], True)
+            self.assertIs(value["live_provider_execution"], False)
+
+    def test_352_roundtrip_binds_matrix_response_and_receipt_digests(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        for key in (
+            "pilot_matrix_sha256",
+            "simulated_provider_response_sha256",
+            "provider_observation_sha256",
+            "termination_record_sha256",
+            "result_sha256",
+            "execution_receipt_sha256",
+            "observation_binding_sha256",
+        ):
+            self.assertEqual(len(value[key]), 64)
+
+    def test_353_roundtrip_exact_validation_accepts_both_providers(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = build_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                provider,
+                response_schema(),
+            )
+            self.assertEqual(
+                validate_provider_pilot_roundtrip(
+                    task_v2(),
+                    snapshot,
+                    provider,
+                    response_schema(),
+                    value,
+                ),
+                value,
+            )
+
+    def test_354_roundtrip_rejects_model_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        value["model_id"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                "GOOGLE_GEMINI",
+                response_schema(),
+                value,
+            )
+
+    def test_355_roundtrip_rejects_receipt_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        value["execution_receipt_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                "ANTHROPIC_CLAUDE",
+                response_schema(),
+                value,
+            )
+
+    def test_356_roundtrip_grants_no_provider_or_spend_authority(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertIs(value["provider_credentials"], False)
+        self.assertIs(value["spend_authorized"], False)
+        self.assertIs(value["adoption_authority"], False)
+
+    def test_357_roundtrip_runtime_remains_off(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_358_roundtrip_provider_digests_are_distinct(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        gemini = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        claude = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            response_schema(),
+        )
+        self.assertNotEqual(
+            gemini["simulated_provider_response_sha256"],
+            claude["simulated_provider_response_sha256"],
+        )
+        self.assertNotEqual(
+            gemini["observation_binding_sha256"],
+            claude["observation_binding_sha256"],
+        )
+
+    def test_359_roundtrip_rejects_observation_binding_digest_tamper(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        value = build_provider_pilot_roundtrip(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+            response_schema(),
+        )
+        value["observation_binding_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_roundtrip(
+                task_v2(),
+                snapshot,
+                "GOOGLE_GEMINI",
+                response_schema(),
+                value,
+            )
+
+    def test_360_roundtrip_digest_is_deterministic(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        value = build_provider_pilot_roundtrip(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+        )
+        first = provider_pilot_roundtrip_sha256(
+            bound_task,
+            snapshot,
+            "ANTHROPIC_CLAUDE",
+            schema,
+            value,
+        )
+        second = provider_pilot_roundtrip_sha256(
+            copy.deepcopy(bound_task),
+            copy.deepcopy(snapshot),
+            "ANTHROPIC_CLAUDE",
+            copy.deepcopy(schema),
+            copy.deepcopy(value),
+        )
+        self.assertEqual(first, second)
+
+
+    def _rehearsal_fixture(self, provider="GOOGLE_GEMINI"):
+        (
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            launch,
+        ) = self._launch_evidence_fixture(provider)
+        roundtrip = build_provider_pilot_roundtrip(
+            bound_task,
+            snapshot,
+            provider,
+            schema,
+        )
+        record = build_provider_rehearsal_convergence(
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            launch,
+            roundtrip,
+        )
+        return (
+            bound_task,
+            snapshot,
+            schema,
+            matrix,
+            plan,
+            freshness,
+            pilot_binding,
+            attestation,
+            time_binding,
+            bundle,
+            launch,
+            roundtrip,
+            record,
+        )
+
+    def test_361_valid_gemini_full_offline_rehearsal(self):
+        args = self._rehearsal_fixture("GOOGLE_GEMINI")
+        self.assertEqual(
+            validate_provider_rehearsal_convergence(*args),
+            args[-1],
+        )
+        self.assertEqual(args[-1]["model_id"], "gemini-3.8-flash")
+
+    def test_362_valid_claude_full_offline_rehearsal(self):
+        args = self._rehearsal_fixture("ANTHROPIC_CLAUDE")
+        self.assertEqual(
+            validate_provider_rehearsal_convergence(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_363_rehearsal_binds_one_exact_pilot_matrix_generation(self):
+        args = self._rehearsal_fixture()
+        self.assertEqual(
+            args[-1]["pilot_matrix_sha256"],
+            args[-2]["pilot_matrix_sha256"],
+        )
+        self.assertEqual(
+            args[-1]["pilot_matrix_sha256"],
+            args[-3]["pilot_matrix_sha256"],
+        )
+
+    def test_364_rehearsal_rejects_provider_mix(self):
+        gemini = list(self._rehearsal_fixture("GOOGLE_GEMINI"))
+        claude = self._rehearsal_fixture("ANTHROPIC_CLAUDE")
+        gemini[-2] = claude[-2]
+        with self.assertRaises(ResearchContractError):
+            build_provider_rehearsal_convergence(*gemini[:-1])
+
+    def test_365_rehearsal_rejects_model_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-2] = copy.deepcopy(args[-2])
+        args[-2]["model_id"] = "model-other"
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_366_rehearsal_rejects_launch_digest_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["launch_evidence_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_367_rehearsal_rejects_roundtrip_digest_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["pilot_roundtrip_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_368_rehearsal_preserves_candidate_head_and_seal(self):
+        args = self._rehearsal_fixture()
+        self.assertEqual(
+            args[-1]["prelive_candidate_head"],
+            "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+        )
+        self.assertEqual(
+            args[-1]["prelive_candidate_seal_blob"],
+            "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+
+    def test_369_rehearsal_grants_no_authority(self):
+        args = self._rehearsal_fixture()
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(args[-1][key], False)
+
+    def test_370_rehearsal_runtime_remains_off(self):
+        args = self._rehearsal_fixture()
+        self.assertEqual(args[-1]["runtime"], "OFF")
+
+    def test_371_rehearsal_provider_records_are_distinct(self):
+        gemini = self._rehearsal_fixture("GOOGLE_GEMINI")[-1]
+        claude = self._rehearsal_fixture("ANTHROPIC_CLAUDE")[-1]
+        self.assertNotEqual(
+            gemini["pilot_roundtrip_sha256"],
+            claude["pilot_roundtrip_sha256"],
+        )
+        self.assertNotEqual(
+            gemini["observation_binding_sha256"],
+            claude["observation_binding_sha256"],
+        )
+
+    def test_372_rehearsal_digest_is_deterministic(self):
+        args = self._rehearsal_fixture("ANTHROPIC_CLAUDE")
+        first = provider_rehearsal_convergence_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_rehearsal_convergence_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def test_373_rehearsal_gemini_usage_counts_are_bound(self):
+        value = self._rehearsal_fixture("GOOGLE_GEMINI")[-1]
+        self.assertEqual(value["input_tokens"], 10)
+        self.assertEqual(value["output_tokens"], 20)
+
+    def test_374_rehearsal_claude_usage_counts_are_bound(self):
+        value = self._rehearsal_fixture("ANTHROPIC_CLAUDE")[-1]
+        self.assertEqual(value["input_tokens"], 10)
+        self.assertEqual(value["output_tokens"], 20)
+
+    def test_375_rehearsal_gemini_simulated_usage_cost(self):
+        value = self._rehearsal_fixture("GOOGLE_GEMINI")[-1]
+        self.assertEqual(value["simulated_usage_cost_usd_micros"], 83)
+
+    def test_376_rehearsal_claude_simulated_usage_cost(self):
+        value = self._rehearsal_fixture("ANTHROPIC_CLAUDE")[-1]
+        self.assertEqual(value["simulated_usage_cost_usd_micros"], 110)
+
+    def test_377_rehearsal_usage_cost_stays_below_preflight_ceiling(self):
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = self._rehearsal_fixture(provider)[-1]
+            self.assertIs(value["within_preflight_cost_ceiling"], True)
+            self.assertLessEqual(
+                value["simulated_usage_cost_usd_micros"],
+                value["estimated_max_cost_usd_micros"],
+            )
+
+    def test_378_rehearsal_max_cost_matches_launch_evidence(self):
+        args = self._rehearsal_fixture("GOOGLE_GEMINI")
+        self.assertEqual(
+            args[-1]["estimated_max_cost_usd_micros"],
+            args[-3]["estimated_max_cost_usd_micros"],
+        )
+
+    def test_379_rehearsal_rejects_roundtrip_input_usage_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-2] = copy.deepcopy(args[-2])
+        args[-2]["input_tokens"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_380_rehearsal_rejects_roundtrip_output_usage_tamper(self):
+        args = list(self._rehearsal_fixture("ANTHROPIC_CLAUDE"))
+        args[-2] = copy.deepcopy(args[-2])
+        args[-2]["output_tokens"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_381_rehearsal_rejects_simulated_cost_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["simulated_usage_cost_usd_micros"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_382_rehearsal_rejects_max_cost_tamper(self):
+        args = list(self._rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["estimated_max_cost_usd_micros"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_rehearsal_convergence(*args)
+
+    def test_383_rehearsal_cost_accounting_grants_no_spend_authority(self):
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = self._rehearsal_fixture(provider)[-1]
+            self.assertIs(value["spend_authorized"], False)
+            self.assertIs(value["live_provider_execution"], False)
+
+    def test_384_rehearsal_cost_bound_digest_is_deterministic(self):
+        args = self._rehearsal_fixture("GOOGLE_GEMINI")
+        first = provider_rehearsal_convergence_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_rehearsal_convergence_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def _dual_provider_research_fixture(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        record = build_dual_provider_offline_research(
+            bound_task,
+            snapshot,
+            schema,
+        )
+        return bound_task, snapshot, schema, record
+
+    def test_385_valid_dual_provider_offline_research(self):
+        args = self._dual_provider_research_fixture()
+        self.assertEqual(
+            validate_dual_provider_offline_research(*args),
+            args[-1],
+        )
+
+    def test_386_dual_provider_exact_provider_counts(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["provider_count"], 2)
+        self.assertEqual(value["provider_model_count"], 2)
+
+    def test_387_dual_provider_uses_catalog_model_ids(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["gemini_model_id"], "gemini-3.8-flash")
+        self.assertEqual(
+            value["claude_model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_388_dual_provider_binds_same_prompt_digest(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            len(value["provider_neutral_prompt_sha256"]),
+            64,
+        )
+
+    def test_389_dual_provider_detects_cross_provider_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["cross_provider_divergence"], True)
+
+    def test_390_dual_provider_detects_cross_model_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["cross_model_divergence"], True)
+
+    def test_391_dual_provider_not_role_conditioned_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["role_conditioned_divergence"], False)
+
+    def test_392_dual_provider_disagreement_is_descriptive_only(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["descriptive_label"], "DIVERGENT")
+        self.assertIs(value["majority_confers_truth"], False)
+        self.assertIs(value["vote_confers_authority"], False)
+
+    def test_393_dual_provider_routes_to_mechanical_falsification(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["unresolved_divergence_status"],
+            "UNRESOLVED_DIVERGENCE",
+        )
+        self.assertEqual(
+            value["required_next_action"],
+            "MECHANICAL_FALSIFICATION_TASK",
+        )
+
+    def test_394_dual_provider_rejects_aggregate_digest_tamper(self):
+        args = list(self._dual_provider_research_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["aggregate_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_offline_research(*args)
+
+    def test_395_dual_provider_grants_no_authority(self):
+        value = self._dual_provider_research_fixture()[-1]
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(value[key], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_396_dual_provider_digest_is_deterministic(self):
+        args = self._dual_provider_research_fixture()
+        first = dual_provider_offline_research_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_offline_research_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def _dual_provider_fanout_fixture(self):
+        snapshot = json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+        bound_task = task_v2()
+        schema = response_schema()
+        record = build_dual_provider_fanout_rehearsal(
+            bound_task,
+            snapshot,
+            schema,
+        )
+        return bound_task, snapshot, schema, record
+
+    def test_397_valid_dual_provider_fanout_rehearsal(self):
+        args = self._dual_provider_fanout_fixture()
+        self.assertEqual(
+            validate_dual_provider_fanout_rehearsal(*args),
+            args[-1],
+        )
+
+    def test_398_dual_fanout_plans_exactly_two_assignments(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["full_planned_assignment_count"], 2)
+        self.assertEqual(value["provider_count"], 2)
+
+    def test_399_dual_fanout_uses_exact_catalog_model_ids(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["gemini_model_id"], "gemini-3.8-flash")
+        self.assertEqual(
+            value["claude_model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_400_dual_fanout_full_batch_observes_two_results(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["full_observed_terminal_result_count"],
+            2,
+        )
+        self.assertEqual(value["full_completed_assignment_count"], 2)
+
+    def test_401_dual_fanout_full_batch_has_no_missing_assignment(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["full_missing_assignment_count"], 0)
+        self.assertIs(value["full_all_planned_observed"], True)
+        self.assertIs(value["full_all_planned_completed"], True)
+
+    def test_402_dual_fanout_missing_demo_detects_one_missing(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["missing_demo_observed_terminal_result_count"],
+            1,
+        )
+        self.assertEqual(
+            value["missing_demo_missing_assignment_count"],
+            1,
+        )
+
+    def test_403_dual_fanout_missing_demo_never_claims_complete(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertIs(
+            value["missing_demo_all_planned_observed"],
+            False,
+        )
+        self.assertIs(
+            value["missing_demo_all_planned_completed"],
+            False,
+        )
+
+    def test_404_dual_fanout_assignment_digests_are_distinct(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertNotEqual(
+            value["gemini_assignment_sha256"],
+            value["claude_assignment_sha256"],
+        )
+
+    def test_405_dual_fanout_plan_and_batches_are_digest_bound(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        for key in (
+            "fanout_plan_sha256",
+            "full_batch_sha256",
+            "missing_demo_batch_sha256",
+        ):
+            self.assertEqual(len(value[key]), 64)
+
+    def test_406_dual_fanout_binds_one_provider_neutral_prompt(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            len(value["provider_neutral_prompt_sha256"]),
+            64,
+        )
+
+    def test_407_dual_fanout_grants_no_authority(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(value[key], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_408_dual_fanout_digest_is_deterministic(self):
+        args = self._dual_provider_fanout_fixture()
+        first = dual_provider_fanout_rehearsal_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_fanout_rehearsal_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def test_409_dual_provider_agreement_is_support_only(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["agreement_descriptive_label"],
+            "SUPPORT_ONLY",
+        )
+
+    def test_410_dual_provider_agreement_has_no_cross_provider_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(
+            value["agreement_cross_provider_divergence"],
+            False,
+        )
+
+    def test_411_dual_provider_agreement_has_no_cross_model_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(
+            value["agreement_cross_model_divergence"],
+            False,
+        )
+
+    def test_412_dual_provider_agreement_has_no_unresolved_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["agreement_unresolved_divergence_count"],
+            0,
+        )
+
+    def test_413_disagreement_and_agreement_aggregates_are_distinct(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertNotEqual(
+            value["aggregate_sha256"],
+            value["agreement_aggregate_sha256"],
+        )
+
+    def test_414_agreement_aggregate_digest_is_bound(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            len(value["agreement_aggregate_sha256"]),
+            64,
+        )
+
+    def test_415_dual_provider_rejects_agreement_state_tamper(self):
+        args = list(self._dual_provider_research_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["agreement_cross_provider_divergence"] = True
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_offline_research(*args)
+
+    def test_416_dual_provider_agreement_comparison_is_deterministic(self):
+        args = self._dual_provider_research_fixture()
+        first = dual_provider_offline_research_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_offline_research_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def _federation_rehearsal_fixture(self):
+        cached = getattr(
+            self.__class__,
+            "_federation_rehearsal_cache",
+            None,
+        )
+        if cached is None:
+            snapshot = json.loads(
+                Path(__file__).with_name(
+                    "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+                ).read_text()
+            )
+            bound_task = task_v2()
+            schema = response_schema()
+            record = build_dual_provider_federation_rehearsal(
+                bound_task,
+                snapshot,
+                schema,
+            )
+            cached = (bound_task, snapshot, schema, record)
+            self.__class__._federation_rehearsal_cache = cached
+        return tuple(copy.deepcopy(item) for item in cached)
+
+    def test_417_valid_dual_provider_federation_rehearsal(self):
+        args = self._federation_rehearsal_fixture()
+        self.assertEqual(
+            validate_dual_provider_federation_rehearsal(*args),
+            args[-1],
+        )
+
+    def test_418_federation_binds_two_providers_and_models(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(value["provider_count"], 2)
+        self.assertEqual(value["provider_model_count"], 2)
+
+    def test_419_federation_binds_exact_catalog_model_ids(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(value["gemini_model_id"], "gemini-3.8-flash")
+        self.assertEqual(
+            value["claude_model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+
+    def test_420_federation_binds_frozen_prelive_candidate(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(
+            value["prelive_candidate_head"],
+            "d354bfa274b1f6a4ba116fbfa27356ce01979677",
+        )
+        self.assertEqual(
+            value["prelive_candidate_seal_blob"],
+            "89d17c2978749da8bd4e146c06ed16ce0fa8730e",
+        )
+
+    def test_421_federation_binds_both_provider_rehearsals(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["gemini_rehearsal_sha256"]), 64)
+        self.assertEqual(len(value["claude_rehearsal_sha256"]), 64)
+        self.assertNotEqual(
+            value["gemini_rehearsal_sha256"],
+            value["claude_rehearsal_sha256"],
+        )
+
+    def test_422_federation_binds_fanout_and_research(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["dual_provider_fanout_sha256"]), 64)
+        self.assertEqual(len(value["dual_provider_research_sha256"]), 64)
+
+    def test_423_federation_requires_full_batch_complete(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["full_batch_complete"], True)
+        self.assertIs(value["missing_provider_fails_complete"], True)
+
+    def test_424_federation_preserves_disagreement_and_agreement_logic(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["disagreement_detected"], True)
+        self.assertIs(
+            value["agreement_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_425_federation_preserves_mechanical_falsification_route(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(
+            value["mechanical_falsification_route_preserved"],
+            True,
+        )
+
+    def test_426_federation_grants_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        for key in (
+            "provider_call_authorized",
+            "credential_authorized",
+            "spend_authorized",
+            "live_provider_execution",
+            "adoption_authority",
+        ):
+            self.assertIs(value[key], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_427_federation_rejects_cross_bundle_tamper(self):
+        args = list(self._federation_rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["dual_provider_fanout_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_federation_rehearsal(*args)
+
+    def test_428_federation_digest_is_deterministic(self):
+        args = self._federation_rehearsal_fixture()
+        first = dual_provider_federation_rehearsal_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = dual_provider_federation_rehearsal_sha256(*cloned)
+        self.assertEqual(first, second)
+
+
+    def test_429_federation_binds_provider_neutral_prompt_digest(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(
+            len(value["provider_neutral_prompt_sha256"]),
+            64,
+        )
+
+    def test_430_federation_binds_gemini_matrix_digest(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["gemini_matrix_sha256"]), 64)
+
+    def test_431_federation_binds_claude_matrix_digest(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(len(value["claude_matrix_sha256"]), 64)
+
+    def test_432_federation_provider_matrix_digests_are_distinct(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertNotEqual(
+            value["gemini_matrix_sha256"],
+            value["claude_matrix_sha256"],
+        )
+
+    def test_433_federation_matrix_binding_coexists_with_full_batch(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["full_batch_complete"], True)
+        self.assertEqual(value["provider_count"], 2)
+
+    def test_434_federation_matrix_binding_coexists_with_disagreement(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["disagreement_detected"], True)
+        self.assertIs(
+            value["agreement_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_435_federation_matrix_binding_preserves_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["provider_call_authorized"], False)
+        self.assertIs(value["credential_authorized"], False)
+        self.assertIs(value["spend_authorized"], False)
+
+    def test_436_federation_matrix_binding_preserves_runtime_off(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertEqual(value["runtime"], "OFF")
+
+
+    def test_437_dual_fanout_failure_demo_observes_both_results(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["failure_demo_observed_terminal_result_count"],
+            2,
+        )
+        self.assertIs(value["failure_demo_all_planned_observed"], True)
+
+    def test_438_dual_fanout_failure_demo_completes_only_one(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["failure_demo_completed_assignment_count"],
+            1,
+        )
+        self.assertEqual(
+            value["failure_demo_noncompleted_assignment_count"],
+            1,
+        )
+
+    def test_439_dual_fanout_failure_demo_has_no_missing_result(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(
+            value["failure_demo_missing_assignment_count"],
+            0,
+        )
+
+    def test_440_dual_fanout_failure_demo_records_refusal(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(value["failure_demo_refused_count"], 1)
+
+    def test_441_dual_fanout_failure_demo_never_claims_complete(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertIs(
+            value["failure_demo_all_planned_completed"],
+            False,
+        )
+
+    def test_442_dual_fanout_failure_batch_digest_is_bound(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertEqual(len(value["failure_demo_batch_sha256"]), 64)
+
+    def test_443_dual_fanout_rejects_failure_completion_tamper(self):
+        args = list(self._dual_provider_fanout_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["failure_demo_all_planned_completed"] = True
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_fanout_rehearsal(*args)
+
+    def test_444_dual_fanout_failure_demo_preserves_no_authority(self):
+        value = self._dual_provider_fanout_fixture()[-1]
+        self.assertIs(value["provider_call_authorized"], False)
+        self.assertIs(value["spend_authorized"], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+    def test_445_federation_requires_provider_failure_to_fail_complete(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["provider_failure_fails_complete"], True)
+
+    def test_446_federation_failure_guard_coexists_with_full_success(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["full_batch_complete"], True)
+        self.assertIs(value["provider_failure_fails_complete"], True)
+
+    def test_447_federation_rejects_provider_failure_guard_tamper(self):
+        args = list(self._federation_rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["provider_failure_fails_complete"] = False
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_federation_rehearsal(*args)
+
+    def test_448_federation_failure_guard_preserves_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["live_provider_execution"], False)
+        self.assertIs(value["adoption_authority"], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+
+    def test_449_dual_provider_refusal_observes_two_providers(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["refusal_observed_provider_count"], 2)
+
+    def test_450_dual_provider_refusal_completes_only_one_provider(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["refusal_completed_provider_count"], 1)
+        self.assertEqual(value["refusal_noncompleted_result_count"], 1)
+
+    def test_451_dual_provider_refusal_records_refused_status(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(value["refusal_refused_status_count"], 1)
+
+    def test_452_dual_provider_refusal_is_support_only(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["refusal_descriptive_label"],
+            "SUPPORT_ONLY",
+        )
+
+    def test_453_dual_provider_refusal_is_not_cross_provider_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(
+            value["refusal_cross_provider_divergence"],
+            False,
+        )
+
+    def test_454_dual_provider_refusal_is_not_cross_model_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertIs(value["refusal_cross_model_divergence"], False)
+
+    def test_455_dual_provider_refusal_has_no_unresolved_divergence(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(
+            value["refusal_unresolved_divergence_count"],
+            0,
+        )
+
+    def test_456_dual_provider_refusal_aggregate_digest_is_bound(self):
+        value = self._dual_provider_research_fixture()[-1]
+        self.assertEqual(len(value["refusal_aggregate_sha256"]), 64)
+
+    def test_457_federation_refusal_is_not_mislabeled_divergent(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(
+            value["provider_refusal_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_458_federation_refusal_guard_coexists_with_disagreement(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["disagreement_detected"], True)
+        self.assertIs(
+            value["provider_refusal_not_mislabeled_divergent"],
+            True,
+        )
+
+    def test_459_federation_rejects_refusal_guard_tamper(self):
+        args = list(self._federation_rehearsal_fixture())
+        args[-1] = copy.deepcopy(args[-1])
+        args[-1]["provider_refusal_not_mislabeled_divergent"] = False
+        with self.assertRaises(ResearchContractError):
+            validate_dual_provider_federation_rehearsal(*args)
+
+    def test_460_refusal_guard_preserves_no_authority(self):
+        value = self._federation_rehearsal_fixture()[-1]
+        self.assertIs(value["provider_call_authorized"], False)
+        self.assertIs(value["spend_authorized"], False)
+        self.assertEqual(value["runtime"], "OFF")
+
+
+    def _provider_result_ingestion_fixture(
+        self,
+        provider="GOOGLE_GEMINI",
+    ):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider=provider,
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        output_text = json.dumps(
+            provider_result,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        if provider == "GOOGLE_GEMINI":
+            observation = parse_gemini_interactions_v1_response(
+                gemini_response(
+                    model=bound_assignment["target_model"],
+                    text=output_text,
+                )
+            )
+        else:
+            observation = parse_claude_messages_response(
+                claude_response(
+                    model=bound_assignment["target_model"],
+                    text=output_text,
+                )
+            )
+        ingestion = build_provider_result_ingestion(
+            bound_task,
+            bound_assignment,
+            provider,
+            observation,
+        )
+        return (
+            bound_task,
+            bound_assignment,
+            provider,
+            observation,
+            ingestion,
+        )
+
+    def test_461_provider_result_ingestion_accepts_gemini_result_v2(self):
+        args = self._provider_result_ingestion_fixture(
+            "GOOGLE_GEMINI"
+        )
+        self.assertEqual(
+            validate_provider_result_ingestion(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["result"]["assignment_sha256"],
+            assignment_sha256(args[0], args[1]),
+        )
+
+    def test_462_provider_result_ingestion_accepts_claude_result_v2(self):
+        args = self._provider_result_ingestion_fixture(
+            "ANTHROPIC_CLAUDE"
+        )
+        self.assertEqual(
+            validate_provider_result_ingestion(*args),
+            args[-1],
+        )
+        self.assertEqual(
+            args[-1]["observed_model_id"],
+            "model-stable-001",
+        )
+
+    def test_463_provider_result_ingestion_rejects_malformed_json(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text='{"schema":',
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_464_provider_result_ingestion_rejects_markdown_wrapped_json(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="ANTHROPIC_CLAUDE",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        output_text = "~~~json\n" + json.dumps(provider_result) + "\n~~~"
+        observation = parse_claude_messages_response(
+            claude_response(
+                model="model-stable-001",
+                text=output_text,
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "ANTHROPIC_CLAUDE",
+                observation,
+            )
+
+    def test_465_provider_result_ingestion_rejects_duplicate_json_keys(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text='{"schema":"x","schema":"y"}',
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_466_provider_result_ingestion_rejects_other_assignment(self):
+        bound_task = task_v2()
+        expected_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        other_assignment = assignment(
+            bound_task,
+            assignment_id="assignment-other",
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            other_assignment,
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text=json.dumps(provider_result),
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                expected_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_467_provider_result_ingestion_rejects_observed_model_drift(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-other",
+                text=json.dumps(provider_result),
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_468_provider_result_ingestion_enforces_assignment_output_limit(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="ANTHROPIC_CLAUDE",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        bound_assignment["max_output_bytes"] = 1024
+        provider_result = result_v2(
+            bound_task,
+            bound_assignment,
+        )
+        provider_result["uncertainty_factors"] = ["x" * 2000]
+        observation = parse_claude_messages_response(
+            claude_response(
+                model="model-stable-001",
+                text=json.dumps(provider_result),
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "ANTHROPIC_CLAUDE",
+                observation,
+            )
+
+    def test_469_provider_result_ingestion_rejects_nonfinite_json_constant(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        observation = parse_gemini_interactions_v1_response(
+            gemini_response(
+                model="model-stable-001",
+                text='{"confidence":NaN}',
+            )
+        )
+        with self.assertRaises(ResearchContractError):
+            build_provider_result_ingestion(
+                bound_task,
+                bound_assignment,
+                "GOOGLE_GEMINI",
+                observation,
+            )
+
+    def test_470_provider_result_ingestion_digest_and_exact_record_are_stable(self):
+        args = self._provider_result_ingestion_fixture(
+            "GOOGLE_GEMINI"
+        )
+        first = provider_result_ingestion_sha256(*args)
+        cloned = tuple(copy.deepcopy(item) for item in args)
+        second = provider_result_ingestion_sha256(*cloned)
+        self.assertEqual(first, second)
+
+        tampered = copy.deepcopy(args[-1])
+        tampered["output_bytes"] += 1
+        with self.assertRaises(ResearchContractError):
+            validate_provider_result_ingestion(
+                args[0],
+                args[1],
+                args[2],
+                args[3],
+                tampered,
+            )
+
+
+
+    def _roundtrip_v2_catalog(self):
+        return json.loads(
+            Path(__file__).with_name(
+                "PROVIDER_MODEL_CATALOG_SNAPSHOT_20260908.json"
+            ).read_text()
+        )
+
+    def test_471_result_v2_response_schema_binds_exact_assignment(self):
+        bound_task = task_v2()
+        bound_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        schema = build_result_v2_response_schema(
+            bound_task,
+            bound_assignment,
+        )
+        self.assertEqual(
+            validate_result_v2_response_schema(
+                bound_task,
+                bound_assignment,
+                schema,
+            ),
+            schema,
+        )
+        props = schema["properties"]
+        self.assertEqual(
+            props["task_sha256"]["enum"],
+            [sha256_json(bound_task)],
+        )
+        self.assertEqual(
+            props["assignment_sha256"]["enum"],
+            [assignment_sha256(bound_task, bound_assignment)],
+        )
+        self.assertEqual(
+            props["model_identity"]["properties"]["model"]["enum"],
+            ["model-stable-001"],
+        )
+
+    def test_472_result_v2_response_schema_digest_changes_with_assignment(self):
+        bound_task = task_v2()
+        first_assignment = assignment(
+            bound_task,
+            provider="GOOGLE_GEMINI",
+            model="model-stable-001",
+            execution_mode="LIVE_ADVISORY",
+        )
+        second_assignment = copy.deepcopy(first_assignment)
+        second_assignment["target_model"] = "model-stable-002"
+        first_schema = build_result_v2_response_schema(
+            bound_task,
+            first_assignment,
+        )
+        second_schema = build_result_v2_response_schema(
+            bound_task,
+            second_assignment,
+        )
+        first_digest = result_v2_response_schema_sha256(
+            bound_task,
+            first_assignment,
+            first_schema,
+        )
+        second_digest = result_v2_response_schema_sha256(
+            bound_task,
+            second_assignment,
+            second_schema,
+        )
+        self.assertNotEqual(first_digest, second_digest)
+
+    def test_473_roundtrip_v2_gemini_result_originates_in_provider_output(self):
+        value = build_provider_pilot_roundtrip_v2(
+            task_v2(),
+            self._roundtrip_v2_catalog(),
+            "GOOGLE_GEMINI",
+        )
+        self.assertEqual(value["model_id"], "gemini-3.8-flash")
+        self.assertIs(value["result_from_provider_output"], True)
+        self.assertEqual(value["normalized_state"], "COMPLETED")
+
+    def test_474_roundtrip_v2_claude_result_originates_in_provider_output(self):
+        value = build_provider_pilot_roundtrip_v2(
+            task_v2(),
+            self._roundtrip_v2_catalog(),
+            "ANTHROPIC_CLAUDE",
+        )
+        self.assertEqual(
+            value["model_id"],
+            "claude-haiku-4-5-20251001",
+        )
+        self.assertIs(value["result_from_provider_output"], True)
+        self.assertEqual(value["normalized_state"], "COMPLETED")
+
+    def test_475_roundtrip_v2_binds_schema_ingestion_and_receipt_chain(self):
+        value = build_provider_pilot_roundtrip_v2(
+            task_v2(),
+            self._roundtrip_v2_catalog(),
+            "GOOGLE_GEMINI",
+        )
+        for key in (
+            "response_schema_sha256",
+            "pilot_matrix_sha256",
+            "simulated_provider_response_sha256",
+            "provider_observation_sha256",
+            "provider_result_ingestion_sha256",
+            "termination_record_sha256",
+            "result_sha256",
+            "execution_receipt_sha256",
+            "observation_binding_sha256",
+        ):
+            self.assertEqual(len(value[key]), 64)
+
+    def test_476_roundtrip_v2_exact_validation_accepts_both_providers(self):
+        snapshot = self._roundtrip_v2_catalog()
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = build_provider_pilot_roundtrip_v2(
+                task_v2(),
+                snapshot,
+                provider,
+            )
+            self.assertEqual(
+                validate_provider_pilot_roundtrip_v2(
+                    task_v2(),
+                    snapshot,
+                    provider,
+                    value,
+                ),
+                value,
+            )
+
+    def test_477_roundtrip_v2_rejects_ingestion_digest_tamper(self):
+        snapshot = self._roundtrip_v2_catalog()
+        value = build_provider_pilot_roundtrip_v2(
+            task_v2(),
+            snapshot,
+            "GOOGLE_GEMINI",
+        )
+        value["provider_result_ingestion_sha256"] = "0" * 64
+        with self.assertRaises(ResearchContractError):
+            validate_provider_pilot_roundtrip_v2(
+                task_v2(),
+                snapshot,
+                "GOOGLE_GEMINI",
+                value,
+            )
+
+    def test_478_roundtrip_v2_preserves_no_authority(self):
+        snapshot = self._roundtrip_v2_catalog()
+        for provider in ("GOOGLE_GEMINI", "ANTHROPIC_CLAUDE"):
+            value = build_provider_pilot_roundtrip_v2(
+                task_v2(),
+                snapshot,
+                provider,
+            )
+            self.assertIs(value["synthetic_only"], True)
+            self.assertIs(value["live_provider_execution"], False)
+            self.assertIs(value["provider_credentials"], False)
+            self.assertIs(value["spend_authorized"], False)
+            self.assertIs(value["adoption_authority"], False)
+            self.assertEqual(value["runtime"], "OFF")
+            self.assertEqual(
+                len(
+                    provider_pilot_roundtrip_v2_sha256(
+                        task_v2(),
+                        snapshot,
+                        provider,
+                        value,
+                    )
+                ),
+                64,
+            )
 
 
 if __name__ == "__main__":
