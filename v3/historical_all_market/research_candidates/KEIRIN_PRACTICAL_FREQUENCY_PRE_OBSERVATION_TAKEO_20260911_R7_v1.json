@@ -1,0 +1,47 @@
+{
+  "record": "KEIRIN_PRACTICAL_FREQUENCY_PRE_OBSERVATION_TAKEO_20260911_R7_v1",
+  "status": "FROZEN_PRACTICAL_CHALLENGER_PRE_PRICE_DAILY_TOPN_PENDING",
+  "captured_jst": "2026-09-11T00:08:31+09:00",
+  "prespec_binding": "v3/historical_all_market/research_candidates/KEIRIN_PRACTICAL_FREQUENCY_LANE_PRESPEC_20260911_v1.json",
+  "strict_observation_binding": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R7_v1.json",
+  "target_event": {"date": "2026-09-11", "venue": "武雄", "race_no": 7, "class": "A級チャレンジ決勝", "start_jst": "10:35", "final_flag": true},
+  "frozen_model_summary": {
+    "top1_car": 2,
+    "top1_agreement": true,
+    "conservative_top1_probability": 0.277115902532,
+    "top3_ticket": "2=3=4",
+    "conservative_ticket_probability": 0.161610786463,
+    "s0_ranking": [2,4,3,7,5,1,6],
+    "challenger_ranking": [2,4,3,7,1,5,6]
+  },
+  "policy_results_before_odds": {
+    "STRICT_40": "FAIL",
+    "PRACTICAL_CONFIDENCE_35": "FAIL",
+    "PRACTICAL_CONFIDENCE_30": "FAIL",
+    "DAILY_TOP3": "PENDING_DAY_SET_COMPLETION",
+    "DAILY_TOP5": "PENDING_DAY_SET_COMPLETION"
+  },
+  "price_stage": {
+    "target_odds_accessed_before_this_freeze": false,
+    "exact_ticket_frozen_before_price_lookup": true,
+    "price_lookup_allowed_only_if_selected_by_daily_topn": true,
+    "current_buy_candidate": false,
+    "stake_yen": 0
+  },
+  "strata_only": {
+    "final": true,
+    "final_used_as_selection_modifier": false,
+    "reason": "Owner final-race volatility hypothesis remains an observation stratum only until separately validated."
+  },
+  "interpretation": "R7 fails all fixed confidence thresholds but its ticket is frozen before any target odds lookup so it can be evaluated honestly if it enters a prespecified DAILY_TOP3 or DAILY_TOP5 set. No profitability claim.",
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "fresh_branch_head_observed_immediately_before_write": "87c5612e408dd0ce1edf0cd667f8185fc86babae"
+}
