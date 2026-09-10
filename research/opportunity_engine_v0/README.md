@@ -53,6 +53,23 @@ The system should not assume every tactical opportunity must become a large busi
 
 The owner-facing UI may later map these classes to game/rank metaphors, but the core logic keeps ordinary economic terminology.
 
+## Bounded output monetization
+
+Multiverse itself does not need to be sold for Multiverse to generate revenue. Selected lower-value outputs may be monetized while the discovery/scoring/learning core stays private.
+
+The current research policy is:
+- tactical outputs may be sold as time-bounded signals when they have standalone buyer value;
+- sustaining outputs may be sold as bounded playbooks when this does not expose the core advantage;
+- growth-class outputs may be considered only for limited/bounded licensing when copy and strategic-leakage risk are low;
+- portfolio/platform-class opportunities are presumptively retained internally because their option value is higher;
+- proprietary outcome data and the core method are never exposed by default;
+- if selling an output would create a dangerous direct competitor against an opportunity we can exploit ourselves, retain it internally;
+- do not manufacture an information product merely because an output exists: the output must be independently useful to a real buyer.
+
+This creates a second monetization route: execute the best opportunities internally, while selectively selling lower strategic-value slices of the opportunity stream.
+
+See `exposure.py` for the research classifier and `test_exposure.py` for regression cases.
+
 ## Safety / authority boundary
 
 No live web/SNS/news ingestion, external provider/API call, credential use, purchases, posting, affiliate enrollment, ad spend, personal-data profiling, publication, canonical adoption or Runtime activation is included or authorized by this prototype.
