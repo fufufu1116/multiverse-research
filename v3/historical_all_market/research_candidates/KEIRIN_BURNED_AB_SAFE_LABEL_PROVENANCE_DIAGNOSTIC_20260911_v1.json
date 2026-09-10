@@ -1,0 +1,57 @@
+{
+  "record": "KEIRIN_BURNED_AB_SAFE_LABEL_PROVENANCE_DIAGNOSTIC_20260911_v1",
+  "status": "RAW_SETTLEMENT_PROVENANCE_GROUNDED_DERIVED_SAFE_JOIN_NOT_FOUND",
+  "scope": "PROVENANCE_AND_METADATA_ONLY",
+  "governance": {
+    "segment_c_opened": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "new_result_payout_access": false,
+    "raw_settlement_content_opened_in_this_diagnostic": false,
+    "owner_spend_credentials_live_effect": false
+  },
+  "fresh_branch_head_before_work": "a7b97577e4a8cc16cd22f4ff9e34be800b6c597d",
+  "immutable_prediction_csv_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+  "stage7_failure_report": {
+    "drive_file_id": "1jU-G-10LMxY-XsoCvBfDI9oj-zRkpGGy",
+    "scope": "outcome-aware failure diagnostics only",
+    "verified_settlement_sha256": {
+      "A": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+      "B": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72"
+    }
+  },
+  "stage7_settlement_receipt": {
+    "drive_file_id": "1NjD08-GEkv3kHbUKocB9cV5-18OMLAQI",
+    "status": "PASS_COMPLETE",
+    "scientific_trial_count_before_open": 0,
+    "segment_c_scored": false,
+    "stage7_selection_started": false,
+    "settlement_sha256": {
+      "A": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+      "B": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72",
+      "C": "252d8f15bcf5b872bf9948a20c7cc6f506176d7fe0977685029f9fc6e1417d07"
+    }
+  },
+  "settlement_folder_metadata_only": {
+    "folder_id": "1PsFZ5DXjMQURIOiQFH51nvD-E1MfuEoN",
+    "A_file": "DEV2000_SETTLEMENT_A_v1.jsonl",
+    "B_file": "DEV2000_SETTLEMENT_B_v1.jsonl",
+    "C_file": "DEV2000_SETTLEMENT_C_UNTOUCHED_v1.jsonl",
+    "note": "Only folder/file metadata was listed; raw settlement bytes were not fetched or opened."
+  },
+  "search_result": {
+    "derived_burned_ab_winner_join_found": false,
+    "queries_attempted": [
+      "BURNED AB winner",
+      "DEV2000 SETTLEMENT A",
+      "race_id winner car_no DEV2000",
+      "winner_car_no"
+    ]
+  },
+  "conclusion": "A/B settlement provenance and exact hashes are now grounded, but no already-authorized derived winner-label/join artifact was located. Under current governance, do not open raw settlement A/B merely to create a new calibration join. Winner-probability calibration remains blocked on a safe pre-derived label/join artifact or explicit scope authorization.",
+  "next_safe_steps": [
+    "Continue provenance-only discovery for a previously derived A+B race winner mapping or prediction-vs-winner audit artifact.",
+    "Do not fetch/open DEV2000_SETTLEMENT_A_v1.jsonl, DEV2000_SETTLEMENT_B_v1.jsonl, Segment C, or ECON_HOLDOUT1000 under this scope.",
+    "Keep competition_score threshold 0.40 frozen; 0.35/0.30 research-only.",
+    "Keep winner-probability calibration separate from ticket-level calibration."
+  ]
+}
