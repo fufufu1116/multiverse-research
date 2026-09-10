@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_FORWARD_CANDIDATE_DIAGNOSTICS_V1_REPLAY_PROOF_20260910_v1",
+  "status": "REPLAYABLE_STRUCTURAL_DIAGNOSTICS_PASS_NO_ECONOMIC_SUPPORT_INCREMENT",
+  "date_jst": "2026-09-10",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_branch_head_before_write": "6e9e49ad472a63e70668c0b4d3f245773b5a2248",
+  "synthesis": "v3/historical_all_market/research_candidates/KEIRIN_STRONGEST_WINNING_PATH_CANDIDATE_SYNTHESIS_20260910_v1.json",
+  "tool": "tools/keirin_forward_candidate_diagnostics_v1.py",
+  "test_file": "tools/test_keirin_forward_candidate_diagnostics_v1.py",
+  "local_replay": {
+    "test_count": 11,
+    "passed": 11,
+    "failed": 0,
+    "result": "PASS",
+    "execution_note": "Deterministic local Python unittest replay of the exact candidate-diagnostics logic before repository write; engineering proof only, not economic or formal scientific evidence."
+  },
+  "verified_findings": {
+    "core_feasibility_floor": 0.055,
+    "r5_exact_minimum_core_odds": 6.137955612442124,
+    "all_current_band_numeric_pairs_algebraically_redundant": true,
+    "fallback_max_pairwise_logit_spread": 0.058658042093,
+    "fallback_equivalent_competition_score_points_for_abs_q_1": 0.26350806451725767,
+    "lower_probability_ticket_addition_dilutes_equal_stake_uniform_odds_screen": true
+  },
+  "decision_effect": {
+    "forward_prespec_changed": false,
+    "price_gate_v2_changed": false,
+    "model_changed": false,
+    "ticket_rule_changed": false,
+    "stake_rule_changed": false,
+    "existing_observations_reclassified": false
+  },
+  "evidence_effect": {
+    "prospective_model_observation_increment": 0,
+    "valid_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "result_accessed": false,
+    "payout_accessed": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
