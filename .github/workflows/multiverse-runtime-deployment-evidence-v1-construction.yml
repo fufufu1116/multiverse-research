@@ -1,0 +1,81 @@
+name: MULTIVERSE Runtime Deployment Evidence v1 Construction
+
+on:
+  push:
+    branches:
+      - agent/runtime-deployment-evidence-v1-construction-20260904-v1
+    paths:
+      - 'automation/deployment_v1/**'
+      - '.github/workflows/multiverse-runtime-deployment-evidence-v1-construction.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  sealed-deployment-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact construction head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bind adopted Runtime and canonical main
+        shell: bash
+        run: |
+          set -euo pipefail
+          FRESH_MAIN="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "${FRESH_MAIN}" = "a6f56facc80709f2e7b8218d927484d522bfa356"
+          python - <<'PY'
+          import json
+          d=json.load(open('automation/deployment_v1/DEPLOYMENT_EVIDENCE_V1_FREEZE.json'))
+          assert d['adopted_runtime_head']=='8685193cc6d592a36ea78bc7a8647ceadce13ae6'
+          assert d['canonical_main']=='a6f56facc80709f2e7b8218d927484d522bfa356'
+          assert d['runtime']=='OFF'
+          assert d['mode']=='SEALED_DEPLOYMENT_VALIDATION'
+          assert d['target_environment']=='LOCAL_SEALED_DRY_RUN'
+          assert d['credential_source']=='INJECTED_EPHEMERAL_ONLY'
+          assert all(v is False for v in d['authority'].values())
+          PY
+
+      - name: Deployment evidence regression
+        shell: bash
+        env:
+          PYTHONPATH: automation/deployment_v1
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s automation/deployment_v1 -p 'test_*.py' -v
+
+      - name: Mechanical no-effect gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('automation/deployment_v1/deployment_contract.py')
+          s=p.read_text()
+          forbidden=('requests','urllib','http.client','socket','boto3','openai','anthropic')
+          for item in forbidden:
+              assert f'import {item}' not in s and f'from {item}' not in s, item
+          assert 'RUNTIME = "OFF"' in s
+          assert 'SEALED_DEPLOYMENT_VALIDATION' in s
+          assert 'INJECTED_EPHEMERAL_ONLY' in s
+          assert 'KILL_SWITCH_MUST_REMAIN_ENGAGED' in s
+          assert 'ready_for_live_activation": False' in s
+          print('DEPLOYMENT_EVIDENCE_MECHANICAL_GATE=PASS')
+          PY
+
+      - name: Nonauthority receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'RUNTIME=OFF'
+          echo 'PRODUCTION=false'
+          echo 'LIVE_PROVIDER=false'
+          echo 'NETWORK=false'
+          echo 'EXTERNAL_EFFECT=false'
+          echo 'SPEND=false'
+          echo 'PROTECTED_KEIRIN_DATA=false'
+          echo 'SECRET_PERSISTENCE=false'
+          echo 'RUNTIME_ACTIVATION=false'
