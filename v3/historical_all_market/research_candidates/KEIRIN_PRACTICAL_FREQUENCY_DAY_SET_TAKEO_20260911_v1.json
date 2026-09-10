@@ -1,0 +1,48 @@
+{
+  "record": "KEIRIN_PRACTICAL_FREQUENCY_DAY_SET_TAKEO_20260911_v1",
+  "status": "FROZEN_CLEAN_DAY_SET_PRE_PRICE_SELECTION_NO_ECONOMIC_CLAIM",
+  "date_jst": "2026-09-11",
+  "venue": "武雄",
+  "prespec_binding": "v3/historical_all_market/research_candidates/KEIRIN_PRACTICAL_FREQUENCY_LANE_PRESPEC_20260911_v1.json",
+  "purpose": "Freeze the comparable clean pre-price day set and daily ranking before any additional target-price lookup.",
+  "clean_races_ranked_by_conservative_top1_probability": [
+    {"race_no": 5, "probability": 0.540234324130, "ticket": "1=2=3", "strict_40": true, "practical_35": true, "practical_30": true, "daily_top3": true, "daily_top5": true, "price_status": "PRE_PRICE_LOOKUP_ATTEMPTED_BUT_GENUINE_TIMESTAMPED_EXACT_PRICE_NOT_VERIFIED", "buy_candidate": false},
+    {"race_no": 4, "probability": 0.381057720912, "ticket": "1=3=4", "strict_40": false, "practical_35": true, "practical_30": true, "daily_top3": true, "daily_top5": true, "price_status": "TARGET_ODDS_NOT_USED_FOR_SELECTION", "buy_candidate": false},
+    {"race_no": 6, "probability": 0.357674052433, "ticket": "1=4=7", "strict_40": false, "practical_35": true, "practical_30": true, "daily_top3": true, "daily_top5": true, "price_status": "TARGET_ODDS_NOT_ACCESSED_BEFORE_FREEZE", "buy_candidate": false},
+    {"race_no": 7, "probability": 0.277115902532, "ticket": "2=3=4", "strict_40": false, "practical_35": false, "practical_30": false, "daily_top3": false, "daily_top5": true, "price_status": "TARGET_ODDS_NOT_ACCESSED_BEFORE_FREEZE", "buy_candidate": false},
+    {"race_no": 1, "probability": 0.249793945858, "ticket": null, "strict_40": false, "practical_35": false, "practical_30": false, "daily_top3": false, "daily_top5": true, "price_status": "ODDS_NOT_LOOKED_UP", "buy_candidate": false}
+  ],
+  "excluded_from_clean_daily_ranking": [
+    {"race_no": 2, "reason": "target detail page exposed an odds section before a clean ticket freeze; conservatively excluded from prediction-before-price daily set"},
+    {"race_no": 3, "reason": "target detail page exposed an odds section before a clean ticket freeze; conservatively excluded from prediction-before-price daily set"}
+  ],
+  "policy_membership": {
+    "STRICT_40": [5],
+    "PRACTICAL_CONFIDENCE_35": [5, 4, 6],
+    "PRACTICAL_CONFIDENCE_30": [5, 4, 6],
+    "DAILY_TOP3": [5, 4, 6],
+    "DAILY_TOP5": [5, 4, 6, 7, 1]
+  },
+  "day_level_findings": {
+    "clean_race_count": 5,
+    "practical_35_candidate_count": 3,
+    "practical_30_candidate_count": 3,
+    "daily_top3_candidate_count": 3,
+    "daily_top5_candidate_count": 5,
+    "key_observation": "On this five-race clean sample, 35-percent, 30-percent, and Daily Top3 select exactly R5, R4, and R6. Lowering the threshold from 35 percent to 30 percent adds no race on this day.",
+    "economic_interpretation": "NONE. Selection-frequency evidence only; genuine price evidence and outcomes are not established here."
+  },
+  "governance": {
+    "canonical_main_authority_conflict_remains": true,
+    "no_new_result_or_payout_access_authorized_by_this_record": true,
+    "no_new_price_access_authorized_by_this_record": true,
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "fresh_branch_head_observed_immediately_before_write": "03e98437e82d24f659c19296d1dcfdc12a0ed2c2"
+}
