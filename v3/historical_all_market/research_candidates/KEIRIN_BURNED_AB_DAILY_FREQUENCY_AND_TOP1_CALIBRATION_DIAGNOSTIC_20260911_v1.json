@@ -1,0 +1,101 @@
+{
+  "record": "KEIRIN_BURNED_AB_DAILY_FREQUENCY_AND_TOP1_CALIBRATION_DIAGNOSTIC_20260911_v1",
+  "status": "PASS_BURNED_DIAGNOSTIC_ONLY_NO_CURRENT_MODEL_OR_ECONOMIC_VALIDATION_CLAIM",
+  "date_jst": "2026-09-11",
+  "purpose": "Use already-consumed DEV2000 A+B only to test whether a 3-5 races/day target requires lowering a confidence threshold and to separate winner-probability behavior from ticket-probability behavior. This is a historical diagnostic, not validation of the current S0 model.",
+  "input_integrity": {
+    "prediction_file": "DEV2000_CANDIDATE_A_B1A_RECONSTITUTED_v1_PREDICTIONS.csv",
+    "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "settlement_A_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "settlement_B_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72",
+    "races_A": 1000,
+    "races_B": 500,
+    "calendar_dates_AB": 20,
+    "prediction_lock_was_before_result_open": true
+  },
+  "protected_boundaries": {
+    "segment_C_accessed": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "new_validation_trial_consumed": 0,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "spend": false
+  },
+  "legacy_model_scope_warning": "Candidate_A and B1a_RECONSTITUTED_v1 are historical models. Their probabilities are not asserted to be identical to the current S0_SCORE_ONLY_SOFTMAX plus rider/style/circumference challenger. Therefore these numbers are design evidence only, not current-model calibration evidence.",
+  "top1_agreement_frequency_diagnostic": {
+    "top1_agreement_races": 1222,
+    "top1_agreement_fraction": 0.814666666667,
+    "thresholds": {
+      "0.30": {"selected_races": 929, "mean_per_calendar_date": 46.45, "mean_conservative_probability": 0.402940419242, "observed_winner_frequency": 0.524219590958},
+      "0.35": {"selected_races": 646, "mean_per_calendar_date": 32.3, "mean_conservative_probability": 0.437291239551, "observed_winner_frequency": 0.566563467492},
+      "0.40": {"selected_races": 412, "mean_per_calendar_date": 20.6, "mean_conservative_probability": 0.473272632189, "observed_winner_frequency": 0.623786407767}
+    },
+    "interpretation": "In this broad historical all-venue universe, even the 0.40 legacy agreement gate supplied far more than 3-5 races/day on average. This argues against lowering a threshold solely to manufacture frequency. It does not prove the current model will have the same coverage."
+  },
+  "daily_topn_blind_3renhuku_diagnostic": {
+    "selection_analogue": "Require historical Candidate_A/B1a same top1 and same unordered top3 set; rank eligible races within each calendar date by conservative top1 probability; stake flat 100 yen on the common top3 3renhuku ticket. No price/value filtering is applied in this diagnostic.",
+    "eligible_races_with_top1_and_top3_set_agreement": 766,
+    "eligible_mean_per_calendar_date": 38.3,
+    "DAILY_TOP3": {
+      "bets": 60,
+      "days": 20,
+      "bets_per_day": 3.0,
+      "hits": 15,
+      "hit_rate": 0.25,
+      "mean_conservative_ticket_probability": 0.161332376883,
+      "stake_yen": 6000,
+      "return_yen": 4680,
+      "net_yen": -1320,
+      "recovery_rate": 0.78,
+      "positive_days": 7,
+      "calendar_days": 20,
+      "positive_weeks": 2,
+      "observed_weeks": 5,
+      "positive_months": 0,
+      "observed_months": 3,
+      "maximum_consecutive_losing_bets": 7,
+      "maximum_drawdown_yen": 1720,
+      "largest_single_return_yen": 810
+    },
+    "DAILY_TOP5": {
+      "bets": 100,
+      "days": 20,
+      "bets_per_day": 5.0,
+      "hits": 24,
+      "hit_rate": 0.24,
+      "mean_conservative_ticket_probability": 0.16193330109,
+      "stake_yen": 10000,
+      "return_yen": 8190,
+      "net_yen": -1810,
+      "recovery_rate": 0.819,
+      "positive_days": 6,
+      "calendar_days": 20,
+      "positive_weeks": 0,
+      "zero_weeks": 1,
+      "observed_weeks": 5,
+      "positive_months": 0,
+      "observed_months": 3,
+      "maximum_consecutive_losing_bets": 10,
+      "maximum_drawdown_yen": 2240,
+      "largest_single_return_yen": 1120
+    },
+    "interpretation": "A daily Top3/Top5 sporting rank by itself did not produce positive historical economics. Candidate frequency and purchase frequency must remain separate; a pre-price value veto is still necessary."
+  },
+  "bridge_to_existing_burned_ticket_calibration": {
+    "receipt": "v3/historical_all_market/governance/BURNED_AB_TICKET_CALIBRATION_DIAGNOSTICS_RECEIPT_v1.json",
+    "known_finding": "Historical high-odds 3rentan selections were strongly overconfident conditional on model-market disagreement, even while winner-probability behavior can show a different calibration direction.",
+    "consequence": "Top1 calibration cannot substitute for ticket-level calibration. The current 3renhuku <=20x path needs its own current-model ticket-probability audit before profitability claims."
+  },
+  "decision_implications": [
+    "Preserve the strict 0.40 lane as a scientific control; do not lower it merely to meet daily frequency.",
+    "Prefer ranking a broad daily race universe and producing 3-5 candidates, then applying a separate pre-price value veto.",
+    "Do not interpret daily Top3/Top5 selection alone as an edge; the burned diagnostic was negative at both 3 and 5 bets/day.",
+    "Run direct current-model top1 and 3renhuku-ticket calibration on allowed burned A+B only if current S0 inputs can be reconstructed without touching Segment C.",
+    "Evaluate future evidence on 7-day, 30-day and 90-day horizons with drawdown, losing streak and winner-concentration checks."
+  ],
+  "formal_support_increment": 0,
+  "economic_support_increment": 0,
+  "profitability_proven": false,
+  "fresh_branch_head_observed_immediately_before_write": "c437432579be707b9f9254a06d7deddb2272bd62"
+}
