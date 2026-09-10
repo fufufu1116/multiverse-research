@@ -1,0 +1,35 @@
+{
+  "record": "KEIRIN_V57_STATE_RECONCILIATION_20260911_v1",
+  "scope": "RESEARCH_STATE_RECONCILIATION_ONLY",
+  "fresh_head_before_reconciliation": "082f297b690e7541590d149c8dbb3aa665804c00",
+  "authoritative_prior_evidence": {
+    "v52": "Segment C was opened and scored once on 2026-09-11; primary and >=300x tail calibration gates passed; Segment C is consumed and retuning is forbidden.",
+    "v56": "Canonical ECON_HOLDOUT1000 fully collides with consumed B+C; untouched rows remaining = 0; v54 scoring was not executed on that invalid final holdout."
+  },
+  "v57_valid_finding_retained": {
+    "nextgen5000_auto_rebuild": "REJECT_AS_FINAL_UNTOUCHED_HOLDOUT_SOURCE",
+    "reason": "The v57 investigation opened shard 000 while following PRE provenance and discovered result fields including finishing positions; shards 001-004 were then left unopened. The lineage is also tied to B1a development provenance with standard_n=974.",
+    "historical_shortcut": "REJECTED"
+  },
+  "v57_stale_fields_superseded": {
+    "segment_C_UNTOUCHED": "INCORRECT_STALE_PARALLEL_STATE; authoritative state is OPENED_AND_SCORED_ONCE_20260911 from v52.",
+    "ECON_HOLDOUT1000_SEALED": "STALE_LABEL; v56 already performed authorized identity/independence preflight and established 100% B+C collision. Performance scoring remained unexecuted.",
+    "formal_science_progress_70": "STALE; authoritative project reporting remains 85% after successful Segment C untouched calibration replication."
+  },
+  "current_scientific_state": {
+    "formal_science_progress_percent": 85,
+    "segment_C": "CONSUMED_NO_RETUNING",
+    "canonical_ECON_HOLDOUT1000": "INVALID_AS_INDEPENDENT_FINAL_HOLDOUT_FULL_B_PLUS_C_COLLISION",
+    "nextgen5000_auto_rebuild": "INVALID_AS_CLEAN_REPLACEMENT_HOLDOUT_SOURCE",
+    "clean_historical_final_1000_available": false,
+    "preferred_route": "PROSPECTIVE_PRE_RESULT_VALIDATION"
+  },
+  "governance": {
+    "B1a_MKT50_v1_retuning": "FORBIDDEN",
+    "pooling_weight": 0.5,
+    "competition_threshold": 0.4,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  }
+}
