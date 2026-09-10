@@ -1,0 +1,70 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v40",
+  "status": "CURRENT_V114_WITH_FROZEN_PRACTICAL_FREQUENCY_DAY_SET_AND_CALIBRATION_AUDIT_PRESPEC",
+  "date_jst": "2026-09-11",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "supersedes_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v39.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "progress": {"practical_engineering_percent": 100, "simulation_winning_pattern_exploration_percent": 100, "formal_scientific_progress_percent": 60},
+  "strict_scientific_lane": {
+    "name": "SELECTIVE_SCORE_DOMINANCE_CONSERVATIVE_SINGLE_3RENHUKU_CORE_VALUE_LANE",
+    "status": "BEST_CURRENT_CANDIDATE_NOT_PROVEN",
+    "confidence_minimum": 0.40,
+    "mutated": false,
+    "profitability_proven": false
+  },
+  "practical_frequency_lane": {
+    "prespec": "v3/historical_all_market/research_candidates/KEIRIN_PRACTICAL_FREQUENCY_LANE_PRESPEC_20260911_v1.json",
+    "target": "approximately 3 to 5 candidate races per day without forcing purchases",
+    "takeo_day_set": "v3/historical_all_market/research_candidates/KEIRIN_PRACTICAL_FREQUENCY_DAY_SET_TAKEO_20260911_v1.json",
+    "takeo_clean_races_ranked": [5,4,6,7,1],
+    "takeo_strict40": [5],
+    "takeo_practical35": [5,4,6],
+    "takeo_practical30": [5,4,6],
+    "takeo_daily_top3": [5,4,6],
+    "takeo_daily_top5": [5,4,6,7,1],
+    "finding": "On the current five clean Takeo races, lowering 35 percent to 30 percent adds no candidate; 35 percent, 30 percent and Daily Top3 select the same three races.",
+    "economic_support": 0
+  },
+  "forward_evidence_state": {
+    "prospective_model_observations": 5,
+    "valid_genuine_price_observations": 0,
+    "economic_support": 0,
+    "profitability_proven": false,
+    "takeo_20260911": {
+      "R1": "STRICT_FAIL; DAILY_TOP5_MEMBER; PRICE_NOT_LOOKED_UP",
+      "R4": "STRICT_FAIL; PRACTICAL35_AND_TOP3_MEMBER; NO_BUY_DECISION",
+      "R5": "STRICT_PASS; TOP3_MEMBER; GENUINE_EXACT_PRE_PRICE_UNVERIFIED; NO_BET_UNVERIFIED",
+      "R6": "STRICT_FAIL; PRACTICAL35_AND_TOP3_MEMBER; TICKET_1=4=7_FROZEN_PRE_PRICE",
+      "R7": "ALL_FIXED_THRESHOLDS_FAIL; DAILY_TOP5_MEMBER; TICKET_2=3=4_FROZEN_PRE_PRICE"
+    }
+  },
+  "calibration_audit": {
+    "prespec": "v3/historical_all_market/research_candidates/KEIRIN_PROBABILITY_CALIBRATION_AUDIT_PRESPEC_20260911_v1.json",
+    "status": "DESIGN_FROZEN_EXECUTION_BLOCKED_UNTIL_ALLOWED_ALREADY_CONSUMED_RESULT_LABELS_ARE_BOUND",
+    "reason": "Existing Stage1 probability catalog intentionally contains no result or settlement labels, and protected holdouts must remain closed.",
+    "tests": ["top1 probability versus observed win frequency", "3renhuku ticket probability versus observed hit frequency"],
+    "strict40_mutated": false
+  },
+  "next_without_owner": [
+    "Locate an already-consumed, explicitly allowed result-labeled dataset that can be joined to pre-result probabilities without opening DEV2000 C or ECON_HOLDOUT1000.",
+    "If such data is available, execute the frozen probability calibration audit without retuning beta or thresholds during measurement.",
+    "Keep the strict 0.40 lane as the scientific control and the 35/30/Daily Top3/Top5 rules as separate challengers.",
+    "Do not expand target price, result, payout or economic access while canonical main authority remains conflicting; fail closed.",
+    "Evaluate later profit on 7-day, 30-day and 90-day horizons with drawdown, losing streak and winner-concentration checks."
+  ],
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment_now": 0,
+    "economic_support_increment_now": 0,
+    "main_mutation": false,
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false,
+    "runtime": "OFF"
+  },
+  "fresh_head_before_write": "ab9c0ad6744baa34f37d1df3d9d94835412873a9",
+  "owner_action_required_now": false
+}
