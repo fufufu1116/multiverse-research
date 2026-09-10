@@ -1,0 +1,43 @@
+{
+  "record": "KEIRIN_STAGE7_DERIVED_LEDGER_RECOVERY_DIAGNOSTIC_20260911_v1",
+  "scope": "DERIVED_ARTIFACTS_ONLY_NO_RAW_SETTLEMENT_OPEN",
+  "fresh_branch_head_at_start": "030b21655e4268f298eff0029e50e3800eb31311",
+  "stage7_parent_folder_id": "1LUs7IM2MK7lMKFVa67Pkiz4uRWVzPemn",
+  "artifacts_examined": [
+    "STAGE7_B_FAILURE_DIAGNOSTICS_v1.json",
+    "stage7_b_failure_diagnostics_v1.py",
+    "STAGE7_AB_SELECTION_RECEIPT_v1.json"
+  ],
+  "findings": {
+    "derived_realized_ledger_hashes_present": true,
+    "A_example_realized_ledger_sha256": "21f7686d8a3f55b2842d0cda12486231bb896249020295daafce3aabec85ede9",
+    "B_realized_ledger_sha256_group_1": "1b26f0f01b834afdbcf28e25b36d37585b21b0dd85b484aa71268b2d7a01227a",
+    "B_realized_ledger_sha256_group_2": "dc8b0780927acbed9983846f51df07d673bc2033ad3c88adedf40b6a9ebc74ef",
+    "A_unique_winning_event_count": 1,
+    "A_unique_winning_event": {
+      "race_id": "5520260228020002",
+      "race_date": "2026-03-01",
+      "ticket": "7-2-5",
+      "return_yen": 45790
+    },
+    "B_hit_ticket_count": 0,
+    "full_AB_race_winner_mapping_present": false,
+    "standalone_realized_ledger_file_found_by_hash_search": false,
+    "diagnostic_code_behavior": "realized ledgers are constructed in-memory during replay; only ledger hashes and aggregate diagnostics are written to the final diagnostic JSON",
+    "winner_probability_calibration_reconstructable_without_raw_AB": false
+  },
+  "governance_controls": {
+    "raw_settlement_A_opened": false,
+    "raw_settlement_B_opened": false,
+    "segment_C_opened": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "scientific_conclusion": [
+    "Stage7 derived artifacts preserve sufficient evidence to reproduce aggregate economic failure diagnostics but not a complete per-race winner-label table for burned A+B.",
+    "The Stage7 failure diagnostic code confirms the realized ledger is generated in memory from raw settlement inputs and not emitted as a standalone ledger artifact.",
+    "Therefore frozen Candidate A versus B1a winner-probability calibration cannot be completed from the located derived artifacts alone without either discovering another previously authorized per-race outcome derivative or obtaining explicit authorization to reopen burned A/B raw settlement outcomes.",
+    "No protected C or ECON_HOLDOUT1000 data were opened in this diagnostic."
+  ]
+}
