@@ -1,0 +1,44 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v46",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v45.json",
+  "current_status": "OUTCOME_FREE_A_B1A_STRUCTURE_QUANTIFIED_WINNER_CALIBRATION_STILL_PERMISSION_BOUND",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_before_diagnostic": "c1b80ccc0f0cc588f5f849b25065bfee11d53ce0",
+  "new_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_OUTCOME_FREE_A_B1A_DISTRIBUTION_DIAGNOSTIC_20260911_v1.json",
+  "new_diagnostic_commit": "954c06b99001b4f69c7316750cac5673dddca5a0",
+  "resolved": [
+    "Immutable Candidate A + B1a prediction bytes recovered and hash verified.",
+    "Burned A/B settlement provenance and exact hashes grounded from prior Stage7 receipts.",
+    "Prediction distributions validated to sum to one for all 2000 races.",
+    "Outcome-free model-structure comparison completed across all 2000 races."
+  ],
+  "new_findings": {
+    "same_top1_rate": 0.823,
+    "changed_top1_races": 354,
+    "candidate_a_mean_top1_probability": 0.36025497093919534,
+    "b1a_mean_top1_probability": 0.42416296200167064,
+    "b1a_more_confident_rate": 0.84,
+    "mean_total_variation": 0.12670995398124882,
+    "tv_ge_0_25_races": 67
+  },
+  "scientific_boundary": [
+    "These new findings are outcome-free and cannot decide whether B1a is actually more accurate or better calibrated.",
+    "A previously derived race_id-to-winner join has not been found after targeted Drive/GitHub provenance searches.",
+    "Current governance does not authorize reopening raw A/B settlement solely for new winner-probability evaluation.",
+    "Segment C remains untouched and ECON_HOLDOUT1000 remains sealed."
+  ],
+  "next_action": [
+    "Fresh Read branch before continuing.",
+    "Continue only outcome-free/provenance-safe research automatically.",
+    "For formal winner calibration, use an already-authorized derived label artifact if discovered; otherwise explicit scope expansion is required before raw A/B settlement access.",
+    "Do not claim 100% formal scientific validation until untouched validation evidence exists."
+  ],
+  "frozen_controls": {
+    "competition_score_threshold": 0.40,
+    "research_only_thresholds": [0.35, 0.30],
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "segment_c": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
