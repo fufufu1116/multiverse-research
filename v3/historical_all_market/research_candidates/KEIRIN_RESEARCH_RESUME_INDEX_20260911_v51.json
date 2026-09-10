@@ -1,0 +1,48 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v51",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v50.json",
+  "current_status": "B1A_MKT50_IMPLEMENTATION_AND_UNTOUCHED_VALIDATOR_FROZEN_SYNTHETIC_TESTS_PASS_UNTOUCHED_DATA_STILL_SEALED",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "febf792b000a056004cf0b5e2575b1674ae122b8",
+  "new_artifacts": [
+    "v3/historical_all_market/research_candidates/b1a_mkt50_v1.py",
+    "v3/historical_all_market/research_candidates/test_b1a_mkt50_v1.py",
+    "v3/historical_all_market/research_candidates/keirin_b1a_mkt50_untouched_validator_v1.py",
+    "v3/historical_all_market/research_candidates/test_keirin_b1a_mkt50_untouched_validator_v1.py",
+    "v3/historical_all_market/research_candidates/KEIRIN_B1A_MKT50_IMPLEMENTATION_FREEZE_20260911_v1.json"
+  ],
+  "verified": {
+    "implementation_test": "PASS 7/7",
+    "validator_test": "PASS 1/1",
+    "implementation_matches_preregistered_eps": true,
+    "pooling_weight_runtime_configurable": false,
+    "competition_threshold_runtime_configurable": false,
+    "untouched_outcomes_read": false
+  },
+  "candidate": {
+    "name": "B1a_MKT50_v1",
+    "winner_layer": "B1a_RECONSTITUTED_v1 unchanged",
+    "ticket_layer": "fixed 50/50 normalized geometric pooling between B1a ticket probability and normalized inverse-odds market shape",
+    "eps": 1e-15,
+    "competition_score_threshold": 0.4
+  },
+  "scientific_interpretation": [
+    "The next-lineage transform is now implemented and hash-frozen before any untouched validation outcome is opened.",
+    "Synthetic tests verify identity behavior, geometric pooling, zero-probability epsilon floor, odds normalization, scale invariance, and fail-closed behavior.",
+    "The untouched validator enforces calibration-first promotion and prevents ROI from rescuing failed calibration.",
+    "No scientific progress percentage should increase merely because implementation is ready; independent untouched evidence is still required."
+  ],
+  "next_action": [
+    "Fresh Read branch before further work.",
+    "Do not open Segment C or ECON_HOLDOUT1000 without separate explicit authorization.",
+    "If untouched validation is later authorized, bind exact input hashes before scoring and run the frozen validator without modifying weight, epsilon, or competition threshold.",
+    "If untouched validation remains unauthorized, continue only provenance, reproducibility, and synthetic/fail-closed testing that does not consume untouched outcomes."
+  ],
+  "governance": {
+    "segment_C": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  }
+}
