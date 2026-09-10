@@ -1,0 +1,67 @@
+{
+  "authorization": "User explicitly requested execution through results; interpreted as Segment C-only untouched validation. ECON_HOLDOUT1000 remained sealed.",
+  "bindings": {
+    "derived_validation_input_sha256": "7ea7c5ab7ce6e83cb52822ab67348ddfc17cb6f3e3985f36161cae88387deda3",
+    "price_catalog_sha256": "2ca98097f74e5282fdc9c91629083f39bef4dafb94a1fc4f7e510acadefc407b",
+    "settlement_C_sha256": "252d8f15bcf5b872bf9948a20c7cc6f506176d7fe0977685029f9fc6e1417d07",
+    "ticket_probability_catalog_sha256": "6348d9af2a535578cf454afca52ea2c944cb6c50cab87f6e6ffa75149880b526",
+    "transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "validator_git_blob": "41826457cea49445fff8cc91c847d491ae690b79"
+  },
+  "calibration": {
+    "b1a_mkt50_ticket_log_loss": 3.5155942465661787,
+    "by_market": {
+      "2shatan": {
+        "b1a_mkt50_log_loss": 2.799657208832962,
+        "difference": -0.3679666459162183,
+        "raw_b1a_log_loss": 3.16762385474918
+      },
+      "3rentan": {
+        "b1a_mkt50_log_loss": 4.231531284299396,
+        "difference": -0.6095587654956391,
+        "raw_b1a_log_loss": 4.841090049795035
+      }
+    },
+    "difference_candidate_minus_raw": -0.48876270570592917,
+    "primary_gate": "PASS",
+    "raw_b1a_ticket_log_loss": 4.004356952272108,
+    "tail_expected_candidate": 99.5658107294468,
+    "tail_expected_raw": 143.61945295575393,
+    "tail_gate": "PASS",
+    "tail_log_calibration_error_candidate": 0.816629205974505,
+    "tail_log_calibration_error_raw": 1.1829774797868327,
+    "tail_observed_winning_tickets": 44,
+    "tail_odds_floor": 300.0
+  },
+  "economic_secondary": {
+    "promotion_pass": false,
+    "reason": "The frozen validator accepts selected_tickets as an external input, but v51 did not freeze a unique C selection-ledger builder for B1a_MKT50_v1. Inventing one after C outcomes were opened would violate preregistration discipline.",
+    "status": "NOT_EVALUATED"
+  },
+  "fresh_head_before_scoring": "abfc5df0f8e01804f01897648416237a6137597c",
+  "governance": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "automatic_betting": false,
+    "retune_on_C": false,
+    "runtime": "OFF",
+    "segment_C": "OPENED_AND_SCORED_ONCE_20260911"
+  },
+  "record": "KEIRIN_B1A_MKT50_SEGMENT_C_UNTOUCHED_VALIDATION_20260911_v1",
+  "scope": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "markets": [
+      "3rentan",
+      "2shatan"
+    ],
+    "race_market_rows": 1000,
+    "segment_C_races": 500
+  },
+  "scientific_interpretation": [
+    "The primary untouched ticket-calibration gate passed: fixed 50/50 pooling reduced log loss on Segment C.",
+    "The pre-specified >=300x tail calibration gate also passed.",
+    "Both supported exact-order markets improved descriptively.",
+    "Segment C is now consumed and must not be used to retune the 0.50 weight, epsilon, competition threshold, or validation gates.",
+    "No production profitability claim is justified because the economic-selection ledger was not uniquely frozen before C was opened."
+  ],
+  "status": "PRIMARY_AND_TAIL_CALIBRATION_PASS_ECONOMIC_SELECTION_NOT_EVALUATED"
+}
