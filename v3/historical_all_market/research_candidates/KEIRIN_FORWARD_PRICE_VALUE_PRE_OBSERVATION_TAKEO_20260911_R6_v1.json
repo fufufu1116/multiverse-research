@@ -1,0 +1,118 @@
+{
+  "record": "KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R6_v1",
+  "status": "FROZEN_RESULT_BLIND_ODDS_BLIND_PRE_MODEL_OBSERVATION_CONFIDENCE_GATE_FAIL_NO_ODDS_NEEDED",
+  "captured_jst": "2026-09-11T00:02:38+09:00",
+  "target_event": {
+    "date": "2026-09-11",
+    "venue": "武雄",
+    "race_no": 6,
+    "class": "A級チャレンジ選抜",
+    "start_jst": "10:14",
+    "distance_m": 1625,
+    "bank_circumference_m": 400,
+    "rider_count": 7,
+    "girls_flag": false,
+    "final_flag": false
+  },
+  "source_policy": {
+    "target_race_composition_source": "KDreams public final-day racecard list",
+    "target_race_composition_url": "https://keirin.kdreams.jp/takeo/racecard/84202609090300/",
+    "competition_score_policy": "Use same-meeting earlier-day OddsPark racecard competition_score values to avoid opening the target-day detail/odds page before prediction freeze.",
+    "used_fields": ["car_no", "rider_name", "style", "competition_score", "scheduled_start", "race_class"],
+    "target_event_result_accessed": false,
+    "target_event_payout_accessed": false,
+    "target_event_odds_accessed_before_this_freeze": false,
+    "target_day_detail_odds_page_opened_before_freeze": false
+  },
+  "fresh_branch_head_observed_immediately_before_write": "b286db58a2dd16881948fa40fc34286e037496ea",
+  "model_binding": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+  "model": {
+    "baseline": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "challenger": "PRE_ONLY_RIDER_FIRST_STYLE_FALLBACK_CIRCUMFERENCE",
+    "circumference_code_q": -1,
+    "exact_rider_lookup_matches": 0,
+    "style_fallback_deltas": {
+      "逃": -0.020537046719,
+      "追": 0.038120995374,
+      "両": 0.0024804485
+    }
+  },
+  "input_snapshot": [
+    {"car_no": 1, "rider_name": "角田 吏", "style": "逃", "competition_score": 78.809, "score_source": "OddsPark 武雄 2026-09-10 R5"},
+    {"car_no": 2, "rider_name": "仙石 淳", "style": "追", "competition_score": 69.904, "score_source": "OddsPark 武雄 2026-09-09 R6"},
+    {"car_no": 3, "rider_name": "小出 慎也", "style": "逃", "competition_score": 75.037, "score_source": "OddsPark 武雄 2026-09-10 R6"},
+    {"car_no": 4, "rider_name": "白井 輝", "style": "逃", "competition_score": 75.833, "score_source": "OddsPark 武雄 2026-09-09 R1"},
+    {"car_no": 5, "rider_name": "相澤 恵一", "style": "追", "competition_score": 69.833, "score_source": "OddsPark 武雄 2026-09-09 R1"},
+    {"car_no": 6, "rider_name": "田崎 良太郎", "style": "追", "competition_score": 68.5, "score_source": "OddsPark 武雄 2026-09-09 R6"},
+    {"car_no": 7, "rider_name": "田中 弘章", "style": "追", "competition_score": 75.458, "score_source": "OddsPark 武雄 2026-09-09 R2"}
+  ],
+  "frozen_model_output": {
+    "s0_probabilities_by_car": {
+      "1": 0.357674052433,
+      "2": 0.049270737460,
+      "3": 0.154463602460,
+      "4": 0.184408157908,
+      "5": 0.048498139440,
+      "6": 0.036045925479,
+      "7": 0.169639384821
+    },
+    "challenger_probabilities_by_car": {
+      "1": 0.363966313247,
+      "2": 0.047281141481,
+      "3": 0.157180951583,
+      "4": 0.187652296581,
+      "5": 0.046539741652,
+      "6": 0.034590359111,
+      "7": 0.162789196345
+    },
+    "s0_ranking": [1, 4, 7, 3, 2, 5, 6],
+    "challenger_ranking": [1, 4, 7, 3, 2, 5, 6],
+    "s0_top1_car": 1,
+    "challenger_top1_car": 1,
+    "top1_agreement": true,
+    "conservative_top1_probability": 0.357674052433,
+    "confidence_gate_minimum": 0.40,
+    "confidence_gate_pass": false,
+    "hypothetical_top3_ticket_if_gate_passed": "1=4=7",
+    "s0_ticket_probability": 0.175458914062,
+    "challenger_ticket_probability": 0.176027096436,
+    "conservative_ticket_probability": 0.175458914062
+  },
+  "fallback_top1_robustness": {
+    "score_gap": 2.976,
+    "required_strict_score_gap": 0.26350806451725767,
+    "gap_multiple_vs_required": 11.29377199689118,
+    "robust_top1_under_supported_fallback": true,
+    "decision_changing": false
+  },
+  "decision_before_odds": {
+    "strict_research_lane": "NO_BET_CONFIDENCE_GATE_FAIL",
+    "stake_yen": 0,
+    "odds_lookup_required_for_strict_lane": false,
+    "automatic_execution": false
+  },
+  "support_effect_at_prediction_freeze": {
+    "prospective_model_observation_increment": 1,
+    "prospective_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_v114_support_increment": 0,
+    "profitability_claim": false
+  },
+  "anti_hindsight": {
+    "result_blind_at_freeze": true,
+    "payout_blind_at_freeze": true,
+    "odds_blind_at_prediction_freeze": true,
+    "strict_confidence_threshold_changed": false,
+    "strict_ticket_rule_changed": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
