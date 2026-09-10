@@ -84,17 +84,13 @@ jobs:
             automation.multimodel_research_v1.test_phase_b_launch_generation \
             -v
 
-      - name: Validators
+      - name: Phase A validator
         shell: bash
         run: |
           set -euo pipefail
-          for VALIDATOR in \
-            automation/multimodel_research_v1/validator.py \
-            automation/multimodel_research_v1/phase_b_validator.py
-          do
-            OUT="$(python "$VALIDATOR")"
-            echo "$OUT"
-            python - "$OUT" <<'PY'
+          OUT="$(python automation/multimodel_research_v1/validator.py)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
           import json
           import sys
           data = json.loads(sys.argv[1])
@@ -105,4 +101,21 @@ jobs:
           assert data["adoption_authority"] is False
           assert data["runtime"] == "OFF"
           PY
-          done
+
+      - name: Phase B validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python -m automation.multimodel_research_v1.phase_b_validator)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json
+          import sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          PY
