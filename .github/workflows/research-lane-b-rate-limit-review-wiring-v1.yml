@@ -1,0 +1,61 @@
+name: MULTIVERSE Research Lane B Wire Review Read Resilience v1
+
+on:
+  push:
+    branches:
+      - agent/lane-b-github-rate-limit-read-resilience-v1-proof-20260911
+    paths:
+      - '.github/workflows/research-lane-b-rate-limit-review-wiring-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  wire-review-read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/lane-b-github-rate-limit-read-resilience-v1-20260911
+          fetch-depth: 0
+
+      - name: Require expected Candidate head and patch only review GitHub GET
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "8e0358aac2fa41b019c1c55f2f0bf660839858e2"
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('automation/review_dispatcher_v1/review.py')
+          s = p.read_text()
+          old_import = 'from automation.review_dispatcher_v1.model import (\n'
+          new_import = ('from automation.review_dispatcher_v1.github_read_resilience_v1 import (\n'
+                        '    github_json_read,\n'
+                        ')\n'
+                        'from automation.review_dispatcher_v1.model import (\n')
+          if old_import not in s:
+              raise SystemExit('review import anchor missing')
+          s = s.replace(old_import, new_import, 1)
+          old_fn = '''def github_get(url: str) -> Any:\n    req = urllib.request.Request(\n        url,\n        headers={\n            "Accept": "application/vnd.github+json",\n            "X-GitHub-Api-Version": "2022-11-28",\n            "User-Agent": "multiverse-fixed-review-runner-v1",\n        },\n    )\n    with urllib.request.urlopen(req, timeout=30) as response:\n        return json.load(response)\n'''
+          new_fn = '''def github_get(url: str) -> Any:\n    return github_json_read(\n        url,\n        user_agent="multiverse-fixed-review-runner-v1",\n    )\n'''
+          if old_fn not in s:
+              raise SystemExit('review github_get anchor missing')
+          s = s.replace(old_fn, new_fn, 1)
+          p.write_text(s)
+          PY
+          git diff --exit-code -- buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml
+          git diff --exit-code -- buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml
+          git diff --name-only
+          test "$(git diff --name-only)" = "automation/review_dispatcher_v1/review.py"
+
+      - name: Commit and push Candidate successor head
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "fufufu1116"
+          git config user.email "vbd82p4kd6@privaterelay.appleid.com"
+          git add automation/review_dispatcher_v1/review.py
+          git commit -m "Use bounded rate-limit-aware GitHub reads in review"
+          git push origin HEAD:agent/lane-b-github-rate-limit-read-resilience-v1-20260911
+          echo "NEW_CANDIDATE_HEAD=$(git rev-parse HEAD)"
