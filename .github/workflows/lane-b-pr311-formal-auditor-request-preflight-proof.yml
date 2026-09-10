@@ -1,0 +1,91 @@
+name: Lane B PR311 formal AUDITOR request owner-free preflight proof
+
+on:
+  push:
+    branches:
+      - agent/lane-b-pr311-formal-lab-request-preflight-proof-20260911-v1
+    paths:
+      - '.github/workflows/lane-b-pr311-formal-auditor-request-preflight-proof.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout proof carrier
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Execute exact PR311 AUDITOR owner-free ONE_SHOT_PREFLIGHT
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TARGET_HEAD='251b01949d7eb5eb6a1150eb19cb3b2f9f9587b1'
+          TARGET_TREE='7e0590148edd31992bcd5bb13a2d98ba863d4897'
+          DISPATCHER_REF='04f314c744abbd0a15591e0437c5de178cfb0ef4'
+          REQUEST_COMMENT='5625893231'
+          REQUEST_ID='pr311-one-shot-preflight-auditor-v1-main-04f314c7'
+          REQUEST_SHA256='0e0c718c882beabdec1698204f31f402c64f34f30d16a83f53a7b9c4a690dee7'
+
+          git fetch origin main
+          test "$(git rev-parse FETCH_HEAD)" = "$DISPATCHER_REF"
+          test "$(git show -s --format=%T "$TARGET_HEAD")" = "$TARGET_TREE"
+
+          rm -rf /tmp/pr311
+          git worktree add --detach /tmp/pr311 "$TARGET_HEAD"
+          test "$(git -C /tmp/pr311 rev-parse HEAD)" = "$TARGET_HEAD"
+          test "$(git -C /tmp/pr311 show -s --format=%T HEAD)" = "$TARGET_TREE"
+
+          test "$(git -C /tmp/pr311 ls-tree HEAD buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | awk '{print $3}')" = '2d4ec751dee4e507a08313d403c7d0521c172ae5'
+          test "$(git -C /tmp/pr311 ls-tree HEAD buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | awk '{print $3}')" = 'c42bae003a3b1dc6d11cf5e6c33996369a4d22d6'
+
+          set +e
+          python /tmp/pr311/automation/review_dispatcher_v1/one_shot_preflight_v1.py \
+            --dispatcher-ref "$DISPATCHER_REF" \
+            --lane AUDITOR \
+            --repo fufufu1116/multiverse-research \
+            --head "$TARGET_HEAD" \
+            --repo-root /tmp/pr311 \
+            > /tmp/pr311_auditor_preflight.json
+          RC=$?
+          set -e
+
+          cat /tmp/pr311_auditor_preflight.json
+
+          python - "$RC" "$TARGET_HEAD" "$TARGET_TREE" "$DISPATCHER_REF" "$REQUEST_COMMENT" "$REQUEST_ID" "$REQUEST_SHA256" <<'PY'
+          import json, sys
+          rc, head, tree, main, comment, request_id, request_sha = sys.argv[1:]
+          d = json.load(open('/tmp/pr311_auditor_preflight.json'))
+          assert d['schema'] == 'MULTIVERSE_ONE_SHOT_PREFLIGHT_v1', d
+          assert d['repo'] == 'fufufu1116/multiverse-research', d
+          assert d['lane'] == 'AUDITOR', d
+          assert d['head'] == head, d
+          assert d['dispatcher_ref'] == main, d
+          assert d['request_comment'] == int(comment), d
+          assert d['request_id'] == request_id, d
+          assert d['request_sha256'] == request_sha, d
+          assert d['publication_attempted'] is False, d
+          assert d['owner_build_consumed'] is False, d
+          assert d['runtime'] == 'OFF', d
+          if d['ready']:
+              assert int(rc) == 0, (rc, d)
+              assert d['state'] == 'ONE_SHOT_PREFLIGHT_READY', d
+              assert d['classification'] == 'PASS', d
+              assert d['tree'] == tree, d
+              assert d['base'] == main, d
+              assert d['main'] == main, d
+              assert d['review_verdict'] == 'PASS', d
+              assert d['test_count'] == 146, d
+              assert d['findings'] == [], d
+              assert d['artifact_serialization'] == 'PASS', d
+              print('EXACT_PR311_AUDITOR_ONE_SHOT_PREFLIGHT_ASSERTIONS=READY_PASS')
+          else:
+              assert int(rc) != 0, (rc, d)
+              assert d['state'] == 'ONE_SHOT_PREFLIGHT_BLOCKED', d
+              print('EXACT_PR311_AUDITOR_ONE_SHOT_PREFLIGHT_ASSERTIONS=BLOCKED_PASS')
+          PY
