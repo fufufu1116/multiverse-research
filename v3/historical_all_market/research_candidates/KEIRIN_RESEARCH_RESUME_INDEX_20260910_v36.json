@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260910_v36",
+  "status": "CURRENT_V114_WITH_MULTI_VENUE_FORWARD_ACQUISITION_AND_REPLAYABLE_PRICE_GATE_V2",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "supersedes_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v35.json",
+  "fresh_head_before_write": "6cf219d33d91ba375adb1a1e9b6eafd141704ddc",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "forward_price_value_prespec": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "forward_price_gate_v2": "tools/keirin_forward_price_value_gate_v2.py",
+  "forward_price_gate_replay_proof": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_GATE_V2_REPLAY_PROOF_20260910_v1.json",
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 100,
+    "formal_scientific_progress_percent": 60
+  },
+  "forward_observation_state": {
+    "prospective_model_observations": 3,
+    "valid_genuine_price_observations": 0,
+    "economic_support": 0,
+    "profitability_proven": false,
+    "takeo_20260911": {
+      "R1": "CONFIDENCE_FAIL_NO_BET",
+      "R4": "CONFIDENCE_FAIL_NO_BET",
+      "R5": "CONFIDENCE_PASS_TICKET_1=2=3_PRICE_UNVERIFIED_NO_BET"
+    }
+  },
+  "price_gate_v2_engineering_state": {
+    "replayable_tests_passed": 13,
+    "replayable_tests_failed": 0,
+    "core_manual_candidate_region": "1.0x-20.0x only, and only after model-confidence and fixed guarded-EV gates pass on genuine current PRE odds",
+    "over_20x": "SHADOW_ONLY_NEVER_MANUAL_BUY_CANDIDATE",
+    "over_80x": "SECOND_PRE_SOURCE_REQUIRED_FOR_VALID_SHADOW_OBSERVATION",
+    "over_300x": "SECOND_PRE_SOURCE_PLUS_ANOMALY_CHECK_REQUIRED_FOR_VALID_SHADOW_OBSERVATION",
+    "placeholder_or_unverified_price": "NO_BET_UNVERIFIED",
+    "automatic_execution": false,
+    "runtime": "OFF",
+    "economic_support_increment_from_replay": 0
+  },
+  "multi_venue_acquisition_state": {
+    "target_date": "2026-09-11",
+    "public_schedule_confirms_meetings": ["四日市", "高知", "武雄", "川崎", "富山", "奈良", "前橋", "豊橋"],
+    "source_integrity_rule": "Do not derive a future race composition from prior-day results or entrant lists. Count only a fully published racecard with car number, rider identity, style and competition score reproducibly available before target result visibility.",
+    "availability_checks": {
+      "前橋": "Meeting and race list exist, but a current public racecard source explicitly states the 2026-09-11 combinations are not yet decided; do not freeze a model observation from entrant list alone.",
+      "豊橋": "Meeting and entrant list exist, but exact race-by-race assignment was not reproducibly available in the retrieved source; do not freeze from entrant list alone.",
+      "四日市": "Final-day race slots are listed, including Girls races, but the current retrieval did not provide a complete reproducible 2026-09-11 individual racecard suitable for model freeze; keep acquisition pending.",
+      "武雄": "R1/R4/R5 already have clean forward records. Continue seeking complete future cards for remaining races without result/payout reconstruction."
+    }
+  },
+  "next_without_owner": [
+    "Continue multi-source scans for complete 2026-09-11 racecards, prioritizing not-yet-observed venues and Girls strata.",
+    "For every complete racecard, freeze S0/challenger prediction odds-blind and result-blind before any price lookup.",
+    "Confidence below 0.40 => NO_BET and no odds lookup.",
+    "Confidence pass => freeze one top3 3renhuku ticket, commit, then acquire genuine timestamped PRE odds.",
+    "Apply forward price gate v2: only <=20.0x may become a manual BUY_CANDIDATE; >20.0x is shadow-only.",
+    "Do not score economics until target result is public and all PRE records are already committed.",
+    "Keep formal 30/60 support lane independent and protected holdouts unopened."
+  ],
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false,
+    "runtime": "OFF"
+  },
+  "owner_action_required_now": false
+}
