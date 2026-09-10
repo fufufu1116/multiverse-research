@@ -42,6 +42,17 @@ High reuse of existing systems and low custom-build share are rewarded. Heavy cu
 
 See `SERVICE_ASSEMBLY.md` for the existing-system-first architecture.
 
+## Economic ladder
+
+The system should not assume every tactical opportunity must become a large business. The intended ladder is:
+
+1. tactical opportunities can create fast cash, evidence, data, distribution or reusable code;
+2. repeated winning patterns can be promoted into a sustaining automated system;
+3. only validated repeatable systems should receive deeper investment toward growth/portfolio/platform economics;
+4. candidates with a low ceiling and no reusable strategic output should not consume focus merely because they are easy to build.
+
+The owner-facing UI may later map these classes to game/rank metaphors, but the core logic keeps ordinary economic terminology.
+
 ## Safety / authority boundary
 
 No live web/SNS/news ingestion, external provider/API call, credential use, purchases, posting, affiliate enrollment, ad spend, personal-data profiling, publication, canonical adoption or Runtime activation is included or authorized by this prototype.
