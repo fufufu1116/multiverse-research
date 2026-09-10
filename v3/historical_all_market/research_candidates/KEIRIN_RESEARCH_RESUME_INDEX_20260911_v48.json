@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v48",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v47.json",
+  "current_status": "AB_WINNER_CALIBRATION_HARNESS_READY_FAIL_CLOSED_PENDING_EXPLICIT_RAW_AB_SCOPE_AUTHORIZATION",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "6d3cf849e2bf22e26a9b065de8863a41bdfd751f",
+  "new_artifacts": [
+    "v3/historical_all_market/research_candidates/keirin_burned_ab_winner_calibration_v1.py",
+    "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_WINNER_CALIBRATION_READINESS_20260911_v1.json"
+  ],
+  "verified_state": {
+    "prediction_integrity_complete": true,
+    "outcome_free_candidate_a_vs_b1a_comparison_complete": true,
+    "stage7_primary_derivative_search_complete": true,
+    "broader_drive_derivative_search_extended": true,
+    "complete_prederived_AB_winner_mapping_found": false,
+    "raw_AB_reopened": false,
+    "winner_calibration_harness_ready": true,
+    "segment_C": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED"
+  },
+  "harness_behavior": {
+    "settlement_A_expected_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "settlement_B_expected_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72",
+    "prediction_expected_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "expected_AB_labels": 1500,
+    "retuning": false,
+    "metrics": ["top1_hit_rate","mean_top1_probability","top1_ece_10bin","multiclass_brier","winner_log_loss","changed_top1_subset_hit_rates"]
+  },
+  "scientific_interpretation": [
+    "All major owner-free preparation for formal frozen Candidate A versus B1a winner-probability calibration is now complete.",
+    "The remaining blocker is not implementation; it is explicit authorization to reopen already-burned Settlement A+B raw outcome content.",
+    "Generic continuation should not silently expand outcome-data scope because v47 explicitly preserved fail-closed governance.",
+    "Once explicitly authorized, only A+B should be read, exact hashes verified before parsing, labels reconstructed, and frozen models scored without retuning.",
+    "Segment C and ECON_HOLDOUT1000 remain outside this authorization and sealed."
+  ],
+  "next_action": [
+    "Fresh Read branch.",
+    "If Owner provides the exact or semantically equivalent explicit A+B-only scope authorization, fetch/read Settlement A and B only and run the frozen calibration harness.",
+    "Persist calibration output and compare Candidate A vs B1a separately on A, B, A+B and on races where their Top1 choices differ.",
+    "Do not tune on A/B in the same scoring step.",
+    "After burned A+B calibration, design the next frozen candidate lineage before any prospective untouched validation."
+  ],
+  "explicit_authorization_phrase": "AUTHORIZE_BURNED_AB_RAW_SETTLEMENT_REOPEN_FOR_FIXED_WINNER_CALIBRATION_ONLY_C_AND_ECON_HOLDOUT_REMAIN_SEALED",
+  "frozen_controls": {
+    "competition_score_threshold": 0.40,
+    "research_only_thresholds": [0.35, 0.30],
+    "automatic_betting": false,
+    "runtime": "OFF",
+    "segment_c": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
