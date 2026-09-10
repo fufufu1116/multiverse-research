@@ -1,0 +1,99 @@
+{
+  "record": "KEIRIN_0914_0915_FINAL_RACECARD_CAPTURE_QUEUE_20260911_v1",
+  "status": "READY_FOR_FINAL_DAY1_RACECARD_CAPTURE_IDENTITY_RESOLVED_PRE_NOT_YET_FROZEN",
+  "generated_jst": "2026-09-11",
+  "scope": "RESEARCH_PRECAPTURE_QUEUE_ONLY_NO_RESULT_NO_MODEL_FIT_NO_RUNTIME",
+  "repository": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "parent_head_sha": "e41efb156eec5bc696cf6a0c7d5c69378c175ffa",
+  "authority": {
+    "resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v60.json",
+    "prospective_bridge": "KEIRIN_B1A_MKT50_V54_PROSPECTIVE_VALIDATION_BRIDGE_20260911_v1.json",
+    "candidate_manifest": "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "identity_coverage": "KEIRIN_POST_FIREWALL_35_CANDIDATE_OFFICIAL_IDENTITY_COVERAGE_20260907_v1.json",
+    "readiness_evidence": "KEIRIN_0914_0915_PROSPECTIVE_PRE_CAPTURE_READINESS_20260911_v1.json"
+  },
+  "identity_authority": {
+    "status": "ALL_35_CANDIDATES_EXACT_OFFICIAL_REGISTRATION_IDENTITY_RESOLVED_NO_SUPPORT_INCREMENT",
+    "join_key": "official_registration_number",
+    "match_rule": "Exact KEIRIN.JP profile identity only: normalized full name + graduation term + prefecture must agree. No fuzzy matching.",
+    "duplicate_identity_rows_here": false
+  },
+  "frozen_v54_bindings": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.50,
+    "competition_score_threshold": 0.40,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2",
+    "retuning_allowed": false
+  },
+  "targets": [
+    {
+      "venue": "Ito",
+      "day1": "2026-09-14",
+      "candidate_count": 11,
+      "assignment_readiness": "MATCHED_11_OF_11",
+      "final_racecard_capture_status": "PENDING_TRUSTWORTHY_FINAL_DAY1_RACECARD"
+    },
+    {
+      "venue": "Aomori",
+      "day1": "2026-09-14",
+      "candidate_count": 4,
+      "assignment_readiness": "MATCHED_4_OF_4",
+      "final_racecard_capture_status": "PENDING_TRUSTWORTHY_FINAL_DAY1_RACECARD"
+    },
+    {
+      "venue": "Hofu",
+      "day1": "2026-09-15",
+      "candidate_count": 20,
+      "assignment_readiness": "MATCHED_20_OF_20",
+      "final_racecard_capture_status": "PENDING_TRUSTWORTHY_FINAL_DAY1_RACECARD"
+    }
+  ],
+  "required_final_racecard_fields": [
+    "venue",
+    "date",
+    "race_number",
+    "car_number",
+    "official_registration_number",
+    "rider_name"
+  ],
+  "capture_order_before_any_outcome_availability": [
+    "1_FREEZE_EXACT_FINAL_RACE_MEMBERSHIP_RACE_NUMBER_AND_CAR_NUMBER",
+    "2_BIND_SAME_RACE_PRE_INPUTS",
+    "3_FREEZE_EXACT_V54_PREDICTIONS",
+    "4_CAPTURE_GENUINE_PRE_CLOSE_ODDS_PROVENANCE",
+    "5_FREEZE_SELECTED_TICKET_LEDGER"
+  ],
+  "fail_closed_rules": {
+    "candidate_absent_from_final_day1_card": "DO_NOT_FORCE_INTO_VALIDATION_SET",
+    "identity_mismatch_or_unresolved": "EXCLUDE_AS_MISSING_NO_FUZZY_JOIN",
+    "missing_pre_at_cutoff": "PERMANENTLY_MISSING_NEVER_RECONSTRUCT_POST_RESULT",
+    "outcome_visible_before_complete_precapture": "DO_NOT_BACKFILL_OR_CLAIM_PROSPECTIVE_SUPPORT",
+    "v54_rule_change": "PROHIBITED"
+  },
+  "current_freeze_state": {
+    "final_race_membership_frozen": false,
+    "race_numbers_frozen": false,
+    "car_numbers_frozen": false,
+    "same_race_pre_inputs_frozen": false,
+    "predictions_frozen": false,
+    "genuine_preclose_odds_frozen": false,
+    "selected_ticket_ledger_frozen": false
+  },
+  "anti_leak": {
+    "target_outcomes_accessed": false,
+    "result_fields_joined": false,
+    "post_result_reconstruction": false,
+    "v54_retuning": false
+  },
+  "scientific_increment": 0,
+  "formal_science_progress_percent": 85,
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE",
+  "next_gate": "At first trustworthy final Day1 racecard availability for a target venue, execute the capture order atomically enough to preserve pre-outcome provenance; do not wait for all three venues if one venue becomes trustworthy first."
+}
