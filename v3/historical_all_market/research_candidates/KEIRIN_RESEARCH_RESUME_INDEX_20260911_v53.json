@@ -1,0 +1,49 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v53",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v52.json",
+  "current_status": "FINAL_ECONOMIC_SELECTION_PREREGISTERED_AND_IMPLEMENTED_BEFORE_ECON_HOLDOUT1000_OPEN",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "61b50269fdfc3dfdd6f65d0af6306da4e723cf93",
+  "new_artifacts": [
+    "v3/historical_all_market/research_candidates/KEIRIN_B1A_MKT50_FINAL_ECONOMIC_SELECTION_PREREG_20260911_v1.json",
+    "v3/historical_all_market/research_candidates/b1a_mkt50_final_economic_selector_v1.py",
+    "v3/historical_all_market/research_candidates/test_b1a_mkt50_final_economic_selector_v1.py"
+  ],
+  "final_selector": {
+    "implementation_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "competition_score_threshold": 0.40,
+    "markets": ["3rentan", "2shatan"],
+    "ticket_probability": "B1a_MKT50_v1 fixed 50/50 market shrinkage",
+    "eligibility": "raw_ev>=0 and shape_edge_ratio>=1",
+    "template": "SINGLE",
+    "stake_policy": "FK10_R2",
+    "stake_unit_yen": 100,
+    "kelly_multiplier": 0.10,
+    "ticket_fraction_cap": 0.0025,
+    "race_fraction_cap": 0.02,
+    "initial_bankroll_yen": 100000
+  },
+  "verification": {
+    "local_semantic_self_test": "PASS 4/4",
+    "segment_C_used_to_tune_selector": false,
+    "segment_C_status": "CONSUMED_CALIBRATION_ONLY_NO_RETUNING_ALLOWED",
+    "ECON_HOLDOUT1000": "SEALED"
+  },
+  "scientific_interpretation": [
+    "The missing external selected-ticket ledger rule identified in v52 is now specified and implemented before final holdout access.",
+    "The selector inherits P00-equivalent EV/shape eligibility, SINGLE portfolio behavior, and FK10_R2 stake semantics from the prior frozen Stage7 family while replacing raw ticket probability with preregistered B1a_MKT50_v1 q.",
+    "No Segment C selected-ticket ROI was used to choose the rule values.",
+    "Formal science remains below 100% because ECON_HOLDOUT1000 has not been opened or scored."
+  ],
+  "next_action": [
+    "Fresh Read branch before further work.",
+    "Prepare a fail-closed ECON_HOLDOUT1000 evaluator bound to this exact selector blob and the existing B1a_MKT50 transform blob.",
+    "Do not open ECON_HOLDOUT1000 until separate explicit owner authorization.",
+    "When authorized, execute the final holdout exactly once without changing any frozen rule."
+  ],
+  "governance": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  }
+}
