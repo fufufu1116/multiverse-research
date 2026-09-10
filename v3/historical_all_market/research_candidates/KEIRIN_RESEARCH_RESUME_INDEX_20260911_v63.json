@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v63",
+  "status": "DATE_AGNOSTIC_PROSPECTIVE_CAPTURE_TOOLCHAIN_READY_FOR_FIRST_ELIGIBLE_PRE",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v62.json",
+  "fresh_parent_head_before_v63": "d222d97e3450e0af6b762867ade90cb407a62b1a",
+  "new_artifacts": [
+    "tools/keirin_pre_source_receipt_builder_v1.py"
+  ],
+  "source_receipt_builder_git_blob": "74eca0a8853105ddb652eca6bd34789f0152b64a",
+  "toolchain": {
+    "step_1": "SAVE_TRUSTWORTHY_PRE_SOURCE_SNAPSHOT_INSIDE_REPOSITORY",
+    "step_2": "BUILD_RECEIPT_AND_SHA256_WITH_KEIRIN_PRE_SOURCE_RECEIPT_BUILDER_V1",
+    "step_3": "BUILD_PRE_ENVELOPE_USING_ONLY_INFORMATION_AVAILABLE_AT_OR_BEFORE_TARGET_CUTOFF",
+    "step_4": "VALIDATE_ENVELOPE_WITH_KEIRIN_PROSPECTIVE_CUTOFF_GUARD_V2",
+    "step_5": "FREEZE_EXACT_V54_PREDICTION_AND_SELECTED_TICKET_LEDGER_BEFORE_OUTCOME",
+    "specific_calendar_date_required": false,
+    "future_information_dependency": false
+  },
+  "selftest": {
+    "source_receipt_builder": "PASS_6_OF_6",
+    "prospective_cutoff_guard_v2": "PASS_11_OF_11"
+  },
+  "absolute_rule_ja": "対象時点より先の情報を、対象時点の予測・選択・実行成立条件にしてはいけない。",
+  "current_state": {
+    "formal_science_progress_percent": 85,
+    "prospective_route": "ACTIVE_AND_BOUND_TO_EXACT_V54_RULES",
+    "capture_toolchain": "READY",
+    "owner_action_block": false
+  },
+  "remaining_scientific_gate": {
+    "requires_genuinely_new_independent_prospective_evidence": true,
+    "specific_date_required": false,
+    "eligible_event": "FIRST_ANY_ELIGIBLE_EVENT_WITH_TRUSTWORTHY_FINAL_PRE_SOURCE_FROZEN_BEFORE_OUTCOME",
+    "prospective_retuning": "PROHIBITED"
+  },
+  "frozen_v54": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.50,
+    "competition_score_threshold": 0.40,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2"
+  },
+  "next_action": "Keep checking the earliest eligible race source. On first trustworthy final PRE publication, capture that race immediately with immutable snapshot, receipt hash, exact v54 prediction and ticket ledger; do not wait for later dates or other venues.",
+  "owner_action_required_now": false,
+  "scientific_increment_now": 0,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
