@@ -1,0 +1,47 @@
+{
+  "record": "KEIRIN_PRACTICAL_FREQUENCY_PRE_OBSERVATION_TAKEO_20260911_R6_v1",
+  "status": "FROZEN_PRACTICAL_CHALLENGER_PRE_PRICE_CANDIDATE_NOT_BUY_YET",
+  "captured_jst": "2026-09-11T00:02:38+09:00",
+  "prespec_binding": "v3/historical_all_market/research_candidates/KEIRIN_PRACTICAL_FREQUENCY_LANE_PRESPEC_20260911_v1.json",
+  "strict_observation_binding": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R6_v1.json",
+  "target_event": {
+    "date": "2026-09-11",
+    "venue": "武雄",
+    "race_no": 6,
+    "start_jst": "10:14"
+  },
+  "frozen_model_summary": {
+    "top1_car": 1,
+    "top1_agreement": true,
+    "conservative_top1_probability": 0.357674052433,
+    "top3_ticket": "1=4=7",
+    "conservative_ticket_probability": 0.175458914062,
+    "rankings": [1, 4, 7, 3, 2, 5, 6]
+  },
+  "policy_results_before_odds": {
+    "STRICT_40": "FAIL",
+    "PRACTICAL_CONFIDENCE_35": "PASS_PRE_PRICE",
+    "PRACTICAL_CONFIDENCE_30": "PASS_PRE_PRICE",
+    "DAILY_TOP3": "PENDING_DAY_SET_COMPLETION",
+    "DAILY_TOP5": "PENDING_DAY_SET_COMPLETION"
+  },
+  "price_stage": {
+    "target_odds_accessed_before_this_freeze": false,
+    "exact_ticket_frozen_before_price_lookup": true,
+    "genuine_timestamped_pre_odds_required_next": true,
+    "current_action": "WAIT_FOR_PRICE_CHECK",
+    "current_buy_candidate": false,
+    "stake_yen": 0
+  },
+  "interpretation": "R6 is intentionally kept as a strict scientific NO_BET while simultaneously entering the separately prespecified practical-frequency challenger at the 0.35 and 0.30 confidence policies. This does not rewrite the strict history and does not claim profitability.",
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "fresh_branch_head_observed_immediately_before_write": "11a45aa5de4a0cdbf8612d229373328dacd4a9da"
+}
