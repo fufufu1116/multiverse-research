@@ -1,0 +1,50 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v54",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v53.json",
+  "current_status": "FINAL_ECON_SELECTOR_AND_ECON_HOLDOUT1000_VALIDATOR_FROZEN_HOLDOUT_STILL_SEALED",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "new_artifact": "v3/historical_all_market/research_candidates/keirin_b1a_mkt50_econ_holdout1000_validator_v1.py",
+  "bindings": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "holdout_validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f"
+  },
+  "final_selector_state": {
+    "competition_score_threshold": 0.40,
+    "markets": ["3rentan", "2shatan"],
+    "eligibility": "q*odds-1 >= 0 and q/market_shape >= 1",
+    "template": "SINGLE",
+    "stake_policy": "FK10_R2",
+    "pool_weight": 0.50,
+    "runtime_configurable": false
+  },
+  "final_holdout_validator": {
+    "expected_races": 1000,
+    "primary_gate": "B1a_MKT50 log loss < raw B1a log loss",
+    "tail_gate": ">=300x calibration error improves; zero hits => INCONCLUSIVE",
+    "economic_minimum_hits": 20,
+    "economic_minimum_bet_races": 50,
+    "economic_roi_requirement": ">=0",
+    "maximum_drawdown": 0.35,
+    "maximum_single_positive_return_share": 0.50,
+    "roi_cannot_rescue_failed_calibration": true
+  },
+  "scientific_boundary": {
+    "segment_C": "CONSUMED_CALIBRATION_ONLY_NO_RETUNING_ALLOWED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "holdout_content_accessed": false,
+    "holdout_scored": false
+  },
+  "next_action": [
+    "Fresh Read branch.",
+    "Wait only for explicit Owner authorization to open and score ECON_HOLDOUT1000 exactly once.",
+    "After authorization, bind exact holdout input hash before interpretation and execute the frozen validator without changing any rule.",
+    "Do not claim 100% formal scientific validation before that result exists."
+  ],
+  "explicit_authorization_phrase": "AUTHORIZE_ECON_HOLDOUT1000_ONE_SHOT_FINAL_VALIDATION_WITH_EXACT_V54_FROZEN_RULES_ONLY",
+  "governance": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  }
+}
