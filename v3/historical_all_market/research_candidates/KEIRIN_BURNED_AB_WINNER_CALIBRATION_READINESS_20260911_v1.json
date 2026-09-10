@@ -1,0 +1,52 @@
+{
+  "record": "KEIRIN_BURNED_AB_WINNER_CALIBRATION_READINESS_20260911_v1",
+  "status": "READY_FAIL_CLOSED_PENDING_EXPLICIT_RAW_AB_SCOPE_AUTHORIZATION",
+  "fresh_branch_head_before_harness": "6d3cf849e2bf22e26a9b065de8863a41bdfd751f",
+  "harness": "v3/historical_all_market/research_candidates/keirin_burned_ab_winner_calibration_v1.py",
+  "purpose": "Score frozen Candidate A versus B1a winner probabilities on already-burned DEV2000 A+B without retuning.",
+  "bindings": {
+    "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "settlement_A_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "settlement_B_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72"
+  },
+  "expected_scope": {
+    "A_races": 1000,
+    "B_races": 500,
+    "AB_races": 1500,
+    "prediction_rows": 14255,
+    "prediction_races": 2000
+  },
+  "metrics_ready": [
+    "top1_hit_rate",
+    "mean_top1_probability",
+    "top1_ece_10bin",
+    "multiclass_brier",
+    "winner_log_loss",
+    "top1_changed_subset_candidate_a_hit_rate",
+    "top1_changed_subset_b1a_hit_rate"
+  ],
+  "hard_fail_closed_controls": [
+    "Settlement A exact SHA must match before parsing.",
+    "Settlement B exact SHA must match before parsing.",
+    "Frozen prediction exact SHA must match before parsing.",
+    "Only segment labels A and B are accepted.",
+    "Exactly 1000 A + 500 B labels are required.",
+    "Winner must be consistently inferable from a positive ordered-market settlement (3rentan or 2shatan).",
+    "No model refit or parameter change occurs.",
+    "Segment C is not an input and remains untouched.",
+    "ECON_HOLDOUT1000 is not an input and remains sealed."
+  ],
+  "search_conclusion": {
+    "primary_stage7_parent_exhausted": true,
+    "broader_drive_search_terms_attempted": [
+      "burned A B winner race_id car_no",
+      "DEV2000 A B top1 calibration",
+      "realized ledger DEV2000",
+      "winning_ticket burned A B"
+    ],
+    "complete_prederived_AB_winner_mapping_found": false,
+    "raw_AB_opened": false
+  },
+  "authorization_boundary": "Execution remains blocked until the Owner explicitly authorizes reopening only the already-burned Settlement A+B artifacts for winner-label reconstruction/calibration. Generic continuation does not silently expand this scope.",
+  "explicit_authorization_phrase": "AUTHORIZE_BURNED_AB_RAW_SETTLEMENT_REOPEN_FOR_FIXED_WINNER_CALIBRATION_ONLY_C_AND_ECON_HOLDOUT_REMAIN_SEALED"
+}
