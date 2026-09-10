@@ -1,0 +1,61 @@
+{
+  "record": "KEIRIN_NEXT_LINEAGE_MARKET_SHRINKAGE_PREREG_20260911_v1",
+  "status": "PREREGISTERED_BEFORE_UNTOUCHED_VALIDATION",
+  "source_branch_head": "c387fba7d25e636cc089364e1e6dd4e79e74d98e",
+  "scientific_basis": {
+    "winner_layer": "Burned A+B showed Candidate A and B1a top1 accuracy effectively tied, while B1a had materially better ECE, Brier and log loss.",
+    "ticket_layer": "Burned A+B showed severe over-optimism in high-odds exact-order tickets, especially where model probability greatly exceeded takeout-normalized market shape probability.",
+    "design_goal": "Preserve the B1a winner-probability layer unchanged while shrinking exact-order ticket probabilities toward normalized market shape before economic selection."
+  },
+  "candidate_name": "B1a_MKT50_v1",
+  "winner_probability_layer": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "change": "NONE",
+    "requirement": "Per-rider B1a win probabilities and Top1 ranking must remain byte-equivalent to the frozen B1a lineage wherever the same pre-result inputs are present."
+  },
+  "ticket_probability_layer": {
+    "markets": ["3rentan", "2shatan"],
+    "model_ticket_probability_symbol": "p_model",
+    "market_shape_probability_symbol": "p_market",
+    "market_shape_definition": "For each race+market, compute inverse-odds weights 1/odds for all valid tickets in the same market, then normalize those weights to sum to 1. This removes the common overround/takeout scale while retaining market shape.",
+    "transform": "q_raw(ticket) = sqrt(max(p_model, eps) * max(p_market, eps)); q(ticket) = q_raw(ticket) / sum_same_race_market(q_raw)",
+    "eps": 1e-15,
+    "model_weight": 0.5,
+    "market_weight": 0.5,
+    "tuning_grid": "NONE",
+    "reason_for_fixed_50_50": "Equal-weight geometric pooling is simple, symmetric and avoids selecting a bespoke coefficient to optimize already-burned A+B outcomes."
+  },
+  "economic_selection": {
+    "baseline_competition_score_threshold": 0.4,
+    "research_only_thresholds": [0.35, 0.3],
+    "rule": "Any EV or model-vs-market selection in the next lineage must use q rather than raw p_model for exact-order ticket probability. Existing candidate-selection threshold 0.40 is unchanged.",
+    "live_price_requirement": "A live decision still requires a genuine pre-close odds observation; discovery snippets are not trusted price evidence."
+  },
+  "untouched_validation_acceptance_gates": {
+    "gate_0_integrity": [
+      "No Segment C or ECON_HOLDOUT1000 read before this preregistration commit exists.",
+      "Winner layer is unchanged B1a; no refit or A+B rescue tuning after preregistration.",
+      "All validation inputs are hash-bound before outcome scoring."
+    ],
+    "gate_1_winner_layer_non_regression": "Because winner probabilities are unchanged, validation must reproduce the frozen B1a winner layer exactly before any ticket-level result is interpreted.",
+    "gate_2_ticket_calibration_primary": "On untouched validation exact-order tickets, B1a_MKT50_v1 must have lower or equal ticket log loss than the raw B1a ticket-probability baseline. A strict improvement is required for promotion; equality is not sufficient for scientific preference.",
+    "gate_3_selected_tail_calibration": "For the pre-specified high-disagreement tail selected by the frozen economic rule, absolute log calibration error |log((observed_hit_rate+eps)/(mean_predicted_probability+eps))| must be lower for B1a_MKT50_v1 than raw B1a. If the observed hit count is zero, report this gate as INCONCLUSIVE rather than manufacturing a pass.",
+    "gate_4_selection_stability": "Report number of selected races/tickets and concentration of gross return. No pass may be declared from ROI alone if a single realized win contributes more than 50% of gross return.",
+    "gate_5_economic_secondary": "ROI/recovery is secondary evidence only and cannot override failed calibration gates. Promotion requires non-negative untouched validation ROI only if the sample contains at least 20 realized hits; otherwise economic evidence is INCONCLUSIVE.",
+    "gate_6_fail_closed": "Any hash mismatch, missing odds universe, incomplete ticket normalization, outcome leakage, or scope drift causes FAIL_CLOSED."
+  },
+  "prohibited_actions": [
+    "Do not retune the 0.50 pooling weight after observing untouched outcomes.",
+    "Do not alter competition_score baseline 0.40 based on untouched outcomes.",
+    "Do not use Segment C as a tuning set after first scoring.",
+    "Do not open ECON_HOLDOUT1000 without separate explicit authorization.",
+    "Do not claim profitability from burned A+B diagnostics or from sparse-hit untouched evidence."
+  ],
+  "governance": {
+    "segment_C": "UNTOUCHED_AT_PREREGISTRATION",
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  }
+}
