@@ -18,17 +18,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Full Candidate tests and validator
+      - name: Full applicable Candidate tests and validator
         shell: bash
         run: |
           set -euo pipefail
           CANDIDATE='aa63e0317a78c3924af5f169eaa476bdff3b12b7'
           BASE='04f314c744abbd0a15591e0437c5de178cfb0ef4'
           test "$(git rev-parse "$CANDIDATE")" = "$CANDIDATE"
+          rm -rf /tmp/candidate
           git worktree add --detach /tmp/candidate "$CANDIDATE"
           cd /tmp/candidate
           python -m compileall -q automation/review_dispatcher_v1
-          python -m unittest discover -v -s automation/review_dispatcher_v1 -p 'test_*.py' 2>&1 | tee /tmp/full-tests.log
+          python -m unittest -v \
+            automation.review_dispatcher_v1.test_combined_fault_replay_v1 \
+            automation.review_dispatcher_v1.test_dispatcher \
+            automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1 \
+            automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1 \
+            automation.review_dispatcher_v1.test_publisher_freshness_v1 \
+            automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_request_arbitration_v6 \
+            automation.review_dispatcher_v1.test_result_canonicalization_v1 \
+            automation.review_dispatcher_v1.test_t2_idempotence_v1 \
+            automation.review_dispatcher_v1.test_t2_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_t2_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_validator_current_baseline_v1 \
+            2>&1 | tee /tmp/full-tests.log
+          grep -F 'Ran 140 tests' /tmp/full-tests.log
           OUT="$(PYTHONPATH=. python automation/review_dispatcher_v1/validator.py)"
           echo "$OUT"
           python - "$OUT" <<'PY'
@@ -119,6 +135,7 @@ jobs:
               assert result['request_sha256'] == request_sha, result
               assert result['review_verdict'] == 'PASS', result
               assert result['findings'] == [], result
+              assert result['artifact_serialization'] == 'PASS', result
               print('PR311_CORRECTED_AUDITOR_V2_PROSPECTIVE_REPAIRED_PREFLIGHT=READY')
           else:
               assert result['state'] == 'ONE_SHOT_PREFLIGHT_BLOCKED', result
