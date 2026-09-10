@@ -1,0 +1,51 @@
+{
+  "ECON_HOLDOUT1000": "SEALED",
+  "authorization": "AUTHORIZE_BURNED_AB_RAW_SETTLEMENT_REOPEN_FOR_FIXED_WINNER_CALIBRATION_ONLY_C_AND_ECON_HOLDOUT_REMAIN_SEALED",
+  "bindings": {
+    "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "settlement_a_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "settlement_b_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72"
+  },
+  "cardinality": {"A": 1000, "AB": 1500, "B": 500, "prediction_races_total": 2000, "prediction_rows_total": 14255},
+  "competition_score_threshold_changed": false,
+  "metrics": {
+    "A": {
+      "candidate_a_win_prob": {"n":1000,"top1_hit_rate":0.449,"mean_top1_probability":0.354954081299987,"top1_ece_10bin":0.09447217468748756,"multiclass_brier_equal_share_ties":0.719434949088641,"winner_set_log_loss":1.5606872258857192},
+      "b1a_reconstituted_v1_win_prob": {"n":1000,"top1_hit_rate":0.45,"mean_top1_probability":0.41725223097583736,"top1_ece_10bin":0.041774587942602505,"multiclass_brier_equal_share_ties":0.7085646675111166,"winner_set_log_loss":1.5311790832641232}
+    },
+    "B": {
+      "candidate_a_win_prob": {"n":500,"top1_hit_rate":0.456,"mean_top1_probability":0.3692639206120665,"top1_ece_10bin":0.0867360793879335,"multiclass_brier_equal_share_ties":0.7001250667761253,"winner_set_log_loss":1.494541731622393},
+      "b1a_reconstituted_v1_win_prob": {"n":500,"top1_hit_rate":0.438,"mean_top1_probability":0.4326308872091223,"top1_ece_10bin":0.02658561342540853,"multiclass_brier_equal_share_ties":0.6979521807648739,"winner_set_log_loss":1.4755565881969492}
+    },
+    "AB": {
+      "candidate_a_win_prob": {"n":1500,"top1_hit_rate":0.4513333333333333,"mean_top1_probability":0.3597240277373469,"top1_ece_10bin":0.09165983676929323,"multiclass_brier_equal_share_ties":0.7129983216511357,"winner_set_log_loss":1.5386387277979439},
+      "b1a_reconstituted_v1_win_prob": {"n":1500,"top1_hit_rate":0.446,"mean_top1_probability":0.42237844972026567,"top1_ece_10bin":0.02891463515298506,"multiclass_brier_equal_share_ties":0.7050271719290356,"winner_set_log_loss":1.5126382515750654}
+    }
+  },
+  "paired_top1": {"both_hit":591,"candidate_a_only":86,"b1a_only":78,"both_miss":745,"discordant_n":164,"mcnemar_exact_two_sided_p":0.5847834991169724},
+  "top1_changed_subset": {
+    "n":278,
+    "candidate_a_hit_rate":0.30935251798561153,
+    "b1a_hit_rate":0.2805755395683453
+  },
+  "paired_loss_difference_b1a_minus_candidate_a": {
+    "mean_multiclass_brier_difference": -0.007971149722100144,
+    "bootstrap_95pct_ci_multiclass_brier": [-0.01469853,-0.00123848],
+    "mean_winner_set_log_loss_difference": -0.0260004762228786,
+    "bootstrap_95pct_ci_log_loss": [-0.04144577,-0.01055737],
+    "bootstrap_seed": 20260911,
+    "bootstrap_replicates": 20000
+  },
+  "tie_handling": {"multi_first_place_races":3,"all_in_segment":"A","primary_top1_hit":"hit if predicted top car is any co-winner","primary_brier":"equal target mass across co-winners","primary_log_loss":"negative log of summed model probability assigned to co-winner set","sensitivity_check":"excluding ties produced materially unchanged conclusions"},
+  "interpretation": [
+    "Candidate A and B1a top1 accuracy are statistically indistinguishable on burned A+B by paired exact McNemar test.",
+    "B1a has lower top1 calibration error and lower proper scoring losses on burned A+B.",
+    "Candidate A has higher hit rate on the post-hoc subset where the two models choose different top1 riders.",
+    "Burned A+B are development data and do not establish production profitability or independent generalization.",
+    "Segment C and ECON_HOLDOUT1000 remain sealed."
+  ],
+  "record": "KEIRIN_BURNED_AB_WINNER_CALIBRATION_20260911_v1",
+  "retuned": false,
+  "segment_c_opened": false,
+  "status": "PASS_FIXED_MODEL_DIAGNOSTIC_ONLY"
+}
