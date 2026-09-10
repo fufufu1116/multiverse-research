@@ -1,0 +1,111 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260910_v35",
+  "status": "CURRENT_V114_WITH_FORWARD_PRICE_PRESPEC_AND_THREE_RESULT_BLIND_PRE_OBSERVATIONS",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "supersedes_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v34.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v24.json",
+  "forward_price_value_prespec": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "fresh_head_immediately_before_write": "9a1f282de3a5603c40ed89ec5f4aa23da98d08a4",
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 100,
+    "formal_scientific_progress_percent": 60
+  },
+  "forward_price_value_status": {
+    "prespec_registered": true,
+    "prospective_model_observations": 3,
+    "price_lookup_attempts": 1,
+    "valid_price_observations": 0,
+    "economic_support": 0,
+    "profitability_proven": false,
+    "observations": [
+      {
+        "date_jst": "2026-09-11",
+        "venue": "武雄",
+        "race_no": 1,
+        "artifact": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRE_FREEZE_TAKEO_20260911_R1_v1.json",
+        "freeze_commit": "41ac070c660e00e35dd90db710565d1b45bf616b",
+        "result_blind_at_freeze": true,
+        "odds_blind_at_prediction_freeze": true,
+        "agreed_top1_car": 1,
+        "conservative_top1_probability": 0.249793945858,
+        "confidence_gate": 0.4,
+        "confidence_pass": false,
+        "decision": "NO_BET_CONFIDENCE_GATE_FAIL",
+        "odds_acquisition_required": false,
+        "stake_yen": 0
+      },
+      {
+        "date_jst": "2026-09-11",
+        "venue": "武雄",
+        "race_no": 4,
+        "artifact": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R4_v1.json",
+        "freeze_commit": "9a1f282de3a5603c40ed89ec5f4aa23da98d08a4",
+        "result_blind_at_freeze": true,
+        "odds_blind_at_prediction_freeze": true,
+        "agreed_top1_car": 3,
+        "conservative_top1_probability": 0.381057720912,
+        "confidence_gate": 0.4,
+        "confidence_pass": false,
+        "decision": "NO_BET_CONFIDENCE_GATE_FAIL",
+        "odds_acquisition_required": false,
+        "stake_yen": 0
+      },
+      {
+        "date_jst": "2026-09-11",
+        "venue": "武雄",
+        "race_no": 5,
+        "prediction_artifact": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R5_v1.json",
+        "prediction_freeze_commit": "b9984681dd863cac78d9f3a678ce1e2fff8349a2",
+        "price_check_artifact": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRICE_CHECK_TAKEO_20260911_R5_20260910T2021_v1.json",
+        "price_check_commit": "593bd66a92abb17aaebdc3fcd034676956debb25",
+        "result_blind_at_freeze": true,
+        "odds_blind_at_prediction_freeze": true,
+        "agreed_top1_car": 1,
+        "conservative_top1_probability": 0.540234324130,
+        "confidence_gate": 0.4,
+        "confidence_pass": true,
+        "frozen_3renhuku_ticket": "1=2=3",
+        "conservative_ticket_probability": 0.179212765529,
+        "guarded_ev_10pct_minimum_odds_approx": 6.2,
+        "verified_current_pre_odds": null,
+        "price_quality": "UNVERIFIED_UNAVAILABLE_VIA_CURRENT_PUBLIC_RETRIEVAL",
+        "decision": "NO_BET_UNVERIFIED",
+        "stake_yen": 0
+      }
+    ],
+    "eligible_manual_buy_region": "CORE 1.0-20.0x only after frozen model confidence PASS plus genuine timestamped PRE price and fixed guarded-value gate PASS",
+    "over_20x": "SHADOW_ONLY",
+    "automatic_betting": false,
+    "interpretation": "The forward anti-hindsight pipeline is now operational across confidence-fail and confidence-pass cases. R5 demonstrated that a model PASS still fails closed when genuine timestamped PRE price cannot be verified. These records are prospective process evidence only, not profitability evidence."
+  },
+  "next_without_owner": [
+    "Continue scanning future 2026-09-11 racecards without opening candidate-race results or payouts.",
+    "For every reproducible racecard, freeze odds-blind S0/challenger outputs before any odds acquisition.",
+    "If base confidence fails, record NO_BET and do not query odds.",
+    "If base confidence passes, freeze the exact one-ticket 3renhuku prediction first; only after its repository commit acquire genuine timestamped PRE odds.",
+    "Keep only 1.0-20.0x in the manual CORE exposure region; keep over 20x SHADOW_ONLY.",
+    "Treat missing, stale, ambiguous, placeholder-like or result-derived prices as NO_BET_UNVERIFIED.",
+    "Log final/solo/Girls/venue only as analysis strata; do not modify the frozen purchase rule from those labels.",
+    "Keep formal 30/60 support acquisition independent.",
+    "Do not open DEV2000 C or ECON_HOLDOUT1000."
+  ],
+  "formal_scientific_state": {
+    "formal_v114_changed": false,
+    "formal_support_increment_from_forward_price_lane": 0,
+    "profitability_proven": false,
+    "main_mutation": false,
+    "runtime": "OFF"
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "owner_action_required_now": false
+}
