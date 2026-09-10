@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_FORWARD_PRICE_VALUE_PRICE_CHECK_TAKEO_20260911_R5_20260910T2021_v1",
+  "status": "FROZEN_PRE_PRICE_CHECK_NO_TRUSTWORTHY_CURRENT_ODDS_NO_BET_UNVERIFIED",
+  "checked_jst": "2026-09-10T20:21:42+09:00",
+  "target_event": {
+    "date": "2026-09-11",
+    "venue": "武雄",
+    "race_no": 5,
+    "start_jst": "09:53",
+    "market": "3renhuku",
+    "exact_frozen_ticket": "1=2=3"
+  },
+  "prediction_freeze": {
+    "path": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R5_v1.json",
+    "commit": "b9984681dd863cac78d9f3a678ce1e2fff8349a2",
+    "conservative_top1_probability": 0.540234324130,
+    "conservative_ticket_probability": 0.179212765529,
+    "confidence_gate_pass": true
+  },
+  "prespec_binding": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "fresh_branch_head_before_write": "b9984681dd863cac78d9f3a678ce1e2fff8349a2",
+  "price_retrieval_attempt": {
+    "performed_only_after_prediction_freeze": true,
+    "target_result_accessed": false,
+    "target_payout_accessed": false,
+    "sources_checked": [
+      {
+        "source": "OddsPark public future racecard/search retrieval",
+        "url": "https://www.oddspark.com/keirin/RaceList.do?joCode=84&kaisaiBi=20260911&raceNo=5",
+        "result": "Future racecard verified, but no trustworthy timestamped current 3renhuku 1=2=3 price was exposed in the retrieved public content."
+      },
+      {
+        "source": "Rakuten KDreamS public web search",
+        "result": "Search retrieval did not yield the 2026-09-11 Takeo R5 current 3renhuku price; returned program/current-day pages were not accepted as target price evidence."
+      },
+      {
+        "source": "Additional public searches for WINTICKET/netkeirin/Chariloto/official-domain target odds",
+        "result": "No exact 2026-09-11 Takeo R5 3renhuku 1=2=3 timestamped current price was verified."
+      }
+    ],
+    "rejected_as_price_evidence": [
+      "2026-09-10 or earlier race odds",
+      "other race numbers",
+      "9999.9 placeholder-like values from other races/dates",
+      "result or payout-derived prices",
+      "untimestamped or ambiguous prices"
+    ],
+    "verified_current_pre_odds": null,
+    "odds_quality_state": "UNVERIFIED_UNAVAILABLE_VIA_CURRENT_PUBLIC_RETRIEVAL"
+  },
+  "frozen_price_decision": {
+    "decision": "NO_BET_UNVERIFIED",
+    "stake_yen": 0,
+    "reason": "The model confidence gate passed, but the prespec requires genuine timestamped PRE odds. No trustworthy target price was verified at this check, so price quality fails closed.",
+    "guarded_expected_roi": null,
+    "probability_multiple_vs_market": null,
+    "odds_band": null,
+    "buy_candidate": false,
+    "automatic_execution": false
+  },
+  "evidence_effect": {
+    "prospective_model_observation_increment": 0,
+    "price_lookup_attempt_increment": 1,
+    "valid_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false
+  },
+  "anti_hindsight": {
+    "prediction_was_committed_before_price_lookup": true,
+    "target_result_blind": true,
+    "target_payout_blind": true,
+    "no_threshold_change": true,
+    "no_ticket_change": true,
+    "no_stake_increase": true
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
