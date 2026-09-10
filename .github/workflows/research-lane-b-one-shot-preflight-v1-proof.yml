@@ -1,0 +1,104 @@
+name: MULTIVERSE Lane B One Shot Preflight v1 Proof
+
+on:
+  push:
+    branches:
+      - agent/lane-b-one-shot-preflight-v1-proof-20260911
+    paths:
+      - '.github/workflows/research-lane-b-one-shot-preflight-v1-proof.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact successor Candidate
+        uses: actions/checkout@v4
+        with:
+          ref: 251b01949d7eb5eb6a1150eb19cb3b2f9f9587b1
+          fetch-depth: 0
+
+      - name: Exact head and fixed Steps immutability
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "251b01949d7eb5eb6a1150eb19cb3b2f9f9587b1"
+          test "$(git ls-tree HEAD buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | awk '{print $3}')" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git ls-tree HEAD buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | awk '{print $3}')" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+
+      - name: Compile review dispatcher
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m compileall -q automation/review_dispatcher_v1
+
+      - name: Full applicable review-dispatcher suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest -v \
+            automation.review_dispatcher_v1.test_combined_fault_replay_v1 \
+            automation.review_dispatcher_v1.test_dispatcher \
+            automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1 \
+            automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1 \
+            automation.review_dispatcher_v1.test_one_shot_preflight_v1 \
+            automation.review_dispatcher_v1.test_publisher_freshness_v1 \
+            automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_request_arbitration_v6 \
+            automation.review_dispatcher_v1.test_result_canonicalization_v1 \
+            automation.review_dispatcher_v1.test_t2_idempotence_v1 \
+            automation.review_dispatcher_v1.test_t2_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_t2_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_validator_current_baseline_v1
+
+      - name: Validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(PYTHONPATH=. python automation/review_dispatcher_v1/validator.py)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          d=json.loads(sys.argv[1])
+          assert d['verdict']=='PASS', d
+          assert d['findings']==[], d
+          assert d.get('runtime')=='OFF', d
+          assert d.get('merge_authorized') is False, d
+          assert d.get('main_mutation_authorized') is False, d
+          assert d.get('shared_pipeline_mutation_authorized') is False, d
+          PY
+
+      - name: Historical Build64 class caught before Owner Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          git worktree add --detach /tmp/pr308 f3611e3d2afd434d3ad91b73f7288bd9180f5d4b
+          set +e
+          python automation/review_dispatcher_v1/one_shot_preflight_v1.py \
+            --dispatcher-ref 04f314c744abbd0a15591e0437c5de178cfb0ef4 \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head f3611e3d2afd434d3ad91b73f7288bd9180f5d4b \
+            --repo-root /tmp/pr308 > /tmp/build64_preflight.json
+          RC=$?
+          set -e
+          cat /tmp/build64_preflight.json
+          test "$RC" -eq 1
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/build64_preflight.json'))
+          assert d['ready'] is False, d
+          assert d['state']=='ONE_SHOT_PREFLIGHT_BLOCKED', d
+          assert d['classification']=='REVIEW_RECIPE_OR_CANDIDATE_FAILURE', d
+          assert d['request_comment']==5624960652, d
+          assert d['request_sha256']=='307dd085cecf244a159aba51bc0990ad5ddccd07c6bad7ef566cd0c9d123220c', d
+          assert d['test_count']==52, d
+          assert d['findings']==['unittest_count:automation.review_dispatcher_v1.test_dispatcher: 52 != 132'], d
+          assert d['publication_attempted'] is False, d
+          assert d['owner_build_consumed'] is False, d
+          assert d['runtime']=='OFF', d
+          PY
