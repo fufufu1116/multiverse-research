@@ -1,0 +1,135 @@
+{
+  "bridge_authority": {
+    "adoption": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "production": false,
+    "protected_data": false,
+    "provider_effect": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "spend": false,
+    "workflow_dispatch_rerun": false
+  },
+  "case_id": "office2021-eos-jp",
+  "case_ref": "research/opportunity_engine_v0/cases/real_world_batch_20260911.json#case=office2021-eos-jp",
+  "opportunity_case": {
+    "case_id": "office2021-eos-jp",
+    "competitor_notes": [
+      "Microsoft provides official migration guidance and upgrade paths.",
+      "Mature third-party migration products already exist, including MigrationWiz, Cloudiway and ShareGate in current comparison listings.",
+      "General AI can answer most generic version-check and migration questions."
+    ],
+    "competitor_state": "MATURE",
+    "forecast": {
+      "card": {
+        "candidate_name": "Office 2021 end-of-support action demand (Japan)",
+        "confidence": 4,
+        "created_at": "2026-09-11T07:03:00+09:00",
+        "expected_demand_life_days": 60.0,
+        "forecast_id": "f-20260911-office2021-eos-jp-v1",
+        "kill_condition": "Reject an Office-specific paid guide/tool if official Microsoft guidance, general AI, and mature migration products already solve the actionable last mile for the target segment.",
+        "monetization_hypothesis": "Research-only: Office-specific generic guidance is too substitutable; more promising asset is a reusable support-end/change scanner plus action-ready checks. No live monetization is authorized.",
+        "predicted_ai_or_incumbent_absorption_days": 1.0,
+        "predicted_competitor_arrival_days": 1.0,
+        "predicted_next_actions": [
+          "deadline awareness rises",
+          "version-check and risk questions rise",
+          "migration/replacement intent rises",
+          "October 13 deadline creates urgency",
+          "post-deadline cleanup demand persists then decays"
+        ],
+        "predicted_peak_end": "2026-10-20",
+        "predicted_peak_start": "2026-10-01",
+        "source_signal_ids": [
+          "sig-20260911-microsoft-office2021-eos"
+        ]
+      },
+      "sha256_commitment": "67cc8cf943c0de233dce6b9c981cbd42fc8f59b955348da88c85a86b4254a25c"
+    },
+    "leverage_candidates": [
+      "reuse the deadline as training data for a general support-end/change scanner",
+      "machine-readable version and deadline checks rather than another generic guide",
+      "reusable migration-deadline templates across software vendors"
+    ],
+    "provisional_verdict": "FREE_ACQUISITION_OR_INTERNAL_ASSET_ONLY_UNLESS_LAST_MILE_GAP_FOUND",
+    "signal": {
+      "evidence": [
+        {
+          "primary": true,
+          "source": "Microsoft Support Japan",
+          "url": "https://support.microsoft.com/ja-jp/office/system-requirements/end-of-support-for-office-2021"
+        },
+        {
+          "primary": true,
+          "source": "Microsoft Lifecycle Japan",
+          "url": "https://learn.microsoft.com/ja-jp/lifecycle/announcements/office-ltsc-2021-end-of-support"
+        },
+        {
+          "primary": false,
+          "source": "G2 migration-tool alternatives",
+          "url": "https://www.g2.com/products/office-365-migration-planner/competitors/alternatives"
+        }
+      ],
+      "fact": "Microsoft states that Office 2021 support ends on 2026-10-13 with no extension or extended security updates; Office LTSC 2021 also reaches end of support on that date.",
+      "market": "Japan",
+      "signal_id": "sig-20260911-microsoft-office2021-eos",
+      "type": "SERVICE_CHANGE"
+    }
+  },
+  "opportunity_case_sha256": "57675cd809b75b227e05473e55bee64a1a83d1e86f78395f6a3a691693464562",
+  "packet_sha256": "ff5952a72e3e655085d653371791723025f153bb8a39319a3689c33f70c45e13",
+  "research_task": {
+    "allowed_primitives": [
+      "SOURCE_REF"
+    ],
+    "constraints": {
+      "max_compute_seconds": 180,
+      "max_findings": 12,
+      "max_output_bytes": 100000,
+      "network_access": "NONE"
+    },
+    "created_at": "2026-09-10T22:03:00Z",
+    "domain": "opportunity_engine",
+    "evidence_manifest": [
+      {
+        "observed_at": "2026-09-10T22:03:00Z",
+        "primitive": "SOURCE_REF",
+        "ref": "research/opportunity_engine_v0/cases/real_world_batch_20260911.json#case=office2021-eos-jp",
+        "sha256": "57675cd809b75b227e05473e55bee64a1a83d1e86f78395f6a3a691693464562"
+      }
+    ],
+    "nonauthority": {
+      "adoption": false,
+      "live_business_effect": false,
+      "main_mutation": false,
+      "merge": false,
+      "production": false,
+      "protected_data": false,
+      "provider_effect": false,
+      "ruleset_mutation": false,
+      "runtime_activation": false,
+      "spend": false,
+      "workflow_dispatch_rerun": false
+    },
+    "objective": "Independently challenge this frozen Opportunity Engine case. Do not assume its provisional verdict is correct. Attack competitor coverage, general-AI/incumbent substitution, payer clarity, low/base/high economics, demand lifetime, leverage assumptions, owner burden, copy exposure, legal/safety risk, kill conditions, and whether a simpler existing-service solution dominates. Return evidence-grounded findings only; this task has no adoption, execution, spend, publication, provider-effect, or Runtime authority.\n\nFROZEN_OPPORTUNITY_CASE_SHA256=57675cd809b75b227e05473e55bee64a1a83d1e86f78395f6a3a691693464562\nFROZEN_OPPORTUNITY_CASE={\"case_id\":\"office2021-eos-jp\",\"competitor_notes\":[\"Microsoft provides official migration guidance and upgrade paths.\",\"Mature third-party migration products already exist, including MigrationWiz, Cloudiway and ShareGate in current comparison listings.\",\"General AI can answer most generic version-check and migration questions.\"],\"competitor_state\":\"MATURE\",\"forecast\":{\"card\":{\"candidate_name\":\"Office 2021 end-of-support action demand (Japan)\",\"confidence\":4,\"created_at\":\"2026-09-11T07:03:00+09:00\",\"expected_demand_life_days\":60.0,\"forecast_id\":\"f-20260911-office2021-eos-jp-v1\",\"kill_condition\":\"Reject an Office-specific paid guide/tool if official Microsoft guidance, general AI, and mature migration products already solve the actionable last mile for the target segment.\",\"monetization_hypothesis\":\"Research-only: Office-specific generic guidance is too substitutable; more promising asset is a reusable support-end/change scanner plus action-ready checks. No live monetization is authorized.\",\"predicted_ai_or_incumbent_absorption_days\":1.0,\"predicted_competitor_arrival_days\":1.0,\"predicted_next_actions\":[\"deadline awareness rises\",\"version-check and risk questions rise\",\"migration/replacement intent rises\",\"October 13 deadline creates urgency\",\"post-deadline cleanup demand persists then decays\"],\"predicted_peak_end\":\"2026-10-20\",\"predicted_peak_start\":\"2026-10-01\",\"source_signal_ids\":[\"sig-20260911-microsoft-office2021-eos\"]},\"sha256_commitment\":\"67cc8cf943c0de233dce6b9c981cbd42fc8f59b955348da88c85a86b4254a25c\"},\"leverage_candidates\":[\"reuse the deadline as training data for a general support-end/change scanner\",\"machine-readable version and deadline checks rather than another generic guide\",\"reusable migration-deadline templates across software vendors\"],\"provisional_verdict\":\"FREE_ACQUISITION_OR_INTERNAL_ASSET_ONLY_UNLESS_LAST_MILE_GAP_FOUND\",\"signal\":{\"evidence\":[{\"primary\":true,\"source\":\"Microsoft Support Japan\",\"url\":\"https://support.microsoft.com/ja-jp/office/system-requirements/end-of-support-for-office-2021\"},{\"primary\":true,\"source\":\"Microsoft Lifecycle Japan\",\"url\":\"https://learn.microsoft.com/ja-jp/lifecycle/announcements/office-ltsc-2021-end-of-support\"},{\"primary\":false,\"source\":\"G2 migration-tool alternatives\",\"url\":\"https://www.g2.com/products/office-365-migration-planner/competitors/alternatives\"}],\"fact\":\"Microsoft states that Office 2021 support ends on 2026-10-13 with no extension or extended security updates; Office LTSC 2021 also reaches end of support on that date.\",\"market\":\"Japan\",\"signal_id\":\"sig-20260911-microsoft-office2021-eos\",\"type\":\"SERVICE_CHANGE\"}}",
+    "requested_roles": [
+      "competitor_challenge",
+      "economics_challenge",
+      "execution_risk_challenge"
+    ],
+    "schema": "MULTIVERSE_RESEARCH_TASK_v2",
+    "snapshot_id": "opportunity-snapshot-office2021-eos-jp-v1",
+    "source_refs": [
+      {
+        "kind": "OPPORTUNITY_CASE",
+        "observed_at": "2026-09-10T22:03:00Z",
+        "ref": "research/opportunity_engine_v0/cases/real_world_batch_20260911.json#case=office2021-eos-jp",
+        "sha256": "57675cd809b75b227e05473e55bee64a1a83d1e86f78395f6a3a691693464562"
+      }
+    ],
+    "task_id": "opportunity-review-office2021-eos-jp-v1"
+  },
+  "schema": "MULTIVERSE_OPPORTUNITY_REVIEW_PACKET_v1"
+}
