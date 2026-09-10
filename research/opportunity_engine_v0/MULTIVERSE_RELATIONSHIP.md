@@ -82,6 +82,26 @@ Conceptually:
 
 MULTIVERSE decides what is allowed and whether evidence is sufficient. Opportunity Engine decides what economic opportunity appears attractive and how it may be exploited with the least owner burden and capital risk.
 
+## Implemented research bridge v0
+
+The first thin integration bridge now exists inside this research candidate:
+
+- `multiverse_bridge.py` freezes one Opportunity Engine case into the existing `MULTIVERSE_RESEARCH_TASK_v2` contract instead of inventing a parallel review protocol;
+- the extracted case is canonical-JSON hashed and bound to both the task source reference and evidence manifest;
+- a packet-level hash detects outer packet rewriting;
+- all MULTIVERSE non-authority flags remain false;
+- v0 frozen reviews use `network_access = NONE`, so evidence cannot silently change while a candidate is being challenged;
+- default challenge roles attack competitor coverage, economics and execution risk;
+- `multiverse_result_bridge.py` validates an existing MULTIVERSE research result against the exact frozen task before returning it to Opportunity Engine;
+- result findings must cite evidence inside the frozen manifest with the matching digest;
+- a supportive review becomes only `NO_BLOCKER_FOUND_YET`, never approval or execution authority;
+- high-severity opposition becomes `CHALLENGE_REQUIRED`, unknown/uncertain results become `MORE_EVIDENCE`, and infrastructure/non-completed review becomes `REVIEW_UNAVAILABLE`;
+- `cases/review_packet_office2021_eos_jp_v1.json` is the first concrete frozen bridge specimen.
+
+This creates a two-way evidence path without duplicating Owner/Core/Vault/Lab/Auditor authority.
+
+See `BRIDGE_CONTRACT.md`, `test_multiverse_bridge.py` and `test_multiverse_result_bridge.py`.
+
 ## Why the separation matters
 
 1. The general MULTIVERSE core can serve many domains beyond money-making: research, patents, creative IP, software, science, Keirin or future domains.
