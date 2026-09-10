@@ -1,0 +1,38 @@
+{
+  "record": "KEIRIN_ECON_HOLDOUT1000_MEMBERSHIP_COLLISION_DIAGNOSTIC_20260911_v1",
+  "status": "FAIL_CLOSED_FINAL_HOLDOUT_NOT_INDEPENDENT",
+  "authorization_received": "AUTHORIZE_ECON_HOLDOUT1000_ONE_SHOT_FINAL_VALIDATION_WITH_EXACT_V54_FROZEN_RULES_ONLY",
+  "fresh_research_head_before_preflight": "40e33fc394a18218b95a082fd9b4adb457e90c1d",
+  "canonical_membership_sources": [
+    "v3/holdout_membership_guard_v1.json",
+    "v3/prospective/governance/ECON_HOLDOUT1000_MEMBERSHIP_COLLISION_GATE_FINAL_v1.json"
+  ],
+  "canonical_membership": {
+    "name": "ECON_HOLDOUT_1000",
+    "dev_index_min": 1001,
+    "dev_index_max": 2000,
+    "race_count": 1000,
+    "race_date_min": "2026-03-27",
+    "race_date_max": "2026-04-10",
+    "ordered_race_id_sha256": "814e72d228ebaf40b4fa1aae636c55c69add71d941f27f6900a0e21d91f2e2c8",
+    "sorted_race_id_set_sha256": "54c33d907e2e610599bbdf03b81b6557072ab2eb2a71fce9e1ca1c44295cce54"
+  },
+  "collision": {
+    "segment_B": "dev_index 1001..1500; already burned/used in prior Stage7 and later calibration diagnostics",
+    "segment_C": "dev_index 1501..2000; opened and scored once on 2026-09-11 in B1a_MKT50 Segment C validation",
+    "intersection_with_consumed_data": 1000,
+    "independent_untouched_rows_remaining": 0
+  },
+  "execution_decision": {
+    "performance_scoring_executed": false,
+    "reason": "Running v54 against B+C would misrepresent previously consumed data as an untouched final holdout and would invalidate the scientific claim.",
+    "fail_closed": true
+  },
+  "scientific_conclusion": "The object historically named ECON_HOLDOUT1000 is not an independent final holdout for the current lineage because its complete membership is already consumed as Segment B plus Segment C. A genuinely new disjoint holdout is required before a 100% formal scientific validation claim is possible.",
+  "governance": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE",
+    "no_false_final_pass": true
+  }
+}
