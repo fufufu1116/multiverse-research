@@ -1,0 +1,63 @@
+{
+  "record": "KEIRIN_PROBABILITY_CALIBRATION_AUDIT_PRESPEC_20260911_v1",
+  "status": "FROZEN_AUDIT_DESIGN_BLOCKED_UNTIL_ALLOWED_CONSUMED_RESULT_LABELS_ARE_BOUND",
+  "date_jst": "2026-09-11",
+  "purpose": "Test whether model probability outputs behave like real event frequencies before changing the strict 0.40 control or promoting any practical-frequency challenger.",
+  "questions": [
+    "When top1 probability is reported near a given level, does the predicted top1 actually win at a similar frequency?",
+    "When the frozen 3renhuku ticket probability is reported near a given level, does that exact unordered top3 ticket actually hit at a similar frequency?"
+  ],
+  "frozen_scope": {
+    "strict_40_control_mutated": false,
+    "practical_frequency_prespec_mutated": false,
+    "model_beta_retuned": false,
+    "calibration_transform_fitted": false,
+    "purpose_is_measurement_before_correction": true
+  },
+  "required_inputs": {
+    "prediction_side": "already-produced pre-result model probabilities with stable race identity",
+    "label_side": "result labels from an already-consumed and explicitly allowed dataset only",
+    "forbidden": ["DEV2000_C", "ECON_HOLDOUT1000", "newly opened sealed data", "post-result reconstructed predictions"]
+  },
+  "known_input_limitation": {
+    "stage1_probability_catalog_exists": true,
+    "stage1_result_fields_included": false,
+    "stage1_settlement_fields_included": false,
+    "stage1_ev_roi_computed": false,
+    "consequence": "The Stage1 probability catalog alone cannot establish calibration because it intentionally lacks outcome labels."
+  },
+  "audit_outputs": {
+    "top1": ["probability bucket counts", "mean predicted probability", "observed win frequency", "absolute gap", "Brier score", "log loss"],
+    "ticket_3renhuku": ["probability bucket counts", "mean predicted probability", "observed hit frequency", "absolute gap", "Brier score", "log loss"],
+    "stability": ["chronological slices", "venue/class strata where sample size permits", "largest-gap buckets", "sample-size warnings"]
+  },
+  "bucket_policy": {
+    "primary": "fixed-width 0.10 probability bands where sample size is sufficient",
+    "fallback": "merge adjacent bands when counts are too small; do not interpret tiny bins as evidence",
+    "threshold_focus": [0.30, 0.35, 0.40]
+  },
+  "anti_overfit_rules": {
+    "do_not_choose_bins_after_observing favorable results": true,
+    "do_not_retune_beta_during_audit": true,
+    "do_not_fit_a_calibration_map on_the_same_rows_used_for_final_evaluation": true,
+    "do_not_promote_35_or_30_from_frequency_alone": true,
+    "preserve_chronological_order": true
+  },
+  "decision_logic": {
+    "if_allowed_result_labels_unavailable": "BLOCK_AUDIT_WITHOUT_OPENING_PROTECTED_DATA",
+    "if_material_miscalibration_found": "DESIGN_SEPARATE_CALIBRATION_CHALLENGER_USING_NONFINAL_TRAINING_DATA_AND_RETEST_CHRONOLOGICALLY",
+    "if_no_material_miscalibration_found": "DO_NOT_ADD_CALIBRATION_COMPLEXITY_WITHOUT_MEASURABLE_GAIN",
+    "profitability_claim_from_this_audit": false
+  },
+  "execution_boundary": {
+    "result_or_payout_access_by_this_record": false,
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "fresh_branch_head_observed_immediately_before_write": "d053b3d88eba26fe43699b82e71e157abb5794a3"
+}
