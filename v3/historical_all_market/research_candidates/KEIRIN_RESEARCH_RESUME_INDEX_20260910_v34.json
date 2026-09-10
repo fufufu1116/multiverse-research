@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260910_v34",
+  "status": "CURRENT_V114_WITH_FORWARD_PRICE_PRESPEC_AND_FIRST_RESULT_BLIND_PRE_OBSERVATION",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "supersedes_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v33.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "post_current_delta": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v24.json",
+  "forward_price_value_prespec": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "first_forward_pre_observation": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRE_FREEZE_TAKEO_20260911_R1_v1.json",
+  "fresh_head_at_resume_creation": "41ac070c660e00e35dd90db710565d1b45bf616b",
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 99,
+    "formal_scientific_progress_percent": 60
+  },
+  "forward_price_value_status": {
+    "prespec_registered": true,
+    "prospective_pre_observations": 1,
+    "price_observations": 0,
+    "economic_support": 0,
+    "first_observation": {
+      "date_jst": "2026-09-11",
+      "venue": "武雄",
+      "race_no": 1,
+      "result_blind_at_freeze": true,
+      "odds_blind_at_prediction_freeze": true,
+      "s0_and_challenger_agreed_top1": 1,
+      "conservative_top1_probability": 0.249793945858,
+      "confidence_gate": 0.4,
+      "confidence_pass": false,
+      "decision": "NO_BET",
+      "stake_yen": 0,
+      "pre_odds_needed": false,
+      "freeze_commit": "41ac070c660e00e35dd90db710565d1b45bf616b"
+    },
+    "interpretation": "The first clean prospective observation was filtered before any odds lookup because base model confidence failed. It is evidence that the anti-hindsight sequence is operational, not evidence of profitability.",
+    "eligible_manual_buy_region": "CORE 1.0-20.0x only if the frozen model confidence gate passes and fixed V2-derived value thresholds pass",
+    "over_20x": "SHADOW_ONLY",
+    "automatic_betting": false
+  },
+  "next_without_owner": [
+    "Continue scanning future public racecards for 2026-09-11 without opening candidate-race results or payouts.",
+    "For each faithfully reproducible racecard, freeze odds-blind S0/challenger outputs before any odds acquisition.",
+    "If base confidence fails, record NO_BET without querying odds.",
+    "When the first base-confidence PASS appears, commit that prediction freeze first; only then acquire timestamped genuine PRE 3renhuku odds for the exact frozen ticket and apply the prespecified value gate.",
+    "Keep >20x shadow-only and keep missing/stale/anomalous odds fail-closed.",
+    "Keep formal 30/60 support lane independent.",
+    "Do not open DEV2000 C or ECON_HOLDOUT1000."
+  ],
+  "formal_scientific_state": {
+    "formal_v114_changed": false,
+    "formal_support_increment": 0,
+    "profitability_proven": false,
+    "main_mutation": false,
+    "runtime": "OFF"
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "owner_action_required_now": false
+}
