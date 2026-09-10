@@ -1,0 +1,85 @@
+{
+  "record": "KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R4_v1",
+  "status": "FROZEN_RESULT_BLIND_PRE_MODEL_OBSERVATION_CONFIDENCE_GATE_FAIL_NO_ODDS_NEEDED",
+  "captured_jst": "2026-09-10T20:22:57+09:00",
+  "target_event": {
+    "date": "2026-09-11",
+    "venue": "武雄",
+    "race_no": 4,
+    "class": "A級チャレンジ選抜",
+    "start_jst": "09:32",
+    "distance_m": 1625,
+    "bank_circumference_m": 400,
+    "rider_count": 7,
+    "girls_flag": false,
+    "final_flag": false
+  },
+  "source_policy": {
+    "racecard_source": "OddsPark public racecard",
+    "racecard_url": "https://www.oddspark.com/keirin/RaceList.do?joCode=84&kaisaiBi=20260911&raceNo=4",
+    "used_fields": ["car_no", "rider_name", "style", "competition_score", "scheduled_start", "distance", "race_class"],
+    "publisher_marks_used": false,
+    "publisher_comments_used": false,
+    "prior_day_current_meeting_results_visible_in_source_but_used_by_model": false,
+    "target_event_result_accessed": false,
+    "target_event_payout_accessed": false,
+    "target_event_odds_used": false
+  },
+  "fresh_branch_head_before_write": "593bd66a92abb17aaebdc3fcd034676956debb25",
+  "prespec_binding": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "model_binding": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+  "model": {
+    "baseline": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "challenger": "PRE_ONLY_RIDER_FIRST_STYLE_FALLBACK_CIRCUMFERENCE",
+    "circumference_code_q": -1,
+    "exact_rider_lookup_matches": 0,
+    "style_fallback_deltas": {"逃": -0.020537046719, "追": 0.038120995374, "両": 0.0024804485}
+  },
+  "input_snapshot": [
+    {"car_no": 1, "rider_name": "財満 伊織", "style": "逃", "competition_score": 73.166},
+    {"car_no": 2, "rider_name": "大室 翔", "style": "逃", "competition_score": 70.045},
+    {"car_no": 3, "rider_name": "森川 康輔", "style": "両", "competition_score": 76.75},
+    {"car_no": 4, "rider_name": "光岡 義洋", "style": "追", "competition_score": 72.16},
+    {"car_no": 5, "rider_name": "真崎 章徳", "style": "逃", "competition_score": 68.066},
+    {"car_no": 6, "rider_name": "原 司", "style": "追", "competition_score": 68.0},
+    {"car_no": 7, "rider_name": "高嶋 一朗", "style": "追", "competition_score": 71.37}
+  ],
+  "frozen_model_output": {
+    "s0_probabilities_by_car": {"1": 0.171594967994, "2": 0.085660231804, "3": 0.381057720912, "4": 0.137166687580, "5": 0.055138856352, "6": 0.054334684358, "7": 0.115046851000},
+    "challenger_probabilities_by_car": {"1": 0.176199975792, "2": 0.087959052335, "3": 0.382380459571, "4": 0.132823549960, "5": 0.056618590091, "6": 0.052614273842, "7": 0.111404098409},
+    "s0_ranking": [3, 1, 4, 7, 2, 5, 6],
+    "challenger_ranking": [3, 1, 4, 7, 2, 5, 6],
+    "agreed_top1_car": 3,
+    "conservative_top1_probability": 0.381057720912,
+    "confidence_gate_minimum": 0.40,
+    "confidence_gate_pass": false,
+    "three_renhuku_ticket_if_passed": "1=3=4",
+    "s0_ticket_probability": 0.138950110255,
+    "challenger_ticket_probability": 0.139265673738,
+    "conservative_ticket_probability": 0.138950110255
+  },
+  "decision": {
+    "action": "NO_BET_CONFIDENCE_GATE_FAIL",
+    "reason": "S0/challenger agree top1 but conservative top1 probability 0.381057720912 is below the frozen 0.40 gate.",
+    "odds_acquisition_required": false,
+    "stake_yen": 0,
+    "automatic_execution": false
+  },
+  "evidence_effect": {
+    "prospective_model_observation_increment": 1,
+    "valid_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
