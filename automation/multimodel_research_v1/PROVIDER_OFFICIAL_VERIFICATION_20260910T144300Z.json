@@ -1,0 +1,56 @@
+{
+  "schema": "MULTIVERSE_PROVIDER_OFFICIAL_VERIFICATION_v1",
+  "checked_at": "2026-09-10T14:43:00Z",
+  "catalog_snapshot_id": "provider-model-catalog-20260910",
+  "providers": [
+    {
+      "provider": "GOOGLE_GEMINI",
+      "model_id": "gemini-3.8-flash",
+      "lifecycle": "GA",
+      "classification": "PINNED_OR_STABLE",
+      "structured_json": true,
+      "input_usd_micros_per_million_tokens": 750000,
+      "output_usd_micros_per_million_tokens": 3750000,
+      "transport_policy_ref": "gemini-interactions-v1-stable",
+      "allowed_host": "generativelanguage.googleapis.com",
+      "allowed_operation": "INTERACTIONS_CREATE_V1",
+      "sdk_surface": "interactions.create",
+      "api_version": "v1",
+      "official_evidence_refs": [
+        "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash",
+        "https://ai.google.dev/gemini-api/docs/latest-model",
+        "https://ai.google.dev/gemini-api/docs/pricing",
+        "https://ai.google.dev/gemini-api/docs/structured-output",
+        "https://ai.google.dev/api/interactions-api-v1"
+      ],
+      "common_wire_schema_subset_supported": true
+    },
+    {
+      "provider": "ANTHROPIC_CLAUDE",
+      "model_id": "claude-haiku-4-5-20251001",
+      "lifecycle": "CURRENT",
+      "classification": "PINNED_OR_STABLE",
+      "structured_json": true,
+      "input_usd_micros_per_million_tokens": 1000000,
+      "output_usd_micros_per_million_tokens": 5000000,
+      "transport_policy_ref": "claude-messages-v1",
+      "allowed_host": "api.anthropic.com",
+      "allowed_operation": "MESSAGES_CREATE_V1",
+      "sdk_surface": "messages.create",
+      "api_version": "v1",
+      "official_evidence_refs": [
+        "https://platform.claude.com/docs/en/models/overview",
+        "https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions",
+        "https://platform.claude.com/docs/en/about-claude/pricing",
+        "https://platform.claude.com/docs/en/build-with-claude/structured-outputs",
+        "https://platform.claude.com/docs/en/api/messages/create"
+      ],
+      "common_wire_schema_subset_supported": true
+    }
+  ],
+  "selection_scope": "ALL_CATALOG_PROVIDERS_STABLE_STRUCTURED_TRANSPORT_ELIGIBLE",
+  "runtime": "OFF",
+  "provider_call_authorized": false,
+  "credential_authorized": false,
+  "spend_authorized": false
+}

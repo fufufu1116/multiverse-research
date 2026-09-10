@@ -1,0 +1,103 @@
+name: MULTIVERSE Multi-Model First Provider Execution Packet pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/multimodel-phase-b-first-provider-execution-packet-post-pr290-20260910-v1
+    paths:
+      - 'automation/multimodel_research_v1/**'
+      - '.github/workflows/multiverse-multimodel-first-provider-execution-packet-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  phase-b-first-provider-packet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout exact Candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Exact head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "PHASE_B_FIRST_PROVIDER_PACKET_HEAD=$GITHUB_SHA"
+
+      - name: Compile new packet files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            automation/multimodel_research_v1/phase_b_execution_packet.py \
+            automation/multimodel_research_v1/test_phase_b_execution_packet.py \
+            automation/multimodel_research_v1/phase_b_execution_packet_validator.py
+
+      - name: Full cumulative unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            automation.multimodel_research_v1.test_phase_a \
+            automation.multimodel_research_v1.test_phase_b_launch_generation \
+            automation.multimodel_research_v1.test_phase_b_execution_packet \
+            -v
+
+      - name: Phase A validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python automation/multimodel_research_v1/validator.py)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          PY
+
+      - name: Phase B launch-generation validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python -m automation.multimodel_research_v1.phase_b_validator)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          PY
+
+      - name: First provider execution-packet validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python -m automation.multimodel_research_v1.phase_b_execution_packet_validator)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["spend_authorized"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          assert data["packet_summary"]["selected_provider"] == "GOOGLE_GEMINI"
+          assert data["packet_summary"]["proposed_max_cost_usd_micros"] == 39936
+          PY
