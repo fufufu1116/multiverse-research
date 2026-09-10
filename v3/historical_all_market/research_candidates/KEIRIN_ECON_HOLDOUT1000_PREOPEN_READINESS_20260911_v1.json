@@ -1,0 +1,38 @@
+{
+  "record": "KEIRIN_ECON_HOLDOUT1000_PREOPEN_READINESS_20260911_v1",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_before_record": "2660e3218c89be38899a79f80b104372d5bc0f6b",
+  "status": "READY_EXCEPT_FOR_EXPLICIT_OWNER_GATE_AND_HOLDOUT_LOCATOR_BINDING",
+  "candidate": "B1a_MKT50_v1",
+  "frozen_components": {
+    "candidate_transform": "v3/historical_all_market/research_candidates/b1a_mkt50_v1.py",
+    "final_economic_selector": "v3/historical_all_market/research_candidates/b1a_mkt50_final_economic_selector_v1.py",
+    "final_holdout_validator": "v3/historical_all_market/research_candidates/keirin_b1a_mkt50_econ_holdout1000_validator_v1.py",
+    "competition_score_threshold": 0.40,
+    "markets": ["3rentan", "2shatan"],
+    "selection": "single highest-ranked eligible ticket per race",
+    "staking": "FK10_R2 semantics with 100-yen floor",
+    "pooling_weight_model": 0.50,
+    "pooling_weight_market": 0.50
+  },
+  "fresh_canonical_main_governance": {
+    "current_state_path": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "owner_gate_required_for_holdout_open": true,
+    "hard_prohibition_before_explicit_gate": "NO_ECON_HOLDOUT1000_OPEN",
+    "result_payout_access_requires_scope_gate": true
+  },
+  "metadata_only_discovery": {
+    "holdout_payload_opened": false,
+    "search_terms_used": ["ECON_HOLDOUT1000", "HOLDOUT1000 settlement", "HOLDOUT"],
+    "exact_payload_locator_found": false,
+    "note": "Drive metadata search returned governance/research references but no uniquely identifiable ECON_HOLDOUT1000 payload. No candidate payload was fetched or opened."
+  },
+  "segment_C": {
+    "status": "CONSUMED_ONE_SHOT_20260911",
+    "retuning_forbidden": true
+  },
+  "next_action": "Require exact explicit Owner authorization for ECON_HOLDOUT1000 one-shot final validation. After authorization, resolve and hash-bind the exact holdout payload before any scoring; fail closed if locator or hash binding is ambiguous.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
