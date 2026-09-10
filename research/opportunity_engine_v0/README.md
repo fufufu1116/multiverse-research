@@ -70,6 +70,32 @@ This creates a second monetization route: execute the best opportunities interna
 
 See `exposure.py` for the research classifier and `test_exposure.py` for regression cases.
 
+## Durable demand x enabling wave
+
+The engine must distinguish the durability of an underlying human need from the durability of a particular business format, product or interface.
+
+Examples of enduring need categories may include food/convenience, rest/sleep, health, intimacy/relationships, belonging/status, entertainment/escape, money/security, appearance, learning, mobility and time saving. These are research categories, not an assumption that every market serving them is attractive.
+
+Historical analysis should ask:
+1. what underlying need persisted;
+2. which delivery mechanism became obsolete;
+3. what enabling technology changed cost, access, speed or distribution;
+4. where early adopters captured value;
+5. what incumbents later commoditized;
+6. what durable asset remained after the interface changed.
+
+The target intersection is:
+
+`persistent need x verified enabling wave x unmet last-mile gap x low owner burden x survivable competition`
+
+A centuries-old market is not automatically attractive. Direct operation may still fail the owner's constraints because of licensing, regulation, inventory, premises, high-touch customer service or human labor.
+
+Likewise, a new technology is not treated as a real wave merely because it is fashionable. `durability.py` requires multiple independent adoption signals before a wave can rise above speculative status. The engine should prefer being early to verified adoption, not first into unsupported hype.
+
+This layer is intended to complement short-lived opportunity capture: tactical waves can fund and teach the system, while persistent needs intersecting real platform shifts can produce higher-scale candidates.
+
+See `durability.py` and `test_durability.py`.
+
 ## Safety / authority boundary
 
 No live web/SNS/news ingestion, external provider/API call, credential use, purchases, posting, affiliate enrollment, ad spend, personal-data profiling, publication, canonical adoption or Runtime activation is included or authorized by this prototype.
