@@ -1,0 +1,35 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v45",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v44.json",
+  "current_status": "PREDICTION_BYTES_VERIFIED_AND_AB_SETTLEMENT_PROVENANCE_GROUNDED_SAFE_LABEL_JOIN_STILL_MISSING",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "a7b97577e4a8cc16cd22f4ff9e34be800b6c597d",
+  "new_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_SAFE_LABEL_PROVENANCE_DIAGNOSTIC_20260911_v1.json",
+  "immutable_prediction_csv_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+  "burned_ab_settlement_provenance": {
+    "A_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "B_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72",
+    "raw_content_opened_this_resume": false,
+    "derived_safe_winner_join_found": false
+  },
+  "scientific_interpretation": [
+    "The frozen Candidate A+B1a prediction bytes are no longer a blocker.",
+    "A/B outcome provenance is grounded by prior Stage7 receipts and diagnostics, including exact hashes.",
+    "Current governance does not justify reopening raw settlement A/B solely to manufacture a new winner-calibration join.",
+    "Current winner-probability calibration therefore remains pending discovery of an already-derived authorized label/join artifact or explicit scope expansion."
+  ],
+  "next_action": [
+    "Fresh Read branch before further work.",
+    "Continue provenance-only search for previously derived A+B race winner mapping / prediction audit outputs.",
+    "If found, join to immutable prediction CSV and compute Candidate A vs B1a winner calibration on burned A+B only without retuning.",
+    "If not found, keep fail-closed and report scope authorization as the true blocker rather than touching protected/raw outcome sources."
+  ],
+  "frozen_controls": {
+    "competition_score_threshold": 0.40,
+    "research_only_thresholds": [0.35, 0.30],
+    "automatic_betting": false,
+    "runtime": "OFF",
+    "segment_c": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
