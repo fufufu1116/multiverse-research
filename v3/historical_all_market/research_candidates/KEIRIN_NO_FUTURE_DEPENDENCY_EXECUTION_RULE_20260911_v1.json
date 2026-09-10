@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "artifact": "KEIRIN_NO_FUTURE_DEPENDENCY_EXECUTION_RULE_20260911_v1",
+  "status": "CANONICAL_ARCHITECTURE_GUARDRAIL_NO_FUTURE_INFORMATION_DEPENDENCY",
+  "absolute_rule": {
+    "rule_ja": "対象時点より先の情報を、対象時点の予測・選択・実行成立条件にしてはいけない。",
+    "prediction_cutoff_guard": "ALLOW_ONLY_INFORMATION_GENUINELY_AVAILABLE_AT_OR_BEFORE_TARGET_CUTOFF",
+    "later_information_required": false,
+    "post_cutoff_backfill": "PROHIBITED",
+    "post_result_reconstruction": "PROHIBITED",
+    "missing_pre_at_cutoff": "PERMANENT_MISSING_OR_SKIP"
+  },
+  "date_dependency_policy": {
+    "specific_future_dates_required_for_runtime": false,
+    "specific_future_dates_required_for_research_execution": false,
+    "2026-09-14_required": false,
+    "2026-09-15_required": false,
+    "2026-09-14_and_2026-09-15_role": "OPTIONAL_PROSPECTIVE_VALIDATION_OPPORTUNITIES_ONLY",
+    "specific_dates_required_for_final_independent_science": false,
+    "genuinely_fresh_prospective_evidence_still_required_for_final_independent_science": true,
+    "fresh_prospective_event_may_be_any_eligible_event_frozen_before_outcome": true
+  },
+  "frozen_v54": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.50,
+    "competition_score_threshold": 0.40,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2"
+  },
+  "scientific_boundary": {
+    "historical_or_already_consumed_evidence_may_support_engineering_checks": true,
+    "historical_or_already_consumed_evidence_must_not_be_relabelled_as_new_independent_final_validation": true,
+    "prospective_evidence_must_be_frozen_before_outcome": true,
+    "prospective_evidence_must_not_retune_v54": true
+  },
+  "safety": {
+    "runtime": "OFF",
+    "automatic_betting": "OFF",
+    "owner_spend_required": false,
+    "credentials_required": false,
+    "live_effect": "NONE"
+  },
+  "science_increment": 0,
+  "formal_science_progress_pct": 85
+}
