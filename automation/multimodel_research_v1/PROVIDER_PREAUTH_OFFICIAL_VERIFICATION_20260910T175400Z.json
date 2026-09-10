@@ -1,0 +1,56 @@
+{
+  "api": {
+    "api_version": "v1",
+    "background_required": false,
+    "endpoint": "https://generativelanguage.googleapis.com/v1/interactions",
+    "host": "generativelanguage.googleapis.com",
+    "operation": "INTERACTIONS_CREATE_V1",
+    "previous_interaction_id_allowed": false,
+    "required_store": false,
+    "response_format_field": "response_format",
+    "response_schema": "steps",
+    "sdk_surface": "interactions.create",
+    "store_default": true,
+    "stream_required": false
+  },
+  "catalog_age_seconds": 22980,
+  "catalog_blob_sha1": "6ba85c23bbe666baf204d29ae2145b510a164528",
+  "catalog_max_age_seconds": 86400,
+  "catalog_observed_at": "2026-09-10T11:31:00Z",
+  "catalog_snapshot_id": "provider-model-catalog-20260910",
+  "checked_at": "2026-09-10T17:54:00Z",
+  "credential_authorized": false,
+  "lifecycle": "GA",
+  "live_execution_performed": false,
+  "migration": {
+    "current_response_format_required": true,
+    "current_steps_required": true,
+    "legacy_outputs_removed": true,
+    "may_2026_breaking_changes_reviewed": true
+  },
+  "model_id": "gemini-3.8-flash",
+  "official_evidence_refs": [
+    "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash",
+    "https://ai.google.dev/gemini-api/docs/pricing",
+    "https://ai.google.dev/gemini-api/docs/interactions-overview",
+    "https://ai.google.dev/gemini-api/docs/interactions-breaking-changes-may-2026",
+    "https://ai.google.dev/gemini-api/docs/logs-datasets",
+    "https://ai.google.dev/gemini-api/docs/get-started",
+    "https://ai.google.dev/gemini-api/docs/structured-output"
+  ],
+  "pricing": {
+    "basis": "PER_MILLION_TOKENS",
+    "currency": "USD",
+    "input_usd_micros_per_million_tokens": 750000,
+    "output_usd_micros_per_million_tokens": 3750000,
+    "valid_through": "2026-12-31"
+  },
+  "provider": "GOOGLE_GEMINI",
+  "provider_call_authorized": false,
+  "runtime": "OFF",
+  "schema": "MULTIVERSE_FIRST_LIVE_PROVIDER_PREAUTH_OFFICIAL_VERIFICATION_v1",
+  "source_class": "PUBLIC_OFFICIAL_DOCUMENTATION_ONLY",
+  "spend_authorized": false,
+  "stable": true,
+  "structured_output_supported": true
+}

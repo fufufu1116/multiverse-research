@@ -1,0 +1,126 @@
+name: MULTIVERSE First Live Provider Pilot Preauth pre-Lab
+
+on:
+  push:
+    branches:
+      - agent/multimodel-first-live-provider-pilot-preauth-post-pr297-20260911-v1
+    paths:
+      - 'automation/multimodel_research_v1/**'
+      - '.github/workflows/multiverse-multimodel-first-live-provider-preauth-prelab.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  first-live-provider-preauth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout exact Candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Exact head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "FIRST_LIVE_PROVIDER_PREAUTH_HEAD=$GITHUB_SHA"
+
+      - name: Compile preauth files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            automation/multimodel_research_v1/phase_b_live_pilot_preauth.py \
+            automation/multimodel_research_v1/test_phase_b_live_pilot_preauth.py \
+            automation/multimodel_research_v1/phase_b_live_pilot_preauth_validator.py
+
+      - name: Full cumulative unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            automation.multimodel_research_v1.test_phase_a \
+            automation.multimodel_research_v1.test_phase_b_launch_generation \
+            automation.multimodel_research_v1.test_phase_b_execution_packet \
+            automation.multimodel_research_v1.test_phase_b_live_pilot_preauth \
+            -v
+
+      - name: Phase A validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python automation/multimodel_research_v1/validator.py)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          PY
+
+      - name: Phase B launch-generation validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python -m automation.multimodel_research_v1.phase_b_validator)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          PY
+
+      - name: Canonical execution-packet validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python -m automation.multimodel_research_v1.phase_b_execution_packet_validator)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["spend_authorized"] is False
+          assert data["runtime"] == "OFF"
+          PY
+
+      - name: First live provider preauth validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$(python -m automation.multimodel_research_v1.phase_b_live_pilot_preauth_validator)"
+          echo "$OUT"
+          python - "$OUT" <<'PY'
+          import json, sys
+          data = json.loads(sys.argv[1])
+          assert data["verdict"] == "PASS", data
+          assert data["findings"] == [], data
+          assert data["packet_sha256"]
+          assert data["provider"] == "GOOGLE_GEMINI"
+          assert data["model_id"] == "gemini-3.8-flash"
+          assert data["store"] is False
+          assert data["max_attempts"] == 1
+          assert data["max_cost_usd_micros"] == 39936
+          assert data["execution_ready"] is False
+          assert data["live_provider_execution"] is False
+          assert data["provider_credentials"] is False
+          assert data["spend_authorized"] is False
+          assert data["adoption_authority"] is False
+          assert data["runtime"] == "OFF"
+          PY
