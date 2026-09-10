@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260910_v37",
+  "status": "CURRENT_V114_WITH_STRONGEST_CURRENT_WINNING_PATH_CANDIDATE_AND_REPLAYABLE_STRUCTURAL_DIAGNOSTICS",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "supersedes_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v36.json",
+  "fresh_head_before_write": "bbbdc664e25aca41563ea1a06fabf242408d0899",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "forward_price_value_prespec": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "forward_price_gate_v2": "tools/keirin_forward_price_value_gate_v2.py",
+  "forward_price_gate_replay_proof": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_GATE_V2_REPLAY_PROOF_20260910_v1.json",
+  "strongest_current_candidate_synthesis": "v3/historical_all_market/research_candidates/KEIRIN_STRONGEST_WINNING_PATH_CANDIDATE_SYNTHESIS_20260910_v1.json",
+  "candidate_diagnostics_tool": "tools/keirin_forward_candidate_diagnostics_v1.py",
+  "candidate_diagnostics_test": "tools/test_keirin_forward_candidate_diagnostics_v1.py",
+  "candidate_diagnostics_replay_proof": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_CANDIDATE_DIAGNOSTICS_V1_REPLAY_PROOF_20260910_v1.json",
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 100,
+    "formal_scientific_progress_percent": 60
+  },
+  "forward_observation_state": {
+    "prospective_model_observations": 3,
+    "valid_genuine_price_observations": 0,
+    "economic_support": 0,
+    "profitability_proven": false,
+    "takeo_20260911": {
+      "R1": "CONFIDENCE_FAIL_NO_BET",
+      "R4": "CONFIDENCE_FAIL_NO_BET",
+      "R5": "CONFIDENCE_PASS_TICKET_1=2=3_PRICE_UNVERIFIED_NO_BET"
+    }
+  },
+  "best_current_winning_path_candidate": {
+    "status": "BEST_CURRENT_CANDIDATE_NOT_PROVEN",
+    "name": "SELECTIVE_SCORE_DOMINANCE_CONSERVATIVE_SINGLE_3RENHUKU_CORE_VALUE_LANE",
+    "summary": "Select only strong frozen PRE score-dominance races, keep exactly one top3 3renhuku ticket, require genuine timestamped PRE price, and permit at most a 100-yen Owner-manual candidate only inside the <=20x CORE when the frozen value condition passes.",
+    "not_a_guarantee": true
+  },
+  "new_structural_findings_since_v36": {
+    "numeric_value_gate_redundancy": "Within every current odds band, expected-ROI and probability-multiple thresholds are algebraically the same p*odds cutoff; they are not independent confirmations. Current prespec remains unchanged to avoid threshold drift.",
+    "fallback_consensus_limit": "When no exact-rider lookup exists, challenger agreement is a small perturbation of the same competition-score signal rather than independent-model consensus. The maximum style-fallback pairwise spread at |q|=1 equals about 0.263508 score points.",
+    "core_feasibility_floor": "p_ticket < 0.055 can never become a CORE manual buy candidate under the frozen <=20x and p*odds>=1.10 rules.",
+    "one_ticket_concentration": "Without ticket-specific price evidence, adding a lower-probability ticket worsens the equal-stake uniform-odds screening threshold; one-point 3renhuku remains the cleanest model-side candidate.",
+    "diagnostics_replay": "11/11 PASS; engineering evidence only."
+  },
+  "r5_reference": {
+    "ticket": "1=2=3",
+    "conservative_ticket_probability": 0.179212765529,
+    "exact_minimum_core_odds": 6.137955612442124,
+    "display_threshold_example": "6.2x",
+    "actual_verified_pre_odds": null,
+    "actual_decision": "NO_BET_UNVERIFIED"
+  },
+  "multi_venue_acquisition_state_carried_from_v36": {
+    "target_date": "2026-09-11",
+    "public_schedule_confirms_meetings": ["四日市", "高知", "武雄", "川崎", "富山", "奈良", "前橋", "豊橋"],
+    "source_integrity_rule": "Never infer future race composition. Count only complete reproducible PRE racecards before target result visibility.",
+    "takeo_clean_records": ["R1", "R4", "R5"]
+  },
+  "next_without_owner": [
+    "Keep the current forward prespec, model freeze, price gate v2, ticket rule and thresholds unchanged while observations accumulate.",
+    "Use the new diagnostics only as non-decision-changing checks: identify CORE-impossible tickets below p=0.055 and label fallback-only consensus correctly.",
+    "Do not promote Girls/final/solo/venue/class into purchase rules from the same scored sample; log strata only.",
+    "When legitimate future evidence is available, test the strongest current candidate on genuine frozen PRE prices and post-event outcomes, including drawdown and winner-concentration controls.",
+    "A future challenger may add a genuinely independent uncertainty/calibration criterion, but only via separate preregistration on later unseen evidence.",
+    "Keep formal 30/60 support lane independent and protected holdouts unopened."
+  ],
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_v114_changed": false,
+    "formal_support_increment_now": 0,
+    "economic_support_increment_now": 0,
+    "main_mutation": false,
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false,
+    "runtime": "OFF"
+  },
+  "owner_action_required_now": false
+}
