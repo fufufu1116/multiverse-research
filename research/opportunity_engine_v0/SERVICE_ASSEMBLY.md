@@ -60,7 +60,22 @@ A small candidate is acceptable only when at least one is true:
 
 A candidate must not be mistaken for a durable livelihood when its credible ceiling is below the configured sustaining-profit threshold.
 
-The higher layers are not assumed to come from merely stacking many weak tactical opportunities. Promotion requires evidence that a repeatable pattern exists and that scale does not secretly depend on proportional owner labor, sales calls, inventory or a team.
+## Output-sale rule
+
+Existing infrastructure can also deliver bounded Multiverse outputs without exposing the engine itself. Before any output is sold, compare:
+- expected internal profit if we execute the opportunity ourselves;
+- expected sale/license value;
+- copy and strategic-leakage risk;
+- whether the buyer would become a dangerous competitor;
+- opportunity lifetime and exclusivity value;
+- whether the output remains useful without access to Multiverse.
+
+Default preference:
+1. keep and execute high-option-value opportunities internally;
+2. sell time-sensitive low-strategic-value signals where copying does not damage us;
+3. sell bounded playbooks only when the repeatable core remains private;
+4. use limited licensing rather than full disclosure for higher-value outputs;
+5. never sell proprietary outcome data or the core discovery/scoring/learning mechanism by default.
 
 ## Human-burden guardrail
 
