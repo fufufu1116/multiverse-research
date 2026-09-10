@@ -1,0 +1,58 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v49",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v48.json",
+  "current_status": "AUTHORIZED_BURNED_AB_WINNER_CALIBRATION_COMPLETE_TIE_AWARE_HARNESS_FIXED_NEXT_LINEAGE_DESIGN_PENDING",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "15f65f722efb1a8e7fe1f29d52effe6c854bb2ab",
+  "authorization": "AUTHORIZE_BURNED_AB_RAW_SETTLEMENT_REOPEN_FOR_FIXED_WINNER_CALIBRATION_ONLY_C_AND_ECON_HOLDOUT_REMAIN_SEALED",
+  "new_artifacts": [
+    "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_WINNER_CALIBRATION_20260911_v1.json",
+    "v3/historical_all_market/research_candidates/keirin_burned_ab_winner_calibration_v2.py"
+  ],
+  "verified_bindings": {
+    "prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "settlement_A_sha256": "436846591b082689cf29687b2e63e82b0f12b47b4fa70a596d90b00978079cdd",
+    "settlement_B_sha256": "95096fac61c320484d6ab0456971a3e7debdf311498b00d6390658c072c71a72"
+  },
+  "results": {
+    "AB_races": 1500,
+    "tie_races": 3,
+    "candidate_A_top1_hit_rate": 0.4513333333333333,
+    "B1a_top1_hit_rate": 0.446,
+    "candidate_A_top1_ECE": 0.09165983676929323,
+    "B1a_top1_ECE": 0.02891463515298506,
+    "candidate_A_brier": 0.7129983216511357,
+    "B1a_brier": 0.7050271719290356,
+    "candidate_A_log_loss": 1.5386387277979439,
+    "B1a_log_loss": 1.5126382515750654,
+    "paired_top1_mcnemar_exact_p": 0.5847834991169724,
+    "changed_top1_subset_n": 278,
+    "changed_subset_candidate_A_hit_rate": 0.30935251798561153,
+    "changed_subset_B1a_hit_rate": 0.2805755395683453,
+    "brier_difference_B1a_minus_A": -0.007971149722100144,
+    "brier_bootstrap_95pct_CI": [-0.01469853, -0.00123848],
+    "logloss_difference_B1a_minus_A": -0.0260004762228786,
+    "logloss_bootstrap_95pct_CI": [-0.04144577, -0.01055737]
+  },
+  "scientific_interpretation": [
+    "Top1 accuracy is effectively tied between Candidate A and B1a on burned A+B; paired exact McNemar does not show a meaningful winner.",
+    "B1a is materially better calibrated and has lower proper scoring losses on burned A+B.",
+    "Candidate A is descriptively better on the post-hoc subset where Top1 choices differ, but that subset is not an independent validation set.",
+    "Three tied-first races required set-valued outcome handling; excluding them did not materially change conclusions.",
+    "These are burned development data, so this does not establish independent generalization or production profitability."
+  ],
+  "governance": {
+    "retuned_on_AB": false,
+    "competition_score_threshold_changed": false,
+    "segment_C": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "next_action": [
+    "Freeze interpretation of burned A+B calibration; do not tune against the same scored outcomes in-place.",
+    "Design the next lineage using only already-burned A+B diagnostics and pre-result information, with calibration/shrinkage as an explicit candidate transformation rather than retroactive scoring rescue.",
+    "Define acceptance gates before any untouched validation: top1 calibration, proper scoring loss, candidate-selection stability, and ticket-probability calibration must all be pre-specified.",
+    "Do not open Segment C or ECON_HOLDOUT1000 without separate explicit authorization."
+  ]
+}
