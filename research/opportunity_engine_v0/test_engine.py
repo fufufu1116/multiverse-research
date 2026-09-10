@@ -201,5 +201,41 @@ class PacketTests(unittest.TestCase):
         self.assertIsInstance(result["score"], int)
 
 
+class PortfolioTests(unittest.TestCase):
+    def test_only_one_candidate_gets_focus(self):
+        from research.opportunity_engine_v0.portfolio import rank_portfolio
+
+        stronger = candidate(
+            name="stronger",
+            expected_profit_low_yen=50000,
+            expected_profit_base_yen=150000,
+            expected_profit_high_yen=300000,
+            proprietary_edge=5,
+        )
+        weaker = candidate(
+            name="weaker",
+            expected_profit_low_yen=8000,
+            expected_profit_base_yen=20000,
+            proprietary_edge=3,
+        )
+        ranked = rank_portfolio([weaker, stronger])
+        self.assertEqual(ranked[0].candidate.name, "stronger")
+        self.assertEqual(ranked[0].allocation, "FOCUS")
+        self.assertEqual(sum(item.allocation == "FOCUS" for item in ranked), 1)
+
+    def test_rejected_candidate_never_gets_focus(self):
+        from research.opportunity_engine_v0.portfolio import rank_portfolio
+
+        rejected = candidate(
+            name="rejected",
+            deceptive_tactics_required=True,
+            expected_profit_high_yen=9999999,
+        )
+        valid = candidate(name="valid")
+        ranked = rank_portfolio([rejected, valid])
+        rejected_row = next(item for item in ranked if item.candidate.name == "rejected")
+        self.assertEqual(rejected_row.allocation, "REJECT")
+
+
 if __name__ == "__main__":
     unittest.main()
