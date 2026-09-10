@@ -53,6 +53,18 @@ The system should not assume every tactical opportunity must become a large busi
 
 The owner-facing UI may later map these classes to game/rank metaphors, but the core logic keeps ordinary economic terminology.
 
+## Leverage search / force multipliers
+
+A viable candidate is not considered optimized until a separate leverage search is performed. The search covers distribution, automation, AI, monetization, data, reuse, geography, partners/platforms and infrastructure.
+
+The objective is not maximum complexity. It is more output per owner hour and per yen at risk while keeping the one-person-plus-AI operating model intact.
+
+Leverage options are rewarded when they are verified, low-cost, reversible, heavily reuse existing systems, increase automation, create reusable assets or compound learning. They are rejected or penalized when they require deception, high legal risk, teams, sales calls, inventory, dangerous copying exposure, high recurring fixed cost or vendor lock-in.
+
+Claimed multipliers are not naively multiplied. `leverage.py` uses diminishing credit for stacked options because distribution, conversion, automation and monetization effects often overlap. Real observed effects should later replace estimates through the forecast/outcome learning loop.
+
+See `leverage.py`, `test_leverage.py` and `LEVERAGE_DOCTRINE.md`.
+
 ## Bounded output monetization
 
 Multiverse itself does not need to be sold for Multiverse to generate revenue. Selected lower-value outputs may be monetized while the discovery/scoring/learning core stays private.
@@ -95,6 +107,26 @@ Likewise, a new technology is not treated as a real wave merely because it is fa
 This layer is intended to complement short-lived opportunity capture: tactical waves can fund and teach the system, while persistent needs intersecting real platform shifts can produce higher-scale candidates.
 
 See `durability.py` and `test_durability.py`.
+
+## Market dynamics and trajectory
+
+The research model also treats market adoption through a diffusion/immunity/evolution lens. This is a metaphor and analytical frame, not literal biology.
+
+`market_dynamics.py` models spread, host fit, habituation, general-AI substitution, incumbent absorption, mutation, recurrence, network effects, embeddedness and mutual value. Harmful dependence and deceptive retention fail closed.
+
+`trajectory.py` connects those dynamics back to the core opportunity decision so a candidate can be classified as reject/watch, short-window capture-and-exit, test-for-durability or durable-build.
+
+The preferred durable pattern is mutual-value / symbiotic adoption: the customer gains continuing value while the business accumulates legitimate data, integration, distribution or workflow value. Exploitative lock-in is not treated as strength.
+
+## Signals and prediction ledger
+
+`signals.py` defines a common evidence-bearing input for news, search, social, product, advertising, rule changes, service changes and public events. Source-less claims are not treated as evidence.
+
+`forecast_ledger.py` freezes a forecast before outcomes using a deterministic SHA-256 commitment. The forecast records source signals, predicted peak window, expected demand life, likely competitor arrival, likely AI/incumbent absorption, several next actions, monetization hypothesis, kill condition and confidence. Settlement later records observed outcomes. This exists to reduce hindsight bias and build a proprietary prediction-versus-reality history.
+
+## Handoff durability
+
+`HANDOFF_DOCTRINE.md` preserves the strategic doctrine for recovery after chat/session context loss. It is orientation, not CURRENT authority. A future session must Fresh Read canonical GitHub and reconcile repository state before continuing.
 
 ## Safety / authority boundary
 
