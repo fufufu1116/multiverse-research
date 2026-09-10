@@ -1,0 +1,39 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v60",
+  "status": "0914_0915_EVENT_CALENDAR_CONFIRMED_WAITING_FINAL_DAY1_RACECARDS",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v59.json",
+  "new_artifact": "KEIRIN_0914_0915_PRECAPTURE_READINESS_CHECK_20260911_0634JST_v1.json",
+  "fresh_parent_head": "0095fec9d7fddc89446d205624addb5ca6f410a0",
+  "current_state": {
+    "formal_science_progress_percent": 85,
+    "prospective_route": "ACTIVE_AND_BOUND_TO_EXACT_V54_RULES",
+    "event_calendar_status": "CONFIRMED_FOR_ITO_AOMORI_HOFU",
+    "final_day1_racecard_status": "NOT_YET_POSITIVELY_CAPTURED",
+    "prediction_status": "BLOCKED_BY_CAPTURE_GATE_NOT_BY_OWNER_ACTION"
+  },
+  "active_sets": [
+    "2026-09-14 伊東 Day1 final racecard",
+    "2026-09-14 青森 Day1 final racecard",
+    "2026-09-15 防府 Day1 final racecard"
+  ],
+  "candidate_capacity": {
+    "伊東": 11,
+    "青森": 4,
+    "防府": 20,
+    "total": 35,
+    "remaining_formal_riders_required": 29,
+    "theoretical_failure_margin": 6
+  },
+  "next_action": "At first trustworthy final rider-level Day1 racecard availability, immediately freeze exact membership and PRE inputs, capture genuine pre-close odds provenance, compute the already-frozen v54 prediction/selector output, and freeze the selected-ticket ledger before any outcome join.",
+  "guardrails": {
+    "no_retuning": true,
+    "no_threshold_change": true,
+    "no_post_result_pre_reconstruction": true,
+    "result_join_authorized": false
+  },
+  "owner_action_required_now": false,
+  "scientific_increment_now": 0,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
