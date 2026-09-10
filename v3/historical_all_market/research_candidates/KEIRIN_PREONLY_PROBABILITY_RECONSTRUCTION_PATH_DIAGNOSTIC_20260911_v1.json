@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_PREONLY_PROBABILITY_RECONSTRUCTION_PATH_DIAGNOSTIC_20260911_v1",
+  "status": "PATH_PARTIALLY_RECONSTRUCTED_UPSTREAM_PREDICTION_GENERATOR_STILL_MISSING",
+  "scope": "BURNED_AB_AND_OUTCOME_INDEPENDENT_PROBABILITY_ENGINEERING_ONLY",
+  "governance_boundary": {
+    "dev2000_c_opened": false,
+    "econ_holdout1000_opened": false,
+    "new_result_access": false,
+    "new_payout_access": false,
+    "owner_spend": false,
+    "credentials_used": false,
+    "live_effect": false,
+    "runtime": "OFF",
+    "automatic_betting": "OFF"
+  },
+  "fresh_branch_at_investigation": {
+    "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+    "head": "0588630dfcfa7672582ffcc2359f49abfe22f3a9",
+    "tree": "1471d49c3f0e7c76f4578ecb5ab7a67233b9f089"
+  },
+  "verified_stage1_engine": {
+    "path": "v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py",
+    "git_blob": "029904b359e8151263c6a9bf8c4635f026941b0b",
+    "immutable_prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "prediction_rows": 14255,
+    "races": 2000,
+    "required_probability_columns": [
+      "candidate_a_win_prob",
+      "b1a_reconstituted_v1_win_prob"
+    ],
+    "result_fields_used": false,
+    "payout_or_settlement_used": false,
+    "closing_numeric_odds_used": false,
+    "ev_roi_computed": false,
+    "transform": "Plackett-Luce/Harville sequential transform from race-local winner probabilities to elementary ticket probabilities"
+  },
+  "verified_stage1_drive_evidence": {
+    "run_log": "STAGE1_PL_RUN_LOG_v1.txt",
+    "run_status": "PASS",
+    "prediction_rows": 14255,
+    "races": 2000,
+    "output_rows": 4000,
+    "probability_sources": [
+      "candidate_a",
+      "b1a_reconstituted_v1"
+    ],
+    "result_fields_included": false,
+    "settlement_fields_included": false,
+    "ev_roi_computed": false,
+    "econ_holdout1000": "SEALED",
+    "stage1_folder_contains_probability_catalog": true,
+    "stage1_folder_contains_market_structure_only": true
+  },
+  "path_conclusion": {
+    "stage1_can_run_outcome_independently": true,
+    "stage1_is_not_the_current_blocker": true,
+    "missing_link": "the upstream producer or immutable bytes for the 14,255-row winner-probability CSV",
+    "direct_drive_filename_search_found_prediction_csv": false,
+    "safe_next_target": "recover provenance or an allowed PRE-only producer for candidate_a_win_prob and b1a_reconstituted_v1_win_prob without opening DEV2000 C, ECON_HOLDOUT1000, RESULT, or PAYOUT"
+  },
+  "important_non_conclusions": [
+    "This does not constitute current frozen-model probability calibration on burned A+B.",
+    "Historical Candidate A/B1a calibration metrics are not substituted for current-model calibration.",
+    "No betting policy is promoted.",
+    "No profitability claim is made.",
+    "Frozen competition_score threshold 0.40 is not changed."
+  ],
+  "next_steps": [
+    "Trace repository/Drive provenance for the immutable prediction SHA-256 without reading protected outcome payloads.",
+    "If PRE-only producer and required frozen model state are recoverable, reproduce winner probabilities first and verify row/race sets plus per-race probability-sum invariants.",
+    "Only after probability-side reproduction, evaluate whether an already-authorized burned outcome-label path exists for calibration; otherwise stop before new RESULT/PAYOUT access.",
+    "Keep candidate generation separate from BUY/NO-BUY and continue value-selection research only within authorized evidence."
+  ]
+}
