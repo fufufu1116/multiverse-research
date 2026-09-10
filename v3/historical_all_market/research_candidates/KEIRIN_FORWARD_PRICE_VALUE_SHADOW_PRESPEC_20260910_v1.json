@@ -1,0 +1,165 @@
+{
+  "record": "KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1",
+  "status": "PREREGISTERED_FORWARD_ONLY_ZERO_ECON_SUPPORT",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "bound_branch_head_before_prereg": "b9ea57a01e06dfa2915bf8657073006c26391a7c",
+  "purpose": "Prospectively test purchase-stage price versus frozen conservative ticket probability without reusing burned outcomes or protected holdouts.",
+  "source_bindings": {
+    "resume": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v32.json",
+      "blob_sha": "a610dfab843202ed88b6d8dcbff326ebc2170937"
+    },
+    "engineering_delta": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_V114_POST_CURRENT_ENGINEERING_DELTA_20260909_v24.json",
+      "blob_sha": "cc87e0bbb6b2a870e0f6473f63008c9dfbc69aed"
+    },
+    "practical_profile_design_input": {
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_TODAY_PRACTICAL_OPERATION_PROFILE_20260909_v2.json",
+      "blob_sha": "aca51bf2dbb804b34bb84256a0162390608bc312"
+    },
+    "odds_gate_design_input": {
+      "path": "tools/keirin_practical_odds_band_purchase_gate_v1.py",
+      "blob_sha": "6b75ce875cfed6a75326913e3c48663e3dd293d9"
+    }
+  },
+  "authority_resolution": {
+    "rule": "Newest Resume governs research-next restrictions when stricter than an older practical profile.",
+    "resolved_difference": "Practical profile v2 can numerically classify odds above 20x, but Resume v32 requires >20x to remain shadow-only pending separate prospective evidence.",
+    "production_candidate_region": "CORE odds 1.0-20.0 only",
+    "shadow_only_region": ">20.0",
+    "profitability_claim": false
+  },
+  "frozen_model_and_ticket_selection": {
+    "model": "S0 beta 0.22260435254784533 plus frozen PRE-only challenger",
+    "top1_confidence_gate": "S0/challenger agree top1 and conservative top1 probability >=0.40",
+    "market": "3renhuku frozen top3 one point",
+    "ticket_probability": "min(S0 ticket probability, challenger ticket probability)",
+    "maximum_tickets_per_race": 1,
+    "stake_yen": 100,
+    "kelly": false,
+    "martingale": false,
+    "loss_chasing": false
+  },
+  "prospective_order_of_operations": [
+    "1_CAPTURE_PUBLIC_PRE_RACE_CARD_AND_FEATURES_WITHOUT_RESULTS_OR_PAYOUTS",
+    "2_FREEZE_ODDS_BLIND_MODEL_PREDICTION_PROBABILITIES_AND_EXACT_ONE_TICKET_CANDIDATE",
+    "3_IMMUTABLY_FREEZE_OR_COMMIT_THE_PRE_PREDICTION_RECORD",
+    "4_ONLY_AFTER_PREDICTION_FREEZE_ACQUIRE_TIMESTAMPED_GENUINE_PRE_ODDS",
+    "5_CLASSIFY_PRICE_STATE_AND_PURCHASE_CANDIDATE_OR_NO_BET_USING_THE_RULES_BELOW",
+    "6_FREEZE_THE_PURCHASE_DECISION_BEFORE_RESULT_VISIBILITY",
+    "7_ONLY_AFTER_EVENT_RESULT_VISIBILITY_SCORE_OUTCOME_AND_ECONOMICS"
+  ],
+  "price_rules": {
+    "formula": "guarded_expected_roi = conservative_ticket_probability * current_decimal_odds - 1",
+    "market_implied_probability": "1/current_decimal_odds",
+    "probability_multiple_vs_market": "conservative_ticket_probability / market_implied_probability",
+    "core_1_to_20": {
+      "decision_status": "ELIGIBLE_FOR_MANUAL_BUY_CANDIDATE_CLASSIFICATION",
+      "minimum_expected_roi": 0.10,
+      "minimum_probability_multiple_vs_market": 1.10,
+      "qualifies_if": "both fixed thresholds pass",
+      "otherwise": "NO_BET"
+    },
+    "mid_hole_over_20_to_80": {
+      "decision_status": "SHADOW_ONLY",
+      "historical_design_threshold_min_expected_roi": 0.35,
+      "historical_design_threshold_min_probability_multiple_vs_market": 1.35,
+      "live_purchase_authorized_by_this_prespec": false
+    },
+    "longshot_over_80_to_300": {
+      "decision_status": "SHADOW_ONLY",
+      "historical_design_threshold_min_expected_roi": 0.75,
+      "historical_design_threshold_min_probability_multiple_vs_market": 1.75,
+      "data_quality": "second independent current PRE odds source required for a valid shadow observation",
+      "live_purchase_authorized_by_this_prespec": false
+    },
+    "extreme_longshot_over_300": {
+      "decision_status": "SHADOW_ONLY",
+      "historical_design_threshold_min_expected_roi": 1.50,
+      "historical_design_threshold_min_probability_multiple_vs_market": 2.50,
+      "data_quality": "second independent current PRE odds source plus anomaly check required; placeholder or anomalous display fails closed",
+      "live_purchase_authorized_by_this_prespec": false
+    },
+    "missing_stale_unverifiable_odds": "NO_BET_OR_UNRESOLVED",
+    "placeholder_9999_9": "FAIL_CLOSED_UNLESS_EXPLICITLY_VERIFIED_AS_GENUINE_CURRENT_PRE_ODDS",
+    "automatic_execution": false
+  },
+  "required_pre_decision_record_fields": [
+    "event_date_jst",
+    "venue",
+    "race_number",
+    "race_class_or_final_flag",
+    "girls_flag",
+    "solo_rider_or_line_structure_label_if_publicly_available",
+    "source_racecard_url_or_identifier",
+    "racecard_observed_at_jst",
+    "s0_top1",
+    "challenger_top1",
+    "conservative_top1_probability",
+    "exact_3renhuku_ticket",
+    "s0_ticket_probability",
+    "challenger_ticket_probability",
+    "conservative_ticket_probability",
+    "prediction_freeze_timestamp_jst",
+    "prediction_freeze_hash_or_commit",
+    "pre_odds_decimal",
+    "pre_odds_source",
+    "pre_odds_observed_at_jst",
+    "odds_quality_state",
+    "odds_band",
+    "guarded_expected_roi",
+    "probability_multiple_vs_market",
+    "decision",
+    "decision_freeze_timestamp_jst"
+  ],
+  "subgroup_policy": {
+    "finals": "record and report only; not a purchase-rule modifier in this prespec",
+    "solo_rider_or_line_structure": "record and report only; not a purchase-rule modifier in this prespec",
+    "girls": "record and report only; not a purchase-rule modifier in this prespec",
+    "venue": "record and report only; not a purchase-rule modifier in this prespec",
+    "future_promotion_rule": "Any subgroup rule must be separately preregistered and tested on later unseen data; no promotion from the same scored sample."
+  },
+  "fixed_evaluation_metrics": [
+    "eligible_race_count",
+    "price_observation_count",
+    "buy_candidate_count",
+    "purchase_rate",
+    "hit_count",
+    "hit_rate",
+    "stake_yen",
+    "return_yen",
+    "net_yen",
+    "recovery_rate",
+    "roi",
+    "longest_losing_streak",
+    "maximum_drawdown_yen",
+    "largest_single_winner_profit_contribution_fraction",
+    "top3_winner_profit_contribution_fraction",
+    "recovery_rate_excluding_largest_winning_payout"
+  ],
+  "tail_risk_reason": "Old consumed price-aware research demonstrated that apparent profitability can be dominated by an extreme longshot winner; therefore concentration diagnostics are mandatory and high odds alone are never treated as value evidence.",
+  "burned_data_policy": {
+    "mar_jun_81_outcomes_may_select_new_thresholds": false,
+    "julaug_sep_92_outcomes_may_select_new_thresholds": false,
+    "old_stage2_to_stage7_2000r_may_be_fresh_unseen_proof": false,
+    "old_stage2_to_stage7_2000r_role": "historical design evidence only",
+    "odds_reconstruction_from_result_or_payout": false
+  },
+  "scientific_boundaries": {
+    "formal_v114_changed": false,
+    "formal_30_60_support_changed": false,
+    "formal_support_increment_now": 0,
+    "economic_support_increment_now": 0,
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "next_clean_action": "Create the first result-blind PRE observation on a future public race: freeze racecard-derived prediction and exact ticket before acquiring genuine timestamped PRE odds, then freeze the price decision before any result lookup.",
+  "owner_action_required_now": false
+}
