@@ -56,6 +56,17 @@ def request(request_id: str, predecessor: str | None = None) -> dict:
     }
 
 
+def malformed_recipe_request(
+    request_id: str,
+    predecessor: str | None = None,
+) -> dict:
+    value = request(request_id, predecessor)
+    value["recipe"]["source_rules"] = [
+        {"path": "x.py", "contains": ["x"]}
+    ]
+    return value
+
+
 def comment(comment_id: int, req: dict, login: str = "fufufu1116") -> dict:
     fence = "```"
     body = "\n".join((REQUEST_MARKER, fence + "json", json.dumps(req, sort_keys=True), fence))
@@ -152,6 +163,95 @@ class RequestArbitrationV6Tests(unittest.TestCase):
         )
         self.assertEqual(selected[0], 10)
         self.assertEqual(selected[1]["request_id"], "request-first")
+
+    def test_09_recipe_invalid_historical_request_can_be_explicitly_superseded(self):
+        broken = malformed_recipe_request("request-broken")
+        successor = request("request-successor", sha256_json(broken))
+        cid, selected, _ = latest([
+            comment(10, broken),
+            comment(20, successor),
+        ])
+        self.assertEqual(cid, 20)
+        self.assertEqual(selected["request_id"], "request-successor")
+
+    def test_10_recipe_invalid_latest_request_still_fails_closed(self):
+        broken = malformed_recipe_request("request-broken")
+        with self.assertRaisesRegex(
+            ReviewContractError,
+            "HISTORICAL_INVALID_EXACT_SUCCESSOR_COUNT:10:0:SOURCE_RULE_SCHEMA",
+        ):
+            latest([comment(10, broken)])
+
+    def test_11_ambiguous_multiple_successors_of_invalid_request_fail_closed(self):
+        broken = malformed_recipe_request("request-broken")
+        first = request("request-first-successor", sha256_json(broken))
+        second = request("request-second-successor", sha256_json(broken))
+        with self.assertRaisesRegex(
+            ReviewContractError,
+            "HISTORICAL_INVALID_EXACT_SUCCESSOR_COUNT:10:2:SOURCE_RULE_SCHEMA",
+        ):
+            latest([
+                comment(10, broken),
+                comment(20, first),
+                comment(30, second),
+            ])
+
+    def test_12_invalid_collision_loser_child_remains_orphaned(self):
+        winner = request("request-winner")
+        broken_loser = malformed_recipe_request("request-broken-loser")
+        loser_child = request(
+            "request-loser-child",
+            sha256_json(broken_loser),
+        )
+        with self.assertRaisesRegex(
+            ReviewContractError,
+            "ORPHANED_OR_LOSER_DERIVED_SUPERSESSION",
+        ):
+            latest([
+                comment(10, winner),
+                comment(20, broken_loser),
+                comment(30, loser_child),
+            ])
+
+    def test_13_duplicate_id_with_historical_invalid_request_still_fails(self):
+        broken = malformed_recipe_request("request-duplicate")
+        successor = request("request-duplicate", sha256_json(broken))
+        with self.assertRaisesRegex(
+            ReviewContractError,
+            "DUPLICATE_EXACT_REQUEST_ID:request-duplicate",
+        ):
+            latest([comment(10, broken), comment(20, successor)])
+
+    def test_14_authority_defect_cannot_be_historically_bridged(self):
+        broken = request("request-authority-broken")
+        broken["nonauthority"]["merge"] = True
+        successor = request("request-successor", sha256_json(broken))
+        with self.assertRaisesRegex(
+            ReviewContractError,
+            "NONAUTHORITY_NOT_FALSE:merge",
+        ):
+            latest([comment(10, broken), comment(20, successor)])
+
+    def test_15_prepublished_successor_cannot_bridge_invalid_request(self):
+        broken = malformed_recipe_request("request-broken")
+        successor = request("request-successor", sha256_json(broken))
+        with self.assertRaisesRegex(
+            ReviewContractError,
+            "HISTORICAL_INVALID_EXACT_SUCCESSOR_COUNT:10:0:SOURCE_RULE_SCHEMA",
+        ):
+            latest([comment(5, successor), comment(10, broken)])
+
+    def test_16_invalid_successor_cannot_bridge_invalid_request(self):
+        broken = malformed_recipe_request("request-broken")
+        successor = malformed_recipe_request(
+            "request-invalid-successor",
+            sha256_json(broken),
+        )
+        with self.assertRaisesRegex(
+            ReviewContractError,
+            "HISTORICAL_INVALID_EXACT_SUCCESSOR_NOT_VALID:10:20:SOURCE_RULE_SCHEMA",
+        ):
+            latest([comment(10, broken), comment(20, successor)])
 
 
 if __name__ == "__main__":
