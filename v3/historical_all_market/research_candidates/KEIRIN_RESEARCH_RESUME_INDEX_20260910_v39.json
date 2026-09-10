@@ -1,0 +1,96 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260910_v39",
+  "status": "CURRENT_V114_STRONGEST_CURRENT_WINNING_PATH_WITH_REPLAYABLE_FALLBACK_TOP1_ROBUSTNESS_DIAGNOSTIC",
+  "date_jst": "2026-09-10",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "supersedes_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260910_v38.json",
+  "fresh_head_before_write": "1aa13b30ebdffca5d2cfea0851610bbe148d10b1",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "strongest_current_candidate_synthesis": "v3/historical_all_market/research_candidates/KEIRIN_STRONGEST_WINNING_PATH_CANDIDATE_SYNTHESIS_20260910_v1.json",
+  "forward_price_gate_v2": "tools/keirin_forward_price_value_gate_v2.py",
+  "forward_candidate_diagnostics": "tools/keirin_forward_candidate_diagnostics_v1.py",
+  "fallback_top1_robustness_tool": "tools/keirin_fallback_top1_robustness_v1.py",
+  "fallback_top1_robustness_test": "tools/test_keirin_fallback_top1_robustness_v1.py",
+  "fallback_top1_robustness_proof": "v3/historical_all_market/research_candidates/KEIRIN_FALLBACK_TOP1_ROBUSTNESS_V1_REPLAY_PROOF_20260910_v1.json",
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 100,
+    "formal_scientific_progress_percent": 60
+  },
+  "current_best_candidate": {
+    "status": "BEST_CURRENT_CANDIDATE_NOT_PROVEN",
+    "name": "SELECTIVE_SCORE_DOMINANCE_CONSERVATIVE_SINGLE_3RENHUKU_CORE_VALUE_LANE",
+    "plain_japanese": "強い事前スコア優位が出たレースだけ選び、3連複1点に絞り、予測固定後に本物の事前オッズを確認し、20倍以下のCOREで固定価値条件を満たす時だけ100円のOwner手動候補にする。",
+    "rule_changed_since_v38": false,
+    "profitability_proven": false
+  },
+  "forward_evidence_state": {
+    "prospective_model_observations": 3,
+    "valid_genuine_price_observations": 0,
+    "economic_support": 0,
+    "profitability_proven": false,
+    "takeo_20260911": {
+      "R1": "CONFIDENCE_FAIL_NO_BET",
+      "R4": "CONFIDENCE_FAIL_NO_BET",
+      "R5": "CONFIDENCE_PASS_TICKET_1=2=3_PRICE_UNVERIFIED_NO_BET"
+    }
+  },
+  "new_since_v38": {
+    "fallback_top1_robustness_diagnostic": {
+      "local_replay": "12/12 PASS",
+      "supported_abs_q_bound": 1.0,
+      "maximum_pairwise_fallback_logit_spread": 0.058658042093000004,
+      "required_strict_competition_score_gap": 0.26350806451725767,
+      "decision_changing": false,
+      "economic_evidence": false
+    },
+    "takeo_r5": {
+      "score_gap": 5.875,
+      "gap_multiple_vs_required": 22.29533282316388,
+      "worst_case_logit_margin_after_supported_fallback": 1.2491425291255913,
+      "robust_top1_under_supported_fallback": true,
+      "confidence_gate_pass": true,
+      "price_state": "UNVERIFIED",
+      "decision": "NO_BET_UNVERIFIED"
+    },
+    "takeo_r4_anti_overreach": {
+      "score_gap": 3.584000000000003,
+      "gap_multiple_vs_required": 13.601101759696922,
+      "robust_top1_under_supported_fallback": true,
+      "conservative_top1_probability": 0.381057720912,
+      "confidence_gate_minimum": 0.40,
+      "confidence_gate_pass": false,
+      "decision": "NO_BET_CONFIDENCE_GATE_FAIL",
+      "finding": "Top1 stability alone does not override the frozen confidence gate. The new diagnostic is not a hidden purchase rule."
+    }
+  },
+  "interpretation": {
+    "what_got_stronger": "The strongest current lane now has a replayable way to distinguish a score-dominant top1 that is mathematically stable against the full supported fallback perturbation from a merely fragile fallback agreement.",
+    "what_did_not_change": "No model coefficient, confidence threshold, ticket rule, odds band, value threshold, stake, protected dataset state, or economic conclusion changed.",
+    "current_bottleneck": "Clean prospective evidence: complete PRE racecards followed by immutable prediction freezes, genuine timestamped PRE prices where required, and only later post-event scoring. More same-signal model complexity cannot substitute for this evidence."
+  },
+  "next_without_owner": [
+    "Continue scanning for complete reproducible future racecards without inferring race composition from entrant lists or prior-day results.",
+    "For each valid future racecard, freeze S0/challenger prediction result-blind and odds-blind under the existing prespec.",
+    "Use fallback robustness only as a diagnostic label; never let it override the frozen 0.40 confidence gate or price gate.",
+    "Confidence fail => NO_BET with no odds lookup. Confidence pass => freeze one top3 3renhuku ticket before any price lookup.",
+    "Acquire only genuine timestamped current PRE odds after the prediction freeze; unverified price remains NO_BET_UNVERIFIED.",
+    "Do not score economics until the target result becomes public after all corresponding PRE records are immutable.",
+    "Measure later ROI, drawdown, losing streak and winner-concentration controls and require later unseen reproduction before any profitability claim.",
+    "Keep formal 30/60 support lane independent and protected holdouts unopened."
+  ],
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_v114_changed": false,
+    "formal_support_increment_now": 0,
+    "economic_support_increment_now": 0,
+    "main_mutation": false,
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false,
+    "runtime": "OFF"
+  },
+  "owner_action_required_now": false
+}
