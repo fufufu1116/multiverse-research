@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v56",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v55.json",
+  "current_status": "FINAL_HOLDOUT_PREFLIGHT_FAIL_CLOSED_CANONICAL_ECON_HOLDOUT1000_FULLY_COLLIDES_WITH_CONSUMED_B_PLUS_C",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "owner_authorization": "AUTHORIZE_ECON_HOLDOUT1000_ONE_SHOT_FINAL_VALIDATION_WITH_EXACT_V54_FROZEN_RULES_ONLY",
+  "fresh_head_before_holdout_preflight": "40e33fc394a18218b95a082fd9b4adb457e90c1d",
+  "collision_diagnostic_commit": "9eea29ff5a38cf77488107407676140d91ebff7b",
+  "collision_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_ECON_HOLDOUT1000_MEMBERSHIP_COLLISION_DIAGNOSTIC_20260911_v1.json",
+  "canonical_econ_holdout1000_membership": {
+    "dev_index_min": 1001,
+    "dev_index_max": 2000,
+    "race_count": 1000,
+    "race_date_min": "2026-03-27",
+    "race_date_max": "2026-04-10",
+    "ordered_race_id_sha256": "814e72d228ebaf40b4fa1aae636c55c69add71d941f27f6900a0e21d91f2e2c8",
+    "sorted_race_id_set_sha256": "54c33d907e2e610599bbdf03b81b6557072ab2eb2a71fce9e1ca1c44295cce54"
+  },
+  "independence_failure": {
+    "segment_B": "dev_index 1001..1500 already consumed",
+    "segment_C": "dev_index 1501..2000 opened and scored once on 2026-09-11",
+    "untouched_rows_remaining": 0,
+    "v54_performance_scoring_executed_on_econ_holdout1000": false
+  },
+  "scientific_interpretation": [
+    "The final-holdout authorization was honored by performing identity and independence preflight before outcome scoring.",
+    "The canonical object named ECON_HOLDOUT1000 is exactly the already-consumed B+C portion of DEV2000, so it cannot serve as an independent final holdout for this lineage.",
+    "Running the v54 validator on this set would create a false untouched-final-validation claim and is therefore prohibited by fail-closed scientific practice.",
+    "The successful one-shot Segment C calibration replication remains valid evidence; the formal-science progress remains 85%, not 100%."
+  ],
+  "replacement_holdout_search": {
+    "nextgen5000_parent_universe_sha256_known": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "drive_folder_seen": "MULTIVERSE_NEXTGEN5000_PRE_EXPANSION_20260909_v1",
+    "drive_folder_id": "1QQwfYbQVcmOlqM1VHSOU75o8_ku6-QfW",
+    "direct_children_visible": false,
+    "outcome_accessed": false,
+    "status": "SEARCHING_FOR_GENUINELY_DISJOINT_RESULT_FREE_MEMBERSHIP_ONLY"
+  },
+  "next_action": [
+    "Continue owner-free provenance search for a result-free NEXTGEN5000 membership artifact disjoint from DEV2000.",
+    "If a clean disjoint >=1000-race membership is recovered, freeze that membership before any outcome access.",
+    "Do not treat the prior ECON_HOLDOUT1000 authorization as authorization to open outcomes for a newly defined replacement holdout; obtain a separate explicit Owner gate first.",
+    "Do not retune B1a_MKT50_v1, the 0.50 pooling weight, competition threshold 0.40, economic selector, or validation gates using Segment B or C."
+  ],
+  "governance": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE",
+    "no_false_final_pass": true
+  }
+}
