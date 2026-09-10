@@ -1,0 +1,37 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v58",
+  "status": "STATE_RECONCILED_NEXTGEN5000_HISTORICAL_SHORTCUT_REJECTED_PROSPECTIVE_FINAL_VALIDATION_ROUTE_ACTIVE",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v57.json",
+  "reconciliation": "KEIRIN_V57_STATE_RECONCILIATION_20260911_v1.json",
+  "current_conclusion": [
+    "Segment C was validly opened/scored once in v52 and is consumed; its positive calibration replication remains valid evidence and cannot be used for retuning.",
+    "Canonical ECON_HOLDOUT1000 is not an independent final holdout because it is exactly already-consumed B+C; v54 performance scoring was correctly not run on it.",
+    "NEXTGEN5000 AUTO_REBUILD cannot be promoted into a replacement final untouched holdout: v57 found result fields in shard 000 and the lineage is tied to B1a development provenance. Remaining shards 001-004 must not be opened to manufacture a historical holdout.",
+    "The scientifically clean path is prospective pre-result validation with predictions/membership frozen before outcomes."
+  ],
+  "formal_science_progress_percent": 85,
+  "formal_science_increment_reason": "No increment in v58: state reconciliation and provenance hardening do not substitute for new untouched outcomes.",
+  "prospective_route": {
+    "existing_manifests": [
+      "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+      "KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json"
+    ],
+    "next_calendar_trigger": "2026-09-14 final Day1 racecards for Ito/Aomori, then 2026-09-15 Hofu; 2026-09-24 five-venue Day1 set also pre-frozen.",
+    "required_method": "Freeze exact race membership, PRE inputs, B1a_MKT50_v1 predictions, v54 selector outputs, and hashes before result availability; join outcomes only after the race/cutoff; never reconstruct missed PRE after results.",
+    "owner_action_required_now": false
+  },
+  "governance": {
+    "segment_C": "CONSUMED_NO_RETUNING",
+    "canonical_ECON_HOLDOUT1000": "INVALID_AS_INDEPENDENT_FINAL_HOLDOUT",
+    "nextgen5000_auto_rebuild": "REJECTED_AS_REPLACEMENT_HOLDOUT",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  },
+  "next_action": [
+    "Inspect the already-prepared prospective manifests and ensure they bind the exact v54 B1a_MKT50_v1 model/selector rather than an older lineage.",
+    "Prepare a prospective capture-and-score harness now using synthetic/result-free fixtures only.",
+    "Do not access future outcomes before the frozen PRE capture cutoff.",
+    "Do not ask Owner for a gate until an outcome-opening/scoring action is actually required."
+  ]
+}
