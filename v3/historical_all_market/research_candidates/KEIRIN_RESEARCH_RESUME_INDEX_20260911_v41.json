@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v41",
+  "status": "CURRENT_V114_WITH_PRACTICAL_DAILY_TOPN_AND_BURNED_AB_FREQUENCY_DIAGNOSTIC",
+  "date_jst": "2026-09-11",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "supersedes_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v40.json",
+  "current_state_pointer": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json",
+  "progress": {"practical_engineering_percent": 100, "simulation_winning_pattern_exploration_percent": 100, "formal_scientific_progress_percent": 60},
+  "strict_scientific_lane": {
+    "name": "SELECTIVE_SCORE_DOMINANCE_CONSERVATIVE_SINGLE_3RENHUKU_CORE_VALUE_LANE",
+    "confidence_minimum": 0.40,
+    "mutated": false,
+    "status": "BEST_CURRENT_CANDIDATE_NOT_PROVEN",
+    "profitability_proven": false
+  },
+  "practical_frequency_lane": {
+    "target": "approximately 3 to 5 candidate races per day without forcing purchases",
+    "selection_direction": "rank a broad clean daily race universe first, then apply a separate pre-price value veto",
+    "takeo_20260911_daily_top3": [5,4,6],
+    "takeo_20260911_daily_top5": [5,4,6,7,1],
+    "burned_AB_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_BURNED_AB_DAILY_FREQUENCY_AND_TOP1_CALIBRATION_DIAGNOSTIC_20260911_v1.json"
+  },
+  "new_burned_AB_findings": {
+    "data_role": "ALREADY_CONSUMED_DIAGNOSTIC_ONLY",
+    "races": 1500,
+    "calendar_dates": 20,
+    "legacy_agreement_gate_mean_candidates_per_day": {"0.30": 46.45, "0.35": 32.3, "0.40": 20.6},
+    "daily_top3_blind_3renhuku": {"bets": 60, "return_yen": 4680, "stake_yen": 6000, "net_yen": -1320, "recovery_rate": 0.78, "positive_weeks": 2, "observed_weeks": 5, "positive_months": 0, "observed_months": 3},
+    "daily_top5_blind_3renhuku": {"bets": 100, "return_yen": 8190, "stake_yen": 10000, "net_yen": -1810, "recovery_rate": 0.819, "positive_weeks": 0, "observed_weeks": 5, "positive_months": 0, "observed_months": 3},
+    "interpretation": [
+      "Historical broad-universe candidate supply suggests lowering confidence solely to manufacture 3-5 daily candidates may be unnecessary.",
+      "Daily Top3/Top5 ranking alone was not profitable on burned A+B; candidate ranking and purchase qualification must remain separate.",
+      "Legacy top1 agreement probability bands were not overconfident in the same direction as the known high-odds 3rentan ticket tail, so winner calibration cannot substitute for ticket-level calibration."
+    ],
+    "current_model_direct_calibration_proven": false
+  },
+  "owner_time_horizon_binding": {
+    "daily_profit_required": false,
+    "evaluate_7_day": true,
+    "evaluate_30_day": true,
+    "evaluate_90_day": true,
+    "required_risk_views": ["maximum drawdown", "maximum losing streak", "winner concentration", "positive-week behavior", "positive-month behavior"]
+  },
+  "forward_evidence_state": {
+    "prospective_model_observations": 5,
+    "valid_genuine_price_observations": 0,
+    "economic_support": 0,
+    "profitability_proven": false
+  },
+  "next_without_owner": [
+    "Recover an A+B-only PRE feature path for the current S0 inputs without reading Segment C.",
+    "If possible, recompute current S0 winner and current 3renhuku ticket probabilities on burned A+B for diagnostics only; do not treat this as untouched validation.",
+    "Compare current-model calibration separately at winner level and ticket level.",
+    "Keep daily candidate generation separate from purchase qualification and preserve the strict 0.40 control.",
+    "Do not open DEV2000 C or ECON_HOLDOUT1000."
+  ],
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "formal_support_increment_now": 0,
+    "economic_support_increment_now": 0,
+    "main_mutation": false,
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false,
+    "runtime": "OFF"
+  },
+  "fresh_head_before_write": "5914dc4783bd6d2a9dfa722b50cf8e355eece50b",
+  "owner_action_required_now": false
+}
