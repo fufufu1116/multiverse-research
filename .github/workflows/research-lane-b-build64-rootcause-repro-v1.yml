@@ -1,0 +1,86 @@
+name: MULTIVERSE Lane B Build64 Root Cause Repro v1
+
+on:
+  push:
+    branches:
+      - agent/lane-b-build64-rootcause-preflight-proof-20260911-v1
+    paths:
+      - '.github/workflows/research-lane-b-build64-rootcause-repro-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXACT_MAIN: 04f314c744abbd0a15591e0437c5de178cfb0ef4
+      EXACT_HEAD: f3611e3d2afd434d3ad91b73f7288bd9180f5d4b
+      BUILDKITE_COMMIT: f3611e3d2afd434d3ad91b73f7288bd9180f5d4b
+      BUILDKITE_BRANCH: agent/lane-b-github-rate-limit-read-resilience-v1-20260911
+      BUILDKITE_BUILD_ID: owner-free-build64-repro
+      BUILDKITE_BUILD_NUMBER: preflight
+      MULTIVERSE_DISPATCHER_REF: 04f314c744abbd0a15591e0437c5de178cfb0ef4
+    steps:
+      - name: Checkout exact frozen PR308 head
+        uses: actions/checkout@v4
+        with:
+          ref: f3611e3d2afd434d3ad91b73f7288bd9180f5d4b
+          fetch-depth: 0
+
+      - name: Reproduce fixed first step without publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          git cat-file -e "$EXACT_MAIN^{commit}"
+          rm -rf .mv_dispatcher
+          mkdir .mv_dispatcher
+          git archive "$EXACT_MAIN" automation/review_dispatcher_v1 | tar -x -C .mv_dispatcher
+
+          set +e
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head "$EXACT_HEAD" \
+            --output review_job.json
+          DISPATCH_RC=$?
+          set -e
+          echo "DISPATCH_RC=$DISPATCH_RC"
+          test "$DISPATCH_RC" -eq 0
+          python3 - <<'PY'
+          import json
+          j=json.load(open('review_job.json'))
+          print('JOB_REQUEST_COMMENT=',j['request_comment'])
+          print('JOB_REQUEST_ID=',j['request_id'])
+          print('JOB_REQUEST_SHA256=',j['request_sha256'])
+          print('JOB_DISPATCHER_REF=',j.get('dispatcher_ref'))
+          assert j['request_comment']==5624960652
+          assert j['request_sha256']=='307dd085cecf244a159aba51bc0990ad5ddccd07c6bad7ef566cd0c9d123220c'
+          assert j['head']=='f3611e3d2afd434d3ad91b73f7288bd9180f5d4b'
+          assert j['tree']=='bce1f7559048031b6e66bed83a634aef974c2b16'
+          assert j['main']=='04f314c744abbd0a15591e0437c5de178cfb0ef4'
+          PY
+
+          set +e
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
+            --job review_job.json \
+            --output review_artifact.json \
+            --repo-root . > review_stdout.txt 2> review_stderr.txt
+          REVIEW_RC=$?
+          set -e
+          echo "REVIEW_RC=$REVIEW_RC"
+          cat review_stdout.txt
+          cat review_stderr.txt >&2
+          python3 - <<'PY'
+          import json
+          a=json.load(open('review_artifact.json'))
+          print('ARTIFACT_VERDICT=',a['verdict'])
+          print('ARTIFACT_TEST_COUNT=',a['test_count'])
+          print('ARTIFACT_FINDINGS_COUNT=',len(a['findings']))
+          for x in a['findings']:
+              print('FINDING=',x)
+          PY
+          # Build #64 signature requires review non-PASS but serialized artifact.
+          test "$REVIEW_RC" -eq 1
