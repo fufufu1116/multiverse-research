@@ -1,0 +1,82 @@
+{
+  "schema": "MULTIVERSE_MULTI_HOST_PREPRODUCTION_PREPARATION_CONTRACT_v1",
+  "issue": 126,
+  "authority_issue": 125,
+  "authority_comment": 5549695338,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "adopted_single_host_decision": 5549590213,
+  "adopted_single_host_head": "f673d5eb53d5831ce345ff3262970cad6bcd0f9a",
+  "excluded_later_pr123_head": "f5cdc340a1e80281d4805e0f7701cb92a63e8402",
+  "topology_class": "RENDER_PREPRODUCTION_TWO_SERVICE_SHARED_POSTGRES_NO_EFFECT_v1",
+  "environment_class": "PRE_PRODUCTION",
+  "provider_family": "RENDER",
+  "planned_topology": {
+    "worker_count": 2,
+    "workers": [
+      {
+        "worker_id": "worker-a",
+        "service_identity": "UNPROVISIONED_WORKER_A",
+        "provisioned": false
+      },
+      {
+        "worker_id": "worker-b",
+        "service_identity": "UNPROVISIONED_WORKER_B",
+        "provisioned": false
+      }
+    ],
+    "shared_state": {
+      "kind": "POSTGRESQL",
+      "identity": "UNPROVISIONED_SHARED_POSTGRES",
+      "provisioned": false
+    },
+    "actual_remote_execution_performed": false
+  },
+  "lease_contract": {
+    "single_owner_before_expiry": true,
+    "successor_allowed_at_or_after_expiry": true,
+    "fence_token_must_strictly_increase_on_acquire": true,
+    "renewal_preserves_fence_token": true,
+    "stale_owner_write_rejected": true,
+    "stale_fence_write_rejected": true,
+    "split_brain_write_rejected": true
+  },
+  "idempotency_contract": {
+    "scope": "SHARED_ACROSS_WORKERS",
+    "same_key_same_payload_is_duplicate": true,
+    "same_key_different_payload_is_rejected": true,
+    "duplicate_external_effect": false
+  },
+  "future_remote_evidence_requirements": {
+    "separate_worker_provider_identities": true,
+    "shared_state_provider_identity": true,
+    "concurrent_acquire_attempt_receipts": true,
+    "fencing_token_monotonicity_receipts": true,
+    "stale_owner_rejection_receipts": true,
+    "stale_fence_rejection_receipts": true,
+    "successor_owner_failover_receipts": true,
+    "cross_worker_idempotency_receipts": true,
+    "restart_plus_failover_receipts": true,
+    "split_brain_rejection_receipts": true,
+    "provider_logs_for_both_workers": true,
+    "provider_cpu_memory_for_both_workers": true,
+    "database_transaction_or_lock_evidence": true,
+    "no_http_slo_claim_without_http_metrics": true
+  },
+  "authority": {
+    "remote_resource_creation": false,
+    "remote_network_execution": false,
+    "render_control_plane_execution": false,
+    "additional_spend": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "live_business_effect": false,
+    "workflow_dispatch_rerun": false,
+    "main_mutation": false,
+    "ruleset_mutation": false,
+    "merge_adoption": false,
+    "runtime_activation": false
+  },
+  "runtime": "OFF",
+  "proof_ceiling": "MULTI_HOST_PREPRODUCTION_SYNTHETIC_NO_EFFECT_PREPARATION_ONLY"
+}
