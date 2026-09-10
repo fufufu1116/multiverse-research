@@ -1,0 +1,26 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v57",
+  "status": "NEXTGEN5000_HISTORICAL_HOLDOUT_ROUTE_REJECTED_PROSPECTIVE_VALIDATION_ROUTE_CONFIRMED",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v56.json",
+  "collision_diagnostic": "KEIRIN_NEXTGEN5000_HOLDOUT_COLLISION_DIAGNOSTIC_20260911_v1.json",
+  "current_conclusion": "NEXTGEN5000 AUTO_REBUILD artifacts cannot support a claim of a clean final untouched holdout because the inspected shard contains result fields and the lineage is tied to B1a development provenance (standard_n=974). Remaining AUTO_REBUILD shards were not opened in this investigation.",
+  "scientifically_clean_next_route": {
+    "type": "PROSPECTIVE_PRE_RESULT_VALIDATION",
+    "rule": "Freeze model, candidate selection, race membership, predictions and provenance before outcomes; join outcomes only after the race/cutoff; never reconstruct missed PRE data after results.",
+    "already_prepared": [
+      "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+      "KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json"
+    ],
+    "next_calendar_trigger": "2026-09-14 final Day1 racecards for Ito/Aomori, then 2026-09-15 Hofu; 2026-09-24 five-venue Day1 set is also pre-frozen.",
+    "owner_action_required_now": false
+  },
+  "formal_science_progress_percent": 70,
+  "formal_science_increment_reason": "No increment: provenance/governance hardening does not substitute for untouched outcome evidence.",
+  "protected_state": {
+    "DEV2000_segment_C": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "production_runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  }
+}
