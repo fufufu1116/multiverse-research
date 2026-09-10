@@ -1,0 +1,54 @@
+{
+  "record": "KEIRIN_OUTCOME_FREE_A_B1A_DISTRIBUTION_DIAGNOSTIC_20260911_v1",
+  "scope": "OUTCOME_FREE_FROZEN_PREDICTION_DISTRIBUTION_ONLY",
+  "prediction_csv_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+  "rows": 14255,
+  "races": 2000,
+  "probability_sum_max_abs_error": {
+    "candidate_a": 7.771561172376096e-16,
+    "b1a_reconstituted_v1": 7.771561172376096e-16
+  },
+  "distribution_comparison": {
+    "mean_total_variation": 0.12670995398124882,
+    "median_total_variation": 0.12195376548163706,
+    "p90_total_variation": 0.18711320403759132,
+    "p95_total_variation": 0.22821782076743327,
+    "max_total_variation": 0.48403969181905565,
+    "tv_ge_0_20_rate": 0.081,
+    "tv_ge_0_25_rate": 0.0335,
+    "tv_ge_0_25_races": 67,
+    "tv_ge_0_30_races": 32
+  },
+  "top1_comparison": {
+    "same_top1_rate": 0.823,
+    "changed_top1_races": 354,
+    "candidate_a_mean_top1_probability": 0.36025497093919534,
+    "b1a_mean_top1_probability": 0.42416296200167064,
+    "candidate_a_median_top1_probability": 0.34550618218143225,
+    "b1a_median_top1_probability": 0.40946042209497524,
+    "b1a_more_confident_rate": 0.84,
+    "top1_probability_delta_mean_b_minus_a": 0.06390799106247527,
+    "top1_probability_delta_median_b_minus_a": 0.06156915578232153,
+    "top1_probability_delta_p10_b_minus_a": -0.02485773881229895,
+    "top1_probability_delta_p90_b_minus_a": 0.1437085112464372
+  },
+  "entropy": {
+    "candidate_a_mean": 1.6965703225019029,
+    "b1a_mean": 1.5646962834563911,
+    "mean_delta_b_minus_a": -0.1318740390455119
+  },
+  "interpretation": [
+    "B1a is materially sharper than Candidate A on the frozen 2000-race prediction universe: its average Top1 probability is about 6.39 percentage points higher and its mean entropy is lower.",
+    "Despite that sharpening, the two models retain the same Top1 rider in 82.3% of races; B1a changes the Top1 identity in 354 of 2000 races.",
+    "Large model disagreement is concentrated rather than ubiquitous: only 3.35% of races have total-variation distance at least 0.25.",
+    "These are outcome-free structural diagnostics. They do not establish that B1a is better calibrated or more accurate because no new winner/result data were accessed."
+  ],
+  "governance": {
+    "new_result_access": false,
+    "new_payout_access": false,
+    "segment_c_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
