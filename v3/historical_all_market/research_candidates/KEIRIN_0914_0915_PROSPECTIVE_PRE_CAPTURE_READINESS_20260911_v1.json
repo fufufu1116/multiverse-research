@@ -1,0 +1,106 @@
+{
+  "record": "KEIRIN_0914_0915_PROSPECTIVE_PRE_CAPTURE_READINESS_20260911_v1",
+  "status": "ASSIGNMENT_CANDIDATES_MATCHED_35_OF_35_FINAL_DAY1_RACECARDS_NOT_YET_FROZEN",
+  "checked_at_jst": "2026-09-11T06:34:32+09:00",
+  "repository": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "parent_head_sha": "cf9c9ca0204cb6a97a1917d769535e540ab432de",
+  "authority": {
+    "resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v59.json",
+    "prospective_bridge": "KEIRIN_B1A_MKT50_V54_PROSPECTIVE_VALIDATION_BRIDGE_20260911_v1.json",
+    "candidate_manifest": "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "rules": "EXACT_V54_BINDINGS_NO_RETUNING"
+  },
+  "frozen_v54_bindings": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.50,
+    "competition_score_threshold": 0.40,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2"
+  },
+  "targets": [
+    {
+      "venue": "Ito",
+      "day1": "2026-09-14",
+      "manifest_candidate_count": 11,
+      "assignment_match_count": 11,
+      "assignment_match_status": "MATCHED_11_OF_11",
+      "assignment_source": "https://keirin.kdreams.jp/ito/assen/3720260914/",
+      "final_day1_racecard_status": "NOT_SURFACED_IN_CURRENT_WEB_RETRIEVAL_NOT_FROZEN"
+    },
+    {
+      "venue": "Aomori",
+      "day1": "2026-09-14",
+      "manifest_candidate_count": 4,
+      "assignment_match_count": 4,
+      "assignment_match_status": "MATCHED_4_OF_4",
+      "assignment_source": "https://keirin.kdreams.jp/aomori/assen/1220260914/",
+      "matched_candidates": [
+        "田頭 寛之",
+        "加賀美 智史",
+        "山本 天平",
+        "亀谷 隆一"
+      ],
+      "final_day1_racecard_status": "NOT_SURFACED_IN_CURRENT_WEB_RETRIEVAL_NOT_FROZEN"
+    },
+    {
+      "venue": "Hofu",
+      "day1": "2026-09-15",
+      "manifest_candidate_count": 20,
+      "assignment_match_count": 20,
+      "assignment_match_status": "MATCHED_20_OF_20",
+      "assignment_source": "https://keirin.kdreams.jp/hofu/assen/6320260915/",
+      "matched_candidates": [
+        "中村 龍吉",
+        "櫻井 学",
+        "成清 貴之",
+        "張野 幸聖",
+        "中石 昌芳",
+        "岡崎 陸登",
+        "阿竹 智史",
+        "箱田 優樹",
+        "小野 大介",
+        "黒沢 征治",
+        "永井 哉多",
+        "大塚 玲",
+        "鈴木 伸之",
+        "不破 将登",
+        "松岡 健介",
+        "前反 祐一郎",
+        "佐々木 翔一",
+        "田中 陽平",
+        "谷口 友真",
+        "大西 健士"
+      ],
+      "final_day1_racecard_status": "NOT_SURFACED_IN_CURRENT_WEB_RETRIEVAL_NOT_FROZEN"
+    }
+  ],
+  "aggregate": {
+    "manifest_candidates": 35,
+    "assignment_matches": 35,
+    "assignment_match_rate": 1.0,
+    "final_race_membership_frozen": false,
+    "race_numbers_frozen": false,
+    "car_numbers_frozen": false,
+    "predictions_frozen": false,
+    "genuine_preclose_odds_frozen": false,
+    "selected_ticket_ledger_frozen": false
+  },
+  "provenance_note": "Assignment pages are readiness evidence only and are not substituted for the trustworthy final Day1 racecard required by the v59 capture gate. Current web retrieval did not surface the final Day1 race membership and car-number contents, so no race-level PRE capture is asserted here.",
+  "anti_leak": {
+    "outcomes_accessed_for_target_races": false,
+    "result_fields_joined": false,
+    "post_result_reconstruction": false,
+    "v54_retuning": false,
+    "missing_pre_may_be_reconstructed_after_result": false
+  },
+  "next_gate": "On first trustworthy final Day1 racecard availability: freeze exact race membership and race/car numbers, bind same-race PRE inputs, freeze exact v54 predictions, capture genuine pre-close odds provenance, and freeze selected-ticket ledger before any outcome availability. Missing PRE at cutoff remains missing forever.",
+  "scientific_increment": 0,
+  "formal_science_progress_percent": 85,
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
