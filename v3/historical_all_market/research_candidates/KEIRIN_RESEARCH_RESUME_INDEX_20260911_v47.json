@@ -1,0 +1,42 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v47",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v46.json",
+  "current_status": "OUTCOME_FREE_MODEL_DIAGNOSTICS_COMPLETE_AND_STAGE7_DERIVED_LEDGER_RECOVERY_EXHAUSTED_RAW_AB_SCOPE_AUTHORIZATION_IS_NOW_TRUE_WINNER_CALIBRATION_BLOCKER",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_at_start": "030b21655e4268f298eff0029e50e3800eb31311",
+  "new_diagnostic": "v3/historical_all_market/research_candidates/KEIRIN_STAGE7_DERIVED_LEDGER_RECOVERY_DIAGNOSTIC_20260911_v1.json",
+  "verified_state": {
+    "immutable_prediction_csv_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "prediction_races": 2000,
+    "prediction_rows": 14255,
+    "candidate_a_vs_b1a_outcome_free_comparison_complete": true,
+    "stage7_derived_artifact_search_complete_for_primary_parent": true,
+    "full_burned_AB_winner_mapping_found": false,
+    "raw_AB_reopened": false,
+    "segment_C": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED"
+  },
+  "scientific_interpretation": [
+    "Prediction-byte integrity and outcome-free Candidate A/B1a structural comparison are no longer blockers.",
+    "Primary Stage7 derived artifacts preserve aggregate realized diagnostics and ledger hashes but do not preserve a complete per-race burned A+B winner-label mapping.",
+    "Stage7 diagnostic implementation generated realized ledgers in memory from settlement inputs and wrote only hashes/aggregates, so the missing winner table cannot be reconstructed from those derivatives alone.",
+    "Under current governance, reopening burned A/B raw settlement outcomes solely to manufacture a new winner calibration join is not authorized; this is now the true blocker for formal Candidate A versus B1a winner-probability calibration.",
+    "This blocker does not authorize touching Segment C or ECON_HOLDOUT1000."
+  ],
+  "next_action": [
+    "Fresh Read branch before further work.",
+    "Continue only low-risk metadata/provenance search for any other previously authorized per-race burned A+B outcome derivative outside the primary Stage7 parent.",
+    "If no such derivative exists, require explicit owner scope authorization before reading burned A/B raw settlement content for winner-label reconstruction.",
+    "If authorized, read burned A and B only, verify exact frozen settlement hashes before use, derive race_id -> winning car_no labels, join immutable frozen prediction CSV, and compute Candidate A versus B1a calibration without retuning.",
+    "Keep Segment C and ECON_HOLDOUT1000 sealed throughout burned A+B calibration.",
+    "Do not change competition-score baseline threshold 0.40; 0.35/0.30 remain research-only."
+  ],
+  "frozen_controls": {
+    "competition_score_threshold": 0.40,
+    "research_only_thresholds": [0.35, 0.30],
+    "automatic_betting": false,
+    "runtime": "OFF",
+    "segment_c": "UNTOUCHED",
+    "ECON_HOLDOUT1000": "SEALED"
+  }
+}
