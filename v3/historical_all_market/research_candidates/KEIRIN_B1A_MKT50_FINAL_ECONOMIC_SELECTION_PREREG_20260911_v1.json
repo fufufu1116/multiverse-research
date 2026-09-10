@@ -1,0 +1,54 @@
+{
+  "record": "KEIRIN_B1A_MKT50_FINAL_ECONOMIC_SELECTION_PREREG_20260911_v1",
+  "status": "PREREGISTERED_AFTER_SEGMENT_C_CALIBRATION_AND_BEFORE_ECON_HOLDOUT1000_OPEN",
+  "candidate": "B1a_MKT50_v1",
+  "scientific_boundary": {
+    "segment_C": "CONSUMED_FOR_CALIBRATION_ONLY_NO_FURTHER_TUNING_ALLOWED",
+    "ECON_HOLDOUT1000": "SEALED_AT_THIS_PREREGISTRATION",
+    "post_C_parameter_tuning": false
+  },
+  "selection_rule": {
+    "race_gate": "competition_score >= 0.40",
+    "supported_markets": ["3rentan", "2shatan"],
+    "ticket_probability": "fixed B1a_MKT50_v1 50/50 normalized geometric pool",
+    "ticket_eligibility": [
+      "raw_ev = closing_decimal_odds * q - 1 >= 0",
+      "shape_edge_ratio = q / normalized_market_shape_probability >= 1"
+    ],
+    "portfolio_template": "SINGLE",
+    "ranking": "descending raw_ev, then descending shape_edge_ratio, then descending q, then market, then ticket key",
+    "max_selected_tickets_per_race": 1,
+    "stake_policy": "FK10_R2",
+    "kelly_multiplier": 0.10,
+    "ticket_bankroll_fraction_cap": 0.0025,
+    "race_bankroll_fraction_cap": 0.02,
+    "stake_floor_yen": 100,
+    "stake_rounding": "floor to whole 100-yen units",
+    "initial_bankroll_yen": 100000
+  },
+  "why_not_tuned_on_C": [
+    "The 0.40 competition threshold was frozen before Segment C.",
+    "P00-equivalent EV>=0 and shape-ratio>=1, SINGLE, and FK10_R2 are inherited from the prior frozen Stage7 family rather than optimized against Segment C outcomes.",
+    "No C ROI or selected-ticket ledger was used to choose these values."
+  ],
+  "final_holdout_acceptance": {
+    "calibration_primary": "B1a_MKT50 ticket log loss must remain strictly lower than raw B1a on ECON_HOLDOUT1000.",
+    "tail_calibration": ">=300x calibration error must improve; zero realized tail hits is INCONCLUSIVE.",
+    "economic_minimum_hits": 20,
+    "economic_roi_gate": "ROI must be >= 0 only when realized hit count >= 20; otherwise economic evidence is INCONCLUSIVE.",
+    "profit_concentration_gate": "largest single positive-return event must be <= 50% of gross return.",
+    "maximum_drawdown_gate": "maximum drawdown <= 35%",
+    "minimum_bet_races": 50,
+    "promotion_rule": "Calibration gates must pass and economic gates must pass; ROI cannot rescue failed calibration."
+  },
+  "prohibited": [
+    "Do not alter pool weight 0.50 after holdout open.",
+    "Do not alter competition_score threshold 0.40 after holdout open.",
+    "Do not alter eligibility thresholds, SINGLE template, or FK10_R2 after holdout open.",
+    "Do not reuse Segment C to select alternative rules.",
+    "Do not claim profitability before ECON_HOLDOUT1000 evidence exists."
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
