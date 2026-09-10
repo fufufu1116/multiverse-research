@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "artifact": "KEIRIN_PRE_PROVENANCE_BINDING_HARDENING_20260911_v1",
+  "status": "PASS_PROSPECTIVE_PRE_PROVENANCE_GUARD_V2_REPOSITORY_ONLY",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v61.json",
+  "purpose": "Close the gap where a PRE envelope could assert pre-cutoff timing without cryptographically binding the asserted evidence to immutable source snapshots.",
+  "guard": {
+    "path": "tools/keirin_prospective_cutoff_guard_v2.py",
+    "git_blob": "1d6f3b395094f76a02164ea11674e7022350938f",
+    "supersedes_for_new_capture_validation": "tools/keirin_prospective_cutoff_guard_v1.py",
+    "v1_remains_historical": true,
+    "network_access": false,
+    "event_discovery": false,
+    "hardcoded_target_date": false
+  },
+  "new_fail_closed_requirements": [
+    "AT_LEAST_ONE_OFFICIAL_OR_PRIMARY_SOURCE_RECEIPT",
+    "SOURCE_RETRIEVED_AT_MUST_BE_AT_OR_BEFORE_ENVELOPE_CAPTURE_TIME",
+    "SOURCE_RETRIEVED_AT_MUST_BE_AT_OR_BEFORE_TARGET_CUTOFF",
+    "ENVELOPE_CAPTURE_TIME_MUST_BE_AT_OR_BEFORE_TARGET_CUTOFF",
+    "SOURCE_HTTP_STATUS_MUST_EQUAL_200",
+    "SOURCE_SNAPSHOT_MUST_EXIST_INSIDE_REPOSITORY_ROOT",
+    "SOURCE_SNAPSHOT_PATH_TRAVERSAL_IS_PROHIBITED",
+    "SOURCE_SNAPSHOT_SHA256_MUST_MATCH_RECEIPT",
+    "SOURCE_IDS_MUST_BE_NONEMPTY_AND_UNIQUE",
+    "PRE_PAYLOAD_RESULT_OR_OUTCOME_KEYS_ARE_PROHIBITED",
+    "OUTCOME_ACCESS_POST_CUTOFF_BACKFILL_AND_POST_RESULT_RECONSTRUCTION_MUST_ALL_BE_FALSE",
+    "EXACT_FROZEN_V54_BINDINGS_MUST_MATCH_WITH_NO_PARAMETER_DRIFT"
+  ],
+  "exact_frozen_v54": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.50,
+    "competition_score_threshold": 0.40,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2"
+  },
+  "selftest": {
+    "executed_against_exact_git_blob_candidate": true,
+    "git_blob_recomputed_locally": "1d6f3b395094f76a02164ea11674e7022350938f",
+    "status": "PASS",
+    "passed": 11,
+    "total": 11,
+    "cases": [
+      "VALID_PROVENANCE_BOUND_PRE_PASSES",
+      "POST_CUTOFF_CAPTURE_REJECTED",
+      "OUTCOME_ACCESS_REJECTED",
+      "RESULT_KEY_REJECTED",
+      "NAIVE_TIMESTAMP_REJECTED",
+      "MISSING_RECEIPTS_REJECTED",
+      "SNAPSHOT_HASH_MISMATCH_REJECTED",
+      "RECEIPT_AFTER_CAPTURE_REJECTED",
+      "UNTRUSTED_ONLY_REJECTED",
+      "V54_BINDING_DRIFT_REJECTED",
+      "SNAPSHOT_PATH_TRAVERSAL_REJECTED"
+    ]
+  },
+  "absolute_rule_ja": "対象時点より先の情報を、対象時点の予測・選択・実行成立条件にしてはいけない。",
+  "scientific_boundary": {
+    "this_is_engineering_and_provenance_hardening_not_new_independent_outcome_evidence": true,
+    "science_increment": 0,
+    "formal_science_progress_pct": 85,
+    "fresh_prospective_evidence_still_required": true,
+    "specific_future_date_required": false,
+    "prospective_retuning": "PROHIBITED"
+  },
+  "safety": {
+    "runtime": "OFF",
+    "automatic_betting": "OFF",
+    "owner_action_required_now": false,
+    "owner_spend_required": false,
+    "credentials_required": false,
+    "live_effect": "NONE"
+  }
+}
