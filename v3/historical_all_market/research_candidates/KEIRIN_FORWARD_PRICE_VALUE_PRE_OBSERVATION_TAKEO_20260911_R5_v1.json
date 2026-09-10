@@ -1,0 +1,117 @@
+{
+  "record": "KEIRIN_FORWARD_PRICE_VALUE_PRE_OBSERVATION_TAKEO_20260911_R5_v1",
+  "status": "FROZEN_RESULT_BLIND_ODDS_BLIND_PRE_MODEL_OBSERVATION_CONFIDENCE_GATE_PASS_ODDS_PENDING",
+  "captured_jst": "2026-09-10T20:17:52+09:00",
+  "target_event": {
+    "date": "2026-09-11",
+    "venue": "武雄",
+    "race_no": 5,
+    "class": "A級チャレンジ選抜",
+    "start_jst": "09:53",
+    "distance_m": 1625,
+    "bank_circumference_m": 400,
+    "rider_count": 6,
+    "girls_flag": false,
+    "final_flag": false
+  },
+  "source_policy": {
+    "racecard_source": "OddsPark public racecard",
+    "racecard_url": "https://www.oddspark.com/keirin/RaceList.do?joCode=84&kaisaiBi=20260911&raceNo=5",
+    "used_fields": ["car_no", "rider_name", "style", "competition_score", "scheduled_start", "distance", "race_class"],
+    "publisher_marks_used": false,
+    "publisher_comments_used": false,
+    "prior_day_current_meeting_results_visible_in_source_but_used_by_model": false,
+    "target_event_result_accessed": false,
+    "target_event_payout_accessed": false,
+    "target_event_odds_accessed_before_this_freeze": false
+  },
+  "fresh_branch_head_observed_immediately_before_write": "bda2acc58176bd0c3563241dd9303affd1c5c342",
+  "prespec_binding": "v3/historical_all_market/research_candidates/KEIRIN_FORWARD_PRICE_VALUE_SHADOW_PRESPEC_20260910_v1.json",
+  "model_binding": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+  "model": {
+    "baseline": "S0_SCORE_ONLY_SOFTMAX",
+    "beta": 0.22260435254784533,
+    "challenger": "PRE_ONLY_RIDER_FIRST_STYLE_FALLBACK_CIRCUMFERENCE",
+    "circumference_code_q": -1,
+    "exact_rider_lookup_matches": 0,
+    "style_fallback_deltas": {
+      "逃": -0.020537046719,
+      "追": 0.038120995374,
+      "両": 0.0024804485
+    },
+    "formula": "S0 z=beta*competition_score; challenger z=beta*competition_score + q*delta_style because no exact rider lookup matches; softmax within race"
+  },
+  "input_snapshot": [
+    {"car_no": 1, "rider_name": "岸川 哲也", "style": "両", "competition_score": 79.875},
+    {"car_no": 2, "rider_name": "松丸 裕紀", "style": "追", "competition_score": 72.37},
+    {"car_no": 3, "rider_name": "黒崎 直行", "style": "追", "competition_score": 74.0},
+    {"car_no": 4, "rider_name": "金田 健一郎", "style": "追", "competition_score": 72.19},
+    {"car_no": 5, "rider_name": "小川 佑希也", "style": "逃", "competition_score": 71.454},
+    {"car_no": 6, "rider_name": "重 一徳", "style": "追", "competition_score": 67.111}
+  ],
+  "frozen_model_output": {
+    "s0_probabilities_by_car": {
+      "1": 0.540234324130,
+      "2": 0.101631884846,
+      "3": 0.146087010685,
+      "4": 0.097640125385,
+      "5": 0.082884802844,
+      "6": 0.031521852110
+    },
+    "challenger_probabilities_by_car": {
+      "1": 0.546389824251,
+      "2": 0.099190919428,
+      "3": 0.142578334824,
+      "4": 0.095295032899,
+      "5": 0.085781119278,
+      "6": 0.030764769320
+    },
+    "s0_ranking": [1, 3, 2, 4, 5, 6],
+    "challenger_ranking": [1, 3, 2, 4, 5, 6],
+    "s0_top1_car": 1,
+    "s0_top1_probability": 0.540234324130,
+    "challenger_top1_car": 1,
+    "challenger_top1_probability": 0.546389824251,
+    "top1_agreement": true,
+    "conservative_top1_probability": 0.540234324130,
+    "confidence_gate_minimum": 0.40,
+    "confidence_gate_pass": true,
+    "frozen_3renhuku_ticket": "1=2=3",
+    "s0_ticket_probability": 0.183558660636,
+    "challenger_ticket_probability": 0.179212765529,
+    "conservative_ticket_probability": 0.179212765529
+  },
+  "decision_before_odds": {
+    "base_confidence": "PASS",
+    "action": "WAIT_FOR_GENUINE_TIMESTAMPED_PRE_ODDS",
+    "stake_before_price_gate_yen": 0,
+    "odds_must_be_acquired_only_after_this_prediction_freeze": true,
+    "automatic_execution": false
+  },
+  "anti_hindsight": {
+    "result_blind_at_freeze": true,
+    "payout_blind_at_freeze": true,
+    "odds_blind_at_prediction_freeze": true,
+    "confidence_threshold_changed": false,
+    "ticket_rule_changed": false,
+    "stake_rule_changed": false,
+    "price_threshold_changed": false
+  },
+  "support_effect_at_prediction_freeze": {
+    "prospective_model_observation_increment": 1,
+    "prospective_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_v114_support_increment": 0,
+    "profitability_claim": false
+  },
+  "next_clean_action": "After confirming this commit exists, acquire genuine current PRE odds for exact 3renhuku 1=2=3, timestamp the observation, apply the prespecified CORE/shadow price gate, and freeze BUY_CANDIDATE/NO_BET before any target result lookup.",
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  }
+}
