@@ -16,7 +16,7 @@ Build the inside of MULTIVERSE before UI/avatar/gamification. The product-facing
 
 The intended loop is:
 
-world signals -> candidate discovery -> competitor/substitute research -> evidence verification -> AI-substitutability test -> economic simulation -> future-step / demand-death forecast -> choose monetization/exposure -> small reversible execution -> measured outcome -> learning dataset -> next decision.
+world signals -> candidate discovery -> competitor/substitute research -> evidence verification -> AI-substitutability test -> economic simulation -> future-step / demand-death forecast -> leverage search -> choose monetization/exposure -> small reversible execution -> measured outcome -> learning dataset -> next decision.
 
 ## Non-negotiable doctrine
 
@@ -32,6 +32,9 @@ world signals -> candidate discovery -> competitor/substitute research -> eviden
 10. Measure actual outcomes. Strategy scores without real traffic/conversion/profit/decay evidence are hypotheses, not truth.
 11. The long-run moat should come from accumulated outcome data, historical change data, verified mappings, distribution, integrations, behavior/conversion history, reusable code and opportunity-discovery speed—not idea secrecy alone.
 12. The owner-facing kingdom/chess/rank metaphor is optional UI only. Core terminology stays ordinary: profit, ceiling, risk, competition, demand life, automation, owner hours, exit trigger, etc.
+13. Leverage search is mandatory for serious candidates. For each opportunity, actively search how distribution, automation, AI, monetization, data, reuse, geography, partners/platforms and infrastructure can increase output per owner hour or per yen at risk.
+14. Do not call something leverage if it merely creates hidden workload, fixed cost, vendor lock-in, legal risk, inventory, sales-call dependence, team dependence or dangerous copy exposure.
+15. Do not multiply claimed leverage factors naively. Effects overlap. Use conservative diminishing credit until measured outcomes replace estimates.
 
 ## Three economic horizons
 
@@ -108,6 +111,29 @@ Promotion requires evidence that revenue can rise without proportional owner lab
 
 The owner remains the strategic authority. The UI may later represent business/system growth through kingdom ranks (hundred-person commander, thousand-person commander, general, great general, commander-in-chief, etc.), but the core must use actual economics and evidence.
 
+## Leverage / force-multiplier layer
+
+Every meaningful candidate gets a separate leverage scan after basic viability and competitor checks. The scan looks for ways to increase output without proportionally increasing owner labor or capital risk.
+
+Mandatory leverage search areas:
+- distribution: existing demand pools, search, marketplaces, social, referrals;
+- automation: remove recurring owner work before hiring people;
+- AI: use current models to reduce research/build/support/operation cost without becoming a thin replaceable wrapper;
+- monetization: compare multiple revenue routes rather than forcing one business model;
+- data: make each experiment or customer interaction create lawful reusable evidence;
+- reuse: reuse code, workflows, integrations, content structure and distribution assets across opportunities;
+- geography: look for country/language timing gaps and portable systems;
+- partner/platform: use existing ecosystems/APIs/affiliate systems where they create reach or capability;
+- infrastructure: rent commodity plumbing such as hosting, payments, analytics, email/notification and identity instead of rebuilding it when practical.
+
+Reject leverage options that require dangerous disclosure of the core method, deception, high legal risk, teams, sales calls, inventory or other constraints incompatible with the owner model. Penalize vendor lock-in and recurring fixed costs. Prefer verified, reversible, low-cost options that compound automation, data, distribution or reusable assets.
+
+Do not assume claimed 2x, 3x and 4x uplifts multiply to 24x. Use conservative diminishing credit until real measurements exist.
+
+A future application may visualize opportunity/business units as commanders, leverage options as equipment/capabilities, go-to-market/exit choices as tactics, and repeated measured improvement as training. This is optional presentation only; the underlying decision uses normal economic and risk metrics.
+
+See `leverage.py`, `test_leverage.py` and `LEVERAGE_DOCTRINE.md`.
+
 ## Output exposure / selling slices of MULTIVERSE
 
 MULTIVERSE itself does not need to be sold. The engine may choose among:
@@ -139,7 +165,7 @@ Consider follow-on demand several steps ahead. The system may predict complement
 
 The strongest proprietary dataset is a history of:
 
-signal/change -> prediction -> competitor state -> chosen action -> traffic -> conversion -> profit -> decay time -> exit -> residual assets -> failure/success reason.
+signal/change -> prediction -> competitor state -> leverage chosen -> chosen action -> traffic -> conversion -> profit -> owner time -> decay time -> exit -> residual assets -> failure/success reason.
 
 Over time this should answer questions such as:
 - which signal combinations actually predict monetizable demand;
@@ -147,6 +173,7 @@ Over time this should answer questions such as:
 - when competitors typically arrive;
 - when AI/official features erase the opportunity;
 - which monetization route works for which opportunity class;
+- which leverage options actually increase profit per owner hour rather than just adding complexity;
 - which small tests predict larger-scale winners;
 - which apparent trends should be ignored.
 
