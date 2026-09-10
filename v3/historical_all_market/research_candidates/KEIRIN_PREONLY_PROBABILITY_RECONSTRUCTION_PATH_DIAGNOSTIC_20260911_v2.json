@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_PREONLY_PROBABILITY_RECONSTRUCTION_PATH_DIAGNOSTIC_20260911_v2",
+  "status": "B1A_FROZEN_INFERENCE_STATE_RECOVERED_CANDIDATE_A_LOCK_BYTES_OR_PROVENANCE_STILL_UNRESOLVED",
+  "scope": "OUTCOME_INDEPENDENT_INFERENCE_PROVENANCE_ONLY",
+  "governance_boundary": {
+    "dev2000_c_opened": false,
+    "econ_holdout1000_opened": false,
+    "new_result_access": false,
+    "new_payout_access": false,
+    "owner_spend": false,
+    "credentials_used": false,
+    "live_effect": false,
+    "runtime": "OFF",
+    "automatic_betting": "OFF"
+  },
+  "stage1": {
+    "engine_git_blob": "029904b359e8151263c6a9bf8c4635f026941b0b",
+    "immutable_prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "rows": 14255,
+    "races": 2000,
+    "required_columns": ["candidate_a_win_prob", "b1a_reconstituted_v1_win_prob"],
+    "result_free": true,
+    "settlement_free": true,
+    "numeric_closing_odds_free": true
+  },
+  "b1a_freeze_recovered": {
+    "drive_folder": "MULTIVERSE_B1A_RECONSTITUTED_v1_FREEZE",
+    "model_file": "B1A_RECONSTITUTED_v1_MODEL.json",
+    "implementation_file": "B1A_RECONSTITUTED_v1_IMPLEMENTATION.py",
+    "spec_file": "B1A_RECONSTITUTED_v1_SPEC.json",
+    "master_provenance_file": "MASTER_PROVENANCE.json",
+    "lineage_status": "NEW_RECONSTITUTED_AUDITABLE_LINEAGE",
+    "standard_n": 974,
+    "candidate_a_prediction_lock_sha256": "2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada",
+    "parent_nextgen5000_universe_sha256": "dd2045cc609c37c08a9e65ba4f80ab121803d0749440a7023394e431a1678781",
+    "candidate_a_base": {
+      "temperature": 1.15,
+      "coefficients": {
+        "score_z": 0.55,
+        "win_rate_z": 0.18,
+        "quinella_rate_z": 0.12,
+        "trio_rate_z": 0.08,
+        "B_z": 0.04,
+        "S_z": 0.03
+      }
+    },
+    "b1a_residual_beta": {
+      "style_逃": 0.26909662735448,
+      "style_追": -0.3773237125550861,
+      "style_両": 0.10822708520060681,
+      "class_SS": 1.0770873580301035,
+      "class_S1": -0.12658801568020364,
+      "class_S2": -0.9504993423499002,
+      "class_A1": 0.10862511799550383,
+      "class_A2": -0.10862511799550574,
+      "class_A3": 4.991005121158697e-16,
+      "class_L1": -1.446593378458555e-16
+    },
+    "inference_form": "softmax(candidate_a_base_logit + style/class fixed residual beta)",
+    "new_result_access_required_for_inference": false,
+    "note": "Historical model fitting used winner labels, but frozen inference coefficients and equations are already present. Do not refit."
+  },
+  "remaining_blocker": {
+    "candidate_a_prediction_lock_sha_known": true,
+    "candidate_a_prediction_lock_bytes_found_by_direct_drive_search": false,
+    "immutable_combined_prediction_csv_found_by_direct_drive_search": false,
+    "needed": "recover PRE record schema/bytes compatible with the frozen Candidate A base features, or recover the immutable prediction artifact itself, without opening protected outcome datasets"
+  },
+  "safe_next_steps": [
+    "Trace Candidate A prediction-lock provenance and the PRE input universe by SHA/name/manifest only.",
+    "Do not refit B1a; use recovered frozen coefficients only for inference once PRE inputs are grounded.",
+    "If PRE bytes are recovered under an allowed path, independently regenerate candidate_a and B1a winner probabilities and verify race-local sums, row counts, race sets, and hashes where applicable.",
+    "Only after probability-side reproduction consider calibration through an already-authorized burned-label artifact; do not open new RESULT/PAYOUT."
+  ],
+  "non_conclusions": [
+    "No current A+B calibration has been completed.",
+    "No BUY rule is changed.",
+    "No profitability claim is made.",
+    "competition_score threshold 0.40 remains frozen control."
+  ]
+}
