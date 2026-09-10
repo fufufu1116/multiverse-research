@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_B1A_MKT50_V54_PROSPECTIVE_VALIDATION_BRIDGE_20260911_v1",
+  "status": "FROZEN_BEFORE_FUTURE_RACECARDS_AND_OUTCOMES",
+  "created_from_fresh_head": "f183a70d4c7328a4344596199562c6f858d56307",
+  "purpose": "Bind already-prepared prospective race sets to the exact v54 B1a_MKT50_v1 model, selector and validation rules before future racecards/results become available.",
+  "source_future_manifests": [
+    "KEIRIN_0914_0915_35_CANDIDATE_PRE_CAPTURE_MANIFEST_20260907_v1.json",
+    "KEIRIN_0924_DAY1_START_SET_FREEZE_20260908_v1.json"
+  ],
+  "v54_immutable_bindings": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.50,
+    "competition_score_threshold": 0.40,
+    "markets": ["3rentan", "2shatan"],
+    "eligibility": "q*odds-1 >= 0 and q/market_shape >= 1",
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2"
+  },
+  "prospective_capture_protocol": {
+    "membership": "Use only the race/event membership fixed by the source future manifests; when exact Day1 racecards become available, freeze exact race IDs before any result join.",
+    "pre_inputs": "Capture only contemporaneous pre-result race/rider inputs and genuine pre-close odds needed by the frozen model/selector.",
+    "prediction": "Compute B1a_RECONSTITUTED_v1 winner layer unchanged, then B1a_MKT50_v1 exact-order ticket probabilities, then v54 selector output.",
+    "freeze_before_outcome": [
+      "ordered race membership",
+      "PRE input artifact hash",
+      "odds artifact hash and capture timestamp/provenance",
+      "prediction artifact hash",
+      "selected-ticket ledger hash",
+      "model/selector/validator bindings"
+    ],
+    "missed_pre_rule": "If required PRE or genuine pre-close odds are missing at cutoff, the race/ticket is a closed miss for evidence collection and must never be reconstructed after results.",
+    "outcome_join": "Forbidden before the race/cutoff and requires a later explicit scoring authority if governance still requires it at that time."
+  },
+  "calendar_sets": {
+    "2026-09-14": ["伊東", "青森"],
+    "2026-09-15": ["防府"],
+    "2026-09-24": ["弥彦", "川崎", "奈良", "別府", "熊本"]
+  },
+  "scientific_rules": {
+    "no_retuning_after_capture": true,
+    "no_threshold_change_after_capture": true,
+    "no_post_result_pre_reconstruction": true,
+    "historical_NEXTGEN5000_as_final_holdout": false,
+    "formal_science_increment_at_freeze": 0
+  },
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
