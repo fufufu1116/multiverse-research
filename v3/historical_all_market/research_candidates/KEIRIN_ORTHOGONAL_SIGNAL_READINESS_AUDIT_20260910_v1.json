@@ -1,0 +1,62 @@
+{
+  "record": "KEIRIN_ORTHOGONAL_SIGNAL_READINESS_AUDIT_20260910_v1",
+  "status": "ORTHOGONAL_LINE_SIGNAL_ARCHITECTURE_EXISTS_NOT_FITTED_NOT_VALIDATED_NOT_PROMOTABLE",
+  "date_jst": "2026-09-10",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_branch_head_before_write": "4f913e828c0becea4efc792f868b7bca9e5cac36",
+  "purpose": "Check whether a materially different PRE-only signal family is ready to challenge the current score-dominance winning-path candidate without using RESULT, PAYOUT, protected holdouts, or post-hoc fitting.",
+  "inspected_components": {
+    "line_relation_encoder": "v3/historical_all_market/new_lineage/line_relation_features_v1.py",
+    "line_logit_adapter": "v3/historical_all_market/new_lineage/c1_n1_line_logit_adapter_v1.py",
+    "formal_state": "v3/historical_all_market/research_candidates/KEIRIN_CURRENT_RESEARCH_STATE_20260908_v114.json"
+  },
+  "findings": {
+    "line_features_are_structurally_distinct": true,
+    "pre_only": true,
+    "contains_result_or_payout_or_odds": false,
+    "encoder_supports": [
+      "own line position and size",
+      "singleton flag",
+      "line-head / bante / rear-position flags",
+      "same-line pair relations",
+      "ordered-top3 context relations"
+    ],
+    "adapter_behavior": "Deterministically injects externally supplied coefficients into C1/N1 probability generators; it does not fit those coefficients itself.",
+    "zero_coefficient_semantics": "Designed to reduce to the corresponding PL control when line coefficients are zero.",
+    "current_research_state": "IMPLEMENTED_SELFTEST_PASS_NOT_FITTED_NOT_VALIDATED",
+    "predictive_coefficients_ready": false,
+    "real_world_edge_validated": false
+  },
+  "candidate_comparison": {
+    "current_best": "SELECTIVE_SCORE_DOMINANCE_CONSERVATIVE_SINGLE_3RENHUKU_CORE_VALUE_LANE",
+    "line_signal_can_replace_current_best_now": false,
+    "reason": "The line architecture is an orthogonal feature carrier but currently lacks legitimately fitted and unseen-validated coefficients, so promoting it now would add freedom without evidence.",
+    "owner_hypotheses": "Girls/final/solo/line structure remain logged strata or future research hypotheses, not current purchase-rule modifiers."
+  },
+  "future_safe_route": [
+    "Keep the current frozen forward lane unchanged.",
+    "If later governance permits legitimate training evidence, fit line coefficients only on authorized training/calibration data with a fixed protocol.",
+    "Preregister the resulting line challenger before exposing it to later unseen prospective outcomes.",
+    "Require it to beat the frozen score-dominance lane on proper scoring/calibration and economic robustness, not merely raw hit count.",
+    "Do not promote from the same sample used to discover subgroup or coefficient behavior."
+  ],
+  "evidence_effect": {
+    "prospective_model_observation_increment": 0,
+    "valid_price_observation_increment": 0,
+    "economic_support_increment": 0,
+    "formal_support_increment": 0,
+    "profitability_claim": false
+  },
+  "protected_boundaries": {
+    "DEV2000_C_opened": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "result_accessed": false,
+    "payout_accessed": false,
+    "main_mutation": false,
+    "runtime": "OFF",
+    "credentials": false,
+    "spend": false,
+    "automatic_betting": false
+  },
+  "owner_action_required_now": false
+}
