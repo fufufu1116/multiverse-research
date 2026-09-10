@@ -1,0 +1,67 @@
+{
+  "schema": "MULTIVERSE_REMOTE_POSTGRES_ADAPTER_PREPROD_CANDIDATE_SEAL_v1",
+  "issue": 142,
+  "pr": 143,
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "canonical_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "branch": "agent/remote-postgres-adapter-preprod-preparation-v1-20260906-v1",
+  "adopted_postgres_adapter_parent": {
+    "pr": 140,
+    "head": "d44b9c8262888182801cb3f6355538f63e7dc21b",
+    "tree": "34d3a2045ea24cfa7eec80bc691e37a64adbb2ab",
+    "owner_gate": 141,
+    "owner_adoption_comment": 5557497002
+  },
+  "pre_seal_head": "2979538968c0a812df5fdd3a19da6e106f04a060",
+  "pre_seal_tree": "a2a8ffbd0b7426ef723ff93d7fd17059fbea5024",
+  "pre_seal_execution_preparation_subtree": "f787228d67d7f2527324863995f6fed45db058f1",
+  "proof_ceiling": "REMOTE_POSTGRES_ADAPTER_PREPRODUCTION_EXECUTION_PREPARATION_ONLY",
+  "execution_state": "REMOTE_EXECUTION_NOT_AUTHORIZED",
+  "remote_postgres_execution": false,
+  "activation_ready": false,
+  "runtime": "OFF",
+  "candidate_side_execution": {
+    "remote_execution_performed": false,
+    "provider_mutation_performed": false,
+    "deploy_performed": false,
+    "schema_mutation_performed": false,
+    "exact_head_tests_executed_before_seal": false,
+    "independent_lab_exact_head_execution_required": true
+  },
+  "provider_target": {
+    "provider": "RENDER",
+    "environment_class": "PRE_PRODUCTION",
+    "region": "singapore",
+    "existing_postgres_id": "dpg-dadou0on74is73b09570-a",
+    "existing_postgres_plan": "free",
+    "planned_service_plan": "free",
+    "planned_auto_deploy": false
+  },
+  "activation_gates": {
+    "provider_effect_adapter_enabled": false,
+    "runtime_activation_bridge_enabled": false,
+    "activation_ready": false
+  },
+  "required_review_path": [
+    "INDEPENDENT_LAB",
+    "T1",
+    "INDEPENDENT_AUDITOR",
+    "T2",
+    "SEPARATE_OWNER_EXECUTION_AUTHORITY"
+  ],
+  "authority": {
+    "additional_spend": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "provider_resource_mutation": false,
+    "remote_postgres_execution": false,
+    "remote_schema_mutation": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "workflow_dispatch_rerun": false
+  }
+}

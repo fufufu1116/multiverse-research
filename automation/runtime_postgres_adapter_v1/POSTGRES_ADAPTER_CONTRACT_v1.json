@@ -1,0 +1,79 @@
+{
+  "schema": "MULTIVERSE_RUNTIME_POSTGRES_ADAPTER_CONTRACT_v1",
+  "issue": 139,
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "canonical_main": "a6f56facc80709f2e7b8218d927484d522bfa356",
+  "canonical_tree": "2c957c4ad8a553b3a0e7122ebcdb22e75398afaf",
+  "adopted_activation_integration": {
+    "pr": 137,
+    "head": "efe180d91ff4fd2149c4d0cfba1af6821269602d",
+    "tree": "af99595781224844d2867392e7aa3ce4d41a92bf",
+    "owner_gate": 138,
+    "owner_adoption_comment": 5557340887,
+    "proof_ceiling": "RUNTIME_ACTIVATION_INTEGRATION_REPOSITORY_PREPARATION_ONLY",
+    "integration_state": "ACTIVATION_INTEGRATION_PREPARATION_NOT_ACTIVATABLE"
+  },
+  "runtime_readiness_reassessment_comment": 5557349957,
+  "proof_ceiling": "RUNTIME_POSTGRES_ADAPTER_REPOSITORY_IMPLEMENTATION_ONLY",
+  "implementation_state": "POSTGRES_ADAPTER_IMPLEMENTED_NOT_REMOTE_VALIDATED",
+  "activation_ready": false,
+  "runtime": "OFF",
+  "adapter": {
+    "connection_factory_injected": true,
+    "connection_string_handling": false,
+    "network_dialing_in_candidate": false,
+    "postgres_driver_import": false,
+    "database_time_authority": "clock_timestamp()",
+    "control_row_locking": "FOR UPDATE",
+    "monotonic_fence": true,
+    "worker_instance_binding": true,
+    "lease_expiry_fail_closed": true,
+    "checkpoint_fence_bound": true,
+    "idempotency_request_key_payload_digest": true,
+    "sql_parameterized_authority_values": true,
+    "transaction_commit_rollback": true,
+    "remote_validation_required": true
+  },
+  "activation_gates": {
+    "kill_switch_default_engaged": true,
+    "provider_effect_adapter_enabled": false,
+    "runtime_activation_bridge_enabled": false
+  },
+  "authority": {
+    "additional_spend": false,
+    "live_business_effect": false,
+    "main_mutation": false,
+    "merge": false,
+    "network_effect": false,
+    "production_credentials": false,
+    "production_deployment": false,
+    "protected_keirin_data": false,
+    "provider_resource_mutation": false,
+    "remote_postgres_execution": false,
+    "ruleset_mutation": false,
+    "runtime_activation": false,
+    "workflow_dispatch_rerun": false
+  },
+  "required_review_path": [
+    "CANDIDATE_FREEZE",
+    "INDEPENDENT_LAB",
+    "T1",
+    "INDEPENDENT_AUDITOR",
+    "T2",
+    "SEPARATE_OWNER_DECISION"
+  ],
+  "not_proven": [
+    "REMOTE_POSTGRES_RUNTIME_ADAPTER_EXECUTION",
+    "REMOTE_SCHEMA_MUTATION",
+    "POSTGRES_NETWORK_PARTITION_BEHAVIOR",
+    "POSTGRES_HIGH_AVAILABILITY",
+    "RUNTIME_ACTIVATION_READY",
+    "RUNTIME_ACTIVATION",
+    "PROVIDER_EFFECT_ADAPTER_ENABLEMENT",
+    "PRODUCTION_CREDENTIALS",
+    "PRODUCTION_DEPLOYMENT",
+    "LIVE_BUSINESS_EFFECTS",
+    "PROTECTED_KEIRIN_DATA",
+    "PAID_OR_ADDITIONAL_SPEND"
+  ]
+}
