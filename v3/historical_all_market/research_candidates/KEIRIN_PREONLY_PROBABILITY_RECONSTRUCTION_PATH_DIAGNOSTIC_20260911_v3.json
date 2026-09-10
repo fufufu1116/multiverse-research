@@ -1,0 +1,46 @@
+{
+  "record": "KEIRIN_PREONLY_PROBABILITY_RECONSTRUCTION_PATH_DIAGNOSTIC_20260911_v3",
+  "status": "IMMUTABLE_COMBINED_PREDICTION_BYTES_RECOVERED_AND_HASH_VERIFIED",
+  "scope": "OUTCOME_INDEPENDENT_INFERENCE_PROVENANCE_ONLY",
+  "governance_boundary": {
+    "dev2000_c_opened": false,
+    "econ_holdout1000_opened": false,
+    "new_result_access": false,
+    "new_payout_access": false,
+    "owner_spend": false,
+    "credentials_used": false,
+    "live_effect": false,
+    "runtime": "OFF",
+    "automatic_betting": "OFF"
+  },
+  "recovered_prediction_lock": {
+    "drive_folder": "MULTIVERSE_DEV2000_PREDICTION_LOCK_v3_IPHONE_LITE",
+    "lock_file": "PREDICTION_LOCK.json",
+    "prediction_file": "DEV2000_CANDIDATE_A_B1A_RECONSTITUTED_v1_PREDICTIONS.csv",
+    "prediction_sha256_expected": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "prediction_sha256_observed": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "hash_match": true,
+    "rows": 14255,
+    "races": 2000,
+    "columns": ["race_id", "car_no", "rider_id", "candidate_a_win_prob", "b1a_reconstituted_v1_win_prob"],
+    "result_columns_present": false,
+    "payout_columns_present": false,
+    "numeric_closing_odds_present": false,
+    "lock_status": "PASS_FROZEN_BEFORE_RESULT_OPEN",
+    "candidate_a_prediction_lock_sha256": "2defade77042f5e2e78a68c831d4cb67330882b4d8977c6e3d9d44546988aada",
+    "dev2000_pre_table_artifact_sha256": "c8868af351d0480fb0e0036fd255a5dc08157d73795aa523e95d5578ae26ffc6",
+    "dev2000_pre_table_csv_sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73"
+  },
+  "conclusion": "The v43 blocker 'immutable combined prediction bytes not found' is resolved. Candidate A and B1a frozen winner probabilities can now be referenced from verified immutable bytes without recomputing from protected PRE inputs or opening new outcome data.",
+  "remaining_work": [
+    "Ground an already-authorized burned A+B label/join artifact that maps race_id and winner without opening new RESULT/PAYOUT sources.",
+    "Run current Candidate A vs B1a winner-probability calibration on burned A+B only.",
+    "Keep ticket-probability calibration separate from winner calibration.",
+    "Preserve competition_score threshold 0.40 and do not retune on burned A+B."
+  ],
+  "non_conclusions": [
+    "No new profitability claim is made.",
+    "No BUY rule is changed.",
+    "No protected holdout is opened."
+  ]
+}
