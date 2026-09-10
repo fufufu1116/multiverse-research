@@ -19,16 +19,21 @@ jobs:
       - name: Checkout exact Candidate
         uses: actions/checkout@v4
         with:
-          ref: 8e0358aac2fa41b019c1c55f2f0bf660839858e2
+          ref: f3611e3d2afd434d3ad91b73f7288bd9180f5d4b
           fetch-depth: 0
 
-      - name: Exact head
+      - name: Exact head and narrow wiring
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "8e0358aac2fa41b019c1c55f2f0bf660839858e2"
+          test "$(git rev-parse HEAD)" = "f3611e3d2afd434d3ad91b73f7288bd9180f5d4b"
           echo "CANDIDATE_HEAD=$(git rev-parse HEAD)"
           echo "WORKFLOW_TRIGGER_SHA=$GITHUB_SHA"
+          grep -q 'github_json_read' automation/review_dispatcher_v1/dispatcher.py
+          grep -q 'github_json_read' automation/review_dispatcher_v1/review.py
+          grep -q 'def github_json_read' automation/review_dispatcher_v1/github_read_resilience_v1.py
+          test "$(git ls-tree HEAD buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | awk '{print $3}')" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git ls-tree HEAD buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | awk '{print $3}')" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
 
       - name: Compile dispatcher
         shell: bash
