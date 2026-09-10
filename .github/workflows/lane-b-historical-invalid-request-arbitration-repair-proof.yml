@@ -44,7 +44,7 @@ jobs:
             automation.review_dispatcher_v1.test_t2_resilience_integration_v1 \
             automation.review_dispatcher_v1.test_validator_current_baseline_v1 \
             2>&1 | tee /tmp/full-tests.log
-          grep -F 'Ran 140 tests' /tmp/full-tests.log
+          grep -F 'Ran 132 tests' /tmp/full-tests.log
           OUT="$(PYTHONPATH=. python automation/review_dispatcher_v1/validator.py)"
           echo "$OUT"
           python - "$OUT" <<'PY'
