@@ -1,0 +1,116 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v69",
+  "date_jst": "2026-09-11",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "previous_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v68.json",
+  "fresh_head_before_write": "152b1ce6aaa4b77d3e810ef433d65214e3fa8407",
+  "current_status": "STRICT40_RACE_GATE_SCORE_PRODUCER_RECOVERED_AND_V54_DECISION_RUNNER_HARDENED_WAITING_FOR_GENUINE_FINAL_PRE_RACECARD_AND_ODDS",
+  "competition_gate_recovery": {
+    "resolved_semantic_name": "conservative_top1_probability_with_same_top1_agreement",
+    "threshold": 0.40,
+    "rule": "Require S0 and frozen challenger to agree on Top1; if they agree, gate score is min(S0 Top1 probability, challenger Top1 probability); if they disagree, gate score is 0.0.",
+    "s0": "within-race softmax(beta * rider competition score), beta=0.22260435254784533",
+    "challenger": "within-race softmax(beta*score + circumference-signed exact-rider delta; else frozen style delta; else S0)",
+    "circumference_q": {"400": -1, "333_OR_333_33": 1},
+    "frozen_style_delta_logit": {"逃": -0.020537046719, "追": 0.038120995374, "両": 0.0024804485},
+    "frozen_model_path": "v3/historical_all_market/research_candidates/KEIRIN_PRE_ONLY_RIDER_OR_STYLE_CIRCUMFERENCE_MODEL_FREEZE_20260908_v2.json",
+    "frozen_model_git_blob": "061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878",
+    "historical_crosscheck": {
+      "takeo_20260911_R5_s0": 0.540234324130,
+      "takeo_20260911_R5_challenger": 0.546389824251,
+      "takeo_20260911_R5_conservative": 0.540234324130,
+      "takeo_20260911_R4_conservative": 0.381057720912,
+      "takeo_20260911_R6_conservative": 0.357674052433,
+      "strict40_membership": [5]
+    },
+    "explicitly_not": [
+      "not the rider's raw 65-111-ish competition score",
+      "not Stage7 G20/G25/G30 TV3 disagreement gate",
+      "not an invented 0-1 normalization of rider score"
+    ]
+  },
+  "new_tools": {
+    "score_producer": {
+      "path": "tools/keirin_prospective_competition_gate_score_v1.py",
+      "git_blob": "8ffbab9d02562a3f8b617047c614a2008378932b",
+      "behavior": [
+        "reads only PRE payload plus exact frozen S0/challenger model freeze",
+        "accepts rider score field alias score or competition_score; if both exist they must match",
+        "rejects outcome/result/payout/refund/finish/winner fields",
+        "no network, no odds, no retune, no overwrite"
+      ]
+    },
+    "decision_runner_v2": {
+      "path": "tools/keirin_prospective_v54_decision_freeze_runner_v2.py",
+      "git_blob": "78e5b5a5cfef24d58ac2abfbd38028eb73834ee5",
+      "parent_v1_git_blob": "417fa8947ab9b15dde305adc15085d558659d134",
+      "hardening": [
+        "caller-supplied competition_score is forbidden",
+        "requires exact PRE payload used by the PRE-freeze receipt",
+        "canonical PRE payload SHA256 must equal PRE-freeze receipt pre_payload_sha256",
+        "target identity must match",
+        "race-gate score is internally recomputed by pinned score producer",
+        "then delegates MKT50 + frozen selector + FK10_R2 to pinned v1"
+      ]
+    }
+  },
+  "frozen_v54_unchanged": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "stage1_pl_ticket_probability_engine_git_blob": "029904b359e8151263c6a9bf8c4635f026941b0b",
+    "pool_weight": 0.50,
+    "competition_score_threshold": 0.40,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2",
+    "kelly_mult": 0.10,
+    "ticket_cap_fraction": 0.0025,
+    "race_cap_fraction": 0.02
+  },
+  "pre_discovery_20260911_midday": {
+    "matsuyama_20260912": {
+      "event_and_day1_race_links_visible": true,
+      "day1_races": 7,
+      "individual_race_body_with_car_and_rider_captured": false,
+      "freeze_eligible": false,
+      "reason": "race links are visible but the current retrieval layer still has not produced a trustworthy savable individual body bound to car+rider before cutoff"
+    },
+    "sasebo_20260912": {
+      "event_and_day1_race_links_visible": true,
+      "day1_races": 12,
+      "individual_race_body_with_car_and_rider_captured": false,
+      "freeze_eligible": false,
+      "reason": "race links are visible but the current retrieval layer still has not produced a trustworthy savable individual body bound to car+rider before cutoff"
+    },
+    "target_result_pages_opened": false,
+    "target_payout_pages_opened": false
+  },
+  "verification_state": {
+    "github_readback_score_producer": "PASS",
+    "github_readback_decision_runner_v2": "PASS",
+    "exact_connected_repo_execution": "NOT_RUN_IN_CONNECTOR_ENVIRONMENT",
+    "reason": "connected GitHub interface supports content read/write but not arbitrary repository process execution; do not overclaim a runtime test",
+    "scientific_trial_count_increment": 0
+  },
+  "next_action": [
+    "Continue PRE-only discovery without opening target results or payouts.",
+    "As soon as a trustworthy final racecard body exposes date+venue+race+car+rider before cutoff, save raw PRE bytes and hash them.",
+    "Build the exact B1A/S0-compatible PRE payload, run PRE freeze, then v54 decision runner v2.",
+    "Acquire and save genuine pre-close supported-market odds only after the prediction/PRE freeze and before cutoff; bind raw odds snapshots by hash.",
+    "If the strict40 gate fails, freeze NO_BET without target odds lookup where the existing forward ordering requires that behavior.",
+    "Post-outcome validator remains untouched until outcomes legitimately exist after the PRE freezes."
+  ],
+  "owner_action_required_now": false,
+  "owner_assist_only_if": "A final PRE-only racecard is visible on Owner device before cutoff but cannot be captured by available tooling; Owner may share/save that PRE-only page or PDF without result/payout content.",
+  "progress": {
+    "practical_engineering_percent": 100,
+    "simulation_winning_pattern_exploration_percent": 100,
+    "formal_scientific_progress_percent": 85,
+    "formal_increment_now": 0
+  },
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend": false,
+  "credentials_used": false,
+  "live_effect": false
+}
