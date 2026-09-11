@@ -103,7 +103,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python automation/review_dispatcher_v1/validator.py > validator.json
+          PYTHONPATH=. python automation/review_dispatcher_v1/validator.py > validator.json
           python - <<'PY'
           import json
           data = json.load(open('validator.json'))
