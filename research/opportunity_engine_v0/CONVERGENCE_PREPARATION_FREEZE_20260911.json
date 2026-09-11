@@ -1,0 +1,70 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_CONVERGENCE_PREPARATION_FREEZE_v1",
+  "status": "REPOSITORY_ONLY_PREPARATION_COMPLETE_PENDING_EXTERNAL_GOVERNANCE",
+  "observed_on": "2026-09-11",
+  "canonical_main_at_freeze_preparation": {
+    "sha": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46"
+  },
+  "research_branch": "agent/opportunity-engine-core-v0-20260911",
+  "pre_freeze_head": "70ccf390c7c3f390530ce44ab6b078392be61558",
+  "slices": {
+    "A_core_domain_model": "FROZEN_FOR_PREPARATION",
+    "B_forecast_integrity": "FROZEN_FOR_PREPARATION",
+    "C_customer_value_hundred_user": "FROZEN_FOR_PREPARATION",
+    "D_multiverse_bridge": "CURRENT_MAIN_CONTRACT_BOUND_RESEARCH_ONLY",
+    "E_completion_spine": "DEFINED_REUSES_UPSTREAM_OUTPUTS"
+  },
+  "current_main_binding": {
+    "task_schema": "MULTIVERSE_RESEARCH_TASK_v2",
+    "result_schema": "MULTIVERSE_RESEARCH_RESULT_v1",
+    "evidence_manifest_required": true,
+    "source_ref_required_for_bridge": true,
+    "nonauthority_fail_closed": true
+  },
+  "main_delta_since_pr310_original_base": {
+    "base": "04f314c744abbd0a15591e0437c5de178cfb0ef4",
+    "current": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "ahead_by": 3,
+    "observed_changed_paths": [
+      "automation/review_dispatcher_v1/request_arbitration_v6.py",
+      "automation/review_dispatcher_v1/test_request_arbitration_v6.py"
+    ],
+    "direct_opportunity_engine_path_overlap_observed": false
+  },
+  "proof_state": {
+    "new_convergence_tests": "WRITTEN_NOT_INDEPENDENTLY_EXECUTED",
+    "latest_head_pull_request_workflow_runs": "NONE_OBSERVED",
+    "independent_lab_auditor_proof_for_latest_head": false,
+    "pass_claim_for_latest_convergence_tests": false
+  },
+  "rework_controls": [
+    "do not merge PR310 wholesale",
+    "do not copy canonical MULTIVERSE control-plane code",
+    "do not duplicate canonical provider, publisher, T2, credential or Runtime logic",
+    "reuse frozen evidence and upstream decisions",
+    "rerun only the invalidated stage when a downstream stage changes",
+    "Fresh-read canonical main before any successor or adoption action"
+  ],
+  "remaining_actions_are_outside_repository_only_preparation": [
+    "create exact fresh-main adoption successor when canonical integration is authorized",
+    "formal independent Lab/Auditor review under canonical process",
+    "canonical adoption or merge",
+    "live provider/network/credential/spend activity",
+    "Hundred User customer recruitment and real-market validation",
+    "Runtime activation or live business effect"
+  ],
+  "authority": {
+    "formal_review": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "provider_call": false,
+    "network_live_effect": false,
+    "credential_use": false,
+    "spend": false,
+    "publication": false,
+    "customer_recruitment": false,
+    "runtime_activation": false,
+    "live_business_effect": false
+  }
+}
