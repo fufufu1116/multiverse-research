@@ -15,6 +15,46 @@ from automation.review_dispatcher_v1.model_legacy_v1 import (
 )
 
 
+CandidateRecord = tuple[
+    int,
+    dict[str, Any],
+    dict[str, Any],
+    str | None,
+]
+
+
+_SAFE_RECIPE = {
+    "subtrees": {},
+    "durable_comments": [],
+    "source_rules": [],
+    "unittest_modules": [],
+    "validators": [],
+    "secret_scan_paths": [],
+    "forbidden_patterns": [],
+    "http": None,
+}
+
+
+def _recipe_only_invalid(request: dict[str, Any]) -> bool:
+    """True only when replacing recipe makes the whole request valid.
+
+    This is the safety boundary for historical bridging. Authority,
+    identity, envelope, upstream, supersession and nonauthority fields must
+    already satisfy the current canonical request contract. Only a malformed
+    historical recipe may be bridged by an explicit later valid successor.
+    """
+    probe = dict(request)
+    probe["recipe"] = {
+        key: (value.copy() if isinstance(value, dict) else list(value) if isinstance(value, list) else value)
+        for key, value in _SAFE_RECIPE.items()
+    }
+    try:
+        validate_request(probe)
+    except ReviewContractError:
+        return False
+    return True
+
+
 def _exact_candidates(
     comments: list[dict[str, Any]],
     *,
@@ -25,8 +65,8 @@ def _exact_candidates(
     tree: str,
     base: str,
     main: str,
-) -> list[tuple[int, dict[str, Any], dict[str, Any]]]:
-    candidates: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
+) -> list[CandidateRecord]:
+    candidates: list[CandidateRecord] = []
     for raw_comment in comments:
         comment = required_object(raw_comment, "COMMENT_RESPONSE_OBJECT")
         body = comment.get("body") or ""
@@ -49,12 +89,22 @@ def _exact_candidates(
             and request["base"] == base
             and request["main"] == main
         ):
-            validate_request(request)
+            validation_error: str | None = None
+            try:
+                validate_request(request)
+            except ReviewContractError as exc:
+                # Never bridge authority/identity/upstream/envelope defects.
+                # A later successor may bridge only a recipe-local historical
+                # defect, and only after exact SHA/order/ambiguity checks below.
+                if not _recipe_only_invalid(request):
+                    raise
+                validation_error = str(exc)
             candidates.append(
                 (
                     github_comment_id(comment, "OWNER_REQUEST_COMMENT_ID"),
                     request,
                     comment,
+                    validation_error,
                 )
             )
     candidates.sort(key=lambda item: item[0])
@@ -84,13 +134,50 @@ def exact_current_owner_requests_v6(
     )
 
     seen_ids: set[str] = set()
-    generations: dict[str | None, list[tuple[int, dict[str, Any], dict[str, Any]]]] = {}
-    for comment_id, request, comment in candidates:
+    generations: dict[str | None, list[CandidateRecord]] = {}
+    for comment_id, request, comment, validation_error in candidates:
+        # Recipe-only historical candidates already passed a full validation
+        # probe with a safe empty recipe, so these arbitration fields are
+        # canonical and authority-safe even when their original recipe is not.
         rid = request["request_id"]
         require(rid not in seen_ids, f"DUPLICATE_EXACT_REQUEST_ID:{rid}")
         seen_ids.add(rid)
         predecessor = request["supersedes_request_sha256"]
-        generations.setdefault(predecessor, []).append((comment_id, request, comment))
+        generations.setdefault(predecessor, []).append(
+            (comment_id, request, comment, validation_error)
+        )
+
+    # A malformed exact request is tolerated only as durable historical
+    # lineage when exactly one later exact trusted *valid* request binds to
+    # its raw canonical SHA. No successor, an invalid successor, or multiple
+    # successors remains fail-closed.
+    historical_bridge_hashes: set[str] = set()
+    for comment_id, request, _comment, validation_error in candidates:
+        if validation_error is None:
+            continue
+        request_sha = sha256_json(request)
+        direct_successors = [
+            candidate
+            for candidate in candidates
+            if candidate[0] > comment_id
+            and candidate[1]["supersedes_request_sha256"] == request_sha
+        ]
+        require(
+            len(direct_successors) == 1,
+            (
+                "HISTORICAL_INVALID_EXACT_SUCCESSOR_COUNT:"
+                f"{comment_id}:{len(direct_successors)}:{validation_error}"
+            ),
+        )
+        successor = direct_successors[0]
+        require(
+            successor[3] is None,
+            (
+                "HISTORICAL_INVALID_EXACT_SUCCESSOR_NOT_VALID:"
+                f"{comment_id}:{successor[0]}:{successor[3]}"
+            ),
+        )
+        historical_bridge_hashes.add(request_sha)
 
     accepted: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
     winning_predecessors: set[str | None] = set()
@@ -103,7 +190,7 @@ def exact_current_owner_requests_v6(
         visited_predecessors.add(predecessor)
         generation = generations[predecessor]
         winner = generation[0]
-        winner_comment_id, winner_request, _ = winner
+        winner_comment_id, winner_request, winner_comment, validation_error = winner
         require(
             winner_comment_id > previous_comment_id,
             (
@@ -111,12 +198,22 @@ def exact_current_owner_requests_v6(
                 f"{winner_comment_id}<={previous_comment_id}"
             ),
         )
-        accepted.append(winner)
+        winner_sha = sha256_json(winner_request)
+        if validation_error is None:
+            accepted.append((winner_comment_id, winner_request, winner_comment))
+        else:
+            require(
+                winner_sha in historical_bridge_hashes,
+                (
+                    "CURRENT_MALFORMED_REQUEST_NOT_BRIDGEABLE:"
+                    f"{winner_comment_id}:{validation_error}"
+                ),
+            )
         winning_predecessors.add(predecessor)
         previous_comment_id = winner_comment_id
-        predecessor = sha256_json(winner_request)
+        predecessor = winner_sha
 
-    for comment_id, request, _ in candidates:
+    for comment_id, request, _comment, _validation_error in candidates:
         candidate_predecessor = request["supersedes_request_sha256"]
         require(
             candidate_predecessor in winning_predecessors,
