@@ -1,0 +1,265 @@
+name: lane-b-pr329-formal-auditor-v1-pre-gate-t2-proof
+
+on:
+  push:
+    branches:
+      - agent/lane-b-pr329-formal-auditor-v1-pre-gate-t2-proof-20260911-v1
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact bindings and fixed Steps
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          HEAD=d71461da53d2498e42edcd92e987a26a59a95cd9
+          TREE=a2bf5a25abeffed80deacfa5299e97ddee559840
+          TOOLING=c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$MAIN"
+          test "$(git show -s --format=%T "$HEAD")" = "$TREE"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$HEAD:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test "$(git rev-parse "$HEAD:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          git cat-file -e "$TOOLING^{commit}"
+          echo EXACT_BINDING=PASS
+          echo FIXED_LAB_STEPS_BLOB=$LAB_BLOB
+          echo FIXED_AUDITOR_STEPS_BLOB=$AUDITOR_BLOB
+
+      - name: Materialize exact Candidate, canonical dispatcher, and preflight tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/pr329 /tmp/preflight-tooling /tmp/mv_dispatcher /tmp/mv_out
+          git worktree add --detach /tmp/pr329 d71461da53d2498e42edcd92e987a26a59a95cd9
+          git worktree add --detach /tmp/preflight-tooling c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          test "$(git -C /tmp/pr329 rev-parse HEAD)" = d71461da53d2498e42edcd92e987a26a59a95cd9
+          test "$(git -C /tmp/pr329 show -s --format=%T HEAD)" = a2bf5a25abeffed80deacfa5299e97ddee559840
+          test "$(git -C /tmp/preflight-tooling rev-parse HEAD:automation/review_dispatcher_v1/one_shot_preflight_v1.py)" = 238f03109353b80c951b19c698aca43efd2c422c
+          mkdir -p /tmp/mv_dispatcher /tmp/mv_out
+          git archive d1edc2eabb847c10a4faa59a039b480e85dfb0e4 automation/review_dispatcher_v1 | tar -x -C /tmp/mv_dispatcher
+          echo EXACT_CANDIDATE_WORKTREE=PASS
+          echo EXACT_PREFLIGHT_TOOLING=PASS
+
+      - name: Execute exact owner-free one-shot Auditor preflight to terminal
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          set +e
+          python3 /tmp/preflight-tooling/automation/review_dispatcher_v1/one_shot_preflight_v1.py \
+            --dispatcher-ref d1edc2eabb847c10a4faa59a039b480e85dfb0e4 \
+            --lane AUDITOR \
+            --repo fufufu1116/multiverse-research \
+            --head d71461da53d2498e42edcd92e987a26a59a95cd9 \
+            --repo-root /tmp/pr329 \
+            > /tmp/mv_out/preflight.json
+          rc=$?
+          set -e
+          cat /tmp/mv_out/preflight.json
+          python3 - "$rc" <<'PY'
+          import json, sys
+          rc = int(sys.argv[1])
+          v = json.load(open('/tmp/mv_out/preflight.json'))
+          assert rc == 0, (rc, v)
+          assert v['schema'] == 'MULTIVERSE_ONE_SHOT_PREFLIGHT_v1', v
+          assert v['state'] == 'ONE_SHOT_PREFLIGHT_READY', v
+          assert v['classification'] == 'PASS', v
+          assert v['ready'] is True, v
+          assert v['repo'] == 'fufufu1116/multiverse-research', v
+          assert v['lane'] == 'AUDITOR', v
+          assert v['head'] == 'd71461da53d2498e42edcd92e987a26a59a95cd9', v
+          assert v['tree'] == 'a2bf5a25abeffed80deacfa5299e97ddee559840', v
+          assert v['base'] == 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4', v
+          assert v['main'] == 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4', v
+          assert v['dispatcher_ref'] == 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4', v
+          assert v['request_id'] == 'pr329-t2-github-read-resilience-auditor-v1-main-d1edc2ea', v
+          assert v['request_comment'] == 5630165699, v
+          assert v['request_sha256'] == '32dcf456faf972b08b29d0bfdba2541f854c08478b039cc6db25995e9f6380d6', v
+          assert v['review_verdict'] == 'PASS', v
+          assert v['test_count'] == 140, v
+          assert v['findings'] == [], v
+          assert v['artifact_serialization'] == 'PASS', v
+          assert v['publication_attempted'] is False, v
+          assert v['owner_build_consumed'] is False, v
+          assert v['runtime'] == 'OFF', v
+          print('AUDITOR_ONE_SHOT_TERMINAL=READY')
+          print('AUDITOR_REQUEST_SHA256=' + v['request_sha256'])
+          print('FULL_RECIPE_TEST_COUNT=140')
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          print('PUBLICATION_ATTEMPTED=false')
+          print('OWNER_BUILD_CONSUMED=false')
+          PY
+
+      - name: Materialize exact canonical Auditor job and artifact for T2 read-only replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=d71461da53d2498e42edcd92e987a26a59a95cd9
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          export MULTIVERSE_DISPATCHER_REF="$MAIN"
+          export BUILDKITE_COMMIT="$TARGET"
+          export BUILDKITE_BUILD_ID="OWNER_FREE_PRE_GATE_PR329_AUDITOR_V1_T2_REPLAY"
+          export BUILDKITE_BUILD_NUMBER="0"
+          export BUILDKITE_BRANCH="PRE_GATE_READ_ONLY"
+          (cd /tmp/pr329 && PYTHONPATH=/tmp/mv_dispatcher python3 /tmp/mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+            --lane AUDITOR \
+            --repo fufufu1116/multiverse-research \
+            --head "$TARGET" \
+            --output /tmp/mv_out/auditor_job.json)
+          (cd /tmp/pr329 && PYTHONPATH=/tmp/mv_dispatcher python3 /tmp/mv_dispatcher/automation/review_dispatcher_v1/review.py \
+            --job /tmp/mv_out/auditor_job.json \
+            --output /tmp/mv_out/auditor_artifact.json \
+            --repo-root /tmp/pr329)
+          python3 - <<'PY'
+          import hashlib, json
+          job = json.load(open('/tmp/mv_out/auditor_job.json'))
+          art = json.load(open('/tmp/mv_out/auditor_artifact.json'))
+          req = job['request']
+          digest = hashlib.sha256(json.dumps(req, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+          assert digest == '32dcf456faf972b08b29d0bfdba2541f854c08478b039cc6db25995e9f6380d6'
+          assert job['request_comment'] == 5630165699
+          assert req['upstream'] == {
+              'lab_pass_comment': 5630052134,
+              'lab_request_sha256': 'aa299037d7b90aaa28d8b2785ce22d60a4f930b3405b31ec83a31efcb885061b',
+              't1_comment': 5630112888,
+          }
+          assert art['lane'] == 'AUDITOR'
+          assert art['verdict'] == 'PASS'
+          assert art['findings'] == []
+          assert art['test_count'] == 140
+          assert art['request_sha256'] == digest
+          assert art['upstream'] == req['upstream']
+          print('EXACT_REQUEST_ARBITRATION=PASS')
+          print('UPSTREAM_LAB_T1_BINDING=PASS')
+          print('NO_EXISTING_EXACT_AUDITOR_RESULT=PASS_BY_DISPATCHER_SERIALIZATION')
+          PY
+
+      - name: Run focused Build 1691 T2 GitHub read-resilience fault matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/pr329
+          PYTHONPATH=. python3 -m unittest -v automation.review_dispatcher_v1.test_t2_github_read_resilience_v1 2>&1 | tee /tmp/mv_out/t2_read_resilience_tests.log
+          grep -q 'Ran 8 tests' /tmp/mv_out/t2_read_resilience_tests.log
+          grep -q '^OK$' /tmp/mv_out/t2_read_resilience_tests.log
+          echo T2_RATE_LIMIT_FOCUSED_TESTS=8/8_PASS
+          echo TRUSTED_RETRY_AFTER_RECOVERY=PASS
+          echo TRUSTED_RESET_RECOVERY=PASS
+          echo AMBIGUOUS_403_FAIL_CLOSE=PASS
+          echo MISSING_TIMING_403_FAIL_CLOSE=PASS
+          echo MALFORMED_TIMING_403_FAIL_CLOSE=PASS
+          echo NON_GET_BODY_MUTATION_NO_RETRY=PASS
+
+      - name: Exercise exact post-Auditor Fixed T2 durable-lineage read-only path
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/pr329
+          PYTHONPATH=. python3 - <<'PY'
+          import json
+          from automation.review_dispatcher_v1 import t2
+
+          job = json.load(open('/tmp/mv_out/auditor_job.json'))
+          artifact = json.load(open('/tmp/mv_out/auditor_artifact.json'))
+          synthetic_comment_id = 999999329
+          receipt = {
+              'published_comment_id': synthetic_comment_id,
+              'published_by': t2._legacy.AUDITOR_LOGIN,
+              'github_app_id': t2._legacy.AUDITOR_APP_ID,
+              'request_sha256': job['request_sha256'],
+          }
+          fence = chr(96) * 3
+          synthetic_body = '\n'.join([
+              '<!-- OWNER_FREE_SYNTHETIC_AUDITOR_RESULT_FOR_T2_READ_ONLY_PREFLIGHT -->',
+              '',
+              'MULTIVERSE FIXED REVIEW DISPATCHER v1 — AUDITOR RESULT',
+              '',
+              fence + 'json',
+              json.dumps(artifact, indent=2, sort_keys=True),
+              fence,
+              '',
+              'FIXED_REVIEW_VERDICT: PASS',
+          ])
+          synthetic_comment = {
+              'id': synthetic_comment_id,
+              'user': {'login': t2._legacy.AUDITOR_LOGIN, 'type': 'Bot'},
+              'performed_via_github_app': {
+                  'id': t2._legacy.AUDITOR_APP_ID,
+                  'slug': t2._legacy.AUDITOR_APP_SLUG,
+              },
+              'body': synthetic_body,
+          }
+
+          real_bounded_read = t2._legacy.public_github
+          synthetic_url = (
+              'https://api.github.com/repos/fufufu1116/multiverse-research/issues/comments/'
+              + str(synthetic_comment_id)
+          )
+          seen = []
+
+          def read_only_fetch(url):
+              seen.append(url)
+              if url == synthetic_url:
+                  return synthetic_comment
+              return real_bounded_read(url)
+
+          t2._legacy.public_github = read_only_fetch
+          try:
+              comments = t2._fresh_t2_verify(job, artifact, receipt)
+          finally:
+              t2._legacy.public_github = real_bounded_read
+
+          assert isinstance(comments, list) and comments
+          required_live_reads = [
+              'https://api.github.com/repos/fufufu1116/multiverse-research/pulls/329',
+              'https://api.github.com/repos/fufufu1116/multiverse-research/branches/main',
+              'https://api.github.com/repos/fufufu1116/multiverse-research/commits/d71461da53d2498e42edcd92e987a26a59a95cd9',
+              'https://api.github.com/repos/fufufu1116/multiverse-research/issues/comments/5630112888',
+          ]
+          for url in required_live_reads:
+              assert url in seen, (url, seen)
+          assert any('/issues/329/comments?per_page=100&page=1' in u for u in seen), seen
+          assert synthetic_url in seen, seen
+          assert all(not u.endswith('/comments') or '?' in u for u in seen)
+          print('EXACT_DURABLE_LINEAGE_T2_READ_ONLY_REPLAY=PASS')
+          print('LIVE_PR_MAIN_COMMIT_READS=PASS')
+          print('LIVE_CURRENT_REQUEST_AND_LAB_LINEAGE_READS=PASS')
+          print('LIVE_T1_BINDING_READ=PASS')
+          print('SYNTHETIC_AUDITOR_PUBLICATION_NETWORK_CALL=false')
+          print('T2_PUBLICATION_NETWORK_CALL=false')
+          PY
+
+      - name: Terminal no-effect summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo TERMINAL_STATE=READY
+          echo BUILD_KITE_STARTED=false
+          echo T2_PUBLICATION=false
+          echo PUBLICATION_ATTEMPTED=false
+          echo OWNER_BUILD_CONSUMED=false
+          echo CANDIDATE_MUTATION=false
+          echo FIXED_STEPS_MUTATION=false
+          echo MAIN_MUTATION=false
+          echo PROVIDER_API_CALL=false
+          echo PRODUCTION_CREDENTIAL_USE=false
+          echo SPEND=false
+          echo LIVE_EFFECT=false
+          echo RUNTIME=OFF
