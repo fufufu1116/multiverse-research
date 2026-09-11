@@ -1,0 +1,125 @@
+name: lane-b-pr329-formal-lab-v2-pre-gate-preflight-proof
+
+on:
+  push:
+    branches:
+      - agent/lane-b-pr329-formal-lab-v2-pre-gate-preflight-proof-20260911-v1
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact immutable bindings
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          HEAD=d71461da53d2498e42edcd92e987a26a59a95cd9
+          TREE=a2bf5a25abeffed80deacfa5299e97ddee559840
+          TOOLING=c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$MAIN"
+          test "$(git show -s --format=%T "$HEAD")" = "$TREE"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$HEAD:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test "$(git rev-parse "$HEAD:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test -n "$(git cat-file -e "$TOOLING^{commit}" 2>/dev/null && echo ok)"
+          echo EXACT_BINDING=PASS
+          echo FIXED_STEPS_UNCHANGED=PASS
+
+      - name: Materialize exact Candidate and preflight tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/pr329 /tmp/preflight-tooling
+          git worktree add --detach /tmp/pr329 d71461da53d2498e42edcd92e987a26a59a95cd9
+          git worktree add --detach /tmp/preflight-tooling c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          test "$(git -C /tmp/pr329 rev-parse HEAD)" = d71461da53d2498e42edcd92e987a26a59a95cd9
+          test "$(git -C /tmp/pr329 show -s --format=%T HEAD)" = a2bf5a25abeffed80deacfa5299e97ddee559840
+          test "$(git -C /tmp/preflight-tooling rev-parse HEAD)" = c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          test "$(git -C /tmp/preflight-tooling rev-parse HEAD:automation/review_dispatcher_v1/one_shot_preflight_v1.py)" = 238f03109353b80c951b19c698aca43efd2c422c
+          echo EXACT_CANDIDATE_WORKTREE=PASS
+          echo EXACT_PREFLIGHT_TOOLING=PASS
+
+      - name: Execute exact owner-free one-shot Lab preflight to terminal
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          set +e
+          python3 /tmp/preflight-tooling/automation/review_dispatcher_v1/one_shot_preflight_v1.py \
+            --dispatcher-ref d1edc2eabb847c10a4faa59a039b480e85dfb0e4 \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head d71461da53d2498e42edcd92e987a26a59a95cd9 \
+            --repo-root /tmp/pr329 \
+            > /tmp/preflight.json
+          rc=$?
+          set -e
+          cat /tmp/preflight.json
+          python3 - "$rc" <<'PY'
+          import json, sys
+          rc = int(sys.argv[1])
+          value = json.load(open('/tmp/preflight.json'))
+          assert value['schema'] == 'MULTIVERSE_ONE_SHOT_PREFLIGHT_v1', value
+          assert value['repo'] == 'fufufu1116/multiverse-research', value
+          assert value['lane'] == 'LAB', value
+          assert value['head'] == 'd71461da53d2498e42edcd92e987a26a59a95cd9', value
+          assert value['dispatcher_ref'] == 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4', value
+          assert value['request_id'] == 'pr329-t2-github-read-resilience-lab-v2-main-d1edc2ea', value
+          assert value['request_comment'] == 5629831889, value
+          assert value['request_sha256'] == 'aa299037d7b90aaa28d8b2785ce22d60a4f930b3405b31ec83a31efcb885061b', value
+          assert value['tree'] == 'a2bf5a25abeffed80deacfa5299e97ddee559840', value
+          assert value['base'] == 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4', value
+          assert value['main'] == 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4', value
+          assert value['publication_attempted'] is False, value
+          assert value['owner_build_consumed'] is False, value
+          assert value['runtime'] == 'OFF', value
+          if value['ready']:
+              assert rc == 0, (rc, value)
+              assert value['state'] == 'ONE_SHOT_PREFLIGHT_READY', value
+              assert value['classification'] == 'PASS', value
+              assert value['review_verdict'] == 'PASS', value
+              assert value['test_count'] == 140, value
+              assert value['findings'] == [], value
+              assert value['artifact_serialization'] == 'PASS', value
+              print('TERMINAL_STATE=READY')
+          else:
+              assert rc == 1, (rc, value)
+              assert value['state'] == 'ONE_SHOT_PREFLIGHT_BLOCKED', value
+              assert value['classification'] != 'PASS', value
+              print('TERMINAL_STATE=BLOCKED')
+              print('BLOCKER_CLASSIFICATION=' + str(value['classification']))
+              for finding in value.get('findings') or []:
+                  print('BLOCKER_FINDING=' + str(finding))
+          print('REQUEST_SHA256=' + str(value['request_sha256']))
+          print('PUBLICATION_ATTEMPTED=false')
+          print('OWNER_BUILD_CONSUMED=false')
+          print('RUNTIME=OFF')
+          PY
+
+      - name: Terminal no-effect summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo FORMAL_BUILDKITE_BUILD_STARTED=false
+          echo OWNER_GATE_USED=false
+          echo CANDIDATE_MUTATION=false
+          echo MAIN_MUTATION=false
+          echo PROVIDER_API_CALL=false
+          echo PRODUCTION_CREDENTIAL_USE=false
+          echo SPEND=false
+          echo LIVE_EFFECT=false
+          echo RUNTIME=OFF
