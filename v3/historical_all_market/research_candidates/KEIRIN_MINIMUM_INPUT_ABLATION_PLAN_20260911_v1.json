@@ -1,0 +1,47 @@
+{
+  "schema": "MULTIVERSE_KEIRIN_MINIMUM_INPUT_ABLATION_PLAN_v1",
+  "status": "ACTIVE_RESEARCH_PLAN",
+  "objective": "Find the smallest trustworthy PRE-only input set that preserves useful predictive performance, so simulation never waits on unnecessary fields.",
+  "policy_dependency": "v3/historical_all_market/research_candidates/KEIRIN_MINIMUM_INPUT_POLICY_20260911_v1.json",
+  "baseline_principles": [
+    "Never use result, payout, or future information in PRE prediction.",
+    "Do not require live odds for prediction generation unless the exact frozen model mathematically requires odds.",
+    "Do not infer race membership from event-level rosters.",
+    "Do not perform fuzzy rider identity joins.",
+    "If a field can be removed without material predictive degradation, demote it to optional."
+  ],
+  "trial_order": [
+    {
+      "stage": 1,
+      "name": "identity_core",
+      "retain": ["race identity", "car number", "rider identity", "frozen-model-required rider score"],
+      "purpose": "Establish the minimum model-executable core."
+    },
+    {
+      "stage": 2,
+      "name": "style_increment",
+      "add_if_available": ["running style / leg type"],
+      "purpose": "Measure whether style materially improves prediction versus the identity core."
+    },
+    {
+      "stage": 3,
+      "name": "circumference_increment",
+      "add_if_available": ["track circumference class"],
+      "purpose": "Measure the frozen circumference adjustment contribution."
+    },
+    {
+      "stage": 4,
+      "name": "nonessential_candidate_fields",
+      "test_individually": ["line/formation information", "recent-form summaries", "other PRE-only metadata not required by the frozen model"],
+      "purpose": "Only retain fields that produce repeatable material improvement."
+    }
+  ],
+  "odds_handling": {
+    "during_prediction_simulation": "OPTIONAL / NOT A BLOCKER",
+    "output_when_missing": "candidate ticket plus minimum acceptable odds threshold",
+    "during_real_execution": "compare actual live odds to threshold before manual Owner purchase",
+    "during_formal_roi_validation": "use genuine pre-close odds only; never reconstruct after result"
+  },
+  "promotion_rule": "A field becomes required only if the frozen model requires it or controlled ablation shows material repeatable predictive benefit sufficient to justify its availability cost.",
+  "progress_effect": "Creating or running this plan does not itself increase formal scientific validation percent without new genuine evidence."
+}
