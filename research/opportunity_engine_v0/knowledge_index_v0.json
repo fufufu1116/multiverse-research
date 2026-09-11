@@ -1,0 +1,67 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_KNOWLEDGE_INDEX_v0",
+  "status": "RESEARCH_ONLY_NON_AUTHORITATIVE",
+  "runtime": "OFF",
+  "items": [
+    {
+      "item_id": "decision-clean-growth-cross-market-v1",
+      "class": "DECISION_RULE",
+      "statement": "Apply the same lawful, transparent, user-value-first and policy-compliant growth standard across domestic, foreign-user, overseas and other service classes.",
+      "source_kind": "OWNER_DIRECTION_PLUS_RESEARCH_DOCTRINE",
+      "source_ref": "CROSS_MARKET_CLEAN_GROWTH_DOCTRINE.md",
+      "verification_state": "PROJECT_DECISION_RULE",
+      "state": "CURRENT",
+      "sensitivity": "LOW",
+      "may_influence_ranking": true,
+      "may_block_readiness": true,
+      "authorizes_execution": false
+    },
+    {
+      "item_id": "pattern-casual-post-reseller-value-add-v1",
+      "class": "HYPOTHESIS",
+      "statement": "A lawful reseller, agency, OEM, referral or managed-service structure may create recurring contribution margin when independent user value is added; gross price spread alone is not profit.",
+      "source_kind": "CASUAL_POST_FORWARDED_BY_OWNER",
+      "source_ref": "cases/casual_post_reseller_value_add_20260911.json",
+      "verification_state": "UNVERIFIED_HYPOTHESIS_ONLY",
+      "state": "CURRENT",
+      "sensitivity": "LOW",
+      "may_influence_ranking": false,
+      "may_block_readiness": false,
+      "authorizes_execution": false
+    },
+    {
+      "item_id": "constraint-low-capital-clean-start-v1",
+      "class": "OWNER_CONSTRAINT",
+      "statement": "Prefer opportunities that can be researched and tested with very low capital, low fixed cost, no unnecessary borrowing, reversible commitments and no live spend without a governed Owner gate.",
+      "source_kind": "OWNER_DIRECTION",
+      "source_ref": "conversation-derived operational constraint",
+      "verification_state": "OWNER_STATED_CONSTRAINT",
+      "state": "CURRENT",
+      "sensitivity": "MINIMIZED",
+      "may_influence_ranking": true,
+      "may_block_readiness": true,
+      "authorizes_execution": false
+    },
+    {
+      "item_id": "rule-conversation-is-intake-not-record-v1",
+      "class": "DECISION_RULE",
+      "statement": "Conversation is an intake surface, not the durable system of record; decision-bearing fragments should be stored with provenance, verification state and supersession history.",
+      "source_kind": "PROJECT_DOCTRINE",
+      "source_ref": "KNOWLEDGE_RETENTION_DOCTRINE.md",
+      "verification_state": "PROJECT_DECISION_RULE",
+      "state": "CURRENT",
+      "sensitivity": "LOW",
+      "may_influence_ranking": false,
+      "may_block_readiness": false,
+      "authorizes_execution": false
+    }
+  ],
+  "authority": {
+    "provider_call_authorized": false,
+    "spend_authorized": false,
+    "publication_authorized": false,
+    "live_execution_authorized": false,
+    "adoption_authorized": false,
+    "runtime_activation_authorized": false
+  }
+}
