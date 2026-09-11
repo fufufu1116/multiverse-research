@@ -1,0 +1,192 @@
+name: lane-b-t2-github-read-resilience-v1-proof2
+
+on:
+  push:
+    branches:
+      - agent/lane-b-t2-github-read-resilience-v1-proof2-20260911
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact candidate binding and immutable fixed Steps
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          HEAD=d71461da53d2498e42edcd92e987a26a59a95cd9
+          TREE=a2bf5a25abeffed80deacfa5299e97ddee559840
+          BRANCH=agent/lane-b-t2-github-read-resilience-v1-20260911
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          HELPER_BLOB=87c9183cd572676fcdfa3a354ca0177479c0deb2
+          git fetch origin main
+          git fetch origin "+refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"
+          test "$(git rev-parse origin/main)" = "$MAIN"
+          test "$(git rev-parse origin/${BRANCH})" = "$HEAD"
+          test "$(git show -s --format=%T "$HEAD")" = "$TREE"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$HEAD:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test "$(git rev-parse "$HEAD:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test "$(git rev-parse "$HEAD:automation/review_dispatcher_v1/github_read_resilience_v1.py")" = "$HELPER_BLOB"
+          python3 - <<'PY'
+          import subprocess
+          main = "d1edc2eabb847c10a4faa59a039b480e85dfb0e4"
+          head = "d71461da53d2498e42edcd92e987a26a59a95cd9"
+          expected = [
+              "automation/review_dispatcher_v1/github_read_resilience_v1.py",
+              "automation/review_dispatcher_v1/t2.py",
+              "automation/review_dispatcher_v1/test_t2_github_read_resilience_v1.py",
+          ]
+          actual = subprocess.check_output(["git", "diff", "--name-only", main, head], text=True).splitlines()
+          assert actual == expected, (actual, expected)
+          print("EXACT_CHANGED_PATHS=PASS")
+          PY
+          rm -rf /tmp/candidate
+          git worktree add --detach /tmp/candidate "$HEAD"
+          test "$(git -C /tmp/candidate rev-parse HEAD)" = "$HEAD"
+          test "$(git -C /tmp/candidate show -s --format=%T HEAD)" = "$TREE"
+          echo EXACT_BINDING=PASS
+          echo FIXED_STEPS_INTEGRITY=PASS
+          echo PR318_HELPER_BLOB_REUSED=PASS
+
+      - name: Run focused Build1691 T2 403 regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/candidate
+          PYTHONPATH=. python3 -m unittest -v automation.review_dispatcher_v1.test_t2_github_read_resilience_v1
+          echo BUILD1691_T2_403_FOCUSED_REGRESSION=PASS
+
+      - name: Run full applicable suite with exact counts
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/candidate
+          PYTHONPATH=. python3 - <<'PY'
+          import re, subprocess, sys
+          expected = {
+              "automation.review_dispatcher_v1.test_combined_fault_replay_v1": 8,
+              "automation.review_dispatcher_v1.test_dispatcher": 44,
+              "automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1": 5,
+              "automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1": 4,
+              "automation.review_dispatcher_v1.test_publisher_freshness_v1": 4,
+              "automation.review_dispatcher_v1.test_publisher_resilience_integration_v1": 10,
+              "automation.review_dispatcher_v1.test_receipt_recovery_v1": 6,
+              "automation.review_dispatcher_v1.test_request_arbitration_v6": 16,
+              "automation.review_dispatcher_v1.test_result_canonicalization_v1": 6,
+              "automation.review_dispatcher_v1.test_t2_idempotence_v1": 7,
+              "automation.review_dispatcher_v1.test_t2_receipt_recovery_v1": 6,
+              "automation.review_dispatcher_v1.test_t2_resilience_integration_v1": 11,
+              "automation.review_dispatcher_v1.test_validator_current_baseline_v1": 5,
+              "automation.review_dispatcher_v1.test_t2_github_read_resilience_v1": 8,
+          }
+          total = 0
+          for module, count in expected.items():
+              proc = subprocess.run([sys.executable, "-m", "unittest", "-v", module], text=True, capture_output=True)
+              sys.stdout.write(proc.stdout); sys.stderr.write(proc.stderr)
+              assert proc.returncode == 0, (module, proc.returncode)
+              matches = re.findall(r"Ran (\d+) tests?", proc.stdout + "\n" + proc.stderr)
+              assert matches, module
+              actual = int(matches[-1])
+              assert actual == count, (module, actual, count, matches)
+              total += actual
+              print(f"MODULE_COUNT_PASS={module}:{actual}")
+          assert total == 140, total
+          print("FULL_APPLICABLE_TESTS=140/140 PASS")
+          PY
+
+      - name: Run validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/candidate
+          PYTHONPATH=. python3 automation/review_dispatcher_v1/validator.py > /tmp/validator.json
+          cat /tmp/validator.json
+          python3 - <<'PY'
+          import json
+          value = json.load(open('/tmp/validator.json'))
+          assert value['verdict'] == 'PASS', value
+          assert value['findings'] == [], value
+          assert value['runtime'] == 'OFF', value
+          assert value['main_mutation_authorized'] is False, value
+          assert value['merge_authorized'] is False, value
+          assert value['shared_pipeline_mutation_authorized'] is False, value
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          PY
+
+      - name: Replay exact PR323 post-Auditor-pass T2 read path without mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/candidate
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          export MULTIVERSE_DISPATCHER_REF=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          export BUILDKITE_COMMIT=4193321bcbf2e24c8e4d176358fad3e277100932
+          export BUILDKITE_BUILD_ID=OWNER_FREE_T2_READ_REPLAY_PR323
+          export BUILDKITE_BUILD_NUMBER=0
+          export BUILDKITE_BRANCH=REPOSITORY_ONLY_PROOF
+          PYTHONPATH=. python3 automation/review_dispatcher_v1/dispatcher.py --lane AUDITOR --repo fufufu1116/multiverse-research --head 4193321bcbf2e24c8e4d176358fad3e277100932 --output /tmp/pr323_auditor_job.json
+          PYTHONPATH=. python3 - <<'PY'
+          import json
+          from automation.review_dispatcher_v1 import t2
+          job = json.load(open('/tmp/pr323_auditor_job.json'))
+          assert job['request_comment'] == 5629285315, job
+          assert job['request_sha256'] == '913020e83c4acf6e7aba2dfb9d5589e7f269c9b2e5e257ce338ebffd94902066', job
+          assert job['head'] == '4193321bcbf2e24c8e4d176358fad3e277100932', job
+          assert job['tree'] == '881f9b7ce7191b424a48245a291bcae472b4032e', job
+          assert job['main'] == 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4', job
+          auditor_comment = t2._legacy.required_object(t2._legacy.public_github('https://api.github.com/repos/fufufu1116/multiverse-research/issues/comments/5629486699'), 'AUDITOR_COMMENT_RESPONSE_OBJECT')
+          assert t2._legacy.lane_result_outer_app_trusted(auditor_comment, 'AUDITOR')
+          artifact = t2._legacy.json_block(auditor_comment.get('body') or '')
+          assert artifact['verdict'] == 'PASS', artifact
+          assert artifact['findings'] == [], artifact
+          assert artifact['request_comment'] == 5629285315, artifact
+          assert artifact['request_sha256'] == job['request_sha256'], artifact
+          receipt = {
+              'published_comment_id': 5629486699,
+              'published_by': 'multiverse-independent-auditor[bot]',
+              'github_app_id': 4821179,
+              'request_sha256': job['request_sha256'],
+          }
+          comments = t2._fresh_t2_verify(job, artifact, receipt)
+          assert isinstance(comments, list) and comments, type(comments)
+          print('PR323_POST_AUDITOR_PASS_T2_READ_REPLAY=PASS')
+          print('AUDITOR_PASS_COMMENT=5629486699')
+          print('AUDITOR_REQUEST_COMMENT=5629285315')
+          print('PUBLICATION_ATTEMPTED=false')
+          print('OWNER_BUILD_CONSUMED=false')
+          print('RUNTIME=OFF')
+          PY
+
+      - name: Terminal repository-only proof summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo TERMINAL=PASS
+          echo CANDIDATE_HEAD=d71461da53d2498e42edcd92e987a26a59a95cd9
+          echo CANDIDATE_TREE=a2bf5a25abeffed80deacfa5299e97ddee559840
+          echo BASE_MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          echo FULL_APPLICABLE_TESTS=140/140_PASS
+          echo VALIDATOR=PASS
+          echo VALIDATOR_FINDINGS=[]
+          echo FIXED_STEPS_MUTATION=false
+          echo PR323_MUTATION=false
+          echo PR318_MUTATION=false
+          echo BUILD1691_RETRY_RERUN_REUSE=false
+          echo PROVIDER_API_CALL=false
+          echo CREDENTIAL_USE=false
+          echo SPEND=false
+          echo LIVE_EFFECT=false
+          echo RUNTIME=OFF
