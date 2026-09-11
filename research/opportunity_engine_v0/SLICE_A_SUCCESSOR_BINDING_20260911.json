@@ -1,0 +1,59 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_A_SUCCESSOR_BINDING_v1",
+  "status": "FRESH_MAIN_SUCCESSOR_PREPARATION",
+  "canonical_base": {
+    "branch": "main",
+    "sha": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46"
+  },
+  "frozen_research_source": {
+    "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5"
+  },
+  "slice": "A_CORE_DOMAIN_MODEL",
+  "carry_forward_rule": "copy only exact frozen Slice A paths; no later PR310 delta; no canonical control-plane duplication",
+  "exact_paths": [
+    "research/opportunity_engine_v0/model.py",
+    "research/opportunity_engine_v0/engine.py",
+    "research/opportunity_engine_v0/durability.py",
+    "research/opportunity_engine_v0/exposure.py",
+    "research/opportunity_engine_v0/force_multiplier.py",
+    "research/opportunity_engine_v0/leverage.py",
+    "research/opportunity_engine_v0/market_dynamics.py",
+    "research/opportunity_engine_v0/opportunity_archetype.py",
+    "research/opportunity_engine_v0/portfolio.py",
+    "research/opportunity_engine_v0/scale.py",
+    "research/opportunity_engine_v0/tactics.py",
+    "research/opportunity_engine_v0/test_engine.py",
+    "research/opportunity_engine_v0/test_durability.py",
+    "research/opportunity_engine_v0/test_exposure.py",
+    "research/opportunity_engine_v0/test_force_multiplier.py",
+    "research/opportunity_engine_v0/test_leverage.py",
+    "research/opportunity_engine_v0/test_market_dynamics.py",
+    "research/opportunity_engine_v0/test_opportunity_archetype.py",
+    "research/opportunity_engine_v0/test_portfolio.py"
+  ],
+  "forbidden_in_slice_a": [
+    "provider execution",
+    "credentials",
+    "publisher",
+    "T2",
+    "Runtime",
+    "formal review dispatch",
+    "customer live effect",
+    "spend",
+    "canonical adoption authority"
+  ],
+  "proof_state": "NOT_YET_EXECUTED",
+  "authority": {
+    "formal_review": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "provider_call": false,
+    "credential_use": false,
+    "spend": false,
+    "publication": false,
+    "runtime_activation": false,
+    "live_business_effect": false
+  }
+}
