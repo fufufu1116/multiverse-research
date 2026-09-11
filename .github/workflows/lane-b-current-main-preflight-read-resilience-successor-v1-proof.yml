@@ -1,0 +1,190 @@
+name: lane-b-current-main-preflight-read-resilience-successor-v1-proof
+
+on:
+  push:
+    branches:
+      - agent/lane-b-current-main-preflight-read-resilience-successor-v1-proof-20260911
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact candidate and preserved current-main boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          CANDIDATE=c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          TREE=867ec216722155c7ab97400b6891e64af1dde896
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$BASE"
+          test "$(git show -s --format=%T "$CANDIDATE")" = "$TREE"
+
+          expected="$(cat <<'EOF'
+automation/review_dispatcher_v1/dispatcher.py
+automation/review_dispatcher_v1/github_read_resilience_v1.py
+automation/review_dispatcher_v1/one_shot_preflight_v1.py
+automation/review_dispatcher_v1/review.py
+automation/review_dispatcher_v1/test_dispatcher.py
+automation/review_dispatcher_v1/test_one_shot_preflight_v1.py
+EOF
+)"
+          actual="$(git diff --name-only "$BASE" "$CANDIDATE" | sort)"
+          test "$actual" = "$expected"
+
+          git diff --quiet "$BASE" "$CANDIDATE" -- \
+            automation/review_dispatcher_v1/request_arbitration_v6.py \
+            automation/review_dispatcher_v1/test_request_arbitration_v6.py
+
+          test "$(git rev-parse "$BASE:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git rev-parse "$CANDIDATE:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git rev-parse "$BASE:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+          test "$(git rev-parse "$CANDIDATE:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+
+          git checkout --detach "$CANDIDATE"
+
+      - name: Compile review-dispatcher subtree
+        run: python -m compileall -q automation/review_dispatcher_v1
+
+      - name: Run full applicable tests with current-main counts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import importlib
+          import sys
+          import unittest
+
+          expected = {
+              "automation.review_dispatcher_v1.test_combined_fault_replay_v1": 8,
+              "automation.review_dispatcher_v1.test_dispatcher": 52,
+              "automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1": 5,
+              "automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1": 4,
+              "automation.review_dispatcher_v1.test_one_shot_preflight_v1": 14,
+              "automation.review_dispatcher_v1.test_publisher_freshness_v1": 4,
+              "automation.review_dispatcher_v1.test_publisher_resilience_integration_v1": 10,
+              "automation.review_dispatcher_v1.test_receipt_recovery_v1": 6,
+              "automation.review_dispatcher_v1.test_request_arbitration_v6": 16,
+              "automation.review_dispatcher_v1.test_result_canonicalization_v1": 6,
+              "automation.review_dispatcher_v1.test_t2_idempotence_v1": 7,
+              "automation.review_dispatcher_v1.test_t2_receipt_recovery_v1": 6,
+              "automation.review_dispatcher_v1.test_t2_resilience_integration_v1": 11,
+              "automation.review_dispatcher_v1.test_validator_current_baseline_v1": 5,
+          }
+          loader = unittest.TestLoader()
+          total = 0
+          for name, count in expected.items():
+              module = importlib.import_module(name)
+              suite = loader.loadTestsFromModule(module)
+              actual = suite.countTestCases()
+              print(f"COUNT {name} {actual}")
+              if actual != count:
+                  raise SystemExit(f"COUNT_MISMATCH:{name}:{actual}!={count}")
+              result = unittest.TextTestRunner(verbosity=1).run(suite)
+              if not result.wasSuccessful():
+                  raise SystemExit(f"TEST_FAILURE:{name}")
+              total += actual
+          print(f"TOTAL {total}")
+          if total != 154:
+              raise SystemExit(f"TOTAL_MISMATCH:{total}!=154")
+          PY
+
+      - name: Validator PASS findings empty
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/review_dispatcher_v1/validator.py > validator.json
+          python - <<'PY'
+          import json
+          data = json.load(open('validator.json'))
+          print(json.dumps(data, sort_keys=True))
+          assert data.get('verdict') == 'PASS', data
+          assert data.get('findings') == [], data
+          assert data.get('runtime') == 'OFF', data
+          assert data.get('merge_authorized') is False, data
+          assert data.get('main_mutation_authorized') is False, data
+          assert data.get('shared_pipeline_mutation_authorized') is False, data
+          PY
+
+      - name: Prove corrected PR311 Auditor-v2 arbitration under current-main semantics
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import urllib.request
+          from automation.review_dispatcher_v1.model import (
+              latest_exact_current_owner_request,
+              sha256_json,
+              validate_request,
+          )
+
+          repo = 'fufufu1116/multiverse-research'
+          comments = []
+          page = 1
+          while True:
+              url = f'https://api.github.com/repos/{repo}/issues/311/comments?per_page=100&page={page}'
+              req = urllib.request.Request(url, headers={
+                  'Accept': 'application/vnd.github+json',
+                  'X-GitHub-Api-Version': '2022-11-28',
+                  'Authorization': f'Bearer {os.environ["GH_TOKEN"]}',
+                  'User-Agent': 'multiverse-lane-b-proof-v1',
+              })
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  batch = json.load(response)
+              comments.extend(batch)
+              if len(batch) < 100:
+                  break
+              page += 1
+
+          cid, request, _ = latest_exact_current_owner_request(
+              comments,
+              repo=repo,
+              pr=311,
+              lane='AUDITOR',
+              head='251b01949d7eb5eb6a1150eb19cb3b2f9f9587b1',
+              tree='7e0590148edd31992bcd5bb13a2d98ba863d4897',
+              base='04f314c744abbd0a15591e0437c5de178cfb0ef4',
+              main='04f314c744abbd0a15591e0437c5de178cfb0ef4',
+          )
+          validate_request(request)
+          actual = sha256_json(request)
+          assert cid == 5626191487, cid
+          assert request['request_id'] == 'pr311-one-shot-preflight-auditor-v2-main-04f314c7', request['request_id']
+          assert actual == 'c90ad0edc4a8e9b4492700b40bb00f8a597b7b87088f04a5cdffa84f6827c6a9', actual
+          assert request['upstream']['lab_pass_comment'] == 5625875910
+          assert request['upstream']['t1_comment'] == 5625887062
+          print(json.dumps({
+              'scenario': 'PR311_CORRECTED_AUDITOR_V2',
+              'current_main_semantics_commit': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'selected_comment': cid,
+              'request_sha256': actual,
+              'arbitration': 'PASS',
+              'historical_build_reused': False,
+              'runtime': 'OFF',
+          }, sort_keys=True))
+          PY
+
+      - name: Terminal proof summary
+        run: |
+          echo 'CANDIDATE_HEAD=c3e5bbd340b6da75c8fc80fa921becf01b0bc907'
+          echo 'CANDIDATE_TREE=867ec216722155c7ab97400b6891e64af1dde896'
+          echo 'BASE_MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4'
+          echo 'FULL_APPLICABLE_TESTS=154/154 PASS'
+          echo 'VALIDATOR=PASS findings=[]'
+          echo 'PR311_CORRECTED_AUDITOR_V2_ARBITRATION=PASS'
+          echo 'OWNER_BUILD_CONSUMED=false'
+          echo 'PUBLICATION_ATTEMPTED=false'
+          echo 'RUNTIME=OFF'
