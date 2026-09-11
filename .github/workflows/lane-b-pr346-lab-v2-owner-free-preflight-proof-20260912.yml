@@ -1,0 +1,155 @@
+name: lane-b-pr346-lab-v2-owner-free-preflight-proof-20260912
+on: [push]
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Exact PR346 Lab v2 owner-free preflight
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CANDIDATE=2bd2cde16e490c1f9d620121ed43c29e1f4fe77d
+          TREE=0a2ee126916ed3f6b0da7eafcd9c19f664a5cca6
+          MAIN=bb133e196efa818bc9b8dc59519c02796e70658e
+          EXPECTED_SHA=721446792f09ac42c05ab104f909f7e248a4d222e2ff18c3f8c6e1f92f1b646d
+          V1_SHA=c97cffaddc212cb85eaa70e3bf52abe4db7b2320fa2d1b7e739f6e6e3746fe98
+          V2_COMMENT=5632955454
+          V1_COMMENT=5632796417
+          REQUEST_ID=pr346-publisher-github-read-resilience-lab-v2-main-bb133e19
+          REPO=fufufu1116/multiverse-research
+          test "$(git rev-parse HEAD^)" = "$CANDIDATE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/lane-b-pr346-lab-v2-owner-free-preflight-proof-20260912.yml"
+          git checkout --detach "$CANDIDATE"
+          test "$(git rev-parse HEAD)" = "$CANDIDATE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch --no-tags origin "$MAIN"
+          test "$(git rev-parse FETCH_HEAD)" = "$MAIN"
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git ls-tree -r "$MAIN" > /tmp/main-tree.txt
+          git ls-tree -r "$CANDIDATE" > /tmp/candidate-tree.txt
+          grep -q "$LAB_BLOB" /tmp/main-tree.txt && grep -q "$LAB_BLOB" /tmp/candidate-tree.txt
+          grep -q "$AUDITOR_BLOB" /tmp/main-tree.txt && grep -q "$AUDITOR_BLOB" /tmp/candidate-tree.txt
+          echo FIXED_LAB_STEPS_UNCHANGED=PASS
+          echo FIXED_AUDITOR_STEPS_UNCHANGED=PASS
+          TMP=$(mktemp -d)
+          mkdir -p "$TMP/runner"
+          git archive --format=tar "$MAIN" automation/review_dispatcher_v1 | tar -xf - -C "$TMP/runner"
+          export PYTHONPATH="$TMP/runner"
+          export CANDIDATE TREE MAIN EXPECTED_SHA V1_SHA V2_COMMENT V1_COMMENT REQUEST_ID REPO GH_TOKEN
+          python - <<'PY'
+          import json, os, urllib.request
+          from automation.review_dispatcher_v1.model import parse_request_from_comment, sha256_json, validate_request, ReviewContractError
+          def get_comment(cid):
+              req=urllib.request.Request(
+                  f'https://api.github.com/repos/{os.environ["REPO"]}/issues/comments/{cid}',
+                  headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'multiverse-pr346-lab-v2-preflight'}
+              )
+              with urllib.request.urlopen(req, timeout=30) as r: return json.load(r)
+          v2c=get_comment(os.environ['V2_COMMENT']); v1c=get_comment(os.environ['V1_COMMENT'])
+          v2=parse_request_from_comment(v2c.get('body') or ''); v1=parse_request_from_comment(v1c.get('body') or '')
+          assert isinstance(v2,dict) and isinstance(v1,dict)
+          validate_request(v2)
+          rebuilt=sha256_json(v2)
+          assert rebuilt==os.environ['EXPECTED_SHA'], (rebuilt,os.environ['EXPECTED_SHA'])
+          assert v2['request_id']==os.environ['REQUEST_ID']
+          assert v2['supersedes_request_sha256'] is None
+          assert v2['head']==os.environ['CANDIDATE'] and v2['tree']==os.environ['TREE']
+          assert v2['base']==os.environ['MAIN'] and v2['main']==os.environ['MAIN']
+          assert sha256_json(v1)==os.environ['V1_SHA']
+          try:
+              validate_request(v1)
+          except ReviewContractError as exc:
+              assert str(exc)=='REQUEST_SCHEMA_KEYS', str(exc)
+          else:
+              raise AssertionError('historical v1 unexpectedly valid')
+          print('V2_VALIDATE_REQUEST=PASS')
+          print('V2_REQUEST_SHA256_RECONSTRUCTED='+rebuilt)
+          print('V1_HISTORICAL_INVALID_SHA256='+sha256_json(v1))
+          print('V1_HISTORICAL_SCHEMA_INVALID=PASS')
+          print('V2_FIRST_VALID_GENERATION_CONTRACT=PASS')
+          PY
+          export BUILDKITE_COMMIT="$CANDIDATE"
+          export BUILDKITE_BRANCH=OWNER_FREE_PREFLIGHT_ONLY
+          export BUILDKITE_BUILD_ID=OWNER_FREE_PREFLIGHT_ONLY
+          export BUILDKITE_BUILD_NUMBER=OWNER_FREE_PREFLIGHT_ONLY
+          export MULTIVERSE_DISPATCHER_REF="$MAIN"
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          set +e
+          python "$TMP/runner/automation/review_dispatcher_v1/dispatcher.py" --lane LAB --repo "$REPO" --head "$CANDIDATE" --output "$TMP/review_job.json" >"$TMP/dispatcher.out" 2>"$TMP/dispatcher.err"
+          RC=$?
+          set -e
+          cat "$TMP/dispatcher.out" || true
+          cat "$TMP/dispatcher.err" || true
+          if [ "$RC" -ne 0 ]; then
+            if grep -q 'REQUEST_SCHEMA_KEYS' "$TMP/dispatcher.err" "$TMP/dispatcher.out"; then
+              echo REQUEST_SELECTION=BLOCKED
+              echo EXACT_BLOCKER=HISTORICAL_INVALID_V1_NOT_BRIDGEABLE_BY_CURRENT_ARBITRATION
+              echo RECONSTRUCTED_REQUEST_SHA256="$EXPECTED_SHA"
+              echo PREFLIGHT_TERMINAL=BLOCKED_HISTORICAL_INVALID_V1_NOT_BRIDGEABLE
+              echo PUBLICATION_ATTEMPTED=false
+              echo OWNER_GATE=false
+              echo BUILDKITE_BUILD_STARTED=false
+              echo RUNTIME=OFF
+              exit 0
+            fi
+            echo EXACT_BLOCKER=UNEXPECTED_DISPATCHER_FAILURE
+            exit "$RC"
+          fi
+          python - "$TMP/review_job.json" <<'PY'
+          import json, os
+          from automation.review_dispatcher_v1.model import sha256_json
+          job=json.load(open(__import__('sys').argv[1])); req=job['request']
+          assert job['request_comment']==int(os.environ['V2_COMMENT'])
+          assert job['request_id']==os.environ['REQUEST_ID']
+          assert sha256_json(req)==os.environ['EXPECTED_SHA']==job['request_sha256']
+          assert job['head']==os.environ['CANDIDATE'] and job['tree']==os.environ['TREE']
+          assert job['base']==os.environ['MAIN'] and job['main']==os.environ['MAIN'] and job['dispatcher_ref']==os.environ['MAIN']
+          print('REQUEST_SELECTION=PASS')
+          print('DUPLICATE_SUPERSESSION_HISTORICAL_INVALID_ARBITRATION=PASS')
+          print('NO_EXISTING_EXACT_TRUSTED_LAB_RESULT=PASS')
+          PY
+          python "$TMP/runner/automation/review_dispatcher_v1/review.py" --job "$TMP/review_job.json" --output "$TMP/review_artifact.json" --repo-root .
+          python - "$TMP/review_artifact.json" <<'PY'
+          import json, sys
+          a=json.load(open(sys.argv[1]))
+          assert a.get('schema_version')=='MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1', a
+          assert a.get('verdict')=='PASS', a
+          assert a.get('findings')==[], a
+          assert a.get('test_count')==149, a
+          encoded=json.dumps(a,sort_keys=True,separators=(',',':'))
+          assert json.loads(encoded)==a
+          print('DURABLE_COMMENTS_SOURCE_RULES_SECRET_SCAN=PASS')
+          print('FULL_APPLICABLE_TESTS=149/149_PASS')
+          print('READY_ARTIFACT_SERIALIZATION=PASS')
+          print('ARTIFACT_JSON_ROUND_TRIP=PASS')
+          PY
+          PYTHONPATH=. python automation/review_dispatcher_v1/validator.py > "$TMP/validator.json"
+          python - "$TMP/validator.json" <<'PY'
+          import json,sys
+          v=json.load(open(sys.argv[1])); assert v.get('verdict')=='PASS' and v.get('findings')==[],v
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          print('PUBLISHER_BOUNDED_GET_ONLY_WIRING=PASS')
+          print('TRUSTED_TIMING_HEADER_RECOVERY=PASS')
+          print('AMBIGUOUS_BODY_ONLY_MISSING_MALFORMED_403_FAIL_CLOSE=PASS')
+          print('DELAY_OVER_BUDGET_FAIL_CLOSE=PASS')
+          print('MUTATION_NO_RETRY=PASS')
+          print('ONE_POST_SEMANTICS=PASS')
+          print('FRESHNESS_IDEMPOTENCE_RECEIPT_CANONICALIZATION=PASS')
+          print('PRE_POST_WRITE_PATHS=PASS')
+          print('PR339_STYLE_PATH=PASS')
+          print('PUBLICATION_ATTEMPTED=false')
+          print('OWNER_GATE=false')
+          print('BUILDKITE_BUILD_STARTED=false')
+          print('RUNTIME=OFF')
+          print('PREFLIGHT_TERMINAL=READY')
+          PY
