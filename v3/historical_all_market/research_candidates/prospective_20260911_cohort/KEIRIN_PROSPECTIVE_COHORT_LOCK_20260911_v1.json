@@ -1,0 +1,18 @@
+{
+  "bindings":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","circumference_model_blob":"061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878","competition_gate_blob":"8ffbab9d02562a3f8b617047c614a2008378932b","required_odds_runner_blob":"5d06bb2d1546101e4989e94816b274b6cbc4563f","v54_probability_blob":"417fa8947ab9b15dde305adc15085d558659d134"},
+  "cohort_body_sha256_excluding_self_field":"3dfa39520e6dea24df24fae3c06e986f9e109d6c0db00995d891d0d29d84f2cc",
+  "cohort_summary":{"candidate_count":3,"earliest_scheduled_start_jst":"2026-09-11T19:21:00+09:00","race_count":6,"reject_count":3},
+  "created_at_jst":"2026-09-11T19:06:35+09:00",
+  "members":[
+    {"event_id":"KAWASAKI_20260911_R9","gate_value":0.40013329971299005,"pre_evidence_git_blob":"10ef2fd14f2fb9213a1fb736eefc175211ad8789","source_snapshot_git_blob":"13895f25904e445f3c5a19f9be9da6fb0350e210","status":"CANDIDATE_GATE_PASS"},
+    {"event_id":"KAWASAKI_20260911_R10","gate_value":0.3014452195620674,"reject_audit_git_blob":"49981e72254b9e9c4493f5a18bf5686f940b6549","source_snapshot_git_blob":"1ec5991c15e588eb6722cfe36f4b9750433981bd","status":"REJECT_GATE_BELOW_0_40"},
+    {"event_id":"KAWASAKI_20260911_R11","gate_value":0.5024772789438202,"pre_evidence_git_blob":"88bf501a848af841d520b71e9b20a04ecd8e7cf9","source_snapshot_git_blob":"c7456668d3a0dac489a3625ec51154600c47c267","status":"CANDIDATE_GATE_PASS"},
+    {"event_id":"YOKKAICHI_20260911_R10","gate_value":0.35212977409393054,"reject_audit_git_blob":"49981e72254b9e9c4493f5a18bf5686f940b6549","source_snapshot_git_blob":"c8072c7817c7e87c31ff2bb304683328699fd65d","status":"REJECT_GATE_BELOW_0_40"},
+    {"event_id":"YOKKAICHI_20260911_R11","gate_value":0.22212579927625156,"reject_audit_git_blob":"49981e72254b9e9c4493f5a18bf5686f940b6549","source_snapshot_git_blob":"513421d085ad12b879b3b7b67500105ceaa7f9fa","status":"REJECT_GATE_BELOW_0_40"},
+    {"event_id":"YOKKAICHI_20260911_R12","gate_value":0.5088933284584041,"pre_evidence_git_blob":"bfdb1bc0e742f64fa06c8c9bb17717720b9d154f","source_snapshot_git_blob":"bc3c365807f8bb31a7037b10707c495c751e50ee","status":"CANDIDATE_GATE_PASS"}
+  ],
+  "record":"KEIRIN_PROSPECTIVE_COHORT_LOCK_20260911_v1",
+  "science":{"actual_odds_used":false,"automatic_betting":false,"cohort_membership_frozen_before_earliest_outcome":true,"formal_scientific_validation_percent":85,"next_gate":"Evaluate all six locked members after outcomes are independently available; no membership changes or PRE backfill.","payout_accessed":false,"post_result_reconstruction":false,"result_accessed":false,"retune":false,"runtime":"OFF"},
+  "scope":"Bounded six-race prospective cohort assembled from the current late-race scan; not claimed exhaustive of all nationwide races.",
+  "selection_rule":"Candidate iff frozen competition gate has same Top1 and conservative gate value >= 0.40; otherwise reject. No results, payouts, or actual odds may influence membership."
+}
