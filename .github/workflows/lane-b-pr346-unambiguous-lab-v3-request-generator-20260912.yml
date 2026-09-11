@@ -1,0 +1,51 @@
+name: lane-b-pr346-unambiguous-lab-v3-request-generator-20260912
+on: [push]
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate exact unambiguous Lab v3 request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CANDIDATE=2bd2cde16e490c1f9d620121ed43c29e1f4fe77d
+          MAIN=bb133e196efa818bc9b8dc59519c02796e70658e
+          V1_COMMENT=5632796417
+          V1_SHA=c54f4bacde051bd669ccf754974f0545cd9a1eced19b28a88d3c063d9cd0efda
+          REPO=fufufu1116/multiverse-research
+          test "$(git rev-parse HEAD^)" = "$CANDIDATE"
+          git checkout --detach "$CANDIDATE"
+          git fetch --no-tags origin "$MAIN"
+          TMP=$(mktemp -d); mkdir -p "$TMP/runner"
+          git archive --format=tar "$MAIN" automation/review_dispatcher_v1 | tar -xf - -C "$TMP/runner"
+          export PYTHONPATH="$TMP/runner"
+          export GH_TOKEN REPO V1_COMMENT V1_SHA
+          python - <<'PY'
+          import json, os, urllib.request
+          from automation.review_dispatcher_v1.model import parse_request_from_comment, sha256_json, validate_request
+          q=urllib.request.Request(
+              f'https://api.github.com/repos/{os.environ["REPO"]}/issues/comments/{os.environ["V1_COMMENT"]}',
+              headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'multiverse-pr346-unambiguous-v3-generator'})
+          with urllib.request.urlopen(q,timeout=30) as r: c=json.load(r)
+          req=parse_request_from_comment(c.get('body') or '')
+          assert isinstance(req,dict)
+          validate_request(req)
+          assert sha256_json(req)==os.environ['V1_SHA']
+          req=dict(req)
+          req['request_id']='pr346-publisher-github-read-resilience-lab-v3-unambiguous-main-bb133e19'
+          req['supersedes_request_sha256']=os.environ['V1_SHA']
+          validate_request(req)
+          print('V3_REQUEST_SHA256='+sha256_json(req))
+          print('V3_REQUEST_JSON='+json.dumps(req,sort_keys=True,separators=(',',':')))
+          print('V1_CURRENT_VALID_PREDECESSOR_SHA256='+os.environ['V1_SHA'])
+          print('GENERATOR_TERMINAL=READY')
+          print('RUNTIME=OFF')
+          PY
