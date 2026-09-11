@@ -67,6 +67,8 @@ def _require_mapping(obj: Any, label: str) -> dict[str, Any]:
 
 
 def _rank_market(probs: dict[str, float]) -> list[dict[str, Any]]:
+    if not probs:
+        raise FailClosed("empty_ticket_probability_market")
     rows: list[dict[str, Any]] = []
     for ticket, raw_q in probs.items():
         q = float(raw_q)
@@ -143,11 +145,12 @@ def run(envelope: dict[str, Any], repo_root: Path, top_n: int = 10) -> dict[str,
     if not math.isfinite(gate_value):
         raise FailClosed("generated_competition_gate_nonfinite")
 
-    ticket_probs = v1.build_frozen_ticket_probabilities(winner)
+    ticket_probs = _require_mapping(v1.build_frozen_ticket_probabilities(winner), "ticket_probabilities")
     markets: dict[str, Any] = {}
     gate_pass = gate_value >= COMPETITION_THRESHOLD
     for market in SUPPORTED_MARKETS:
-        ranked = _rank_market(ticket_probs[market])
+        probs = _require_mapping(ticket_probs.get(market), f"ticket_probabilities.{market}")
+        ranked = _rank_market(probs)
         markets[market] = {
             "ticket_count": len(ranked),
             "prediction_only_candidate": ranked[0] if gate_pass else None,
