@@ -29,7 +29,8 @@ class FreshMainPreauthSuccessorTests(unittest.TestCase):
 
     def test_559_pr305_remains_predecessor_history(self):
         self.assertEqual(PR305_FROZEN_HEAD, "9662b62107ea29ebc10936ceba172925c3bb7aae")
-        self.assertIs(validate_first_live_provider_preauth(build_first_live_provider_preauth()), build_first_live_provider_preauth())
+        packet = build_first_live_provider_preauth()
+        self.assertIs(validate_first_live_provider_preauth(packet), packet)
 
     def test_560_post_pr313_control_binding_present(self):
         self.assertEqual(PR313_REQUEST_ARBITRATION_BLOB, "ccf53e79155a79cda4f24a1c03badf3b4d003c97")
