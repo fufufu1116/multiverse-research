@@ -1,0 +1,95 @@
+{
+  "schema": "MULTIVERSE_KEIRIN_RESEARCH_RESUME_INDEX_v73",
+  "checkpoint_jst": "2026-09-11T16:33:56+09:00",
+  "status": "PRE_ONLY_RUNNER_FINAL_HARDENING_PERSISTED_CONTINUE_PROSPECTIVE_RESEARCH",
+  "supersedes_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v72.json",
+  "branch_at_evidence_freeze": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "verified_head_before_resume_write": "3148be2f5984f7f30987af96095299f698c71c88",
+  "owner_policy_lock": {
+    "policy_file": "v3/historical_all_market/research_candidates/KEIRIN_MINIMUM_INPUT_POLICY_20260911_v1.json",
+    "rule": "Do not block prediction simulation on odds or other non-essential inputs. Odds are not required for prediction generation or candidate-ticket generation unless an exact frozen model mathematically requires them.",
+    "simulation_behavior": "Proceed with the minimum trustworthy PRE-only race inputs required by the frozen model/selector. Use ablation to demote non-material inputs to optional.",
+    "odds_behavior": "When odds are absent, still generate prediction/ticket candidates and output the minimum acceptable purchase odds threshold. At real operation time the Owner can compare live odds against that threshold.",
+    "formal_science_boundary": "Actual odds remain necessary only for claims about realized profitability/ROI and must be genuine pre-close observations when used for that purpose. Their absence must not halt unrelated prediction research.",
+    "handoff_requirement": "Every future KEIRIN handoff/resume must preserve this separation explicitly; never regress to waiting for odds before simulation."
+  },
+  "pre_only_runner_final_hardening": {
+    "original_contradiction_repair_commit": "b899921b1f6cf0bfa50fa7a33981b85a3afb32ca",
+    "first_expanded_test_commit": "8d87881d8b96ac6abc7c0d786980e97de694d095",
+    "final_runner_hardening_commit": "ab5da7a0563ddb68763daec926a79bb0463a0fdf",
+    "final_runner_git_blob": "5d06bb2d1546101e4989e94816b274b6cbc4563f",
+    "final_test_commit": "3148be2f5984f7f30987af96095299f698c71c88",
+    "final_test_git_blob": "7b3160dbebe85cea0315f3103f5f5c54add0bc33",
+    "local_exact_test_result": "PASS_22_OF_22",
+    "final_hardening_rules": [
+      "Outcome-control exceptions are identified by true tuple path components rather than dotted path strings, preventing dotted-key path spoofing.",
+      "Only the exact legitimate paths pre_freeze_receipt/winner_prediction and pre_freeze_receipt/post_result_reconstruction are exempted by name; nested or misplaced outcome/result fields remain rejected.",
+      "Nonnumeric ticket probabilities fail closed as invalid_ticket_probability.",
+      "Invalid winner identity numeric conversion fails closed as winner_prediction_identity_invalid.",
+      "Missing or nonnumeric generated competition-gate value fails closed as generated_competition_gate_invalid."
+    ],
+    "covered_fail_closed_cases": [
+      "outcome contamination",
+      "nested result under winner_prediction",
+      "misplaced winner_prediction control name",
+      "dotted path spoof",
+      "missing pinned dependency",
+      "pinned blob mismatch",
+      "capture after cutoff",
+      "PRE payload SHA mismatch",
+      "missing supported market",
+      "empty supported market",
+      "nonpositive, above-one, or nonnumeric ticket probability",
+      "invalid generated gate value"
+    ],
+    "result_access": false,
+    "payout_access": false,
+    "network_access_by_runner": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "external_ci_observation": {
+    "last_observed_head": "8d87881d8b96ac6abc7c0d786980e97de694d095",
+    "context": "buildkite/multiverse-independent-auditor",
+    "status": "FAILURE_BUILD_1724_ONE_SECOND",
+    "interpretation": "External one-second failure is not treated as code-test evidence because the exact Buildkite log was not accessible. Do not claim a code root cause without exact evidence."
+  },
+  "prospective_20260912_status_carried_forward": {
+    "matsuyama": {
+      "event_confirmed": true,
+      "day1_race_count": 7,
+      "race_class": "チャレンジ予選",
+      "deadline_range_jst": "08:25-10:30",
+      "final_car_plus_rider_body_safely_captured": false,
+      "freeze_eligible": false
+    },
+    "sasebo": {
+      "event_confirmed": true,
+      "final_car_plus_rider_body_safely_captured": false,
+      "freeze_eligible": false
+    },
+    "target_result_or_payout_pages_opened": false
+  },
+  "unchanged_bindings": {
+    "competition_gate": "Use the pinned PRE-only internal race-level competition score producer; caller-supplied race competition_score remains forbidden.",
+    "v54_selector": "Frozen v54 selector/economics remain unchanged.",
+    "contamination_rule": "No result, payout, future-data, or post-cutoff reconstruction may enter PRE prediction.",
+    "runtime": "OFF",
+    "automatic_betting": "OFF"
+  },
+  "next_execution_order": [
+    "Fresh-read the branch before repository writes.",
+    "Re-check 2026-09-12 Matsuyama and Sasebo final PRE racecard publication using trustworthy public sources without opening target result/payout evidence.",
+    "Continue minimum-input PRE-only prospective discovery without waiting for odds.",
+    "When a trustworthy final car-number plus rider card is available, freeze the exact PRE bytes/hash and race identity before prediction.",
+    "Run the repaired and hardened PRE-only candidate/required-odds path and emit ticket candidate plus raw break-even odds threshold without requiring live odds.",
+    "Capture genuine pre-close odds separately when available only for execution-price checks and later formal profitability/ROI evidence.",
+    "Do not open result/payout evidence before the separately governed outcome-evaluation gate.",
+    "Keep formal scientific verification percentage unchanged unless genuine scientific evidence increases."
+  ],
+  "progress": {
+    "practical_implementation_percent": 100,
+    "large_scale_simulation_win_pattern_percent": 100,
+    "formal_scientific_validation_percent": 85
+  }
+}
