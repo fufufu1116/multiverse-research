@@ -1,0 +1,96 @@
+name: Opportunity Engine Slice C v4 pre-Lab proof
+
+on:
+  push:
+    branches:
+      - proof/opportunity-engine-slice-c-v4-prelab-20260911
+
+permissions:
+  contents: read
+
+jobs:
+  slice-c-v4-prelab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout proof carrier
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Bind exact Candidate parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "25e6c4ee9ac6c88a4d6c11544a62ee1ec79a19e9"
+          test "$(git rev-parse HEAD^{tree}:research/opportunity_engine_v0/customer_contribution.py)" = "ae5fd34cc4b52081feade081601903b08e0c5ef2"
+          test "$(git rev-parse HEAD^{tree}:research/opportunity_engine_v0/customer_value_loop.py)" = "1e7ea441adc4311aaaff7af9ab598570f646cf77"
+          test "$(git rev-parse HEAD^{tree}:research/opportunity_engine_v0/growth_loop.py)" = "a5897df1f10f3ecf318018769fd7a72ace396c6e"
+          test "$(git rev-parse HEAD^{tree}:research/opportunity_engine_v0/hundred_user_general.py)" = "f0be1a22898dd533e6649725098f511d110288fd"
+
+      - name: Compile Slice C v4
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            research/opportunity_engine_v0/customer_contribution.py \
+            research/opportunity_engine_v0/customer_value_loop.py \
+            research/opportunity_engine_v0/growth_loop.py \
+            research/opportunity_engine_v0/hundred_user_general.py \
+            research/opportunity_engine_v0/test_customer_contribution.py \
+            research/opportunity_engine_v0/test_growth_loop.py \
+            research/opportunity_engine_v0/test_customer_value_loop.py \
+            research/opportunity_engine_v0/test_hundred_user_general.py
+
+      - name: Run exact bounded Slice C test surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            research.opportunity_engine_v0.test_customer_contribution \
+            research.opportunity_engine_v0.test_growth_loop \
+            research.opportunity_engine_v0.test_customer_value_loop \
+            research.opportunity_engine_v0.test_hundred_user_general \
+            -v
+
+      - name: Count tests mechanically
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import unittest
+          modules = [
+              'research.opportunity_engine_v0.test_customer_contribution',
+              'research.opportunity_engine_v0.test_growth_loop',
+              'research.opportunity_engine_v0.test_customer_value_loop',
+              'research.opportunity_engine_v0.test_hundred_user_general',
+          ]
+          loader = unittest.TestLoader()
+          total = 0
+          counts = {}
+          for name in modules:
+              suite = loader.loadTestsFromName(name)
+              count = suite.countTestCases()
+              counts[name] = count
+              total += count
+          print('COUNTS=', counts)
+          print('TOTAL=', total)
+          assert counts['research.opportunity_engine_v0.test_customer_contribution'] == 6
+          assert counts['research.opportunity_engine_v0.test_growth_loop'] == 8
+          assert counts['research.opportunity_engine_v0.test_customer_value_loop'] == 6
+          assert counts['research.opportunity_engine_v0.test_hundred_user_general'] == 9
+          assert total == 29
+          PY
+
+      - name: Prove nonauthority markers remain
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from research.opportunity_engine_v0.hundred_user_general import build_first_wedge_spec
+          spec = build_first_wedge_spec()
+          assert spec['live_execution_authorized'] is False
+          assert spec['owner_gate_still_required_for_live_test'] is True
+          print('RUNTIME=OFF')
+          print('SLICE_C_V4_PRELAB_PROOF=PASS')
+          PY
