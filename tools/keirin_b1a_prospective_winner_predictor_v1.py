@@ -45,7 +45,7 @@ def _forbidden_key(k:str)->bool:
     x=str(k).lower()
     return any(t.lower() in x for t in FORBIDDEN_TOKENS)
 
-def reject_outcome_fields(obj:Any,path:str="$')->None:
+def reject_outcome_fields(obj:Any,path:str="$")->None:
     if isinstance(obj,dict):
         for k,v in obj.items():
             if _forbidden_key(k):
