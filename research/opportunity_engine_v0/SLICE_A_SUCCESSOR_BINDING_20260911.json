@@ -8,31 +8,33 @@
   },
   "frozen_research_source": {
     "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
-    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5"
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5",
+    "manifest": "research/opportunity_engine_v0/adoption_slice_a_manifest_v0.json"
   },
   "slice": "A_CORE_DOMAIN_MODEL",
-  "carry_forward_rule": "copy only exact frozen Slice A paths; no later PR310 delta; no canonical control-plane duplication",
+  "carry_forward_rule": "copy only exact frozen Slice A include_paths from adoption_slice_a_manifest_v0.json; no later PR310 delta; no canonical control-plane duplication",
   "exact_paths": [
     "research/opportunity_engine_v0/model.py",
     "research/opportunity_engine_v0/engine.py",
-    "research/opportunity_engine_v0/durability.py",
-    "research/opportunity_engine_v0/exposure.py",
-    "research/opportunity_engine_v0/force_multiplier.py",
-    "research/opportunity_engine_v0/leverage.py",
-    "research/opportunity_engine_v0/market_dynamics.py",
-    "research/opportunity_engine_v0/opportunity_archetype.py",
-    "research/opportunity_engine_v0/portfolio.py",
     "research/opportunity_engine_v0/scale.py",
-    "research/opportunity_engine_v0/tactics.py",
+    "research/opportunity_engine_v0/exposure.py",
+    "research/opportunity_engine_v0/durability.py",
+    "research/opportunity_engine_v0/market_dynamics.py",
+    "research/opportunity_engine_v0/signals.py",
+    "research/opportunity_engine_v0/trajectory.py",
+    "research/opportunity_engine_v0/opportunity_archetype.py",
+    "research/opportunity_engine_v0/market_discovery.py",
+    "research/opportunity_engine_v0/narrow_wedge_ranker.py",
     "research/opportunity_engine_v0/test_engine.py",
-    "research/opportunity_engine_v0/test_durability.py",
+    "research/opportunity_engine_v0/test_scale.py",
     "research/opportunity_engine_v0/test_exposure.py",
-    "research/opportunity_engine_v0/test_force_multiplier.py",
-    "research/opportunity_engine_v0/test_leverage.py",
+    "research/opportunity_engine_v0/test_durability.py",
     "research/opportunity_engine_v0/test_market_dynamics.py",
-    "research/opportunity_engine_v0/test_opportunity_archetype.py",
-    "research/opportunity_engine_v0/test_portfolio.py"
+    "research/opportunity_engine_v0/test_signal_forecast.py",
+    "research/opportunity_engine_v0/test_trajectory.py",
+    "research/opportunity_engine_v0/test_opportunity_archetype.py"
   ],
+  "preparation_finding_resolved": "Removed stale derived allowlist entries not present in the frozen source manifest, including nonexistent test_portfolio.py; rebound to the exact 19 frozen include_paths.",
   "forbidden_in_slice_a": [
     "provider execution",
     "credentials",
@@ -44,7 +46,7 @@
     "spend",
     "canonical adoption authority"
   ],
-  "proof_state": "NOT_YET_EXECUTED",
+  "proof_state": "CARRY_FORWARD_PENDING_VALIDATION",
   "authority": {
     "formal_review": false,
     "canonical_adoption": false,
