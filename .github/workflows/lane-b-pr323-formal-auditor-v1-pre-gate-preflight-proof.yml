@@ -1,0 +1,368 @@
+name: lane-b-pr323-formal-auditor-v1-pre-gate-preflight-proof
+
+on:
+  push:
+    branches:
+      - agent/lane-b-pr323-formal-auditor-v1-pre-gate-preflight-proof-20260911-v1
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify frozen bindings and fixed Steps integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=4193321bcbf2e24c8e4d176358fad3e277100932
+          TREE=881f9b7ce7191b424a48245a291bcae472b4032e
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          CAND_BRANCH=agent/lane-b-duplicate-identical-request-arbitration-repair-v1-20260911
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+
+          git fetch origin main
+          git fetch origin "+refs/heads/${CAND_BRANCH}:refs/remotes/origin/${CAND_BRANCH}"
+          test "$(git rev-parse origin/main)" = "$MAIN"
+          test "$(git rev-parse origin/${CAND_BRANCH})" = "$TARGET"
+          test "$(git show -s --format=%T "$TARGET")" = "$TREE"
+
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$TARGET:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test "$(git rev-parse "$TARGET:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+
+          rm -rf /tmp/pr323 /tmp/mv_dispatcher /tmp/mv_out
+          git worktree add --detach /tmp/pr323 "$TARGET"
+          test "$(git -C /tmp/pr323 rev-parse HEAD)" = "$TARGET"
+          test "$(git -C /tmp/pr323 show -s --format=%T HEAD)" = "$TREE"
+
+          mkdir -p /tmp/mv_dispatcher /tmp/mv_out
+          git archive "$MAIN" automation/review_dispatcher_v1 | tar -x -C /tmp/mv_dispatcher
+
+          echo EXACT_BINDING=PASS
+          echo FIXED_LAB_STEPS_BLOB=$LAB_BLOB
+          echo FIXED_AUDITOR_STEPS_BLOB=$AUDITOR_BLOB
+
+      - name: Run exact canonical fixed Auditor dispatcher selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=4193321bcbf2e24c8e4d176358fad3e277100932
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          export MULTIVERSE_DISPATCHER_REF="$MAIN"
+          export BUILDKITE_COMMIT="$TARGET"
+          export BUILDKITE_BUILD_ID="OWNER_FREE_PRE_GATE_PREFLIGHT_PR323_AUDITOR_V1"
+          export BUILDKITE_BUILD_NUMBER="0"
+          export BUILDKITE_BRANCH="PRE_GATE_PREFLIGHT_ONLY"
+
+          set +e
+          (cd /tmp/pr323 && PYTHONPATH=/tmp/mv_dispatcher python3 /tmp/mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+            --lane AUDITOR \
+            --repo fufufu1116/multiverse-research \
+            --head "$TARGET" \
+            --output /tmp/mv_out/review_job.json) \
+            > /tmp/mv_out/dispatcher.stdout 2> /tmp/mv_out/dispatcher.stderr
+          rc=$?
+          set -e
+          cat /tmp/mv_out/dispatcher.stdout
+          cat /tmp/mv_out/dispatcher.stderr >&2
+          echo DISPATCHER_RC=$rc
+          test "$rc" -eq 0
+          test -s /tmp/mv_out/review_job.json
+
+      - name: Verify exact formal Auditor request object and recipe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          job = json.loads(Path('/tmp/mv_out/review_job.json').read_text())
+          exact = {
+              'schema': 'MULTIVERSE_FIXED_REVIEW_JOB_v1',
+              'repo': 'fufufu1116/multiverse-research',
+              'pr': 323,
+              'lane': 'AUDITOR',
+              'head': '4193321bcbf2e24c8e4d176358fad3e277100932',
+              'tree': '881f9b7ce7191b424a48245a291bcae472b4032e',
+              'base': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'main': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'dispatcher_ref': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'request_id': 'pr323-duplicate-identical-request-arbitration-repair-auditor-v1-main-d1edc2ea',
+              'request_comment': 5629285315,
+              'request_sha256': '913020e83c4acf6e7aba2dfb9d5589e7f269c9b2e5e257ce338ebffd94902066',
+          }
+          for key, expected in exact.items():
+              assert job.get(key) == expected, (key, job.get(key), expected)
+
+          req = job['request']
+          canonical = json.dumps(req, sort_keys=True, separators=(',', ':'), ensure_ascii=False)
+          digest = hashlib.sha256(canonical.encode()).hexdigest()
+          assert digest == exact['request_sha256'], digest
+          assert req['schema'] == 'MULTIVERSE_REVIEW_REQUEST_v1'
+          assert req['mode'] == 'REPOSITORY_ONLY'
+          assert req['proof_ceiling'] == 'DUPLICATE_IDENTICAL_REQUEST_ARBITRATION_REPAIR_REPOSITORY_ONLY'
+          assert req['execution_state'] == 'FIXED_REQUEST_ONLY_BASELINE_DUPLICATE_IDENTICAL_REQUEST_ARBITRATION_REPAIR_REVIEW_REQUESTED'
+          assert req['supersedes_request_sha256'] is None
+          assert req['upstream'] == {
+              'lab_pass_comment': 5629112204,
+              'lab_request_sha256': 'fbdb041009533f10f615ebc682c1bbfef95e3d1d6516066759247cacd47d093b',
+              't1_comment': 5629271793,
+          }
+          assert all(value is False for value in req['nonauthority'].values())
+
+          recipe = req['recipe']
+          expected_counts = {
+              'automation.review_dispatcher_v1.test_combined_fault_replay_v1': 8,
+              'automation.review_dispatcher_v1.test_dispatcher': 44,
+              'automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1': 5,
+              'automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1': 4,
+              'automation.review_dispatcher_v1.test_publisher_freshness_v1': 4,
+              'automation.review_dispatcher_v1.test_publisher_resilience_integration_v1': 10,
+              'automation.review_dispatcher_v1.test_receipt_recovery_v1': 6,
+              'automation.review_dispatcher_v1.test_request_arbitration_v6': 22,
+              'automation.review_dispatcher_v1.test_result_canonicalization_v1': 6,
+              'automation.review_dispatcher_v1.test_t2_idempotence_v1': 7,
+              'automation.review_dispatcher_v1.test_t2_receipt_recovery_v1': 6,
+              'automation.review_dispatcher_v1.test_t2_resilience_integration_v1': 11,
+              'automation.review_dispatcher_v1.test_validator_current_baseline_v1': 5,
+          }
+          actual_counts = {item['module']: item['count'] for item in recipe['unittest_modules']}
+          assert len(recipe['unittest_modules']) == 13
+          assert actual_counts == expected_counts, actual_counts
+          assert sum(actual_counts.values()) == 138
+          assert [item['id'] for item in recipe['durable_comments']] == [5628891884, 5628894944]
+          assert [item['path'] for item in recipe['source_rules']] == [
+              'automation/review_dispatcher_v1/request_arbitration_v6.py',
+              'automation/review_dispatcher_v1/test_request_arbitration_v6.py',
+          ]
+          assert recipe['secret_scan_paths'] == [
+              'automation/review_dispatcher_v1/request_arbitration_v6.py',
+              'automation/review_dispatcher_v1/test_request_arbitration_v6.py',
+          ]
+          assert recipe['forbidden_patterns'] == ['AIza', 'sk-ant-', 'sk-']
+          assert recipe['http'] is None
+          assert recipe['subtrees'] == {}
+          assert recipe['validators'] == [{
+              'path': 'automation/review_dispatcher_v1/validator.py',
+              'expect': {'findings': [], 'verdict': 'PASS'},
+          }]
+          print('EXACT_REQUEST_SELECTION=PASS')
+          print('REQUEST_COMMENT=5629285315')
+          print('REQUEST_SHA256=' + digest)
+          print('UPSTREAM_LAB_PASS_COMMENT=5629112204')
+          print('UPSTREAM_T1_COMMENT=5629271793')
+          print('UNITTEST_MODULES=13')
+          print('UNITTEST_AGGREGATE=138')
+          PY
+
+      - name: Confirm no existing Auditor result bound to exact request
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          repo = 'fufufu1116/multiverse-research'
+          marker = (
+              '<!-- MULTIVERSE_FIXED_REVIEW_RESULT_V1:'
+              'pr323-duplicate-identical-request-arbitration-repair-auditor-v1-main-d1edc2ea:'
+              '4193321bcbf2e24c8e4d176358fad3e277100932:'
+              '5629285315:'
+              '913020e83c4acf6e7aba2dfb9d5589e7f269c9b2e5e257ce338ebffd94902066:'
+          )
+          found = []
+          for page in range(1, 101):
+              req = urllib.request.Request(
+                  f'https://api.github.com/repos/{repo}/issues/323/comments?per_page=100&page={page}',
+                  headers={
+                      'Accept': 'application/vnd.github+json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'Authorization': f'Bearer {os.environ["GH_READ_TOKEN"]}',
+                      'User-Agent': 'multiverse-lane-b-owner-free-auditor-preflight',
+                  },
+              )
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  batch = json.load(response)
+              for item in batch:
+                  if marker in (item.get('body') or ''):
+                      found.append(item.get('id'))
+              if len(batch) < 100:
+                  break
+          assert found == [], found
+          print('EXISTING_AUDITOR_RESULT_BOUND_TO_REQUEST=NONE')
+          PY
+
+      - name: Execute exact canonical fixed Auditor review against frozen Candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=4193321bcbf2e24c8e4d176358fad3e277100932
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          export MULTIVERSE_DISPATCHER_REF="$MAIN"
+          export BUILDKITE_COMMIT="$TARGET"
+          export BUILDKITE_BUILD_ID="OWNER_FREE_PRE_GATE_PREFLIGHT_PR323_AUDITOR_V1"
+          export BUILDKITE_BUILD_NUMBER="0"
+          export BUILDKITE_BRANCH="PRE_GATE_PREFLIGHT_ONLY"
+
+          set +e
+          (cd /tmp/pr323 && PYTHONPATH=/tmp/mv_dispatcher python3 /tmp/mv_dispatcher/automation/review_dispatcher_v1/review.py \
+            --job /tmp/mv_out/review_job.json \
+            --output /tmp/mv_out/review_artifact.json \
+            --repo-root /tmp/pr323) \
+            > /tmp/mv_out/review.stdout 2> /tmp/mv_out/review.stderr
+          rc=$?
+          set -e
+          cat /tmp/mv_out/review.stdout
+          cat /tmp/mv_out/review.stderr >&2
+          echo REVIEW_RC=$rc
+          test "$rc" -eq 0
+          test -s /tmp/mv_out/review_artifact.json
+
+      - name: Validate serialized artifact and terminal READY contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('/tmp/mv_out/review_artifact.json')
+          artifact = json.loads(path.read_text())
+          assert json.loads(json.dumps(artifact, sort_keys=True, ensure_ascii=False)) == artifact
+
+          exact = {
+              'schema_version': 'MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1',
+              'result_schema': 'MULTIVERSE_FIXED_REVIEW_RESULT_v1',
+              'lane': 'AUDITOR',
+              'request_id': 'pr323-duplicate-identical-request-arbitration-repair-auditor-v1-main-d1edc2ea',
+              'request_comment': 5629285315,
+              'request_sha256': '913020e83c4acf6e7aba2dfb9d5589e7f269c9b2e5e257ce338ebffd94902066',
+              'reviewed_repo': 'fufufu1116/multiverse-research',
+              'reviewed_pr': 323,
+              'reviewed_head': '4193321bcbf2e24c8e4d176358fad3e277100932',
+              'reviewed_tree': '881f9b7ce7191b424a48245a291bcae472b4032e',
+              'reviewed_base': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'reviewed_main': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'dispatcher_ref': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'mode': 'REPOSITORY_ONLY',
+              'proof_ceiling': 'DUPLICATE_IDENTICAL_REQUEST_ARBITRATION_REPAIR_REPOSITORY_ONLY',
+              'execution_state': 'FIXED_REQUEST_ONLY_BASELINE_DUPLICATE_IDENTICAL_REQUEST_ARBITRATION_REPAIR_REVIEW_REQUESTED',
+              'test_count': 138,
+              'findings': [],
+              'verdict': 'PASS',
+              'upstream': {
+                  'lab_pass_comment': 5629112204,
+                  'lab_request_sha256': 'fbdb041009533f10f615ebc682c1bbfef95e3d1d6516066759247cacd47d093b',
+                  't1_comment': 5629271793,
+              },
+          }
+          for key, expected in exact.items():
+              assert artifact.get(key) == expected, (key, artifact.get(key), expected)
+          assert all(value is False for value in artifact['nonauthority'].values())
+          producer = artifact['producer']
+          assert producer['github_login'] == 'multiverse-independent-auditor[bot]'
+          assert producer['github_app_id'] == 4821179
+          assert producer['build_commit'] == exact['reviewed_head']
+
+          checks = artifact['checks']
+          assert checks and all(value == 'PASS' for value in checks.values()), [
+              (k, v) for k, v in checks.items() if v != 'PASS'
+          ]
+          for key in ('buildkite_commit_exact', 'local_head_exact', 'fresh_binding_contract', 'fresh_pr_head', 'fresh_pr_tree', 'fresh_pr_base', 'fresh_main', 'pr_open', 'pr_draft', 'pr_unmerged'):
+              assert checks.get(key) == 'PASS', key
+          for key in (
+              'upstream_lab_result_bound_to_latest_request',
+              'upstream_lab_request_proof_ceiling',
+              'upstream_lab_request_execution_state',
+              'upstream_lab_request_sha256',
+              'upstream_lab_login',
+              'upstream_lab_app',
+              'upstream_lab_single_authentic_latest_result',
+              'upstream_t1_owner',
+              'upstream_t1_binding:lab_comment',
+              'upstream_t1_binding:lab_request_sha256',
+              'upstream_t1_binding:head',
+              'upstream_t1_binding:tree',
+              'upstream_t1_binding:base',
+              'upstream_t1_binding:main',
+              'upstream_t1_binding:pass',
+          ):
+              assert checks.get(key) == 'PASS', (key, checks.get(key))
+          for name in ('DATABASE_URL', 'RENDER_API_KEY', 'MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY', 'MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY'):
+              assert checks.get('secret_env_absent:' + name) == 'PASS', name
+          for cid in (5628891884, 5628894944):
+              assert checks.get(f'comment:{cid}:login') == 'PASS', cid
+              assert checks.get(f'comment:{cid}:app_slug') == 'PASS', cid
+          unittest_counts = [k for k, v in checks.items() if k.startswith('unittest_count:') and v == 'PASS']
+          unittest_results = [k for k, v in checks.items() if k.startswith('unittest_result:') and v == 'PASS']
+          assert len(unittest_counts) == 13, unittest_counts
+          assert len(unittest_results) == 13, unittest_results
+          assert checks.get('validator_exit:automation/review_dispatcher_v1/validator.py') == 'PASS'
+          assert checks.get('validator_json:automation/review_dispatcher_v1/validator.py') == 'PASS'
+          assert checks.get('validator_expect:automation/review_dispatcher_v1/validator.py:verdict') == 'PASS'
+          assert checks.get('validator_expect:automation/review_dispatcher_v1/validator.py:findings') == 'PASS'
+          secret_checks = [k for k, v in checks.items() if k.startswith('secret_scan:') and v == 'PASS']
+          assert len(secret_checks) == 6, secret_checks
+
+          result = {
+              'schema': 'MULTIVERSE_OWNER_FREE_ONE_SHOT_AUDITOR_PREFLIGHT_v1',
+              'state': 'READY',
+              'classification': 'PASS',
+              'repo': 'fufufu1116/multiverse-research',
+              'lane': 'AUDITOR',
+              'pr': 323,
+              'head': exact['reviewed_head'],
+              'tree': exact['reviewed_tree'],
+              'main': exact['reviewed_main'],
+              'request_id': exact['request_id'],
+              'request_comment': exact['request_comment'],
+              'request_sha256': exact['request_sha256'],
+              'lab_pass_comment': 5629112204,
+              'lab_request_sha256': 'fbdb041009533f10f615ebc682c1bbfef95e3d1d6516066759247cacd47d093b',
+              't1_comment': 5629271793,
+              'test_count': artifact['test_count'],
+              'findings': artifact['findings'],
+              'validator': 'PASS',
+              'artifact_serialization': 'PASS',
+              'fixed_steps_integrity': 'PASS',
+              'existing_auditor_result_bound_to_request': False,
+              'publication_attempted': False,
+              'owner_build_consumed': False,
+              'owner_gate': False,
+              'runtime': 'OFF',
+          }
+          Path('/tmp/mv_out/auditor_preflight_result.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+          print(json.dumps(result, sort_keys=True))
+          print('ONE_SHOT_AUDITOR_PREFLIGHT_READY=TRUE')
+          PY
+
+      - name: No-effect terminal summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat /tmp/mv_out/auditor_preflight_result.json
+          echo TERMINAL=READY
+          echo PUBLICATION_ATTEMPTED=false
+          echo OWNER_BUILD_CONSUMED=false
+          echo OWNER_GATE=false
+          echo CANDIDATE_MUTATION=false
+          echo MAIN_MUTATION=false
+          echo RUNTIME=OFF
