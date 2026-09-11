@@ -1,0 +1,44 @@
+{
+  "capture_method": "Race membership taken only from race-level PRE pages; four-month rates and registration/style fields from official KEIRIN.JP profiles; no event-roster inference; no target result/payout access.",
+  "captured_at_jst": "2026-09-12T00:08:07+09:00",
+  "odds_values_used": false,
+  "official_profile_sources": [
+    {"car_no": 1, "url": "https://www.keirin.jp/pc/racerprofile?snum=015889"},
+    {"car_no": 2, "url": "https://www.keirin.jp/pc/racerprofile?snum=012529"},
+    {"car_no": 3, "url": "https://www.keirin.jp/pc/racerprofile?snum=014183"},
+    {"car_no": 4, "url": "https://www.keirin.jp/pc/racerprofile?snum=013128"},
+    {"car_no": 5, "url": "https://www.keirin.jp/pc/racerprofile?snum=015990"},
+    {"car_no": 6, "url": "https://www.keirin.jp/pc/racerprofile?snum=012329"},
+    {"car_no": 7, "url": "https://www.keirin.jp/pc/racerprofile?snum=014866"}
+  ],
+  "payout_accessed_before_freeze": false,
+  "pre_payload": {
+    "circumference_bucket": "400",
+    "entrants": [
+      {"B": 20, "S": 1, "car_no": 1, "class": "A3", "name": "大本 隆也", "quinella_rate": 0.52, "registration_number": "015889", "score": 75.25, "style": "逃", "trio_rate": 0.68, "win_rate": 0.24},
+      {"B": 0, "S": 4, "car_no": 2, "class": "A3", "name": "木本 賢二", "quinella_rate": 0.133, "registration_number": "012529", "score": 74.33, "style": "追", "trio_rate": 0.3, "win_rate": 0.066},
+      {"B": 2, "S": 0, "car_no": 3, "class": "A3", "name": "隅田 幸助", "quinella_rate": 0.2, "registration_number": "014183", "score": 67.93, "style": "両", "trio_rate": 0.266, "win_rate": 0.133},
+      {"B": 0, "S": 0, "car_no": 4, "class": "A3", "name": "梶原 秀庸", "quinella_rate": 0.153, "registration_number": "013128", "score": 70.61, "style": "追", "trio_rate": 0.461, "win_rate": 0.076},
+      {"B": 6, "S": 13, "car_no": 5, "class": "A3", "name": "児玉 東次郎", "quinella_rate": 0.444, "registration_number": "015990", "score": 73.11, "style": "逃", "trio_rate": 0.555, "win_rate": 0.277},
+      {"B": 0, "S": 0, "car_no": 6, "class": "A3", "name": "松尾 正人", "quinella_rate": 0.0, "registration_number": "012329", "score": 67.52, "style": "追", "trio_rate": 0.238, "win_rate": 0.0},
+      {"B": 2, "S": 0, "car_no": 7, "class": "A3", "name": "櫻井 利之", "quinella_rate": 0.2, "registration_number": "014866", "score": 74.07, "style": "両", "trio_rate": 0.266, "win_rate": 0.133}
+    ],
+    "event_date": "2026-09-12",
+    "race_id": "7520260912010001",
+    "race_number": 1,
+    "venue": "松山"
+  },
+  "pre_payload_sha256": "7a77a6fd88513ee6e9dbc265bd4a971d9e9d2ba3c82ab456141ba5dc2132773b",
+  "record": "KEIRIN_PROSPECTIVE_PRE_SOURCE_SNAPSHOT_20260912_MATSUYAMA_R1_v1",
+  "results_accessed_before_freeze": false,
+  "scheduled_start_jst": "2026-09-12T08:30:00+09:00",
+  "snapshot_sha256": "3ffce5b296761b36d852682b52a513bf57ffa7b08576602388c8612e0b194a4a",
+  "sources": [
+    {"provider": "東スポ競輪", "role": "race-level exact card + score/B/S/class/style + scheduled time", "trust_class": "PUBLIC_RACE_LEVEL_PRE", "url": "https://keirin.tokyo-sports.co.jp/list/race/20260911_31528"},
+    {"provider": "オッズパーク競輪", "role": "independent race-level exact car/rider membership + line comments", "trust_class": "PUBLIC_RACE_LEVEL_PRE", "url": "https://www-orign.oddspark.com/keirin/yosou/matsuyama/2026/0912.html"},
+    {"provider": "KEIRIN.JP", "role": "Matsuyama 400m circumference", "trust_class": "OFFICIAL", "url": "https://www.keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html"}
+  ],
+  "status": "FROZEN_PRE_ONLY_MULTI_SOURCE_RACE_LEVEL_TRANSCRIPTION",
+  "target_cutoff_jst": "2026-09-12T08:25:00+09:00",
+  "target_identity": {"event_date": "2026-09-12", "race_number": 1, "venue": "松山"}
+}
