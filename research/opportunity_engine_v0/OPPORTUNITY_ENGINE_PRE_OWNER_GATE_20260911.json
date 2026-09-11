@@ -1,0 +1,34 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_PRE_OWNER_GATE_v1",
+  "status": "REPOSITORY_ONLY_PREPARATION_COMPLETE_WAITING_ON_GOVERNED_OR_EXTERNAL_DEPENDENCIES",
+  "observed_on": "2026-09-11",
+  "canonical_main": {
+    "sha": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46"
+  },
+  "prepared_slices": {
+    "A": {"pr":325,"head":"70e5aa16b4f650c6742f60d2549139eaa869057e","tree":"451afbb790531f3ebc2d70d129262b1d75045efb","draft":true,"independent_pass_claimed":false,"observed_auditor_status":"FAILURE","observed_build":1667},
+    "B": {"pr":326,"head":"9037f51d4696c67d9e626f37002110221f39f5c3","tree":"084a02b077bbca6d77961788682f1e4b0039bdf2","draft":true,"independent_pass_claimed":false,"observed_auditor_status":"FAILURE","observed_build":1672},
+    "C": {"pr":327,"head":"6b41434c9d0d645b82fa3b12e5a0c56df7504083","draft":true,"independent_pass_claimed":false,"observed_auditor_status":"FAILURE","observed_build":1675}
+  },
+  "failure_interpretation": "No root cause is asserted from commit status alone. Do not rerun or modify fixed Lab/Auditor Steps without separate authority.",
+  "slice_d_gate": {
+    "state": "DEFERRED_BY_DECLARED_TRIGGER",
+    "reason": "Frozen Slice D requires active control-plane and first-live-provider lines to be canonically integrated or superseded by stable fresh-main successors before a bridge successor is frozen.",
+    "active_dependencies": [
+      {"pr":318,"state":"OPEN_DRAFT_UNMERGED","role":"control-plane one-shot preflight/read-resilience successor"},
+      {"pr":320,"state":"OPEN_DRAFT_UNMERGED","role":"first-live-provider preauth successor"}
+    ]
+  },
+  "slice_e_gate": {"state":"WAITING_FOR_SLICE_D_STABLE_BINDING","rule":"Do not build the final completion spine against a moving bridge/control/provider contract."},
+  "remaining_safe_repository_work_before_owner_or_dependency_change": [],
+  "next_governed_actions": [
+    "investigate exact independent auditor failures under the canonical review process if authorized",
+    "review/adopt Slice A/B/C under canonical governance",
+    "after PR318/PR320 are integrated or stably superseded, Fresh-read main and build Slice D",
+    "then build/freeze Slice E",
+    "canonical merge/adoption remains separate",
+    "Hundred User live validation remains separate"
+  ],
+  "authority": {"formal_review":false,"auditor_rerun":false,"fixed_steps_change":false,"canonical_adoption":false,"merge":false,"provider_call":false,"credential_use":false,"spend":false,"publication":false,"customer_recruitment":false,"runtime_activation":false,"live_business_effect":false}
+}
