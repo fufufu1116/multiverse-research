@@ -1,0 +1,180 @@
+name: lane-b-duplicate-identical-request-arbitration-repair-v1-proof2
+
+on:
+  push:
+    branches:
+      - agent/lane-b-duplicate-identical-request-arbitration-repair-v1-proof2-20260911
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact candidate binding and fixed Steps integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=4193321bcbf2e24c8e4d176358fad3e277100932
+          TREE=881f9b7ce7191b424a48245a291bcae472b4032e
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$MAIN"
+          test "$(git show -s --format=%T "$TARGET")" = "$TREE"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$TARGET:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test "$(git rev-parse "$TARGET:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          git checkout --detach "$TARGET"
+          test "$(git rev-parse HEAD)" = "$TARGET"
+          echo FIXED_STEPS_INTEGRITY=PASS
+
+      - name: Compile changed paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m py_compile \
+            automation/review_dispatcher_v1/request_arbitration_v6.py \
+            automation/review_dispatcher_v1/test_request_arbitration_v6.py
+          echo COMPILE=PASS
+
+      - name: Run full applicable current-main control-plane suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          specs=(
+            'automation.review_dispatcher_v1.test_combined_fault_replay_v1:8'
+            'automation.review_dispatcher_v1.test_dispatcher:44'
+            'automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1:5'
+            'automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1:4'
+            'automation.review_dispatcher_v1.test_publisher_freshness_v1:4'
+            'automation.review_dispatcher_v1.test_publisher_resilience_integration_v1:10'
+            'automation.review_dispatcher_v1.test_receipt_recovery_v1:6'
+            'automation.review_dispatcher_v1.test_request_arbitration_v6:22'
+            'automation.review_dispatcher_v1.test_result_canonicalization_v1:6'
+            'automation.review_dispatcher_v1.test_t2_idempotence_v1:7'
+            'automation.review_dispatcher_v1.test_t2_receipt_recovery_v1:6'
+            'automation.review_dispatcher_v1.test_t2_resilience_integration_v1:11'
+            'automation.review_dispatcher_v1.test_validator_current_baseline_v1:5'
+          )
+          total=0
+          for spec in "${specs[@]}"; do
+            module="${spec%:*}"
+            expected="${spec##*:}"
+            set +e
+            output="$(PYTHONPATH=. python -m unittest "$module" 2>&1)"
+            rc=$?
+            set -e
+            printf '%s\n' "$output"
+            test "$rc" -eq 0
+            actual="$(printf '%s\n' "$output" | sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' | tail -n 1)"
+            test -n "$actual"
+            test "$actual" = "$expected"
+            total=$((total + actual))
+            echo "MODULE_PASS=$module:$actual"
+          done
+          test "$total" = "138"
+          echo FULL_APPLICABLE_TESTS=138/138_PASS
+          echo BASELINE_PREVIOUSLY_PROVEN=132/132_PASS
+          echo FOCUSED_ARBITRATION_DELTA=+6
+
+      - name: Run validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python automation/review_dispatcher_v1/validator.py > validator.json
+          cat validator.json
+          python - <<'PY'
+          import json
+          data = json.load(open('validator.json'))
+          assert data.get('verdict') == 'PASS', data
+          assert data.get('findings') == [], data
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          PY
+
+      - name: Replay complete live PR318 durable request history
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          from automation.review_dispatcher_v1.model_legacy_v1 import sha256_json
+          from automation.review_dispatcher_v1.request_arbitration_v6 import latest_exact_current_owner_request_v6
+
+          repo = 'fufufu1116/multiverse-research'
+          comments = []
+          for page in range(1, 100):
+              req = urllib.request.Request(
+                  f'https://api.github.com/repos/{repo}/issues/318/comments?per_page=100&page={page}',
+                  headers={
+                      'Accept': 'application/vnd.github+json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'Authorization': f'Bearer {os.environ["GITHUB_TOKEN"]}',
+                      'User-Agent': 'multiverse-lane-b-research-proof',
+                  },
+              )
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  batch = json.load(response)
+              comments.extend(batch)
+              if len(batch) < 100:
+                  break
+
+          selected_comment, selected, _ = latest_exact_current_owner_request_v6(
+              comments,
+              repo=repo,
+              pr=318,
+              lane='LAB',
+              head='c3e5bbd340b6da75c8fc80fa921becf01b0bc907',
+              tree='867ec216722155c7ab97400b6891e64af1dde896',
+              base='d1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              main='d1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+          )
+          assert selected_comment == 5628512577, selected_comment
+          assert selected['request_id'] == 'pr318-current-main-preflight-read-resilience-lab-v3-main-d1edc2ea', selected
+          selected_sha = sha256_json(selected)
+          assert selected_sha == 'b07b6371c6edfd5a0561f96316413d0daa88032bb71cdc8f7528c3cdad3a0680', selected_sha
+          assert selected['supersedes_request_sha256'] == '35011c99d39be40fa80d4ca0abb41c7c57beee40c13a31486f44c045faf03917'
+
+          ids = []
+          for item in comments:
+              body = item.get('body') or ''
+              if (
+                  '<!-- MULTIVERSE_REVIEW_REQUEST_V1 -->' in body
+                  and 'pr318-current-main-preflight-read-resilience-lab-v3-main-d1edc2ea' in body
+              ):
+                  ids.append(item.get('id'))
+          assert 5628512577 in ids, ids
+          assert 5628564802 in ids, ids
+          print('PR318_LIVE_FULL_HISTORY_REPLAY=PASS')
+          print('PR318_V3_DUPLICATE_IDS=' + ','.join(map(str, ids)))
+          print('PR318_SELECTED_EARLIEST_COMMENT=5628512577')
+          print('PR318_SELECTED_REQUEST_SHA256=' + selected_sha)
+          PY
+
+      - name: Terminal no-effect summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo TERMINAL=PASS
+          echo FORMAL_BUILD_CONSUMED=false
+          echo OWNER_GATE=false
+          echo PR318_MUTATION=false
+          echo FIXED_STEPS_MUTATION=false
+          echo MAIN_MUTATION=false
+          echo PUBLICATION_ATTEMPTED=false
+          echo RUNTIME=OFF
