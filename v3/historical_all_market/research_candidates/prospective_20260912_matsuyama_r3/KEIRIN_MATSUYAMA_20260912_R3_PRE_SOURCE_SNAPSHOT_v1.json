@@ -1,0 +1,36 @@
+{
+  "capture_method": "楽天Kドリームス 2026-09-12 racecard assignment/style + 競輪公式投票CTC event participant statistics; exact-name join; no odds or target result fields used",
+  "captured_at_jst": "2026-09-11T19:07:41+09:00",
+  "ctc_data_window_through": "2026-09-10",
+  "note": "Kdreams supplied race/car assignment and style. CTC supplied score, S(ST), B(BK), win/quinella/trio rates. Join was by exact rider name after whitespace normalization. Individual Kdreams detail endpoints were not used because the retrieval layer returned cache miss.",
+  "odds_values_used": false,
+  "pre_payload": {
+    "circumference_bucket": "400",
+    "entrants": [
+      {"B": 0, "S": 1, "car_no": 1, "class": "A3", "name": "爲田 学", "quinella_rate": 0.133, "score": 73.53, "style": "追", "trio_rate": 0.4, "win_rate": 0},
+      {"B": 0, "S": 2, "car_no": 2, "class": "A3", "name": "浦野 慈生", "quinella_rate": 0.185, "score": 69.04, "style": "両", "trio_rate": 0.37, "win_rate": 0.111},
+      {"B": 5, "S": 2, "car_no": 3, "class": "A3", "name": "山下 季秦", "quinella_rate": 0.467, "score": 74.0, "style": "逃", "trio_rate": 0.533, "win_rate": 0.2},
+      {"B": 0, "S": 0, "car_no": 4, "class": "A3", "name": "竹野 行登", "quinella_rate": 0.091, "score": 68.62, "style": "追", "trio_rate": 0.227, "win_rate": 0},
+      {"B": 0, "S": 0, "car_no": 5, "class": "A3", "name": "富澤 洋祐", "quinella_rate": 0.185, "score": 71.04, "style": "追", "trio_rate": 0.444, "win_rate": 0.037},
+      {"B": 7, "S": 1, "car_no": 6, "class": "A3", "name": "田山 誠", "quinella_rate": 0.286, "score": 68.52, "style": "逃", "trio_rate": 0.381, "win_rate": 0.095},
+      {"B": 0, "S": 2, "car_no": 7, "class": "A3", "name": "川村 昭弘", "quinella_rate": 0.345, "score": 78.31, "style": "追", "trio_rate": 0.552, "win_rate": 0.034}
+    ],
+    "event_date": "2026-09-12",
+    "race_id": "7520260912010003",
+    "race_number": 3,
+    "venue": "松山"
+  },
+  "record": "KEIRIN_PROSPECTIVE_PRE_SOURCE_SNAPSHOT_20260912_MATSUYAMA_R3_v1",
+  "scheduled_start_jst": "2026-09-12T09:11:00+09:00",
+  "sources": [
+    {"locator": "https://keirin.kdreams.jp/matsuyama/racecard/75202609120100/", "provider": "楽天Kドリームス", "role": "race_assignment_and_style"},
+    {"locator": "https://ctc.gr.jp/schedule/detail.php?id=7520260912", "provider": "競輪公式投票CTC", "role": "participant_statistics"},
+    {"locator": "official rider profiles identifying Matsuyama as 400m", "provider": "KEIRIN.JP", "role": "track_circumference_confirmation"}
+  ],
+  "status": "FROZEN_PRE_ONLY_MULTI_SOURCE_TRANSCRIPTION",
+  "target_cutoff_jst": "2026-09-12T09:06:00+09:00",
+  "target_identity": {"event_date": "2026-09-12", "race_number": 3, "venue": "松山"},
+  "target_outcome_accessed": false,
+  "target_payout_accessed": false,
+  "track_circumference_m": 400
+}
