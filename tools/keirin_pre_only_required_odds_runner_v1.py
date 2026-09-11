@@ -71,7 +71,10 @@ def _rank_market(probs: dict[str, float]) -> list[dict[str, Any]]:
         raise FailClosed("empty_ticket_probability_market")
     rows: list[dict[str, Any]] = []
     for ticket, raw_q in probs.items():
-        q = float(raw_q)
+        try:
+            q = float(raw_q)
+        except (TypeError, ValueError) as exc:
+            raise FailClosed(f"invalid_ticket_probability:{ticket}") from exc
         if not math.isfinite(q) or q <= 0.0 or q > 1.0:
             raise FailClosed(f"invalid_ticket_probability:{ticket}")
         rows.append(
@@ -90,27 +93,34 @@ def _rank_market(probs: dict[str, float]) -> list[dict[str, Any]]:
 
 
 _ALLOWED_OUTCOME_CONTROL_PATHS = frozenset({
-    "$.pre_freeze_receipt.winner_prediction",
-    "$.pre_freeze_receipt.post_result_reconstruction",
+    ("pre_freeze_receipt", "winner_prediction"),
+    ("pre_freeze_receipt", "post_result_reconstruction"),
 })
 
 
+def _path_label(path: tuple[str, ...]) -> str:
+    return "$" + "".join(f".{part}" for part in path)
+
+
 def _reject_outcome_fields_scoped(
-    obj: Any, forbidden_tokens: tuple[str, ...], path: str = "$"
+    obj: Any, forbidden_tokens: tuple[str, ...], path: tuple[str, ...] = ()
 ) -> None:
     """Reject outcome/settlement fields while allowing exact PRE receipt control keys."""
     if isinstance(obj, dict):
         for key, value in obj.items():
-            child = f"{path}.{key}"
-            lowered = str(key).lower()
+            key_text = str(key)
+            child = path + (key_text,)
+            lowered = key_text.lower()
             if child not in _ALLOWED_OUTCOME_CONTROL_PATHS and any(
                 str(token).lower() in lowered for token in forbidden_tokens
             ):
-                raise FailClosed(f"outcome_or_settlement_field_forbidden:{child}")
+                raise FailClosed(
+                    f"outcome_or_settlement_field_forbidden:{_path_label(child)}"
+                )
             _reject_outcome_fields_scoped(value, forbidden_tokens, child)
     elif isinstance(obj, list):
         for i, value in enumerate(obj):
-            _reject_outcome_fields_scoped(value, forbidden_tokens, f"{path}[{i}]")
+            _reject_outcome_fields_scoped(value, forbidden_tokens, path + (f"[{i}]",))
 
 
 def run(envelope: dict[str, Any], repo_root: Path, top_n: int = 10) -> dict[str, Any]:
@@ -157,16 +167,25 @@ def run(envelope: dict[str, Any], repo_root: Path, top_n: int = 10) -> dict[str,
         raise FailClosed("pre_payload_target_identity_mismatch")
 
     winner = _require_mapping(pre_receipt.get("winner_prediction"), "winner_prediction")
-    if (
-        str(winner.get("event_date")),
-        str(winner.get("venue", "")).strip(),
-        int(winner.get("race_number", -1)),
-    ) != v1.identity_tuple(target_identity):
+    try:
+        winner_identity = (
+            str(winner.get("event_date")),
+            str(winner.get("venue", "")).strip(),
+            int(winner.get("race_number", -1)),
+        )
+    except (TypeError, ValueError) as exc:
+        raise FailClosed("winner_prediction_identity_invalid") from exc
+    if winner_identity != v1.identity_tuple(target_identity):
         raise FailClosed("winner_prediction_identity_mismatch")
 
     model = score_mod.load_frozen_model(repo_root)
-    generated_gate = score_mod.produce_gate_score(pre_payload, model)
-    gate_value = float(generated_gate["value"])
+    generated_gate = _require_mapping(
+        score_mod.produce_gate_score(pre_payload, model), "generated_competition_gate"
+    )
+    try:
+        gate_value = float(generated_gate["value"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise FailClosed("generated_competition_gate_invalid") from exc
     if not math.isfinite(gate_value):
         raise FailClosed("generated_competition_gate_nonfinite")
 
