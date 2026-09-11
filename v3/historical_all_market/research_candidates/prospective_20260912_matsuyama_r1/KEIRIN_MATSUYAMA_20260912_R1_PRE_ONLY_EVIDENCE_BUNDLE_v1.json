@@ -1,0 +1,81 @@
+{
+  "bindings": {
+    "b1a_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "circumference_model_blob": "061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878",
+    "competition_gate_blob": "8ffbab9d02562a3f8b617047c614a2008378932b",
+    "required_odds_runner_blob": "5d06bb2d1546101e4989e94816b274b6cbc4563f",
+    "v54_probability_blob": "417fa8947ab9b15dde305adc15085d558659d134"
+  },
+  "bundle_sha256": "ff10d716f0ee3b3d883d447427d2447567067d6353bf89f0c3de73bae739e81b",
+  "canonical_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "competition_gate": {
+    "challenger_probabilities": {"1": 0.2606248255819953, "2": 0.2002622738863903, "3": 0.04992892866055535, "4": 0.08749132848361063, "5": 0.16185625214322816, "6": 0.04397811993514736, "7": 0.19585827130907282},
+    "challenger_top1_car_no": 1,
+    "challenger_top1_probability": 0.2606248255819953,
+    "circumference_bucket": "400",
+    "pass": false,
+    "s0_probabilities": {"1": 0.25407879511542214, "2": 0.20702683686587917, "3": 0.04980824712557363, "4": 0.09044665596592141, "5": 0.15779096037614904, "6": 0.04546363568530594, "7": 0.1953848688657487},
+    "s0_top1_car_no": 1,
+    "s0_top1_probability": 0.25407879511542214,
+    "support_mode_by_car": {"1": "STYLE_FALLBACK", "2": "STYLE_FALLBACK", "3": "STYLE_FALLBACK", "4": "STYLE_FALLBACK", "5": "STYLE_FALLBACK", "6": "STYLE_FALLBACK", "7": "STYLE_FALLBACK"},
+    "threshold": 0.4,
+    "top1_agreement": true,
+    "value": 0.25407879511542214
+  },
+  "created_at_jst": "2026-09-12T00:08:41+09:00",
+  "pre_payload_sha256": "7a77a6fd88513ee6e9dbc265bd4a971d9e9d2ba3c82ab456141ba5dc2132773b",
+  "record": "KEIRIN_PROSPECTIVE_PRE_ONLY_EVIDENCE_BUNDLE_20260912_MATSUYAMA_R1_v1",
+  "science": {
+    "automatic_betting": false,
+    "credentials_used": false,
+    "formal_scientific_validation_percent_before_result": 85,
+    "live_effect": false,
+    "payout_accessed_before_freeze": false,
+    "post_result_reconstruction": false,
+    "result_accessed_before_freeze": false,
+    "retune": false,
+    "runtime": "OFF",
+    "science_progress_incremented_at_freeze": false,
+    "spend": 0
+  },
+  "selector": {
+    "actual_odds_used": false,
+    "gate_pass": false,
+    "name": "PRE_ONLY_STRICT_0.40_COMPETITION_GATE",
+    "odds_required_for_prediction": false,
+    "selected_2shatan": null,
+    "selected_3rentan": null,
+    "selected_tickets": [],
+    "selection_status": "NO_CANDIDATE_GATE_BELOW_THRESHOLD",
+    "threshold": 0.4
+  },
+  "source_commit": "d0f8b2c813f1b590e18364a359059def6c8b35b3",
+  "source_path": "v3/historical_all_market/research_candidates/prospective_20260912_matsuyama_r1/KEIRIN_MATSUYAMA_20260912_R1_PRE_SOURCE_SNAPSHOT_v1.json",
+  "source_snapshot_sha256": "3ffce5b296761b36d852682b52a513bf57ffa7b08576602388c8612e0b194a4a",
+  "status": "PASS_PROSPECTIVE_PRE_FROZEN_CANDIDATE_BEFORE_OUTCOME",
+  "target": {"cutoff_jst": "2026-09-12T08:25:00+09:00", "event_date": "2026-09-12", "race_id": "7520260912010001", "race_number": 1, "scheduled_start_jst": "2026-09-12T08:30:00+09:00", "venue": "松山"},
+  "winner_prediction": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "probabilities": [
+      {"car_no": 1, "name": "大本 隆也", "win_prob": 0.39236294245529574},
+      {"car_no": 2, "name": "木本 賢二", "win_prob": 0.08017408171828842},
+      {"car_no": 3, "name": "隅田 幸助", "win_prob": 0.05205824151012189},
+      {"car_no": 4, "name": "梶原 秀庸", "win_prob": 0.04710355897430253},
+      {"car_no": 5, "name": "児玉 東次郎", "win_prob": 0.2656421004555317},
+      {"car_no": 6, "name": "松尾 正人", "win_prob": 0.020576717126861262},
+      {"car_no": 7, "name": "櫻井 利之", "win_prob": 0.1420823577595985}
+    ],
+    "ranking": [
+      {"car_no": 1, "name": "大本 隆也", "rank": 1, "win_prob": 0.39236294245529574},
+      {"car_no": 5, "name": "児玉 東次郎", "rank": 2, "win_prob": 0.2656421004555317},
+      {"car_no": 7, "name": "櫻井 利之", "rank": 3, "win_prob": 0.1420823577595985},
+      {"car_no": 2, "name": "木本 賢二", "rank": 4, "win_prob": 0.08017408171828842},
+      {"car_no": 3, "name": "隅田 幸助", "rank": 5, "win_prob": 0.05205824151012189},
+      {"car_no": 4, "name": "梶原 秀庸", "rank": 6, "win_prob": 0.04710355897430253},
+      {"car_no": 6, "name": "松尾 正人", "rank": 7, "win_prob": 0.020576717126861262}
+    ],
+    "top1_car_no": 1,
+    "top1_name": "大本 隆也",
+    "top1_probability": 0.39236294245529574
+  }
+}
