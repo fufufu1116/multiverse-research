@@ -1,0 +1,47 @@
+{
+  "schema": "MULTIVERSE_KEIRIN_MINIMUM_INPUT_POLICY_v1",
+  "status": "ACTIVE_RESEARCH_POLICY",
+  "effective_date_jst": "2026-09-11",
+  "scope": "KEIRIN_RESEARCH_CANDIDATE_LANE",
+  "purpose": "Prevent handoff regressions that incorrectly block simulation on non-essential market data.",
+  "core_rule": {
+    "simulation_must_not_wait_for_odds": true,
+    "odds_required_for_prediction_generation": false,
+    "odds_required_for_candidate_ticket_generation": false,
+    "odds_role": [
+      "execution_price_filter_at_real_operation_time",
+      "post_prediction_profitability_and_roi_evaluation_when_scientifically_available"
+    ],
+    "required_operational_output_when_odds_are_absent": "For each candidate ticket, emit the minimum acceptable purchase odds / break-even-or-policy threshold so the Owner can compare against live odds manually at operation time."
+  },
+  "minimum_input_principle": {
+    "rule": "Use only information that is necessary to generate the prediction or materially improves predictive performance. Missing non-essential fields must not block simulation.",
+    "ablation_required": true,
+    "ablation_definition": "Remove or withhold one candidate input class at a time and compare predictive performance. Inputs that do not materially improve performance should remain optional for simulation.",
+    "fail_closed_only_for": [
+      "missing information without which race identity or participant identity cannot be established",
+      "future or post-result contamination",
+      "untrusted or ambiguous rider identity joins",
+      "inputs required by the exact frozen model or selector being evaluated"
+    ]
+  },
+  "separation_of_concerns": {
+    "prediction_research_lane": "Generate ranking/probability/ticket candidates from PRE-only race information without requiring odds when the frozen model itself does not require odds.",
+    "execution_lane": "At actual operation time, compare live odds against the precomputed minimum acceptable odds and buy only if the threshold is met; Owner/manual execution only unless separately authorized.",
+    "formal_science_lane": "Real odds are still required when the scientific claim being tested is realized profitability/ROI. Their absence must not halt model-learning or prediction-simulation work that does not mathematically depend on them."
+  },
+  "handoff_rule": {
+    "must_survive_chat_handoffs": true,
+    "instruction": "Any future KEIRIN handoff/resume must preserve this minimum-input separation explicitly. Do not revert to 'wait for odds before simulation'.",
+    "priority": "OWNER_EXPLICIT_POLICY"
+  },
+  "safety_and_authority": {
+    "runtime": "OFF",
+    "automatic_betting": "OFF",
+    "owner_spend": "NONE",
+    "credentials": "NONE",
+    "live_effect": "NONE",
+    "no_post_result_pre_reconstruction": true,
+    "no_future_data_for_pre_prediction": true
+  }
+}
