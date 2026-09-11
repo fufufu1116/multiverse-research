@@ -1,0 +1,34 @@
+{
+  "schema": "MULTIVERSE_KEIRIN_RESEARCH_RESUME_INDEX_v71",
+  "checkpoint_jst": "2026-09-11",
+  "status": "MINIMUM_INPUT_POLICY_PERSISTED_CONTINUE_PROSPECTIVE_RESEARCH",
+  "supersedes_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v70.json",
+  "owner_policy_lock": {
+    "policy_file": "v3/historical_all_market/research_candidates/KEIRIN_MINIMUM_INPUT_POLICY_20260911_v1.json",
+    "rule": "Do not block prediction simulation on odds or other non-essential inputs. Odds are not required for prediction generation or candidate-ticket generation unless an exact frozen model mathematically requires them.",
+    "simulation_behavior": "Proceed with the minimum trustworthy PRE-only race inputs required by the frozen model/selector. Use ablation to demote non-material inputs to optional.",
+    "odds_behavior": "When odds are absent, still generate prediction/ticket candidates and output the minimum acceptable purchase odds threshold. At real operation time the Owner can compare live odds against that threshold.",
+    "formal_science_boundary": "Actual odds remain necessary only for claims about realized profitability/ROI and must be genuine pre-close observations when used for that purpose. Their absence must not halt unrelated prediction research.",
+    "handoff_requirement": "Every future KEIRIN handoff/resume must preserve this separation explicitly; never regress to waiting for odds before simulation."
+  },
+  "unchanged_v70_bindings": {
+    "competition_gate": "Use the v70 pinned PRE-only internal race-level competition score producer; caller-supplied race competition_score remains forbidden.",
+    "v54_selector": "Frozen v54 selector/economics remain unchanged.",
+    "contamination_rule": "No result, payout, future-data, or post-cutoff reconstruction may enter PRE prediction.",
+    "runtime": "OFF",
+    "automatic_betting": "OFF"
+  },
+  "next_execution_order": [
+    "Fresh-read the branch before repository writes.",
+    "Continue simulation and input-ablation work using the minimum trustworthy PRE-only fields available; do not wait for odds.",
+    "For prospective races, freeze final race identity/participants before prediction whenever required by the frozen model.",
+    "Emit candidate ticket plus minimum acceptable odds threshold even if live odds are unavailable.",
+    "Capture genuine pre-close odds separately when available for execution-price checks and formal profitability/ROI evidence.",
+    "Keep formal scientific verification percentage unchanged unless genuine scientific evidence increases."
+  ],
+  "progress": {
+    "practical_implementation_percent": 100,
+    "large_scale_simulation_win_pattern_percent": 100,
+    "formal_scientific_validation_percent": 85
+  }
+}
