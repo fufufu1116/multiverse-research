@@ -1,0 +1,46 @@
+name: lane-b-pr323-readonly-t2-replay-proof-20260911
+on:
+  push:
+    branches:
+      - agent/lane-b-pr323-readonly-t2-replay-proof-20260911
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read-only current T2 replay classification
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          from automation.review_dispatcher_v1 import t2
+          job = {
+              'repo': 'fufufu1116/multiverse-research',
+              'pr': 323,
+              'head': '4193321bcbf2e24c8e4d176358fad3e277100932',
+              'tree': '881f9b7ce7191b424a48245a291bcae472b4032e',
+              'base': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'main': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+              'dispatcher_ref': 'd1edc2eabb847c10a4faa59a039b480e85dfb0e4',
+          }
+          assert t2._legacy.public_github is t2._bounded_public_github
+          mutation_calls = 0
+          def mutation_trap(*args, **kwargs):
+              nonlocal_marker = None
+              raise AssertionError('MUTATION_PATH_MUST_NOT_BE_CALLED')
+          t2._original_publish_t2 = mutation_trap
+          try:
+              t2._fresh_t2_verify(job, {}, {})
+          except t2._legacy.ReviewContractError as exc:
+              assert str(exc) == 'MAIN_DRIFT', repr(exc)
+              print('T2_GET_RESILIENCE_WIRED=PASS')
+              print('READ_ONLY_FRESH_VERIFY=PASS')
+              print('EXPECTED_FAIL_CLOSED=MAIN_DRIFT')
+              print('MUTATION_PATH_CALLED=0')
+              print('OLD_AUDITOR_RETROACTIVE_AUTHORIZATION=false')
+              print('CLASSIFICATION=FRESH_MAIN_SUCCESSOR_REQUIRED')
+          else:
+              raise AssertionError('EXPECTED_MAIN_DRIFT')
+          PY
