@@ -1,0 +1,58 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_ADOPTION_SLICE_v0",
+  "slice_id": "A_CORE_DOMAIN_MODEL",
+  "status": "RESEARCH_ONLY_PREPARED_FOR_FRESH_MAIN_SUCCESSOR",
+  "source_pr": 310,
+  "purpose": "Smallest low-coupling Opportunity Engine adoption unit: deterministic domain scoring/model primitives only.",
+  "include_paths": [
+    "research/opportunity_engine_v0/model.py",
+    "research/opportunity_engine_v0/engine.py",
+    "research/opportunity_engine_v0/scale.py",
+    "research/opportunity_engine_v0/exposure.py",
+    "research/opportunity_engine_v0/durability.py",
+    "research/opportunity_engine_v0/market_dynamics.py",
+    "research/opportunity_engine_v0/signals.py",
+    "research/opportunity_engine_v0/trajectory.py",
+    "research/opportunity_engine_v0/opportunity_archetype.py",
+    "research/opportunity_engine_v0/market_discovery.py",
+    "research/opportunity_engine_v0/narrow_wedge_ranker.py",
+    "research/opportunity_engine_v0/test_engine.py",
+    "research/opportunity_engine_v0/test_scale.py",
+    "research/opportunity_engine_v0/test_exposure.py",
+    "research/opportunity_engine_v0/test_durability.py",
+    "research/opportunity_engine_v0/test_market_dynamics.py",
+    "research/opportunity_engine_v0/test_signal_forecast.py",
+    "research/opportunity_engine_v0/test_trajectory.py",
+    "research/opportunity_engine_v0/test_opportunity_archetype.py"
+  ],
+  "explicitly_excluded_classes": [
+    "MULTIVERSE_CONTROL_PLANE",
+    "MULTIVERSE_TASK_OR_RESULT_BRIDGE",
+    "LIVE_PROVIDER_OR_NETWORK",
+    "CREDENTIAL_OR_SECRET_HANDLING",
+    "RUNTIME_ACTIVATION",
+    "CUSTOMER_RECRUITMENT_OR_PAYMENT",
+    "PUBLICATION_OR_POSTING",
+    "FORECAST_SETTLEMENT_AND_REVISION",
+    "CUSTOMER_VALUE_OR_HUNDRED_USER_STAGE",
+    "ADVISOR_OR_REVIEW_GOVERNANCE"
+  ],
+  "adoption_invariants": [
+    "deterministic repository-only behavior",
+    "no external calls",
+    "no authority creation",
+    "no canonical MULTIVERSE control-plane duplication",
+    "no provider/model binding",
+    "no live business effect",
+    "fresh-main successor must rebind to then-current canonical main before review"
+  ],
+  "successor_rule": "Do not merge this manifest or PR #310 wholesale. Build a fresh-main Slice A successor containing only the still-needed include_paths plus the minimum proof/validator files required by current canonical contracts.",
+  "owner_gate": {
+    "formal_lab_or_auditor": true,
+    "canonical_adoption_or_merge": true,
+    "runtime": true,
+    "live_provider": true,
+    "spend": true
+  },
+  "runtime": "OFF"
+}
