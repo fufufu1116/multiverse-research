@@ -1,0 +1,51 @@
+name: lane-b-pr339-proof-20260911
+on:
+  push:
+    branches:
+      - agent/lane-b-pr339-proof-20260911
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Exact proof carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "fb96686f6e35f51949dda810a8580f91ad76e8ef"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/lane-b-pr339-proof-20260911.yml"
+      - name: Full applicable control-plane tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest \
+            automation.review_dispatcher_v1.test_combined_fault_replay_v1 \
+            automation.review_dispatcher_v1.test_dispatcher \
+            automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1 \
+            automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1 \
+            automation.review_dispatcher_v1.test_publisher_freshness_v1 \
+            automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_request_arbitration_v6 \
+            automation.review_dispatcher_v1.test_result_canonicalization_v1 \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1 \
+            automation.review_dispatcher_v1.test_t2_idempotence_v1 \
+            automation.review_dispatcher_v1.test_t2_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_t2_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_validator_current_baseline_v1
+      - name: Validator PASS findings empty
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python automation/review_dispatcher_v1/validator.py > /tmp/validator.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/validator.json'))
+          assert p.get('verdict') == 'PASS', p
+          assert p.get('findings') == [], p
+          print('VALIDATOR_PASS_FINDINGS_EMPTY')
+          PY
