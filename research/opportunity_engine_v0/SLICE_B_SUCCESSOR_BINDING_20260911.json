@@ -24,19 +24,19 @@
     "research/opportunity_engine_v0/forecast_revision.py",
     "research/opportunity_engine_v0/trend_forecast.py",
     "research/opportunity_engine_v0/trend_retrospective.py",
-    "research/opportunity_engine_v0/test_signal_forecast.py",
+    "research/opportunity_engine_v0/test_forecast_ledger.py",
     "research/opportunity_engine_v0/test_forecast_revision.py",
     "research/opportunity_engine_v0/test_trend_forecast.py"
   ],
-  "carry_forward": "EXACT_FINAL_SLICE_B_V2_PAYLOAD_BLOBS; ONLY_BINDING_REBOUND_TO_CURRENT_MAIN",
+  "carry_forward": "FINAL_SLICE_B_V2_PRODUCTION_AND_EXISTING_TEST_BLOBS_EXACT; FORECAST_LEDGER_TESTS_MOVED_BYTE_IDENTICALLY_TO A NEW B-ONLY MODULE TO PRESERVE CANONICAL SLICE_A test_signal_forecast.py",
   "successor_compatibility_repairs": [
     {
       "path": "research/opportunity_engine_v0/forecast_revision.py",
       "reason": "Frozen source imported shock_adaptation.py outside Slice B. Successor preserves the same accepted verdict vocabulary locally so forecast revision is self-contained without carrying a broader adaptation module."
     },
     {
-      "path": "research/opportunity_engine_v0/test_signal_forecast.py",
-      "reason": "Frozen source mixed Slice A signal tests with Slice B forecast-ledger tests. Successor retains only forecast-ledger proof so the Slice B candidate does not depend on signals.py."
+      "path": "research/opportunity_engine_v0/test_forecast_ledger.py",
+      "reason": "After Slice A became canonical, its test_signal_forecast.py is an adopted file. Slice B forecast-ledger tests are therefore carried byte-identically into a B-only module instead of replacing the canonical Slice A test file."
     },
     {
       "path": "research/opportunity_engine_v0/trend_forecast.py",
@@ -49,6 +49,7 @@
     "successor forecast never mutates predecessor",
     "settlement distinct from creation",
     "historical retrospective is hypothesis-only until prospective test",
+    "canonical Slice A files are not regressed or replaced",
     "no live/provider/runtime authority"
   ],
   "forbidden_scope": [
