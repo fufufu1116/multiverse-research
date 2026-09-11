@@ -1,0 +1,63 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_FIRST_TEST_COMPARISON_v1",
+  "comparison_id": "fitness-vs-recipe-20260911",
+  "status": "RESEARCH_ONLY",
+  "candidates": [
+    {
+      "domain": "fitness/workouts",
+      "strengths": [
+        "repeat intent is naturally high",
+        "first-party state compounds through workout history and progress",
+        "shareable outputs such as streaks, PRs, plans and progress summaries are natural",
+        "premium value can attach to analysis, progression, planning and coaching",
+        "owned utility gets stronger with accumulated history"
+      ],
+      "risks": [
+        "strong incumbents already own activity graphs and social proof",
+        "health/fitness claims require careful safety boundaries",
+        "sensor/device integration can increase implementation complexity"
+      ],
+      "small_test_shape": "character-led short-form workout content -> deep link to a simple owned workout/progress state -> immediate useful action -> save progress -> next-session recommendation -> shareable progress artifact",
+      "test_requires_live_execution": true,
+      "governed_test_ready": false
+    },
+    {
+      "domain": "recipes/cooking",
+      "strengths": [
+        "very strong short-form content fit",
+        "easy to understand immediate utility",
+        "shopping lists, timers, meal plans and saved recipes create owned utility"
+      ],
+      "risks": [
+        "social recipe import and meal-planning competition is already dense",
+        "basic save/import functionality is commoditized",
+        "differentiation must come from brand, workflow depth or unique utility rather than import alone"
+      ],
+      "small_test_shape": "character-led short-form recipe content -> deep link to exact recipe/cook mode -> save state -> shopping/timer utility -> next meal suggestion -> shareable result",
+      "test_requires_live_execution": true,
+      "governed_test_ready": false
+    }
+  ],
+  "current_research_preference": "fitness/workouts",
+  "why": [
+    "history/state compounds more strongly over time",
+    "return frequency is structurally stronger",
+    "premium value can attach to progress and analysis rather than content access alone",
+    "the three-engine loop depends less on a single external social platform"
+  ],
+  "disqualifier": "This is not a winner declaration. No measured conversion, retention, CAC or profit evidence exists yet.",
+  "next_research_before_owner_gate": [
+    "define the smallest reversible fitness test without live publishing",
+    "identify incumbent gaps not solved by Strava/Nike/general AI",
+    "define a unique owned-state object that gets more valuable after each session",
+    "freeze pre-test success thresholds before any governed live test"
+  ],
+  "authority": {
+    "provider_call_authorized": false,
+    "spend_authorized": false,
+    "publication_authorized": false,
+    "live_execution_authorized": false,
+    "adoption_authorized": false,
+    "runtime_activation_authorized": false
+  }
+}
