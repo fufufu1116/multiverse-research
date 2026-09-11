@@ -1,0 +1,67 @@
+name: lane-b-pr346-unambiguous-lab-v3-lineage-proof-20260912
+on: [push]
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify exact v3 arbitration lineage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CANDIDATE=2bd2cde16e490c1f9d620121ed43c29e1f4fe77d
+          TREE=0a2ee126916ed3f6b0da7eafcd9c19f664a5cca6
+          MAIN=bb133e196efa818bc9b8dc59519c02796e70658e
+          REQUEST_COMMENT=5640652363
+          REQUEST_ID=pr346-publisher-github-read-resilience-lab-v3-unambiguous-main-bb133e19
+          REQUEST_SHA=1750f21ca4606d9b7fb5e72e7ca9787726081d4ef1220ea9e3fa74ef6bb17b44
+          PREDECESSOR=c54f4bacde051bd669ccf754974f0545cd9a1eced19b28a88d3c063d9cd0efda
+          REPO=fufufu1116/multiverse-research
+          test "$(git rev-parse HEAD^)" = "$CANDIDATE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/lane-b-pr346-unambiguous-lab-v3-lineage-proof-20260912.yml"
+          git checkout --detach "$CANDIDATE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch --no-tags origin "$MAIN"
+          test "$(git rev-parse FETCH_HEAD)" = "$MAIN"
+          TMP=$(mktemp -d); mkdir -p "$TMP/runner"
+          git archive --format=tar "$MAIN" automation/review_dispatcher_v1 | tar -xf - -C "$TMP/runner"
+          export PYTHONPATH="$TMP/runner"
+          export BUILDKITE_COMMIT="$CANDIDATE"
+          export BUILDKITE_BRANCH=OWNER_FREE_LINEAGE_PROOF_ONLY
+          export BUILDKITE_BUILD_ID=OWNER_FREE_LINEAGE_PROOF_ONLY
+          export BUILDKITE_BUILD_NUMBER=OWNER_FREE_LINEAGE_PROOF_ONLY
+          export MULTIVERSE_DISPATCHER_REF="$MAIN"
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          python "$TMP/runner/automation/review_dispatcher_v1/dispatcher.py" --lane LAB --repo "$REPO" --head "$CANDIDATE" --output "$TMP/job.json"
+          python - "$TMP/job.json" <<'PY'
+          import json,sys
+          from automation.review_dispatcher_v1.model import sha256_json, validate_request
+          j=json.load(open(sys.argv[1])); r=j['request']
+          assert j['request_comment']==5640652363,j
+          assert j['request_id']=='pr346-publisher-github-read-resilience-lab-v3-unambiguous-main-bb133e19',j
+          validate_request(r)
+          assert sha256_json(r)=='1750f21ca4606d9b7fb5e72e7ca9787726081d4ef1220ea9e3fa74ef6bb17b44'
+          assert j['request_sha256']=='1750f21ca4606d9b7fb5e72e7ca9787726081d4ef1220ea9e3fa74ef6bb17b44'
+          assert r['supersedes_request_sha256']=='c54f4bacde051bd669ccf754974f0545cd9a1eced19b28a88d3c063d9cd0efda'
+          assert j['head']=='2bd2cde16e490c1f9d620121ed43c29e1f4fe77d' and j['tree']=='0a2ee126916ed3f6b0da7eafcd9c19f664a5cca6'
+          assert j['base']=='bb133e196efa818bc9b8dc59519c02796e70658e' and j['main']=='bb133e196efa818bc9b8dc59519c02796e70658e' and j['dispatcher_ref']=='bb133e196efa818bc9b8dc59519c02796e70658e'
+          print('V3_VALIDATE_REQUEST=PASS')
+          print('V3_REQUEST_SELECTION=PASS')
+          print('V3_ARBITRATION_CURRENT=PASS')
+          print('V3_PREDECESSOR_BINDING=PASS')
+          print('V2_SAME_GENERATION_LOSER_INERT=PASS')
+          print('NO_EXISTING_EXACT_TRUSTED_LAB_RESULT=PASS')
+          print('V3_REQUEST_SHA256_RECONSTRUCTED=1750f21ca4606d9b7fb5e72e7ca9787726081d4ef1220ea9e3fa74ef6bb17b44')
+          print('LINEAGE_PROOF_TERMINAL=READY')
+          print('OWNER_GATE=false')
+          print('BUILDKITE_BUILD_STARTED=false')
+          print('PUBLICATION_ATTEMPTED=false')
+          print('RUNTIME=OFF')
+          PY
