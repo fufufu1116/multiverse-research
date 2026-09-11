@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v66",
+  "status": "PROSPECTIVE_B1A_PRE_FREEZE_PATH_IMPLEMENTED_WAITING_ONLY_FOR_TRUSTWORTHY_FINAL_RACECARD_BODY",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v65.json",
+  "fresh_parent_head_before_v66": "0457739e485b576944958866ce56918c1960f701",
+  "implemented": {
+    "winner_predictor_path": "tools/keirin_b1a_prospective_winner_predictor_v1.py",
+    "winner_predictor_git_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "pre_freeze_runner_path": "tools/keirin_prospective_pre_freeze_runner_v1.py",
+    "pre_freeze_runner_git_blob": "9068c7ef49b6b81de8abdcc13e1b2c03864007d3",
+    "cutoff_guard_v3_git_blob": "4e4ed1f9a3a574fbd610272a6613c536586f7f3a"
+  },
+  "frozen_b1a_binding": {
+    "model_name": "B1a_RECONSTITUTED_v1",
+    "implementation_sha256": "10e2ae81380c98df52845646cdc7a288f022ffac3a226004651e8abb80ade28b",
+    "model_sha256": "f5c0f1226a7552cb1f807e559f9409773b532934502f6a2ae5bb9b302a730481",
+    "spec_sha256": "a5c896f6d56a55c0f10859b356b91a9b8756bdc90305da8c94b2a3a66c1490b3",
+    "historical_prediction_lock_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "retune_allowed": false,
+    "substitute_model_allowed": false
+  },
+  "pipeline": [
+    "trusted PRE snapshot body must match target event_date + venue + race_number",
+    "snapshot hash and source receipt must validate before cutoff",
+    "pre_payload event_date + venue + race_number must exactly equal target identity",
+    "outcome/result/payout/settlement-bearing PRE is fail-closed",
+    "exact frozen B1a_RECONSTITUTED_v1 winner probabilities are computed without fitting",
+    "single immutable PRE freeze receipt is emitted with hashes and no outcome access"
+  ],
+  "verification": {
+    "winner_predictor_local_selftest": "PASS_4_OF_4",
+    "winner_predictor_cases": ["VALID", "OUTCOME_REJECT", "UNKNOWN_CLASS_REJECT", "DUPLICATE_CAR_REJECT"],
+    "pre_freeze_runner_local_syntax_check": "PASS",
+    "github_readback_after_fix": "PASS",
+    "container_repo_clone_execution": "NOT_AVAILABLE_DNS_RESOLUTION_BLOCKED",
+    "scientific_trial_count": 0
+  },
+  "prospective_discovery": {
+    "keirin_jp_2026_09_12_schedule": "MATSuyama_F2_DAY1_CONFIRMED",
+    "winticket_matsuyama_2026_09_12": "DAY1_1R_TO_7R_LINKS_PRESENT_BUT_INDIVIDUAL_RACECARD_FETCH_NOT_YET_AVAILABLE_TO_CAPTURE",
+    "winticket_sasebo_2026_09_12": "DAY1_1R_TO_12R_LINKS_PRESENT_BUT_INDIVIDUAL_RACECARD_FETCH_NOT_YET_AVAILABLE_TO_CAPTURE",
+    "kdreams_matsuyama_2026_09_12": "DAY1_1R_TO_7R_AND_CUTOFF_TIMES_PRESENT",
+    "freeze_status": "NOT_YET_ELIGIBLE_NO_TRUSTWORTHY_FINAL_CAR_RIDER_BODY_CAPTURED"
+  },
+  "absolute_rule_ja": "対象時点より先の情報を、対象時点の予測・選択・実行成立条件にしてはいけない。",
+  "current_state": {
+    "formal_science_progress_percent": 85,
+    "scientific_increment_now": 0,
+    "owner_action_block": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  },
+  "next_action": "Continue PRE-only discovery without opening outcome pages. The first time a trustworthy final racecard body binds date, venue, race number, car number and rider identity before cutoff, preserve the raw snapshot, hash it, build the PRE envelope and run keirin_prospective_pre_freeze_runner_v1 immediately."
+}
