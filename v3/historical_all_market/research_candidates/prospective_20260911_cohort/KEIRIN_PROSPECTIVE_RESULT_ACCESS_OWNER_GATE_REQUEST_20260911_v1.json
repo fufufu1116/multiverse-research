@@ -1,0 +1,23 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_RESULT_ACCESS_OWNER_GATE_REQUEST_20260911_v1",
+  "created_at_jst": "2026-09-11T19:14:07+09:00",
+  "status": "REQUEST_PREPARED_NOT_AUTHORIZED",
+  "target_cohort": "KEIRIN_PROSPECTIVE_COHORT_LOCK_20260911_v1",
+  "evaluation_protocol": "KEIRIN_PROSPECTIVE_OUTCOME_EVAL_PROTOCOL_20260911_v1",
+  "cohort_lock_commit": "58bf0d3789cea371287d5761e12408f87f5c0089",
+  "protocol_commit": "055dc4ee2656fd36b5e82b78ec9ffa6ddf405246",
+  "requested_scope": {
+    "official_result_access_after_each_race_completion": true,
+    "six_locked_members_only": true,
+    "evaluate_under_frozen_protocol_only": true,
+    "payout_access": false,
+    "actual_odds_access": false,
+    "real_money_betting": false,
+    "runtime_activation": false,
+    "retuning_before_full_cohort_evaluation": false,
+    "membership_change": false
+  },
+  "exact_owner_authorization_text": "AUTHORIZE_20260911_LOCKED_SIX_RACE_COHORT_RESULT_ACCESS_ONLY_NO_PAYOUT_NO_ODDS",
+  "fail_closed": "Until the Owner sends the exact authorization (or an equally explicit cohort-specific authorization), do not access RESULT. PAYOUT and actual odds remain separately prohibited.",
+  "post_authorization_action": "After each locked race completes, read official RESULT only, retain all six cohort members, compute the preregistered predictive endpoints, and publish no realized ROI/profit claim."
+}
