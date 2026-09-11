@@ -2,18 +2,20 @@
 """Prospective strict-0.40 race-gate score producer.
 
 Replays the frozen S0/challenger PRE-only confidence gate recovered from the
-Sep-10/11 forward-lane authority.  This is NOT the rider's 65-111-ish
-`competition_score`; it produces the race-level scalar consumed by the later
-0.40 selector gate.
+Sep-10/11 forward-lane authority. This is NOT the rider's 65-111-ish field by
+itself; it produces the race-level scalar consumed by the later 0.40 selector.
 
 Rule:
-- S0 logits: beta * rider competition_score.
+- S0 logits: beta * rider competition score.
 - Challenger logits: S0 + circumference-signed exact-rider delta when frozen
   support exists, else circumference-signed frozen style delta, else S0.
 - softmax each model within the race.
-- if S0/challenger Top1 disagree: race gate score = 0.0 (agreement gate fails).
+- if S0/challenger Top1 disagree: race gate score = 0.0.
 - if they agree: race gate score = min(S0 Top1 probability,
   challenger Top1 probability).
+
+The official PRE rider score may be named `score` (B1A prospective schema) or
+`competition_score` (legacy S0 schema). If both are present they must agree.
 
 No outcomes, payouts, odds, fitting, retuning, or network access.
 """
@@ -72,6 +74,18 @@ def _finite(v: Any, label: str) -> float:
     return x
 
 
+def _rider_score(row: dict[str, Any], car: int) -> float:
+    has_legacy = "competition_score" in row
+    has_b1a = "score" in row
+    if not has_legacy and not has_b1a:
+        raise FailClosed(f"entrant_{car}:rider_score_missing")
+    legacy = _finite(row["competition_score"], f"entrant_{car}.competition_score") if has_legacy else None
+    b1a = _finite(row["score"], f"entrant_{car}.score") if has_b1a else None
+    if legacy is not None and b1a is not None and abs(legacy - b1a) > 1e-9:
+        raise FailClosed(f"entrant_{car}:rider_score_alias_mismatch")
+    return legacy if legacy is not None else float(b1a)
+
+
 def _softmax(logits: dict[int, float]) -> dict[int, float]:
     if len(logits) < 2:
         raise FailClosed("race_requires_at_least_two_active_entrants")
@@ -87,7 +101,6 @@ def _softmax(logits: dict[int, float]) -> dict[int, float]:
 
 
 def _top1(probs: dict[int, float]) -> int:
-    # Stable deterministic tie break: lower car number.
     return min(probs, key=lambda car: (-probs[car], car))
 
 
@@ -108,8 +121,6 @@ def load_frozen_model(repo_root: Path) -> dict[str, Any]:
         raise FailClosed("frozen_beta_drift")
     styles = model.get("style_level", model.get("style_fallback", {})).get("lookup")
     if not isinstance(styles, dict):
-        # Current frozen artifact stores the style block under a nearby namespace;
-        # locate exactly one lookup matching the expected three styles, otherwise fail.
         matches: list[dict[str, Any]] = []
         def walk(x: Any) -> None:
             if isinstance(x, dict):
@@ -170,11 +181,14 @@ def produce_gate_score(pre_payload: dict[str, Any], model: dict[str, Any]) -> di
             raise FailClosed(f"entrant_{i}:not_object")
         if row.get("withdrawn") is True:
             continue
-        car = int(row.get("car_no"))
+        try:
+            car = int(row.get("car_no"))
+        except Exception as e:
+            raise FailClosed(f"entrant_{i}:invalid_car") from e
         if car <= 0 or car in seen:
             raise FailClosed(f"entrant_{i}:invalid_or_duplicate_car")
         seen.add(car)
-        score = _finite(row.get("competition_score"), f"entrant_{car}.competition_score")
+        score = _rider_score(row, car)
         reg = str(row.get("registration_number", row.get("official_registration_number", ""))).strip()
         style = str(row.get("style", "")).strip()
         base = beta * score
