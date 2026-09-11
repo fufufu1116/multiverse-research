@@ -1,0 +1,52 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v64",
+  "status": "DATE_AGNOSTIC_CAPTURE_HARDENED_AGAINST_STALE_OFFICIAL_SNAPSHOTS",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v63.json",
+  "fresh_parent_head_before_v64": "ba87da6dea204c0020ab65911bffe61a166717ed",
+  "new_artifacts": [
+    "tools/keirin_prospective_cutoff_guard_v3.py"
+  ],
+  "prospective_cutoff_guard_v3_git_blob": "4e4ed1f9a3a574fbd610272a6613c536586f7f3a",
+  "hardening": {
+    "inherits_v2_cutoff_hash_source_receipt_and_exact_v54_checks": true,
+    "requires_target_identity": ["event_date", "venue", "race_number"],
+    "requires_each_trusted_snapshot_body_to_match_target_identity": true,
+    "official_url_alone_is_not_sufficient": true,
+    "stale_official_snapshot": "FAIL_CLOSED",
+    "wrong_venue_snapshot": "FAIL_CLOSED",
+    "wrong_race_snapshot": "FAIL_CLOSED",
+    "future_information_dependency": false,
+    "specific_calendar_date_required": false
+  },
+  "verification": {
+    "v2_selftest_inherited": "PASS_11_OF_11",
+    "v3_compact_successor_cases": [
+      "VALID_TARGET_BOUND_PRE",
+      "STALE_OFFICIAL_DATE_REJECTED",
+      "WRONG_VENUE_REJECTED",
+      "WRONG_RACE_REJECTED"
+    ],
+    "v3_syntax_check": "PASS",
+    "network_access": false,
+    "outcome_access": false
+  },
+  "upstream_lineage_trace": {
+    "stage1_probability_engine_path": "v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py",
+    "stage1_probability_engine_git_blob": "029904b359e8151263c6a9bf8c4635f026941b0b",
+    "stage1_expected_prediction_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "stage1_prediction_input_name": "DEV2000_CANDIDATE_A_B1A_RECONSTITUTED_v1_PREDICTIONS.csv",
+    "b1a_prediction_generator_exact_path": "NOT_YET_TRACED",
+    "no_substitute_probability_model_allowed": true
+  },
+  "absolute_rule_ja": "対象時点より先の情報を、対象時点の予測・選択・実行成立条件にしてはいけない。",
+  "current_state": {
+    "formal_science_progress_percent": 85,
+    "prospective_route": "ACTIVE_AND_BOUND_TO_EXACT_V54_RULES",
+    "owner_action_block": false
+  },
+  "next_action": "Continue earliest-event PRE discovery without outcome access. Use v3 for the first trustworthy text snapshot whose body itself binds target date, venue and race number; in parallel finish tracing the exact generator of the B1A prediction input. Do not wait for 2026-09-14 or 2026-09-15 if an earlier eligible event becomes capturable.",
+  "scientific_increment_now": 0,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE"
+}
