@@ -1,0 +1,79 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_MARKET_DISCOVERY_PACKET_v1",
+  "packet_id": "market-discovery-expansion-20260911",
+  "status": "RESEARCH_PRIORITY_ONLY",
+  "purpose": "Reopen the search space and identify markets where branded trend commentary, owned-state utility and permissioned personalization can form a durable loop.",
+  "candidate_domains": [
+    {
+      "domain": "beauty_style_product_decision",
+      "thesis": "High trend velocity and visual shareability; owned value must move beyond reviews into preference history, product compatibility, routines and decision memory.",
+      "main_risks": ["crowded creator market", "advertising disclosure", "body-image or health-adjacent claims", "affiliate bias"],
+      "research_priority": "HIGH"
+    },
+    {
+      "domain": "fitness_progress",
+      "thesis": "Strong repeat intent and accumulated progress state create a return path from entertainment into owned utility.",
+      "main_risks": ["strong incumbents", "health/safety claims", "generic AI coach substitution"],
+      "research_priority": "HIGH"
+    },
+    {
+      "domain": "skill_learning_micropractice",
+      "thesis": "Trend commentary can acquire attention while streaks, skill state, spaced practice and outcome history create first-party compounding value.",
+      "main_risks": ["large incumbents", "free AI tutoring", "content commoditization"],
+      "research_priority": "HIGH"
+    },
+    {
+      "domain": "travel_experience_decision",
+      "thesis": "Highly visual and trend-driven; owned service can preserve trip intent, constraints, comparisons and itinerary state.",
+      "main_risks": ["lower repeat frequency", "seasonality", "affiliate/platform dependency", "freshness burden"],
+      "research_priority": "MEDIUM_HIGH"
+    },
+    {
+      "domain": "hobby_gear_decision_and_progress",
+      "thesis": "Character-led testing and criticism can attract users; owned gear history, skill progress and project state may create durable utility.",
+      "main_risks": ["fragmented niches", "affiliate bias", "variable market size"],
+      "research_priority": "MEDIUM_HIGH"
+    },
+    {
+      "domain": "recipe_meal_execution",
+      "thesis": "Strong visual sharing and repeat need, but social recipe import and meal-planning utility are increasingly crowded.",
+      "main_risks": ["feature convergence", "creator competition", "weak differentiation if limited to import/save"],
+      "research_priority": "MEDIUM_HIGH"
+    },
+    {
+      "domain": "personal_finance_investing",
+      "thesis": "Strong monetization and recurring intent but user-harm and regulatory exposure make aggressive trend-commentary funnels unsuitable as an early clean-growth target.",
+      "main_risks": ["financial harm", "regulated claims", "conflicts of interest", "high trust burden"],
+      "research_priority": "DEFER_HIGH_RISK"
+    },
+    {
+      "domain": "cosmetic_medical_decision",
+      "thesis": "High attention and purchase value but health, body-image and medical decision risks dominate the clean-growth opportunity score.",
+      "main_risks": ["medical harm", "body-image vulnerability", "regulated claims", "provider conflicts"],
+      "research_priority": "DEFER_HIGH_RISK"
+    }
+  ],
+  "data_boundary": {
+    "rule": "Do not rely on covert cross-app or browser-history surveillance. Use contextual signals, consented first-party state, and separately permissioned data where lawful and necessary.",
+    "reason": "Platform policy and durable trust are treated as design constraints rather than obstacles to evade."
+  },
+  "fresh_policy_evidence": [
+    {
+      "source": "Google Play User Data policy",
+      "observed_2026_09_11": "Personal/sensitive data collection and unexpected background use require transparent in-app disclosure and, where required, affirmative consent; collection should be limited to necessary purposes."
+    }
+  ],
+  "next_research_batch": [
+    "beauty_style_product_decision",
+    "fitness_progress",
+    "skill_learning_micropractice",
+    "travel_experience_decision",
+    "hobby_gear_decision_and_progress"
+  ],
+  "winner_selected": false,
+  "live_execution_authorized": false,
+  "spend_authorized": false,
+  "publication_authorized": false,
+  "adoption_authorized": false,
+  "runtime": "OFF"
+}
