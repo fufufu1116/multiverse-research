@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+import io
+import urllib.error
 from pathlib import Path
+from unittest import mock
 
 from automation.review_dispatcher_v1 import test_dispatcher_legacy_v1 as _legacy
+from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_read,
+    github_json_request,
+)
 
 for _name in dir(_legacy):
     if not _name.startswith("__") and _name != "HardeningTests":
@@ -123,3 +130,180 @@ class HardeningTests(_legacy.HardeningTests):
         self.assertIn(lab_token, review_block)
         self.assertIn(lab_token, t2_block)
         self.assertIn(auditor_token, t2_block)
+
+
+class GitHubReadRateLimitTests(_legacy.unittest.TestCase):
+    @staticmethod
+    def _http_error(
+        *,
+        code=403,
+        reason="Forbidden",
+        headers=None,
+        body=b"",
+    ):
+        return urllib.error.HTTPError(
+            "https://api.github.com/repos/o/r",
+            code,
+            reason,
+            headers or {},
+            io.BytesIO(body),
+        )
+
+    def test_44_retry_after_rate_limit_recovers_bounded_read(self):
+        first = self._http_error(
+            headers={"Retry-After": "2"},
+            body=b'{"message":"API rate limit exceeded"}',
+        )
+        opener = mock.Mock(
+            side_effect=[first, io.BytesIO(b'{"ok":true}')]
+        )
+        sleeper = mock.Mock()
+        result = github_json_read(
+            "https://api.github.com/repos/o/r",
+            user_agent="test",
+            opener=opener,
+            sleeper=sleeper,
+            clock=lambda: 100.0,
+        )
+        self.assertEqual(result, {"ok": True})
+        self.assertEqual(opener.call_count, 2)
+        sleeper.assert_called_once_with(2.0)
+
+    def test_45_primary_reset_signal_recovers_bounded_read(self):
+        first = self._http_error(
+            headers={
+                "X-RateLimit-Remaining": "0",
+                "X-RateLimit-Reset": "102",
+            },
+            body=b'{"message":"API rate limit exceeded"}',
+        )
+        opener = mock.Mock(
+            side_effect=[first, io.BytesIO(b'{"ok":true}')]
+        )
+        sleeper = mock.Mock()
+        result = github_json_read(
+            "https://api.github.com/repos/o/r",
+            user_agent="test",
+            opener=opener,
+            sleeper=sleeper,
+            clock=lambda: 100.0,
+        )
+        self.assertEqual(result, {"ok": True})
+        self.assertEqual(opener.call_count, 2)
+        sleeper.assert_called_once_with(3.0)
+
+    def test_46_non_rate_limit_403_fails_closed_without_retry(self):
+        first = self._http_error(
+            reason="Forbidden",
+            headers={"Retry-After": "2"},
+            body=b'{"message":"resource forbidden"}',
+        )
+        opener = mock.Mock(side_effect=first)
+        sleeper = mock.Mock()
+        with self.assertRaises(urllib.error.HTTPError):
+            github_json_read(
+                "https://api.github.com/repos/o/r",
+                user_agent="test",
+                opener=opener,
+                sleeper=sleeper,
+            )
+        self.assertEqual(opener.call_count, 1)
+        sleeper.assert_not_called()
+
+    def test_47_repeated_rate_limit_exhaustion_fails_closed(self):
+        errors = [
+            self._http_error(
+                reason="rate limit exceeded",
+                headers={"Retry-After": "1"},
+            ),
+            self._http_error(
+                reason="rate limit exceeded",
+                headers={"Retry-After": "1"},
+            ),
+        ]
+        opener = mock.Mock(side_effect=errors)
+        sleeper = mock.Mock()
+        with self.assertRaises(urllib.error.HTTPError):
+            github_json_read(
+                "https://api.github.com/repos/o/r",
+                user_agent="test",
+                opener=opener,
+                sleeper=sleeper,
+                max_attempts=2,
+            )
+        self.assertEqual(opener.call_count, 2)
+        sleeper.assert_called_once_with(1.0)
+
+    def test_48_malformed_retry_header_fails_closed(self):
+        first = self._http_error(
+            reason="rate limit exceeded",
+            headers={"Retry-After": "soon"},
+        )
+        opener = mock.Mock(side_effect=first)
+        sleeper = mock.Mock()
+        with self.assertRaises(urllib.error.HTTPError):
+            github_json_read(
+                "https://api.github.com/repos/o/r",
+                user_agent="test",
+                opener=opener,
+                sleeper=sleeper,
+            )
+        self.assertEqual(opener.call_count, 1)
+        sleeper.assert_not_called()
+
+    def test_49_mutation_is_never_retried(self):
+        first = self._http_error(
+            reason="rate limit exceeded",
+            headers={"Retry-After": "1"},
+        )
+        opener = mock.Mock(side_effect=first)
+        sleeper = mock.Mock()
+        with self.assertRaises(urllib.error.HTTPError):
+            github_json_request(
+                "https://api.github.com/repos/o/r/issues/1/comments",
+                user_agent="test",
+                method="POST",
+                data=b"{}",
+                opener=opener,
+                sleeper=sleeper,
+            )
+        self.assertEqual(opener.call_count, 1)
+        sleeper.assert_not_called()
+
+    def test_50_body_only_rate_limit_403_is_not_enough_to_retry(self):
+        first = self._http_error(
+            reason="rate limit exceeded",
+            body=b'{"message":"API rate limit exceeded"}',
+        )
+        opener = mock.Mock(side_effect=first)
+        sleeper = mock.Mock()
+        with self.assertRaises(urllib.error.HTTPError):
+            github_json_read(
+                "https://api.github.com/repos/o/r",
+                user_agent="test",
+                opener=opener,
+                sleeper=sleeper,
+            )
+        self.assertEqual(opener.call_count, 1)
+        sleeper.assert_not_called()
+
+    def test_51_reset_beyond_total_wait_budget_fails_closed(self):
+        first = self._http_error(
+            headers={
+                "X-RateLimit-Remaining": "0",
+                "X-RateLimit-Reset": "1000",
+            },
+        )
+        opener = mock.Mock(side_effect=first)
+        sleeper = mock.Mock()
+        with self.assertRaises(urllib.error.HTTPError):
+            github_json_read(
+                "https://api.github.com/repos/o/r",
+                user_agent="test",
+                opener=opener,
+                sleeper=sleeper,
+                clock=lambda: 100.0,
+                max_total_wait_seconds=60.0,
+            )
+        self.assertEqual(opener.call_count, 1)
+        sleeper.assert_not_called()
