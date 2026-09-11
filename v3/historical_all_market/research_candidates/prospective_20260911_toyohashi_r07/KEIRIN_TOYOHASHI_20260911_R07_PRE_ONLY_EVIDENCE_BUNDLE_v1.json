@@ -1,0 +1,56 @@
+{
+  "bindings": {
+    "b1a_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "circumference_model_blob": "061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878",
+    "competition_gate_blob": "8ffbab9d02562a3f8b617047c614a2008378932b",
+    "required_odds_runner_blob": "5d06bb2d1546101e4989e94816b274b6cbc4563f",
+    "v54_probability_blob": "417fa8947ab9b15dde305adc15085d558659d134"
+  },
+  "bundle_body_sha256_excluding_self_field": "57569203662b75307f1c590ab9ab61b28bdc95719cf33ce13ad00014d74d35a2",
+  "competition_gate": {
+    "challenger_top1_probability": 0.4542607058190516,
+    "pass": true,
+    "s0_top1_probability": 0.44505616334905224,
+    "support_mode": "STYLE_FALLBACK",
+    "threshold": 0.4,
+    "top1_agreement": true,
+    "value": 0.44505616334905224
+  },
+  "created_at_jst": "2026-09-11T18:07:42+09:00",
+  "pre_payload_sha256": "6bcd13d6df56b512a109787dfc3e07c7a6b49fd4372ae61dc990a119c34ce86e",
+  "record": "KEIRIN_PROSPECTIVE_PRE_ONLY_EVIDENCE_BUNDLE_20260911_TOYOHASHI_R07_v1",
+  "required_odds": {
+    "actual_odds_used": false,
+    "exact_v54_executable": false,
+    "formula": "raw_break_even_decimal_odds=1/raw_b1a_pl_probability",
+    "san_rentan": {"raw_break_even_decimal_odds":16.805676613463362,"raw_probability":0.05950370359970393,"ticket":"1-3-5"},
+    "two_shatan": {"raw_break_even_decimal_odds":5.455801616792271,"raw_probability":0.18329112204559012,"ticket":"1-3"}
+  },
+  "science": {"automatic_betting":false,"formal_scientific_validation_percent":85,"next_gate":"After race completion, separately governed outcome evaluation; no PRE backfill.","payout_accessed":false,"post_result_reconstruction":false,"result_accessed":false,"retune":false,"runtime":"OFF"},
+  "selection": {"rule":"Scan any still-unstarted race with trustworthy PRE inputs; freeze each strict-gate pass without waiting for a preselected venue.","selected_gate":{"threshold":0.4,"value":0.44505616334905224}},
+  "source": {
+    "capture_method": "Current-chat earlier web retrieval from Rakuten Kdreams -> PRE-only structured transcription frozen now; raw transport bytes unavailable in this execution environment",
+    "retrieved_at": "earlier_in_current_chat_before_freeze",
+    "snapshot_path": "v3/historical_all_market/research_candidates/prospective_20260911_toyohashi_r07/KEIRIN_TOYOHASHI_20260911_R07_PRE_SOURCE_SNAPSHOT_v1.json",
+    "snapshot_sha256": "8c204d6b31770c371af1a1f2d41f57b65a494c54bf6896da6143601c9b85e25c",
+    "snapshot_sha256_basis": "exact UTF-8 file bytes including trailing LF",
+    "source_locator": "https://keirin.kdreams.jp/toyohashi/racedetail/4520260911010007/",
+    "trust_class": "PRIMARY"
+  },
+  "status": "PASS_PROSPECTIVE_PRE_FROZEN_CANDIDATE_BEFORE_OUTCOME",
+  "target": {"cutoff_jst":"2026-09-11T22:35:00+09:00","event_date":"2026-09-11","event_id":"TOYOHASHI_20260911_R07","race_number":7,"scheduled_start_jst":"2026-09-11T22:40:00+09:00","venue":"豊橋"},
+  "winner_prediction": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "probabilities": [
+      {"car_no":1,"win_prob":0.5868960612782422},
+      {"car_no":2,"win_prob":0.061919314023916684},
+      {"car_no":3,"win_prob":0.12901481104652757},
+      {"car_no":4,"win_prob":0.08263167192038892},
+      {"car_no":5,"win_prob":0.09222680869879074},
+      {"car_no":6,"win_prob":0.02900615495336414},
+      {"car_no":7,"win_prob":0.01830517807876965}
+    ],
+    "top1_car_no": 1,
+    "top1_probability": 0.5868960612782422
+  }
+}
