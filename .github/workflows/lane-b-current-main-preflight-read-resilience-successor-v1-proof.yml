@@ -29,17 +29,19 @@ jobs:
           test "$(git rev-parse origin/main)" = "$BASE"
           test "$(git show -s --format=%T "$CANDIDATE")" = "$TREE"
 
-          expected="$(cat <<'EOF'
-automation/review_dispatcher_v1/dispatcher.py
-automation/review_dispatcher_v1/github_read_resilience_v1.py
-automation/review_dispatcher_v1/one_shot_preflight_v1.py
-automation/review_dispatcher_v1/review.py
-automation/review_dispatcher_v1/test_dispatcher.py
-automation/review_dispatcher_v1/test_one_shot_preflight_v1.py
-EOF
-)"
-          actual="$(git diff --name-only "$BASE" "$CANDIDATE" | sort)"
-          test "$actual" = "$expected"
+          expected=(
+            automation/review_dispatcher_v1/dispatcher.py
+            automation/review_dispatcher_v1/github_read_resilience_v1.py
+            automation/review_dispatcher_v1/one_shot_preflight_v1.py
+            automation/review_dispatcher_v1/review.py
+            automation/review_dispatcher_v1/test_dispatcher.py
+            automation/review_dispatcher_v1/test_one_shot_preflight_v1.py
+          )
+          mapfile -t actual < <(git diff --name-only "$BASE" "$CANDIDATE" | sort)
+          test "${#actual[@]}" -eq "${#expected[@]}"
+          for i in "${!expected[@]}"; do
+            test "${actual[$i]}" = "${expected[$i]}"
+          done
 
           git diff --quiet "$BASE" "$CANDIDATE" -- \
             automation/review_dispatcher_v1/request_arbitration_v6.py \
@@ -61,7 +63,6 @@ EOF
           set -euo pipefail
           python - <<'PY'
           import importlib
-          import sys
           import unittest
 
           expected = {
