@@ -1,0 +1,119 @@
+name: pr346-trusted-t2-recovery-execution-20260912
+
+on:
+  push:
+    branches:
+      - agent/pr346-trusted-t2-recovery-execution-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  trusted-t2:
+    runs-on: ubuntu-latest
+    env:
+      MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY: ${{ secrets.MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY }}
+      BUILDKITE_BUILD_ID: TRUSTED_T2_RECOVERY_PR346_20260912
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact execution-carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "bb133e196efa818bc9b8dc59519c02796e70658e"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = ".github/workflows/pr346-trusted-t2-recovery-execution-20260912.yml"
+          test "$(git show HEAD^:automation/review_dispatcher_v1/t2.py | git hash-object --stdin)" = "abf09abd10fb7f5b72a54683d0ae3b6513f1677b"
+      - name: Build exact durable inputs and execute trusted T2 once
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, re, urllib.request
+          from pathlib import Path
+
+          repo = "fufufu1116/multiverse-research"
+          request_comment = 5641019047
+          auditor_comment = 5641130370
+          exact_request_sha = "f571e92879a4a5d4da42c57ff40093137c7232f6e55947e130e6ff2568eb9df7"
+          exact_head = "2bd2cde16e490c1f9d620121ed43c29e1f4fe77d"
+          exact_tree = "0a2ee126916ed3f6b0da7eafcd9c19f664a5cca6"
+          exact_main = "bb133e196efa818bc9b8dc59519c02796e70658e"
+
+          def get(url):
+              req = urllib.request.Request(url, headers={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"multiverse-pr346-t2-recovery"})
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  return json.load(r)
+
+          def block(body):
+              m = re.search(r"```json\s*(\{.*?\})\s*```", body or "", re.S)
+              if not m:
+                  raise SystemExit("JSON_BLOCK_MISSING")
+              return json.loads(m.group(1))
+
+          req_comment = get(f"https://api.github.com/repos/{repo}/issues/comments/{request_comment}")
+          request = block(req_comment["body"])
+          canonical = json.dumps(request, sort_keys=True, separators=(",", ":")).encode()
+          request_sha = hashlib.sha256(canonical).hexdigest()
+          if request_sha != exact_request_sha:
+              raise SystemExit(f"REQUEST_SHA_DRIFT:{request_sha}")
+
+          aud_comment = get(f"https://api.github.com/repos/{repo}/issues/comments/{auditor_comment}")
+          artifact = block(aud_comment["body"])
+          if artifact.get("verdict") != "PASS" or artifact.get("findings") != []:
+              raise SystemExit("AUDITOR_NOT_EXACT_PASS")
+          if artifact.get("request_sha256") != exact_request_sha:
+              raise SystemExit("AUDITOR_REQUEST_SHA_DRIFT")
+          if artifact.get("reviewed_head") != exact_head or artifact.get("reviewed_tree") != exact_tree or artifact.get("reviewed_main") != exact_main:
+              raise SystemExit("AUDITOR_BINDING_DRIFT")
+
+          job = {
+              "schema":"MULTIVERSE_FIXED_REVIEW_JOB_v1",
+              "repo":repo,
+              "pr":346,
+              "branch":"agent/lane-b-publisher-github-read-resilience-v1-20260911",
+              "head":exact_head,
+              "tree":exact_tree,
+              "base":exact_main,
+              "main":exact_main,
+              "lane":"AUDITOR",
+              "request_id":request["request_id"],
+              "request_comment":request_comment,
+              "request_sha256":exact_request_sha,
+              "request_comment_author":"fufufu1116",
+              "request":request,
+              "dispatcher_ref":exact_main,
+          }
+          receipt = {
+              "schema":"MULTIVERSE_FIXED_REVIEW_PUBLISH_RECEIPT_v1",
+              "request_id":request["request_id"],
+              "request_sha256":exact_request_sha,
+              "published_comment_id":auditor_comment,
+              "published_by":"multiverse-independent-auditor[bot]",
+              "github_app_id":4821179,
+              "reviewed_head":exact_head,
+              "reviewed_tree":exact_tree,
+              "reviewed_main":exact_main,
+              "verdict":"PASS",
+          }
+          Path("review_job.json").write_text(json.dumps(job, indent=2, sort_keys=True)+"\n")
+          Path("review_artifact.json").write_text(json.dumps(artifact, indent=2, sort_keys=True)+"\n")
+          Path("review_publish_receipt.json").write_text(json.dumps(receipt, indent=2, sort_keys=True)+"\n")
+          print("EXACT_INPUT_RECONSTRUCTION=PASS")
+          PY
+          test -n "${MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY:-}"
+          python -m automation.review_dispatcher_v1.t2 --job review_job.json --artifact review_artifact.json --receipt review_publish_receipt.json --output t2_publish_receipt.json
+          python - <<'PY'
+          import json
+          r=json.load(open('t2_publish_receipt.json'))
+          assert r['verdict']=='PASS'
+          assert r['request_sha256']=='f571e92879a4a5d4da42c57ff40093137c7232f6e55947e130e6ff2568eb9df7'
+          assert r['auditor_comment_id']==5641130370
+          print('TRUSTED_T2_EXECUTION=PASS')
+          print('T2_COMMENT_ID='+str(r['t2_comment_id']))
+          PY
