@@ -43,6 +43,10 @@
     {
       "finding": "frozen test_signal_forecast.py imported forecast_ledger, which belongs outside Slice A",
       "resolution": "after exact carry-forward, minimally removed only the forecast-ledger import/tests; retained signal tests on the same allowlisted path"
+    },
+    {
+      "finding": "Build #72 reached fixed review execution and exposed deferred test imports of missing packet.py and portfolio.py from test_engine.py; both modules are outside the frozen Slice A include_paths",
+      "resolution": "created a successor branch and removed only the four cross-slice PacketTests/PortfolioTests from test_engine.py; no production/domain module was added or changed"
     }
   ],
   "validation": {
@@ -51,14 +55,16 @@
     "duplicate_paths": "PASS_NONE",
     "forbidden_canonical_surface_paths": "PASS_NONE",
     "static_internal_import_dependency_check": "PASS_AFTER_MINIMAL_FIX",
+    "deferred_test_import_dependency_check": "PASS_AFTER_MINIMAL_FIX",
     "frozen_blob_identity": "18_OF_19_EXACT_PLUS_1_MINIMAL_DEPENDENCY_BOUNDARY_FIX",
+    "slice_a_test_engine_expected_count": 10,
     "pull_request_triggered_workflow_runs_on_payload_fix_head": "NONE_OBSERVED",
-    "unit_test_execution": "NOT_EXECUTED_NO_NON_LAB_REPOSITORY_RUNNER_INVOKED",
-    "formal_lab_or_auditor": "NOT_INVOKED_OWNER_GATE"
+    "unit_test_execution": "NOT_EXECUTED_PENDING_FORMAL_REVIEW",
+    "formal_lab_or_auditor": "NOT_INVOKED_ON_SUCCESSOR_V2_HEAD"
   },
   "validated_payload_fix_head": {
-    "sha": "bd8bcf6a9d00fd86b59b685fd3c90821bcc9adf2",
-    "tree": "667090e4ae33cd78954711f2390af9d242e3a0a7"
+    "sha": "9d388f4eee4558132a619aa96d931204075400f2",
+    "tree": "5b0bf5bb3e04d98d107767dc6d1c5abcc889474c"
   },
   "remaining_blockers": [
     "normal MULTIVERSE review/test execution remains external governance",
