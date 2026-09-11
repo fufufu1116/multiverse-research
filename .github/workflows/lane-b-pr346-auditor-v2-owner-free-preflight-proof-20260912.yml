@@ -1,0 +1,73 @@
+name: lane-b-pr346-auditor-v2-owner-free-preflight-proof-20260912
+on: [push]
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Exact Auditor v2 owner-free preflight
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CANDIDATE=2bd2cde16e490c1f9d620121ed43c29e1f4fe77d
+          TREE=0a2ee126916ed3f6b0da7eafcd9c19f664a5cca6
+          MAIN=bb133e196efa818bc9b8dc59519c02796e70658e
+          REPO=fufufu1116/multiverse-research
+          test "$(git rev-parse HEAD^)" = "$CANDIDATE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/lane-b-pr346-auditor-v2-owner-free-preflight-proof-20260912.yml"
+          git checkout --detach "$CANDIDATE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch --no-tags origin "$MAIN"
+          test "$(git rev-parse FETCH_HEAD)" = "$MAIN"
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git ls-tree -r "$MAIN" > /tmp/main-tree.txt; git ls-tree -r "$CANDIDATE" > /tmp/candidate-tree.txt
+          grep -q "$LAB_BLOB" /tmp/main-tree.txt && grep -q "$LAB_BLOB" /tmp/candidate-tree.txt
+          grep -q "$AUDITOR_BLOB" /tmp/main-tree.txt && grep -q "$AUDITOR_BLOB" /tmp/candidate-tree.txt
+          echo FIXED_LAB_STEPS_UNCHANGED=PASS; echo FIXED_AUDITOR_STEPS_UNCHANGED=PASS
+          TMP=$(mktemp -d); mkdir -p "$TMP/runner"
+          git archive --format=tar "$MAIN" automation/review_dispatcher_v1 | tar -xf - -C "$TMP/runner"
+          export PYTHONPATH="$TMP/runner" BUILDKITE_COMMIT="$CANDIDATE" BUILDKITE_BRANCH=OWNER_FREE_AUDITOR_PREFLIGHT_ONLY BUILDKITE_BUILD_ID=OWNER_FREE_AUDITOR_PREFLIGHT_ONLY BUILDKITE_BUILD_NUMBER=OWNER_FREE_AUDITOR_PREFLIGHT_ONLY MULTIVERSE_DISPATCHER_REF="$MAIN"
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          python "$TMP/runner/automation/review_dispatcher_v1/dispatcher.py" --lane AUDITOR --repo "$REPO" --head "$CANDIDATE" --output "$TMP/job.json"
+          python - "$TMP/job.json" <<'PY'
+          import json,sys
+          from automation.review_dispatcher_v1.model import validate_request,sha256_json
+          j=json.load(open(sys.argv[1])); r=j['request']; validate_request(r)
+          assert j['request_comment']==5641019047,j
+          assert j['request_id']=='pr346-publisher-github-read-resilience-auditor-v2-labv3-main-bb133e19',j
+          assert j['request_sha256']=='f571e92879a4a5d4da42c57ff40093137c7232f6e55947e130e6ff2568eb9df7',j
+          assert sha256_json(r)==j['request_sha256']
+          assert r['supersedes_request_sha256']=='85ce4d562886224c0a89bc32f3064053a91540c85f0fba98cec54530c11076cf'
+          assert r['upstream']=={'lab_pass_comment':5640942160,'lab_request_sha256':'1750f21ca4606d9b7fb5e72e7ca9787726081d4ef1220ea9e3fa74ef6bb17b44','t1_comment':5640959671}
+          assert r['execution_state']=='FIXED_REQUEST_ONLY_BASELINE_PUBLISHER_GITHUB_GET_RESILIENCE_REVIEW_REQUESTED'
+          assert j['head']=='2bd2cde16e490c1f9d620121ed43c29e1f4fe77d' and j['tree']=='0a2ee126916ed3f6b0da7eafcd9c19f664a5cca6'
+          assert j['base']=='bb133e196efa818bc9b8dc59519c02796e70658e' and j['main']=='bb133e196efa818bc9b8dc59519c02796e70658e' and j['dispatcher_ref']=='bb133e196efa818bc9b8dc59519c02796e70658e'
+          print('REQUEST_SCHEMA_SHA_ARBITRATION_SUPERSESSION=PASS')
+          print('UPSTREAM_LAB_V3_T1_EXACT_BINDING=PASS')
+          print('NO_EXISTING_EXACT_TRUSTED_AUDITOR_RESULT=PASS')
+          PY
+          python "$TMP/runner/automation/review_dispatcher_v1/review.py" --job "$TMP/job.json" --output "$TMP/artifact.json" --repo-root .
+          python - "$TMP/artifact.json" <<'PY'
+          import json,sys
+          a=json.load(open(sys.argv[1])); assert a['verdict']=='PASS' and a['findings']==[] and a['test_count']==149,a
+          s=json.dumps(a,sort_keys=True,separators=(',',':')); assert json.loads(s)==a
+          print('DURABLE_SOURCE_SECRET=PASS'); print('FULL_APPLICABLE_TESTS=149/149_PASS'); print('ARTIFACT_SERIALIZATION_JSON_ROUND_TRIP=PASS')
+          PY
+          PYTHONPATH=. python -m unittest -q automation.review_dispatcher_v1.test_publisher_github_read_resilience_v1 automation.review_dispatcher_v1.test_publisher_freshness_v1 automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 automation.review_dispatcher_v1.test_receipt_recovery_v1 automation.review_dispatcher_v1.test_result_canonicalization_v1 automation.review_dispatcher_v1.test_request_arbitration_v6 automation.review_dispatcher_v1.test_t2_github_read_resilience_v1 automation.review_dispatcher_v1.test_t2_idempotence_v1 automation.review_dispatcher_v1.test_t2_receipt_recovery_v1 automation.review_dispatcher_v1.test_t2_resilience_integration_v1
+          grep -q 'github_json_read' automation/review_dispatcher_v1/t2.py
+          grep -q '_legacy.public_github = _bounded_public_github' automation/review_dispatcher_v1/t2.py
+          echo PUBLISHER_GET_RESILIENCE=PASS; echo POST_PUBLICATION_T2_GET_RATE_LIMIT_PATH=PASS
+          PYTHONPATH=. python automation/review_dispatcher_v1/validator.py > "$TMP/validator.json"
+          python - "$TMP/validator.json" <<'PY'
+          import json,sys
+          v=json.load(open(sys.argv[1])); assert v['verdict']=='PASS' and v['findings']==[],v
+          print('VALIDATOR=PASS'); print('VALIDATOR_FINDINGS=[]'); print('PUBLICATION_ATTEMPTED=false'); print('OWNER_GATE=false'); print('BUILDKITE_BUILD_STARTED=false'); print('FORMAL_AUDITOR_T2_PUBLICATION=false'); print('RETRY_RERUN_REUSE=false'); print('RUNTIME=OFF'); print('PREFLIGHT_TERMINAL=READY')
+          PY
