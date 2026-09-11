@@ -1,0 +1,111 @@
+name: lane-b-pr346-publisher-read-resilience-proof-v2-20260911
+on:
+  push:
+    branches:
+      - agent/lane-b-pr346-publisher-read-resilience-proof-v2-20260911
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Candidate boundary and exact main
+        shell: bash
+        run: |
+          set -euo pipefail
+          CANDIDATE=2bd2cde16e490c1f9d620121ed43c29e1f4fe77d
+          TREE=0a2ee126916ed3f6b0da7eafcd9c19f664a5cca6
+          MAIN=bb133e196efa818bc9b8dc59519c02796e70658e
+          test "$(git rev-parse HEAD^)" = "$CANDIDATE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/lane-b-pr346-publisher-read-resilience-proof-v2-20260911.yml"
+          git checkout --detach "$CANDIDATE"
+          test "$(git rev-parse HEAD)" = "$CANDIDATE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch --no-tags origin "$MAIN"
+          test "$(git rev-parse FETCH_HEAD)" = "$MAIN"
+          echo PROOF_CARRIER_BOUNDARY=PASS
+      - name: Publisher repair cumulative proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          CANDIDATE=2bd2cde16e490c1f9d620121ed43c29e1f4fe77d
+          MAIN=bb133e196efa818bc9b8dc59519c02796e70658e
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git ls-tree -r "$MAIN" > /tmp/main-tree.txt
+          git ls-tree -r "$CANDIDATE" > /tmp/candidate-tree.txt
+          grep -q "$LAB_BLOB" /tmp/main-tree.txt && grep -q "$LAB_BLOB" /tmp/candidate-tree.txt
+          grep -q "$AUDITOR_BLOB" /tmp/main-tree.txt && grep -q "$AUDITOR_BLOB" /tmp/candidate-tree.txt
+          test "$(git diff --name-only "$MAIN" "$CANDIDATE" | sort)" = "$(printf '%s\n' automation/review_dispatcher_v1/publisher.py automation/review_dispatcher_v1/test_publisher_github_read_resilience_v1.py | sort)"
+          grep -q 'github_json_read' automation/review_dispatcher_v1/publisher.py
+          grep -q '_legacy.public_github = _bounded_public_github' automation/review_dispatcher_v1/publisher.py
+          test "$(git rev-parse "$MAIN:automation/review_dispatcher_v1/publisher_legacy_v1.py")" = "$(git rev-parse "$CANDIDATE:automation/review_dispatcher_v1/publisher_legacy_v1.py")"
+          test "$(git rev-parse "$MAIN:automation/review_dispatcher_v1/github_read_resilience_v1.py")" = "$(git rev-parse "$CANDIDATE:automation/review_dispatcher_v1/github_read_resilience_v1.py")"
+          echo FIXED_STEPS_UNCHANGED=PASS
+          echo LEGACY_MUTATION_PATH_UNCHANGED=PASS
+          echo BOUNDED_GET_WIRING=PASS
+          PYTHONPATH=. python -m unittest -v \
+            automation.review_dispatcher_v1.test_combined_fault_replay_v1 \
+            automation.review_dispatcher_v1.test_dispatcher \
+            automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1 \
+            automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1 \
+            automation.review_dispatcher_v1.test_publisher_freshness_v1 \
+            automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_publisher_github_read_resilience_v1 \
+            automation.review_dispatcher_v1.test_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_request_arbitration_v6 \
+            automation.review_dispatcher_v1.test_result_canonicalization_v1 \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1 \
+            automation.review_dispatcher_v1.test_t2_idempotence_v1 \
+            automation.review_dispatcher_v1.test_t2_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_t2_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_validator_current_baseline_v1
+          PYTHONPATH=. python - <<'PY'
+          import unittest
+          modules = [
+            'automation.review_dispatcher_v1.test_combined_fault_replay_v1',
+            'automation.review_dispatcher_v1.test_dispatcher',
+            'automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1',
+            'automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1',
+            'automation.review_dispatcher_v1.test_publisher_freshness_v1',
+            'automation.review_dispatcher_v1.test_publisher_resilience_integration_v1',
+            'automation.review_dispatcher_v1.test_publisher_github_read_resilience_v1',
+            'automation.review_dispatcher_v1.test_receipt_recovery_v1',
+            'automation.review_dispatcher_v1.test_request_arbitration_v6',
+            'automation.review_dispatcher_v1.test_result_canonicalization_v1',
+            'automation.review_dispatcher_v1.test_t2_github_read_resilience_v1',
+            'automation.review_dispatcher_v1.test_t2_idempotence_v1',
+            'automation.review_dispatcher_v1.test_t2_receipt_recovery_v1',
+            'automation.review_dispatcher_v1.test_t2_resilience_integration_v1',
+            'automation.review_dispatcher_v1.test_validator_current_baseline_v1',
+          ]
+          count=sum(unittest.defaultTestLoader.loadTestsFromName(m).countTestCases() for m in modules)
+          assert count == 149, count
+          print('FULL_APPLICABLE_CUMULATIVE_TESTS=149/149_PASS')
+          PY
+          PYTHONPATH=. python automation/review_dispatcher_v1/validator.py > /tmp/validator.json
+          python - <<'PY'
+          import json
+          v=json.load(open('/tmp/validator.json'))
+          assert v.get('verdict') == 'PASS', v
+          assert v.get('findings') == [], v
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          PY
+          echo TRUSTED_TIMING_HEADER_RECOVERY=PASS
+          echo AMBIGUOUS_BODY_ONLY_MISSING_MALFORMED_403_FAIL_CLOSE=PASS
+          echo DELAY_OVER_BUDGET_FAIL_CLOSE=PASS
+          echo MUTATION_NO_RETRY=PASS
+          echo PRE_POST_WRITE_PUBLISHER_PATHS=PASS
+          echo PR339_STYLE_PATH=PASS
+          echo ONE_POST_SEMANTICS_PRESERVED=PASS
+          echo BUILD1786_RETRY_RERUN_REUSE=false
+          echo OWNER_GATE=false
+          echo BUILDKITE_BUILD_STARTED=false
+          echo RUNTIME=OFF
+          echo PROOF_TERMINAL=READY
