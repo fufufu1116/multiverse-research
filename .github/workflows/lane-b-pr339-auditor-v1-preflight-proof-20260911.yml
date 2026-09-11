@@ -1,0 +1,137 @@
+name: lane-b-pr339-auditor-v1-preflight-proof-20260911
+on:
+  push:
+    branches:
+      - agent/lane-b-pr339-auditor-v1-preflight-proof-20260911
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Proof branch completed-commit boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          CANDIDATE=fb96686f6e35f51949dda810a8580f91ad76e8ef
+          test "$(git rev-parse HEAD^)" = "$CANDIDATE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/lane-b-pr339-auditor-v1-preflight-proof-20260911.yml"
+          echo PROOF_BRANCH_COMPLETED_COMMIT_FIRST=PASS
+          git checkout --detach "$CANDIDATE"
+          test "$(git rev-parse HEAD)" = "$CANDIDATE"
+          test "$(git rev-parse HEAD^{tree})" = "f4c8770ca60003529fc3afb934a180721d9c62d7"
+      - name: Exact owner-free Auditor v1 preflight and T2 read-only mechanics
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CANDIDATE=fb96686f6e35f51949dda810a8580f91ad76e8ef
+          TREE=f4c8770ca60003529fc3afb934a180721d9c62d7
+          MAIN=bb133e196efa818bc9b8dc59519c02796e70658e
+          REPO=fufufu1116/multiverse-research
+          REQUEST_COMMENT=5632435671
+          REQUEST_ID=pr339-duplicate-identical-request-arbitration-fresh-main-auditor-v1-main-bb133e19
+          REQUEST_SHA=21941a3582847579e5fce71b63c43fcb95f8efecead858445a1bac07402d1c1b
+          LAB_PASS=5632404233
+          LAB_REQUEST_SHA=084a24285b5d11e15011f31fcc4e66ca72f799add8e1708367bc94d6b6e7029c
+          T1_PASS=5632426846
+          test "$(git rev-parse HEAD)" = "$CANDIDATE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch --no-tags origin "$MAIN"
+          test "$(git rev-parse FETCH_HEAD)" = "$MAIN"
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git ls-tree -r "$MAIN" > /tmp/main-tree.txt
+          git ls-tree -r "$CANDIDATE" > /tmp/candidate-tree.txt
+          grep -q "$LAB_BLOB" /tmp/main-tree.txt && grep -q "$LAB_BLOB" /tmp/candidate-tree.txt
+          grep -q "$AUDITOR_BLOB" /tmp/main-tree.txt && grep -q "$AUDITOR_BLOB" /tmp/candidate-tree.txt
+          echo FIXED_LAB_STEPS_UNCHANGED=PASS
+          echo FIXED_AUDITOR_STEPS_UNCHANGED=PASS
+          TMP=$(mktemp -d)
+          mkdir -p "$TMP/runner"
+          git archive --format=tar "$MAIN" automation/review_dispatcher_v1 | tar -xf - -C "$TMP/runner"
+          export PYTHONPATH="$TMP/runner"
+          export BUILDKITE_COMMIT="$CANDIDATE"
+          export BUILDKITE_BRANCH=OWNER_FREE_PREFLIGHT_ONLY
+          export BUILDKITE_BUILD_ID=OWNER_FREE_PREFLIGHT_ONLY
+          export BUILDKITE_BUILD_NUMBER=OWNER_FREE_PREFLIGHT_ONLY
+          export MULTIVERSE_DISPATCHER_REF="$MAIN"
+          unset DATABASE_URL RENDER_API_KEY MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY || true
+          python "$TMP/runner/automation/review_dispatcher_v1/dispatcher.py" --lane AUDITOR --repo "$REPO" --head "$CANDIDATE" --output "$TMP/review_job.json"
+          python - "$TMP/review_job.json" "$REQUEST_COMMENT" "$REQUEST_ID" "$REQUEST_SHA" "$CANDIDATE" "$TREE" "$MAIN" "$LAB_PASS" "$LAB_REQUEST_SHA" "$T1_PASS" <<'PY'
+          import json, sys
+          from automation.review_dispatcher_v1.model import sha256_json
+          p, comment_id, request_id, expected_sha, head, tree, main, lab_pass, lab_sha, t1 = sys.argv[1:]
+          job=json.load(open(p))
+          req=job['request']
+          assert job['request_comment'] == int(comment_id), job
+          assert job['request_id'] == request_id, job
+          assert job['head'] == head and job['tree'] == tree, job
+          assert job['base'] == main and job['main'] == main and job['dispatcher_ref'] == main, job
+          rebuilt=sha256_json(req)
+          assert rebuilt == expected_sha == job['request_sha256'], (rebuilt, expected_sha, job['request_sha256'])
+          assert req['upstream']['lab_pass_comment'] == int(lab_pass), req
+          assert req['upstream']['lab_request_sha256'] == lab_sha, req
+          assert req['upstream']['t1_comment'] == int(t1), req
+          print('REQUEST_SELECTION=PASS')
+          print('REQUEST_ID=PASS')
+          print('REQUEST_SHA256_RECONSTRUCTED='+rebuilt)
+          print('REQUEST_ENVELOPE=PASS')
+          print('UPSTREAM_BINDING=PASS')
+          print('NO_EXISTING_EXACT_TRUSTED_AUDITOR_RESULT=PASS')
+          print('DUPLICATE_SUPERSESSION_ARBITRATION=PASS')
+          print('EXACT_DURABLE_LINEAGE_REPLAY=PASS')
+          PY
+          python "$TMP/runner/automation/review_dispatcher_v1/review.py" --job "$TMP/review_job.json" --output "$TMP/review_artifact.json" --repo-root .
+          python - "$TMP/review_artifact.json" <<'PY'
+          import json, sys
+          a=json.load(open(sys.argv[1]))
+          assert a.get('schema_version') == 'MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1', a
+          assert a.get('verdict') == 'PASS', a
+          assert a.get('findings') == [], a
+          assert a.get('test_count') == 146, a
+          encoded=json.dumps(a, sort_keys=True, separators=(',', ':'))
+          assert json.loads(encoded) == a
+          print('SOURCE_RULES_EXACT_CANDIDATE_BYTES=PASS')
+          print('DURABLE_COMMENTS=PASS')
+          print('SECRET_SCAN=PASS')
+          print('FULL_APPLICABLE_TESTS=146/146_PASS')
+          print('READY_LEVEL_ARTIFACT_SERIALIZATION=PASS')
+          print('ARTIFACT_ROUND_TRIP=PASS')
+          PY
+          PYTHONPATH=. python automation/review_dispatcher_v1/validator.py > "$TMP/validator.json"
+          python - "$TMP/validator.json" <<'PY'
+          import json, sys
+          v=json.load(open(sys.argv[1]))
+          assert v.get('verdict') == 'PASS', v
+          assert v.get('findings') == [], v
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          PY
+          PYTHONPATH=. python -m unittest -v \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_01_retry_after_rate_limit_403_recovers_bounded_get \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_02_exhausted_primary_reset_recovers_bounded_get \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_03_ordinary_403_with_retry_after_but_no_rate_limit_signal_fails_closed \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_04_body_only_rate_limit_403_without_trusted_headers_fails_closed \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_05_malformed_retry_after_fails_closed \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_06_retry_delay_beyond_aggregate_budget_fails_without_sleep \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_07_mutation_or_body_request_is_never_retried \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1.T2GitHubReadResilienceTests.test_08_exact_post_auditor_comment_get_uses_bounded_helper_and_recovers_trusted_403
+          echo T2_TRUSTED_TIMING_HEADER_BOUNDED_GET_RECOVERY=PASS
+          echo T2_AMBIGUOUS_OR_MISSING_TIMING_403_FAIL_CLOSE=PASS
+          echo T2_MALFORMED_TIMING_403_FAIL_CLOSE=PASS
+          echo T2_DELAY_OVER_BUDGET_FAIL_CLOSE=PASS
+          echo T2_NON_GET_BODY_MUTATION_NO_RETRY=PASS
+          echo PUBLICATION_ATTEMPTED=false
+          echo OWNER_GATE=false
+          echo BUILDKITE_BUILD_STARTED=false
+          echo FORMAL_AUDITOR_PUBLICATION=false
+          echo FORMAL_T2_PUBLICATION=false
+          echo RUNTIME=OFF
+          echo PREFLIGHT_TERMINAL=READY
