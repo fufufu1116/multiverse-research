@@ -1,0 +1,14 @@
+{
+  "audit_body_sha256_excluding_self_field":"b3831d97346ba2208aa2582257e8ed6a0c1deed1cc07cf5067db0a13193c02f3",
+  "bindings":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","circumference_model_blob":"061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878","competition_gate_blob":"8ffbab9d02562a3f8b617047c614a2008378932b"},
+  "created_at_jst":"2026-09-11T19:04:33+09:00",
+  "races":[
+    {"b1a_top1":{"car_no":2,"probability":0.3959853336090854},"competition_gate":{"challenger_top1_car_no":2,"challenger_top1_probability":0.30683977544415486,"pass":false,"s0_top1_car_no":2,"s0_top1_probability":0.3014452195620674,"threshold":0.4,"top1_agreement":true,"value":0.3014452195620674},"cutoff_jst":"2026-09-11T19:42:00+09:00","event_id":"KAWASAKI_20260911_R10","race_number":10,"scheduled_start_jst":"2026-09-11T19:47:00+09:00","selection_status":"REJECT_GATE_BELOW_0_40","source_snapshot_git_blob":"1ec5991c15e588eb6722cfe36f4b9750433981bd","venue":"川崎"},
+    {"b1a_top1":{"car_no":7,"probability":0.49719403786398636},"competition_gate":{"challenger_top1_car_no":7,"challenger_top1_probability":0.353145143511197,"pass":false,"s0_top1_car_no":7,"s0_top1_probability":0.35212977409393054,"threshold":0.4,"top1_agreement":true,"value":0.35212977409393054},"cutoff_jst":"2026-09-11T19:29:00+09:00","event_id":"YOKKAICHI_20260911_R10","race_number":10,"scheduled_start_jst":"2026-09-11T19:34:00+09:00","selection_status":"REJECT_GATE_BELOW_0_40","source_snapshot_git_blob":"c8072c7817c7e87c31ff2bb304683328699fd65d","venue":"四日市"},
+    {"b1a_top1":{"car_no":7,"probability":0.31365280125843176},"competition_gate":{"challenger_top1_car_no":4,"challenger_top1_probability":0.2285312662259164,"pass":false,"s0_top1_car_no":4,"s0_top1_probability":0.22212579927625156,"threshold":0.4,"top1_agreement":true,"value":0.22212579927625156},"cutoff_jst":"2026-09-11T19:56:00+09:00","event_id":"YOKKAICHI_20260911_R11","race_number":11,"scheduled_start_jst":"2026-09-11T20:01:00+09:00","selection_status":"REJECT_GATE_BELOW_0_40","source_snapshot_git_blob":"513421d085ad12b879b3b7b67500105ceaa7f9fa","venue":"四日市"}
+  ],
+  "record":"KEIRIN_PROSPECTIVE_SCAN_REJECT_AUDIT_20260911_v1",
+  "scan_summary":{"pass_count":0,"reject_count":3,"scanned_count":3},
+  "science":{"actual_odds_used":false,"automatic_betting":false,"formal_scientific_validation_percent":85,"payout_accessed":false,"post_result_reconstruction":false,"result_accessed":false,"retune":false,"runtime":"OFF"},
+  "selection_rule":"Freeze every trustworthy PRE scan; candidate only when same-top1 conservative competition gate >= 0.40."
+}
