@@ -135,6 +135,7 @@ jobs:
           PYTHONPATH=. python3 - <<'PY'
           import json
           from automation.review_dispatcher_v1 import t2
+          from automation.review_dispatcher_v1.model_legacy_v1 import extract_request_from_comment
 
           repo = 'fufufu1116/multiverse-research'
           pr = 323
@@ -151,7 +152,7 @@ jobs:
               ),
               'AUDITOR_REQUEST_COMMENT_RESPONSE_OBJECT',
           )
-          request = t2._legacy.extract_request_from_comment(request_comment.get('body') or '')
+          request = extract_request_from_comment(request_comment.get('body') or '')
           assert request is not None
           assert t2._legacy.sha256_json(request) == request_sha
           assert request['repo'] == repo
