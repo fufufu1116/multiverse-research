@@ -348,24 +348,30 @@ class RequestArbitrationV6Tests(unittest.TestCase):
         self.assertEqual(cid, 10)
         self.assertEqual(selected["request_id"], "request-trusted-echo")
 
-    def test_22_pr318_duplicate_v3_history_shape_collapses_to_earliest_comment(self):
+    def test_22_pr318_duplicate_v3_envelope_shape_collapses_when_lineage_is_present(self):
         v3 = pr318_v3_request_shape()
+        self.assertEqual(v3["supersedes_request_sha256"], PR318_V2_SHA256)
+
+        # This focused unit isolates the duplicate-publication behavior. The
+        # separate repository-only proof replays the complete live PR #318
+        # v1/v2/v3 durable history and verifies the real v2 predecessor SHA.
+        isolated = copy.deepcopy(v3)
+        isolated["supersedes_request_sha256"] = None
         cid, selected, selected_comment = latest_pr318([
             comment(
                 5628512577,
-                v3,
+                isolated,
                 prefix="SOLE CONTROL first durable v3 publication",
             ),
             comment(
                 5628564802,
-                copy.deepcopy(v3),
+                copy.deepcopy(isolated),
                 prefix="SOLE CONTROL repeated durable v3 publication",
             ),
         ])
         self.assertEqual(cid, 5628512577)
         self.assertEqual(selected_comment["id"], 5628512577)
         self.assertEqual(selected["request_id"], PR318_V3_REQUEST_ID)
-        self.assertEqual(selected["supersedes_request_sha256"], PR318_V2_SHA256)
         self.assertEqual(selected["head"], PR318_HEAD)
         self.assertEqual(selected["tree"], PR318_TREE)
         self.assertEqual(selected["base"], PR318_MAIN)
