@@ -1,0 +1,48 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_C_SUCCESSOR_BINDING_v3",
+  "status": "FRESH_MAIN_SUCCESSOR_PRE_REVIEW_FREEZE",
+  "canonical_base": {
+    "branch": "main",
+    "sha": "bb133e196efa818bc9b8dc59519c02796e70658e",
+    "tree": "27a69ce90685942dea84788ae204de79faed3647"
+  },
+  "supersedes": {
+    "pull_request": 335,
+    "branch": "candidate/opportunity-engine-slice-c-fresh-main-20260911-v2",
+    "head": "dc3c981989922beaad4248906a197b1af1f4e4bc",
+    "tree": "3a464e8f0e33991f771c6d8b73d73df43c8b3d04",
+    "reason": "canonical main advanced by exact adoption of PR #329; rebuild Slice C on fresh main while preserving exact Slice C payload blobs"
+  },
+  "frozen_research_source": {
+    "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5"
+  },
+  "slice": "C_CUSTOMER_VALUE_HUNDRED_USER",
+  "exact_paths": [
+    "research/opportunity_engine_v0/customer_value_loop.py",
+    "research/opportunity_engine_v0/customer_contribution.py",
+    "research/opportunity_engine_v0/hundred_user_general.py",
+    "research/opportunity_engine_v0/growth_loop.py",
+    "research/opportunity_engine_v0/test_customer_contribution.py",
+    "research/opportunity_engine_v0/test_growth_loop.py"
+  ],
+  "carry_forward": "EXACT_BLOB_IDENTITY_FROM_SLICE_C_V2_FOR_ALL_6_SOURCE_TEST_PATHS",
+  "isolation": {
+    "external_imports_observed": false,
+    "live_recruitment": false,
+    "payment_collection": false,
+    "provider_call": false,
+    "credential_use": false,
+    "runtime_activation": false,
+    "publication": false,
+    "spend": false,
+    "canonical_adoption": false
+  },
+  "proof_state": {
+    "repository_tests": "PRESENT_NOT_INDEPENDENTLY_EXECUTED_ON_V3",
+    "expected_unit_test_count": 14,
+    "lab_auditor": "NOT_EXECUTED",
+    "pass_claim": false
+  },
+  "note": "This v3 successor preserves the exact Slice C v2 payload while rebasing the candidate boundary onto canonical main after PR #329. It is convergence preparation only; Runtime OFF."
+}
