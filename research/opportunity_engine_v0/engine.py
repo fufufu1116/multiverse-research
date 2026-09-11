@@ -44,9 +44,7 @@ def simulate_unit_economics(
     conversion_profit = conversions * profit_per_conversion_yen
     advertising_profit = (visitors / 1000.0) * ad_revenue_per_1000_visitors_yen
     variable_cost = visitors * variable_cost_per_visitor_yen
-    total_profit = (
-        conversion_profit + advertising_profit - variable_cost - fixed_cost_yen
-    )
+    total_profit = conversion_profit + advertising_profit - variable_cost - fixed_cost_yen
     return {
         "visitors": float(visitors),
         "conversions": conversions,
@@ -59,24 +57,15 @@ def simulate_unit_economics(
 
 
 def choose_revenue_route(candidate: OpportunityCandidate) -> RevenueRoute:
-    short_lived = (
-        candidate.demand_life_days is not None and candidate.demand_life_days <= 60
-    )
+    short_lived = candidate.demand_life_days is not None and candidate.demand_life_days <= 60
+
     scores = {
         RevenueRoute.ADVERTISING: candidate.attention * 2 + (3 if short_lived else 0),
         RevenueRoute.AFFILIATE: candidate.purchase_intent * 2 + candidate.distribution,
-        RevenueRoute.ONE_TIME: candidate.buyer_clarity
-        + candidate.purchase_intent
-        + candidate.why_now,
-        RevenueRoute.SUBSCRIPTION: candidate.reusable_asset * 2
-        + candidate.buyer_clarity
-        + (0 if short_lived else 3),
-        RevenueRoute.TRANSACTION_FEE: candidate.purchase_intent
-        + candidate.action_completion * 2
-        + candidate.buyer_clarity,
-        RevenueRoute.INTERNAL_ASSET: candidate.proprietary_edge * 2
-        + candidate.reusable_asset * 2
-        + candidate.why_not_before,
+        RevenueRoute.ONE_TIME: candidate.buyer_clarity + candidate.purchase_intent + candidate.why_now,
+        RevenueRoute.SUBSCRIPTION: candidate.reusable_asset * 2 + candidate.buyer_clarity + (0 if short_lived else 3),
+        RevenueRoute.TRANSACTION_FEE: candidate.purchase_intent + candidate.action_completion * 2 + candidate.buyer_clarity,
+        RevenueRoute.INTERNAL_ASSET: candidate.proprietary_edge * 2 + candidate.reusable_asset * 2 + candidate.why_not_before,
     }
     return max(scores, key=lambda route: (scores[route], route.value))
 
@@ -95,11 +84,7 @@ def evaluate(candidate: OpportunityCandidate) -> Evaluation:
         hard_failures.append("UNVERIFIED_PERSONAL_CLAIMS_REQUIRED")
     if candidate.legal_risk >= 4:
         hard_failures.append("LEGAL_RISK_TOO_HIGH")
-    if (
-        candidate.ai_substitutability >= 4
-        and candidate.proprietary_edge < 3
-        and candidate.action_completion < 3
-    ):
+    if candidate.ai_substitutability >= 4 and candidate.proprietary_edge < 3 and candidate.action_completion < 3:
         hard_failures.append("AI_SUBSTITUTABLE_WITHOUT_EDGE")
     if candidate.buyer_clarity <= 1 and candidate.purchase_intent <= 1:
         hard_failures.append("NO_CLEAR_PAYER_OR_PURCHASE_INTENT")
@@ -133,6 +118,7 @@ def evaluate(candidate: OpportunityCandidate) -> Evaluation:
             _weighted(candidate.distribution, 10),
         )
     )
+
     if candidate.expected_profit_low_yen > candidate.initial_cost_yen:
         positive += 10
         reasons.append("LOW_CASE_PAYS_BACK_INITIAL_COST")
@@ -163,15 +149,9 @@ def evaluate(candidate: OpportunityCandidate) -> Evaluation:
 
     score = max(0, min(100, round(positive - penalties)))
 
-    if (
-        candidate.expected_profit_low_yen > candidate.initial_cost_yen
-        and score >= 72
-    ):
+    if candidate.expected_profit_low_yen > candidate.initial_cost_yen and score >= 72:
         decision = Decision.BUILD_CANDIDATE
-    elif (
-        candidate.expected_profit_base_yen > candidate.initial_cost_yen
-        and score >= 55
-    ):
+    elif candidate.expected_profit_base_yen > candidate.initial_cost_yen and score >= 55:
         decision = Decision.MICRO_TEST
     else:
         decision = Decision.WATCH
