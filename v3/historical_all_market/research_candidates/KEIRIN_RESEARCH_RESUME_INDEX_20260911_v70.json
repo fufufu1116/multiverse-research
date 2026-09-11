@@ -1,0 +1,107 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v70",
+  "parent_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v69.json",
+  "status": "PROSPECTIVE_V54_INTERNAL_COMPETITION_GATE_HARDENED_WAITING_ONLY_FOR_TRUSTWORTHY_FINAL_RACECARD_AND_PRE_CLOSE_ODDS",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "fresh_head_before_v70_write": "69e83266a9cac8381695c3739e9cb061de2f71c3",
+  "absolute_rule": "対象時点より先の情報を、対象時点の予測成立条件にしてはいけない。",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_credentials_live_effect": "NONE",
+  "formal_science_percent": 85,
+  "formal_science_increment_this_resume": 0,
+  "scientific_trial_count_increment": 0,
+  "frozen_v54": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.5,
+    "competition_score_threshold": 0.4,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2",
+    "kelly_multiplier": 0.10,
+    "ticket_fraction_cap": 0.0025,
+    "race_fraction_cap": 0.02,
+    "stake_unit_yen": 100
+  },
+  "prospective_gate_lineage": {
+    "race_gate_score_producer": {
+      "path": "tools/keirin_prospective_competition_gate_score_v1.py",
+      "git_blob": "8ffbab9d02562a3f8b617047c614a2008378932b",
+      "semantic_name": "conservative_top1_probability_with_same_top1_agreement",
+      "source_of_truth": "PRE_ONLY_INTERNAL_RECOMPUTATION",
+      "external_caller_score_allowed": false
+    },
+    "decision_runner_v2": {
+      "path": "tools/keirin_prospective_v54_decision_freeze_runner_v2.py",
+      "git_blob": "78e5b5a5cfef24d58ac2abfbd38028eb73834ee5",
+      "pre_payload_sha_binding_required": true,
+      "target_identity_binding_required": true,
+      "pinned_score_producer_required": true,
+      "pinned_v1_runner_required": true,
+      "external_competition_score_forbidden": true
+    },
+    "rider_score_name_collision": {
+      "resolved": true,
+      "rider_level_japanese_competition_score_typical_scale": "approximately 50-111",
+      "race_level_selector_gate_scale": "0-1",
+      "policy": "NEVER_USE_RIDER_LEVEL_SCORE_DIRECTLY_AS_RACE_GATE"
+    }
+  },
+  "new_hardening_test": {
+    "path": "tools/test_keirin_prospective_competition_gate_and_v54_v2.py",
+    "git_blob": "58c913d7bf3ce9d891ed34220c513faeb96c7233",
+    "commit_introduced": "69e83266a9cac8381695c3739e9cb061de2f71c3",
+    "cases_declared": 10,
+    "coverage": [
+      "valid PRE-only gate score bounded and frozen model pinned",
+      "rider score alias mismatch fails closed",
+      "outcome field fails closed",
+      "unsupported circumference fails closed",
+      "duplicate car fails closed",
+      "unknown rider/style support falls back to frozen S0 rather than inventing a delta",
+      "caller-supplied race competition score forbidden in v2",
+      "missing PRE receipt fails closed",
+      "PRE payload SHA mismatch fails closed before decision",
+      "target identity mismatch fails closed"
+    ],
+    "github_readback": "PASS",
+    "execution_status": "NOT_RUN_IN_CONNECTOR_ENVIRONMENT",
+    "execution_note": "GitHub connector supports content read/write but not arbitrary repository process execution; do not claim runtime PASS from readback alone."
+  },
+  "current_pre_discovery_20260911_approx_1241_jst": {
+    "matsuyama_20260912": {
+      "event_confirmed": true,
+      "day1_race_entries_visible": 7,
+      "event_roster_visible": true,
+      "final_per_race_car_plus_rider_body_safely_captured": false,
+      "pre_close_odds_safely_captured": false,
+      "freeze_eligible": false,
+      "reason": "race entry links/event roster do not yet constitute a trustworthy saved final per-race car+rider body"
+    },
+    "sasebo_20260912": {
+      "event_confirmed": true,
+      "day1_race_entries_visible": 12,
+      "final_per_race_car_plus_rider_body_safely_captured": false,
+      "pre_close_odds_safely_captured": false,
+      "freeze_eligible": false,
+      "secondary_page_explicit_state": "出走の組み合わせはまだ決まっていません"
+    },
+    "target_result_pages_opened": false,
+    "target_payout_pages_opened": false
+  },
+  "owner_assist_policy": {
+    "owner_action_needed_now": false,
+    "request_owner_help_only_if": "final PRE-only racecard or odds are visibly available on Owner device but cannot be safely captured by connected tooling before cutoff",
+    "acceptable_owner_input": "PRE-only page/PDF/screenshot saved before cutoff; do not include result or payout content"
+  },
+  "next_action": [
+    "Fresh Read branch before every subsequent write.",
+    "Continue PRE-only discovery, prioritizing Matsuyama because its Day1 cutoffs are earlier than Sasebo night racing.",
+    "Do not infer race membership from event-level rosters or race-link existence.",
+    "At the first trustworthy final racecard body, preserve raw PRE bytes, timestamp, provenance, and SHA256 before cutoff.",
+    "Capture genuine pre-close odds with the same identity/hash/provenance discipline before cutoff; no post-cutoff backfill.",
+    "Run PRE freeze and hardened v54 decision freeze only after all required PRE evidence is bound.",
+    "Keep formal science at 85% until genuine prospective evidence and later authorized outcome evaluation exist."
+  ]
+}
