@@ -1,0 +1,26 @@
+{
+  "schema": "MULTIVERSE_KEIRIN_MINIMUM_INPUT_EXECUTION_QUEUE_v1",
+  "status": "READY",
+  "objective": "Continue the fastest prediction-research path without waiting for odds or other non-essential fields.",
+  "execution_priority": [
+    "Run or reproduce the frozen PRE-only prediction path on historical/prospective racecards using the minimum model-required fields first.",
+    "Generate candidate tickets independently of live odds.",
+    "For every candidate ticket calculate and persist the minimum acceptable odds threshold implied by the frozen decision/economic policy.",
+    "Run controlled input ablation to determine which optional PRE-only fields materially improve predictive accuracy.",
+    "Remove non-material fields from the simulation blocker set.",
+    "Collect genuine pre-close odds opportunistically for execution-price and formal ROI validation, but never pause prediction research waiting for them."
+  ],
+  "non_blockers": [
+    "live odds when not mathematically required by the frozen prediction model",
+    "optional PRE metadata not proven to improve prediction materially"
+  ],
+  "hard_blockers": [
+    "unresolved race identity",
+    "unresolved participant identity required by the frozen model",
+    "missing field explicitly required by the exact frozen model",
+    "data contamination or post-result leakage"
+  ],
+  "formal_science_percent": 85,
+  "formal_science_increment": 0,
+  "reason_no_increment": "This queue and policy persistence improve execution/research throughput but do not add genuine prospective scientific evidence by themselves."
+}
