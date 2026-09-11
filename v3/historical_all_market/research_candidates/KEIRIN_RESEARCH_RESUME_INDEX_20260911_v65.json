@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v65",
+  "status": "B1A_FROZEN_LINEAGE_RECOVERED_PROSPECTIVE_RACECARD_NOT_YET_FREEZE_READY",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v64.json",
+  "fresh_parent_head_before_v65": "b92bf16932e435a5189c78beabe4d6c587ebe95a",
+  "b1a_lineage_recovery": {
+    "source_role": "NON_CANONICAL_DRIVE_RECOVERY_EVIDENCE_RECONCILED_AGAINST_EXISTING_PREDICTION_LOCK_HASHES",
+    "freeze_name": "MULTIVERSE_B1A_RECONSTITUTED_v1_FREEZE",
+    "implementation_sha256": "10e2ae81380c98df52845646cdc7a288f022ffac3a226004651e8abb80ade28b",
+    "model_sha256": "f5c0f1226a7552cb1f807e559f9409773b532934502f6a2ae5bb9b302a730481",
+    "spec_sha256": "a5c896f6d56a55c0f10859b356b91a9b8756bdc90305da8c94b2a3a66c1490b3",
+    "prediction_lock_expected_prediction_csv_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51",
+    "prediction_lock_status": "PASS_FROZEN_BEFORE_RESULT_OPEN",
+    "prediction_lock_result_accessed": false,
+    "prediction_lock_payout_accessed": false,
+    "legacy_b1a_used": false,
+    "stage1_probability_engine_path": "v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py",
+    "stage1_probability_engine_git_blob": "029904b359e8151263c6a9bf8c4635f026941b0b",
+    "frozen_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "recovery_conclusion": "The previously untraced B1A_RECONSTITUTED_v1 winner-probability lineage is now bound to frozen implementation/model/spec hashes and the historical prediction-lock SHA. This is lineage recovery, not permission to refit or substitute a model.",
+    "retune_allowed": false,
+    "substitute_model_allowed": false
+  },
+  "prospective_readiness": {
+    "event_date_priority": ["2026-09-11", "2026-09-12", "EARLIEST_LATER_ELIGIBLE_DAY1"],
+    "2026-09-12_matsuyama": "EVENT_CONFIRMED_BUT_FINAL_INDIVIDUAL_RACECARD_NOT_YET_TEXT_FREEZE_READY",
+    "2026-09-12_sasebo": "EVENT_CONFIRMED_BUT_FINAL_INDIVIDUAL_RACECARD_NOT_YET_TEXT_FREEZE_READY",
+    "rule": "Do not fabricate or infer car/race membership. Wait only for the first trustworthy PRE body that itself binds target date, venue, race number, car number and rider identity; then capture before cutoff without outcome access."
+  },
+  "absolute_rule_ja": "対象時点より先の情報を、対象時点の予測・選択・実行成立条件にしてはいけない。",
+  "current_state": {
+    "formal_science_progress_percent": 85,
+    "scientific_increment_now": 0,
+    "owner_action_block": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  },
+  "next_action": "Build only a fail-closed prospective invocation path around the exact recovered B1A frozen lineage; do not refit. Continue PRE-only discovery for the earliest eligible Day1 and freeze immediately when final race membership becomes trustworthy and capturable."
+}
