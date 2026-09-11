@@ -10,21 +10,43 @@ _FORBIDDEN_PREFIXES = (
     "automation/multimodel_research_v1/",
 )
 
-_FORBIDDEN_TOKENS = (
+_COMMON_FORBIDDEN_TOKENS = (
     "multiverse_bridge",
     "multiverse_result_bridge",
-    "provider",
+    "provider_escalation",
     "credential",
     "runtime",
     "publisher",
     "t2",
-    "customer_contribution",
-    "customer_value_loop",
-    "hundred_user",
     "advisor_",
     "review_",
-    "forecast_revision",
+    "owner_gate",
+    "mission_continuation",
 )
+
+_PROFILE_FORBIDDEN = {
+    "A_CORE_DOMAIN": (
+        "customer_contribution",
+        "customer_value_loop",
+        "hundred_user",
+        "forecast_revision",
+        "forecast_ledger",
+        "trend_forecast",
+        "trend_retrospective",
+    ),
+    "B_FORECAST_INTEGRITY": (
+        "customer_contribution",
+        "customer_value_loop",
+        "hundred_user",
+        "growth_loop",
+    ),
+    "C_CUSTOMER_VALUE_HUNDRED_USER": (
+        "forecast_revision",
+        "forecast_ledger",
+        "trend_forecast",
+        "trend_retrospective",
+    ),
+}
 
 
 @dataclass(frozen=True)
@@ -33,14 +55,20 @@ class SliceValidation:
     findings: tuple[str, ...]
 
 
-def validate_adoption_slice_paths(paths: Iterable[str]) -> SliceValidation:
+def validate_adoption_slice_paths(paths: Iterable[str], *, profile: str = "A_CORE_DOMAIN") -> SliceValidation:
     """Fail closed if an adoption slice leaks control/live/high-coupling paths.
 
-    This is a repository-only research validator. It grants no review, adoption,
-    merge, provider, spend, publication, customer, or Runtime authority.
+    Profiles let Slice A/B/C reuse one validator rather than fork validation logic.
+    This grants no review, adoption, merge, provider, spend, publication,
+    customer, or Runtime authority.
     """
     findings: list[str] = []
     normalized: list[str] = []
+
+    if profile not in _PROFILE_FORBIDDEN:
+        return SliceValidation(False, (f"UNKNOWN_PROFILE:{profile}",))
+
+    forbidden_tokens = _COMMON_FORBIDDEN_TOKENS + _PROFILE_FORBIDDEN[profile]
 
     for raw in paths:
         if not isinstance(raw, str) or not raw.strip():
@@ -59,7 +87,7 @@ def validate_adoption_slice_paths(paths: Iterable[str]) -> SliceValidation:
             findings.append(f"CANONICAL_CONTROL_PLANE_FORBIDDEN:{rendered}")
 
         lower = rendered.lower()
-        for token in _FORBIDDEN_TOKENS:
+        for token in forbidden_tokens:
             if token in lower:
                 findings.append(f"HIGH_COUPLING_PATH_FORBIDDEN:{rendered}:{token}")
                 break
@@ -70,7 +98,7 @@ def validate_adoption_slice_paths(paths: Iterable[str]) -> SliceValidation:
     return SliceValidation(valid=not findings, findings=tuple(findings))
 
 
-def slice_a_authority_ceiling() -> dict[str, bool]:
+def slice_authority_ceiling() -> dict[str, bool]:
     return {
         "formal_review_authorized": False,
         "canonical_adoption_authorized": False,
@@ -80,5 +108,10 @@ def slice_a_authority_ceiling() -> dict[str, bool]:
         "spend_authorized": False,
         "publication_authorized": False,
         "customer_recruitment_authorized": False,
+        "payment_collection_authorized": False,
         "runtime_activation_authorized": False,
     }
+
+
+def slice_a_authority_ceiling() -> dict[str, bool]:
+    return slice_authority_ceiling()
