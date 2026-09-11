@@ -1,0 +1,24 @@
+MULTIVERSE LIVE — KEIRIN HANDOFF LOCK
+Effective: 2026-09-11 JST
+
+OWNER EXPLICIT POLICY — MUST SURVIVE ALL FUTURE HANDOFFS
+
+1. Prediction simulation MUST NOT wait for odds unless the exact frozen model mathematically requires odds.
+2. Odds are NOT a required input for ordinary prediction generation or candidate-ticket generation.
+3. When odds are unavailable, continue simulation and output the minimum acceptable purchase odds threshold for each candidate ticket.
+4. Live odds are used at actual operation time for buy/skip price checks, and in formal scientific work when testing realized profitability/ROI with genuine pre-close observations.
+5. Missing non-essential information must not block simulation. Use controlled ablation: if removing a PRE-only field does not materially degrade predictive performance, keep that field optional.
+6. Only information truly necessary to identify the race/participants, satisfy the exact frozen model, or preserve trustworthy PRE-only prediction may be hard-required.
+7. Never compensate for missing PRE information with result/payout/future information, post-result reconstruction, post-cutoff backfill, event-roster race assignment inference, or fuzzy rider identity joins.
+8. Runtime OFF. Automatic betting OFF. Owner spend NONE unless separately authorized.
+
+CANONICAL POLICY FILE:
+v3/historical_all_market/research_candidates/KEIRIN_MINIMUM_INPUT_POLICY_20260911_v1.json
+
+ACTIVE RESUME:
+v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v71.json
+
+ABLATION PLAN:
+v3/historical_all_market/research_candidates/KEIRIN_MINIMUM_INPUT_ABLATION_PLAN_20260911_v1.json
+
+Future KEIRIN chats must Fresh Read the research branch and preserve this rule explicitly. Do not regress to 'wait for odds before simulation'.
