@@ -5,13 +5,15 @@ from enum import Enum
 from typing import Tuple
 
 from .forecast_ledger import ForecastCard, forecast_commitment, verify_forecast_commitment
-from .shock_adaptation import ShockVerdict
 
 
 class RevisionDecision(str, Enum):
     KEEP_CURRENT = "KEEP_CURRENT"
     FRESH_RESEARCH_REQUIRED = "FRESH_RESEARCH_REQUIRED"
     REJECT_ADAPTATION = "REJECT_ADAPTATION"
+
+
+_ALLOWED_SHOCK_VERDICTS = {"REJECT", "HOLD", "ADAPT", "CONSTRAINT_INVERSION"}
 
 
 @dataclass(frozen=True)
@@ -46,15 +48,13 @@ def assess_forecast_revision_need(
     """
     if not verify_forecast_commitment(current_card, current_commitment):
         raise ValueError("current forecast commitment mismatch")
-    try:
-        verdict = ShockVerdict(shock_verdict)
-    except ValueError as exc:
-        raise ValueError("unexpected shock_verdict") from exc
+    if shock_verdict not in _ALLOWED_SHOCK_VERDICTS:
+        raise ValueError("unexpected shock_verdict")
 
-    if verdict == ShockVerdict.REJECT:
+    if shock_verdict == "REJECT":
         decision = RevisionDecision.REJECT_ADAPTATION
         reasons = ("SHOCK_ADAPTATION_REJECTED",)
-    elif change.materiality >= 3 or verdict in {ShockVerdict.ADAPT, ShockVerdict.CONSTRAINT_INVERSION}:
+    elif change.materiality >= 3 or shock_verdict in {"ADAPT", "CONSTRAINT_INVERSION"}:
         decision = RevisionDecision.FRESH_RESEARCH_REQUIRED
         reasons = ("MATERIAL_EXTERNAL_CHANGE", "PRESERVE_FROZEN_FORECAST")
     else:
@@ -68,7 +68,7 @@ def assess_forecast_revision_need(
         "change_id": change.change_id,
         "change_type": change.change_type,
         "evidence_refs": list(change.evidence_refs),
-        "shock_verdict": verdict.value,
+        "shock_verdict": shock_verdict,
         "fresh_research_required": decision == RevisionDecision.FRESH_RESEARCH_REQUIRED,
         "new_forecast_must_use_new_id": True,
         "old_forecast_mutation_authorized": False,
