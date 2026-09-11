@@ -12,7 +12,7 @@ class GrowthLoopTests(unittest.TestCase):
     def channels(self):
         return (
             GrowthChannel("owned_app", True, 1),
-            GrowthChannel("social_video", False, 4),
+            GrowthChannel("social_video", False, 3),
         )
 
     def edge(self, source, destination, **overrides):
@@ -68,6 +68,20 @@ class GrowthLoopTests(unittest.TestCase):
         )
         self.assertEqual(result.decision, LoopDecision.FRAGILE_LOOP)
         self.assertIn("NO_OWNED_CAPTURE_POINT", result.reasons)
+
+    def test_high_platform_dependency_is_fragile_even_with_owned_capture(self):
+        channels = (
+            GrowthChannel("owned_app", True, 1),
+            GrowthChannel("social_video", False, 4),
+        )
+        result = assess_growth_loop(
+            channels=channels,
+            edges=(
+                self.edge("owned_app", "social_video"),
+                self.edge("social_video", "owned_app"),
+            ),
+        )
+        self.assertEqual(result.decision, LoopDecision.FRAGILE_LOOP)
 
     def test_high_policy_risk_edge_is_rejected(self):
         result = assess_growth_loop(
