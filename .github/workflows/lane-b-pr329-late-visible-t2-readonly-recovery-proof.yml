@@ -1,0 +1,205 @@
+name: lane-b-pr329-late-visible-t2-readonly-recovery-proof
+
+on:
+  push:
+    branches:
+      - agent/lane-b-pr329-late-visible-t2-readonly-recovery-proof-20260911-v1
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify proof carrier and immutable bindings
+        shell: bash
+        run: |
+          set -euo pipefail
+          CANDIDATE=d71461da53d2498e42edcd92e987a26a59a95cd9
+          TREE=a2bf5a25abeffed80deacfa5299e97ddee559840
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          test "$(git rev-parse HEAD^)" = "$CANDIDATE"
+          test "$(git show -s --format=%T "$CANDIDATE")" = "$TREE"
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$MAIN"
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = 2d4ec751dee4e507a08313d403c7d0521c172ae5
+          test "$(git rev-parse "$CANDIDATE:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = 2d4ec751dee4e507a08313d403c7d0521c172ae5
+          test "$(git rev-parse "$MAIN:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          test "$(git rev-parse "$CANDIDATE:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          echo PROOF_CARRIER_PARENT_EXACT=PASS
+          echo FIXED_STEPS_UNCHANGED=PASS
+      - name: Execute exact durable late-visible T2 recovery without publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          CANDIDATE=d71461da53d2498e42edcd92e987a26a59a95cd9
+          rm -rf /tmp/pr329
+          git worktree add --detach /tmp/pr329 "$CANDIDATE"
+          cd /tmp/pr329
+          PYTHONPATH=. python3 - <<'PY'
+          import json, re
+          from automation.review_dispatcher_v1 import t2
+
+          REPO='fufufu1116/multiverse-research'
+          PR=329
+          HEAD='d71461da53d2498e42edcd92e987a26a59a95cd9'
+          TREE='a2bf5a25abeffed80deacfa5299e97ddee559840'
+          MAIN='d1edc2eabb847c10a4faa59a039b480e85dfb0e4'
+          REQUEST_COMMENT=5630433273
+          REQUEST_SHA='22e9212bdfabe5fcc65c0b1a0ce6b229435064279a7746a63f0202339fd3c095'
+          V1_SHA='32dcf456faf972b08b29d0bfdba2541f854c08478b039cc6db25995e9f6380d6'
+          LAB=5630052134
+          LAB_SHA='aa299037d7b90aaa28d8b2785ce22d60a4f930b3405b31ec83a31efcb885061b'
+          T1=5630112888
+          AUDITOR=5630600716
+          T2=5630602662
+          GATE_TOKEN=5630568614
+          AUTH_RECEIPT=5630579732
+          CONTROL_DIRECTIVE=5630629051
+          REQUEST_ID='pr329-t2-github-read-resilience-auditor-v2-main-d1edc2ea'
+
+          def get_comment(cid):
+              return t2._legacy.required_object(
+                  t2._legacy.public_github(f'https://api.github.com/repos/{REPO}/issues/comments/{cid}'),
+                  f'COMMENT_{cid}'
+              )
+
+          req_comment=get_comment(REQUEST_COMMENT)
+          assert t2._legacy.issue_comment_owner_trusted(req_comment, REPO)
+          body=req_comment.get('body') or ''
+          blocks=re.findall(r'```json\s*(\{.*?\})\s*```', body, re.S)
+          request=None
+          for raw in blocks:
+              obj=json.loads(raw)
+              if obj.get('schema')=='MULTIVERSE_REVIEW_REQUEST_v1' and obj.get('lane')=='AUDITOR':
+                  request=obj
+                  break
+          assert request is not None
+          assert t2._legacy.sha256_json(request)==REQUEST_SHA
+          assert request['request_id']==REQUEST_ID
+          assert request['supersedes_request_sha256']==V1_SHA
+          assert request['head']==HEAD and request['tree']==TREE
+          assert request['base']==MAIN and request['main']==MAIN
+          assert request['upstream']=={'lab_pass_comment':LAB,'lab_request_sha256':LAB_SHA,'t1_comment':T1}
+
+          job={
+              'repo':REPO,'pr':PR,'head':HEAD,'tree':TREE,'base':MAIN,'main':MAIN,
+              'dispatcher_ref':MAIN,'request_id':REQUEST_ID,'request_comment':REQUEST_COMMENT,
+              'request_sha256':REQUEST_SHA,'request':request,
+          }
+
+          auditor_comment=get_comment(AUDITOR)
+          assert (auditor_comment.get('user') or {}).get('login')==t2._legacy.AUDITOR_LOGIN
+          assert t2._legacy.lane_result_outer_app_trusted(auditor_comment,'AUDITOR')
+          artifact=t2._legacy.json_block(auditor_comment.get('body') or '')
+          assert artifact['verdict']=='PASS'
+          assert artifact['request_id']==REQUEST_ID and artifact['request_sha256']==REQUEST_SHA
+          assert artifact['reviewed_head']==HEAD and artifact['reviewed_tree']==TREE
+          assert artifact['reviewed_base']==MAIN and artifact['reviewed_main']==MAIN
+          assert artifact['upstream']=={'lab_pass_comment':LAB,'lab_request_sha256':LAB_SHA,'t1_comment':T1}
+          assert artifact['producer']['github_app_id']==t2._legacy.AUDITOR_APP_ID
+          assert artifact['producer']['github_login']==t2._legacy.AUDITOR_LOGIN
+
+          receipt={
+              'published_comment_id':AUDITOR,
+              'published_by':t2._legacy.AUDITOR_LOGIN,
+              'github_app_id':t2._legacy.AUDITOR_APP_ID,
+              'request_sha256':REQUEST_SHA,
+          }
+
+          comments=t2._all_comments(job)
+          latest_id, latest_req, _ = t2._legacy.latest_exact_current_owner_request(
+              comments, repo=REPO, pr=PR, lane='AUDITOR', head=HEAD, tree=TREE, base=MAIN, main=MAIN
+          )
+          assert latest_id==REQUEST_COMMENT
+          assert t2._legacy.sha256_json(latest_req)==REQUEST_SHA
+
+          result_prefix=f'<!-- MULTIVERSE_FIXED_REVIEW_RESULT_V1:{REQUEST_ID}:{HEAD}:{REQUEST_COMMENT}:{REQUEST_SHA}:'
+          result_hits=[c for c in comments if result_prefix in (c.get('body') or '') and t2._legacy.lane_result_comment_trusted(c,'AUDITOR')]
+          assert [t2._legacy.github_comment_id(c,'RESULT_ID') for c in result_hits]==[AUDITOR]
+
+          auditor_id, marker=t2._t2_marker_for_job(job, receipt)
+          assert auditor_id==AUDITOR
+          t2_prefix=f'<!-- MULTIVERSE_FIXED_T2_V1:{REQUEST_ID}:{HEAD}:{AUDITOR}:{REQUEST_SHA}:'
+          t2_hits=[c for c in comments if t2_prefix in (c.get('body') or '') and t2._legacy.lane_result_comment_trusted(c,'AUDITOR')]
+          assert [t2._legacy.github_comment_id(c,'T2_ID') for c in t2_hits]==[T2]
+          assert t2.canonical_trusted_comment_id(comments,lane='AUDITOR',marker=marker)==T2
+
+          recovered=t2._recover_existing_t2(job,receipt,comments,marker)
+          assert recovered is not None
+          assert recovered['schema']=='MULTIVERSE_FIXED_T2_PUBLISH_RECEIPT_v1'
+          assert recovered['t2_comment_id']==T2
+          assert recovered['auditor_comment_id']==AUDITOR
+          assert recovered['request_id']==REQUEST_ID and recovered['request_sha256']==REQUEST_SHA
+          assert recovered['reviewed_head']==HEAD and recovered['reviewed_tree']==TREE and recovered['reviewed_main']==MAIN
+          assert recovered['verdict']=='PASS' and recovered['recovered'] is True
+
+          fresh_comments=t2._fresh_t2_verify(job,artifact,receipt)
+          assert t2.canonical_trusted_comment_id(fresh_comments,lane='AUDITOR',marker=marker)==T2
+
+          called={'post':0}
+          def forbidden_publish(*args,**kwargs):
+              called['post']+=1
+              raise AssertionError('MUTATION_PATH_MUST_NOT_RUN')
+          original=t2._original_publish_t2
+          t2._original_publish_t2=forbidden_publish
+          try:
+              again=t2.publish_t2(job,artifact,receipt)
+          finally:
+              t2._original_publish_t2=original
+          assert called['post']==0
+          assert again['t2_comment_id']==T2 and again['recovered'] is True
+
+          gate=get_comment(GATE_TOKEN)
+          authority=get_comment(AUTH_RECEIPT)
+          assert t2._legacy.issue_comment_owner_trusted(gate,REPO)
+          assert t2._legacy.issue_comment_owner_trusted(authority,REPO)
+          assert (gate.get('body') or '').strip()=='AUTHORIZE_PR329_T2_GITHUB_GET_RATE_LIMIT_RESILIENCE_AUDITOR_V2_ONE_SHOT_NEW_BUILD_ONLY'
+          abody=authority.get('body') or ''
+          for token in (str(GATE_TOKEN),HEAD,TREE,MAIN,str(LAB),str(T1),str(REQUEST_COMMENT),REQUEST_SHA,'one NEW Build','No Retry/rerun/reuse'):
+              assert token in abody, token
+
+          directive=get_comment(CONTROL_DIRECTIVE)
+          assert t2._legacy.issue_comment_owner_trusted(directive,REPO)
+          dbody=directive.get('body') or ''
+          assert 'T2_POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED' in dbody
+          assert str(AUDITOR) in dbody and str(T2) in dbody
+
+          t2_comment=get_comment(T2)
+          t2_artifact=t2._legacy.json_block(t2_comment.get('body') or '')
+          assert t2_artifact['schema_version']=='MULTIVERSE_FIXED_T2_RESULT_v1'
+          assert t2_artifact['gate']=='T2' and t2_artifact['verdict']=='PASS'
+          assert t2_artifact['request_id']==REQUEST_ID and t2_artifact['request_sha256']==REQUEST_SHA
+          assert t2_artifact['auditor_pass_comment']==AUDITOR
+          assert t2_artifact['auditor_app_id']==t2._legacy.AUDITOR_APP_ID
+          assert t2_artifact['auditor_producer']==t2._legacy.AUDITOR_LOGIN
+          assert t2_artifact['reviewed_head']==HEAD and t2_artifact['reviewed_tree']==TREE
+          assert t2_artifact['reviewed_base']==MAIN and t2_artifact['reviewed_main']==MAIN
+          assert t2_artifact['lab_pass_comment']==LAB and t2_artifact['t1_comment']==T1
+
+          print('TECHNICAL_PUBLICATION_SUCCESS=PASS')
+          print('LOCAL_POST_WRITE_VISIBILITY_FAILURE_SEPARABLE=PASS')
+          print('AUDITOR_V2_UNIQUENESS=PASS')
+          print('T2_V2_UNIQUENESS=PASS')
+          print('REQUEST_SUPERSESSION=PASS')
+          print('PUBLISHER_RECEIPT_BINDING=PASS')
+          print('AUDITOR_APP_IDENTITY=PASS')
+          print('OWNER_GATE_BINDING=PASS')
+          print('FRESH_T2_VERIFY=PASS')
+          print('RECOVER_T2_RECEIPT=PASS')
+          print('RECOVERED_T2_COMMENT_ID=5630602662')
+          print('RECOVERED=true')
+          print('MUTATION_PATH_CALLED=0')
+          print('NEW_AUDITOR_PUBLICATION=false')
+          print('NEW_T2_PUBLICATION=false')
+          print('BUILD_RETRY_RERUN_REUSE=false')
+          print('PR329_MUTATION=false')
+          print('RUNTIME=OFF')
+          print('TERMINAL=AUTHORITATIVE_T2_DURABLE_PASS_RECOVERABLE_WITHOUT_NEW_BUILD')
+          PY
