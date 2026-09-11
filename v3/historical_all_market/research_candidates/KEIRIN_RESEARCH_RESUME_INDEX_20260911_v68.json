@@ -1,0 +1,113 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v68",
+  "status": "PROSPECTIVE_V54_DECISION_FREEZE_PATH_IMPLEMENTED_WAITING_FOR_GENUINE_PRE_RACECARD_ODDS_AND_PROVENANCE_BOUND_COMPETITION_SCORE",
+  "parent_resume": "v3/historical_all_market/research_candidates/KEIRIN_RESEARCH_RESUME_INDEX_20260911_v67.json",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_spend_or_live_effect": false,
+  "formal_science_percent": 85,
+  "formal_science_increment_this_resume": 0,
+  "scientific_trial_count": 0,
+  "absolute_rule": "対象時点より先の情報を、対象時点の予測成立条件にしてはいけない。",
+  "frozen_v54": {
+    "b1a_mkt50_transform_git_blob": "6fb09aaba113cd1b4a8d9f4b0b68e5beaff18fff",
+    "final_selector_git_blob": "34c4ae08bfd21240bdfec63de9427e1b5d277d6f",
+    "validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pool_weight": 0.5,
+    "competition_score_threshold": 0.4,
+    "ticket_template": "SINGLE",
+    "stake_policy": "FK10_R2",
+    "retune_allowed": false
+  },
+  "prospective_components": {
+    "b1a_winner_predictor": {
+      "path": "tools/keirin_b1a_prospective_winner_predictor_v1.py",
+      "git_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3"
+    },
+    "pre_freeze_runner": {
+      "path": "tools/keirin_prospective_pre_freeze_runner_v1.py",
+      "git_blob": "9068c7ef49b6b81de8abdcc13e1b2c03864007d3"
+    },
+    "cutoff_guard_v3": {
+      "path": "tools/keirin_prospective_cutoff_guard_v3.py",
+      "git_blob": "4e4ed1f9a3a574fbd610272a6613c536586f7f3a"
+    },
+    "stage1_pl_ticket_probability_engine": {
+      "path": "v3/historical_all_market/stage1_pl_ticket_probability_engine_v1.py",
+      "git_blob": "029904b359e8151263c6a9bf8c4635f026941b0b"
+    },
+    "v54_decision_freeze_runner": {
+      "path": "tools/keirin_prospective_v54_decision_freeze_runner_v1.py",
+      "git_blob": "417fa8947ab9b15dde305adc15085d558659d134",
+      "commit_introduced": "5bc5d60cfd3e30a3b1fa91fa30ae62608e0f539c",
+      "purpose": "PRE-only one-shot B1A ticket probability -> exact frozen MKT50 -> exact frozen SINGLE selector -> FK10_R2 selected-ticket/no-bet immutable ledger"
+    }
+  },
+  "exact_selector_semantics_recovered": {
+    "competition_score_minimum": 0.4,
+    "supported_markets": ["3rentan", "2shatan"],
+    "eligibility": ["q*odds-1 >= 0", "q/market_shape >= 1"],
+    "ranking": ["raw_ev descending", "shape_edge_ratio descending", "q descending", "market ascending", "ticket ascending"],
+    "single_ticket": true,
+    "kelly_multiplier": 0.1,
+    "ticket_cap_fraction": 0.0025,
+    "race_cap_fraction": 0.02,
+    "stake_unit_yen": 100
+  },
+  "competition_score_handling": {
+    "exact_canonical_producer_recovered": false,
+    "runner_recomputes_or_invents_score": false,
+    "required_input": "externally precomputed score with captured_at, frozen_before_target_cutoff=true, provenance, method_binding, optional matching target_identity",
+    "missing_or_unbound_policy": "FAIL_CLOSED",
+    "reason": "do not silently create a new competition_score formula or weaken frozen selector semantics"
+  },
+  "validator_phase_separation": {
+    "pre_outcome": "structural/provenance/hash/identity/ticket-universe/market consistency fail-closed validation only",
+    "post_outcome_validator_git_blob": "bbdcef51ce1d216fbda9e1bdf042ed9ef397876f",
+    "pre_outcome_validator_status": "NOT_RUN_PRE_OUTCOME_BY_DESIGN",
+    "reason": "the frozen validator requires later result/payout evidence; executing it before outcome would violate prospective isolation"
+  },
+  "market_capture_requirements": {
+    "capture_at_or_before_cutoff": true,
+    "receipt_at_or_before_capture_and_cutoff": true,
+    "trusted_classes": ["OFFICIAL", "PRIMARY"],
+    "saved_utf8_snapshot_required": true,
+    "snapshot_sha256_required": true,
+    "body_target_identity_match_required": ["event_date", "venue", "race_number"],
+    "complete_ticket_universe_required_for_each_included_market": true,
+    "decimal_odds_must_be_finite_and_gt_1": true,
+    "result_or_settlement_fields_forbidden": true,
+    "invented_staleness_threshold": false
+  },
+  "local_synthetic_verification": {
+    "scope": "local intended runner source; not canonical CI/repository execution",
+    "py_compile": "PASS",
+    "tests_passed": 8,
+    "tests_total": 8,
+    "tests": {
+      "valid_path": "PASS",
+      "missing_odds": "FAIL_CLOSED_AS_EXPECTED",
+      "outcome_result_field": "FAIL_CLOSED_AS_EXPECTED",
+      "race_identity_mismatch": "FAIL_CLOSED_AS_EXPECTED",
+      "v54_binding_drift": "FAIL_CLOSED_AS_EXPECTED",
+      "invalid_odds": "FAIL_CLOSED_AS_EXPECTED",
+      "ticket_universe_mismatch": "FAIL_CLOSED_AS_EXPECTED",
+      "output_overwrite": "FAIL_CLOSED_AS_EXPECTED"
+    },
+    "canonical_github_readback": "PASS_CONTENT_INSPECTION",
+    "canonical_ci_execution": "NOT_RUN"
+  },
+  "prospective_trial_state": {
+    "true_trial_frozen": false,
+    "blockers": [
+      "trustworthy final racecard body with exact date/venue/race/car/rider identity before cutoff",
+      "genuine pre-close complete odds snapshot for supported market(s) with saved raw provenance",
+      "provenance-bound preregistered competition_score input/method lineage"
+    ],
+    "next_action": "continue PRE-only discovery; when all required PRE evidence exists before cutoff, save raw snapshots and hashes, run PRE freeze, then run v54 decision freeze immediately; never backfill missing PRE after cutoff"
+  },
+  "no_retune": true,
+  "no_model_substitution": true,
+  "no_future_dependency": true,
+  "post_result_reconstruction": false
+}
