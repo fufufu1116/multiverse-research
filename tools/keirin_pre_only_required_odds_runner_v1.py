@@ -89,15 +89,40 @@ def _rank_market(probs: dict[str, float]) -> list[dict[str, Any]]:
     return rows
 
 
+_ALLOWED_OUTCOME_CONTROL_PATHS = frozenset({
+    "$.pre_freeze_receipt.winner_prediction",
+    "$.pre_freeze_receipt.post_result_reconstruction",
+})
+
+
+def _reject_outcome_fields_scoped(
+    obj: Any, forbidden_tokens: tuple[str, ...], path: str = "$"
+) -> None:
+    """Reject outcome/settlement fields while allowing exact PRE receipt control keys."""
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            child = f"{path}.{key}"
+            lowered = str(key).lower()
+            if child not in _ALLOWED_OUTCOME_CONTROL_PATHS and any(
+                str(token).lower() in lowered for token in forbidden_tokens
+            ):
+                raise FailClosed(f"outcome_or_settlement_field_forbidden:{child}")
+            _reject_outcome_fields_scoped(value, forbidden_tokens, child)
+    elif isinstance(obj, list):
+        for i, value in enumerate(obj):
+            _reject_outcome_fields_scoped(value, forbidden_tokens, f"{path}[{i}]")
+
+
 def run(envelope: dict[str, Any], repo_root: Path, top_n: int = 10) -> dict[str, Any]:
     if not isinstance(envelope, dict):
         raise FailClosed("input_envelope_not_object")
     if top_n <= 0:
         raise FailClosed("top_n_must_be_positive")
 
-    # Explicitly reject outcome/settlement contamination anywhere in the input.
+    # Reject outcome/settlement contamination while allowing the two exact PRE
+    # receipt control-field names that intentionally contain forbidden substrings.
     v1 = _load_pinned(repo_root, V1_REL, V1_GIT_BLOB, "keirin_v54_v1_for_pre_only_required_odds")
-    v1.reject_outcome_fields(envelope)
+    _reject_outcome_fields_scoped(envelope, tuple(v1.FORBIDDEN_TOKENS))
     score_mod = _load_pinned(
         repo_root,
         SCORE_PRODUCER_REL,
