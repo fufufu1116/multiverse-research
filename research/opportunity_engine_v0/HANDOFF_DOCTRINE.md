@@ -10,6 +10,8 @@ Never treat this file, a chat handoff, a saved SHA, or a previous summary as CUR
 
 Do not touch active unrelated candidates, fixed Lab/Auditor steps, canonical main, Runtime, credentials, spend, publication, live providers, affiliate enrollment or other live effects without the required repository/Owner authority.
 
+A visible Owner Gate is not, by itself, a reason for this lane to stop. If useful reversible repository-only research remains, defer the gated action and continue with the next safe action. Interrupt the Owner only when the next useful action truly requires Owner authority or owner-only input and no meaningful safe research remains. When interruption is unavoidable, present one exact bounded request rather than a vague question. See `owner_gate.py`, `mission_continuation.py`, `AUTONOMOUS_CONTINUATION_DOCTRINE.md` and their tests.
+
 ## Core goal
 
 Build the inside of MULTIVERSE before UI/avatar/gamification. The product-facing app, kingdom/avatar/rank visuals and other presentation are decoration that can be added later. The durable asset is the system that discovers opportunities, verifies them, compares alternatives, predicts several steps ahead, chooses an action, measures the result and learns.
