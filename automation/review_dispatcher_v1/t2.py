@@ -3,6 +3,9 @@ from __future__ import annotations
 import time
 
 from automation.review_dispatcher_v1 import t2_legacy_v1 as _legacy
+from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_read,
+)
 from automation.review_dispatcher_v1.publisher_freshness_v1 import (
     assert_job_request_still_canonical,
 )
@@ -14,6 +17,20 @@ from automation.review_dispatcher_v1.t2_idempotence_v1 import (
 from automation.review_dispatcher_v1.t2_receipt_recovery_v1 import (
     recover_t2_receipt,
 )
+
+
+def _bounded_public_github(url: str):
+    return github_json_read(
+        url,
+        user_agent="multiverse-fixed-t2-v1",
+    )
+
+
+# Fixed T2 legacy logic performs only public GitHub GET reads through this
+# function. Rebind that read edge to the same bounded GET-only semantics used
+# by the existing read-resilience lineage. Mutation/authenticated GitHub App
+# paths remain untouched and are never retried by this helper.
+_legacy.public_github = _bounded_public_github
 
 _original_publish_t2 = _legacy.publish_t2
 _original_fetch_all_pages = _legacy.fetch_all_pages
