@@ -151,7 +151,7 @@ jobs:
               ),
               'AUDITOR_REQUEST_COMMENT_RESPONSE_OBJECT',
           )
-          request = t2._legacy.extract_request(request_comment.get('body') or '')
+          request = t2._legacy.extract_request_from_comment(request_comment.get('body') or '')
           assert request is not None
           assert t2._legacy.sha256_json(request) == request_sha
           assert request['repo'] == repo
