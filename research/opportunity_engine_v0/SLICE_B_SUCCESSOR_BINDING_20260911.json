@@ -1,0 +1,85 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_B_SUCCESSOR_BINDING_v3",
+  "status": "FRESH_MAIN_SUCCESSOR_PRE_REVIEW_FREEZE",
+  "canonical_base": {
+    "branch": "main",
+    "sha": "228bd5b1fe2550747398790712edccc04c741814",
+    "tree": "857b0ab2b572a13feb97f2d07bf5c004fdabd683"
+  },
+  "supersedes": {
+    "pull_request": 334,
+    "branch": "candidate/opportunity-engine-slice-b-fresh-main-20260911-v2",
+    "head": "5a1b1cec251c30a21b5b7525d5df38370b5711c9",
+    "tree": "5ec71f5fe2549f7e0238fc3082692c1580a4ce2a",
+    "reason": "canonical main advanced by 12 commits to the adopted Slice A head; preserve the Build #77 repair but rebind Slice B to current main before any further formal review"
+  },
+  "frozen_research_source": {
+    "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5",
+    "source_manifest": "research/opportunity_engine_v0/SLICE_B_FORECAST_INTEGRITY_MANIFEST.json"
+  },
+  "slice": "B_FORECAST_INTEGRITY",
+  "source_paths": [
+    "research/opportunity_engine_v0/forecast_ledger.py",
+    "research/opportunity_engine_v0/forecast_revision.py",
+    "research/opportunity_engine_v0/trend_forecast.py",
+    "research/opportunity_engine_v0/trend_retrospective.py",
+    "research/opportunity_engine_v0/test_signal_forecast.py",
+    "research/opportunity_engine_v0/test_forecast_revision.py",
+    "research/opportunity_engine_v0/test_trend_forecast.py"
+  ],
+  "carry_forward": "EXACT_FINAL_SLICE_B_V2_PAYLOAD_BLOBS; ONLY_BINDING_REBOUND_TO_CURRENT_MAIN",
+  "successor_compatibility_repairs": [
+    {
+      "path": "research/opportunity_engine_v0/forecast_revision.py",
+      "reason": "Frozen source imported shock_adaptation.py outside Slice B. Successor preserves the same accepted verdict vocabulary locally so forecast revision is self-contained without carrying a broader adaptation module."
+    },
+    {
+      "path": "research/opportunity_engine_v0/test_signal_forecast.py",
+      "reason": "Frozen source mixed Slice A signal tests with Slice B forecast-ledger tests. Successor retains only forecast-ledger proof so the Slice B candidate does not depend on signals.py."
+    },
+    {
+      "path": "research/opportunity_engine_v0/trend_forecast.py",
+      "reason": "Fixed Lab Build #77 exposed a commitment collision when distinct raw snapshots saturated to the same derived score. The final v2 repair binds the full immutable TrendSignalSnapshot plus the derived assessment into forecast_commitment. v3 carries that repaired blob exactly."
+    }
+  ],
+  "required_properties": [
+    "forecast frozen before outcome observation",
+    "tamper-evident commitment binds the full raw snapshot even when derived scoring saturates",
+    "successor forecast never mutates predecessor",
+    "settlement distinct from creation",
+    "historical retrospective is hypothesis-only until prospective test",
+    "no live/provider/runtime authority"
+  ],
+  "forbidden_scope": [
+    "provider execution",
+    "credentials",
+    "publisher",
+    "T2",
+    "Runtime activation",
+    "customer recruitment",
+    "payment collection",
+    "canonical adoption authority"
+  ],
+  "proof_state": {
+    "tests_present": true,
+    "expected_unit_test_count": 18,
+    "independent_execution_on_v3": false,
+    "pass_claim": false,
+    "formal_lab_or_auditor_on_v3": false,
+    "build_77_finding": "COMMITMENT_COLLISION_ON_SATURATED_DERIVED_SCORE_REPAIRED_AND_EXACTLY_CARRIED"
+  },
+  "authority": {
+    "formal_review": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "provider_call": false,
+    "credential_use": false,
+    "spend": false,
+    "publication": false,
+    "customer_recruitment": false,
+    "payment_collection": false,
+    "runtime_activation": false,
+    "live_business_effect": false
+  }
+}
