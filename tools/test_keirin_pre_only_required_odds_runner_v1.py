@@ -147,6 +147,16 @@ class RequiredOddsRunnerTests(unittest.TestCase):
         with self.assertRaisesRegex(mod.FailClosed, "outcome_or_settlement_field_forbidden"):
             mod._reject_outcome_fields_scoped(env, FakeV1.FORBIDDEN_TOKENS)
 
+    def test_scoped_outcome_filter_rejects_dotted_path_spoof(self):
+        env = make_envelope()
+        env["pre_freeze_receipt.winner_prediction"] = 1
+        with self.assertRaisesRegex(mod.FailClosed, "outcome_or_settlement_field_forbidden"):
+            mod._reject_outcome_fields_scoped(env, FakeV1.FORBIDDEN_TOKENS)
+
+    def test_rank_market_rejects_nonnumeric_probability_as_failclosed(self):
+        with self.assertRaisesRegex(mod.FailClosed, "invalid_ticket_probability"):
+            mod._rank_market({"1-2": "not-a-number"})
+
     def test_load_pinned_fails_closed_on_missing_file(self):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(mod.FailClosed, "missing_pinned_module"):
@@ -208,6 +218,16 @@ class RequiredOddsRunnerTests(unittest.TestCase):
         with mock.patch.object(mod, "_load_pinned", side_effect=fake_load_pinned):
             with self.assertRaisesRegex(mod.FailClosed, "outcome_or_settlement_field_forbidden"):
                 mod.run(env, Path("."))
+
+    def test_run_fails_closed_when_generated_gate_value_missing(self):
+        original = FakeScore.produce_gate_score
+        FakeScore.produce_gate_score = classmethod(lambda cls, _pre_payload, _model: {"semantic_name": "bad"})
+        try:
+            with mock.patch.object(mod, "_load_pinned", side_effect=fake_load_pinned):
+                with self.assertRaisesRegex(mod.FailClosed, "generated_competition_gate_invalid"):
+                    mod.run(make_envelope(), Path("."))
+        finally:
+            FakeScore.produce_gate_score = original
 
     def test_run_fails_closed_when_supported_market_missing(self):
         original = FakeV1.build_frozen_ticket_probabilities
