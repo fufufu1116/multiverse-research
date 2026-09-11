@@ -1,0 +1,38 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_C_SUCCESSOR_BINDING_v1",
+  "status": "FRESH_MAIN_SUCCESSOR_PRE_REVIEW",
+  "canonical_base": {
+    "sha": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46"
+  },
+  "frozen_research_source": {
+    "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5"
+  },
+  "slice": "C_CUSTOMER_VALUE_HUNDRED_USER",
+  "exact_paths": [
+    "research/opportunity_engine_v0/customer_value_loop.py",
+    "research/opportunity_engine_v0/customer_contribution.py",
+    "research/opportunity_engine_v0/hundred_user_general.py",
+    "research/opportunity_engine_v0/growth_loop.py",
+    "research/opportunity_engine_v0/test_customer_contribution.py",
+    "research/opportunity_engine_v0/test_growth_loop.py"
+  ],
+  "isolation": {
+    "external_imports_observed": false,
+    "live_recruitment": false,
+    "payment_collection": false,
+    "provider_call": false,
+    "credential_use": false,
+    "runtime_activation": false,
+    "publication": false,
+    "spend": false,
+    "canonical_adoption": false
+  },
+  "proof_state": {
+    "repository_tests": "PRESENT_NOT_INDEPENDENTLY_EXECUTED",
+    "lab_auditor": "NOT_EXECUTED",
+    "pass_claim": false
+  },
+  "note": "This is convergence preparation, not canonical integration. Slice C remains research-only until separately reviewed and adopted."
+}
