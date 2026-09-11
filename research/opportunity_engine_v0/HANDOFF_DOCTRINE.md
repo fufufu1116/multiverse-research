@@ -35,6 +35,9 @@ world signals -> candidate discovery -> competitor/substitute research -> eviden
 13. Leverage search is mandatory for serious candidates. For each opportunity, actively search how distribution, automation, AI, monetization, data, reuse, geography, partners/platforms and infrastructure can increase output per owner hour or per yen at risk.
 14. Do not call something leverage if it merely creates hidden workload, fixed cost, vendor lock-in, legal risk, inventory, sales-call dependence, team dependence or dangerous copy exposure.
 15. Do not multiply claimed leverage factors naively. Effects overlap. Use conservative diminishing credit until measured outcomes replace estimates.
+16. For serious distribution candidates, search for bidirectional growth loops, not only one-way funnels. Ask whether activity on one surface creates useful material or intent for another surface, and whether the return path creates genuine user value and measurable repeat cycles.
+17. Cross-promotion is leverage only when the user has a real reason to move in both directions. Do not manufacture page views, spam, fake engagement or policy-violating promotional behavior.
+18. Prefer at least one owned or portable capture point in a growth loop. External platforms are rented distribution; APIs, ranking, pricing, moderation and posting rules can change.
 
 ## Three economic horizons
 
@@ -134,6 +137,22 @@ A future application may visualize opportunity/business units as commanders, lev
 
 See `leverage.py`, `test_leverage.py` and `LEVERAGE_DOCTRINE.md`.
 
+## Bidirectional growth-loop layer
+
+For every serious distribution opportunity, ask whether a useful two-way loop can exist between an owned/portable surface and an external discovery surface, or between multiple complementary surfaces.
+
+Example pattern:
+
+owned utility -> shareable result/content -> external platform -> discovered intent -> deep link/import/action -> owned utility -> new result/content.
+
+The recipe-app / short-video example is only an illustration. The reusable asset is the loop pattern itself.
+
+A one-way funnel is not a loop. A two-way path is still weak if either direction gives the user no real value. Measure transition friction, attribution, repeat-cycle rate, platform dependency, policy risk, owned capture and reusable asset growth.
+
+Do not assume virality. External platforms are rented distribution. Verify current official platform rules before implementation and maintain a fallback path where practical.
+
+See `growth_loop.py`, `test_growth_loop.py` and `GROWTH_LOOP_DOCTRINE.md`.
+
 ## Output exposure / selling slices of MULTIVERSE
 
 MULTIVERSE itself does not need to be sold. The engine may choose among:
@@ -174,6 +193,8 @@ Over time this should answer questions such as:
 - when AI/official features erase the opportunity;
 - which monetization route works for which opportunity class;
 - which leverage options actually increase profit per owner hour rather than just adding complexity;
+- which growth-loop transitions produce repeat cycles rather than one-off clicks;
+- which external platforms create durable acquisition vs fragile rented reach;
 - which small tests predict larger-scale winners;
 - which apparent trends should be ignored.
 
