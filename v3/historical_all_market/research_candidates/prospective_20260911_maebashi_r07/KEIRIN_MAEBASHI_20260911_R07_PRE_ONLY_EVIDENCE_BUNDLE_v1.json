@@ -1,0 +1,102 @@
+{
+  "bindings": {
+    "b1a_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "circumference_model_blob": "061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878",
+    "competition_gate_blob": "8ffbab9d02562a3f8b617047c614a2008378932b",
+    "cutoff_guard_v3_blob": "4e4ed1f9a3a574fbd610272a6613c536586f7f3a",
+    "pre_freeze_runner_blob": "9068c7ef49b6b81de8abdcc13e1b2c03864007d3",
+    "required_odds_runner_blob": "5d06bb2d1546101e4989e94816b274b6cbc4563f",
+    "v54_probability_blob": "417fa8947ab9b15dde305adc15085d558659d134"
+  },
+  "bundle_sha256": "e02eb8798177acbb059eed070dd52441231992e59134737eef3deba7b1ea19dc",
+  "competition_gate": {
+    "challenger_top1_probability": 0.4981748464499028,
+    "pass": true,
+    "s0_top1_probability": 0.5070362539098492,
+    "support_mode": "STYLE_FALLBACK",
+    "threshold": 0.4,
+    "top1_agreement": true,
+    "value": 0.4981748464499028
+  },
+  "created_at_jst": "2026-09-11T17:22:15+09:00",
+  "integrity": {
+    "pre_freeze_receipt_sha256": "63fc94a33897984600208e3733e312b66bbf8acb2d7ee25e1daa883c6de91e8b",
+    "pre_payload_sha256": "23825c169ed912f770eebbb12cbe9992c10463634301a3790b165a1882101781",
+    "required_odds_receipt_sha256": "1db3191ef31f4c43871655531c6e2cbfb5d9ade4754267c1b8e4595aef615b7b",
+    "source_snapshot_sha256": "ab787e81d80c5d2ec5571b23f791512e53beabe4d139608bbebd2d7a5ed7987a"
+  },
+  "pre_payload_sha256": "23825c169ed912f770eebbb12cbe9992c10463634301a3790b165a1882101781",
+  "record": "KEIRIN_PROSPECTIVE_PRE_ONLY_EVIDENCE_BUNDLE_20260911_MAEBASHI_R07_v1",
+  "required_odds": {
+    "actual_odds_used": false,
+    "exact_v54_executable": false,
+    "formula": "raw_break_even_decimal_odds=1/raw_b1a_pl_probability",
+    "san_rentan": {
+      "raw_break_even_decimal_odds": 18.222490811158256,
+      "raw_probability": 0.05487723990990659,
+      "ticket": "1-3-2"
+    },
+    "two_shatan": {
+      "raw_break_even_decimal_odds": 5.1908213940165275,
+      "raw_probability": 0.19264773801554844,
+      "ticket": "1-3"
+    }
+  },
+  "science": {
+    "automatic_betting": false,
+    "formal_scientific_validation_percent": 85,
+    "next_gate": "After race completion, use separately governed outcome evaluation. Do not backfill PRE.",
+    "payout_accessed": false,
+    "post_result_reconstruction": false,
+    "result_accessed": false,
+    "retune": false,
+    "runtime": "OFF"
+  },
+  "selection": {
+    "rejected_gate_example": {
+      "race_number": 9,
+      "value": 0.3026703347388992,
+      "venue": "前橋"
+    },
+    "rule": "Scan any still-unstarted race with trustworthy PRE inputs; do not wait for a preselected venue.",
+    "selected_gate": {
+      "race_number": 7,
+      "threshold": 0.4,
+      "value": 0.4981748464499028,
+      "venue": "前橋"
+    }
+  },
+  "source": {
+    "capture_method": "ChatGPT web retrieval -> PRE-only structured transcription; raw transport bytes unavailable/exported=false",
+    "retrieved_at": "2026-09-11T17:22:15+09:00",
+    "snapshot_path": "v3/historical_all_market/research_candidates/prospective_20260911_maebashi_r07/KEIRIN_MAEBASHI_20260911_R07_PRE_SOURCE_SNAPSHOT_v1.json",
+    "snapshot_sha256": "ab787e81d80c5d2ec5571b23f791512e53beabe4d139608bbebd2d7a5ed7987a",
+    "source_locator": "https://keirin.kdreams.jp/maebashi/racedetail/2220260911010007/",
+    "trust_class": "PRIMARY"
+  },
+  "status": "PASS_PROSPECTIVE_PRE_FROZEN_CANDIDATE_BEFORE_OUTCOME",
+  "target": {
+    "cutoff_jst": "2026-09-11T22:45:00+09:00",
+    "event_date": "2026-09-11",
+    "event_id": "MAEBASHI_20260911_R07",
+    "race_number": 7,
+    "scheduled_start_jst": "2026-09-11T22:50:00+09:00",
+    "venue": "前橋"
+  },
+  "winner_prediction": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "probabilities": [
+      {"car_no": 1, "win_prob": 0.479849696210422},
+      {"car_no": 2, "win_prob": 0.0886827955569617},
+      {"car_no": 3, "win_prob": 0.20882743126552},
+      {"car_no": 4, "win_prob": 0.08614948986210105},
+      {"car_no": 5, "win_prob": 0.03498474966589822},
+      {"car_no": 6, "win_prob": 0.055352972903342845},
+      {"car_no": 7, "win_prob": 0.04615286453575409}
+    ],
+    "top1_car_no": 1,
+    "top1_probability": 0.479849696210422,
+    "top2_car_no": 3,
+    "top2_probability": 0.20882743126552
+  }
+}
