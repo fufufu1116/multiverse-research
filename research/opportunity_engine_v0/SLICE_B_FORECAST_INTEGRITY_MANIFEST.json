@@ -1,0 +1,36 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_CONVERGENCE_SLICE_v1",
+  "slice_id": "B_FORECAST_INTEGRITY",
+  "status": "RESEARCH_ONLY_FROZEN_SCOPE",
+  "purpose": "Preserve pre-outcome forecast integrity, temporal ordering, hindsight resistance, and settlement semantics without introducing live/provider/runtime authority.",
+  "source_pr": 310,
+  "included_paths": [
+    "research/opportunity_engine_v0/forecast_ledger.py",
+    "research/opportunity_engine_v0/forecast_revision.py",
+    "research/opportunity_engine_v0/trend_forecast.py",
+    "research/opportunity_engine_v0/trend_retrospective.py",
+    "research/opportunity_engine_v0/test_signal_forecast.py",
+    "research/opportunity_engine_v0/test_forecast_revision.py",
+    "research/opportunity_engine_v0/test_trend_forecast.py"
+  ],
+  "required_properties": [
+    "forecast content is frozen before outcome observation",
+    "forecast commitment is tamper evident",
+    "successor forecasts never mutate predecessor history",
+    "later outcome information cannot enter pre-outcome scoring",
+    "settlement remains distinct from forecast creation",
+    "historical backtests are not represented as forward predictive proof"
+  ],
+  "forbidden_dependency_tokens": [
+    "credentials", "provider_call", "runtime_activation", "publisher", "t2", "customer_recruitment", "payment_collection"
+  ],
+  "authority": {
+    "live_execution": false,
+    "provider_call": false,
+    "spend": false,
+    "publication": false,
+    "adoption": false,
+    "runtime_activation": false
+  },
+  "fresh_main_rebind_required_before_adoption": true
+}

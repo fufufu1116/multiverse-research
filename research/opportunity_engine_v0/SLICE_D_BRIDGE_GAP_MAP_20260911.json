@@ -1,0 +1,58 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_BRIDGE_GAP_MAP_v1",
+  "status": "RESEARCH_ONLY_CURRENT_MAIN_OBSERVATION",
+  "observed_on": "2026-09-11",
+  "purpose": "Bound the remaining compatibility work before creating a fresh-main Opportunity Engine bridge successor.",
+  "current_main_observation": {
+    "main_from_active_fresh_main_candidates": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "canonical_multimodel_aggregator_path": "automation/multimodel_research_v1/aggregator.py",
+    "canonical_multimodel_aggregator_blob": "3f1ab52a9a60441cd4fd5f2fadbc95cbfa75e37c",
+    "active_control_plane_line": "one-shot preflight/read-resilience successor",
+    "active_first_live_provider_line": "fresh-main executable first-live-provider preauth successor"
+  },
+  "bridge_source_paths": [
+    "research/opportunity_engine_v0/multiverse_bridge.py",
+    "research/opportunity_engine_v0/multiverse_result_bridge.py",
+    "research/opportunity_engine_v0/multiverse_review_ensemble.py",
+    "research/opportunity_engine_v0/review_independence_gate.py",
+    "research/opportunity_engine_v0/advisor_track_record.py",
+    "research/opportunity_engine_v0/advisor_learning.py"
+  ],
+  "must_reuse_canonical_multiverse": [
+    "task/review schemas",
+    "aggregate/diversity semantics",
+    "review authority boundary",
+    "provider execution boundary",
+    "publisher/T2/control-plane behavior"
+  ],
+  "must_not_duplicate": [
+    "voting or majority authority",
+    "provider execution",
+    "dispatcher or publisher logic",
+    "canonical result arbitration",
+    "T2 semantics",
+    "credential handling"
+  ],
+  "fresh_main_successor_trigger": [
+    "active control-plane line is canonically integrated or superseded by a stable fresh-main successor",
+    "active first-live-provider line is canonically integrated or superseded by a stable fresh-main successor",
+    "current canonical task/review interfaces are Fresh-read and exact bindings are known"
+  ],
+  "remaining_work_before_candidate": [
+    "Fresh-read exact canonical task/review contract paths and blobs",
+    "compare PR310 bridge assumptions against current canonical contracts",
+    "carry forward only still-needed bridge deltas",
+    "add current-main binding regressions and validator",
+    "freeze exact head/tree before returning to Control"
+  ],
+  "authority": {
+    "formal_review": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "provider_call": false,
+    "credential_use": false,
+    "spend": false,
+    "publication": false,
+    "runtime_activation": false
+  }
+}

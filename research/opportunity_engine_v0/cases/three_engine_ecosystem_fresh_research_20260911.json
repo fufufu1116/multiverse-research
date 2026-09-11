@@ -1,0 +1,75 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_FRESH_RESEARCH_PACKET_v1",
+  "case_id": "three-engine-ecosystem-20260911",
+  "researched_at": "2026-09-11",
+  "scope": "Official-source feasibility constraints for branded content -> social discovery/share -> owned utility -> consented personalization -> repeat sharing.",
+  "findings": [
+    {
+      "id": "tiktok-share-supported",
+      "finding": "TikTok provides Share Kit and Content Posting API paths for sharing/publishing app-created content, subject to integration setup, review and platform limits.",
+      "source": "https://developers.tiktok.com/docs/en/content-publishing-landing",
+      "source_class": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "tiktok-watermark-promo-constraint",
+      "finding": "TikTok Content Sharing Guidelines state that apps/integrations should not superimpose brand names, logos, watermarks, promotional links or promotional text on content shared to TikTok. Therefore the defense layer must not assume a visible promotional watermark survives or is permitted on TikTok-shared content.",
+      "source": "https://developers.tiktok.com/docs/en/content-sharing-guidelines",
+      "source_class": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "tiktok-original-creator-intent",
+      "finding": "TikTok Direct Post guidance is intended for authentic creators posting original content and explicitly rejects arbitrary copying from other platforms as an intended integration use.",
+      "source": "https://developers.tiktok.com/docs/en/content-sharing-guidelines",
+      "source_class": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "tiktok-url-ownership",
+      "finding": "TikTok requires URL ownership verification for relevant app configuration and some link/content-posting features; Android redirects use App Link/Deep Link and iOS redirects use Universal Link in documented registration flows.",
+      "source": "https://developers.tiktok.com/docs/en/getting-started-create-an-app",
+      "source_class": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "apple-att-required",
+      "finding": "Apple requires App Tracking Transparency authorization when app-related data is used to track users across other companies' apps or websites.",
+      "source": "https://developer.apple.com/documentation/apptrackingtransparency",
+      "source_class": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "apple-no-covert-profile",
+      "finding": "Apple review guidance prohibits surreptitious user profiling and requires explicit permission for tracking; data collected for one purpose cannot simply be repurposed without further consent unless otherwise permitted.",
+      "source": "https://developer.apple.com/app-store/review/guidelines/",
+      "source_class": "OFFICIAL_PLATFORM"
+    },
+    {
+      "id": "google-play-expected-purpose",
+      "finding": "Google Play requires personal/sensitive data access, collection, use and sharing to be limited to purposes reasonably expected by the user and consistent with app functionality and policy.",
+      "source": "https://support.google.com/googleplay/android-developer/answer/10144311",
+      "source_class": "OFFICIAL_PLATFORM"
+    }
+  ],
+  "design_implications": [
+    "Do not make visible watermarking the core anti-copy mechanism for TikTok integration.",
+    "Prefer distinctive creative format, account identity, audio/visual signature where policy-compliant, profile/deep-link paths, owned utility and saved state as the return-path moat.",
+    "Treat cross-app/web behavioral targeting as permission-gated rather than invisible by default.",
+    "First-party in-product context can power useful recommendations, but purpose and controls should be understandable to the user.",
+    "The clean three-engine model remains feasible as a hypothesis, but exact Instagram/Meta sharing/deep-link constraints still require a separate fresh official-source pass before implementation.",
+    "No evidence in this packet establishes conversion uplift, retention uplift, willingness to pay, repost-to-source return rate, or cross-domain portability; those remain experiment hypotheses."
+  ],
+  "next_autonomous_research": [
+    "Build a platform-neutral return-path design that does not depend on promotional watermarks.",
+    "Define measurable funnel events from social discovery to owned utility to repeat share.",
+    "Define clean personalization tiers: contextual, first-party history, permission-gated cross-context.",
+    "Compare recipe, fitness, travel, language, beauty/style, DIY, productivity and hobby education using repeat intent, shareability, exclusive utility, monetization and platform dependence.",
+    "Research Meta/Instagram official constraints separately before any implementation claim."
+  ],
+  "authority": {
+    "live_tracking_authorized": false,
+    "provider_call_authorized": false,
+    "spend_authorized": false,
+    "publication_authorized": false,
+    "live_execution_authorized": false,
+    "adoption_authorized": false,
+    "runtime_activation_authorized": false
+  },
+  "runtime": "OFF"
+}

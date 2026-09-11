@@ -1,0 +1,187 @@
+{
+  "batch_id": "real-world-batch-20260911-jst-v1",
+  "observed_at": "2026-09-11T07:03:00+09:00",
+  "status": "RESEARCH_ONLY",
+  "runtime": "OFF",
+  "cases": [
+    {
+      "case_id": "iphone18pro-jp-launch-wave",
+      "signal": {
+        "signal_id": "sig-20260911-apple-iphone18pro-announcement",
+        "type": "PRODUCT",
+        "market": "Japan",
+        "fact": "Apple announced iPhone 18 Pro and iPhone 18 Pro Max on 2026-09-09; pre-orders begin 2026-09-12 and availability begins 2026-09-18.",
+        "evidence": [
+          {
+            "source": "Apple Japan Newsroom",
+            "url": "https://www.apple.com/jp/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/",
+            "primary": true
+          },
+          {
+            "source": "Apple Japan accessories",
+            "url": "https://www.apple.com/jp/shop/accessories/all/only-at-apple/iphone-18-pro",
+            "primary": true
+          }
+        ]
+      },
+      "competitor_state": "HIGH_AND_IMMEDIATE",
+      "competitor_notes": [
+        "Apple already sells first-party and third-party accessories in its own store.",
+        "Retailers, carriers, review media and general AI can cover most generic comparison and accessory questions.",
+        "A generic paid guide has weak defensibility; inventory resale conflicts with current capital/owner-burden constraints."
+      ],
+      "leverage_candidates": [
+        "existing marketplace or authorized affiliate distribution",
+        "event-date SEO/search pages only if they solve a narrow action gap",
+        "reusable launch-wave template for future device releases",
+        "cross-sell path research without holding inventory"
+      ],
+      "provisional_verdict": "TACTICAL_RESEARCH_NOT_FOCUS",
+      "forecast": {
+        "card": {
+          "forecast_id": "f-20260911-iphone18pro-jp-v1",
+          "candidate_name": "iPhone 18 Pro launch-wave accessory/action demand (Japan)",
+          "created_at": "2026-09-11T07:03:00+09:00",
+          "source_signal_ids": ["sig-20260911-apple-iphone18pro-announcement"],
+          "predicted_peak_start": "2026-09-12",
+          "predicted_peak_end": "2026-09-20",
+          "expected_demand_life_days": 30.0,
+          "predicted_competitor_arrival_days": 1.0,
+          "predicted_ai_or_incumbent_absorption_days": 1.0,
+          "predicted_next_actions": [
+            "preorder-intent rises",
+            "comparison and accessory intent rises",
+            "launch-day attention spikes",
+            "reviews and availability questions spread",
+            "generic attention decays while owner/use accessories persist"
+          ],
+          "monetization_hypothesis": "Research-only: strongest low-capital route is likely existing-marketplace/affiliate/free-acquisition rather than inventory or a new generic guide; no live monetization is authorized.",
+          "kill_condition": "Do not build a paid standalone product unless competitor research finds a last-mile action gap that Apple, retailers, carriers, or general AI do not already solve.",
+          "confidence": 4
+        },
+        "sha256_commitment": "5b11fb19f9f9c32039b5019c0d49672974f2b8171f45b64a31b3a17d278a3103"
+      }
+    },
+    {
+      "case_id": "office2021-eos-jp",
+      "signal": {
+        "signal_id": "sig-20260911-microsoft-office2021-eos",
+        "type": "SERVICE_CHANGE",
+        "market": "Japan",
+        "fact": "Microsoft states that Office 2021 support ends on 2026-10-13 with no extension or extended security updates; Office LTSC 2021 also reaches end of support on that date.",
+        "evidence": [
+          {
+            "source": "Microsoft Support Japan",
+            "url": "https://support.microsoft.com/ja-jp/office/system-requirements/end-of-support-for-office-2021",
+            "primary": true
+          },
+          {
+            "source": "Microsoft Lifecycle Japan",
+            "url": "https://learn.microsoft.com/ja-jp/lifecycle/announcements/office-ltsc-2021-end-of-support",
+            "primary": true
+          },
+          {
+            "source": "G2 migration-tool alternatives",
+            "url": "https://www.g2.com/products/office-365-migration-planner/competitors/alternatives",
+            "primary": false
+          }
+        ]
+      },
+      "competitor_state": "MATURE",
+      "competitor_notes": [
+        "Microsoft provides official migration guidance and upgrade paths.",
+        "Mature third-party migration products already exist, including MigrationWiz, Cloudiway and ShareGate in current comparison listings.",
+        "General AI can answer most generic version-check and migration questions."
+      ],
+      "leverage_candidates": [
+        "reuse the deadline as training data for a general support-end/change scanner",
+        "machine-readable version and deadline checks rather than another generic guide",
+        "reusable migration-deadline templates across software vendors"
+      ],
+      "provisional_verdict": "FREE_ACQUISITION_OR_INTERNAL_ASSET_ONLY_UNLESS_LAST_MILE_GAP_FOUND",
+      "forecast": {
+        "card": {
+          "forecast_id": "f-20260911-office2021-eos-jp-v1",
+          "candidate_name": "Office 2021 end-of-support action demand (Japan)",
+          "created_at": "2026-09-11T07:03:00+09:00",
+          "source_signal_ids": ["sig-20260911-microsoft-office2021-eos"],
+          "predicted_peak_start": "2026-10-01",
+          "predicted_peak_end": "2026-10-20",
+          "expected_demand_life_days": 60.0,
+          "predicted_competitor_arrival_days": 1.0,
+          "predicted_ai_or_incumbent_absorption_days": 1.0,
+          "predicted_next_actions": [
+            "deadline awareness rises",
+            "version-check and risk questions rise",
+            "migration/replacement intent rises",
+            "October 13 deadline creates urgency",
+            "post-deadline cleanup demand persists then decays"
+          ],
+          "monetization_hypothesis": "Research-only: Office-specific generic guidance is too substitutable; more promising asset is a reusable support-end/change scanner plus action-ready checks. No live monetization is authorized.",
+          "kill_condition": "Reject an Office-specific paid guide/tool if official Microsoft guidance, general AI, and mature migration products already solve the actionable last mile for the target segment.",
+          "confidence": 4
+        },
+        "sha256_commitment": "67cc8cf943c0de233dce6b9c981cbd42fc8f59b955348da88c85a86b4254a25c"
+      }
+    },
+    {
+      "case_id": "japan-dark-pattern-preflight",
+      "signal": {
+        "signal_id": "sig-20260911-caa-consumer-contract-interim",
+        "type": "RULE_CHANGE",
+        "market": "Japan",
+        "fact": "Japan's Consumer Affairs Agency published the interim summary of the consumer contract law study group on 2026-09-10. The agency had also published a June 2026 dark-pattern consumer survey and has been examining interfaces that may distort consumer decision-making.",
+        "evidence": [
+          {
+            "source": "Consumer Affairs Agency 2026 releases",
+            "url": "https://www.caa.go.jp/policies/policy/consumer_system/release/2026/index.html",
+            "primary": true
+          },
+          {
+            "source": "Consumer Affairs Agency study group",
+            "url": "https://www.caa.go.jp/policies/policy/consumer_system/meeting_materials/review_meeting_006",
+            "primary": true
+          },
+          {
+            "source": "Consumer Affairs Agency dark-pattern survey",
+            "url": "https://www.caa.go.jp/notice/entry/046575/",
+            "primary": true
+          },
+          {
+            "source": "PageAuditors dark-pattern scanner",
+            "url": "https://www.pageauditors.com/dark-patterns",
+            "primary": false
+          },
+          {
+            "source": "DarkLens",
+            "url": "https://darklens.dev/",
+            "primary": false
+          },
+          {
+            "source": "Dokven",
+            "url": "https://www.dokven.com/",
+            "primary": false
+          }
+        ]
+      },
+      "competitor_state": "STRONGER_THAN_PREVIOUSLY_ASSUMED",
+      "competitor_notes": [
+        "PageAuditors and DarkLens already offer automated dark-pattern scanning.",
+        "Dokven materially narrows the previously suspected gap by combining real-browser user-journey testing, recordings and dark-pattern/legal-risk flags.",
+        "A simple URL-to-risk-score product is therefore rejected; any surviving Japan-specific opportunity must prove a distinct deterministic evidence, rule-mapping or action-completion gap."
+      ],
+      "leverage_candidates": [
+        "use existing real-browser/testing infrastructure rather than rebuilding browsers",
+        "focus research on Japan-specific official-rule mapping and versioned evidence only if competitors lack it",
+        "retain as long-term research until a measurable last-mile gap is demonstrated"
+      ],
+      "provisional_verdict": "LONG_TERM_RESEARCH_DOWNGRADED_UNTIL_GAP_PROVEN",
+      "forecast": null
+    }
+  ],
+  "notes": [
+    "This batch starts real-world evidence/forecast history without authorizing publication, sales, spend or Runtime.",
+    "Forecasts are hypotheses and must be settled against later observations; confidence must not rise merely because a forecast was recorded.",
+    "Competitor reconnaissance is part of the gate and can downgrade previously attractive ideas."
+  ]
+}

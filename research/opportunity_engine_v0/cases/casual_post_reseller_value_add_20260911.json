@@ -1,0 +1,48 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_CASUAL_POST_HYPOTHESIS_v1",
+  "case_id": "casual-post-reseller-value-add-20260911",
+  "source_kind": "CASUAL_CHAT_FORWARD",
+  "status": "UNVERIFIED_HYPOTHESIS_ONLY",
+  "observed_date": "2026-09-11",
+  "raw_pattern_summary": "Purchase or lawfully obtain access to an existing paid service, add setup/manual/use-case value, and sell a higher-priced self-service recurring bundle operated by one person.",
+  "example_numbers_from_post": {
+    "upstream_monthly_yen": 500,
+    "proposed_sale_monthly_yen": 800,
+    "apparent_gross_spread_yen": 300,
+    "verified": false
+  },
+  "reusable_pattern": "existing service -> lawful resale/agency/OEM/managed-service right -> independent value add -> self-service subscription -> retained contribution margin",
+  "owner_fit_hypothesis": {
+    "solo_operation": true,
+    "remote_non_face_to_face": true,
+    "automation_potential": true,
+    "inventory_light": true,
+    "recurring_revenue": true
+  },
+  "must_verify_before_advancement": [
+    "exact provider and service",
+    "resale/sublicensing/account-sharing/white-label rights",
+    "whether login credentials may be transferred or provisioned to customers",
+    "current upstream price and volume limits",
+    "payment processing fees",
+    "tax/compliance cost",
+    "refund and chargeback exposure",
+    "support minutes per active customer",
+    "customer acquisition cost",
+    "monthly churn and cancellation burden",
+    "direct and indirect competitors",
+    "general-AI substitution risk",
+    "whether affiliate/referral/agency/managed-service is safer than resale"
+  ],
+  "economics_rule": "Do not treat 800-500=300 as economic profit. Use sale price minus upstream cost, payment fees, taxes/compliance, refunds/chargebacks, support, tooling, acquisition burden and churn effects.",
+  "initial_verdict": "WATCH_AND_VERIFY_MODEL_CLASS",
+  "why_not_micro_test_yet": "The underlying service is unspecified, so resale rights, customer-account structure, fees and actual contribution margin cannot yet be verified.",
+  "authority": {
+    "adoption_authorized": false,
+    "spend_authorized": false,
+    "provider_call_authorized": false,
+    "live_business_authorized": false,
+    "publication_authorized": false
+  },
+  "runtime": "OFF"
+}

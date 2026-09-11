@@ -1,0 +1,102 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_DEMAND_VALIDATION_v1",
+  "case_id": "fashion-hundred-user-demand-validation-20260911",
+  "status": "FRESH_EXTERNAL_DEMAND_EVIDENCE_RESEARCH_ONLY",
+  "candidate": "fashion trend commentary -> recreate with owned wardrobe -> saved personal state -> repeat use",
+  "fresh_research_date": "2026-09-11",
+  "evidence": [
+    {
+      "source": "Rakuten Group 2026 fashion reference-country survey",
+      "kind": "PRIMARY_CORPORATE_SURVEY",
+      "finding": "For women in their teens through 50s, Instagram is the leading or tied-leading fashion information source; for men in their teens through 50s, YouTube is the leading source. TikTok is also material among people in their 20s.",
+      "url": "https://corp.rakuten.co.jp/news/press/2026/0812_01.html"
+    },
+    {
+      "source": "Onward Holdings 2026 fashion-information survey",
+      "kind": "PRIMARY_CORPORATE_SURVEY",
+      "finding": "Survey of 614 people reported movement from aspiration/trend-following toward finding a personal optimum; AI use emerged as a new fashion information source and SNS overload/trust concerns were reported as friction.",
+      "url": "https://www.onward-hd.co.jp/release/2026/20260702%20.html"
+    },
+    {
+      "source": "Hakuhodo Institute of Shopping Behavior 2026 AI Shopper survey",
+      "kind": "PRIMARY_LARGE_SURVEY",
+      "finding": "Among a 20,000-person national sample, generative AI is increasingly used for shopping comparison, organization and advice, and many respondents want AI involved in final purchase decisions.",
+      "url": "https://www.hakuhodo.co.jp/news/newsrelease/267248/"
+    },
+    {
+      "source": "Itochu Fashion System 2026 AIdentity survey",
+      "kind": "PRIMARY_CORPORATE_SURVEY",
+      "finding": "Even as some consumers are willing to delegate purchases to AI, clothing remains a category many want to choose themselves because it expresses identity and taste. This supports human taste plus AI assistance rather than full automation.",
+      "url": "https://prtimes.jp/main/html/rd/p/000000031.000062538.html"
+    },
+    {
+      "source": "Style DNA App Store listing",
+      "kind": "COMPETITOR_EXISTENCE_EVIDENCE",
+      "finding": "An AI stylist/closet product with millions of claimed users exists, showing that digital wardrobe plus outfit recommendation is an active market but also that generic AI stylist functionality is not a moat.",
+      "url": "https://apps.apple.com/jp/app/style-dna-ai-stylist-closet/id1358319821"
+    },
+    {
+      "source": "Vogue / Meta fashion partnerships interview 2026",
+      "kind": "INDUSTRY_EVIDENCE",
+      "finding": "Fashion discovery on Instagram is shifting toward personality, authenticity, community and Reels; human taste remains important alongside rising AI use.",
+      "url": "https://www.vogue.com/article/fashions-new-instagram-playbook-according-to-eva-chen"
+    }
+  ],
+  "demand_conclusion": {
+    "verdict": "CONTINUE_HUNDRED_USER_RESEARCH",
+    "confidence": "MODERATE_NOT_PROVEN",
+    "why": [
+      "Fashion discovery is demonstrably social/video-led for large age segments in Japan.",
+      "Consumers increasingly want a personal optimum rather than more undifferentiated trend content.",
+      "AI is becoming acceptable in shopping assistance, while clothing still retains strong identity/taste involvement.",
+      "Existing closet/styling competitors validate demand but also invalidate generic AI stylist as sufficient differentiation."
+    ],
+    "what_is_not_proven": [
+      "No evidence yet proves this exact product concept will retain users.",
+      "No evidence yet proves users will upload enough wardrobe items to create useful state.",
+      "No evidence yet proves willingness to pay for this exact wedge.",
+      "No evidence yet proves creator-character commentary materially improves conversion.",
+      "No evidence yet proves CAC, contribution margin or organic loop economics."
+    ]
+  },
+  "hundred_user_wedge": {
+    "name": "TREND_TO_MY_CLOSET",
+    "promise": "See a trend, get an honest character-led verdict, then recreate or reject it using clothes you already own.",
+    "owned_state": [
+      "wardrobe items",
+      "fit/style preferences",
+      "past accept/reject decisions",
+      "successful combinations",
+      "context history such as work/casual/weather only when user-provided or first-party and appropriate"
+    ],
+    "why_not_generic_ai_stylist": "The differentiator is not outfit generation alone; it is the repeated loop from social trend commentary to the user's actual closet and accumulated decision history.",
+    "first_metrics": [
+      "qualified social viewer -> owned-surface visit",
+      "owned visit -> first useful answer",
+      "first useful answer -> at least one wardrobe item/state saved",
+      "saved state -> 7-day return",
+      "return -> second distinct fashion decision",
+      "active user -> share or organic referral",
+      "percentage of sessions users say could be fully replaced by generic AI",
+      "owner minutes per active user"
+    ],
+    "promotion_rule": "Do not promote because of views or followers. Promotion requires evidence of repeat use and state-dependent value among the first 100 users.",
+    "kill_or_redesign_triggers": [
+      "users refuse wardrobe/state setup at a rate that prevents first value",
+      "7-day return remains weak after setup friction is minimized",
+      "generic AI answers are judged equivalent for most sessions",
+      "manual owner workload scales materially with each user",
+      "acquisition depends on one fragile platform mechanic",
+      "privacy/policy requirements make the intended personalization impractical"
+    ]
+  },
+  "authority": {
+    "live_execution_authorized": false,
+    "spend_authorized": false,
+    "publication_authorized": false,
+    "provider_call_authorized": false,
+    "adoption_authorized": false,
+    "runtime_activation_authorized": false,
+    "merge_authorized": false
+  }
+}

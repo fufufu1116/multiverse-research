@@ -1,0 +1,34 @@
+{
+  "schema": "THREE_ENGINE_DOMAIN_COMPARISON_v1",
+  "status": "RESEARCH_PRIORITIZATION_ONLY",
+  "scoring_scale": "0_to_5_inputs_using_three_engine_funnel.py; scores are hypotheses, not measured demand or profit",
+  "candidates": [
+    {"domain":"recipes/meal workflow","inputs":{"branded_content_strength":5,"repeat_intent":5,"shareable_output_strength":5,"exclusive_owned_utility":5,"first_party_state_value":5,"monetization_fit":4,"platform_dependency_risk":3,"policy_fragility":2},"score":100,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Fresh 2026 market evidence shows social-video recipe import is already becoming table stakes, so import alone is not a moat.","Differentiation must move to branded discovery plus plan-shop-cook state, household/pantry context, execution utility and repeat loop.","Recent MyRecipes launch includes Instagram/TikTok saving in paid membership, further validating competition around social-to-owned import."]},
+    {"domain":"fitness/workout progression","inputs":{"branded_content_strength":5,"repeat_intent":5,"shareable_output_strength":5,"exclusive_owned_utility":5,"first_party_state_value":5,"monetization_fit":5,"platform_dependency_risk":2,"policy_fragility":2},"score":100,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Strong natural loop: coach/creator content -> workout -> recorded progress -> shareable achievement -> rediscovery.","Official Nike-Strava integration demonstrates real cross-platform activity sharing and community distribution.","Strava subscription demonstrates monetization around routes, analysis, goals, history and challenges."]},
+    {"domain":"travel planning","inputs":{"branded_content_strength":5,"repeat_intent":3,"shareable_output_strength":5,"exclusive_owned_utility":5,"first_party_state_value":4,"monetization_fit":4,"platform_dependency_risk":3,"policy_fragility":2},"score":88,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Highly visual/shareable and owned itinerary utility can be strong, but per-user repeat frequency is lower than food or fitness.","Needs fresh competitor and booking/affiliate economics research before advancement."]},
+    {"domain":"language learning","inputs":{"branded_content_strength":5,"repeat_intent":5,"shareable_output_strength":3,"exclusive_owned_utility":5,"first_party_state_value":5,"monetization_fit":5,"platform_dependency_risk":2,"policy_fragility":1},"score":100,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Very high repeat intent and state value; weaker natural share output than recipes/fitness unless progress artifacts are designed well.","Requires fresh competitor research because incumbent strength is likely substantial."]},
+    {"domain":"beauty/style","inputs":{"branded_content_strength":5,"repeat_intent":4,"shareable_output_strength":5,"exclusive_owned_utility":3,"first_party_state_value":3,"monetization_fit":5,"platform_dependency_risk":4,"policy_fragility":3},"score":74,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Excellent branded content and commerce fit, but owned utility/state moat needs stronger design and platform dependence is higher."]},
+    {"domain":"DIY/home projects","inputs":{"branded_content_strength":4,"repeat_intent":3,"shareable_output_strength":5,"exclusive_owned_utility":4,"first_party_state_value":3,"monetization_fit":4,"platform_dependency_risk":3,"policy_fragility":2},"score":75,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Strong before/after sharing and project utility, but repeat cadence varies by segment."]},
+    {"domain":"personal productivity","inputs":{"branded_content_strength":3,"repeat_intent":5,"shareable_output_strength":2,"exclusive_owned_utility":5,"first_party_state_value":5,"monetization_fit":5,"platform_dependency_risk":2,"policy_fragility":1},"score":100,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Very strong owned state and monetization potential, but weaker public share loop means the attack engine may need templates/results rather than entertainment-first content."]},
+    {"domain":"hobby education","inputs":{"branded_content_strength":5,"repeat_intent":4,"shareable_output_strength":4,"exclusive_owned_utility":4,"first_party_state_value":4,"monetization_fit":4,"platform_dependency_risk":3,"policy_fragility":1},"score":92,"posture":"PRIORITY_RESEARCH_CANDIDATE","notes":["Broad category; must split by hobby before serious ranking because economics and repeat cadence differ materially."]}
+  ],
+  "current_research_order": [
+    "fitness/workout progression",
+    "recipes/meal workflow",
+    "language learning",
+    "travel planning",
+    "hobby education",
+    "beauty/style",
+    "DIY/home projects",
+    "personal productivity"
+  ],
+  "ranking_rule_note": "Raw score ties are broken qualitatively by attack/defense/engine balance, observed cross-platform precedent, incumbent pressure, and natural share-loop strength. This is not adoption authority.",
+  "fresh_evidence_refs": [
+    "Food & Wine / MyRecipes app launch 2026-09-11",
+    "Strava subscription page checked 2026-09-11",
+    "Nike-Strava official partnership",
+    "Strava Help Center Nike integration checked 2026-09-11"
+  ],
+  "authority":{"live_execution_authorized":false,"spend_authorized":false,"publication_authorized":false,"adoption_authorized":false,"runtime_activation_authorized":false},
+  "runtime":"OFF"
+}

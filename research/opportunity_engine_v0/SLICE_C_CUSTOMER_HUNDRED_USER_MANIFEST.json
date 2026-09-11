@@ -1,0 +1,37 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_CONVERGENCE_SLICE_v1",
+  "slice_id": "C_CUSTOMER_VALUE_HUNDRED_USER",
+  "status": "RESEARCH_ONLY_FROZEN_SCOPE",
+  "purpose": "Evaluate whether a candidate returns real customer value and earns progression through first-100-user evidence without vanity promotion, manipulation, or live authority.",
+  "source_pr": 310,
+  "included_paths": [
+    "research/opportunity_engine_v0/customer_value_loop.py",
+    "research/opportunity_engine_v0/customer_contribution.py",
+    "research/opportunity_engine_v0/hundred_user_general.py",
+    "research/opportunity_engine_v0/growth_loop.py",
+    "research/opportunity_engine_v0/test_customer_contribution.py",
+    "research/opportunity_engine_v0/test_growth_loop.py"
+  ],
+  "required_properties": [
+    "customer can receive value even when no purchase occurs",
+    "vanity metrics cannot promote a candidate",
+    "manipulative or deceptive loops fail closed",
+    "customer contribution never becomes independent evidence by itself",
+    "first-100-user promotion depends on repeat use and state-dependent value",
+    "owner burden and generic-AI substitutability remain explicit failure conditions"
+  ],
+  "forbidden_dependency_tokens": [
+    "covert_tracking", "dark_pattern", "credential", "provider_call", "runtime_activation", "payment_collection_authorized:true"
+  ],
+  "authority": {
+    "recruitment": false,
+    "payment_collection": false,
+    "live_execution": false,
+    "provider_call": false,
+    "spend": false,
+    "publication": false,
+    "adoption": false,
+    "runtime_activation": false
+  },
+  "fresh_main_rebind_required_before_adoption": true
+}
