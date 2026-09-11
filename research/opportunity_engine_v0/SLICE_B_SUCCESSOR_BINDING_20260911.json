@@ -1,5 +1,5 @@
 {
-  "schema": "OPPORTUNITY_ENGINE_SLICE_B_SUCCESSOR_BINDING_v1",
+  "schema": "OPPORTUNITY_ENGINE_SLICE_B_SUCCESSOR_BINDING_v2",
   "status": "FRESH_MAIN_SUCCESSOR_PRE_REVIEW_FREEZE",
   "canonical_base": {
     "branch": "main",
@@ -29,11 +29,15 @@
     {
       "path": "research/opportunity_engine_v0/test_signal_forecast.py",
       "reason": "Frozen source mixed Slice A signal tests with Slice B forecast-ledger tests. Successor retains only forecast-ledger proof so the Slice B candidate does not depend on signals.py."
+    },
+    {
+      "path": "research/opportunity_engine_v0/trend_forecast.py",
+      "reason": "Fixed Lab Build #77 reached review execution and exposed that forecast_commitment hashed only the derived assessment payload. Distinct raw snapshots could collapse to the same commitment when the derived score saturated at 100. Successor v2 binds the full immutable TrendSignalSnapshot plus the derived assessment into the commitment, preserving temporal/tamper evidence without adding authority. Existing regression test_changed_snapshot_changes_commitment is retained unchanged."
     }
   ],
   "required_properties": [
     "forecast frozen before outcome observation",
-    "tamper-evident commitment",
+    "tamper-evident commitment binds the full raw snapshot even when derived scoring saturates",
     "successor forecast never mutates predecessor",
     "settlement distinct from creation",
     "historical retrospective is hypothesis-only until prospective test",
@@ -53,7 +57,8 @@
     "tests_present": true,
     "independent_execution": false,
     "pass_claim": false,
-    "formal_lab_or_auditor": false
+    "formal_lab_or_auditor": false,
+    "build_77_finding": "COMMITMENT_COLLISION_ON_SATURATED_DERIVED_SCORE_REPAIRED_IN_SUCCESSOR_V2"
   },
   "authority": {
     "formal_review": false,
