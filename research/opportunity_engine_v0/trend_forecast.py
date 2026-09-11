@@ -4,7 +4,7 @@ The key rule is temporal integrity: score with information available at forecast
 freeze the forecast, and settle later. This module does not authorize investment,
 spend, publication, or live execution.
 """
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import date
 from enum import Enum
 import hashlib
@@ -92,6 +92,15 @@ def assess_trend_signal(snapshot: TrendSignalSnapshot) -> dict:
         "adoption_authorized": False,
         "runtime_activation_authorized": False,
     }
-    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    commitment_payload = {
+        "snapshot": asdict(snapshot),
+        "assessment": payload,
+    }
+    canonical = json.dumps(
+        commitment_payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
     payload["forecast_commitment"] = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
     return payload
