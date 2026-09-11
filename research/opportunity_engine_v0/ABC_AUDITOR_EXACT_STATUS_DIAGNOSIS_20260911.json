@@ -1,0 +1,63 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_ABC_AUDITOR_EXACT_STATUS_DIAGNOSIS_v1",
+  "observed_on": "2026-09-11",
+  "canonical_main": {
+    "sha": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46"
+  },
+  "builds": {
+    "A": {
+      "pr": 325,
+      "head": "70e5aa16b4f650c6742f60d2549139eaa869057e",
+      "build": 1667,
+      "status_context": "buildkite/multiverse-independent-auditor",
+      "result": "FAILURE",
+      "reported_duration_seconds": 2,
+      "pr_explanation_comment_present": false
+    },
+    "B": {
+      "pr": 326,
+      "head": "9037f51d4696c67d9e626f37002110221f39f5c3",
+      "build": 1672,
+      "status_context": "buildkite/multiverse-independent-auditor",
+      "result": "FAILURE",
+      "reported_duration_seconds": 1,
+      "pr_explanation_comment_present": false
+    },
+    "C": {
+      "pr": 327,
+      "head": "6b41434c9d0d645b82fa3b12e5a0c56df7504083",
+      "build": 1675,
+      "status_context": "buildkite/multiverse-independent-auditor",
+      "result": "FAILURE",
+      "reported_duration_seconds": 1,
+      "pr_explanation_comment_present": false
+    }
+  },
+  "diagnosis": {
+    "repository_cause_established": false,
+    "infrastructure_cause_established": false,
+    "request_authority_cause_established": false,
+    "review_content_cause_established": false,
+    "startup_or_pretest_failure_pattern_observed": true,
+    "startup_or_pretest_failure_pattern_is_root_cause_claim": false,
+    "reason": "All three independent-auditor statuses transition from started to failed in 1-2 seconds, but GitHub-visible status evidence contains no Buildkite job log or exact failure message. Therefore repository cause is not proven and no minimal successor is authorized under the repository-cause-only rule."
+  },
+  "action": {
+    "minimal_successor_created": false,
+    "rerun_performed": false,
+    "fixed_steps_changed": false,
+    "merge_performed": false,
+    "candidate_heads_mutated": false,
+    "next_required_evidence": "Exact Buildkite Build #1667/#1672/#1675 job log or equivalent canonical failure message sufficient to distinguish repository cause from harness/request/infrastructure cause."
+  },
+  "authority": {
+    "formal_review": false,
+    "auditor_rerun": false,
+    "fixed_steps_change": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "runtime_activation": false,
+    "live_business_effect": false
+  }
+}
