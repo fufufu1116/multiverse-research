@@ -1,0 +1,34 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_OWNER_CONSTRAINT_PROFILE_v1",
+  "case_id": "owner-capital-constraint-profile-v1",
+  "status": "PRIVACY_PRESERVING_CONSTRAINT_ONLY",
+  "purpose": "Bound opportunity research without storing owner-sensitive financial, legal, health, family, welfare, creditor, or other personal facts in repository artifacts.",
+  "constraints": {
+    "assume_deployable_capital": false,
+    "assume_credit_available": false,
+    "assume_legal_or_regulatory_freedom": false,
+    "prefer_zero_or_near_zero_capital": true,
+    "prefer_low_fixed_cost": true,
+    "prefer_reversible_tests": true,
+    "prefer_remote_or_phone_cloud_executable": true,
+    "prefer_no_inventory": true,
+    "prefer_no_borrowing": true,
+    "require_fresh_owner_gate_before_live_spend": true,
+    "require_fresh_legal_or_compliance_check_when_material": true
+  },
+  "privacy_rules": [
+    "Do not encode the underlying personal reason for a constraint in repository artifacts.",
+    "Do not place owner-sensitive facts into provider packets, public artifacts, marketing, telemetry, examples, or unrelated research outputs.",
+    "Retain only the minimum operational constraint needed for opportunity filtering.",
+    "If a future decision requires a sensitive fact, ask or verify it at the governed decision point rather than persisting it here."
+  ],
+  "authority": {
+    "provider_call_authorized": false,
+    "spend_authorized": false,
+    "live_business_authorized": false,
+    "publication_authorized": false,
+    "adoption_authorized": false,
+    "runtime_activation_authorized": false
+  },
+  "runtime": "OFF"
+}
