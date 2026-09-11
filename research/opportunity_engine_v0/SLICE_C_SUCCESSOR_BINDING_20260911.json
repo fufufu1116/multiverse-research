@@ -1,0 +1,48 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_C_SUCCESSOR_BINDING_v2",
+  "status": "FRESH_MAIN_SUCCESSOR_PRE_REVIEW_FREEZE",
+  "canonical_base": {
+    "branch": "main",
+    "sha": "228bd5b1fe2550747398790712edccc04c741814",
+    "tree": "857b0ab2b572a13feb97f2d07bf5c004fdabd683"
+  },
+  "supersedes": {
+    "pull_request": 327,
+    "branch": "candidate/opportunity-engine-slice-c-fresh-main-20260911-v1",
+    "head": "6b41434c9d0d645b82fa3b12e5a0c56df7504083",
+    "tree": "a919f08c2b5e86c1d8a90e5bf0287f854e8d30b6",
+    "reason": "canonical main advanced to the exact adopted Slice A head; rebuild Slice C on fresh main rather than reviewing the stale-base candidate"
+  },
+  "frozen_research_source": {
+    "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5"
+  },
+  "slice": "C_CUSTOMER_VALUE_HUNDRED_USER",
+  "exact_paths": [
+    "research/opportunity_engine_v0/customer_value_loop.py",
+    "research/opportunity_engine_v0/customer_contribution.py",
+    "research/opportunity_engine_v0/hundred_user_general.py",
+    "research/opportunity_engine_v0/growth_loop.py",
+    "research/opportunity_engine_v0/test_customer_contribution.py",
+    "research/opportunity_engine_v0/test_growth_loop.py"
+  ],
+  "carry_forward": "EXACT_BLOB_IDENTITY_FROM_SLICE_C_V1_FOR_ALL_6_SOURCE_TEST_PATHS",
+  "isolation": {
+    "external_imports_observed": false,
+    "live_recruitment": false,
+    "payment_collection": false,
+    "provider_call": false,
+    "credential_use": false,
+    "runtime_activation": false,
+    "publication": false,
+    "spend": false,
+    "canonical_adoption": false
+  },
+  "proof_state": {
+    "repository_tests": "PRESENT_NOT_INDEPENDENTLY_EXECUTED",
+    "expected_unit_test_count": 14,
+    "lab_auditor": "NOT_EXECUTED",
+    "pass_claim": false
+  },
+  "note": "This fresh-main successor preserves the exact Slice C v1 payload while rebasing the candidate boundary onto canonical main after Slice A. It is convergence preparation, not canonical integration."
+}
