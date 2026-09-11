@@ -1,0 +1,37 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_OWNER_CONSTRAINT_v1",
+  "case_id": "owner-debt-bankruptcy-welfare-20260911",
+  "status": "SENSITIVE_OWNER_CONSTRAINT_DO_NOT_GENERALIZE",
+  "observed_date": "2026-09-11",
+  "purpose": "Constrain future opportunity recommendations so they do not assume deployable capital, credit, debt repayment from protected subsistence funds, or legal freedom that has not been verified.",
+  "constraints": {
+    "public_assistance_currently_reported": true,
+    "bankruptcy_under_consideration": true,
+    "significant_debt_reported": true,
+    "personal_creditor_exists": true,
+    "future_voluntary_gratitude_or_payment_after_self_support_is_a_goal": true
+  },
+  "research_safety_rules": [
+    "Do not advise preferential repayment to a friend or relative before or during bankruptcy without case-specific lawyer review.",
+    "Do not omit a personal creditor from the creditor list merely because the relationship matters.",
+    "Do not model legal-aid cost as automatically free; distinguish deferral, advance-payment assistance and later waiver eligibility.",
+    "Do not assume welfare benefits are freely deployable for old-debt repayment.",
+    "Do not treat a future voluntary payment after discharge as a current enforceable obligation or as a reason to hide or prefer a creditor.",
+    "Before any live business/spend recommendation, re-check welfare reporting rules, bankruptcy status, legal-aid obligations, income effects and disposable-cash reality.",
+    "Prefer zero/near-zero-capital, reversible, remote, low-fixed-cost opportunity research while these constraints remain active.",
+    "Owner-specific sensitive facts must not be exposed in public artifacts, provider packets, marketing, or unrelated research outputs."
+  ],
+  "official_source_findings_20260911": [
+    "Japan Legal Support Center states that welfare recipients may receive deferment of reimbursement during the assisted matter and may apply for waiver after all assisted matters end, but welfare receipt does not automatically make the service free.",
+    "Japanese court guidance warns that selectively repaying only some creditors, including acquaintances or relatives, can create issues in discharge proceedings.",
+    "After a discharge becomes final, ordinary pre-bankruptcy debts are generally no longer legally enforceable except non-dischargeable claims; case-specific advice is still required before any later voluntary payment plan."
+  ],
+  "authority": {
+    "legal_advice_authorized": false,
+    "spend_authorized": false,
+    "debt_payment_authorized": false,
+    "live_business_authorized": false,
+    "publication_authorized": false
+  },
+  "runtime": "OFF"
+}
