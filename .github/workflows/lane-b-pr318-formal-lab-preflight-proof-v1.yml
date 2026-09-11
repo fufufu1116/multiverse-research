@@ -1,0 +1,184 @@
+name: lane-b-pr318-formal-lab-preflight-proof-v1
+
+on:
+  push:
+    branches:
+      - agent/lane-b-pr318-formal-lab-preflight-proof-20260911-v1
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact frozen target and fixed Steps integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET=c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          TREE=867ec216722155c7ab97400b6891e64af1dde896
+          DISPATCHER_REF=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          LAB_BLOB=2d4ec751dee4e507a08313d403c7d0521c172ae5
+          AUDITOR_BLOB=c42bae003a3b1dc6d11cf5e6c33996369a4d22d6
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$DISPATCHER_REF"
+          test "$(git show -s --format=%T "$TARGET")" = "$TREE"
+          test "$(git rev-parse "$DISPATCHER_REF:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$TARGET:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml")" = "$LAB_BLOB"
+          test "$(git rev-parse "$DISPATCHER_REF:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          test "$(git rev-parse "$TARGET:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml")" = "$AUDITOR_BLOB"
+          git checkout --detach "$TARGET"
+          test "$(git rev-parse HEAD)" = "$TARGET"
+          echo "FIXED_STEPS_INTEGRITY=PASS"
+
+      - name: Execute exact owner-free one-shot preflight
+        id: run_preflight
+        shell: bash
+        run: |
+          set -uo pipefail
+          TARGET=c3e5bbd340b6da75c8fc80fa921becf01b0bc907
+          DISPATCHER_REF=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          set +e
+          PYTHONPATH=. python automation/review_dispatcher_v1/one_shot_preflight_v1.py \
+            --dispatcher-ref "$DISPATCHER_REF" \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head "$TARGET" \
+            --repo-root . \
+            > preflight.json 2> preflight.stderr
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > preflight.rc
+          echo "PREFLIGHT_EXIT_CODE=$rc"
+          echo "--- preflight.json ---"
+          cat preflight.json || true
+          echo "--- preflight.stderr ---"
+          cat preflight.stderr || true
+          exit 0
+
+      - name: Validate exact terminal READY or BLOCKED envelope
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = {
+              "repo": "fufufu1116/multiverse-research",
+              "lane": "LAB",
+              "head": "c3e5bbd340b6da75c8fc80fa921becf01b0bc907",
+              "tree": "867ec216722155c7ab97400b6891e64af1dde896",
+              "base": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+              "main": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+              "dispatcher_ref": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+              "request_id": "pr318-current-main-preflight-read-resilience-lab-v1-main-d1edc2ea",
+              "request_comment": 5627957154,
+              "request_sha256": "64a5bc2ea1328e35163e3df9d5f78f8575e455e06e257e53dfc005a0fb13a5f7",
+          }
+          rc = int(Path("preflight.rc").read_text().strip())
+          stdout = Path("preflight.json").read_text()
+          stderr = Path("preflight.stderr").read_text()
+          try:
+              data = json.loads(stdout)
+              valid_json = isinstance(data, dict)
+          except Exception as exc:
+              data = {
+                  "ready": False,
+                  "state": "ONE_SHOT_PREFLIGHT_BLOCKED",
+                  "classification": "PREFLIGHT_EXECUTION_NO_VALID_JSON",
+                  "findings": [repr(exc)],
+                  "publication_attempted": False,
+                  "owner_build_consumed": False,
+                  "runtime": "OFF",
+              }
+              valid_json = False
+
+          violations = []
+          if valid_json:
+              if data.get("ready") is True:
+                  for key, value in expected.items():
+                      if data.get(key) != value:
+                          violations.append(f"{key}:{data.get(key)!r}!={value!r}")
+                  if data.get("state") != "ONE_SHOT_PREFLIGHT_READY":
+                      violations.append("state_not_ready")
+                  if data.get("classification") != "PASS":
+                      violations.append(f"classification:{data.get('classification')!r}")
+                  if data.get("review_verdict") != "PASS":
+                      violations.append(f"review_verdict:{data.get('review_verdict')!r}")
+                  if data.get("test_count") != 154:
+                      violations.append(f"test_count:{data.get('test_count')!r}")
+                  if data.get("findings") != []:
+                      violations.append(f"findings:{data.get('findings')!r}")
+                  if data.get("artifact_serialization") != "PASS":
+                      violations.append(f"artifact_serialization:{data.get('artifact_serialization')!r}")
+                  if rc != 0:
+                      violations.append(f"ready_exit_code:{rc}")
+              else:
+                  if data.get("state") != "ONE_SHOT_PREFLIGHT_BLOCKED":
+                      violations.append(f"blocked_state:{data.get('state')!r}")
+                  if rc == 0:
+                      violations.append("blocked_exit_code_zero")
+
+              if data.get("publication_attempted") is not False:
+                  violations.append("publication_attempted_not_false")
+              if data.get("owner_build_consumed") is not False:
+                  violations.append("owner_build_consumed_not_false")
+              if data.get("runtime") != "OFF":
+                  violations.append(f"runtime:{data.get('runtime')!r}")
+
+          if violations:
+              terminal = "BLOCKED"
+              classification = "PREFLIGHT_TERMINAL_ENVELOPE_MISMATCH"
+              findings = violations
+          else:
+              terminal = "READY" if data.get("ready") is True else "BLOCKED"
+              classification = data.get("classification")
+              findings = data.get("findings") or []
+
+          terminal_payload = {
+              "terminal": terminal,
+              "classification": classification,
+              "preflight_exit_code": rc,
+              "preflight_valid_json": valid_json,
+              "request_comment": data.get("request_comment"),
+              "request_id": data.get("request_id"),
+              "request_sha256": data.get("request_sha256"),
+              "head": data.get("head"),
+              "tree": data.get("tree"),
+              "base": data.get("base"),
+              "main": data.get("main"),
+              "dispatcher_ref": data.get("dispatcher_ref"),
+              "review_verdict": data.get("review_verdict"),
+              "test_count": data.get("test_count"),
+              "artifact_serialization": data.get("artifact_serialization"),
+              "findings": findings,
+              "publication_attempted": data.get("publication_attempted", False),
+              "owner_build_consumed": data.get("owner_build_consumed", False),
+              "runtime": data.get("runtime", "OFF"),
+              "fixed_steps_integrity": "PASS",
+              "stderr_tail": "\n".join(stderr.splitlines()[-24:]),
+          }
+          Path("terminal.json").write_text(json.dumps(terminal_payload, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(terminal_payload, sort_keys=True))
+          print(f"TERMINAL={terminal}")
+          PY
+
+      - name: Terminal no-effect summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat terminal.json
+          echo 'FORMAL_BUILD_CONSUMED=false'
+          echo 'RETRY_RERUN_REUSE=false'
+          echo 'PR_MUTATION=false'
+          echo 'PUBLICATION_ATTEMPTED=false'
+          echo 'OWNER_BUILD_CONSUMED=false'
+          echo 'RUNTIME=OFF'
