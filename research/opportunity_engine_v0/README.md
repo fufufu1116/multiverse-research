@@ -15,6 +15,16 @@ The revenue-route heuristic compares advertising, affiliate, one-time, subscript
 
 Portfolio ranking implements the doctrine: research broadly, deploy narrowly. At most one passing candidate is assigned `FOCUS`; other passing candidates remain `HOLD_AFTER_RESEARCH` until the focus candidate is resolved.
 
+## Casual-post / brainstorm intake
+
+`casual_intake.py` is a bounded gate for extracting commercially useful fragments from casual conversations without treating the whole conversation as trusted knowledge. It can retain reusable business-model patterns, growth mechanisms, monetization structures, constraints, competitor clues and falsifiers while rejecting sensitive personal data, deceptive/evasive tactics and low-value banter.
+
+Concrete claims from casual chat remain explicitly unverified until researched. Provider terms, resale/licensing rights, prices, fees, competition, legal constraints, support burden and demand must be freshly verified before a retained fragment can advance through the normal Opportunity Engine pipeline.
+
+The repository defines the intake contract but does not have background access to other ChatGPT rooms. Actual automatic cross-chat capture requires an authorized conversation/export/event source. Until then, forwarding a useful post into this lane is valid intake and can be stored as a hypothesis immediately.
+
+See `CASUAL_POST_INTAKE_DOCTRINE.md`, `casual_intake.py`, `test_casual_intake.py`, and `cases/casual_post_reseller_value_add_20260911.json`.
+
 ## Scale-path layer
 
 A separate scale model prevents a small opportunity from being mistaken for a durable livelihood. Profit thresholds are policy inputs rather than hard-coded assumptions.
