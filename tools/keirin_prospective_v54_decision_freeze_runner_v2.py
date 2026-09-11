@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Hardened prospective v54 decision freeze runner v2.
 
-v2 closes the v1 competition-score injection gap.  It never accepts a caller-
-supplied race-gate score.  Instead it requires the exact PRE payload already
+v2 closes the v1 competition-score injection gap. It never accepts a caller-
+supplied race-gate score. Instead it requires the exact PRE payload already
 bound by the PRE-freeze receipt, verifies the canonical SHA256, recomputes the
 frozen S0/challenger strict-0.40 gate score with the pinned producer, and only
 then delegates the remaining frozen v54 decision logic to v1.
@@ -22,7 +22,7 @@ from typing import Any
 V1_REL = "tools/keirin_prospective_v54_decision_freeze_runner_v1.py"
 V1_GIT_BLOB = "417fa8947ab9b15dde305adc15085d558659d134"
 SCORE_PRODUCER_REL = "tools/keirin_prospective_competition_gate_score_v1.py"
-SCORE_PRODUCER_GIT_BLOB = "e975bb3704863dbc7ebdb88d1d7f9a7ac82d5700"
+SCORE_PRODUCER_GIT_BLOB = "8ffbab9d02562a3f8b617047c614a2008378932b"
 
 
 class FailClosed(RuntimeError):
@@ -82,8 +82,6 @@ def run_v2(envelope: dict[str, Any], repo_root: Path) -> dict[str, Any]:
     target_identity = pre_receipt.get("target_identity")
     if not isinstance(target_identity, dict):
         raise FailClosed("pre_freeze_receipt_target_identity_missing")
-    # The score producer is bound to the exact PRE bytes; additionally require
-    # the PRE identity itself to agree with the frozen receipt identity.
     if v1.identity_tuple(pre_payload) != v1.identity_tuple(target_identity):
         raise FailClosed("pre_payload_for_gate_score_target_identity_mismatch")
 
@@ -113,7 +111,6 @@ def run_v2(envelope: dict[str, Any], repo_root: Path) -> dict[str, Any]:
     }
 
     base = v1.run(delegated, repo_root)
-    # Do not mutate the v1 receipt because its own receipt hash binds its body.
     wrapper = {
         "record": "KEIRIN_PROSPECTIVE_V54_DECISION_FREEZE_RECEIPT_v2",
         "status": "PASS_HARDENED_SCORE_PRODUCER_BOUND",
