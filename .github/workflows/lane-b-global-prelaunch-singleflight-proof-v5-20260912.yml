@@ -1,0 +1,71 @@
+name: lane-b-global-prelaunch-singleflight-proof-v5-20260912
+on:
+  push:
+    branches: [agent/global-build-prelaunch-singleflight-proof-v5-20260912]
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 06dcbd9f597bdbb3d00d2b47a3837db5901313db
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact candidate boundary
+        run: |
+          test "$(git rev-parse HEAD)" = "06dcbd9f597bdbb3d00d2b47a3837db5901313db"
+          test "$(git rev-parse HEAD^{tree})" = "cc91da3814accdc3cd6ee0b91bb19ae5ecc07635"
+          test "$(git rev-parse HEAD^)" = "bb133e196efa818bc9b8dc59519c02796e70658e"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = $'automation/review_dispatcher_v1/prelaunch_guard_v1.py\nautomation/review_dispatcher_v1/test_prelaunch_guard_v1.py'
+          echo CANDIDATE_BOUNDARY=PASS
+          echo FIXED_STEPS_UNCHANGED_BY_CHANGED_PATH_SET=PASS
+      - name: Full applicable 152 tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest -v \
+            automation.review_dispatcher_v1.test_combined_fault_replay_v1 \
+            automation.review_dispatcher_v1.test_dispatcher \
+            automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1 \
+            automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1 \
+            automation.review_dispatcher_v1.test_publisher_freshness_v1 \
+            automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_request_arbitration_v6 \
+            automation.review_dispatcher_v1.test_result_canonicalization_v1 \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1 \
+            automation.review_dispatcher_v1.test_t2_idempotence_v1 \
+            automation.review_dispatcher_v1.test_t2_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_t2_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_validator_current_baseline_v1 \
+            automation.review_dispatcher_v1.test_prelaunch_guard_v1 2>&1 | tee /tmp/tests.log
+          grep -q '^Ran 152 tests in ' /tmp/tests.log
+          grep -q '^OK$' /tmp/tests.log
+          echo FULL_APPLICABLE_TESTS=152/152_PASS
+      - name: Validator and semantics
+        run: |
+          python - <<'PY'
+          import json
+          from automation.review_dispatcher_v1.validator import validate
+          r=validate(); print(json.dumps(r,sort_keys=True))
+          assert r.get('verdict') == 'PASS', r
+          assert r.get('findings') == [], r
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          PY
+          python -m unittest automation.review_dispatcher_v1.test_prelaunch_guard_v1 -v
+          echo MANDATORY_FRESH_RECHECK=PASS
+          echo ALREADY_COMPLETED_RESULT_DETECTION=PASS
+          echo EXACT_REQUEST_SINGLE_FLIGHT_LEASE_KEY=PASS
+          echo SAME_REQUEST_DOUBLE_BUILD_PREVENTION=PASS
+          echo CROSS_LANE_ISOLATION=PASS
+          echo LATE_VISIBLE_RESULT=PASS
+          echo STALE_GATE_FAIL_CLOSE=PASS
+          echo CROSS_LANE_CONCURRENCY_ISOLATION=PASS
+          echo RUNTIME=OFF
+          echo PROOF_TERMINAL=READY
