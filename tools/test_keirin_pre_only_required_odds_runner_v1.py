@@ -21,6 +21,11 @@ spec.loader.exec_module(mod)
 
 
 class FakeV1:
+    FORBIDDEN_TOKENS = (
+        "result", "payout", "refund", "finish", "winner",
+        "着順", "払戻", "確定",
+    )
+
     @staticmethod
     def reject_outcome_fields(envelope):
         if "result" in envelope:
@@ -126,6 +131,22 @@ class RequiredOddsRunnerTests(unittest.TestCase):
         self.assertEqual(mod.COMPETITION_THRESHOLD, 0.40)
         self.assertEqual(mod.SUPPORTED_MARKETS, ("3rentan", "2shatan"))
 
+    def test_scoped_outcome_filter_allows_exact_required_control_paths(self):
+        env = make_envelope()
+        mod._reject_outcome_fields_scoped(env, FakeV1.FORBIDDEN_TOKENS)
+
+    def test_scoped_outcome_filter_rejects_nested_result_inside_winner_prediction(self):
+        env = make_envelope()
+        env["pre_freeze_receipt"]["winner_prediction"]["result"] = {"car_no": 1}
+        with self.assertRaisesRegex(mod.FailClosed, "outcome_or_settlement_field_forbidden"):
+            mod._reject_outcome_fields_scoped(env, FakeV1.FORBIDDEN_TOKENS)
+
+    def test_scoped_outcome_filter_rejects_misplaced_winner_control_name(self):
+        env = make_envelope()
+        env["shadow"] = {"winner_prediction": {}}
+        with self.assertRaisesRegex(mod.FailClosed, "outcome_or_settlement_field_forbidden"):
+            mod._reject_outcome_fields_scoped(env, FakeV1.FORBIDDEN_TOKENS)
+
     def test_load_pinned_fails_closed_on_missing_file(self):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(mod.FailClosed, "missing_pinned_module"):
@@ -181,11 +202,11 @@ class RequiredOddsRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(mod.FailClosed, "pre_payload_sha256_mismatch"):
                 mod.run(env, Path("."))
 
-    def test_run_delegates_outcome_contamination_rejection(self):
+    def test_run_rejects_outcome_contamination(self):
         env = make_envelope()
         env["result"] = {"winner": 1}
         with mock.patch.object(mod, "_load_pinned", side_effect=fake_load_pinned):
-            with self.assertRaisesRegex(mod.FailClosed, "forbidden_outcome_field"):
+            with self.assertRaisesRegex(mod.FailClosed, "outcome_or_settlement_field_forbidden"):
                 mod.run(env, Path("."))
 
     def test_run_fails_closed_when_supported_market_missing(self):
