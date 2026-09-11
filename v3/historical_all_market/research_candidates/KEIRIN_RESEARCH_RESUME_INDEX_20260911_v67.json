@@ -1,0 +1,47 @@
+{
+  "record": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v67",
+  "status": "PROSPECTIVE_PRE_FREEZE_PATH_READY_EVENT_ROSTERS_VISIBLE_FINAL_RACE_ASSIGNMENTS_NOT_YET_FIXED",
+  "parent_resume": "KEIRIN_RESEARCH_RESUME_INDEX_20260911_v66.json",
+  "fresh_parent_head_before_v67": "4de4e0b7db214dbc51531ea1bdef49182a46df46",
+  "prospective_targets": {
+    "matsuyama_2026_09_12": {
+      "event_confirmed": true,
+      "day1_races": 7,
+      "event_roster_visible": true,
+      "final_race_assignment_visible": false,
+      "freeze_eligible_now": false,
+      "reason": "event-level entrants are visible but final per-race car+rider assignment is not yet trustworthily bound"
+    },
+    "sasebo_2026_09_12": {
+      "event_confirmed": true,
+      "day1_races": 12,
+      "final_race_assignment_visible": false,
+      "freeze_eligible_now": false,
+      "secondary_source_explicit_state": "race combinations are not yet decided",
+      "official_source_state": "previous-day racecard still preparing",
+      "official_expected_update_window_jst": "around 21:00 for night meeting"
+    }
+  },
+  "preparation_progress": {
+    "matsuyama_event_roster_precollected": true,
+    "winner_predictor_ready": true,
+    "cutoff_provenance_target_guard_ready": true,
+    "one_shot_pre_freeze_runner_ready": true,
+    "result_pages_opened_for_target": false,
+    "payout_pages_opened_for_target": false
+  },
+  "owner_assist_policy": {
+    "owner_action_needed_now": false,
+    "ask_owner_only_if": "a trustworthy final racecard becomes visible on Owner device but remains inaccessible to repository/web capture tooling",
+    "acceptable_owner_help": "save/share the PRE-only racecard page or PDF before cutoff; do not include result/payout pages"
+  },
+  "absolute_rule_ja": "対象時点より先の情報を、対象時点の予測・選択・実行成立条件にしてはいけない。",
+  "current_state": {
+    "formal_science_progress_percent": 85,
+    "scientific_increment_now": 0,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_spend_credentials_live_effect": "NONE"
+  },
+  "next_action": "Continue PRE-only discovery. Do not infer race membership from event roster. Freeze the first eligible race only after date+venue+race number+car number+rider identity are all present in a trustworthy pre-outcome source body before cutoff."
+}
