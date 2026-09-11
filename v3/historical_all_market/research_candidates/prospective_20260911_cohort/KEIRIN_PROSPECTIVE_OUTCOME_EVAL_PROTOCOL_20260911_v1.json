@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_OUTCOME_EVAL_PROTOCOL_20260911_v1",
+  "created_at_jst": "2026-09-11T19:13:21+09:00",
+  "status": "FROZEN_RESULT_BLIND_BEFORE_EARLIEST_COHORT_START",
+  "scope": "Exact six-race prospective cohort frozen in KEIRIN_PROSPECTIVE_COHORT_LOCK_20260911_v1.json only.",
+  "bindings": {
+    "cohort_lock_commit": "58bf0d3789cea371287d5761e12408f87f5c0089",
+    "cohort_lock_body_sha256": "3dfa39520e6dea24df24fae3c06e986f9e109d6c0db00995d891d0d29d84f2cc",
+    "b1a_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "circumference_model_blob": "061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878",
+    "competition_gate_blob": "8ffbab9d02562a3f8b617047c614a2008378932b",
+    "required_odds_runner_blob": "5d06bb2d1546101e4989e94816b274b6cbc4563f",
+    "v54_probability_blob": "417fa8947ab9b15dde305adc15085d558659d134"
+  },
+  "cohort_accounting": {
+    "all_members_must_be_retained": true,
+    "race_count": 6,
+    "candidate_pass_count": 3,
+    "reject_count": 3,
+    "candidate_event_ids": [
+      "KAWASAKI_20260911_R9",
+      "KAWASAKI_20260911_R11",
+      "YOKKAICHI_20260911_R12"
+    ],
+    "reject_event_ids": [
+      "KAWASAKI_20260911_R10",
+      "YOKKAICHI_20260911_R10",
+      "YOKKAICHI_20260911_R11"
+    ],
+    "post_outcome_member_drop_prohibited": true,
+    "post_outcome_membership_change_prohibited": true,
+    "pre_backfill_prohibited": true
+  },
+  "primary_endpoint": {
+    "name": "candidate_top1_hit_rate",
+    "population": "exact 3 frozen gate-pass candidates",
+    "per_race_definition": "1 iff frozen B1a top1 car_no equals official actual winner car_no; else 0",
+    "aggregation": "arithmetic mean of the three binary hits"
+  },
+  "secondary_endpoints": {
+    "multiclass_brier": {
+      "population": "exact 3 frozen gate-pass candidates",
+      "per_race_definition": "sum_i((p_i-y_i)^2) across all starters, where p_i is frozen B1a win probability and y_i is 1 only for the official winner",
+      "normalization": "no division by number of starters",
+      "aggregation": "arithmetic mean across the three candidates"
+    },
+    "two_shatan_exact_hit_count": {
+      "definition": "count candidate races where frozen ordered 2車単 ticket exactly matches official first-second order"
+    },
+    "san_rentan_exact_hit_count": {
+      "definition": "count candidate races where frozen ordered 3連単 ticket exactly matches official first-second-third order"
+    },
+    "selection_integrity": {
+      "definition": "report all 6 frozen members with original PASS/REJECT state; no member may disappear after outcomes"
+    }
+  },
+  "economic_claim_boundary": {
+    "actual_odds_required_for_realized_ev_or_roi_claims": true,
+    "payout_required_for_realized_return_claims": true,
+    "without_payout_or_actual_odds": "report only predictive hit/probability metrics and frozen break-even thresholds; do not claim realized ROI or profit"
+  },
+  "governance": {
+    "result_access": "PROHIBITED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION_FOR_THIS_COHORT",
+    "payout_access": "PROHIBITED_UNTIL_SEPARATE_EXPLICIT_OWNER_AUTHORIZATION",
+    "result_and_payout_authorizations_must_not_be_inferred_from_historical_receipts": true,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "science": {
+    "result_accessed_before_protocol_freeze": false,
+    "payout_accessed_before_protocol_freeze": false,
+    "actual_odds_used_before_protocol_freeze": false,
+    "retune_after_cohort_lock_prohibited": true,
+    "candidate_n": 3,
+    "interpretation": "pilot prospective evidence; insufficient by itself for robust statistical proof or automatic 100% promotion",
+    "research_lane_formal_validation_percent_before_outcome_eval": 85,
+    "automatic_percent_promotion_from_hits": false,
+    "next_gate": "After explicit RESULT authorization and race completion, evaluate all six locked members under this exact protocol. PAYOUT remains separately gated."
+  }
+}
