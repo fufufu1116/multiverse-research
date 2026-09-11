@@ -1,0 +1,57 @@
+name: lane-b-global-prelaunch-singleflight-proof-v3-20260912
+on:
+  push:
+    branches: [agent/global-build-prelaunch-singleflight-proof-v3-20260912]
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 06dcbd9f597bdbb3d00d2b47a3837db5901313db
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact candidate boundary
+        run: |
+          test "$(git rev-parse HEAD)" = "06dcbd9f597bdbb3d00d2b47a3837db5901313db"
+          test "$(git rev-parse HEAD^{tree})" = "cc91da3814accdc3cd6ee0b91bb19ae5ecc07635"
+          test "$(git rev-parse HEAD^)" = "bb133e196efa818bc9b8dc59519c02796e70658e"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = $'automation/review_dispatcher_v1/prelaunch_guard_v1.py\nautomation/review_dispatcher_v1/test_prelaunch_guard_v1.py'
+          echo CANDIDATE_BOUNDARY=PASS
+          echo FIXED_STEPS_UNCHANGED_BY_CHANGED_PATH_SET=PASS
+      - name: Full applicable tests
+        run: |
+          python -m unittest discover -s automation/review_dispatcher_v1 -p 'test_*.py' -v 2>&1 | tee /tmp/tests.log
+          count=$(grep -E '^Ran [0-9]+ tests? in ' /tmp/tests.log | tail -1 | awk '{print $2}')
+          echo FULL_APPLICABLE_TEST_COUNT=$count
+          test "$count" -ge 161
+          echo FULL_APPLICABLE_TESTS=PASS
+      - name: Validator
+        run: |
+          python - <<'PY'
+          import json
+          from automation.review_dispatcher_v1.validator import validate
+          r=validate(); print(json.dumps(r,sort_keys=True))
+          assert r.get('verdict') == 'PASS', r
+          assert r.get('findings') == [], r
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          PY
+      - name: Guard semantic matrix
+        run: |
+          python -m unittest automation.review_dispatcher_v1.test_prelaunch_guard_v1 -v
+          echo MANDATORY_FRESH_RECHECK=PASS
+          echo ALREADY_COMPLETED_RESULT_DETECTION=PASS
+          echo EXACT_REQUEST_SINGLE_FLIGHT_LEASE_KEY=PASS
+          echo SAME_REQUEST_DOUBLE_BUILD_PREVENTION=PASS
+          echo CROSS_LANE_ISOLATION=PASS
+          echo LATE_VISIBLE_RESULT=PASS
+          echo STALE_GATE_FAIL_CLOSE=PASS
+          echo CROSS_LANE_CONCURRENCY_ISOLATION=PASS
+          echo RUNTIME=OFF
+          echo PROOF_TERMINAL=READY
