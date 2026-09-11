@@ -1,0 +1,80 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_PREBOOM_RETROSPECTIVE_v1",
+  "status": "HISTORICAL_HYPOTHESIS_ONLY",
+  "purpose": "Extract candidate leading signals from unlike historical trend explosions, then prospectively test them on unseen cases without rewriting history.",
+  "cases": [
+    {
+      "name": "LABUBU_THE_MONSTERS",
+      "observed_mechanisms": [
+        "existing niche fandom before global explosion",
+        "creator/celebrity acceleration",
+        "high visual distinctiveness",
+        "collectibility and limited releases",
+        "cross-region cultural propagation",
+        "offline events and IP-world expansion"
+      ],
+      "evidence_notes": [
+        "POP MART 2024 annual reporting describes LABUBU as particularly strong and highlights Thailand cultural-ambassador activity, frequent fan interaction, global events and IP globalization.",
+        "Later reporting records celebrity endorsement and a large secondary-market auction outcome, which are outcome-stage evidence and must not be treated as early signals."
+      ],
+      "source_classes": ["OFFICIAL_COMPANY_REPORT", "NEWS_OUTCOME"],
+      "prospective_training_only": true
+    },
+    {
+      "name": "STANLEY_QUENCHER",
+      "observed_mechanisms": [
+        "early adopter affiliates and tastemakers",
+        "organic word of mouth and social sharing",
+        "collectible color variants",
+        "identity/fashion-accessory behavior beyond core utility",
+        "community-generated demonstrations and viral moments"
+      ],
+      "evidence_notes": [
+        "Stanley leadership attributed growth to early adopter affiliates, influencers, tastemakers, organic word of mouth and community engagement.",
+        "Later viral view counts and revenue are outcome-stage confirmation, not valid early-signal labels."
+      ],
+      "source_classes": ["EXECUTIVE_INTERVIEW", "NEWS_OUTCOME"],
+      "prospective_training_only": true
+    },
+    {
+      "name": "DUBAI_CHOCOLATE",
+      "observed_mechanisms": [
+        "distinctive visual and texture reveal",
+        "social-video replication",
+        "local-origin product diffusing internationally",
+        "derivative product creation",
+        "large-retailer imitation and category expansion"
+      ],
+      "evidence_notes": [
+        "AP reporting traces the concept to a UAE startup and describes Instagram/TikTok-driven spread before broad retail imitation.",
+        "Large retailer entry and sharply higher pistachio-filled chocolate sales are late-stage confirmation and should be separated from leading signals."
+      ],
+      "source_classes": ["NEWS_PRIMARY_REPORTING"],
+      "prospective_training_only": true
+    }
+  ],
+  "candidate_cross_case_signals": [
+    "small but engaged community before mass awareness",
+    "acceleration in creator/tastemaker adoption rather than raw follower count",
+    "strong visual or demonstrable signature that is easy to imitate",
+    "cross-region or cross-subculture propagation",
+    "derivative creations and user remixes",
+    "save/search/purchase-intent acceleration where measurable",
+    "collectibility, identity or self-expression layer",
+    "mainstream retail expansion as confirmation, not earliest detection"
+  ],
+  "anti_hindsight_rules": [
+    "freeze signal definitions before prospectively scoring unseen cases",
+    "do not use later sales, auction prices, celebrity endorsements or retailer expansion as if they were known earlier",
+    "store misses as misses",
+    "separate discovery-stage signals from confirmation-stage signals",
+    "a famous historical example cannot by itself prove predictive power"
+  ],
+  "authority": {
+    "live_execution": false,
+    "spend": false,
+    "publication": false,
+    "adoption": false,
+    "runtime": false
+  }
+}
