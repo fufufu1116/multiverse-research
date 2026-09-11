@@ -1,0 +1,47 @@
+name: pr356-formal-lab-request-exact-proof-20260912
+
+on:
+  push:
+    branches:
+      - agent/pr356-formal-lab-request-exact-proof-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    env:
+      MULTIVERSE_DISPATCHER_REF: bb133e196efa818bc9b8dc59519c02796e70658e
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof-carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "06dcbd9f597bdbb3d00d2b47a3837db5901313db"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = ".github/workflows/pr356-formal-lab-request-exact-proof-20260912.yml"
+      - name: Actual dispatcher selects exact formal Lab request
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m automation.review_dispatcher_v1.dispatcher --lane LAB --head 06dcbd9f597bdbb3d00d2b47a3837db5901313db --output review_job.json
+          python - <<'PY'
+          import json
+          j=json.load(open('review_job.json'))
+          assert j['request_comment']==5641513120
+          assert j['request_id']=='pr356-global-prelaunch-singleflight-lab-v1-main-bb133e19'
+          assert j['request_sha256']=='ab4539a3eadf50fc3dc11ddf9be16f2564936ed0ef0803913366912c4ef9d6ee'
+          assert j['head']=='06dcbd9f597bdbb3d00d2b47a3837db5901313db'
+          assert j['tree']=='cc91da3814accdc3cd6ee0b91bb19ae5ecc07635'
+          assert j['base']=='bb133e196efa818bc9b8dc59519c02796e70658e'
+          assert j['main']=='bb133e196efa818bc9b8dc59519c02796e70658e'
+          assert j['dispatcher_ref']=='bb133e196efa818bc9b8dc59519c02796e70658e'
+          print('FORMAL_LAB_REQUEST_EXACT_SELECTION=PASS')
+          PY
