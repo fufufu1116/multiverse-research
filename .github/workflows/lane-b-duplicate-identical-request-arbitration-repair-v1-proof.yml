@@ -47,44 +47,40 @@ jobs:
             automation/review_dispatcher_v1/test_request_arbitration_v6.py
           echo COMPILE=PASS
 
-      - name: Run full applicable control-plane suite with exact per-module counts
+      - name: Discover and run full applicable control-plane suite
         shell: bash
         run: |
           set -euo pipefail
-          specs=(
-            'automation.review_dispatcher_v1.test_combined_fault_replay_v1:8'
-            'automation.review_dispatcher_v1.test_dispatcher:52'
-            'automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1:5'
-            'automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1:4'
-            'automation.review_dispatcher_v1.test_one_shot_preflight_v1:14'
-            'automation.review_dispatcher_v1.test_publisher_freshness_v1:4'
-            'automation.review_dispatcher_v1.test_publisher_resilience_integration_v1:10'
-            'automation.review_dispatcher_v1.test_receipt_recovery_v1:6'
-            'automation.review_dispatcher_v1.test_request_arbitration_v6:22'
-            'automation.review_dispatcher_v1.test_result_canonicalization_v1:6'
-            'automation.review_dispatcher_v1.test_t2_idempotence_v1:7'
-            'automation.review_dispatcher_v1.test_t2_receipt_recovery_v1:6'
-            'automation.review_dispatcher_v1.test_t2_resilience_integration_v1:11'
-            'automation.review_dispatcher_v1.test_validator_current_baseline_v1:5'
-          )
-          total=0
-          for spec in "${specs[@]}"; do
-            module="${spec%:*}"
-            expected="${spec##*:}"
-            set +e
-            output="$(PYTHONPATH=. python -m unittest "$module" 2>&1)"
-            rc=$?
-            set -e
-            printf '%s\n' "$output"
-            test "$rc" -eq 0
-            actual="$(printf '%s\n' "$output" | sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' | tail -n 1)"
-            test -n "$actual"
-            test "$actual" = "$expected"
-            total=$((total + actual))
-            echo "MODULE_PASS=$module:$actual"
-          done
-          test "$total" -eq 160
-          echo FULL_APPLICABLE_TESTS=160/160_PASS
+          MAIN=d1edc2eabb847c10a4faa59a039b480e85dfb0e4
+          git worktree add --detach /tmp/main-baseline "$MAIN"
+
+          set +e
+          baseline_output="$(cd /tmp/main-baseline && PYTHONPATH=. python -m unittest discover -s automation/review_dispatcher_v1 -p 'test_*.py' 2>&1)"
+          baseline_rc=$?
+          set -e
+          printf '%s\n' "$baseline_output"
+          test "$baseline_rc" -eq 0
+          baseline_count="$(printf '%s\n' "$baseline_output" | sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' | tail -n 1)"
+          test -n "$baseline_count"
+          echo "CURRENT_MAIN_FULL_DISCOVERY=$baseline_count/$baseline_count_PASS"
+
+          set +e
+          candidate_output="$(PYTHONPATH=. python -m unittest discover -s automation/review_dispatcher_v1 -p 'test_*.py' 2>&1)"
+          candidate_rc=$?
+          set -e
+          printf '%s\n' "$candidate_output"
+          test "$candidate_rc" -eq 0
+          candidate_count="$(printf '%s\n' "$candidate_output" | sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' | tail -n 1)"
+          test -n "$candidate_count"
+          test "$candidate_count" -eq $((baseline_count + 6))
+          echo "CANDIDATE_FULL_DISCOVERY=$candidate_count/$candidate_count_PASS"
+          echo "FOCUSED_TEST_DELTA=+6"
+
+          arbitration_output="$(PYTHONPATH=. python -m unittest automation.review_dispatcher_v1.test_request_arbitration_v6 2>&1)"
+          printf '%s\n' "$arbitration_output"
+          arbitration_count="$(printf '%s\n' "$arbitration_output" | sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' | tail -n 1)"
+          test "$arbitration_count" = "22"
+          echo REQUEST_ARBITRATION_V6=22/22_PASS
 
       - name: Run validator
         shell: bash
