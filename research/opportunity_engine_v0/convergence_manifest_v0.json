@@ -1,0 +1,75 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_MULTIVERSE_CONVERGENCE_MANIFEST_v0",
+  "status": "RESEARCH_ONLY_RUNTIME_OFF",
+  "merge_strategy": "SMALLEST_ADOPTION_SLICES_NOT_PR310_WHOLESALE",
+  "fresh_read_required": true,
+  "canonical_authority": "MULTIVERSE",
+  "domain_module": "OPPORTUNITY_ENGINE",
+  "customer_experiment_layer": "HUNDRED_USER",
+  "slices": [
+    {
+      "id": "A_CORE_DOMAIN_MODEL",
+      "depends_on": [],
+      "purpose": "pure deterministic domain scoring/model primitives",
+      "live_effect_allowed": false
+    },
+    {
+      "id": "B_FORECAST_INTEGRITY",
+      "depends_on": ["A_CORE_DOMAIN_MODEL"],
+      "purpose": "forecast freeze, revision, trend temporal integrity, anti-hindsight",
+      "live_effect_allowed": false
+    },
+    {
+      "id": "C_CUSTOMER_VALUE_HUNDRED_USER",
+      "depends_on": ["A_CORE_DOMAIN_MODEL"],
+      "purpose": "customer value, contribution, growth-loop and first-100 evaluation",
+      "live_effect_allowed": false
+    },
+    {
+      "id": "D_MULTIVERSE_BRIDGE",
+      "depends_on": ["A_CORE_DOMAIN_MODEL", "B_FORECAST_INTEGRITY", "C_CUSTOMER_VALUE_HUNDRED_USER"],
+      "purpose": "thin binding to then-current canonical MULTIVERSE task/review contracts",
+      "live_effect_allowed": false
+    },
+    {
+      "id": "E_COMPLETION_SPINE",
+      "depends_on": ["D_MULTIVERSE_BRIDGE"],
+      "purpose": "single orchestration path with no duplicate authoritative decisions",
+      "live_effect_allowed": false
+    }
+  ],
+  "convergence_trigger": {
+    "prepare_now": true,
+    "canonical_adoption_now": false,
+    "wait_for": "current MULTIVERSE control-plane and first-live-provider preparation to be integrated or superseded by stable fresh-main interfaces",
+    "fresh_discovery_overrides_named_prs": true
+  },
+  "rework_guards": {
+    "copy_canonical_control_plane_into_domain_module": false,
+    "duplicate_governance": false,
+    "duplicate_scoring_when_owner_module_exists": false,
+    "rerun_unrelated_upstream_research_after_downstream_failure": false,
+    "prefer_thin_adapter": true,
+    "preserve_frozen_evidence": true
+  },
+  "owner_gates": [
+    "CANONICAL_ADOPTION_OR_MERGE",
+    "FORMAL_LAB_OR_AUDITOR_EXECUTION",
+    "LIVE_PROVIDER_USE",
+    "CREDENTIAL_USE",
+    "SPEND",
+    "PUBLICATION_OR_CUSTOMER_CONTACT",
+    "CUSTOMER_RECRUITMENT",
+    "PAYMENT_COLLECTION",
+    "LIVE_BUSINESS_EFFECT",
+    "RUNTIME_ACTIVATION"
+  ],
+  "hundred_user_launch_from_research_branch": false,
+  "completion_definition": [
+    "NO_MATERIAL_DUPLICATE_DECISION_PATH",
+    "ADOPTION_SLICES_AND_DEPENDENCIES_FROZEN",
+    "REPOSITORY_PROOF_PER_SLICE",
+    "CURRENT_MAIN_BRIDGE_GAP_BOUNDED",
+    "REMAINING_WORK_IS_GOVERNANCE_OR_LIVE_MARKET_NOT_SPECULATIVE_ARCHITECTURE"
+  ]
+}
