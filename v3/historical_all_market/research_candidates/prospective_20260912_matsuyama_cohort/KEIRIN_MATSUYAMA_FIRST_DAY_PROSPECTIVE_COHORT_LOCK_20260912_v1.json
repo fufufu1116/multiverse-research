@@ -1,0 +1,47 @@
+{
+  "bindings": {
+    "b1a_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "circumference_model_blob": "061ef5b227fc78fdf35a1dd9ef48e3c16a1ea878",
+    "competition_gate_blob": "8ffbab9d02562a3f8b617047c614a2008378932b",
+    "required_odds_runner_blob": "5d06bb2d1546101e4989e94816b274b6cbc4563f",
+    "v54_probability_blob": "417fa8947ab9b15dde305adc15085d558659d134"
+  },
+  "cohort_body_sha256_excluding_self_field": "84a72846152a925ad0299b9ca2e4faa56a6998f26b25d7e0a9cb3fb5dfb43b64",
+  "cohort_summary": {
+    "candidate_count": 3,
+    "earliest_scheduled_start_jst": "2026-09-12T08:30:00+09:00",
+    "race_count": 7,
+    "reject_count": 4
+  },
+  "created_at_jst": "2026-09-11T19:12:20+09:00",
+  "members": [
+    {"b1a_top1_car_no": 1, "b1a_top1_probability": 0.37864455087760773, "event_id": "MATSUYAMA_20260912_R1", "gate_value": 0.2493569515979763, "status": "REJECT_GATE_BELOW_0_40"},
+    {"b1a_top1_car_no": 3, "b1a_top1_probability": 0.30192912524937554, "event_id": "MATSUYAMA_20260912_R2", "gate_value": 0.362746549444164, "status": "REJECT_GATE_BELOW_0_40"},
+    {"b1a_top1_car_no": 3, "b1a_top1_probability": 0.4020582184203145, "event_id": "MATSUYAMA_20260912_R3", "gate_value": 0.4316342073246122, "pre_evidence_git_blob": "37c9a7234581af90486522e89375f428b31e9da0", "source_snapshot_git_blob": "914ca466d5a1e2dd2985864d86a5637d18255a5a", "status": "CANDIDATE_GATE_PASS"},
+    {"b1a_top1_car_no": 5, "b1a_top1_probability": 0.633319020391046, "event_id": "MATSUYAMA_20260912_R4", "gate_value": 0.36958907767841237, "status": "REJECT_GATE_BELOW_0_40"},
+    {"b1a_top1_car_no": 5, "b1a_top1_probability": 0.5795847894249633, "event_id": "MATSUYAMA_20260912_R5", "gate_value": 0.47239832760846556, "pre_evidence_git_blob": "9b2233e4ab09efa30ebf4d3a3e6e7f0d8b8ca4b2", "source_snapshot_git_blob": "003f27d9e1c7ff94a2453cdc1290cd020b362c28", "status": "CANDIDATE_GATE_PASS"},
+    {"b1a_top1_car_no": 1, "b1a_top1_probability": 0.5315273489486027, "event_id": "MATSUYAMA_20260912_R6", "gate_value": 0.37146814321539146, "status": "REJECT_GATE_BELOW_0_40"},
+    {"b1a_top1_car_no": 5, "b1a_top1_probability": 0.6431151510054535, "event_id": "MATSUYAMA_20260912_R7", "gate_value": 0.5802781465790307, "pre_evidence_git_blob": "1fe2f397fa8fdf07c6d35b01e602a66109ba2596", "source_snapshot_git_blob": "69919a915c37a5d1fbdcaaf62e4a1f40a8bc5d84", "status": "CANDIDATE_GATE_PASS"}
+  ],
+  "record": "KEIRIN_MATSUYAMA_FIRST_DAY_PROSPECTIVE_COHORT_LOCK_20260912_v1",
+  "science": {
+    "actual_odds_used": false,
+    "automatic_betting": false,
+    "cohort_membership_frozen_before_earliest_outcome": true,
+    "formal_scientific_validation_percent": 85,
+    "next_gate": "Evaluate all seven locked members after outcomes are independently available; no membership changes or PRE backfill.",
+    "payout_accessed": false,
+    "post_result_reconstruction": false,
+    "result_accessed": false,
+    "retune": false,
+    "runtime": "OFF"
+  },
+  "scope": "Complete seven-race Matsuyama 2026-09-12 first-day morning card scanned from the same published PRE source basis; three gate passes and four rejects.",
+  "selection_rule": "Candidate iff frozen competition gate has same Top1 and conservative gate value >= 0.40; otherwise reject. No results, payouts, or actual odds may influence membership.",
+  "source_basis": {
+    "ctc": "https://ctc.gr.jp/schedule/detail.php?id=7520260912",
+    "join": "exact rider name after whitespace normalization",
+    "kdreams": "https://keirin.kdreams.jp/matsuyama/racecard/75202609120100/",
+    "track_circumference_m": 400
+  }
+}
