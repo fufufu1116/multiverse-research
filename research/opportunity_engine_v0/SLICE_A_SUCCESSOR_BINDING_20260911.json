@@ -1,10 +1,11 @@
 {
   "schema": "OPPORTUNITY_ENGINE_SLICE_A_SUCCESSOR_BINDING_v1",
-  "status": "FRESH_MAIN_SUCCESSOR_PREPARATION",
+  "status": "CANDIDATE_READY_FOR_MULTIVERSE_NORMAL_REVIEW",
   "canonical_base": {
     "branch": "main",
     "sha": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
-    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46"
+    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46",
+    "fresh_reconfirmed_after_payload_fix": true
   },
   "frozen_research_source": {
     "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
@@ -34,7 +35,35 @@
     "research/opportunity_engine_v0/test_trajectory.py",
     "research/opportunity_engine_v0/test_opportunity_archetype.py"
   ],
-  "preparation_finding_resolved": "Removed stale derived allowlist entries not present in the frozen source manifest, including nonexistent test_portfolio.py; rebound to the exact 19 frozen include_paths.",
+  "preparation_findings": [
+    {
+      "finding": "derived binding allowlist had drifted from the frozen research manifest and referenced nonexistent test_portfolio.py",
+      "resolution": "rebound to the exact 19 frozen include_paths"
+    },
+    {
+      "finding": "frozen test_signal_forecast.py imported forecast_ledger, which belongs outside Slice A",
+      "resolution": "after exact carry-forward, minimally removed only the forecast-ledger import/tests; retained signal tests on the same allowlisted path"
+    }
+  ],
+  "validation": {
+    "payload_path_allowlist": "PASS_19_OF_19",
+    "candidate_changed_path_shape": "PASS_19_PAYLOAD_PLUS_1_SLICE_A_BINDING_METADATA",
+    "duplicate_paths": "PASS_NONE",
+    "forbidden_canonical_surface_paths": "PASS_NONE",
+    "static_internal_import_dependency_check": "PASS_AFTER_MINIMAL_FIX",
+    "frozen_blob_identity": "18_OF_19_EXACT_PLUS_1_MINIMAL_DEPENDENCY_BOUNDARY_FIX",
+    "pull_request_triggered_workflow_runs_on_payload_fix_head": "NONE_OBSERVED",
+    "unit_test_execution": "NOT_EXECUTED_NO_NON_LAB_REPOSITORY_RUNNER_INVOKED",
+    "formal_lab_or_auditor": "NOT_INVOKED_OWNER_GATE"
+  },
+  "validated_payload_fix_head": {
+    "sha": "bd8bcf6a9d00fd86b59b685fd3c90821bcc9adf2",
+    "tree": "667090e4ae33cd78954711f2390af9d242e3a0a7"
+  },
+  "remaining_blockers": [
+    "normal MULTIVERSE review/test execution remains external governance",
+    "canonical adoption or merge remains Owner Gate"
+  ],
   "forbidden_in_slice_a": [
     "provider execution",
     "credentials",
@@ -46,7 +75,6 @@
     "spend",
     "canonical adoption authority"
   ],
-  "proof_state": "CARRY_FORWARD_PENDING_VALIDATION",
   "authority": {
     "formal_review": false,
     "canonical_adoption": false,
