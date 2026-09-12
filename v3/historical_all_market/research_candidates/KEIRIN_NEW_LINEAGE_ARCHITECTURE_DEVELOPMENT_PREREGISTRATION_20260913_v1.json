@@ -1,0 +1,121 @@
+{
+  "record": "KEIRIN_NEW_LINEAGE_ARCHITECTURE_DEVELOPMENT_PREREGISTRATION_20260913_v1",
+  "status": "PREREGISTERED_BEFORE_REPLACEMENT_MODEL_FITTING",
+  "purpose": "Test a small fixed family of replacement probability architectures using only already exposed non-protected historical evidence, with meeting-held-out evaluation so candidate selection rewards cross-meeting stability rather than same-meeting fit. The frozen B1a confirmatory lineage remains unchanged and is the required baseline.",
+  "evidence_class": "DEVELOPMENT_ONLY_NOT_UNTOUCHED_VALIDATION",
+  "development_sources": [
+    {
+      "id": "BATCH5_REGIME_VALIDATION",
+      "audit": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_VALIDATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
+      "selected": 123,
+      "labelled": 122,
+      "meeting_count": 5,
+      "note": "One frozen result-fetch failure remains unlabelled and is retained in the manifest but excluded from supervised fitting with explicit reason."
+    },
+    {
+      "id": "BATCH6_REGIME_SIGNAL_CONFIRMATION",
+      "audit": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_SIGNAL_CONFIRMATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
+      "selected": 198,
+      "labelled": 198,
+      "meeting_count": 6
+    }
+  ],
+  "development_universe_policy": {
+    "expected_selected_races": 321,
+    "expected_labelled_races": 320,
+    "expected_unique_meetings": 11,
+    "deduplicate_by": "race_id",
+    "group_key": "meeting_id",
+    "use_only_exact_pre_inputs_frozen_in_the_exposed_artifacts": true,
+    "use_only_already_exposed_outcomes": true,
+    "fresh_target_outcomes_for_candidate_selection": false,
+    "dev2000": "NOT_USED_FOR_NEW_LINEAGE_DEVELOPMENT_SELECTION; exposed/restricted diagnostic evidence only",
+    "dev2000_segment_c": "RETIRED_FROM_NEW_LINEAGE_DEVELOPMENT_SELECTION_AND_UNTOUCHED_VALIDATION_CLAIMS",
+    "econ_holdout1000": "SEALED"
+  },
+  "features": {
+    "numeric_raw_available": ["score","win_rate","top2_rate","top3_rate","B","S"],
+    "numeric_transform": "within-race population z-score independently for each numeric feature; zero-variance feature maps to zeros",
+    "categorical_available": ["class","style"],
+    "class_levels_fixed": ["A1","A2","A3","L1","S1","S2","SS"],
+    "style_levels_fixed": ["逃","追","両"],
+    "forbidden_features": ["result","finish_order","payout","odds","meeting_identity_as_predictor","venue_identity_as_predictor","exact_circumference_as_predictor","post-outcome-derived subgroup label","B1a entropy","B1a top1 margin"],
+    "reason_for_forbidden_context_features": "The first replacement search tests whether more stable weighting/regularization of the same PRE rider information can generalize across meetings without encoding meeting/venue repair rules already falsified as stable."
+  },
+  "fixed_candidate_family": [
+    {
+      "id": "BASELINE_B1A_FROZEN",
+      "type": "fixed_existing_baseline",
+      "definition": "Exact B1a_RECONSTITUTED_v1 probability semantics; blob 62ae4ebc17cda47dca1fffae190fa44caae58ca3; temperature 1.15; no fitting."
+    },
+    {
+      "id": "NL1_REDUCED_L2_V1",
+      "type": "conditional_softmax_linear",
+      "numeric_features": ["score","win_rate","top3_rate"],
+      "categorical_features": [],
+      "l2_lambda": 1.0
+    },
+    {
+      "id": "NL1_NUMERIC_L2_V1",
+      "type": "conditional_softmax_linear",
+      "numeric_features": ["score","win_rate","top2_rate","top3_rate","B","S"],
+      "categorical_features": [],
+      "l2_lambda": 1.0
+    },
+    {
+      "id": "NL1_NUMERIC_CLASS_STYLE_L2_V1",
+      "type": "conditional_softmax_linear",
+      "numeric_features": ["score","win_rate","top2_rate","top3_rate","B","S"],
+      "categorical_features": ["class","style"],
+      "l2_lambda": 1.0,
+      "categorical_coding": "full fixed one-hot levels with L2 regularization; common additive constant is harmless under within-race softmax"
+    },
+    {
+      "id": "NL1_SCORE_ONLY_L2_V1",
+      "type": "conditional_softmax_linear",
+      "numeric_features": ["score"],
+      "categorical_features": [],
+      "l2_lambda": 1.0
+    }
+  ],
+  "fit_definition": {
+    "loss": "mean race-level multiclass negative log likelihood plus l2_lambda * mean squared coefficient / 2",
+    "probability": "within-race softmax over entrant linear scores",
+    "optimizer": "deterministic scipy.optimize L-BFGS-B from all-zero coefficients",
+    "optimizer_maxiter": 2000,
+    "optimizer_ftol": 1e-12,
+    "randomness": "none"
+  },
+  "evaluation": {
+    "method": "leave-one-meeting-out cross-validation over all 11 labelled development meetings",
+    "fold_rule": "For each meeting, fit only on labelled races from the other 10 meetings and score every labelled race in the held-out meeting.",
+    "primary_metric": "pooled held-out multiclass log loss across all 320 labelled races",
+    "secondary_metrics": ["pooled held-out Top1 accuracy","pooled held-out winner Top3 rate","median held-out meeting log loss","worst held-out meeting log loss","number of meetings with lower log loss than frozen B1a on the same held-out meeting"],
+    "retain_all_candidates": true,
+    "retain_all_meetings": true
+  },
+  "candidate_eligibility_and_selection": {
+    "baseline": "BASELINE_B1A_FROZEN evaluated on the exact same 320 development races and 11 meeting groups",
+    "eligibility_rules": [
+      "Candidate pooled held-out log loss must improve on baseline by at least 0.015 absolute.",
+      "Candidate must have lower held-out log loss than baseline in at least 6 of 11 meetings.",
+      "Candidate pooled held-out winner Top3 rate must not be more than 0.02 below baseline."
+    ],
+    "winner_rule": "Among eligible replacement candidates, choose the lowest pooled held-out log loss; tie within 1e-12 is broken by more meetings improved versus baseline, then higher Top1 accuracy, then lexical candidate id.",
+    "no_eligible_candidate_rule": "If no replacement candidate is eligible, record DEVELOPMENT_SEARCH_FAIL_NO_ELIGIBLE_REPLACEMENT and do not open fresh validation outcomes for these candidates. A new preregistered development lineage is required."
+  },
+  "post_selection_rule": {
+    "fit_final_candidate": "Only after the cross-validation winner is determined, refit that exact architecture on all 320 labelled development races with the same fixed L2 and feature definition.",
+    "freeze_required": true,
+    "parameter_hash_required": true,
+    "fresh_validation": "A separately preregistered meeting-disjoint historical universe not used in candidate selection must be prediction-frozen under both the selected new candidate and frozen B1a before dedicated target result scoring.",
+    "validation_reuse_for_retune": false
+  },
+  "governance": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "odds_or_payout_required": false,
+    "owner_action_required": false,
+    "b1a_confirmatory_retune": false
+  }
+}
