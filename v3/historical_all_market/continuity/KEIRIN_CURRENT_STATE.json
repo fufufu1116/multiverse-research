@@ -1,30 +1,47 @@
 {
   "record": "KEIRIN_CURRENT_STATE",
   "protocol": {"issue":377,"pr":385,"title":"Keirin Chat continuity / capacity-proof operating protocol v1","chat_role":"EPHEMERAL_TERMINAL","canonical_state_store":"GITHUB_REPOSITORY"},
-  "checkpoint_jst": "2026-09-12T22:43:00+09:00",
+  "checkpoint_jst": "2026-09-12T23:22:00+09:00",
   "canonical_repo": "fufufu1116/multiverse-research",
   "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
-  "branch_head_before_state_write": "e19e5509ee8cc545602c78829461918c520e59f1",
-  "current_research_objective": "Reach scientific validation 100% primarily through historical virtual-world simulation using only pre-race information available at each historical point. Realtime/current/future race dependence is deferred to the final confirmation stage unless a question is uniquely impossible to reproduce historically. Preserve anti-leak, no-retune and exact-circumference discipline.",
+  "branch_head_before_state_write": "2f0776eea5d99b90987a66bb7aa82f7434d6dd8f",
+  "current_research_objective": "Reach scientific validation 100% primarily through historical virtual-world simulation. The fixed 100-race multi-venue batch materially revised the scientific picture: Frozen B1a is not uniformly strong and shows large venue/circumference heterogeneity. Next priority is independent different-date replication without retune, followed by scale-up toward the existing 2000-race substrate. Realtime/future dependence remains deferred to final confirmation only.",
   "model": {"name":"B1a_RECONSTITUTED_v1","predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","temperature":1.15,"retune":false},
   "canonical_continuity": {"rule_registry":"v3/historical_all_market/continuity/KEIRIN_RULE_REGISTRY_v1.json","experiment_ledger":"v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v1.jsonl","current_state":"v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE.json","capacity_candidate_pr":385},
   "active_datasets_and_artifacts": [
-    {"id":"335M_PROSPECTIVE_20260912_MAEBASHI_R1_R9","path":"v3/historical_all_market/research_candidates/KEIRIN_335M_PROSPECTIVE_LANE_BOOTSTRAP_STATUS_20260912_v1.json","status":"COMPLETE_9_OF_9_FROZEN_BEFORE_OUTCOME","evidence_class":"PROSPECTIVE","next":"score all 9 after official outcomes without deletion or retune; this is retained as already-created final-stage quality evidence but does not control research throughput"},
-    {"id":"335M_POOLED_RETRO_20","path":"v3/historical_all_market/research_candidates/KEIRIN_335M_POOLED_20_RETROSPECTIVE_HETEROGENEITY_AUDIT_20260912_v1.json","status":"COMPLETE_DESCRIPTIVE_HETEROGENEITY_AUDIT","metrics":{"n":20,"top1_hits":7,"top1_accuracy":0.35,"top3":14,"top3_rate":0.7,"weighted_log_loss":1.7450076321549717},"finding":"Two independent 335m days differ materially; do not tune from either."},
-    {"id":"500M_POOLED_RETRO_55","path":"v3/historical_all_market/research_candidates/KEIRIN_500M_POOLED_55_RETROSPECTIVE_ROBUSTNESS_AUDIT_20260912_v1.json","status":"COMPLETE_DESCRIPTIVE_RETROSPECTIVE_ONLY","metrics":{"n":55,"top1_hits":25,"top1_accuracy":0.45454545454545453,"top3":43,"top3_rate":0.7818181818181819,"weighted_log_loss":1.5475314699945555},"finding":"Exact-500m descriptive performance remains stable across current evidence."},
-    {"id":"HISTORICAL_RACECARD_SOURCE_LEAK_AUDIT","path":"v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_RACECARD_SOURCE_LEAK_AUDIT_20260912_v1.json","status":"FAIL_BLIND_HISTORICAL_FORWARD_SOURCE_ASSUMPTION","finding":"Historical source pages can expose outcomes; simulator must reconstruct PRE inputs separately and classify evidence honestly."},
-    {"id":"500M_PROSPECTIVE_20260913_OMIYA","status":"DEFERRED_BY_KR_016_UNTIL_FINAL_CONFIRMATION_STAGE","venue":"大宮","event_date":"2026-09-13","circumference_m":500,"decision":"DO_NOT_BLOCK_ON_REALTIME_PRE_CAPTURE","next":"Use historical exact-500m virtual-world simulations now; revisit genuine prospective 500m only near final confirmation."}
+    {"id":"HISTORICAL_VIRTUALWORLD_100_B1A_20260811_12","path":"v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_VIRTUALWORLD_100_B1A_COMPLETE_AUDIT_20260912_v1.json","status":"COMPLETE_100_OF_100_RETROSPECTIVE_VIRTUALWORLD","evidence_class":"RETROSPECTIVE_KR015","metrics":{"n":100,"top1_hits":29,"top1_accuracy":0.29,"top3":65,"top3_rate":0.65,"log_loss":1.8085855354144962},"finding":"Earlier small-sample uniformly strong B1a impression does not generalize. Venue and exact-circumference heterogeneity is large; no subgroup retune from this batch."},
+    {"id":"335M_POOLED_RETRO_20","path":"v3/historical_all_market/research_candidates/KEIRIN_335M_POOLED_20_RETROSPECTIVE_HETEROGENEITY_AUDIT_20260912_v1.json","status":"COMPLETE_DESCRIPTIVE_HETEROGENEITY_AUDIT","metrics":{"n":20,"top1_hits":7,"top1_accuracy":0.35,"top3":14,"top3_rate":0.7,"weighted_log_loss":1.7450076321549717}},
+    {"id":"500M_POOLED_RETRO_55","path":"v3/historical_all_market/research_candidates/KEIRIN_500M_POOLED_55_RETROSPECTIVE_ROBUSTNESS_AUDIT_20260912_v1.json","status":"COMPLETE_DESCRIPTIVE_RETROSPECTIVE_ONLY","metrics":{"n":55,"top1_hits":25,"top1_accuracy":0.45454545454545453,"top3":43,"top3_rate":0.7818181818181819,"weighted_log_loss":1.5475314699945555}},
+    {"id":"HISTORICAL_RACECARD_SOURCE_LEAK_AUDIT","path":"v3/historical_all_market/research_candidates/KEIRIN_HISTORICAL_RACECARD_SOURCE_LEAK_AUDIT_20260912_v1.json","status":"FAIL_BLIND_HISTORICAL_FORWARD_SOURCE_ASSUMPTION","finding":"Historical source pages can expose outcomes; KR-015 keeps virtual-world evidence retrospective unless true pre-outcome snapshots exist."},
+    {"id":"335M_PROSPECTIVE_20260912_MAEBASHI_R1_R9","path":"v3/historical_all_market/research_candidates/KEIRIN_335M_PROSPECTIVE_LANE_BOOTSTRAP_STATUS_20260912_v1.json","status":"COMPLETE_9_OF_9_FROZEN_BEFORE_OUTCOME_FINAL_STAGE_ONLY","next":"Retained for final-stage genuine prospective confirmation; not throughput-critical under KR-016."},
+    {"id":"500M_PROSPECTIVE_20260913_OMIYA","status":"DEFERRED_BY_KR_016_UNTIL_FINAL_CONFIRMATION_STAGE","decision":"DO_NOT_BLOCK_ON_REALTIME_PRE_CAPTURE"}
   ],
-  "immutable_rule_summary": ["Historical virtual-world simulation is now the primary path until final live confirmation (KR-016).","Offline simulation does not require live odds unless an experiment specifically tests odds.","Odds belong at live/manual purchase boundary.","Historical simulation must use only fields available before the simulated race; outcomes are kept out of predictor inputs.","Historical racecard URLs are not proof of blindness; evidence class must reflect source leakage risk.","Exact circumference is preserved; no 335->333.3 or 500->400 coercion.","No guessing missing PRE fields; no cherry-picking; no retune.","GitHub is canonical continuity state; chat is ephemeral."],
+  "virtualworld_100_key_breakdowns": {
+    "by_exact_circumference": {
+      "333.3m":{"n":11,"top1_accuracy":0.09090909090909091,"top3_rate":0.6363636363636364,"log_loss":2.247294499850875},
+      "335m":{"n":11,"top1_accuracy":0.36363636363636365,"top3_rate":0.5454545454545454,"log_loss":1.7703102859321305},
+      "400m":{"n":78,"top1_accuracy":0.3076923076923077,"top3_rate":0.6666666666666666,"log_loss":1.7521141140748269}
+    },
+    "venue_extremes_to_replicate_not_adopt": {
+      "strong_batch_examples":{"takeo":{"n":9,"top1_accuracy":0.7777777777777778,"top3_rate":1.0},"aomori":{"n":9,"top1_accuracy":0.5555555555555556,"top3_rate":1.0},"kawasaki":{"n":6,"top1_accuracy":0.5,"top3_rate":1.0}},
+      "weak_batch_examples":{"gifu":{"n":7,"top1_accuracy":0.0,"top3_rate":0.42857142857142855},"matsuyama":{"n":11,"top1_accuracy":0.0,"top3_rate":0.36363636363636365},"yahiko":{"n":24,"top1_accuracy":0.16666666666666666,"top3_rate":0.5416666666666666}}
+    }
+  },
+  "immutable_rule_summary": ["Historical virtual-world simulation is the primary path until final live confirmation (KR-016).","Offline simulation does not require live odds unless an experiment specifically tests odds.","Odds belong at live/manual purchase boundary.","Historical simulation uses PRE model fields only; target results/payouts are not predictor inputs.","Historical pages may be outcome-bearing; KR-015 prevents false prospective upgrades.","Exact circumference is preserved; no nearest-length coercion.","No guessed PRE fields, post-result cherry-picking, or confirmatory retune.","Venue/circumference subgroup findings from the 100R batch require independent replication before adoption.","GitHub is canonical continuity state; chat is ephemeral."],
   "latest_completed_experiments": [
-    {"id":"EXP-335M-POOLED-20-MAEBASHI","result":"7/20 top1=35.0%; 14/20 winner Top3=70.0%; weighted log loss 1.74501; material day-to-day heterogeneity retained"},
-    {"id":"EXP-500M-POOLED-55-THREE-VENUES","result":"25/55 top1=45.45%; 43/55 winner Top3=78.18%; weighted log loss 1.54753; descriptive retrospective only"},
-    {"id":"EXP-335M-PROSPECTIVE-MAEBASHI-20260912-R1-R9","result":"9/9 frozen before outcomes; scoring pending; retained but no longer throughput-critical"}
+    {"id":"EXP-HISTORICAL-VIRTUALWORLD-100-B1A-20260811-12","result":"100/100 frozen and scored; top1 29.0%; winner Top3 65.0%; log loss 1.80859; large venue/circumference heterogeneity materially revised prior small-sample optimism"},
+    {"id":"EXP-500M-POOLED-55-THREE-VENUES","result":"25/55 top1=45.45%; 43/55 winner Top3=78.18%; weighted log loss 1.54753"},
+    {"id":"EXP-335M-POOLED-20-MAEBASHI","result":"7/20 top1=35.0%; 14/20 winner Top3=70.0%; weighted log loss 1.74501"}
   ],
   "open_blockers": [],
-  "exact_next_executable_actions": ["Expand historical virtual-world simulation across all retrievable complete historical racecards, separated by exact circumference, venue, class/grade, day type and race structure.","For each batch reconstruct PRE-only inputs first, freeze predictions, then join outcomes for scoring; never use target result/payout/odds as predictor inputs.","Evaluate top1, winner-in-Top3, log loss/calibration, stability across dates/venues/classes, finals-vs-qualifiers, solo-rider presence, line structure and other predeclared dimensions; reject unstable findings and do not retune confirmatory sets.","Accumulate enough independent historical evidence to settle model structure and purchase-rule research before returning to a small final genuine realtime confirmation gate."],
-  "scientific_validation_progress_percent": 85,
-  "progress_rule": "Do not increase progress merely because files or case counts grow; increase only when evidence strength materially advances.",
+  "exact_next_executable_actions": [
+    "Construct a fixed independent historical universe from different dates than 2026-08-11/12 and repeat Frozen B1a without retune.",
+    "Preregister exact-circumference and venue subgroup comparisons before scoring the independent batch; test whether strong/weak venue differences replicate rather than tuning to this 100R result.",
+    "After independent replication, expand historical virtual-world coverage toward the existing 2000-race substrate and characterize class/grade, finals-vs-qualifiers, solo-rider and line-structure effects.",
+    "Only after ranking/probability stability is characterized, use historical odds/settlement data to optimize ticket count, minimum required odds and bankroll allocation; realtime remains final confirmation only."
+  ],
+  "scientific_validation_progress_percent": 89,
+  "progress_reason": "Advanced from 85% because a fixed multi-venue 100-race historical virtual-world universe completed 100/100 with no retune and materially changed the scientific conclusion, exposing large heterogeneity and falsifying the earlier small-sample uniform-strength impression. This is an evidence-strength advance, not a file-count increment.",
   "owner_action_required_now": false,
   "runtime": "OFF",
   "automatic_betting": false,
