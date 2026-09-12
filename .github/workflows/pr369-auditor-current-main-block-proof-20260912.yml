@@ -1,0 +1,60 @@
+name: pr369-auditor-current-main-block-proof-20260912
+on:
+  push:
+    branches:
+      - agent/pr369-auditor-current-main-block-proof-20260912
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    env:
+      EXACT_HEAD: 583e1b9c2831521d47aff419774999edb2c9c116
+      EXACT_TREE: 8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd
+      OLD_MAIN: 27b038736e6f160a0ab4f619c6aeef39f0ae8d10
+      CURRENT_MAIN: c3455ef933227d52a2aa365ff9a2befde431218e
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact carrier boundary
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD^)" = "$EXACT_TREE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/pr369-auditor-current-main-block-proof-20260912.yml"
+      - name: Current-main exact AUDITOR preflight terminal
+        run: |
+          set -euo pipefail
+          git fetch -q origin "$CURRENT_MAIN"
+          git checkout -q --detach "$EXACT_HEAD"
+          test -z "${MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY:-}"
+          test -z "${MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY:-}"
+          test -z "${DATABASE_URL:-}"
+          test -z "${RENDER_API_KEY:-}"
+          set +e
+          PYTHONPATH=. python3 automation/review_dispatcher_v1/one_shot_preflight_v1.py --dispatcher-ref "$CURRENT_MAIN" --lane AUDITOR --repo fufufu1116/multiverse-research --head "$EXACT_HEAD" --repo-root . > preflight.json
+          rc=$?
+          set -e
+          cat preflight.json
+          RC="$rc" python3 - <<'PY'
+          import json, os
+          p=json.load(open('preflight.json'))
+          assert p['schema']=='MULTIVERSE_ONE_SHOT_PREFLIGHT_v1'
+          assert p['ready'] is False
+          assert p['state']=='ONE_SHOT_PREFLIGHT_BLOCKED'
+          assert p['publication_attempted'] is False
+          assert p['owner_build_consumed'] is False
+          assert p['runtime']=='OFF'
+          assert int(os.environ['RC']) != 0
+          print('CURRENT_MAIN='+os.environ['CURRENT_MAIN'])
+          print('OLD_MAIN='+os.environ['OLD_MAIN'])
+          print('PUBLICATION_ATTEMPTED=NO')
+          print('OWNER_BUILD_CONSUMED=NO')
+          print('PREFLIGHT_TERMINAL=BLOCKED')
+          print('CLASSIFICATION='+str(p['classification']))
+          print('STDOUT_TAIL='+str(p.get('stdout_tail','')))
+          PY
