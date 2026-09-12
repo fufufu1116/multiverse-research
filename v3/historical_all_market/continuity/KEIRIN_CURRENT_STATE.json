@@ -6,11 +6,11 @@
     "chat_role": "EPHEMERAL_TERMINAL",
     "canonical_state_store": "GITHUB_REPOSITORY"
   },
-  "checkpoint_jst": "2026-09-13T01:45:00+09:00",
+  "checkpoint_jst": "2026-09-13T02:05:00+09:00",
   "canonical_repo": "fufufu1116/multiverse-research",
   "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
-  "branch_head_before_state_write": "0dfa7a5837cb4efd6f5bb2530d54a341e70a4df2",
-  "current_research_objective": "Reach scientific validation 100% primarily through historical virtual-world simulation. Four frozen-B1a 100-race historical batches are complete. The fourth was a separately preregistered, prior-meeting-disjoint, venue/circumference coverage-balanced confirmation and materially falsified simple stable venue/circumference narratives while preserving broad ranking signal. The current priority is preregistered PRE-only regime explanation and a larger collision-audited validation universe that does not recycle exposed DEV2000 as untouched evidence.",
+  "branch_head_before_state_write": "c0963a3d632e6d2ef2f307f42a01c69445ced529",
+  "current_research_objective": "Reach scientific validation 100% primarily through historical virtual-world simulation. Five substantial frozen-B1a historical validation batches are now complete, including the new preregistered five-meeting regime-validation universe with 123 PRE-complete freezes and 122 scored results. The new batch again shows material meeting/regime heterogeneity and weakens any stable venue/circumference story. The immediate priority is an independent meeting-disjoint confirmation of the already-preregistered normalized-entropy, top1-margin and meeting-day signals without changing bins, thresholds or B1a.",
   "model": {
     "name": "B1a_RECONSTITUTED_v1",
     "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
@@ -53,6 +53,20 @@
       }
     },
     {
+      "id": "HISTORICAL_VIRTUALWORLD_REGIME_VALIDATION_FIXED_MEETINGS_B1A_V1",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_VALIDATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
+      "status": "COMPLETE_WITH_ONE_RETAINED_RESULT_FETCH_FAILURE",
+      "metrics": {"selected": 123, "scored": 122, "top1_hits": 35, "top1_accuracy": 0.28688524590163933, "top3_hits": 81, "top3_rate": 0.6639344262295082, "log_loss": 1.8130028666934388},
+      "candidate_signals": {
+        "normalized_entropy_low_0_0_70": {"n": 11, "top1_accuracy": 0.5454545454545454, "top3_rate": 0.6363636363636364},
+        "normalized_entropy_high_0_85_1": {"n": 59, "top1_accuracy": 0.22033898305084745, "top3_rate": 0.6440677966101694},
+        "meeting_day_2": {"n": 41, "top1_accuracy": 0.3902439024390244, "top3_rate": 0.7317073170731707}
+      },
+      "workflow_run_id": 34706584423,
+      "artifact_id": 10302206040,
+      "retained_result_failure": "REG1_2120260907_yahiko_03_02R"
+    },
+    {
       "id": "B1A_FREEZE_IDENTITY_AUDIT",
       "path": "v3/historical_all_market/research_candidates/KEIRIN_B1A_FREEZE_IDENTITY_AUDIT_20260913_v1.json",
       "status": "PASS_PROBABILITY_LAYER_IDENTITY_VERIFIED",
@@ -69,21 +83,24 @@
     "batch2_temporal": {"n": 100, "top1_accuracy": 0.35, "top3_rate": 0.71, "log_loss": 1.6778819171421917},
     "batch3_independent_meeting": {"n": 100, "top1_accuracy": 0.32, "top3_rate": 0.69, "log_loss": 1.7988463039691303},
     "batch4_coverage_balanced": {"n": 100, "top1_accuracy": 0.46, "top3_rate": 0.78, "log_loss": 1.5358944840252322},
-    "descriptive_aggregate_400": {"n": 400, "top1_hits": 142, "top1_accuracy": 0.355, "top3_hits": 283, "top3_rate": 0.7075, "weighted_log_loss": 1.7053020601377626, "warning": "Nonidentical sampling designs; descriptive only, not a population-frequency estimate."},
+    "batch5_regime_validation": {"n": 122, "selected": 123, "top1_accuracy": 0.28688524590163933, "top3_rate": 0.6639344262295082, "log_loss": 1.8130028666934388, "warning": "One preregistered frozen 5-rider race has a retained result-fetch failure and was not substituted."},
+    "descriptive_aggregate_522_scored": {"n": 522, "top1_hits": 177, "top1_accuracy": 0.3390804597701149, "top3_hits": 364, "top3_rate": 0.6973180076628352, "weighted_log_loss": 1.7304735130109283, "warning": "Nonidentical sampling designs and one retained result failure; descriptive only, not a population-frequency estimate."},
     "retained_findings": [
       "Frozen B1a retains broad ranking signal but performance varies materially by meeting/sample composition.",
-      "Exact circumference must remain preserved as an analysis dimension; no length coercion is allowed.",
-      "Gifu remains repeatedly weak descriptively, but no operational venue rule is adopted."
+      "Exact circumference remains an analysis dimension; no length coercion or deterministic circumference policy is allowed.",
+      "Meeting-level heterogeneity is large and repeated across independent samples.",
+      "Preregistered normalized entropy and meeting-day index now have candidate explanatory signal, but neither is independently confirmed or operational."
     ],
     "falsified_or_weakened_findings": [
       "Stable universal exact-333.3m/Toyama weakness is not supported after batch4: 6/16 Top1=37.5% versus temporal batch 0/16.",
-      "Stable Yahiko weakness is not supported: batch4 13/17 Top1=76.47% and 17/17 Top3.",
+      "Stable Yahiko weakness is not supported as a venue law: batch4 Yahiko was 13/17 Top1=76.47%, while batch5 Yahiko was 3/32=9.38%, showing strong meeting/regime dependence.",
       "Stable Kawasaki strength is not supported: batch4 5/17 Top1=29.41%.",
-      "Simple venue/circumference directional labels are meeting/regime-sensitive and must not be retuned or operationalized from these batches."
+      "Simple venue/circumference directional labels are meeting/regime-sensitive and must not be retuned or operationalized from these batches.",
+      "Top1-margin bins were not monotonic in batch5, so margin alone is not promoted as a confidence rule."
     ],
-    "important_negative_evidence_policy": "All prior weak and failed batches remain valid evidence. No unfavorable race, meeting, venue or circumference result may be removed after outcome access."
+    "important_negative_evidence_policy": "All prior weak and failed batches remain valid evidence. No unfavorable race, meeting, venue, circumference or confidence-bin result may be removed after outcome access."
   },
-  "b1a_identity_conclusion": "The current historical probability scorer is numerically identical to the original frozen B1a_RECONSTITUTED_v1 probability semantics to floating-point precision. Formula drift does not explain the exposed DEV2000 descriptive Top1=44.0% versus recent batch variation. Composition/regime/source-population explanations remain hypotheses requiring preregistered testing.",
+  "b1a_identity_conclusion": "The current historical probability scorer is numerically identical to the original frozen B1a_RECONSTITUTED_v1 probability semantics to floating-point precision. Formula drift does not explain the exposed DEV2000 descriptive Top1=44.0% versus recent-batch variation. Composition/regime/source-population explanations remain hypotheses requiring preregistered testing.",
   "immutable_rule_summary": [
     "Historical virtual-world simulation is the primary path until final live confirmation (KR-016).",
     "Offline simulation does not require live odds unless an experiment specifically tests odds.",
@@ -95,16 +112,16 @@
   ],
   "latest_completed_experiments": [
     {
+      "id": "EXP-HISTORICAL-VIRTUALWORLD-REGIME-VALIDATION-FIXED-MEETINGS-B1A-V1",
+      "result": "123 PRE-complete freezes across five collision-audited meetings; 122 scored with one retained result-fetch failure; Top1 28.69%; Top3 66.39%; log loss 1.81300. Meeting heterogeneity persisted. Low normalized entropy and day 2 are candidate explanatory signals only."
+    },
+    {
       "id": "EXP-B1A-FREEZE-IDENTITY-AUDIT-20260913-V1",
       "result": "PASS; 100 current frozen races recomputed under original B1a semantics; max car-probability difference 2.22e-16; no formula drift detected."
     },
     {
       "id": "EXP-HISTORICAL-VIRTUALWORLD-COVERAGE-BALANCED-INDEPENDENT-MEETING-100-B1A-V2",
       "result": "100/100; Top1 46%; Top3 78%; log loss 1.53589; exact 333.3m severe-weakness story failed stable replication; venue directions remain meeting-sensitive."
-    },
-    {
-      "id": "EXP-HISTORICAL-VIRTUALWORLD-INDEPENDENT-MEETING-REPLICATION-100-B1A",
-      "result": "100/100; Top1 32%; Top3 69%; log loss 1.79885; fully meeting-disjoint but composition-skewed."
     }
   ],
   "exposed_evidence_boundary": {
@@ -114,14 +131,14 @@
   },
   "open_blockers": [],
   "exact_next_executable_actions": [
-    "Preregister PRE-only explanatory regime dimensions before any new outcome scoring: class/grade, finals-versus-qualifiers, field size, and line structure where source semantics can be verified without guessing.",
-    "Audit which regime fields can be extracted reproducibly from historical PRE pages without result dependence; fail closed on ambiguous fields and do not invent line structure.",
-    "Construct a new larger collision-audited historical validation universe disjoint from all exposed 100-race batches and DEV2000; freeze selection and subgroup definitions before dedicated result scoring.",
-    "Run frozen B1a without odds requirement or retune, characterize meeting/regime heterogeneity, and retain every preregistered successful PRE freeze regardless of outcome.",
+    "Preregister an independent meeting-disjoint confirmation using exactly the already-frozen normalized-entropy bins [0,0.70), [0.70,0.85), [0.85,1.0000001], top1-margin bins [0,0.05), [0.05,0.15), [0.15,1.0], and exact meeting-day indices; do not tune them from batch5 outcomes.",
+    "Select the next historical universe by deterministic meeting identity and mandatory PRE completeness only, with collision audit against DEV2000, all five completed substantial batches and explicitly exposed smaller experiments; freeze all successful selections before result scoring.",
+    "Run frozen B1a unchanged and retain all preregistered successful freezes and any result failures without substitution.",
+    "If normalized-entropy/day signals independently replicate, quantify calibration and robustness before any operational confidence gate. If they fail, retain the negative result and evaluate a new development lineage rather than contaminating frozen B1a.",
     "Only after probability/ranking stability is characterized may historical odds/settlement research optimize ticket count, minimum required odds and virtual bankroll allocation; realtime remains final confirmation only."
   ],
-  "scientific_validation_progress_percent": 96,
-  "progress_reason": "Advanced from 94% because a separately preregistered coverage-balanced independent-meeting confirmation completed 100/100 and materially resolved a major uncertainty by falsifying simple stable circumference/venue narratives, while a separate freeze-identity audit ruled out B1a probability-formula drift to floating-point precision. Progress is not 100% because larger collision-audited regime validation and final probability-stability characterization remain unfinished.",
+  "scientific_validation_progress_percent": 97,
+  "progress_reason": "Advanced from 96% because the preregistered larger collision-audited regime validation completed across five new meetings with 123 frozen races and 122 scored results, materially strengthening the meeting/regime-dependence finding and surfacing fixed PRE-only confidence/day candidates for falsifiable independent confirmation. Progress is not 100% because those candidate regime signals are not independently replicated, calibration/decision stability is not established, and one frozen race remains an explicitly retained result-fetch failure.",
   "owner_action_required_now": false,
   "runtime": "OFF",
   "automatic_betting": false,
