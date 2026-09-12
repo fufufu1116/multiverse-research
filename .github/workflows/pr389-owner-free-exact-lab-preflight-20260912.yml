@@ -1,0 +1,41 @@
+name: pr389-owner-free-exact-lab-preflight-20260912
+on:
+  push:
+    branches:
+      - agent/pr389-owner-free-exact-lab-preflight-20260912
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    env:
+      BUILDKITE_COMMIT: 778ccc8a2f502e7c08bd633c17bba24a199325b8
+      BUILDKITE_BUILD_ID: owner-free-pr389-preflight
+      BUILDKITE_BUILD_NUMBER: "0"
+      BUILDKITE_BRANCH: candidate/opportunity-engine-slice-b-clean-successor-v8-20260912
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 778ccc8a2f502e7c08bd633c17bba24a199325b8
+          fetch-depth: 1
+      - name: Write exact non-publishing review job
+        run: |
+          python - <<'PY'
+          import json
+          request=json.loads(r'''{"base":"c3455ef933227d52a2aa365ff9a2befde431218e","execution_state":"FIXED_REQUEST_ONLY_OPPORTUNITY_ENGINE_SLICE_B_V8_CLEAN_LINEAGE_REVIEW_REQUESTED","head":"778ccc8a2f502e7c08bd633c17bba24a199325b8","lane":"LAB","main":"c3455ef933227d52a2aa365ff9a2befde431218e","mode":"REPOSITORY_ONLY","nonauthority":{"additional_spend":false,"database_mutation":false,"deploy":false,"live_business_effect":false,"main_mutation":false,"merge":false,"production_credentials":false,"production_deployment":false,"protected_data":false,"provider_effect_enablement":false,"provider_resource_mutation":false,"ruleset_mutation":false,"runtime_activation":false,"runtime_activation_bridge_enablement":false,"workflow_dispatch_rerun":false},"pr":389,"proof_ceiling":"OPPORTUNITY_ENGINE_SLICE_B_V8_CLEAN_LINEAGE_REPOSITORY_ONLY","recipe":{"durable_comments":[{"app_slug":"chatgpt-codex-connector","body_contains":["PR: `#389`","778ccc8a2f502e7c08bd633c17bba24a199325b8","e52a4c695761f59803ea5ebfc0561fc355da023e","authority transfer=false","Runtime OFF"],"id":5645686848,"login":"fufufu1116"}],"forbidden_patterns":["AIza","sk-ant-","sk-"],"http":null,"secret_scan_paths":["research/opportunity_engine_v0/SLICE_B_SUCCESSOR_BINDING_20260912.json","research/opportunity_engine_v0/forecast_ledger.py","research/opportunity_engine_v0/forecast_revision.py","research/opportunity_engine_v0/trend_forecast.py","research/opportunity_engine_v0/trend_retrospective.py","research/opportunity_engine_v0/test_forecast_ledger.py","research/opportunity_engine_v0/test_forecast_revision.py","research/opportunity_engine_v0/test_trend_forecast.py"],"source_rules":[{"contains":["FRESH_MAIN_CLEAN_LINEAGE_PRE_REVIEW_FREEZE","B_FORECAST_INTEGRITY","expected_unit_test_count","authority_transfer"],"not_contains":[],"path":"research/opportunity_engine_v0/SLICE_B_SUCCESSOR_BINDING_20260912.json"}],"subtrees":{},"unittest_modules":[{"count":3,"module":"research.opportunity_engine_v0.test_forecast_ledger"},{"count":7,"module":"research.opportunity_engine_v0.test_forecast_revision"},{"count":8,"module":"research.opportunity_engine_v0.test_trend_forecast"}],"validators":[{"expect":{"findings":[],"verdict":"PASS"},"path":"automation/review_dispatcher_v1/validator.py"}]},"repo":"fufufu1116/multiverse-research","request_id":"pr389-opportunity-engine-slice-b-v8-lab-v1-main-c3455ef9","schema":"MULTIVERSE_REVIEW_REQUEST_v1","supersedes_request_sha256":null,"tree":"e52a4c695761f59803ea5ebfc0561fc355da023e","upstream":{}}''')
+          job={"schema":"MULTIVERSE_FIXED_REVIEW_JOB_v1","request":request,"request_id":request["request_id"],"request_comment":5645693057,"request_sha256":"5339f25b6e863a8ffb1f341b1a14734852bafc02bfab8aafce24b08595e696a8","lane":"LAB","repo":request["repo"],"pr":389,"head":request["head"],"tree":request["tree"],"base":request["base"],"main":request["main"],"dispatcher_ref":request["main"]}
+          open('review_job.json','w').write(json.dumps(job,sort_keys=True))
+          PY
+      - name: Run canonical review non-publishing
+        run: python -m automation.review_dispatcher_v1.review --job review_job.json --output review_artifact.json --repo-root .
+      - name: Assert READY
+        run: |
+          python - <<'PY'
+          import json
+          a=json.load(open('review_artifact.json'))
+          assert a['verdict']=='PASS', a['findings']
+          assert a['findings']==[], a['findings']
+          assert a['test_count']==18, a['test_count']
+          assert a['request_sha256']=='5339f25b6e863a8ffb1f341b1a14734852bafc02bfab8aafce24b08595e696a8'
+          print('READY NON_PUBLISHING 18/18 findings=[]')
+          PY
