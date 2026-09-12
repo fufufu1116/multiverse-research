@@ -1,0 +1,93 @@
+{
+  "schema": "MULTIVERSE_FIRST_LIVE_PROVIDER_PREAUTH_FRESH_MAIN_REEVALUATION_v1",
+  "observed_at_jst": "2026-09-11",
+  "canonical": {
+    "main": "d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+    "tree": "488afdff4d5e7b55072ef69baf8dad0056fd3a46",
+    "multimodel_subtree": "51f97ee06a81b72932b2a09d2230a19b7ba63a71",
+    "integrated_control_change_pr": 313
+  },
+  "frozen_predecessor": {
+    "pr": 305,
+    "state": "OPEN_DRAFT_UNMERGED_FROZEN",
+    "head": "9662b62107ea29ebc10936ceba172925c3bb7aae",
+    "tree": "2375f43d59868169dfa231e78628ccfe20ecc012",
+    "merge_base": "04f314c744abbd0a15591e0437c5de178cfb0ef4",
+    "divergence_from_current_main": {
+      "ahead_by": 1,
+      "behind_by": 3
+    },
+    "mutation_allowed": false
+  },
+  "control_plane_recheck": {
+    "pr313_changed_paths": [
+      "automation/review_dispatcher_v1/request_arbitration_v6.py",
+      "automation/review_dispatcher_v1/test_request_arbitration_v6.py"
+    ],
+    "request_arbitration_v6_blob": "ccf53e79155a79cda4f24a1c03badf3b4d003c97",
+    "test_request_arbitration_v6_blob": "71973ab85f217d018044b1d648516987d89391e1",
+    "publisher_blob": "514505257c04cb5d40cb91d65044c7d3f18d6cb8",
+    "direct_path_overlap_with_pr305": false,
+    "multimodel_subtree_changed_by_pr313": false
+  },
+  "provider_official_recheck": {
+    "provider": "GOOGLE_GEMINI",
+    "model": "gemini-3.8-flash",
+    "lifecycle": "GA_STABLE",
+    "stable_v1_interactions_available": true,
+    "stable_v1_sdk_configuration_documented": true,
+    "current_default_examples_may_show_v1beta": true,
+    "response_shape_steps": true,
+    "structured_output_field": "response_format",
+    "store_false_stateless_supported": true,
+    "pricing_through_2026_12_31": {
+      "input_usd_per_million_tokens": 0.75,
+      "output_usd_per_million_tokens": 3.75
+    },
+    "official_refs": [
+      "https://ai.google.dev/gemini-api/docs/latest-model",
+      "https://ai.google.dev/gemini-api/docs/pricing",
+      "https://ai.google.dev/gemini-api/docs/api-versions",
+      "https://ai.google.dev/api/interactions-api-v1",
+      "https://ai.google.dev/gemini-api/docs/interactions-breaking-changes-may-2026"
+    ]
+  },
+  "fresh_successor_policy": {
+    "required": true,
+    "reason": "PR305 hard-binds the prior canonical main/tree and must remain frozen; a fresh-main successor must rebind without rewriting PR305.",
+    "minimum_changes": [
+      "start from canonical main d1edc2eabb847c10a4faa59a039b480e85dfb0e4",
+      "preserve PR305 safety contract and predecessor execution-packet hash",
+      "rebind canonical main/tree to d1edc2eabb847c10a4faa59a039b480e85dfb0e4 / 488afdff4d5e7b55072ef69baf8dad0056fd3a46",
+      "retain canonical Multi-model subtree 51f97ee06a81b72932b2a09d2230a19b7ba63a71 unless a newer verified main changes it",
+      "add fail-closed preflight checks for PR313 request_arbitration_v6.py and its tests",
+      "retain publisher/T2/fixed Lab/Auditor Step integrity checks",
+      "rerun full cumulative Multi-model tests and validators on exact successor head",
+      "freeze exact head/tree/subtree before Sole Control intake"
+    ],
+    "forbidden": [
+      "provider_api_call",
+      "credential_retrieval_or_use",
+      "spend",
+      "live_effect",
+      "runtime_activation",
+      "pr305_mutation",
+      "lab_request",
+      "auditor_request",
+      "t1_t2",
+      "adoption",
+      "merge_main"
+    ]
+  },
+  "authority": {
+    "provider_call_authorized": false,
+    "credential_authorized": false,
+    "spend_authorized": false,
+    "live_effect_authorized": false,
+    "runtime_activation_authorized": false,
+    "adoption_authority": false,
+    "merge_authority": false,
+    "runtime": "OFF"
+  },
+  "state": "FRESH_MAIN_REEVALUATION_COMPLETE_SUCCESSOR_PREPARATION_READY_FOR_SOLE_CONTROL"
+}
