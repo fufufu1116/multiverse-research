@@ -1,0 +1,67 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_B_SUCCESSOR_BINDING_v7",
+  "status": "FRESH_MAIN_CLEAN_LINEAGE_PRE_REVIEW_FREEZE",
+  "canonical_base": {
+    "branch": "main",
+    "sha": "c3455ef933227d52a2aa365ff9a2befde431218e",
+    "tree": "8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd"
+  },
+  "supersedes": {
+    "pull_request": 382,
+    "branch": "candidate/opportunity-engine-slice-b-clean-successor-v7-20260912",
+    "head": "406c8612711b799fda4141e563050a34f85ce4b9",
+    "tree": "a1da2b523cb797f84463b5e3dfbb1731454373af",
+    "reason": "authorized Auditor Build #1965 failed with no trusted exact Auditor RESULT; one-shot consumed; carry exact intended Slice B v7 implementation/test bytes only onto current canonical main with no authority transfer"
+  },
+  "slice": "B_FORECAST_INTEGRITY",
+  "source_paths": [
+    "research/opportunity_engine_v0/forecast_ledger.py",
+    "research/opportunity_engine_v0/forecast_revision.py",
+    "research/opportunity_engine_v0/trend_forecast.py",
+    "research/opportunity_engine_v0/trend_retrospective.py",
+    "research/opportunity_engine_v0/test_forecast_ledger.py",
+    "research/opportunity_engine_v0/test_forecast_revision.py",
+    "research/opportunity_engine_v0/test_trend_forecast.py"
+  ],
+  "exact_carry_forward_blobs": {
+    "research/opportunity_engine_v0/forecast_ledger.py": "d93390fcb1297b17ca244a008febecfe124b219f",
+    "research/opportunity_engine_v0/forecast_revision.py": "cc5da8c6784e339c8f1b92c20ec937faf23b323a",
+    "research/opportunity_engine_v0/trend_forecast.py": "2e9d78c97e3a1d11ab1e26bb4c16f6a11913a872",
+    "research/opportunity_engine_v0/trend_retrospective.py": "1c56e973f021748643b5f91161ace310c8d57466",
+    "research/opportunity_engine_v0/test_forecast_ledger.py": "73405c977402da20b55f35d8619402c43a133147",
+    "research/opportunity_engine_v0/test_forecast_revision.py": "c6319a58eccbe676f303c86104026241308f3371",
+    "research/opportunity_engine_v0/test_trend_forecast.py": "6dbc8204d3dfc87ec1228b0142f3e66fccfa100a"
+  },
+  "carry_forward": "PR382_SLICE_B_V7_IMPLEMENTATION_AND_TEST_BLOBS_EXACT; HISTORICAL REVIEW EVIDENCE_ONLY; NO_AUTHORITY_TRANSFER",
+  "historical_evidence_only": {
+    "pr": 382,
+    "lab_pass_comment": 5645469498,
+    "t1_comment": 5645475486,
+    "auditor_request_comment": 5645492463,
+    "auditor_build": 1965,
+    "auditor_result": null,
+    "auditor_outcome": "FAILURE_ONE_SHOT_CONSUMED",
+    "authority_transfer": false
+  },
+  "proof_state": {
+    "tests_present": true,
+    "expected_unit_test_count": 18,
+    "independent_execution_on_successor": false,
+    "pass_claim": false,
+    "formal_lab_or_auditor_on_successor": false
+  },
+  "authority": {
+    "formal_review": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "provider_call": false,
+    "credential_use": false,
+    "spend": false,
+    "publication": false,
+    "customer_recruitment": false,
+    "payment_collection": false,
+    "runtime_activation": false,
+    "live_business_effect": false
+  },
+  "runtime": "OFF"
+}
