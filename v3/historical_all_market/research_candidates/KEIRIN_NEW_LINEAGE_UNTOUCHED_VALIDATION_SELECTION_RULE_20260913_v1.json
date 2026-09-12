@@ -1,0 +1,76 @@
+{
+  "record": "KEIRIN_NEW_LINEAGE_UNTOUCHED_VALIDATION_SELECTION_RULE_20260913_v1",
+  "status": "PREREGISTERED_BEFORE_TARGET_RESULT_SCORING",
+  "purpose": "Test the frozen replacement model NL1_NUMERIC_CLASS_STYLE_L2_V1 against frozen B1a on a new meeting-disjoint historical universe whose target outcomes were not used in replacement-model development or selection.",
+  "evidence_class": "RETROSPECTIVE_KR015_UNTOUCHED_NEW_LINEAGE_VALIDATION",
+  "model_bindings": {
+    "new_lineage": {
+      "model": "NL1_NUMERIC_CLASS_STYLE_L2_V1",
+      "freeze": "v3/historical_all_market/research_candidates/KEIRIN_NEW_LINEAGE_MODEL_FREEZE_20260913_v1.json",
+      "model_core_sha256": "53608ed299e5148f215f1a199d897ac1d8320e04707ccb7453c67ced04080671",
+      "retune": false
+    },
+    "baseline": {
+      "model": "B1a_RECONSTITUTED_v1",
+      "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+      "temperature": 1.15,
+      "retune": false
+    }
+  },
+  "fixed_meetings": [
+    {"meeting_id":"1220260730","venue":"aomori","exact_circumference_m":400.0},
+    {"meeting_id":"7420260818","venue":"kochi","exact_circumference_m":500.0},
+    {"meeting_id":"2420260831","venue":"utsunomiya","exact_circumference_m":500.0},
+    {"meeting_id":"3820260815","venue":"shizuoka","exact_circumference_m":400.0},
+    {"meeting_id":"8620260804","venue":"beppu","exact_circumference_m":400.0}
+  ],
+  "selection_rule": [
+    "The five meeting IDs above are frozen before any target result scoring for this validation.",
+    "For each fixed meeting, enumerate day indices 01,02,03,04 and race numbers 01..12 in listed-meeting/day/race order.",
+    "During selection, use only the existing fail-closed PRE parser required by frozen B1a. A candidate enters iff all mandatory PRE rider fields parse successfully.",
+    "Retain every PRE-complete candidate. Do not stop at a favorable count, replace after outcomes, or delete unfavorable races.",
+    "Before prediction lock, fail closed if any fixed validation meeting collides with the seed/temporal batches, independent-meeting batch3, coverage-balanced batch4, regime-validation batch5, regime-confirmation batch6, the new-lineage development meetings, or explicitly known smaller scored historical meetings.",
+    "DEV2000 is not queried or reused as fresh validation evidence. ECON_HOLDOUT1000 remains sealed.",
+    "Require at least 120 successfully frozen races and PRE-complete representation from all five fixed meetings; otherwise fail closed before dedicated result scoring and do not alter the rule after outcome access.",
+    "Freeze the complete PRE inputs plus both NL1 and B1a probabilities/rankings for every selected race before dedicated target result-page scoring.",
+    "After prediction lock, score every frozen race for which the result parser succeeds. Any result-fetch/parser failure is retained explicitly and is never silently substituted.",
+    "No odds or payout data are required or used for this probability/ranking validation."
+  ],
+  "interpretability_gate_after_scoring": {
+    "minimum_scored_races": 110,
+    "required_scored_meetings": 5,
+    "minimum_scored_races_per_meeting": 15,
+    "if_gate_fails": "INCONCLUSIVE_RESULT_COVERAGE; do not declare model pass/fail and do not replace failed results after outcome access"
+  },
+  "primary_validation_criteria": {
+    "C1_POOLED_LOG_LOSS": "NL1 mean multiclass log loss must be at least 0.03 lower than B1a on the identical scored races.",
+    "C2_MEETING_STABILITY": "NL1 must have lower mean log loss than B1a in at least 3 of the 5 fixed validation meetings.",
+    "C3_TOP3_NONINFERIORITY": "NL1 winner Top3 rate must be no more than 0.02 below B1a on the identical scored races.",
+    "C4_TOP1_NONINFERIORITY": "NL1 Top1 accuracy must be no more than 0.02 below B1a on the identical scored races."
+  },
+  "overall_decision_rule": {
+    "PASS_UNTOUCHED_VALIDATION": "interpretability gate passes and C1, C2, C3 and C4 all pass",
+    "FAIL_UNTOUCHED_VALIDATION": "interpretability gate passes and at least one of C1, C2, C3 or C4 fails",
+    "INCONCLUSIVE_RESULT_COVERAGE": "interpretability gate fails"
+  },
+  "known_collision_boundaries": {
+    "development_meetings": ["2120260907","2220260722","2420260806","2420260824","3420260910","4320260807","4620260910","7520260821","7520260831","8420260821","8420260903"],
+    "explicit_smaller_exposed_meetings": ["2220260809","2220260815","2220260912","2520260427","2520260522","2520260701","2420260521","7420260629"],
+    "dev2000": "EXPOSED_RESTRICTED_DIAGNOSTIC_ONLY_NOT_FRESH_VALIDATION",
+    "dev2000_segment_c": "RETIRED_FROM_NEW_LINEAGE_DEVELOPMENT_SELECTION_AND_UNTOUCHED_VALIDATION_CLAIMS",
+    "econ_holdout1000": "SEALED"
+  },
+  "anti_cherry_pick": {
+    "result_access_during_selection": false,
+    "payout_access_during_selection": false,
+    "odds_used": false,
+    "post_result_replacement": false,
+    "post_result_deletion": false,
+    "new_lineage_retune": false,
+    "b1a_retune": false,
+    "criteria_change_after_outcome": false
+  },
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
