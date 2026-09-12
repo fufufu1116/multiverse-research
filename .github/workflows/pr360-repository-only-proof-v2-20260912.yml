@@ -1,0 +1,75 @@
+name: pr360-repository-only-proof-v2-20260912
+
+on:
+  push:
+    branches:
+      - agent/pr360-repository-only-proof-v2-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "8874e21542da6b482e2c27b5318ae10866e3efb7"
+          test "$(git show -s --format=%T HEAD^)" = "8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = ".github/workflows/pr360-repository-only-proof-v2-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Run full applicable control-plane suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout -q --detach 8874e21542da6b482e2c27b5318ae10866e3efb7
+          python3 - <<'PY'
+          import importlib, unittest
+          modules = [
+            'automation.review_dispatcher_v1.test_combined_fault_replay_v1',
+            'automation.review_dispatcher_v1.test_dispatcher',
+            'automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1',
+            'automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1',
+            'automation.review_dispatcher_v1.test_prelaunch_guard_v1',
+            'automation.review_dispatcher_v1.test_publisher_freshness_v1',
+            'automation.review_dispatcher_v1.test_publisher_github_read_resilience_v1',
+            'automation.review_dispatcher_v1.test_publisher_resilience_integration_v1',
+            'automation.review_dispatcher_v1.test_receipt_recovery_v1',
+            'automation.review_dispatcher_v1.test_request_arbitration_v6',
+            'automation.review_dispatcher_v1.test_result_canonicalization_v1',
+            'automation.review_dispatcher_v1.test_t2_github_read_resilience_v1',
+            'automation.review_dispatcher_v1.test_t2_idempotence_v1',
+            'automation.review_dispatcher_v1.test_t2_receipt_recovery_v1',
+            'automation.review_dispatcher_v1.test_t2_resilience_integration_v1',
+            'automation.review_dispatcher_v1.test_validator_current_baseline_v1',
+            'automation.review_dispatcher_v1.test_one_shot_preflight_v1',
+          ]
+          loader=unittest.TestLoader(); suite=unittest.TestSuite(); counts={}
+          for name in modules:
+              s=loader.loadTestsFromModule(importlib.import_module(name)); counts[name]=s.countTestCases(); suite.addTests(s)
+          print('MODULE_COUNTS='+repr(counts)); print('TOTAL_TESTS='+str(suite.countTestCases()))
+          assert suite.countTestCases()==183, suite.countTestCases()
+          result=unittest.TextTestRunner(verbosity=1).run(suite); assert result.wasSuccessful()
+          print('FULL_APPLICABLE_TESTS=183/183_PASS')
+          PY
+          PYTHONPATH=. python3 automation/review_dispatcher_v1/validator.py > validator.json
+          python3 - <<'PY'
+          import json
+          v=json.load(open('validator.json'))
+          assert v.get('verdict')=='PASS', v
+          assert v.get('findings')==[], v
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          print('FIXED_STEPS_UNCHANGED=PASS')
+          print('PROOF_TERMINAL=READY')
+          PY
