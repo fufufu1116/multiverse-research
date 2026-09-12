@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_REGIME_EXPLANATORY_VALIDATION_PREREGISTRATION_20260913_v1",
+  "status": "PREREGISTERED_BEFORE_NEW_UNIVERSE_RESULT_SCORING",
+  "purpose": "Test whether the large batch-to-batch variation of frozen B1a can be explained or bounded by PRE-only race/meeting regime dimensions without retuning, cherry-picking or treating venue/circumference labels as deterministic rules.",
+  "model_binding": {
+    "model":"B1a_RECONSTITUTED_v1",
+    "predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "temperature":1.15,
+    "retune":false,
+    "identity_audit":"v3/historical_all_market/research_candidates/KEIRIN_B1A_FREEZE_IDENTITY_AUDIT_20260913_v1.json"
+  },
+  "field_authority": "v3/historical_all_market/research_candidates/KEIRIN_PRE_REGIME_FIELD_AVAILABILITY_AUDIT_20260913_v1.json",
+  "confirmatory_dimensions": [
+    {"id":"FIELD_SIZE","definition":"exact active entrant count after PRE-only withdrawal handling; report 5,6,7,8,9 separately; no nearest bucket"},
+    {"id":"MEETING_DAY_INDEX","definition":"exact day index encoded in the historical race identity; report each observed day index separately"},
+    {"id":"CLASS_COMPOSITION","definition":"counts of SS,S1,S2,A1,A2,A3,L1 among active entrants; report race-level class-count signature and coarse all-L1 / contains-S / A-only indicators without dropping mixed or rare signatures"},
+    {"id":"STYLE_COMPOSITION","definition":"counts of 逃,追,両 among active entrants; style is not line structure"},
+    {"id":"SCORE_DISPERSION","definition":"population standard deviation and max-minus-min of frozen competition score within race; analyze continuously and descriptively"},
+    {"id":"MODEL_NORMALIZED_ENTROPY","definition":"H(p)/log(n) from frozen B1a probabilities; fixed descriptive bins [0,0.70), [0.70,0.85), [0.85,1.0000001] plus continuous value"},
+    {"id":"MODEL_TOP1_MARGIN","definition":"p(top1)-p(top2) from frozen B1a probabilities; fixed bins [0,0.05), [0.05,0.15), [0.15,1.0] plus continuous value"},
+    {"id":"EXACT_CIRCUMFERENCE","definition":"authoritative exact venue circumference; preserve 333.3m,335m,400m,500m and any other separately verified value without coercion"},
+    {"id":"VENUE","definition":"descriptive venue identity only; no venue operational rule may be promoted from this validation set"}
+  ],
+  "conditional_dimensions_if_parser_frozen_before_target_result_scoring": [
+    {"id":"RACE_TYPE_RAW","definition":"raw race heading label, with fixed token family 決勝/準決勝/予選/特選/一般/選抜/その他; unknown retained as OTHER/UNKNOWN"},
+    {"id":"EVENT_GRADE_RAW","definition":"raw event grade label such as F1/F2/G3/etc; unknown retained as UNKNOWN"}
+  ],
+  "explicitly_excluded_dimensions": [
+    {"id":"LINE_STRUCTURE","reason":"not yet authoritatively bound in the current PRE parser; do not infer from style"},
+    {"id":"SOLO_RIDER","reason":"depends on line structure; fail closed until separately verified"}
+  ],
+  "primary_metrics": ["Top1 accuracy","winner Top3 rate","multiclass log loss"],
+  "analysis_policy": [
+    "Report overall metrics first, then every preregistered dimension including unfavorable cells.",
+    "No subgroup threshold, exclusion rule, feature weight, temperature, probability or model parameter may be changed using target outcomes.",
+    "Continuous regime dimensions are explanatory; fixed bins are reporting aids and are not purchase thresholds.",
+    "Small cells are reported with n and uncertainty warning; they are not deleted or merged after outcomes.",
+    "Any missing subgroup value is UNKNOWN and the race remains in overall scoring.",
+    "Multiple subgroup comparisons are treated as descriptive/falsification evidence. Any proposed operational subgroup rule requires a new independent preregistered confirmation."
+  ],
+  "new_universe_requirements": [
+    "Must be temporally after the original frozen B1a training/freeze lineage where feasible.",
+    "Must be collision-audited against DEV2000 and every already exposed 100-race meeting/race set before result scoring.",
+    "Must exclude explicitly known smaller scored historical experiments when their race identities overlap.",
+    "Selection is frozen from PRE completeness and deterministic identity rules only; no result/payout/odds/model-performance criterion may select races.",
+    "Prediction lock is written before dedicated target result scoring.",
+    "All successfully frozen selected races are scored; no post-result deletion or replacement."
+  ],
+  "success_interpretation": "Scientific progress requires demonstrating which PRE-only regime dimensions explain reproducible variation on a new collision-audited universe, or demonstrating that simple regime explanations fail. Either result is valid if preregistration and retention rules are obeyed.",
+  "runtime":"OFF",
+  "automatic_betting":false,
+  "owner_action_required":false
+}
