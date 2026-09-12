@@ -1,0 +1,115 @@
+{
+  "record": "KEIRIN_NEW_LINEAGE_STABILITY_UNTOUCHED_VALIDATION_COMPLETE_AUDIT_20260913_v3",
+  "status": "PASS_UNTOUCHED_VALIDATION",
+  "evidence_class": "FRESH_MEETING_DISJOINT_RETROSPECTIVE_KR015_UNTOUCHED_VALIDATION",
+  "model": {
+    "name": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+    "model_core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+    "freeze": "v3/historical_all_market/research_candidates/KEIRIN_NEW_LINEAGE_STABILITY_MODEL_FREEZE_20260913_v2.json",
+    "retuned_from_validation": false
+  },
+  "baseline": {
+    "name": "B1a_RECONSTITUTED_v1",
+    "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "temperature": 1.15,
+    "retuned": false
+  },
+  "selection_rule": "v3/historical_all_market/research_candidates/KEIRIN_NEW_LINEAGE_STABILITY_UNTOUCHED_VALIDATION_SELECTION_RULE_20260913_v3.json",
+  "runner": "v3/historical_all_market/historical_virtualworld_new_lineage_stability_untouched_validation_v3.py",
+  "workflow": {
+    "run_id": 34710810725,
+    "head_sha": "2a92bd865a78b06ab6caf99577f7f0827642efce",
+    "conclusion": "success",
+    "artifact_id": 10303077709,
+    "artifact_name": "keirin-new-lineage-stability-untouched-validation-v3",
+    "artifact_size_bytes": 51424,
+    "artifact_sha256": "0303f9ac3edf4670dc241065e70c8f929b67832884fc1a89cabeb2cab555175b"
+  },
+  "artifact_file_sha256": {
+    "SELECTION_AUDIT.json": "fbf67ce8d0b3183a6473a596d1b4a4a6137ece7e75a89109615df706a6998883",
+    "PREDICTION_LOCK.json": "59f357af6ca6466ca0b87d10ba0da548fd673a2646c8ff0a947c3897210f8ab3",
+    "SCORE.json": "205584dc9f9da0b2eb0c8c680c2a301054f83b6543c4edde49d51e6636244eab"
+  },
+  "selection_integrity": {
+    "candidate_count": 180,
+    "selected_count": 120,
+    "pre_only_rejection_count": 60,
+    "prior_meeting_count": 52,
+    "prior_meeting_overlap_count": 0,
+    "selected_unique_meeting_count": 5,
+    "selected_by_meeting": {
+      "2820260822": 21,
+      "4820260909": 36,
+      "7420260825": 21,
+      "8420260909": 21,
+      "8720260824": 21
+    },
+    "selected_by_exact_circumference_m": {
+      "400.0": 99,
+      "500.0": 21
+    },
+    "fixed_meetings": [
+      {"meeting_id":"2820260822","venue":"tachikawa","circumference_m":400.0},
+      {"meeting_id":"7420260825","venue":"kochi","circumference_m":500.0},
+      {"meeting_id":"8720260824","venue":"kumamoto","circumference_m":400.0},
+      {"meeting_id":"4820260909","venue":"yokkaichi","circumference_m":400.0},
+      {"meeting_id":"8420260909","venue":"takeo","circumference_m":400.0}
+    ],
+    "dedicated_result_access_during_selection": false,
+    "dedicated_result_access_before_prediction_lock": false,
+    "odds_used_as_predictor": false,
+    "payout_used": false,
+    "post_result_deletion": false,
+    "result_failures_retained_without_substitution": true
+  },
+  "scoring": {
+    "selected_count": 120,
+    "scored_count": 120,
+    "result_failure_count": 0,
+    "coverage_gate_pass": true,
+    "nl2": {
+      "top1_hits": 42,
+      "top1_accuracy": 0.35,
+      "top3_hits": 80,
+      "top3_rate": 0.6666666666666666,
+      "mean_multiclass_log_loss": 1.7591202431034474
+    },
+    "b1a": {
+      "top1_hits": 37,
+      "top1_accuracy": 0.30833333333333335,
+      "top3_hits": 76,
+      "top3_rate": 0.6333333333333333,
+      "mean_multiclass_log_loss": 1.824595872211278
+    },
+    "b1a_minus_nl2_log_loss": 0.06547562910783067,
+    "nl2_minus_b1a_top1_accuracy": 0.04166666666666663,
+    "nl2_minus_b1a_top3_rate": 0.033333333333333326,
+    "meetings_nl2_lower_log_loss": ["2820260822","4820260909","7420260825","8420260909"],
+    "meetings_nl2_lower_log_loss_count": 4,
+    "by_meeting_log_loss": {
+      "2820260822": {"n":21,"nl2":1.8792669633,"b1a":2.0243665673,"nl2_lower":true},
+      "4820260909": {"n":36,"nl2":2.0211998465,"b1a":2.1320383392,"nl2_lower":true},
+      "7420260825": {"n":21,"nl2":1.8668091452,"b1a":1.9452266731,"nl2_lower":true},
+      "8420260909": {"n":21,"nl2":1.6726678252,"b1a":1.6745342204,"nl2_lower":true},
+      "8720260824": {"n":21,"nl2":1.1684577186,"b1a":1.1272117990,"nl2_lower":false}
+    }
+  },
+  "preregistered_primary_criteria": {
+    "C1_POOLED_LOG_LOSS": {"required":"B1a minus NL2 log loss >= 0.02","observed":0.06547562910783067,"pass":true},
+    "C2_MEETING_STABILITY": {"required":"NL2 lower log loss in >=3 of 5 meetings","observed":4,"pass":true},
+    "C3_TOP3_NONINFERIORITY": {"required":"NL2 minus B1a Top3 >= -0.02","observed":0.033333333333333326,"pass":true},
+    "C4_TOP1_NONINFERIORITY": {"required":"NL2 minus B1a Top1 >= -0.02","observed":0.04166666666666663,"pass":true}
+  },
+  "decision": "PASS_UNTOUCHED_VALIDATION",
+  "scientific_interpretation": "NL2 is the first separately versioned stability-oriented candidate in this lineage to pass its locked fresh meeting-disjoint historical untouched-validation criteria against frozen B1a. The result materially validates the historical probability/ranking candidate but does not by itself establish prospective/live performance or economic profitability. KR-015 retrospective classification remains binding.",
+  "protected_evidence_firewall": {
+    "DEV2000_used_for_this_validation": false,
+    "DEV2000_segment_c_used": false,
+    "ECON_HOLDOUT1000_used": false,
+    "ECON_HOLDOUT1000_status": "SEALED"
+  },
+  "next_scientific_gate": "Preregister and execute a separate historical price/settlement economics lineage using frozen NL2 probabilities, exposed non-protected economic evidence only, and a fresh collision-audited untouched economic validation set before final live confirmation.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
