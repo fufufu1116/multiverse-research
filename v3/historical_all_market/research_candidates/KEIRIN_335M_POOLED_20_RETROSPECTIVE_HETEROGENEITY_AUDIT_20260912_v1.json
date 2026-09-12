@@ -1,0 +1,40 @@
+{
+  "record": "KEIRIN_335M_POOLED_20_RETROSPECTIVE_HETEROGENEITY_AUDIT_20260912_v1",
+  "status": "COMPLETE_DESCRIPTIVE_HETEROGENEITY_AUDIT",
+  "created_jst": "2026-09-12T22:43:00+09:00",
+  "model": "B1a_RECONSTITUTED_v1",
+  "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+  "temperature": 1.15,
+  "track_circumference_m": 335,
+  "retune": false,
+  "actual_odds_used": false,
+  "circumference_challenger_applied": false,
+  "evidence_class": "RETROSPECTIVE_DESCRIPTIVE",
+  "source_batches": [
+    {"venue":"前橋","date":"2026-08-15","n":9,"top1_hits":4,"winner_top3_hits":7,"log_loss":1.4459326689324703,"top1_accuracy":0.4444444444444444,"winner_top3_rate":0.7777777777777778},
+    {"venue":"前橋","date":"2026-08-09","n":11,"top1_hits":3,"winner_top3_hits":7,"log_loss":1.989705329337018,"top1_accuracy":0.2727272727272727,"winner_top3_rate":0.6363636363636364,"integrity_note":"Independent preregistered retrospective day; weaker result retained without retune."}
+  ],
+  "aggregate": {
+    "n_races": 20,
+    "top1_hits": 7,
+    "top1_accuracy": 0.35,
+    "winner_top3_hits": 14,
+    "winner_top3_rate": 0.7,
+    "weighted_multiclass_log_loss": 1.7450076321549717
+  },
+  "heterogeneity": {
+    "top1_accuracy_absolute_gap": 0.1717171717171717,
+    "winner_top3_rate_absolute_gap": 0.14141414141414144,
+    "log_loss_gap": 0.5437726604045478,
+    "finding": "The two independent exact-335m retrospective days differ materially. Pooled performance is moderate, but day-to-day heterogeneity is too large to justify tuning from either day or claiming stable 335m performance from retrospective evidence alone."
+  },
+  "integrity": {
+    "both_independent_days_retained": true,
+    "post_hoc_case_deletion": false,
+    "retune": false,
+    "odds_used": false,
+    "length_coercion": false
+  },
+  "conclusion": "Exact-335m retrospective evidence is heterogeneous: pooled n=20 top1 35%, winner Top3 70%, weighted log loss 1.74501. The already-frozen genuine prospective Maebashi 2026-09-12 R1-R9 is therefore the decisive next evidence rather than further retrospective tuning.",
+  "next": "Score all nine genuine prospective Maebashi 2026-09-12 races after official outcomes are complete, retaining all cases and making no retune."
+}
