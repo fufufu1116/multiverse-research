@@ -1,16 +1,19 @@
 {
   "record":"KEIRIN_500M_OMIYA_20260913_PRE_CAPTURE_READINESS_20260912_v1",
-  "checked_at_jst":"2026-09-12T16:01:04+09:00",
-  "status":"SCHEDULE_CONFIRMED_FINAL_RACECARD_NOT_YET_DISCOVERABLE_FAIL_CLOSED_WAIT",
+  "checked_at_jst":"2026-09-12T16:58:25+09:00",
+  "status":"TWELVE_RACE_CARD_EXISTENCE_CONFIRMED_FINAL_MODEL_INPUTS_NOT_YET_TRUSTWORTHY_FAIL_CLOSED_WAIT_OFFICIAL_PDF_RELEASE",
   "venue":"大宮",
   "event_date":"2026-09-13",
   "track_circumference_m":500,
   "circumference_lane":"CIRCUMFERENCE_500M",
-  "meeting":{"grade":"FI","day":"初日","schedule_confirmed":true},
-  "discovery_checks":{"netkeirin_schedule_found":true,"netkeirin_venue_calendar_found":true,"exact_race_id_202609132501_search_found":false,"exact_race_id_202609132512_search_found":false},
-  "capture_rule":"Do not infer entrants or model inputs. At first trustworthy final racecard availability, freeze exact race membership and PRE fields before any target outcome, then run frozen B1a only.",
+  "meeting":{"grade":"FI","day":"初日","title":"サンケイスポーツ杯","schedule_confirmed":true,"race_count":12},
+  "race_structure":{"R1":"A級予選","R2":"A級予選","R3":"A級予選","R4":"A級予選","R5":"A級初日特選","R6":"S級予選","R7":"S級予選","R8":"S級予選","R9":"S級予選","R10":"S級予選","R11":"S級予選","R12":"S級初特選"},
+  "discovery_checks":{"kdreams_20260913_twelve_races_show_racecard_state":true,"winticket_20260913_event_and_participant_pool_found":true,"official_omiya_event_confirmed":true,"official_omiya_race_table_policy_found":true,"official_pdf_release_policy":"開催日前日20:00より閲覧可能","exact_netkeirin_race_id_202609132501_search_found":false,"exact_netkeirin_race_id_202609132512_search_found":false,"trustworthy_full_per_race_model_input_set_available_at_checked_time":false},
+  "prospective_preregistration":{"target_set":"ALL_12_RACES_NO_POST_HOC_CASE_SELECTION_EXCEPT_PREDECLARED_FAIL_CLOSED_MISSING_INPUT_OR_WITHDRAWAL","primary_metrics":["top1_accuracy","winner_in_top3_rate","multiclass_log_loss"],"descriptive_subgroups":["A_class_top1_accuracy","S_class_top1_accuracy"],"weights_or_threshold_changes_before_scoring":false,"retune_allowed":false},
+  "capture_rule":"Do not infer entrants or model inputs from the event-wide participant pool. At first trustworthy final racecard availability, freeze exact race membership and all nine B1a-required PRE fields for every complete race before any target outcome; then compute frozen B1a. A race may be excluded only for a documented PRE-time withdrawal or a missing required PRE input that cannot be sourced without guessing.",
   "model_scope":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","b1a_requires_circumference":false,"current_333_400_circumference_challenger_applied":false,"competition_gate_applied":false,"required_odds_runner_applied":false,"exact_v54_executable":false},
-  "anti_leak":{"target_results_accessed":false,"target_payouts_accessed":false,"actual_odds_used":false,"post_result_reconstruction":false,"length_rounding_or_coercion":false},
+  "anti_leak":{"target_results_accessed":false,"target_payouts_accessed":false,"actual_odds_used":false,"post_result_reconstruction":false,"length_rounding_or_coercion":false,"event_pool_to_race_membership_inference":false},
   "science":{"formal_scientific_validation_percent":85,"runtime":"OFF","automatic_betting":false,"retune":false},
-  "owner_action_required_now":false
+  "owner_action_required_now":false,
+  "next_machine_action":"After trustworthy final racecard data is published, freeze the full 12-race PRE set and B1a predictions immediately; official Omiya PDF is scheduled to become viewable from 20:00 JST on 2026-09-12."
 }
