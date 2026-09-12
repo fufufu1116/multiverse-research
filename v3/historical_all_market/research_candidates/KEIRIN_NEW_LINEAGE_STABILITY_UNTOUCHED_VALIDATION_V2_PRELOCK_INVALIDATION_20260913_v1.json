@@ -1,0 +1,19 @@
+{
+  "record": "KEIRIN_NEW_LINEAGE_STABILITY_UNTOUCHED_VALIDATION_V2_PRELOCK_INVALIDATION_20260913_v1",
+  "status": "RETIRED_BEFORE_PREDICTION_LOCK_NO_VALIDATION_CLAIM",
+  "retired_rule": "v3/historical_all_market/research_candidates/KEIRIN_NEW_LINEAGE_STABILITY_UNTOUCHED_VALIDATION_SELECTION_RULE_20260913_v2.json",
+  "model": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+  "model_core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+  "prediction_lock_created": false,
+  "dedicated_result_scoring_executed": false,
+  "reason": [
+    "Pre-lock schedule verification showed fixed meeting 2820260825 was not a valid Tachikawa meeting start date for the August 2026 schedule.",
+    "Pre-lock schedule verification showed fixed meeting 8720260828 was not a valid Kumamoto meeting start date for the August 2026 schedule.",
+    "During that verification an external search result surfaced outcome-bearing Tamano race-detail content for meeting 6120260826 before an NL2 prediction lock existed. Fail-closed governance therefore retires the entire v2 target universe rather than treating it as untouched."
+  ],
+  "scientific_effect": "NONE_AS_CONFIRMATORY_EVIDENCE. The v2 target universe is excluded from NL2 untouched-validation claims. The frozen NL2 model is not changed or retuned from this event. A new fixed universe must be committed before its target result scoring.",
+  "post_outcome_model_change": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
