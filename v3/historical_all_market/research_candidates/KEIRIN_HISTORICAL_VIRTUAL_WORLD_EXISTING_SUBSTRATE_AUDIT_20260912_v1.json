@@ -1,0 +1,36 @@
+{
+  "record":"KEIRIN_HISTORICAL_VIRTUAL_WORLD_EXISTING_SUBSTRATE_AUDIT_20260912_v1",
+  "status":"PASS_EXISTING_SUBSTRATE_DISCOVERED",
+  "purpose":"Avoid rebuilding historical simulation from scratch and remove realtime/future dependency until final confirmation.",
+  "fresh_branch_head_at_discovery":"99323875dbb28de6133d30d42c456c5fa3a48f84",
+  "existing_substrates":[
+    {
+      "name":"SIM100_PRELOCK",
+      "paths":[".github/workflows/sim100_prelock.py",".github/workflows/races.csv"],
+      "observed_capability":"Frozen historical universe up to 100 races with PRE-only field firewall, immutable prediction-lock outputs, market ticket probability construction and explicit POST-field rejection.",
+      "important_fields":["race_id","car_no","score","S","B","nige","makuri","sashi","mark","win_rate","top2_rate","top3_rate","line_id","line_position","line_size","num_lines","leading_competition","initiative_clarity","makuri_threat","second_pressure","collapse_proxy"],
+      "realtime_required":false
+    },
+    {
+      "name":"DEV2000_ALL_MARKET_PIPELINE",
+      "observed_path":"v3/historical_all_market/Multiverse_STAGE1_PL_PROBABILITY_2000_IPHONE_LITE_v2.ipynb",
+      "observed_capability":"2000-race all-market probability pipeline designed to consume a frozen B1a prediction lock while keeping RESULT/PAYOUT/Settlement/EV/ROI inaccessible at Stage1 and keeping ECON_HOLDOUT1000 sealed.",
+      "expected_prediction_artifact_name":"DEV2000_CANDIDATE_A_B1A_RECONSTITUTED_v1_PREDICTIONS.csv",
+      "repository_presence_of_expected_prediction_artifact":"NOT_FOUND_BY_CODE_SEARCH_AT_THIS_CHECKPOINT",
+      "note":"Notebook points to a Google Drive artifact path. This audit does not claim that external Drive bytes are currently accessible from this chat. Do not ask Owner for them while other repository/web historical work remains executable.",
+      "realtime_required":false
+    }
+  ],
+  "decision":"PRIMARY_PATH_HISTORICAL_VIRTUAL_WORLD",
+  "execution_policy":[
+    "Exploit repository-backed SIM100/DEV2000 lineage before inventing a new simulator.",
+    "Expand all retrievable historical races without waiting for current/future racecards.",
+    "Separate exact circumference and predeclared structural subgroups.",
+    "Use odds only for separate purchase-rule/economic simulations when historical price evidence exists; odds never block prediction-science simulation.",
+    "Keep target outcomes outside predictor inputs; classify post-event source-derived batches as retrospective when blindness cannot be independently proven.",
+    "Reserve genuine realtime prospective checks for final-stage confirmation only."
+  ],
+  "owner_action_required":false,
+  "scientific_progress_change":0,
+  "reason_progress_not_raised":"This materially improves execution throughput but is substrate discovery, not new outcome evidence."
+}
