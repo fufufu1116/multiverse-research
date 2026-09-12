@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 from pathlib import Path
 
@@ -80,6 +79,15 @@ def audit(root: Path, registry_path: Path | None = None) -> dict:
         for item in data.get("services", []):
             if item.get("credential_scope") in {None, ""}:
                 findings.append({"severity": "CRITICAL", "type": "UNKNOWN_CREDENTIAL_SCOPE_UNMARKED", "service": item.get("id")})
+            observed = item.get("observed_state") or {}
+            if observed.get("chatgpt_plugin_permission") == "FULL_ACCESS_OBSERVED":
+                findings.append({
+                    "severity": "CRITICAL",
+                    "type": "OVERBROAD_CHATGPT_PLUGIN_PERMISSION",
+                    "service": item.get("id"),
+                    "observed": "FULL_ACCESS_OBSERVED",
+                    "required_action": "OWNER_REVIEW_AND_PERMISSION_REDUCTION_OR_EXPLICIT_EXCEPTION",
+                })
     critical = [f for f in findings if f["severity"] == "CRITICAL"]
     return {
         "schema": "MULTIVERSE_REPOSITORY_SECURITY_AUDIT_v1",
@@ -92,7 +100,7 @@ def audit(root: Path, registry_path: Path | None = None) -> dict:
         "finding_count": len(findings),
         "findings": findings,
         "decision": "FAIL_CLOSED" if critical else "PASS_NO_CRITICAL_PATTERN_FOUND",
-        "warning": "Pattern scan is defense-in-depth only; it is not proof that no secret exists and it never grants mutation authority.",
+        "warning": "Pattern scan and declared posture checks are defense-in-depth only; they do not prove that no secret exists and never grant mutation authority.",
     }
 
 
