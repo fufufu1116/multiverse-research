@@ -27,6 +27,8 @@ class RepositoryCurrentLocatorTests(unittest.TestCase):
         self.assertEqual(result["scope_count"], 6)
         self.assertEqual(result["runtime"], "OFF")
         self.assertEqual(result["authority_role"], "LOCATOR_ONLY_NOT_AUTHORITY_REPLACEMENT")
+        self.assertTrue(result["control_first_boot"])
+        self.assertTrue(result["control_sync_receipt_required"])
 
     def test_duplicate_scope_primary_fails_closed(self):
         value = registry()
@@ -72,12 +74,34 @@ class RepositoryCurrentLocatorTests(unittest.TestCase):
         self.assertTrue(result["nonauthority"])
         self.assertFalse(result["write_effects"])
         self.assertEqual(result["freshness_rule"], "REVERIFY_ALL_PRIMARY_POINTERS_BEFORE_USE")
+        self.assertEqual(result["boot_order"], ["FRESH_CANONICAL_MAIN", "FRESH_LATEST_CONTROL_394", "FRESH_LANE_PRIMARY"])
+        self.assertTrue(result["control_sync_receipt_required"])
 
     def test_bootstrap_mapping_is_explicit(self):
         value = registry()
         common = next(s for s in value["scopes"] if s["scope_id"] == "COMMON_BOOTSTRAP_GOVERNANCE")
         self.assertEqual(common["primary"]["kind"], "repo_path_on_main")
         self.assertEqual(common["primary"]["path"], "MULTIVERSE_BOOTSTRAP.md")
+
+    def test_every_scope_requires_control_394_before_primary(self):
+        value = registry()
+        for scope in value["scopes"]:
+            self.assertEqual(scope["control_sync"]["required_issue"], "394")
+            self.assertTrue(scope["control_sync"]["must_precede_primary"])
+            self.assertEqual(scope["control_sync"]["receipt"], "REQUIRED_BEFORE_SUBSTANTIVE_EXECUTION")
+        validate_registry(value)
+
+    def test_missing_control_receipt_fails_closed(self):
+        value = registry()
+        del value["scopes"][1]["control_sync"]
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
+
+    def test_wrong_control_issue_fails_closed(self):
+        value = registry()
+        value["scopes"][2]["control_sync"]["required_issue"] = "377"
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
 
 
 if __name__ == "__main__":
