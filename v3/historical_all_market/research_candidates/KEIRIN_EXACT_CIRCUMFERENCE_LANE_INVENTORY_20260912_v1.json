@@ -1,0 +1,94 @@
+{
+  "record": "KEIRIN_EXACT_CIRCUMFERENCE_LANE_INVENTORY_20260912_v1",
+  "status": "ACTIVE_VERIFIED_CIRCUMFERENCE_LANE_INVENTORY",
+  "date_jst": "2026-09-12",
+  "policy_binding": "KEIRIN_ALL_CIRCUMFERENCE_STORAGE_AND_RESEARCH_POLICY_20260912_v1.json",
+  "scope": "Japanese KEIRIN velodrome circumference categories; preserve raw source measurement/serialization on every race record and never coerce one true circumference class into another.",
+  "official_category_authority": {
+    "provider": "KEIRIN.JP",
+    "source_locator": "https://keirin.jp/pc/static/beginner/keirin-glossary/ha-ho.html",
+    "retrieved_date_jst": "2026-09-12",
+    "verified_statement": "KEIRIN.JP identifies four Japanese keirin bank-lap length types: 333.3m, 335m, 400m, and 500m.",
+    "standard_keirin_circumference_category_count": 4
+  },
+  "lanes": [
+    {
+      "lane_id": "CIRCUMFERENCE_333_3M",
+      "official_category_circumference_m": 333.3,
+      "raw_source_value_policy": "Preserve the source value exactly. Existing PRE artifacts may use nominal 333 or 333.33-style serialization; do not numerically overwrite the raw field.",
+      "current_frozen_circumference_gate_supported": true,
+      "current_gate_bucket": "333_OR_333_33",
+      "repository_evidence": [
+        "v3/historical_all_market/research_candidates/prospective_20260912_nara_r3/KEIRIN_NARA_20260912_R3_PRE_SOURCE_SNAPSHOT_v1.json"
+      ],
+      "example_verified_venue": "奈良",
+      "research_handling": "Continue PRE/outcome accumulation inside this circumference class; retain raw authoritative serialization per record."
+    },
+    {
+      "lane_id": "CIRCUMFERENCE_335M",
+      "official_category_circumference_m": 335,
+      "raw_source_value_policy": "Preserve 335 exactly; never coerce to the 333.3m class.",
+      "current_frozen_circumference_gate_supported": false,
+      "current_gate_bucket": null,
+      "official_evidence": {
+        "venue": "前橋",
+        "provider": "前橋競輪 / KEIRIN.JP",
+        "source_locator": "https://www.maebashi-keirin.jp/wp-content/uploads/2025/09/dome2510.pdf",
+        "verified_circumference_m": 335
+      },
+      "research_handling": "Capture clean PRE and outcomes in the 335m lane. B1a winner prediction may be evaluated where its frozen contract is satisfied, but the current 333/400 circumference challenger and its dependent gate/required-odds chain must not be represented as 335m-supported. Build a 335m-specific challenger from same-length evidence."
+    },
+    {
+      "lane_id": "CIRCUMFERENCE_400M",
+      "official_category_circumference_m": 400,
+      "raw_source_value_policy": "Preserve 400 exactly.",
+      "current_frozen_circumference_gate_supported": true,
+      "current_gate_bucket": "400",
+      "repository_evidence": [
+        "v3/historical_all_market/research_candidates/prospective_20260912_toyohashi_r6/KEIRIN_TOYOHASHI_20260912_R6_PRE_SOURCE_SNAPSHOT_v1.json",
+        "v3/historical_all_market/research_candidates/prospective_20260912_kawasaki_r6/KEIRIN_KAWASAKI_20260912_R6_PRE_SOURCE_SNAPSHOT_v1.json",
+        "v3/historical_all_market/research_candidates/prospective_20260912_toyohashi_r9/KEIRIN_TOYOHASHI_20260912_R9_PRE_SOURCE_SNAPSHOT_v1.json"
+      ],
+      "example_verified_venues": ["豊橋", "川崎"],
+      "research_handling": "Continue frozen 400m circumference challenger plus PRE/outcome accumulation."
+    },
+    {
+      "lane_id": "CIRCUMFERENCE_500M",
+      "official_category_circumference_m": 500,
+      "raw_source_value_policy": "Preserve 500 exactly; never coerce to 400m.",
+      "current_frozen_circumference_gate_supported": false,
+      "current_gate_bucket": null,
+      "official_evidence": {
+        "venue": "大宮",
+        "provider": "大宮競輪",
+        "source_locator": "https://www.keirin-saitama.jp/omiya/",
+        "verified_circumference_m": 500
+      },
+      "research_handling": "Capture clean PRE and outcomes in the 500m lane. B1a winner prediction may be evaluated where its frozen contract is satisfied, but the current 333/400 circumference challenger and its dependent gate/required-odds chain must not be represented as 500m-supported. Build a 500m-specific challenger from same-length evidence."
+    }
+  ],
+  "unsupported_or_new_length_behavior": {
+    "drop": false,
+    "round_to_nearest_existing_lane": false,
+    "action": "If an authoritative future KEIRIN source exposes a new circumference category, preserve it exactly and create a new lane before model use."
+  },
+  "model_separation": {
+    "b1a_winner_predictor_requires_circumference": false,
+    "current_circumference_challenger_supported_lanes": ["CIRCUMFERENCE_333_3M", "CIRCUMFERENCE_400M"],
+    "current_circumference_challenger_unsupported_lanes": ["CIRCUMFERENCE_335M", "CIRCUMFERENCE_500M"],
+    "cross_length_model_assumption_forbidden": true
+  },
+  "science": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "target_outcome_backfill": false,
+    "retune_from_target_outcomes": false,
+    "formal_science_progress_percent": 85
+  },
+  "next_actions": [
+    "Backfill existing repository PRE evidence into the four exact circumference lanes without changing source values.",
+    "Prioritize genuine prospective PRE capture for 335m and 500m races to start same-length validation sets.",
+    "Derive 335m-specific and 500m-specific circumference challengers only after sufficient same-length PRE evidence exists; keep the current 333/400 challenger frozen."
+  ],
+  "owner_action_required_now": false
+}
