@@ -1,0 +1,121 @@
+{
+  "record": "KEIRIN_REGIME_VALIDATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1",
+  "status": "COMPLETE_WITH_ONE_RETAINED_RESULT_FETCH_FAILURE",
+  "evidence_class": "RETROSPECTIVE_KR015_REGIME_VALIDATION",
+  "source_workflow": {
+    "run_id": 34706584423,
+    "job_id": 103587611805,
+    "head_sha": "836b804f51824b0c98ff32ad13e39ffc9061a30e",
+    "conclusion": "success",
+    "artifact_id": 10302206040,
+    "artifact_name": "keirin-regime-validation-fixed-meetings-b1a-v1",
+    "artifact_sha256": "882657a256f843876879f667b13342c9e5151c9afa84896e17addac9cfe1b925",
+    "artifact_expires_at": "2026-12-11T16:53:19Z"
+  },
+  "model_binding": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "temperature": 1.15,
+    "retune": false
+  },
+  "preregistration": {
+    "regime": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_EXPLANATORY_VALIDATION_PREREGISTRATION_20260913_v1.json",
+    "selection": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_VALIDATION_FIXED_MEETINGS_SELECTION_RULE_20260913_v1.json"
+  },
+  "integrity": {
+    "candidate_count": 240,
+    "pre_complete_selected": 123,
+    "selected_unique_meetings": 5,
+    "prior_meeting_overlap_count": 0,
+    "pre_rejections": 117,
+    "pre_rejection_reason_counts": {
+      "entrant_table_missing": 117
+    },
+    "result_access_during_selection": false,
+    "payout_access_during_selection": false,
+    "odds_used": false,
+    "post_result_deletion": false,
+    "prediction_lock_written_before_dedicated_result_scoring": true,
+    "result_fetch_failures": [
+      {
+        "race_id": "REG1_2120260907_yahiko_03_02R",
+        "reason": ""
+      }
+    ]
+  },
+  "artifact_hashes": {
+    "PREDICTION_LOCK.json": "ae168dfa1b024aad470f7e45a572b7014e79a4d75e7644a1db366c3d08ed17e5",
+    "SCORE.json": "bbc4b8d0f3b7b32a810ca7d1f0e54a77a2f41d43d6ada0c624617bc430becac0",
+    "SELECTION_AUDIT.json": "53c39982b11c5abdde0b7d82e508d5ec0578bd47560344e2fe045a777bdc734c"
+  },
+  "overall": {
+    "n": 122,
+    "top1_hits": 35,
+    "top1_accuracy": 0.28688524590163933,
+    "winner_top3": 81,
+    "top3_rate": 0.6639344262295082,
+    "mean_log_loss": 1.8130028666934388
+  },
+  "key_preregistered_slices": {
+    "field_size": {
+      "6": {"n": 6, "top1_hits": 2, "top1_accuracy": 0.3333333333333333, "winner_top3": 5, "top3_rate": 0.8333333333333334, "mean_log_loss": 1.2826574776749833},
+      "7": {"n": 116, "top1_hits": 33, "top1_accuracy": 0.28448275862068967, "winner_top3": 76, "top3_rate": 0.6551724137931034, "mean_log_loss": 1.8404345247461176}
+    },
+    "meeting_day_index": {
+      "1": {"n": 41, "top1_hits": 10, "top1_accuracy": 0.24390243902439024, "winner_top3": 25, "top3_rate": 0.6097560975609756, "mean_log_loss": 1.8649945476559704},
+      "2": {"n": 41, "top1_hits": 16, "top1_accuracy": 0.3902439024390244, "winner_top3": 30, "top3_rate": 0.7317073170731707, "mean_log_loss": 1.667098269062856},
+      "3": {"n": 40, "top1_hits": 9, "top1_accuracy": 0.225, "winner_top3": 26, "top3_rate": 0.65, "mean_log_loss": 1.9092636062781942}
+    },
+    "class_coarse": {
+      "ALL_L1": {"n": 6, "top1_hits": 0, "top1_accuracy": 0.0, "winner_top3": 3, "top3_rate": 0.5, "mean_log_loss": 2.471377177668511},
+      "A_ONLY": {"n": 116, "top1_hits": 35, "top1_accuracy": 0.3017241379310345, "winner_top3": 78, "top3_rate": 0.6724137931034483, "mean_log_loss": 1.7789490230223144}
+    },
+    "model_normalized_entropy_bin": {
+      "[0,0.70)": {"n": 11, "top1_hits": 6, "top1_accuracy": 0.5454545454545454, "winner_top3": 7, "top3_rate": 0.6363636363636364, "mean_log_loss": 1.6178599121927548},
+      "[0.70,0.85)": {"n": 52, "top1_hits": 16, "top1_accuracy": 0.3076923076923077, "winner_top3": 36, "top3_rate": 0.6923076923076923, "mean_log_loss": 1.8347105891736593},
+      "[0.85,1.0000001]": {"n": 59, "top1_hits": 13, "top1_accuracy": 0.22033898305084745, "winner_top3": 38, "top3_rate": 0.6440677966101694, "mean_log_loss": 1.8302532214482896}
+    },
+    "model_top1_margin_bin": {
+      "[0,0.05)": {"n": 30, "top1_hits": 8, "top1_accuracy": 0.26666666666666666, "winner_top3": 19, "top3_rate": 0.6333333333333333, "mean_log_loss": 1.8057055703299307},
+      "[0.05,0.15)": {"n": 32, "top1_hits": 7, "top1_accuracy": 0.21875, "winner_top3": 19, "top3_rate": 0.59375, "mean_log_loss": 1.9119186978503608},
+      "[0.15,1.0]": {"n": 60, "top1_hits": 20, "top1_accuracy": 0.3333333333333333, "winner_top3": 43, "top3_rate": 0.7166666666666667, "mean_log_loss": 1.7638964049248353}
+    },
+    "exact_circumference": {
+      "400.0": {"n": 101, "top1_hits": 28, "top1_accuracy": 0.27722772277227725, "winner_top3": 64, "top3_rate": 0.6336633663366337, "mean_log_loss": 1.8724468682614168},
+      "500.0": {"n": 21, "top1_hits": 7, "top1_accuracy": 0.3333333333333333, "winner_top3": 17, "top3_rate": 0.8095238095238095, "mean_log_loss": 1.5271055258188784}
+    },
+    "venue": {
+      "gifu": {"n": 21, "top1_hits": 5, "top1_accuracy": 0.23809523809523808, "winner_top3": 13, "top3_rate": 0.6190476190476191, "mean_log_loss": 1.866368573514444},
+      "matsuyama": {"n": 27, "top1_hits": 15, "top1_accuracy": 0.5555555555555556, "winner_top3": 25, "top3_rate": 0.9259259259259259, "mean_log_loss": 1.2114548767473168},
+      "takeo": {"n": 21, "top1_hits": 5, "top1_accuracy": 0.23809523809523808, "winner_top3": 11, "top3_rate": 0.5238095238095238, "mean_log_loss": 2.246710493157472},
+      "utsunomiya": {"n": 21, "top1_hits": 7, "top1_accuracy": 0.3333333333333333, "winner_top3": 17, "top3_rate": 0.8095238095238095, "mean_log_loss": 1.5271055258188784},
+      "yahiko": {"n": 32, "top1_hits": 3, "top1_accuracy": 0.09375, "winner_top3": 15, "top3_rate": 0.46875, "mean_log_loss": 2.1885372381911066}
+    },
+    "meeting": {
+      "2120260907": {"n": 32, "top1_hits": 3, "top1_accuracy": 0.09375, "winner_top3": 15, "top3_rate": 0.46875, "mean_log_loss": 2.1885372381911066},
+      "2420260824": {"n": 21, "top1_hits": 7, "top1_accuracy": 0.3333333333333333, "winner_top3": 17, "top3_rate": 0.8095238095238095, "mean_log_loss": 1.5271055258188784},
+      "4320260807": {"n": 21, "top1_hits": 5, "top1_accuracy": 0.23809523809523808, "winner_top3": 13, "top3_rate": 0.6190476190476191, "mean_log_loss": 1.866368573514444},
+      "7520260821": {"n": 27, "top1_hits": 15, "top1_accuracy": 0.5555555555555556, "winner_top3": 25, "top3_rate": 0.9259259259259259, "mean_log_loss": 1.2114548767473168},
+      "8420260821": {"n": 21, "top1_hits": 5, "top1_accuracy": 0.23809523809523808, "winner_top3": 11, "top3_rate": 0.5238095238095238, "mean_log_loss": 2.246710493157472}
+    }
+  },
+  "interpretation": {
+    "primary": "Frozen B1a again retains ranking signal but the new collision-audited universe is materially weaker overall than the immediately preceding coverage-balanced batch: 35/122 Top1=28.69%, 81/122 Top3=66.39%, mean log loss=1.81300. Large meeting-level heterogeneity persists.",
+    "meeting_heterogeneity": "Matsuyama was strong (15/27 Top1=55.56%, 25/27 Top3=92.59%) while Yahiko was weak (3/32 Top1=9.38%, 15/32 Top3=46.88%) and Takeo/Gifu were each 5/21 Top1=23.81%. These are descriptive meeting results, not operational venue rules.",
+    "confidence_signal": "The preregistered low normalized-entropy bin [0,0.70) was 6/11 Top1=54.55% versus 13/59=22.03% in [0.85,1.0000001], but n=11 is small and top1-margin bins were not monotonic. This is a candidate explanatory signal requiring independent preregistered confirmation, not a purchase threshold.",
+    "day_index": "Meeting day 2 was stronger (16/41 Top1=39.02%) than day 1 (10/41=24.39%) or day 3 (9/40=22.50%); this is descriptive and requires independent replication.",
+    "circumference": "500m was 7/21 Top1=33.33%, Top3=80.95% versus 400m 28/101=27.72%, Top3=63.37%, but 500m is represented by one meeting and is confounded with meeting/venue. No circumference rule is promoted.",
+    "field_and_class": "Field-size 6 has n=6 and ALL_L1 has n=6; neither supports an operational rule. The sole selected 5-rider race is the retained result-fetch failure and has no scored subgroup result.",
+    "negative_evidence": "The lower overall result and weak Yahiko meeting directly reinforce the prior conclusion that simple stable venue/circumference narratives are false or meeting/regime-sensitive. No unfavorable cases were removed."
+  },
+  "scientific_conclusion": "This preregistered larger validation materially strengthens the case that B1a performance is regime/meeting-sensitive rather than governed by a stable venue or circumference label. It surfaces normalized entropy and day index as explanatory candidates, but does not yet establish a reproducible operational subgroup rule. Frozen B1a remains unchanged.",
+  "next_gate": [
+    "Durably checkpoint this experiment and retain the one result-fetch failure without substitution.",
+    "Preregister an independent meeting-disjoint confirmation using the same already-frozen entropy/margin/day bins, with no outcome-driven threshold changes.",
+    "Use deterministic PRE-only selection and preserve all successful freezes; do not retune B1a.",
+    "If confidence/regime signals replicate, quantify calibration and only then proceed toward historical odds/settlement optimization; otherwise treat B1a as unstable across regimes and revisit model architecture under a new development lineage rather than contaminating the frozen confirmatory line."
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
