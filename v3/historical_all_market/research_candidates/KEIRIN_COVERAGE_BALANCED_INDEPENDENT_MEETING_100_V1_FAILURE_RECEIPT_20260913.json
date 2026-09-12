@@ -1,0 +1,26 @@
+{
+  "record": "KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_V1_FAILURE_RECEIPT_20260913",
+  "status": "FAIL_CLOSED_BEFORE_RESULT_SCORING",
+  "selection_rule": "v3/historical_all_market/research_candidates/KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_SELECTION_RULE_20260913_v1.json",
+  "runner": "v3/historical_all_market/historical_virtualworld_coverage_balanced_independent_meeting_100_b1a_v1.py",
+  "workflow_run_id": 34704001982,
+  "workflow_job_id": 103580629587,
+  "workflow_head_sha": "77359b125e1e0bc97d48500f874ab01fb77e7e65",
+  "workflow_conclusion": "failure",
+  "failure": {
+    "type": "PREREGISTERED_COVERAGE_QUOTA_INFEASIBLE_IN_FROZEN_WINDOW",
+    "message": "venue_quota_unfilled_kawasaki_0_expected_17",
+    "stage": "PRE_ONLY_UNIVERSE_SELECTION",
+    "result_scoring_started": false,
+    "result_access_during_selection": false,
+    "payout_access_during_selection": false,
+    "odds_used": false,
+    "retune": false,
+    "post_result_replacement": false
+  },
+  "interpretation": "The preregistered 2026-06-01 through 2026-07-31 window did not contain a PRE-complete Kawasaki meeting discoverable under the frozen rule. The experiment therefore failed closed exactly as preregistered. No scientific performance metric was produced and the failed batch must not be silently repaired or relabelled as completed evidence.",
+  "allowed_follow_up": "A separately versioned and preregistered experiment may use a different meeting-selection frame because no result scoring occurred in v1. Its meeting frame must be fixed from schedule/PRE availability evidence before any dedicated target result scoring and must retain zero overlap with prior confirmatory meeting IDs.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
