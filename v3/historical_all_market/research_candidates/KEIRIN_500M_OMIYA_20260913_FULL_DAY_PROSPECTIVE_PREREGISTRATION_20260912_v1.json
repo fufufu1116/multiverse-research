@@ -1,0 +1,22 @@
+{
+  "record":"KEIRIN_500M_OMIYA_20260913_FULL_DAY_PROSPECTIVE_PREREGISTRATION_20260912_v1",
+  "status":"FROZEN_BEFORE_TARGET_DAY_AND_BEFORE_ANY_TARGET_OUTCOME",
+  "created_jst":"2026-09-12T17:13:26+09:00",
+  "venue":"大宮",
+  "event_date":"2026-09-13",
+  "meeting":{"grade":"FI","name":"サンケイスポーツ杯","day":"初日"},
+  "track_circumference_m":500,
+  "circumference_lane":"CIRCUMFERENCE_500M",
+  "evidence_class":"PROSPECTIVE_PRE_OUTCOME_FULL_DAY",
+  "target_races":[1,2,3,4,5,6,7,8,9,10,11,12],
+  "race_structure":{"R1":"A級予選","R2":"A級予選","R3":"A級予選","R4":"A級予選","R5":"A級初日特選","R6":"S級予選","R7":"S級予選","R8":"S級予選","R9":"S級予選","R10":"S級予選","R11":"S級予選","R12":"S級初特選"},
+  "published_cutoff_times_jst":{"R1":"10:40","R2":"11:06","R3":"11:33","R4":"12:01","R5":"12:29","R6":"12:57","R7":"13:25","R8":"13:53","R9":"14:22","R10":"14:52","R11":"15:23","R12":"15:54"},
+  "source_discovery":{"kdreams_event_schedule":"https://keirin.kdreams.jp/kaisai/2026/09/13/","official_venue":"https://www.keirin-saitama.jp/omiya/","winticket_venue_racecard":"https://www.winticket.jp/keirin/omiya/racecard","winticket_meeting_cyclists":"https://www.winticket.jp/keirin/omiya/racecard/2026091325/cyclists","kdreams_meeting_assigned_cyclists":"https://keirin.kdreams.jp/omiya/assen/2520260913/","note":"Meeting and 12-race structure are discoverable. Full final per-race PRE membership plus all frozen-B1a required fields must still be captured from a trustworthy racecard source; meeting-level assen lists are not sufficient and must not be used to infer race membership."},
+  "model_binding":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","model":"B1a_RECONSTITUTED_v1","temperature":1.15,"retune_allowed":false,"circumference_challenger_applied":false,"competition_gate_applied":false},
+  "required_entrant_fields":["car_no","score","win_rate","quinella_rate","trio_rate","B","S","style","class"],
+  "capture_rules":{"complete_final_race_membership_required":true,"no_guessing_missing_fields":true,"no_assigned_cyclist_to_race_inference":true,"withdrawals_respected_if_authoritatively_published":true,"actual_odds_required":false,"target_results_forbidden_before_freeze":true,"target_payouts_forbidden_before_freeze":true,"freeze_every_complete_target_race_before_its_outcome":true,"prefer_full_12_race_day_freeze_before_R1":true},
+  "scoring_lock":{"score_all_successfully_pre_frozen_target_races":true,"post_hoc_case_deletion":false,"retune_before_scoring":false,"primary_metrics":["top1_accuracy","winner_in_top3_rate","multiclass_log_loss"],"descriptive_subgroups":["A_class_top1_accuracy","S_class_top1_accuracy"],"actual_odds_not_required_for_scientific_scoring":true},
+  "anti_leak":{"target_results_accessed":false,"target_payouts_accessed":false,"actual_odds_used":false,"post_result_reconstruction":false,"outcome_based_selection":false,"length_rounding_or_coercion":false},
+  "science":{"formal_scientific_validation_percent":85,"prospective_increment":0,"reason":"Preregistration strengthens design but predictive evidence is not scoreable until outcomes exist.","runtime":"OFF","automatic_betting":false},
+  "owner_action_required_now":false
+}
