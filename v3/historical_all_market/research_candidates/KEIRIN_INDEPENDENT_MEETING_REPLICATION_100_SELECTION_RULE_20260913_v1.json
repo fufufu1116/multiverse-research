@@ -1,0 +1,34 @@
+{
+  "record": "KEIRIN_INDEPENDENT_MEETING_REPLICATION_100_SELECTION_RULE_20260913_v1",
+  "status": "PREREGISTERED_BEFORE_SCORING",
+  "purpose": "Test whether the replicated venue/circumference heterogeneity survives on meeting IDs fully disjoint from both existing 100-race batches, without retuning.",
+  "date_window": {"start":"2026-07-01","end":"2026-07-31"},
+  "venues": {"12":"aomori","21":"yahiko","22":"maebashi","34":"kawasaki","43":"gifu","46":"toyama","75":"matsuyama","84":"takeo","87":"kumamoto"},
+  "selection_rule": [
+    "Read .github/workflows/races.csv and extract every seed meeting ID.",
+    "Read .github/workflows/races_temporal_replication_100_v1.csv if present and extract every temporal-replication meeting ID.",
+    "Enumerate candidate meeting IDs deterministically across 2026-07-01 through 2026-07-31, date ascending then venue code ascending.",
+    "Exclude every meeting ID seen in either prior 100-race batch.",
+    "For each remaining candidate meeting ID enumerate day indices 01,02,03 then race numbers 01..12.",
+    "Probe PRE racecard parsing only during selection; result and payout endpoints are forbidden until exactly 100 complete PRE candidates are frozen.",
+    "Take the first 100 candidates with complete mandatory Frozen B1a PRE fields. No result-dependent replacement, venue quota, favorable-circumference filter or post-hoc deletion.",
+    "Freeze all 100 PRE inputs and predictions before dedicated result scoring.",
+    "If fewer than 100 complete PRE candidates exist in the fixed window, fail closed and report the maximum available set rather than widening the date window after seeing outcomes."
+  ],
+  "primary_comparisons_preregistered": [
+    "Overall top1 accuracy, winner Top3 rate and multiclass log loss versus both prior 100-race batches.",
+    "Exact 333.3m versus 335m versus 400m performance.",
+    "Whether Aomori and Kawasaki remain relatively strong and Gifu and Yahiko remain relatively weak when represented.",
+    "Whether exact 333.3m remains the weakest circumference group when represented."
+  ],
+  "evidence_class": "RETROSPECTIVE_KR015_FULLY_INDEPENDENT_MEETING_REPLICATION",
+  "model": "B1a_RECONSTITUTED_v1",
+  "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+  "temperature": 1.15,
+  "odds_used": false,
+  "retune": false,
+  "post_result_selection": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
