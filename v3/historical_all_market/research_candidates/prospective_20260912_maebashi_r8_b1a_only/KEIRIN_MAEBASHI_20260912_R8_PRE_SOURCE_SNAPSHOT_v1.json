@@ -1,0 +1,45 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_PRE_SOURCE_SNAPSHOT_20260912_MAEBASHI_R8_B1A_ONLY_v1",
+  "captured_at_jst": "2026-09-12T14:28:26+09:00",
+  "status": "FROZEN_PRE_ONLY_335M_B1A_INPUT",
+  "source_providers": ["netkeirin current-day race entry", "Tokyo Sports current-day racecard"],
+  "source_locators": [
+    "https://keirin.netkeiba.com/race/entry/?race_id=202609122208&rf=speciallist",
+    "https://keirin.tokyo-sports.co.jp/list/race/20260911_35670"
+  ],
+  "capture_method": "Current-day PRE racecard fields only. Score, style, S, B, and displayed four-month first/second/third/out counts are taken from the current-day netkeirin entry; current class is cross-checked from the current-day Tokyo Sports racecard. Rates are reconstructed exactly from the displayed counts. Same-meeting prior-day finishes visible on racecard pages were not copied into the model payload. No target-race result, payout, or actual odds were used.",
+  "track_circumference_m": 335,
+  "circumference_lane": "CIRCUMFERENCE_335M",
+  "current_frozen_circumference_gate_supported": false,
+  "odds_values_used": false,
+  "target_race_result_accessed": false,
+  "target_payout_accessed": false,
+  "target_identity": {"event_date":"2026-09-12","venue":"前橋","race_number":8},
+  "target_cutoff_jst": "2026-09-12T23:05:00+09:00",
+  "scheduled_start_jst": "2026-09-12T23:10:00+09:00",
+  "pre_payload": {
+    "event_date": "2026-09-12",
+    "venue": "前橋",
+    "race_number": 8,
+    "race_id": "202609122208",
+    "entrants": [
+      {"car_no":1,"name":"金澤幸司","class":"A1","style":"追","score":94.43,"S":1,"B":0,"win_rate":0.21739130434782608,"quinella_rate":0.30434782608695654,"trio_rate":0.391304347826087},
+      {"car_no":2,"name":"安達光伸","class":"A2","style":"逃","score":93.75,"S":0,"B":11,"win_rate":0.6190476190476191,"quinella_rate":0.7142857142857143,"trio_rate":0.8095238095238095},
+      {"car_no":3,"name":"吉田茂生","class":"A1","style":"両","score":93.65,"S":1,"B":0,"win_rate":0.2777777777777778,"quinella_rate":0.3888888888888889,"trio_rate":0.5555555555555556},
+      {"car_no":4,"name":"岩辺陸","class":"A2","style":"逃","score":91.33,"S":5,"B":11,"win_rate":0.3333333333333333,"quinella_rate":0.5,"trio_rate":0.75},
+      {"car_no":5,"name":"宮内善光","class":"A2","style":"追","score":88.74,"S":4,"B":0,"win_rate":0.14814814814814814,"quinella_rate":0.48148148148148145,"trio_rate":0.5555555555555556},
+      {"car_no":6,"name":"加藤寛治","class":"A1","style":"両","score":87.56,"S":11,"B":1,"win_rate":0.25925925925925924,"quinella_rate":0.4074074074074074,"trio_rate":0.48148148148148145},
+      {"car_no":7,"name":"吉田優斗","class":"A1","style":"逃","score":87.23,"S":2,"B":11,"win_rate":0.18181818181818182,"quinella_rate":0.5,"trio_rate":0.5909090909090909}
+    ]
+  },
+  "science": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "retune": false,
+    "target_race_result_accessed": false,
+    "target_payout_accessed": false,
+    "actual_odds_used": false,
+    "circumference_model_applied": false,
+    "reason_circumference_model_not_applied": "Frozen circumference challenger currently supports only 333/333.33 and 400; 335m is retained as its own lane."
+  }
+}
