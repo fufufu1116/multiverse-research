@@ -1,0 +1,111 @@
+{
+  "schema": "MULTIVERSE_REPOSITORY_SCOPE_REGISTRY_v1",
+  "status": "CANDIDATE_NON_AUTHORITY_LOCATOR",
+  "parent_control_issue": 394,
+  "runtime": "OFF",
+  "authority_role": "LOCATOR_ONLY_NOT_AUTHORITY_REPLACEMENT",
+  "resume_rule": "EVERY_PRIMARY_POINTER_REQUIRES_FRESH_GITHUB_VERIFICATION",
+  "ambiguity_rule": "FAIL_CLOSED",
+  "scopes": [
+    {
+      "scope_id": "SOLE_CONTROL",
+      "owner_label": "司令塔",
+      "primary": {
+        "kind": "issue",
+        "locator": "394",
+        "verification": "FRESH_ISSUE_AND_CANONICAL_MAIN_READ"
+      },
+      "secondary": []
+    },
+    {
+      "scope_id": "OPPORTUNITY_ENGINE",
+      "owner_label": "百人将",
+      "primary": {
+        "kind": "issue",
+        "locator": "404",
+        "verification": "FRESH_ISSUE_AND_REFERENCED_ARTIFACT_READ"
+      },
+      "secondary": []
+    },
+    {
+      "scope_id": "KEIRIN_RESEARCH",
+      "owner_label": "特殊部隊",
+      "primary": {
+        "kind": "repo_path_on_named_branch",
+        "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+        "path": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE.json",
+        "verification": "FRESH_BRANCH_PATH_READ"
+      },
+      "secondary": [
+        {
+          "kind": "issue",
+          "locator": "377",
+          "role": "CONTINUITY_PROTOCOL"
+        },
+        {
+          "kind": "pull_request",
+          "locator": "385",
+          "role": "CAPACITY_CONTINUITY_CANDIDATE_NOT_AUTOMATIC_ADOPTION"
+        }
+      ]
+    },
+    {
+      "scope_id": "MULTIMODEL_RESEARCH",
+      "owner_label": "AI研究 A",
+      "primary": {
+        "kind": "issue",
+        "locator": "154",
+        "verification": "FRESH_ISSUE_AND_CURRENT_LINEAGE_READ"
+      },
+      "secondary": []
+    },
+    {
+      "scope_id": "SYSTEM_IMPROVEMENT",
+      "owner_label": "システム改善 B",
+      "primary": {
+        "kind": "pull_request",
+        "locator": "411",
+        "verification": "FRESH_PR_AND_PARENT_CONTROL_READ"
+      },
+      "secondary": [
+        {
+          "kind": "issue",
+          "locator": "394",
+          "role": "COMMON_CONTROL_PARENT"
+        }
+      ]
+    },
+    {
+      "scope_id": "COMMON_BOOTSTRAP_GOVERNANCE",
+      "owner_label": "共通復旧・統治",
+      "primary": {
+        "kind": "repo_path_on_main",
+        "path": "MULTIVERSE_BOOTSTRAP.md",
+        "verification": "FRESH_CANONICAL_MAIN_PATH_READ"
+      },
+      "secondary": [
+        {
+          "kind": "issue",
+          "locator": "394",
+          "role": "COMMON_OPERATING_RULE"
+        }
+      ]
+    }
+  ],
+  "protected_root_policy": {
+    "complete_registry_available": false,
+    "state": "UNKNOWN_FAIL_CLOSED",
+    "rule": "FILENAME_HEURISTICS_MAY_REPORT_FINDINGS_BUT_MUST_NOT_PROVE_COMPLETE_PROTECTION_COVERAGE_OR_AUTHORIZE_MUTATION"
+  },
+  "forbidden_in_this_candidate": [
+    "FILE_DELETE",
+    "FILE_MOVE",
+    "ISSUE_CLOSE",
+    "PR_MERGE",
+    "ADOPTION",
+    "RUNTIME_ACTIVATION",
+    "PROVIDER_EFFECT",
+    "CREDENTIAL_USE",
+    "SPEND"
+  ]
+}
