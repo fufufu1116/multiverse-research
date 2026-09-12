@@ -1,0 +1,37 @@
+name: control-plane-same-build-read-cache-v1-proof-20260912
+on:
+  push:
+    branches:
+      - agent/control-plane-same-build-read-cache-v1-proof-20260912
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "ea1e212656df176e7d83dcd9e812c40c5267b5be"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/control-plane-same-build-read-cache-v1-proof-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Focused cache and resilience tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest -v \
+            automation.review_dispatcher_v1.test_publisher_github_read_resilience_v1 \
+            automation.review_dispatcher_v1.test_same_build_github_read_cache_v1
+      - name: Full review-dispatcher cumulative suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -v automation/review_dispatcher_v1 -p 'test*.py'
