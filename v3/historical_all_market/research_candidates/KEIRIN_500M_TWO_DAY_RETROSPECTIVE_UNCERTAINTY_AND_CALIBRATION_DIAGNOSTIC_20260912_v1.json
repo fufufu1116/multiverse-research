@@ -1,0 +1,17 @@
+{
+  "record":"KEIRIN_500M_TWO_DAY_RETROSPECTIVE_UNCERTAINTY_AND_CALIBRATION_DIAGNOSTIC_20260912_v1",
+  "status":"COMPLETE_NO_RETUNE_DIAGNOSTIC",
+  "created_jst_date":"2026-09-12",
+  "circumference_lane":"CIRCUMFERENCE_500M",
+  "scope":"Two independent Omiya 500m retrospective days only: 2026-07-01 and 2026-04-27. This diagnostic must not be promoted to prospective evidence.",
+  "model_binding":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","model":"B1a_RECONSTITUTED_v1","retune":false},
+  "sample":{"days":2,"races":24,"A_races":10,"S_races":14},
+  "accuracy":{"top1":{"hits":11,"n":24,"rate":0.4583333333333333,"wilson_95_ci":[0.2789133373121099,0.6492513464108051]},"winner_in_top3":{"hits":19,"n":24,"rate":0.7916666666666666,"wilson_95_ci":[0.5952954674681133,0.9075517464714814]},"A_top1":{"hits":6,"n":10,"rate":0.6,"wilson_95_ci":[0.31267376973365824,0.8318196702937638]},"S_top1":{"hits":5,"n":14,"rate":0.35714285714285715,"wilson_95_ci":[0.1634473175355414,0.612355768960926]}},
+  "day_stability":{"2026-07-01":{"top1_hits":5,"n":12,"rate":0.4166666666666667,"wilson_95_ci":[0.19326031365875665,0.6804886874504503]},"2026-04-27":{"top1_hits":6,"n":12,"rate":0.5,"wilson_95_ci":[0.2537815976337061,0.7462184023662939]}},
+  "top1_confidence_calibration":{"mean_top1_probability":0.4137752055051041,"observed_top1_accuracy":0.4583333333333333,"binary_top1_brier_score":0.21636345383044278,"ece_fixed_width_0_2_bins":0.04455812782822914,"bins":[{"range":"[0.0,0.2)","n":0},{"range":"[0.2,0.4)","n":12,"mean_confidence":0.3219435704360312,"observed_accuracy":0.3333333333333333,"hits":4},{"range":"[0.4,0.6)","n":10,"mean_confidence":0.47140175169199905,"observed_accuracy":0.5,"hits":5},{"range":"[0.6,0.8)","n":2,"mean_confidence":0.6766322849850677,"observed_accuracy":1.0,"hits":2},{"range":"[0.8,1.0]","n":0}],"warning":"Small bins, especially n=2, are descriptive only. Do not set thresholds from this diagnostic."},
+  "A_vs_S_exploratory_test":{"table":{"A_hits":6,"A_misses":4,"S_hits":5,"S_misses":9},"fisher_exact_two_sided_odds_ratio":2.7,"p_value":0.4080966482702921,"interpretation":"Direction A>S repeated descriptively, but this 24-race sample does not support a statistically reliable class difference. Do not build or tune a class-specific rule from it."},
+  "interpretation":["Two retrospective days show similar top1 accuracy and repeated high winner-in-top3 coverage.","Top1 confidence is not visibly grossly miscalibrated in this small 24-race sample, but uncertainty remains wide.","The prospective 2026-09-13 Omiya 500m full-day freeze remains the key next evidence gate; it is more valuable than further tuning on these retrospective days."],
+  "anti_leak":{"new_model_fit":false,"weight_change":false,"threshold_change":false,"case_deletion":false,"actual_odds_used":false},
+  "science":{"formal_scientific_validation_percent":85,"prospective_increment":0,"runtime":"OFF","automatic_betting":false},
+  "owner_action_required_now":false
+}
