@@ -1,0 +1,18 @@
+{
+  "record":"KEIRIN_500M_CROSS_VENUE_ROBUSTNESS_PREREGISTRATION_20260912_v1",
+  "status":"FROZEN_BEFORE_FULL_DAY_MODEL_EXTRACTION",
+  "created_jst":"2026-09-12T17:17:28+09:00",
+  "circumference_lane":"CIRCUMFERENCE_500M",
+  "purpose":"Reduce the Omiya-venue confound in the existing 500m retrospective evidence by testing the same frozen B1a on a different exact-500m venue.",
+  "verified_500m_venues":{"source":"Omiya official DASH500 page and Utsunomiya official bank data","venues":["大宮","宇都宮","高知"]},
+  "selection_rule":"Among exact-500m venues other than Omiya, use the chronologically nearest prior FI first-day before 2026-07-01 with a complete standard 12-race card and retrievable frozen-B1a PRE fields. Do not skip a valid nearer day because of its results.",
+  "selected_target":{"venue":"高知","event_date":"2026-06-29","meeting":"第1回 喫茶スプーン杯","grade":"FI","day":"初日","target_races":[1,2,3,4,5,6,7,8,9,10,11,12],"track_circumference_m":500},
+  "selection_evidence":{"kochi_program":"https://keirin.kdreams.jp/kochi/raceprogram/7420260629/","official_500m_context":"https://www.keirin-saitama.jp/omiya/topics/0220-22_fanservice/","utsunomiya_bank":"https://utsunomiya-keirin.jp/bank_data/index.html"},
+  "model_binding":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","model":"B1a_RECONSTITUTED_v1","temperature":1.15,"retune_allowed":false,"circumference_challenger_applied":false},
+  "required_inputs":["car_no","score","win_rate","quinella_rate","trio_rate","B","S","style","class"],
+  "evaluation_lock":{"score_all_12_races":true,"post_hoc_case_deletion":false,"primary_metrics":["top1_accuracy","winner_in_top3_rate","multiclass_log_loss"],"descriptive_subgroups":["A_class_top1_accuracy","S_class_top1_accuracy"],"retune_before_or_during_test":false,"actual_odds_used":false},
+  "evidence_class":"RETROSPECTIVE_CROSS_VENUE_ROBUSTNESS_NOT_PROSPECTIVE",
+  "blindness_note":"During source discovery, a search result exposed at least the R1 historical winner before this preregistration. Because the model is already frozen and all 12 races are locked, the day remains useful for descriptive cross-venue robustness but is not classified as blinded confirmatory evidence.",
+  "science":{"formal_scientific_validation_percent":85,"prospective_increment":0,"runtime":"OFF","automatic_betting":false},
+  "owner_action_required_now":false
+}
