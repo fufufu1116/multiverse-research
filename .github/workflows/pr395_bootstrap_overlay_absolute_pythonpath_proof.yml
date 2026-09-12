@@ -1,0 +1,71 @@
+name: PR395 Bootstrap Overlay Absolute PYTHONPATH Proof
+
+on:
+  push:
+    branches:
+      - agent/pr395-bootstrap-overlay-absolute-pythonpath-proof-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact candidate parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "4ca4527240335bd05cf4a8a3f52b48301bc66ac1"
+          test "$(git rev-parse HEAD^{tree})" != "$(git rev-parse HEAD^^{tree})"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/pr395_bootstrap_overlay_absolute_pythonpath_proof.yml"
+
+      - name: Reproduce bounded overlay with absolute PYTHONPATH
+        shell: bash
+        env:
+          BUILDKITE_COMMIT: 4ca4527240335bd05cf4a8a3f52b48301bc66ac1
+          BUILDKITE_BUILD_ID: github-actions-pr395-proof
+        run: |
+          set -euo pipefail
+
+          git fetch origin main
+          DISPATCHER_REF="$(git rev-parse FETCH_HEAD)"
+          test "$DISPATCHER_REF" = "c3455ef933227d52a2aa365ff9a2befde431218e"
+          export MULTIVERSE_DISPATCHER_REF="$DISPATCHER_REF"
+
+          rm -rf .mv_dispatcher
+          mkdir -p .mv_dispatcher
+
+          git archive "$DISPATCHER_REF" automation/review_dispatcher_v1 \
+            | tar -x -C .mv_dispatcher
+
+          test "$BUILDKITE_COMMIT" = "4ca4527240335bd05cf4a8a3f52b48301bc66ac1"
+          CANDIDATE_HELPER_BLOB="$(git hash-object automation/review_dispatcher_v1/github_read_resilience_v1.py)"
+          test "$CANDIDATE_HELPER_BLOB" = "1fc5243506f55e1c100e5de519b58134c455914a"
+          cp automation/review_dispatcher_v1/github_read_resilience_v1.py \
+            .mv_dispatcher/automation/review_dispatcher_v1/github_read_resilience_v1.py
+          OVERLAID_HELPER_BLOB="$(git hash-object .mv_dispatcher/automation/review_dispatcher_v1/github_read_resilience_v1.py)"
+          test "$OVERLAID_HELPER_BLOB" = "1fc5243506f55e1c100e5de519b58134c455914a"
+
+          export PYTHONPATH="$PWD/.mv_dispatcher"
+          python3 - <<'PY'
+          import automation.review_dispatcher_v1.dispatcher as dispatcher
+          import automation.review_dispatcher_v1.review as review
+          import automation.review_dispatcher_v1.github_read_resilience_v1 as helper
+          assert helper.SAME_BUILD_CACHE_TTL_SECONDS == 5.0
+          print("ABSOLUTE_PYTHONPATH_IMPORT_PASS")
+          PY
+
+          python3 -m unittest -q automation.review_dispatcher_v1.test_same_build_github_read_cache_v1
+
+      - name: Verify repository-only nonauthority
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'publication_attempted=NO'
+          echo 'buildkite_attempted=NO'
+          echo 'runtime=OFF'
