@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_REGIME_SIGNAL_CONFIRMATION_FIXED_MEETINGS_SELECTION_RULE_20260913_v1",
+  "status": "PREREGISTERED_BEFORE_TARGET_RESULT_SCORING",
+  "purpose": "Independently confirm or falsify the already-preregistered normalized-entropy and meeting-day candidate signals from the first regime-validation universe, using new meeting IDs and unchanged frozen B1a semantics, bins, thresholds, and retention rules.",
+  "model_binding": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "temperature": 1.15,
+    "retune": false,
+    "identity_audit": "v3/historical_all_market/research_candidates/KEIRIN_B1A_FREEZE_IDENTITY_AUDIT_20260913_v1.json"
+  },
+  "parent_regime_preregistration": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_EXPLANATORY_VALIDATION_PREREGISTRATION_20260913_v1.json",
+  "discovery_batch_audit": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_VALIDATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
+  "confirmatory_hypotheses": [
+    {
+      "id": "H1_NORMALIZED_ENTROPY_DIRECTION",
+      "rule": "Using the unchanged bins [0,0.70), [0.70,0.85), [0.85,1.0000001], the low-entropy bin must have higher Top1 accuracy than the high-entropy bin to count as directional replication. If the low-entropy scored cell has n<10 the test is INCONCLUSIVE_INSUFFICIENT_CELL rather than promoted or re-binned.",
+      "operationalization": "No purchase rule or model change may be adopted from this confirmation alone even if the direction replicates."
+    },
+    {
+      "id": "H2_MEETING_DAY2_DIRECTION",
+      "rule": "Using exact meeting day indices with no merging, day 2 must have higher Top1 accuracy than both day 1 and day 3 to count as directional replication. Missing day cells remain missing and are not repaired after outcomes.",
+      "operationalization": "No day-index filter may be adopted from this confirmation alone."
+    },
+    {
+      "id": "H3_TOP1_MARGIN_FALSIFICATION_CONTROL",
+      "rule": "Report the unchanged top1-margin bins [0,0.05), [0.05,0.15), [0.15,1.0]. No monotonicity is assumed. This dimension is retained as a falsification/control slice and must not be re-binned after outcomes."
+    }
+  ],
+  "fixed_meetings": [
+    {"meeting_id":"2220260722","venue":"maebashi","exact_circumference_m":335.0,"historical_event_start":"2026-07-22"},
+    {"meeting_id":"2420260806","venue":"utsunomiya","exact_circumference_m":500.0,"historical_event_start":"2026-08-06"},
+    {"meeting_id":"7520260831","venue":"matsuyama","exact_circumference_m":400.0,"historical_event_start":"2026-08-31"},
+    {"meeting_id":"8420260903","venue":"takeo","exact_circumference_m":400.0,"historical_event_start":"2026-09-03"},
+    {"meeting_id":"3420260910","venue":"kawasaki","exact_circumference_m":400.0,"historical_event_start":"2026-09-10"},
+    {"meeting_id":"4620260910","venue":"toyama","exact_circumference_m":333.3,"historical_event_start":"2026-09-10"}
+  ],
+  "selection_rule": [
+    "The six meeting IDs above are frozen before target result scoring for this confirmation.",
+    "For each fixed meeting, enumerate day indices 01,02,03,04 and race numbers 01..12 in listed-meeting/day/race order.",
+    "During selection, use only the existing fail-closed PRE parser required by frozen B1a. A candidate enters iff all mandatory PRE fields parse successfully.",
+    "Retain every PRE-complete candidate. Do not stop at a favorable count, replace after outcomes, or delete unfavorable races.",
+    "Fail closed before dedicated target-result scoring if any fixed meeting collides with seed/temporal batches, independent-meeting batch3, coverage-balanced batch4, the first regime-validation batch5, or explicitly known smaller scored historical meetings.",
+    "DEV2000 remains exposed diagnostic evidence only. These meetings are temporally outside its 2026-03-01 through 2026-04-10 window and must not be represented as DEV2000 reuse.",
+    "Require at least 120 successfully frozen races across at least five of the six fixed meetings; otherwise fail closed before dedicated result scoring and do not alter the selection rule after seeing outcomes.",
+    "Freeze all PRE inputs, frozen-B1a probabilities/rankings, exact regime variables, unchanged entropy bins, unchanged margin bins, and meeting-day indices before dedicated result-page scoring.",
+    "After prediction lock, attempt result scoring for every frozen race. Result-fetch/parser failures remain explicit and are never silently substituted.",
+    "No odds or payout data are required or used for this probability/ranking confirmation."
+  ],
+  "known_collision_boundaries": {
+    "dev2000": "EXPOSED_DIAGNOSTIC_ONLY; 2026-03-01 through 2026-04-10; not fresh validation",
+    "econ_holdout1000": "SEALED",
+    "first_regime_validation_meetings": ["2120260907","4320260807","7520260821","8420260821","2420260824"],
+    "explicit_smaller_excluded_meetings": ["2220260809","2220260815","2220260912","2520260427","2520260522","2520260701","2420260521","7420260629"]
+  },
+  "evidence_class": "RETROSPECTIVE_KR015_REGIME_SIGNAL_CONFIRMATION",
+  "anti_cherry_pick": {
+    "result_access_during_selection": false,
+    "payout_access_during_selection": false,
+    "odds_used": false,
+    "post_result_replacement": false,
+    "post_result_deletion": false,
+    "confirmatory_retune": false,
+    "entropy_rebin_after_outcome": false,
+    "margin_rebin_after_outcome": false,
+    "day_merge_after_outcome": false
+  },
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
