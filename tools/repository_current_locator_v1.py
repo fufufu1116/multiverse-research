@@ -7,6 +7,7 @@ from typing import Any
 
 SCHEMA = "MULTIVERSE_REPOSITORY_SCOPE_REGISTRY_v1"
 INDEX_SCHEMA = "MULTIVERSE_REPOSITORY_INDEX_v1"
+RECEIPT_SCHEMA = "MULTIVERSE_CONTROL_SYNC_RECEIPT_v1"
 ALLOWED_KINDS = {"issue", "pull_request", "repo_path_on_main", "repo_path_on_named_branch"}
 REQUIRED_SCOPES = {
     "SOLE_CONTROL", "OPPORTUNITY_ENGINE", "KEIRIN_RESEARCH",
@@ -128,6 +129,37 @@ def validate_registry(registry: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def validate_control_sync_receipt(receipt: dict[str, Any], registry: dict[str, Any]) -> dict[str, Any]:
+    validate_registry(registry)
+    if not isinstance(receipt, dict):
+        raise LocatorValidationError("receipt must be object")
+    if receipt.get("schema") != RECEIPT_SCHEMA:
+        raise LocatorValidationError("receipt wrong schema")
+    scope_id = _require_text(receipt, "scope_id", "receipt")
+    valid_scopes = {scope["scope_id"] for scope in registry["scopes"]}
+    if scope_id not in valid_scopes:
+        raise LocatorValidationError("receipt scope is not registered")
+    if str(receipt.get("control_issue")) != CONTROL_ISSUE:
+        raise LocatorValidationError("receipt must bind latest Control Issue #394")
+    _require_text(receipt, "observed_control_comment_or_revision", "receipt")
+    _require_text(receipt, "observed_at", "receipt")
+    _require_text(receipt, "executor_surface", "receipt")
+    if receipt.get("lane_primary_verified") is not True:
+        raise LocatorValidationError("receipt requires lane_primary_verified=true")
+    if receipt.get("runtime") != "OFF":
+        raise LocatorValidationError("receipt runtime must remain OFF")
+    if receipt.get("authority_granted") not in {None, False}:
+        raise LocatorValidationError("receipt cannot grant authority")
+    return {
+        "schema": RECEIPT_SCHEMA,
+        "scope_id": scope_id,
+        "control_issue": CONTROL_ISSUE,
+        "validation": "PASS",
+        "authority_granted": False,
+        "runtime": "OFF",
+    }
+
+
 def build_observed_index(registry: dict[str, Any], observed_main_sha: str) -> dict[str, Any]:
     summary = validate_registry(registry)
     if not isinstance(observed_main_sha, str) or len(observed_main_sha) != 40:
@@ -144,7 +176,11 @@ def build_observed_index(registry: dict[str, Any], observed_main_sha: str) -> di
         "canonical_main_observed": observed_main_sha,
         "boot_order": ["FRESH_CANONICAL_MAIN", "FRESH_LATEST_CONTROL_394", "FRESH_LANE_PRIMARY"],
         "control_sync_receipt_required": True,
-        "control_sync_receipt_fields": ["scope_id", "control_issue", "observed_control_comment_or_revision", "observed_at", "lane_primary_verified"],
+        "control_sync_receipt_schema": RECEIPT_SCHEMA,
+        "control_sync_receipt_fields": [
+            "scope_id", "control_issue", "observed_control_comment_or_revision",
+            "observed_at", "lane_primary_verified", "executor_surface", "runtime",
+        ],
         "freshness_rule": "REVERIFY_ALL_PRIMARY_POINTERS_BEFORE_USE",
         "runtime": "OFF",
         "protected_root_state": summary["protected_root_state"],
