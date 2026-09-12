@@ -1,0 +1,80 @@
+{
+  "record": "KEIRIN_NEW_LINEAGE_STABILITY_UNTOUCHED_VALIDATION_SELECTION_RULE_20260913_v3",
+  "status": "PREREGISTERED_BEFORE_TARGET_PRE_FREEZE_AND_DEDICATED_RESULT_SCORING",
+  "model": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+  "model_core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+  "evidence_class": "FRESH_MEETING_DISJOINT_RETROSPECTIVE_KR015_UNTOUCHED_VALIDATION",
+  "supersedes_for_execution": "v2 target universe was retired pre-lock and is not validation evidence",
+  "fixed_meetings": [
+    {"meeting_id":"2820260822","venue":"tachikawa","circumference_m":400.0,"scheduled_dates":"2026-08-22..2026-08-24"},
+    {"meeting_id":"7420260825","venue":"kochi","circumference_m":500.0,"scheduled_dates":"2026-08-25..2026-08-27"},
+    {"meeting_id":"8720260824","venue":"kumamoto","circumference_m":400.0,"scheduled_dates":"2026-08-24..2026-08-26"},
+    {"meeting_id":"4820260909","venue":"yokkaichi","circumference_m":400.0,"scheduled_dates":"2026-09-09..2026-09-11"},
+    {"meeting_id":"8420260909","venue":"takeo","circumference_m":400.0,"scheduled_dates":"2026-09-09..2026-09-11"}
+  ],
+  "schedule_and_circumference_verification": {
+    "schedule_sources": [
+      "https://keirin.jp/pc/dfw/portal/guest/campaign/morning/index.html",
+      "https://keirin.jp/pc/raceschedule?scym=09&scyy=2026"
+    ],
+    "circumference_source": "https://keirin.jp/pc/dfw/portal/guest/data/bankrecord/bankrecord.html",
+    "outcome_target_pages_used_for_target_selection": false,
+    "note": "Official KEIRIN.JP schedule/bank metadata only was used to repair the retired v2 target universe. No dedicated target result page is authorized before PREDICTION_LOCK is written."
+  },
+  "selection": {
+    "enumerate_days": [1,2,3],
+    "enumerate_races": [1,2,3,4,5,6,7,8,9,10,11,12],
+    "include_rule": "For each fixed meeting enumerate day 01..03 and race 01..12, select every candidate whose mandatory PRE parse succeeds. Do not stop early, replace, delete, or filter on outcome.",
+    "candidate_count": 180,
+    "minimum_frozen_races": 120,
+    "require_all_fixed_meetings": true
+  },
+  "collision_firewall": {
+    "dynamic_sources_required": [
+      ".github/workflows/races.csv",
+      "KEIRIN_INDEPENDENT_MEETING_REPLICATION_100_B1A_COMPLETE_AUDIT_20260913_v1.json",
+      "KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_B1A_COMPLETE_AUDIT_20260913_v2.json",
+      "KEIRIN_REGIME_VALIDATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
+      "KEIRIN_REGIME_SIGNAL_CONFIRMATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
+      "KEIRIN_NEW_LINEAGE_MODEL_FREEZE_20260913_v1.json",
+      "KEIRIN_NEW_LINEAGE_UNTOUCHED_VALIDATION_COMPLETE_AUDIT_20260913_v1.json",
+      "KEIRIN_NEW_LINEAGE_STABILITY_MODEL_FREEZE_20260913_v2.json"
+    ],
+    "retired_v2_target_ids_also_excluded": ["1220260807","2320260811","2820260825","6120260826","8720260828"],
+    "explicit_smaller_exposed_meetings": ["2220260809","2220260815","2220260912","2520260427","2520260522","2520260701","2420260521","7420260629"],
+    "fail_closed_on_any_fixed_meeting_overlap": true,
+    "dev2000_boundary_must_remain_excluded": true,
+    "dev2000_segment_c_must_remain_retired": true,
+    "econ_holdout1000_must_remain_sealed": true
+  },
+  "freeze_protocol": {
+    "freeze_PRE_before_dedicated_result_scoring": true,
+    "freeze_NL2_probabilities_and_rankings": true,
+    "freeze_B1a_probabilities_and_rankings": true,
+    "write_prediction_lock_before_any_result_url_fetch": true,
+    "result_failures_retained_without_substitution": true,
+    "odds_used": false,
+    "payout_used": false,
+    "retuning_after_result_access": false,
+    "post_result_deletion": false
+  },
+  "coverage_gate": {
+    "minimum_scored_races": 110,
+    "minimum_scored_per_meeting": 15,
+    "require_all_fixed_meetings": true
+  },
+  "primary_criteria": {
+    "C1_POOLED_LOG_LOSS": "B1a mean multiclass log loss minus NL2 mean multiclass log loss must be >= 0.02 on identical scored races",
+    "C2_MEETING_STABILITY": "NL2 mean log loss must be lower than B1a in at least 3 of 5 fixed meetings",
+    "C3_TOP3_NONINFERIORITY": "NL2 Top3 accuracy minus B1a Top3 accuracy must be >= -0.02",
+    "C4_TOP1_NONINFERIORITY": "NL2 Top1 accuracy minus B1a Top1 accuracy must be >= -0.02"
+  },
+  "decision": "PASS iff coverage gate and all C1-C4 pass; FAIL iff coverage gate passes and any criterion fails; otherwise INCONCLUSIVE. No criterion may be changed after target result access.",
+  "governance": {
+    "KR_015_retrospective_class_applies": true,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "owner_gate_required": false,
+    "no_post_outcome_adjustment": true
+  }
+}
