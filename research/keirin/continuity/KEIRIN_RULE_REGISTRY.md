@@ -1,7 +1,8 @@
 # KEIRIN_RULE_REGISTRY v1
 
 Purpose: chat handoffで消失させてはいけない競輪研究の固定運用ルール。
-Rule changes must be explicit/versioned. Runtime OFF / automatic betting OFF.
+Rule changes must be explicit/versioned. Chat summaries cannot silently override this registry.
+Runtime OFF / automatic betting OFF.
 
 ## KR-001 Offline odds independence
 オフラインの予測・シミュレーションでは、リアルタイムオッズを必須入力にしない。特定のオッズ研究を行う場合のみ別途入力する。
@@ -38,3 +39,30 @@ Owner操作が不要なデータ整理・シミュレーション・分析・仮
 
 ## KR-012 Fresh-state rule
 CURRENT/NOW/LATESTを古いhandoffやchat履歴だけから決めない。再開時はcanonical GitHubとactive Keirin artifactsをFresh Readする。
+
+## KR-013 Exact circumference preservation
+公式に観測された走路長は正確な値のまま別レーンで保存・研究する。333.3m、335m、400m、500mその他の公式長を近い長さへ丸めない。unsupported-length dropも禁止。
+
+## KR-014 Frozen B1a no-retune binding
+Confirmatory / prospective評価では凍結B1aを再学習・再重み付け・閾値調整しない。Current binding: `B1a_RECONSTITUTED_v1`, predictor blob `62ae4ebc17cda47dca1fffae190fa44caae58ca3`, temperature `1.15`.
+
+## KR-015 Evidence-class separation
+Prospective / preregistered-retrospective / ordinary retrospective を明示的に分離する。結果を見た後で、より強いevidence classへ格上げしない。
+
+## KR-016 Missing PRE fail-closed
+必須PRE項目が欠ける場合は推測・合成しない。結果参照前にfail-closedまたは除外し、理由を記録する。
+
+## KR-017 No post-outcome cherry-picking
+Full-day等を事前登録した場合、正常に凍結できた対象は結果後に都合よく削除しない。失格・落車等も事前ルールに従って保持する。
+
+## KR-018 Scientific-progress discipline
+科学検証進行度は、ファイル数や単純なレース件数増加だけでは上げない。独立追試・前向き証拠・漏洩耐性など、証拠強度が実質的に進んだ時だけ変更する。
+
+## KR-019 Circumference challenger support boundary
+現在凍結されているcircumference challengerは exact 333.3m/400m のみ対応。335m/500mへ流用・丸め適用しない。335m/500mは当面B1a-onlyで評価し、十分な同長証拠から別途検証されたchallengerを作る。
+
+## KR-020 Canonical continuity store
+GitHub repositoryが継続状態の正本。Chatは短命な実行端末として扱う。CURRENT_STATE / RULE_REGISTRY / EXPERIMENT_LEDGER / datasets-artifactsをFresh Readすれば巨大handoffなしで再開できる状態を維持する。
+
+Detailed machine-readable registry on the active Keirin branch:
+`v3/historical_all_market/continuity/KEIRIN_RULE_REGISTRY_v1.json`
