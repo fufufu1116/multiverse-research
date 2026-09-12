@@ -1,0 +1,22 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_335M_B1A_ONLY_PRE_PREDICTION_20260912_MAEBASHI_R8_v1",
+  "status": "PASS_PROSPECTIVE_335M_B1A_ONLY_PRE_FROZEN_BEFORE_OUTCOME",
+  "created_at_jst": "2026-09-12T14:28:26+09:00",
+  "target": {"event_date":"2026-09-12","venue":"前橋","race_number":8,"race_id":"202609122208","track_circumference_m":335,"circumference_lane":"CIRCUMFERENCE_335M","scheduled_start_jst":"2026-09-12T23:10:00+09:00","cutoff_jst":"2026-09-12T23:05:00+09:00"},
+  "bindings": {"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","source_commit":"224504a23297ebd50e241c1e5791c9e137138480","source_snapshot_git_blob":"b3cde1adaf3d423c5c0840d9349eab80768f9df8","circumference_policy_commit":"4f0f4070480f082098cc00992bf7bf96010397af"},
+  "model_scope": {"model":"B1a_RECONSTITUTED_v1","b1a_requires_circumference_input":false,"circumference_challenger_applied":false,"competition_gate_applied":false,"competition_gate":null,"required_odds_runner_applied":false,"exact_v54_executable":false,"reason":"335m exact lane; no 333/400 circumference-gate coercion."},
+  "winner_prediction": {
+    "model":"B1a_RECONSTITUTED_v1",
+    "probabilities":[
+      {"car_no":1,"name":"金澤幸司","win_prob":0.09746138251165015},
+      {"car_no":2,"name":"安達光伸","win_prob":0.3898703080831164},
+      {"car_no":3,"name":"吉田茂生","win_prob":0.17391349538072587},
+      {"car_no":4,"name":"岩辺陸","win_prob":0.15984389665382656},
+      {"car_no":5,"name":"宮内善光","win_prob":0.03663978451609388},
+      {"car_no":6,"name":"加藤寛治","win_prob":0.06552068838654138},
+      {"car_no":7,"name":"吉田優斗","win_prob":0.07675044446804573}
+    ],
+    "top1_car_no":2,"top1_name":"安達光伸","top1_probability":0.3898703080831164
+  },
+  "science": {"prospective_pre_only":true,"runtime":"OFF","automatic_betting":false,"retune":false,"target_race_result_accessed":false,"target_payout_accessed":false,"actual_odds_used":false,"post_result_reconstruction":false,"length_rounding_or_coercion":false,"formal_scientific_validation_percent":85,"next_gate":"Evaluate immutable B1a-only prediction after outcome inside 335m lane."}
+}
