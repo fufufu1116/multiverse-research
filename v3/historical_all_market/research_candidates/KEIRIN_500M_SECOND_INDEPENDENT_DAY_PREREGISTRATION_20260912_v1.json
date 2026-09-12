@@ -1,0 +1,15 @@
+{
+  "record":"KEIRIN_500M_SECOND_INDEPENDENT_DAY_PREREGISTRATION_20260912_v1",
+  "status":"FROZEN_BEFORE_SECOND_DAY_OUTCOME_EXTRACTION",
+  "created_jst_date":"2026-09-12",
+  "circumference_lane":"CIRCUMFERENCE_500M",
+  "selection_rule":"Use the chronologically nearest prior independent Omiya FI first-day card before 2026-07-01 for which all race PRE fields required by frozen B1a are retrievable. Do not skip a valid nearer FI day because of its results.",
+  "model_binding":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","model":"B1a_RECONSTITUTED_v1","retune_allowed":false,"circumference_challenger_applied":false},
+  "primary_metrics":["top1_accuracy","winner_in_top3_rate","multiclass_log_loss"],
+  "descriptive_subgroups":["A_class_top1_accuracy","S_class_top1_accuracy"],
+  "hypothesis_from_first_day_to_test_not_fit":"The 2026-07-01 500m day showed A-class top1 accuracy above S-class top1 accuracy and winner-in-top3 rate materially above top1 rate. Test whether direction repeats; do not alter weights or thresholds regardless of result.",
+  "first_day_reference":{"event_date":"2026-07-01","n":12,"top1_hits":5,"top1_accuracy":0.4166666666666667,"winner_in_top3":10,"winner_in_top3_rate":0.8333333333333334,"A_top1_accuracy":0.6,"S_top1_accuracy":0.2857142857142857},
+  "evidence_class":"RETROSPECTIVE_CONFIRMATORY_WITH_DATE_RULE_PREDECLARED_NOT_PROSPECTIVE",
+  "science":{"formal_scientific_validation_percent":85,"prospective_increment":0,"runtime":"OFF","automatic_betting":false},
+  "owner_action_required_now":false
+}
