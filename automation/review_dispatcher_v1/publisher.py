@@ -3,6 +3,9 @@ from __future__ import annotations
 import time
 
 from automation.review_dispatcher_v1 import publisher_legacy_v1 as _legacy
+from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_read,
+)
 from automation.review_dispatcher_v1.publisher_freshness_v1 import (
     assert_job_request_still_canonical,
 )
@@ -13,6 +16,20 @@ from automation.review_dispatcher_v1.result_canonicalization_v1 import (
     assert_published_result_is_canonical,
     canonical_result_comment_id,
 )
+
+
+def _bounded_public_github(url: str):
+    return github_json_read(
+        url,
+        user_agent="multiverse-fixed-review-publisher-v1",
+    )
+
+
+# Fixed publisher legacy logic performs public GitHub freshness reads through
+# this function. Rebind only that GET edge to the already-integrated bounded
+# GET-only rate-limit helper. Authenticated mutation remains in github_app and
+# is never retried by this helper.
+_legacy.public_github = _bounded_public_github
 
 _original_fresh_verify = _legacy._fresh_verify
 _original_publish = _legacy.publish
