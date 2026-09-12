@@ -3,10 +3,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import urllib.request
 from pathlib import Path
 from typing import Any
 
+from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_read,
+)
 from automation.review_dispatcher_v1.model import (
     ReviewContractError,
     fetch_all_pages,
@@ -27,16 +29,10 @@ JOB_SCHEMA = "MULTIVERSE_FIXED_REVIEW_JOB_v1"
 
 
 def github_get(url: str) -> Any:
-    req = urllib.request.Request(
+    return github_json_read(
         url,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "multiverse-fixed-review-dispatcher-v1",
-        },
+        user_agent="multiverse-fixed-review-dispatcher-v1",
     )
-    with urllib.request.urlopen(req, timeout=30) as response:
-        return json.load(response)
 
 
 def discover_pr(repo: str, head: str, fetch=github_get) -> dict[str, Any]:
