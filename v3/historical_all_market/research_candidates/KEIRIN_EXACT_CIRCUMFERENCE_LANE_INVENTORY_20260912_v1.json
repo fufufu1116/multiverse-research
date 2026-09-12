@@ -3,18 +3,41 @@
   "status": "ACTIVE_VERIFIED_CIRCUMFERENCE_LANE_INVENTORY",
   "date_jst": "2026-09-12",
   "policy_binding": "KEIRIN_ALL_CIRCUMFERENCE_STORAGE_AND_RESEARCH_POLICY_20260912_v1.json",
-  "scope": "Japanese KEIRIN velodrome circumference categories; preserve raw source measurement/serialization on every race record and never coerce one true circumference class into another.",
-  "official_category_authority": {
+  "scope": "Japanese KEIRIN and legally recognized 250-race circumference lanes; preserve raw source measurement/serialization on every race record and never coerce one true circumference class into another.",
+  "standard_keirin_category_authority": {
     "provider": "KEIRIN.JP",
     "source_locator": "https://keirin.jp/pc/static/beginner/keirin-glossary/ha-ho.html",
     "retrieved_date_jst": "2026-09-12",
-    "verified_statement": "KEIRIN.JP identifies four Japanese keirin bank-lap length types: 333.3m, 335m, 400m, and 500m.",
+    "verified_statement": "KEIRIN.JP identifies four standard Japanese keirin bank-lap length types: 333.3m, 335m, 400m, and 500m.",
     "standard_keirin_circumference_category_count": 4
+  },
+  "special_250_race_authority": {
+    "provider": "千葉市 / KEIRIN.JP",
+    "source_locators": [
+      "https://www.city.chiba.jp/keizainosei/keizai/koeijigyo/250pist6gaiyou.html",
+      "https://www.city.chiba.jp/keizainosei/keizai/koeijigyo/saikaijiki.html",
+      "https://www.keirin.jp/pc/dfw/portal/guest/column/tokusyu/tokusyu/20211013_3.html"
+    ],
+    "retrieved_date_jst": "2026-09-12",
+    "verified_statement": "250競走 (PIST6) uses a 250m bank and is a distinct public bicycle-racing format. It has been suspended since October 2025; Chiba City currently targets FY2030 for resumption.",
+    "current_race_operation_status": "SUSPENDED_TARGET_RESUMPTION_FY2030"
   },
   "lanes": [
     {
+      "lane_id": "CIRCUMFERENCE_250M_SPECIAL_250_RACE",
+      "official_category_circumference_m": 250,
+      "competition_family": "250競走_PIST6",
+      "standard_keirin_bank_category": false,
+      "current_operation_status": "SUSPENDED_TARGET_RESUMPTION_FY2030",
+      "raw_source_value_policy": "Preserve 250 exactly and never pool into standard keirin circumference lanes without separately validated cross-format research.",
+      "current_frozen_circumference_gate_supported": false,
+      "current_gate_bucket": null,
+      "research_handling": "Retain historical evidence as a separate 250m/250競走 lane. Do not mix directly with standard keirin because race format, rider count, line rules and competition structure differ. Resume prospective capture only when authoritative 250-race operation resumes."
+    },
+    {
       "lane_id": "CIRCUMFERENCE_333_3M",
       "official_category_circumference_m": 333.3,
+      "competition_family": "STANDARD_KEIRIN",
       "raw_source_value_policy": "Preserve the source value exactly. Existing PRE artifacts may use nominal 333 or 333.33-style serialization; do not numerically overwrite the raw field.",
       "current_frozen_circumference_gate_supported": true,
       "current_gate_bucket": "333_OR_333_33",
@@ -27,6 +50,7 @@
     {
       "lane_id": "CIRCUMFERENCE_335M",
       "official_category_circumference_m": 335,
+      "competition_family": "STANDARD_KEIRIN",
       "raw_source_value_policy": "Preserve 335 exactly; never coerce to the 333.3m class.",
       "current_frozen_circumference_gate_supported": false,
       "current_gate_bucket": null,
@@ -36,11 +60,18 @@
         "source_locator": "https://www.maebashi-keirin.jp/wp-content/uploads/2025/09/dome2510.pdf",
         "verified_circumference_m": 335
       },
+      "current_prospective_opportunity": {
+        "venue": "前橋",
+        "meeting": "CTCなら3分前まで買える杯",
+        "meeting_dates": "2026-09-11..2026-09-13",
+        "source_locator": "https://keirin.jp/sp/raceschedule"
+      },
       "research_handling": "Capture clean PRE and outcomes in the 335m lane. B1a winner prediction may be evaluated where its frozen contract is satisfied, but the current 333/400 circumference challenger and its dependent gate/required-odds chain must not be represented as 335m-supported. Build a 335m-specific challenger from same-length evidence."
     },
     {
       "lane_id": "CIRCUMFERENCE_400M",
       "official_category_circumference_m": 400,
+      "competition_family": "STANDARD_KEIRIN",
       "raw_source_value_policy": "Preserve 400 exactly.",
       "current_frozen_circumference_gate_supported": true,
       "current_gate_bucket": "400",
@@ -55,14 +86,25 @@
     {
       "lane_id": "CIRCUMFERENCE_500M",
       "official_category_circumference_m": 500,
+      "competition_family": "STANDARD_KEIRIN",
       "raw_source_value_policy": "Preserve 500 exactly; never coerce to 400m.",
       "current_frozen_circumference_gate_supported": false,
       "current_gate_bucket": null,
       "official_evidence": {
         "venue": "大宮",
-        "provider": "大宮競輪",
+        "provider": "大宮競輪 / KEIRIN.JP",
         "source_locator": "https://www.keirin-saitama.jp/omiya/",
         "verified_circumference_m": 500
+      },
+      "current_prospective_opportunity": {
+        "venue": "大宮",
+        "meeting": "サンケイスポーツ杯",
+        "meeting_dates": "2026-09-13..2026-09-15",
+        "racecard_publication_note": "Official Omiya site states racecard PDF is available from 20:00 on the day before racing.",
+        "source_locators": [
+          "https://www.keirin-saitama.jp/omiya/",
+          "https://www.keirin-saitama.jp/omiya/race-table/"
+        ]
       },
       "research_handling": "Capture clean PRE and outcomes in the 500m lane. B1a winner prediction may be evaluated where its frozen contract is satisfied, but the current 333/400 circumference challenger and its dependent gate/required-odds chain must not be represented as 500m-supported. Build a 500m-specific challenger from same-length evidence."
     }
@@ -70,13 +112,14 @@
   "unsupported_or_new_length_behavior": {
     "drop": false,
     "round_to_nearest_existing_lane": false,
-    "action": "If an authoritative future KEIRIN source exposes a new circumference category, preserve it exactly and create a new lane before model use."
+    "action": "If an authoritative source exposes another circumference or competition format, preserve it exactly and create a separate lane before model use."
   },
   "model_separation": {
     "b1a_winner_predictor_requires_circumference": false,
     "current_circumference_challenger_supported_lanes": ["CIRCUMFERENCE_333_3M", "CIRCUMFERENCE_400M"],
-    "current_circumference_challenger_unsupported_lanes": ["CIRCUMFERENCE_335M", "CIRCUMFERENCE_500M"],
-    "cross_length_model_assumption_forbidden": true
+    "current_circumference_challenger_unsupported_lanes": ["CIRCUMFERENCE_250M_SPECIAL_250_RACE", "CIRCUMFERENCE_335M", "CIRCUMFERENCE_500M"],
+    "cross_length_model_assumption_forbidden": true,
+    "cross_competition_family_pooling_forbidden_without_separate_validation": true
   },
   "science": {
     "runtime": "OFF",
@@ -86,9 +129,11 @@
     "formal_science_progress_percent": 85
   },
   "next_actions": [
-    "Backfill existing repository PRE evidence into the four exact circumference lanes without changing source values.",
-    "Prioritize genuine prospective PRE capture for 335m and 500m races to start same-length validation sets.",
-    "Derive 335m-specific and 500m-specific circumference challengers only after sufficient same-length PRE evidence exists; keep the current 333/400 challenger frozen."
+    "Capture current Maebashi 335m PRE evidence before remaining 2026-09-12/13 outcomes where trustworthy racecard fields are available.",
+    "At first trustworthy Omiya 2026-09-13 final racecard availability, capture 500m PRE evidence and freeze B1a-only prospective predictions before outcomes.",
+    "Backfill existing repository evidence into the exact circumference lanes without changing raw source values.",
+    "Derive 335m-specific and 500m-specific circumference challengers only after sufficient same-length PRE evidence exists; keep the current 333/400 challenger frozen.",
+    "Keep 250m PIST6 historical evidence isolated until authoritative race operation resumes."
   ],
   "owner_action_required_now": false
 }
