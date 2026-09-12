@@ -1,0 +1,62 @@
+{
+  "record": "KEIRIN_B1A_FREEZE_IDENTITY_AUDIT_20260913_v1",
+  "status": "PASS_PROBABILITY_LAYER_IDENTITY_VERIFIED",
+  "purpose": "Determine whether the large performance difference between the old exposed DEV2000 descriptive replay and recent historical virtual-world batches can be explained by drift in the frozen B1a probability implementation.",
+  "current_binding": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "temperature": 1.15
+  },
+  "original_freeze_artifacts": {
+    "implementation_filename": "B1A_RECONSTITUTED_v1_IMPLEMENTATION.py",
+    "implementation_sha256": "10e2ae81380c98df52845646cdc7a288f022ffac3a226004651e8abb80ade28b",
+    "model_filename": "B1A_RECONSTITUTED_v1_MODEL.json",
+    "model_sha256": "f5c0f1226a7552cb1f807e559f9409773b532934502f6a2ae5bb9b302a730481",
+    "spec_filename": "B1A_RECONSTITUTED_v1_SPEC.json",
+    "spec_sha256": "a5c896f6d56a55c0f10859b356b91a9b8756bdc90305da8c94b2a3a66c1490b3",
+    "historical_prediction_lock_sha256": "772eca4d26f177b94a86ccf7c1b8486e3cdbac0cae454d76ce91fadeca5f1d51"
+  },
+  "predictor_blob_audit": {
+    "blob_resolved": true,
+    "blob_declares_same_original_freeze_hashes": true,
+    "base_weights_match_original_model": true,
+    "beta_coefficients_match_original_model": true,
+    "temperature_matches_original_model": true,
+    "classes_and_styles_match_original_freeze": true
+  },
+  "current_historical_adapter_audit": {
+    "path": "v3/historical_all_market/historical_virtualworld_100_b1a_v1.py",
+    "git_blob_sha": "9d8b2c7ee5962b7f105652786713811e815a2866",
+    "base_weights_match_predictor_blob": true,
+    "beta_coefficients_match_predictor_blob": true,
+    "temperature_match": true,
+    "semantic_field_mapping": {
+      "score": "score",
+      "win_rate": "win_rate",
+      "top2_rate": "original quinella_rate / official 2連対率",
+      "top3_rate": "original trio_rate / official 3連対率",
+      "B": "B",
+      "S": "S"
+    },
+    "within_race_standardization": "population z-score, identical mathematical semantics",
+    "softmax_probability_layer": "identical mathematical semantics"
+  },
+  "numerical_equivalence_test": {
+    "input_artifact": "coverage-balanced v2 PREDICTION_LOCK.json",
+    "races_tested": 100,
+    "method": "For every frozen race, recompute probabilities using the original frozen adapter semantics and compare car-by-car against the current historical adapter's stored probabilities.",
+    "max_absolute_probability_difference": 2.220446049250313e-16,
+    "races_exceeding_1e-14": 0,
+    "verdict": "NUMERICALLY_IDENTICAL_TO_FLOATING_POINT_PRECISION"
+  },
+  "scientific_conclusion": "No material B1a probability-layer implementation drift was found. The current historical virtual-world scorer is mathematically bound to the original B1a_RECONSTITUTED_v1 freeze. Therefore the old DEV2000 descriptive Top1=44.0% versus the recent 100-race batch variation cannot be attributed to a changed B1a probability formula. Remaining explanations include exposed-universe composition/regime differences, source/PRE population differences, and sampling design; these must be tested rather than assumed.",
+  "important_boundary": "This identity audit does not make DEV2000 new untouched evidence. DEV2000 remains exposed diagnostic/reproducibility material; ECON_HOLDOUT1000 remains SEALED.",
+  "next_actions": [
+    "Treat predictor-formula drift as ruled out at the probability layer for the current frozen B1a binding.",
+    "Preregister PRE-only regime/composition dimensions before using outcomes to compare them.",
+    "Build a new collision-audited larger historical universe for further validation rather than recycling exposed DEV2000 as untouched evidence."
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
