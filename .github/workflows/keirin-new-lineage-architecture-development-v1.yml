@@ -1,0 +1,54 @@
+name: Keirin New Lineage Architecture Development v1
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - v3/historical_all_market/new_lineage_architecture_development_compact_v1.py
+      - v3/historical_all_market/research_candidates/KEIRIN_NEW_LINEAGE_ARCHITECTURE_DEVELOPMENT_PREREGISTRATION_20260913_v1.json
+      - .github/workflows/keirin-new-lineage-architecture-development-v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  architecture-development:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deterministic development dependencies
+        run: python -m pip install numpy scipy
+      - name: Download exact exposed development artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/10302206040/zip" \
+            -o /tmp/batch5.zip
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/10301752742/zip" \
+            -o /tmp/batch6.zip
+          sha256sum /tmp/batch5.zip /tmp/batch6.zip
+      - name: Run preregistered meeting-held-out architecture search
+        run: |
+          python v3/historical_all_market/new_lineage_architecture_development_compact_v1.py \
+            --batch5-zip /tmp/batch5.zip \
+            --batch6-zip /tmp/batch6.zip
+      - name: Upload development evidence and frozen winner
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-new-lineage-architecture-development-v1
+          path: v3/historical_all_market/research_candidates/new_lineage_architecture_development_v1/
+          if-no-files-found: warn
