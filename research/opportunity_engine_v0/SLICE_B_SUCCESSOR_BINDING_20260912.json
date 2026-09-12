@@ -1,0 +1,92 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_B_SUCCESSOR_BINDING_v5",
+  "status": "FRESH_MAIN_SUCCESSOR_PRE_REVIEW_FREEZE",
+  "canonical_base": {
+    "branch": "main",
+    "sha": "27b038736e6f160a0ab4f619c6aeef39f0ae8d10",
+    "tree": "cc91da3814accdc3cd6ee0b91bb19ae5ecc07635"
+  },
+  "supersedes": {
+    "pull_request": 341,
+    "branch": "candidate/opportunity-engine-slice-b-fresh-main-20260911-v4",
+    "head": "55917a1bbe71b24bfdfe818badd4ce0e4a75a813",
+    "tree": "085eb31b69b29df99ce0cf1fe72c769531dd61d2",
+    "reason": "canonical main advanced by exact integration of PR #356 after the v4 review lineage began; preserve the seven Slice B payload/test blobs exactly while rebinding to current canonical main"
+  },
+  "frozen_research_source": {
+    "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5",
+    "source_manifest": "research/opportunity_engine_v0/SLICE_B_FORECAST_INTEGRITY_MANIFEST.json"
+  },
+  "slice": "B_FORECAST_INTEGRITY",
+  "source_paths": [
+    "research/opportunity_engine_v0/forecast_ledger.py",
+    "research/opportunity_engine_v0/forecast_revision.py",
+    "research/opportunity_engine_v0/trend_forecast.py",
+    "research/opportunity_engine_v0/trend_retrospective.py",
+    "research/opportunity_engine_v0/test_forecast_ledger.py",
+    "research/opportunity_engine_v0/test_forecast_revision.py",
+    "research/opportunity_engine_v0/test_trend_forecast.py"
+  ],
+  "exact_carry_forward_blobs": {
+    "research/opportunity_engine_v0/forecast_ledger.py": "d93390fcb1297b17ca244a008febecfe124b219f",
+    "research/opportunity_engine_v0/forecast_revision.py": "cc5da8c6784e339c8f1b92c20ec937faf23b323a",
+    "research/opportunity_engine_v0/trend_forecast.py": "2e9d78c97e3a1d11ab1e26bb4c16f6a11913a872",
+    "research/opportunity_engine_v0/trend_retrospective.py": "1c56e973f021748643b5f91161ace310c8d57466",
+    "research/opportunity_engine_v0/test_forecast_ledger.py": "73405c977402da20b55f35d8619402c43a133147",
+    "research/opportunity_engine_v0/test_forecast_revision.py": "c6319a58eccbe676f303c86104026241308f3371",
+    "research/opportunity_engine_v0/test_trend_forecast.py": "6dbc8204d3dfc87ec1228b0142f3e66fccfa100a"
+  },
+  "carry_forward": "SLICE_B_V4_PAYLOAD_AND_TEST_BLOBS_EXACT; ONLY SUCCESSOR BINDING METADATA REBOUND TO CURRENT MAIN",
+  "required_properties": [
+    "forecast frozen before outcome observation",
+    "tamper-evident commitment binds the full raw snapshot even when derived scoring saturates",
+    "successor forecast never mutates predecessor",
+    "settlement distinct from creation",
+    "historical retrospective is hypothesis-only until prospective test",
+    "canonical Slice A and integrated control-plane files are not regressed or replaced",
+    "no live/provider/runtime authority"
+  ],
+  "forbidden_scope": [
+    "provider execution",
+    "credentials",
+    "publisher",
+    "T2",
+    "Runtime activation",
+    "customer recruitment",
+    "payment collection",
+    "canonical adoption authority"
+  ],
+  "prior_proof_lineage": {
+    "v4_pr": 341,
+    "v4_lab_pass_comment": 5632215546,
+    "v4_lab_build": 80,
+    "v4_test_count": 18,
+    "v4_findings": [],
+    "v4_t1_comment": 5632264429,
+    "v4_auditor_request_comment": 5632274106,
+    "v4_auditor_build_1776": "CONSUMED_INFRA_FAILURE_HISTORICAL_EVIDENCE_ONLY",
+    "proof_transfer_authorized": false
+  },
+  "proof_state": {
+    "tests_present": true,
+    "expected_unit_test_count": 18,
+    "independent_execution_on_v5": false,
+    "pass_claim": false,
+    "formal_lab_or_auditor_on_v5": false,
+    "build_77_finding": "COMMITMENT_COLLISION_ON_SATURATED_DERIVED_SCORE_REPAIRED_AND_EXACTLY_CARRIED"
+  },
+  "authority": {
+    "formal_review": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "provider_call": false,
+    "credential_use": false,
+    "spend": false,
+    "publication": false,
+    "customer_recruitment": false,
+    "payment_collection": false,
+    "runtime_activation": false,
+    "live_business_effect": false
+  }
+}
