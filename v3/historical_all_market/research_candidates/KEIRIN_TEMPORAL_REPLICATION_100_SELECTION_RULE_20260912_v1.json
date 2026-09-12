@@ -1,0 +1,26 @@
+{
+  "record": "KEIRIN_TEMPORAL_REPLICATION_100_SELECTION_RULE_20260912_v1",
+  "status": "PREREGISTERED_BEFORE_REPLICATION_SCORING",
+  "purpose": "Test whether the broad 100-race Frozen B1a performance and venue heterogeneity repeat on race-level-disjoint dates without retuning.",
+  "source_seed_universe": ".github/workflows/races.csv",
+  "selection_rule": [
+    "Extract each unique Kdreams meeting id and the day index already used by the seed 100-race universe.",
+    "For those same meetings only, enumerate other day indices 01, 02, 03 in ascending meeting-id/day/race-number order.",
+    "Exclude every exact seed-universe URL and every already-used day index for that meeting.",
+    "Use only the nine already-authoritatively-mapped venues: aomori 400m, yahiko 400m, gifu 400m, toyama 333.3m, matsuyama 400m, takeo 400m, kumamoto 400m, maebashi 335m, kawasaki 400m.",
+    "Probe PRE racecard parsing only; result and payout endpoints are forbidden during selection.",
+    "Take the first 100 candidates with complete mandatory Frozen B1a PRE fields; no result-dependent replacement or favorable-venue filtering.",
+    "Freeze all selected PRE inputs and predictions before dedicated result-page scoring.",
+    "If fewer than 100 complete PRE candidates exist, fail closed and report the maximum available set rather than changing the rule after seeing results."
+  ],
+  "evidence_class": "RETROSPECTIVE_KR015_TEMPORAL_REPLICATION",
+  "independence_caveat": "Race URLs/dates are disjoint from batch 1, but some races come from other days of the same meetings and may share riders/context. This is temporal replication, not fully independent-meeting replication.",
+  "model": "B1a_RECONSTITUTED_v1",
+  "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+  "temperature": 1.15,
+  "odds_used": false,
+  "retune": false,
+  "post_result_selection": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
