@@ -1,0 +1,59 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_335M_B1A_ONLY_PRE_PREDICTION_20260912_MAEBASHI_R9_v1",
+  "status": "PASS_PROSPECTIVE_335M_B1A_ONLY_PRE_FROZEN_BEFORE_OUTCOME",
+  "created_at_jst": "2026-09-12T14:25:42+09:00",
+  "target": {
+    "event_date": "2026-09-12",
+    "venue": "前橋",
+    "race_number": 9,
+    "race_id": "202609122209",
+    "track_circumference_m": 335,
+    "circumference_lane": "CIRCUMFERENCE_335M",
+    "scheduled_start_jst": "2026-09-12T23:30:00+09:00",
+    "cutoff_jst": "2026-09-12T23:25:00+09:00"
+  },
+  "bindings": {
+    "b1a_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "source_commit": "1201d38cd3ea04dcd126deb39046fe7b75f62cf0",
+    "source_snapshot_git_blob": "4a4c01455e7b20b3d8c3f9144dec4e9fff14cf11",
+    "circumference_policy_commit": "4f0f4070480f082098cc00992bf7bf96010397af"
+  },
+  "model_scope": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "b1a_requires_circumference_input": false,
+    "circumference_challenger_applied": false,
+    "competition_gate_applied": false,
+    "competition_gate": null,
+    "required_odds_runner_applied": false,
+    "exact_v54_executable": false,
+    "reason": "335m is an exact independent circumference lane. The currently frozen circumference challenger and competition-gate chain support only 333/333.33m and 400m; therefore they are not coerced or reused for 335m."
+  },
+  "winner_prediction": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "probabilities": [
+      {"car_no":1,"name":"内山雅貴","win_prob":0.5993517132598319},
+      {"car_no":2,"name":"前川大輔","win_prob":0.09052732897112638},
+      {"car_no":3,"name":"中野雄喜","win_prob":0.13369063115194796},
+      {"car_no":4,"name":"佐藤朋也","win_prob":0.06092778561053225},
+      {"car_no":5,"name":"山本健也","win_prob":0.048554238009194575},
+      {"car_no":6,"name":"小林卓人","win_prob":0.024798178282422124},
+      {"car_no":7,"name":"水谷亮太","win_prob":0.042150124714944774}
+    ],
+    "top1_car_no": 1,
+    "top1_name": "内山雅貴",
+    "top1_probability": 0.5993517132598319
+  },
+  "science": {
+    "prospective_pre_only": true,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "retune": false,
+    "target_race_result_accessed": false,
+    "target_payout_accessed": false,
+    "actual_odds_used": false,
+    "post_result_reconstruction": false,
+    "length_rounding_or_coercion": false,
+    "formal_scientific_validation_percent": 85,
+    "next_gate": "After target outcome becomes available, evaluate this immutable B1a-only 335m prediction inside the 335m lane. Do not retrofit the 333/400 circumference challenger."
+  }
+}
