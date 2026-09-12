@@ -16,6 +16,9 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Callable
 
+from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_read,
+)
 from automation.review_dispatcher_v1.model import (
     AUDITOR_APP_ID,
     AUDITOR_APP_SLUG,
@@ -79,16 +82,10 @@ class _PinnedHTTPSConnection(http.client.HTTPSConnection):
 
 
 def github_get(url: str) -> Any:
-    req = urllib.request.Request(
+    return github_json_read(
         url,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "multiverse-fixed-review-runner-v1",
-        },
+        user_agent="multiverse-fixed-review-runner-v1",
     )
-    with urllib.request.urlopen(req, timeout=30) as response:
-        return json.load(response)
 
 
 def endpoint(
