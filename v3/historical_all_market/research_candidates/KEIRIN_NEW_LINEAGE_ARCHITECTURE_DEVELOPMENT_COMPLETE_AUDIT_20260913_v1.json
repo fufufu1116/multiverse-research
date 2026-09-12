@@ -1,0 +1,58 @@
+{
+  "record": "KEIRIN_NEW_LINEAGE_ARCHITECTURE_DEVELOPMENT_COMPLETE_AUDIT_20260913_v1",
+  "status": "COMPLETE_DEVELOPMENT_SEARCH_ELIGIBLE_REPLACEMENT_SELECTED",
+  "evidence_class": "DEVELOPMENT_ONLY_NOT_UNTOUCHED_VALIDATION",
+  "preregistration": "v3/historical_all_market/research_candidates/KEIRIN_NEW_LINEAGE_ARCHITECTURE_DEVELOPMENT_PREREGISTRATION_20260913_v1.json",
+  "executable_runner": "v3/historical_all_market/new_lineage_architecture_development_compact_v1.py",
+  "workflow": {
+    "run_id": 34708227615,
+    "job_id": 103592075565,
+    "head_sha": "4f75680fd88ef2357397cde355972d0e3fae2e6c",
+    "conclusion": "success",
+    "artifact_id": 10302236847,
+    "artifact_name": "keirin-new-lineage-architecture-development-v1",
+    "artifact_sha256": "c3b45c6934a81450002c5f452270819a66cc10e5fa125e1e3ee03c0b7dd7e1c4"
+  },
+  "dataset": {
+    "selected_exposed_races": 321,
+    "labelled_development_races": 320,
+    "unlabelled_retained": 1,
+    "unique_meetings": 11,
+    "development_dataset_sha256": "1ffb1678fd966b05f84424a387774b48643883d093e17bea3acb05112c1ec475",
+    "sources": ["batch5 regime validation artifact","batch6 regime-signal confirmation artifact"],
+    "fresh_validation_outcomes_used": false,
+    "dev2000_used": false,
+    "econ_holdout1000_used": false
+  },
+  "baseline_b1a_leave_one_meeting_out_comparison_set": {
+    "n": 320,
+    "top1_hits": 83,
+    "top1_accuracy": 0.259375,
+    "winner_top3": 210,
+    "top3_rate": 0.65625,
+    "mean_log_loss": 1.863342400289223
+  },
+  "candidate_results": {
+    "NL1_REDUCED_L2_V1": {"top1_accuracy":0.4125,"top3_rate":0.69375,"mean_log_loss":1.7403441676206222,"log_loss_improvement_vs_b1a":0.12299823266860077,"meetings_improved_vs_b1a":8,"eligible":true},
+    "NL1_NUMERIC_L2_V1": {"top1_accuracy":0.39375,"top3_rate":0.70625,"mean_log_loss":1.72041025764924,"log_loss_improvement_vs_b1a":0.142932142639983,"meetings_improved_vs_b1a":10,"eligible":true},
+    "NL1_NUMERIC_CLASS_STYLE_L2_V1": {"top1_accuracy":0.38125,"top3_rate":0.709375,"mean_log_loss":1.7189761167943547,"log_loss_improvement_vs_b1a":0.14436628349486824,"meetings_improved_vs_b1a":10,"median_meeting_log_loss":1.842511300304243,"worst_meeting_log_loss":2.1743804758513905,"eligible":true},
+    "NL1_SCORE_ONLY_L2_V1": {"top1_accuracy":0.41875,"top3_rate":0.69375,"mean_log_loss":1.775213547219608,"log_loss_improvement_vs_b1a":0.08812885306961493,"meetings_improved_vs_b1a":8,"eligible":true}
+  },
+  "selection": {
+    "selected_candidate": "NL1_NUMERIC_CLASS_STYLE_L2_V1",
+    "selection_rule_applied_exactly": true,
+    "reason": "Lowest pooled leave-one-meeting-out log loss among all preregistered eligible replacement candidates.",
+    "model_freeze": "v3/historical_all_market/research_candidates/KEIRIN_NEW_LINEAGE_MODEL_FREEZE_20260913_v1.json",
+    "model_core_sha256": "53608ed299e5148f215f1a199d897ac1d8320e04707ccb7453c67ced04080671"
+  },
+  "artifact_file_sha256": {
+    "DATASET_AUDIT.json": "1a29eab51d01246bcb1100862a1ab274a93f7ae0d16e2645d138d34ed4f909e7",
+    "MODEL_FREEZE.json": "0ef5fd2fc074d325dae2c33f2e5add3e6ff86b01b4a77630dba4f19a2a9df571",
+    "SCORE.json": "280dbc1a94d2736ce79b22e8794c33f0af1c1a8dd0a44d566922a0178d6c5794"
+  },
+  "scientific_interpretation": "A separately preregistered development-only search found multiple simple regularized conditional-softmax replacements that materially outperform frozen B1a under leave-one-meeting-out development evaluation. The selected candidate is NL1_NUMERIC_CLASS_STYLE_L2_V1 because it has the best preregistered primary metric, but this is not validation evidence. The candidate remains unproven until it is frozen and compared against B1a on a new collision-audited meeting-disjoint historical universe whose outcomes were not used in candidate selection.",
+  "next_gate": "Preregister untouched validation meetings, freeze both NL1 and B1a predictions before dedicated result scoring, then compare log loss and ranking stability without retune.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
