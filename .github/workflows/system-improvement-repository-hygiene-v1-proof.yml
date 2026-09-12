@@ -1,0 +1,55 @@
+name: system-improvement-repository-hygiene-v1-proof
+on:
+  push:
+    branches:
+      - agent/system-improvement-repository-hygiene-v1-proof-20260913
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    env:
+      EXACT_CANDIDATE: 2b0b5c1255a2ed86ae221044b2ec0c7267f03bd2
+      EXACT_BASE: e875d491853ab9a27158b617ff185d14ac804039
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof carrier boundary
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXACT_CANDIDATE"
+          test "$(git rev-parse HEAD^^)" = "$EXACT_BASE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/system-improvement-repository-hygiene-v1-proof.yml"
+      - name: Unit tests
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest -v tools.test_repository_hygiene_audit_v1
+      - name: Full repository read-only hygiene audit
+        run: |
+          set -euo pipefail
+          python tools/repository_hygiene_audit_v1.py --repo-root . --output repository_hygiene_audit.json --hash-duplicates
+          python - <<'PY'
+          import json
+          p=json.load(open('repository_hygiene_audit.json'))
+          assert p['schema']=='MULTIVERSE_REPOSITORY_HYGIENE_AUDIT_v1'
+          assert p['mode']=='READ_ONLY'
+          assert p['runtime']=='OFF'
+          assert p['deletion_authority'] is False
+          assert p['tracked_file_count'] > 0
+          codes=[x['code'] for x in p['findings']]
+          assert 'NESTED_WORKFLOW_TREE' in codes
+          print('TRACKED_FILE_COUNT='+str(p['tracked_file_count']))
+          print('FINDING_COUNT='+str(len(p['findings'])))
+          print('DUPLICATE_GROUP_COUNT='+str(len(p['exact_content_duplicate_groups'])))
+          print('CLASSIFICATION_COUNTS='+json.dumps(p['classification_counts'],sort_keys=True))
+          for f in p['findings']:
+              print('FINDING='+json.dumps(f,sort_keys=True))
+          for d in p['exact_content_duplicate_groups'][:50]:
+              print('DUPLICATE='+json.dumps(d,sort_keys=True))
+          print('PROOF_TERMINAL=READY')
+          print('RUNTIME=OFF')
+          PY
