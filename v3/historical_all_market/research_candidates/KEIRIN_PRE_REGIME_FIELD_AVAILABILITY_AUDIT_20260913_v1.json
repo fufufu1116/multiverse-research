@@ -1,0 +1,56 @@
+{
+  "record": "KEIRIN_PRE_REGIME_FIELD_AVAILABILITY_AUDIT_20260913_v1",
+  "status": "PASS_WITH_LINE_STRUCTURE_DEFERRED_FAIL_CLOSED",
+  "purpose": "Define which meeting/regime variables can be used in the next historical validation without inventing PRE fields or selecting variables from favorable outcomes.",
+  "evidence_sources": [
+    "Existing frozen B1a PREDICTION_LOCK inputs from the four historical 100-race batches.",
+    "Original B1a_RECONSTITUTED_v1 PRE schema/freeze artifacts.",
+    "Public Kdreams historical race-detail pages used only for source-semantic verification of race type/event grade/day labels."
+  ],
+  "verified_now": {
+    "field_size": {"source":"count of successfully frozen active entrants","status":"VERIFIED_PRE_ONLY"},
+    "entrant_class_counts": {"source":"frozen entrant class labels SS/S1/S2/A1/A2/A3/L1","status":"VERIFIED_PRE_ONLY"},
+    "entrant_style_counts": {"source":"frozen entrant style labels 逃/追/両","status":"VERIFIED_PRE_ONLY"},
+    "score_dispersion": {"source":"frozen entrant competition-score values","status":"VERIFIED_PRE_ONLY"},
+    "B_S_aggregate": {"source":"frozen entrant B/S values","status":"VERIFIED_PRE_ONLY"},
+    "model_normalized_entropy": {"source":"frozen B1a probabilities, computed before outcome scoring","status":"VERIFIED_PRE_ONLY"},
+    "model_top1_margin": {"source":"difference between highest and second-highest frozen B1a probabilities","status":"VERIFIED_PRE_ONLY"},
+    "venue": {"source":"race URL / frozen race identity","status":"VERIFIED_PRE_ONLY"},
+    "meeting_id": {"source":"race URL / frozen race identity","status":"VERIFIED_PRE_ONLY"},
+    "meeting_day_index": {"source":"race URL day identifier","status":"VERIFIED_PRE_ONLY"},
+    "exact_circumference": {"source":"authoritatively mapped venue circumference; exact value retained","status":"VERIFIED_PRE_ONLY_NO_COERCION"}
+  },
+  "source_verified_but_parser_binding_required_before_confirmatory_use": {
+    "race_type_raw": {
+      "status":"SOURCE_SEMANTICS_VERIFIED_PARSER_NOT_YET_BOUND",
+      "evidence_examples":[
+        "Kdreams historical race detail exposes labels such as A級特選, A級準決勝, S級特選 and A級決勝 in the race heading.",
+        "The same page exposes event grade/name such as F1 and meeting day labels such as 初日/2日目/最終日."
+      ],
+      "rule":"If a parser is added, freeze its exact lexical classification before target result scoring. Unknown labels become UNKNOWN/OTHER and must not cause race deletion."
+    },
+    "event_grade_raw": {
+      "status":"SOURCE_SEMANTICS_VERIFIED_PARSER_NOT_YET_BOUND",
+      "rule":"Preserve the raw observed grade label; do not infer a missing grade."
+    }
+  },
+  "not_verified_for_confirmatory_use": {
+    "line_structure": {
+      "status":"DEFER_FAIL_CLOSED",
+      "reason":"The current canonical historical B1a input lock does not contain authoritative line membership/order, and semantic extraction has not yet been independently verified. Style labels must not be treated as a substitute for line structure."
+    },
+    "solo_rider": {
+      "status":"DEFER_FAIL_CLOSED",
+      "reason":"Depends on authoritative line structure; cannot be inferred from style alone."
+    }
+  },
+  "anti_leak_rules": [
+    "No result, winner, payout or odds field is used to construct regime variables.",
+    "Any parser addition must be frozen before dedicated target result scoring.",
+    "A missing subgroup field never permits post-result race deletion; overall scoring retains the race and subgroup value is UNKNOWN.",
+    "Regime variables are explanatory/falsification dimensions, not permission to retune B1a inside the validation set."
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
