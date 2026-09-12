@@ -1,0 +1,118 @@
+name: pr360-auditor-collision-fresh-pre-gate-proof-20260912
+on:
+  push:
+    branches:
+      - agent/pr360-auditor-collision-fresh-pre-gate-proof-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    env:
+      EXACT_HEAD: 8874e21542da6b482e2c27b5318ae10866e3efb7
+      EXACT_TREE: 8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd
+      EXACT_MAIN: 27b038736e6f160a0ab4f619c6aeef39f0ae8d10
+      WINNER_REQUEST_COMMENT: "5642477435"
+      WINNER_REQUEST_SHA: 3acfc7ff75b3648276fede5deb874451d7020cbb4f74da31a6200b7fb0b0d5bd
+      LOSER_REQUEST_COMMENT: "5642477501"
+      LOSER_REQUEST_SHA: 06ebcd811f243a26416e753174eed9ad026950ae7acb9cc78874ec4502ec4c9e
+      EXACT_LAB_RESULT: "5642442187"
+      EXACT_LAB_REQUEST_SHA: 8109d2825646b73cae28055df6076b49237e440c3937ea7768252b692d4f1d6f
+      EXACT_T1: "5642452284"
+      BUILDKITE_COMMIT: 8874e21542da6b482e2c27b5318ae10866e3efb7
+      BUILDKITE_BUILD_ID: OWNER_FREE_AUDITOR_COLLISION_PREFLIGHT_PR360_20260912
+      BUILDKITE_BUILD_NUMBER: "0"
+      BUILDKITE_BRANCH: agent/control-plane-get-resilience-convergence-post-pr356-20260912
+      MULTIVERSE_DISPATCHER_REF: 27b038736e6f160a0ab4f619c6aeef39f0ae8d10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD^)" = "$EXACT_TREE"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = ".github/workflows/pr360-auditor-collision-fresh-pre-gate-proof-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Fresh classify collision and run exact non-publishing preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch -q origin "$EXACT_MAIN"
+          git checkout -q --detach "$EXACT_HEAD"
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD)" = "$EXACT_TREE"
+          rm -rf .mv_dispatcher
+          mkdir -p .mv_dispatcher
+          git archive "$EXACT_MAIN" automation/review_dispatcher_v1 | tar -x -C .mv_dispatcher
+
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+            --lane AUDITOR \
+            --repo fufufu1116/multiverse-research \
+            --head "$EXACT_HEAD" \
+            --output review_job.json
+
+          python3 - <<'PY'
+          import json, os
+          j=json.load(open('review_job.json'))
+          assert j['pr']==360 and j['lane']=='AUDITOR'
+          assert j['head']==os.environ['EXACT_HEAD']
+          assert j['tree']==os.environ['EXACT_TREE']
+          assert j['base']==os.environ['EXACT_MAIN'] and j['main']==os.environ['EXACT_MAIN']
+          assert j['request_comment']==int(os.environ['WINNER_REQUEST_COMMENT'])
+          assert j['request_sha256']==os.environ['WINNER_REQUEST_SHA']
+          assert j['request_id']=='pr360-control-plane-get-resilience-convergence-auditor-v1-labv1-main-27b03873'
+          assert j['request_sha256'] != os.environ['LOSER_REQUEST_SHA']
+          u=j['request']['upstream']
+          assert u['lab_pass_comment']==int(os.environ['EXACT_LAB_RESULT'])
+          assert u['lab_request_sha256']==os.environ['EXACT_LAB_REQUEST_SHA']
+          assert u['t1_comment']==int(os.environ['EXACT_T1'])
+          print('COLLISION_CLASSIFICATION=SAME_GENERATION_EARLIEST_WINS')
+          print('SURVIVING_REQUEST_COMMENT='+os.environ['WINNER_REQUEST_COMMENT'])
+          print('LOSING_SIBLING_COMMENT='+os.environ['LOSER_REQUEST_COMMENT'])
+          print('NO_APPEND_REPAIR_REQUIRED=PASS')
+          PY
+
+          test -z "${MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY:-}"
+          test -z "${MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY:-}"
+          test -z "${DATABASE_URL:-}"
+          test -z "${RENDER_API_KEY:-}"
+
+          set +e
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
+            --job review_job.json \
+            --output review_artifact.json \
+            --repo-root .
+          review_rc=$?
+          set -e
+          test -f review_artifact.json
+          REVIEW_RC="$review_rc" python3 - <<'PY'
+          import json, os
+          a=json.load(open('review_artifact.json'))
+          assert json.loads(json.dumps(a,sort_keys=True,separators=(',',':')))==a
+          assert a['schema_version']=='MULTIVERSE_FIXED_REVIEW_ARTIFACT_v1'
+          assert a['request_comment']==int(os.environ['WINNER_REQUEST_COMMENT'])
+          assert a['request_sha256']==os.environ['WINNER_REQUEST_SHA']
+          assert a['reviewed_head']==os.environ['EXACT_HEAD']
+          assert a['reviewed_tree']==os.environ['EXACT_TREE']
+          assert a['reviewed_base']==os.environ['EXACT_MAIN']
+          assert a['reviewed_main']==os.environ['EXACT_MAIN']
+          assert a['test_count']==183
+          print('ARTIFACT_SERIALIZATION=PASS')
+          print('TEST_COUNT=183')
+          print('VERDICT='+str(a['verdict']))
+          print('FINDINGS='+json.dumps(a['findings'],sort_keys=True))
+          if int(os.environ['REVIEW_RC'])==0 and a['verdict']=='PASS' and a['findings']==[]:
+              print('PREFLIGHT_TERMINAL=READY')
+          else:
+              print('PREFLIGHT_TERMINAL=BLOCKED')
+          PY
