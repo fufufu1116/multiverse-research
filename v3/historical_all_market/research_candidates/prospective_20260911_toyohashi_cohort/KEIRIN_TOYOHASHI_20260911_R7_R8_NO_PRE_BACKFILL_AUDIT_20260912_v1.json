@@ -1,0 +1,32 @@
+{
+  "record": "KEIRIN_TOYOHASHI_20260911_R7_R8_NO_PRE_BACKFILL_AUDIT_20260912_v1",
+  "created_at_jst": "2026-09-12T09:35:40+09:00",
+  "status": "POST_OUTCOME_AUDIT_ONLY_NOT_PRE_EVIDENCE",
+  "cohort_lock_commit": "d91f311601e1dc2760d1e550a11666769b28e88e",
+  "scope": [
+    {
+      "event_id": "TOYOHASHI_20260911_R7",
+      "pre_source_commit": "529a21f4b95d3d57c590679d1bfea3a106b9e115",
+      "expected_pre_bundle_path": "v3/historical_all_market/research_candidates/prospective_20260911_toyohashi_r7/KEIRIN_TOYOHASHI_20260911_R7_PRE_ONLY_EVIDENCE_BUNDLE_v1.json",
+      "fresh_path_check_at_audit": "NOT_FOUND",
+      "scientific_treatment": "EXCLUDE_FROM_PRE_PREDICTION_ENDPOINTS; NO BACKFILL"
+    },
+    {
+      "event_id": "TOYOHASHI_20260911_R8",
+      "pre_source_commit": "5a08706f92d5143cc35b5acd5865e26fe7520a9a",
+      "expected_pre_bundle_path": "v3/historical_all_market/research_candidates/prospective_20260911_toyohashi_r8/KEIRIN_TOYOHASHI_20260911_R8_PRE_ONLY_EVIDENCE_BUNDLE_v1.json",
+      "fresh_path_check_at_audit": "NOT_FOUND",
+      "scientific_treatment": "EXCLUDE_FROM_PRE_PREDICTION_ENDPOINTS; NO BACKFILL"
+    }
+  ],
+  "rules": {
+    "post_result_pre_bundle_creation_prohibited": true,
+    "cohort_membership_history_preserved": true,
+    "source_snapshots_preserved": true,
+    "no_result_used_to_reconstruct_prediction": true,
+    "no_payout_or_actual_odds_used": true,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "note": "The full Toyohashi nine-race cohort membership and R7/R8 PRE source snapshots were frozen before outcomes, but the expected R7/R8 PRE prediction bundle files are absent on Fresh GitHub inspection after race day. They are therefore not recreated after outcomes and are not eligible for PRE prediction endpoint scoring."
+}
