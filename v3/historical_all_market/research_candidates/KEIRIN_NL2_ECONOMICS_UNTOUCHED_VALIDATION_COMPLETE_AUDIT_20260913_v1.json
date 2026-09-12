@@ -1,0 +1,113 @@
+{
+  "record": "KEIRIN_NL2_ECONOMICS_UNTOUCHED_VALIDATION_COMPLETE_AUDIT_v1",
+  "status": "COMPLETE_FAIL_NO_RETUNE",
+  "canonical_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "workflow": {
+    "run_id": 34715215675,
+    "job_id": 103611132899,
+    "head_sha": "77c6d7fa024b199a628ab866b2c77bf6847056ed",
+    "artifact_id": 10304448988,
+    "artifact_name": "keirin-nl2-economics-development-untouched-validation-v1",
+    "artifact_digest_sha256": "1bc7e1e26f9a36ad13af735fcaafcaee894a123773a796b00457c2b24fd5da96"
+  },
+  "preregistration": "v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_DEVELOPMENT_AND_UNTOUCHED_VALIDATION_PREREG_20260913_v1.json",
+  "probability_model": {
+    "name": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+    "core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+    "parameters_frozen_for_economics": true,
+    "price_used_for_probability_model": false
+  },
+  "governance": {
+    "collision_audit_status": "PASS",
+    "prior_meeting_count": 57,
+    "validation_prior_overlap_count": 0,
+    "DEV2000_RESULT_PAYOUT": "NOT_OPENED",
+    "DEV2000_use": "NOT_TUNING_OR_VALIDATION",
+    "ECON_HOLDOUT1000": "SEALED_NOT_OPENED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "evidence_class": "KR-015_RETROSPECTIVE_NATIVE_PUBLIC_PRICE_AND_SETTLEMENT_CAPTURE"
+  },
+  "development": {
+    "role": "DEVELOPMENT_ONLY_AFTER_NL2_PROBABILITY_VALIDATION_EXPOSURE",
+    "meetings": ["2820260822", "4820260909", "7420260825", "8420260909", "8720260824"],
+    "configuration_count": 12,
+    "eligible_count": 12,
+    "selected_configuration_id": "P10:CORE_NO_TRIFECTA:TOP1_PER_MARKET:FLAT100",
+    "selected_configuration": {
+      "profile": "P10",
+      "market_group": "CORE_NO_TRIFECTA",
+      "markets": ["2shatan", "2shahuku", "3renhuku", "wide"],
+      "min_raw_ev": 0.1,
+      "min_shape_edge_ratio": 1.1,
+      "fixed_max_decimal_odds": 100.0,
+      "fixed_probability_floor": 0.03,
+      "portfolio_template": "TOP1_PER_MARKET_AFTER_FILTERING",
+      "stake_policy": "FLAT100_JPY_PER_SELECTED_TICKET"
+    },
+    "selected_metrics": {
+      "bet_races": 120,
+      "executed_tickets": 466,
+      "hit_tickets": 24,
+      "total_stake_jpy": 46600,
+      "total_return_jpy": 71930,
+      "realized_roi": 0.5435622317596567,
+      "positive_meeting_count": 3,
+      "maximum_drawdown": 0.08626410086264101,
+      "largest_single_ticket_return_share": 0.1266509106075351
+    },
+    "policy_frozen_before_validation_settlement": true
+  },
+  "untouched_validation": {
+    "meetings": ["1320260907", "2620260906", "3720260907", "6120260908", "7420260909"],
+    "selected_by_meeting": {"1320260907": 36, "2620260906": 33, "3720260907": 21, "6120260908": 27, "7420260909": 36},
+    "selected_count": 153,
+    "minimum_required": 80,
+    "coverage_pass": true,
+    "settlement_failures": 0,
+    "metrics": {
+      "bet_races": 153,
+      "executed_tickets": 597,
+      "hit_tickets": 16,
+      "total_stake_jpy": 59700,
+      "total_return_jpy": 27980,
+      "realized_roi": -0.5313232830820771,
+      "positive_meeting_count": 1,
+      "maximum_drawdown": 0.3172,
+      "largest_single_ticket_return_share": 0.1679771265189421,
+      "by_meeting": {
+        "1320260907": {"bet_races": 36, "hits": 6, "return": 7250, "roi": -0.4858156028368794, "stake": 14100, "tickets": 141},
+        "2620260906": {"bet_races": 33, "hits": 1, "return": 460, "roi": -0.9643410852713178, "stake": 12900, "tickets": 129},
+        "3720260907": {"bet_races": 21, "hits": 2, "return": 5870, "roi": -0.2753086419753087, "stake": 8100, "tickets": 81},
+        "6120260908": {"bet_races": 27, "hits": 5, "return": 10440, "roi": 0.0038461538461538325, "stake": 10400, "tickets": 104},
+        "7420260909": {"bet_races": 36, "hits": 2, "return": 3960, "roi": -0.7211267605633802, "stake": 14200, "tickets": 142}
+      }
+    },
+    "criteria": {
+      "C1_realized_roi_positive": {"observed": -0.5313232830820771, "pass": false},
+      "C2_positive_meetings_at_least_3_of_5": {"observed": 1, "pass": false},
+      "C3_maximum_drawdown_at_most_0_20": {"observed": 0.3172, "pass": false},
+      "C4_largest_return_share_at_most_0_60": {"observed": 0.1679771265189421, "pass": true},
+      "C5_bootstrap_lower_bound_positive": {"observed_lower_2_5": -0.7879561289462279, "observed_upper_97_5": -0.22278848278079957, "replicates": 10000, "seed": 20260913, "pass": false}
+    },
+    "decision": "FAIL_HISTORICAL_ECONOMICS_UNTOUCHED_VALIDATION"
+  },
+  "artifact_files_sha256": {
+    "00_COLLISION_AND_GOVERNANCE_AUDIT.json": "4195195a7238a1fc1783bba371dfe4d99c547e89b0f5de8382a31ebf8dc9c3a7",
+    "01_DEVELOPMENT_PRE_PRICE_LOCK.json": "2913deef75874be6cf5be16144b3a6d442951414ed7a78cbeb3902db9a472a80",
+    "02_DEVELOPMENT_SCORE.json": "550d3692f89d3609de4ed0d5cd3fbf8f6e6549f9d04729f22a632da1135fe3fa",
+    "03_POLICY_FREEZE.json": "8745d3471f945ebfb7e6e32b465c98dd2b4582a073155684d9532ee5db728537",
+    "04_VALIDATION_DECISION_LOCK.json": "d3be8ac8bf142aa5c0cbf536b1bb74b5b0a3bb4fd5aa49fe136505cc5831c44e",
+    "05_VALIDATION_SCORE.json": "29f1b16d76ad452abfbe47e6d3da052f3715d9b2b19e1226ca9dbb6c0711ab18"
+  },
+  "scientific_disposition": {
+    "probability_model_status": "NL2_HISTORICAL_PROBABILITY_RANKING_VALIDATED_CANDIDATE_REMAINS_FROZEN",
+    "economics_policy_status": "FAILED_UNTOUCHED_ECONOMICS_VALIDATION_NOT_PROMOTED",
+    "failed_holdout_status": "EXPOSED_CONSUMED_MUST_NOT_BE_REUSED_AS_FRESH_VALIDATION",
+    "same_lineage_retune_from_holdout": false,
+    "next": "OPEN_SEPARATELY_PREREGISTERED_ECONOMICS_DEVELOPMENT_LINEAGE_USING_EXPOSED_EVIDENCE_THEN_VALIDATE_ON_NEW_MEETING_DISJOINT_HOLDOUT"
+  },
+  "owner_gate": {"required_now": false},
+  "runtime": "OFF",
+  "automatic_betting": false
+}
