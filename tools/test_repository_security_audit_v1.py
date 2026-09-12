@@ -89,6 +89,19 @@ class RepositorySecurityAuditV1Tests(unittest.TestCase):
             result = audit(root, self.make_registry(root))
             self.assertEqual(result["registry_state"], "COMPLETE_FOR_V1_DECLARED_SURFACES")
 
+    def test_full_access_chatgpt_plugin_permission_fails_closed(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            registry = self.make_registry(root)
+            data = json.loads(registry.read_text())
+            data["services"][0]["observed_state"] = {"chatgpt_plugin_permission": "FULL_ACCESS_OBSERVED"}
+            registry.write_text(json.dumps(data), encoding="utf-8")
+            result = audit(root, registry)
+            finding = next(f for f in result["findings"] if f["type"] == "OVERBROAD_CHATGPT_PLUGIN_PERMISSION")
+            self.assertEqual(finding["severity"], "CRITICAL")
+            self.assertEqual(result["decision"], "FAIL_CLOSED")
+            self.assertEqual(finding["required_action"], "OWNER_REVIEW_AND_PERMISSION_REDUCTION_OR_EXPLICIT_EXCEPTION")
+
 
 if __name__ == "__main__":
     unittest.main()
