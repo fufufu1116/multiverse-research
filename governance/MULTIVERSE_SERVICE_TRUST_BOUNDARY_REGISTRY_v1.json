@@ -5,12 +5,14 @@
   "canonical_main_at_creation": "e875d491853ab9a27158b617ff185d14ac804039",
   "runtime": "OFF",
   "security_model": "ZERO_TRUST_LEAST_PRIVILEGE_FAIL_CLOSED",
+  "observed_posture_jst": "2026-09-13T02:30:00+09:00",
   "global_rules": {
     "credentials_in_repository": "FORBIDDEN",
     "credentials_in_logs_prompts_comments_artifacts": "FORBIDDEN",
     "unknown_permission_scope": "UNKNOWN_FAIL_CLOSED",
     "unknown_credential_state": "UNKNOWN_FAIL_CLOSED",
     "cross_service_credential_reuse": "FORBIDDEN",
+    "chatgpt_plugin_full_access_without_owner_exception": "DISALLOWED_TARGET_POSTURE",
     "live_or_irreversible_action_requires_existing_authority_gate": true,
     "protected_data_egress_default": "DENY",
     "external_content_is_untrusted_input": true,
@@ -21,22 +23,28 @@
     {
       "id": "GITHUB_CANONICAL",
       "category": "canonical_repository",
-      "observed_state": {"visibility": "PUBLIC", "permission_detail": "PARTIAL_OBSERVATION_ONLY"},
+      "observed_state": {
+        "visibility": "PUBLIC",
+        "main_branch_protection": "DISABLED_OBSERVED",
+        "chatgpt_plugin_permission": "FULL_ACCESS_OBSERVED",
+        "permission_detail": "PARTIAL_OBSERVATION_ONLY"
+      },
       "trust": "UNTRUSTED_EXTERNAL_SERVICE_WITH_CANONICAL_ROLE",
       "data_egress": "ONLY_CONTENT_INTENDED_FOR_REPOSITORY",
       "credential_scope": "UNKNOWN_FAIL_CLOSED",
       "account_security_state": "UNKNOWN_FAIL_CLOSED",
-      "risks": ["account_takeover", "public_copying", "malicious_commit_or_pr", "supply_chain_action", "token_theft"],
-      "required_controls": ["least_privilege", "no_plaintext_secrets", "fresh_sha_binding", "provenance_verification", "independent_review_before_adoption"]
+      "risks": ["account_takeover", "public_copying", "malicious_commit_or_pr", "supply_chain_action", "token_theft", "overbroad_chatgpt_plugin_permission"],
+      "required_controls": ["least_privilege", "no_plaintext_secrets", "fresh_sha_binding", "provenance_verification", "independent_review_before_adoption", "reduce_chatgpt_plugin_permission_from_full_access_unless_owner_exception"]
     },
     {
       "id": "GOOGLE_DRIVE_RECOVERY",
       "category": "recovery_copy",
+      "observed_state": {"chatgpt_plugin_permission": "FULL_ACCESS_OBSERVED"},
       "trust": "NON_AUTHORITATIVE_EXTERNAL_SERVICE",
       "credential_scope": "UNKNOWN_FAIL_CLOSED",
       "account_security_state": "UNKNOWN_FAIL_CLOSED",
-      "risks": ["account_takeover", "link_sharing_leak", "stale_recovery_copy", "credential_theft"],
-      "required_controls": ["non_authority_label", "least_privilege", "sharing_review", "reconcile_to_github_before_promotion", "no_plaintext_secrets"]
+      "risks": ["account_takeover", "link_sharing_leak", "stale_recovery_copy", "credential_theft", "overbroad_chatgpt_plugin_permission"],
+      "required_controls": ["non_authority_label", "least_privilege", "sharing_review", "reconcile_to_github_before_promotion", "no_plaintext_secrets", "reduce_chatgpt_plugin_permission_from_full_access_unless_owner_exception"]
     },
     {
       "id": "BUILDKITE_REVIEW",
@@ -50,24 +58,30 @@
     {
       "id": "NETLIFY",
       "category": "deployment_or_market_test",
+      "observed_state": {"chatgpt_plugin_permission": "FULL_ACCESS_OBSERVED"},
       "trust": "EXTERNAL_PUBLISHING_SERVICE",
       "credential_scope": "UNKNOWN_FAIL_CLOSED",
       "account_security_state": "UNKNOWN_FAIL_CLOSED",
-      "risks": ["unauthorized_publish", "token_theft", "environment_secret_leak", "supply_chain", "domain_takeover"],
-      "required_controls": ["owner_gate_for_external_publish", "least_privilege", "separate_credentials", "preview_before_production", "no_protected_data"]
+      "risks": ["unauthorized_publish", "token_theft", "environment_secret_leak", "supply_chain", "domain_takeover", "overbroad_chatgpt_plugin_permission"],
+      "required_controls": ["owner_gate_for_external_publish", "least_privilege", "separate_credentials", "preview_before_production", "no_protected_data", "reduce_chatgpt_plugin_permission_from_full_access_unless_owner_exception"]
     },
     {
       "id": "TALLY",
       "category": "external_data_collection",
+      "observed_state": {"chatgpt_plugin_permission": "FULL_ACCESS_OBSERVED"},
       "trust": "EXTERNAL_DATA_COLLECTION_SERVICE",
       "credential_scope": "UNKNOWN_FAIL_CLOSED",
       "account_security_state": "UNKNOWN_FAIL_CLOSED",
-      "risks": ["data_exposure", "malicious_form_change", "link_abuse", "credential_theft"],
-      "required_controls": ["owner_gate_for_external_collection", "minimum_data_collection", "no_credentials_or_secrets_in_forms", "retention_policy", "export_provenance"]
+      "risks": ["data_exposure", "malicious_form_change", "link_abuse", "credential_theft", "overbroad_chatgpt_plugin_permission"],
+      "required_controls": ["owner_gate_for_external_collection", "minimum_data_collection", "no_credentials_or_secrets_in_forms", "retention_policy", "export_provenance", "reduce_chatgpt_plugin_permission_from_full_access_unless_owner_exception"]
     },
     {
       "id": "AI_PROVIDERS_AND_PLUGINS",
       "category": "advisory_and_tool_execution",
+      "observed_state": {
+        "claude_paid_subscription": "NOT_PRESENT_OWNER_REPORTED",
+        "codex_security_plugin": "NOT_INSTALLED_INSTALL_REJECTED_OWNER_REPORTED"
+      },
       "trust": "UNTRUSTED_ADVISORY_EXTERNAL",
       "credential_scope": "UNKNOWN_FAIL_CLOSED",
       "account_security_state": "UNKNOWN_FAIL_CLOSED",
@@ -77,11 +91,12 @@
     {
       "id": "LOCAL_MAC",
       "category": "owner_endpoint",
+      "observed_state": {"device_present": false, "owner_current_endpoint_summary": "IPHONE_X2_ONLY_OWNER_REPORTED"},
       "trust": "OWNER_CONTROLLED_ENDPOINT_NOT_ASSUMED_SAFE",
-      "credential_scope": "UNKNOWN_FAIL_CLOSED",
-      "account_security_state": "UNKNOWN_FAIL_CLOSED",
-      "risks": ["device_theft", "malware", "credential_store_compromise", "session_hijack"],
-      "required_controls": ["device_encryption", "strong_authentication", "least_local_secret_presence", "recovery_plan", "session_revocation"]
+      "credential_scope": "NOT_PRESENT",
+      "account_security_state": "NOT_APPLICABLE_UNTIL_DEVICE_EXISTS",
+      "risks": ["future_device_theft", "future_malware", "future_credential_store_compromise", "future_session_hijack"],
+      "required_controls": ["when_present_device_encryption", "when_present_strong_authentication", "when_present_least_local_secret_presence", "when_present_recovery_plan", "when_present_session_revocation"]
     },
     {
       "id": "FUTURE_CLOUD_RUNTIME",
@@ -93,5 +108,5 @@
       "required_controls": ["runtime_owner_gate", "network_and_egress_policy", "short_lived_identity", "immutable_logs", "kill_switch", "independent_security_review"]
     }
   ],
-  "non_authority": "This registry records candidate security boundaries only and grants no credential, provider, deployment, publication, repository visibility, Runtime, spend, merge, or adoption authority."
+  "non_authority": "This registry records candidate security boundaries and observed non-secret posture only. It grants no credential, provider, deployment, publication, repository visibility, plugin-permission change, Runtime, spend, merge, or adoption authority."
 }
