@@ -1,0 +1,61 @@
+{
+  "record": "KEIRIN_HISTORICAL_VIRTUALWORLD_100_B1A_COMPLETE_AUDIT_20260912_v1",
+  "status": "COMPLETE_100_OF_100_RETROSPECTIVE_VIRTUALWORLD",
+  "evidence_class": "RETROSPECTIVE_KR015",
+  "source_universe": ".github/workflows/races.csv",
+  "universe_count": 100,
+  "prediction_lock_count": 100,
+  "scored_count": 100,
+  "pre_exclusions": 0,
+  "result_fetch_failures": 0,
+  "model": "B1a_RECONSTITUTED_v1",
+  "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+  "temperature": 1.15,
+  "odds_used": false,
+  "retune": false,
+  "post_result_deletion": false,
+  "integrity": "All 100 usable PRE input sets and Frozen B1a rankings were constructed before the dedicated result-page scoring phase in each run. Because historical source pages may themselves contain outcome-bearing material, KR-015 keeps this evidence retrospective rather than upgrading it to blind/prospective evidence.",
+  "overall": {
+    "n": 100,
+    "top1_hits": 29,
+    "top1_accuracy": 0.29,
+    "winner_top3": 65,
+    "top3_rate": 0.65,
+    "mean_log_loss": 1.8085855354144962,
+    "winner_rank_distribution": {"1":29,"2":16,"3":20,"4":23,"5":6,"6":4,"7":2}
+  },
+  "by_exact_circumference": {
+    "333.3": {"n":11,"top1_hits":1,"top1_accuracy":0.09090909090909091,"winner_top3":7,"top3_rate":0.6363636363636364,"mean_log_loss":2.247294499850875},
+    "335.0": {"n":11,"top1_hits":4,"top1_accuracy":0.36363636363636365,"winner_top3":6,"top3_rate":0.5454545454545454,"mean_log_loss":1.7703102859321305},
+    "400.0": {"n":78,"top1_hits":24,"top1_accuracy":0.3076923076923077,"winner_top3":52,"top3_rate":0.6666666666666666,"mean_log_loss":1.7521141140748269}
+  },
+  "by_date": {
+    "2026-08-11": {"n":29,"top1_hits":9,"top1_accuracy":0.3103448275862069,"winner_top3":18,"top3_rate":0.6206896551724138,"mean_log_loss":1.8527357230473986},
+    "2026-08-12": {"n":71,"top1_hits":20,"top1_accuracy":0.28169014084507044,"winner_top3":47,"top3_rate":0.6619718309859155,"mean_log_loss":1.7905523601841542}
+  },
+  "by_venue": {
+    "aomori": {"n":9,"top1_accuracy":0.5555555555555556,"top3_rate":1.0,"mean_log_loss":1.1942062699954374},
+    "gifu": {"n":7,"top1_accuracy":0.0,"top3_rate":0.42857142857142855,"mean_log_loss":2.429746409178482},
+    "kawasaki": {"n":6,"top1_accuracy":0.5,"top3_rate":1.0,"mean_log_loss":1.5465639129396156},
+    "kumamoto": {"n":12,"top1_accuracy":0.4166666666666667,"top3_rate":0.6666666666666666,"mean_log_loss":1.5178845975079895},
+    "maebashi": {"n":11,"top1_accuracy":0.36363636363636365,"top3_rate":0.5454545454545454,"mean_log_loss":1.7703102859321305},
+    "matsuyama": {"n":11,"top1_accuracy":0.0,"top3_rate":0.36363636363636365,"mean_log_loss":2.1413167926499055},
+    "takeo": {"n":9,"top1_accuracy":0.7777777777777778,"top3_rate":1.0,"mean_log_loss":1.0385627840804479},
+    "toyama": {"n":11,"top1_accuracy":0.09090909090909091,"top3_rate":0.6363636363636364,"mean_log_loss":2.247294499850875},
+    "yahiko": {"n":24,"top1_accuracy":0.16666666666666666,"top3_rate":0.5416666666666666,"mean_log_loss":2.0213862991675655}
+  },
+  "scientific_findings": [
+    "The previous small-sample impression of uniformly strong Frozen B1a performance does not generalize across this fixed 100-race universe.",
+    "Performance is materially heterogeneous by venue and exact circumference; venue/circumference structure must be treated as a primary research dimension rather than pooled away.",
+    "400m is materially stronger than 333.3m in this batch, while 335m is intermediate on top1 but weaker on winner-Top3; no retuning is authorized from this confirmatory batch.",
+    "Takeo/Aomori/Kawasaki are strong in this batch while Gifu/Matsuyama/Yahiko are weak; this must be replicated on independent dates before any venue-specific rule is adopted."
+  ],
+  "workflow_run_id": 34698778708,
+  "workflow_artifact_id": 10299577098,
+  "workflow_artifact_zip_sha256": "d865df20c521b2a53293c328037b3da70b6211642ba2a8ac09747a530124ae8e",
+  "next": [
+    "Build an independent historical universe on different dates and repeat without retuning.",
+    "Predeclare venue/circumference/race-type subgroup analyses and test whether the large venue differences replicate.",
+    "Use the historical virtual world to test ticket construction and bankroll rules only after ranking/probability stability is characterized."
+  ]
+}
