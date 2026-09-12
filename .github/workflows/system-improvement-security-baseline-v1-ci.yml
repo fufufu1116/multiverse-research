@@ -1,0 +1,54 @@
+name: System Improvement Security Baseline v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'governance/MULTIVERSE_SERVICE_TRUST_BOUNDARY_REGISTRY_v1.json'
+      - 'tools/repository_security_audit_v1.py'
+      - 'tools/test_repository_security_audit_v1.py'
+      - '.github/workflows/system-improvement-security-baseline-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-baseline-proof:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run focused regression tests
+        run: python -m unittest tools.test_repository_security_audit_v1
+      - name: Validate trust-boundary registry structure without reading credentials
+        run: |
+          python - <<'PY'
+          import json
+          p='governance/MULTIVERSE_SERVICE_TRUST_BOUNDARY_REGISTRY_v1.json'
+          d=json.load(open(p))
+          assert d['status']=='CANDIDATE_REPOSITORY_ONLY_NON_AUTHORITY'
+          assert d['runtime']=='OFF'
+          assert d['security_model']=='ZERO_TRUST_LEAST_PRIVILEGE_FAIL_CLOSED'
+          assert len(d['services']) >= 8
+          assert all(s.get('credential_scope') for s in d['services'])
+          assert all(s.get('required_controls') for s in d['services'])
+          print('SECURITY_TRUST_BOUNDARY_REGISTRY_V1_PASS')
+          PY
+      - name: Confirm audit itself is read-only and fail-closed by construction
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tempfile, json
+          from tools.repository_security_audit_v1 import audit
+          with tempfile.TemporaryDirectory() as td:
+              root=Path(td)
+              ids=['GITHUB_CANONICAL','GOOGLE_DRIVE_RECOVERY','BUILDKITE_REVIEW','NETLIFY','TALLY','AI_PROVIDERS_AND_PLUGINS','LOCAL_MAC','FUTURE_CLOUD_RUNTIME']
+              r=root/'registry.json'
+              r.write_text(json.dumps({'services':[{'id':i,'credential_scope':'UNKNOWN_FAIL_CLOSED'} for i in ids]}))
+              out=audit(root,r)
+              assert out['write_effects'] is False
+              assert out['runtime']=='OFF'
+          print('SECURITY_AUDIT_READ_ONLY_PASS')
+          PY
