@@ -4,6 +4,8 @@ import io
 import json
 import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -149,6 +151,37 @@ class SameBuildGithubReadCacheTests(unittest.TestCase):
         self.assertEqual(calls, [("POST", b"{}")])
         root = Path(r.SAME_BUILD_CACHE_ROOT)
         self.assertFalse(root.exists())
+
+    def test_cache_survives_separate_python_process_same_build(self):
+        build_id = "build-process-boundary"
+        payload = {"number": 382, "state": "open"}
+        with mock.patch.dict(os.environ, {"BUILDKITE_BUILD_ID": build_id}, clear=False):
+            r.github_json_read(
+                PR_URL,
+                user_agent="dispatcher-process",
+                opener=lambda req, timeout=30: response(payload),
+            )
+
+        repo_root = str(Path(self.cwd).resolve())
+        script = (
+            "import json; "
+            "from automation.review_dispatcher_v1.github_read_resilience_v1 import github_json_read; "
+            f"v=github_json_read({PR_URL!r}, user_agent='review-process'); "
+            "print(json.dumps(v, sort_keys=True))"
+        )
+        env = os.environ.copy()
+        env["BUILDKITE_BUILD_ID"] = build_id
+        env["PYTHONPATH"] = repo_root + os.pathsep + env.get("PYTHONPATH", "")
+        proc = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=self.tmp.name,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(json.loads(proc.stdout), payload)
 
 
 if __name__ == "__main__":
