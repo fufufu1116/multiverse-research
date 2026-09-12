@@ -1,0 +1,35 @@
+name: Keirin Historical VirtualWorld Coverage Balanced Independent Meeting 100 B1a v1
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - v3/historical_all_market/historical_virtualworld_coverage_balanced_independent_meeting_100_b1a_v1.py
+      - v3/historical_all_market/research_candidates/KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_SELECTION_RULE_20260913_v1.json
+      - .github/workflows/keirin-historical-virtualworld-coverage-balanced-independent-meeting-100-b1a-v1.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage-balanced-independent-meeting-100:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install bounded research dependencies
+        run: python -m pip install numpy requests beautifulsoup4 lxml
+      - name: Run preregistered coverage-balanced independent-meeting confirmation 100
+        run: python v3/historical_all_market/historical_virtualworld_coverage_balanced_independent_meeting_100_b1a_v1.py
+      - name: Upload research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-coverage-balanced-independent-meeting-100-b1a-v1
+          path: v3/historical_all_market/research_candidates/virtualworld_coverage_balanced_independent_meeting_100_b1a_v1/
+          if-no-files-found: warn
