@@ -1,0 +1,51 @@
+{
+  "record": "KEIRIN_CURRENT_STATE",
+  "protocol": {"issue":377,"title":"Keirin Chat continuity / capacity-proof operating protocol v1","chat_role":"EPHEMERAL_TERMINAL","canonical_state_store":"GITHUB_REPOSITORY"},
+  "checkpoint_jst": "2026-09-12T19:43:00+09:00",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "branch_head_before_state_write": "0b2c86f8ad90799f9ccd418c2b2a01e5e59da931",
+  "current_research_objective": "Reach scientific validation 100% as quickly as possible with anti-leak, no-retune, exact-circumference evidence; prioritize genuine prospective 335m/500m gates while continuing owner-free retrospective robustness work.",
+  "model": {"name":"B1a_RECONSTITUTED_v1","predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","temperature":1.15,"retune":false},
+  "canonical_continuity": {
+    "rule_registry":"v3/historical_all_market/continuity/KEIRIN_RULE_REGISTRY_v1.json",
+    "experiment_ledger":"v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v1.jsonl",
+    "current_state":"v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE.json"
+  },
+  "active_datasets_and_artifacts": [
+    {"id":"335M_PROSPECTIVE_20260912_MAEBASHI_R1_R9","path":"v3/historical_all_market/research_candidates/KEIRIN_335M_PROSPECTIVE_LANE_BOOTSTRAP_STATUS_20260912_v1.json","status":"COMPLETE_9_OF_9_FROZEN_BEFORE_OUTCOME","evidence_class":"PROSPECTIVE","next":"score all 9 after official outcomes without deletion or retune"},
+    {"id":"335M_RETRO_20260815_MAEBASHI_R1_R9","path":"v3/historical_all_market/research_candidates/retrospective_335m_maebashi_20260815_full_day/KEIRIN_MAEBASHI_20260815_335M_B1A_RETROSPECTIVE_FULL_DAY_R1_R9_v1.json","status":"COMPLETE","metrics":{"n":9,"top1_hits":4,"top1_accuracy":0.4444444444444444,"top3":7,"top3_rate":0.7777777777777778,"log_loss":1.4459326689324703}},
+    {"id":"335M_SECOND_DAY_20260809_MAEBASHI","path":"v3/historical_all_market/research_candidates/KEIRIN_335M_SECOND_INDEPENDENT_DAY_PREREGISTRATION_20260912_v1.json","status":"PREREGISTERED_R1_R11_NOT_YET_SCORED","next":"collect PRE fields, freeze B1a, then extract outcomes separately for complete R1-R11"},
+    {"id":"500M_POOLED_RETRO_48","path":"v3/historical_all_market/research_candidates/KEIRIN_500M_FOUR_DAY_THREE_VENUE_ROBUSTNESS_AUDIT_20260912_v1.json","status":"COMPLETE_DESCRIPTIVE_ONLY","metrics":{"n":48,"top1_hits":22,"top1_accuracy":0.4583333333333333,"top3":37,"top3_rate":0.7708333333333334,"weighted_log_loss":1.5702363637305767,"A_top1_accuracy":0.45,"S_top1_accuracy":0.4642857142857143},"finding":"No stable A-vs-S direction; do not subgroup-retune. Genuine prospective 500m evidence still required."},
+    {"id":"500M_PROSPECTIVE_20260913_OMIYA","status":"PENDING_FINAL_PRE_FREEZE","venue":"大宮","event_date":"2026-09-13","circumference_m":500,"next":"freeze trustworthy final R1-R12 PRE card before outcomes; B1a-only; no 333/400 circumference challenger"}
+  ],
+  "immutable_rule_summary": [
+    "Offline simulation does not require live odds unless an experiment specifically tests odds.",
+    "Odds belong at the live/manual purchase boundary and may be checked against minimum required odds.",
+    "For forward-style backtests/prospective tests, results remain hidden until predictions are frozen.",
+    "Exact circumference is preserved; no 335->333 or 500->400 coercion.",
+    "No guessing missing PRE fields; no post-outcome cherry-picking; no retune inside confirmatory/prospective sets.",
+    "GitHub is canonical continuity state; chat is not long-term memory."
+  ],
+  "latest_completed_experiments": [
+    {"id":"EXP-500M-POOLED-48-THREE-VENUES","result":"22/48 top1; 37/48 winner Top3; A/S difference disappears; prospective gate still required"},
+    {"id":"EXP-335M-MAEBASHI-20260815-FULLDAY","result":"4/9 top1; 7/9 winner Top3; log loss 1.44593"},
+    {"id":"EXP-335M-PROSPECTIVE-MAEBASHI-20260912-R1-R9","result":"9/9 frozen before outcomes; scoring pending"}
+  ],
+  "open_blockers": [
+    {"blocker":"Maebashi 2026-09-12 prospective outcomes not yet official at checkpoint","owner_action_required":false},
+    {"blocker":"Omiya 2026-09-13 trustworthy final racecard PRE freeze still pending at checkpoint","owner_action_required":false}
+  ],
+  "exact_next_executable_actions": [
+    "Continue owner-free execution of preregistered Maebashi 2026-08-09 exact-335m full-day R1-R11 retrospective test without changing B1a.",
+    "As soon as trustworthy final Omiya 2026-09-13 race membership is available, freeze exact-500m R1-R12 PRE inputs and B1a predictions before outcomes; no odds required.",
+    "After Maebashi 2026-09-12 official outcomes, score all 9 prospective races without deletion or retune and append the result to the experiment ledger.",
+    "Update this CURRENT STATE after each major batch or before any Owner boundary."
+  ],
+  "scientific_validation_progress_percent": 85,
+  "progress_rule": "Do not increase progress merely because files or case counts grow; increase only when evidence strength materially advances.",
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "non_authority_note": "Issue #384 is explicitly VOID/closed and has no research authority."
+}
