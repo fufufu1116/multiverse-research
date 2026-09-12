@@ -1,0 +1,59 @@
+{
+  "record": "KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_SELECTION_RULE_20260913_v1",
+  "status": "PREREGISTERED_BEFORE_SELECTION_AND_SCORING",
+  "purpose": "A new confirmatory experiment, separate from the completed independent-meeting batch, designed to ensure that the key previously observed venue/exact-circumference cells are actually represented while preserving full meeting-ID disjointness, frozen B1a, PRE/result separation and no retune.",
+  "scientific_context": {
+    "completed_batch3_disposition": "IMMUTABLE_VALID_MIXED_EVIDENCE_DO_NOT_REPAIR_OR_REPLACE",
+    "reason_for_new_experiment": "The deterministic first-100 rule in batch3 produced only Aomori/Yahiko/Maebashi and no exact 333.3m/Kawasaki/Gifu/Toyama. A separately preregistered coverage-balanced confirmation is needed to test the pre-existing subgroup hypotheses rather than post-hoc modifying batch3.",
+    "aggregate_metric_warning": "Because this experiment is venue-stratified by design, its overall aggregate is not a population-representative estimate. Primary inference is within preregistered venue/circumference cells and stability versus prior evidence."
+  },
+  "model_binding": {
+    "model": "B1a_RECONSTITUTED_v1",
+    "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "temperature": 1.15,
+    "retune": false
+  },
+  "date_window": {"start": "2026-06-01", "end": "2026-07-31"},
+  "target_venues": {
+    "aomori": {"venue_code": "12", "exact_circumference_m": 400.0, "quota": 17},
+    "yahiko": {"venue_code": "21", "exact_circumference_m": 400.0, "quota": 17},
+    "maebashi": {"venue_code": "22", "exact_circumference_m": 335.0, "quota": 17},
+    "kawasaki": {"venue_code": "34", "exact_circumference_m": 400.0, "quota": 17},
+    "gifu": {"venue_code": "43", "exact_circumference_m": 400.0, "quota": 16},
+    "toyama": {"venue_code": "46", "exact_circumference_m": 333.3, "quota": 16}
+  },
+  "total_target_count": 100,
+  "meeting_diversity_rule": {
+    "max_selected_races_per_meeting": 12,
+    "consequence": "Every venue quota above 12 necessarily requires at least two distinct selected meeting IDs if the experiment completes.",
+    "prior_meeting_exclusion": "Exclude every meeting ID present in the original 100-race batch, temporal 100-race batch, and completed independent-meeting 100-race batch before any result scoring."
+  },
+  "selection_algorithm": [
+    "Process each target venue independently using the fixed venue order shown above.",
+    "Within each venue, scan dates ascending from 2026-06-01 through 2026-07-31 for a real PRE-complete meeting start; discovery uses racecard/PRE access only and never result/payout pages.",
+    "Skip any meeting ID that belongs to any prior 100-race batch.",
+    "For a discovered eligible meeting, scan day index 01 then 02 then 03 and race number 01 through 12 in ascending order.",
+    "Select each successfully parsed mandatory-PRE race until either the venue quota is filled or the meeting cap of 12 selected races is reached.",
+    "Continue to the next eligible meeting date until the fixed venue quota is filled.",
+    "If any venue quota cannot be filled within the frozen date window without violating exclusions, fail closed; do not substitute a different venue or relax a quota after result access."
+  ],
+  "primary_confirmatory_comparisons": [
+    "Aomori and Yahiko stability on new meeting IDs after batch3 produced a directional reversal versus earlier batches.",
+    "Kawasaki and Gifu on fully disjoint meeting IDs because batch3 did not represent them.",
+    "Exact 333.3m Toyama on fully disjoint meetings because prior temporal evidence produced 0/16 top1 and batch3 did not represent 333.3m.",
+    "Exact 335m Maebashi on fully disjoint meetings as the intermediate exact-circumference lane.",
+    "Exact 333.3m versus exact 335m versus exact 400m descriptive performance, while explicitly noting venue stratification and unequal circumference counts."
+  ],
+  "integrity_rules": [
+    "No result or payout access during meeting discovery or race selection.",
+    "PRE fields and B1a predictions must be frozen before dedicated result-page scoring.",
+    "No realtime odds required; odds are not used in this prediction-science experiment.",
+    "No post-result deletion, replacement, threshold adjustment, subgroup retune or venue substitution.",
+    "Exact official circumference is preserved; no nearest-length coercion.",
+    "Historical source pages may be outcome-bearing; evidence remains RETROSPECTIVE_KR015 and must not be upgraded to prospective.",
+    "All failure/exclusion reasons before result access are retained in the selection/prediction audit."
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
