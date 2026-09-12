@@ -1,0 +1,99 @@
+name: pr375-owner-free-exact-lab-preflight-20260912
+
+on:
+  push:
+    branches:
+      - agent/pr375-owner-free-exact-lab-preflight-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    env:
+      EXACT_HEAD: 0c533f9c9a761157e6d6c0d92de6ecd20d3b778f
+      EXACT_TREE: a1da2b523cb797f84463b5e3dfbb1731454373af
+      EXACT_MAIN: c3455ef933227d52a2aa365ff9a2befde431218e
+      EXACT_REQUEST_COMMENT: '5644720560'
+      BUILDKITE_COMMIT: 0c533f9c9a761157e6d6c0d92de6ecd20d3b778f
+      BUILDKITE_BUILD_ID: OWNER_FREE_LAB_PREFLIGHT_PR375_20260912
+      BUILDKITE_BUILD_NUMBER: '0'
+      BUILDKITE_BRANCH: candidate/opportunity-engine-slice-b-fresh-main-20260912-v6
+      MULTIVERSE_DISPATCHER_REF: c3455ef933227d52a2aa365ff9a2befde431218e
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD^)" = "$EXACT_TREE"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = ".github/workflows/pr375-owner-free-exact-lab-preflight-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Run exact owner-free Lab preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch -q origin "$EXACT_MAIN"
+          git checkout -q --detach "$EXACT_HEAD"
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD)" = "$EXACT_TREE"
+          rm -rf .mv_dispatcher
+          mkdir -p .mv_dispatcher
+          git archive "$EXACT_MAIN" automation/review_dispatcher_v1 | tar -x -C .mv_dispatcher
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head "$EXACT_HEAD" \
+            --output review_job.json
+          python3 - <<'PY'
+          import json
+          j=json.load(open('review_job.json'))
+          assert j['pr']==375
+          assert j['lane']=='LAB'
+          assert j['head']=='0c533f9c9a761157e6d6c0d92de6ecd20d3b778f'
+          assert j['tree']=='a1da2b523cb797f84463b5e3dfbb1731454373af'
+          assert j['main']=='c3455ef933227d52a2aa365ff9a2befde431218e'
+          assert j['dispatcher_ref']=='c3455ef933227d52a2aa365ff9a2befde431218e'
+          assert j['request_comment']==5644720560
+          assert j['request_id']=='pr375-opportunity-engine-slice-b-v6-lab-v1-main-c3455ef9'
+          assert j['request_sha256']=='09dee40650d4b95e3be07a7188f48e5b5022a9be9cdbc360b1e70d855b3db6d1'
+          print('EXACT_DISPATCH_SELECTION=PASS')
+          print('ACTUAL_REQUEST_SHA256='+j['request_sha256'])
+          PY
+          test -z "${MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY:-}"
+          test -z "${MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY:-}"
+          test -z "${DATABASE_URL:-}"
+          test -z "${RENDER_API_KEY:-}"
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
+            --job review_job.json \
+            --output review_artifact.json \
+            --repo-root .
+          python3 - <<'PY'
+          import json
+          a=json.load(open('review_artifact.json'))
+          print('ACTUAL_ARTIFACT_FINDINGS='+json.dumps(a['findings'], sort_keys=True))
+          assert a['verdict']=='PASS', a['findings']
+          assert a['findings']==[]
+          assert a['test_count']==18, a['test_count']
+          assert a['lane']=='LAB'
+          assert a['request_comment']==5644720560
+          assert a['request_id']=='pr375-opportunity-engine-slice-b-v6-lab-v1-main-c3455ef9'
+          assert a['reviewed_head']=='0c533f9c9a761157e6d6c0d92de6ecd20d3b778f'
+          assert a['reviewed_tree']=='a1da2b523cb797f84463b5e3dfbb1731454373af'
+          assert a['reviewed_base']=='c3455ef933227d52a2aa365ff9a2befde431218e'
+          assert a['reviewed_main']=='c3455ef933227d52a2aa365ff9a2befde431218e'
+          print('FULL_APPLICABLE_TESTS=18/18_PASS')
+          print('LAB_PREFLIGHT=PASS')
+          print('PUBLICATION_ATTEMPTED=NO')
+          print('OWNER_BUILD_CONSUMED=NO')
+          print('RUNTIME=OFF')
+          PY
