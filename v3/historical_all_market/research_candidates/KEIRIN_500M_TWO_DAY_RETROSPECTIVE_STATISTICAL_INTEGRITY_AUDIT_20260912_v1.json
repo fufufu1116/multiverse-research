@@ -1,0 +1,19 @@
+{
+  "record":"KEIRIN_500M_TWO_DAY_RETROSPECTIVE_STATISTICAL_INTEGRITY_AUDIT_20260912_v1",
+  "status":"PASS_RETROSPECTIVE_REPLICATION_BUT_INSUFFICIENT_FOR_PROSPECTIVE_VALIDATION",
+  "created_jst_date":"2026-09-12",
+  "circumference_lane":"CIRCUMFERENCE_500M",
+  "model_binding":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","model":"B1a_RECONSTITUTED_v1","temperature":1.15,"retune_allowed":false,"circumference_challenger_applied":false},
+  "source_days":[
+    {"event_date":"2026-07-01","evidence_class":"RETROSPECTIVE_BACKFILL_NOT_PROSPECTIVE","artifact":"v3/historical_all_market/research_candidates/retrospective_500m_omiya_20260701_full_day/KEIRIN_OMIYA_20260701_500M_B1A_RETROSPECTIVE_FULL_DAY_R1_R12_v1.json","artifact_blob":"d681e0876452df1bdb576bf8a628e4f399689b3a","n":12,"top1_hits":5,"winner_in_top3":10,"multiclass_log_loss":1.5667742035837948,"A":{"n":5,"top1_hits":3},"S":{"n":7,"top1_hits":2}},
+    {"event_date":"2026-04-27","evidence_class":"RETROSPECTIVE_CONFIRMATORY_WITH_DATE_RULE_PREDECLARED_NOT_PROSPECTIVE","artifact":"v3/historical_all_market/research_candidates/retrospective_500m_omiya_20260427_confirmatory_full_day/KEIRIN_OMIYA_20260427_500M_B1A_CONFIRMATORY_FULL_DAY_R1_R12_v1.json","artifact_blob":"ca9e914db2ab33d94bb964efcdb3a6099c9de9cc","preregistration_commit":"ef5b4e3758e2ea2a8dc04db4610557d23ea6a854","n":12,"top1_hits":6,"winner_in_top3":9,"multiclass_log_loss":1.5264461189008423,"A":{"n":5,"top1_hits":3},"S":{"n":7,"top1_hits":3}}
+  ],
+  "pooled_descriptive_metrics":{"n":24,"top1_hits":11,"top1_accuracy":0.4583333333333333,"winner_in_top3":19,"winner_in_top3_rate":0.7916666666666666,"mean_day_multiclass_log_loss":1.5466101612423184,"A":{"n":10,"top1_hits":6,"top1_accuracy":0.6},"S":{"n":14,"top1_hits":5,"top1_accuracy":0.35714285714285715}},
+  "wilson_95_intervals":{"method":"Wilson score interval; descriptive uncertainty only","top1_accuracy":[0.2789133373121098,0.6492513464108052],"winner_in_top3_rate":[0.5952954674681133,0.9075517464714814],"A_top1_accuracy":[0.31267376973365824,0.8318196702937638],"S_top1_accuracy":[0.1634473175355414,0.612355768960926]},
+  "replication_checks":{"day1_A_top1_above_S_top1":true,"day2_A_top1_above_S_top1":true,"day1_top3_above_top1":true,"day2_top3_above_top1":true,"directional_hypotheses_repeated":true,"stable_subgroup_effect_claim_allowed":false,"reason":"A/S uncertainty intervals overlap materially and total N is small; retain only descriptive directional evidence."},
+  "integrity_checks":{"two_complete_12_race_days":true,"same_frozen_model":true,"second_day_selection_rule_preregistered":true,"no_retune_between_days":true,"actual_odds_not_used":true,"circumference_exact_500m":true,"length_rounding_or_coercion":false,"post_hoc_case_deletion":false,"retrospective_and_prospective_evidence_separated":true},
+  "interpretation":"Two independent full retrospective 500m days show repeatable directional signal, but this cannot substitute for a genuine pre-outcome 500m day. Do not raise formal scientific validation percentage from these retrospective data alone.",
+  "next_science_changing_gate":{"event":"Omiya 2026-09-13 exact 500m FI first day","required":"Freeze final per-race PRE membership and all B1a required fields before outcomes, score all successfully frozen races without deletion, no retune.","preregistration":"v3/historical_all_market/research_candidates/KEIRIN_500M_OMIYA_20260913_FULL_DAY_PROSPECTIVE_PREREGISTRATION_20260912_v1.json"},
+  "science":{"formal_scientific_validation_percent":85,"prospective_increment":0,"runtime":"OFF","automatic_betting":false},
+  "owner_action_required_now":false
+}
