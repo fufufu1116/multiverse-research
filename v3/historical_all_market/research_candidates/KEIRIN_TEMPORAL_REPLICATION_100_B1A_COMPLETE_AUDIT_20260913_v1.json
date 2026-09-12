@@ -1,0 +1,59 @@
+{
+  "record": "KEIRIN_TEMPORAL_REPLICATION_100_B1A_COMPLETE_AUDIT_20260913_v1",
+  "status": "COMPLETE_PREREGISTERED_TEMPORAL_REPLICATION_100_OF_100",
+  "evidence_class": "RETROSPECTIVE_KR015_TEMPORAL_REPLICATION",
+  "selection_rule": "v3/historical_all_market/research_candidates/KEIRIN_TEMPORAL_REPLICATION_100_SELECTION_RULE_20260912_v1.json",
+  "workflow_run_id": 34700294559,
+  "workflow_conclusion": "success",
+  "artifact_id": 10299843022,
+  "model": "B1a_RECONSTITUTED_v1",
+  "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+  "temperature": 1.15,
+  "retune": false,
+  "odds_used": false,
+  "post_result_selection": false,
+  "metrics": {
+    "n": 100,
+    "top1_hits": 35,
+    "top1_accuracy": 0.35,
+    "winner_top3": 71,
+    "top3_rate": 0.71,
+    "mean_log_loss": 1.6778819171421917
+  },
+  "by_exact_circumference": {
+    "333.3m": {"n": 16, "top1_hits": 0, "top1_accuracy": 0.0, "winner_top3": 10, "top3_rate": 0.625, "mean_log_loss": 2.108665010285847},
+    "335m": {"n": 22, "top1_hits": 8, "top1_accuracy": 0.36363636363636365, "winner_top3": 14, "top3_rate": 0.6363636363636364, "mean_log_loss": 1.7642356218278197},
+    "400m": {"n": 62, "top1_hits": 27, "top1_accuracy": 0.43548387096774194, "winner_top3": 47, "top3_rate": 0.7580645161290323, "mean_log_loss": 1.5360704495069926}
+  },
+  "by_venue": {
+    "aomori": {"n": 18, "top1_accuracy": 0.6666666666666666, "top3_rate": 0.9444444444444444, "mean_log_loss": 1.2460825780037588},
+    "gifu": {"n": 14, "top1_accuracy": 0.21428571428571427, "top3_rate": 0.5714285714285714, "mean_log_loss": 1.8998438837315574},
+    "kawasaki": {"n": 18, "top1_accuracy": 0.5555555555555556, "top3_rate": 0.8888888888888888, "mean_log_loss": 1.2350207775442101},
+    "maebashi": {"n": 22, "top1_accuracy": 0.36363636363636365, "top3_rate": 0.6363636363636364, "mean_log_loss": 1.7642356218278197},
+    "toyama": {"n": 16, "top1_accuracy": 0.0, "top3_rate": 0.625, "mean_log_loss": 2.108665010285847},
+    "yahiko": {"n": 12, "top1_accuracy": 0.16666666666666666, "top3_rate": 0.5, "mean_log_loss": 1.9982244247773568}
+  },
+  "comparison_to_first_fixed_100": {
+    "first_batch": {"top1_accuracy": 0.29, "top3_rate": 0.65, "mean_log_loss": 1.8085855354144962},
+    "temporal_replication": {"top1_accuracy": 0.35, "top3_rate": 0.71, "mean_log_loss": 1.6778819171421917},
+    "replicated_directional_findings": [
+      "Aomori remained strong relative to the batch average.",
+      "Kawasaki remained strong relative to the batch average.",
+      "Gifu remained weak relative to the batch average.",
+      "Yahiko remained weak relative to the batch average.",
+      "Exact 333.3m remained the weakest circumference group; first batch 1/11 top1, temporal replication 0/16 top1.",
+      "Exact 400m remained materially stronger than exact 333.3m in both batches.",
+      "Exact 335m remained intermediate and heterogeneous rather than collapsing or becoming uniformly strong."
+    ],
+    "non_claims": [
+      "This does not justify live betting or automatic betting.",
+      "This does not justify subgroup retuning from these two batches alone.",
+      "This temporal replication is not fully independent-meeting replication because some races may be other days of the same meetings."
+    ]
+  },
+  "scientific_conclusion": "The second preregistered 100-race batch replicates the existence and direction of substantial venue/circumference heterogeneity without retuning. Overall B1a ranking performance is better than batch 1 but still not uniformly strong. The strongest reproducible warning is exact 333.3m/Toyama weakness; 400m is materially more stable. Venue-specific operational rules still require a fully independent-meeting replication and larger-scale validation before adoption.",
+  "next_gate": "Construct a fully independent-meeting historical replication set, then scale toward the existing ~2000-race substrate while preserving exact circumference, no-retune, no-odds-blocking and KR-015 evidence classification.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
