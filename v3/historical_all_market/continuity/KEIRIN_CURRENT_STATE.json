@@ -6,18 +6,19 @@
     "chat_role": "EPHEMERAL_TERMINAL",
     "canonical_state_store": "GITHUB_REPOSITORY"
   },
-  "checkpoint_jst": "2026-09-13T02:05:00+09:00",
+  "checkpoint_jst": "2026-09-13T02:22:00+09:00",
   "canonical_repo": "fufufu1116/multiverse-research",
   "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
-  "branch_head_before_state_write": "c0963a3d632e6d2ef2f307f42a01c69445ced529",
-  "current_research_objective": "Reach scientific validation 100% primarily through historical virtual-world simulation. Five substantial frozen-B1a historical validation batches are now complete, including the new preregistered five-meeting regime-validation universe with 123 PRE-complete freezes and 122 scored results. The new batch again shows material meeting/regime heterogeneity and weakens any stable venue/circumference story. The immediate priority is an independent meeting-disjoint confirmation of the already-preregistered normalized-entropy, top1-margin and meeting-day signals without changing bins, thresholds or B1a.",
+  "branch_head_before_state_write": "d2e379b49d7a87ace7d3b2296cb994e5af5113a3",
+  "current_research_objective": "Reach scientific validation 100% primarily through historical virtual-world simulation. Six substantial frozen-B1a historical validation batches are now complete. The sixth independently tested the previously observed normalized-entropy and meeting-day explanatory directions on 198 races from six new meeting-disjoint meetings; both preregistered directions failed. Together with verified B1a formula identity and repeated meeting-level swings, the frozen B1a lineage is now scientifically characterized as unstable across regimes with no validated simple venue/circumference/confidence/day repair rule. The immediate priority is a separately versioned DEVELOPMENT_ONLY architecture-improvement lineage using exposed non-protected evidence, while reserving new collision-audited meetings for untouched validation and keeping DEV2000 restricted evidence and ECON_HOLDOUT1000 sealed.",
   "model": {
     "name": "B1a_RECONSTITUTED_v1",
     "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
     "temperature": 1.15,
     "retune": false,
     "freeze_identity_status": "PASS_PROBABILITY_LAYER_IDENTITY_VERIFIED",
-    "identity_audit": "v3/historical_all_market/research_candidates/KEIRIN_B1A_FREEZE_IDENTITY_AUDIT_20260913_v1.json"
+    "identity_audit": "v3/historical_all_market/research_candidates/KEIRIN_B1A_FREEZE_IDENTITY_AUDIT_20260913_v1.json",
+    "lineage_status": "FROZEN_CHARACTERIZED_NO_CONFIRMATORY_RETUNE"
   },
   "canonical_continuity": {
     "rule_registry": "v3/historical_all_market/continuity/KEIRIN_RULE_REGISTRY_v1.json",
@@ -44,33 +45,32 @@
     {
       "id": "HISTORICAL_VIRTUALWORLD_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_B1A_V2",
       "path": "v3/historical_all_market/research_candidates/KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_B1A_COMPLETE_AUDIT_20260913_v2.json",
-      "status": "COMPLETE_PREREGISTERED_COVERAGE_BALANCED_100_OF_100",
-      "metrics": {"n": 100, "top1_hits": 46, "top1_accuracy": 0.46, "top3_hits": 78, "top3_rate": 0.78, "log_loss": 1.5358944840252322},
-      "exact_circumference": {
-        "333.3m": {"n": 16, "top1_accuracy": 0.375, "top3_rate": 0.6875},
-        "335m": {"n": 17, "top1_accuracy": 0.7058823529411765, "top3_rate": 0.9411764705882353},
-        "400m": {"n": 67, "top1_accuracy": 0.417910447761194, "top3_rate": 0.7611940298507462}
-      }
+      "metrics": {"n": 100, "top1_hits": 46, "top1_accuracy": 0.46, "top3_hits": 78, "top3_rate": 0.78, "log_loss": 1.5358944840252322}
     },
     {
       "id": "HISTORICAL_VIRTUALWORLD_REGIME_VALIDATION_FIXED_MEETINGS_B1A_V1",
       "path": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_VALIDATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
       "status": "COMPLETE_WITH_ONE_RETAINED_RESULT_FETCH_FAILURE",
-      "metrics": {"selected": 123, "scored": 122, "top1_hits": 35, "top1_accuracy": 0.28688524590163933, "top3_hits": 81, "top3_rate": 0.6639344262295082, "log_loss": 1.8130028666934388},
-      "candidate_signals": {
-        "normalized_entropy_low_0_0_70": {"n": 11, "top1_accuracy": 0.5454545454545454, "top3_rate": 0.6363636363636364},
-        "normalized_entropy_high_0_85_1": {"n": 59, "top1_accuracy": 0.22033898305084745, "top3_rate": 0.6440677966101694},
-        "meeting_day_2": {"n": 41, "top1_accuracy": 0.3902439024390244, "top3_rate": 0.7317073170731707}
+      "metrics": {"selected":123,"scored":122,"top1_hits":35,"top1_accuracy":0.28688524590163933,"top3_hits":81,"top3_rate":0.6639344262295082,"log_loss":1.8130028666934388}
+    },
+    {
+      "id": "HISTORICAL_VIRTUALWORLD_REGIME_SIGNAL_CONFIRMATION_FIXED_MEETINGS_B1A_V1",
+      "path": "v3/historical_all_market/research_candidates/KEIRIN_REGIME_SIGNAL_CONFIRMATION_FIXED_MEETINGS_B1A_COMPLETE_AUDIT_20260913_v1.json",
+      "status": "COMPLETE_PREREGISTERED_CONFIRMATION_BOTH_PRIMARY_DIRECTIONS_FAILED",
+      "metrics": {"selected":198,"scored":198,"top1_hits":48,"top1_accuracy":0.24242424242424243,"top3_hits":129,"top3_rate":0.6515151515151515,"log_loss":1.8943596886664207},
+      "confirmation": {
+        "normalized_entropy_direction": "FAIL; low 2/13=15.38% vs high 16/72=22.22%",
+        "meeting_day2_direction": "FAIL; day2 13/66=19.70% vs day1 18/66=27.27% and day3 17/66=25.76%",
+        "top1_margin": "NON_MONOTONIC_AGAIN_NO_RULE"
       },
-      "workflow_run_id": 34706584423,
-      "artifact_id": 10302206040,
-      "retained_result_failure": "REG1_2120260907_yahiko_03_02R"
+      "workflow_run_id": 34707418308,
+      "artifact_id": 10301752742
     },
     {
       "id": "B1A_FREEZE_IDENTITY_AUDIT",
       "path": "v3/historical_all_market/research_candidates/KEIRIN_B1A_FREEZE_IDENTITY_AUDIT_20260913_v1.json",
       "status": "PASS_PROBABILITY_LAYER_IDENTITY_VERIFIED",
-      "metrics": {"races_compared": 100, "max_abs_probability_difference": 2.220446049250313e-16, "races_exceeding_1e-14": 0}
+      "metrics": {"races_compared":100,"max_abs_probability_difference":2.220446049250313e-16,"races_exceeding_1e-14":0}
     },
     {
       "id": "HISTORICAL_RACECARD_SOURCE_LEAK_AUDIT",
@@ -79,28 +79,30 @@
     }
   ],
   "replication_comparison": {
-    "batch1": {"n": 100, "top1_accuracy": 0.29, "top3_rate": 0.65, "log_loss": 1.8085855354144962},
-    "batch2_temporal": {"n": 100, "top1_accuracy": 0.35, "top3_rate": 0.71, "log_loss": 1.6778819171421917},
-    "batch3_independent_meeting": {"n": 100, "top1_accuracy": 0.32, "top3_rate": 0.69, "log_loss": 1.7988463039691303},
-    "batch4_coverage_balanced": {"n": 100, "top1_accuracy": 0.46, "top3_rate": 0.78, "log_loss": 1.5358944840252322},
-    "batch5_regime_validation": {"n": 122, "selected": 123, "top1_accuracy": 0.28688524590163933, "top3_rate": 0.6639344262295082, "log_loss": 1.8130028666934388, "warning": "One preregistered frozen 5-rider race has a retained result-fetch failure and was not substituted."},
-    "descriptive_aggregate_522_scored": {"n": 522, "top1_hits": 177, "top1_accuracy": 0.3390804597701149, "top3_hits": 364, "top3_rate": 0.6973180076628352, "weighted_log_loss": 1.7304735130109283, "warning": "Nonidentical sampling designs and one retained result failure; descriptive only, not a population-frequency estimate."},
+    "batch1": {"n":100,"top1_accuracy":0.29,"top3_rate":0.65,"log_loss":1.8085855354144962},
+    "batch2_temporal": {"n":100,"top1_accuracy":0.35,"top3_rate":0.71,"log_loss":1.6778819171421917},
+    "batch3_independent_meeting": {"n":100,"top1_accuracy":0.32,"top3_rate":0.69,"log_loss":1.7988463039691303},
+    "batch4_coverage_balanced": {"n":100,"top1_accuracy":0.46,"top3_rate":0.78,"log_loss":1.5358944840252322},
+    "batch5_regime_validation": {"n":122,"selected":123,"top1_accuracy":0.28688524590163933,"top3_rate":0.6639344262295082,"log_loss":1.8130028666934388,"warning":"One frozen race retained as result-fetch failure."},
+    "batch6_regime_signal_confirmation": {"n":198,"selected":198,"top1_accuracy":0.24242424242424243,"top3_rate":0.6515151515151515,"log_loss":1.8943596886664207,"entropy_direction":"FAIL","day2_direction":"FAIL","margin_rule":"NO_RULE"},
+    "descriptive_aggregate_720_scored": {"n":720,"top1_hits":225,"top1_accuracy":0.3125,"top3_hits":493,"top3_rate":0.6847222222222222,"weighted_log_loss":1.7755422113161887,"warning":"Nonidentical sampling designs and one retained historical result failure across contributing batches; descriptive only, not a population-frequency estimate."},
     "retained_findings": [
-      "Frozen B1a retains broad ranking signal but performance varies materially by meeting/sample composition.",
-      "Exact circumference remains an analysis dimension; no length coercion or deterministic circumference policy is allowed.",
-      "Meeting-level heterogeneity is large and repeated across independent samples.",
-      "Preregistered normalized entropy and meeting-day index now have candidate explanatory signal, but neither is independently confirmed or operational."
+      "Frozen B1a contains broad ranking information but its realized performance varies materially across meetings and samples.",
+      "B1a probability-formula drift is ruled out to floating-point precision; observed performance changes are not an implementation mismatch.",
+      "Exact circumference remains a required analysis dimension and must never be coerced, but no stable circumference policy is established.",
+      "Meeting-level heterogeneity is large and repeated across independent samples."
     ],
     "falsified_or_weakened_findings": [
-      "Stable universal exact-333.3m/Toyama weakness is not supported after batch4: 6/16 Top1=37.5% versus temporal batch 0/16.",
-      "Stable Yahiko weakness is not supported as a venue law: batch4 Yahiko was 13/17 Top1=76.47%, while batch5 Yahiko was 3/32=9.38%, showing strong meeting/regime dependence.",
-      "Stable Kawasaki strength is not supported: batch4 5/17 Top1=29.41%.",
-      "Simple venue/circumference directional labels are meeting/regime-sensitive and must not be retuned or operationalized from these batches.",
-      "Top1-margin bins were not monotonic in batch5, so margin alone is not promoted as a confidence rule."
+      "Stable venue labels are not supported; the same venues have reversed strongly across independent meetings.",
+      "Stable exact-circumference directional rules are not supported by the current independent batches.",
+      "The preregistered low-normalized-entropy Top1 advantage failed independent confirmation and reversed direction.",
+      "The preregistered meeting-day-2 Top1 advantage failed independent confirmation; day2 was weakest on Top1 in batch6.",
+      "Top1-margin bins are non-monotonic across independent evidence and are not a validated confidence rule."
     ],
-    "important_negative_evidence_policy": "All prior weak and failed batches remain valid evidence. No unfavorable race, meeting, venue, circumference or confidence-bin result may be removed after outcome access."
+    "important_negative_evidence_policy": "All prior weak and failed batches remain valid evidence. No unfavorable race, meeting, venue, circumference, confidence bin, day index or result-fetch failure may be removed after outcome access."
   },
-  "b1a_identity_conclusion": "The current historical probability scorer is numerically identical to the original frozen B1a_RECONSTITUTED_v1 probability semantics to floating-point precision. Formula drift does not explain the exposed DEV2000 descriptive Top1=44.0% versus recent-batch variation. Composition/regime/source-population explanations remain hypotheses requiring preregistered testing.",
+  "b1a_identity_conclusion": "The current historical probability scorer is numerically identical to the original frozen B1a_RECONSTITUTED_v1 probability semantics to floating-point precision. Formula drift does not explain exposed DEV2000 or recent-batch variation.",
+  "b1a_scientific_disposition": "FROZEN_CHARACTERIZED_NO_SIMPLE_STABLE_REPAIR_RULE. Confirmatory retuning is prohibited. Any attempt to improve ranking/calibration must use a separately versioned development lineage and fresh untouched validation after candidate selection.",
   "immutable_rule_summary": [
     "Historical virtual-world simulation is the primary path until final live confirmation (KR-016).",
     "Offline simulation does not require live odds unless an experiment specifically tests odds.",
@@ -112,33 +114,34 @@
   ],
   "latest_completed_experiments": [
     {
+      "id": "EXP-HISTORICAL-VIRTUALWORLD-REGIME-SIGNAL-CONFIRMATION-FIXED-MEETINGS-B1A-V1",
+      "result": "198/198 across six new meeting-disjoint meetings; Top1 24.24%; Top3 65.15%; log loss 1.89436. Both preregistered explanatory directions failed: low entropy did not outperform high entropy and day2 did not outperform day1/day3."
+    },
+    {
       "id": "EXP-HISTORICAL-VIRTUALWORLD-REGIME-VALIDATION-FIXED-MEETINGS-B1A-V1",
-      "result": "123 PRE-complete freezes across five collision-audited meetings; 122 scored with one retained result-fetch failure; Top1 28.69%; Top3 66.39%; log loss 1.81300. Meeting heterogeneity persisted. Low normalized entropy and day 2 are candidate explanatory signals only."
+      "result": "123 PRE-complete freezes; 122 scored with one retained result failure; Top1 28.69%; Top3 66.39%; log loss 1.81300. Candidate entropy/day signals were surfaced and then independently falsified by the next batch."
     },
     {
       "id": "EXP-B1A-FREEZE-IDENTITY-AUDIT-20260913-V1",
-      "result": "PASS; 100 current frozen races recomputed under original B1a semantics; max car-probability difference 2.22e-16; no formula drift detected."
-    },
-    {
-      "id": "EXP-HISTORICAL-VIRTUALWORLD-COVERAGE-BALANCED-INDEPENDENT-MEETING-100-B1A-V2",
-      "result": "100/100; Top1 46%; Top3 78%; log loss 1.53589; exact 333.3m severe-weakness story failed stable replication; venue directions remain meeting-sensitive."
+      "result": "PASS; 100 races recomputed under original B1a semantics; max car-probability difference 2.22e-16; no formula drift."
     }
   ],
   "exposed_evidence_boundary": {
+    "current_scored_large_batches_720": "EXPOSED_DEVELOPMENT_ELIGIBLE_WITH_DEDUPLICATION_NOT_UNTOUCHED_VALIDATION",
     "DEV2000": "EXPOSED_DIAGNOSTIC_REPRODUCIBILITY_ONLY_NOT_NEW_UNTOUCHED_VALIDATION",
-    "DEV2000_segment_c": "RETIRED_FROM_NEW_LINEAGE_EVIDENCE_CLAIM",
+    "DEV2000_segment_c": "RETIRED_FROM_NEW_LINEAGE_DEVELOPMENT_SELECTION_AND_UNTOUCHED_VALIDATION_CLAIMS",
     "ECON_HOLDOUT1000": "SEALED"
   },
   "open_blockers": [],
   "exact_next_executable_actions": [
-    "Preregister an independent meeting-disjoint confirmation using exactly the already-frozen normalized-entropy bins [0,0.70), [0.70,0.85), [0.85,1.0000001], top1-margin bins [0,0.05), [0.05,0.15), [0.15,1.0], and exact meeting-day indices; do not tune them from batch5 outcomes.",
-    "Select the next historical universe by deterministic meeting identity and mandatory PRE completeness only, with collision audit against DEV2000, all five completed substantial batches and explicitly exposed smaller experiments; freeze all successful selections before result scoring.",
-    "Run frozen B1a unchanged and retain all preregistered successful freezes and any result failures without substitution.",
-    "If normalized-entropy/day signals independently replicate, quantify calibration and robustness before any operational confidence gate. If they fail, retain the negative result and evaluate a new development lineage rather than contaminating frozen B1a.",
-    "Only after probability/ranking stability is characterized may historical odds/settlement research optimize ticket count, minimum required odds and virtual bankroll allocation; realtime remains final confirmation only."
+    "Preregister a separate DEVELOPMENT_ONLY architecture-search space before fitting any replacement model. The frozen B1a confirmatory lineage must remain unchanged.",
+    "Build a deduplicated development table from already exposed non-protected historical races and their PRE/outcome records; explicitly exclude protected/retired DEV2000 Segment C from new-lineage development and keep ECON_HOLDOUT1000 sealed.",
+    "Evaluate a small fixed family of architecture changes under meeting-grouped cross-validation or leave-one-meeting-out evaluation so candidate selection rewards cross-meeting stability rather than same-meeting fit. Record every candidate, including failures.",
+    "After selecting one candidate using DEVELOPMENT_ONLY evidence, preregister a new collision-audited meeting-disjoint historical validation universe that is not used during model selection; freeze predictions before dedicated result scoring.",
+    "Only if the new lineage materially improves stability/calibration on untouched validation should probability/ranking science advance to historical odds/settlement optimization; realtime remains final confirmation only."
   ],
-  "scientific_validation_progress_percent": 97,
-  "progress_reason": "Advanced from 96% because the preregistered larger collision-audited regime validation completed across five new meetings with 123 frozen races and 122 scored results, materially strengthening the meeting/regime-dependence finding and surfacing fixed PRE-only confidence/day candidates for falsifiable independent confirmation. Progress is not 100% because those candidate regime signals are not independently replicated, calibration/decision stability is not established, and one frozen race remains an explicitly retained result-fetch failure.",
+  "scientific_validation_progress_percent": 98,
+  "progress_reason": "Advanced from 97% because the exact independent confirmation demanded by batch5 completed 198/198 on six new meeting-disjoint meetings and decisively resolved the candidate-explanation uncertainty: both normalized-entropy and meeting-day directions failed under unchanged preregistered definitions, while top1-margin remained non-monotonic. This materially closes the frozen-B1a explanatory search and establishes that further progress requires a separately versioned development lineage, not post-hoc repair. Progress is not 100% because a replacement architecture has not yet been selected and independently validated on a fresh untouched historical universe.",
   "owner_action_required_now": false,
   "runtime": "OFF",
   "automatic_betting": false,
