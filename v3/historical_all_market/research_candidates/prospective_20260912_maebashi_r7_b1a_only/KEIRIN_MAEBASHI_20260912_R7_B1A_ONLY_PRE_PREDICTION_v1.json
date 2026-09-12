@@ -1,0 +1,18 @@
+{
+  "record":"KEIRIN_PROSPECTIVE_335M_B1A_ONLY_PRE_PREDICTION_20260912_MAEBASHI_R7_v1",
+  "status":"PASS_PROSPECTIVE_335M_B1A_ONLY_PRE_FROZEN_BEFORE_OUTCOME",
+  "created_at_jst":"2026-09-12T14:28:26+09:00",
+  "target":{"event_date":"2026-09-12","venue":"前橋","race_number":7,"race_id":"202609122207","track_circumference_m":335,"circumference_lane":"CIRCUMFERENCE_335M","scheduled_start_jst":"2026-09-12T22:50:00+09:00","cutoff_jst":"2026-09-12T22:45:00+09:00"},
+  "bindings":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","source_commit":"67a997fd3559994a3bad5b3cf9916849f151443d","source_snapshot_git_blob":"1b453453896412e1c59c8a8d8e47ff42840142ec","circumference_policy_commit":"4f0f4070480f082098cc00992bf7bf96010397af"},
+  "model_scope":{"model":"B1a_RECONSTITUTED_v1","b1a_requires_circumference_input":false,"circumference_challenger_applied":false,"competition_gate_applied":false,"competition_gate":null,"required_odds_runner_applied":false,"exact_v54_executable":false,"reason":"335m exact lane; no 333/400 circumference-gate coercion."},
+  "winner_prediction":{"model":"B1a_RECONSTITUTED_v1","probabilities":[
+    {"car_no":1,"name":"高野信元","win_prob":0.45793800390861517},
+    {"car_no":2,"name":"野中祐志","win_prob":0.11234415076683663},
+    {"car_no":3,"name":"坪内恒","win_prob":0.2336578475064716},
+    {"car_no":4,"name":"吉田健市","win_prob":0.05091019541427964},
+    {"car_no":5,"name":"望月紀男","win_prob":0.03142646845890516},
+    {"car_no":6,"name":"今井希","win_prob":0.09112136029816209},
+    {"car_no":7,"name":"鈴木良太","win_prob":0.022601973646729747}
+  ],"top1_car_no":1,"top1_name":"高野信元","top1_probability":0.45793800390861517},
+  "science":{"prospective_pre_only":true,"runtime":"OFF","automatic_betting":false,"retune":false,"target_race_result_accessed":false,"target_payout_accessed":false,"actual_odds_used":false,"post_result_reconstruction":false,"length_rounding_or_coercion":false,"formal_scientific_validation_percent":85,"next_gate":"Evaluate immutable B1a-only prediction after outcome inside 335m lane."}
+}
