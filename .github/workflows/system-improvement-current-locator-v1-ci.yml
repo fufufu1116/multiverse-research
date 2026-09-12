@@ -7,6 +7,7 @@ on:
       - 'governance/MULTIVERSE_REPOSITORY_SCOPE_REGISTRY_v1.json'
       - 'tools/repository_current_locator_v1.py'
       - 'tools/test_repository_current_locator_v1.py'
+      - 'docs/control/CONTROL_SYNC_RECEIPT_v1.md'
       - '.github/workflows/system-improvement-current-locator-v1-ci.yml'
   workflow_dispatch:
 
@@ -37,6 +38,9 @@ jobs:
           assert data['nonauthority'] is True
           assert data['write_effects'] is False
           assert data['runtime'] == 'OFF'
+          assert data['boot_order'] == ['FRESH_CANONICAL_MAIN','FRESH_LATEST_CONTROL_394','FRESH_LANE_PRIMARY']
+          assert data['control_sync_receipt_required'] is True
           assert len(data['current_entrypoints']) == 6
+          assert all(x['control_sync']['required_issue'] == '394' for x in data['current_entrypoints'])
           print('CURRENT_LOCATOR_V1_PROOF_PASS')
           PY
