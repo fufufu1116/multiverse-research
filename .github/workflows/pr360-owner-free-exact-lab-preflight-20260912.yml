@@ -1,0 +1,96 @@
+name: pr360-owner-free-exact-lab-preflight-20260912
+
+on:
+  push:
+    branches:
+      - agent/pr360-owner-free-exact-lab-preflight-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    env:
+      EXACT_HEAD: 8874e21542da6b482e2c27b5318ae10866e3efb7
+      EXACT_TREE: 8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd
+      EXACT_MAIN: 27b038736e6f160a0ab4f619c6aeef39f0ae8d10
+      EXACT_REQUEST_COMMENT: '5642365633'
+      EXACT_REQUEST_SHA: 8109d2825646b73cae28055df6076b49237e440c3937ea7768252b692d4f1d6f
+      BUILDKITE_COMMIT: 8874e21542da6b482e2c27b5318ae10866e3efb7
+      BUILDKITE_BUILD_ID: OWNER_FREE_PREFLIGHT_PR360_20260912
+      BUILDKITE_BUILD_NUMBER: '0'
+      BUILDKITE_BRANCH: agent/control-plane-get-resilience-convergence-post-pr356-20260912
+      MULTIVERSE_DISPATCHER_REF: 27b038736e6f160a0ab4f619c6aeef39f0ae8d10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD^)" = "$EXACT_TREE"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = ".github/workflows/pr360-owner-free-exact-lab-preflight-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Run exact owner-free Lab preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch -q origin "$EXACT_MAIN"
+          git checkout -q --detach "$EXACT_HEAD"
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD)" = "$EXACT_TREE"
+          rm -rf .mv_dispatcher
+          mkdir -p .mv_dispatcher
+          git archive "$EXACT_MAIN" automation/review_dispatcher_v1 | tar -x -C .mv_dispatcher
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head "$EXACT_HEAD" \
+            --output review_job.json
+          python3 - <<'PY'
+          import json
+          j=json.load(open('review_job.json'))
+          assert j['pr']==360
+          assert j['lane']=='LAB'
+          assert j['head']=='8874e21542da6b482e2c27b5318ae10866e3efb7'
+          assert j['tree']=='8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd'
+          assert j['main']=='27b038736e6f160a0ab4f619c6aeef39f0ae8d10'
+          assert j['dispatcher_ref']=='27b038736e6f160a0ab4f619c6aeef39f0ae8d10'
+          assert j['request_comment']==5642365633
+          assert j['request_sha256']=='8109d2825646b73cae28055df6076b49237e440c3937ea7768252b692d4f1d6f'
+          assert j['request_id']=='pr360-control-plane-get-resilience-convergence-lab-v1-main-27b03873'
+          print('EXACT_DISPATCH_SELECTION=PASS')
+          PY
+          test -z "${MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY:-}"
+          test -z "${MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY:-}"
+          test -z "${DATABASE_URL:-}"
+          test -z "${RENDER_API_KEY:-}"
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
+            --job review_job.json \
+            --output review_artifact.json \
+            --repo-root .
+          python3 - <<'PY'
+          import json
+          a=json.load(open('review_artifact.json'))
+          assert a['verdict']=='PASS', a['findings']
+          assert a['findings']==[]
+          assert a['test_count']==183, a['test_count']
+          assert a['lane']=='LAB'
+          assert a['request_comment']==5642365633
+          assert a['request_sha256']=='8109d2825646b73cae28055df6076b49237e440c3937ea7768252b692d4f1d6f'
+          assert a['reviewed_head']=='8874e21542da6b482e2c27b5318ae10866e3efb7'
+          assert a['reviewed_tree']=='8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd'
+          assert a['reviewed_main']=='27b038736e6f160a0ab4f619c6aeef39f0ae8d10'
+          print('FULL_APPLICABLE_TESTS=183/183_PASS')
+          print('VALIDATOR=PASS')
+          print('VALIDATOR_FINDINGS=[]')
+          print('PREFLIGHT_TERMINAL=READY')
+          PY
