@@ -1,0 +1,83 @@
+{
+  "record": "KEIRIN_NL2_ECONOMICS_V1_FAILURE_DIAGNOSTIC_v1",
+  "status": "EXPLORATORY_DIAGNOSTIC_ONLY_AFTER_FAILED_UNTOUCHED_VALIDATION",
+  "source_audit": "v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_UNTOUCHED_VALIDATION_COMPLETE_AUDIT_20260913_v1.json",
+  "source_workflow_run_id": 34715215675,
+  "source_artifact_id": 10304448988,
+  "scientific_boundary": "All diagnostics below use already-exposed economics-v1 development and failed-holdout evidence. They may motivate a separately preregistered development lineage but are not confirmatory and cannot repair or rescue economics-v1.",
+  "development_surface": {
+    "configuration_count": 12,
+    "eligible_count": 12,
+    "all_configuration_realized_roi_positive": true,
+    "realized_roi_range": [0.3492985971943887, 0.5435622317596567],
+    "positive_meeting_count_for_every_configuration": 3,
+    "selected_configuration_id": "P10:CORE_NO_TRIFECTA:TOP1_PER_MARKET:FLAT100",
+    "selected_realized_roi": 0.5435622317596567,
+    "interpretation": "The entire low-degree-of-freedom development surface appeared profitable rather than only the selected point. The subsequent holdout collapse therefore indicates broad development optimism / distribution mismatch, not merely a one-grid-cell ranking accident."
+  },
+  "failed_holdout_selected_ticket_profile": {
+    "selected_ticket_count": 597,
+    "closing_decimal_odds_quantiles": {
+      "min": 2.4,
+      "p25": 21.1,
+      "p50": 39.2,
+      "p75": 60.1,
+      "p90": 79.22,
+      "p95": 88.4,
+      "p99": 96.808,
+      "max": 99.8
+    },
+    "conservative_probability_quantiles": {
+      "min": 0.03008629,
+      "p25": 0.04522162,
+      "p50": 0.0670065,
+      "p75": 0.10741746,
+      "p90": 0.18469154,
+      "p95": 0.2349143,
+      "p99": 0.36472861,
+      "max": 0.5179977
+    },
+    "conservative_raw_ev_quantiles": {
+      "min": 0.10917187,
+      "p25": 0.86875463,
+      "p50": 1.43957249,
+      "p75": 2.25397066,
+      "p90": 3.09940545,
+      "p95": 3.64355913,
+      "p99": 5.09016239,
+      "max": 8.75208424
+    },
+    "conservative_shape_edge_ratio_quantiles": {
+      "min": 1.54380642,
+      "p25": 2.58223561,
+      "p50": 3.34368081,
+      "p75": 4.48230997,
+      "p90": 5.53639762,
+      "p95": 6.34552388,
+      "p99": 8.16104862,
+      "max": 13.03136275
+    }
+  },
+  "failed_holdout_outcome": {
+    "realized_roi": -0.5313232830820771,
+    "positive_meetings": 1,
+    "meeting_count": 5,
+    "maximum_drawdown": 0.3172,
+    "bootstrap_roi_95pct": [-0.7879561289462279, -0.22278848278079957]
+  },
+  "diagnostic_findings": [
+    "Very large model-implied conservative EV and shape-edge values were common even though realized ROI was strongly negative, so raw model-vs-market edge magnitude is not calibrated enough to be treated as a direct purchase signal on this evidence.",
+    "The v1 fixed odds cap of 100 left a long-odds-heavy portfolio: median selected decimal odds were 39.2 and the 75th percentile was 60.1.",
+    "V1 placed up to one ticket per market per race, creating multiple correlated exposures in the same race; v2 should test at-most-one-ticket-per-race as a variance-control hypothesis.",
+    "Because these findings are post-holdout diagnostics, every proposed correction must be treated as development-only until independently validated on new meetings."
+  ],
+  "v2_hypotheses_motivated_not_proven": [
+    "Tighter maximum odds may reduce uncalibrated tail exposure.",
+    "Higher probability floors and stricter model-agreement constraints may reduce fragile model-only edge signals.",
+    "Fewer unordered markets and one total ticket per race may reduce correlated portfolio variance.",
+    "Development policy selection should prioritize meeting robustness before pooled ROI."
+  ],
+  "forbidden_inference": "Do not claim that any v2 hypothesis is true because economics-v1 failed. Only a separately preregistered fresh untouched validation can promote a v2 policy.",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
