@@ -1,0 +1,31 @@
+{
+  "record": "KEIRIN_ALL_CIRCUMFERENCE_STORAGE_AND_RESEARCH_POLICY_20260912_v1",
+  "status": "ACTIVE_RESEARCH_POLICY",
+  "date_jst": "2026-09-12",
+  "purpose": "Preserve and study every observed keirin track circumference as its own exact-length research lane instead of limiting storage to previously supported frozen-model buckets.",
+  "owner_directive": "All existing race track lengths may be stored and handled separately by length.",
+  "storage_policy": {
+    "capture_all_observed_circumference_values": true,
+    "preserve_exact_authoritative_measurement": true,
+    "nearest_bucket_coercion_forbidden": true,
+    "unsupported_length_drop_forbidden": true,
+    "lane_key_rule": "Use the exact authoritative track circumference value as the research-lane key; lengths that differ remain separate lanes.",
+    "future_or_new_lengths": "Automatically create a new exact-length lane when an authoritative source exposes a circumference not previously present."
+  },
+  "research_policy": {
+    "same_length_first": true,
+    "cross_length_pooling_requires_separate_scientific_justification": true,
+    "current_frozen_length_adjustment_model_remains_unchanged": true,
+    "unsupported_by_current_frozen_adjustment_model": "Still capture PRE data and outcomes in its exact-length lane. Do not mislabel as a supported length. Build and validate a length-specific challenger when enough evidence exists.",
+    "baseline_models_without_length_adjustment": "May be evaluated separately where their frozen contract does not require a supported circumference bucket; this does not authorize pretending the current 333/400 circumference challenger supports another length."
+  },
+  "supersession_note": "Any prior workflow wording that treated 335m, 500m, or any other non-333/400 circumference as storage-excluded is superseded. Such races are now retained in their own exact-length research lanes.",
+  "science": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "retune_from_target_outcomes": false,
+    "no_length_rounding": true,
+    "no_cross_length_backfill": true
+  },
+  "owner_action_required_now": false
+}
