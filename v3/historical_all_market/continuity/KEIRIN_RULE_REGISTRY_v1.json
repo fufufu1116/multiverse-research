@@ -1,0 +1,25 @@
+{
+  "record": "KEIRIN_RULE_REGISTRY_v1",
+  "authority_source_issue": 377,
+  "status": "ACTIVE_IMMUTABLE_RULE_REGISTRY_V1",
+  "created_jst": "2026-09-12T19:43:00+09:00",
+  "change_policy": "Rules may change only by explicit versioned repository update. Chat summaries or handoffs cannot silently override this registry.",
+  "rules": [
+    {"id":"KR-001","rule":"Offline simulation and historical research MUST NOT require live/realtime odds unless a specific experiment explicitly tests price/odds behavior.","rationale":"Odds are not needed to evaluate prediction science and should not block simulation throughput."},
+    {"id":"KR-002","rule":"Odds are purchase-boundary inputs. During live/manual operation the system may report minimum required odds or price thresholds and the Owner may verify current odds before purchase.","rationale":"Separates prediction research from volatile market-price acquisition."},
+    {"id":"KR-003","rule":"For forward-style historical backtests and prospective tests, race outcome/result/payout information MUST remain hidden until prediction inputs and predictions are frozen.","rationale":"Prevents result leakage and post-hoc reconstruction."},
+    {"id":"KR-004","rule":"Official or established historical racecard/result sources may be used as source evidence under the Keirin research protocol, but PRE fields and outcome fields must be separated in the experiment record.","rationale":"Allows reproducible historical science without contaminating predictor inputs."},
+    {"id":"KR-005","rule":"Preserve exact authoritative track circumference. 333.3m, 335m, 400m, 500m and any other observed official length are separate research lanes. Nearest-bucket coercion and unsupported-length dropping are forbidden.","rationale":"Avoids erasing real track-length structure."},
+    {"id":"KR-006","rule":"Frozen B1a evaluation uses the exact frozen predictor lineage without retuning, reweighting or threshold adjustment inside confirmatory/prospective evaluation sets.","binding":{"predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","model":"B1a_RECONSTITUTED_v1","temperature":1.15}},
+    {"id":"KR-007","rule":"Prospective, preregistered-retrospective and ordinary retrospective evidence classes must remain explicitly separated and must never be relabelled to a stronger evidence class after outcomes are known."},
+    {"id":"KR-008","rule":"Missing mandatory PRE fields must not be guessed or synthesized. Fail closed or exclude before outcome access with the exclusion reason recorded."},
+    {"id":"KR-009","rule":"Do not cherry-pick races after outcomes. When a full-day experiment is preregistered, score the complete successfully frozen card without post-hoc case deletion."},
+    {"id":"KR-010","rule":"Owner-free research, collection, implementation and validation should continue without stopping. Stop only at a genuine Owner authorization, credential, spend, protected-data, live-effect or other Owner boundary."},
+    {"id":"KR-011","rule":"Runtime remains OFF and automatic betting remains OFF unless separately and explicitly authorized. Research artifacts alone never activate live effects or spend."},
+    {"id":"KR-012","rule":"GitHub is the canonical continuity store. Chat is an ephemeral terminal, not long-term research memory. CURRENT STATE, RULE REGISTRY, EXPERIMENT LEDGER and datasets/artifacts must be repository-backed."},
+    {"id":"KR-013","rule":"Default Owner-facing execution replies should be concise: current position, new finding, next executable action and one progress line. Large tables, logs and simulation outputs belong in repository artifacts/files."},
+    {"id":"KR-014","rule":"Scientific progress percentage changes only when evidence strength materially advances; file count or raw case count alone does not automatically increase progress."}
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false
+}
