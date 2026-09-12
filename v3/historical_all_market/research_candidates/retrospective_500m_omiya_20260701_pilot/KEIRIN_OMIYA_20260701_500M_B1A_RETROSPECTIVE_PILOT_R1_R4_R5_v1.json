@@ -1,0 +1,39 @@
+{
+  "record":"KEIRIN_OMIYA_20260701_500M_B1A_RETROSPECTIVE_PILOT_R1_R4_R5_v1",
+  "status":"RETROSPECTIVE_BACKFILL_PILOT_3_RACES_OUTCOMES_SEPARATE_FROM_MODEL_INPUTS",
+  "created_jst":"2026-09-12",
+  "venue":"大宮",
+  "event_date":"2026-07-01",
+  "track_circumference_m":500,
+  "circumference_lane":"CIRCUMFERENCE_500M",
+  "evidence_class":"RETROSPECTIVE_NOT_PROSPECTIVE",
+  "purpose":"Bootstrap an exact-length 500m historical validation lane without coercing to the frozen 333/400 circumference challenger.",
+  "bindings":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","b1a_model":"B1a_RECONSTITUTED_v1","temperature":1.15},
+  "source_policy":"Only pre-race racecard fields are passed into B1a. Outcome is stored in a separate outcome object and is never passed into prediction. Because collection occurred after the races, all cases remain RETROSPECTIVE/BACKFILL and may never be claimed as prospective evidence.",
+  "input_source":"楽天Kドリームス historical race-detail racecard sections; same-course display explicitly labels the course class as 500.",
+  "outcome_sources":["楽天Kドリームス result section for R1","OddsPark result page for R4","OddsPark result page for R5"],
+  "races":{
+    "1":{"race_type":"A級予選","source_locator":"https://keirin.kdreams.jp/omiya/racedetail/2520260701010001/","inputs":[
+      [1,"金子浩貴","A2","追",82.41,4,0,0,2,4,18],[2,"入江航太","A2","逃",87.94,10,3,4,4,4,6],[3,"山崎司","A1","追",87.04,1,0,2,3,6,13],[4,"越智展孝","A2","追",83.85,0,0,2,2,2,15],[5,"八尋英輔","A1","追",88.19,2,0,4,5,2,10],[6,"水澤秀哉","A2","逃",78.71,18,17,17,0,3,1],[7,"篠塚光一","A1","追",81.38,1,0,3,2,2,14]],
+      "input_columns":["car_no","name","class","style","score","S","B","first","second","third","out"],
+      "b1a_probabilities":[[2,"入江航太",0.32051198141839166],[5,"八尋英輔",0.19130266328960274],[6,"水澤秀哉",0.1812261796213369],[3,"山崎司",0.1339306244589505],[4,"越智展孝",0.06470150232628843],[7,"篠塚光一",0.060753208203409285],[1,"金子浩貴",0.04757384068202046]],
+      "prediction_top1":{"car_no":2,"name":"入江航太","probability":0.32051198141839166},
+      "outcome":{"winner_car_no":6,"winner_name":"水澤秀哉","top1_hit":false,"source_locator":"https://keirin.kdreams.jp/omiya/racedetail/2520260701010001/"}},
+    "4":{"race_type":"A級予選","source_locator":"https://keirin.kdreams.jp/omiya/racedetail/2520260701010004/","inputs":[
+      [1,"中野光太郎","A1","逃",86.80,0,3,1,1,0,9],[2,"奥谷広巳","A2","追",84.50,1,0,2,4,2,16],[3,"菊池翔","A2","逃",82.70,5,9,2,4,2,19],[4,"成清謙二郎","A1","追",81.52,0,0,0,1,6,14],[5,"宇根秀俊","A2","追",86.14,1,0,3,1,3,14],[6,"白川有司","A2","追",73.40,1,0,2,8,5,12],[7,"石田拓真","A1","逃",90.25,1,9,7,0,1,8]],
+      "input_columns":["car_no","name","class","style","score","S","B","first","second","third","out"],
+      "b1a_probabilities":[[7,"石田拓真",0.5366545980688717],[1,"中野光太郎",0.15708039589866774],[3,"菊池翔",0.1058432968070034],[5,"宇根秀俊",0.07213765309886441],[2,"奥谷広巳",0.06041956664609573],[4,"成清謙二郎",0.041981339417833434],[6,"白川有司",0.025883150062663576]],
+      "prediction_top1":{"car_no":7,"name":"石田拓真","probability":0.5366545980688717},
+      "outcome":{"winner_car_no":7,"winner_name":"石田拓真","top1_hit":true,"source_locator":"https://www.oddspark.com/keirin/RaceKekka.do?joCode=25&kaisaiBi=20260701&raceNo=4"}},
+    "5":{"race_type":"A級初日特選","source_locator":"https://keirin.kdreams.jp/omiya/racedetail/2520260701010005/","inputs":[
+      [1,"保科千春","A1","追",95.66,2,0,0,2,4,23],[2,"小埜正義","A1","追",92.14,2,0,5,4,6,7],[3,"原井剣也","A1","逃",90.85,0,4,7,2,6,6],[4,"齊藤英伊須","A1","逃",92.88,8,21,10,9,3,5],[5,"村田瑞季","A1","逃",92.90,8,11,6,4,3,8],[6,"藤井優希","A1","逃",90.72,2,13,9,3,2,4],[7,"神尾敬冬","A1","逃",92.87,3,5,1,0,2,21]],
+      "input_columns":["car_no","name","class","style","score","S","B","first","second","third","out"],
+      "b1a_probabilities":[[4,"齊藤英伊須",0.26288989459233125],[5,"村田瑞季",0.199956776606025],[6,"藤井優希",0.13442828452501504],[1,"保科千春",0.1276648621112472],[7,"神尾敬冬",0.10597842663075532],[3,"原井剣也",0.09970266092446918],[2,"小埜正義",0.06937909461015693]],
+      "prediction_top1":{"car_no":4,"name":"齊藤英伊須","probability":0.26288989459233125},
+      "outcome":{"winner_car_no":4,"winner_name":"齊藤英伊須","top1_hit":true,"source_locator":"https://www.oddspark.com/keirin/RaceKekka.do?joCode=25&kaisaiBi=20260701&raceNo=5"}}
+  },
+  "pilot_metrics":{"n":3,"top1_hits":2,"top1_accuracy":0.6666666666666666,"interpretation":"Descriptive pilot only; N=3 is far too small for a performance conclusion and does not change formal science progress."},
+  "anti_leak":{"outcomes_used_as_model_inputs":false,"actual_odds_used":false,"circumference_challenger_applied":false,"length_rounding_or_coercion":false,"retune":false},
+  "science":{"formal_scientific_validation_percent":85,"prospective_increment":0,"runtime":"OFF","automatic_betting":false},
+  "next_actions":["Expand the 2026-07-01 Omiya 500m retrospective card beyond this three-race pilot using the same frozen B1a binding.","Keep all retrospective metrics separate from the 2026-09-13 Omiya prospective 500m lane.","At first trustworthy 2026-09-13 final racecard availability, freeze the prospective 500m inputs before target outcomes."]
+}
