@@ -1,0 +1,70 @@
+name: pr391-owner-free-exact-lab-preflight-20260912
+on:
+  push:
+    branches:
+      - agent/pr391-owner-free-exact-lab-preflight-20260912
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    env:
+      EXACT_HEAD: dd908368b955b3c01806b2fe499480ba8972715d
+      EXACT_TREE: fd64de45f68359404300d1c88e2d7778ecaa8401
+      EXACT_MAIN: c3455ef933227d52a2aa365ff9a2befde431218e
+      BUILDKITE_COMMIT: dd908368b955b3c01806b2fe499480ba8972715d
+      MULTIVERSE_DISPATCHER_REF: c3455ef933227d52a2aa365ff9a2befde431218e
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD^)" = "$EXACT_TREE"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/pr391-owner-free-exact-lab-preflight-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Canonical live Lab dispatcher and review — publication free
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch -q origin "$EXACT_MAIN"
+          git checkout -q --detach "$EXACT_HEAD"
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD)" = "$EXACT_TREE"
+          rm -rf .mv_dispatcher
+          mkdir -p .mv_dispatcher
+          git archive "$EXACT_MAIN" automation/review_dispatcher_v1 | tar -x -C .mv_dispatcher
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head "$EXACT_HEAD" \
+            --output review_job.json
+          PYTHONPATH=.mv_dispatcher python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
+            --job review_job.json \
+            --output review_artifact.json \
+            --repo-root .
+          python3 - <<'PY'
+          import json
+          job=json.load(open('review_job.json'))
+          art=json.load(open('review_artifact.json'))
+          assert job['request_comment']==5645782120, job
+          assert job['request_sha256']=='57a2f151501e834dbf556a5eee05ac278cd8480a1fd7ce69b929fb48a719265e', job
+          assert art['verdict']=='PASS', art['findings']
+          assert art['findings']==[], art['findings']
+          assert art['test_count']==190, art['test_count']
+          assert art['reviewed_head']=='dd908368b955b3c01806b2fe499480ba8972715d'
+          assert art['reviewed_tree']=='fd64de45f68359404300d1c88e2d7778ecaa8401'
+          print('OWNER_FREE_EXACT_LAB_PREFLIGHT=PASS')
+          print('FULL_APPLICABLE_TESTS=190/190_PASS')
+          print('FINDINGS=[]')
+          print('PUBLICATION_ATTEMPTED=NO')
+          print('OWNER_BUILD_CONSUMED=NO')
+          print('RUNTIME=OFF')
+          PY
