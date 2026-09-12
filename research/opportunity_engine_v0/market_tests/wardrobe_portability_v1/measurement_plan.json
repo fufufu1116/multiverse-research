@@ -1,0 +1,49 @@
+{
+  "schema": "PORTABLE_WARDROBE_MARKET_TEST_MEASUREMENT_v1",
+  "status": "FROZEN_INTERNAL_ONLY",
+  "runtime": "OFF",
+  "target_segment": {
+    "digital_closet_user_or_serious_considerer": true,
+    "estimated_wardrobe_items_min": 50,
+    "professional_reseller_primary": false
+  },
+  "variants": ["MIGRATION", "RECOVERY", "CONTROL", "GENERIC_AI_CONTROL"],
+  "primary_event": "HIGH_INTENT_ACTION",
+  "possible_high_intent_actions": ["WAITLIST", "START_IMPORT", "DEMO_REQUEST"],
+  "minimum_external_sample": 100,
+  "advance_thresholds": {
+    "qualified_high_intent_rate_min": 0.10,
+    "distinct_explicit_problem_confirmations_min": 5,
+    "generic_ai_desire_share_of_positive_responses_max": 0.50,
+    "credible_monetization_path_required": true
+  },
+  "kill_or_revise_thresholds": {
+    "qualified_high_intent_rate_below": 0.05,
+    "after_qualified_exposures_min": 100,
+    "portability_or_migration_not_material_to_switch_or_pay": true,
+    "incumbent_gap_eliminated": true,
+    "value_depends_on_unreliable_or_prohibited_marketplace_automation": true
+  },
+  "monetization_hypotheses": [
+    "one_time_paid_migration",
+    "subscription_for_portable_state_backup_and_insights",
+    "transaction_linked_resale_assistance"
+  ],
+  "claims_not_authorized": [
+    "product_market_fit",
+    "willingness_to_pay_proven",
+    "positive_unit_economics",
+    "revenue",
+    "rank_promotion"
+  ],
+  "external_actions_requiring_gate": [
+    "public_landing_page",
+    "real_user_data_collection",
+    "outreach",
+    "paid_ads",
+    "production_deployment",
+    "credentials",
+    "payments",
+    "marketplace_posting"
+  ]
+}
