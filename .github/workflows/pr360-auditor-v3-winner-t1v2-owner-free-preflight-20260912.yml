@@ -1,0 +1,92 @@
+name: pr360-auditor-v3-winner-t1v2-owner-free-preflight-20260912
+on:
+  push:
+    branches:
+      - agent/pr360-auditor-v3-winner-t1v2-preflight-20260912
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    env:
+      EXACT_HEAD: 8874e21542da6b482e2c27b5318ae10866e3efb7
+      EXACT_TREE: 8a491a1d4b5d962bbfa8a2dafe7301bf3bee46fd
+      EXACT_MAIN: 27b038736e6f160a0ab4f619c6aeef39f0ae8d10
+      EXACT_REQUEST_COMMENT: "5643656612"
+      EXACT_REQUEST_SHA: a2ebb3095873db6c826ce3a560fbb1dd3d5c647705917d74d88c42bed5a8a323
+      EXACT_REQUEST_ID: pr360-control-plane-get-resilience-convergence-auditor-v3-winner-t1v2-main-27b03873
+      EXACT_LAB_RESULT: "5642442187"
+      EXACT_LAB_REQUEST_SHA: 8109d2825646b73cae28055df6076b49237e440c3937ea7768252b692d4f1d6f
+      EXACT_T1: "5642536609"
+      WINNING_PREDECESSOR_SHA: 3acfc7ff75b3648276fede5deb874451d7020cbb4f74da31a6200b7fb0b0d5bd
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact proof carrier boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD^)" = "$EXACT_TREE"
+          changed="$(git diff --name-only HEAD^ HEAD)"
+          test "$changed" = ".github/workflows/pr360-auditor-v3-winner-t1v2-owner-free-preflight-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Exact non-publishing Auditor one-shot preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch -q origin "$EXACT_MAIN"
+          git checkout -q --detach "$EXACT_HEAD"
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          test "$(git show -s --format=%T HEAD)" = "$EXACT_TREE"
+          test -z "${MULTIVERSE_INDEPENDENT_LAB_PRIVATE_KEY:-}"
+          test -z "${MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY:-}"
+          test -z "${DATABASE_URL:-}"
+          test -z "${RENDER_API_KEY:-}"
+
+          PYTHONPATH=. python3 automation/review_dispatcher_v1/one_shot_preflight_v1.py \
+            --dispatcher-ref "$EXACT_MAIN" \
+            --lane AUDITOR \
+            --repo fufufu1116/multiverse-research \
+            --head "$EXACT_HEAD" \
+            --repo-root . > preflight.json
+
+          python3 - <<'PY'
+          import json, os
+          p=json.load(open('preflight.json'))
+          assert p['schema']=='MULTIVERSE_ONE_SHOT_PREFLIGHT_v1'
+          assert p['ready'] is True
+          assert p['state']=='ONE_SHOT_PREFLIGHT_READY'
+          assert p['classification']=='PASS'
+          assert p['request_comment']==int(os.environ['EXACT_REQUEST_COMMENT'])
+          assert p['request_sha256']==os.environ['EXACT_REQUEST_SHA']
+          assert p['request_id']==os.environ['EXACT_REQUEST_ID']
+          assert p['head']==os.environ['EXACT_HEAD']
+          assert p['tree']==os.environ['EXACT_TREE']
+          assert p['base']==os.environ['EXACT_MAIN']
+          assert p['main']==os.environ['EXACT_MAIN']
+          assert p['review_verdict']=='PASS'
+          assert p['test_count']==183
+          assert p['findings']==[]
+          assert p['artifact_serialization']=='PASS'
+          assert p['publication_attempted'] is False
+          assert p['owner_build_consumed'] is False
+          assert p['runtime']=='OFF'
+          print('EXACT_REQUEST_ARBITRATION=PASS')
+          print('T1_COMPLETE_BINDING=PASS')
+          print('TEST_COUNT=183')
+          print('VALIDATOR_EXPECTED_PASS_FINDINGS_EMPTY=PASS')
+          print('FIXED_STEPS_UNCHANGED=PASS')
+          print('NO_TRUSTED_EXACT_AUDITOR_RESULT=PASS')
+          print('PUBLICATION_ATTEMPTED=NO')
+          print('OWNER_BUILD_CONSUMED=NO')
+          print('ARTIFACT_SERIALIZATION=PASS')
+          print('PREFLIGHT_TERMINAL=READY')
+          PY
