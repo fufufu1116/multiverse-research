@@ -1,0 +1,137 @@
+{
+  "record": "KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_B1A_COMPLETE_AUDIT_20260913_v2",
+  "status": "COMPLETE_PREREGISTERED_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_OF_100",
+  "evidence_class": "RETROSPECTIVE_KR015_COVERAGE_BALANCED_INDEPENDENT_MEETING_REPLICATION",
+  "selection_rule": "v3/historical_all_market/research_candidates/KEIRIN_COVERAGE_BALANCED_INDEPENDENT_MEETING_100_SELECTION_RULE_20260913_v2.json",
+  "v1_disposition": "The v1 coverage-balanced attempt remains a valid fail-closed pre-scoring selection failure and is not repaired, deleted, or relabelled.",
+  "workflow": {
+    "run_id": 34704466512,
+    "conclusion": "success",
+    "head_sha": "9515872fa46fe8d637d9dea4024a63c6229083f1",
+    "artifact_id": 10300608124,
+    "artifact_name": "keirin-coverage-balanced-independent-meeting-100-b1a-v2",
+    "artifact_sha256": "a369b2ec79491d100f5d603ef12fbcde9fadff814c4e953b639fa6abc3ea296c",
+    "artifact_size_bytes": 33048
+  },
+  "artifact_file_sha256": {
+    "PREDICTION_LOCK.json": "e78359b21adab0da9054b801bab0417bb9cec5bcc5d49a47456d24cc7e7bf223",
+    "SELECTION_AUDIT.json": "0fa8827521102c39f1b217ccc1ff189165dc75e1a99b21323b80a8d709828268",
+    "SCORE.json": "b3d4ccc208100c5eaf7dd0f1edf54d6944d19c9d771ef653c19408f3b707c0b1"
+  },
+  "model": {
+    "name": "B1a_RECONSTITUTED_v1",
+    "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "temperature": 1.15,
+    "retune": false
+  },
+  "integrity": {
+    "result_access_during_selection": false,
+    "payout_access_during_selection": false,
+    "odds_used": false,
+    "prior_meeting_overlap_count": 0,
+    "selected_count": 100,
+    "frozen_before_dedicated_result_scoring": 100,
+    "scored_count": 100,
+    "post_result_deletion": false,
+    "result_fetch_failure_count": 0,
+    "selection_pre_rejection_count": 11,
+    "selection_pre_rejections_retained": true,
+    "historical_source_warning": "Historical pages may themselves be outcome-bearing; KR-015 retrospective classification is retained and no prospective upgrade is claimed."
+  },
+  "selection": {
+    "prior_meeting_exclusion_count": 13,
+    "meeting_cap": 12,
+    "target_venue_quotas": {
+      "aomori": 17,
+      "yahiko": 17,
+      "maebashi": 17,
+      "kawasaki": 17,
+      "gifu": 16,
+      "toyama": 16
+    },
+    "selected_by_venue": {
+      "aomori": 17,
+      "gifu": 16,
+      "kawasaki": 17,
+      "maebashi": 17,
+      "toyama": 16,
+      "yahiko": 17
+    },
+    "selected_unique_meeting_count": 12,
+    "selected_unique_meetings_by_venue": {
+      "aomori": ["1220260824", "1220260903"],
+      "gifu": ["4320260824", "4320260830"],
+      "kawasaki": ["3420260819", "3420260830"],
+      "maebashi": ["2220260815", "2220260827"],
+      "toyama": ["4620260820", "4620260903"],
+      "yahiko": ["2120260818", "2120260902"]
+    },
+    "selected_by_exact_circumference": {
+      "333.3m": 16,
+      "335m": 17,
+      "400m": 67
+    },
+    "aggregate_metric_warning": "This is a deliberately venue-balanced confirmatory sample; the overall aggregate is descriptive and not a population-frequency estimate."
+  },
+  "metrics": {
+    "n": 100,
+    "top1_hits": 46,
+    "top1_accuracy": 0.46,
+    "winner_top3": 78,
+    "top3_rate": 0.78,
+    "mean_log_loss": 1.5358944840252322
+  },
+  "by_exact_circumference": {
+    "333.3m": {"n": 16, "top1_hits": 6, "top1_accuracy": 0.375, "winner_top3": 11, "top3_rate": 0.6875, "mean_log_loss": 1.6411173425917693},
+    "335m": {"n": 17, "top1_hits": 12, "top1_accuracy": 0.7058823529411765, "winner_top3": 16, "top3_rate": 0.9411764705882353, "mean_log_loss": 1.2116669850092006},
+    "400m": {"n": 67, "top1_hits": 28, "top1_accuracy": 0.417910447761194, "winner_top3": 51, "top3_rate": 0.7611940298507462, "mean_log_loss": 1.5930333160581867}
+  },
+  "by_venue": {
+    "aomori": {"n": 17, "top1_hits": 8, "top1_accuracy": 0.47058823529411764, "winner_top3": 16, "top3_rate": 0.9411764705882353, "mean_log_loss": 1.3624779939889256},
+    "gifu": {"n": 16, "top1_hits": 2, "top1_accuracy": 0.125, "winner_top3": 7, "top3_rate": 0.4375, "mean_log_loss": 2.1876341509457076},
+    "kawasaki": {"n": 17, "top1_hits": 5, "top1_accuracy": 0.29411764705882354, "winner_top3": 11, "top3_rate": 0.6470588235294118, "mean_log_loss": 1.872782832984289},
+    "maebashi": {"n": 17, "top1_hits": 12, "top1_accuracy": 0.7058823529411765, "winner_top3": 16, "top3_rate": 0.9411764705882353, "mean_log_loss": 1.2116669850092006},
+    "toyama": {"n": 16, "top1_hits": 6, "top1_accuracy": 0.375, "winner_top3": 11, "top3_rate": 0.6875, "mean_log_loss": 1.6411173425917693},
+    "yahiko": {"n": 17, "top1_hits": 13, "top1_accuracy": 0.7647058823529411, "winner_top3": 17, "top3_rate": 1.0, "mean_log_loss": 0.9842148060130917}
+  },
+  "comparison_to_prior_100_race_batches": {
+    "batch1_fixed": {"n": 100, "top1_hits": 29, "top1_accuracy": 0.29, "winner_top3": 65, "top3_rate": 0.65, "mean_log_loss": 1.8085855354144962},
+    "batch2_temporal": {"n": 100, "top1_hits": 35, "top1_accuracy": 0.35, "winner_top3": 71, "top3_rate": 0.71, "mean_log_loss": 1.6778819171421917},
+    "batch3_independent_meeting": {"n": 100, "top1_hits": 32, "top1_accuracy": 0.32, "winner_top3": 69, "top3_rate": 0.69, "mean_log_loss": 1.7988463039691303},
+    "batch4_coverage_balanced": {"n": 100, "top1_hits": 46, "top1_accuracy": 0.46, "winner_top3": 78, "top3_rate": 0.78, "mean_log_loss": 1.5358944840252322},
+    "descriptive_aggregate_400": {"n": 400, "top1_hits": 142, "top1_accuracy": 0.355, "winner_top3": 283, "top3_rate": 0.7075, "weighted_mean_log_loss": 1.7053020601377626, "warning": "The four 100-race batches use nonidentical sampling designs; this pooled number is descriptive only and is not a clean inferential population estimate."}
+  },
+  "scientific_findings": [
+    "The prior severe exact-333.3m/Toyama weakness does not survive as a stable universal rule: the new preregistered independent balanced sample produced 6/16 Top1=37.5%, materially above the temporal batch's 0/16. The earlier negative evidence remains valid but is now meeting/regime-dependent rather than a stable circumference rule.",
+    "Gifu weakness replicated strongly in the new balanced sample: 2/16 Top1=12.5%, Top3=43.75%, mean log loss 2.18763.",
+    "Earlier Yahiko weakness failed to replicate: the new balanced sample produced 13/17 Top1=76.47% and 17/17 Top3. Venue labels therefore remain unstable across meetings.",
+    "Kawasaki no longer supports a simple strong-venue label in this batch: 5/17 Top1=29.41% and mean log loss 1.87278.",
+    "Exact 335m/Maebashi was very strong in this batch at 12/17 Top1=70.59%, reinforcing that earlier circumference impressions are heterogeneous across meetings rather than monotonic track-length effects.",
+    "The wide batch-to-batch overall swing from 29%-46% Top1 without retune indicates meaningful composition/meeting/regime dependence and argues against subgroup retuning from any single batch."
+  ],
+  "falsified_or_weakened_hypotheses": [
+    "STABLE_EXACT_333_3M_UNIVERSAL_WEAKNESS is not supported after balanced independent-meeting replication.",
+    "STABLE_YAHIKO_WEAKNESS is not supported after balanced independent-meeting replication.",
+    "STABLE_KAWASAKI_STRENGTH is not supported by the balanced independent-meeting replication."
+  ],
+  "retained_findings": [
+    "Broad meeting/venue/regime heterogeneity remains material.",
+    "Gifu weakness has repeated across multiple historical batches and remains a candidate descriptive finding, not an operational rule.",
+    "Frozen B1a retains nonzero ranking signal across all four historical batches, but performance is not composition-invariant."
+  ],
+  "non_claims": [
+    "No venue or circumference rule is promoted to an operational betting rule.",
+    "No retune, threshold adjustment, race deletion, live betting, automatic betting, or Runtime activation is authorized by this result.",
+    "This retrospective KR-015 evidence is not prospective/live evidence.",
+    "The venue-balanced batch aggregate is not represented as the natural population performance rate."
+  ],
+  "next_actions": [
+    "Audit exact identity between the currently bound predictor blob and the original B1a_RECONSTITUTED_v1 freeze before interpreting older DEV2000-versus-current performance differences as regime effects.",
+    "Preregister explanatory PRE-only regime dimensions such as class/grade, finals-versus-qualifiers, field size and line structure before large-scale scoring; do not select them from favorable outcomes.",
+    "Use DEV2000 only as exposed diagnostic/reproducibility evidence, never as new untouched validation; keep ECON_HOLDOUT1000 sealed.",
+    "Build a new collision-audited larger historical validation universe disjoint from exposed 100-race batches and DEV2000 for the next inferential scale-up."
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
