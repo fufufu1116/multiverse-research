@@ -1,0 +1,96 @@
+{
+  "record": "KEIRIN_NL2_ECONOMICS_DEVELOPMENT_AND_UNTOUCHED_VALIDATION_PREREG_20260913_v1",
+  "status": "PREREGISTERED_BEFORE_NEW_ECONOMIC_SETTLEMENT_SCORING",
+  "evidence_class": "HISTORICAL_RETROSPECTIVE_KR015_WITH_PHASE_SEPARATED_PRICE_AND_SETTLEMENT_PARSERS",
+  "objective": "Test whether frozen NL2 probabilities can support a low-degree-of-freedom historical purchase policy that generalizes from exposed development meetings to a fresh meeting-disjoint economic validation universe.",
+  "probability_models": {
+    "primary": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+    "primary_core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+    "reference": "B1a_RECONSTITUTED_v1",
+    "reference_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "retune": false
+  },
+  "governance_inheritance": {
+    "price_semantics": "v3/historical_all_market/governance/STAGE2_PRICE_EV_SEMANTICS_PREREG_v1.md",
+    "settlement_parser": "v3/historical_all_market/kdreams_settlement_recovery_v1.py",
+    "price_parser": "v3/historical_all_market/kdreams_price_catalog_recovery_v1.py",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000": "NOT_USED_FOR_NEW_ECONOMIC_SELECTION_OR_VALIDATION"
+  },
+  "development_meetings": [
+    {"meeting_id":"2820260822","venue":"tachikawa","circumference_m":400.0,"reason":"NL2 probability-validation outcomes already exposed; permitted only as new economics DEVELOPMENT evidence"},
+    {"meeting_id":"7420260825","venue":"kochi","circumference_m":500.0,"reason":"NL2 probability-validation outcomes already exposed; permitted only as new economics DEVELOPMENT evidence"},
+    {"meeting_id":"8720260824","venue":"kumamoto","circumference_m":400.0,"reason":"NL2 probability-validation outcomes already exposed; permitted only as new economics DEVELOPMENT evidence"},
+    {"meeting_id":"4820260909","venue":"yokkaichi","circumference_m":400.0,"reason":"NL2 probability-validation outcomes already exposed; permitted only as new economics DEVELOPMENT evidence"},
+    {"meeting_id":"8420260909","venue":"takeo","circumference_m":400.0,"reason":"NL2 probability-validation outcomes already exposed; permitted only as new economics DEVELOPMENT evidence"}
+  ],
+  "validation_meetings": [
+    {"meeting_id":"7420260909","venue":"kochi","circumference_m":500.0},
+    {"meeting_id":"6120260908","venue":"tamano","circumference_m":400.0},
+    {"meeting_id":"3720260907","venue":"ito","circumference_m":333.0},
+    {"meeting_id":"2620260906","venue":"seibuen","circumference_m":400.0},
+    {"meeting_id":"1320260907","venue":"iwakitaira","circumference_m":400.0}
+  ],
+  "selection_semantics": {
+    "enumeration": "For each fixed meeting enumerate day_index 01..04 and race_no 01..12; retain every race whose mandatory PRE parse and confirmed closing-price parse both pass; no replacement after settlement access.",
+    "development_status": "EXPOSED_DEVELOPMENT_ONLY",
+    "validation_status": "FRESH_ECONOMIC_VALIDATION_TARGETS_FIXED_BEFORE_DEVELOPMENT_SETTLEMENT_SCORING",
+    "validation_collision_gate": "Validation meetings must have zero overlap with all probability-model development/validation meetings and must postdate the immutable DEV2000 universe creation; any collision fails closed.",
+    "minimum_development_races": 80,
+    "minimum_validation_races": 80,
+    "all_five_validation_meetings_required": true
+  },
+  "purchase_policy_family": {
+    "description": "Low-degree-of-freedom redesign informed only by the already-burned DEV2000 postmortem: suppress extreme longshot concentration and require conservative agreement between validated NL2 and frozen B1a.",
+    "conservative_ticket_probability": "min(p_NL2, p_B1a)",
+    "conservative_raw_ev": "min(p_NL2*primary_odds-1, p_B1a*primary_odds-1)",
+    "conservative_shape_edge_ratio": "min(shape_ratio_NL2, shape_ratio_B1a)",
+    "wide_primary_odds": "closing_odds_low",
+    "fixed_probability_floor": 0.03,
+    "fixed_max_decimal_odds": 100.0,
+    "profiles": {
+      "P00":{"min_raw_ev":0.0,"min_shape_edge_ratio":1.0},
+      "P10":{"min_raw_ev":0.10,"min_shape_edge_ratio":1.10},
+      "P20":{"min_raw_ev":0.20,"min_shape_edge_ratio":1.20},
+      "P35":{"min_raw_ev":0.35,"min_shape_edge_ratio":1.35}
+    },
+    "market_groups": {
+      "UNORDERED_CORE":["2shahuku","3renhuku","wide"],
+      "CORE_NO_TRIFECTA":["2shatan","2shahuku","3renhuku","wide"],
+      "ALL_CAR_NO_FRAME":["3rentan","2shatan","3renhuku","2shahuku","wide"]
+    },
+    "portfolio_template": "TOP1_PER_MARKET_AFTER_FILTERING",
+    "ticket_order": ["higher_conservative_raw_ev","higher_conservative_shape_edge_ratio","higher_conservative_probability","lexicographically_smaller_market","lexicographically_smaller_ticket"],
+    "stake_policy": "FLAT100_JPY_PER_SELECTED_TICKET",
+    "configuration_count": 12
+  },
+  "development_selection": {
+    "eligibility": ["bet_races>=30","executed_tickets>=50","total_stake>0","bankroll_never_negative","maximum_drawdown<=0.25"],
+    "rank_order": ["higher_realized_roi","more_positive_meetings","lower_largest_single_ticket_return_share","lower_maximum_drawdown","more_bet_races","lexicographically_smaller_configuration_id"],
+    "exactly_one_policy_frozen_before_validation_fetch": true
+  },
+  "validation_gate": {
+    "coverage": ["selected_validation_races>=80","all_5_meetings_present","bet_races>=30","executed_tickets>=50"],
+    "C1_realized_roi": "ROI > 0",
+    "C2_meeting_stability": "positive-ROI meetings >= 3 of 5",
+    "C3_drawdown": "maximum drawdown <= 0.20",
+    "C4_return_concentration": "largest single-ticket return / total return <= 0.60",
+    "C5_bootstrap": "10000 whole-race bootstrap replicates, seed 20260913, 95% ROI lower bound > 0",
+    "PASS": "coverage and C1-C5 all pass",
+    "POSITIVE_BUT_UNCERTAIN": "coverage and C1-C4 pass but C5 fails",
+    "FAIL": "coverage passes and any of C1-C4 fails",
+    "INCONCLUSIVE": "coverage fails"
+  },
+  "phase_firewall": [
+    "Development PRE and PRICE are parsed before development SETTLEMENT scoring.",
+    "Validation meeting identities are frozen in this preregistration before development settlement scoring.",
+    "The selected development policy must be atomically persisted before any validation target is fetched.",
+    "Validation PRE/PRICE and ticket decisions are frozen before validation SETTLEMENT parser invocation.",
+    "No validation-derived retune, replacement, threshold change, market change, deletion, or rescue scoring is allowed.",
+    "No DEV2000 RESULT/PAYOUT and no ECON_HOLDOUT1000 bytes may be opened by this lineage."
+  ],
+  "scientific_claim_boundary": "Even PASS is historical KR-015 economics evidence only. It does not authorize Runtime, live orders, automatic betting, or real-money wagering.",
+  "owner_action_required": false
+}
