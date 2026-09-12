@@ -1,0 +1,45 @@
+{
+  "record": "KEIRIN_500M_POOLED_55_RETROSPECTIVE_ROBUSTNESS_AUDIT_20260912_v1",
+  "status": "COMPLETE_DESCRIPTIVE_RETROSPECTIVE_ONLY",
+  "created_jst": "2026-09-12T22:40:00+09:00",
+  "model": "B1a_RECONSTITUTED_v1",
+  "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+  "temperature": 1.15,
+  "track_circumference_m": 500,
+  "retune": false,
+  "actual_odds_used": false,
+  "circumference_challenger_applied": false,
+  "evidence_class": "RETROSPECTIVE_DESCRIPTIVE",
+  "source_batches": [
+    {"venue":"大宮","date":"2026-07-01","n":12,"top1_hits":5,"winner_top3_hits":10,"log_loss":1.5667742035837948},
+    {"venue":"大宮","date":"2026-04-27","n":12,"top1_hits":6,"winner_top3_hits":9,"log_loss":1.5264461189008423},
+    {"venue":"高知","date":"2026-06-29","n":12,"top1_hits":6,"winner_top3_hits":8,"log_loss":1.6797612179419021},
+    {"venue":"宇都宮","date":"2026-05-21","n":12,"top1_hits":5,"winner_top3_hits":10,"log_loss":1.5079639144957673},
+    {"venue":"大宮","date":"2026-05-22","n":7,"top1_hits":3,"winner_top3_hits":6,"log_loss":1.3918407700904092,"integrity_note":"Retrospective only. Earlier historical-forward-style label withdrawn after source-leak audit because post-event racecard pages can expose target/current-meeting results."}
+  ],
+  "aggregate": {
+    "n_races": 55,
+    "top1_hits": 25,
+    "top1_accuracy": 0.45454545454545453,
+    "winner_top3_hits": 43,
+    "winner_top3_rate": 0.7818181818181819,
+    "weighted_multiclass_log_loss": 1.5475314699945555
+  },
+  "comparison_to_prior_48": {
+    "prior_top1_accuracy": 0.4583333333333333,
+    "prior_winner_top3_rate": 0.7708333333333334,
+    "prior_weighted_log_loss": 1.5702363637305767,
+    "finding": "Adding the independent Omiya 2026-05-22 FII card leaves pooled exact-500m performance materially stable: Top1 changes from 45.83% to 45.45%, Top3 from 77.08% to 78.18%, and weighted log loss improves from 1.57024 to 1.54753. This is descriptive robustness only and does not replace genuine prospective evidence."
+  },
+  "integrity": {
+    "all_batches_retained": true,
+    "post_hoc_batch_deletion": false,
+    "retune": false,
+    "odds_used": false,
+    "length_coercion": false,
+    "historical_source_blindness_claim": false,
+    "kr_015_applied": true
+  },
+  "conclusion": "Frozen B1a exact-500m descriptive signal remains stable across 55 races, five cards and three venues after inclusion of a different class-mix Omiya FII day. Evidence remains retrospective; genuine prospective 500m validation is still required.",
+  "next": "Continue attempting trustworthy complete Omiya 2026-09-13 R1-R12 PRE capture before R1; if unavailable, fail closed and move the genuine prospective gate to the next exact-500m meeting while continuing explicitly retrospective expansion."
+}
