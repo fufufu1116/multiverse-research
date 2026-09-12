@@ -1,0 +1,14 @@
+{
+  "record":"KEIRIN_335M_MAEBASHI_20260912_FULL_DAY_PRE_FREEZE_INTEGRITY_VALIDATION_v1",
+  "status":"PASS",
+  "created_jst_date":"2026-09-12",
+  "target":{"venue":"前橋","event_date":"2026-09-12","track_circumference_m":335,"race_numbers":[1,2,3,4,5,6,7,8,9]},
+  "checks":{"all_9_races_present":true,"seven_probabilities_per_race":true,"probability_sum_exact_with_stored_double_precision":{"R1":1.0,"R2":1.0,"R3":1.0,"R4":1.0,"R5":1.0,"R6":1.0,"R7":1.0,"R8":1.0,"R9":1.0},"max_abs_probability_sum_error":0.0,"all_prediction_artifacts_bind_frozen_b1a_blob":true,"all_predictions_mark_retune_false":true,"all_predictions_mark_actual_odds_unused":true,"all_predictions_mark_target_result_unaccessed":true,"all_predictions_frozen_before_earliest_start":true,"circumference_challenger_never_applied_to_335m":true,"length_rounding_or_coercion":false},
+  "prediction_artifact_git_blobs":{"R1_R5_batch":"41872caa009957fe85591d3351d0fd4d856f6662","R2_R3_R4_R6_batch":"2687cd2e8bcc7963d0431293f8faa281dc6a53c9","R7":"9b4ff42ae9d7d012c8764740d976370aa762977b","R8":"0e4e4bfcafc685f51b3424d03747b12d4724c58b","R9":"e98a9c3aa653c16ec34ca707fcd16473b36afc6a"},
+  "prediction_commits":{"R1_R5_batch":"b2ea608919697f34fe3dafa88f4d2b3ff69496e9","R2_R3_R4_R6_batch":"0d681fce599611ae07ad11b97c1479c0b1b4aadb","R7":"5fe5a204a071e70b6ed916b579d6a497106054aa","R8":"16f26d9933d1f83895761a7db63c7e8661c391a9","R9":"a11d2fbb01829563531e771357b498eade52ca15"},
+  "full_day_binding_commit":"38b36543108f8099aefa8b3138f680f5ecd4a240",
+  "model_binding":{"b1a_predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","retune":false},
+  "scoring_lock":{"score_all_9_after_outcomes":true,"post_hoc_case_deletion":false,"primary_metrics":["top1_accuracy","winner_in_top3_rate","multiclass_log_loss"]},
+  "science":{"formal_scientific_validation_percent":85,"prospective_increment":0,"runtime":"OFF","automatic_betting":false},
+  "owner_action_required_now":false
+}
