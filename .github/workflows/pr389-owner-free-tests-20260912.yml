@@ -1,0 +1,22 @@
+name: pr389-owner-free-tests-20260912
+on:
+  push:
+    branches:
+      - agent/pr389-owner-free-tests-20260912
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Verify carrier parent
+        run: |
+          test "$(git rev-parse HEAD^)" = "778ccc8a2f502e7c08bd633c17bba24a199325b8"
+          test "$(git rev-parse HEAD^{tree})" != "e52a4c695761f59803ea5ebfc0561fc355da023e"
+          test "$(git rev-parse HEAD^^{tree})" = "e52a4c695761f59803ea5ebfc0561fc355da023e"
+      - name: Run exact Slice B tests
+        run: |
+          python -m unittest research.opportunity_engine_v0.test_forecast_ledger research.opportunity_engine_v0.test_forecast_revision research.opportunity_engine_v0.test_trend_forecast
