@@ -1,0 +1,55 @@
+name: control-plane-same-build-read-cache-v1-canonical-suite-proof-20260912
+on:
+  push:
+    branches:
+      - agent/control-plane-same-build-read-cache-v1-canonical-suite-proof-20260912
+permissions:
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact carrier boundary and fixed-step freeze
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "43b840527bcd8724685d6b1cc39dda102ebdb9be"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/control-plane-same-build-read-cache-v1-canonical-suite-proof-20260912.yml"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml | git hash-object --stdin)" = "2d4ec751dee4e507a08313d403c7d0521c172ae5"
+          test "$(git show HEAD^:buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml | git hash-object --stdin)" = "c42bae003a3b1dc6d11cf5e6c33996369a4d22d6"
+      - name: Canonical cumulative 183-test lineage plus 7 new cache tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest -v \
+            automation.review_dispatcher_v1.test_combined_fault_replay_v1 \
+            automation.review_dispatcher_v1.test_dispatcher \
+            automation.review_dispatcher_v1.test_integrated_resilience_convergence_v1 \
+            automation.review_dispatcher_v1.test_lane_b_completion_matrix_v1 \
+            automation.review_dispatcher_v1.test_prelaunch_guard_v1 \
+            automation.review_dispatcher_v1.test_publisher_freshness_v1 \
+            automation.review_dispatcher_v1.test_publisher_github_read_resilience_v1 \
+            automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_request_arbitration_v6 \
+            automation.review_dispatcher_v1.test_result_canonicalization_v1 \
+            automation.review_dispatcher_v1.test_t2_github_read_resilience_v1 \
+            automation.review_dispatcher_v1.test_t2_idempotence_v1 \
+            automation.review_dispatcher_v1.test_t2_receipt_recovery_v1 \
+            automation.review_dispatcher_v1.test_t2_resilience_integration_v1 \
+            automation.review_dispatcher_v1.test_validator_current_baseline_v1 \
+            automation.review_dispatcher_v1.test_one_shot_preflight_v1 \
+            automation.review_dispatcher_v1.test_same_build_github_read_cache_v1
+      - name: Canonical validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(python automation/review_dispatcher_v1/validator.py)"
+          printf '%s\n' "$output"
+          printf '%s\n' "$output" | tail -n 1 | python -c 'import json,sys; x=json.load(sys.stdin); assert x["verdict"]=="PASS" and x["findings"]==[]'
