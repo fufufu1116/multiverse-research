@@ -1,0 +1,78 @@
+{
+  "record": "KEIRIN_INDEPENDENT_MEETING_REPLICATION_100_B1A_COMPLETE_AUDIT_20260913_v1",
+  "status": "COMPLETE_PREREGISTERED_INDEPENDENT_MEETING_REPLICATION_100_OF_100",
+  "evidence_class": "RETROSPECTIVE_KR015_INDEPENDENT_MEETING_REPLICATION",
+  "selection_rule": "v3/historical_all_market/research_candidates/KEIRIN_INDEPENDENT_MEETING_REPLICATION_100_SELECTION_RULE_20260913_v1.json",
+  "workflow_run_id": 34702613527,
+  "workflow_conclusion": "success",
+  "artifact_id": 10300986114,
+  "artifact_name": "keirin-independent-meeting-replication-100-b1a-v1",
+  "model": "B1a_RECONSTITUTED_v1",
+  "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+  "temperature": 1.15,
+  "retune": false,
+  "odds_used": false,
+  "post_result_selection": false,
+  "result_access_during_selection": false,
+  "payout_access_during_selection": false,
+  "prior_meeting_overlap_count": 0,
+  "selection": {
+    "date_window": ["2026-07-01", "2026-07-31"],
+    "candidate_count": 10044,
+    "selected_count": 100,
+    "selected_unique_meeting_count": 4,
+    "selected_meetings": [
+      {"meeting_id": "1220260703", "venue": "aomori", "n": 36},
+      {"meeting_id": "2120260702", "venue": "yahiko", "n": 33},
+      {"meeting_id": "2120260707", "venue": "yahiko", "n": 27},
+      {"meeting_id": "2220260710", "venue": "maebashi", "n": 4}
+    ],
+    "selection_order": "date asc, venue code asc, day 01/02/03, race 01..12; first 100 complete PRE parses",
+    "integrity_note": "The 100-race universe was frozen from PRE-complete candidates after excluding meeting IDs used by both prior 100-race batches. Dedicated result-page scoring occurred only after the universe/predictions were frozen. Historical source pages may themselves be outcome-bearing, therefore KR-015 retrospective classification is retained."
+  },
+  "metrics": {
+    "n": 100,
+    "top1_hits": 32,
+    "top1_accuracy": 0.32,
+    "winner_top3": 69,
+    "top3_rate": 0.69,
+    "mean_log_loss": 1.7988463039691303
+  },
+  "by_exact_circumference": {
+    "335m": {"n": 4, "top1_accuracy": 0.5, "top3_rate": 0.5, "mean_log_loss": 1.8909588018994254},
+    "400m": {"n": 96, "top1_accuracy": 0.3125, "top3_rate": 0.6979166666666666, "mean_log_loss": 1.795008283222035}
+  },
+  "by_venue": {
+    "aomori": {"n": 36, "top1_accuracy": 0.2777777777777778, "top3_rate": 0.6388888888888888, "mean_log_loss": 1.924830540242412},
+    "yahiko": {"n": 60, "top1_accuracy": 0.3333333333333333, "top3_rate": 0.7333333333333333, "mean_log_loss": 1.7171149290098102},
+    "maebashi": {"n": 4, "top1_accuracy": 0.5, "top3_rate": 0.5, "mean_log_loss": 1.8909588018994254}
+  },
+  "comparison_to_prior_batches": {
+    "batch1": {"n": 100, "top1_accuracy": 0.29, "top3_rate": 0.65, "mean_log_loss": 1.8085855354144962},
+    "batch2_temporal": {"n": 100, "top1_accuracy": 0.35, "top3_rate": 0.71, "mean_log_loss": 1.6778819171421917},
+    "batch3_independent_meeting": {"n": 100, "top1_accuracy": 0.32, "top3_rate": 0.69, "mean_log_loss": 1.7988463039691303},
+    "aggregate_300": {"n": 300, "top1_hits": 96, "top1_accuracy": 0.32, "winner_top3": 205, "top3_rate": 0.6833333333333333, "weighted_mean_log_loss": 1.7617712521752726}
+  },
+  "coverage_limitations": [
+    "The deterministic first-100 PRE-complete rule produced only four independent meetings and was composition-skewed toward Yahiko and Aomori.",
+    "Exact 333.3m was not represented, so the prior repeated 333.3m weakness was not independently re-tested by this batch.",
+    "Kawasaki, Gifu and Toyama were not represented, so their prior venue-specific directional findings were not independently re-tested here."
+  ],
+  "scientific_findings": [
+    "Overall frozen-B1a ranking performance remained in the same broad range as the first two 100-race batches; the 300-race aggregate is top1 32.0%, winner Top3 68.33%, weighted log loss 1.76177.",
+    "Venue-specific strong/weak labels are not yet stable: Aomori fell materially versus the first two batches while Yahiko improved materially on fully disjoint meetings.",
+    "The independent-meeting requirement itself was satisfied: prior meeting overlap was zero and there was no retune or post-result deletion.",
+    "Because subgroup coverage was incomplete, this batch is valid mixed/negative evidence and must not be post-hoc repaired or discarded."
+  ],
+  "non_claims": [
+    "This does not justify live betting or automatic betting.",
+    "This does not justify venue-specific operational rules or subgroup retuning.",
+    "This does not independently confirm exact-333.3m weakness because no 333.3m race was selected.",
+    "This retrospective evidence is not prospective/live evidence under KR-015."
+  ],
+  "scientific_conclusion": "The preregistered 100-race fully independent-meeting replication completed successfully and preserves broad overall B1a ranking performance, but it weakens the stability of earlier venue labels and leaves the exact-333.3m warning untested because of deterministic sample composition. The correct next step is not post-hoc repair of this batch; it is a separately preregistered coverage-balanced independent-meeting confirmation and/or immediate larger-scale historical expansion with subgroup definitions frozen before scoring.",
+  "next_gate": "Preregister a coverage-balanced independent-meeting confirmation that explicitly covers key exact circumferences/venues without outcome-based replacement, then scale toward the existing ~2000-race substrate with frozen B1a and all subgroup definitions frozen before scoring.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
