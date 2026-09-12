@@ -1,0 +1,32 @@
+{
+  "record": "KEIRIN_PROSPECTIVE_RESULT_SNAPSHOT_20260912_v1",
+  "evaluation_started_at_jst": "2026-09-12T10:04:00+09:00",
+  "status": "AUTHORIZED_RESULT_ONLY_SNAPSHOT",
+  "authorization_commit": "078487ba8470e1379450caf4b5210700a9fd9c8f",
+  "target_cohort": "KEIRIN_PROSPECTIVE_COHORT_LOCK_20260911_v1",
+  "source": {
+    "provider": "KEIRIN-NET@NAVI / keirin-mobile.jp",
+    "date": "2026-09-11",
+    "role": "official-result display for target races",
+    "note": "Result retrieval pages co-located payout/odds-related display text. Only finishing-order car numbers were transcribed below. No payout amount, popularity, or actual odds value is stored or used."
+  },
+  "members": [
+    {"event_id": "KAWASAKI_20260911_R9", "frozen_state": "CANDIDATE_GATE_PASS", "actual_top3_car_no": [3,5,4]},
+    {"event_id": "KAWASAKI_20260911_R10", "frozen_state": "REJECT_GATE_BELOW_0_40", "actual_top3_car_no": [3,7,2]},
+    {"event_id": "KAWASAKI_20260911_R11", "frozen_state": "CANDIDATE_GATE_PASS", "actual_top3_car_no": [2,5,1]},
+    {"event_id": "YOKKAICHI_20260911_R10", "frozen_state": "REJECT_GATE_BELOW_0_40", "actual_top3_car_no": [7,6,3]},
+    {"event_id": "YOKKAICHI_20260911_R11", "frozen_state": "REJECT_GATE_BELOW_0_40", "actual_top3_car_no": [3,7,4]},
+    {"event_id": "YOKKAICHI_20260911_R12", "frozen_state": "CANDIDATE_GATE_PASS", "actual_top3_car_no": [2,4,1]}
+  ],
+  "governance": {
+    "all_six_members_retained": true,
+    "membership_change": false,
+    "pre_backfill": false,
+    "retune": false,
+    "payout_values_used": false,
+    "actual_odds_values_used": false,
+    "economic_endpoint_scoring": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
