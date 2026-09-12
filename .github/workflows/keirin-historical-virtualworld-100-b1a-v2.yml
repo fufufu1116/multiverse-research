@@ -1,0 +1,36 @@
+name: Keirin Historical VirtualWorld 100 B1a v2
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - v3/historical_all_market/historical_virtualworld_100_b1a_v1.py
+      - v3/historical_all_market/historical_virtualworld_100_b1a_v2.py
+      - .github/workflows/keirin-historical-virtualworld-100-b1a-v2.yml
+      - .github/workflows/races.csv
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  historical-virtualworld-100-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install bounded research dependencies
+        run: python -m pip install numpy requests beautifulsoup4 lxml
+      - name: Run frozen B1a historical virtual-world 100 v2
+        run: python v3/historical_all_market/historical_virtualworld_100_b1a_v2.py
+      - name: Upload research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-historical-virtualworld-100-b1a-v2
+          path: v3/historical_all_market/research_candidates/virtualworld_100_b1a_v2/
+          if-no-files-found: warn
