@@ -1,4 +1,4 @@
-name: Keirin Synthetic N2 Broad-World Robustness v9 — Hash Preflight
+name: Keirin Synthetic N2 Broad-World Robustness v9
 
 on:
   push:
@@ -14,13 +14,16 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-hash-preflight:
+  synthetic-n2-broad-world-v9:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Fresh-check canonical main synthetic-only authority
         shell: bash
         run: |
@@ -38,13 +41,23 @@ jobs:
               raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
           print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
           PY
-      - name: Print exact candidate hashes and stop before scoring
+      - name: Verify exact frozen hashes before synthetic scoring
         shell: bash
         run: |
           set -euo pipefail
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_N2_BROAD_WORLD_ROBUSTNESS_PREREG_20260914_v9.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py
-          python -m py_compile v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py
-          echo 'HASH_PREFLIGHT_COMPLETE_NO_BROAD_WORLD_SCORING'
+          echo "a871efeac2433c11014960287c8ce5e4ab9c83211ef4420c6de2585bb369a875  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_N2_BROAD_WORLD_ROBUSTNESS_PREREG_20260914_v9.json" | sha256sum -c -
+          echo "9505f54cfaed35fc62f2b1692b5d5c12e257b22ed7ee844a6b736c0e000961e9  v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py" | sha256sum -c -
+          echo "758fab7b92ad4bb7c1d3dc22d77b9f19772f2442ec0a84ca2b4fd9103b40dc43  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json" | sha256sum -c -
+          echo "4a3d7091dad23de2df4108bb3bae0846eb0b710fbb3953a20dabf7f1557501de  v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py" | sha256sum -c -
+      - name: Compile frozen synthetic components
+        run: python -m py_compile v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py
+      - name: Run preregistered N2 broad-world robustness audit
+        run: python v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-synthetic-n2-broad-world-robustness-v9
+          path: v3/historical_all_market/research_candidates/synthetic_n2_broad_world_robustness_v9/
+          if-no-files-found: warn
+          retention-days: 90
