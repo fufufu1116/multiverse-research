@@ -1,0 +1,66 @@
+{
+  "authority_binding": {
+    "RESULT_PAYOUT": false,
+    "canonical_main_head_at_design": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "economics": false,
+    "model_promotion": false,
+    "real_historical_input": false,
+    "required_scope": "LIMITED_SYNTHETIC_ONLY"
+  },
+  "batch": {
+    "event_format": "STANDARD_FI_FII_7",
+    "races": 500,
+    "seed": 20260916,
+    "worlds": [
+      "W0",
+      "W1",
+      "W2",
+      "W3",
+      "W4"
+    ]
+  },
+  "decision": {
+    "otherwise": "NO_NONIDENTIFIABILITY_CLAIM",
+    "pass_label": "PASS_CURRENT_W0_W4_PRE_NONIDENTIFIABILITY_CONFIRMED",
+    "pass_nonidentifiable_stress_regime": [
+      "PRE hash equality rate across W0-W4 == 1.0",
+      "every matched PRE group contains all five world labels exactly once",
+      "empirical mutual information PRE;world == 0 within numerical tolerance 1e-12",
+      "mean pairwise oracle TV distance > 0.02"
+    ]
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "interpretation_boundary": [
+    "This audit concerns the current synthetic W0-W4 generator only.",
+    "It does not prove real keirin regimes are unidentifiable from PRE.",
+    "A pass means W0-W4 is appropriate for universal robustness stress tests but not for evaluating learned PRE-only regime selection.",
+    "Any successor learnable-regime twin must be separately versioned and must encode regime-relevant information in PRE without leaking outcomes."
+  ],
+  "metrics": [
+    "matched_PRE_hash_equality_rate_across_worlds",
+    "unique_PRE_groups_with_all_five_world_labels_rate",
+    "empirical_world_entropy_nats",
+    "empirical_conditional_world_entropy_given_PRE_nats",
+    "empirical_mutual_information_PRE_world_nats",
+    "mean_pairwise_oracle_total_variation_distance",
+    "minimum_pairwise_oracle_total_variation_distance"
+  ],
+  "objective": "Audit whether the current Digital Twin W0-W4 stress-regime identity is learnable from PRE at all. For matched synthetic races, measure whether PRE differs by world and whether hidden oracle distributions differ despite identical PRE. If PRE is identical while oracle distributions differ, record an identifiability limit: no deterministic PRE-only selector can know which world mechanism generated the target distribution.",
+  "owner_action_required": false,
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics": "NOT_COMPUTED",
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "record": "KEIRIN_SYNTHETIC_PRE_IDENTIFIABILITY_AUDIT_PREREG_20260913_v3",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_IDENTIFIABILITY_AUDIT"
+}
