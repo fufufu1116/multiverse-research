@@ -1,0 +1,143 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v2",
+  "status": "ACTIVE_CANONICAL_CURRENT_STATE_V2",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE.json",
+  "predecessor_blob": "238978a35c3bc82422bb13a95e3b5ea3173751a6",
+  "checkpoint_jst": "2026-09-13T14:45:00+09:00",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_issue": 377,
+  "scientific_validation_progress_percent": 99,
+  "current_research_objective": "NL2_GEOBLEND_NUMERIC_L2_3_V1 remains the independently validated frozen probability/ranking candidate. Economics V3 was positive but uncertain and V4 exact-policy replication failed. V5 then tested a separately preregistered cross-meeting WIDE-only monotone-abstention family using only 25 already-exposed meetings and found zero development-eligible policies across 108 configurations. No fresh validation target was selected or accessed in V5. The immediate owner-free priority is a distinct exposed-only successor development lineage that addresses meeting-level zero-return instability without relaxing V5 gates merely to force a winner. Any future untouched validation requires a separately canonicalized preregistration after one successor policy is frozen.",
+  "model_state": {
+    "accepted_reference": {
+      "name": "B1a_RECONSTITUTED_v1",
+      "predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+      "temperature": 1.15,
+      "retune": false
+    },
+    "nl1": {
+      "status": "FAILED_UNTOUCHED_VALIDATION_NOT_PROMOTED",
+      "model_core_sha256": "53608ed299e5148f215f1a199d897ac1d8320e04707ccb7453c67ced04080671"
+    },
+    "nl2": {
+      "name": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+      "status": "PASS_UNTOUCHED_VALIDATION_ELIGIBLE_FOR_ECONOMICS_RESEARCH_ONLY",
+      "model_core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+      "probability_coefficient_retune": false,
+      "live_or_production_status": false
+    }
+  },
+  "economics_history": {
+    "v1": {
+      "status": "FAIL_HISTORICAL_ECONOMICS_UNTOUCHED_VALIDATION",
+      "validation_races": 153,
+      "meetings": 5,
+      "roi": -0.5313232830820771,
+      "positive_meetings": 1,
+      "workflow_run_id": 34715215675,
+      "artifact_id": 10304448988
+    },
+    "v2": {
+      "status": "NO_DEVELOPMENT_ELIGIBLE_POLICY",
+      "development_selected_races": 273,
+      "configuration_count": 18,
+      "eligible_policy_count": 0,
+      "fresh_validation_fetched": false,
+      "fresh_validation_settlement_accessed": false,
+      "workflow_run_id": 34716561045,
+      "artifact_id": 10305795432
+    },
+    "v3": {
+      "status": "POSITIVE_BUT_UNCERTAIN",
+      "selected_policy": "WIDE:MAX15:P175:AGR140:EV050:FLAT100",
+      "validation_races": 147,
+      "bet_races": 38,
+      "meetings": 5,
+      "positive_meetings": 3,
+      "roi": 0.8789473684210527,
+      "race_bootstrap_lower_95pct_roi": -0.2605263157894737,
+      "workflow_run_id": 34729296168,
+      "artifact_id": 10308817910,
+      "evidence_status": "EXPOSED_CONSUMED_DEVELOPMENT_ONLY_NEVER_FRESH_AGAIN"
+    },
+    "v4": {
+      "status": "COMPLETE_FAIL",
+      "selected_policy": "WIDE:MAX15:P175:AGR140:EV050:FLAT100",
+      "selected_races": 306,
+      "bet_races": 89,
+      "hits": 8,
+      "meetings": 10,
+      "positive_meetings": 2,
+      "roi": -0.40786516853932586,
+      "race_bootstrap_lower_95pct_roi": -0.7786516853932585,
+      "meeting_block_bootstrap_lower_95pct_roi": -0.7744256094144017,
+      "workflow_run_id": 34735387522,
+      "artifact_id": 10311152397,
+      "artifact_digest": "sha256:25c89b9c8fe51f7a16f55f274896b7ed63933c4f4da5b8672cc518476c9795ed",
+      "evidence_status": "EXPOSED_CONSUMED_DEVELOPMENT_ONLY_NEVER_FRESH_AGAIN"
+    },
+    "v5": {
+      "lineage": "NL2_ECONOMICS_V5_CROSS_MEETING_ROBUSTNESS",
+      "status": "COMPLETE_NO_DEVELOPMENT_ELIGIBLE_POLICY",
+      "evidence_class": "EXPOSED_DEVELOPMENT_ONLY_NO_FRESH_VALIDATION_ACCESS",
+      "development_selected_races": 726,
+      "development_meetings": 25,
+      "configuration_count": 108,
+      "eligible_policy_count": 0,
+      "nearest_candidate": {
+        "configuration_id": "WIDE:MAX15:P200:AGR120:EV050:FLAT100",
+        "bet_races": 127,
+        "hits": 19,
+        "ticket_hit_rate": 0.14960629921259844,
+        "roi": 0.26535433070866143,
+        "positive_meetings": 12,
+        "wagered_meetings": 24,
+        "median_meeting_roi": 5.551115123125783e-17,
+        "lower_quartile_meeting_roi": -1.0,
+        "positive_folds": 4,
+        "median_fold_roi": 0.10000000000000009,
+        "worst_fold_roi": -0.30800000000000005,
+        "only_failed_gate": "LOWER_QUARTILE_WAGERED_MEETING_ROI_GREATER_THAN_MINUS_0_90"
+      },
+      "diagnostic": "All 108 configurations failed the preregistered lower-quartile wagered-meeting ROI gate; positive pooled ROI did not overcome meeting-level zero-return instability and is not promoted.",
+      "fresh_validation_target_selected": false,
+      "fresh_validation_target_accessed": false,
+      "workflow_run_id": 34737854844,
+      "artifact_id": 10311983335,
+      "artifact_digest": "sha256:4fb9b1656fbccc5ba06882418c374524442f3ba6bdc0b825dd5685fa2da47171",
+      "prereg_sha256": "c4a28ebb1808399cf3216a536196623f2233b669d2913408b455ef8853138bfc",
+      "engine_sha256": "b82e348de81b29da57492413f449158706376896a67ba682a7288ee46ac00624"
+    }
+  },
+  "canonical_continuity": {
+    "rule_registry": "v3/historical_all_market/continuity/KEIRIN_RULE_REGISTRY_v1.json",
+    "experiment_ledger_latest": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v2.jsonl",
+    "owner_free_queue": "v3/historical_all_market/continuity/KEIRIN_OWNER_FREE_QUEUE_v1.json",
+    "predecessor_current_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE.json"
+  },
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000_RESULT_PAYOUT": "DO_NOT_OPEN_FOR_TUNING_OR_VALIDATION",
+    "probability_retune": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false,
+    "live_or_production": false
+  },
+  "exact_next_executable_actions": [
+    "Use only already-exposed V1-V5 economics evidence for successor development diagnosis and design.",
+    "Do not weaken or reinterpret the V5 lower-quartile gate post hoc to promote its nearest candidate.",
+    "Design a distinct successor lineage aimed at reducing meeting-level zero-return instability using only PRE/price information available before settlement and fixed cross-meeting folds.",
+    "Before successor scoring, canonicalize its exact preregistration and implementation bindings. No fresh holdout access is permitted during exposed-only development.",
+    "If no successor development policy passes its preregistered gates, stop that lineage without opening fresh targets.",
+    "If exactly one development-only successor policy freezes, create a separate untouched-validation preregistration and collision audit before any new target PRE/PRICE/RESULT/PAYOUT access.",
+    "Keep ECON_HOLDOUT1000 sealed, DEV2000 result/payout unopened, Runtime OFF, and automatic betting OFF."
+  ],
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "non_authority_note": "Issue #384 remains VOID/closed and has no research authority. This v2 CURRENT is a recovery/state locator and does not alter the immutable rule registry."
+}
