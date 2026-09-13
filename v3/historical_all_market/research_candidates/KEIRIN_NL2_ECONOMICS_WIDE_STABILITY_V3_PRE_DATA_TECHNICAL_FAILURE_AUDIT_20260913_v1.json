@@ -1,0 +1,42 @@
+{
+  "record": "KEIRIN_NL2_ECONOMICS_WIDE_STABILITY_V3_PRE_DATA_TECHNICAL_FAILURE_AUDIT_20260913_v1",
+  "status": "TECHNICAL_FAILURES_RESOLVED_BEFORE_ANY_V3_DATA_ACCESS",
+  "lineage_preregistration": "v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_WIDE_STABILITY_DEVELOPMENT_AND_UNTOUCHED_VALIDATION_PREREG_20260913_v3.json",
+  "failures": [
+    {
+      "workflow_run_id": 34729175298,
+      "job_id": 103648684224,
+      "failure": "RecursionError in wrapper collision_audit caused by replacing engine.collision_audit and then recursively calling the replacement.",
+      "phase": "BEFORE_RULE_VALIDATION_AND_BEFORE_ANY_PRE_PRICE_RESULT_OR_PAYOUT_ACCESS",
+      "artifact_uploaded": false,
+      "scientific_evidence_consumed": false,
+      "fresh_validation_consumed": false,
+      "fix_commit": "10ec69fb316ff594fdd487b41c3e56434ae0dd01",
+      "fix": "Capture ORIGINAL_COLLISION_AUDIT before monkeypatch and call the original implementation."
+    },
+    {
+      "workflow_run_id": 34729233483,
+      "job_id": 103648838001,
+      "failure": "FileNotFoundError from runner typo UNTOUED instead of UNTOUCHED in the preregistration path.",
+      "phase": "BEFORE_RULE_LOAD_AND_BEFORE_ANY_PRE_PRICE_RESULT_OR_PAYOUT_ACCESS",
+      "artifact_uploaded": false,
+      "scientific_evidence_consumed": false,
+      "fresh_validation_consumed": false,
+      "fix_commit": "cb858c94276a522aaf716affbd68ae51a4f86c35",
+      "fix": "Correct only the preregistration path spelling; no thresholds, targets, models, or scientific criteria changed."
+    }
+  ],
+  "fresh_target_integrity_after_failures": {
+    "validation_meetings_accessed_by_failed_runs": false,
+    "validation_settlement_accessed_by_failed_runs": false,
+    "development_settlement_accessed_by_failed_runs": false,
+    "preregistration_changed_after_science_data_access": false,
+    "v3_preregistration_remains_valid": true
+  },
+  "governance": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "DEV2000_RESULT_PAYOUT": "NOT_OPENED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_OPENED"
+  }
+}
