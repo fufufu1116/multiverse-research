@@ -1,0 +1,123 @@
+{
+  "anti_overfit_boundary": [
+    "No world-specific mixture weights.",
+    "No prediction-time use of world identity.",
+    "No weight-grid expansion after design outcomes are observed.",
+    "No evaluation-seed access unless a design winner freezes.",
+    "No retune after evaluation outcomes.",
+    "No real or historical race inputs, RESULT/PAYOUT, odds, economics, ROI, bankroll, or holdout data.",
+    "Synthetic PASS cannot promote a real model or establish real calibration, edge, ROI, or profitability."
+  ],
+  "architecture": {
+    "candidate_weights": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.4,
+      0.5,
+      0.65,
+      0.8,
+      0.95
+    ],
+    "component_source": "synthetic_market_probability_diagnostic_v1.py exact frozen implementation",
+    "components": [
+      "C0_SCORE_PL",
+      "N1_CONDITIONAL"
+    ],
+    "mixture_rule": "P_mix=(1-w)*P_C0+w*P_N1 for every ordered-top3 outcome; one global w shared by every race and world.",
+    "prediction_world_identity_used": false
+  },
+  "authority_binding": {
+    "RESULT_PAYOUT": false,
+    "canonical_main_head_at_design": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "economics": false,
+    "holdout_opening": false,
+    "model_promotion": false,
+    "real_historical_input": false,
+    "required_scope": "LIMITED_SYNTHETIC_ONLY"
+  },
+  "design_batch": {
+    "event_format": "STANDARD_FI_FII_7",
+    "races_per_world": 240,
+    "seed": 20260914,
+    "worlds": [
+      "W0",
+      "W1",
+      "W2",
+      "W3",
+      "W4"
+    ]
+  },
+  "design_selection": {
+    "baseline": "C0_SCORE_PL",
+    "candidate_primary_order": [
+      "lowest_max_world_mean_KL",
+      "lowest_mean_of_world_mean_KL",
+      "smallest_weight"
+    ],
+    "eligibility": [
+      "candidate max world mean KL must be strictly lower than C0 max world mean KL",
+      "candidate mean KL in every world must be <= 1.05 times C0 mean KL in that world"
+    ],
+    "eligible_count_positive": "Freeze exactly one winner by the fixed selection order before evaluation scoring.",
+    "eligible_count_zero": "NO_DEVELOPMENT_ELIGIBLE_GLOBAL_MIXTURE; do not score evaluation seed."
+  },
+  "evaluation_batch": {
+    "access_rule": "Only score if exactly one design winner freezes.",
+    "event_format": "STANDARD_FI_FII_7",
+    "races_per_world": 480,
+    "seed": 20260915,
+    "worlds": [
+      "W0",
+      "W1",
+      "W2",
+      "W3",
+      "W4"
+    ]
+  },
+  "evaluation_pass": {
+    "all_required": [
+      "frozen mixture max world mean KL strictly lower than C0 max world mean KL",
+      "frozen mixture mean-of-world mean KL <= C0 mean-of-world mean KL",
+      "frozen mixture KL in every world <= 1.05 times C0 KL in that world"
+    ],
+    "fail": "FAIL_SYNTHETIC_ROBUST_MIXTURE_REPLICATION",
+    "pass": "PASS_SYNTHETIC_ROBUST_MIXTURE_REPLICATION"
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "metrics": [
+    "ordered_top3_KL_oracle_to_forecast_by_world",
+    "max_world_mean_KL",
+    "mean_of_world_mean_KL",
+    "per_world_relative_KL_vs_C0"
+  ],
+  "objective": "Test whether one globally frozen convex mixture of the already-preregistered C0_SCORE_PL and N1_CONDITIONAL ordered-top3 probability objects can hedge synthetic architecture misspecification across W0-W4 without observing world identity at prediction time or retuning by world. Select at most one weight on a synthetic design seed, then evaluate it once on a disjoint synthetic seed.",
+  "owner_action_required": false,
+  "predecessor": {
+    "artifact_id": 10319344213,
+    "experiment_id": "EXP-SYNTHETIC-MARKET-PROBABILITY-DIAGNOSTIC-V1",
+    "finding": "N1 lowest KL only in W2; C0 lowest in W0/W1/W3/W4; no stable architecture advantage.",
+    "implementation_sha256": "2356765dfca8764065ccda8927227420c832e5a3f8dd25c8056a1630be7b88c1",
+    "result_sha256": "feb3e339e7803ec5849dbebb43905577c53e33c9638c0151f9cb1cdd1debee3d",
+    "workflow_run_id": 34763713374
+  },
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics": "NOT_COMPUTED",
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "record": "KEIRIN_SYNTHETIC_ROBUST_MIXTURE_PREREG_20260913_v2",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_DESIGN_SCORING"
+}
