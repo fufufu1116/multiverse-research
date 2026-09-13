@@ -29,7 +29,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "ce936ca88932be96d6387a99fd0d37c6c565d334f71e1a2e15e933c0b3e4bb6a  v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_FALLBACK_MARKET_ROUTING_DEVELOPMENT_PREREG_20260913_v8.json" | sha256sum -c -
-          echo "f920279cad8b315bc5199426ca22d3daabecfe1511b745f5b5e654c76de10b3b  v3/historical_all_market/historical_virtualworld_nl2_economics_fallback_market_routing_development_v8.py" | sha256sum -c -
+          echo "e2e5b43945edb12f6cb6d7a285d6870439337a65e85ccab2eedc36b7a5a7b896  v3/historical_all_market/historical_virtualworld_nl2_economics_fallback_market_routing_development_v8.py" | sha256sum -c -
       - name: Run preregistered exposed-only fallback market routing development v8
         run: python v3/historical_all_market/historical_virtualworld_nl2_economics_fallback_market_routing_development_v8.py
       - name: Upload v8 development evidence

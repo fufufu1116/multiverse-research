@@ -108,12 +108,20 @@ def config_space(rule: dict) -> list[dict]:
 
 
 def fallback_choices(race: dict, price: dict, rule: dict, configs: list[dict]) -> dict[str, list[dict]]:
-    paired = v7.cross_market_choices(race, price, rule, configs)
+    expanded = []
+    for c in configs:
+        primary = dict(c)
+        primary['configuration_id'] = c['configuration_id'] + '::PRIMARY'
+        primary['markets'] = ['wide']
+        fallback = dict(c)
+        fallback['configuration_id'] = c['configuration_id'] + '::FALLBACK'
+        fallback['markets'] = [c['fallback_market']]
+        expanded.extend([primary, fallback])
+    independent = v7.cross_market_choices(race, price, rule, expanded)
     out = {}
     for c in configs:
-        picks = paired[c['configuration_id']]
-        wide = [x for x in picks if x['market'] == 'wide']
-        fallback = [x for x in picks if x['market'] == c['fallback_market']]
+        wide = independent[c['configuration_id'] + '::PRIMARY']
+        fallback = independent[c['configuration_id'] + '::FALLBACK']
         if len(wide) > 1 or len(fallback) > 1:
             raise RuntimeError('v8_market_pick_cardinality_invalid')
         chosen = wide[:1] if wide else fallback[:1]
