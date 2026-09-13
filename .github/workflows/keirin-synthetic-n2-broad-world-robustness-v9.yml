@@ -1,0 +1,50 @@
+name: Keirin Synthetic N2 Broad-World Robustness v9 — Hash Preflight
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - 'v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_N2_BROAD_WORLD_ROBUSTNESS_PREREG_20260914_v9.json'
+      - 'v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py'
+      - '.github/workflows/keirin-synthetic-n2-broad-world-robustness-v9.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-hash-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Fresh-check canonical main synthetic-only authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin main
+          echo "fresh canonical main: $(git rev-parse origin/main)"
+          git show origin/main:KEIRIN_NOW.md | grep -F 'Synthetic（合成）限定' >/dev/null
+          git show origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json > /tmp/CURRENT_STATE_KEIRIN.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/CURRENT_STATE_KEIRIN.json',encoding='utf-8'))
+          if x.get('status') != 'LIMITED_SYNTHETIC_SCIENTIFIC_EXECUTION_AUTHORIZED_POST_LAB_AUDITOR_OWNER_GATE':
+              raise SystemExit('FAIL_CLOSED: canonical Keirin status is not limited synthetic authorization')
+          if x.get('scientific_state',{}).get('ECON_HOLDOUT1000') != 'SEALED':
+              raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
+          print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
+          PY
+      - name: Print exact candidate hashes and stop before scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_N2_BROAD_WORLD_ROBUSTNESS_PREREG_20260914_v9.json
+          sha256sum v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py
+          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json
+          sha256sum v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py
+          python -m py_compile v3/historical_all_market/new_lineage/synthetic_n2_broad_world_robustness_v9.py
+          echo 'HASH_PREFLIGHT_COMPLETE_NO_BROAD_WORLD_SCORING'
