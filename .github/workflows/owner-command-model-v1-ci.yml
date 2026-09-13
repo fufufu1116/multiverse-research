@@ -1,0 +1,29 @@
+name: Owner Command Model v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/owner_command_v1.schema.json'
+      - 'tools/owner_command_model_v1.py'
+      - 'tools/test_owner_command_model_v1.py'
+      - 'docs/control/OWNER_COMMAND_MODEL_v1.md'
+      - 'docs/control/PORTABLE_CONTROL_STATE_PACKAGE_v1.md'
+      - 'docs/control/SERVICE_DEPENDENCY_MATRIX_v1.md'
+      - '.github/workflows/owner-command-model-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run focused regressions
+        run: python -m unittest tools.test_owner_command_model_v1 -v
+      - name: Compile validator
+        run: python -m py_compile tools/owner_command_model_v1.py tools/test_owner_command_model_v1.py
