@@ -1,0 +1,88 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v8",
+  "status": "ACTIVE_CANONICAL_CURRENT_STATE_V8_SYNTHETIC_MILESTONE_OWNER_GATE_FOR_SCOPE_EXPANSION",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v7.json",
+  "checkpoint_jst": "2026-09-14T08:21:00+09:00",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_at_v9_execution": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "main_keirin_now": "KEIRIN_NOW.md",
+    "main_keirin_governance_current": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "scope": "LIMITED_SYNTHETIC_ONLY"
+  },
+  "latest_completed_experiment": {
+    "id": "EXP-SYNTHETIC-N2-BROAD-WORLD-ROBUSTNESS-V9",
+    "status": "N2_BROADLY_ROBUST_W0_W4_SYNTHETIC",
+    "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "workflow_run_id": 34789364394,
+    "artifact_id": 10327508665,
+    "artifact_digest": "sha256:81376746cd1ad75836f1603ec44d8827cfa1bc73380885b5c67504b6ce2f8293",
+    "ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v13.jsonl"
+  },
+  "synthetic_candidate": {
+    "name": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "status": "PASS_BROAD_W0_W4_SYNTHETIC_ENGINEERING_ROBUSTNESS_NOT_REAL_VALIDATION",
+    "prereg": "v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json",
+    "implementation": "v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py",
+    "posterior_score_shrinkage": 0.7677543186180422,
+    "real_world_claim": false,
+    "model_promotion": false,
+    "live_or_production": false
+  },
+  "latest_scientific_finding": {
+    "decision": "N2_BROADLY_ROBUST_W0_W4_SYNTHETIC",
+    "summary": "Frozen N2 passed all preregistered broad-world gates on two disjoint 500-race synthetic seeds. It beat the best legacy C0/C1/N1 comparator in W0, W1, W2, W3 and W4, and its equal-weight pooled KL was about 22-23% lower than the best single legacy model on both seeds. Earlier v7/v8 work also established that N2_ONLY dominates C0/N2 adaptive mixtures in the current learnable W0/W2 construction because N2 is itself better on both W0 and W2.",
+    "synthetic_only": true,
+    "real_world_claim": false,
+    "economics_claim": false,
+    "model_promotion": false
+  },
+  "completed_owner_free_sequence": [
+    "v3 confirmed original W0-W4 PRE non-identifiability.",
+    "v4 created a separately versioned learnable-regime synthetic twin and found no eligible C0/N1 adaptive mapping.",
+    "v5 isolated original N1 component inadequacy on W2.",
+    "v6 preregistered and validated a separate PRE-only spec-aligned N2 component.",
+    "v7 retested adaptive C0/N2 mixtures and found no eligible mapping because N2_ONLY was best.",
+    "v8 directly confirmed N2 dominates C0 on both W0 and W2.",
+    "v9 confirmed frozen N2 broad robustness across W0-W4 on two new disjoint seeds."
+  ],
+  "current_research_objective": "Synthetic-only owner-free falsification has reached a coherent broad W0-W4 robustness milestone. Do not continue with cosmetic synthetic retuning or repeated seed fishing. The next scientifically material transition would use real/historical evidence, untouched validation, RESULT/PAYOUT, prices/odds, or economics; every such transition is outside the currently authorized synthetic-only scope and requires a separate explicit governed Owner Gate before access.",
+  "protected_boundaries": {
+    "real_historical_input": false,
+    "RESULT_PAYOUT": "UNAUTHORIZED_NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000_RESULT_PAYOUT": "DO_NOT_ACCESS",
+    "economics": "UNAUTHORIZED",
+    "fresh_real_validation": "UNAUTHORIZED",
+    "odds": "NOT_USED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "next_gate": {
+    "type": "OWNER_SCOPE_EXPANSION_GATE_REQUIRED",
+    "reason": "Canonical main authorizes synthetic execution only. Generic 'proceed' instructions cannot be reused as authorization for real/historical, RESULT/PAYOUT, odds/economics, untouched validation, or model-promotion scope.",
+    "minimum_gate_question": "Whether to authorize a separately preregistered next evidence stage beyond synthetic engineering, with exact allowed data classes and prohibited boundaries specified before any access.",
+    "fail_closed_until_gate": true
+  },
+  "exact_next_executable_actions": [
+    "Fresh Read canonical main, issue #394, issue #377 and this state before any next-stage proposal or execution.",
+    "Do not access real/historical inputs, RESULT/PAYOUT, odds/prices, economics, DEV2000 result/payout or ECON_HOLDOUT1000 without a new explicit governed Owner Gate.",
+    "If Owner authorizes a next evidence stage, preregister exact data classes, split/holdout isolation, candidate freeze, metrics, stop rules and access order before any protected evidence access.",
+    "Keep Runtime OFF and automatic betting OFF regardless of research-scope expansion unless separately and explicitly governed."
+  ],
+  "progress": {
+    "exact_percent": null,
+    "status": "SYNTHETIC_ONLY_BROAD_ROBUSTNESS_MILESTONE_COMPLETE",
+    "reason": "No numeric overall progress is claimed because synthetic engineering evidence is not interchangeable with real-world validation or economics evidence."
+  },
+  "owner_action_required_now": true,
+  "owner_action_reason": "A separate explicit scope-expansion gate is required to continue scientifically beyond the completed synthetic-only milestone.",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
