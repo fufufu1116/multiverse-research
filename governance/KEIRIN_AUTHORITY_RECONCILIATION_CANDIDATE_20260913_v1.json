@@ -1,0 +1,88 @@
+{
+  "record": "KEIRIN_AUTHORITY_RECONCILIATION_CANDIDATE_20260913_v1",
+  "status": "DRAFT_NONAUTHORITATIVE_FAIL_CLOSED",
+  "created_jst": "2026-09-13T22:00:00+09:00",
+  "timestamp_is_authority": false,
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "construction_bindings": {
+    "main_head_after_content_restoring_revert": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "main_tree_after_revert": "fd64de45f68359404300d1c88e2d7778ecaa8401",
+    "preincident_content_equivalent_main": "e875d491853ab9a27158b617ff185d14ac804039",
+    "active_keirin_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+    "active_keirin_head_observed": "862240f0ffd7960eda99108982d068fa4e7fe794",
+    "control_issue": 394,
+    "keirin_continuity_issue": 377,
+    "control_escalation_comment_id": 5652502525,
+    "keirin_hold_comment_id": 5652503609
+  },
+  "observed_controlling_scope": {
+    "source": "canonical_main_2026_08_21_scope_specific_owner_gate_chain",
+    "authorized": [
+      "SOURCE_INDEPENDENT_SYNTHETIC_REGRESSION",
+      "DIGITAL_TWIN_W0_W4_SYNTHETIC_STRESS_FAILURE_DIAGNOSTICS",
+      "C0_C1_N1_COMPARISON_INSIDE_SYNTHETIC_WORLDS"
+    ],
+    "not_authorized_without_separate_gate": [
+      "ECONOMICS_BANKROLL_EVALUATION",
+      "REAL_WORLD_OR_UNTOUCHED_VALIDATION",
+      "RESULT_PAYOUT",
+      "ECON_HOLDOUT1000_OPEN_OR_SCORE",
+      "MODEL_PROMOTION",
+      "REAL_LIVE_INPUT_COLLECTION",
+      "EXTERNAL_PROVIDER_CONTACT",
+      "AUTOMATED_BULK_COLLECTION",
+      "REAL_MONEY_WAGERING",
+      "SYNTHETIC_TO_REAL_EDGE_OR_ROI_PROMOTION"
+    ],
+    "superseding_gate_found_in_fresh_search": false
+  },
+  "conflicting_branch_evidence": {
+    "v3_v7_historical_economics_exists": true,
+    "branch_current": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v4.json",
+    "latest_branch_ledger_observed": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v4.jsonl",
+    "continuity_issue_is_authority": false
+  },
+  "proposed_classification_for_independent_review": "PRESERVE_HISTORICAL_EVIDENCE__AUTHORITY_NOT_VERIFIED__NO_PROMOTION_NO_NEW_EXECUTION",
+  "classification_is_adopted": false,
+  "fail_closed": {
+    "v8_economics_scoring": false,
+    "new_result_payout_access": false,
+    "new_fresh_validation_target_access": false,
+    "econ_holdout1000": "SEALED_DO_NOT_ACCESS",
+    "dev2000_result_payout_for_new_tuning_or_validation": "DO_NOT_OPEN",
+    "probability_retune": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false,
+    "live_or_production": false,
+    "provider_contact_new_authority": false
+  },
+  "required_review_sequence_if_no_superseding_authority": [
+    "INDEPENDENT_CLASSIFICATION_REVIEW",
+    "DEFINE_NEW_SCOPE_SPECIFIC_HISTORICAL_ECONOMICS_AUTHORIZATION_CANDIDATE_IF_OWNER_STILL_WANTS_SCOPE",
+    "INDEPENDENT_LAB",
+    "INDEPENDENT_AUDITOR",
+    "SCOPE_SPECIFIC_OWNER_GATE",
+    "SEPARATE_CANONICAL_ADOPTION_TRANSITION",
+    "ONLY_THEN_NEW_EXPERIMENT_PREREGISTRATION_AND_EXECUTION"
+  ],
+  "important_non_grandfathering_rule": "This candidate does not make V3-V7 authorized retroactively and does not authorize future reuse of exposed V3-V7 data. Any future use must be explicitly covered by adopted authority.",
+  "repository_write_incident": {
+    "accidental_commit": "6890187571686ebcefd106792d761ef42d380a46",
+    "accidental_path": "governance/THIS_WILL_NOT_BE_CREATED",
+    "content": "EMPTY",
+    "revert_commit": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "post_revert_tree": "fd64de45f68359404300d1c88e2d7778ecaa8401",
+    "preincident_tree": "fd64de45f68359404300d1c88e2d7778ecaa8401",
+    "content_restored_exactly": true,
+    "history_rewritten": false,
+    "authority_changed": false,
+    "prevention_rule": "Never use main/default as a write probe; create and verify a dedicated candidate branch before file writes."
+  },
+  "candidate_grants_authority": false,
+  "owner_action_required_by_candidate": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
