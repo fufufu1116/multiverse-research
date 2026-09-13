@@ -1,0 +1,61 @@
+name: Keirin Synthetic PRE Identifiability Audit v3
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - 'v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_PRE_IDENTIFIABILITY_AUDIT_PREREG_20260913_v3.json'
+      - 'v3/historical_all_market/new_lineage/synthetic_pre_identifiability_audit_v3.py'
+      - '.github/workflows/keirin-synthetic-pre-identifiability-audit-v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-pre-identifiability-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fresh-check canonical main synthetic-only authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin main
+          echo "fresh canonical main: $(git rev-parse origin/main)"
+          git show origin/main:KEIRIN_NOW.md | grep -F 'Synthetic（合成）限定' >/dev/null
+          git show origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json > /tmp/CURRENT_STATE_KEIRIN.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/CURRENT_STATE_KEIRIN.json',encoding='utf-8'))
+          if x.get('status') != 'LIMITED_SYNTHETIC_SCIENTIFIC_EXECUTION_AUTHORIZED_POST_LAB_AUDITOR_OWNER_GATE':
+              raise SystemExit('FAIL_CLOSED: canonical Keirin status is not limited synthetic authorization')
+          if x.get('scientific_state',{}).get('ECON_HOLDOUT1000') != 'SEALED':
+              raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
+          print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
+          PY
+      - name: Verify exact preregistration and implementation hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "992fe53f6d09cda1f3c205ea7e0aeba5b98e76ff6e36759a5aca1c5f173dd07e  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_PRE_IDENTIFIABILITY_AUDIT_PREREG_20260913_v3.json" | sha256sum -c -
+          echo "f9180e9e738a7dc56c59b5a4e154c42ec8d619b08e9b1bdaf3e5b345ada35a62  v3/historical_all_market/new_lineage/synthetic_pre_identifiability_audit_v3.py" | sha256sum -c -
+      - name: Compile synthetic audit
+        run: python -m py_compile v3/historical_all_market/new_lineage/synthetic_pre_identifiability_audit_v3.py
+      - name: Run preregistered synthetic identifiability audit
+        run: python v3/historical_all_market/new_lineage/synthetic_pre_identifiability_audit_v3.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-synthetic-pre-identifiability-audit-v3
+          path: v3/historical_all_market/research_candidates/synthetic_pre_identifiability_audit_v3/
+          if-no-files-found: warn
+          retention-days: 90
