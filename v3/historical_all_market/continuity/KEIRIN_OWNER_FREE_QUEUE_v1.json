@@ -2,65 +2,80 @@
   "record": "KEIRIN_OWNER_FREE_QUEUE_v1",
   "status": "WAITING_EXTERNAL_OWNER_FREE_EVENT_WITH_QUEUE_SWITCH",
   "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
-  "active_head_at_queue_write": "9de0fd87f814370c27472bf5517c7f73f28ad808",
+  "active_head_at_queue_write": "391ec88e671304ef145e79d5fdcb350cfcae48fe",
   "previous_resolved_run": {
-    "run_id": 34737854844,
+    "run_id": 34741203167,
     "result": "NO_DEVELOPMENT_ELIGIBLE_POLICY",
-    "artifact_id": 10311983335,
-    "artifact_digest": "sha256:4fb9b1656fbccc5ba06882418c374524442f3ba6bdc0b825dd5685fa2da47171",
-    "v5_result_ledger_commit": "1129c1b91b0b6b984b36814fb5f97a702b83caf3"
+    "artifact_id": 10312882871,
+    "artifact_digest": "sha256:0306aac83ec21910d2d24b9a439f12aff0f1952ad3db31bb8958afc0aaee0056",
+    "v6_result_ledger_commit": "abc34f5282310e6041240b0b5fb3a42a4e808270",
+    "current_v3_commit": "4d992b925acaa0dccb08744ed412bd9d4082a0e9"
+  },
+  "v7_pre_data_technical_failure": {
+    "run_id": 34745436024,
+    "job_id": 103692432476,
+    "head_sha": "f8f8b8679228e656e7762da22b76f189884dee4d",
+    "reason": "Workflow working-directory made repository-root canonical paths resolve incorrectly.",
+    "hash_gate_passed": true,
+    "preregistration_loaded": false,
+    "development_data_accessed": false,
+    "fresh_validation_target_accessed": false,
+    "scientific_evidence_consumed": false,
+    "audit_path": "v3/historical_all_market/research_candidates/KEIRIN_V7_PRE_DATA_TECHNICAL_FAILURE_AUDIT_20260913_v1.json",
+    "fix": "Workflow execution path only; frozen preregistration and engine bytes unchanged."
   },
   "blocked_step": {
     "kind": "GITHUB_ACTIONS_RUN",
-    "run_id": 34741203167,
-    "job_id": 103681090647,
-    "workflow": "Keirin NL2 Economics Diversified Wide Portfolio Development v6",
-    "head_sha": "9de0fd87f814370c27472bf5517c7f73f28ad808",
-    "run_started_at_utc": "2026-09-13T05:48:24Z",
+    "run_id": 34745489816,
+    "job_id": 103692579435,
+    "workflow": "Keirin NL2 Economics Cross-Market Coverage Development v7",
+    "head_sha": "391ec88e671304ef145e79d5fdcb350cfcae48fe",
+    "run_started_at_utc": "2026-09-13T07:32:31Z",
     "observed_status": "in_progress",
-    "wait_reason": "External GitHub Actions computation over the preregistered 25-meeting exposed-only V6 diversified-WIDE development pool.",
-    "wake_condition": "Workflow run reaches a terminal state. On success, retrieve and verify the uploaded V6 evidence artifact before any scientific or downstream decision. On technical failure, diagnose using exposed evidence only and preserve the failed-run record before any rerun.",
+    "wait_reason": "External GitHub Actions computation over the preregistered 25-meeting exposed-only V7 cross-market development pool.",
+    "wake_condition": "Workflow run reaches a terminal state. On success, retrieve and verify the V7 evidence artifact before any scientific/downstream decision. On technical failure, preserve the failed-run record and diagnose without altering frozen science semantics.",
     "wait_end_utc": null,
     "avoidable_idle_time_seconds": 0
   },
   "exact_bindings": {
-    "v6_prereg_sha256": "83c3400f8cccd90e17c8d0934f7981df6da95fa035745c0139bba7f999bc2208",
-    "v6_engine_sha256": "0fa3ce51b6f91d21935f46d4937f2c881ff6f580e300fe42aee6ebc9787d9d64",
-    "v6_launch_commit": "9de0fd87f814370c27472bf5517c7f73f28ad808",
-    "v5_result_ledger_commit": "1129c1b91b0b6b984b36814fb5f97a702b83caf3",
-    "current_v2_commit": "4e4dd623bce57019b2bf99265279ede1f175cee6"
+    "v7_prereg_sha256": "ec679fce7b609f4bf8e7b83ab3e24103f8940a2dfc8b9abdc5e3552553cf6f94",
+    "v7_engine_sha256": "426433ca0d41b1a8e9867dbaafa68f138016dab88ba75768ca0e5d8f1b755470",
+    "v7_launch_commit": "f8f8b8679228e656e7762da22b76f189884dee4d",
+    "v7_path_fix_commit": "391ec88e671304ef145e79d5fdcb350cfcae48fe",
+    "v6_result_ledger_commit": "abc34f5282310e6041240b0b5fb3a42a4e808270",
+    "current_v3_commit": "4d992b925acaa0dccb08744ed412bd9d4082a0e9"
   },
   "queue_switch_work": [
     {
-      "task": "V6_HASH_BINDING_GATE",
+      "task": "V7_HASH_BINDING_GATE",
       "status": "COMPLETE",
-      "result": "GitHub Actions pre-scoring SHA256 verification step passed for the exact V6 preregistration and engine before development scoring began."
+      "result": "Run 34745489816 passed exact SHA256 verification for the frozen V7 preregistration and engine before scoring."
     },
     {
-      "task": "STATIC_V6_IMPLEMENTATION_AUDIT",
+      "task": "STATIC_V7_IMPLEMENTATION_AUDIT",
       "status": "COMPLETE",
-      "result": "V6 reads only the exact 25 already-exposed development meetings, generates 72 deterministic WIDE top-2/top-3 configurations, keeps the V5 cross-meeting stability gates, and contains no fresh-validation target selection/access path."
+      "result": "V7 uses only the exact already-exposed 25-meeting pool, 72 deterministic WIDE-plus-one-companion market configurations, unchanged V5/V6 stability gates, and has no fresh-validation target selection/access path."
     },
     {
-      "task": "POST_V6_ARTIFACT_VERIFICATION",
+      "task": "POST_V7_ARTIFACT_VERIFICATION",
       "status": "PENDING_WAKE_CONDITION",
-      "rule": "Require the expected governance, PRE/PRICE lock, development score, and policy-freeze evidence files and verify fresh_validation_target_selected/accessed=false before accepting the result."
+      "rule": "Require governance, PRE/PRICE lock, development score and policy-freeze files; verify fresh_validation_target_selected/accessed=false before accepting any result."
     },
     {
-      "task": "POST_V6_CANONICAL_RECONCILIATION",
-      "status": "PENDING_V6_RESULT",
-      "rule": "Append the exact V6 result to the canonical experiment ledger and update the active current-state successor without rewriting historical evidence."
+      "task": "POST_V7_CANONICAL_RECONCILIATION",
+      "status": "PENDING_V7_RESULT",
+      "rule": "Append V7 result to a new append-only ledger successor and create/update a successor CURRENT without rewriting historical evidence."
     },
     {
       "task": "SUCCESSOR_DECISION",
-      "status": "PENDING_V6_RESULT",
-      "rule": "If no policy is development-eligible, do not open fresh targets. If exactly one development-only winner freezes, a separate canonical untouched-validation preregistration and zero-collision holdout selection are required before any new PRE/PRICE/RESULT/PAYOUT access."
+      "status": "PENDING_V7_RESULT",
+      "rule": "If no policy is development-eligible, do not open fresh targets. If one development-only winner freezes, require a separate canonical untouched-validation preregistration and zero-collision holdout before any new PRE/PRICE/RESULT/PAYOUT access."
     }
   ],
   "protected_boundaries": {
     "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
     "DEV2000_RESULT_PAYOUT": "DO_NOT_OPEN",
-    "fresh_validation_target_access_during_v6": false,
+    "fresh_validation_target_access_during_v7": false,
     "probability_retune": false,
     "runtime": "OFF",
     "automatic_betting": false,
