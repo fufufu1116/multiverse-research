@@ -9,8 +9,12 @@
     "job_id": 103672328981,
     "workflow": "Keirin NL2 Economics Cross-Meeting Robustness Development v5",
     "head_sha": "f5cbd631b11169fcb8335c395d5434df1754d619",
+    "run_started_at_utc": "2026-09-13T04:25:32Z",
     "observed_status": "in_progress",
-    "wake_condition": "Workflow run reaches a terminal state. If completed, retrieve and verify the uploaded v5 evidence artifact before any scientific or downstream decision."
+    "wait_reason": "External GitHub Actions computation over the preregistered 25-meeting exposed-only development pool.",
+    "wake_condition": "Workflow run reaches a terminal state. If completed, retrieve and verify the uploaded v5 evidence artifact before any scientific or downstream decision.",
+    "wait_end_utc": null,
+    "avoidable_idle_time_seconds": 0
   },
   "exact_bindings": {
     "prereg_sha256": "c4a28ebb1808399cf3216a536196623f2233b669d2913408b455ef8853138bfc",
@@ -22,6 +26,11 @@
       "task": "STATIC_V5_IMPLEMENTATION_AUDIT",
       "status": "COMPLETE",
       "result": "Preregistered eligibility and selection order are enforced in code; fresh validation target selection/access remains false in all v5 development exit paths."
+    },
+    {
+      "task": "WAIT_METRICS_PERSISTENCE",
+      "status": "COMPLETE",
+      "result": "Run start, external wait reason, wake condition, wait-end placeholder and avoidable-idle counter are persisted. Avoidable idle is zero because owner-free static audit and continuity work proceeded during the wait."
     },
     {
       "task": "POST_V5_CANONICAL_RECONCILIATION",
