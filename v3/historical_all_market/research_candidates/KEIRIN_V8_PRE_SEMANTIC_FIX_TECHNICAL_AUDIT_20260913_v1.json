@@ -1,0 +1,28 @@
+{
+  "record": "KEIRIN_V8_PRE_SEMANTIC_FIX_TECHNICAL_AUDIT_20260913_v1",
+  "status": "TECHNICAL_INVALID_NON_SCIENTIFIC_RUN_RECORDED",
+  "lineage": "NL2_ECONOMICS_V8_FALLBACK_MARKET_ROUTING",
+  "affected_run_id": 34762812495,
+  "affected_head_sha": "4db640eec8437ef3af264f6d3a5ca316cfaee5f9",
+  "discovery_timing": "Detected by static implementation audit while the first workflow run was still in progress and before any result was accepted or canonicalized.",
+  "reason": "The first V8 engine delegated paired ticket construction directly to the V7 cross-market helper. That helper requires every configured market to be sold before returning any ticket, while the V8 preregistration requires independent primary-WIDE and fallback-market eligibility with routing allowed when either route is available. The implementation therefore did not exactly encode the preregistered routing semantics.",
+  "scientific_disposition": "DO_NOT_USE_FOR_V8_SCIENTIFIC_DECISION_REGARDLESS_OF_WORKFLOW_CONCLUSION",
+  "evidence_class": "TECHNICAL_RUN_ONLY_ALREADY_EXPOSED_DEVELOPMENT_POOL",
+  "fresh_validation_target_selected": false,
+  "fresh_validation_target_accessed": false,
+  "protected_evidence": {
+    "ECON_HOLDOUT1000": "NOT_ACCESSED_BY_IMPLEMENTATION_PATH",
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED_BY_IMPLEMENTATION_PATH"
+  },
+  "corrective_action": {
+    "fix_commit": "6c790e36c106bd8b93a940543a7e6e9017f28363",
+    "preregistration_changed": false,
+    "scientific_gates_changed": false,
+    "probability_coefficients_changed": false,
+    "implementation_change": "Score WIDE and the configured fallback market independently through separate single-market helper calls, then select at most one ticket with WIDE priority and fallback only when no WIDE ticket qualifies.",
+    "replacement_run_id": 34762925164
+  },
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
