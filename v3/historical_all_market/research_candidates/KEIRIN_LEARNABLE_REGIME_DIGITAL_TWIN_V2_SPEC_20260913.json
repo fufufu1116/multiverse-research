@@ -1,0 +1,56 @@
+{
+  "record": "KEIRIN_LEARNABLE_REGIME_DIGITAL_TWIN_V2_SPEC_20260913",
+  "status": "FROZEN_BEFORE_V2_SYNTHETIC_SCORING",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "purpose": "Create a separately versioned synthetic lane in which hidden outcome-mechanism intensity is learnable from ordinary PRE observables, correcting the explicit identifiability limitation proven for W0-W4 without modifying or reinterpreting W0-W4.",
+  "inheritance": {
+    "base_generator": "v3/historical_all_market/new_lineage/digital_twin_v1.py",
+    "base_PRE_view": "digital_twin_v1.pre_view",
+    "immutable_W0_W4": true,
+    "standard_event_format": "STANDARD_FI_FII_7"
+  },
+  "pre_signal": {
+    "direct_regime_label_exposed": false,
+    "features": [
+      "wind_speed_mps",
+      "num_lines",
+      "observed_score_standard_deviation"
+    ],
+    "formula": "signal = 0.65*clip((wind_speed_mps-2.2)/1.5,-2,2) + 0.45*(num_lines-3.0) + 0.50*clip(observed_score_std-1.0,-1.5,1.5)",
+    "all_features_available_in_PRE": true
+  },
+  "hidden_mechanism": {
+    "formula": "alpha = sigmoid(-0.30 + 1.00*signal)",
+    "oracle": "P_truth = (1-alpha)*P_W0 + alpha*P_W2",
+    "P_W0": "digital_twin_v1.world_joint_distribution(race,'W0')",
+    "P_W2": "digital_twin_v1.world_joint_distribution(race,'W2')",
+    "alpha_exposed_to_predictor": false,
+    "world_label_exposed_to_predictor": false,
+    "outcome_exposed_to_predictor": false
+  },
+  "scientific_boundary": [
+    "This twin is an engineered learnability fixture, not a claim that real keirin follows this mechanism.",
+    "A model may use only PRE fields; hidden alpha and oracle distributions are scoring-only synthetic truth.",
+    "Any successful adaptive architecture remains synthetic engineering evidence only and cannot be promoted to real use.",
+    "W0-W4 remain the universal robustness stress lanes and are not overwritten."
+  ],
+  "protected_boundaries": {
+    "real_historical_input": false,
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "odds": "NOT_USED",
+    "economics": "NOT_COMPUTED",
+    "roi": "NOT_COMPUTED",
+    "real_money": false,
+    "spend": false,
+    "credential": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "authority_binding": {
+    "canonical_main_head_at_freeze": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "scope": "LIMITED_SYNTHETIC_ONLY",
+    "owner_action_required": false
+  }
+}
