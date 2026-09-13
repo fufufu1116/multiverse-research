@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://multiverse.local/schemas/owner_command_v1.schema.json",
+  "title": "MULTIVERSE Owner Command v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generated_at", "canonical_ref", "runtime", "items"],
+  "properties": {
+    "schema": {"const": "MULTIVERSE_OWNER_COMMAND_v1"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "canonical_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["backend", "locator", "revision"],
+      "properties": {
+        "backend": {"type": "string", "minLength": 1},
+        "locator": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1}
+      }
+    },
+    "runtime": {"enum": ["OFF", "ON"]},
+    "items": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/item"}
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "lane", "status", "owner_action_required", "authority", "evidence_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["TASK", "OWNER_GATE", "FINAL_DECISION", "DEADLINE", "STATUS", "RECOVERY"]},
+        "title": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "lane": {"type": "string", "minLength": 1},
+        "status": {"enum": ["NOW", "NEXT", "WAITING", "BLOCKED", "READY_FOR_DECISION", "DONE"]},
+        "owner_action_required": {"type": "boolean"},
+        "owner_action": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "location": {"type": "string"},
+            "link": {"type": "string"},
+            "input": {"type": "string"},
+            "action": {"type": "string"},
+            "reply_with": {"type": "string"}
+          }
+        },
+        "due_at": {"type": ["string", "null"], "format": "date-time"},
+        "deadline_date": {"type": ["string", "null"], "format": "date"},
+        "priority": {"enum": ["P1", "P2", "P3", "P4"]},
+        "authority": {"enum": ["INFORMATION_ONLY", "OWNER_GATE_REQUIRED", "OWNER_AUTHORIZED", "NONAUTHORITY"]},
+        "evidence_refs": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "service_projection": {
+          "type": "object",
+          "additionalProperties": {"type": ["string", "number", "boolean", "null"]}
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"owner_action_required": {"const": true}}},
+          "then": {"required": ["owner_action"]}
+        }
+      ]
+    }
+  }
+}
