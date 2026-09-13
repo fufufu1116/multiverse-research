@@ -1,4 +1,4 @@
-name: Keirin Synthetic Market Probability Diagnostic v1 — Hash Preflight
+name: Keirin Synthetic Market Probability Diagnostic v1
 
 on:
   push:
@@ -14,19 +14,23 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-hash-preflight:
+  synthetic-market-probability-diagnostic:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Fresh-check canonical main synthetic-only authority
         shell: bash
         run: |
           set -euo pipefail
           git fetch --no-tags --depth=1 origin main
-          echo "fresh canonical main: $(git rev-parse origin/main)"
+          MAIN_SHA="$(git rev-parse origin/main)"
+          echo "fresh canonical main: ${MAIN_SHA}"
           git show origin/main:KEIRIN_NOW.md | grep -F 'Synthetic（合成）限定' >/dev/null
           git show origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json > /tmp/CURRENT_STATE_KEIRIN.json
           python - <<'PY'
@@ -36,13 +40,25 @@ jobs:
               raise SystemExit('FAIL_CLOSED: canonical Keirin status is not limited synthetic authorization')
           if x.get('scientific_state',{}).get('ECON_HOLDOUT1000') != 'SEALED':
               raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
+          if x.get('owner_policy',{}).get('real_money_wagering') != 'OUT_OF_SCOPE':
+              raise SystemExit('FAIL_CLOSED: real-money authority drift')
           print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
           PY
-      - name: Print exact candidate hashes and stop before scoring
+      - name: Verify exact preregistration and implementation hashes
         shell: bash
         run: |
           set -euo pipefail
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_MARKET_PROBABILITY_DIAGNOSTIC_PREREG_20260913_v1.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py
-          python -m py_compile v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py
-          echo 'HASH_PREFLIGHT_COMPLETE_NO_SCORING'
+          echo "ad96bd369ccee1177dbf9979314f36bfb61e631145c3ed0818ac3bbed7c248b2  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_MARKET_PROBABILITY_DIAGNOSTIC_PREREG_20260913_v1.json" | sha256sum -c -
+          echo "2356765dfca8764065ccda8927227420c832e5a3f8dd25c8056a1630be7b88c1  v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py" | sha256sum -c -
+      - name: Compile synthetic diagnostic
+        run: python -m py_compile v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py
+      - name: Run preregistered synthetic-only diagnostic
+        run: python v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-synthetic-market-probability-diagnostic-v1
+          path: v3/historical_all_market/research_candidates/synthetic_market_probability_diagnostic_v1/
+          if-no-files-found: warn
+          retention-days: 90
