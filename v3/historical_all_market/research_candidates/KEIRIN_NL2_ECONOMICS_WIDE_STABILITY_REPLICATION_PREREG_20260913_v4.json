@@ -1,0 +1,102 @@
+{
+  "record": "KEIRIN_NL2_ECONOMICS_WIDE_STABILITY_REPLICATION_PREREG_20260913_v4",
+  "status": "PREREGISTERED_BEFORE_V4_REPLICATION_TARGET_ACCESS",
+  "evidence_class": "HISTORICAL_RETROSPECTIVE_KR015_WITH_PHASE_SEPARATED_PRICE_AND_SETTLEMENT_PARSERS",
+  "objective": "Replicate the exact frozen economics-v3 policy on a larger, meeting-disjoint historical holdout without retuning. The v3 result was POSITIVE_BUT_UNCERTAIN because C1-C4 passed but the race-bootstrap lower bound was not positive. V4 therefore keeps the policy unchanged and increases independent meeting coverage while adding a preregistered meeting-block bootstrap criterion.",
+  "probability_models": {
+    "primary": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+    "primary_core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+    "reference": "B1a_RECONSTITUTED_v1",
+    "reference_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3",
+    "probability_coefficient_retune": false
+  },
+  "policy_source": {
+    "source_run_id": 34729296168,
+    "source_artifact_id": 10308817910,
+    "source_artifact_sha256": "31dd625b955102e064cd7d08f6028d0aaf4d1c7c65ad5c837973c751aacdb095",
+    "source_v3_preregistration": "v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_WIDE_STABILITY_DEVELOPMENT_AND_UNTOUCHED_VALIDATION_PREREG_20260913_v3.json",
+    "source_v3_result": "POSITIVE_BUT_UNCERTAIN",
+    "policy_retuned_after_v3_validation": false,
+    "fixed_configuration": {
+      "configuration_id": "WIDE:MAX15:P175:AGR140:EV050:FLAT100",
+      "profile": "WIDE_STABILITY",
+      "market_group": "WIDE_ONLY",
+      "markets": ["wide"],
+      "max_decimal_odds": 15.0,
+      "probability_floor": 0.175,
+      "max_model_probability_agreement_ratio": 1.4,
+      "min_raw_ev": 0.5,
+      "min_shape_edge_ratio": 1.5,
+      "stake_policy": "FLAT100_JPY_PER_SELECTED_RACE",
+      "portfolio_template": "TOP1_TOTAL_PER_RACE_AFTER_FILTERING"
+    }
+  },
+  "governance_inheritance": {
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000": "RESULT_PAYOUT_NOT_USED",
+    "same_lineage_threshold_retune": false,
+    "validation_derived_rescue_scoring": false
+  },
+  "v3_exposed_evidence_disposition": {
+    "v3_development_meetings": "EXPOSED_DEVELOPMENT_ONLY",
+    "v3_validation_meetings": "EXPOSED_CONSUMED_AFTER_VALIDATION_NEVER_FRESH_AGAIN",
+    "post_v3_monotone_abstention_diagnostic": "DEVELOPMENT_ONLY; no bounded stricter-threshold candidate was adopted as V4 policy",
+    "v4_policy_change_from_v3": "NONE"
+  },
+  "prior_exposure_snapshot": {
+    "basis": "Union of the v3 run collision audit prior-source meeting ids plus the five v3 validation meetings after they were settlement-scored.",
+    "source_run_id": 34729296168,
+    "source_artifact_id": 10308817910,
+    "meeting_count": 67,
+    "meeting_ids": ["1220260703","1220260730","1220260807","1220260812","1220260824","1220260903","1320260907","2120260702","2120260707","2120260811","2120260818","2120260902","2120260907","2220260710","2220260722","2220260809","2220260815","2220260827","2220260912","2320260811","2420260521","2420260806","2420260824","2420260831","2520260427","2520260522","2520260701","2620260906","2820260822","2820260825","2820260903","3120260901","3420260809","3420260819","3420260830","3420260910","3720260907","3820260815","4320260807","4320260812","4320260824","4320260830","4520260904","4620260810","4620260820","4620260903","4620260910","4820260909","6120260826","6120260902","6120260908","6320260904","7420260629","7420260818","7420260825","7420260909","7520260811","7520260821","7520260831","8420260812","8420260821","8420260903","8420260909","8620260804","8720260811","8720260824","8720260828"]
+  },
+  "replication_meetings": [
+    {"meeting_id":"1320260806","venue":"iwakitaira","circumference_m":400.0,"schedule_start":"2026-08-06"},
+    {"meeting_id":"2620260813","venue":"seibuen","circumference_m":400.0,"schedule_start":"2026-08-13"},
+    {"meeting_id":"2720260814","venue":"keiokaku","circumference_m":400.0,"schedule_start":"2026-08-14"},
+    {"meeting_id":"2820260817","venue":"tachikawa","circumference_m":400.0,"schedule_start":"2026-08-17"},
+    {"meeting_id":"3520260809","venue":"hiratsuka","circumference_m":400.0,"schedule_start":"2026-08-09"},
+    {"meeting_id":"4220260804","venue":"nagoya","circumference_m":400.0,"schedule_start":"2026-08-04"},
+    {"meeting_id":"4420260817","venue":"ogaki","circumference_m":400.0,"schedule_start":"2026-08-17"},
+    {"meeting_id":"5520260823","venue":"wakayama","circumference_m":400.0,"schedule_start":"2026-08-23"},
+    {"meeting_id":"6320260823","venue":"hofu","circumference_m":333.0,"schedule_start":"2026-08-23"},
+    {"meeting_id":"7420260731","venue":"kochi","circumference_m":500.0,"schedule_start":"2026-07-31"}
+  ],
+  "target_selection_integrity": {
+    "all_targets_selected_from_public_schedule_metadata_before_any_v4_PRE_PRICE_RESULT_PAYOUT_access": true,
+    "all_targets_completed_historical_meetings_at_preregistration_time": true,
+    "target_count": 10,
+    "target_prior_snapshot_overlap_count": 0,
+    "no_target_replacement_after_any_target_access": true,
+    "schedule_source": "https://www.keirin.jp/sp/raceschedule"
+  },
+  "selection_semantics": {
+    "enumeration": "For each fixed meeting enumerate day_index 01..04 and race_no 01..12; retain every race whose mandatory PRE parse and confirmed closing-price parse pass; no replacement after settlement access.",
+    "minimum_selected_pre_price_races": 180,
+    "all_ten_meetings_required": true,
+    "minimum_bet_races": 60,
+    "all_ten_wagered_meetings_required": true
+  },
+  "validation_gate": {
+    "C1_realized_roi": "ROI > 0",
+    "C2_meeting_stability": "positive-ROI meetings >= 6 of 10",
+    "C3_drawdown": "maximum drawdown <= 0.20",
+    "C4_return_concentration": "largest single-ticket return / total return <= 0.35",
+    "C5_race_bootstrap": "10000 whole-race bootstrap replicates, seed 20260913, 95% ROI lower bound > 0",
+    "C6_meeting_block_bootstrap": "10000 meeting-block bootstrap replicates, seed 20260914, resampling complete meetings with replacement; 95% ROI lower bound > 0",
+    "PASS": "coverage and C1-C6 all pass",
+    "POSITIVE_BUT_UNCERTAIN": "coverage and C1-C4 pass but C5 and/or C6 fail",
+    "FAIL": "coverage passes and any of C1-C4 fails",
+    "INCONCLUSIVE": "coverage fails or settlement failures occur"
+  },
+  "phase_firewall": [
+    "The policy is frozen exactly as V3 before any V4 target PRE/PRICE/RESULT/PAYOUT access.",
+    "V4 PRE/PRICE and ticket decisions are frozen before V4 settlement parser invocation.",
+    "No V4-derived retune, threshold change, market change, target replacement, unfavorable deletion, or rescue scoring is allowed.",
+    "No DEV2000 RESULT/PAYOUT and no ECON_HOLDOUT1000 bytes may be opened by this lineage."
+  ],
+  "scientific_claim_boundary": "Even PASS is historical KR-015 economics replication evidence only. It does not authorize Runtime, live orders, automatic betting, real-money wagering, spend, credential use, or production deployment.",
+  "owner_action_required": false
+}
