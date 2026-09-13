@@ -1,6 +1,6 @@
 {
   "record": "KEIRIN_OWNER_FREE_QUEUE_v1",
-  "status": "WAITING_EXTERNAL_OWNER_FREE_EVENT_WITH_QUEUE_SWITCH",
+  "status": "V5_EXTERNAL_WAIT_RESOLVED_RESULT_CANONICALIZED",
   "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
   "active_head_at_queue_write": "f5cbd631b11169fcb8335c395d5434df1754d619",
   "blocked_step": {
@@ -10,37 +10,48 @@
     "workflow": "Keirin NL2 Economics Cross-Meeting Robustness Development v5",
     "head_sha": "f5cbd631b11169fcb8335c395d5434df1754d619",
     "run_started_at_utc": "2026-09-13T04:25:32Z",
-    "observed_status": "in_progress",
+    "observed_status": "completed",
+    "conclusion": "success",
     "wait_reason": "External GitHub Actions computation over the preregistered 25-meeting exposed-only development pool.",
     "wake_condition": "Workflow run reaches a terminal state. If completed, retrieve and verify the uploaded v5 evidence artifact before any scientific or downstream decision.",
-    "wait_end_utc": null,
-    "avoidable_idle_time_seconds": 0
+    "wake_condition_satisfied": true,
+    "wait_end_utc": "2026-09-13T05:13:47Z",
+    "avoidable_idle_time_seconds": 0,
+    "artifact_id": 10311983335,
+    "artifact_digest": "sha256:4fb9b1656fbccc5ba06882418c374524442f3ba6bdc0b825dd5685fa2da47171",
+    "scientific_result": "NO_DEVELOPMENT_ELIGIBLE_POLICY"
   },
   "exact_bindings": {
     "prereg_sha256": "c4a28ebb1808399cf3216a536196623f2233b669d2913408b455ef8853138bfc",
     "engine_sha256": "b82e348de81b29da57492413f449158706376896a67ba682a7288ee46ac00624",
-    "canonical_v4_ledger_commit": "69037223d921e22eae33c9137fa5fedc751c63aa"
+    "canonical_v4_ledger_commit": "69037223d921e22eae33c9137fa5fedc751c63aa",
+    "v5_result_ledger_commit": "1129c1b91b0b6b984b36814fb5f97a702b83caf3"
   },
   "queue_switch_work": [
     {
       "task": "STATIC_V5_IMPLEMENTATION_AUDIT",
       "status": "COMPLETE",
-      "result": "Preregistered eligibility and selection order are enforced in code; fresh validation target selection/access remains false in all v5 development exit paths."
+      "result": "Preregistered eligibility and selection order are enforced in code; fresh validation target selection/access remained false in all v5 development exit paths."
     },
     {
       "task": "WAIT_METRICS_PERSISTENCE",
       "status": "COMPLETE",
-      "result": "Run start, external wait reason, wake condition, wait-end placeholder and avoidable-idle counter are persisted. Avoidable idle is zero because owner-free static audit and continuity work proceeded during the wait."
+      "result": "Run start/end, external wait reason, wake condition and avoidable-idle counter are persisted. Avoidable idle remains zero because owner-free static audit and continuity work proceeded during the wait."
+    },
+    {
+      "task": "V5_ARTIFACT_VERIFICATION",
+      "status": "COMPLETE",
+      "result": "Artifact ZIP digest matched GitHub metadata; four expected evidence files were present; governance and policy-freeze records agree that no fresh validation target was selected or accessed."
     },
     {
       "task": "POST_V5_CANONICAL_RECONCILIATION",
-      "status": "PENDING_WAKE_CONDITION",
-      "rule": "After artifact verification, append v5 outcome to the canonical experiment ledger and reconcile CURRENT without rewriting historical evidence."
+      "status": "LEDGER_COMPLETE_CURRENT_PENDING",
+      "result": "V5 no-eligible result appended to canonical experiment ledger v2 without rewriting prior evidence."
     },
     {
       "task": "SUCCESSOR_DECISION",
-      "status": "PENDING_V5_RESULT",
-      "rule": "If no development-eligible policy exists, do not open fresh targets. If exactly one development-only winner freezes, require a separate canonical preregistration and zero-collision new meeting-disjoint holdout before any fresh PRE/PRICE/RESULT/PAYOUT access."
+      "status": "OWNER_FREE_DEVELOPMENT_DIAGNOSIS_ALLOWED_NO_FRESH_ACCESS",
+      "rule": "V5 yielded zero eligible policies. Do not open fresh targets. Any successor must be a separately versioned development lineage using exposed evidence only until a distinct policy is frozen and a separate untouched-validation preregistration exists."
     }
   ],
   "protected_boundaries": {
