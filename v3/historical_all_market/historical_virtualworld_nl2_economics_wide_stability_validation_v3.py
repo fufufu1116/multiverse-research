@@ -8,7 +8,7 @@ import historical_virtualworld_nl2_economics_robustness_validation_v2 as engine
 ORIGINAL_COLLISION_AUDIT = engine.collision_audit
 
 ROOT = Path('v3/historical_all_market/research_candidates')
-RULE = ROOT / 'KEIRIN_NL2_ECONOMICS_WIDE_STABILITY_DEVELOPMENT_AND_UNTOUED_VALIDATION_PREREG_20260913_v3.json'
+RULE = ROOT / 'KEIRIN_NL2_ECONOMICS_WIDE_STABILITY_DEVELOPMENT_AND_UNTOUCHED_VALIDATION_PREREG_20260913_v3.json'
 OUT = ROOT / 'nl2_economics_wide_stability_development_and_untouched_validation_v3'
 OUT.mkdir(parents=True, exist_ok=True)
 
