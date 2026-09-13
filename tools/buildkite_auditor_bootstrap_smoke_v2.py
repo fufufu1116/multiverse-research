@@ -7,6 +7,27 @@ import sys
 import tempfile
 from pathlib import Path
 
+MODULES = (
+    "automation.review_dispatcher_v1.dispatcher",
+    "automation.review_dispatcher_v1.review",
+    "automation.review_dispatcher_v1.publisher",
+    "automation.review_dispatcher_v1.t2",
+)
+
+
+def _run(cmd: list[str], *, cwd: Path, env: dict[str, str]) -> str:
+    proc = subprocess.run(
+        cmd,
+        cwd=cwd,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError("BOOTSTRAP_COMMAND_FAILED:\n" + proc.stdout)
+    return proc.stdout
+
 
 def run_smoke(repo_root: Path, ref: str = "HEAD") -> None:
     with tempfile.TemporaryDirectory(prefix="mv-auditor-bootstrap-") as tmp:
@@ -36,19 +57,19 @@ def run_smoke(repo_root: Path, ref: str = "HEAD") -> None:
         env = dict(os.environ)
         env["PYTHONPATH"] = str(root)
 
-        proc = subprocess.run(
+        for module in MODULES:
+            _run(
+                [sys.executable, "-c", f"import {module}"],
+                cwd=repo_root,
+                env=env,
+            )
+
+        output = _run(
             [sys.executable, str(dispatcher), "--help"],
             cwd=repo_root,
             env=env,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
         )
-        if proc.returncode != 0:
-            raise RuntimeError(
-                "DISPATCHER_IMPORT_BOOTSTRAP_FAILED:\n" + proc.stdout
-            )
-        if "--lane" not in proc.stdout or "--repo" not in proc.stdout:
+        if "--lane" not in output or "--repo" not in output:
             raise RuntimeError("DISPATCHER_HELP_CONTRACT_MISSING")
 
 
