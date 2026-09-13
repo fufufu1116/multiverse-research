@@ -3,6 +3,7 @@ name: System Improvement Buildkite Auditor Bootstrap v2 CI
 on:
   pull_request:
     paths:
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_HOSTED_v2.yml'
       - 'docs/control/BUILDKITE_HOSTED_AUDITOR_BOOTSTRAP_v2.md'
       - 'tools/buildkite_auditor_bootstrap_preflight_v2.py'
       - 'tools/buildkite_auditor_bootstrap_smoke_v2.py'
@@ -26,6 +27,6 @@ jobs:
       - name: Static stored-YAML preflight
         run: |
           python tools/buildkite_auditor_bootstrap_preflight_v2.py \
-            docs/control/BUILDKITE_HOSTED_AUDITOR_BOOTSTRAP_v2.md
+            buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_HOSTED_v2.yml
       - name: Isolated dispatcher archive/import smoke
         run: python tools/buildkite_auditor_bootstrap_smoke_v2.py --repo-root . --ref HEAD
