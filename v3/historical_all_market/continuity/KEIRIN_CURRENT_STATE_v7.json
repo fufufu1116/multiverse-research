@@ -1,0 +1,69 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v7",
+  "status": "ACTIVE_CANONICAL_CURRENT_STATE_V7_SYNTHETIC_ONLY",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v6.json",
+  "checkpoint_date": "2026-09-13",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_at_checkpoint": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "main_keirin_now": "KEIRIN_NOW.md",
+    "main_keirin_governance_current": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "scope": "LIMITED_SYNTHETIC_ONLY"
+  },
+  "latest_completed_experiment": {
+    "id": "EXP-SYNTHETIC-PRE-IDENTIFIABILITY-AUDIT-V3",
+    "status": "PASS_CURRENT_W0_W4_PRE_NONIDENTIFIABILITY_CONFIRMED",
+    "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "workflow_run_id": 34764062288,
+    "artifact_id": 10320155137,
+    "artifact_digest": "sha256:d9fedf2e5ebf32331b5a93a3a113a4117738230e764cdde80b7bb44c66bc54fa",
+    "ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v7.jsonl"
+  },
+  "latest_scientific_finding": {
+    "decision": "PASS_CURRENT_W0_W4_PRE_NONIDENTIFIABILITY_CONFIRMED",
+    "summary": "For 500 matched synthetic race identities, W0-W4 had exactly identical PRE hashes and empirical I(PRE;world) was numerically zero, while hidden oracle distributions differed materially (mean pairwise TV 0.1391; minimum pair mean 0.0516). Current W0-W4 therefore tests universal robustness but cannot fairly test a learned PRE-only regime selector.",
+    "real_world_claim": false,
+    "model_promotion": false
+  },
+  "current_research_objective": "Preserve current W0-W4 as immutable universal robustness stress lanes. Build a separately versioned learnable-regime synthetic twin where hidden mechanism intensity is a deterministic function of PRE-observable variables without exposing a direct regime label or any outcome. Then preregister a disjoint-seed comparison of universal versus PRE-adaptive probability objects. This remains synthetic engineering falsification only.",
+  "protected_boundaries": {
+    "real_historical_input": false,
+    "RESULT_PAYOUT": "UNAUTHORIZED_NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000_RESULT_PAYOUT": "DO_NOT_ACCESS",
+    "economics": "UNAUTHORIZED",
+    "fresh_real_validation": "UNAUTHORIZED",
+    "odds": "NOT_USED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "v8_authority_incident": {
+    "status": "CONTAINED_FAIL_CLOSED",
+    "workflow_now_non_auto_triggerable": true,
+    "quarantined_run_ids": [34762812495, 34762925164],
+    "artifact_policy": "DO_NOT_DOWNLOAD_INTERPRET_SCORE_OR_USE",
+    "incident_audit": "v3/historical_all_market/continuity/KEIRIN_V8_AUTHORITY_SCOPE_INCIDENT_AUDIT_20260913_v1.json"
+  },
+  "exact_next_executable_actions": [
+    "Create Digital Twin v2 without modifying v1: a learnable synthetic mechanism whose intensity is a preregistered deterministic function of PRE-observable wind/line/score-uncertainty features.",
+    "Do not expose the hidden mechanism intensity or direct regime label to prediction interfaces; predictors may use only ordinary PRE fields.",
+    "Preregister candidate adaptive mapping family, design seed, evaluation seed, and gates before synthetic scoring.",
+    "Use disjoint synthetic design/evaluation seeds; freeze one adaptive candidate before evaluation or stop if no candidate qualifies.",
+    "Compare against fixed universal C0/N1/global-mixture baselines and record failures without rescue tuning.",
+    "Make no real-keirin calibration, economics, ROI, profitability, or model-promotion claim."
+  ],
+  "progress": {
+    "exact_percent": null,
+    "status": "REBASELINED_SYNTHETIC_ONLY_ACTIVE",
+    "reason": "Numeric overall progress remains intentionally withheld because prior percentages depended on evidence produced under an authority conflict."
+  },
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
