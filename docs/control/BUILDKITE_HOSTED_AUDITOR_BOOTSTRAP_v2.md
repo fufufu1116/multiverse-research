@@ -4,77 +4,56 @@ Status: repository-only candidate
 Parent: Issue #450
 Runtime: OFF
 
-This successor preserves PR #444's explicit canonical-main ref repair but restores the proven bootstrap semantics from the canonical fixed Lab pipeline.
+This successor preserves PR #444's explicit canonical-main ref repair, restores the proven Python bootstrap shape, and removes a second copy of the Buildkite Steps payload from prose.
 
-## Required full Steps YAML
+## Single source of truth for external Steps
 
-```yaml
-steps:
-  - label: "MULTIVERSE Independent Auditor"
-    agents:
-      queue: "independent-auditor"
-    command: |
-      set -euo pipefail
+The complete candidate Steps payload is exactly:
 
-      git fetch origin main:refs/remotes/origin/main
-      git rev-parse --verify refs/remotes/origin/main^{commit}
+`buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_HOSTED_v2.yml`
 
-      rm -rf .mv_dispatcher
-      mkdir -p .mv_dispatcher
+Do not reconstruct it from snippets and do not edit only one block. Any future Owner-authorized external Steps change must use the complete exact file contents after Fresh SHA verification.
 
-      git archive refs/remotes/origin/main automation/review_dispatcher_v1 \
-        | tar -x -C .mv_dispatcher
+The file contains all three required stages:
+1. Independent Auditor dispatcher/review;
+2. trusted result publisher;
+3. T2.
 
-      DISPATCHER_REF="$(git rev-parse refs/remotes/origin/main)"
-      export MULTIVERSE_DISPATCHER_REF="$$DISPATCHER_REF"
+This prevents the v1 failure mode where a partial replacement could silently drop downstream publisher/T2 stages.
 
-      PYTHONPATH=.mv_dispatcher \
-        python3 -c 'import automation.review_dispatcher_v1.dispatcher'
+## Error class repaired
 
-      PYTHONPATH=.mv_dispatcher \
-        python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
-        --lane AUDITOR \
-        --repo fufufu1116/multiverse-research \
-        --head "$$BUILDKITE_COMMIT" \
-        --output review_job.json
+Build #2314 failed before review execution with:
 
-      rm -f .mv_review_pass
+`ModuleNotFoundError: No module named 'automation'`
 
-      if PYTHONPATH=.mv_dispatcher \
-        python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
-        --job review_job.json \
-        --output review_artifact.json \
-        --repo-root .; then
-        touch .mv_review_pass
-      fi
+Fresh historical search also found the same signature on prior Auditor bootstrap Build #2015, recorded in Gate #399. The earlier repair proof used absolute `$PWD`-based PYTHONPATH in ordinary GitHub Actions, but did not emulate Buildkite YAML interpolation. The lesson was not generalized at that time.
 
-      buildkite-agent artifact upload "review_job.json"
-      if [ -f review_artifact.json ]; then
-        buildkite-agent artifact upload "review_artifact.json"
-      fi
+Buildkite documents that runtime variables in pipeline YAML must escape `$` as `$$` or `\$`. Therefore v2 treats pipeline interpolation as a separate proof layer rather than assuming ordinary shell behavior is sufficient.
 
-      test -f .mv_review_pass
-```
+## v2 invariants
 
-## Why this differs from v1
-
-Build #2314 proved that static token checks were insufficient. The saved pipeline must preserve two separate stages correctly:
-
-1. Buildkite YAML/upload interpolation;
-2. runtime shell/Python bootstrap.
-
-The canonical working Lab pipeline already uses inline `PYTHONPATH=.mv_dispatcher` and doubled-dollar runtime variables. v2 deliberately reuses those semantics instead of inventing a new environment-export shape.
+- canonical-main fetch/archive uses explicit `refs/remotes/origin/main`; no `FETCH_HEAD` dependency in any stage;
+- all three Auditor stages remain present and on queue `independent-auditor`;
+- runtime shell variables are escaped for Buildkite interpolation;
+- Python entry points use inline `PYTHONPATH=.mv_dispatcher` rather than an interpolated `$PWD` export;
+- dispatcher, publisher and T2 each have an import smoke before effectful execution;
+- focused preflight rejects single-dollar runtime variables and incomplete three-stage payloads;
+- isolated archive/import smoke actually runs the archived dispatcher `--help` before any external Build is considered.
 
 ## Mandatory pre-external proof
 
-Before any new Owner-gated Auditor Build:
-- static v2 preflight passes;
-- isolated archive/import smoke test passes;
-- focused CI passes;
-- no single-dollar `$BUILDKITE_COMMIT` remains in the stored YAML payload;
-- no dependency on ambient/exported `$PWD` for Python import root;
-- no `FETCH_HEAD` archive source.
+Before any new Owner-gated external Auditor attempt:
+- full stored-YAML static preflight PASS;
+- focused regression suite PASS;
+- isolated `git archive -> extract -> import -> dispatcher --help` smoke PASS;
+- normal candidate CI PASS;
+- normal independent review sequence PASS;
+- exact external Steps payload separately Owner-authorized;
+- new one-shot Build separately Owner-authorized.
 
-This document grants no authority to change external Buildkite Steps or create/retry a Build. Any external mutation and every one-shot review attempt require their own normal authority chain.
+An external Build must be the last confirmation, not the first time the bootstrap is exercised.
+
+This document grants no external Buildkite mutation, Build/Retry/rerun/reuse, merge/adoption, provider/spend/live effect, or Runtime authority.
 
 `RUNTIME: OFF`
