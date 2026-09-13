@@ -36,7 +36,8 @@ class RepositorySecurityAuditV1Tests(unittest.TestCase):
     def test_private_key_is_critical_and_redacted(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
-            (root / "bad.txt").write_text("-----BEGIN PRIVATE KEY-----\nFAKEFAKEFAKE\n", encoding="utf-8")
+            private_key_marker = "-----BEGIN " + "PRIVATE KEY-----"
+            (root / "bad.txt").write_text(private_key_marker + "\nFAKEFAKEFAKE\n", encoding="utf-8")
             result = audit(root, self.make_registry(root))
             finding = next(f for f in result["findings"] if f["type"] == "PRIVATE_KEY")
             self.assertEqual(finding["severity"], "CRITICAL")
@@ -45,7 +46,7 @@ class RepositorySecurityAuditV1Tests(unittest.TestCase):
     def test_github_token_is_detected_without_full_value_output(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
-            token = "ghp_" + "A" * 36
+            token = "gh" + "p_" + "A" * 36
             (root / "bad.py").write_text(f"x='{token}'", encoding="utf-8")
             result = audit(root, self.make_registry(root))
             self.assertGreater(result["critical_count"], 0)
