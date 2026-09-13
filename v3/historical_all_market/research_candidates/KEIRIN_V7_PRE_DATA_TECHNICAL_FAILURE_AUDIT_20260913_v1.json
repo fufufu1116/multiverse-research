@@ -1,0 +1,27 @@
+{
+  "record": "KEIRIN_V7_PRE_DATA_TECHNICAL_FAILURE_AUDIT_20260913_v1",
+  "status": "TECHNICAL_FAILURE_BEFORE_ANY_V7_DATA_ACCESS",
+  "workflow_run_id": 34745436024,
+  "job_id": 103692432476,
+  "head_sha": "f8f8b8679228e656e7762da22b76f189884dee4d",
+  "failure": "FileNotFoundError while loading the V7 preregistration because the workflow changed working-directory to v3/historical_all_market while the frozen engine intentionally resolves canonical paths from repository root.",
+  "frozen_hash_verification_before_failure": {
+    "prereg_sha256": "ec679fce7b609f4bf8e7b83ab3e24103f8940a2dfc8b9abdc5e3552553cf6f94",
+    "engine_sha256": "426433ca0d41b1a8e9867dbaafa68f138016dab88ba75768ca0e5d8f1b755470",
+    "status": "PASS"
+  },
+  "evidence_access": {
+    "preregistration_loaded": false,
+    "development_PRE_or_PRICE_accessed": false,
+    "development_settlement_accessed": false,
+    "fresh_validation_target_selected": false,
+    "fresh_validation_target_accessed": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "DEV2000_result_or_payout_opened": false
+  },
+  "scientific_effect": "NONE. No V7 scientific evidence was generated or consumed. The preregistration and engine bytes remain unchanged and valid.",
+  "allowed_fix": "Workflow path correction only: execute the exact frozen engine from repository root. Do not change preregistration, engine, policy family, gates, models, evidence pool, or target access rules.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
