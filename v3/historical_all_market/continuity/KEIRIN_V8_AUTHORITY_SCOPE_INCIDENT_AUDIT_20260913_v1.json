@@ -1,0 +1,62 @@
+{
+  "record": "KEIRIN_V8_AUTHORITY_SCOPE_INCIDENT_AUDIT_20260913_v1",
+  "status": "CONTAINED_FAIL_CLOSED_PENDING_EXTERNAL_RUN_TERMINATION",
+  "date": "2026-09-13",
+  "canonical_main_head_fresh_read": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+  "canonical_authority": {
+    "keirin_now_path": "KEIRIN_NOW.md",
+    "governance_current_path": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "scope": "LIMITED_SYNTHETIC_ONLY",
+    "economics": "UNAUTHORIZED",
+    "new_result_payout_access": "OWNER_GATE_REQUIRED",
+    "fresh_or_untouched_validation": "OWNER_GATE_REQUIRED",
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "control_reconciliation": {
+    "issue": 377,
+    "decision": "KEIRIN_AUTHORITY_RECONCILED_TO_CANONICAL_SYNTHETIC_ONLY",
+    "v3_v7_classification": "HISTORICAL_EVIDENCE_PRODUCED_UNDER_AUTHORITY_CONFLICT",
+    "v8_authority": "DORMANT_DESIGN_ONLY"
+  },
+  "incident": {
+    "description": "A V8 real historical economics workflow was launched after the controlling authority had been reconciled fail-closed to canonical synthetic-only scope. General continuous-execution authorization was incorrectly treated as sufficient despite the scope-specific Owner Gate requirement.",
+    "launch_commit": "4db640eec8437ef3af264f6d3a5ca316cfaee5f9",
+    "workflow_run_id": 34762812495,
+    "workflow_job_id": 103738489251,
+    "last_observed_run_status": "in_progress",
+    "scientific_step_last_observed": "V8 exposed-development script in progress",
+    "artifact_downloaded_or_interpreted_after_reconciliation": false,
+    "logs_opened_after_reconciliation": false,
+    "result_promoted": false
+  },
+  "containment": {
+    "workflow_fail_closed_commit": "88296b7ee4d3a2d541c861c6e58bd5d6f03422c6",
+    "automatic_push_trigger_removed": true,
+    "manual_dispatch_now_fails_before_data_access": true,
+    "current_in_progress_run_cancel_capability_available_in_this_connector": false,
+    "current_run_artifact_policy": "IF_PRODUCED_CLASSIFY_QUARANTINED_UNAUTHORIZED_EVIDENCE_DO_NOT_DOWNLOAD_SCORE_INTERPRET_OR_USE",
+    "fresh_target_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000_RESULT_PAYOUT": "DO_NOT_OPEN_FOR_NEW_TUNING_OR_VALIDATION",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false
+  },
+  "root_cause": "Boot/restart Fresh Read did not successfully carry the latest #377/#394 authority reconciliation into the execution decision before V8 workflow launch.",
+  "durable_prevention": [
+    "Before any non-synthetic Keirin workflow creation, launch, rerun, or data access, Fresh Read canonical main KEIRIN_NOW.md and governance CURRENT_STATE_KEIRIN.json in addition to #394/#377/branch CURRENT.",
+    "A generic Owner instruction such as proceed/continue does not satisfy a scope-specific Owner Gate named in canonical Keirin governance.",
+    "When canonical main and branch continuity disagree on scope, canonical main authority wins and branch scientific work is limited to design/synthetic-only tasks.",
+    "No workflow that can touch real RESULT/PAYOUT or economics evidence may remain auto-triggerable while synthetic-only authority is active.",
+    "Unauthorized-run outputs, if produced, are preserved only as incident evidence and never admitted to scientific selection, calibration, validation, promotion, or economic claims."
+  ],
+  "next_owner_free_actions": [
+    "Continue source-independent synthetic engineering and Digital Twin W0-W4 diagnostics only.",
+    "Prototype probability-object/calibration diagnostics against synthetic outcomes only, with no real RESULT/PAYOUT or economics claims.",
+    "Observe workflow run metadata only until terminal; do not retrieve its artifact or logs/results.",
+    "Maintain a separate explicit Owner Gate requirement for any future real economics/RESULT-PAYOUT scope expansion."
+  ],
+  "owner_action_required_now": false,
+  "owner_gate_required_for_real_economics_scope_expansion": true
+}
