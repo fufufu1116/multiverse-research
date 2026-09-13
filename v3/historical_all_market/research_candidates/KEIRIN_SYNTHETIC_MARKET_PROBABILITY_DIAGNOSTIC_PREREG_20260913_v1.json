@@ -1,0 +1,136 @@
+{
+  "anti_overfit_boundary": [
+    "No parameter tuning after synthetic outcomes are observed.",
+    "No world deletion or reassignment.",
+    "No ROI, price, odds, stake, bankroll, real RESULT/PAYOUT, or historical settlement inputs.",
+    "Do not infer real-keirin calibration or future profitability from synthetic results.",
+    "N1 relation coefficients intentionally mirror a designed synthetic sensitivity axis; any apparent advantage is a stress-test result, not independent empirical validation."
+  ],
+  "architectures": {
+    "C0_SCORE_PL": {
+      "generator": "pl_top3_from_runner_utilities",
+      "pre_features": [
+        "observed_score"
+      ]
+    },
+    "C1_LINE_PL": {
+      "fixed_coefficients": {
+        "class": {
+          "A1": 0.05,
+          "A2": -0.03,
+          "A3": 0.0,
+          "S1": 0.08,
+          "S2": -0.03
+        },
+        "line_mean_score": 0.16,
+        "line_position": {
+          "0": 0.04,
+          "1": 0.1,
+          "2": 0.05
+        },
+        "line_size_per_extra": 0.025,
+        "short_bank_self_power_bonus": 0.04,
+        "style": {
+          "両": 0.04,
+          "逃": 0.06,
+          "追": 0.0
+        },
+        "wind_penalty_head": 0.035,
+        "wind_penalty_other": 0.00875
+      },
+      "generator": "pl_top3_from_runner_utilities",
+      "pre_features": [
+        "observed_score",
+        "class",
+        "style",
+        "bank_length_m",
+        "wind_speed_mps",
+        "line_group_id",
+        "line_position",
+        "line_size"
+      ]
+    },
+    "N1_CONDITIONAL": {
+      "base_utility": "same fixed C1 PRE-only utility",
+      "fixed_context_coefficients": {
+        "p2_immediate_follower": 0.28,
+        "p2_same_line": 0.3,
+        "p3_ordered_line_chain": 0.3,
+        "p3_same_as_first": 0.17,
+        "p3_same_as_second": 0.14
+      },
+      "generator": "conditional_top3_from_context_logits"
+    }
+  },
+  "authority_binding": {
+    "canonical_main_head_at_design": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "economics_scoring": false,
+    "fresh_or_untouched_validation": false,
+    "holdout_opening": false,
+    "keirin_governance_current_path": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "keirin_now_path": "KEIRIN_NOW.md",
+    "real_or_historical_result_payout_access": false,
+    "required_scope": "LIMITED_SYNTHETIC_ONLY"
+  },
+  "batch": {
+    "event_format": "STANDARD_FI_FII_7",
+    "races_per_world": 240,
+    "seed": 20260913
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "markets": [
+    "3rentan",
+    "3renhuku",
+    "2shatan",
+    "2shahuku",
+    "wide"
+  ],
+  "metrics": [
+    "ordered_top3_cross_entropy_against_exact_oracle",
+    "ordered_top3_kl_divergence_oracle_to_forecast",
+    "market_event_probability_rmse_against_exact_oracle",
+    "market_event_probability_mae_against_exact_oracle",
+    "market_reliability_bin_absolute_gap_against_exact_oracle",
+    "probability_mass_error"
+  ],
+  "objective": "Stress-test whether PL-style ordered-top3 mapping from PRE-only runner utilities becomes structurally misspecified in synthetic worlds with conditional line relations, disruption, or heavy-tail shocks, and whether an explicitly conditional N1 chain-rule object reduces that synthetic failure mode. This is an engineering falsification test only, not a real-keirin calibration, ROI, profitability, or model-promotion claim.",
+  "owner_action_required": false,
+  "predeclared_interpretation": {
+    "conditional_order_failure_gate": "Let best_PL be the lower mean ordered-top3 KL of C0_SCORE_PL and C1_LINE_PL separately within each comparison aggregate. If mean(best_PL_KL on W2-W4) >= 1.20 * mean(best_PL_KL on W0-W1) AND mean(N1_KL on W2-W4) <= 0.90 * mean(best_PL_KL on W2-W4), classify SYNTHETICALLY_PLAUSIBLE_CONDITIONAL_ORDER_FAILURE_MODE.",
+    "otherwise": "NO_STABLE_SYNTHETIC_ARCHITECTURE_ADVANTAGE",
+    "promotion": "NO_MODEL_PROMOTION_FROM_THIS_EXPERIMENT",
+    "stable_architecture_gate": "If exactly one architecture has the lowest ordered-top3 KL in every one of W0-W4, classify STABLE_SYNTHETIC_ARCHITECTURE_ADVANTAGE for that architecture."
+  },
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "record": "KEIRIN_SYNTHETIC_MARKET_PROBABILITY_DIAGNOSTIC_PREREG_20260913_v1",
+  "reliability_bins": [
+    0.0,
+    0.02,
+    0.05,
+    0.1,
+    0.2,
+    0.4,
+    0.7,
+    1.0000000001
+  ],
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_SCORING",
+  "worlds": [
+    "W0",
+    "W1",
+    "W2",
+    "W3",
+    "W4"
+  ]
+}
