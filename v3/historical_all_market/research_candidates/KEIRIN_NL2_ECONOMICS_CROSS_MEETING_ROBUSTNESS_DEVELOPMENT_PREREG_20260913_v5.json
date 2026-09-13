@@ -1,0 +1,308 @@
+{
+  "cross_meeting_folds": {
+    "construction": "Sort meetings by YYYYMMDD extracted from meeting_id, then meeting_id; assign round-robin to five fixed folds.",
+    "fold_count": 5,
+    "folds": [
+      {
+        "fold": 1,
+        "meeting_ids": [
+          "7420260731",
+          "2720260814",
+          "6320260823",
+          "2820260903",
+          "3720260907"
+        ]
+      },
+      {
+        "fold": 2,
+        "meeting_ids": [
+          "4220260804",
+          "2820260817",
+          "8720260824",
+          "4520260904",
+          "6120260908"
+        ]
+      },
+      {
+        "fold": 3,
+        "meeting_ids": [
+          "1320260806",
+          "4420260817",
+          "7420260825",
+          "6320260904",
+          "4820260909"
+        ]
+      },
+      {
+        "fold": 4,
+        "meeting_ids": [
+          "3520260809",
+          "2820260822",
+          "3120260901",
+          "2620260906",
+          "7420260909"
+        ]
+      },
+      {
+        "fold": 5,
+        "meeting_ids": [
+          "2620260813",
+          "5520260823",
+          "6120260902",
+          "1320260907",
+          "8420260909"
+        ]
+      }
+    ]
+  },
+  "development_eligibility": {
+    "all_five_folds_wagered": true,
+    "largest_single_ticket_return_share": "at_most_0.20",
+    "lower_quartile_wagered_meeting_roi": "greater_than_-0.90",
+    "maximum_drawdown": "at_most_0.20",
+    "median_fold_roi": "greater_than_0",
+    "median_wagered_meeting_roi": "greater_than_-0.10",
+    "minimum_bet_races": 120,
+    "minimum_executed_tickets": 120,
+    "minimum_positive_folds": 3,
+    "minimum_positive_meetings": 12,
+    "minimum_wagered_meetings": 20,
+    "missing_settlement_races": "none",
+    "pooled_roi": "greater_than_0",
+    "worst_fold_roi": "greater_than_-0.70"
+  },
+  "development_outcome_rules": {
+    "eligible_policy_count_positive": "Freeze exactly one winner after exposed development scoring. A separate future preregistration must select a new meeting-disjoint untouched validation set before any fresh PRE/PRICE/RESULT/PAYOUT access.",
+    "eligible_policy_count_zero": "NO_DEVELOPMENT_ELIGIBLE_POLICY; stop; do not select or access any fresh validation target."
+  },
+  "development_pool": {
+    "all_meetings_required_for_pre_price_coverage": true,
+    "basis": "Exact union of V3 development 10, V3 validation 5, and V4 replication 10 meetings. All are outcome/settlement exposed and are development-only forever.",
+    "meeting_count": 25,
+    "meetings": [
+      {
+        "circumference_m": 500.0,
+        "meeting_id": "7420260731",
+        "venue": "kochi"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "4220260804",
+        "venue": "nagoya"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "1320260806",
+        "venue": "iwakitaira"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "3520260809",
+        "venue": "hiratsuka"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "2620260813",
+        "venue": "seibuen"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "2720260814",
+        "venue": "keiokaku"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "2820260817",
+        "venue": "tachikawa"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "4420260817",
+        "venue": "ogaki"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "2820260822",
+        "venue": "tachikawa"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "5520260823",
+        "venue": "wakayama"
+      },
+      {
+        "circumference_m": 333.0,
+        "meeting_id": "6320260823",
+        "venue": "hofu"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "8720260824",
+        "venue": "kumamoto"
+      },
+      {
+        "circumference_m": 500.0,
+        "meeting_id": "7420260825",
+        "venue": "kochi"
+      },
+      {
+        "circumference_m": 333.0,
+        "meeting_id": "3120260901",
+        "venue": "matsudo"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "6120260902",
+        "venue": "tamano"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "2820260903",
+        "venue": "tachikawa"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "4520260904",
+        "venue": "toyohashi"
+      },
+      {
+        "circumference_m": 333.0,
+        "meeting_id": "6320260904",
+        "venue": "hofu"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "2620260906",
+        "venue": "seibuen"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "1320260907",
+        "venue": "iwakitaira"
+      },
+      {
+        "circumference_m": 333.0,
+        "meeting_id": "3720260907",
+        "venue": "ito"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "6120260908",
+        "venue": "tamano"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "4820260909",
+        "venue": "yokkaichi"
+      },
+      {
+        "circumference_m": 500.0,
+        "meeting_id": "7420260909",
+        "venue": "kochi"
+      },
+      {
+        "circumference_m": 400.0,
+        "meeting_id": "8420260909",
+        "venue": "takeo"
+      }
+    ],
+    "minimum_selected_pre_price_races": 600
+  },
+  "evidence_class": "EXPOSED_DEVELOPMENT_ONLY_NO_FRESH_VALIDATION_ACCESS",
+  "forbidden_rescue_actions": [
+    "No V3/V4 same-lineage threshold rescue claim.",
+    "No probability coefficient retune.",
+    "No market expansion beyond WIDE in this family.",
+    "No stake scaling beyond flat 100 JPY simulation.",
+    "No fresh validation target access in this run.",
+    "No ECON_HOLDOUT1000 bytes.",
+    "No DEV2000 RESULT/PAYOUT."
+  ],
+  "governance_inheritance": {
+    "DEV2000": "RESULT_PAYOUT_NOT_USED",
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "automatic_betting": false,
+    "fresh_validation_target_access": false,
+    "real_money": false,
+    "runtime": "OFF",
+    "same_lineage_v3_v4_retune": false
+  },
+  "lineage": "NL2_ECONOMICS_V5_CROSS_MEETING_ROBUSTNESS",
+  "objective": "Use only already-exposed V1-V4 economics meetings to select at most one lower-variance WIDE economics policy under stronger cross-meeting stability constraints. This is a new economics-development lineage after exact-policy V4 replication failed; it is not a rescue of V3/V4 confirmatory evidence.",
+  "owner_action_required": false,
+  "probability_models": {
+    "primary": "NL2_GEOBLEND_NUMERIC_L2_3_V1",
+    "primary_core_sha256": "e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0",
+    "probability_coefficient_retune": false,
+    "reference": "B1a_RECONSTITUTED_v1",
+    "reference_predictor_blob": "62ae4ebc17cda47dca1fffae190fa44caae58ca3"
+  },
+  "purchase_policy_family": {
+    "configuration_count": 108,
+    "design_reason": "Monotone abstention family only: lower odds caps, higher probability floors, tighter model agreement, and higher conservative raw-EV requirements. No market expansion, stake scaling, probability retune, or outcome-conditioned target deletion.",
+    "fixed_minimum_shape_edge_ratio": 1.5,
+    "market_group": "WIDE_ONLY",
+    "markets": [
+      "wide"
+    ],
+    "max_decimal_odds_values": [
+      8.0,
+      10.0,
+      12.0,
+      15.0
+    ],
+    "maximum_model_probability_agreement_ratio_values": [
+      1.2,
+      1.3,
+      1.4
+    ],
+    "minimum_raw_ev_values": [
+      0.5,
+      0.75,
+      1.0
+    ],
+    "portfolio_template": "TOP1_TOTAL_PER_RACE_AFTER_FILTERING",
+    "probability_floor_values": [
+      0.175,
+      0.2,
+      0.225
+    ],
+    "profile": "WIDE_CROSS_MEETING_ROBUSTNESS",
+    "stake_policy": "FLAT100_JPY_PER_SELECTED_RACE"
+  },
+  "record": "KEIRIN_NL2_ECONOMICS_CROSS_MEETING_ROBUSTNESS_DEVELOPMENT_PREREG_20260913_v5",
+  "scientific_claim_boundary": "Any V5 development winner is development-only and cannot be called validated, deployable, live-ready, or profitable out of sample. Only a separately preregistered new meeting-disjoint untouched validation may test it.",
+  "scientific_context": {
+    "same_lineage_rescue": false,
+    "v3_v4_exact_policy_combined_exposed_hit_rate": 0.12385321100917432,
+    "v3_v4_exact_policy_combined_exposed_roi": 0.025688073394495303,
+    "v3_v4_exact_policy_combined_exposed_tickets": 218,
+    "v3_validation_result": "POSITIVE_BUT_UNCERTAIN",
+    "v3_validation_roi": 0.8789473684210527,
+    "v4_exact_policy_replication_result": "FAIL_HISTORICAL_ECONOMICS_WIDE_STABILITY_V4_REPLICATION",
+    "v4_meetings": 10,
+    "v4_positive_meetings": 2,
+    "v4_replication_roi": -0.40786516853932586
+  },
+  "source_evidence": {
+    "canonical_v4_ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v2.jsonl",
+    "canonical_v4_ledger_commit": "69037223d921e22eae33c9137fa5fedc751c63aa",
+    "v3_artifact_id": 10308817910,
+    "v3_workflow_run_id": 34729296168,
+    "v4_artifact_digest": "sha256:25c89b9c8fe51f7a16f55f274896b7ed63933c4f4da5b8672cc518476c9795ed",
+    "v4_artifact_id": 10311152397,
+    "v4_workflow_run_id": 34735387522
+  },
+  "status": "PREREGISTERED_BEFORE_V5_EXPOSED_DEVELOPMENT_SCORING",
+  "winner_selection_order": [
+    "highest_worst_fold_roi",
+    "highest_median_fold_roi",
+    "highest_median_wagered_meeting_roi",
+    "highest_positive_meeting_count",
+    "lowest_largest_single_ticket_return_share",
+    "lowest_maximum_drawdown",
+    "highest_pooled_roi",
+    "highest_bet_races",
+    "lexicographically_smallest_configuration_id"
+  ]
+}
