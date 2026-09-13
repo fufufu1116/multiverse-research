@@ -1,0 +1,95 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_SUITABILITY_AUDIT_PREREG_20260914_v1",
+  "status": "PREREGISTERED_BEFORE_REAL_PRE_BYTE_ACCESS",
+  "evidence_class": "REAL_PRE_ONLY_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "canonical_authority": {
+    "main_head": "b40ff448ce3a2d08e00d93884881934c81469d65",
+    "owner_gate_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_SUITABILITY_AUDIT_20260914_v1.json",
+    "owner_gate_comment_id": 5657106213,
+    "branch_head_before_prereg": "39cd659b69f7232c98a26f2ae7affd15a4154e3a"
+  },
+  "target_artifact": {
+    "name": "DEV2000_PRE_TABLE_v1.csv",
+    "expected_sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
+    "expected_rows": 14255,
+    "expected_races": 2000,
+    "source_mode": "EXISTING_STORED_RECOVERY_ONLY_NO_NEW_COLLECTION"
+  },
+  "frozen_interface_sources": {
+    "PRE_INTERFACE_SCHEMA_DRAFT_v1_git_blob": "60a2efb456c196a56ef4f20104918e6f855d0a69",
+    "validate_pre_structure_v1_git_blob": "5c75838050ed953655de9ea1f8bf1cf56f16618f",
+    "synthetic_N2_implementation_git_blob": "6f95929b2daac6ff3312d43aee6976923ff7ab7a"
+  },
+  "audit_protocol": {
+    "stage_0_hash": {
+      "rule": "Compute SHA256 of recovered bytes before CSV parsing. Exact mismatch => STOP_BYTE_IDENTITY_FAIL and no content parsing."
+    },
+    "stage_1_header_only": {
+      "encoding_allowed": ["utf-8", "utf-8-sig"],
+      "forbidden_column_terms_casefolded": [
+        "result", "payout", "odds", "price", "settlement", "finish", "winner", "refund", "return_amount", "profit", "roi",
+        "結果", "払戻", "オッズ", "配当", "着順", "的中", "収益", "利益"
+      ],
+      "rule": "Read only header after hash pass. If any normalized column contains a forbidden term, classify FORBIDDEN_COLUMN_PRESENT_FAIL_CLOSED and do not read data rows.",
+      "direct_n2_required_columns": [
+        "race_id", "car_no", "score", "class", "style", "line_group_id", "line_position", "line_size", "bank_length_m", "wind_speed_mps"
+      ],
+      "full_pre_contract_flat_columns": [
+        "race_id", "prediction_timestamp", "decision_timestamp", "decision_cutoff_rule_id", "race_regime", "race_regime_source", "race_regime_source_timestamp", "race_regime_raw_provenance_sha",
+        "line_source", "line_snapshot_timestamp", "line_observation_type", "line_raw_provenance_sha", "num_lines",
+        "car_no", "rider_id", "active", "line_group_id", "line_position", "line_size", "is_singleton"
+      ],
+      "missing_direct_n2_rule": "If any direct N2 required column is absent, classify HEADER_MAPPING_REQUIRED_STOP_BEFORE_VALUE_READ, record header only, and stop before data rows. A separate mapping preregistration may be created from header names only before any value access."
+    },
+    "stage_2_values_only_if_direct_columns_exact": {
+      "row_count_rule": "Report exact data-row count and compare to expected 14255; mismatch is DATASET_SHAPE_MISMATCH but does not authorize alternate files.",
+      "race_count_rule": "Report unique race_id count and compare to expected 2000.",
+      "required_value_missingness": "Report exact missing count/rate for every direct N2 column; zero missing is required for STRICT_DIRECT_VALUE_COMPLETENESS.",
+      "numeric_parse_fields": ["car_no", "score", "line_group_id", "line_position", "line_size", "bank_length_m", "wind_speed_mps"],
+      "categorical_synthetic_support": {
+        "class": ["S1", "S2", "A1", "A2", "A3"],
+        "style": ["逃", "両", "追"],
+        "bank_length_m": [333, 400, 500],
+        "line_position": [0, 1, 2],
+        "line_size": [1, 2, 3]
+      },
+      "race_shape_rule": "Report rider-count distribution by race_id. Frozen N2 synthetic validation is STANDARD_FI_FII_7; any non-7 race produces MIXED_EVENT_FORMAT_REQUIRES_EXPLICIT_ROUTING rather than silent coercion or deletion.",
+      "line_structure_rule": "For each race/line group, car_no must be unique, line positions contiguous from 0, and line_size must equal group membership count. Report failures exactly; do not repair values.",
+      "distribution_summary": "For score and wind_speed_mps report min, q05, median, q95, max; for bank/class/style/line_size/race_size report counts. This is support diagnostics only, not training or calibration.",
+      "no_model_prediction": true,
+      "no_parameter_fit": true,
+      "no_outcome_metric": true
+    }
+  },
+  "predeclared_classifications": [
+    "STOP_BYTE_IDENTITY_FAIL",
+    "FORBIDDEN_COLUMN_PRESENT_FAIL_CLOSED",
+    "HEADER_MAPPING_REQUIRED_STOP_BEFORE_VALUE_READ",
+    "DIRECT_N2_COLUMNS_PRESENT_FULL_PRE_CONTRACT_MISSING",
+    "MIXED_EVENT_FORMAT_REQUIRES_EXPLICIT_ROUTING",
+    "DIRECT_N2_VALUE_OR_LINE_INVARIANT_FAILURE",
+    "DIRECT_N2_PRE_ONLY_INTERFACE_COMPATIBLE_FOR_AUDIT"
+  ],
+  "interpretation_rules": [
+    "Compatibility does not mean predictive validity, calibration, edge, profitability, or promotion.",
+    "No row may be excluded because it is inconvenient for compatibility diagnostics; failures are reported, not tuned away.",
+    "No alias/mapping may be invented after viewing data values. Header-only mapping may be separately preregistered before value access if required.",
+    "No real PRE data may be used to fit N2 coefficients, shrinkage, thresholds or feature selection under this gate."
+  ],
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_AUTHORIZED_NOT_ACCESSED",
+    "outcome_labels": "NOT_AUTHORIZED_NOT_ACCESSED",
+    "odds_price": "NOT_AUTHORIZED_NOT_ACCESSED",
+    "economics": "NOT_AUTHORIZED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes": "NOT_AUTHORIZED_NOT_ACCESSED",
+    "new_automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "stop_rule": "Stop immediately on byte identity failure, forbidden column detection, or missing direct N2 columns. In the missing-column case only header names may be used to preregister a deterministic mapping before any value access."
+}
