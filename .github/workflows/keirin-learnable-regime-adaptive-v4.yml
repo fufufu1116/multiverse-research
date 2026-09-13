@@ -1,4 +1,4 @@
-name: Keirin Learnable-Regime Adaptive Probability v4 — Hash Preflight
+name: Keirin Learnable-Regime Adaptive Probability v4
 
 on:
   push:
@@ -16,13 +16,16 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-hash-preflight:
+  learnable-regime-adaptive-v4:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Fresh-check canonical main synthetic-only authority
         shell: bash
         run: |
@@ -38,17 +41,31 @@ jobs:
               raise SystemExit('FAIL_CLOSED: canonical Keirin status is not limited synthetic authorization')
           if x.get('scientific_state',{}).get('ECON_HOLDOUT1000') != 'SEALED':
               raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
+          if x.get('owner_policy',{}).get('real_money_wagering') != 'OUT_OF_SCOPE':
+              raise SystemExit('FAIL_CLOSED: real-money authority drift')
           print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
           PY
-      - name: Print exact candidate hashes and stop before scoring
+      - name: Verify exact frozen hashes before synthetic scoring
         shell: bash
         run: |
           set -euo pipefail
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_LEARNABLE_REGIME_DIGITAL_TWIN_V2_SPEC_20260913.json
-          sha256sum v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_LEARNABLE_REGIME_ADAPTIVE_PROBABILITY_PREREG_20260913_v4.json
-          sha256sum v3/historical_all_market/new_lineage/learnable_regime_adaptive_probability_v4.py
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_MARKET_PROBABILITY_DIAGNOSTIC_PREREG_20260913_v1.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py
-          python -m py_compile v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py v3/historical_all_market/new_lineage/learnable_regime_adaptive_probability_v4.py
-          echo 'HASH_PREFLIGHT_COMPLETE_NO_EXPERIMENT_SCORING'
+          echo "319fa324cbcdbd757ae880efe26cd144b7825b675446c321a519cea7b4a593a0  v3/historical_all_market/research_candidates/KEIRIN_LEARNABLE_REGIME_DIGITAL_TWIN_V2_SPEC_20260913.json" | sha256sum -c -
+          echo "67fbfc8128f93a760df0d68edf7eba1fd5756bc0b5e152066799d45abb071fac  v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py" | sha256sum -c -
+          echo "a446b5adcae9f3f0034b0dd8ff74553fbd46e0a78ce80e79f107cce5dab196d6  v3/historical_all_market/research_candidates/KEIRIN_LEARNABLE_REGIME_ADAPTIVE_PROBABILITY_PREREG_20260913_v4.json" | sha256sum -c -
+          echo "d38dd7a9d655945b44480b8d8addf5505da6a180154f44ef5398ebb75038352a  v3/historical_all_market/new_lineage/learnable_regime_adaptive_probability_v4.py" | sha256sum -c -
+          echo "ad96bd369ccee1177dbf9979314f36bfb61e631145c3ed0818ac3bbed7c248b2  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_MARKET_PROBABILITY_DIAGNOSTIC_PREREG_20260913_v1.json" | sha256sum -c -
+          echo "2356765dfca8764065ccda8927227420c832e5a3f8dd25c8056a1630be7b88c1  v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py" | sha256sum -c -
+      - name: Compile frozen synthetic components
+        run: python -m py_compile v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py v3/historical_all_market/new_lineage/learnable_regime_adaptive_probability_v4.py
+      - name: Selftest learnable-regime digital twin v2
+        run: python v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py
+      - name: Run preregistered learnable-regime adaptive probability v4
+        run: python v3/historical_all_market/new_lineage/learnable_regime_adaptive_probability_v4.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-learnable-regime-adaptive-probability-v4
+          path: v3/historical_all_market/research_candidates/learnable_regime_adaptive_probability_v4/
+          if-no-files-found: warn
+          retention-days: 90
