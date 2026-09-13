@@ -1,0 +1,76 @@
+{
+  "anti_overfit_boundary": [
+    "No coefficient, threshold, world, seed, race, or stratum changes after scoring.",
+    "No selector or adaptive-mixture tuning in this experiment.",
+    "No real/historical data, odds, prices, RESULT/PAYOUT, ROI, or bankroll inputs.",
+    "A failed N1 gate authorizes only a separately preregistered synthetic component-development experiment, not post-hoc repair inside v5."
+  ],
+  "batches": [
+    {
+      "races": 500,
+      "seed": 20260920
+    },
+    {
+      "races": 500,
+      "seed": 20260921
+    }
+  ],
+  "claim_boundary": {
+    "live_or_production": false,
+    "model_promotion": false,
+    "real_keirin_claim": false
+  },
+  "decision_rule": {
+    "c0_W0_reference_adequate": "C0_SCORE_PL has the lowest W0 mean KL on both seeds.",
+    "classification_if_n1_fails": "N1_COMPONENT_INADEQUATE_FOR_W2_SPEC_ALIGNED_COMPONENT_REQUIRED",
+    "classification_if_n1_passes": "N1_COMPONENT_ADEQUATE_FOR_W2",
+    "n1_W2_component_adequate": [
+      "N1_CONDITIONAL W2 mean KL <= 0.95 * min(C0_SCORE_PL, C1_LINE_PL) W2 mean KL on both seeds.",
+      "For every LOW/MID/HIGH stratum with count >= 60 on each seed, N1 W2 stratum KL <= 1.02 * best PL W2 stratum KL."
+    ]
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "inputs": {
+    "digital_twin": "v3/historical_all_market/new_lineage/digital_twin_v1.py",
+    "forecast_components": "v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py::forecasts",
+    "learnable_signal_only": "v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py::pre_mechanism_signal",
+    "real_historical_input": false,
+    "worlds": [
+      "W0",
+      "W2"
+    ]
+  },
+  "metrics": [
+    "mean_ordered_top3_KL_oracle_to_forecast",
+    "stratum_mean_ordered_top3_KL",
+    "relative_KL_to_best_PL"
+  ],
+  "models": [
+    "C0_SCORE_PL",
+    "C1_LINE_PL",
+    "N1_CONDITIONAL"
+  ],
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics": "NOT_COMPUTED",
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "purpose": "Test whether the fixed C0 and N1 synthetic forecasting components are actually adequate for the W0 and W2 oracle components before any further selector/adaptive-mixture tuning.",
+  "record": "KEIRIN_SYNTHETIC_COMPONENT_ADEQUACY_PREREG_v5",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_COMPONENT_SCORING",
+  "strata": {
+    "HIGH": "signal > 0.35",
+    "LOW": "signal < -0.35",
+    "MID": "-0.35 <= signal <= 0.35",
+    "minimum_count_per_seed": 60
+  }
+}
