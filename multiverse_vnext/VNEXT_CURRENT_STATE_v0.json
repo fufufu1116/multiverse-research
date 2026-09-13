@@ -1,120 +1,82 @@
 {
   "record": "VNEXT_CURRENT_STATE_v0",
   "status": "ACCEPTED_FROZEN",
-  "updated_jst": "2026-08-21T09:43:00+09:00",
+  "updated_date_jst": "2026-09-14",
   "mutability": "MUTABLE_CAS_POINTER_WITH_ACCEPTED_VNEXT_AND_FOUNDATION_ARTIFACTS_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
-  "current_phase": "VNEXT_ACCEPTED_FROZEN_FOUNDATION_V1_ACCEPTED_KEIRIN_LIMITED_SYNTHETIC_SCIENCE_AUTHORIZED",
+  "current_phase": "VNEXT_ACCEPTED_FROZEN_FOUNDATION_V1_ACCEPTED_KEIRIN_LIMITED_REAL_PRE_ONLY_SUITABILITY_AUDIT_AUTHORIZED",
   "formal_release_state": "ACCEPTED_FROZEN",
-  "state_generation": 12,
-  "parent_valid_state_git_blob_sha": "f4295fe416667745688f17ab390246cbb64e0dc8",
+  "state_generation": 13,
+  "parent_valid_state_git_blob_sha": "afe746287c7e911d214202abdf2de076f63ab30c",
   "supersedes_state_ref": {
     "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
-    "git_blob_sha": "f4295fe416667745688f17ab390246cbb64e0dc8",
-    "logical_generation": 11
-  },
-  "write_precondition": {
-    "expected_current_file_blob_sha": "f4295fe416667745688f17ab390246cbb64e0dc8",
-    "expected_canonical_main_head": "7993d8d90d0154913e6335bf5219477cf1f8fd38",
-    "expected_audited_pr_head": "5ddca980391c0a3692454cdad540825c155852e7",
-    "expected_generation_of_last_valid_state": 11,
-    "new_generation": 12,
-    "reject_on_any_mismatch": true,
-    "timestamp_can_override": false
+    "git_blob_sha": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "logical_generation": 12
   },
   "canonical_precedence_rule": {
     "ordering": "GIT_ANCESTRY_PLUS_MONOTONIC_GENERATION_PLUS_EXPLICIT_SUPERSESSION",
     "timestamp_is_authority": false,
     "stale_or_invalid_writer_action": "FAIL_CLOSED_OR_EXPLICIT_REPAIR_NO_SILENT_ACCEPTANCE"
   },
-  "vnext_acceptance": {
-    "accepted_main_commit": "460e46440edecf90bfd4028b085ad28c0bd3327c",
-    "audited_pr_head": "331b5bf5078d0343c1efb7add04f9c7e1c26fb70",
-    "auditor_result_comment_id": 5346601637,
-    "auditor_verdict": "PASS",
-    "owner_gate_required": false,
-    "governed_permission_class": "P3_MATERIAL_OPERATION",
-    "acceptance_freeze_receipt": {
-      "path": "multiverse_vnext/VNEXT_ACCEPTANCE_FREEZE_RECEIPT_20260820_v1.json",
-      "git_blob_sha": "51d562d281892b7c705f98664810e7258e335286",
-      "sha256": "cbff09b08cf14ab6a80e2cb0468b6ee05200762afcff737df12d08c4494523db"
-    }
+  "foundation_inheritance": {
+    "status": "UNCHANGED_FROM_GENERATION_12_ACCEPTED_FROZEN",
+    "generation_12_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "foundation_artifacts_reopened": false,
+    "foundation_acceptance_changed": false,
+    "architecture_closure_changed": false
   },
-  "foundation_acceptance": {
-    "status": "ACCEPTED_FROZEN",
-    "candidate_pr": 24,
-    "audited_pr_head": "2f81464a0a159f7d643105e176edbf289f263cda",
-    "canonical_main_parent_before_acceptance": "819afb723c8f14000757b2e53b6664d71ab01227",
-    "auditor_result_comment_id": 5357896969,
-    "auditor_verdict": "PASS",
-    "G1": "ACCEPTED",
-    "G2": "ACCEPTED",
-    "G3": "ACCEPTED",
-    "G4": "ACCEPTED",
-    "G5": "ACCEPTED",
-    "all_foundation_gates_accepted": true,
-    "permission_class": "P4_OWNER_GATE_REQUIRED",
+  "keirin_scope_transition": {
+    "change_class": "MATERIAL_SOURCE_PERMISSION_BOUNDARY_CHANGE",
     "owner_gate_required": true,
-    "owner_gate": {
-      "path": "governance/MULTIVERSE_OWNER_GATE_FOUNDATION_ACCEPT_FREEZE_20260821_v1.json",
-      "git_blob_sha": "abf41ce2cf3c35a9ee65ac04be6eda4132606030",
-      "sha256": "2c2af5eda140af939a94e4bf34a8923c150707f6248cdc35934dc5ed1c89c07e"
-    },
-    "acceptance_freeze_receipt": {
-      "path": "governance/MULTIVERSE_FOUNDATION_ACCEPTANCE_FREEZE_RECEIPT_20260821_v1.json",
-      "git_blob_sha": "c7c9a81d498c623b72d77fbe0e1448aba822a5b3",
-      "sha256": "e1d094bf2982b5ca121a17b61fd23847c1732c5e2c3ddc11219ec6816bcd74ea",
-      "commit_identity_rule": "SAME_ATOMIC_TWO_PARENT_COMMIT_AS_THIS_GENERATION_11_STATE"
-    },
-    "atomic_transition": {
-      "first_parent_required": "819afb723c8f14000757b2e53b6664d71ab01227",
-      "second_parent_required": "2f81464a0a159f7d643105e176edbf289f263cda",
-      "self_commit_identity": "RESOLVE_FROM_GIT_COMMIT_CONTAINING_THIS_STATE_AND_RECEIPT"
-    }
-  },
-  "foundation_recovery_evidence": {
-    "dual_root_recovery": "PASS",
-    "recovery_run": 32383034746,
-    "recovery_job": 96470656193,
-    "inner_repo_zip_sha256": "291df8ee537ec8af72a4f94756509e955cc6528257495a65c04c7880bf57477e",
-    "inner_repo_zip_size_bytes": 1007679,
-    "github_artifact_id": 9411765380,
-    "github_artifact_zip_sha256": "8c9bfc4bb1dec04139da9200954ab1c1e3b36c4c367223a402d875b4a92ecae1",
-    "github_artifact_zip_size_bytes": 928634,
-    "drive_file_id": "1BFqJ9TQk-xhVS2BQdUfetgIXa4wjB8gx",
-    "drive_role": "NONAUTHORITATIVE_RECOVERY_COPY",
-    "acl_assurance_limit": "Auditor API could not independently expose ACL fields; byte identity and reconstructability were verified."
-  },
-  "architecture_closure": {
-    "current_target": "STRONG_L2_ORCHESTRATED_FOUNDATION",
-    "vnext_accepted": true,
-    "foundation_v1_accepted": true,
-    "core_noncritical_expansion": "STOP_OR_ROUTE_TO_NEXT_VERSION_CANDIDATE",
-    "ordinary_new_ideas": "NEXT_VERSION_CANDIDATE",
-    "reopen_only_for_material_acceptance_invalidators": true
+    "owner_gate_satisfied": true,
+    "owner_gate_issue": 377,
+    "owner_gate_comment_id": 5657106213,
+    "receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_SUITABILITY_AUDIT_20260914_v1.json",
+    "scope": "EXISTING_STORED_REAL_PRE_ONLY_SUITABILITY_COMPATIBILITY_AUDIT",
+    "not_model_promotion": true,
+    "not_outcome_validation": true,
+    "not_runtime_authorization": true
   },
   "keirin_firewall": {
     "scientific_state_change_authorized_by_foundation_acceptance": false,
     "scientific_resume_allowed": true,
     "separate_scientific_execution_authorization_required": false,
+    "real_pre_only_suitability_audit_authorized": true,
+    "authorized_real_pre_artifact": "DEV2000_PRE_TABLE_v1.csv",
+    "authorized_real_pre_artifact_sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
+    "result_payout_access_authorized": false,
+    "odds_or_price_access_authorized": false,
+    "economics_authorized": false,
     "ECON_HOLDOUT1000": "SEALED",
     "DEV2000_C_new_lineage_rescue": "PROHIBITED",
     "same_lineage_B_C_rescue_tuning": "PROHIBITED",
     "new_untouched_validation_opened": false,
-    "result_payout_access_authorized": false,
+    "real_pre_training_or_parameter_selection": "PROHIBITED_UNDER_THIS_GATE",
     "model_promotion": "PROHIBITED",
-    "pr15_quarantined_metrics_may_be_inspected_for_resume_selection": false,
     "external_provider_contact_authorized": false,
+    "new_automated_bulk_collection_authorized": false,
+    "access_control_bypass": "PROHIBITED",
     "real_money_wagering": "OUT_OF_SCOPE",
-    "synthetic_evidence_is_real_world_edge_evidence": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
     "current_scientific_state_source": "FRESH_READ_v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json_REQUIRED"
   },
+  "authority_activation": {
+    "atomic_commit_required": true,
+    "required_surfaces": [
+      "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_SUITABILITY_AUDIT_20260914_v1.json",
+      "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+      "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
+      "KEIRIN_NOW.md"
+    ],
+    "fail_closed_on_mismatch": true
+  },
   "next_actions": [
-    "Immediately before first Keirin execution, Fresh Read canonical main, generation-12 VNEXT_CURRENT_STATE_v0.json, CURRENT_STATE_KEIRIN.json, and governance/KEIRIN_LIMITED_SYNTHETIC_EXECUTION_AUTHORIZATION_RECEIPT_20260821_v1.json; fail closed on relevant drift.",
-    "Execute only source-independent synthetic regression checks, Digital Twin W0-W4 synthetic stress/failure diagnostics, and C0/C1/N1 comparison inside those synthetic worlds.",
-    "Keep real/live input collection, economics, real-world or untouched validation, PR #15 metrics, RESULT/PAYOUT, ECON_HOLDOUT1000, DEV2000 C rescue, same-lineage B/C rescue, model promotion, external contact, bulk collection and real-money wagering unauthorized.",
-    "Keep scientific segment C scoring count at 0 and treat all authorized output as synthetic engineering/falsification evidence only.",
-    "Any scope expansion requires a separate governed gate and cannot reuse the 2026-08-21 limited-synthetic Owner Gate."
+    "Immediately before first real PRE access, Fresh Read canonical main, issue #394, issue #377, this generation-13 state, CURRENT_STATE_KEIRIN, KEIRIN_NOW and the PRE-only authorization receipt; fail closed on relevant drift.",
+    "Preregister the exact PRE-only suitability audit before accessing DEV2000_PRE_TABLE_v1.csv bytes.",
+    "Recover only the already-existing DEV2000_PRE_TABLE_v1.csv and verify its canonical SHA256 before scientific use.",
+    "Perform only schema, forbidden-field, availability, missingness, type, range, support, race-shape and interface compatibility diagnostics.",
+    "Keep RESULT/PAYOUT, odds/prices, economics, ECON_HOLDOUT1000, DEV2000 C outcomes, untouched outcome validation, real-data training/model selection, model promotion, external contact, new bulk collection, Runtime and automatic betting prohibited."
   ],
-  "owner_action_now": "NONE"
+  "owner_action_now": "NONE_FOR_AUTHORIZED_PRE_ONLY_AUDIT; NEW_OWNER_GATE_REQUIRED_FOR_ANY_BROADER_EVIDENCE_STAGE"
 }

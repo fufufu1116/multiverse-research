@@ -1,0 +1,56 @@
+{
+  "record": "KEIRIN_OWNER_GATE_REAL_PRE_ONLY_SUITABILITY_AUDIT_20260914_v1",
+  "status": "ACTIVE_ONLY_IN_ATOMIC_CANONICAL_COMMIT_WITH_MATCHING_KEIRIN_STATE_VNEXT_STATE_AND_KEIRIN_NOW",
+  "created_date_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "purpose": "Authorize one narrow real/historical PRE-only suitability and interface-compatibility audit after the completed synthetic N2 engineering milestone, without opening outcome, price, economics, holdout, runtime or betting scope.",
+  "owner_gate_evidence": {
+    "control_issue": 377,
+    "owner_gate_comment_id": 5657106213,
+    "owner_directive_exact": "実データPRE-only適合性監査を許可。RESULT/PAYOUT・odds/price・economics・ECON_HOLDOUT1000・新規自動大量収集は引き続き禁止。Runtime OFF・自動投票OFFのまま進めて。"
+  },
+  "allowed_scope": {
+    "existing_stored_artifact_only": "DEV2000_PRE_TABLE_v1.csv",
+    "expected_sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
+    "expected_rows": 14255,
+    "expected_races": 2000,
+    "allowed_operations": [
+      "recover the already-existing stored PRE table from its canonical recovery pointer",
+      "verify exact bytes against the canonical SHA256 before scientific use",
+      "inspect header/schema and fail closed if outcome, payout, odds, price, settlement or economics fields are present",
+      "audit required PRE field availability, types, missingness, cardinality, range and support",
+      "audit race-shape and interface compatibility with the frozen PRE/N2 input contract",
+      "compare PRE-only feature support/distribution summaries with synthetic engineering support for compatibility diagnostics",
+      "run deterministic parser/transform/interface dry-run without outcome labels or performance interpretation"
+    ],
+    "evidence_class": "REAL_PRE_ONLY_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE"
+  },
+  "explicitly_not_authorized": [
+    "RESULT or PAYOUT access",
+    "finish position, winner, settlement or any outcome label access",
+    "odds, price or market price catalog access",
+    "economics, bankroll, ROI, profit or wagering evaluation",
+    "ECON_HOLDOUT1000 opening, scoring or access-policy change",
+    "DEV2000 C result/payout rescue or any outcome-bearing C access",
+    "untouched outcome validation",
+    "training, fitting or selecting model parameters from real PRE data",
+    "result-aware feature selection, exclusions, thresholds or ticket decisions",
+    "model promotion, freeze acceptance or production deployment",
+    "new automated bulk collection",
+    "external provider contact, payment, credential use or contractual action",
+    "access-control, rate-limit, CAPTCHA or WAF bypass",
+    "Runtime activation, automatic betting or real-money wagering"
+  ],
+  "scientific_invariants": {
+    "scientific_segment_c_scoring_count_must_remain": 0,
+    "new_untouched_validation_opened_must_remain": false,
+    "ECON_HOLDOUT1000_must_remain": "SEALED",
+    "runtime_must_remain": "OFF",
+    "automatic_betting_must_remain": false,
+    "no_real_world_edge_or_roi_claim": true
+  },
+  "activation_rule": "Authority is active only when one atomic canonical main commit contains this receipt plus matching v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json, multiverse_vnext/VNEXT_CURRENT_STATE_v0.json generation 13, and KEIRIN_NOW.md. Any missing or contradictory surface fails closed.",
+  "first_access_rule": "Immediately before accessing DEV2000_PRE_TABLE_v1.csv bytes, Fresh Read canonical main, this receipt, CURRENT_STATE_KEIRIN, VNEXT_CURRENT_STATE_v0, KEIRIN_NOW.md, issue #394 and issue #377. Verify the exact artifact SHA before any statistical audit. Fail closed on drift.",
+  "scope_expansion_rule": "Any later use of outcomes, RESULT/PAYOUT, odds/prices, economics, untouched validation, real-data training/model selection, model promotion, Runtime or betting requires a separate explicit governed Owner Gate and cannot reuse this receipt.",
+  "canonical_commit_identity": "RESOLVE_FROM_ATOMIC_MAIN_COMMIT_CONTAINING_ALL_MATCHING_AUTHORITY_SURFACES"
+}
