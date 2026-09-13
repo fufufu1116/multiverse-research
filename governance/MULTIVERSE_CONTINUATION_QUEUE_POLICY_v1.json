@@ -1,0 +1,36 @@
+{
+  "schema": "MULTIVERSE_CONTINUATION_QUEUE_POLICY_v1",
+  "status": "CANDIDATE_REPOSITORY_ONLY_NON_AUTHORITY",
+  "runtime": "OFF",
+  "purpose": "Persist enough continuation state to resume owner-free safe work after chat or executor loss.",
+  "owner_facing_model": "AUTOSAVE_STYLE_CONTINUITY",
+  "canonical_authority": "GITHUB_AFTER_ADOPTION_ONLY",
+  "event_priority": [
+    "completion_event",
+    "queue_recovery",
+    "periodic_fallback"
+  ],
+  "claim_policy": {
+    "idempotency_required": true,
+    "lease_required": true,
+    "expired_lease_reclaimable": true,
+    "duplicate_execution": "DENY"
+  },
+  "stop_conditions": [
+    "OWNER_GATE_REQUIRED",
+    "UPSTREAM_FAILURE",
+    "RUNTIME_OR_LIVE_AUTHORITY_REQUIRED",
+    "CREDENTIAL_OR_SPEND_REQUIRED",
+    "IRREVERSIBLE_ACTION_REQUIRED",
+    "INDEPENDENT_AUDIT_REQUIRED"
+  ],
+  "metrics": [
+    "detection_latency_seconds",
+    "average_wait_seconds",
+    "max_wait_seconds",
+    "ready_count",
+    "leased_count",
+    "gate_blocked_count"
+  ],
+  "authority_note": "This candidate grants no merge, adoption, deployment, credential, provider, spend, production, or Runtime authority."
+}
