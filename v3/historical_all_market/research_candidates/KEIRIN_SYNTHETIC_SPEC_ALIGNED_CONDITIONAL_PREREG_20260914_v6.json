@@ -1,0 +1,107 @@
+{
+  "anti_overfit_boundary": [
+    "All coefficients are derived from the synthetic simulator specification, not v6 outcome scoring.",
+    "No coefficient, threshold, seed, race, or stratum changes after scoring.",
+    "No real/historical data, odds, prices, RESULT/PAYOUT, ROI, bankroll, or hidden latent skill is a prediction input.",
+    "A pass is synthetic engineering evidence only and cannot promote a real Keirin model."
+  ],
+  "batches": [
+    {
+      "races": 500,
+      "seed": 20260922
+    },
+    {
+      "races": 500,
+      "seed": 20260923
+    }
+  ],
+  "claim_boundary": {
+    "live_or_production": false,
+    "model_promotion": false,
+    "real_keirin_claim": false
+  },
+  "comparison_models": [
+    "C0_SCORE_PL",
+    "N1_CONDITIONAL",
+    "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL"
+  ],
+  "component": {
+    "base_utility_coefficients": {
+      "class": {
+        "A1": 0.05,
+        "A2": -0.03,
+        "A3": 0.0,
+        "S1": 0.08,
+        "S2": -0.03
+      },
+      "line_position": {
+        "0": 0.04,
+        "1": 0.1,
+        "2": 0.05
+      },
+      "line_size_per_extra": 0.025,
+      "line_strength": 0.16,
+      "short_bank_self_power_bonus": 0.04,
+      "style": {
+        "両": 0.04,
+        "逃": 0.06,
+        "追": 0.0
+      },
+      "wind_penalty_other_style_multiplier": 0.25,
+      "wind_penalty_self_power_head_style": 0.035
+    },
+    "conditional_relation_coefficients": {
+      "p2_immediate_follower": 0.28,
+      "p2_same_line": 0.3,
+      "p3_ordered_line_chain": 0.3,
+      "p3_same_as_first": 0.17,
+      "p3_same_as_second": 0.14
+    },
+    "derivation": "Gaussian posterior mean coefficient for latent_skill~N(0,1) observed with independent N(0,0.55^2) noise; fixed analytically from simulator specification before v6 scoring.",
+    "hidden_alpha_access": false,
+    "latent_skill_access": false,
+    "name": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "oracle_access_for_prediction": false,
+    "posterior_score_shrinkage": 0.7677543186180422
+  },
+  "decision_rule": {
+    "component_adequate": [
+      "N2 mean W2 KL <= 0.90 * N1 mean W2 KL on both seeds.",
+      "N2 mean W2 KL <= 0.90 * C0 mean W2 KL on both seeds.",
+      "For every LOW/MID/HIGH stratum with count >= 60 on each seed, N2 stratum KL <= 0.95 * N1 stratum KL."
+    ],
+    "fail_classification": "N2_SPEC_ALIGNED_COMPONENT_NOT_ADEQUATE",
+    "pass_classification": "N2_SPEC_ALIGNED_COMPONENT_ADEQUATE_FOR_W2"
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "metrics": [
+    "mean_ordered_top3_KL_oracle_to_forecast",
+    "stratum_mean_ordered_top3_KL",
+    "N2_relative_to_N1",
+    "N2_relative_to_C0"
+  ],
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics": "NOT_COMPUTED",
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "purpose": "Test a separately versioned PRE-only conditional component aligned to the explicit W2 simulator specification after v5 established that the original N1 component was inadequate.",
+  "record": "KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_v6",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_COMPONENT_SCORING",
+  "strata": {
+    "HIGH": "signal > 0.35",
+    "LOW": "signal < -0.35",
+    "MID": "-0.35 <= signal <= 0.35",
+    "minimum_count_per_seed": 60
+  },
+  "world": "W2"
+}
