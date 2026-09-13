@@ -1,0 +1,63 @@
+name: Keirin Synthetic Component Adequacy v5
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - 'v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_COMPONENT_ADEQUACY_PREREG_20260914_v5.json'
+      - 'v3/historical_all_market/new_lineage/synthetic_component_adequacy_v5.py'
+      - '.github/workflows/keirin-synthetic-component-adequacy-v5.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-component-adequacy-v5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fresh-check canonical main synthetic-only authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin main
+          echo "fresh canonical main: $(git rev-parse origin/main)"
+          git show origin/main:KEIRIN_NOW.md | grep -F 'Synthetic（合成）限定' >/dev/null
+          git show origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json > /tmp/CURRENT_STATE_KEIRIN.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/CURRENT_STATE_KEIRIN.json',encoding='utf-8'))
+          if x.get('status') != 'LIMITED_SYNTHETIC_SCIENTIFIC_EXECUTION_AUTHORIZED_POST_LAB_AUDITOR_OWNER_GATE':
+              raise SystemExit('FAIL_CLOSED: canonical Keirin status is not limited synthetic authorization')
+          if x.get('scientific_state',{}).get('ECON_HOLDOUT1000') != 'SEALED':
+              raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
+          if x.get('owner_policy',{}).get('real_money_wagering') != 'OUT_OF_SCOPE':
+              raise SystemExit('FAIL_CLOSED: real-money authority drift')
+          print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
+          PY
+      - name: Verify exact preregistration and implementation hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "0a43f5464f509d0fbfb17c3ac567f137e2ee5db37e499991f9efe111bd1d5454  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_COMPONENT_ADEQUACY_PREREG_20260914_v5.json" | sha256sum -c -
+          echo "2cbb46f15a3252caf93de222af290cf1ccaef0f0421e71f35556a0ad4c74c8e6  v3/historical_all_market/new_lineage/synthetic_component_adequacy_v5.py" | sha256sum -c -
+      - name: Compile synthetic component audit
+        run: python -m py_compile v3/historical_all_market/new_lineage/synthetic_component_adequacy_v5.py
+      - name: Run preregistered synthetic component adequacy audit
+        run: python v3/historical_all_market/new_lineage/synthetic_component_adequacy_v5.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-synthetic-component-adequacy-v5
+          path: v3/historical_all_market/research_candidates/synthetic_component_adequacy_v5/
+          if-no-files-found: warn
+          retention-days: 90
