@@ -1,0 +1,72 @@
+{
+  "record": "KEIRIN_V5_MEETING_ZERO_RETURN_STABILITY_DIAGNOSTIC_20260913_v1",
+  "status": "EXPOSED_EVIDENCE_DIAGNOSTIC_ONLY",
+  "source": {
+    "workflow_run_id": 34737854844,
+    "artifact_id": 10311983335,
+    "artifact_digest": "sha256:4fb9b1656fbccc5ba06882418c374524442f3ba6bdc0b825dd5685fa2da47171",
+    "source_file": "02_DEVELOPMENT_SCORE.json",
+    "meeting_count": 25,
+    "selected_races": 726,
+    "configuration_count": 108
+  },
+  "findings": {
+    "eligible_policy_count": 0,
+    "positive_pooled_roi_configuration_count": 88,
+    "all_configurations_lower_quartile_wagered_meeting_roi": -1.0,
+    "all_configurations_failed_lower_quartile_gate_count": 108,
+    "zero_return_wagered_meeting_count_range_across_configurations": [9, 18],
+    "eligibility_failure_counts_by_gate": {
+      "lower_quartile_wagered_meeting_roi": 108,
+      "median_wagered_meeting_roi": 107,
+      "minimum_positive_meetings": 107,
+      "minimum_bet_races": 80,
+      "minimum_executed_tickets": 80,
+      "worst_fold_roi": 79,
+      "median_fold_roi": 55,
+      "minimum_positive_folds": 49,
+      "minimum_wagered_meetings": 31,
+      "pooled_roi": 20,
+      "largest_single_ticket_return_share": 9,
+      "all_five_folds_wagered": 9
+    },
+    "failed_gate_count_distribution": {
+      "1": 1,
+      "3": 5,
+      "4": 4,
+      "5": 12,
+      "6": 31,
+      "7": 18,
+      "8": 15,
+      "9": 13,
+      "10": 6,
+      "11": 3
+    },
+    "nearest_candidate": {
+      "configuration_id": "WIDE:MAX15:P200:AGR120:EV050:FLAT100",
+      "failed_gate_count": 1,
+      "only_failed_gate": "lower_quartile_wagered_meeting_roi_greater_than_-0.90",
+      "realized_roi": 0.26535433070866143,
+      "bet_races": 127,
+      "hit_tickets": 19,
+      "positive_meetings": 12,
+      "wagered_meetings": 24,
+      "zero_return_wagered_meetings": 10,
+      "median_wagered_meeting_roi": 5.551115123125783e-17,
+      "lower_quartile_wagered_meeting_roi": -1.0,
+      "positive_folds": 4,
+      "median_fold_roi": 0.10000000000000009,
+      "worst_fold_roi": -0.30800000000000005
+    }
+  },
+  "interpretation": "The V5 failure is not explained by pooled ROI alone: 88/108 configurations were pooled-ROI positive, yet every configuration had at least one quarter of wagered meetings at total loss, forcing the lower-quartile meeting ROI to -1.0. The most direct exposed-only successor hypothesis is therefore to test deterministic within-race WIDE portfolio diversification rather than weakening the lower-quartile gate or retuning the probability model.",
+  "scientific_boundary": "This diagnostic uses already-exposed V5 development evidence only. It cannot validate a policy and must not be used to relabel V5 evidence or to justify fresh-target access by itself.",
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED_NOT_OPENED",
+    "DEV2000_RESULT_PAYOUT": "NOT_OPENED",
+    "fresh_validation_target_access": false,
+    "probability_retune": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
