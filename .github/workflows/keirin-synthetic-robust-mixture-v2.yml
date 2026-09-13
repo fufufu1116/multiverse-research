@@ -1,0 +1,63 @@
+name: Keirin Synthetic Robust Mixture v2
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - 'v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_ROBUST_MIXTURE_PREREG_20260913_v2.json'
+      - 'v3/historical_all_market/new_lineage/synthetic_robust_mixture_v2.py'
+      - '.github/workflows/keirin-synthetic-robust-mixture-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-robust-mixture-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fresh-check canonical main synthetic-only authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin main
+          echo "fresh canonical main: $(git rev-parse origin/main)"
+          git show origin/main:KEIRIN_NOW.md | grep -F 'Synthetic（合成）限定' >/dev/null
+          git show origin/main:v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json > /tmp/CURRENT_STATE_KEIRIN.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/CURRENT_STATE_KEIRIN.json',encoding='utf-8'))
+          if x.get('status') != 'LIMITED_SYNTHETIC_SCIENTIFIC_EXECUTION_AUTHORIZED_POST_LAB_AUDITOR_OWNER_GATE':
+              raise SystemExit('FAIL_CLOSED: canonical Keirin status is not limited synthetic authorization')
+          if x.get('scientific_state',{}).get('ECON_HOLDOUT1000') != 'SEALED':
+              raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
+          print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
+          PY
+      - name: Verify exact frozen hashes before synthetic scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "b57f585da1f62c4cc96d127dad058c7d9a8ab86fb214f43a047601b754c90fa2  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_ROBUST_MIXTURE_PREREG_20260913_v2.json" | sha256sum -c -
+          echo "9d758b3c02dd48aef405946d2bc9bdbfe843281350c486973af9f1c8b56481d9  v3/historical_all_market/new_lineage/synthetic_robust_mixture_v2.py" | sha256sum -c -
+          echo "ad96bd369ccee1177dbf9979314f36bfb61e631145c3ed0818ac3bbed7c248b2  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_MARKET_PROBABILITY_DIAGNOSTIC_PREREG_20260913_v1.json" | sha256sum -c -
+          echo "2356765dfca8764065ccda8927227420c832e5a3f8dd25c8056a1630be7b88c1  v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py" | sha256sum -c -
+      - name: Compile synthetic robust-mixture engine
+        run: python -m py_compile v3/historical_all_market/new_lineage/synthetic_robust_mixture_v2.py
+      - name: Run preregistered synthetic robust-mixture experiment
+        run: python v3/historical_all_market/new_lineage/synthetic_robust_mixture_v2.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-synthetic-robust-mixture-v2
+          path: v3/historical_all_market/research_candidates/synthetic_robust_mixture_v2/
+          if-no-files-found: warn
+          retention-days: 90
