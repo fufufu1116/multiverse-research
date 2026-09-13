@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from tools.buildkite_auditor_bootstrap_preflight_v2 import inspect_pipeline_text
+from tools.buildkite_auditor_bootstrap_smoke_v2 import run_smoke
 
 
 GOOD = '''
@@ -46,6 +48,9 @@ class BootstrapPreflightV2Tests(unittest.TestCase):
     def test_good_payload_passes(self) -> None:
         self.assertTrue(inspect_pipeline_text(GOOD)["ok"])
 
+    def test_executable_archive_import_smoke(self) -> None:
+        run_smoke(Path.cwd(), "HEAD")
+
     def test_rejects_fetch_head_anywhere(self) -> None:
         bad = GOOD.replace(
             "refs/remotes/origin/main automation/review_dispatcher_v1",
@@ -81,18 +86,15 @@ class BootstrapPreflightV2Tests(unittest.TestCase):
             "PYTHONPATH=.mv_dispatcher python3 -c 'import automation.review_dispatcher_v1.dispatcher'\n",
             "",
         )
-        result = inspect_pipeline_text(bad)
-        self.assertFalse(result["ok"])
+        self.assertFalse(inspect_pipeline_text(bad)["ok"])
 
     def test_requires_publisher_stage(self) -> None:
         bad = GOOD.replace("publisher.py", "publisher_missing.py")
-        result = inspect_pipeline_text(bad)
-        self.assertFalse(result["ok"])
+        self.assertFalse(inspect_pipeline_text(bad)["ok"])
 
     def test_requires_t2_stage(self) -> None:
         bad = GOOD.replace("t2.py", "t2_missing.py")
-        result = inspect_pipeline_text(bad)
-        self.assertFalse(result["ok"])
+        self.assertFalse(inspect_pipeline_text(bad)["ok"])
 
     def test_requires_all_three_hosted_queues(self) -> None:
         bad = GOOD.replace('queue: "independent-auditor"', 'queue: "default"', 1)
