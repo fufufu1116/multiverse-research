@@ -1,0 +1,62 @@
+{
+  "schema": "MULTIVERSE_FIRST_LIVE_PROVIDER_PILOT_OFFICIAL_VERIFICATION_v1",
+  "checked_at": "2026-09-10T17:54:00Z",
+  "provider": "GOOGLE_GEMINI",
+  "model_id": "gemini-3.8-flash",
+  "classification": "STABLE",
+  "lifecycle": "GA",
+  "pricing": {
+    "currency": "USD",
+    "basis": "PER_MILLION_TOKENS",
+    "input_usd_micros": 750000,
+    "output_usd_micros": 3750000,
+    "valid_through": "2026-12-31"
+  },
+  "structured_output": {
+    "supported": true,
+    "request_field": "response_format",
+    "legacy_response_mime_type_allowed": false,
+    "strict_local_semantic_validation_required": true
+  },
+  "transport": {
+    "api_version": "v1",
+    "host": "generativelanguage.googleapis.com",
+    "method": "POST",
+    "path": "/v1/interactions",
+    "endpoint": "https://generativelanguage.googleapis.com/v1/interactions",
+    "operation": "INTERACTIONS_CREATE_V1",
+    "sdk_surface": "interactions.create",
+    "response_steps_field": "steps"
+  },
+  "storage": {
+    "default_store": true,
+    "pilot_store": false,
+    "store_false_supported": true,
+    "stateless_single_turn": true,
+    "previous_interaction_id_allowed": false,
+    "background_allowed": false
+  },
+  "migration": {
+    "guide": "INTERACTIONS_BREAKING_CHANGES_MAY_2026",
+    "current_response_field": "steps",
+    "legacy_response_field": "outputs",
+    "current_format_field": "response_format",
+    "legacy_format_field": "response_mime_type",
+    "legacy_schema_allowed": false
+  },
+  "official_evidence_refs": [
+    "https://ai.google.dev/gemini-api/docs/latest-model",
+    "https://ai.google.dev/gemini-api/docs/pricing",
+    "https://ai.google.dev/gemini-api/docs/structured-output",
+    "https://ai.google.dev/gemini-api/docs/interactions-overview",
+    "https://ai.google.dev/api/interactions-api-v1",
+    "https://ai.google.dev/gemini-api/docs/logs-datasets",
+    "https://ai.google.dev/gemini-api/docs/interactions-breaking-changes-may-2026"
+  ],
+  "authority": {
+    "provider_call_authorized": false,
+    "credential_authorized": false,
+    "spend_authorized": false
+  },
+  "runtime": "OFF"
+}
