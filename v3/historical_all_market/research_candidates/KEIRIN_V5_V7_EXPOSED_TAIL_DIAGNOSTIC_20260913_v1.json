@@ -1,0 +1,30 @@
+{
+  "record": "KEIRIN_V5_V7_EXPOSED_TAIL_DIAGNOSTIC_20260913_v1",
+  "status": "EXPOSED_DEVELOPMENT_DIAGNOSTIC_ONLY",
+  "purpose": "Use only already-exposed V5-V7 economics evidence to characterize persistent meeting-level full-loss tails while the preregistered V8 run is computing. This diagnostic cannot alter V8 because V8 was frozen before this analysis.",
+  "representative_policies": [
+    "V5 WIDE:MAX15:P200:AGR120:EV050:FLAT100",
+    "V6 WIDE:TOP2:MAX15:P200:AGR120:EV025:FLAT100",
+    "V6 WIDE:TOP3:MAX15:P200:AGR120:EV025:FLAT100",
+    "V7 MIX:WIDE+3RENHUKU:MAX15:P175:AGR120:EV000:FLAT100",
+    "V7 MIX:WIDE+2SHATAN:MAX15:P175:AGR140:EV050:FLAT100"
+  ],
+  "persistent_zero_return_meetings_across_all_five_representatives": [
+    {"meeting_id":"3520260809","venue":"hiratsuka","circumference_m":400.0,"fold":4},
+    {"meeting_id":"6320260904","venue":"hofu","circumference_m":333.0,"fold":3},
+    {"meeting_id":"7420260731","venue":"kochi","circumference_m":500.0,"fold":1},
+    {"meeting_id":"8420260909","venue":"takeo","circumference_m":400.0,"fold":5}
+  ],
+  "diagnosis": [
+    "The persistent full-loss tail spans four distinct fixed folds, so it is not localized to a single fold.",
+    "The persistent full-loss tail spans 333m, 400m and 500m meetings, so exposed evidence does not support deleting one circumference class as a rescue rule.",
+    "Meeting identity is outcome-exposed information and must not become a future purchase-selection feature.",
+    "If V8 also fails, any successor should target preregistered PRE-only uncertainty/regime attributes that can generalize across meetings, not outcome-conditioned meeting exclusion."
+  ],
+  "anti_cherry_pick_boundary": "Do not remove the listed meetings, folds, venues or circumference classes merely because they performed poorly. Any successor hypothesis must be separately versioned and preregistered before scoring.",
+  "fresh_validation_target_selected": false,
+  "fresh_validation_target_accessed": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required": false
+}
