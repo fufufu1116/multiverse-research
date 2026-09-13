@@ -1,0 +1,31 @@
+name: System Improvement Buildkite Auditor Bootstrap v2 CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/control/BUILDKITE_HOSTED_AUDITOR_BOOTSTRAP_v2.md'
+      - 'tools/buildkite_auditor_bootstrap_preflight_v2.py'
+      - 'tools/buildkite_auditor_bootstrap_smoke_v2.py'
+      - 'tools/test_buildkite_auditor_bootstrap_preflight_v2.py'
+      - '.github/workflows/system-improvement-buildkite-auditor-bootstrap-v2-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-v2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Focused regression tests
+        run: python -m unittest tools.test_buildkite_auditor_bootstrap_preflight_v2 -v
+      - name: Static stored-YAML preflight
+        run: |
+          python tools/buildkite_auditor_bootstrap_preflight_v2.py \
+            docs/control/BUILDKITE_HOSTED_AUDITOR_BOOTSTRAP_v2.md
+      - name: Isolated dispatcher archive/import smoke
+        run: python tools/buildkite_auditor_bootstrap_smoke_v2.py --repo-root . --ref HEAD
