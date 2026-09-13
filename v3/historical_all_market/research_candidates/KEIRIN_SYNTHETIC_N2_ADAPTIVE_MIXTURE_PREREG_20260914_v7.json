@@ -1,0 +1,91 @@
+{
+  "adaptive_family": {
+    "bias_values": [-0.9, -0.6, -0.3, 0.0, 0.3],
+    "candidate_count": 20,
+    "excluded_truth_pair": {"bias": -0.3, "slope": 1.0},
+    "formula": "w_hat = sigmoid(bias + slope * pre_mechanism_signal)",
+    "slope_values": [0.4, 0.6, 0.8, 1.2]
+  },
+  "anti_overfit_boundary": [
+    "The exact synthetic truth parameter pair bias=-0.30,slope=1.00 is excluded from the candidate family.",
+    "No candidate, coefficient, baseline, threshold, seed, race, or stratum change after design scoring.",
+    "If no design candidate passes, evaluation seed 20260925 must remain unaccessed.",
+    "No v4 evaluation seed reuse, no real/historical input, no odds, RESULT/PAYOUT, ROI, bankroll or economics input.",
+    "A synthetic pass does not promote a real Keirin model or authorize any real/economics scope expansion."
+  ],
+  "baselines": {
+    "C0_ONLY": 0.0,
+    "GLOBAL_MIX_005": 0.05,
+    "GLOBAL_MIX_025": 0.25,
+    "GLOBAL_MIX_050": 0.5,
+    "GLOBAL_MIX_075": 0.75,
+    "N2_ONLY": 1.0
+  },
+  "claim_boundary": {
+    "live_or_production": false,
+    "model_promotion": false,
+    "real_keirin_claim": false
+  },
+  "components": {
+    "component_0": "C0_SCORE_PL",
+    "component_1": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "n2_prereg": "v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json",
+    "n2_status_required": "N2_SPEC_ALIGNED_COMPONENT_ADEQUATE_FOR_W2",
+    "n2_v6_ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v10.jsonl"
+  },
+  "design_batch": {
+    "races": 400,
+    "seed": 20260924
+  },
+  "design_gate": [
+    "Adaptive overall mean KL must be strictly lower than the best universal baseline overall mean KL.",
+    "Adaptive KL in every LOW/MID/HIGH stratum must be <= 1.02x the best universal baseline for that stratum.",
+    "LOW and HIGH design stratum counts must each be >= 60."
+  ],
+  "evaluation_batch": {
+    "races": 800,
+    "seed": 20260925
+  },
+  "evaluation_gate": [
+    "Frozen adaptive overall mean KL must be <= 0.98x the best universal baseline overall mean KL.",
+    "Frozen adaptive KL in every LOW/MID/HIGH stratum must be <= the best universal baseline for that stratum.",
+    "LOW and HIGH evaluation stratum counts must each be >= 100."
+  ],
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "frozen_selection_order": [
+    "lowest overall mean KL",
+    "lowest worst stratum ratio to best universal",
+    "smallest abs(slope-1.0)",
+    "smallest abs(bias)",
+    "candidate_id lexical"
+  ],
+  "inputs": {
+    "digital_twin": "v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py",
+    "prediction_inputs": "PRE_ONLY",
+    "world_label_input": false,
+    "hidden_alpha_input": false,
+    "oracle_input": false
+  },
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics": "NOT_COMPUTED",
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "purpose": "Re-test PRE-only adaptive mixture after replacing the inadequate N1 W2-side component with preregistered, independently synthetic-validated N2.",
+  "record": "KEIRIN_SYNTHETIC_N2_ADAPTIVE_MIXTURE_PREREG_v7",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_DESIGN_SCORING",
+  "strata": {
+    "HIGH": "signal > 0.35",
+    "LOW": "signal < -0.35",
+    "MID": "-0.35 <= signal <= 0.35"
+  }
+}
