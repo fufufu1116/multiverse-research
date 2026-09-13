@@ -1,0 +1,59 @@
+{
+  "anti_overfit_boundary": [
+    "No model coefficient, seed, race, world, threshold or stratum changes after scoring.",
+    "No selector/adaptive-mixture tuning in this experiment.",
+    "No real/historical data, odds, RESULT/PAYOUT, ROI, bankroll or economics inputs.",
+    "Classification is diagnostic only and cannot promote a real Keirin model."
+  ],
+  "batches": [
+    {"races": 500, "seed": 20260926},
+    {"races": 500, "seed": 20260927}
+  ],
+  "classification_rules": {
+    "CLEAN_SPECIALIZATION": [
+      "C0 W0 mean KL <= 0.95 * N2 W0 mean KL on both seeds.",
+      "N2 W2 mean KL <= 0.90 * C0 W2 mean KL on both seeds."
+    ],
+    "N2_DOMINATES_W0_W2": [
+      "N2 W0 mean KL <= C0 W0 mean KL on both seeds.",
+      "N2 W2 mean KL <= 0.90 * C0 W2 mean KL on both seeds."
+    ],
+    "otherwise": "NO_CLEAN_COMPONENT_SPECIALIZATION"
+  },
+  "components": ["C0_SCORE_PL", "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL"],
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "inputs": {
+    "digital_twin": "v3/historical_all_market/new_lineage/digital_twin_v1.py",
+    "learnable_signal": "v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py::pre_mechanism_signal",
+    "n2": "v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py::n2_forecast",
+    "prediction_inputs": "PRE_ONLY",
+    "worlds": ["W0", "W2"]
+  },
+  "metrics": [
+    "mean_ordered_top3_KL_oracle_to_forecast",
+    "stratum_mean_ordered_top3_KL",
+    "N2_relative_to_C0"
+  ],
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics": "NOT_COMPUTED",
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "purpose": "Determine whether C0 and frozen N2 are genuinely specialized for W0/W2 or whether N2 dominates both, explaining why adaptive mixture v7 preferred N2_ONLY.",
+  "record": "KEIRIN_SYNTHETIC_COMPONENT_SPECIALIZATION_PREREG_v8",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_COMPONENT_SCORING",
+  "strata": {
+    "HIGH": "signal > 0.35",
+    "LOW": "signal < -0.35",
+    "MID": "-0.35 <= signal <= 0.35"
+  }
+}
