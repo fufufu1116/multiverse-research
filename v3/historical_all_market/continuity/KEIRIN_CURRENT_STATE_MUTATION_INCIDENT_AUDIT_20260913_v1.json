@@ -1,0 +1,35 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_MUTATION_INCIDENT_AUDIT_20260913_v1",
+  "status": "RECOVERED_NO_SCIENTIFIC_EVIDENCE_IMPACT",
+  "incident": "During owner-free continuity reconciliation, an unsafe repository-write probe accidentally replaced KEIRIN_CURRENT_STATE.json content on the active research branch.",
+  "safe_preincident_branch_head": "d9185348326002a542d57a1f6e3ce0dfe524108e",
+  "safe_preincident_current_blob": "238978a35c3bc82422bb13a95e3b5ea3173751a6",
+  "accidental_commits_removed_from_active_branch_by_rollback": [
+    "0ec08daf2ad2186c393126356fe0050d851c1aba",
+    "1256c354124b5e29697e14fd4e9572acd5d82073",
+    "43e4b828bf8fd13d1522b664c43848daf3726b76",
+    "3063da7a22bf07821049984561e70db13c2e837b",
+    "c65b550f6a1e8feacc10756ac0487c381a86f007",
+    "f9497ee02682ddd0c34e492beb08301e0b193d1c"
+  ],
+  "recovery": {
+    "method": "Force-reset only the active research branch reference to the exact known-good preincident commit after Fresh Read confirmed the accidental commit chain contained only CURRENT repair/probe mutations above that checkpoint.",
+    "restored_branch_head": "d9185348326002a542d57a1f6e3ce0dfe524108e",
+    "restored_current_blob_verified": "238978a35c3bc82422bb13a95e3b5ea3173751a6",
+    "v5_ledger_commit_preserved": "1129c1b91b0b6b984b36814fb5f97a702b83caf3",
+    "v5_queue_commit_preserved": "d9185348326002a542d57a1f6e3ce0dfe524108e",
+    "successor_current_v2_commit": "4e4dd623bce57019b2bf99265279ede1f175cee6"
+  },
+  "impact": {
+    "V5_workflow_or_artifact_changed": false,
+    "scientific_evidence_changed": false,
+    "fresh_target_access_changed": false,
+    "ECON_HOLDOUT1000_opened": false,
+    "DEV2000_result_payout_opened": false,
+    "runtime_changed": false,
+    "automatic_betting_changed": false,
+    "real_money_or_spend": false
+  },
+  "durable_lesson": "Never probe repository write capability by replacing an authoritative CURRENT/RULE/LEDGER file. Write-capability probes must use a dedicated non-authoritative disposable probe path or issue comment. Authoritative-file mutation requires a fully prepared replacement payload and a Fresh Read of the exact current blob immediately before update.",
+  "owner_action_required": false
+}
