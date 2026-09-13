@@ -1,0 +1,21 @@
+name: System Improvement Buildkite Dispatcher Preflight v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'tools/buildkite_dispatcher_preflight_v1.py'
+      - 'tools/test_buildkite_dispatcher_preflight_v1.py'
+      - '.github/workflows/system-improvement-buildkite-dispatcher-preflight-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest tools.test_buildkite_dispatcher_preflight_v1
