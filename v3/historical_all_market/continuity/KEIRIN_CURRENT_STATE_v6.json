@@ -1,0 +1,69 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v6",
+  "status": "ACTIVE_CANONICAL_CURRENT_STATE_V6_SYNTHETIC_ONLY",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v5.json",
+  "checkpoint_date": "2026-09-13",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_at_latest_run": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "main_keirin_now": "KEIRIN_NOW.md",
+    "main_keirin_governance_current": "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "scope": "LIMITED_SYNTHETIC_ONLY"
+  },
+  "latest_completed_experiment": {
+    "id": "EXP-SYNTHETIC-MARKET-PROBABILITY-DIAGNOSTIC-V1",
+    "status": "COMPLETE_NO_STABLE_SYNTHETIC_ARCHITECTURE_ADVANTAGE",
+    "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+    "workflow_run_id": 34763713374,
+    "artifact_id": 10319344213,
+    "artifact_digest": "sha256:a4160c83e5791fe04f0adbd47f567f80ce4a15d84e313f32996a1d4f0e5bf945",
+    "ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v5.jsonl"
+  },
+  "latest_scientific_finding": {
+    "summary": "The tested fixed conditional N1 architecture is not a universal synthetic rescue for PL misspecification. Best-PL KL increased 28.2% from W0-W1 to W2-W4, but N1 was 4.7% worse than best-PL on aggregate W2-W4. N1 was best only in W2; C0_SCORE_PL was best in W0, W1, W3, and W4.",
+    "decision": "NO_STABLE_SYNTHETIC_ARCHITECTURE_ADVANTAGE",
+    "conditional_order_failure_gate_passed": false,
+    "model_promotion": false,
+    "real_world_claim": false
+  },
+  "current_research_objective": "Continue within synthetic-only authority by testing whether one globally frozen convex probability mixture of C0_SCORE_PL and N1_CONDITIONAL can reduce worst-world synthetic KL without world identity, post-outcome routing, or per-world retuning. Use a separate synthetic design seed for candidate selection and a disjoint synthetic evaluation seed for one-shot frozen validation. This remains engineering falsification only.",
+  "protected_boundaries": {
+    "real_historical_input": false,
+    "RESULT_PAYOUT": "UNAUTHORIZED_NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000_RESULT_PAYOUT": "DO_NOT_ACCESS",
+    "economics": "UNAUTHORIZED",
+    "fresh_real_validation": "UNAUTHORIZED",
+    "odds": "NOT_USED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "v8_authority_incident": {
+    "status": "CONTAINED_FAIL_CLOSED",
+    "workflow_now_non_auto_triggerable": true,
+    "run_ids_quarantined_if_output_produced": [34762812495, 34762925164],
+    "artifact_policy": "DO_NOT_DOWNLOAD_INTERPRET_SCORE_OR_USE",
+    "incident_audit": "v3/historical_all_market/continuity/KEIRIN_V8_AUTHORITY_SCOPE_INCIDENT_AUDIT_20260913_v1.json"
+  },
+  "exact_next_executable_actions": [
+    "Preregister a synthetic-only robust-mixture experiment using C0_SCORE_PL and N1_CONDITIONAL with one global mixture weight shared across all worlds.",
+    "Use a synthetic design seed to select at most one candidate under fixed minimax/no-material-regression criteria.",
+    "If and only if one candidate freezes, evaluate that exact weight once on a disjoint synthetic evaluation seed with no retune.",
+    "Record negative results as strongly as positive results; no real model promotion or economics inference.",
+    "Keep V8 real historical economics outputs quarantined if they appear and never retrieve or use them."
+  ],
+  "progress": {
+    "exact_percent": null,
+    "status": "REBASELINED_SYNTHETIC_ONLY_ACTIVE",
+    "reason": "A numeric percent is intentionally withheld because prior percentages depended on real historical evidence now classified under an authority conflict."
+  },
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
