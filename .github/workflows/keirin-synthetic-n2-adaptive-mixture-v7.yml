@@ -1,4 +1,4 @@
-name: Keirin Synthetic N2 Adaptive Mixture v7 — Hash Preflight
+name: Keirin Synthetic N2 Adaptive Mixture v7
 
 on:
   push:
@@ -14,13 +14,16 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-hash-preflight:
+  synthetic-n2-adaptive-mixture-v7:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Fresh-check canonical main synthetic-only authority
         shell: bash
         run: |
@@ -38,14 +41,24 @@ jobs:
               raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
           print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
           PY
-      - name: Print exact candidate hashes and stop before scoring
+      - name: Verify exact frozen hashes before synthetic scoring
         shell: bash
         run: |
           set -euo pipefail
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_N2_ADAPTIVE_MIXTURE_PREREG_20260914_v7.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_n2_adaptive_mixture_v7.py
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py
-          sha256sum v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v10.jsonl
-          python -m py_compile v3/historical_all_market/new_lineage/synthetic_n2_adaptive_mixture_v7.py
-          echo 'HASH_PREFLIGHT_COMPLETE_NO_ADAPTIVE_SCORING'
+          echo "40166b0dbc050e4f350774a372a8be90a11f177d3bfbbc66ee4703396ee12349  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_N2_ADAPTIVE_MIXTURE_PREREG_20260914_v7.json" | sha256sum -c -
+          echo "33d724c5b651de960d725bcbe4379cc164d8b291feb06cbff088120c43a33e0f  v3/historical_all_market/new_lineage/synthetic_n2_adaptive_mixture_v7.py" | sha256sum -c -
+          echo "758fab7b92ad4bb7c1d3dc22d77b9f19772f2442ec0a84ca2b4fd9103b40dc43  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json" | sha256sum -c -
+          echo "4a3d7091dad23de2df4108bb3bae0846eb0b710fbb3953a20dabf7f1557501de  v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py" | sha256sum -c -
+          echo "03eb6daceb19d71d91268c65c07a14a28360f5f77cc6454699361d53de84aa46  v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v10.jsonl" | sha256sum -c -
+      - name: Compile frozen synthetic components
+        run: python -m py_compile v3/historical_all_market/new_lineage/synthetic_n2_adaptive_mixture_v7.py
+      - name: Run preregistered N2 adaptive synthetic experiment
+        run: python v3/historical_all_market/new_lineage/synthetic_n2_adaptive_mixture_v7.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-synthetic-n2-adaptive-mixture-v7
+          path: v3/historical_all_market/research_candidates/synthetic_n2_adaptive_mixture_v7/
+          if-no-files-found: warn
+          retention-days: 90
