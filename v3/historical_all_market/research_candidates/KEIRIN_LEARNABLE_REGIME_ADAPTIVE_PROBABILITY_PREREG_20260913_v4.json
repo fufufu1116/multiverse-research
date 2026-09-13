@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_LEARNABLE_REGIME_ADAPTIVE_PROBABILITY_PREREG_20260913_v4",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_DESIGN_SCORING",
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "objective": "Test whether a PRE-only adaptive mixture can generalize across a separately versioned learnable-regime Digital Twin whose hidden mechanism varies with ordinary PRE observables. Select one adaptive mapping on a synthetic design seed, freeze it, and evaluate once on a disjoint synthetic seed without retuning.",
+  "dependencies": {
+    "digital_twin_v2_spec": "v3/historical_all_market/research_candidates/KEIRIN_LEARNABLE_REGIME_DIGITAL_TWIN_V2_SPEC_20260913.json",
+    "digital_twin_v2": "v3/historical_all_market/new_lineage/digital_twin_learnable_regime_v2.py",
+    "forecast_components": "v3/historical_all_market/new_lineage/synthetic_market_probability_diagnostic_v1.py",
+    "components": ["C0_SCORE_PL", "N1_CONDITIONAL"]
+  },
+  "prediction_inputs": {
+    "allowed": ["ordinary PRE fields", "pre_mechanism_signal derived only from wind_speed_mps, num_lines, observed_score_standard_deviation"],
+    "forbidden": ["hidden mechanism alpha", "oracle joint", "sampled outcome", "world/regime label", "real/historical RESULT/PAYOUT", "odds", "economics"]
+  },
+  "adaptive_family": {
+    "formula": "w_hat = sigmoid(bias + slope * pre_mechanism_signal); P_adapt=(1-w_hat)*P_C0 + w_hat*P_N1",
+    "bias_values": [-0.60, -0.45, -0.15, 0.0, 0.15],
+    "slope_values": [0.60, 0.80, 1.20, 1.40],
+    "candidate_count": 20,
+    "direct_truth_parameter_pair_excluded": true,
+    "truth_parameter_pair_for_reference_only": {"bias": -0.30, "slope": 1.00}
+  },
+  "universal_baselines": {
+    "C0_SCORE_PL": "w=0",
+    "N1_CONDITIONAL": "w=1",
+    "GLOBAL_MIX_005": "w=0.05",
+    "GLOBAL_MIX_050": "w=0.50"
+  },
+  "signal_strata": {
+    "LOW": "signal < -0.35",
+    "MID": "-0.35 <= signal <= 0.35",
+    "HIGH": "signal > 0.35"
+  },
+  "design_batch": {
+    "seed": 20260917,
+    "races": 300,
+    "event_format": "STANDARD_FI_FII_7"
+  },
+  "design_eligibility": [
+    "candidate overall mean ordered-top3 KL must be strictly lower than the best universal baseline overall KL",
+    "candidate KL in each nonempty LOW/MID/HIGH signal stratum must be <= 1.02 times the best universal baseline KL for that stratum",
+    "LOW and HIGH strata must each contain at least 40 races"
+  ],
+  "winner_selection_order": [
+    "lowest overall mean ordered-top3 KL",
+    "lowest maximum stratum-relative-KL versus best universal baseline",
+    "slope closest to 1.0",
+    "absolute bias closest to 0",
+    "lexicographically smallest candidate_id"
+  ],
+  "design_outcome": {
+    "zero_eligible": "NO_DEVELOPMENT_ELIGIBLE_ADAPTIVE_MAPPING; do not access evaluation seed",
+    "positive_eligible": "Freeze exactly one winner before evaluation scoring"
+  },
+  "evaluation_batch": {
+    "seed": 20260918,
+    "races": 600,
+    "event_format": "STANDARD_FI_FII_7",
+    "access_rule": "Only after exactly one design winner freezes"
+  },
+  "evaluation_pass": {
+    "all_required": [
+      "frozen adaptive overall mean ordered-top3 KL <= 0.98 times best universal baseline overall KL",
+      "frozen adaptive KL in every nonempty LOW/MID/HIGH stratum <= best universal baseline KL in that stratum",
+      "LOW and HIGH evaluation strata each contain at least 80 races"
+    ],
+    "pass_label": "PASS_SYNTHETIC_LEARNABLE_REGIME_ADAPTIVE_REPLICATION",
+    "fail_label": "FAIL_SYNTHETIC_LEARNABLE_REGIME_ADAPTIVE_REPLICATION"
+  },
+  "anti_overfit_boundary": [
+    "No candidate-grid expansion after design outcomes.",
+    "No evaluation-seed access if design produces no eligible winner.",
+    "No retuning after evaluation outcomes.",
+    "No hidden alpha or outcome in prediction inputs.",
+    "No real/historical input, RESULT/PAYOUT, odds, economics, ROI, bankroll, holdout, spend, or credentials.",
+    "Synthetic PASS cannot promote a real model or imply real-keirin calibration, edge, ROI, or profitability."
+  ],
+  "protected_boundaries": {
+    "real_historical_input": false,
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "odds": "NOT_USED",
+    "economics": "NOT_COMPUTED",
+    "roi": "NOT_COMPUTED",
+    "real_money": false,
+    "spend": false,
+    "credential": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "authority_binding": {
+    "canonical_main_head_at_design": "49a03a01fb401ba3d3a09521928796caef4ecdfa",
+    "scope": "LIMITED_SYNTHETIC_ONLY",
+    "owner_action_required": false
+  }
+}
