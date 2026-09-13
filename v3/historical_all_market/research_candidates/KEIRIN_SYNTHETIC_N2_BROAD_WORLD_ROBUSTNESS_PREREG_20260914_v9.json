@@ -1,0 +1,52 @@
+{
+  "anti_overfit_boundary": [
+    "Frozen N2 coefficients are not changed after any W0-W4 scores are observed.",
+    "No world, seed, race, legacy comparator, threshold or metric may be removed after scoring.",
+    "No real/historical data, odds, RESULT/PAYOUT, ROI, bankroll or economics inputs.",
+    "A pass is synthetic engineering evidence only; a fail may motivate a separately preregistered robust-combination experiment but no in-place rescue."
+  ],
+  "batches": [
+    {"races": 500, "seed": 20260928},
+    {"races": 500, "seed": 20260929}
+  ],
+  "decision_rule": {
+    "broad_robust_pass": [
+      "On both seeds, N2 mean KL on W0, W1 and W2 must be <= the best legacy C0/C1/N1 mean KL for that world.",
+      "On both seeds, N2 mean KL on W3 and W4 must be <= 1.05x the best legacy C0/C1/N1 mean KL for that world.",
+      "On both seeds, N2 equal-weight W0-W4 pooled mean KL must be <= 0.98x the best single legacy model equal-weight W0-W4 pooled mean KL."
+    ],
+    "fail_classification": "N2_NOT_BROADLY_ROBUST_W0_W4",
+    "pass_classification": "N2_BROADLY_ROBUST_W0_W4_SYNTHETIC"
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "legacy_models": ["C0_SCORE_PL", "C1_LINE_PL", "N1_CONDITIONAL"],
+  "metrics": [
+    "mean_ordered_top3_KL_by_world",
+    "N2_relative_to_best_legacy_by_world",
+    "equal_weight_W0_W4_pooled_mean_KL",
+    "N2_relative_to_best_single_legacy_pooled"
+  ],
+  "n2": {
+    "name": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "prereg": "v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json",
+    "implementation": "v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py"
+  },
+  "protected_boundaries": {
+    "DEV2000_RESULT_PAYOUT": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics": "NOT_COMPUTED",
+    "odds": "NOT_USED",
+    "real_historical_input": false,
+    "real_money": false,
+    "roi": "NOT_COMPUTED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "purpose": "Falsify frozen N2 against the full existing W0-W4 synthetic world suite after v8 showed it dominates C0 on W0/W2.",
+  "record": "KEIRIN_SYNTHETIC_N2_BROAD_WORLD_ROBUSTNESS_PREREG_v9",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_BROAD_WORLD_SCORING",
+  "worlds": ["W0", "W1", "W2", "W3", "W4"]
+}
