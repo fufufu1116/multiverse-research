@@ -1,0 +1,73 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v4",
+  "status": "ACTIVE_CANONICAL_CURRENT_STATE_V4",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v3.json",
+  "checkpoint_jst": "2026-09-13T17:23:00+09:00",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_issue": 377,
+  "scientific_validation_progress_percent": 99,
+  "current_research_objective": "Frozen NL2 remains the independently validated historical probability/ranking candidate. Economics V3 was positive but uncertain, V4 exact-policy replication failed, V5 found no stable one-ticket WIDE policy, V6 found no stable multi-WIDE portfolio, and V7 found no development-eligible cross-market coverage policy under unchanged meeting/fold gates. V7 did reduce the full-loss tail for its nearest candidate to four zero-return wagered meetings, but pooled ROI and fold robustness remained negative. No fresh validation target has been selected or accessed. The next owner-free work must use only already-exposed evidence to design a separately versioned successor aimed at economics quality and fold robustness without relaxing prior gates or retuning NL2/B1a probabilities.",
+  "model_state": {
+    "accepted_reference": {"name":"B1a_RECONSTITUTED_v1","predictor_blob":"62ae4ebc17cda47dca1fffae190fa44caae58ca3","temperature":1.15,"retune":false},
+    "nl1": {"status":"FAILED_UNTOUCHED_VALIDATION_NOT_PROMOTED","model_core_sha256":"53608ed299e5148f215f1a199d897ac1d8320e04707ccb7453c67ced04080671"},
+    "nl2": {"name":"NL2_GEOBLEND_NUMERIC_L2_3_V1","status":"PASS_UNTOUCHED_VALIDATION_ELIGIBLE_FOR_ECONOMICS_RESEARCH_ONLY","model_core_sha256":"e8d969a43c0adddcdf09374d1686a763dbce6d07745576da031849e22c8fb9d0","probability_coefficient_retune":false,"live_or_production_status":false}
+  },
+  "economics_latest": {
+    "v6": {"status":"COMPLETE_NO_DEVELOPMENT_ELIGIBLE_POLICY","workflow_run_id":34741203167,"artifact_id":10312882871},
+    "v7": {
+      "lineage":"NL2_ECONOMICS_V7_CROSS_MARKET_COVERAGE",
+      "status":"COMPLETE_NO_DEVELOPMENT_ELIGIBLE_POLICY",
+      "evidence_class":"EXPOSED_DEVELOPMENT_ONLY_NO_FRESH_VALIDATION_ACCESS",
+      "selected_races":726,
+      "meetings":25,
+      "configuration_count":72,
+      "eligible_policy_count":0,
+      "nearest_candidate":{
+        "configuration_id":"MIX:WIDE+3RENHUKU:MAX15:P175:AGR120:EV000:FLAT100",
+        "bet_races":354,
+        "executed_tickets":373,
+        "hits":55,
+        "ticket_hit_rate":0.14745308310991956,
+        "roi":-0.12252010723860585,
+        "positive_meetings":12,
+        "wagered_meetings":25,
+        "zero_return_wagered_meetings":4,
+        "median_meeting_roi":-0.09999999999999998,
+        "lower_quartile_meeting_roi":-0.48235294117647054,
+        "positive_folds":2,
+        "median_fold_roi":-0.10799999999999998,
+        "worst_fold_roi":-0.4472222222222222,
+        "failed_gates":["median_fold_roi","minimum_positive_folds","pooled_roi"]
+      },
+      "fresh_validation_target_selected":false,
+      "fresh_validation_target_accessed":false,
+      "initial_technical_run_id":34745436024,
+      "workflow_run_id":34745489816,
+      "artifact_id":10314343274,
+      "artifact_digest":"sha256:221d3920c6b00bc555d2d448ea33848fcd55bdcb1a8b77d2c35300506688f839",
+      "prereg_sha256":"ec679fce7b609f4bf8e7b83ab3e24103f8940a2dfc8b9abdc5e3552553cf6f94",
+      "engine_sha256":"426433ca0d41b1a8e9867dbaafa68f138016dab88ba75768ca0e5d8f1b755470"
+    }
+  },
+  "canonical_continuity": {
+    "rule_registry": "v3/historical_all_market/continuity/KEIRIN_RULE_REGISTRY_v1.json",
+    "experiment_ledger_latest": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v4.jsonl",
+    "owner_free_queue": "v3/historical_all_market/continuity/KEIRIN_OWNER_FREE_QUEUE_v1.json",
+    "predecessor_current_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v3.json"
+  },
+  "protected_boundaries": {"ECON_HOLDOUT1000":"SEALED_DO_NOT_ACCESS","DEV2000_RESULT_PAYOUT":"DO_NOT_OPEN_FOR_TUNING_OR_VALIDATION","probability_retune":false,"runtime":"OFF","automatic_betting":false,"real_money":false,"spend":false,"credential":false,"live_or_production":false},
+  "exact_next_executable_actions": [
+    "Use only the already-exposed V1-V7 economics evidence for successor development diagnosis and design.",
+    "Do not weaken V5/V6/V7 meeting/fold gates after observing near-misses.",
+    "Design a distinct successor lineage that targets pooled economics and fold-level robustness rather than merely increasing ticket coverage; keep NL2/B1a probability coefficients frozen.",
+    "Canonicalize exact preregistration and implementation bindings before successor scoring; no fresh holdout access during exposed-only development.",
+    "If no successor policy passes all preregistered gates, stop that lineage without opening fresh targets.",
+    "If exactly one successor policy freezes, create a separate untouched-validation preregistration and zero-collision holdout audit before any new PRE/PRICE/RESULT/PAYOUT access.",
+    "Keep ECON_HOLDOUT1000 sealed, DEV2000 result/payout unopened, Runtime OFF, and automatic betting OFF."
+  ],
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "non_authority_note": "Issue #384 remains VOID/closed and has no research authority."
+}
