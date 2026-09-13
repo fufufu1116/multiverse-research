@@ -1,0 +1,50 @@
+{
+  "record": "KEIRIN_OWNER_FREE_QUEUE_v1",
+  "status": "WAITING_EXTERNAL_OWNER_FREE_EVENT_WITH_QUEUE_SWITCH",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "active_head_at_queue_write": "f5cbd631b11169fcb8335c395d5434df1754d619",
+  "blocked_step": {
+    "kind": "GITHUB_ACTIONS_RUN",
+    "run_id": 34737854844,
+    "job_id": 103672328981,
+    "workflow": "Keirin NL2 Economics Cross-Meeting Robustness Development v5",
+    "head_sha": "f5cbd631b11169fcb8335c395d5434df1754d619",
+    "observed_status": "in_progress",
+    "wake_condition": "Workflow run reaches a terminal state. If completed, retrieve and verify the uploaded v5 evidence artifact before any scientific or downstream decision."
+  },
+  "exact_bindings": {
+    "prereg_sha256": "c4a28ebb1808399cf3216a536196623f2233b669d2913408b455ef8853138bfc",
+    "engine_sha256": "b82e348de81b29da57492413f449158706376896a67ba682a7288ee46ac00624",
+    "canonical_v4_ledger_commit": "69037223d921e22eae33c9137fa5fedc751c63aa"
+  },
+  "queue_switch_work": [
+    {
+      "task": "STATIC_V5_IMPLEMENTATION_AUDIT",
+      "status": "COMPLETE",
+      "result": "Preregistered eligibility and selection order are enforced in code; fresh validation target selection/access remains false in all v5 development exit paths."
+    },
+    {
+      "task": "POST_V5_CANONICAL_RECONCILIATION",
+      "status": "PENDING_WAKE_CONDITION",
+      "rule": "After artifact verification, append v5 outcome to the canonical experiment ledger and reconcile CURRENT without rewriting historical evidence."
+    },
+    {
+      "task": "SUCCESSOR_DECISION",
+      "status": "PENDING_V5_RESULT",
+      "rule": "If no development-eligible policy exists, do not open fresh targets. If exactly one development-only winner freezes, require a separate canonical preregistration and zero-collision new meeting-disjoint holdout before any fresh PRE/PRICE/RESULT/PAYOUT access."
+    }
+  ],
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000_RESULT_PAYOUT": "DO_NOT_OPEN",
+    "fresh_validation_target_access_during_v5": false,
+    "probability_retune": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false,
+    "live_or_production": false
+  },
+  "owner_action_required_now": false
+}
