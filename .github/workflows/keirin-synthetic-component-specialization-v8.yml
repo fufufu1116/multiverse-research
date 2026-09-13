@@ -1,4 +1,4 @@
-name: Keirin Synthetic Component Specialization v8 — Hash Preflight
+name: Keirin Synthetic Component Specialization v8
 
 on:
   push:
@@ -14,13 +14,16 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-hash-preflight:
+  synthetic-component-specialization-v8:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Fresh-check canonical main synthetic-only authority
         shell: bash
         run: |
@@ -38,13 +41,23 @@ jobs:
               raise SystemExit('FAIL_CLOSED: ECON_HOLDOUT1000 authority drift')
           print('CANONICAL_SYNTHETIC_ONLY_AUTHORITY_PASS')
           PY
-      - name: Print exact candidate hashes and stop before scoring
+      - name: Verify exact frozen hashes before synthetic scoring
         shell: bash
         run: |
           set -euo pipefail
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_COMPONENT_SPECIALIZATION_PREREG_20260914_v8.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_component_specialization_v8.py
-          sha256sum v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json
-          sha256sum v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py
-          python -m py_compile v3/historical_all_market/new_lineage/synthetic_component_specialization_v8.py
-          echo 'HASH_PREFLIGHT_COMPLETE_NO_COMPONENT_SCORING'
+          echo "ed32afd82a445e9cf80bd05b6dafb30be678c61a27e1bddc03b162dfbe39dd8e  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_COMPONENT_SPECIALIZATION_PREREG_20260914_v8.json" | sha256sum -c -
+          echo "73af55910527a1537bae48c87e880556af06aac710dd5ca6a33ddbc7f69f0e5f  v3/historical_all_market/new_lineage/synthetic_component_specialization_v8.py" | sha256sum -c -
+          echo "758fab7b92ad4bb7c1d3dc22d77b9f19772f2442ec0a84ca2b4fd9103b40dc43  v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json" | sha256sum -c -
+          echo "4a3d7091dad23de2df4108bb3bae0846eb0b710fbb3953a20dabf7f1557501de  v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py" | sha256sum -c -
+      - name: Compile frozen synthetic components
+        run: python -m py_compile v3/historical_all_market/new_lineage/synthetic_component_specialization_v8.py
+      - name: Run preregistered synthetic component specialization audit
+        run: python v3/historical_all_market/new_lineage/synthetic_component_specialization_v8.py
+      - name: Upload synthetic-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-synthetic-component-specialization-v8
+          path: v3/historical_all_market/research_candidates/synthetic_component_specialization_v8/
+          if-no-files-found: warn
+          retention-days: 90
