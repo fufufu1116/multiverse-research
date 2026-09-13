@@ -15,4 +15,4 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run continuation regression suite
-        run: python -m unittest tools.test_event_continuation_model_v1 tools.test_continuation_queue_v1
+        run: python -m unittest tools.test_event_continuation_model_v1 tools.test_continuation_queue_v1 tools.test_continuation_queue_receipt_v1
