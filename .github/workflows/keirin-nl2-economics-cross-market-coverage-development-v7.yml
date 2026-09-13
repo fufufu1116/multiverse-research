@@ -31,8 +31,7 @@ jobs:
           echo "ec679fce7b609f4bf8e7b83ab3e24103f8940a2dfc8b9abdc5e3552553cf6f94  v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_CROSS_MARKET_COVERAGE_DEVELOPMENT_PREREG_20260913_v7.json" | sha256sum -c -
           echo "426433ca0d41b1a8e9867dbaafa68f138016dab88ba75768ca0e5d8f1b755470  v3/historical_all_market/historical_virtualworld_nl2_economics_cross_market_coverage_development_v7.py" | sha256sum -c -
       - name: Run preregistered exposed-only cross-market coverage development v7
-        working-directory: v3/historical_all_market
-        run: python historical_virtualworld_nl2_economics_cross_market_coverage_development_v7.py
+        run: python v3/historical_all_market/historical_virtualworld_nl2_economics_cross_market_coverage_development_v7.py
       - name: Upload v7 development evidence
         if: always()
         uses: actions/upload-artifact@v4
