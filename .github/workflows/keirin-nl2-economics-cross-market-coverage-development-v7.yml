@@ -1,0 +1,43 @@
+name: Keirin NL2 Economics Cross-Market Coverage Development v7
+
+on:
+  push:
+    branches:
+      - research/keirin-real-evidence-dual-lane-20260901-v1
+    paths:
+      - 'v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_CROSS_MARKET_COVERAGE_DEVELOPMENT_PREREG_20260913_v7.json'
+      - 'v3/historical_all_market/historical_virtualworld_nl2_economics_cross_market_coverage_development_v7.py'
+      - '.github/workflows/keirin-nl2-economics-cross-market-coverage-development-v7.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  economics-cross-market-coverage-development-v7:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install bounded research dependencies
+        run: python -m pip install --disable-pip-version-check numpy requests beautifulsoup4 lxml
+      - name: Verify frozen v7 development files before exposed evidence scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ec679fce7b609f4bf8e7b83ab3e24103f8940a2dfc8b9abdc5e3552553cf6f94  v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_CROSS_MARKET_COVERAGE_DEVELOPMENT_PREREG_20260913_v7.json" | sha256sum -c -
+          echo "426433ca0d41b1a8e9867dbaafa68f138016dab88ba75768ca0e5d8f1b755470  v3/historical_all_market/historical_virtualworld_nl2_economics_cross_market_coverage_development_v7.py" | sha256sum -c -
+      - name: Run preregistered exposed-only cross-market coverage development v7
+        working-directory: v3/historical_all_market
+        run: python historical_virtualworld_nl2_economics_cross_market_coverage_development_v7.py
+      - name: Upload v7 development evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keirin-nl2-economics-cross-market-coverage-development-v7
+          path: v3/historical_all_market/research_candidates/nl2_economics_cross_market_coverage_development_v7/
+          if-no-files-found: warn
+          retention-days: 90
