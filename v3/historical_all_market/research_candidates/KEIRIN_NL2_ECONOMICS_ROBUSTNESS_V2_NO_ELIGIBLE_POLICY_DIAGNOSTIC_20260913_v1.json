@@ -1,0 +1,63 @@
+{
+  "record": "KEIRIN_NL2_ECONOMICS_ROBUSTNESS_V2_NO_ELIGIBLE_POLICY_DIAGNOSTIC_20260913_v1",
+  "status": "DEVELOPMENT_NO_ELIGIBLE_POLICY_NO_UNTOUCHED_VALIDATION",
+  "source_workflow_run_id": 34716561045,
+  "source_artifact_id": 10305795432,
+  "source_artifact_name": "keirin-nl2-economics-robustness-v2",
+  "preregistration": "v3/historical_all_market/research_candidates/KEIRIN_NL2_ECONOMICS_ROBUSTNESS_DEVELOPMENT_AND_UNTOUCHED_VALIDATION_PREREG_20260913_v2.json",
+  "development": {
+    "selected_races": 273,
+    "meeting_count": 10,
+    "configuration_count": 18,
+    "eligible_count": 0,
+    "settlement_failures": 0,
+    "highest_pooled_roi_configuration": {
+      "configuration_id": "E150:PAIR_UNORDERED:MAX40:TOP1_TOTAL:FLAT100",
+      "bet_races": 99,
+      "pooled_realized_roi": 0.3111111111111111,
+      "positive_meetings": 5,
+      "median_wagered_meeting_roi": -0.48636363636363633,
+      "lower_quartile_wagered_meeting_roi": -1.0,
+      "eligibility_failure": "median_wagered_meeting_roi<=-0.10"
+    },
+    "highest_median_meeting_roi_configuration": {
+      "configuration_id": "E50:WIDE_ONLY:MAX40:TOP1_TOTAL:FLAT100",
+      "bet_races": 194,
+      "pooled_realized_roi": -0.15309278350515465,
+      "positive_meetings": 6,
+      "median_wagered_meeting_roi": 0.05589171974522291,
+      "lower_quartile_wagered_meeting_roi": -0.7760416666666667,
+      "eligibility_failure": "pooled_realized_roi<=0"
+    },
+    "criterion_failure_counts_across_18_configurations": {
+      "median_wagered_meeting_roi<=-0.10": 17,
+      "positive_meeting_count<5": 15,
+      "pooled_realized_roi<=0": 14,
+      "bet_races<60": 4,
+      "executed_tickets<60": 4,
+      "largest_single_ticket_return_share>0.35": 4
+    },
+    "interpretation": "Positive pooled ROI and meeting stability did not coexist under the preregistered v2 family. No threshold was relaxed after scoring."
+  },
+  "fresh_validation_firewall": {
+    "policy_freeze_status": "NO_DEVELOPMENT_ELIGIBLE_POLICY",
+    "validation_fetched": false,
+    "validation_settlement_accessed": false,
+    "validation_artifact_files_created": false,
+    "fixed_validation_meetings_remain_unaccessed": true
+  },
+  "governance": {
+    "DEV2000_RESULT_PAYOUT": "NOT_OPENED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_OPENED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "post_result_rescue_of_v2": "PROHIBITED",
+    "next_allowed_action": "SEPARATE_PREREGISTERED_DEVELOPMENT_LINEAGE"
+  },
+  "artifact_file_sha256": {
+    "00_COLLISION_AND_GOVERNANCE_AUDIT.json": "a78957124b659a467198ff3ae7acc3065b69b6a9c31bf47f83e1c43c1edfe0ff",
+    "01_DEVELOPMENT_PRE_PRICE_LOCK.json": "5c4fdca7c68339280c4952a433d17aa470c2443968becdacd1d81156a280d514",
+    "02_DEVELOPMENT_SCORE.json": "fa6e1fdd7baeb02c663d360cab5a3ff32343bde99de7a6376b541309c9a7c878",
+    "03_POLICY_FREEZE.json": "6943fc62fc55222d2d817e5e0cb4fe94b194b082183453e85e98d285eee2aa92"
+  }
+}
