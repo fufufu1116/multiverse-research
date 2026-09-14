@@ -1,0 +1,28 @@
+name: System Improvement 526 Candidate Constructor v2
+
+on:
+  push:
+    branches:
+      - agent/system-improvement-526-constructor-v2-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  construct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Apply bounded patch and publish clean candidate branch
+        run: |
+          set -euo pipefail
+          python tools/_constructor_patch_526.py
+          rm .github/workflows/system-improvement-526-constructor-v2.yml tools/_constructor_patch_526.py
+          git config user.name "fufufu1116"
+          git config user.email "vbd82p4kd6@privaterelay.appleid.com"
+          git checkout -b system-improvement-auditor-upstream-execution-state-v1-20260915
+          git add -A
+          git commit -m "[SYSTEM IMPROVEMENT] Fix Auditor upstream Lab execution-state validation"
+          git push origin HEAD:refs/heads/system-improvement-auditor-upstream-execution-state-v1-20260915
