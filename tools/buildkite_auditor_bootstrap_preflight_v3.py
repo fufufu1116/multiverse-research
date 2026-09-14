@@ -40,14 +40,9 @@ def inspect_pipeline_text(text: str) -> dict[str, object]:
     for code, pattern in FORBIDDEN_PATTERNS:
         if pattern.search(text):
             findings.append(code)
-    lines = text.splitlines()
-    for idx, line in enumerate(lines):
-        if DIRECT_ENTRY.search(line):
-            joined = line
-            if idx > 0:
-                joined = lines[idx - 1] + " " + line
-            if "PYTHONPATH=.mv_dispatcher" not in joined:
-                findings.append(f"DIRECT_ENTRY_WITHOUT_PACKAGE_ROOT:{idx + 1}")
+    for idx, line in enumerate(text.splitlines()):
+        if DIRECT_ENTRY.search(line) and "PYTHONPATH=.mv_dispatcher" not in line:
+            findings.append(f"DIRECT_ENTRY_WITHOUT_PACKAGE_ROOT:{idx + 1}")
     return {"ok": not findings, "findings": findings, "runtime_effect": False}
 
 
