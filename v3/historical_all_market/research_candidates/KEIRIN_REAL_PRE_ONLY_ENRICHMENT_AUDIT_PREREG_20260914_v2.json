@@ -1,0 +1,94 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2",
+  "status": "PREREGISTERED_BEFORE_ADDITIONAL_REAL_PRE_SOURCE_BYTE_ACCESS",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_fresh_read": "74e5534ac95d13ce0418b69d527812d1cd139781",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5657234204,
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "scientific_question": "Does an already-existing DEV2000 PRE collection artifact contain any of the five frozen N2 direct inputs missing from DEV2000_PRE_TABLE_v1.csv, without introducing outcome, price or economics material?",
+  "frozen_candidate": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+  "frozen_candidate_changed": false,
+  "authorized_target_fields": [
+    "line_group_id",
+    "line_position",
+    "line_size",
+    "bank_length_m",
+    "wind_speed_mps"
+  ],
+  "preregistered_sources": [
+    {
+      "role": "PRIMARY_PRE_ONLY_STRUCTURED_SOURCE",
+      "name": "PRE_STRUCTURED.jsonl.gz",
+      "drive_file_id": "1N2Cq5IkuxcBU0MqeIW5PIF44JTkHaq1Q",
+      "parent_folder": "MULTIVERSE_DEV2000_PRE_COLLECTION_v3_TURBO_LITE",
+      "expected_size_bytes": 576571,
+      "expected_sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84"
+    },
+    {
+      "role": "PRE_COLLECTION_PROVENANCE_COMPANION",
+      "name": "DEV2000_PRE_COLLECTION_REPORT.json",
+      "drive_file_id": "1oqCX7huuTxFajsKPdrgP5Ay9qhWSlff7",
+      "parent_folder": "MULTIVERSE_DEV2000_PRE_COLLECTION_v3_TURBO_LITE",
+      "expected_size_bytes": 678,
+      "expected_sha256": "331115704c98d0a1a7194c8f5d338d31c7036df9aec834fc07acc46e962b9d03"
+    }
+  ],
+  "implementation": {
+    "path": "v3/historical_all_market/new_lineage/real_pre_only_enrichment_audit_v2.py",
+    "git_blob_sha": "740e093d7fb03f5770490d8f5dfc89922e116e6a",
+    "logic_freeze": [
+      "verify exact source/report SHA256 before use",
+      "lexically enumerate JSON key names before value audit",
+      "stop before value audit if forbidden outcome/payout/settlement/odds/price/economics key terms are detected",
+      "confirm collection report result_accessed=false, payout_accessed=false, market_odds_used=false, external_prediction_fields_used=false",
+      "only after PRE-only confirmation parse source values",
+      "analyze only the five authorized fields; no labels, performance, fit or selection"
+    ]
+  },
+  "forbidden_key_terms": [
+    "result",
+    "payout",
+    "finish",
+    "winner",
+    "settlement",
+    "odds",
+    "price",
+    "roi",
+    "profit",
+    "bankroll",
+    "return"
+  ],
+  "access_order": [
+    "FRESH_READ_AUTHORITY",
+    "VERIFY_SOURCE_AND_REPORT_HASH_IDENTITY",
+    "LEXICAL_FORBIDDEN_KEY_SCAN",
+    "CONFIRM_PRE_ONLY_FROM_PROVENANCE_REPORT",
+    "VALUE_AUDIT_ONLY_FIVE_TARGET_FIELDS"
+  ],
+  "stop_rules": [
+    "STOP_IDENTITY_HASH_MISMATCH",
+    "STOP_FORBIDDEN_KEY_DETECTED_BEFORE_VALUE_AUDIT",
+    "STOP_PRE_ONLY_CONFIRMATION_FAILED"
+  ],
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_bankroll_roi_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes": "NOT_ACCESSED",
+    "untouched_outcome_validation": "NOT_OPENED",
+    "real_pre_training_fit_selection": "PROHIBITED_NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "new_automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "follow_up_rule": "If this exact source does not supply all five fields, no additional source bytes may be opened unless that exact next source is separately preregistered under the same Owner-authorized PRE-only source-family boundary."
+}
