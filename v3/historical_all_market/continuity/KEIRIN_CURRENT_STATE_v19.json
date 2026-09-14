@@ -1,0 +1,91 @@
+{
+  "authority_sources": {
+    "branch_head_before_current_state_write": "46b8a8da085464c09fbc530a3f53ecd0ea7dcb20",
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "ledger_v24_commit": "46b8a8da085464c09fbc530a3f53ecd0ea7dcb20",
+    "owner_gate_issue": 377,
+    "prediction_lock_owner_gate_comment_id": 5659098942,
+    "prereg_commit": "e9d1d0895b942b2ae76fac154120456d8ebd1b8d",
+    "result_commit": "6c5cee0c5ad3a4dae5c10e7b9a968ad883ccac09",
+    "scope": "SW0_REAL_PRE_PREDICTION_LOCK_ON_DEV2000_A_B_ONLY_NO_OUTCOME_NO_FIT_NO_PROMOTION"
+  },
+  "automatic_betting": false,
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "checkpoint_jst": "2026-09-14",
+  "cross_lane_control": {
+    "branch_only_continuity": true,
+    "canonical_main_mutation": false,
+    "reason": "Global Control #394 requires this Keirin work to remain branch-only / issue-only."
+  },
+  "current_research_objective": "Preserve the immutable pre-outcome SW0 A+B prediction lock and stop before all outcome/result/payout/performance evaluation. The next scientific step requires a separate exact Owner Gate and must not repurpose DEV2000 C or open ECON_HOLDOUT1000 without separate authority.",
+  "exact_next_executable_actions": [
+    "Persist this completed prediction-lock checkpoint and ledger on the research branch and Issue #377.",
+    "Do not mutate canonical main from this lane.",
+    "Do not access RESULT/PAYOUT/outcomes/settlement/odds/price/economics or evaluate predictive performance under the consumed prediction-lock authority.",
+    "Do not use DEV2000 C for this new lineage and do not open ECON_HOLDOUT1000.",
+    "Before any outcome reveal or performance evaluation, obtain a separate Owner Gate whose exact universe, evidence class and protected-data boundaries are explicitly defined."
+  ],
+  "frozen_model": {
+    "name": "SW0_SCORE_ONLY_PL",
+    "prediction_fields": [
+      "race_id",
+      "car_no",
+      "score"
+    ],
+    "real_data_fit": false,
+    "real_predictive_validation": false,
+    "score_shrinkage": 0.7677543186180422,
+    "status": "FROZEN_UNCHANGED_PREDICTION_LOCKED_NOT_PROMOTED"
+  },
+  "latest_completed_experiments": [
+    {
+      "classification": "SW0_REAL_PRE_PREDICTION_LOCK_COMPLETE_OUTCOMES_UNOPENED",
+      "id": "EXP-SW0-REAL-PRE-PREDICTION-LOCK-V1",
+      "prediction_artifact_drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+      "prediction_artifact_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+      "preregistration": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/00_PREREG.json",
+      "result": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/01_RESULT.json",
+      "status": "COMPLETE_PREDICTION_LOCK_OUTCOMES_UNOPENED"
+    }
+  ],
+  "latest_scientific_finding": {
+    "generated_ordered_top3_values": 350688,
+    "max_probability_mass_abs_error": 3.650413304967515e-12,
+    "model_promotion": false,
+    "race_count": 1500,
+    "real_predictive_performance_claim": false,
+    "selected_candidate": "SW0_SCORE_ONLY_PL",
+    "summary": "Frozen SW0_SCORE_ONLY_PL predictions are now hash-locked before outcome access on exactly DEV2000 A+B (dev_index 1..1500): 1500 races and 350688 ordered-top3 probabilities. DEV2000 C was excluded before car_no/score parsing and probability generation. This establishes a reproducible pre-outcome prediction lock only; it does not establish predictive accuracy, edge, ROI, profitability or economics."
+  },
+  "owner_action_required_now": true,
+  "owner_gate_needed_next": "SEPARATE_EXACT_OUTCOME_REVEAL_OR_PREDICTIVE_PERFORMANCE_EVALUATION_GATE_WITH_EXPLICIT_UNIVERSE_AND_EVIDENCE_CLASS",
+  "prediction_lock_artifacts": {
+    "drive_folder_id": "1vCbYxJrg0nhnTrII8X85Kg-axAkakYw1",
+    "manifest_file_id": "1LcI_eiDBWK3qzrHEtNtaY4iDe7wM8pMl",
+    "manifest_sha256": "88bcd3903ab9c6e5d4d787e3eda4eb216c4c3fb32ec81b97a06adb922b05552a",
+    "post_upload_hash_verification": "PASS",
+    "prediction_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "prediction_file_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127"
+  },
+  "protected_boundaries": {
+    "DEV2000_C": "EXCLUDED_NOT_SCORED_NOT_REPURPOSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "model_promotion": "PROHIBITED",
+    "odds_price": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "provider_contact": false,
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "runtime": "OFF",
+    "spend": false
+  },
+  "record": "KEIRIN_CURRENT_STATE_v19",
+  "runtime": "OFF",
+  "status": "ACTIVE_CURRENT_STATE_V19_SW0_REAL_PRE_PREDICTION_LOCK_COMPLETE_OUTCOMES_UNOPENED_NEXT_OWNER_GATE_REQUIRED",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v18.json"
+}
