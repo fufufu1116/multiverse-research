@@ -1,0 +1,72 @@
+{
+  "record": "KEIRIN_SOURCE_WIDE_SW0_REAL_PRE_MECHANICAL_RERUN_PREREG_20260914_v1",
+  "status": "PREREGISTERED_BEFORE_ONE_TIME_REAL_PRE_RERUN",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+  "control_issue": 394,
+  "control_state": "ACTIVE_REVIEW_LAUNCH_LEASE_ESCALATED_STRUCTURAL_HARDENING_BRANCH_ONLY_ISSUE_ONLY_WORK_ALLOWED_MAIN_MUTATION_PROHIBITED",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5658938248,
+  "evidence_class": "REAL_PRE_MECHANICAL_INTERFACE_COMPATIBILITY_ONLY_NOT_PREDICTIVE_PERFORMANCE",
+  "one_time_rerun_budget": 1,
+  "selected_candidate": {
+    "name": "SW0_SCORE_ONLY_PL",
+    "frozen_artifact": "v3/historical_all_market/research_candidates/source_wide_sibling_synthetic_selection_v1/02_FROZEN_CANDIDATE.json",
+    "utility": "0.7677543186180422 * score",
+    "prediction_fields_used_in_utility": ["car_no", "score"],
+    "class_dependency": false,
+    "style_dependency": false,
+    "field_size_support": "ANY_N_GE_3",
+    "probability_family": "Plackett-Luce ordered top3",
+    "no_post_freeze_tuning": true
+  },
+  "exact_source": {
+    "role": "SAME_EXISTING_STORED_CANONICAL_DEV2000_PRE_ONLY_SOURCE",
+    "name": "PRE_STRUCTURED.jsonl.gz",
+    "drive_file_id": "1N2Cq5IkuxcBU0MqeIW5PIF44JTkHaq1Q",
+    "expected_size_bytes": 576571,
+    "expected_sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84"
+  },
+  "authorized_selective_access": {
+    "top_level_identity_values": ["race_id"],
+    "structural_containers": ["entrants"],
+    "nested_values": ["car_no", "class", "style", "score"],
+    "utility_consumes_only": ["car_no", "score"],
+    "all_other_values": "SKIP_WITHOUT_DECODE_OR_MATERIALIZE"
+  },
+  "pre_access_guards": [
+    "verify exact source SHA256 before selective value interpretation",
+    "recursively scan key names and fail closed on RESULT/PAYOUT/outcome/settlement/odds/price/economics/ROI/profit-like keys",
+    "decode only race_id plus entrant car_no/class/style/score",
+    "do not access any companion RESULT/PAYOUT/outcome/price/economics source"
+  ],
+  "mechanical_checks": [
+    "schema/type/missingness for race_id/car_no/class/style/score",
+    "aggregate class/style support observation only; neither class nor style may influence SW0 utility",
+    "per-race entrant count >=3 and unique car_no",
+    "score finite",
+    "generate frozen SW0 ordered-top3 probabilities for every mechanically valid race",
+    "all emitted values finite and nonnegative",
+    "ordered-top3 probability mass sums to 1 within absolute error <=1e-10 for every race"
+  ],
+  "decision_rule": {
+    "PASS_SOURCE_WIDE_MECHANICAL_COMPATIBILITY": "exact hash matches; forbidden-key scan clear; all 2000 races have authorized fields with valid types/no missingness; every race has >=3 unique cars; frozen SW0 generates finite nonnegative normalized top3 probabilities for all 2000 races",
+    "FAIL_CLOSED": "any identity/hash mismatch, forbidden key, missing/invalid authorized field, duplicate/malformed race, nonfinite score or probability sanity failure; no tuning and no second rerun under this Gate"
+  },
+  "persistence_rule": "Persist aggregate counts/support/probability-sanity metrics only; no real PRE row values or per-race probabilities.",
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_results": "NOT_ACCESSED",
+    "real_PRE_fit_training_parameter_model_selection": "PROHIBITED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
