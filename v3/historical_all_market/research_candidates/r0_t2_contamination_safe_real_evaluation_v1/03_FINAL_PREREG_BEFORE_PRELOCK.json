@@ -1,0 +1,101 @@
+{
+  "record": "KEIRIN_R0_T2_CONTAMINATION_SAFE_REAL_EVALUATION_PREREG_V1",
+  "status": "FROZEN_BEFORE_PRELOCK_AND_RESULT_ACCESS_WAITING_FOR_PROSPECTIVE_PRE_LOCK",
+  "frozen_date_jst": "2026-09-15",
+  "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+  "model_under_test": {
+    "id": "R0_T2",
+    "family": "R0_SCORE_ONLY_TEMPERED_PL",
+    "formula": "Plackett-Luce softmax(score / 2.0)",
+    "temperature": 2.0,
+    "selection_evidence": "SYNTHETIC_ENGINEERING_ONLY",
+    "real_validation_status": "NOT_YET_EVALUATED",
+    "promotion_status": "NOT_AUTHORIZED"
+  },
+  "frozen_evidence_assignment": {
+    "path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/01_PROSPECTIVE_EVIDENCE_ASSIGNMENT.json",
+    "commit": "24bdfd98e5240a2f3939f26c2e7c2121cd53f5d1",
+    "git_blob_sha": "baac358a7f306ccde09e5fbb0666902f5e059bf8",
+    "meetings": [
+      "静岡 F1 2026-09-18..2026-09-20 オタクなリンカイ！と臥龍梅杯",
+      "富山 G2 2026-09-18..2026-09-21 共同通信社杯競輪",
+      "松山 F2 2026-09-19..2026-09-21 イー新聞杯×ウィンチケット杯"
+    ],
+    "selection": "ALL_RACES_IN_EXACT_ASSIGNED_MEETINGS_SUBJECT_ONLY_TO_PREDECLARED_PRE_TIME_INPUT_VALIDITY_AND_5_TO_9_ENTRANTS",
+    "minimum_races": 24,
+    "minimum_meetings": 3,
+    "post_outcome_substitution": false
+  },
+  "collision_audit": {
+    "path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/02_EVIDENCE_COLLISION_AUDIT.json",
+    "commit": "d7a7c6ac16a159c17a3b31bda6c76595428aec68",
+    "git_blob_sha": "3f4df326800e1c342ca61b3308eaeb98c252d6a9",
+    "status": "PASS_PRE_OUTCOME_IDENTITY_LEVEL_NO_PROTECTED_DESERIALIZATION",
+    "final_lock_identity_reaudit_required": true
+  },
+  "prelock_implementation": {
+    "path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/r0_t2_prelock_v1.py",
+    "commit": "a306f00adb3e0b81852aa0cc84cf323a0dbc7bf8",
+    "git_blob_sha": "2a02e17548ecebb95ca3188dbaf0b95ba9d675dc",
+    "sha256": "e1f996bb3004ca815862c33c0930a0b6103bf2d0467799a2378b5e48e5138ec8",
+    "required_execution_order": "PRE_SOURCE_BYTES_HASHED_THEN_INPUT_MANIFEST_THEN_R0_T2_LOCK_BEFORE_EACH_RACE_START; NO_RESULT_ACCESS"
+  },
+  "evaluator": {
+    "path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/evaluate_r0_t2_one_shot_v1.py",
+    "commit": "7d867bf16a873bee15bb3cd59ea4ab8ec1c425ed",
+    "git_blob_sha": "35864ab9f2a0ad2eb9b32324ea19fae8dfb96727",
+    "allowed_result_artifact_schema": ["race_id", "ordered_top3_car_no"],
+    "result_schema_extra_keys": "FAIL_CLOSED",
+    "exact_race_set_mismatch": "FAIL_CLOSED",
+    "lock_hash_mismatch": "FAIL_CLOSED"
+  },
+  "metrics": {
+    "primary": "mean_ordered_top3_nll_improvement_vs_sequential_uniform",
+    "secondary": [
+      "winner_logloss_improvement_vs_uniform",
+      "winner_brier_improvement_vs_uniform",
+      "top1_accuracy",
+      "unordered_top3_containment",
+      "toplabel_ece10"
+    ],
+    "race_bootstrap": {"reps": 10000, "seed": 20260918, "lower_bound_quantile": 0.025},
+    "meeting_block_bootstrap": {"reps": 10000, "seed": 20260919, "lower_bound_quantile": 0.025}
+  },
+  "frozen_pass_logic": {
+    "minimum_races": 24,
+    "minimum_meetings": 3,
+    "race_bootstrap_primary_lower95_gt_zero": true,
+    "meeting_bootstrap_primary_lower95_gt_zero": true,
+    "winner_logloss_improvement_vs_uniform_gte_zero": true,
+    "winner_brier_improvement_vs_uniform_gte_zero": true,
+    "toplabel_ece10_lte": 0.15,
+    "all_required_values_finite": true,
+    "verdicts": ["PASS_PREREGISTERED_SIGNAL_GATE", "FAIL_PREREGISTERED_SIGNAL_GATE"]
+  },
+  "access_order_and_gate": [
+    "1_FREEZE_ASSIGNMENT_IMPLEMENTATIONS_THRESHOLDS_AND_COLLISION_AUDIT",
+    "2_COLLECT_ONLY_PRE_REQUIRED_SOURCE_BYTES_AND_HASH_THEM_BEFORE_RACE_START",
+    "3_CREATE_FULL_PREDICTION_LOCK_ARTIFACT_WITH_NO_RESULT_ACCESS",
+    "4_REAUDIT_FINAL_LOCK_IDENTITIES_ONLY_FOR_COLLISION_AND_COVERAGE",
+    "5_CREATE_NEW_EXACT_OWNER_GATE_BOUND_TO_FINAL_LOCK_HASH_AND_RESULT_PARSER_HASH",
+    "6_ONLY_AFTER_EXACT_OWNER_TOKEN_FETCH_MINIMAL_RESULT_ONLY_ARTIFACT_ONCE",
+    "7_SCORE_ONCE_WITH_FROZEN_EVALUATOR_AND_PERSIST_RECEIPT",
+    "8_STOP_NO_RERUN_NO_RETUNE_NO_PROMOTION_BY_THIS_GATE"
+  ],
+  "owner_gate_state": "NOT_READY_UNTIL_FULL_PRE_PREDICTION_LOCK_EXISTS_AND_IS_HASH_FROZEN",
+  "result_access_authorized_now": false,
+  "hard_prohibitions": [
+    "NO_GATE_487_RERUN_OR_A_PLUS_B_REUSE_AS_FRESH_VALIDATION",
+    "NO_DEV2000_C_OUTCOME_ACCESS",
+    "NO_ECON_HOLDOUT1000_ACCESS",
+    "NO_RESULT_OR_OUTCOME_ACCESS_BEFORE_NEW_EXACT_OWNER_GATE",
+    "NO_PAYOUT_ODDS_PRICE_ECONOMICS_ROI_PROFIT",
+    "NO_REAL_PRE_FIT_TRAINING_TUNING_CALIBRATION_PARAMETER_OR_MODEL_SELECTION",
+    "NO_POSTHOC_RACE_SUBSTITUTION_METRIC_THRESHOLD_OR_MODEL_CHANGE",
+    "NO_MODEL_PROMOTION",
+    "NO_PROVIDER_CONTACT_CREDENTIAL_SPEND_RUNTIME_OR_AUTOMATIC_BETTING"
+  ],
+  "claim_boundary": "ONE_FUTURE_INDEPENDENT_PROSPECTIVE_EVIDENCE_SET_ONLY; PASS_WOULD_BE_REAL_PREDICTIVE_EVIDENCE_FOR_FROZEN_R0_T2_BUT_NOT_AUTOMATIC_MODEL_PROMOTION_OR_ECONOMIC_EDGE",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
