@@ -1,0 +1,41 @@
+{
+  "schema": "MULTIVERSE_CHAT_STREAM_INTERRUPTION_RECOVERY_CONTRACT_v1",
+  "runtime": "OFF",
+  "states": [
+    "NOT_AUTHORIZED",
+    "AUTHORIZED_NOT_ATTEMPTED",
+    "ATTEMPTED_CONSUMED",
+    "RESULT_RECORDED"
+  ],
+  "allowed_transitions": [
+    ["NOT_AUTHORIZED", "AUTHORIZED_NOT_ATTEMPTED"],
+    ["AUTHORIZED_NOT_ATTEMPTED", "ATTEMPTED_CONSUMED"],
+    ["ATTEMPTED_CONSUMED", "RESULT_RECORDED"]
+  ],
+  "resume_order": [
+    "canonical_main",
+    "control_and_current_lane",
+    "durable_authority_and_attempt_receipts",
+    "external_status_when_needed",
+    "first_uncommitted_step"
+  ],
+  "invariants": {
+    "delivery_failure_is_not_project_state_rollback": true,
+    "canonical_before_consequential_narration": true,
+    "receipt_before_long_post_attempt_report": true,
+    "repeat_receipted_owner_action": false,
+    "speculative_retry_after_interruption": false,
+    "move_backward_from_attempted_consumed": false,
+    "chat_open_state_is_reliability_control": false,
+    "claim_platform_transport_repaired_by_repository": false
+  },
+  "authority": {
+    "runtime_activation": false,
+    "provider_effect": false,
+    "credential_use": false,
+    "spend": false,
+    "build_or_retry": false,
+    "merge_or_adoption": false,
+    "production_effect": false
+  }
+}
