@@ -1,0 +1,59 @@
+name: TEMP Issue555 Branch Edit
+
+on:
+  push:
+    branches:
+      - system-improvement-t2-cross-lane-legacy-v1-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  edit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: system-improvement-t2-cross-lane-legacy-v1-20260915
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Apply narrow source repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('automation/review_dispatcher_v1/t2_legacy_v1.py')
+          s = p.read_text()
+          old_import = '    ReviewContractError,\n    fetch_all_pages,\n'
+          new_import = '    ReviewContractError,\n    cross_lane_execution_state_valid,\n    fetch_all_pages,\n'
+          if old_import not in s:
+              raise SystemExit('import anchor missing')
+          s = s.replace(old_import, new_import, 1)
+
+          old_latest = '''    require(\n        latest_lab_request["execution_state"] == request["execution_state"],\n        "LATEST_LAB_EXECUTION_STATE_MISMATCH",\n    )\n'''
+          new_latest = '''    require(\n        cross_lane_execution_state_valid(\n            latest_lab_request["execution_state"],\n            request["execution_state"],\n        ),\n        "LATEST_LAB_EXECUTION_STATE_MISMATCH",\n    )\n'''
+          if old_latest not in s:
+              raise SystemExit('latest-lab equality anchor missing')
+          s = s.replace(old_latest, new_latest, 1)
+
+          old_artifact = '''    require(\n        lab_artifact.get("execution_state") == request["execution_state"],\n        "LAB_UPSTREAM_EXECUTION_STATE",\n    )\n'''
+          new_artifact = '''    require(\n        cross_lane_execution_state_valid(\n            lab_artifact.get("execution_state"),\n            request["execution_state"],\n        ),\n        "LAB_UPSTREAM_EXECUTION_STATE",\n    )\n'''
+          if old_artifact not in s:
+              raise SystemExit('lab-artifact equality anchor missing')
+          s = s.replace(old_artifact, new_artifact, 1)
+          p.write_text(s)
+          PY
+          git diff --check
+          grep -n 'cross_lane_execution_state_valid' automation/review_dispatcher_v1/t2_legacy_v1.py
+      - name: Commit repair to candidate branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'multiverse-system-improvement-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add automation/review_dispatcher_v1/t2_legacy_v1.py
+          git commit -m '[SYSTEM IMPROVEMENT] Fix legacy T2 cross-lane execution-state validation (#555)'
+          git push origin HEAD:system-improvement-t2-cross-lane-legacy-v1-20260915
