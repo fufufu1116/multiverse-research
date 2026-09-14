@@ -1,0 +1,79 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_5",
+  "status": "PREREGISTERED_BEFORE_V3_PRE_PROVENANCE_VALUE_ACCESS",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_expected": "74e5534ac95d13ce0418b69d527812d1cd139781",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5657234204,
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "scientific_question": "Can the already hash-verified PRE-only V3 PRE_PROVENANCE map canonical DEV2000 race IDs to stored pre-event raw-payload identities strongly enough to determine whether a later exact raw-source safety audit is possible, without opening raw payload bytes or any outcome/price/economics material?",
+  "source": {
+    "name": "PRE_PROVENANCE.jsonl.gz",
+    "drive_file_id": "15CuqYV02DiZTKTf_5fSps48ruoiS_P2R",
+    "parent_folder": "MULTIVERSE_DEV2000_PRE_COLLECTION_v3_TURBO_LITE",
+    "expected_size_bytes": 127890,
+    "expected_sha256": "86627fe4151074f2d20db637a7f5468e24ae3c6e878a82a33fde7b3218261b27",
+    "schema_audit_result": "v3/historical_all_market/research_candidates/real_pre_only_enrichment_audit_v2_2/01_RESULT.json",
+    "pre_only_already_confirmed": true,
+    "schema_target_fields_present": [],
+    "schema_forbidden_fields_detected": []
+  },
+  "allowed_value_fields_only": [
+    "race_id",
+    "payload_sha256",
+    "retrieved_at_utc",
+    "source_url",
+    "availability_proof"
+  ],
+  "allowed_derived_summaries": [
+    "row_count",
+    "unique_race_id_count",
+    "missingness for the five allowed provenance fields",
+    "payload_sha256 uniqueness and deterministic first-five lexicographic sample",
+    "source URL host/path-template counts with query strings and fragments removed",
+    "retrieval timestamp minimum/maximum only",
+    "availability_proof categorical counts without following or opening referenced content"
+  ],
+  "raw_payload_policy": {
+    "raw_payload_byte_access": "PROHIBITED_UNDER_THIS_PREREGISTRATION",
+    "metadata_only_lookup_by_exact_payload_sha256_filename": "ALLOWED_AFTER_THIS_PROVENANCE_AUDIT",
+    "sample_lookup_rule": "At most the deterministic first five lexicographically sorted non-null payload_sha256 values may be used for Drive metadata-only existence lookup before a new raw-payload preregistration.",
+    "next_raw_gate": "Any raw HTML byte access requires a new exact preregistration proving PRE timing and a forbidden-content safety strategy; if safety cannot be established without reading forbidden content, fail closed."
+  },
+  "access_order": [
+    "FRESH_READ_CANONICAL_MAIN_ISSUE394_ISSUE377_RECEIPT_CURRENT_STATE_VNEXT_KEIRIN_NOW_AND_THIS_PREREGISTRATION",
+    "REVERIFY_EXACT_GZIP_SHA256",
+    "RELY_ON_COMPLETED_V2_2_SCHEMA_AND_PRE_ONLY_CONFIRMATION_ONLY_IF_AUTHORITY_UNCHANGED",
+    "PARSE_ROWS_BUT_INTERPRET_AND_PERSIST_ONLY_THE_FIVE_PREREGISTERED_PROVENANCE_FIELDS",
+    "COMPUTE_ONLY_PREREGISTERED_PROVENANCE_SUMMARIES",
+    "PERFORM_AT_MOST_FIVE_METADATA_ONLY_RAW_FILENAME_LOOKUPS_USING_DETERMINISTIC_PAYLOAD_HASH_SAMPLE",
+    "STOP_BEFORE_ANY_RAW_PAYLOAD_BYTE_ACCESS"
+  ],
+  "stop_rules": [
+    "STOP_AUTHORITY_DRIFT",
+    "STOP_SOURCE_HASH_DRIFT",
+    "STOP_IF_V2_2_PRE_ONLY_OR_SCHEMA_EVIDENCE_NO_LONGER_MATCHES_SOURCE_IDENTITY",
+    "STOP_IF_ANY_UNEXPECTED_FORBIDDEN_SCHEMA_KEY_IS_DISCOVERED_DURING_RECHECK",
+    "STOP_BEFORE_RAW_PAYLOAD_BYTES"
+  ],
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_bankroll_roi_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes": "NOT_ACCESSED",
+    "untouched_outcome_validation": "NOT_OPENED",
+    "real_pre_training_fit_selection": "PROHIBITED_NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "new_automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "raw_payload_bytes": "NOT_AUTHORIZED_BY_THIS_PREREGISTRATION",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  }
+}
