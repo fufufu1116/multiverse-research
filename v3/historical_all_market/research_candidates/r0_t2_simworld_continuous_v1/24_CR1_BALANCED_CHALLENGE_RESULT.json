@@ -1,0 +1,22 @@
+{
+  "record": "CR1_E05_BALANCED_CHALLENGE_RESULT_v1",
+  "prereg_commit": "4b7c1ece1562e651f4a58ab7d4be4c4f354f17ae",
+  "fresh_races": 30000,
+  "seed_results": {
+    "20261005": {
+      "R0_T2": {"mean_primary_regret": 0.02391172495834816, "max_primary_regret": 0.06540282703779711, "clean_T2_exact_regret": 0.0},
+      "CR1_E05": {"mean_primary_regret": 0.023523537097778706, "max_primary_regret": 0.05555177765398018, "clean_T2_exact_regret": 0.0011975672703360037},
+      "retain_rule_pass": true
+    },
+    "20261006": {
+      "R0_T2": {"mean_primary_regret": 0.025009753121807966, "max_primary_regret": 0.0405449292411389, "clean_T2_exact_regret": 0.0},
+      "CR1_E05": {"mean_primary_regret": 0.02415120697700326, "max_primary_regret": 0.04012532174521526, "clean_T2_exact_regret": -0.00004424102825609359},
+      "retain_rule_pass": true
+    }
+  },
+  "decision": "PASS_BALANCED_CHALLENGE_RETAIN_CR1_SYNTHETIC_LEAD",
+  "interpretation": "CR1 survived a second independently preregistered fresh battery designed to include clean and near-clean worlds, with no material clean-T2 penalty under the frozen rule. This remains simulation-only engineering evidence.",
+  "real_validation": false,
+  "promotion": false,
+  "protected_boundaries_unchanged": true
+}
