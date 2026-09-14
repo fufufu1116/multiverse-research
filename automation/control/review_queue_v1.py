@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -21,7 +20,6 @@ STATES = {
     "SUPERSEDED",
 }
 REVIEW_TYPES = {"LAB", "AUDITOR"}
-TERMINAL = {"PASS", "FAIL", "BLOCKED", "SUPERSEDED"}
 ACTIVE_RESOURCE_STATES = {"AUTHORIZED", "RUNNING", "CONSUMED"}
 
 
@@ -62,6 +60,15 @@ def queue_id_for(item: dict[str, Any]) -> str:
     return "rq-" + hashlib.sha256(raw).hexdigest()[:24]
 
 
+def _validate_result_binding(item: dict[str, Any], result: dict[str, Any], verdict: str) -> None:
+    require(result.get("request_id") == item["request_id"], "RESULT_REQUEST_ID_MISMATCH")
+    require(result.get("request_sha256") == item["request_sha256"], "RESULT_REQUEST_SHA_MISMATCH")
+    require(result.get("head") == item["head"], "RESULT_HEAD_MISMATCH")
+    require(result.get("tree") == item["tree"], "RESULT_TREE_MISMATCH")
+    require(result.get("review_type") == item["review_type"], "RESULT_REVIEW_TYPE_MISMATCH")
+    require(result.get("verdict") == verdict, "RESULT_VERDICT_MISMATCH")
+
+
 def validate_item(item: dict[str, Any]) -> None:
     require(item.get("schema") == ITEM_SCHEMA, "INVALID_ITEM_SCHEMA")
     review_type = text(item, "review_type")
@@ -69,12 +76,14 @@ def validate_item(item: dict[str, Any]) -> None:
     state = text(item, "state")
     require(state in STATES, "INVALID_STATE")
     integer(item, "pr", 1)
+    integer(item, "created_seq", 0)
     for key in ("lane", "branch", "head", "tree", "base", "main", "request_id", "request_sha256", "gate_ref"):
         text(item, key)
     priority = integer(item, "priority", 0)
     require(priority <= 1000, "PRIORITY_TOO_HIGH")
     deps = item.get("depends_on", [])
     require(isinstance(deps, list) and all(isinstance(x, str) and x for x in deps), "INVALID_DEPENDS_ON")
+    require(len(deps) == len(set(deps)), "DUPLICATE_DEPENDENCY")
     consumed = item.get("one_shot_consumed")
     require(isinstance(consumed, bool), "ONE_SHOT_CONSUMED_MUST_BE_BOOL")
     expected = queue_id_for(item)
@@ -83,17 +92,10 @@ def validate_item(item: dict[str, Any]) -> None:
         require(consumed, f"STATE_REQUIRES_CONSUMED:{state}")
     if state in {"WAITING", "OWNER_GATE_REQUIRED", "AUTHORIZED"}:
         require(not consumed, f"PREBUILD_STATE_CANNOT_BE_CONSUMED:{state}")
-    result = item.get("result")
     if state in {"PASS", "FAIL"}:
+        result = item.get("result")
         require(isinstance(result, dict), "TERMINAL_REVIEW_REQUIRES_RESULT")
-        for key in ("request_id", "request_sha256", "head", "tree", "review_type", "verdict"):
-            require(result.get(key) == item[key if key != "verdict" else "state"] if False else result.get(key), "")
-        require(result.get("request_id") == item["request_id"], "RESULT_REQUEST_ID_MISMATCH")
-        require(result.get("request_sha256") == item["request_sha256"], "RESULT_REQUEST_SHA_MISMATCH")
-        require(result.get("head") == item["head"], "RESULT_HEAD_MISMATCH")
-        require(result.get("tree") == item["tree"], "RESULT_TREE_MISMATCH")
-        require(result.get("review_type") == item["review_type"], "RESULT_REVIEW_TYPE_MISMATCH")
-        require(result.get("verdict") == state, "RESULT_VERDICT_MISMATCH")
+        _validate_result_binding(item, result, state)
 
 
 def validate_queue(queue: dict[str, Any]) -> None:
@@ -113,6 +115,10 @@ def validate_queue(queue: dict[str, Any]) -> None:
         env = (item["review_type"], item["request_sha256"])
         require(env not in envelope_keys, f"DUPLICATE_REVIEW_ENVELOPE:{env[0]}:{env[1]}")
         envelope_keys.add(env)
+    for item in items:
+        for dep in item.get("depends_on", []):
+            require(dep in ids, f"UNKNOWN_DEPENDENCY:{dep}")
+            require(dep != item["queue_id"], "SELF_DEPENDENCY")
     active_by_resource: dict[str, list[str]] = {"LAB": [], "AUDITOR": []}
     for item in items:
         if item["state"] in ACTIVE_RESOURCE_STATES:
@@ -122,11 +128,7 @@ def validate_queue(queue: dict[str, Any]) -> None:
 
 
 def _deps_satisfied(item: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> bool:
-    for dep in item.get("depends_on", []):
-        require(dep in by_id, f"UNKNOWN_DEPENDENCY:{dep}")
-        if by_id[dep]["state"] != "PASS":
-            return False
-    return True
+    return all(by_id[dep]["state"] == "PASS" for dep in item.get("depends_on", []))
 
 
 def select_next(queue: dict[str, Any], review_type: str) -> dict[str, Any] | None:
@@ -180,13 +182,9 @@ def record_result(queue: dict[str, Any], queue_id: str, result: dict[str, Any]) 
     item = next((i for i in queue["items"] if i["queue_id"] == queue_id), None)
     require(item is not None, "QUEUE_ITEM_NOT_FOUND")
     require(item["state"] in {"CONSUMED", "RUNNING"}, "RESULT_BEFORE_CONSUMPTION")
-    require(result.get("request_id") == item["request_id"], "RESULT_REQUEST_ID_MISMATCH")
-    require(result.get("request_sha256") == item["request_sha256"], "RESULT_REQUEST_SHA_MISMATCH")
-    require(result.get("head") == item["head"], "RESULT_HEAD_MISMATCH")
-    require(result.get("tree") == item["tree"], "RESULT_TREE_MISMATCH")
-    require(result.get("review_type") == item["review_type"], "RESULT_REVIEW_TYPE_MISMATCH")
     verdict = result.get("verdict")
     require(verdict in {"PASS", "FAIL"}, "INVALID_RESULT_VERDICT")
+    _validate_result_binding(item, result, verdict)
     item["result"] = dict(result)
     item["state"] = verdict
     validate_queue(queue)
