@@ -1,0 +1,110 @@
+{
+  "record": "KEIRIN_SW0_STRICT_SINGLETON_PREDICTIVE_EVAL_PREREG_v1",
+  "status": "FROZEN_AFTER_GATE_485_STRUCTURAL_CHARACTERIZATION_BEFORE_ANY_PREDICTIVE_SCORING",
+  "created_jst": "2026-09-14",
+  "purpose": "Evaluate frozen SW0 only on A+B result rows whose first_set, second_set and third_set are each singleton integer lists. Non-singleton or empty rank-set rows are excluded from predictive scoring rather than scalarized because authoritative tie-parser semantics were not established.",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "structural_basis": {
+    "gate": 485,
+    "gate_status": "CONSUMED_SUCCESS_STRUCTURAL_CHARACTERIZATION_ONLY",
+    "aggregate_report_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/06_SCHEMA_CHARACTERIZATION_RESULT.json",
+    "aggregate_report_sha256": "d82db4d1cfc4f9cd937b90e75adcab0c60a21a450e908256a2b787dcc6d65551",
+    "parser_histogram": {
+      "result-v4.1-tie-aware": 1500
+    },
+    "first_set_length_histogram": {"1": 1497, "2": 3},
+    "second_set_length_histogram": {"0": 3, "1": 1494, "2": 3},
+    "third_set_length_histogram": {"0": 3, "1": 1496, "2": 1},
+    "all_rank_sets_integer_unique_and_pairwise_disjoint": true,
+    "authoritative_scalarization_for_non_singleton_or_empty_sets": "NOT_ESTABLISHED"
+  },
+  "inputs": {
+    "result": {
+      "drive_file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+      "title": "DEV2000_RESULT_ONLY_v3.jsonl",
+      "sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+      "expected_total_jsonl_lines": 2000
+    },
+    "prediction_lock": {
+      "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+      "title": "SW0_DEV2000_AB_PREDICTION_LOCK_v1.jsonl.gz",
+      "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+      "expected_unique_race_count": 1500,
+      "dev_index_range": [1, 1500]
+    }
+  },
+  "frozen_evaluator": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/evaluate_sw0_singleton_set_outcomes_v2.py",
+    "git_blob": "f4e0ee0d4fced410cbd79de35b49e97422144763",
+    "sha256": "f2f419d6e6b48c51fdc9602e258855b1b7899a47a7718a6f73c9b4a3d026d00c"
+  },
+  "frozen_synthetic_test": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/test_evaluate_sw0_singleton_set_outcomes_v2.py",
+    "git_blob": "d2462a393e2d87511b9ef7167322e102bec4178a",
+    "sha256": "41ba90defcb43bd8f81536078ac41df567d79f39a76d3b903d256029627ee7ae",
+    "tests": 3,
+    "result": "PASS",
+    "real_result_data_used": false
+  },
+  "execution_contract": {
+    "preconditions": [
+      "Fresh verify a NEW exact Owner Gate bound to this prereg/evaluator/test is authorized and unused",
+      "verify exact result SHA256 and prediction SHA256",
+      "verify evaluator and test Git blobs plus SHA256 values",
+      "derive exact A+B allowlist from frozen prediction race_id values and require exactly 1500 races"
+    ],
+    "protected_scan": [
+      "raw-extract race_id before JSON deserialization",
+      "skip every non-A+B row without deserializing outcome fields",
+      "for A+B only require exact seven-field schema first_set/parser/race_date/race_id/second_set/status/third_set",
+      "require parser exactly result-v4.1-tie-aware, status str, race_date str",
+      "require all three rank-set fields to be integer unique lists and pairwise disjoint",
+      "score a row only when rank-set shape is exactly 1-1-1",
+      "for any other shape, exclude from predictive scoring and aggregate only the shape count; do not scalarize or impute"
+    ],
+    "coverage_gate": {
+      "minimum_strict_singleton_rows": 1487,
+      "derivation": "Gate #485 marginal non-singleton counts imply at most 13 rows can fail the 1-1-1 condition by union bound; requiring >=1487 is an integrity/coverage check, not a performance threshold."
+    }
+  },
+  "metrics": {
+    "primary": "mean exact ordered-top3 log-loss effect = uniform exact NLL minus SW0 exact NLL on strict-singleton rows",
+    "secondary": [
+      "winner marginal NLL",
+      "winner multiclass Brier score and uniform improvement",
+      "top1 winner accuracy",
+      "exact ordered-top3 hit rate",
+      "unordered top3-set hit rate",
+      "segment A primary effect dev_index<=1000",
+      "segment B primary effect dev_index>=1001"
+    ],
+    "bootstrap": {
+      "unit": "strict-singleton race",
+      "reps": 10000,
+      "seed": 20260914,
+      "interval": "95% percentile"
+    }
+  },
+  "classification_rule": {
+    "STRONG_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET": "pooled primary effect >0, bootstrap lower bound >0, A effect >0, B effect >0, and pooled winner Brier improvement >0",
+    "POSITIVE_BUT_UNCERTAIN_STRICT_SINGLETON_SUBSET": "pooled primary effect >0 but not all STRONG conditions",
+    "NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET": "pooled primary effect <=0",
+    "INVALID_FAIL_CLOSED": "any hash/schema/parser/allowlist/count/coverage/nonfinite/protected-boundary invariant fails"
+  },
+  "evidence_class": "LINEAGE_LOCAL_PREOUTCOME_HISTORICAL_PREDICTIVE_EVALUATION_STRICT_SINGLETON_OUTCOME_SUBSET_NOT_GLOBAL_UNTOUCHED_HOLDOUT",
+  "claim_scope": "STRICT_SINGLETON_FIRST_SECOND_THIRD_SET_ROWS_ONLY_NOT_SOURCE_WIDE",
+  "explicit_non_authority": [
+    "no scoring of non-singleton/empty tie-aware rows",
+    "no tie scalarization or imputation",
+    "no DEV2000 C outcome-value deserialization or use",
+    "no ECON_HOLDOUT1000 access",
+    "no payout/odds/price/economics/ROI/profit access or computation",
+    "no fitting/tuning/calibration/parameter/model selection",
+    "no model promotion",
+    "no provider contact, credentials, spend, Runtime, live betting, or automatic betting"
+  ],
+  "post_evaluation_rule": "Exactly one predictive evaluation attempt under a separate NEW exact Owner Gate. Persist result and receipt, consume the Gate on success or fail-closed, and do not rerun or alter metrics based on the observed performance.",
+  "gate_475_reuse": false,
+  "gate_485_reuse": false
+}
