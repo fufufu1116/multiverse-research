@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
 import time
 
 from automation.review_dispatcher_v1 import publisher_legacy_v1 as _legacy
 from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_fresh_read,
     github_json_read,
 )
 from automation.review_dispatcher_v1.publisher_freshness_v1 import (
@@ -25,6 +27,13 @@ def _bounded_public_github(url: str):
     )
 
 
+def _fresh_public_github(url: str):
+    return github_json_fresh_read(
+        url,
+        user_agent="multiverse-fixed-review-publisher-v1",
+    )
+
+
 # Fixed publisher legacy logic performs public GitHub freshness reads through
 # this function. Rebind only that GET edge to the already-integrated bounded
 # GET-only rate-limit helper. Authenticated mutation remains in github_app and
@@ -38,8 +47,24 @@ POST_WRITE_VISIBILITY_MAX_READS = 4
 POST_WRITE_VISIBILITY_DELAY_SECONDS = 1.0
 
 
-def _fresh_verify(job):
-    comments = _original_fresh_verify(job)
+@contextmanager
+def _legacy_public_read_mode(*, use_cache: bool):
+    previous = _legacy.public_github
+    _legacy.public_github = (
+        _bounded_public_github if use_cache else _fresh_public_github
+    )
+    try:
+        yield
+    finally:
+        _legacy.public_github = previous
+
+
+def _fresh_verify(job, *, use_cache: bool = True):
+    # Ordinary freshness checks retain the same-build read budget cache.
+    # Post-write convergence checks explicitly bypass cache lookup so a
+    # successful mutation cannot be hidden by a stale pre-write comments list.
+    with _legacy_public_read_mode(use_cache=use_cache):
+        comments = _original_fresh_verify(job)
     assert_job_request_still_canonical(job, comments)
     return comments
 
@@ -72,7 +97,7 @@ def _await_published_result_canonical(
 ):
     missed_visibility = False
     for read_index in range(POST_WRITE_VISIBILITY_MAX_READS):
-        comments = _fresh_verify(job)
+        comments = _fresh_verify(job, use_cache=False)
         try:
             assert_published_result_is_canonical(
                 comments,
@@ -178,7 +203,7 @@ def publish(job, artifact):
     except _legacy.ReviewContractError as exc:
         if not str(exc).startswith("CURRENT_REQUEST_RESULT_ALREADY_EXISTS:"):
             raise
-        comments = _fresh_verify(job)
+        comments = _fresh_verify(job, use_cache=False)
         recovered = _recover_existing(job, artifact, comments, marker)
         if recovered is None:
             raise _legacy.ReviewContractError(
