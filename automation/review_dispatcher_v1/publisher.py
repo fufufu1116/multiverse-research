@@ -62,55 +62,6 @@ def _canonical_comment_or_none(comments, *, lane, marker):
     raise _legacy.ReviewContractError("CANONICAL_RESULT_COMMENT_NOT_FOUND")
 
 
-def _await_published_result_canonical(
-    job,
-    artifact,
-    *,
-    marker,
-    published_comment_id,
-    receipt,
-):
-    missed_visibility = False
-    for read_index in range(POST_WRITE_VISIBILITY_MAX_READS):
-        comments = _fresh_verify(job)
-        try:
-            assert_published_result_is_canonical(
-                comments,
-                lane=job["lane"],
-                marker=marker,
-                published_comment_id=published_comment_id,
-            )
-        except _legacy.ReviewContractError as exc:
-            if str(exc) != "NO_TRUSTED_RESULT_FOR_MARKER":
-                raise
-            missed_visibility = True
-        else:
-            if not missed_visibility:
-                return receipt
-            recovered = _recover_existing(
-                job,
-                artifact,
-                comments,
-                marker,
-            )
-            if recovered is None:
-                raise _legacy.ReviewContractError(
-                    "POST_WRITE_CANONICAL_RESULT_DISAPPEARED"
-                )
-            _legacy.require(
-                recovered["published_comment_id"] == published_comment_id,
-                "POST_WRITE_RECEIPT_COMMENT_ID_DRIFT",
-            )
-            return recovered
-
-        if read_index + 1 < POST_WRITE_VISIBILITY_MAX_READS:
-            time.sleep(POST_WRITE_VISIBILITY_DELAY_SECONDS)
-
-    raise _legacy.ReviewContractError(
-        "POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED"
-    )
-
-
 def _validate_recovery_artifact(job, artifact):
     expected_login, expected_app_id, _ = _legacy._lane_identity(job["lane"])
     exact = {
@@ -157,6 +108,99 @@ def _recover_existing(job, artifact, comments, marker):
         job=job,
         artifact=artifact,
         canonical_result_comment=canonical,
+    )
+
+
+def _recover_published_comment_direct(
+    job,
+    artifact,
+    *,
+    marker,
+    published_comment_id,
+):
+    url = (
+        f"https://api.github.com/repos/{job['repo']}/issues/comments/"
+        f"{published_comment_id}"
+    )
+    try:
+        comment = _bounded_public_github(url)
+    except Exception as exc:
+        raise _legacy.ReviewContractError(
+            "POST_WRITE_DIRECT_COMMENT_RECOVERY_FAILED"
+        ) from exc
+
+    _legacy.require(
+        isinstance(comment, dict),
+        "POST_WRITE_DIRECT_COMMENT_NOT_OBJECT",
+    )
+    assert_published_result_is_canonical(
+        [comment],
+        lane=job["lane"],
+        marker=marker,
+        published_comment_id=published_comment_id,
+    )
+    _validate_recovery_artifact(job, artifact)
+    recovered = recover_publish_receipt(
+        job=job,
+        artifact=artifact,
+        canonical_result_comment=comment,
+    )
+    _legacy.require(
+        recovered["published_comment_id"] == published_comment_id,
+        "POST_WRITE_DIRECT_RECEIPT_COMMENT_ID_DRIFT",
+    )
+    return recovered
+
+
+def _await_published_result_canonical(
+    job,
+    artifact,
+    *,
+    marker,
+    published_comment_id,
+    receipt,
+):
+    missed_visibility = False
+    for read_index in range(POST_WRITE_VISIBILITY_MAX_READS):
+        comments = _fresh_verify(job)
+        try:
+            assert_published_result_is_canonical(
+                comments,
+                lane=job["lane"],
+                marker=marker,
+                published_comment_id=published_comment_id,
+            )
+        except _legacy.ReviewContractError as exc:
+            if str(exc) != "NO_TRUSTED_RESULT_FOR_MARKER":
+                raise
+            missed_visibility = True
+        else:
+            if not missed_visibility:
+                return receipt
+            recovered = _recover_existing(
+                job,
+                artifact,
+                comments,
+                marker,
+            )
+            if recovered is None:
+                raise _legacy.ReviewContractError(
+                    "POST_WRITE_CANONICAL_RESULT_DISAPPEARED"
+                )
+            _legacy.require(
+                recovered["published_comment_id"] == published_comment_id,
+                "POST_WRITE_RECEIPT_COMMENT_ID_DRIFT",
+            )
+            return recovered
+
+        if read_index + 1 < POST_WRITE_VISIBILITY_MAX_READS:
+            time.sleep(POST_WRITE_VISIBILITY_DELAY_SECONDS)
+
+    return _recover_published_comment_direct(
+        job,
+        artifact,
+        marker=marker,
+        published_comment_id=published_comment_id,
     )
 
 
