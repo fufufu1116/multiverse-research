@@ -1,0 +1,19 @@
+{
+  "record": "R0_T2_SIMWORLD_HYBRID_DEVELOPMENT_RESULT_v1",
+  "created_jst": "2026-09-15",
+  "data_class": "ALREADY_CONSUMED_SYNTHETIC_DEVELOPMENT_WORLDS_ONLY",
+  "base_mix": "equal mixture over temperatures [1.0,1.5,2.0,3.0,4.0]",
+  "hybrid_definition": "H(alpha) = alpha * T2 choice probabilities + (1-alpha) * base_mix choice probabilities",
+  "alphas_tested": [0.0,0.25,0.5,0.75,1.0],
+  "consumed_meta_world_regret": {
+    "H0": {"mean_regret": 0.0024685729554025037, "max_regret": 0.005943038792669775},
+    "H0.25": {"mean_regret": 0.0018583008455785865, "max_regret": 0.003891918902525937},
+    "H0.5": {"mean_regret": 0.001597061454903592, "max_regret": 0.00465044407264692},
+    "H0.75": {"mean_regret": 0.0016910657736530332, "max_regret": 0.007428752909842018},
+    "H1.0": {"mean_regret": 0.002148396051525658, "max_regret": 0.010513112063284424}
+  },
+  "development_frontier": {"minimax": "H0.25", "mean_regret": "H0.5", "status": "SYNTHETIC_DEVELOPMENT_ONLY"},
+  "promotion_authority": false,
+  "next_action": "Freeze H0.25 and H0.5, preregister genuinely fresh simulator families, then test once on two independent seeds.",
+  "protected_boundaries": {"real_result_access": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
