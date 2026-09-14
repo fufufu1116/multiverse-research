@@ -1,108 +1,76 @@
 {
   "record": "CURRENT_STATE_KEIRIN",
   "updated_date_jst": "2026-09-14",
-  "status": "LIMITED_REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_AUDIT_AUTHORIZED_NO_OUTCOME_NO_PRICE_NO_ECONOMICS_NO_TRAINING",
+  "status": "SYNTHETIC_DEV2000_AVAILABLE_FIELD_SIBLING_LINEAGE_AUTHORIZED_NO_REAL_OUTCOME_NO_REAL_FIT_NO_PROMOTION",
   "canonical_repo": "fufufu1116/multiverse-research",
   "owner_visible_status": "KEIRIN_NOW.md",
   "ai_governance": "AI_COUNCIL.md",
-  "supersedes_current_state_blob_sha": "a6e048e047c565ad03944111677cb80d4f943108",
+  "supersedes_current_state_blob_sha": "6c90256008f5591f7a1e8437015bfa1a0d42376d",
   "authority": {
-    "owner_gate_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+    "owner_gate_receipt": "governance/KEIRIN_OWNER_GATE_DEV2000_AVAILABLE_FIELD_SYNTHETIC_SIBLING_20260914_v1.json",
     "owner_gate_issue": 377,
-    "owner_gate_comment_id": 5657234204,
-    "scope": "EXISTING_STORED_DEV2000_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_AUDIT",
-    "activation_requires_matching_vnext_generation": 14,
+    "owner_gate_comment_id": 5658034266,
+    "scope": "DEV2000_AVAILABLE_FIELD_SYNTHETIC_SIBLING_INTERFACE_MODEL_ABLATION",
+    "activation_requires_matching_vnext_generation": 15,
     "activation_requires_matching_keirin_now": true
   },
   "latest_scientific_checkpoint": {
-    "synthetic_candidate": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
-    "synthetic_result": "N2_BROADLY_ROBUST_W0_W4_SYNTHETIC",
-    "continuity_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v9.json",
-    "experiment_ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v14.jsonl",
-    "real_pre_v1_decision": "EXACT_PRE_TABLE_NOT_DIRECTLY_COMPATIBLE_WITH_FROZEN_N2_INPUT_CONTRACT",
-    "real_pre_v1_missing_direct_inputs": [
+    "frozen_baseline": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "frozen_baseline_status": "UNCHANGED_SYNTHETIC_COMPARISON_BASELINE",
+    "synthetic_baseline_result": "N2_BROADLY_ROBUST_W0_W4_SYNTHETIC",
+    "real_pre_enrichment_conclusion": "SAFE_EXISTING_STORED_PRE_ONLY_ENRICHMENT_SOURCES_EXHAUSTED_WITHOUT_FIVE_FIELD_DEV2000_COMPATIBILITY_CLOSURE",
+    "missing_direct_inputs": [
       "line_group_id",
       "line_position",
       "line_size",
       "bank_length_m",
       "wind_speed_mps"
     ],
-    "real_pre_v1_row_values_accessed": false,
-    "evidence_class": "REAL_PRE_ONLY_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE"
+    "real_predictive_performance_evidence": false
+  },
+  "new_synthetic_sibling_scope": {
+    "authorized": true,
+    "purpose": "Determine in synthetic worlds whether a separate lineage constrained to DEV2000-available PRE fields can remain technically viable without the five unavailable direct inputs.",
+    "allowed": [
+      "separate interface design based on already-proven DEV2000 PRE field names",
+      "separate synthetic model design",
+      "synthetic ablation of the five unavailable fields",
+      "synthetic robustness/calibration/sensitivity comparison to Frozen N2"
+    ],
+    "real_PRE_row_value_training_or_fit": false,
+    "real_outcome_scoring": false,
+    "model_promotion": false
   },
   "scientific_state": {
     "current_DEV2000_C_scored_for_new_lineage": false,
     "scientific_segment_c_scoring_count": 0,
     "ECON_HOLDOUT1000": "SEALED",
-    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
     "new_untouched_validation_opened": false,
-    "real_pre_only_enrichment_audit_authorized": true,
     "real_outcome_scoring_authorized": false,
     "real_price_or_economics_authorized": false,
     "real_pre_training_or_parameter_selection_authorized": false,
+    "synthetic_sibling_design_authorized": true,
+    "synthetic_ablation_authorized": true,
     "model_promotion_authorized": false
   },
-  "real_pre_only_enrichment_audit": {
-    "allowed_source_families": [
-      "already-existing DEV2000 PRE collection artifacts",
-      "already-existing DEV2000-linked PRE-only line-structure artifacts",
-      "already-existing DEV2000-linked PRE-only race-context artifacts"
-    ],
-    "fields_of_interest": [
-      "line_group_id",
-      "line_position",
-      "line_size",
-      "bank_length_m",
-      "wind_speed_mps"
-    ],
-    "required_access_order": [
-      "preregister exact source",
-      "verify identity/hash",
-      "scan forbidden fields",
-      "confirm PRE-only",
-      "only then value-level availability/missingness/support audit"
-    ],
-    "metadata_only_enumeration_before_preregistration": true,
-    "value_level_audit_before_pre_only_confirmation": false,
-    "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE"
-  },
   "source_rights_state": {
-    "external_provider_contact": "PROHIBITED_UNLESS_SEPARATE_OWNER_GATE",
-    "new_automated_bulk_collection": "PROHIBITED",
-    "access_control_bypass": "PROHIBITED",
-    "authorized_source_mode": "RECOVER_AND_AUDIT_ALREADY_EXISTING_STORED_DEV2000_PRE_ONLY_ENRICHMENT_SOURCES_ONLY"
-  },
-  "source_independent_implementation": {
-    "PRE_interface_schema": "v3/historical_all_market/new_lineage/PRE_INTERFACE_SCHEMA_DRAFT_v1.json",
-    "PRE_structure_validator": "v3/historical_all_market/new_lineage/validate_pre_structure_v1.py",
-    "frozen_synthetic_N2": "v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py"
-  },
-  "owner_policy": {
-    "real_money_wagering": "OUT_OF_SCOPE",
-    "runtime": "OFF",
-    "automatic_betting": false,
-    "additional_payment": "PROHIBITED_UNLESS_SEPARATE_OWNER_APPROVAL",
     "external_provider_contact": "PROHIBITED",
     "new_automated_bulk_collection": "PROHIBITED",
-    "owner_gate_required_for_next": [
-      "RESULT_PAYOUT_ACCESS",
-      "OUTCOME_OR_SETTLEMENT_ACCESS",
-      "ODDS_OR_PRICE_ACCESS",
-      "ECONOMICS_OR_BANKROLL_EVALUATION",
-      "ECON_HOLDOUT1000_ACCESS_OR_POLICY_CHANGE",
-      "UNTOUCHED_OUTCOME_VALIDATION",
-      "REAL_DATA_TRAINING_OR_MODEL_SELECTION",
-      "MODEL_PROMOTION_OR_FREEZE",
-      "RUNTIME_OR_AUTOMATIC_BETTING"
-    ]
+    "access_control_bypass": "PROHIBITED",
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "source_independent_implementation": {
+    "existing_PRE_interface_schema": "v3/historical_all_market/new_lineage/PRE_INTERFACE_SCHEMA_DRAFT_v1.json",
+    "frozen_synthetic_N2": "v3/historical_all_market/new_lineage/synthetic_spec_aligned_conditional_v6.py"
   },
   "next_exact_actions": [
-    "Fresh Read canonical main, issue #394, issue #377, this state, VNEXT_CURRENT_STATE_v0 generation 14, KEIRIN_NOW and the enrichment Owner Gate receipt; fail closed on drift.",
-    "Metadata-enumerate only already-existing DEV2000 PRE collection / line-structure / race-context candidate sources; do not read file bytes yet.",
-    "Preregister the exact candidate source set and audit sequence before reading any additional source bytes.",
-    "For every preregistered source, verify identity/hash then scan schema/key names for forbidden RESULT/PAYOUT/outcome/settlement/odds/price/economics material before any value read.",
-    "Only sources confirmed PRE-only may proceed to availability/schema/missingness/support audit for line_group_id, line_position, line_size, bank_length_m and wind_speed_mps plus necessary join/provenance keys.",
-    "Keep frozen N2 unchanged and do not train, fit, select, score outcomes, evaluate economics, promote a model, open any holdout, activate Runtime or enable automatic betting."
+    "Fresh Read canonical main, issue #394, issue #377, this state, VNEXT generation 15, KEIRIN_NOW and the new Owner Gate receipt before synthetic sibling execution.",
+    "Reconcile issue-level v2.5/v2.6/v2.7 PRE-only audit evidence into the KEIRIN research branch continuity records now that Auditor webhook containment is complete.",
+    "Preregister an exact synthetic sibling interface/model ablation plan before execution.",
+    "Design the sibling interface from DEV2000-available PRE schema fields only; do not read real outcome labels or use real PRE values for fitting/selection.",
+    "Run synthetic ablations with the five unavailable fields removed and compare only synthetic robustness/calibration/sensitivity against Frozen N2.",
+    "Persist results as synthetic engineering evidence only; do not promote any model or claim real-world edge."
   ],
   "hard_prohibitions": [
     "NO_RESULT_PAYOUT_ACCESS",
@@ -110,17 +78,17 @@
     "NO_ODDS_OR_PRICE_ACCESS",
     "NO_ECONOMICS_BANKROLL_ROI_PROFIT",
     "NO_ECON_HOLDOUT1000_OPEN",
-    "NO_CURRENT_DEV2000_C_OUTCOME_ACCESS_FOR_NEW_LINEAGE",
-    "NO_UNTOUCHED_OUTCOME_VALIDATION",
-    "NO_REAL_PRE_TRAINING_FITTING_OR_PARAMETER_SELECTION",
+    "NO_DEV2000_C_OUTCOME_ACCESS",
+    "NO_UNTOUCHED_REAL_OUTCOME_VALIDATION",
+    "NO_REAL_PRE_TRAINING_FITTING_TUNING_OR_SELECTION",
+    "NO_MODEL_PROMOTION",
     "NO_NEW_AUTOMATED_BULK_COLLECTION",
     "NO_EXTERNAL_PROVIDER_CONTACT",
-    "NO_ACCESS_CONTROL_RATE_LIMIT_CAPTCHA_WAF_BYPASS",
-    "NO_REAL_MONEY_WAGERING",
+    "NO_CREDENTIAL_OR_SPEND",
     "NO_RUNTIME_ACTIVATION",
-    "NO_AUTOMATIC_BETTING",
-    "NO_MODEL_PROMOTION"
+    "NO_AUTOMATIC_BETTING"
   ],
+  "owner_action_now": "NONE_FOR_AUTHORIZED_SYNTHETIC_SIBLING_DESIGN_AND_ABLATION",
   "runtime": "OFF",
   "automatic_betting": false
 }

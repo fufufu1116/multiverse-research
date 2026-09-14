@@ -2,108 +2,85 @@
 
 最終更新: 2026-09-14 JST
 
-この1枚は **主向けの現在地表示**。NOW / CURRENT / LATEST は必ず canonical GitHub を Fresh Read して確認する。
+この1枚は主向けの現在地表示。NOW / CURRENT / LATEST は canonical GitHub を Fresh Read して確認する。
 
 ## 現在の結論
 
-Synthetic（合成）工学のFrozen N2はW0-W4広域耐性マイルストーンまで完了しています。最初の実データPRE-only監査では、canonical `DEV2000_PRE_TABLE_v1.csv` がFrozen N2に必要な5項目を欠くことを、データ行を読まずheader段階で確認しました。
+Frozen `N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL` は引き続き変更せず、合成環境での比較基準として維持します。
 
-不足項目:
+既存DEV2000 PRE-only補完監査では、Frozen N2が直接要求する次の5項目をDEV2000期間へ安全に補完できる既存保存ソースは見つかりませんでした。
+
 - `line_group_id`
 - `line_position`
 - `line_size`
 - `bank_length_m`
 - `wind_speed_mps`
 
-主の追加明示Gateは issue #377 comment `5657234204` に固定済みです。
+既存安全ソースの監査結論は `SAFE_EXISTING_STORED_PRE_ONLY_ENRICHMENT_SOURCES_EXHAUSTED_WITHOUT_FIVE_FIELD_DEV2000_COMPATIBILITY_CLOSURE`。
 
-このGateで新たに許可されたのは、**既存保存済みのDEV2000 PRE collection / PRE-only line structure / PRE-only race context 補完ソースを使って、上記5項目の取得可否・schema・missingness・support・Frozen N2入力互換性だけを監査すること**です。
+そのため主は issue #377 comment `5658034266` で、新しい別系統研究を明示許可しました。
 
-これは現実の的中性能・利益・ROIを調べる許可ではありません。
+## 新たに許可された研究
 
----
+既存DEV2000 PREで実際に利用可能であることが既に確認されたfield familyだけを前提に、Frozen N2とは別の sibling model / interface を設計し、**合成環境だけ**でアブレーションを行います。
 
-## 必須アクセス順序
+目的:
+- 上記5欠損項目への依存度を合成環境で測る
+- 5項目を使わない別系統が技術的に成立し得るかを判定する
+- Frozen N2との比較は合成robustness / calibration / sensitivityに限定する
 
-追加ソースごとに必ず次の順序を守る:
-1. exact sourceを事前登録
-2. identity/hash確認
-3. RESULT/PAYOUT/outcome/settlement/odds/price/economics等の禁制項目scan
-4. PRE-onlyであることを確認
-5. その後だけ値レベルのavailability / schema / missingness / cardinality / range / support監査
+これは実世界の的中率・収益性・ROIの検証ではありません。
 
-事前登録前に許可されるのは、既存保存物を特定するためのmetadata-only列挙だけ。追加sourceのfile bytesは読まない。
+## Frozen N2
 
-証拠区分:
-`REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE`
+- name: `N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL`
+- status: `UNCHANGED`
+- role: `SYNTHETIC_COMPARISON_BASELINE_ONLY`
 
----
-
-## 引き続き禁止・未許可
+## 引き続き禁止
 
 - RESULT / PAYOUT
-- 着順・勝者・settlement等のoutcome label
-- odds / price / market price
+- outcome / 着順 / winner / settlement
+- odds / price / market data
 - economics / bankroll / ROI / profit
 - `ECON_HOLDOUT1000`
-- DEV2000 C の結果・払戻アクセス
-- untouched outcome validation
-- 実PREを使ったtraining / fit / parameter selection / model selection
-- result-aware feature / threshold / exclusion / ticket decision
+- DEV2000 C outcome access
+- untouched real-outcome validation
+- 実PRE row値を使ったtraining / fit / tuning / parameter selection / model selection
 - model promotion / freeze acceptance / production
 - 新規自動大量収集
 - 外部providerへの連絡・課金・credential利用
-- access-control / rate-limit / CAPTCHA / WAF bypass
 - Runtime起動
 - 自動投票
-- 現実のお金を使う賭け
+- real-money wagering
 
-scientific segment C scoring count は **0のまま**。
-`ECON_HOLDOUT1000` は **SEALEDのまま**。
-Frozen N2は変更しない。
-
----
-
-## 現在の科学チェックポイント
-
-Frozen candidate:
-`N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL`
-
-Synthetic classification:
-`N2_BROADLY_ROBUST_W0_W4_SYNTHETIC`
-
-Real PRE v1 classification:
-`EXACT_PRE_TABLE_NOT_DIRECTLY_COMPATIBLE_WITH_FROZEN_N2_INPUT_CONTRACT`
-
-最新continuity:
-- `v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v9.json`
-- `v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v14.jsonl`
-
-Real PRE v1は適合性/schema証拠であり、Real edge / ROI / 実世界予測性能の証拠ではありません。
-
----
+scientific segment C scoring count は0のまま。
+`ECON_HOLDOUT1000` はSEALEDのまま。
 
 ## 実行前Fresh Read
 
-追加PRE sourceの最初のbyte access直前に必ず確認する:
+合成sibling実験の実行前に必ず確認する:
 - canonical main HEAD
 - issue #394 最新
 - issue #377 最新
-- `governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json`
+- `governance/KEIRIN_OWNER_GATE_DEV2000_AVAILABLE_FIELD_SYNTHETIC_SIBLING_20260914_v1.json`
 - `v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json`
-- `multiverse_vnext/VNEXT_CURRENT_STATE_v0.json` generation 14
+- `multiverse_vnext/VNEXT_CURRENT_STATE_v0.json` generation 15
 - この `KEIRIN_NOW.md`
-- exact source preregistration
+- exact synthetic experiment preregistration
 
 一致しなければ fail-closed。
 
----
+## 次にやること
+
+1. issue側に残っている最新PRE監査証拠を研究branchのcontinuityへ正式固定する。
+2. DEV2000-available field sibling interface/modelのexact preregistrationを作る。
+3. 5欠損項目を除いたsynthetic ablationを実行する。
+4. 結果をsynthetic engineering evidenceとしてのみ保存する。
 
 ## 主がやること
 
-**現在のPRE-only補完監査については、今はなし。**
-
-追加のRESULT/PAYOUT、outcome validation、odds/price、economics、Holdout、実データ学習、モデル昇格、Runtime、自動投票にはこのGateを流用しません。
+現在の合成sibling設計・アブレーションについては、今はなし。
 
 詳細ルール: `AI_COUNCIL.md`
 科学Current State: `v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json`

@@ -1,0 +1,63 @@
+{
+  "record": "KEIRIN_OWNER_GATE_DEV2000_AVAILABLE_FIELD_SYNTHETIC_SIBLING_20260914_v1",
+  "status": "ACTIVE_ONLY_IN_ATOMIC_CANONICAL_COMMIT_WITH_MATCHING_KEIRIN_STATE_VNEXT_STATE_AND_KEIRIN_NOW",
+  "created_date_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "purpose": "Authorize a separate synthetic-only sibling model/interface lineage constrained to fields actually available in canonical DEV2000 PRE, while keeping Frozen N2 unchanged as the comparison baseline and keeping all real-outcome, price, economics, real-data fitting, promotion, Runtime and betting boundaries closed.",
+  "owner_gate_evidence": {
+    "control_issue": 377,
+    "owner_gate_comment_id": 5658034266,
+    "owner_directive_exact": "既存DEV2000 PREで実際に利用可能な項目だけを前提とする別系統モデル／interfaceの設計・合成アブレーション研究を許可。Frozen N2は変更せず比較基準として維持する。目的は、欠損しているline_group_id・line_position・line_size・bank_length_m・wind_speed_mpsへの依存度を合成環境で評価し、これらを使わない系統が成立するか判定すること。RESULT/PAYOUT・outcome・odds/price・economics・ECON_HOLDOUT1000・DEV2000 C・実データ学習/fit/選択・model promotion・新規自動大量収集・外部provider連絡・Runtime・自動投票は引き続き禁止。"
+  },
+  "authorized_scope": [
+    "design a separate sibling PRE interface using only field families already demonstrated present in canonical DEV2000 PRE schema",
+    "design separate sibling synthetic model candidates without modifying Frozen N2",
+    "run synthetic-only ablations that remove or withhold line_group_id, line_position, line_size, bank_length_m and wind_speed_mps",
+    "compare sibling synthetic behavior against Frozen N2 only inside synthetic worlds",
+    "evaluate synthetic robustness, calibration behavior, sensitivity and technical viability without real outcomes or real fitting"
+  ],
+  "real_data_rule": {
+    "real_PRE_schema_evidence_may_define_available_field_names": true,
+    "real_PRE_row_values_for_training_fit_selection_or_scoring": false,
+    "real_outcomes_or_labels": false,
+    "real_predictive_performance_claim": false
+  },
+  "frozen_baseline": {
+    "name": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "must_remain_unchanged": true,
+    "role": "SYNTHETIC_COMPARISON_BASELINE_ONLY"
+  },
+  "missing_fields_under_ablation": [
+    "line_group_id",
+    "line_position",
+    "line_size",
+    "bank_length_m",
+    "wind_speed_mps"
+  ],
+  "explicitly_not_authorized": [
+    "RESULT or PAYOUT access",
+    "outcome, finish position, winner or settlement label access",
+    "odds, price or market data access",
+    "economics, bankroll, ROI or profit evaluation",
+    "ECON_HOLDOUT1000 opening or scoring",
+    "DEV2000 C outcome access",
+    "untouched real-outcome validation",
+    "real PRE training, fitting, tuning, parameter selection or model selection",
+    "model promotion, freeze acceptance or production deployment",
+    "new automated bulk collection",
+    "external provider contact, payment, credential use or contract action",
+    "Runtime activation, automatic betting or real-money wagering"
+  ],
+  "scientific_invariants": {
+    "scientific_segment_c_scoring_count_must_remain": 0,
+    "ECON_HOLDOUT1000_must_remain": "SEALED",
+    "new_untouched_validation_opened_must_remain": false,
+    "frozen_N2_must_remain_unchanged": true,
+    "real_pre_training_or_selection_must_remain": false,
+    "runtime_must_remain": "OFF",
+    "automatic_betting_must_remain": false,
+    "no_real_world_edge_or_roi_claim": true
+  },
+  "activation_rule": "Authority is active only when one atomic canonical main commit contains this receipt plus matching v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json, multiverse_vnext/VNEXT_CURRENT_STATE_v0.json generation 15, and KEIRIN_NOW.md.",
+  "scope_expansion_rule": "Any use of real outcomes, RESULT/PAYOUT, odds/prices, economics, real-data fitting/selection, model promotion, Runtime or betting requires a separate explicit governed Owner Gate."
+}
