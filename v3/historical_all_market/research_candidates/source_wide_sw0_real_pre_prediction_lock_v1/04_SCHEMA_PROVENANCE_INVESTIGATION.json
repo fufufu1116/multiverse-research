@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_SW0_RESULT_SCHEMA_PROVENANCE_INVESTIGATION_v1",
+  "status": "OWNER_FREE_INVESTIGATION_COMPLETE_NO_AUTHORITATIVE_FIELD_MAPPING_FOUND",
+  "created_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "basis": {
+    "gate_475_issue": 475,
+    "gate_475_consumed": true,
+    "gate_475_audit_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/03_OWNER_GATE_475_FAIL_CLOSED_AUDIT.json",
+    "result_drive_file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+    "result_sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+    "observed_schema_from_consumed_gate": [
+      "first_set",
+      "parser",
+      "race_date",
+      "race_id",
+      "second_set",
+      "status",
+      "third_set"
+    ],
+    "frozen_prediction_drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "frozen_prediction_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "frozen_prediction_race_count": 1500
+  },
+  "owner_free_checks": [
+    {
+      "surface": "canonical GitHub branch",
+      "check": "exact source_wide_sw0 prediction-lock directory",
+      "finding": "contains prereg/result/evaluator/test/Gate-475 audit but no generator or authoritative definition of first_set/second_set/third_set"
+    },
+    {
+      "surface": "canonical GitHub branch",
+      "check": "kdreams_settlement_recovery_v1.py",
+      "finding": "explicitly emits no result-order fields and is not provenance for the observed set schema"
+    },
+    {
+      "surface": "canonical GitHub branch",
+      "check": "kdreams_all_market_offline_parser_v1.py",
+      "finding": "PRE/rating parser only; no authoritative observed-set schema mapping found"
+    },
+    {
+      "surface": "GitHub repository and issue search",
+      "check": "first_set / DEV2000_RESULT_ONLY_v3 / exact Drive id / quarantine names",
+      "finding": "no authoritative generator or semantic mapping found"
+    },
+    {
+      "surface": "Google Drive metadata only",
+      "check": "parent and quarantine metadata",
+      "finding": "RAW_RESULT_LIST_QUARANTINE / RAW_RESULT_QUARANTINE and quarantine batch folders exist, but metadata did not establish field semantics or generator provenance"
+    },
+    {
+      "surface": "public web exact-term search",
+      "check": "first_set second_set third_set with keirin/kdreams",
+      "finding": "no relevant authoritative source located; public web is non-authoritative for project semantics"
+    }
+  ],
+  "scientific_conclusion": {
+    "authoritative_mapping_first_set_to_finish_rank": "NOT_ESTABLISHED",
+    "posthoc_rename_or_adapter_owner_free": "PROHIBITED",
+    "predictive_evaluation_owner_free": "PROHIBITED",
+    "predictive_success_or_failure_claim": "NOT_AVAILABLE",
+    "reason": "Field names alone are insufficient to silently reinterpret protected outcomes after Gate #475 failed closed. A separate, pre-registered structural characterization read is required before any replacement evaluator is designed."
+  },
+  "next_safe_step": {
+    "action": "freeze a schema-characterization tool and synthetic tests before any further result access",
+    "then": "request a NEW exact Owner Gate for one structural characterization read only",
+    "after_success": "use only the characterization/provenance evidence to freeze a deterministic transformation/evaluator, then require a separate Owner Gate for predictive evaluation",
+    "gate_475_reuse": false
+  },
+  "protected_boundaries": {
+    "additional_result_value_access_during_investigation": false,
+    "DEV2000_C_outcome_value_use": false,
+    "ECON_HOLDOUT1000": "SEALED",
+    "payout_odds_price_economics_roi_profit": "NOT_ACCESSED",
+    "model_fit_tuning_selection": false,
+    "model_promotion": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
