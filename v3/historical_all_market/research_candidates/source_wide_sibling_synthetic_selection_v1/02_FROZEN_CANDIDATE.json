@@ -1,0 +1,23 @@
+{
+  "record": "KEIRIN_SOURCE_WIDE_SYNTHETIC_SIBLING_FROZEN_v1",
+  "name": "SW0_SCORE_ONLY_PL",
+  "status": "FROZEN_AFTER_SYNTHETIC_SELECTION_NOT_PROMOTED",
+  "selected_from": ["SW0_SCORE_ONLY_PL", "SW1_SCORE_STYLE_PL"],
+  "selection_result": "v3/historical_all_market/research_candidates/source_wide_sibling_synthetic_selection_v1/01_RESULT.json",
+  "prediction_fields_used_in_utility": ["car_no", "score"],
+  "score_shrinkage": 0.7677543186180422,
+  "utility": "0.7677543186180422 * score",
+  "class_dependency": false,
+  "style_dependency": false,
+  "field_size_support": "ANY_N_GE_3",
+  "probability_family": "Plackett-Luce ordered top3",
+  "L1_SS_handling": "NO_CLASS_LOOKUP_REQUIRED",
+  "frozen_S0_unchanged": true,
+  "frozen_N2_unchanged": true,
+  "real_PRE_fit": false,
+  "real_PRE_parameter_selection": false,
+  "real_predictive_performance_claim": false,
+  "model_promotion": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
