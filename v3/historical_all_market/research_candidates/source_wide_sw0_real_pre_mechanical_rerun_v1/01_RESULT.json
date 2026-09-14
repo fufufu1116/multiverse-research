@@ -1,0 +1,91 @@
+{
+  "authorized_values_decoded_only": [
+    "race_id",
+    "car_no",
+    "class",
+    "style",
+    "score"
+  ],
+  "entrant_count_distribution": {
+    "5": 11,
+    "6": 109,
+    "7": 1675,
+    "8": 24,
+    "9": 181
+  },
+  "entrant_rows": 14255,
+  "evidence_class": "REAL_PRE_MECHANICAL_INTERFACE_COMPATIBILITY_ONLY_NOT_PREDICTIVE_PERFORMANCE",
+  "forbidden_key_scan": "CLEAR",
+  "frozen_N2_unchanged": true,
+  "frozen_S0_unchanged": true,
+  "frozen_candidate_unchanged": true,
+  "missingness": {
+    "car_no": 0,
+    "class": 0,
+    "race_id": 0,
+    "score": 0,
+    "style": 0
+  },
+  "model_promotion": false,
+  "probability_sanity": {
+    "all_finite": true,
+    "all_nonnegative": true,
+    "generated_ordered_top3_values": 464778,
+    "max_abs_mass_error": 3.651301483387215e-12,
+    "max_probability": 0.8161678316897775,
+    "min_probability": 3.106369561959228e-45
+  },
+  "protected_boundaries": {
+    "DEV2000_C_results": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "odds_price": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "runtime": "OFF"
+  },
+  "race_rows": 2000,
+  "race_shape": {
+    "duplicate_car_races": 0,
+    "malformed_races": 0
+  },
+  "real_PRE_fit_training_parameter_model_selection": false,
+  "real_predictive_performance_claim": false,
+  "record": "KEIRIN_SOURCE_WIDE_SW0_REAL_PRE_MECHANICAL_RERUN_RESULT_v1",
+  "selected_candidate": "SW0_SCORE_ONLY_PL",
+  "source_identity": {
+    "sha256_actual": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+    "sha256_expected": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84"
+  },
+  "status": "PASS_SOURCE_WIDE_MECHANICAL_COMPATIBILITY",
+  "support": {
+    "class": {
+      "A1": 2871,
+      "A2": 2864,
+      "A3": 2832,
+      "L1": 1023,
+      "S1": 1398,
+      "S2": 3211,
+      "SS": 56
+    },
+    "style": {
+      "両": 3587,
+      "追": 6818,
+      "逃": 3850
+    }
+  },
+  "types": {
+    "car_no": {"int": 14255},
+    "class": {"str": 14255},
+    "race_id": {"str": 2000},
+    "score": {"float": 14255},
+    "style": {"str": 14255}
+  },
+  "unapproved_values_materialized": false,
+  "utility_consumes_only": [
+    "car_no",
+    "score"
+  ],
+  "result_payload_sha256": "f68face12a4bff3bbf262317e312d13aa8194711c813d245c6858ce5acbe0fb0"
+}
