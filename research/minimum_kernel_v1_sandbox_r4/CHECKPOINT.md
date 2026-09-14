@@ -20,34 +20,36 @@ This branch is an evidence/recovery checkpoint only. It does not alter main, gra
 - anchor rollback is never auto-healed;
 - whole-store / whole-ledger rollback against a newer external head is detected;
 - top-level package API does not export `VerifiedCapability` or bare `verify_capability` as convenience authority surfaces;
-- provider-neutral drafts exist for mutating execution binding, P4 Owner binding, and public-key lifecycle/rotation/revocation; no private/secret key material is present.
+- provider-neutral drafts exist for mutating execution binding, P4 Owner binding, public-key lifecycle/rotation/revocation, and the production external-head-anchor contract; no private/secret key material is present.
 
 ## Additional resumed self-red-team closure
 
-A further HIGH-severity race was reproduced after the prior checkpoint: a failed external-anchor CAS was previously treated as success if a follow-up read already equaled the deterministic desired `entry_hash`. With two cloned local stores sharing one anchor, that can let the CAS loser believe it also acquired the same one-shot transition.
+**R4-F7 — false-CAS/same-new-head split-brain risk (HIGH):** an earlier R4 draft treated a failed external-anchor CAS as success if a follow-up read already equaled the deterministic desired next hash. With cloned local stores sharing one anchor, the CAS loser could incorrectly believe it also acquired the same one-shot transition.
 
-Repair now in local R4 package:
-- `False` from anchor CAS is always failure, even when current head already equals the desired new head;
+Repair:
+- `False` from external-anchor CAS is always failure, even when the current head already equals the desired next hash;
 - loser rolls back local SQLite state and hard-stops;
-- new negative tests cover this exact same-new-head/false-CAS case for both capability-use state and the main ledger;
-- multiprocessing capability races use `spawn` rather than implicit `fork`.
+- direct negative tests cover this for capability-use state and the main ledger;
+- real two-process/two-local-DB clone races sharing one anchor now prove exactly one successful caller for the same capability and for the same deterministic ledger transition;
+- capability multiprocessing tests use `spawn` rather than implicit `fork`.
 
 ## Current local proof
 
-- normal Python: **78/78 PASS**
-- optimized `python -O`: **78/78 PASS**
+- normal Python: **80/80 PASS**
+- optimized `python -O`: **80/80 PASS**
 - Node fixed MV-CJSON-1 vectors: **6/6 PASS**
 - encoding differential corpus: **1000/1000 PASS**
 - strict Node raw-JSON adversarial parser: **15/15 PASS**
 - strict raw-parser differential corpus: **1000/1000 PASS**
 - compileall + AST/security surface scan: PASS
 - anchored main-ledger benchmark: 8 processes / 1000 total appends / final local+external head equality PASS; ~18.934s local only, not an SLA
-- one-shot capability race remains exact-one-success on one shared replay store
-- false-CAS/same-new-head loser: fail-closed for capability-use state and ledger
+- one shared replay-store one-shot race: exact one success
+- two cloned replay stores sharing one anchor with the same capability: exact one success
+- two cloned ledgers sharing one anchor with the same deterministic append: exact one success
 
-Local R4 ZIP SHA256: `1ea68e7733be680f4c92b95123eaa32cde2826ce0520bcd40ac868732f8fd0d3`
+Local R4 ZIP SHA256: `9295e6d37a1d8223e6e7f78faca714b414504dbbf4a4d3c6be0e5e87f58ef030`
 
-Local manifest SHA256: `72c1a34bee4ee512ac32778d5283891675505912a6d77d5078e0f21b0a737777`
+Local manifest SHA256: `68bce576b1c66496197bacff4cd84d8e776fcc6994ec75c0abb05d4996bb9178`
 
 Evidence strength: **高信頼 (local sandbox only)**. Independent review/adoption readiness remains **未証明**.
 
@@ -56,7 +58,7 @@ Evidence strength: **高信頼 (local sandbox only)**. Independent review/adopti
 1. P1/P2/P3 exact execution-request/resource/context/parameter binding is draft-only and execution remains denied.
 2. P4 Owner Receipt -> capability -> exact execution request binding is draft-only and execution remains denied.
 3. Public verification-key rotation/revocation and historical-verification semantics are draft-only.
-4. Production external monotonic anchor backend is not implemented; local tests use a separate SQLite emulator only.
+4. Production external monotonic anchor backend is not implemented. `spec/EXTERNAL_HEAD_ANCHOR_DRAFT.md` now fixes required linearizable CAS, strict false-CAS semantics, rollback-domain separation, failure handling, adversarial tests, and explicit recovery requirements, but no production backend is yet proven.
 5. Trusted signer integration is not implemented/tested; no secret/private key material is handled here.
 6. Role-separated RED TEAM / Independent Lab / Auditor is still required before any adoption.
 
