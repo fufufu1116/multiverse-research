@@ -1,0 +1,65 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_2",
+  "status": "PREREGISTERED_BEFORE_PRE_PROVENANCE_BYTE_ACCESS",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_fresh_read": "74e5534ac95d13ce0418b69d527812d1cd139781",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5657234204,
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "scientific_question": "Does the exact existing DEV2000 PRE_PROVENANCE v3 source expose any of the five missing frozen N2 line/context fields or provenance sufficient to close their compatibility gap, while remaining PRE-only?",
+  "frozen_candidate": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+  "frozen_candidate_changed": false,
+  "authorized_target_fields": ["line_group_id","line_position","line_size","bank_length_m","wind_speed_mps"],
+  "preregistered_sources": [
+    {
+      "role": "PRIMARY_PRE_ONLY_PROVENANCE_SOURCE",
+      "name": "PRE_PROVENANCE.jsonl.gz",
+      "drive_file_id": "15CuqYV02DiZTKTf_5fSps48ruoiS_P2R",
+      "parent_folder": "MULTIVERSE_DEV2000_PRE_COLLECTION_v3_TURBO_LITE",
+      "expected_size_bytes": 127890,
+      "expected_sha256": "86627fe4151074f2d20db637a7f5468e24ae3c6e878a82a33fde7b3218261b27"
+    },
+    {
+      "role": "PRE_COLLECTION_PROVENANCE_COMPANION",
+      "name": "DEV2000_PRE_COLLECTION_REPORT.json",
+      "drive_file_id": "1oqCX7huuTxFajsKPdrgP5Ay9qhWSlff7",
+      "expected_size_bytes": 678,
+      "expected_sha256": "331115704c98d0a1a7194c8f5d338d31c7036df9aec834fc07acc46e962b9d03"
+    }
+  ],
+  "source_identity_basis": "Existing stored v3 PRE collection AUDIT_MANIFEST identity recorded before byte access; source itself not yet opened under this preregistration.",
+  "implementation": {
+    "path": "v3/historical_all_market/new_lineage/real_pre_only_enrichment_audit_v2_2.py",
+    "git_blob_sha": "34031daa4e106ca01da337a6a4ebf18a647d45d6",
+    "logic_freeze": [
+      "verify exact source/report SHA256",
+      "lexically enumerate primary provenance source keys",
+      "fail closed on forbidden outcome/payout/settlement/odds/price/economics keys before source value audit",
+      "enforce exact companion report key allowlist and require all PRE-only safety flags false",
+      "if target field names are absent, do not parse provenance data-row values",
+      "if target field names are present, parse only those five target fields for availability/missingness/type/range support; do not interpret non-target values",
+      "no labels, performance, fitting, selection or promotion"
+    ]
+  },
+  "access_order": ["FRESH_READ_AUTHORITY","VERIFY_SOURCE_AND_REPORT_HASH_IDENTITY","LEXICAL_PRIMARY_SOURCE_FORBIDDEN_KEY_SCAN","CONFIRM_PRE_ONLY_FROM_COMPANION","TARGET_FIELD_SCHEMA_CHECK","VALUE_AUDIT_TARGET_FIELDS_ONLY_IF_PRESENT"],
+  "protected_boundaries": {
+    "RESULT_PAYOUT":"NOT_ACCESSED",
+    "outcome_or_settlement_labels":"NOT_ACCESSED",
+    "odds_price":"NOT_ACCESSED",
+    "economics_bankroll_roi_profit":"NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000":"SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes":"NOT_ACCESSED",
+    "untouched_outcome_validation":"NOT_OPENED",
+    "real_pre_training_fit_selection":"PROHIBITED_NOT_PERFORMED",
+    "model_promotion":"PROHIBITED",
+    "new_automated_bulk_collection":false,
+    "external_provider_contact":false,
+    "runtime":"OFF",
+    "automatic_betting":false,
+    "real_money":false,
+    "spend":false,
+    "credential":false
+  },
+  "follow_up_rule": "If this source contains none of the five fields, continue only to another exact existing stored source separately preregistered under the current Owner-authorized PRE-only source family. Raw payloads require their own explicit preregistration and PRE-only safety case before byte access."
+}
