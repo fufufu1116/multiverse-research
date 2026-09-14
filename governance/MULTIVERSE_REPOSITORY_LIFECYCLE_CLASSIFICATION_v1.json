@@ -1,0 +1,77 @@
+{
+  "schema": "MULTIVERSE_REPOSITORY_LIFECYCLE_CLASSIFICATION_v1",
+  "status": "CANDIDATE_NON_AUTHORITY",
+  "parent_control_issue": 394,
+  "runtime": "OFF",
+  "lifecycle_classes": {
+    "CURRENT_POINTER": {
+      "retention": "while_current_then_review",
+      "deletion_default": "DENY",
+      "meaning": "small mutable locator for Fresh Read resume"
+    },
+    "ADOPTED_CANONICAL": {
+      "retention": "while_adopted_then_reclassify",
+      "deletion_default": "DENY",
+      "meaning": "currently adopted canonical implementation/policy/contract"
+    },
+    "EVIDENCE_IMMUTABLE": {
+      "retention": "INDEFINITE",
+      "deletion_default": "DENY",
+      "meaning": "audit, Owner decision, experiment, failure, provenance, receipt, recovery evidence"
+    },
+    "ARCHIVE_OBSOLETE": {
+      "retention": "INDEFINITE_UNLESS_SEPARATE_MIGRATION_PROVES_REPLACEMENT",
+      "deletion_default": "DENY",
+      "meaning": "superseded but useful history/reproducibility/recovery material"
+    },
+    "TEMPORARY_GENERATED": {
+      "retention": "REVIEW_AFTER_30D_OR_90D_BY_KIND",
+      "deletion_default": "OWNER_GATE_OR_ADOPTED_DELETION_AUTHORITY_REQUIRED",
+      "meaning": "reproducible unreferenced transient proof/scratch/generated outputs"
+    },
+    "PROTECTED_SEALED": {
+      "retention": "INDEFINITE",
+      "deletion_default": "ABSOLUTE_HYGIENE_DENY",
+      "meaning": "protected, holdout, sensitive or sealed lineage"
+    }
+  },
+  "decision_labels": [
+    "KEEP_ACTIVE",
+    "KEEP_EVIDENCE",
+    "RETIRE_FROM_ACTIVE_VIEW",
+    "CONSOLIDATION_CANDIDATE",
+    "DELETION_CANDIDATE",
+    "PROTECTED_NO_TOUCH",
+    "UNKNOWN_FAIL_CLOSED"
+  ],
+  "hard_rules": {
+    "age_alone_never_authorizes_deletion": true,
+    "historical_failure_is_evidence": true,
+    "owner_decisions_are_evidence": true,
+    "review_receipts_are_evidence": true,
+    "protected_paths_no_touch": true,
+    "audit_default_read_only": true,
+    "tracked_deletion_fail_closed": true,
+    "fresh_main_wins_over_filename_current": true,
+    "parallel_authority_registry_creation_forbidden_when_existing_substrate_suffices": true
+  },
+  "retention_defaults_days": {
+    "temporary_unreferenced_review_after": 30,
+    "bulky_reproducible_with_durable_hash_receipt_review_after": 90
+  },
+  "index_contract": {
+    "proposed_path": "governance/MULTIVERSE_REPOSITORY_INDEX_v1.json",
+    "authority_role": "LOCATOR_ONLY_NOT_AUTHORITY_REPLACEMENT",
+    "required_sections": [
+      "canonical_main_observed",
+      "current_entrypoints",
+      "adopted_surfaces",
+      "evidence_roots",
+      "archive_roots",
+      "protected_roots",
+      "known_hygiene_findings",
+      "generated_at",
+      "generator_version"
+    ]
+  }
+}
