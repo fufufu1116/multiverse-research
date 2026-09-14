@@ -3,7 +3,7 @@
 Status: CANDIDATE — repository-only
 Parent: #504
 Control: #394
-Runtime: OFF
+RUNTIME: OFF
 
 ## Purpose
 Centralize Independent Lab / Independent Auditor request arbitration under Sole Control (Owner-facing: 軍師) without weakening any existing Owner Gate, one-shot rule, request binding, role separation, or fail-closed behavior.
