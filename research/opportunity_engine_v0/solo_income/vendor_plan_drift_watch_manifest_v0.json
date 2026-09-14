@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "status": "RESEARCH_ONLY_NO_RUNTIME",
+  "checked_at": "2026-09-14T12:10:00+09:00",
+  "purpose": "Deterministic source-and-field contract for monitoring decision-material pricing, billing, AI packaging, plan-generation and affiliate-term drift without provider calls or automatic publication.",
+  "global_rules": {
+    "authoritative_sources": "official vendor pricing/help/legal/affiliate surfaces only for normalized facts",
+    "missing_source": "SOURCE_UNAVAILABLE -> HUMAN_REVIEW_REQUIRED; never silently reuse stale value",
+    "conflict": "CONFLICTING -> HUMAN_REVIEW_REQUIRED; preserve both claims",
+    "plan_generation_change": "always HUMAN_REVIEW_REQUIRED",
+    "ordinary_numeric_change": "RECOMPUTE_DECISION_ROWS unless evidence degrades",
+    "publication": "OFF",
+    "monetization": "OFF",
+    "runtime": "OFF"
+  },
+  "vendors": {
+    "clickup": {
+      "decision_job": "Determine whether public pricing is applicable to the exact Workspace generation before making an upgrade/AI-cost claim.",
+      "sources": [
+        {
+          "id": "clickup_new_plans_help",
+          "url": "https://help.clickup.com/hc/en-us/articles/42972527662359-New-plans-and-pricing-options",
+          "source_status": "AVAILABLE",
+          "track_fields": [
+            "plan_generation_or_migration_state",
+            "eligibility_region",
+            "ai_packaging_credit_model",
+            "effective_date",
+            "feature_state"
+          ],
+          "current_anchor": "Limited rollout; current plan/price stay the same; no automatic migration; only upgrade options change; new plans include AI; all Free Forever, new Workspaces, and a small number of paid Workspaces may see new plans.",
+          "human_review_if_changed": true
+        },
+        {
+          "id": "clickup_brain_pricing",
+          "url": "https://clickup.com/brain/pricing",
+          "source_status": "AVAILABLE",
+          "track_fields": ["price", "billing_basis", "feature_state", "currency_tax_basis"],
+          "current_anchor": "Public Brain AI $9/user/month and Everything AI $28/user/month context exists; public price is not treated as proof of a specific Workspace invoice.",
+          "human_review_if_changed": false
+        },
+        {
+          "id": "clickup_pricing",
+          "url": "https://clickup.com/pricing",
+          "source_status": "AVAILABLE",
+          "track_fields": ["price", "billing_basis", "feature_state", "ai_packaging_credit_model"],
+          "human_review_if_changed": false
+        }
+      ],
+      "forced_review_conditions": [
+        "classic add-on and new AI-included surfaces coexist in the same Workspace",
+        "public price conflicts with Workspace-specific billing/upgrade surface",
+        "migration/rollout wording changes",
+        "AI credit inclusion/allowance changes"
+      ]
+    },
+    "make": {
+      "decision_job": "Normalize workload cost across credits, dynamic AI consumption, plan tiers and affiliate economics without assuming one operation always equals one credit.",
+      "sources": [
+        {
+          "id": "make_pricing",
+          "url": "https://www.make.com/en/pricing",
+          "source_status": "AVAILABLE",
+          "track_fields": ["price", "billing_basis", "minimum_or_bucket_rule", "ai_packaging_credit_model", "term_commitment_renewal_refund"],
+          "current_anchor": "At 10k credits/month public surface shows Free 1,000 credits/month, Core $12/month, Pro $21/month, Teams $38/month; monthly/annual controls exist. Ordinary module action language is one credit but exceptions must be checked against Credits help.",
+          "human_review_if_changed": false
+        },
+        {
+          "id": "make_credits_help",
+          "url": "https://help.make.com/credits",
+          "source_status": "AVAILABLE",
+          "track_fields": ["billing_basis", "ai_packaging_credit_model", "feature_state", "effective_date"],
+          "current_anchor": "Default fixed usage is 1 operation = 1 credit; some AI/advanced features use dynamic credits based on tokens/other usage; custom AI provider connections separate Make operation credits from provider token cost.",
+          "human_review_if_changed": true
+        },
+        {
+          "id": "make_affiliate_page",
+          "url": "https://www.make.com/en/affiliate",
+          "source_status": "AVAILABLE",
+          "track_fields": ["affiliate_commission_rate", "affiliate_commission_window", "affiliate_payout_threshold", "affiliate_eligibility", "affiliate_attribution_rule"],
+          "current_anchor": "Headline/FAQ repeatedly state 35% for 12 months; payout requires $100 and 3 unique paying referrals via Wise. The same current page also contains a later affiliate-vs-partner FAQ sentence saying affiliate commission for 24 months, creating a material internal conflict.",
+          "human_review_if_changed": true
+        },
+        {
+          "id": "make_affiliate_help",
+          "url": "https://help.make.com/affiliate-program",
+          "source_status": "AVAILABLE",
+          "track_fields": ["affiliate_commission_rate", "affiliate_commission_window", "affiliate_payout_threshold", "affiliate_eligibility", "affiliate_attribution_rule"],
+          "current_anchor": "35% on affiliate-link referrals for 12 months; $100 minimum and 3 unique paying users; subscription payments only; Wise payout.",
+          "human_review_if_changed": true
+        }
+      ],
+      "cross_source_state": {
+        "affiliate_commission_window": {
+          "evidence_state": "CONFLICTING",
+          "claims": ["12 months", "24 months on one current affiliate-page FAQ sentence"],
+          "safe_normalized_value": null,
+          "action": "HUMAN_OR_VENDOR_CONFIRMATION_REQUIRED_BEFORE_REVENUE_MODEL"
+        }
+      }
+    },
+    "n8n": {
+      "decision_job": "Keep workflow execution economics separate from AI-credit economics and affiliate terms.",
+      "sources": [
+        {
+          "id": "n8n_pricing",
+          "url": "https://n8n.io/pricing/",
+          "source_status": "AVAILABLE",
+          "track_fields": ["price", "billing_basis", "minimum_or_bucket_rule", "ai_packaging_credit_model", "feature_state"],
+          "current_anchor": "A workflow execution is one full workflow run regardless of step count; AI Assistant credits are a separate monthly allowance on relevant Cloud plans.",
+          "human_review_if_changed": true
+        },
+        {
+          "id": "n8n_cloud_features",
+          "url": "https://support.n8n.io/article/n-8-n-cloud-subscription-features-per-tier",
+          "source_status": "AVAILABLE",
+          "track_fields": ["minimum_or_bucket_rule", "ai_packaging_credit_model", "feature_state", "term_commitment_renewal_refund"],
+          "current_anchor": "Starter currently lists 2,500 executions and 2,300 AI credits/month; Pro tiers list 10k/50k executions and 5,700/13,700 AI credits; annual billing affects price, not allowances.",
+          "human_review_if_changed": true
+        },
+        {
+          "id": "n8n_credit_terms",
+          "url": "https://n8n.io/legal/credit-terms/",
+          "source_status": "AVAILABLE",
+          "track_fields": ["ai_packaging_credit_model", "term_commitment_renewal_refund", "effective_date"],
+          "current_anchor": "Credit unit prices/allowances may change; included/top-up credit treatment and expiration/refund constraints are material.",
+          "human_review_if_changed": true
+        },
+        {
+          "id": "n8n_affiliate",
+          "url": "https://n8n.io/affiliates/",
+          "source_status": "AVAILABLE",
+          "track_fields": ["affiliate_commission_rate", "affiliate_commission_window", "affiliate_payout_threshold", "affiliate_eligibility", "affiliate_attribution_rule"],
+          "current_anchor": "30% on n8n Cloud referrals for 12 months; application/approval; monthly PayPal payouts at EUR100+ balance.",
+          "human_review_if_changed": true
+        }
+      ]
+    }
+  },
+  "current_decision": {
+    "clickup": "PRIMARY_EXTERNAL_FALSIFICATION_CANDIDATE_NOT_LAUNCHED",
+    "make": "SUPPORTING_COST_NORMALIZATION_AND_AFFILIATE_CANDIDATE_WITH_TERM_CONFLICT",
+    "n8n": "SUPPORTING_COST_NORMALIZATION_AND_AFFILIATE_CANDIDATE",
+    "real_world_demand": "UNPROVEN",
+    "revenue": "OFF",
+    "rank_promotion": "NO"
+  }
+}

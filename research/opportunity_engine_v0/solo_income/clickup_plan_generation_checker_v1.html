@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClickUp料金世代チェッカー v1 — internal research</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#111;background:#f7f7f8}body{max-width:860px;margin:0 auto;padding:20px;line-height:1.6}h1{font-size:1.6rem}h2{font-size:1.15rem;margin-top:0}.card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:16px;margin:14px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}label{font-weight:700;display:block;margin-bottom:5px}select,input{width:100%;box-sizing:border-box;padding:11px;border:1px solid #aaa;border-radius:9px;font-size:16px;background:#fff}button{width:100%;padding:13px;border:0;border-radius:10px;background:#111;color:#fff;font-weight:800;font-size:16px}.muted{color:#666;font-size:.9rem}.state{font-weight:900;word-break:break-word}.ok{background:#eef9f0;border-color:#9fc8a5}.warn{background:#fff8df;border-color:#e5c86c}.bad{background:#fff0f0;border-color:#dda0a0}.facts{font-size:.94rem}code{word-break:break-all}@media(max-width:640px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>ClickUp料金世代チェッカー v1</h1>
+<p class="muted">内部研究用。公開・収益化・ログイン連携・データ送信なし。確認日 2026-09-14。</p>
+
+<div class="card">
+  <h2>Workspaceで実際に見えているものを入力</h2>
+  <div class="grid">
+    <div>
+      <label for="workspace">Workspaceの現在状態</label>
+      <select id="workspace">
+        <option value="unknown">不明</option>
+        <option value="free">Free Forever</option>
+        <option value="paid_existing">既存の有料Workspace</option>
+        <option value="new_workspace">最近作成したWorkspace</option>
+      </select>
+    </div>
+    <div>
+      <label for="surface">Plans / Billing / Upgrade画面</label>
+      <select id="surface">
+        <option value="unknown">未確認</option>
+        <option value="classic">Brain AI / Everything AIを別アドオンとして追加する表示</option>
+        <option value="new">Core / Business / Business Plus / Enterprise / Max等、AI内包の新プラン表示</option>
+        <option value="both">新プラン表示とAIアドオン表示の両方が見える</option>
+      </select>
+    </div>
+    <div>
+      <label for="priceObserved">Workspace固有の請求価格を確認した？</label>
+      <select id="priceObserved">
+        <option value="no">いいえ</option>
+        <option value="yes">はい</option>
+      </select>
+    </div>
+    <div>
+      <label for="cadence">表示されている請求周期</label>
+      <select id="cadence">
+        <option value="unknown">不明</option>
+        <option value="monthly">月払い</option>
+        <option value="yearly">年払い換算 / 年払い</option>
+      </select>
+    </div>
+    <div>
+      <label for="members">請求対象メンバー数（任意）</label>
+      <input id="members" type="number" min="1" step="1" placeholder="例: 10">
+    </div>
+    <div>
+      <label for="actualPrice">Workspace画面のAIアドオン単価 / 人 / 月（任意）</label>
+      <input id="actualPrice" type="number" min="0" step="0.01" placeholder="公開ページ価格ではなく実表示">
+    </div>
+    <div class="full"><button id="judge">判定する</button></div>
+  </div>
+</div>
+
+<div id="result" class="card warn"></div>
+
+<div class="card facts">
+<h2>現在の公式事実（公開価格とWorkspace価格は別物として扱う）</h2>
+<ul>
+<li>ClickUp公式公開ページには Brain AI $9/人/月、Everything AI $28/人/月の表示がある。</li>
+<li>一方、ClickUp Helpでは一部WorkspaceへAI内包の新プラン群を段階展開中としている。</li>
+<li>既存Workspaceは新プランへ自動移行されず、現在のプランと価格は維持され、アップグレード候補だけが変わる。</li>
+<li>新プランは、ローンチ後に作成されたWorkspace、すべてのFree Forever Workspace、一部の有料Workspaceに提示される。</li>
+<li>新プランではAIが別アドオンではなくプラン内包となり、月間AIクレジットが付く。</li>
+</ul>
+<p><strong>決定安全ルール：</strong>公開ページの $9 / $28 を見ただけでは、特定Workspaceの支払価格や料金世代を断定しない。</p>
+</div>
+
+<div class="card facts">
+<h2>公式参照先</h2>
+<ul>
+<li>https://help.clickup.com/hc/en-us/articles/42972527662359-New-plans-and-pricing-options</li>
+<li>https://clickup.com/brain/pricing</li>
+<li>https://clickup.com/pricing</li>
+<li>https://help.clickup.com/hc/en-us/articles/6303101719831-Purchase-or-cancel-ClickUp-add-ons</li>
+<li>https://help.clickup.com/hc/en-us/articles/20686299081879-ClickUp-Brain-AI-feature-availability-and-limits</li>
+</ul>
+</div>
+
+<div class="card facts">
+<h2>内蔵セルフテスト</h2>
+<p id="tests" class="muted">未実行</p>
+</div>
+
+<script>
+function classify(x){
+  if(x.surface==='both') return {
+    state:'CONFLICTING_SURFACES_HUMAN_REVIEW',
+    tone:'bad',
+    safe:'新プランと従来アドオンの両方が見えるため、料金世代を自動確定しません。',
+    next:'Workspace名・現在プラン名・Plans/Billing画面の表示日時を保存し、購入前にWorkspace固有表示を優先して再確認してください。'
+  };
+  if(x.surface==='new') return {
+    state:x.priceObserved==='yes'?'NEW_INCLUDED_AI_PLAN_PRICE_OBSERVED':'NEW_INCLUDED_AI_PLAN_CONFIRMED_PRICE_UNKNOWN',
+    tone:x.priceObserved==='yes'?'ok':'warn',
+    safe:x.priceObserved==='yes'?'AI内包の新プラン世代とWorkspace固有価格を確認済みです。':'AI内包の新プラン世代は確認できましたが、実支払価格は未確認です。',
+    next:x.priceObserved==='yes'?'表示周期・人数・税/為替・契約条件を別に確認してください。':'Upgrade/Billing画面で実際のWorkspace価格と請求周期を確認してください。'
+  };
+  if(x.surface==='classic') return {
+    state:x.priceObserved==='yes'?'CLASSIC_ADDON_MODEL_PRICE_OBSERVED':'CLASSIC_ADDON_MODEL_CONFIRMED_PRICE_UNKNOWN',
+    tone:x.priceObserved==='yes'?'ok':'warn',
+    safe:x.priceObserved==='yes'?'従来プラン＋AIアドオン世代とWorkspace固有価格を確認済みです。':'従来プラン＋AIアドオン世代は確認できましたが、実支払価格は未確認です。',
+    next:x.priceObserved==='yes'?'請求対象人数・周期・按分・税/為替を別に確認してください。':'公開$9/$28を代入せず、Workspace内の注文/請求画面で実単価を確認してください。'
+  };
+  if(x.surface==='unknown' && (x.workspace==='free' || x.workspace==='new_workspace')) return {
+    state:'NEW_PLAN_SET_EXPECTED_SURFACE_NOT_CONFIRMED',tone:'warn',
+    safe:'公式Help上は新プラン提示対象ですが、このWorkspaceで実際に表示されるプラン/価格は未確認です。',
+    next:'WorkspaceのPlans / Billing / Upgrade画面を確認してください。'
+  };
+  if(x.surface==='unknown' && x.workspace==='paid_existing') return {
+    state:'UPGRADE_SURFACE_UNKNOWN',tone:'warn',
+    safe:'既存有料Workspaceは自動移行されないため、公開価格だけでは料金世代を決められません。',
+    next:'Workspace固有のPlans / Billing / Upgrade画面を確認してください。'
+  };
+  return {state:'INSUFFICIENT_EVIDENCE',tone:'warn',safe:'材料不足のため料金世代を推測しません。',next:'現在Workspace種別とPlans/Billing画面を確認してください。'};
+}
+
+function costBlock(x,r){
+  const m=Number(x.members),p=Number(x.actualPrice);
+  if(x.surface!=='classic') return '';
+  if(x.priceObserved!=='yes' || !(m>0) || !(p>=0)) return '<p><strong>総額計算：</strong>未実施。Workspace固有単価と請求対象人数が揃うまで公開価格を代入しません。</p>';
+  const total=m*p;
+  const cadence=x.cadence==='monthly'?'月払い':x.cadence==='yearly'?'年払い表示/年換算':'周期不明';
+  return '<p><strong>単純月額露出：</strong>'+m+'人 × $'+p.toFixed(2)+' = <strong>$'+total.toFixed(2)+'</strong> / 月相当（'+cadence+'）。税・為替・按分・空席・契約割引・返金条件は未反映。</p>';
+}
+
+function readInput(){return {
+  workspace:document.getElementById('workspace').value,
+  surface:document.getElementById('surface').value,
+  priceObserved:document.getElementById('priceObserved').value,
+  cadence:document.getElementById('cadence').value,
+  members:document.getElementById('members').value,
+  actualPrice:document.getElementById('actualPrice').value
+};}
+function render(){
+  const x=readInput(),r=classify(x),el=document.getElementById('result');
+  el.className='card '+r.tone;
+  el.innerHTML='<p class="state">'+r.state+'</p><p><strong>安全に言えること：</strong>'+r.safe+'</p><p><strong>次に必要な証拠：</strong>'+r.next+'</p>'+costBlock(x,r)+'<p class="muted">公開サイトの料金は比較用の公開文脈であり、特定Workspaceの請求額証明ではありません。</p>';
+}
+
+document.getElementById('judge').addEventListener('click',render);
+['workspace','surface','priceObserved','cadence','members','actualPrice'].forEach(id=>document.getElementById(id).addEventListener('change',render));
+
+function selfTests(){
+ const cases=[
+  [{workspace:'paid_existing',surface:'classic',priceObserved:'yes'},'CLASSIC_ADDON_MODEL_PRICE_OBSERVED'],
+  [{workspace:'paid_existing',surface:'classic',priceObserved:'no'},'CLASSIC_ADDON_MODEL_CONFIRMED_PRICE_UNKNOWN'],
+  [{workspace:'paid_existing',surface:'new',priceObserved:'yes'},'NEW_INCLUDED_AI_PLAN_PRICE_OBSERVED'],
+  [{workspace:'paid_existing',surface:'both',priceObserved:'yes'},'CONFLICTING_SURFACES_HUMAN_REVIEW'],
+  [{workspace:'free',surface:'unknown',priceObserved:'no'},'NEW_PLAN_SET_EXPECTED_SURFACE_NOT_CONFIRMED'],
+  [{workspace:'paid_existing',surface:'unknown',priceObserved:'no'},'UPGRADE_SURFACE_UNKNOWN'],
+  [{workspace:'unknown',surface:'unknown',priceObserved:'no'},'INSUFFICIENT_EVIDENCE']
+ ];
+ let pass=0; const failed=[];
+ for(const [input,expected] of cases){const got=classify(input).state;if(got===expected)pass++;else failed.push(expected+' -> '+got);}
+ document.getElementById('tests').textContent=pass+'/'+cases.length+' PASS'+(failed.length?' | FAIL: '+failed.join('; '):'');
+}
+render();selfTests();
+</script>
+</body>
+</html>

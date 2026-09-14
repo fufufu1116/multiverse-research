@@ -1,0 +1,86 @@
+{
+  "schema_version": 0,
+  "status": "RESEARCH_ONLY_OFFLINE_SIMULATION",
+  "cases": [
+    {
+      "id": "make_affiliate_window_conflict",
+      "description": "A previously normalized 12-month affiliate window encounters simultaneous current official claims for 12 and 24 months.",
+      "before": {
+        "affiliate_commission_rate": "35%",
+        "affiliate_commission_window": "12 months",
+        "affiliate_payout_threshold": "$100 + 3 unique paying users",
+        "evidence_state": "CONFIRMED",
+        "source_status": "AVAILABLE"
+      },
+      "after": {
+        "affiliate_commission_rate": "35%",
+        "affiliate_commission_window": null,
+        "affiliate_payout_threshold": "$100 + 3 unique paying users",
+        "evidence_state": "CONFLICTING",
+        "source_status": "AVAILABLE"
+      },
+      "expected_status": "HUMAN_REVIEW_REQUIRED",
+      "expected_category": "AFFILIATE_COMMISSION_WINDOW"
+    },
+    {
+      "id": "clickup_plan_generation_drift",
+      "description": "A Workspace decision boundary moves from classic separate AI add-on packaging to a new AI-included plan generation.",
+      "before": {
+        "price": "$9/user/month public context",
+        "billing_basis": "per user per month",
+        "feature_state": "AI add-on",
+        "ai_packaging_credit_model": "separate add-on credits",
+        "plan_generation_or_migration_state": "CLASSIC_ADDON_PUBLIC_MODEL",
+        "evidence_state": "CONFIRMED",
+        "source_status": "AVAILABLE"
+      },
+      "after": {
+        "price": null,
+        "billing_basis": "Workspace-specific plan pricing required",
+        "feature_state": "AI included in new plan generation",
+        "ai_packaging_credit_model": "plan-included AI credits",
+        "plan_generation_or_migration_state": "NEW_INCLUDED_AI_PLAN",
+        "evidence_state": "CONFIRMED",
+        "source_status": "AVAILABLE"
+      },
+      "expected_status": "HUMAN_REVIEW_REQUIRED",
+      "expected_category": "PLAN_GENERATION_OR_MIGRATION"
+    },
+    {
+      "id": "n8n_allowance_numeric_drift",
+      "description": "An otherwise well-evidenced Cloud allowance changes without plan-generation or evidence degradation.",
+      "before": {
+        "minimum_or_bucket_rule": "2,500 workflow executions/month",
+        "ai_packaging_credit_model": "2,300 AI credits/month",
+        "feature_state": "Starter Cloud allowance",
+        "evidence_state": "CONFIRMED",
+        "source_status": "AVAILABLE"
+      },
+      "after": {
+        "minimum_or_bucket_rule": "3,000 workflow executions/month",
+        "ai_packaging_credit_model": "2,500 AI credits/month",
+        "feature_state": "Starter Cloud allowance",
+        "evidence_state": "CONFIRMED",
+        "source_status": "AVAILABLE"
+      },
+      "expected_status": "RECOMPUTE_DECISION_ROWS",
+      "expected_category": "AI_PACKAGING_OR_CREDIT_MODEL"
+    },
+    {
+      "id": "official_source_unavailable",
+      "description": "A watched official source becomes unavailable; prior normalized value must not be silently carried forward.",
+      "before": {
+        "price": "$12/month",
+        "evidence_state": "CONFIRMED",
+        "source_status": "AVAILABLE"
+      },
+      "after": {
+        "price": "$12/month",
+        "evidence_state": "SOURCE_UNAVAILABLE",
+        "source_status": "UNAVAILABLE"
+      },
+      "expected_status": "HUMAN_REVIEW_REQUIRED",
+      "expected_category": "SOURCE_AVAILABILITY"
+    }
+  ]
+}
