@@ -1,0 +1,84 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_4",
+  "status": "PREREGISTERED_BEFORE_REALITY_CALIBRATION_ARCHIVE_CELL_VALUE_ACCESS",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_expected": "74e5534ac95d13ce0418b69d527812d1cd139781",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5657234204,
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "scientific_question": "Is the existing KEIRIN Reality Calibration Archive 2026-09-01 v1 a PRE-only, DEV2000-linked race-context source that can supply bank_length_m and/or wind_speed_mps for frozen N2 compatibility without opening outcome, price or economics evidence?",
+  "frozen_candidate": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+  "frozen_candidate_changed": false,
+  "candidate_context_source": {
+    "name": "KEIRIN Reality Calibration Archive 2026-09-01 v1",
+    "drive_file_id": "15y4xQs0aDghTNdm6VCT-cvsgqgf1ShDUjTy2CLumyyc",
+    "mime_type": "application/vnd.google-apps.spreadsheet",
+    "current_revision_id_from_metadata_only_discovery": "7",
+    "modified_time": "2026-09-01T06:53:00.241Z",
+    "sheet_metadata": {
+      "PRE_Rows": {"sheet_id": 719781035, "row_count": 200, "column_count": 22},
+      "Race_Index": {"sheet_id": 1767869497, "row_count": 50, "column_count": 12},
+      "Summary": {"sheet_id": 520152403, "row_count": 100, "column_count": 9},
+      "README": {"sheet_id": 175970220, "row_count": 60, "column_count": 4},
+      "Roster_Rows": {"sheet_id": 1466335753, "row_count": 150, "column_count": 30}
+    },
+    "identity_rule": "Native Google Sheet identity is fixed by Drive file ID plus revision ID 7; any revision drift fails closed and requires a new preregistration."
+  },
+  "dev2000_join_companion": {
+    "name": "DEV2000_UNIVERSE_v1.csv",
+    "drive_file_id": "1BV79TYKyNJYX7zUZai1Aa-nvgbZCiq_O",
+    "expected_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "expected_races": 2000,
+    "allowed_values": ["race_id"],
+    "recovery_receipt_drive_file_id": "1NJb7DMhEWg-1c7dkM1OgNw4PkBms4tRS",
+    "receipt_safety_claims_required": {"result_accessed": false, "payout_accessed": false, "scoring_performed": false}
+  },
+  "authorized_target_fields": ["bank_length_m", "wind_speed_mps"],
+  "line_fields_not_audited_in_this_source": ["line_group_id", "line_position", "line_size"],
+  "header_alias_policy": {
+    "bank_length_m_aliases": ["bank_length_m", "bank_length", "track_length_m", "周長", "バンク周長"],
+    "wind_speed_mps_aliases": ["wind_speed_mps", "wind_speed", "wind_mps", "風速"],
+    "rule": "Aliases are schema mapping only and cannot be selected based on outcomes. Any unexpected semantic ambiguity stops before value interpretation."
+  },
+  "access_order": [
+    "FRESH_READ_CANONICAL_AUTHORITY_AND_THIS_PREREGISTRATION",
+    "REVERIFY_NATIVE_SHEET_REVISION_ID_EQUALS_7",
+    "READ_HEADER_ROWS_ONLY_FROM_PRE_ROWS_RACE_INDEX_SUMMARY_README_AND_ROSTER_ROWS",
+    "FAIL_CLOSED_IF_HEADERS_EXPOSE_RESULT_PAYOUT_FINISH_WINNER_SETTLEMENT_ODDS_PRICE_ROI_PROFIT_BANKROLL_RETURN_OR_OTHER_OUTCOME_ECONOMICS_FIELDS",
+    "IF_HEADER_SAFE_READ_BOUNDED_README_PROVENANCE_SEMANTICS_ONLY_TO_CONFIRM_PRE_ONLY_STATUS",
+    "IF_PRE_ONLY_NOT_CONFIRMED_STOP_WITHOUT_RACE_OR_TARGET_VALUE_ACCESS",
+    "READ_ONLY_RACE_ID_JOIN_COLUMN_FROM_THE_MINIMUM_SAFE_SHEET_IDENTIFIED_BY_HEADER",
+    "COMPARE_EXACT_RACE_ID_TO_HASH_VERIFIED_DEV2000_UNIVERSE_RACE_IDS",
+    "IF_OVERLAP_ZERO_STOP_SOURCE_WITHOUT_CONTEXT_TARGET_VALUE_AUDIT",
+    "IF_OVERLAP_POSITIVE_READ_ONLY_RACE_ID_PLUS_PREREGISTERED_BANK_WIND_COLUMNS_FOR_OVERLAPPING_ROWS_AND_AUDIT_AVAILABILITY_MISSINGNESS_CARDINALITY_RANGE_SUPPORT"
+  ],
+  "forbidden_header_terms": ["result", "payout", "finish", "winner", "settlement", "odds", "price", "roi", "profit", "bankroll", "return", "着順", "払戻", "オッズ"],
+  "stop_rules": [
+    "STOP_NATIVE_REVISION_DRIFT",
+    "STOP_FORBIDDEN_HEADER_FIELD",
+    "STOP_PRE_ONLY_PROVENANCE_NOT_CONFIRMED",
+    "STOP_NO_SAFE_RACE_ID_JOIN_COLUMN",
+    "STOP_NO_DEV2000_RACE_ID_OVERLAP",
+    "STOP_TARGET_ALIAS_AMBIGUITY"
+  ],
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_bankroll_roi_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes": "NOT_ACCESSED",
+    "untouched_outcome_validation": "NOT_OPENED",
+    "real_pre_training_fit_selection": "PROHIBITED_NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "new_automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "follow_up_rule": "This source is eligible for context target-value audit only if header/provenance is PRE-only and exact race_id overlap with DEV2000 is positive. Otherwise stop and continue metadata-only discovery."
+}
