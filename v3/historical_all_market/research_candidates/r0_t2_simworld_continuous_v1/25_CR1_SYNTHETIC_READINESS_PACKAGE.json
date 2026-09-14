@@ -1,0 +1,34 @@
+{
+  "record": "CR1_E05_SYNTHETIC_READINESS_PACKAGE_v1",
+  "candidate_id": "CR1_E05",
+  "definition": "At each sequential choice step: 0.95 * PL(score/2.0) + 0.05 * Uniform.",
+  "status": "SYNTHETIC_LEAD_READY_FOR_INDEPENDENT_GOVERNANCE_REVIEW_NOT_REAL_TEST_AUTHORIZED",
+  "evidence_chain": [
+    "H0.25 structural falsification failed and was rejected under frozen rule",
+    "RR1 rank-robust successor failed both fresh seeds and was rejected",
+    "AT1 adaptive-temperature successor passed one fresh seed but failed replication and was rejected",
+    "CR1 contamination-robust successor passed both seeds of fresh tail/contamination battery",
+    "CR1 then passed both seeds of a separate balanced clean-plus-shift battery"
+  ],
+  "fresh_CR1_evidence": {
+    "tail_contamination_battery_races": 30000,
+    "balanced_clean_shift_battery_races": 30000,
+    "independent_preregistered_batteries": 2,
+    "independent_seeds_total": 4,
+    "all_frozen_rules_passed": true
+  },
+  "negative_results_preserved": ["H0.25", "RR1_B20_S4", "AT1_A18_B02"],
+  "scientific_claim_ceiling": "CR1 is the current synthetic robustness lead only. No claim of real predictive superiority, economic value, or promotion is authorized.",
+  "required_next_role_separated_action": "Independent Lab/Auditor governance review of simulator design, leakage/firewall, preregistration chronology, metric choice and candidate-selection history before any separate real-world CR1 test design is proposed.",
+  "forbidden_next_shortcuts": [
+    "Do not substitute CR1 into frozen R0_T2 prospective assignment",
+    "Do not use DEV2000_C outcomes",
+    "Do not open ECON_HOLDOUT1000",
+    "Do not use Gate487/A+B as fresh validation",
+    "Do not access payout/odds/price/economics",
+    "Do not promote CR1 from simulation evidence alone"
+  ],
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required_now": false
+}
