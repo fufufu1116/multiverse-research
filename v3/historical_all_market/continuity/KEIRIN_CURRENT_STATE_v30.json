@@ -1,0 +1,78 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v30",
+  "status": "ACTIVE_CURRENT_STATE_V30_CONTINUOUS_SIMWORLD_HYBRID_LEAD_PLUS_INDEPENDENT_R0_T2_PROSPECTIVE_CONFIRMATION",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v29.json",
+  "checkpoint_jst": "2026-09-15",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-simworld-continuous-20260915-v1",
+  "current_research_objective": "Continue immediate simulator falsification without future-data blocking. Preserve R0_T2 unchanged for its already-preregistered prospective real confirmation, while treating H0.25 as a separate simulation-only successor lead that must survive further fresh simulator families before any real-world test is even proposed.",
+  "frozen_real_confirmation_model": {
+    "id": "R0_T2",
+    "formula": "Plackett-Luce softmax(score / 2.0)",
+    "temperature": 2.0,
+    "prospective_parameter_status": "FROZEN_UNCHANGED",
+    "real_validation_status": "NOT_YET_EVALUATED",
+    "promotion_status": "NOT_AUTHORIZED"
+  },
+  "simulation_world_lane": {
+    "status": "ACTIVE_IMMEDIATE_CONTINUOUS",
+    "synthetic_races_total_through_v30": 305000,
+    "current_synthetic_lead": {
+      "id": "H0.25",
+      "definition": "At each sequential PL choice step, mix probabilities from temperatures [1.0,1.5,2.0,3.0,4.0] with weights [0.15,0.15,0.40,0.15,0.15].",
+      "origin": "Constrained hybrid of frozen R0_T2 and broad robust temperature mixture using consumed synthetic development worlds only.",
+      "status": "SYNTHETIC_ONLY_NOT_REAL_VALIDATED_NOT_PROMOTED"
+    },
+    "fresh_meta_evidence": {
+      "prereg_commit": "ad3739eb7fb5d5ce7b0b378a796ce8d64c8cb166",
+      "result_commit": "8a52c0c700fe3a158e85d27fa6607f46c97025f6",
+      "primary_seed": 20260924,
+      "replication_seed": 20260925,
+      "result": "H0.25 passed the frozen synthetic-lead rule in both seeds and was selected over H0.5 by lower average max regret.",
+      "primary_max_regret": {"R0_T2": 0.0799917845380893, "H0.25": 0.009017641782222086},
+      "replication_max_regret": {"R0_T2": 0.07665680902113436, "H0.25": 0.005107386218145216},
+      "primary_mean_regret": {"R0_T2": 0.01209766084164574, "H0.25": 0.0015368095949980897},
+      "replication_mean_regret": {"R0_T2": 0.011463680213126803, "H0.25": 0.0008580227918501216}
+    },
+    "important_negative_result": "The earlier broad-mixture lead failed its first preregistered fresh-world retain rule because it improved worst-case regret but not mean regret versus R0_T2. That failure was honored; no post-hoc promotion occurred.",
+    "promotion_authority": false
+  },
+  "prospective_real_lane": {
+    "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+    "status": "INDEPENDENT_CONFIRMATION_WAITING_PRE_INPUT_WINDOW",
+    "blocking_simulation_research": false,
+    "model_bound_to_assignment": "R0_T2_ONLY",
+    "H0_25_bound_to_assignment": false,
+    "result_scoring_authority": false
+  },
+  "exact_next_executable_actions": [
+    "Freeze a new set of simulator families not used in H0.25 development and continue seed-replicated falsification of H0.25 versus R0_T2.",
+    "Add structural worlds with tactical interactions, nonstationary meeting regimes, feature corruption mechanisms, and model-misspecification not reducible to temperature alone.",
+    "Do not substitute H0.25 into the already-preregistered R0_T2 prospective assignment; that would contaminate the frozen confirmation design.",
+    "If H0.25 continues to survive independent synthetic preregistered batteries, prepare a separate future real-test design only after governance review; do not use DEV2000_C or ECON_HOLDOUT1000.",
+    "When R0_T2 prospective PRE inputs become available, process that confirmation lane independently without stopping simulation research."
+  ],
+  "scientific_contamination_guard": {
+    "gate_487_rerun": "PROHIBITED",
+    "A_plus_B_as_fresh_validation": "PROHIBITED",
+    "DEV2000_C_outcome_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "prospective_result_access_before_complete_prelock_and_new_exact_owner_gate": "PROHIBITED",
+    "H0_25_substitution_into_R0T2_prospective_assignment": "PROHIBITED",
+    "simulation_only_successor_real_promotion": "PROHIBITED"
+  },
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_YET_READY_PROSPECTIVE_RESULT_GATE_REMAINS_SEPARATE",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "Do not inflate readiness from synthetic evidence. Research throughput and falsification quality improved substantially, and H0.25 is a stronger synthetic lead, but there is still no new independent real predictive validation.",
+  "protected_boundaries": {
+    "new_real_result_access": false,
+    "payout_access": false,
+    "odds_price_economics_access": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
