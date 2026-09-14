@@ -1,0 +1,20 @@
+{
+  "record":"KEIRIN_REAL_PRE_S0_MECHANICAL_INTERFACE_PREREG_20260914_v1_1",
+  "status":"CORRECTED_PREREG_BEFORE_NESTED_ENTRANT_VALUE_ACCESS",
+  "created_date_jst":"2026-09-14",
+  "supersedes_for_execution":"v3/historical_all_market/research_candidates/KEIRIN_REAL_PRE_S0_MECHANICAL_INTERFACE_PREREG_20260914_v1.json",
+  "correction_reason":"The exact PRE_STRUCTURED v3 file is race-level JSONL: top-level rows expose race_id and an entrants container; the four authorized rider fields are nested inside entrant objects. This nesting was already established by the prior schema-only audit. The first mechanical parser decoded only authorized top-level race_id values and key names, did not descend into entrants, and therefore decoded no entrant car_no/class/style/score values. This correction freezes selective structural traversal before any nested entrant value access.",
+  "canonical_main_fresh_read":"7893a915d18db8069aa077665ecc069448d0917b",
+  "control_issue":394,
+  "control_latest_comment_id":5658204661,
+  "control_coordination_state":"ACTIVE_REVIEW_LAUNCH_LEASE_PREP_PR459_REFRESH_BRANCH_ONLY_WRITES_ALLOWED_MAIN_MUTATION_PROHIBITED",
+  "owner_gate_issue":377,
+  "owner_gate_comment_id":5658262127,
+  "exact_source":{"name":"PRE_STRUCTURED.jsonl.gz","drive_file_id":"1N2Cq5IkuxcBU0MqeIW5PIF44JTkHaq1Q","expected_size_bytes":576571,"expected_sha256":"4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84","metadata_verified_name":true,"metadata_verified_size":true,"sha256_reverified_before_nested_values":true},
+  "authorized_selective_access":{"top_level_identity_value_fields":["race_id"],"structural_containers_traversed_without_materializing_unapproved_values":["entrants"],"nested_prediction_value_fields":["car_no","class","style","score"],"all_other_top_level_and_nested_values":"SKIP_WITHOUT_DECODE_OR_MATERIALIZE"},
+  "pre_value_guards":["exact SHA256 must equal preregistered hash","recursively enumerate key names only while traversing structure and fail closed on forbidden key tokens","decode no value for any key outside race_id/car_no/class/style/score","do not read withdrawn or any other PRE feature value","do not access RESULT/PAYOUT/outcome/settlement/odds/price/economics sources"],
+  "frozen_sibling":{"name":"S0_DEV2000_AVAILABLE_SCORE_CLASS_STYLE_PL","prediction_fields":["car_no","class","style","score"],"posterior_score_shrinkage":0.7677543186180422,"class_coefficients":{"A1":0.05,"A2":-0.03,"A3":0.0,"S1":0.08,"S2":-0.03},"style_coefficients":{"逃":0.06,"両":0.04,"追":0.0},"probability_family":"Plackett-Luce ordered top3","no_tuning":true},
+  "decision_rule":{"PASS_MECHANICAL_COMPATIBILITY":"hash matches; forbidden-key scan clear; all authorized fields present with compatible types/support; at least one valid 7-unique-car race produces finite nonnegative ordered-top3 probabilities whose total mass differs from 1 by <=1e-10","FAIL_CLOSED":"identity/hash mismatch, forbidden key, unsupported authorized-field type/support, malformed structural parse, zero valid races, or probability sanity failure; no tuning after failure"},
+  "protected_boundaries":{"RESULT_PAYOUT":"NOT_ACCESSED","outcome_settlement":"NOT_ACCESSED","odds_price":"NOT_ACCESSED","economics_ROI_profit":"NOT_ACCESSED_NOT_COMPUTED","ECON_HOLDOUT1000":"SEALED_NOT_ACCESSED","DEV2000_C_results":"NOT_ACCESSED","training_fit_parameter_model_selection":"PROHIBITED_NOT_PERFORMED","model_promotion":"PROHIBITED","new_automated_bulk_collection":false,"external_provider_contact":false,"credential":false,"spend":false,"runtime":"OFF","automatic_betting":false},
+  "persistence_rule":"Persist aggregate counts and sanity metrics only; no real PRE row values and no per-race probability payloads."
+}
