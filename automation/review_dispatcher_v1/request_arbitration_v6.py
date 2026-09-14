@@ -111,6 +111,48 @@ def _exact_candidates(
     return candidates
 
 
+def _collapse_identical_valid_duplicate_echoes(
+    candidates: list[CandidateRecord],
+) -> list[CandidateRecord]:
+    """Collapse only exact idempotent re-publications of a valid request.
+
+    The earliest trusted durable comment remains the single logical request.
+    A later same-request-id comment is ignored only when both requests are
+    independently valid and their parsed request objects and canonical SHA256
+    are identical. Historical-invalid requests are never collapsed, and any
+    same-id near-duplicate remains a hard fail-close.
+    """
+    collapsed: list[CandidateRecord] = []
+    first_by_request_id: dict[str, CandidateRecord] = {}
+
+    for candidate in candidates:
+        _comment_id, request, _comment, validation_error = candidate
+        request_id = request["request_id"]
+        previous = first_by_request_id.get(request_id)
+        if previous is None:
+            first_by_request_id[request_id] = candidate
+            collapsed.append(candidate)
+            continue
+
+        _previous_comment_id, previous_request, _previous_comment, previous_error = previous
+        identical_valid_echo = (
+            previous_error is None
+            and validation_error is None
+            and request == previous_request
+            and sha256_json(request) == sha256_json(previous_request)
+        )
+        require(
+            identical_valid_echo,
+            f"DUPLICATE_EXACT_REQUEST_ID:{request_id}",
+        )
+        # Exact valid duplicate echo: preserve durable history externally but
+        # do not create another logical generation candidate. Because input is
+        # sorted by comment id, the first/earliest trusted durable comment is
+        # deterministic and remains authoritative for this exact request.
+
+    return collapsed
+
+
 def exact_current_owner_requests_v6(
     comments: list[dict[str, Any]],
     *,
@@ -122,26 +164,24 @@ def exact_current_owner_requests_v6(
     base: str,
     main: str,
 ) -> list[tuple[int, dict[str, Any], dict[str, Any]]]:
-    candidates = _exact_candidates(
-        comments,
-        repo=repo,
-        pr=pr,
-        lane=lane,
-        head=head,
-        tree=tree,
-        base=base,
-        main=main,
+    candidates = _collapse_identical_valid_duplicate_echoes(
+        _exact_candidates(
+            comments,
+            repo=repo,
+            pr=pr,
+            lane=lane,
+            head=head,
+            tree=tree,
+            base=base,
+            main=main,
+        )
     )
 
-    seen_ids: set[str] = set()
     generations: dict[str | None, list[CandidateRecord]] = {}
     for comment_id, request, comment, validation_error in candidates:
         # Recipe-only historical candidates already passed a full validation
         # probe with a safe empty recipe, so these arbitration fields are
         # canonical and authority-safe even when their original recipe is not.
-        rid = request["request_id"]
-        require(rid not in seen_ids, f"DUPLICATE_EXACT_REQUEST_ID:{rid}")
-        seen_ids.add(rid)
         predecessor = request["supersedes_request_sha256"]
         generations.setdefault(predecessor, []).append(
             (comment_id, request, comment, validation_error)
@@ -150,7 +190,9 @@ def exact_current_owner_requests_v6(
     # A malformed exact request is tolerated only as durable historical
     # lineage when exactly one later exact trusted *valid* request binds to
     # its raw canonical SHA. No successor, an invalid successor, or multiple
-    # successors remains fail-closed.
+    # non-identical successors remains fail-closed. Exact valid duplicate
+    # publication echoes were already collapsed above and therefore cannot
+    # create false successor ambiguity.
     historical_bridge_hashes: set[str] = set()
     for comment_id, request, _comment, validation_error in candidates:
         if validation_error is None:
