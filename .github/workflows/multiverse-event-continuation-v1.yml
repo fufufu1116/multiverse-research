@@ -1,0 +1,39 @@
+name: MULTIVERSE Event Continuation v1
+
+on:
+  workflow_run:
+    workflows: ['System Improvement Event Continuation v1 CI']
+    types: [completed]
+
+permissions:
+  contents: read
+
+env:
+  RUNTIME: 'OFF'
+
+jobs:
+  continuation-receipt:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Evaluate completion event immediately
+        env:
+          EVENT_ID: ${{ github.event.workflow_run.id }}
+          COMPLETED_AT: ${{ github.event.workflow_run.updated_at }}
+          RESULT: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from tools.event_continuation_model_v1 import evaluate
+          event = {
+              'event_id': os.environ['EVENT_ID'],
+              'completed_at': os.environ['COMPLETED_AT'],
+              'detected_at': datetime.now(timezone.utc).isoformat(),
+              'result': os.environ['RESULT'],
+              'next_stage': 'verify-and-advance-safe-repository-work',
+              'requires_gate': False,
+              'generation': 'event-continuation-v1',
+          }
+          print(json.dumps(evaluate(event, set()), sort_keys=True))
+          PY
