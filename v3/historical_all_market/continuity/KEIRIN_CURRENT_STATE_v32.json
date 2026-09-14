@@ -1,0 +1,67 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v32",
+  "status": "ACTIVE_CURRENT_STATE_V32_CR1_SYNTHETIC_LEAD_READY_FOR_ROLE_SEPARATED_GOVERNANCE_REVIEW",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v31.json",
+  "checkpoint_jst": "2026-09-15",
+  "branch": "research/keirin-structural-falsification-20260915-v1",
+  "main_fresh_read_sha_at_start": "f6f145cf197f5e5cb9e8ad4d3d0b98e562039bb4",
+  "simulation_world_lane": {
+    "status": "SYNTHETIC_STAGE_COMPLETE_AT_ROLE_SEPARATION_BOUNDARY",
+    "cumulative_unique_simworld_races": 482600,
+    "current_synthetic_lead": {
+      "id": "CR1_E05",
+      "definition": "At each sequential choice step use 0.95 * PL(score/2.0) + 0.05 * Uniform.",
+      "status": "SYNTHETIC_ONLY_NOT_REAL_VALIDATED_NOT_PROMOTED"
+    },
+    "recent_falsification_chain": [
+      "H0.25 failed fresh structural max-regret rule and was rejected.",
+      "RR1_B20_S4 failed fresh max-regret rule in both seeds and was rejected.",
+      "AT1_A18_B02 passed one seed but failed replication and was rejected.",
+      "CR1_E05 passed both seeds of a fresh contamination/tail battery.",
+      "CR1_E05 passed both seeds of a separate balanced clean-plus-shift battery."
+    ],
+    "fresh_CR1_validation": {
+      "preregistered_batteries": 2,
+      "independent_seeds": 4,
+      "fresh_races": 60000,
+      "all_frozen_rules_passed": true
+    },
+    "readiness_package": "v3/historical_all_market/research_candidates/r0_t2_simworld_continuous_v1/25_CR1_SYNTHETIC_READINESS_PACKAGE.json",
+    "promotion_authority": false
+  },
+  "frozen_real_confirmation_lane": {
+    "model": "R0_T2",
+    "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+    "status": "UNCHANGED_INDEPENDENT_WAITING_PRE_INPUT_WINDOW",
+    "CR1_substitution_authorized": false,
+    "result_scoring_authority": false
+  },
+  "exact_next_actions": [
+    "Stop self-certifying CR1. Route the synthetic readiness package for independent Lab/Auditor review of simulator construction, contamination controls, preregistration chronology, metric choice, and candidate-selection history.",
+    "Only after independent governance review may a separate CR1 real-world test design be proposed. That future design must not reuse the frozen R0_T2 prospective assignment, DEV2000_C, ECON_HOLDOUT1000, Gate487, or A+B as fresh evidence.",
+    "Continue the already frozen R0_T2 prospective PRE-lock lane independently when its public PRE inputs become available."
+  ],
+  "scientific_contamination_guard": {
+    "gate_487_rerun": "PROHIBITED",
+    "A_plus_B_as_fresh_validation": "PROHIBITED",
+    "DEV2000_C_outcome_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "prospective_result_access_before_complete_prelock_and_new_exact_owner_gate": "PROHIBITED",
+    "CR1_substitution_into_R0T2_assignment": "PROHIBITED",
+    "simulation_only_real_promotion": "PROHIBITED"
+  },
+  "owner_action_required_now": false,
+  "role_separation_blocker": "INDEPENDENT_LAB_AUDITOR_REVIEW_REQUIRED_BEFORE_CR1_REAL_TEST_PROPOSAL",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "Synthetic evidence quality improved and CR1 survived two fresh preregistered batteries, but no independent real predictive validation has been obtained. Keep readiness unchanged.",
+  "protected_boundaries": {
+    "new_real_result_access": false,
+    "payout_access": false,
+    "odds_price_economics_access": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
