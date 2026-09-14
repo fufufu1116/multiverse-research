@@ -1,0 +1,75 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v20",
+  "status": "ACTIVE_CURRENT_STATE_V20_SW0_PREDICTION_LOCK_COMPLETE_OUTCOME_EVAL_METHOD_FROZEN_WAITING_OWNER_GATE_475",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v19.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "prediction_lock_owner_gate_comment_id": 5659098942,
+    "owner_gate_prep_issue": 475,
+    "method_prep_issue": 476,
+    "ledger_v25_commit": "bec6e6b56c3050455f483528f84c3dc9d551b6dc",
+    "branch_head_before_current_state_write": "bec6e6b56c3050455f483528f84c3dc9d551b6dc"
+  },
+  "current_research_objective": "Preserve the immutable SW0 A+B pre-outcome prediction lock. The predictive-evaluation method is now frozen before outcome access. Stop before opening/downloading any result bytes until Owner Gate #475 is exactly authorized.",
+  "prediction_lock": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "status": "FROZEN_UNCHANGED_PREDICTION_LOCKED_NOT_PROMOTED",
+    "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "race_count": 1500,
+    "dev_index_range": [1, 1500],
+    "DEV2000_C": "EXCLUDED"
+  },
+  "outcome_evaluation_prep": {
+    "preregistration": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/02_OUTCOME_EVAL_PREREG.json",
+    "prereg_git_blob_sha": "aef34b838e0f3ce2c5739a10fa436555d1e2c5d6",
+    "evaluator": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/evaluate_sw0_outcomes_v1.py",
+    "evaluator_git_blob_sha": "15063389d60c51fc0e263d7a5eaa3d6239474016",
+    "evaluator_sha256": "5a76acd288f77e247e10406a8be8fb60c1b7244f8f65ea1e7c1d5afa0d064d45",
+    "synthetic_regression_test": "PASS",
+    "outcome_candidate_metadata": {
+      "folder_id": "1_yez_7Qtqlq-K4-PnXPZcGs4Fwyzzgtv",
+      "file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+      "name": "DEV2000_RESULT_ONLY_v3.jsonl",
+      "size_bytes": 370017,
+      "content_opened": false,
+      "content_hash_verified": false
+    },
+    "evidence_class": "LINEAGE_LOCAL_PREOUTCOME_HISTORICAL_PREDICTIVE_EVALUATION_NOT_GLOBAL_UNTOUCHED_HOLDOUT"
+  },
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "DEV2000_C": "EXCLUDED_NOT_SCORED_NOT_REPURPOSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "exact_next_executable_actions": [
+    "Keep canonical main untouched from this lane.",
+    "Do not open/download DEV2000_RESULT_ONLY_v3.jsonl before exact Owner authorization.",
+    "Finalize Owner Gate #475 with exact one-shot scope: hash/schema verification of the exact result-only file followed by exactly one evaluation using the frozen prereg/evaluator if and only if schema/race universe/protected-boundary checks pass.",
+    "After Owner authorization, fail closed if the result-only source contains any extra columns, race-set mismatch, protected C overlap, or any payout/odds/price/economics fields.",
+    "No tuning/calibration/model selection/model promotion under the evaluation Gate regardless of verdict."
+  ],
+  "owner_action_required_now": true,
+  "owner_gate_needed_next": "#475 EXACT SW0 A+B RESULT-ONLY HASH_SCHEMA_CHECK_PLUS_ONE_PREDICTIVE_EVALUATION",
+  "cross_lane_control": {
+    "canonical_main_mutation": false,
+    "branch_only_continuity": true
+  },
+  "runtime": "OFF",
+  "automatic_betting": false
+}
