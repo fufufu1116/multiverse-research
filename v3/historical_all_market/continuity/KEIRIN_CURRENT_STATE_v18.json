@@ -1,0 +1,95 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v18",
+  "status": "ACTIVE_CURRENT_STATE_V18_SOURCE_WIDE_SW0_REAL_PRE_MECHANICAL_PASS_NEXT_PREDICTION_LOCK_OWNER_GATE_REQUIRED",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v17.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "control_state": "ACTIVE_REVIEW_LAUNCH_LEASE_ESCALATED_STRUCTURAL_HARDENING_BRANCH_ONLY_ISSUE_ONLY_WORK_ALLOWED_MAIN_MUTATION_PROHIBITED",
+    "owner_gate_issue": 377,
+    "owner_gate_comment_id": 5658938248,
+    "scope": "SOURCE_WIDE_SYNTHETIC_SIBLING_SELECTION_PLUS_ONE_TIME_REAL_PRE_MECHANICAL_RERUN"
+  },
+  "latest_completed_experiments": [
+    {
+      "id": "EXP-SOURCE-WIDE-SIBLING-SYNTHETIC-SELECTION-V1",
+      "status": "COMPLETE_SYNTHETIC_SELECTION",
+      "classification": "SOURCE_WIDE_SYNTHETIC_SIBLING_SELECTED_AND_FROZEN",
+      "selected": "SW0_SCORE_ONLY_PL",
+      "result": "v3/historical_all_market/research_candidates/source_wide_sibling_synthetic_selection_v1/01_RESULT.json",
+      "frozen_candidate": "v3/historical_all_market/research_candidates/source_wide_sibling_synthetic_selection_v1/02_FROZEN_CANDIDATE.json"
+    },
+    {
+      "id": "EXP-SOURCE-WIDE-SW0-REAL-PRE-MECHANICAL-RERUN-V1",
+      "status": "PASS_SOURCE_WIDE_MECHANICAL_COMPATIBILITY",
+      "classification": "SOURCE_WIDE_SW0_REAL_PRE_MECHANICAL_COMPATIBILITY_PASS",
+      "result": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_mechanical_rerun_v1/01_RESULT.json",
+      "governance_audit": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_mechanical_rerun_v1/00_GOVERNANCE_AUDIT.json",
+      "one_time_rerun_consumed": true
+    }
+  ],
+  "latest_scientific_finding": {
+    "summary": "Synthetic-only selection froze the class-independent low-freedom SW0_SCORE_ONLY_PL sibling. The single authorized real-PRE mechanical rerun then passed on the exact same PRE_STRUCTURED v3 source: all 2000 races / 14255 entrant rows were mechanically accepted across 5-9 rider sizes, with zero authorized-field missingness, zero malformed/duplicate-car races, finite nonnegative probabilities and maximum mass error 3.651301483387215e-12. L1 and SS no longer cause an interface support failure because SW0 does not use class in its utility. This establishes source-wide mechanical compatibility only and does not establish real predictive accuracy, edge, ROI or economics.",
+    "selected_candidate": "SW0_SCORE_ONLY_PL",
+    "prediction_fields_used_in_utility": ["car_no", "score"],
+    "race_rows": 2000,
+    "entrant_rows": 14255,
+    "generated_ordered_top3_values": 464778,
+    "real_predictive_performance_claim": false,
+    "model_promotion": false
+  },
+  "synthetic_baseline": {
+    "name": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "status": "FROZEN_UNCHANGED",
+    "role": "SYNTHETIC_COMPARISON_BASELINE_ONLY"
+  },
+  "prior_sibling": {
+    "name": "S0_DEV2000_AVAILABLE_SCORE_CLASS_STYLE_PL",
+    "status": "FROZEN_UNCHANGED_NOT_SOURCE_WIDE_MECHANICALLY_COMPATIBLE_NOT_PROMOTED"
+  },
+  "source_wide_sibling": {
+    "name": "SW0_SCORE_ONLY_PL",
+    "status": "FROZEN_SYNTHETICALLY_SELECTED_REAL_PRE_MECHANICALLY_COMPATIBLE_NOT_PROMOTED",
+    "prediction_fields": ["car_no", "score"],
+    "field_size_support": "ANY_N_GE_3",
+    "class_dependency": false,
+    "style_dependency": false,
+    "real_data_fit": false,
+    "real_predictive_validation": false
+  },
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_results": "NOT_ACCESSED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "cross_lane_control": {
+    "canonical_main_mutation": false,
+    "branch_only_continuity": true,
+    "reason": "Global Control #394 structural-hardening lease remains active; Keirin work stayed branch-only / issue-only."
+  },
+  "current_research_objective": "Stop further model/interface tuning. Preserve SW0, S0 and N2 unchanged. The next scientifically useful step is a separately authorized prediction-lock stage on an explicitly allowed real-PRE universe while outcomes remain hidden, followed only later by separately governed outcome validation. Exact DEV2000 partition/protected-state rules must be Fresh-read before any such prediction-lock execution.",
+  "exact_next_executable_actions": [
+    "Notify Issue #377 of the completed synthetic selection and one-time source-wide mechanical compatibility pass.",
+    "Do not mutate canonical main while #394 structural-hardening control remains active.",
+    "Do not rerun the consumed real-PRE mechanical audit under this Gate.",
+    "Do not create or persist real per-race prediction-lock payloads, reveal outcomes, evaluate predictive performance, access prices/economics, fit/select on real data or promote a model without a new Owner Gate.",
+    "Before proposing/executing a prediction-lock gate, Fresh-read exact DEV2000 partition and protected-state authority so DEV2000-C and ECON_HOLDOUT1000 remain sealed."
+  ],
+  "owner_action_required_now": true,
+  "owner_gate_needed_next": "REAL_PRE_PREDICTION_LOCK_ON_EXPLICITLY_ALLOWED_NON_PROTECTED_UNIVERSE_NO_OUTCOME_NO_FIT_NO_SELECTION_NO_PROMOTION",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
