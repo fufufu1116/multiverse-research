@@ -2,18 +2,52 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 
-from automation.review_dispatcher_v1.dispatcher import discover_request
+from automation.review_dispatcher_v1.dispatcher import discover_request, github_get
 from automation.review_dispatcher_v1.model import require
 
 SCHEMA = "MULTIVERSE_BUILD_ADMISSION_PREFLIGHT_v1"
+READ_RETRYABLE = {429, 500, 502, 503, 504}
+
+
+def authenticated_github_get(url: str):
+    token = os.environ.get("GITHUB_TOKEN") or ""
+    if not token:
+        return github_get(url)
+    delays = (0.0, 0.5, 1.0, 2.0)
+    last = None
+    for i, delay in enumerate(delays):
+        if delay:
+            time.sleep(delay)
+        req = urllib.request.Request(
+            url,
+            method="GET",
+            headers={
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+                "User-Agent": "multiverse-build-admission-preflight-v1",
+                "Authorization": f"Bearer {token}",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=15) as response:
+                return json.load(response)
+        except urllib.error.HTTPError as exc:
+            last = exc
+            if exc.code not in READ_RETRYABLE or i + 1 >= len(delays):
+                raise
+    raise last  # pragma: no cover
 
 
 def run_preflight(*, repo: str, lane: str, head: str, expected_request_comment: int,
                   expected_request_sha256: str, expected_main: str,
-                  expected_tree: str) -> dict:
-    job = discover_request(repo=repo, lane=lane, head=head)
+                  expected_tree: str, fetch=authenticated_github_get) -> dict:
+    job = discover_request(repo=repo, lane=lane, head=head, fetch=fetch)
     require(job["request_comment"] == expected_request_comment,
             "ADMISSION_REQUEST_COMMENT_DRIFT")
     require(job["request_sha256"] == expected_request_sha256,
