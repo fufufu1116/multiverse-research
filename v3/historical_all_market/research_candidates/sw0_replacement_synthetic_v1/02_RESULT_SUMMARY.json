@@ -1,0 +1,33 @@
+{
+  "design": {
+    "field_sizes": [5, 6, 7, 8, 9],
+    "races_per_cell": 500,
+    "seeds": [104729, 130363, 155921, 181081, 207017],
+    "total_races": 62500,
+    "worlds": ["W0", "W1", "W2", "W3", "W4"]
+  },
+  "eligible_candidates": ["R0_T2", "R1_A0.25", "R1_A0.5", "R2_M0.5", "R1_A0.75", "R0_T1.5", "R2_M0.25"],
+  "execution_freeze_sha256": "2ee384cb2f73e0fb188adc00dbb0be9cb9fd3356e67b4117d031a84267b4a0e0",
+  "full_local_result_sha256": "c6520da2e37eb87df15377c002da87307ef646b5cae71bd29e498b32ced2ba7b",
+  "interpretation": "Synthetic-only eligibility, not evidence of real-world predictive value. Any protected real evaluation requires a new preregistration and exact Owner Gate; no promotion is authorized.",
+  "pooled": {
+    "R0_T1.5": {"eligible": true, "ordered_top3_nll": 5.005899567350252, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.04116919939016921, "unordered_top3_containment": 0.126512, "winner_brier": 0.8233588114621769, "winner_logloss": 1.835502844520464, "worst_cell_toplabel_ece10": 0.11781794757226376},
+    "R0_T2": {"eligible": true, "ordered_top3_nll": 4.976936517977866, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.007189465072259129, "unordered_top3_containment": 0.126512, "winner_brier": 0.8196816519163184, "winner_logloss": 1.824968096578071, "worst_cell_toplabel_ece10": 0.1093105532559407},
+    "R0_T3": {"eligible": false, "ordered_top3_nll": 5.005976130210477, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.04425393634975049, "unordered_top3_containment": 0.126512, "winner_brier": 0.8231733129206211, "winner_logloss": 1.8354801415289863, "worst_cell_toplabel_ece10": 0.15648727607346},
+    "R1_A0.25": {"eligible": true, "ordered_top3_nll": 4.9773590581482505, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.010793537138063095, "unordered_top3_containment": 0.126512, "winner_brier": 0.819763500429642, "winner_logloss": 1.825120749588144, "worst_cell_toplabel_ece10": 0.11540333018849551},
+    "R1_A0.5": {"eligible": true, "ordered_top3_nll": 4.984651348354765, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.0191339091418311, "unordered_top3_containment": 0.126512, "winner_brier": 0.8207773583123417, "winner_logloss": 1.8278398532196884, "worst_cell_toplabel_ece10": 0.12161169970629714},
+    "R1_A0.75": {"eligible": true, "ordered_top3_nll": 4.998968746793236, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.02723178096498754, "unordered_top3_containment": 0.126512, "winner_brier": 0.8226749759562239, "winner_logloss": 1.833161570726256, "worst_cell_toplabel_ece10": 0.1278351957309512},
+    "R2_M0.25": {"eligible": true, "ordered_top3_nll": 5.020602302606884, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.06552026032927655, "unordered_top3_containment": 0.126512, "winner_brier": 0.8277716155085295, "winner_logloss": 1.8416902224997365, "worst_cell_toplabel_ece10": 0.14435999343510209},
+    "R2_M0.5": {"eligible": true, "ordered_top3_nll": 4.990033559780281, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.008262236268601486, "unordered_top3_containment": 0.126512, "winner_brier": 0.8209778242164206, "winner_logloss": 1.8301366243772708, "worst_cell_toplabel_ece10": 0.10965615200378638},
+    "R2_M0.75": {"eligible": false, "ordered_top3_nll": 5.063030521480224, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.05700325713891842, "unordered_top3_containment": 0.126512, "winner_brier": 0.8286782910045827, "winner_logloss": 1.855694575188921, "worst_cell_toplabel_ece10": 0.17682807600189315},
+    "REF_BASE_SCORE_PL": {"ordered_top3_nll": 5.215359299866191, "sane": true, "top1_accuracy": 0.267392, "toplabel_ece10": 0.126782019063374, "unordered_top3_containment": 0.126512, "winner_brier": 0.8490596648809107, "winner_logloss": 1.9120378896589822, "worst_cell_toplabel_ece10": 0.1998099222167638},
+    "REF_UNIFORM": {"ordered_top3_nll": 5.253726252751261, "sane": true, "top1_accuracy": 0.1468, "toplabel_ece10": 0.0027749841269841093, "unordered_top3_containment": 0.041072, "winner_brier": 0.850873015873017, "winner_logloss": 1.9247547299467014, "worst_cell_toplabel_ece10": 0.040999999999999995}
+  },
+  "protected_access": {"automatic_betting": false, "dev2000_c": false, "econ_holdout1000": false, "gate487": false, "odds_economics": false, "result_payout": false, "runtime": "OFF"},
+  "record": "KEIRIN_SW0_REPLACEMENT_SYNTHETIC_RESULT_SUMMARY_v1",
+  "runner_sha256": "10376fbdaaf1ec6820984b7cdcc550533a2757b8294eb2263439b1a71b9ab265",
+  "status": "COMPLETED_FROZEN_SYNTHETIC_ONLY",
+  "verdict": "SYNTHETICALLY_ELIGIBLE_REPLACEMENT_FROZEN",
+  "winner": "R0_T2",
+  "winner_frozen_spec": {"candidate_id": "R0_T2", "family": "R0_SCORE_ONLY_TEMPERED_PL", "formula": "Plackett-Luce softmax(x_i / 2.0)", "temperature": 2.0}
+}
