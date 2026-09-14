@@ -1,0 +1,37 @@
+{
+  "record": "R0_T2_SIMWORLD_HYBRID_FRESH_META_RESULT_v1",
+  "created_jst": "2026-09-15",
+  "prereg_commit": "ad3739eb7fb5d5ce7b0b378a796ce8d64c8cb166",
+  "interpretation_guard": "Simulation-only engineering evidence. No real promotion authority.",
+  "design": {
+    "fresh_worlds": 10,
+    "primary_seed": 20260924,
+    "primary_races_per_world": 1700,
+    "primary_total_synthetic_races": 17000,
+    "replication_seed": 20260925,
+    "replication_races_per_world": 1200,
+    "replication_total_synthetic_races": 12000,
+    "combined_total_synthetic_races": 29000
+  },
+  "primary_regret": {
+    "R0_T2": {"mean_regret": 0.01209766084164574, "max_regret": 0.0799917845380893, "p90_regret": 0.021964256355326905},
+    "H0.25": {"mean_regret": 0.0015368095949980897, "max_regret": 0.009017641782222086, "p90_regret": 0.006120283563550365},
+    "H0.5": {"mean_regret": 0.004130907780435855, "max_regret": 0.020858242138467098, "p90_regret": 0.007281041607682498}
+  },
+  "replication_regret": {
+    "R0_T2": {"mean_regret": 0.011463680213126803, "max_regret": 0.07665680902113436, "p90_regret": 0.02147288207978526},
+    "H0.25": {"mean_regret": 0.0008580227918501216, "max_regret": 0.005107386218145216, "p90_regret": 0.0033758243958240002},
+    "H0.5": {"mean_regret": 0.003489945530994287, "max_regret": 0.0199028113477544, "p90_regret": 0.006448183594442453}
+  },
+  "predeclared_rule": "A hybrid may become the synthetic lead only if it beats R0_T2 on max regret in both seeds and does not exceed R0_T2 mean regret by more than 0.002 in either seed. If both pass, choose lower average max regret across seeds.",
+  "rule_result": {
+    "H0.25": "PASS",
+    "H0.5": "PASS",
+    "selected_synthetic_lead": "H0.25",
+    "selection_basis": "lower average max regret across both preregistered fresh seeds"
+  },
+  "synthetic_lead_definition": "H0.25 = 0.25*T2 + 0.75*equal_mix(T1,T1.5,T2,T3,T4), equivalent weights [0.15,0.15,0.40,0.15,0.15] over temperatures [1,1.5,2,3,4] at each sequential PL choice step.",
+  "status": "SYNTHETIC_LEAD_ONLY_NOT_REAL_VALIDATED_NOT_PROMOTED",
+  "next_action": "Freeze H0.25 as the current synthetic successor lead, preserve R0_T2 unchanged for its already-preregistered prospective real confirmation, and continue independent simulator falsification using new world families without touching protected real outcomes.",
+  "protected_boundaries": {"Gate_487_rerun": false, "A_plus_B_fresh_validation_reuse": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "prospective_result_accessed": false, "payout_odds_price_economics_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
