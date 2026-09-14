@@ -1,0 +1,75 @@
+{
+  "record": "KEIRIN_SOURCE_WIDE_SIBLING_SYNTHETIC_PREREG_20260914_v1",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_CANDIDATE_SCORING",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+  "control_issue": 394,
+  "control_state": "ACTIVE_REVIEW_LAUNCH_LEASE_ESCALATED_STRUCTURAL_HARDENING_BRANCH_ONLY_ISSUE_ONLY_WORK_ALLOWED_MAIN_MUTATION_PROHIBITED",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5658938248,
+  "evidence_class": "SYNTHETIC_ENGINEERING_SOURCE_WIDE_INTERFACE_SELECTION_ONLY",
+  "purpose": "Select and freeze a low-freedom class-independent sibling that can mechanically accept L1/SS and variable 5-9 rider fields without changing Frozen S0 or Frozen N2, using synthetic evidence only.",
+  "frozen_references": {
+    "N2": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "S0": "S0_DEV2000_AVAILABLE_SCORE_CLASS_STYLE_PL",
+    "changed": false
+  },
+  "candidate_family": [
+    {
+      "name": "SW0_SCORE_ONLY_PL",
+      "prediction_fields": ["car_no", "score"],
+      "utility": "0.7677543186180422 * score",
+      "class_dependency": false,
+      "style_dependency": false,
+      "field_size_support": "ANY_N_GE_3"
+    },
+    {
+      "name": "SW1_SCORE_STYLE_PL",
+      "prediction_fields": ["car_no", "style", "score"],
+      "utility": "0.7677543186180422 * score + style_coef",
+      "style_coefficients": {"逃": 0.06, "両": 0.04, "追": 0.0},
+      "class_dependency": false,
+      "field_size_support": "ANY_N_GE_3"
+    }
+  ],
+  "candidate_freeze_rule": "No candidate, coefficient, threshold, seed, world or field-size change after synthetic scoring begins.",
+  "synthetic_batches": [
+    {"seed": 20261101, "races_per_world_field_size": 100},
+    {"seed": 20261102, "races_per_world_field_size": 100},
+    {"seed": 20261103, "races_per_world_field_size": 100}
+  ],
+  "worlds": ["W0", "W1", "W2", "W3", "W4"],
+  "field_sizes": [5, 6, 7, 8, 9],
+  "comparison_reference": "Frozen N2 forecast semantics from the prior synthetic sibling confirmation; N2 is comparison-only and is not changed or promoted.",
+  "metrics": [
+    "mean KL(oracle || candidate)",
+    "candidate mean KL / Frozen N2 mean KL per seed/world/field-size cell",
+    "worst cell ratio",
+    "overall mean KL",
+    "probability finite/nonnegative/mass sanity"
+  ],
+  "selection_rule": {
+    "eligibility": "candidate must be class-independent, mechanically defined for every field size 5-9, emit finite nonnegative normalized ordered-top3 probabilities, and have ratio_to_N2 <= 1.35 in every preregistered cell",
+    "primary": "among eligible candidates choose the smallest worst-cell ratio_to_N2",
+    "secondary": "if worst-cell ratios differ by <=0.005, choose the lower overall mean KL",
+    "simplicity_tiebreak": "if overall mean KL differs by <=0.5 percent, choose SW0_SCORE_ONLY_PL",
+    "no_candidate_rule": "if no candidate is eligible, freeze no source-wide sibling and stop without real-PRE rerun"
+  },
+  "post_selection": "If exactly one candidate is selected, freeze its exact interface/coefficient semantics before any real-PRE rerun. The Owner-authorized one-time real-PRE mechanical rerun may then read only race_id plus car_no/class/style/score from the exact same PRE_STRUCTURED v3 hash; class may be audited but the class-independent selected model must not use class in utility generation.",
+  "protected_boundaries": {
+    "real_PRE_row_values_during_synthetic_selection": false,
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_results": "NOT_ACCESSED",
+    "real_PRE_fit_training_parameter_model_selection": "PROHIBITED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
