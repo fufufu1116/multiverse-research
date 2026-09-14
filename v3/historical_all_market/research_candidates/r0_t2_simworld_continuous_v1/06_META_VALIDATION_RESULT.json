@@ -1,0 +1,37 @@
+{
+  "record": "R0_T2_SIMWORLD_SUCCESSOR_META_VALIDATION_RESULT_v1",
+  "created_jst": "2026-09-15",
+  "prereg_commit": "6e493c147ac19fb8aa12e6fd87ba639e6a5ef638",
+  "interpretation_guard": "Simulation-only engineering evidence. No promotion authority.",
+  "design": {
+    "fresh_unseen_worlds": 10,
+    "primary_seed": 20260922,
+    "primary_races_per_world": 1600,
+    "primary_total_synthetic_races": 16000,
+    "replication_seed": 20260923,
+    "replication_races_per_world": 1100,
+    "replication_total_synthetic_races": 11000,
+    "combined_total_synthetic_races": 27000
+  },
+  "primary_regret": {
+    "R0_T2": {"mean_regret": 0.002585382941027614, "max_regret": 0.013964005552445258, "p90_regret": 0.0076599387368916335},
+    "MIX_1_15_2_3_4": {"mean_regret": 0.0028881047942563853, "max_regret": 0.005943038792669775, "p90_regret": 0.004145306635940748},
+    "MIX_075_15_3_6": {"mean_regret": 0.010370485433678666, "max_regret": 0.0194810294536083, "p90_regret": 0.015845350068228112}
+  },
+  "replication_regret": {
+    "R0_T2": {"mean_regret": 0.003123065098721156, "max_regret": 0.024989164996439328, "p90_regret": 0.005530024521567603},
+    "MIX_1_15_2_3_4": {"mean_regret": 0.004467829811383694, "max_regret": 0.011280346073339054, "p90_regret": 0.009479094087272433},
+    "MIX_075_15_3_6": {"mean_regret": 0.013221260221063869, "max_regret": 0.03162974711426347, "p90_regret": 0.023386424384532485}
+  },
+  "predeclared_rule_result": "FAIL_RETAIN_LEAD_RULE",
+  "reason": "MIX_1_15_2_3_4 reduced worst-case regret versus R0_T2 in both seeds, but did not beat R0_T2 on mean regret in either seed. The preregistered retain-lead rule required both mean and max regret superiority in both seeds.",
+  "decision": {
+    "frontier_status": "UNRESOLVED_SYNTHETIC_FRONTIER",
+    "R0_T2_strength": "better mean regret on fresh unseen worlds",
+    "MIX_1_15_2_3_4_strength": "better worst-case regret on fresh unseen worlds",
+    "MIX_075_15_3_6": "downgraded from frontier lead contention",
+    "promotion": false
+  },
+  "next_action": "Develop a constrained hybrid that interpolates R0_T2 with the robust broad mixture, optimize only on already-consumed synthetic worlds, then preregister another genuinely fresh unseen simulation family before testing it.",
+  "protected_boundaries": {"Gate_487_rerun": false, "A_plus_B_fresh_validation_reuse": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "prospective_result_accessed": false, "payout_odds_price_economics_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
