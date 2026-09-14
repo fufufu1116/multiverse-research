@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_OWNER_GATE_485_EXECUTION_RECEIPT_v1",
+  "status": "CONSUMED_SUCCESS_STRUCTURAL_CHARACTERIZATION_ONLY",
+  "checkpoint_jst": "2026-09-14",
+  "owner_gate_issue": 485,
+  "owner_authorization_comment_id": 5663481704,
+  "owner_authorization_token": "AUTHORIZE_SW0_DEV2000_AB_RESULT_ONLY_V3_STRUCTURAL_SCHEMA_CHARACTERIZATION_ONE_SHOT_ONLY",
+  "canonical_main_head_pre_execution": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "research_branch_head_pre_execution": "a4d78d9e5d5ea43288294f929815f238770ac4d0",
+  "frozen_prereg": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/05_SCHEMA_CHARACTERIZATION_PREREG.json",
+    "git_blob": "e39a699abbd972ff25a65b6376fe0aa34839feef"
+  },
+  "frozen_tool": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/characterize_sw0_result_schema_v1.py",
+    "git_blob": "555aaadf07c50f7eb36f54c08d5ace05ff658726",
+    "sha256_verified": "72de27149e4c9a5a072652f74ed89b280e7ba2fda382ca70e23fbd55a612d4d3"
+  },
+  "frozen_test": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/test_characterize_sw0_result_schema_v1.py",
+    "git_blob": "c35b33eb6245fc5338d04c18c5279c24d3640634",
+    "sha256_verified": "12a4f160739b8ce384a7262dc17a39cc1b250217ca81a9b00ea06d117baf7a85",
+    "tests_run_pre_execution": 2,
+    "tests_result": "PASS"
+  },
+  "protected_inputs_verified": {
+    "result_drive_file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+    "result_sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+    "prediction_drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "prediction_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127"
+  },
+  "execution": {
+    "attempt_count": 1,
+    "return_code": 0,
+    "total_result_lines": 2000,
+    "ab_allowlist_race_count": 1500,
+    "ab_rows_characterized": 1500,
+    "non_ab_rows_outcome_values_deserialized": false,
+    "predictive_evaluation_invoked": false,
+    "prediction_probabilities_used_for_scoring": false,
+    "economics_fields_accessed": false
+  },
+  "aggregate_result": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/06_SCHEMA_CHARACTERIZATION_RESULT.json",
+    "sha256": "d82db4d1cfc4f9cd937b90e75adcab0c60a21a450e908256a2b787dcc6d65551",
+    "result_commit": "66ff35aaffae31c875311ac4987f18bfe0e5cbe8",
+    "classification": "STRUCTURAL_CHARACTERIZATION_ONLY_NO_PREDICTIVE_EVALUATION"
+  },
+  "gate_consumed": true,
+  "gate_475_reused": false,
+  "predictive_metrics_computed": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
