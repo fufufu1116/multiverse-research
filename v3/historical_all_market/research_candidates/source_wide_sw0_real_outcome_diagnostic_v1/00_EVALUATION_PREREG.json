@@ -1,0 +1,117 @@
+{
+  "record": "KEIRIN_SW0_A_B_PREDICTIVE_EVALUATION_PREREG_v1",
+  "status": "PREREGISTERED_PRE_OUTCOME_REVEAL_NOT_AUTHORITY_TO_ACCESS_OUTCOMES",
+  "created_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_boundary": {
+    "current_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v19.json",
+    "prediction_lock_owner_gate_comment_id": 5659098942,
+    "prediction_lock_result_commit": "6c5cee0c5ad3a4dae5c10e7b9a968ad883ccac09",
+    "prediction_artifact_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "outcome_access_authorized_by_this_prereg": false,
+    "separate_owner_gate_required_before_any_outcome_read": true,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "evaluation_universe": {
+    "required_exact_races": 1500,
+    "allowed_dev_index": "1..1500 inclusive",
+    "segment_A": "1..1000",
+    "segment_B": "1001..1500",
+    "DEV2000_C": "1501..2000 EXCLUDED",
+    "ECON_HOLDOUT1000": "SEALED",
+    "no_partial_or_cherry_picked_evaluation": true
+  },
+  "normalized_outcome_contract": {
+    "accepted_formats": [
+      "CSV",
+      "JSONL"
+    ],
+    "required_fields": [
+      "race_id",
+      "first_car_no",
+      "second_car_no",
+      "third_car_no"
+    ],
+    "optional_fields": [
+      "dev_index"
+    ],
+    "exact_prediction_race_id_match_required": true,
+    "duplicate_race_id_prohibited": true,
+    "extra_race_id_prohibited": true,
+    "missing_race_id_prohibited": true,
+    "no_odds_price_payout_economics_fields_required_or_consumed": true
+  },
+  "primary_metrics": [
+    {
+      "name": "ordered_top3_log_loss_mean",
+      "definition": "mean(-ln(probability assigned to the observed exact ordered top3 tuple))",
+      "lower_is_better": true
+    },
+    {
+      "name": "ordered_top3_log_loss_improvement_vs_uniform_mean",
+      "definition": "mean(ln(number_of_ordered_top3_permutations) - model_ordered_top3_log_loss)",
+      "higher_is_better": true
+    },
+    {
+      "name": "winner_log_loss_mean",
+      "definition": "mean(-ln(marginal probability assigned to observed winner))",
+      "lower_is_better": true
+    },
+    {
+      "name": "winner_log_loss_improvement_vs_uniform_mean",
+      "definition": "mean(ln(field_size) - model_winner_log_loss)",
+      "higher_is_better": true
+    }
+  ],
+  "secondary_metrics": [
+    "ordered_top3_brier_mean",
+    "ordered_top3_brier_skill_vs_uniform",
+    "exact_order_argmax_accuracy",
+    "observed_order_top1_top3_top5_top10_top20_coverage",
+    "observed_order_probability_rank_median",
+    "winner_multiclass_brier_mean",
+    "winner_brier_skill_vs_uniform",
+    "winner_top1_accuracy",
+    "top3_membership_binary_brier_mean"
+  ],
+  "reporting": {
+    "report_segments": [
+      "A",
+      "B",
+      "A+B"
+    ],
+    "primary_inference_segment": "B",
+    "reason": "B is reported separately to prevent pooled A+B results from masking segment instability; this remains diagnostic, not an untouched confirmatory holdout.",
+    "bootstrap": {
+      "unit": "whole race",
+      "replicates": 10000,
+      "seed": 20260914,
+      "interval": "percentile 95%",
+      "primary_bootstrap_targets": [
+        "ordered_top3_log_loss_improvement_vs_uniform_mean",
+        "winner_log_loss_improvement_vs_uniform_mean",
+        "exact_order_argmax_accuracy",
+        "winner_top1_accuracy"
+      ]
+    }
+  },
+  "diagnostic_verdict_rule": {
+    "scope": "REAL_OUTCOME_DIAGNOSTIC_ONLY_NOT_MODEL_PROMOTION_NOT_PROFITABILITY",
+    "DIAGNOSTIC_SIGNAL_CONSISTENT": "On segment B, both ordered-top3 and winner log-loss improvement vs uniform are > 0 and the 95% race-bootstrap lower bound for ordered-top3 improvement is > 0.",
+    "DIAGNOSTIC_SIGNAL_WEAK": "On segment B, ordered-top3 improvement vs uniform is > 0 but its 95% bootstrap lower bound is <= 0, or winner improvement is <= 0.",
+    "DIAGNOSTIC_FAIL": "On segment B, ordered-top3 improvement vs uniform is <= 0.",
+    "promotion_effect": "NONE. No model promotion, betting, economics, Runtime, or protected holdout access follows automatically from any verdict."
+  },
+  "hard_prohibitions": [
+    "NO_OUTCOME_ACCESS_BEFORE_SEPARATE_OWNER_GATE",
+    "NO_DEV2000_C_ACCESS_OR_REPURPOSING",
+    "NO_ECON_HOLDOUT1000_OPEN",
+    "NO_ODDS_PRICE_PAYOUT_ECONOMICS_ROI_PROFIT",
+    "NO_REAL_DATA_REFIT_TUNING_CALIBRATION_OR_MODEL_SELECTION",
+    "NO_MODEL_PROMOTION",
+    "NO_RUNTIME_ACTIVATION",
+    "NO_AUTOMATIC_BETTING"
+  ]
+}
