@@ -7,13 +7,14 @@ from automation.review_dispatcher_v1.main_drift_guard_v1 import (
 )
 from automation.review_dispatcher_v1.model import (
     REQUEST_MARKER,
-    github_comment_id,
+    ReviewContractError,
     issue_comment_owner_trusted,
     latest_exact_current_owner_request,
     parse_request_from_comment,
     require,
     required_object,
     sha256_json,
+    sha40,
 )
 
 
@@ -59,6 +60,7 @@ def _request_snapshot_mains(
             and request["base"] == base
         ):
             require(isinstance(request["main"], str), "OWNER_REQUEST_MAIN_TYPE")
+            require(sha40(request["main"]), "OWNER_REQUEST_MAIN_SHA")
             mains.add(request["main"])
     return mains
 
@@ -73,12 +75,12 @@ def latest_target_request_across_main_snapshots(
     tree: str,
     base: str,
 ) -> tuple[int, dict[str, Any], dict[str, Any]]:
-    """Return the newest valid exact-envelope winner across request-main snapshots.
+    """Return the newest valid winner across request-main snapshots.
 
-    Each snapshot delegates lineage/arbitration to the canonical v6 exact
-    selector. A malformed/ambiguous matching snapshot therefore fails closed;
-    this function never skips a bad newer snapshot in order to fall back to an
-    older request.
+    Every snapshot still delegates lineage/arbitration to the canonical exact
+    selector. A malformed or ambiguous matching snapshot therefore fails
+    closed; this function never skips a bad snapshot to resurrect older
+    authority.
     """
     mains = _request_snapshot_mains(
         comments,
@@ -160,12 +162,39 @@ def select_request_for_live_main(
     live_main: str,
     fetch: Fetch,
 ) -> tuple[int, dict[str, Any], dict[str, Any], dict[str, Any]]:
-    """Select the newest target request, then prove its main binding is safe.
+    """Prefer exact-live-main authority; use stale snapshot only if absent.
 
-    Exact-main is naturally preferred when the newest trusted request is bound
-    to live main. If the newest request belongs to an older snapshot, no older
-    request is tried: that exact request must pass the fail-closed drift guard.
+    If an exact-live-main request exists, it wins even when an older-main
+    request has a later comment id. If exact-live-main arbitration is malformed
+    or ambiguous, fail closed rather than falling back. Only the specific
+    `NO_EXACT_CURRENT_<LANE>_REQUEST` condition enables stale-snapshot
+    consideration, and that selected snapshot must then pass the drift guard.
     """
+    try:
+        comment_id, request, comment = latest_exact_current_owner_request(
+            comments,
+            repo=repo,
+            pr=pr,
+            lane=lane,
+            head=head,
+            tree=tree,
+            base=base,
+            main=live_main,
+        )
+    except ReviewContractError as exc:
+        if str(exc) != f"NO_EXACT_CURRENT_{lane}_REQUEST":
+            raise
+    else:
+        classification = assess_request_main_against_live(
+            repo=repo,
+            base=base,
+            head=head,
+            request_main=live_main,
+            live_main=live_main,
+            fetch=fetch,
+        )
+        return comment_id, request, comment, classification
+
     comment_id, request, comment = latest_target_request_across_main_snapshots(
         comments,
         repo=repo,
@@ -202,10 +231,75 @@ def assert_job_main_binding_fresh(
     )
 
 
+def assert_dispatcher_ref_on_live_chain(
+    job: dict[str, Any],
+    *,
+    live_main: str,
+    fetch: Fetch,
+) -> dict[str, Any]:
+    """Prove dispatcher ref is on the same safe descendant main chain.
+
+    This replaces the old `dispatcher_ref == live_main` assumption without
+    allowing an arbitrary historical or divergent dispatcher snapshot.
+    """
+    dispatcher_ref = job.get("dispatcher_ref")
+    require(sha40(dispatcher_ref), "DISPATCHER_REF_SHA")
+
+    request_to_dispatcher = assess_request_main_against_live(
+        repo=job["repo"],
+        base=job["base"],
+        head=job["head"],
+        request_main=job["main"],
+        live_main=dispatcher_ref,
+        fetch=fetch,
+    )
+    dispatcher_to_live = assess_request_main_against_live(
+        repo=job["repo"],
+        base=job["base"],
+        head=job["head"],
+        request_main=dispatcher_ref,
+        live_main=live_main,
+        fetch=fetch,
+    )
+    return {
+        "request_to_dispatcher": request_to_dispatcher,
+        "dispatcher_to_live": dispatcher_to_live,
+    }
+
+
 def assert_job_request_latest_across_snapshots(
     job: dict[str, Any],
     comments: list[dict[str, Any]],
+    *,
+    live_main: str | None = None,
 ) -> None:
+    if live_main is not None:
+        try:
+            comment_id, request, _ = latest_exact_current_owner_request(
+                comments,
+                repo=job["repo"],
+                pr=job["pr"],
+                lane=job["lane"],
+                head=job["head"],
+                tree=job["tree"],
+                base=job["base"],
+                main=live_main,
+            )
+        except ReviewContractError as exc:
+            if str(exc) != f"NO_EXACT_CURRENT_{job['lane']}_REQUEST":
+                raise
+        else:
+            require(
+                comment_id == job["request_comment"],
+                f"REQUEST_SUPERSEDED_BY_EXACT_LIVE_MAIN:{job['request_comment']}!={comment_id}",
+            )
+            require(
+                sha256_json(request) == job["request_sha256"],
+                "REQUEST_SUPERSEDED_BY_EXACT_LIVE_MAIN_SHA256",
+            )
+            require(request == job["request"], "REQUEST_SUPERSEDED_BY_EXACT_LIVE_MAIN_BODY")
+            return
+
     comment_id, request, _ = latest_target_request_across_main_snapshots(
         comments,
         repo=job["repo"],
