@@ -1,0 +1,118 @@
+{
+  "decision": {
+    "classification": "FROZEN_S0_NOT_SOURCE_WIDE_MECHANICALLY_COMPATIBLE_AS_PREREGISTERED",
+    "post_failure_tuning_or_subset_execution": false,
+    "probability_sanity_completed": false,
+    "reason": "The exact canonical PRE source contains class values outside the frozen S0 coefficient support (L1 and SS) and heterogeneous entrant counts. The preregistered fail-closed rule prohibits post-observation coefficient/domain adaptation or subset probability execution under this audit."
+  },
+  "evidence_class": "REAL_PRE_MECHANICAL_INTERFACE_COMPATIBILITY_ONLY_NOT_PREDICTIVE_PERFORMANCE",
+  "frozen_S0_unchanged": true,
+  "model_promotion": false,
+  "protected_boundaries": {
+    "DEV2000_C_results": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "odds_price": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "runtime": "OFF"
+  },
+  "race_shape": {
+    "duplicate_car_races": 0,
+    "entrant_count_distribution": {
+      "5": 11,
+      "6": 109,
+      "7": 1675,
+      "8": 24,
+      "9": 181
+    },
+    "nonseven_rider_races": 325,
+    "races_containing_L1": 148,
+    "races_containing_SS": 40,
+    "seven_rider_all_frozen_support_races": 1539,
+    "seven_rider_with_support_mismatch_races": 136
+  },
+  "real_predictive_performance_claim": false,
+  "record": "KEIRIN_REAL_PRE_S0_MECHANICAL_INTERFACE_RESULT_v1_1",
+  "schema_type_missingness": {
+    "entrant_rows": 14255,
+    "missingness": {
+      "car_no": 0,
+      "class": 0,
+      "race_id": 0,
+      "score": 0,
+      "style": 0
+    },
+    "race_rows": 2000,
+    "required_key_names_present": true,
+    "types": {
+      "car_no": {
+        "int": 14255
+      },
+      "class": {
+        "str": 14255
+      },
+      "race_id": {
+        "str": 2000
+      },
+      "score": {
+        "float": 14255
+      },
+      "style": {
+        "str": 14255
+      }
+    }
+  },
+  "selective_access": {
+    "forbidden_key_scan": "CLEAR",
+    "nested_prediction_values": [
+      "car_no",
+      "class",
+      "style",
+      "score"
+    ],
+    "structural_container": "entrants",
+    "top_identity_values": [
+      "race_id"
+    ],
+    "unapproved_values_materialized": false
+  },
+  "source_identity": {
+    "drive_file_id": "1N2Cq5IkuxcBU0MqeIW5PIF44JTkHaq1Q",
+    "name": "PRE_STRUCTURED.jsonl.gz",
+    "sha256_actual": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+    "sha256_expected": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+    "size_bytes": 576571
+  },
+  "status": "FAIL_CLOSED_SOURCE_WIDE_MECHANICAL_COMPATIBILITY",
+  "support": {
+    "class_counts": {
+      "A1": 2871,
+      "A2": 2864,
+      "A3": 2832,
+      "L1": 1023,
+      "S1": 1398,
+      "S2": 3211,
+      "SS": 56
+    },
+    "frozen_S0_supported_classes": [
+      "A1",
+      "A2",
+      "A3",
+      "S1",
+      "S2"
+    ],
+    "style_counts": {
+      "両": 3587,
+      "追": 6818,
+      "逃": 3850
+    },
+    "unsupported_classes_observed": [
+      "L1",
+      "SS"
+    ],
+    "unsupported_styles_observed": []
+  },
+  "training_fit_parameter_model_selection": false
+}
