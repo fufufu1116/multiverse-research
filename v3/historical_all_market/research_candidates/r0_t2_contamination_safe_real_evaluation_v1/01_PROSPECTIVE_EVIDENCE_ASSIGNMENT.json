@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_R0_T2_PROSPECTIVE_EVIDENCE_ASSIGNMENT_V1",
+  "status": "FROZEN_PRE_OUTCOME_ASSIGNMENT_NO_RESULT_ACCESS",
+  "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+  "frozen_date_jst": "2026-09-15",
+  "model": {
+    "id": "R0_T2",
+    "family": "R0_SCORE_ONLY_TEMPERED_PL",
+    "temperature": 2.0,
+    "selection_evidence": "SYNTHETIC_ENGINEERING_ONLY"
+  },
+  "evidence_class": "POST_FREEZE_PROSPECTIVE_PUBLIC_RACE_SEQUENCE_WITH_PRE_OUTCOME_LOCK",
+  "official_schedule_source": "https://www.keirin.jp/sp/raceschedule",
+  "assigned_meetings": [
+    {
+      "venue": "静岡",
+      "grade": "F1",
+      "start_date_jst": "2026-09-18",
+      "end_date_jst": "2026-09-20",
+      "event_title": "オタクなリンカイ！と臥龍梅杯"
+    },
+    {
+      "venue": "富山",
+      "grade": "G2",
+      "start_date_jst": "2026-09-18",
+      "end_date_jst": "2026-09-21",
+      "event_title": "共同通信社杯競輪"
+    },
+    {
+      "venue": "松山",
+      "grade": "F2",
+      "start_date_jst": "2026-09-19",
+      "end_date_jst": "2026-09-21",
+      "event_title": "イー新聞杯×ウィンチケット杯"
+    }
+  ],
+  "deterministic_inclusion_rule": {
+    "meeting_scope": "ALL_RACES_IN_THE_THREE_EXACT_ASSIGNED_MEETINGS",
+    "race_order": "CHRONOLOGICAL_BY_SCHEDULED_START_JST_THEN_MEETING_ID_THEN_RACE_ID",
+    "required_pre_fields": ["meeting_id", "race_id", "scheduled_start_jst", "source_url", "source_sha256", "entrants.car_no", "entrants.score"],
+    "entrant_count": "5_TO_9_INCLUSIVE",
+    "prelock_deadline": "EACH_RACE_MUST_BE_LOCKED_FROM_PRE_ONLY_SOURCE_BEFORE_ITS_SCHEDULED_START_AND_BEFORE_ANY_RESULT_ACCESS_BY_THIS_EVALUATION_PATH",
+    "outcome_aware_filtering": false,
+    "post_outcome_substitution": false
+  },
+  "missing_or_invalid_pre_policy": {
+    "rule": "EXCLUDE_ONLY_IF_THE_PRE_REQUIRED_INPUT_IS_UNAVAILABLE_OR_INVALID_BEFORE_SCHEDULED_START; RECORD_THE_EXCLUSION_PRE_OUTCOME_WITH_REASON; NEVER_REPLACE_WITH_ANOTHER_MEETING_OR_RACE_AFTER_OUTCOME",
+    "evaluation_minimum_races": 24,
+    "evaluation_minimum_meetings": 3,
+    "minimum_failure_action": "FAIL_CLOSED_NO_REPLACEMENT_NO_RESULT_SCORING"
+  },
+  "prediction_lock": {
+    "implementation": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/r0_t2_prelock_v1.py",
+    "implementation_commit": "a306f00adb3e0b81852aa0cc84cf323a0dbc7bf8",
+    "implementation_sha256": "e1f996bb3004ca815862c33c0930a0b6103bf2d0467799a2378b5e48e5138ec8",
+    "lock_fields": ["assignment_id", "meeting_id", "race_id", "scheduled_start_jst", "source_url", "source_sha256", "entrants.car_no", "entrants.score", "r0_t2_temperature", "p_win", "ordered_top3_car_no", "lock_sha256"],
+    "full_lock_artifact_required_before_result_gate": true
+  },
+  "result_firewall": {
+    "result_or_outcome_access_now": false,
+    "payout_access": false,
+    "odds_price_access": false,
+    "economics_access": false,
+    "DEV2000_C_outcome_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "result_scoring_requires_new_exact_owner_gate_after_complete_lock": true
+  },
+  "claim_boundary": "ASSIGNMENT_AND_PRE_PREDICTION_LOCK_ONLY_NOT_REAL_PERFORMANCE_EVIDENCE_NOT_MODEL_PROMOTION",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
