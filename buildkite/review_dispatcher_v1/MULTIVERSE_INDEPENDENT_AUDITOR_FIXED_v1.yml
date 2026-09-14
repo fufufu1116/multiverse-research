@@ -27,7 +27,7 @@ steps:
 
       rm -f .mv_review_pass
       if PYTHONPATH=.mv_dispatcher \
-        python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
+        python3 .mv_dispatcher/automation/review_dispatcher_v1/review_main_drift_v1.py \
         --job review_job.json \
         --output review_artifact.json \
         --repo-root .; then
@@ -67,23 +67,22 @@ steps:
       buildkite-agent artifact download \
         "review_artifact.json" .
 
+      JOB_DISPATCHER_REF="$(python3 -c 'import json; print(json.load(open("review_job.json"))["dispatcher_ref"])')"
+
       rm -rf .mv_dispatcher .mv_dispatcher_source
       git init -q .mv_dispatcher_source
       git -C .mv_dispatcher_source remote add origin \
         https://github.com/fufufu1116/multiverse-research.git
-      git -C .mv_dispatcher_source fetch -q --depth=1 origin main
-
-      FRESH_DISPATCHER_REF="$(git -C .mv_dispatcher_source rev-parse FETCH_HEAD)"
-      JOB_DISPATCHER_REF="$(python3 -c 'import json; print(json.load(open("review_job.json"))["dispatcher_ref"])')"
-      test "$$FRESH_DISPATCHER_REF" = "$$JOB_DISPATCHER_REF"
+      git -C .mv_dispatcher_source fetch -q --depth=65 origin main
+      git -C .mv_dispatcher_source cat-file -e "$$JOB_DISPATCHER_REF^{commit}"
 
       mkdir -p .mv_dispatcher
       git -C .mv_dispatcher_source archive \
-        "$$FRESH_DISPATCHER_REF" automation/review_dispatcher_v1 \
+        "$$JOB_DISPATCHER_REF" automation/review_dispatcher_v1 \
         | tar -x -C .mv_dispatcher
 
       PYTHONPATH=.mv_dispatcher \
-        python3 .mv_dispatcher/automation/review_dispatcher_v1/publisher.py \
+        python3 .mv_dispatcher/automation/review_dispatcher_v1/publisher_main_drift_v1.py \
         --job review_job.json \
         --artifact review_artifact.json \
         --receipt review_publish_receipt.json
@@ -117,19 +116,18 @@ steps:
       buildkite-agent artifact download \
         "review_publish_receipt.json" .
 
+      JOB_DISPATCHER_REF="$(python3 -c 'import json; print(json.load(open("review_job.json"))["dispatcher_ref"])')"
+
       rm -rf .mv_dispatcher .mv_dispatcher_source
       git init -q .mv_dispatcher_source
       git -C .mv_dispatcher_source remote add origin \
         https://github.com/fufufu1116/multiverse-research.git
-      git -C .mv_dispatcher_source fetch -q --depth=1 origin main
-
-      FRESH_DISPATCHER_REF="$(git -C .mv_dispatcher_source rev-parse FETCH_HEAD)"
-      JOB_DISPATCHER_REF="$(python3 -c 'import json; print(json.load(open("review_job.json"))["dispatcher_ref"])')"
-      test "$$FRESH_DISPATCHER_REF" = "$$JOB_DISPATCHER_REF"
+      git -C .mv_dispatcher_source fetch -q --depth=65 origin main
+      git -C .mv_dispatcher_source cat-file -e "$$JOB_DISPATCHER_REF^{commit}"
 
       mkdir -p .mv_dispatcher
       git -C .mv_dispatcher_source archive \
-        "$$FRESH_DISPATCHER_REF" automation/review_dispatcher_v1 \
+        "$$JOB_DISPATCHER_REF" automation/review_dispatcher_v1 \
         | tar -x -C .mv_dispatcher
 
       PYTHONPATH=.mv_dispatcher \
