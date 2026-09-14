@@ -1,0 +1,48 @@
+{
+  "record": "R0_T2_SIMWORLD_DEGRADATION_STRESS_RESULT_v1",
+  "created_jst": "2026-09-15",
+  "interpretation_guard": "Simulation-only engineering evidence. No real-data promotion authority.",
+  "design": {
+    "worlds": 19,
+    "primary_seed": 20260918,
+    "primary_races_per_world": 1800,
+    "primary_total_synthetic_races": 34200,
+    "replication_seed": 20260919,
+    "replication_races_per_world": 1200,
+    "replication_total_synthetic_races": 22800,
+    "combined_total_synthetic_races": 57000,
+    "worlds_tested": [
+      "missing PRE score at 10/20/35/50 percent with zero replacement",
+      "observed-score noise sd 0.5/1.0/1.5/2.0",
+      "score clipping at abs 0.5/1.0/1.5",
+      "score quantization step 0.25/0.5/1.0",
+      "latent correlated group effects 0.4/0.8/1.2",
+      "venue-style interactions 0.4/0.8/1.2",
+      "field-size-5 sharp world T1.1",
+      "field-size-9 flat world T4.5"
+    ]
+  },
+  "candidates": ["R0_T2","MIX_1_2_3","MIX_075_15_3_6","MIX_1_2_4","MIX_1_15_2_3_4"],
+  "primary_regret": {
+    "MIX_075_15_3_6": {"mean_regret": 0.016616851793613607, "max_regret": 0.04477473611710092, "p90_regret": 0.03312021876087582},
+    "MIX_1_15_2_3_4": {"mean_regret": 0.012452026146186517, "max_regret": 0.07505499243565694, "p90_regret": 0.02075053849784015},
+    "MIX_1_2_4": {"mean_regret": 0.019066423300438486, "max_regret": 0.09152062735757571, "p90_regret": 0.03654527148998224},
+    "R0_T2": {"mean_regret": 0.017212038917866993, "max_regret": 0.2014916846739716, "p90_regret": 0.05030342205447121},
+    "MIX_1_2_3": {"mean_regret": 0.03859181952167172, "max_regret": 0.24950994024230333, "p90_regret": 0.08876273223734851}
+  },
+  "replication_regret": {
+    "MIX_075_15_3_6": {"mean_regret": 0.015558592129918553, "max_regret": 0.03210005827763318, "p90_regret": 0.031012423440811083},
+    "MIX_1_15_2_3_4": {"mean_regret": 0.01258292815201009, "max_regret": 0.07586524656291438, "p90_regret": 0.022475780439225716},
+    "MIX_1_2_4": {"mean_regret": 0.018606567314353315, "max_regret": 0.0926513858606457, "p90_regret": 0.03625823290194792},
+    "R0_T2": {"mean_regret": 0.018210087664067662, "max_regret": 0.2022601751670905, "p90_regret": 0.05213299558790946},
+    "MIX_1_2_3": {"mean_regret": 0.03761365521447566, "max_regret": 0.2517863657408501, "p90_regret": 0.08534148598203097}
+  },
+  "finding": "The earlier minimax leader MIX_1_2_3 does not remain robust under PRE degradation/field-size stress. MIX_075_15_3_6 is the stable worst-case leader in both stress seeds, while MIX_1_15_2_3_4 has the lowest average regret. This creates a two-candidate synthetic robustness frontier rather than a single successor winner.",
+  "successor_frontier": {
+    "minimax_candidate": "MIX_075_15_3_6",
+    "average_regret_candidate": "MIX_1_15_2_3_4",
+    "status": "SYNTHETIC_ONLY_NOT_PROMOTED"
+  },
+  "next_experiment": "Cross both frontier candidates against more severe joint shifts (missingness plus noise plus rank reversal, venue interaction plus field-size shift, and nonstationary meeting regimes) and require seed replication before retaining either candidate.",
+  "protected_boundaries": {"Gate_487_rerun": false, "A_plus_B_fresh_validation_reuse": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "prospective_result_accessed": false, "payout_odds_price_economics_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
