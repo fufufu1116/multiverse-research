@@ -1,0 +1,25 @@
+name: System Improvement Review Main Drift Guard v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/main_drift_guard_v1.py'
+      - 'automation/review_dispatcher_v1/test_main_drift_guard_v1.py'
+      - 'docs/control/REVIEW_MAIN_DRIFT_GUARD_v1.md'
+      - '.github/workflows/system-improvement-review-main-drift-guard-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run main-drift guard regressions
+        run: python -m unittest automation.review_dispatcher_v1.test_main_drift_guard_v1 -v
+      - name: Compile candidate Python
+        run: python -m py_compile automation/review_dispatcher_v1/main_drift_guard_v1.py automation/review_dispatcher_v1/test_main_drift_guard_v1.py
