@@ -1,0 +1,29 @@
+name: System Improvement Auditor Package Root v3 CI
+
+on:
+  pull_request:
+    paths:
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_HOSTED_v3.yml'
+      - 'tools/buildkite_auditor_bootstrap_preflight_v3.py'
+      - 'tools/buildkite_auditor_bootstrap_smoke_v3.py'
+      - 'tools/test_buildkite_auditor_bootstrap_preflight_v3.py'
+      - '.github/workflows/system-improvement-auditor-package-root-v3-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  auditor-package-root-v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Focused regression tests
+        run: python -m unittest tools.test_buildkite_auditor_bootstrap_preflight_v3 -v
+      - name: Static stored-YAML preflight
+        run: python tools/buildkite_auditor_bootstrap_preflight_v3.py buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_HOSTED_v3.yml
+      - name: Isolated current-package archive/import smoke
+        run: python tools/buildkite_auditor_bootstrap_smoke_v3.py --repo-root . --ref HEAD
