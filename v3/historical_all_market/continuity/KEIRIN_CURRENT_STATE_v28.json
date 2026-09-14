@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v28",
+  "status": "ACTIVE_CURRENT_STATE_V28_R0_T2_PROSPECTIVE_ASSIGNMENT_PREREG_FROZEN_WAITING_PRELOCK_WINDOW_NO_RESULT_ACCESS",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v27.json",
+  "checkpoint_jst": "2026-09-15",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_owner_gate_487": 487,
+    "predecessor_current": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v27.json",
+    "ledger_v33_commit": "bb94927d57885ff40fd8622f5638e75089b4170c"
+  },
+  "current_research_objective": "Preserve Gate #487 as consumed/no-rerun and frozen R0_T2 as synthetic engineering evidence only while creating a genuinely prospective, post-freeze, contamination-safe real predictive evidence set. The exact meeting assignment, PRE-lock implementation, evaluator, collision audit, metrics, bootstrap seeds and pass thresholds are now frozen. The lane must wait for the assigned future PRE/racecard inputs, lock predictions before race starts without reading results, and only after the complete lock exists prepare a new exact Owner Gate for one-shot minimal-result scoring.",
+  "frozen_model_under_test": {
+    "id": "R0_T2",
+    "family": "R0_SCORE_ONLY_TEMPERED_PL",
+    "formula": "Plackett-Luce softmax(score / 2.0)",
+    "temperature": 2.0,
+    "selection_evidence": "SYNTHETIC_ENGINEERING_EVIDENCE_ONLY",
+    "real_validation_status": "NOT_YET_EVALUATED",
+    "promotion_status": "NOT_AUTHORIZED"
+  },
+  "prospective_evidence": {
+    "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+    "assignment_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/01_PROSPECTIVE_EVIDENCE_ASSIGNMENT.json",
+    "assignment_commit": "24bdfd98e5240a2f3939f26c2e7c2121cd53f5d1",
+    "assigned_meetings": [
+      "静岡 F1 2026-09-18..2026-09-20",
+      "富山 G2 2026-09-18..2026-09-21",
+      "松山 F2 2026-09-19..2026-09-21"
+    ],
+    "prelock_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/r0_t2_prelock_v1.py",
+    "prelock_git_blob_sha": "2a02e17548ecebb95ca3188dbaf0b95ba9d675dc",
+    "evaluator_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/evaluate_r0_t2_one_shot_v1.py",
+    "evaluator_git_blob_sha": "35864ab9f2a0ad2eb9b32324ea19fae8dfb96727",
+    "collision_audit_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/02_EVIDENCE_COLLISION_AUDIT.json",
+    "prereg_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/03_FINAL_PREREG_BEFORE_PRELOCK.json",
+    "prereg_commit": "f887a0d4be81a00b7e8e0c26b16f46601a04617b",
+    "full_prediction_lock_status": "NOT_YET_CREATED_FUTURE_PRE_INPUTS_NOT_YET_DUE",
+    "result_scoring_authority": false
+  },
+  "frozen_evaluation_gate": {
+    "minimum_races": 24,
+    "minimum_meetings": 3,
+    "race_bootstrap_reps": 10000,
+    "race_bootstrap_seed": 20260918,
+    "meeting_bootstrap_reps": 10000,
+    "meeting_bootstrap_seed": 20260919,
+    "primary": "mean_ordered_top3_nll_improvement_vs_sequential_uniform",
+    "primary_race_bootstrap_lower95_gt_zero": true,
+    "primary_meeting_bootstrap_lower95_gt_zero": true,
+    "winner_logloss_improvement_vs_uniform_gte_zero": true,
+    "winner_brier_improvement_vs_uniform_gte_zero": true,
+    "toplabel_ece10_lte": 0.15
+  },
+  "scientific_contamination_guard": {
+    "gate_487_rerun": "PROHIBITED",
+    "A_plus_B_as_fresh_validation": "PROHIBITED",
+    "DEV2000_C_outcome_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "post_outcome_race_substitution": "PROHIBITED",
+    "same_lineage_retune": "PROHIBITED",
+    "result_access_before_complete_prelock_and_new_exact_owner_gate": "PROHIBITED"
+  },
+  "exact_next_executable_actions": [
+    "When each assigned public racecard/PRE input becomes available, collect and hash only the preregistered PRE fields and create the frozen R0_T2 prediction lock before that race starts; do not access results.",
+    "After all assigned meetings are PRE-locked, hash-freeze the complete prediction-lock artifact and perform the final identity-only collision/coverage audit.",
+    "Freeze the exact minimal result source/parser binding without opening result values.",
+    "Only then create a new exact Owner Gate bound to the final lock hash and parser identity for one-shot result scoring; generic progress instructions do not cross that Gate."
+  ],
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_YET_READY_WAIT_FOR_COMPLETE_PROSPECTIVE_PRE_PREDICTION_LOCK",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "Keep readiness at 60%: contamination-safe design and preregistration improved materially, but no new independent real predictive validation has been observed and promotion remains unsupported.",
+  "protected_boundaries": {
+    "result_payout_accessed_after_v27": false,
+    "odds_price_economics_accessed": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
