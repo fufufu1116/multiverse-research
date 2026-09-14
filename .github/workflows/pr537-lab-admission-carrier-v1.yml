@@ -1,0 +1,41 @@
+name: PR537 Lab Admission Carrier v1
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/pr537-lab-admission-carrier-v1.yml'
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  admission:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Package-root import smoke
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          from automation.review_dispatcher_v1.dispatcher import discover_request
+          from tools.review_build_admission_preflight_v2 import run_preflight
+          print('IMPORT_SMOKE_PASS')
+          PY
+      - name: Admission preflight unit regressions
+        run: PYTHONPATH=. python -m unittest -v tools.test_review_build_admission_preflight_v2
+      - name: Exact live PR537 LAB admission
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          PYTHONPATH=. python -m tools.review_build_admission_preflight_v2
+          --repo fufufu1116/multiverse-research
+          --lane LAB
+          --head 91ac698e47b676ee753774c1a651954b07942a23
+          --expected-request-comment 5669113865
+          --expected-request-sha256 158296112374a923541ad0ad0b71276a616e1c62a7eb585d3ad6127ec00c069a
+          --expected-main 54f1760cef52d6a757c1e89dba421cbca6c06f15
+          --expected-tree 2a39ef48c84e6ffbd4d99d073f06b92525a990c0
