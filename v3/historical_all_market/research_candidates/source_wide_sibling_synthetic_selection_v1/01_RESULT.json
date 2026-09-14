@@ -1,0 +1,75 @@
+{
+  "record": "KEIRIN_SOURCE_WIDE_SIBLING_SYNTHETIC_RESULT_v1",
+  "status": "COMPLETE_SYNTHETIC_SELECTION",
+  "evidence_class": "SYNTHETIC_ENGINEERING_SOURCE_WIDE_INTERFACE_SELECTION_ONLY",
+  "synthetic_cell_count": 75,
+  "seeds": [20261101, 20261102, 20261103],
+  "field_sizes": [5, 6, 7, 8, 9],
+  "worlds": ["W0", "W1", "W2", "W3", "W4"],
+  "races_per_seed_field_size_world": 100,
+  "candidate_summary": {
+    "SW0_SCORE_ONLY_PL": {
+      "prediction_fields": ["car_no", "score"],
+      "class_dependency": false,
+      "style_dependency": false,
+      "overall_mean_KL": 0.2913421430433956,
+      "worst_cell_ratio_to_N2": 1.1705175767457747,
+      "worst_cell": {"seed": 20261102, "field_size": 5, "world": "W2"},
+      "all_75_cells_ratio_to_N2_le_1_35": true,
+      "all_probability_values_finite": true,
+      "all_probability_values_nonnegative": true,
+      "max_probability_mass_error": 2.220446049250313e-16,
+      "eligible": true
+    },
+    "SW1_SCORE_STYLE_PL": {
+      "prediction_fields": ["car_no", "style", "score"],
+      "class_dependency": false,
+      "style_dependency": true,
+      "overall_mean_KL": 0.29159638001809285,
+      "worst_cell_ratio_to_N2": 1.1733226593198005,
+      "worst_cell": {"seed": 20261102, "field_size": 5, "world": "W2"},
+      "all_75_cells_ratio_to_N2_le_1_35": true,
+      "all_probability_values_finite": true,
+      "all_probability_values_nonnegative": true,
+      "max_probability_mass_error": 2.220446049250313e-16,
+      "eligible": true
+    }
+  },
+  "ratio_summary_mean_across_three_seeds": {
+    "SW0_SCORE_ONLY_PL": {
+      "5": {"W0": 0.839517852186845, "W1": 0.9073953106850079, "W2": 1.1399078455328329, "W3": 1.0596491164420616, "W4": 0.9750883438725919},
+      "6": {"W0": 0.8663800719428745, "W1": 0.9246697750844803, "W2": 1.1504614692550683, "W3": 1.0720706157182742, "W4": 0.9917673128275168},
+      "7": {"W0": 0.8719873568049472, "W1": 0.9473448421822812, "W2": 1.0980638039324941, "W3": 1.0265283421551614, "W4": 0.9510784825940601},
+      "8": {"W0": 0.8902760183549903, "W1": 0.9502650437132875, "W2": 1.115944471857978, "W3": 1.048056551225728, "W4": 0.9782293392828786},
+      "9": {"W0": 0.8840660038723206, "W1": 0.9523998045238095, "W2": 1.0845306809998536, "W3": 1.0240275882243082, "W4": 0.9541910607715811}
+    },
+    "SW1_SCORE_STYLE_PL": {
+      "5": {"W0": 0.834039771751941, "W1": 0.9042654637495895, "W2": 1.138452392442742, "W3": 1.0571266477686687, "W4": 0.9748536899266744},
+      "6": {"W0": 0.8663214336535805, "W1": 0.9268671380175456, "W2": 1.154746694969588, "W3": 1.0744031286459859, "W4": 0.9946531361818831},
+      "7": {"W0": 0.8720745017825148, "W1": 0.9503418722797219, "W2": 1.102868339862319, "W3": 1.0281438489381771, "W4": 0.9548563061506048},
+      "8": {"W0": 0.8877081634719369, "W1": 0.9499000503575187, "W2": 1.1168391247490919, "W3": 1.0472255676264748, "W4": 0.9790871232214338},
+      "9": {"W0": 0.8840386676906581, "W1": 0.9543281979090447, "W2": 1.0878338213016634, "W3": 1.0265182030195115, "W4": 0.9563887119840289}
+    }
+  },
+  "decision": {
+    "selected": "SW0_SCORE_ONLY_PL",
+    "classification": "SOURCE_WIDE_SYNTHETIC_SIBLING_SELECTED_AND_FROZEN",
+    "reason": "Both preregistered low-freedom class-independent candidates passed every synthetic cell and probability sanity check. SW0 had the lower preregistered primary metric (worst-cell ratio to Frozen N2: 1.17052 versus 1.17332) and also the lower overall mean KL, so the selection rule freezes SW0 without using real PRE row values."
+  },
+  "frozen_N2_unchanged": true,
+  "frozen_S0_unchanged": true,
+  "real_PRE_row_values_used_for_selection": false,
+  "real_world_predictive_claim": false,
+  "model_promotion": false,
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_results": "NOT_ACCESSED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
