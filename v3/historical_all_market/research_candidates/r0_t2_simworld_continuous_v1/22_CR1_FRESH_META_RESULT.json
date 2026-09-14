@@ -1,0 +1,23 @@
+{
+  "record": "CR1_E05_FRESH_META_RESULT_v1",
+  "prereg_commit": "41eeebce37eafd5519e26ba2314defed598d574e",
+  "candidate_id": "CR1_E05",
+  "fresh_races": 30000,
+  "seed_results": {
+    "20261003": {
+      "R0_T2": {"mean_primary_regret": 0.11581768469492688, "max_primary_regret": 0.2687659775897229},
+      "CR1_E05": {"mean_primary_regret": 0.11189908163904679, "max_primary_regret": 0.26633996521941444},
+      "retain_rule_pass": true
+    },
+    "20261004": {
+      "R0_T2": {"mean_primary_regret": 0.12397592452897277, "max_primary_regret": 0.33506673260720954},
+      "CR1_E05": {"mean_primary_regret": 0.1195726565124374, "max_primary_regret": 0.3320300893010836},
+      "retain_rule_pass": true
+    }
+  },
+  "dominant_world": "heavy_tail_positive_and_negative",
+  "decision": "RETAIN_CR1_AS_CURRENT_SYNTHETIC_ROBUSTNESS_LEAD",
+  "scope": "Simulation-only. Not real validated, not promoted, not substituted into the frozen R0_T2 prospective assignment.",
+  "posthoc_changes": false,
+  "protected_boundaries_unchanged": true
+}
