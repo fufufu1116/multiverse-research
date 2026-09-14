@@ -1,0 +1,41 @@
+name: System Improvement Safe Main Drift Integration v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/dispatcher.py'
+      - 'automation/review_dispatcher_v1/main_drift_guard_v1.py'
+      - 'automation/review_dispatcher_v1/main_drift_runtime_v1.py'
+      - 'automation/review_dispatcher_v1/review_main_drift_v1.py'
+      - 'automation/review_dispatcher_v1/publisher_main_drift_v1.py'
+      - 'automation/review_dispatcher_v1/test_main_drift_guard_v1.py'
+      - 'automation/review_dispatcher_v1/test_main_drift_runtime_v1.py'
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml'
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml'
+      - '.github/workflows/system-improvement-safe-main-drift-integration-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run focused main-drift regressions
+        run: |
+          python -m unittest automation.review_dispatcher_v1.test_main_drift_guard_v1 -v
+          python -m unittest automation.review_dispatcher_v1.test_main_drift_runtime_v1 -v
+          python -m unittest automation.review_dispatcher_v1.test_dispatcher -v
+      - name: Compile integration candidate
+        run: |
+          python -m py_compile \
+            automation/review_dispatcher_v1/dispatcher.py \
+            automation/review_dispatcher_v1/main_drift_guard_v1.py \
+            automation/review_dispatcher_v1/main_drift_runtime_v1.py \
+            automation/review_dispatcher_v1/review_main_drift_v1.py \
+            automation/review_dispatcher_v1/publisher_main_drift_v1.py \
+            automation/review_dispatcher_v1/test_main_drift_runtime_v1.py
