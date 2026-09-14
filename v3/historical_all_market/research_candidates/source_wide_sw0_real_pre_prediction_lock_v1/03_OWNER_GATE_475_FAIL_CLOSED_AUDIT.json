@@ -1,0 +1,53 @@
+{
+  "record": "KEIRIN_SW0_OWNER_GATE_475_FAIL_CLOSED_AUDIT_v1",
+  "checkpoint_jst": "2026-09-14",
+  "owner_gate_issue": 475,
+  "owner_authorization_token": "AUTHORIZE_SW0_DEV2000_AB_RESULT_ONLY_V3_HASH_SCHEMA_AND_ONE_PREDICTIVE_EVALUATION_ONLY",
+  "owner_authorization_receipt_comment_id": 5662662401,
+  "gate_attempt_consumed": true,
+  "evaluation_invoked": false,
+  "classification": "FAIL_CLOSED_BEFORE_PREDICTIVE_EVALUATION_OUTCOME_SCHEMA_MISMATCH",
+  "bound_inputs": {
+    "prediction_drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "prediction_expected_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "prediction_observed_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "prediction_hash_check": "PASS",
+    "outcome_drive_file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+    "outcome_name": "DEV2000_RESULT_ONLY_v3.jsonl",
+    "outcome_parent_folder_id": "1_yez_7Qtqlq-K4-PnXPZcGs4Fwyzzgtv",
+    "outcome_expected_metadata_size_bytes": 370017,
+    "outcome_observed_size_bytes": 370017,
+    "outcome_sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+    "prereg_git_blob_sha": "aef34b838e0f3ce2c5739a10fa436555d1e2c5d6",
+    "evaluator_git_blob_sha": "58067cb179dbc6e005debd8e13676176a1c08ddd",
+    "evaluator_expected_sha256": "6e7b7d1f80222d340faa5797e88a36ad01c3be09705f404388b92b68ff921b60",
+    "evaluator_observed_sha256": "6e7b7d1f80222d340faa5797e88a36ad01c3be09705f404388b92b68ff921b60",
+    "evaluator_hash_check": "PASS"
+  },
+  "authorized_schema_contract": {
+    "required_exact_fields": ["race_id", "first", "second", "third"],
+    "required_race_count": 1500,
+    "required_universe": "DEV2000_A_B_ONLY_DEV_INDEX_1_1500"
+  },
+  "observed_schema_check": {
+    "jsonl_record_count": 2000,
+    "unique_schema_signature_count": 1,
+    "observed_fields": ["first_set", "parser", "race_date", "race_id", "second_set", "status", "third_set"],
+    "records_matching_required_exact_schema": 0,
+    "records_with_extra_or_mismatched_schema": 2000,
+    "race_id_set_check_reached": false,
+    "finish_values_inspected_for_evaluation": false
+  },
+  "fail_closed_reason": "The exact authorized result-only contract requires exactly race_id/first/second/third and exactly 1500 A+B races. The exact bound Drive file instead contains 2000 JSONL records whose schema is first_set/parser/race_date/race_id/second_set/status/third_set. Under Gate #475, any extra outcome field or schema mismatch requires stopping before evaluation. Therefore the frozen evaluator was not invoked and no predictive-performance metric was computed.",
+  "evidence_class": "GATE_EXECUTION_RECEIPT_SCHEMA_FAILURE_NO_PREDICTIVE_EVALUATION",
+  "protected_boundaries": {
+    "DEV2000_C_used_for_prediction_or_evaluation": false,
+    "ECON_HOLDOUT1000_accessed": false,
+    "payout_odds_price_economics_accessed": false,
+    "fit_tuning_calibration_selection_performed": false,
+    "model_promotion": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "next_rule": "Do not rerun Gate #475 or adapt the frozen evaluator to this revealed schema. Any new path must be separately preregistered and separately authorized after owner-free schema provenance/semantics investigation that does not consume additional protected result values."
+}
