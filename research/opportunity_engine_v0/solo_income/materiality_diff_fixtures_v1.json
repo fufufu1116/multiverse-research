@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "engine": "materiality_diff_engine_v1.py",
+  "base": {
+    "price": "$9/user/month",
+    "billing_basis": "per user per month",
+    "minimum_or_bucket_rule": null,
+    "billable_actor_rule": "Workspace member",
+    "currency_tax_basis": "USD / tax not normalized",
+    "eligibility_region": "public global page",
+    "feature_state": "AI add-on",
+    "ai_packaging_credit_model": "separate add-on credits",
+    "plan_generation_or_migration_state": "CLASSIC_ADDON_PUBLIC_MODEL",
+    "effective_date": null,
+    "term_commitment_renewal_refund": "not normalized",
+    "affiliate_commission_rate": "35%",
+    "affiliate_commission_window": "12 months",
+    "affiliate_payout_threshold": "$100 + 3 unique paying users",
+    "affiliate_eligibility": "program terms apply",
+    "affiliate_attribution_rule": "unique affiliate link required",
+    "evidence_state": "CONFIRMED",
+    "source_status": "AVAILABLE"
+  },
+  "cases": [
+    {
+      "id": "no_change",
+      "patch": {},
+      "expected_status": "NO_MATERIAL_NORMALIZED_CHANGE",
+      "expected_human_review": false
+    },
+    {
+      "id": "ordinary_price_change",
+      "patch": {"price": "$10/user/month"},
+      "expected_status": "RECOMPUTE_DECISION_ROWS",
+      "expected_human_review": false,
+      "expected_category": "PRICE"
+    },
+    {
+      "id": "plan_generation_change",
+      "patch": {"plan_generation_or_migration_state": "NEW_INCLUDED_AI_PLAN"},
+      "expected_status": "HUMAN_REVIEW_REQUIRED",
+      "expected_human_review": true,
+      "expected_category": "PLAN_GENERATION_OR_MIGRATION"
+    },
+    {
+      "id": "affiliate_term_change",
+      "patch": {"affiliate_commission_window": "24 months"},
+      "expected_status": "RECOMPUTE_DECISION_ROWS",
+      "expected_human_review": false,
+      "expected_category": "AFFILIATE_COMMISSION_WINDOW"
+    },
+    {
+      "id": "evidence_conflict",
+      "patch": {"evidence_state": "CONFLICTING"},
+      "expected_status": "HUMAN_REVIEW_REQUIRED",
+      "expected_human_review": true,
+      "expected_category": "UNKNOWN_OR_CONFLICTING"
+    },
+    {
+      "id": "source_missing",
+      "patch": {"source_status": "UNAVAILABLE"},
+      "expected_status": "HUMAN_REVIEW_REQUIRED",
+      "expected_human_review": true,
+      "expected_category": "SOURCE_AVAILABILITY"
+    },
+    {
+      "id": "make_current_affiliate_conflict_shape",
+      "patch": {"affiliate_commission_window": null, "evidence_state": "CONFLICTING"},
+      "expected_status": "HUMAN_REVIEW_REQUIRED",
+      "expected_human_review": true,
+      "expected_category": "AFFILIATE_COMMISSION_WINDOW"
+    }
+  ]
+}
