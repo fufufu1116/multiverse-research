@@ -1,0 +1,27 @@
+name: System Improvement Post Write Visibility v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/github_read_resilience_v1.py'
+      - 'automation/review_dispatcher_v1/publisher.py'
+      - 'automation/review_dispatcher_v1/t2.py'
+      - 'tools/test_auditor_post_write_visibility_cache_bypass_v1.py'
+      - '.github/workflows/system-improvement-post-write-visibility-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  post-write-visibility-v1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Focused post-write visibility regression
+        run: python -m unittest tools.test_auditor_post_write_visibility_cache_bypass_v1 -v
+      - name: Existing package-root regression
+        run: python -m unittest tools.test_buildkite_auditor_bootstrap_preflight_v3 -v
