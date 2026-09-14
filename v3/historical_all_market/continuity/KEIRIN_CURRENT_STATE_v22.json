@@ -1,0 +1,66 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v22",
+  "status": "ACTIVE_CURRENT_STATE_V22_GATE_475_CONSUMED_SCHEMA_FAIL_CLOSED_NO_PREDICTIVE_EVALUATION_SCHEMA_PROVENANCE_INVESTIGATION_NEXT",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v21.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "owner_gate_issue": 475,
+    "owner_authorization_receipt_comment_id": 5662662401,
+    "gate_audit_commit": "2b91f410e9d613d215bc68901edf68a4c82c5bb2",
+    "ledger_v27_commit": "08e1292133647ac58b1c3f6558081a51635c888e",
+    "branch_head_before_current_state_write": "08e1292133647ac58b1c3f6558081a51635c888e"
+  },
+  "current_research_objective": "Preserve the frozen SW0 A+B prediction lock and the scientific record that Gate #475 failed closed before predictive evaluation. Do not rerun or adapt Gate #475. Continue owner-free provenance/schema investigation using canonical code/docs/metadata only; do not consume further protected result values. Prepare a new preregistration and separate Owner Gate only if a deterministic, governance-safe path is established.",
+  "prediction_lock": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "status": "FROZEN_UNCHANGED_PREDICTION_LOCKED_NOT_PROMOTED",
+    "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "race_count": 1500,
+    "dev_index_range": [1, 1500],
+    "DEV2000_C": "EXCLUDED"
+  },
+  "gate_475_execution": {
+    "status": "CONSUMED_FAIL_CLOSED_BEFORE_EVALUATION",
+    "outcome_drive_file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+    "outcome_sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+    "outcome_size_bytes": 370017,
+    "outcome_jsonl_record_count": 2000,
+    "required_exact_fields": ["race_id", "first", "second", "third"],
+    "observed_fields": ["first_set", "parser", "race_date", "race_id", "second_set", "status", "third_set"],
+    "records_matching_required_schema": 0,
+    "race_set_check_reached": false,
+    "evaluation_invoked": false,
+    "predictive_metrics_computed": false,
+    "audit": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/03_OWNER_GATE_475_FAIL_CLOSED_AUDIT.json"
+  },
+  "protected_boundaries": {
+    "no_gate_475_rerun_or_posthoc_adapter": true,
+    "DEV2000_C_used_for_prediction_or_evaluation": false,
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "payout_odds_price_economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "exact_next_executable_actions": [
+    "Do not mutate canonical main from this lane.",
+    "Do not rerun Gate #475 and do not adapt the frozen evaluator after the schema reveal.",
+    "Search canonical repository code/docs and non-protected metadata for the provenance and semantics of DEV2000_RESULT_ONLY_v3.jsonl fields first_set/second_set/third_set/parser/status/race_date without inspecting further result values.",
+    "Determine whether an existing pre-outcome result-only projection artifact or already-governed deterministic transformation exists. Prefer an existing authority path over inventing a new one.",
+    "If and only if a deterministic safe projection path is established, preregister exact transformation, source identity/hash, target schema/hash procedure and one-shot evaluation scope before any further protected result-value processing, then require a new exact Owner Gate."
+  ],
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_YET_DEFINED_PENDING_OWNER_FREE_SCHEMA_PROVENANCE_INVESTIGATION",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
