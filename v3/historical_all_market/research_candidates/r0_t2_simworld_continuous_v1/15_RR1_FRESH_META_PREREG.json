@@ -1,0 +1,40 @@
+{
+  "record": "RR1_B20_S4_FRESH_META_PREREG_v1",
+  "frozen_jst": "2026-09-15",
+  "candidate_id": "RR1_B20_S4",
+  "candidate_definition": "At each sequential choice step: 0.8 * PL(score/2.0) + 0.2 * rank-softmax where p(rank r) proportional to exp(-r/4.0).",
+  "baseline": "R0_T2 = PL(score/2.0)",
+  "fresh_world_families": [
+    "adjacent_pair_interference",
+    "cyclic_score_warp",
+    "field_size_dependent_sharpness",
+    "top_cluster_random_permutation",
+    "bottom_to_top_shock",
+    "piecewise_monotone_latent",
+    "group_confounding",
+    "winner_only_latent_shock",
+    "bimodal_mechanism_switch",
+    "score_saturation_with_local_reversal"
+  ],
+  "seeds": [20260930, 20260931],
+  "races_per_world_per_seed": 1500,
+  "total_fresh_races_if_completed": 30000,
+  "primary_metric": "ordered_top3_nll_regret_vs_oracle_world_probability",
+  "retain_rule": {
+    "per_seed": "RR1 maximum primary regret < R0_T2 maximum primary regret AND RR1 mean primary regret <= R0_T2 mean primary regret + 0.0015",
+    "replication": "must pass both seeds independently",
+    "failure": "any seed failure rejects RR1 as robustness lead; no threshold or candidate mutation after seeing fresh results"
+  },
+  "firewall": {
+    "candidate_parameters_frozen": true,
+    "worlds_not_used_in_candidate_development": true,
+    "R0_T2_prospective_assignment_unchanged": true,
+    "DEV2000_C_outcome_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "prospective_result_access": false,
+    "payout_odds_price_economics_access": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "owner_action_required_now": false
+}
