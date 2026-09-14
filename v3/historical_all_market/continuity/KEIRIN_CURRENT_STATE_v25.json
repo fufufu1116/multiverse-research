@@ -1,0 +1,92 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v25",
+  "status": "ACTIVE_CURRENT_STATE_V25_GATE487_COMPLETE_NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET_STOPPED_PER_GATE_NO_PROMOTION",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v24.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_owner_gate_475": 475,
+    "consumed_owner_gate_485": 485,
+    "consumed_owner_gate_487": 487,
+    "gate_487_authorization_comment": 5663743079,
+    "gate_487_execution_start_receipt_comment": 5663798639,
+    "gate_487_result_commit": "7655465cad6b2370120be7b7d327c66c064d8e80",
+    "gate_487_execution_receipt_commit": "7cd0f47ea3d75142447168ae450c9ffce8e08b78",
+    "ledger_v30_commit": "ac0e630ac8a8b4dd3f0e7c2b04f600b5a50dee98"
+  },
+  "current_research_objective": "Preserve the one-shot Gate #487 negative predictive result without rerun or posthoc metric/model changes, keep SW0 unpromoted, and stop this evaluation cycle per Gate contract. Any future protected evaluation requires a separately preregistered method and a new exact Owner Gate.",
+  "prediction_lock": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "status": "FROZEN_EVALUATED_NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET_NOT_PROMOTED",
+    "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "race_count": 1500,
+    "dev_index_range": [1, 1500],
+    "DEV2000_C": "EXCLUDED"
+  },
+  "gate_487_result": {
+    "status": "CONSUMED_SUCCESS_ONE_SHOT_PREDICTIVE_EVALUATION_COMPLETE",
+    "result_artifact": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/09_GATE_487_STRICT_SINGLETON_PREDICTIVE_EVALUATION_RESULT.json",
+    "result_artifact_sha256": "2c08e22b99eb912089dcc169899bc3a459f04e11406853fcbdef8ea4bdd72e7c",
+    "execution_receipt": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/10_OWNER_GATE_487_EXECUTION_RECEIPT.json",
+    "verdict": "NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET",
+    "claim_scope": "STRICT_SINGLETON_FIRST_SECOND_THIRD_SET_ROWS_ONLY_NOT_SOURCE_WIDE",
+    "evidence_class": "LINEAGE_LOCAL_PREOUTCOME_HISTORICAL_PREDICTIVE_EVALUATION_STRICT_SINGLETON_OUTCOME_SUBSET_NOT_GLOBAL_UNTOUCHED_HOLDOUT",
+    "coverage": {
+      "ab_result_rows": 1500,
+      "strict_singleton_rows_scored": 1493,
+      "non_strict_rows_excluded": 7,
+      "excluded_shape_histogram": {"1-1-2": 1, "1-2-0": 3, "2-0-1": 3}
+    },
+    "pooled_primary_effect_uniform_minus_sw0": -1.8529385402808158,
+    "primary_effect_bootstrap_95pct": [-2.180065038595912, -1.5453062075715123],
+    "segment_A_primary_effect": -1.9378973756215496,
+    "segment_B_primary_effect": -1.6831914696703136,
+    "pooled_winner_brier_improvement": -0.00913711353585854,
+    "top1_accuracy": 0.39986604152712657,
+    "ordered_top3_hit_rate": 0.05023442732752847,
+    "unordered_top3_set_hit_rate": 0.16141995981245813,
+    "rerun_permitted": false,
+    "model_promotion_supported": false
+  },
+  "plain_japanese_interpretation": "事前に固定した方法で1493レースを一度だけ採点した結果、SW0は一様予測より三連単の確率評価が悪く、信頼区間もマイナス側でした。この試験では予測力があるとは言えず、SW0を昇格させる根拠はありません。",
+  "protected_boundaries": {
+    "no_gate_475_reuse": true,
+    "no_gate_485_reuse": true,
+    "no_gate_487_reuse": true,
+    "non_singleton_tie_rows_scalarization": "PROHIBITED",
+    "DEV2000_C_outcome_value_deserialization_or_use": false,
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "payout_odds_price_economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "NOT_SUPPORTED_PROHIBITED_UNDER_GATE487",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "operational_incident": {
+    "classification": "NONAUTHORITY_CONNECTOR_TOOL_SELECTION_ERRORS_DURING_POST_EVALUATION_PERSISTENCE",
+    "accidental_issue_numbers": [488, 490, 492, 493, 495],
+    "all_closed_not_planned": true,
+    "scientific_state_effect": "NONE",
+    "additional_evaluation_attempts": 0
+  },
+  "exact_next_executable_actions": [
+    "STOP the Gate #487 cycle after persistence; do not rerun or alter frozen metrics based on observed performance.",
+    "On a later continuation, owner-free postmortem/model-replacement design may proceed without additional protected-result access.",
+    "Any future protected result evaluation must be separately preregistered before protected access and use a NEW exact Owner Gate.",
+    "Do not access C, ECON_HOLDOUT1000, payout/odds/economics, or promote SW0 under this result."
+  ],
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_DEFINED_AT_THIS_STOP_POINT",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "Keep the latest Fresh Control baseline stable: Gate #487 materially increased scientific certainty but produced a negative model result rather than promotion/economic readiness, so no readiness inflation is justified.",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
