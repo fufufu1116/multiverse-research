@@ -1,0 +1,98 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v26",
+  "status": "ACTIVE_CURRENT_STATE_V26_POST_GATE487_SYNTHETIC_REPLACEMENT_FROZEN_NO_PROTECTED_EVALUATION_AUTHORIZED",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v25.json",
+  "checkpoint_jst": "2026-09-15",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_owner_gate_487": 487,
+    "gate_487_result_commit": "7655465cad6b2370120be7b7d327c66c064d8e80",
+    "predecessor_current": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v25.json",
+    "ledger_v31_commit": "963bbb1f0fe965c7d4da8f16d5bdb7aa4be5ca0a"
+  },
+  "precedent_classification": "CONTINUATION",
+  "current_research_objective": "Preserve Gate #487 as consumed/no-rerun, keep SW0 unpromoted, and preserve the newly frozen synthetic-only R0_T2 probability-quality replacement as engineering evidence only. Do not evaluate R0_T2 against already-observed A+B outcomes as a fresh validation set. Any protected real evaluation requires a new preregistration, independent evidence assignment, and a new exact Owner Gate.",
+  "prior_protected_result": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "gate": 487,
+    "verdict": "NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET",
+    "strict_rows_scored": 1493,
+    "pooled_primary_effect_uniform_minus_sw0": -1.8529385402808158,
+    "bootstrap_95pct": [-2.180065038595912, -1.5453062075715123],
+    "gate_consumed": true,
+    "rerun_permitted": false,
+    "model_promotion_supported": false
+  },
+  "synthetic_replacement": {
+    "status": "COMPLETED_FROZEN_SYNTHETIC_ONLY",
+    "experiment_id": "EXP-SYNTHETIC-SW0-REPLACEMENT-PROBABILITY-QUALITY-V1",
+    "prereg": "v3/historical_all_market/research_candidates/sw0_replacement_synthetic_v1/00_PREREG.json",
+    "runner": "v3/historical_all_market/research_candidates/sw0_replacement_synthetic_v1/run_sw0_replacement_synthetic_v1.py",
+    "runner_commit": "8e912680a4a0877d5189eb261e72b3038fdc7897",
+    "runner_sha256": "10376fbdaaf1ec6820984b7cdcc550533a2757b8294eb2263439b1a71b9ab265",
+    "execution_freeze": "v3/historical_all_market/research_candidates/sw0_replacement_synthetic_v1/01_EXECUTION_FREEZE.json",
+    "execution_freeze_commit": "42715c02d99eef961c0abbddfd1dfa6242774d59",
+    "execution_freeze_sha256": "2ee384cb2f73e0fb188adc00dbb0be9cb9fd3356e67b4117d031a84267b4a0e0",
+    "result_summary": "v3/historical_all_market/research_candidates/sw0_replacement_synthetic_v1/02_RESULT_SUMMARY.json",
+    "result_summary_commit": "7277af4169c5707d89900b4084e44d4e72d18648",
+    "full_local_result_sha256": "c6520da2e37eb87df15377c002da87307ef646b5cae71bd29e498b32ced2ba7b",
+    "synthetic_races": 62500,
+    "winner": "R0_T2",
+    "winner_spec": {
+      "family": "R0_SCORE_ONLY_TEMPERED_PL",
+      "formula": "Plackett-Luce softmax(x_i / 2.0)",
+      "temperature": 2.0
+    },
+    "winner_metrics": {
+      "ordered_top3_nll": 4.976936517977866,
+      "winner_logloss": 1.824968096578071,
+      "winner_brier": 0.8196816519163184,
+      "top1_accuracy": 0.267392,
+      "unordered_top3_containment": 0.126512,
+      "toplabel_ece10": 0.007189465072259129,
+      "worst_cell_toplabel_ece10": 0.1093105532559407
+    },
+    "uniform_reference": {
+      "ordered_top3_nll": 5.253726252751261,
+      "winner_logloss": 1.9247547299467014,
+      "winner_brier": 0.850873015873017
+    },
+    "claim_boundary": "SYNTHETIC_ENGINEERING_EVIDENCE_ONLY_NOT_REAL_KEIRIN_VALIDATION_NOT_PROMOTION"
+  },
+  "scientific_contamination_guard": {
+    "A_plus_B_outcomes_already_observed_under_gate487": true,
+    "R0_T2_selected_after_gate487_result_known": true,
+    "same_A_plus_B_as_fresh_validation": "PROHIBITED_AS_CONTAMINATED_POST_OUTCOME_REUSE",
+    "future_protected_evaluation_requirement": "NEW_PREREGISTRATION_PLUS_NEW_EXACT_OWNER_GATE_PLUS_SEPARATELY_GOVERNED_NONREUSED_EVIDENCE_SET"
+  },
+  "protected_boundaries": {
+    "no_gate_487_reuse": true,
+    "DEV2000_C_outcome_value_deserialization_or_use": false,
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "result_payout": "NOT_ACCESSED_AFTER_GATE487",
+    "payout_odds_price_economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "NOT_AUTHORIZED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "exact_next_executable_actions": [
+    "Do not rerun Gate #487 or reuse A+B outcomes as fresh validation for R0_T2.",
+    "Do not widen the completed synthetic grid/world set post hoc; the synthetic winner is frozen.",
+    "Owner-free work may prepare a contamination-safe future evaluation design and search canonical precedents, but must not access C, ECON_HOLDOUT1000, or any protected outcomes.",
+    "Before any future protected evaluation, preregister the exact independent evidence set, access order, metrics and stop conditions, then require a new exact Owner Gate."
+  ],
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_YET_DEFINED_CONTAMINATION_SAFE_DESIGN_REQUIRED_FIRST",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "Keep the v25 Control-aligned 60% readiness baseline stable. The synthetic replacement improves engineering direction but adds no new real predictive validation or promotion evidence.",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
