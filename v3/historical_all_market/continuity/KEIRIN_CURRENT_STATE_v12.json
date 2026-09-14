@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v12",
+  "status": "ACTIVE_CURRENT_STATE_V12_REAL_PRE_ONLY_ENRICHMENT_METADATA_DISCOVERY_CONTINUING_AFTER_LINE_ARCHIVE_LINKAGE_FAIL",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v11.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_at_v2_3_execution": "74e5534ac95d13ce0418b69d527812d1cd139781",
+    "owner_gate_comment_id": 5657234204,
+    "receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+    "scope": "EXISTING_STORED_DEV2000_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_AUDIT"
+  },
+  "latest_completed_experiment": {
+    "id": "EXP-REAL-PRE-ONLY-ENRICHMENT-AUDIT-V2-3-EXPECTED-LINE-LINKAGE",
+    "status": "STOP_NO_DEV2000_RACE_ID_OVERLAP_NO_TARGET_VALUE_AUDIT",
+    "classification": "PRE_ONLY_EXPECTED_LINE_ARCHIVE_NOT_DEV2000_LINKED_EXACT_RACE_ID_OVERLAP_ZERO",
+    "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+    "ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v17.jsonl",
+    "result": "v3/historical_all_market/research_candidates/real_pre_only_enrichment_audit_v2_3/01_RESULT.json",
+    "target_values_read": false
+  },
+  "latest_scientific_finding": {
+    "decision": "EXPECTED_LINE_ARCHIVE_IS_PRE_ONLY_BUT_NOT_DEV2000_LINKED",
+    "summary": "The 2026-09-01 Expected Line archive is a point-in-time PRE_EVENT_EXPECTED_LINE source and its headers expose no prohibited outcome/price/economics fields. However, its 12 unique race_ids have zero exact overlap with the 2,000 canonical DEV2000 universe race_ids. The preregistered stop fired before any line target values were read.",
+    "real_pre_evidence": true,
+    "outcome_evidence": false,
+    "predictive_performance_claim": false,
+    "model_promotion": false
+  },
+  "synthetic_candidate": {
+    "name": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "status": "FROZEN_UNCHANGED_SYNTHETIC_BROAD_ROBUSTNESS_ONLY_REAL_DIRECT_INTERFACE_STILL_MISSING_FIVE_FIELDS",
+    "frozen_unchanged": true,
+    "real_data_training_or_tuning": false
+  },
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_DO_NOT_ACCESS",
+    "DEV2000_C_outcomes": "DO_NOT_ACCESS",
+    "untouched_outcome_validation": "NOT_OPENED",
+    "real_pre_training_or_parameter_selection": "NOT_PERFORMED_NOT_AUTHORIZED",
+    "new_automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "current_research_objective": "Continue metadata-only discovery for a genuinely DEV2000-linked PRE-only line-structure or race-context source that can supply any of line_group_id, line_position, line_size, bank_length_m or wind_speed_mps. General Keirin archives without DEV2000 linkage cannot be used for target-value audit under the current Gate.",
+  "exact_next_executable_actions": [
+    "Fresh Read canonical main, issue #394, issue #377 and this state before any next source byte or cell-value access.",
+    "Metadata-identify the next candidate existing stored race-context/line source and fix its identity/revision before access.",
+    "Preregister a bounded header/provenance/race_id-linkage audit before reading candidate values.",
+    "Prove DEV2000 linkage before reading any target line/context values; zero exact race_id overlap triggers stop.",
+    "Do not presume raw HTML payloads are PRE-only; any raw-payload path requires its own exact preregistration and safety case before byte access.",
+    "Keep frozen N2 unchanged and all outcome/price/economics/training/promotion/runtime/betting boundaries closed."
+  ],
+  "progress": {
+    "exact_percent": null,
+    "status": "THREE_PRE_ONLY_SOURCE_CHECKS_COMPLETED_TARGET_FIELDS_STILL_UNAVAILABLE_IN_DEV2000_LINKED_STRUCTURED_EVIDENCE",
+    "reason": "The structured DEV2000 PRE table, PRE_STRUCTURED and PRE_PROVENANCE lack the target fields, while the separate expected-line archive is PRE-only but not DEV2000-linked."
+  },
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}

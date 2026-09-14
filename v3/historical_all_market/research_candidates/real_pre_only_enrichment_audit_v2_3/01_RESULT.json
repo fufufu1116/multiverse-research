@@ -1,0 +1,80 @@
+{
+  "authority": {
+    "canonical_main_head": "74e5534ac95d13ce0418b69d527812d1cd139781",
+    "owner_gate_comment_id": 5657234204,
+    "prereg_commit": "6bfa5d7d299e8dc5fa1bd803d5e1488639adec40",
+    "prereg_path": "v3/historical_all_market/research_candidates/KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_3.json"
+  },
+  "classification": "PRE_ONLY_EXPECTED_LINE_ARCHIVE_NOT_DEV2000_LINKED_EXACT_RACE_ID_OVERLAP_ZERO",
+  "dev2000_universe": {
+    "drive_file_id": "1BV79TYKyNJYX7zUZai1Aa-nvgbZCiq_O",
+    "hash_match": true,
+    "race_rows": 2000,
+    "receipt_safety": {
+      "payout_accessed": false,
+      "result_accessed": false,
+      "scoring_performed": false
+    },
+    "sha256_actual": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "sha256_expected": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "unique_race_ids": 2000
+  },
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "expected_line_source": {
+    "drive_file_id": "1P-3clLlFZizmhNQxPtj7e_Fz80vEOC0c9lQpqmOLj0I",
+    "header_forbidden_terms_detected": [],
+    "pre_only_basis": [
+      "README purpose identifies point-in-time PRE_EVENT_EXPECTED_LINE provider snapshots.",
+      "README hard boundary states no result/payout/odds/model validation/economics use."
+    ],
+    "pre_only_confirmed": true,
+    "race_id_rows_read": 35,
+    "revision_actual": "13",
+    "revision_expected": "13",
+    "revision_match": true,
+    "unique_race_ids": 12
+  },
+  "linkage": {
+    "decision": "STOP_NO_DEV2000_RACE_ID_OVERLAP",
+    "exact_string_overlap_count": 0,
+    "join_key": "race_id",
+    "overlap_race_ids": []
+  },
+  "protected_boundaries": {
+    "DEV2000_C_outcomes": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics_bankroll_roi_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "external_provider_contact": false,
+    "model_promotion": "PROHIBITED",
+    "new_automated_bulk_collection": false,
+    "odds_price": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "real_money": false,
+    "real_pre_training_fit_selection": "NOT_PERFORMED",
+    "runtime": "OFF",
+    "spend": false,
+    "untouched_outcome_validation": "NOT_OPENED"
+  },
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_V2_3_EXPECTED_LINE_LINKAGE_RESULT",
+  "scientific_interpretation": {
+    "eligible_for_target_value_audit_under_current_gate": false,
+    "reason": "The archive is PRE-only but its 12 unique race_ids have zero exact overlap with the 2,000 canonical DEV2000 universe race_ids. Current authority requires DEV2000-linked sources, so line target values were not opened.",
+    "source_is_dev2000_linked_by_exact_race_id": false,
+    "source_is_pre_only_line_structure_archive": true
+  },
+  "status": "STOP_NO_DEV2000_RACE_ID_OVERLAP_NO_TARGET_VALUE_AUDIT",
+  "target_fields": {
+    "authorized": [
+      "line_group_id",
+      "line_position",
+      "line_size"
+    ],
+    "bank_length_m_audited": false,
+    "group_1_to_group_4_values_read": false,
+    "target_values_read": false,
+    "wind_speed_mps_audited": false
+  }
+}
