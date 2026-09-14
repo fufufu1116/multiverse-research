@@ -1,0 +1,25 @@
+name: System Improvement Publisher Exact Comment Recovery v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/publisher.py'
+      - 'automation/review_dispatcher_v1/test_publisher_resilience_integration_v1.py'
+      - '.github/workflows/system-improvement-publisher-exact-comment-recovery-v1-ci.yml'
+      - 'docs/control/PUBLISHER_EXACT_COMMENT_RECOVERY_v1.md'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run publisher resilience regressions
+        run: python -m unittest automation.review_dispatcher_v1.test_publisher_resilience_integration_v1 -v
+      - name: Compile changed Python
+        run: python -m py_compile automation/review_dispatcher_v1/publisher.py automation/review_dispatcher_v1/test_publisher_resilience_integration_v1.py
