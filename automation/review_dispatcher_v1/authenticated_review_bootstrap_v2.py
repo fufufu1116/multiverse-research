@@ -17,7 +17,6 @@ from automation.review_dispatcher_v1.model import (
     AUDITOR_APP_ID,
     LAB_APP_ID,
     ReviewContractError,
-    require,
 )
 
 BOOTSTRAP_SCHEMA = "MULTIVERSE_AUTHENTICATED_REVIEW_BOOTSTRAP_v2"
@@ -185,9 +184,11 @@ def run_authenticated_review(
 
     token = mint(repo=repo, lane=lane, private_key=private_key)
 
-    # The long-lived private key is no longer needed after the short-lived,
-    # downscoped read token exists. Remove it before dispatcher/reviewer code
-    # or any candidate-controlled subprocess is entered.
+    # Destroy the long-lived key reference and remove it from the process
+    # environment before dispatcher/reviewer code or candidate-controlled
+    # subprocesses are entered. Only the downscoped read token remains in a
+    # trusted closure; it is never exported or persisted.
+    private_key = ""
     os.environ.pop(private_key_env, None)
 
     fetch = authenticated_fetcher(
@@ -211,7 +212,7 @@ def run_authenticated_review(
         _write_artifact(artifact, artifact_output)
         return job, artifact
     finally:
-        # Drop the only Python reference owned by this bootstrap frame. The
+        # Drop the only token reference owned by this bootstrap frame. The
         # token is never exported to the environment or written to disk.
         token = ""
 
