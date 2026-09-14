@@ -1,0 +1,40 @@
+{
+  "record": "CR1_E05_FRESH_META_PREREG_v1",
+  "frozen_jst": "2026-09-15",
+  "candidate_id": "CR1_E05",
+  "candidate_definition": "At each sequential step use 0.95 * PL(score/2.0) + 0.05 * Uniform.",
+  "baseline": "R0_T2 = PL(score/2.0)",
+  "fresh_world_families": [
+    "rare_large_negative_shock",
+    "rare_bidirectional_shock",
+    "top_rank_dropout_latent",
+    "middle_cluster_confusion",
+    "tail_score_aliasing",
+    "racewide_common_noise_plus_idiosyncratic",
+    "three_regime_temperature_switch",
+    "score_sign_flip_rare",
+    "heavy_tail_positive_and_negative",
+    "saturation_plus_random_upset"
+  ],
+  "seeds": [20261003, 20261004],
+  "races_per_world_per_seed": 1500,
+  "total_fresh_races_if_completed": 30000,
+  "primary_metric": "ordered_top3_nll_regret_vs_oracle_world_probability",
+  "retain_rule": {
+    "per_seed": "CR1 maximum primary regret < R0_T2 maximum primary regret AND CR1 mean primary regret <= R0_T2 mean primary regret + 0.0010",
+    "replication": "must pass both seeds independently",
+    "failure": "any seed failure rejects CR1; no epsilon or threshold change after seeing fresh results"
+  },
+  "firewall": {
+    "candidate_parameters_frozen": true,
+    "fresh_worlds_not_used_in_development": true,
+    "R0_T2_prospective_assignment_unchanged": true,
+    "Gate487_rerun": false,
+    "DEV2000_C_outcome_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "prospective_result_access": false,
+    "payout_odds_price_economics_access": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
