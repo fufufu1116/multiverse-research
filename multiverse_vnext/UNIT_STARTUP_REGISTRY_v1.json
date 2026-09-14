@@ -15,14 +15,23 @@
     "owner_is_not_courier": true,
     "ambiguity_behavior": "FAIL_CLOSED"
   },
+  "equipment_source_fabric": {
+    "path": "multiverse_vnext/UNIT_EQUIPMENT_SOURCE_FABRIC_v1.json",
+    "load_policy": "ON_DEMAND_AFTER_MINIMAL_BOOTSTRAP",
+    "parallelism_policy": "AUTO_MAX_SAFE_READ_FANOUT_AND_SERIAL_SHARED_WRITES",
+    "do_not_preload_all_plugins_or_sources": true,
+    "reuse_fresh_cross_unit_read_receipts_when_binding_matches": true
+  },
   "bootstrap_order": [
     "resolve exact canonical Owner-facing unit name",
     "Fresh-read canonical main HEAD/current authority",
     "Fresh-read Control Issue #394 through latest relevant rules",
     "Fresh-read the unit PRIMARY/CURRENT recovery route and referenced gates/PRs/artifacts",
-    "Fresh-discover current tools/plugins/connectors",
+    "recover materially relevant prior failures/decisions needed to avoid duplicate or regressive work",
+    "load only the minimum task-relevant equipment/source capability set from UNIT_EQUIPMENT_SOURCE_FABRIC_v1",
     "restore current authority boundaries and Owner-facing reporting rules",
     "apply concurrent-unit safety contract before any shared-state mutation",
+    "fan out independent read-only evidence work at the maximum safe concurrency supported by the current execution surface",
     "fail closed on ambiguity/conflict/stale authority",
     "return a compact Japanese startup-complete message"
   ],
@@ -48,7 +57,15 @@
     "owner_concurrency_widens_authority": false,
     "owner_must_coordinate_units_manually": false
   },
+  "anti_repeat_contract": {
+    "canonical_precedent_search_before_material_new_improvement": true,
+    "classifications": ["NEW", "RECURRENCE", "REGRESSION", "SUPERSEDED", "DUPLICATE", "CONTINUATION"],
+    "duplicate_work_suppressed": true,
+    "definition_of_done_required_for_improvement_work": true,
+    "new_governance_requires_concrete_blocker_owner_burden_reduction_or_material_risk": true
+  },
   "reporting_contract": {
+    "authority_surface": "issue:394 latest Owner-fixed reporting rules",
     "full_all_unit_dashboard_every_response": false,
     "full_dashboard_when": [
       "meaningful checkpoint",
@@ -63,6 +80,7 @@
   "units": [
     {
       "owner_facing_name": "軍師",
+      "owner_facing_display": "軍師🪬🔱",
       "startup_phrase": "軍師起動",
       "internal_identity": "Sole Control / MULTIVERSE Control",
       "primary_recovery_route": ["issue:394"],
@@ -71,6 +89,7 @@
     },
     {
       "owner_facing_name": "システム改善",
+      "owner_facing_display": "システム改善❤️‍🩹",
       "startup_phrase": "システム改善起動",
       "internal_identity": "Research Lane B / system improvement",
       "primary_recovery_route": ["issue:394", "resolve current system-improvement front dynamically"],
@@ -80,6 +99,7 @@
     },
     {
       "owner_facing_name": "AI研究",
+      "owner_facing_display": "AI研究🧪",
       "startup_phrase": "AI研究起動",
       "internal_identity": "Research Lane A",
       "primary_recovery_route": ["issue:154"],
@@ -88,6 +108,7 @@
     },
     {
       "owner_facing_name": "百人将",
+      "owner_facing_display": "百人将🎠🪙",
       "startup_phrase": "百人将起動",
       "internal_identity": "Opportunity Engine / business-opportunity research",
       "primary_recovery_route": ["issue:404", "issue:430 for real-revenue readiness"],
@@ -96,6 +117,7 @@
     },
     {
       "owner_facing_name": "特殊部隊",
+      "owner_facing_display": "特殊部隊👼🏻🧬",
       "startup_phrase": "特殊部隊起動",
       "internal_identity": "Keirin research lane",
       "primary_recovery_route": ["issue:377"],
@@ -104,6 +126,7 @@
     },
     {
       "owner_facing_name": "対話室",
+      "owner_facing_display": "対話室🪑🪞",
       "startup_phrase": "対話室起動",
       "internal_identity": "Idea / advisory room",
       "primary_recovery_route": ["issue:436"],
@@ -112,6 +135,7 @@
     },
     {
       "owner_facing_name": "本城",
+      "owner_facing_display": "本城🏯⚜️",
       "startup_phrase": "本城起動",
       "internal_identity": "Owner app / service-independent control-plane roadmap",
       "primary_recovery_route": ["issue:432"],
@@ -120,6 +144,7 @@
     },
     {
       "owner_facing_name": "法務",
+      "owner_facing_display": "法務💰",
       "startup_phrase": "法務起動",
       "internal_identity": "legal/tax/revenue readiness lane",
       "primary_recovery_route": ["issue:430"],
@@ -129,6 +154,7 @@
   ],
   "future_unit_admission_required_fields": [
     "canonical Owner-facing unit name",
+    "Owner-facing display mark",
     "internal role/lane identity",
     "startup phrase",
     "PRIMARY/CURRENT recovery route",
@@ -136,6 +162,8 @@
     "explicit non-authorities",
     "Fresh-read bootstrap order",
     "concurrent-unit shared-state safety behavior",
+    "anti-repeat / precedent-search behavior",
+    "equipment/source profile or default inheritance",
     "reporting requirements",
     "rename/deprecation alias rule if applicable"
   ]
