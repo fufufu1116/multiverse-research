@@ -1,0 +1,76 @@
+{
+  "authority": {
+    "canonical_main_head": "74e5534ac95d13ce0418b69d527812d1cd139781",
+    "corrected_prereg_v2_4_1_commit": "3fedd0e684bf16a3eb4cd002d1b26b0360476984",
+    "owner_gate_comment_id": 5657234204,
+    "prereg_v2_4_commit": "ee97edcbf3b9513854533164c0f8fb28ff08eca1"
+  },
+  "classification": "PRE_ONLY_REALITY_CALIBRATION_ARCHIVE_OUTSIDE_DEV2000_DATE_UNIVERSE",
+  "dev2000_universe": {
+    "date_max": "2026-04-10",
+    "date_min": "2026-03-01",
+    "hash_match": true,
+    "only_race_date_values_read_for_this_precheck": true,
+    "race_rows": 2000,
+    "races_on_2026_09_01": 0,
+    "sha256_actual": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "sha256_expected": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "unique_race_dates": 29
+  },
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "linkage": {
+    "capture_date_match_count": 0,
+    "decision": "STOP_NO_DEV2000_RACE_DATE_OVERLAP"
+  },
+  "protected_boundaries": {
+    "DEV2000_C_outcomes": "NOT_ACCESSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "credential": false,
+    "economics_bankroll_roi_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "external_provider_contact": false,
+    "model_promotion": "PROHIBITED",
+    "new_automated_bulk_collection": false,
+    "odds_price": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "real_money": false,
+    "real_pre_training_fit_selection": "NOT_PERFORMED",
+    "runtime": "OFF",
+    "spend": false,
+    "untouched_outcome_validation": "NOT_OPENED"
+  },
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_V2_4_1_REALITY_CONTEXT_LINKAGE_RESULT",
+  "scientific_interpretation": {
+    "eligible_for_target_value_audit_under_current_gate": false,
+    "reason": "The source is captured entirely on 2026-09-01, while canonical DEV2000 spans 2026-03-01 through 2026-04-10 and contains zero races on 2026-09-01. The preregistered date-overlap stop fired before bank_m or wind values were read.",
+    "source_is_dev2000_linked_by_date": false,
+    "source_is_pre_only_context_archive": true
+  },
+  "source": {
+    "bank_m_values_read": false,
+    "capture_date": "2026-09-01",
+    "drive_file_id": "15y4xQs0aDghTNdm6VCT-cvsgqgf1ShDUjTy2CLumyyc",
+    "header_forbidden_terms_detected": [],
+    "header_target_alias_seen": "bank_m",
+    "pre_only_basis": [
+      "README states Reality-Calibrated World calibration PRE data only, not model selection/final validation.",
+      "README states all captures were before decision cutoffs and target RESULT/PAYOUT were not used.",
+      "README states outcome was not collected or used.",
+      "README prohibits untouched/final validation, ROI/economics and model/feature selection evidence."
+    ],
+    "pre_only_confirmed": true,
+    "revision_actual": "7",
+    "revision_expected": "7",
+    "revision_match": true,
+    "wind_values_read": false
+  },
+  "status": "STOP_NO_DEV2000_RACE_DATE_OVERLAP_NO_CONTEXT_VALUE_AUDIT",
+  "target_fields": {
+    "authorized": [
+      "bank_length_m",
+      "wind_speed_mps"
+    ],
+    "target_values_read": false
+  }
+}
