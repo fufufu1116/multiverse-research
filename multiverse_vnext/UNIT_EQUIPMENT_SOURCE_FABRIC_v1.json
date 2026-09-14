@@ -1,0 +1,203 @@
+{
+  "schema_version": "unit_equipment_source_fabric_v1",
+  "status": "CANDIDATE",
+  "control_issue": 394,
+  "startup_registry_issue": 524,
+  "runtime": "OFF",
+  "purpose": "Increase effective research/tool throughput while lowering repeated source/plugin discovery, duplicate reads, context load, and cross-unit contention without widening authority.",
+  "hard_constraints": {
+    "canonical_github_remains_dynamic_authority": true,
+    "chat_memory_is_not_project_state": true,
+    "installed_or_connected_does_not_equal_authorized": true,
+    "runtime_activation_by_this_fabric": false,
+    "spend_or_credential_authority_by_this_fabric": false,
+    "shared_state_writes_are_not_parallel_by_default": true,
+    "consequential_actions_require_immediate_fresh_recheck": true
+  },
+  "execution_model": {
+    "model": "DEPENDENCY_DAG_WITH_BOUNDED_FANOUT",
+    "parallelism_mode": "AUTO_MAX_SAFE",
+    "policy": [
+      "Build a small dependency graph for the task before broad retrieval.",
+      "Run all independent read-only evidence nodes concurrently when the active execution surface supports concurrency.",
+      "Batch multiple independent lookups into one connector/tool invocation when its API supports batching.",
+      "Do not serialize independent providers merely because they belong to one unit.",
+      "Serialize or lease consequential shared-state writes and one-shot scarce resources.",
+      "Cancel or suppress lower-value retrieval once the evidence threshold for the decision is already satisfied.",
+      "Do not pre-load every plugin or source at startup; discover/load only the minimum capability set needed for the current task."
+    ],
+    "parallelism_claim_boundary": "Repository rules can maximize logical/effective parallelism but cannot override hard concurrency limits imposed by ChatGPT, a connector, provider, quota, or external service.",
+    "read_fanout": "MAX_SAFE_SUPPORTED_BY_CURRENT_SURFACE",
+    "write_fanout": "SERIALIZE_PER_SHARED_RESOURCE",
+    "cross_unit_parallelism": "ALLOWED_FOR_INDEPENDENT_READS_AND_LANE_SCOPED_WORK",
+    "cross_unit_shared_write_collision": "FAIL_CLOSED"
+  },
+  "startup_fast_path": {
+    "goal": "Do not make each restart pay the cost of loading every source/equipment surface.",
+    "mandatory_first_reads": [
+      "canonical main/current authority",
+      "Control Issue #394 latest relevant rules",
+      "unit PRIMARY/CURRENT route",
+      "exact active Gate/PR/artifact only when relevant"
+    ],
+    "deferred_until_needed": [
+      "broad plugin inventory",
+      "web discovery",
+      "secondary evidence sources",
+      "optional analytics/marketing/finance/dev connectors",
+      "large historical ledgers not relevant to current task"
+    ],
+    "capability_snapshot_use": "ORIENTATION_ONLY_THEN_FRESH_DISCOVER_ON_DEMAND"
+  },
+  "source_priority": [
+    {
+      "tier": 0,
+      "name": "CANONICAL_CURRENT",
+      "examples": ["canonical GitHub main", "CURRENT/PRIMARY Issue", "exact Gate/PR/receipt"],
+      "use": "authority/current-state binding"
+    },
+    {
+      "tier": 1,
+      "name": "AUTHORITATIVE_PRIMARY",
+      "examples": ["official documentation", "official government/regulator source", "official provider status/policy"],
+      "use": "factual verification"
+    },
+    {
+      "tier": 2,
+      "name": "INDEPENDENT_CORROBORATION",
+      "examples": ["reputable third-party research", "independent measurement", "trusted specialist source"],
+      "use": "challenge/corroboration"
+    },
+    {
+      "tier": 3,
+      "name": "DISCOVERY_COMMUNITY",
+      "examples": ["community discussion", "social evidence", "broad web discovery"],
+      "use": "hypothesis generation and demand/sentiment signals; never sole authority for consequential claims"
+    }
+  ],
+  "freshness_and_cache": {
+    "classes": {
+      "PINNED_IMMUTABLE": "reuse by exact SHA/hash/artifact id",
+      "STABLE": "reuse compact receipt when still within task-relevant freshness window",
+      "VOLATILE": "Fresh-read for each decision/report where material",
+      "CONSEQUENTIAL_SHARED_STATE": "always Fresh-read immediately before action and after action"
+    },
+    "read_receipt_key": [
+      "provider_or_source",
+      "resource_id_or_url",
+      "ref_or_version",
+      "query_or_operation",
+      "freshness_class"
+    ],
+    "read_receipt_fields": [
+      "retrieved_at",
+      "source_ref",
+      "authority_tier",
+      "freshness_class",
+      "content_hash_or_canonical_pointer_when_available",
+      "reuse_eligibility"
+    ],
+    "request_coalescing": true,
+    "duplicate_identical_reads_across_units": "REUSE_IF_FRESHNESS_AND_AUTHORITY_REQUIREMENTS_MATCH",
+    "cache_bypass_after_write": true,
+    "cache_bypass_before_one_shot_or_irreversible_action": true
+  },
+  "evidence_budget": {
+    "principle": "Use the cheapest sufficient evidence set, not the largest possible source set.",
+    "default_stop_conditions": [
+      "canonical/current binding resolved",
+      "required primary authority obtained",
+      "material conflict either resolved or explicitly surfaced",
+      "additional sources are unlikely to change the decision",
+      "task-specific confidence threshold reached"
+    ],
+    "anti_overresearch": true,
+    "anti_duplicate_research": true
+  },
+  "equipment_selection": {
+    "classification": ["ACTIVE", "DORMANT", "REQUIRED_MANUAL", "SUBSTITUTE_NOT_PROVEN"],
+    "select_by": [
+      "task fit",
+      "authority/evidence quality",
+      "freshness need",
+      "latency",
+      "quota/cost",
+      "reliability",
+      "independence value",
+      "write risk",
+      "Owner burden"
+    ],
+    "load_everything_by_default": false,
+    "installed_connector_implies_use": false
+  },
+  "unit_profiles": {
+    "軍師": {
+      "default_core": ["GitHub", "Plugin_Management", "native web/search when current external facts are needed"],
+      "on_demand": ["Google_Drive", "Gmail", "Slack", "Todoist", "other lane-specific connected tools"],
+      "strategy": "route and synthesize; avoid reading every lane/source when a compact canonical pointer is sufficient"
+    },
+    "システム改善": {
+      "default_core": ["GitHub", "Context7 when library/API behavior is material"],
+      "on_demand": ["Render", "Netlify", "Replit", "web/search for external platform behavior"],
+      "strategy": "code/config evidence first; exact failing path before broad platform research"
+    },
+    "AI研究": {
+      "default_core": ["GitHub", "web/search", "Parallel_Search", "Context7 where SDK/library evidence matters"],
+      "on_demand": ["provider-specific tools only when connected and separately authorized"],
+      "strategy": "parallel provider/evidence lanes; preserve provider neutrality and independent challenge"
+    },
+    "百人将": {
+      "default_core": ["GitHub", "web/search", "Parallel_Search"],
+      "on_demand": ["Semrush", "Ubersuggest", "Metricool", "Tally", "Netlify", "Stripe"],
+      "strategy": "parallelize market/demand/competition evidence; live publication/payment/outreach remains separately gated"
+    },
+    "特殊部隊": {
+      "default_core": ["GitHub", "authoritative official data/source tools permitted by current research scope"],
+      "on_demand": ["web/search for permitted public methodology/source verification"],
+      "strategy": "protected scientific boundaries override speed; no parallel access that widens sealed/result/economics scope"
+    },
+    "対話室": {
+      "default_core": ["GitHub"],
+      "on_demand": ["web/search", "Parallel_Search"],
+      "strategy": "idea generation should not pay for broad evidence retrieval until an idea reaches review/promotion need"
+    },
+    "本城": {
+      "default_core": ["GitHub", "Context7"],
+      "on_demand": ["Netlify", "Render", "Replit", "web/search"],
+      "strategy": "architecture/code path first; deployment/live mutation separately gated"
+    },
+    "法務": {
+      "default_core": ["GitHub", "authoritative government/regulator web sources"],
+      "on_demand": ["Stripe for payment-system facts when relevant and non-live", "other official sources"],
+      "strategy": "authoritative-primary first; avoid broad commentary when official source answers the question"
+    }
+  },
+  "cross_unit_shared_read_bus": {
+    "enabled_as_policy": true,
+    "meaning": "Units may reuse compact fresh read receipts/canonical pointers produced by another unit when exact source/version/freshness requirements match.",
+    "owner_as_bus": false,
+    "chat_as_bus": false,
+    "canonical_pointer_over_copy": true,
+    "raw_large_payload_duplication": "AVOID"
+  },
+  "shared_write_safety": {
+    "default": "SINGLE_WRITER_PER_RESOURCE_AT_A_TIME",
+    "requires": [
+      "Fresh-read exact resource",
+      "immediate pre-write binding check",
+      "collision/consumption check",
+      "durable receipt",
+      "post-write Fresh-read"
+    ],
+    "one_shot_resources": "CENTRALLY_ARBITRATED_AND_NON_RETRIABLE_WHEN_CONSUMED"
+  },
+  "definition_of_done": [
+    "Unit startup no longer performs broad all-plugin/all-source loading by default.",
+    "Independent evidence reads are expressed as parallelizable DAG nodes rather than serial prose-driven retrieval.",
+    "Duplicate identical source reads are coalesced/reused when freshness permits.",
+    "Consequential writes remain collision-safe and fresh-bound.",
+    "Each unit has a small default-core equipment set plus on-demand equipment.",
+    "Owner is not required to coordinate source/tool reuse between units.",
+    "The fabric itself does not become a new authority layer or require per-unit duplicate frameworks."
+  ]
+}
