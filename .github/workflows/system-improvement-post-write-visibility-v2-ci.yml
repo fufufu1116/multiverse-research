@@ -1,0 +1,34 @@
+name: System Improvement Post Write Visibility v2 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/github_read_resilience_v1.py'
+      - 'automation/review_dispatcher_v1/publisher.py'
+      - 'automation/review_dispatcher_v1/t2.py'
+      - 'tools/test_auditor_post_write_visibility_cache_bypass_v1.py'
+      - '.github/workflows/system-improvement-post-write-visibility-v2-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Focused post-write visibility regression
+        run: PYTHONPATH=. python -m unittest -v tools.test_auditor_post_write_visibility_cache_bypass_v1
+      - name: Cross-lane execution-state regressions
+        run: PYTHONPATH=. python -m unittest -v tools.test_auditor_upstream_execution_state_v1 tools.test_review_build_admission_preflight_v2
+      - name: Current dispatcher regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          modules=$(find automation/review_dispatcher_v1 -maxdepth 1 -name 'test_*.py' ! -name '*_legacy_v1.py' -printf '%p\n' | sed 's#/#.#g;s#\.py$##' | sort | tr '\n' ' ')
+          PYTHONPATH=. python -m unittest -v $modules
+      - name: Validator
+        run: PYTHONPATH=. python automation/review_dispatcher_v1/validator.py

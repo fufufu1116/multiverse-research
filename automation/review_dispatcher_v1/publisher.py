@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
 import time
 
 from automation.review_dispatcher_v1 import publisher_legacy_v1 as _legacy
 from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_fresh_read,
     github_json_read,
 )
 from automation.review_dispatcher_v1.publisher_freshness_v1 import (
@@ -25,10 +27,13 @@ def _bounded_public_github(url: str):
     )
 
 
-# Fixed publisher legacy logic performs public GitHub freshness reads through
-# this function. Rebind only that GET edge to the already-integrated bounded
-# GET-only rate-limit helper. Authenticated mutation remains in github_app and
-# is never retried by this helper.
+def _fresh_public_github(url: str):
+    return github_json_fresh_read(
+        url,
+        user_agent="multiverse-fixed-review-publisher-v1",
+    )
+
+
 _legacy.public_github = _bounded_public_github
 
 _original_fresh_verify = _legacy._fresh_verify
@@ -38,8 +43,23 @@ POST_WRITE_VISIBILITY_MAX_READS = 4
 POST_WRITE_VISIBILITY_DELAY_SECONDS = 1.0
 
 
-def _fresh_verify(job):
-    comments = _original_fresh_verify(job)
+@contextmanager
+def _legacy_public_read_mode(*, use_cache: bool):
+    previous = _legacy.public_github
+    managed = previous in (_bounded_public_github, _fresh_public_github)
+    if managed:
+        _legacy.public_github = (
+            _bounded_public_github if use_cache else _fresh_public_github
+        )
+    try:
+        yield
+    finally:
+        _legacy.public_github = previous
+
+
+def _fresh_verify(job, *, use_cache: bool = True):
+    with _legacy_public_read_mode(use_cache=use_cache):
+        comments = _original_fresh_verify(job)
     assert_job_request_still_canonical(job, comments)
     return comments
 
@@ -55,24 +75,16 @@ def _canonical_comment_or_none(comments, *, lane, marker):
         if str(exc) == "NO_TRUSTED_RESULT_FOR_MARKER":
             return None
         raise
-
     for comment in comments:
         if _legacy.github_comment_id(comment, "RESULT_COMMENT_ID") == canonical_id:
             return comment
     raise _legacy.ReviewContractError("CANONICAL_RESULT_COMMENT_NOT_FOUND")
 
 
-def _await_published_result_canonical(
-    job,
-    artifact,
-    *,
-    marker,
-    published_comment_id,
-    receipt,
-):
+def _await_published_result_canonical(job, artifact, *, marker, published_comment_id, receipt):
     missed_visibility = False
     for read_index in range(POST_WRITE_VISIBILITY_MAX_READS):
-        comments = _fresh_verify(job)
+        comments = _fresh_verify(job, use_cache=False)
         try:
             assert_published_result_is_canonical(
                 comments,
@@ -87,28 +99,17 @@ def _await_published_result_canonical(
         else:
             if not missed_visibility:
                 return receipt
-            recovered = _recover_existing(
-                job,
-                artifact,
-                comments,
-                marker,
-            )
+            recovered = _recover_existing(job, artifact, comments, marker)
             if recovered is None:
-                raise _legacy.ReviewContractError(
-                    "POST_WRITE_CANONICAL_RESULT_DISAPPEARED"
-                )
+                raise _legacy.ReviewContractError("POST_WRITE_CANONICAL_RESULT_DISAPPEARED")
             _legacy.require(
                 recovered["published_comment_id"] == published_comment_id,
                 "POST_WRITE_RECEIPT_COMMENT_ID_DRIFT",
             )
             return recovered
-
         if read_index + 1 < POST_WRITE_VISIBILITY_MAX_READS:
             time.sleep(POST_WRITE_VISIBILITY_DELAY_SECONDS)
-
-    raise _legacy.ReviewContractError(
-        "POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED"
-    )
+    raise _legacy.ReviewContractError("POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED")
 
 
 def _validate_recovery_artifact(job, artifact):
@@ -145,11 +146,7 @@ def _validate_recovery_artifact(job, artifact):
 
 
 def _recover_existing(job, artifact, comments, marker):
-    canonical = _canonical_comment_or_none(
-        comments,
-        lane=job["lane"],
-        marker=marker,
-    )
+    canonical = _canonical_comment_or_none(comments, lane=job["lane"], marker=marker)
     if canonical is None:
         return None
     _validate_recovery_artifact(job, artifact)
@@ -168,24 +165,21 @@ def publish(job, artifact):
         job["request_comment"],
         job["request_sha256"],
     )
-
     recovered = _recover_existing(job, artifact, comments, marker)
     if recovered is not None:
         return recovered
-
     try:
         receipt = _original_publish(job, artifact)
     except _legacy.ReviewContractError as exc:
         if not str(exc).startswith("CURRENT_REQUEST_RESULT_ALREADY_EXISTS:"):
             raise
-        comments = _fresh_verify(job)
+        comments = _fresh_verify(job, use_cache=False)
         recovered = _recover_existing(job, artifact, comments, marker)
         if recovered is None:
             raise _legacy.ReviewContractError(
                 "EXISTING_RESULT_RACE_WITHOUT_CANONICAL_RECOVERY"
             ) from exc
         return recovered
-
     return _await_published_result_canonical(
         job,
         artifact,
