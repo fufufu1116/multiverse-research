@@ -1,0 +1,77 @@
+{
+  "record": "KEIRIN_SW0_RESULT_SCHEMA_CHARACTERIZATION_PREREG_v1",
+  "status": "FROZEN_BEFORE_ANY_POST_GATE475_RESULT_VALUE_ACCESS",
+  "created_jst": "2026-09-14",
+  "purpose": "One structural/provenance characterization read only. No predictive scoring, no economics, no transformation to first/second/third, and no model decision.",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "inputs": {
+    "result": {
+      "drive_file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+      "title": "DEV2000_RESULT_ONLY_v3.jsonl",
+      "sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+      "expected_total_jsonl_lines": 2000,
+      "known_schema_from_consumed_gate_475": [
+        "first_set",
+        "parser",
+        "race_date",
+        "race_id",
+        "second_set",
+        "status",
+        "third_set"
+      ]
+    },
+    "prediction_lock": {
+      "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+      "title": "SW0_DEV2000_AB_PREDICTION_LOCK_v1.jsonl.gz",
+      "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+      "expected_unique_race_count": 1500,
+      "subset": "DEV2000 A+B only"
+    }
+  },
+  "frozen_tool": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/characterize_sw0_result_schema_v1.py",
+    "sha256": "72de27149e4c9a5a072652f74ed89b280e7ba2fda382ca70e23fbd55a612d4d3"
+  },
+  "frozen_synthetic_test": {
+    "path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/test_characterize_sw0_result_schema_v1.py",
+    "sha256": "12a4f160739b8ce384a7262dc17a39cc1b250217ca81a9b00ea06d117baf7a85",
+    "tests": 2,
+    "result": "PASS",
+    "real_result_data_used": false
+  },
+  "execution_contract": {
+    "preconditions": [
+      "Fresh verify Owner Gate exact binding and unused state",
+      "verify exact result SHA256",
+      "verify exact frozen prediction SHA256",
+      "derive exact A+B allowlist from frozen prediction race_id values and require exactly 1500 unique race_ids"
+    ],
+    "result_scan": [
+      "read each result line only to raw-extract race_id before any JSON deserialization",
+      "if race_id is outside frozen A+B allowlist, do not deserialize or inspect first_set/second_set/third_set/parser/status/race_date values",
+      "for exact A+B rows only, require the already-observed exact seven-field schema",
+      "characterize only field types, set cardinalities, integer/uniqueness/disjointness invariants, parser-value histogram, status type, and race_date type",
+      "emit no first_set/second_set/third_set car-number values and no per-race outcomes"
+    ],
+    "required_counts": {
+      "total_result_lines": 2000,
+      "A_B_rows": 1500,
+      "A_B_duplicate_race_ids": 0,
+      "A_B_missing_race_ids": 0
+    },
+    "output_classification": "STRUCTURAL_CHARACTERIZATION_ONLY_NO_PREDICTIVE_EVALUATION"
+  },
+  "explicit_non_authority": [
+    "no predictive evaluation or scoring",
+    "no use of prediction probabilities for metrics",
+    "no mapping/renaming first_set->first or equivalent during this attempt",
+    "no DEV2000 C outcome-value deserialization/inspection",
+    "no ECON_HOLDOUT1000 access",
+    "no payout/odds/price/economics/ROI/profit access",
+    "no fitting/tuning/calibration/model selection/promotion",
+    "no provider contact, credentials, spend, Runtime, live betting, or automatic betting"
+  ],
+  "post_characterization_rule": "Regardless of observed structure, this attempt must stop after persisting the structural report. Any deterministic outcome transformation/evaluator must be designed and frozen afterward, without further result access, and predictive evaluation requires another NEW exact Owner Gate.",
+  "gate_475_reuse": false
+}
