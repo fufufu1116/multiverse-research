@@ -1,0 +1,35 @@
+name: System Improvement Lab Auth Escape v1 CI
+
+on:
+  push:
+    branches:
+      - system-improvement-lab-auth-bootstrap-escape-v1-20260914
+    paths:
+      - 'tools/buildkite_lab_auth_escape_v1.py'
+      - 'tools/test_buildkite_lab_auth_escape_v1.py'
+      - 'buildkite/review_dispatcher_v1/TEMP_MULTIVERSE_INDEPENDENT_LAB_AUTH_ESCAPE_v1.yml'
+      - '.github/workflows/system-improvement-lab-auth-escape-v1-ci.yml'
+  pull_request:
+    paths:
+      - 'tools/buildkite_lab_auth_escape_v1.py'
+      - 'tools/test_buildkite_lab_auth_escape_v1.py'
+      - 'buildkite/review_dispatcher_v1/TEMP_MULTIVERSE_INDEPENDENT_LAB_AUTH_ESCAPE_v1.yml'
+      - '.github/workflows/system-improvement-lab-auth-escape-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run temporary Lab auth escape preflight
+        run: python -m unittest tools.test_buildkite_lab_auth_escape_v1 -v
+      - name: Run canonical dispatcher regressions
+        run: python -m unittest automation.review_dispatcher_v1.test_dispatcher -v
+      - name: Compile temporary bootstrap
+        run: python -m py_compile tools/buildkite_lab_auth_escape_v1.py tools/test_buildkite_lab_auth_escape_v1.py
