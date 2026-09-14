@@ -23,13 +23,17 @@ This branch is an evidence pointer only. It does not alter main, grant authority
 - `python -O`: 56/56 PASS
 - Node fixed MV-CJSON-1 vectors: 6/6 PASS
 - deterministic Python->Node differential corpus: 1000/1000 PASS
+- strict independent Node raw-JSON parser adversarial cases: 15/15 PASS
+- strict raw-parser Python->Node differential corpus: 1000/1000 PASS
 - ledger concurrency benchmark: 8 processes / 1000 total appends / integrity PASS (~0.304s local only)
 - capability replay race: 8 concurrent consumers -> exactly 1 success / 7 replay rejections
 - AST scan: no bare `assert`, `eval`, `exec` in kernel modules
 - no private-key generation/loading/export/signing surface in kernel modules
 
+During the strict Node raw parser pass, its first draft incorrectly rejected a literal astral Unicode scalar by indexing a single UTF-16 code unit. The literal-astral negative/positive test reproduced the defect. The parser was corrected to consume Unicode code points, then the 15-case adversarial set and 1000-case strict raw differential corpus both passed. This is self-red-team evidence, not independent audit evidence.
+
 Local sandbox ZIP SHA256:
-`db90a1a2c602b23cd3f3f42e7eb39222bcb9a20856ff48f32f9ee7b40e11496d`
+`348cb5e5ffcb837dea6f7b83c9f6a54bfb81d4f91eccda09905c753976a9b43a`
 
 ## Remaining blockers
 
@@ -37,8 +41,7 @@ Local sandbox ZIP SHA256:
 2. Public-key rotation/revocation and historical-verification semantics are not implemented.
 3. External anti-rollback/head anchoring is not implemented for the main ledger or capability-use state.
 4. Trusted signer integration is not implemented or tested end-to-end; no secret/private key material is handled here.
-5. MV-CJSON-1 still lacks a second strict raw-JSON parser implementation; current Node evidence covers encoding/differential semantics, not duplicate-key raw parsing.
-6. Role-separated RED TEAM / independent AUDIT is still required. The authoring ChatGPT context must not self-certify.
+5. Role-separated RED TEAM / independent AUDIT is still required. The authoring ChatGPT context must not self-certify.
 
 ## Safe next route
 
