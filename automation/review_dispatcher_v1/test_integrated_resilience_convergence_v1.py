@@ -36,7 +36,7 @@ def request(request_id: str, *, lane: str = "LAB", predecessor: str | None = Non
         "base": SHA_C,
         "main": SHA_D,
         "proof_ceiling": "TEST_ONLY",
-        "execution_state": "TEST_REQUESTED",
+        "execution_state": ("TEST_REVIEW_REQUESTED" if lane == "LAB" else "TEST_AUDIT_REQUESTED"),
         "supersedes_request_sha256": predecessor,
         "recipe": {
             "subtrees": {}, "durable_comments": [], "source_rules": [],

@@ -1,0 +1,51 @@
+name: System Improvement Auditor Upstream Execution State v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/model.py'
+      - 'automation/review_dispatcher_v1/review.py'
+      - 'automation/review_dispatcher_v1/t2.py'
+      - 'automation/review_dispatcher_v1/test_dispatcher_legacy_v1.py'
+      - 'tools/test_auditor_upstream_execution_state_v1.py'
+      - 'tools/review_build_admission_preflight_v2.py'
+      - 'tools/test_review_build_admission_preflight_v2.py'
+      - '.github/workflows/system-improvement-auditor-upstream-execution-state-v1-ci.yml'
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Focused regressions
+        run: |
+          PYTHONPATH=. python -m unittest -v tools.test_auditor_upstream_execution_state_v1 tools.test_review_build_admission_preflight_v2
+      - name: Current dispatcher regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          modules=$(find automation/review_dispatcher_v1 -maxdepth 1 -name 'test_*.py' ! -name '*_legacy_v1.py' -printf '%p\n' | sed 's#/#.#g;s#\.py$##' | sort | tr '\n' ' ')
+          PYTHONPATH=. python -m unittest -v $modules
+      - name: Validator
+        run: PYTHONPATH=. python automation/review_dispatcher_v1/validator.py
+      - name: Exact live PR510 Auditor semantic admission preflight
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MULTIVERSE_DISPATCHER_REF: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
+        run: >-
+          PYTHONPATH=. python -m tools.review_build_admission_preflight_v2
+          --repo fufufu1116/multiverse-research
+          --lane AUDITOR
+          --head 857d1d501a36773bd8e35d2d7fa2b5dd088dd3bb
+          --expected-request-comment 5666827178
+          --expected-request-sha256 37afb5e86581db08e98492ea47b4c685255af8a91b414d2d4d5cd9a47765902c
+          --expected-main e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
+          --expected-tree 8b5c6cbcb5011f25d7b2cf032e73fc1ac524ed04

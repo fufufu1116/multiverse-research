@@ -56,3 +56,22 @@ def latest_exact_current_owner_request(
         base=base,
         main=main,
     )
+
+def cross_lane_execution_state_valid(
+    lab_execution_state,
+    auditor_execution_state,
+):
+    lab_suffix = "_REVIEW_REQUESTED"
+    auditor_suffix = "_AUDIT_REQUESTED"
+    if not isinstance(lab_execution_state, str):
+        return False
+    if not isinstance(auditor_execution_state, str):
+        return False
+    if not lab_execution_state.endswith(lab_suffix):
+        return False
+    if not auditor_execution_state.endswith(auditor_suffix):
+        return False
+    lab_family = lab_execution_state[:-len(lab_suffix)]
+    auditor_family = auditor_execution_state[:-len(auditor_suffix)]
+    return bool(lab_family) and lab_family == auditor_family
+

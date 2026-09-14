@@ -6,6 +6,9 @@ from automation.review_dispatcher_v1 import t2_legacy_v1 as _legacy
 from automation.review_dispatcher_v1.github_read_resilience_v1 import (
     github_json_read,
 )
+from automation.review_dispatcher_v1.model import (
+    cross_lane_execution_state_valid,
+)
 from automation.review_dispatcher_v1.publisher_freshness_v1 import (
     assert_job_request_still_canonical,
 )
@@ -64,7 +67,10 @@ def _lab_binding(job, comments):
         "LATEST_LAB_PROOF_CEILING_MISMATCH",
     )
     _legacy.require(
-        latest_request["execution_state"] == request["execution_state"],
+        cross_lane_execution_state_valid(
+            latest_request["execution_state"],
+            request["execution_state"],
+        ),
         "LATEST_LAB_EXECUTION_STATE_MISMATCH",
     )
     _legacy.require(

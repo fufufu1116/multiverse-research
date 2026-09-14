@@ -29,6 +29,7 @@ from automation.review_dispatcher_v1.model import (
     RESULT_SCHEMA,
     ReviewContractError,
     canonical_json,
+    cross_lane_execution_state_valid,
     dotted_get,
     fetch_all_pages,
     github_branch_commit_sha,
@@ -391,11 +392,15 @@ def _check_auditor_upstream(
             == job["request"]["proof_ceiling"],
             repr(latest_lab_request["proof_ceiling"]),
         )
+        lab_execution_state = latest_lab_request["execution_state"]
+        auditor_execution_state = job["request"]["execution_state"]
         check(
             "upstream_lab_request_execution_state",
-            latest_lab_request["execution_state"]
-            == job["request"]["execution_state"],
-            repr(latest_lab_request["execution_state"]),
+            cross_lane_execution_state_valid(
+                lab_execution_state,
+                auditor_execution_state,
+            ),
+            f"lab={lab_execution_state!r} auditor={auditor_execution_state!r}",
         )
         latest_lab_request_sha256 = sha256_json(latest_lab_request)
         check(
@@ -457,7 +462,7 @@ def _check_auditor_upstream(
             "reviewed_base": job["base"],
             "reviewed_main": job["main"],
             "proof_ceiling": job["request"]["proof_ceiling"],
-            "execution_state": job["request"]["execution_state"],
+            "execution_state": latest_lab_request.get("execution_state"),
         }
         for key, expected in exact_fields.items():
             actual = lab_artifact.get(key)
