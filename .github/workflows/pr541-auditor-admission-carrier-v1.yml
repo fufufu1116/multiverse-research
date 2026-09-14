@@ -1,0 +1,41 @@
+name: PR541 Auditor Admission Carrier v1
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/pr541-auditor-admission-carrier-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Package-root import smoke
+        run: |
+          PYTHONPATH=. python -c 'import automation.review_dispatcher_v1.review'
+          PYTHONPATH=. python -c 'import automation.review_dispatcher_v1.t2'
+          PYTHONPATH=. python -c 'import tools.review_build_admission_preflight_v2'
+      - name: Admission unit regressions
+        run: PYTHONPATH=. python -m unittest -v tools.test_review_build_admission_preflight_v2 tools.test_auditor_upstream_execution_state_v1
+      - name: Exact live PR541 Auditor semantic admission preflight
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MULTIVERSE_DISPATCHER_REF: 54f1760cef52d6a757c1e89dba421cbca6c06f15
+        run: >-
+          PYTHONPATH=. python -m tools.review_build_admission_preflight_v2
+          --repo fufufu1116/multiverse-research
+          --lane AUDITOR
+          --head e1f87d7e8cb74fadf933b95c4d5570c85a4f645e
+          --expected-request-comment 5669489330
+          --expected-request-sha256 79b38aa3b5852696a2ecfb45b4a7dc69767392d3347136902b15faa34b709f09
+          --expected-main 54f1760cef52d6a757c1e89dba421cbca6c06f15
+          --expected-tree 9f88754adea2949319b8615e37fc3b3f40732845
