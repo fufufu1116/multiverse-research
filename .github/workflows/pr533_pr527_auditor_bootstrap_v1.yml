@@ -1,0 +1,43 @@
+name: PR533 PR527 Auditor bootstrap candidate v1
+
+on:
+  push:
+    branches:
+      - system-improvement-pr527-auditor-bootstrap-v1-20260915
+  pull_request:
+    paths:
+      - 'automation/review_bootstrap_pr527_v1/**'
+      - '.github/workflows/pr533_pr527_auditor_bootstrap_v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile bootstrap module
+        run: python -m py_compile automation/review_bootstrap_pr527_v1/bootstrap_review.py
+      - name: Run focused bootstrap tests
+        run: python -m unittest automation.review_bootstrap_pr527_v1.test_bootstrap_review -v
+      - name: Assert narrow target binding
+        run: |
+          python - <<'PY'
+          from automation.review_bootstrap_pr527_v1 import bootstrap_review as b
+          assert b.TARGET_PR == 527
+          assert b.TARGET_HEAD == '4af4521dfd5daaa47d9b816874c9a65bdf526079'
+          assert b.TARGET_TREE == '7bb675f8ab93a7ec123e40b14f8cb5672c38efaa'
+          assert b.TARGET_MAIN == 'e81f3d310d07d40eb6c11fe8233dade3d72a5ad2'
+          assert b.TARGET_REQUEST_COMMENT == 5668811178
+          assert b.TARGET_REQUEST_SHA256 == '024130391042f6fcae795fe1463b3b79d5b7822dcbdffbc1bf6ec8a1bbced629'
+          print('BOOTSTRAP_TARGET_BINDING=PASS')
+          PY
+      - name: Runtime boundary
+        run: |
+          echo 'RUNTIME=OFF'
+          echo 'BUILDKITE_BUILD_AUTHORITY=NONE'
+          echo 'STEPS_MUTATION_AUTHORITY=NONE'
