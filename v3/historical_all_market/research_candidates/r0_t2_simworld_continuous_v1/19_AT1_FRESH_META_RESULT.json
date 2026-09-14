@@ -1,0 +1,23 @@
+{
+  "record": "AT1_A18_B02_FRESH_META_RESULT_v1",
+  "prereg_commit": "68dfd3a1797f8fffddd6e863cea941b4516e52b3",
+  "candidate_id": "AT1_A18_B02",
+  "fresh_races": 30000,
+  "seed_results": {
+    "20261001": {
+      "R0_T2": {"mean_primary_regret": 0.0638011474777028, "max_primary_regret": 0.19500275217103627},
+      "AT1": {"mean_primary_regret": 0.06240798215691368, "max_primary_regret": 0.1935629810752701},
+      "retain_rule_pass": true
+    },
+    "20261002": {
+      "R0_T2": {"mean_primary_regret": 0.06413380206024484, "max_primary_regret": 0.18342122027948138},
+      "AT1": {"mean_primary_regret": 0.06336844641824942, "max_primary_regret": 0.18374079431011744},
+      "retain_rule_pass": false
+    }
+  },
+  "decision": "REJECT_AT1_AS_BROAD_ROBUSTNESS_LEAD",
+  "reason": "Replication seed failed the frozen maximum-regret condition by a small margin. No threshold relaxation permitted.",
+  "dominant_failure_surface": "asymmetric_positive_outlier_process",
+  "posthoc_threshold_change": false,
+  "real_evidence": false
+}
