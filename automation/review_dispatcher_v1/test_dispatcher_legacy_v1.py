@@ -478,7 +478,9 @@ class HardeningTests(unittest.TestCase):
     def test_16_auditor_upstream_requires_latest_exact_lab_and_owner_t1(self):
         auditor_request = lab_request("auditor-upstream")
         auditor_request["lane"] = "AUDITOR"
+        auditor_request["execution_state"] = "TEST_AUDIT_REQUESTED"
         latest_lab = lab_request("latest-lab")
+        latest_lab["execution_state"] = "TEST_REVIEW_REQUESTED"
         latest_lab_sha256 = sha256_json(latest_lab)
         auditor_request["upstream"] = {
             "lab_pass_comment": 123,
@@ -514,7 +516,7 @@ class HardeningTests(unittest.TestCase):
             "reviewed_base": auditor_request["base"],
             "reviewed_main": auditor_request["main"],
             "proof_ceiling": auditor_request["proof_ceiling"],
-            "execution_state": auditor_request["execution_state"],
+            "execution_state": latest_lab["execution_state"],
             "producer": {
                 "github_login": "multiverse-independent-lab[bot]",
                 "github_app_id": 4819755,
