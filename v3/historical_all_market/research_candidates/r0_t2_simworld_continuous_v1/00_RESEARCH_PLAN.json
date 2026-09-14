@@ -1,0 +1,65 @@
+{
+  "record": "R0_T2_SIMWORLD_CONTINUOUS_RESEARCH_PLAN_v1",
+  "created_jst": "2026-09-15",
+  "owner_directive": "Do not wait for future data as the primary research mode; restructure so research can advance immediately.",
+  "purpose": "Run continuous synthetic/virtual-world robustness and falsification research on frozen R0_T2 while keeping prospective real-world evidence as an independent confirmation lane.",
+  "model_under_test": {
+    "id": "R0_T2",
+    "formula": "Plackett-Luce softmax(score / 2.0)",
+    "temperature": 2.0,
+    "parameter_status": "FROZEN_FOR_PROSPECTIVE_REAL_VALIDATION"
+  },
+  "two_lane_structure": {
+    "simulation_world_lane": {
+      "status": "ACTIVE_IMMEDIATE_CONTINUOUS",
+      "goal": "falsify, stress-test, characterize failure surfaces, and discover successor hypotheses without consuming protected real outcomes",
+      "promotion_authority": false
+    },
+    "prospective_real_lane": {
+      "status": "INDEPENDENT_CONFIRMATION_PENDING_PRE_INPUT_WINDOW",
+      "goal": "one-shot external predictive confirmation only",
+      "promotion_authority": false
+    }
+  },
+  "simulation_world_experiment_families": [
+    "score_noise_and_measurement_error",
+    "score_scale_and_location_shift",
+    "field_size_5_to_9",
+    "heavy_tail_and_outlier_scores",
+    "latent_strength_nonlinearity",
+    "pairwise_interaction_and_style_matchup_effects",
+    "venue_or_meeting_random_effects",
+    "heteroskedastic_race_noise",
+    "missing_and_degraded_pre_features",
+    "adversarial_rank_compression_and_rank_reversal",
+    "distribution_shift_between_development_and_target_worlds",
+    "calibration_failure_surfaces"
+  ],
+  "research_modes": {
+    "R0_T2_characterization": "Allowed. Preserve exact R0_T2 parameters and map robustness/failure regions.",
+    "successor_hypothesis_generation": "Allowed using simulation-only evidence, but successor models must be labeled synthetic-only and cannot alter the frozen prospective R0_T2 test.",
+    "protected_real_data_tuning": "PROHIBITED",
+    "prospective_outcome_peeking": "PROHIBITED"
+  },
+  "decision_outputs": [
+    "robustness map",
+    "failure taxonomy",
+    "candidate successor hypotheses",
+    "simulation-only leaderboard",
+    "predeclared criteria for whether R0_T2 remains worth real confirmation"
+  ],
+  "hard_boundaries": {
+    "gate_487_rerun": "PROHIBITED",
+    "A_plus_B_as_fresh_validation": "PROHIBITED",
+    "DEV2000_C_outcome_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "prospective_result_access": "PROHIBITED_UNTIL_COMPLETE_PRELOCK_AND_NEW_EXACT_OWNER_GATE",
+    "payout_odds_price_economics": "PROHIBITED",
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "spend": false,
+    "credential": false
+  },
+  "owner_action_required_now": false,
+  "next_action": "Implement deterministic simulation harness and execute first robustness/falsification matrix immediately."
+}
