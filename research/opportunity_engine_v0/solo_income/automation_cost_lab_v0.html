@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Automation Cost Lab v0 — Internal Research</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;max-width:760px;margin:0 auto;padding:24px;line-height:1.6;background:#fafafa;color:#111}h1{font-size:1.65rem}h2{font-size:1.15rem;margin-top:28px}.card{background:white;border:1px solid #ddd;border-radius:14px;padding:18px;margin:14px 0}.grid{display:grid;grid-template-columns:1fr;gap:12px}label{font-weight:600}input,select{width:100%;box-sizing:border-box;padding:11px;border:1px solid #bbb;border-radius:9px;font-size:16px}.result{font-weight:700;font-size:1.05rem}.muted{color:#666;font-size:.9rem}.warn{background:#fff7df;border-color:#e8c66a}.ok{background:#eef9f0;border-color:#9fc8a5}.no{background:#fff0f0;border-color:#dda0a0}button{width:100%;padding:13px;border:0;border-radius:10px;background:#111;color:#fff;font-weight:700;font-size:16px}</style>
+</head>
+<body>
+<h1>自動化ツール料金・使用量 正規化ラボ v0</h1>
+<p class="muted">内部研究用。公開・収益化・アフィリエイト導線なし。確認日: 2026-09-14。</p>
+<div class="card">
+<div class="grid">
+<div><label for="runs">月間ワークフロー実行回数</label><input id="runs" type="number" min="0" value="1000"></div>
+<div><label for="steps">1回あたりの通常ステップ数</label><input id="steps" type="number" min="1" value="4"></div>
+<div><label for="ai">Makeの動的AIクレジット機能を含む？</label><select id="ai"><option value="no">いいえ</option><option value="yes">はい / 不明</option></select></div>
+<button id="calc">計算</button>
+</div>
+</div>
+<div id="make" class="card"></div>
+<div id="n8n" class="card"></div>
+<div class="card warn">
+<h2>重要な前提</h2>
+<p>Makeは通常の非AIモジュールでは概ね「1アクション=1クレジット」ですが、AI/高度機能には動的消費があります。n8n Cloudはワークフロー全体の実行回数ベースで、ステップ数自体では課金単位が増えません。</p>
+<p>通貨・月払い/年払い・AI/APIモデル費・セルフホスト運用費は別条件です。この画面は「同じ月額」という誤比較を避けるため、勝者を自動決定しません。</p>
+</div>
+<div class="card">
+<h2>凍結した公式基準</h2>
+<p><strong>Make:</strong> Free 1,000 credits/月。取得時点の10K設定で Core $12/月、Pro $21/月、Teams $38/月。請求周期によって条件が変わるため実購入時は再確認。</p>
+<p><strong>n8n Cloud:</strong> Starter €20/月（年払い、2.5K executions）、Pro €50/月（年払い、10K executions）。各プランは unlimited steps。</p>
+<p class="muted">Sources: make.com/en/pricing, help.make.com/credits, n8n.io/pricing/</p>
+</div>
+<script>
+function fmt(n){return new Intl.NumberFormat('ja-JP').format(n)}
+function render(){
+ const runs=Math.max(0,Number(document.getElementById('runs').value)||0);
+ const steps=Math.max(1,Number(document.getElementById('steps').value)||1);
+ const dynamic=document.getElementById('ai').value==='yes';
+ const make=document.getElementById('make');
+ const n8n=document.getElementById('n8n');
+ if(dynamic){
+   make.className='card warn';
+   make.innerHTML='<h2>Make</h2><p class="result">要追加モデル化</p><p>動的AIクレジット機能が含まれるため、単純な 実行回数×ステップ数 だけでは正確なクレジット量を出しません。</p>';
+ } else {
+   const credits=runs*steps;
+   let fit='10K Core容量内'; let cls='card ok';
+   if(credits<=1000){fit='Free 1K容量内';}
+   else if(credits>10000){fit='10K基本容量を超過'; cls='card no';}
+   make.className=cls;
+   make.innerHTML='<h2>Make</h2><p class="result">推定 '+fmt(credits)+' credits/月</p><p>'+fit+'</p><p class="muted">通常の1-creditモジュールだけを仮定。</p>';
+ }
+ let nfit='Starter 2.5K容量内', ncls='card ok';
+ if(runs>2500&&runs<=10000){nfit='Pro 10K容量内';}
+ else if(runs>10000){nfit='Pro 10K容量を超過';ncls='card no';}
+ n8n.className=ncls;
+ n8n.innerHTML='<h2>n8n Cloud</h2><p class="result">推定 '+fmt(runs)+' executions/月</p><p>'+nfit+'</p><p class="muted">ステップ数 '+fmt(steps)+' でも実行単位はワークフロー全体1回。</p>';
+}
+document.getElementById('calc').addEventListener('click',render);render();
+</script>
+</body></html>
