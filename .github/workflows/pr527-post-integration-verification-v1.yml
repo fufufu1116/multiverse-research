@@ -1,0 +1,57 @@
+name: PR527 Post-Integration Verification v1
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/pr527-post-integration-verification-v1.yml'
+      - 'automation/review_dispatcher_v1/model.py'
+      - 'automation/review_dispatcher_v1/review.py'
+      - 'automation/review_dispatcher_v1/t2.py'
+      - 'tools/review_build_admission_preflight_v2.py'
+      - 'tools/test_auditor_upstream_execution_state_v1.py'
+      - 'tools/test_review_build_admission_preflight_v2.py'
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Cross-lane focused regressions
+        run: |
+          PYTHONPATH=. python -m unittest -v \
+            tools.test_auditor_upstream_execution_state_v1 \
+            tools.test_review_build_admission_preflight_v2
+      - name: Current dispatcher regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          modules=$(find automation/review_dispatcher_v1 -maxdepth 1 -name 'test_*.py' ! -name '*_legacy_v1.py' -printf '%p\n' | sed 's#/#.#g;s#\.py$##' | sort | tr '\n' ' ')
+          PYTHONPATH=. python -m unittest -v $modules
+      - name: Validator
+        run: PYTHONPATH=. python automation/review_dispatcher_v1/validator.py
+      - name: Canonical reviewer source invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F 'def cross_lane_execution_state_valid(' automation/review_dispatcher_v1/model.py
+          grep -F 'cross_lane_execution_state_valid(' automation/review_dispatcher_v1/review.py
+          grep -F '"execution_state": latest_lab_request.get("execution_state")' automation/review_dispatcher_v1/review.py
+          grep -F 'cross_lane_execution_state_valid(' automation/review_dispatcher_v1/t2.py
+          grep -F '_check_auditor_upstream(' tools/review_build_admission_preflight_v2.py
+          grep -F 'auditor_upstream_review_semantics' tools/review_build_admission_preflight_v2.py
+      - name: Fail if carrier changes semantic implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          changed=$(git diff --name-only origin/main...HEAD)
+          printf '%s\n' "$changed"
+          test "$changed" = '.github/workflows/pr527-post-integration-verification-v1.yml'
