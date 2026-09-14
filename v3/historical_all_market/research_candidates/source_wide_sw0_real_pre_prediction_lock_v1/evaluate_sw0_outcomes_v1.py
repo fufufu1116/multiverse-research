@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse, csv, gzip, hashlib, json, math, random
 from collections import defaultdict
+from pathlib import Path
 
 ALLOWED_OUTCOME_FIELDS = ["race_id","first","second","third"]
 
@@ -31,22 +32,40 @@ def load_predictions(path, expected_sha):
         raise SystemExit("FAIL_CLOSED:PREDICTION_UNIVERSE")
     return rows
 
-def load_outcomes_csv(path, expected_sha):
+def _accept_outcome_row(row, out):
+    if list(row.keys()) != ALLOWED_OUTCOME_FIELDS and set(row.keys()) != set(ALLOWED_OUTCOME_FIELDS):
+        raise SystemExit("FAIL_CLOSED:OUTCOME_SCHEMA_OR_EXTRA_FIELDS")
+    rid=str(row["race_id"])
+    if rid in out:
+        raise SystemExit("FAIL_CLOSED:DUPLICATE_OUTCOME_RACE")
+    vals=tuple(int(row[k]) for k in ("first","second","third"))
+    if len(set(vals))!=3:
+        raise SystemExit("FAIL_CLOSED:MALFORMED_FINISH_ORDER")
+    out[rid]=vals
+
+def load_outcomes(path, expected_sha):
     if sha256_file(path) != expected_sha:
         raise SystemExit("FAIL_CLOSED:OUTCOME_SHA_MISMATCH")
     out={}
-    with open(path,newline="",encoding="utf-8") as f:
-        r=csv.DictReader(f)
-        if r.fieldnames != ALLOWED_OUTCOME_FIELDS:
-            raise SystemExit("FAIL_CLOSED:OUTCOME_SCHEMA_OR_EXTRA_COLUMNS")
-        for row in r:
-            rid=row["race_id"]
-            if rid in out:
-                raise SystemExit("FAIL_CLOSED:DUPLICATE_OUTCOME_RACE")
-            vals=tuple(int(row[k]) for k in ("first","second","third"))
-            if len(set(vals))!=3:
-                raise SystemExit("FAIL_CLOSED:MALFORMED_FINISH_ORDER")
-            out[rid]=vals
+    suffix=Path(path).suffix.lower()
+    if suffix==".csv":
+        with open(path,newline="",encoding="utf-8") as f:
+            r=csv.DictReader(f)
+            if r.fieldnames != ALLOWED_OUTCOME_FIELDS:
+                raise SystemExit("FAIL_CLOSED:OUTCOME_SCHEMA_OR_EXTRA_COLUMNS")
+            for row in r:
+                _accept_outcome_row(row,out)
+    elif suffix==".jsonl":
+        with open(path,encoding="utf-8") as f:
+            for line in f:
+                if not line.strip():
+                    raise SystemExit("FAIL_CLOSED:BLANK_OUTCOME_RECORD")
+                row=json.loads(line)
+                if not isinstance(row,dict):
+                    raise SystemExit("FAIL_CLOSED:OUTCOME_RECORD_NOT_OBJECT")
+                _accept_outcome_row(row,out)
+    else:
+        raise SystemExit("FAIL_CLOSED:OUTCOME_FORMAT_NOT_ALLOWED")
     return out
 
 def race_metrics(pred, outcome):
@@ -124,7 +143,7 @@ def main():
     ap.add_argument("--output",required=True)
     args=ap.parse_args()
     preds=load_predictions(args.predictions,args.prediction_sha256)
-    outs=load_outcomes_csv(args.outcomes,args.outcome_sha256)
+    outs=load_outcomes(args.outcomes,args.outcome_sha256)
     pids={p["race_id"] for p in preds}
     if set(outs)!=pids:
         raise SystemExit("FAIL_CLOSED:OUTCOME_RACE_SET_NOT_EXACT_PREDICTION_SET")
