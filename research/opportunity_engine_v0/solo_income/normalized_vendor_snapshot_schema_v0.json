@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "multiverse://opportunity-engine/normalized-vendor-snapshot-v0",
+  "title": "Normalized Vendor Snapshot v0",
+  "description": "Research-only normalized evidence row for decision-material vendor drift. This schema does not fetch sources or authorize publication/monetization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "vendor",
+    "source_id",
+    "source_url",
+    "checked_at",
+    "source_status",
+    "evidence_state"
+  ],
+  "properties": {
+    "schema_version": {"const": 0},
+    "vendor": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "source_url": {"type": "string", "pattern": "^https://"},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "source_status": {
+      "enum": ["AVAILABLE", "UNAVAILABLE"]
+    },
+    "evidence_state": {
+      "enum": ["CONFIRMED", "CONFLICTING", "NOT_FOUND", "REQUIRES_VENDOR_CONFIRMATION", "SOURCE_UNAVAILABLE"]
+    },
+    "price": {"type": ["string", "null"]},
+    "billing_basis": {"type": ["string", "null"]},
+    "minimum_or_bucket_rule": {"type": ["string", "null"]},
+    "billable_actor_rule": {"type": ["string", "null"]},
+    "currency_tax_basis": {"type": ["string", "null"]},
+    "eligibility_region": {"type": ["string", "null"]},
+    "feature_state": {"type": ["string", "null"]},
+    "ai_packaging_credit_model": {"type": ["string", "null"]},
+    "plan_generation_or_migration_state": {"type": ["string", "null"]},
+    "effective_date": {"type": ["string", "null"]},
+    "term_commitment_renewal_refund": {"type": ["string", "null"]},
+    "affiliate_commission_rate": {"type": ["string", "null"]},
+    "affiliate_commission_window": {"type": ["string", "null"]},
+    "affiliate_payout_threshold": {"type": ["string", "null"]},
+    "affiliate_eligibility": {"type": ["string", "null"]},
+    "affiliate_attribution_rule": {"type": ["string", "null"]},
+    "claims": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "notes": {"type": ["string", "null"]}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"source_status": {"const": "UNAVAILABLE"}}, "required": ["source_status"]},
+      "then": {"properties": {"evidence_state": {"enum": ["SOURCE_UNAVAILABLE", "NOT_FOUND", "REQUIRES_VENDOR_CONFIRMATION"]}}}
+    },
+    {
+      "if": {"properties": {"evidence_state": {"const": "CONFLICTING"}}, "required": ["evidence_state"]},
+      "then": {"required": ["claims"], "properties": {"claims": {"minItems": 2}}}
+    }
+  ]
+}
