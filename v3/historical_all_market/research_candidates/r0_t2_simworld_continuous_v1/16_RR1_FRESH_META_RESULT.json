@@ -1,0 +1,24 @@
+{
+  "record": "RR1_B20_S4_FRESH_META_RESULT_v1",
+  "prereg_commit": "cef3ee670370a0dd4481fc7263425419d759bd3d",
+  "candidate_id": "RR1_B20_S4",
+  "fresh_races": 30000,
+  "seed_results": {
+    "20260930": {
+      "R0_T2": {"mean_primary_regret": 0.070876191307017, "max_primary_regret": 0.16801333212221983},
+      "RR1_B20_S4": {"mean_primary_regret": 0.07190818809375392, "max_primary_regret": 0.1698343899894234},
+      "retain_rule_pass": false
+    },
+    "20260931": {
+      "R0_T2": {"mean_primary_regret": 0.07736349224498185, "max_primary_regret": 0.16275979165223176},
+      "RR1_B20_S4": {"mean_primary_regret": 0.07578960017386385, "max_primary_regret": 0.16307667776329365},
+      "retain_rule_pass": false
+    }
+  },
+  "dominant_failure_world": "winner_only_latent_shock",
+  "decision": "REJECT_RR1_AS_BROAD_ROBUSTNESS_LEAD",
+  "reason": "Maximum regret was worse than R0_T2 in both independent seeds. Frozen rule therefore failed despite mixed mean-regret behavior.",
+  "posthoc_changes": false,
+  "real_evidence": false,
+  "protected_boundaries_unchanged": true
+}
