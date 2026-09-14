@@ -1,0 +1,31 @@
+{
+  "record": "STRUCTURAL_SUCCESSOR_DEVELOPMENT_PLAN_v1",
+  "created_jst": "2026-09-15",
+  "trigger": "H0.25 failed the frozen fresh structural-world maximum-regret rule in both seeds.",
+  "status": "DEVELOPMENT_ON_CONSUMED_SYNTHETIC_WORLDS_ONLY",
+  "problem_localization": {
+    "repeated_candidate_underperformance_families": ["localized_rank_reversal", "non_monotone_score_strength_mapping"],
+    "interpretation": "Global temperature mixing cannot represent local ordering errors or non-monotone score-to-strength relationships."
+  },
+  "successor_hypothesis_families": [
+    {
+      "id": "S1_LOCAL_UNCERTAINTY_SHRINKAGE",
+      "idea": "Detect small score margins / local ambiguity from PRE scores only and shrink only ambiguous adjacent probability contrasts toward uniform while leaving clear separations close to R0_T2."
+    },
+    {
+      "id": "S2_ROBUST_SCORE_TRANSFORM",
+      "idea": "Use a bounded monotone score transform before PL to reduce extreme-score misspecification without learning from protected real outcomes."
+    },
+    {
+      "id": "S3_STRUCTURAL_MODEL_AVERAGE",
+      "idea": "Average frozen R0_T2 with a PRE-only rank-robust component designed for localized reversals; all weights developed only on already-consumed synthetic worlds."
+    }
+  ],
+  "development_rule": "These hypotheses may be tuned only on consumed synthetic worlds from batteries through 11_STRUCTURAL_FALSIFICATION_RESULT.json. Before any claim of robustness, freeze a new candidate ID and a new fresh simulator-family preregistration with new seeds/world mechanisms.",
+  "real_world_status": "NO_REAL_TEST_PROPOSED_YET",
+  "R0_T2_prospective_assignment": "UNCHANGED_AND_INDEPENDENT",
+  "protected_real_data_access": false,
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "owner_action_required_now": false
+}
