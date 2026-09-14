@@ -1,0 +1,47 @@
+{
+  "record": "H0_25_STRUCTURAL_FALSIFICATION_PREREG_v1",
+  "frozen_jst": "2026-09-15",
+  "purpose": "Falsify H0.25 on simulator families not used in its development and not reducible to a single global temperature shift.",
+  "models": {
+    "baseline": "R0_T2 = PL softmax(score/2.0)",
+    "candidate": "H0.25 = sequential probability mixture over temperatures [1.0,1.5,2.0,3.0,4.0] with weights [0.15,0.15,0.40,0.15,0.15]"
+  },
+  "fresh_world_families": [
+    "pairwise_tactical_interaction",
+    "clustered_team_or_line_interaction",
+    "meeting_regime_switching",
+    "race_to_race_nonstationary_sharpness",
+    "entrant_specific_heteroskedasticity",
+    "score_censoring_and_rounding",
+    "asymmetric_missingness_by_strength",
+    "localized_rank_reversal",
+    "latent_venue_bias",
+    "mixture_of_latent_race_mechanisms",
+    "adversarial_feature_corruption",
+    "non_monotone_score_strength_mapping"
+  ],
+  "seeds": [20260926, 20260927],
+  "races_per_world_per_seed": 2000,
+  "primary_metric": "ordered_top3_nll_regret_vs_oracle_world_probability",
+  "secondary_metrics": ["winner_logloss_regret", "winner_brier_regret", "top1_accuracy"],
+  "frozen_retain_rule": {
+    "per_seed": "H0.25 maximum primary regret must be < R0_T2 maximum primary regret AND H0.25 mean primary regret must be <= R0_T2 mean primary regret + 0.0025",
+    "replication": "rule must pass independently in both seeds",
+    "failure": "any seed failure rejects H0.25 as current broad synthetic robustness lead; no post-hoc threshold change"
+  },
+  "development_firewall": "No H0.25 weight or temperature changes are allowed after this preregistration using these fresh worlds. Any successor must receive a new ID and use only consumed worlds for development before another fresh preregistered battery.",
+  "real_evidence_firewall": {
+    "R0_T2_prospective_assignment_unchanged": true,
+    "H0_25_substitution": false,
+    "Gate487_rerun": false,
+    "A_plus_B_fresh_reuse": false,
+    "DEV2000_C_outcome_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "prospective_result_access": false,
+    "payout_odds_price_economics_access": false
+  },
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "spend": false,
+  "owner_action_required_now": false
+}
