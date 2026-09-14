@@ -1,0 +1,50 @@
+name: PR541 Post Integration Verification v1
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/pr541-post-integration-verification-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Carrier-only changed surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          changed="$(git diff --name-only origin/main...HEAD)"
+          test "$changed" = ".github/workflows/pr541-post-integration-verification-v1.yml"
+      - name: Post-write visibility regressions
+        run: PYTHONPATH=. python -m unittest -v tools.test_auditor_post_write_visibility_cache_bypass_v1
+      - name: Cross-lane and admission regressions
+        run: PYTHONPATH=. python -m unittest -v tools.test_auditor_upstream_execution_state_v1 tools.test_review_build_admission_preflight_v2
+      - name: Current dispatcher regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          modules=$(find automation/review_dispatcher_v1 -maxdepth 1 -name 'test_*.py' ! -name '*_legacy_v1.py' -printf '%p\n' | sed 's#/#.#g;s#\.py$##' | sort | tr '\n' ' ')
+          PYTHONPATH=. python -m unittest -v $modules
+      - name: Validator
+        run: PYTHONPATH=. python automation/review_dispatcher_v1/validator.py
+      - name: Repaired canonical source invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F 'def github_json_fresh_read(' automation/review_dispatcher_v1/github_read_resilience_v1.py
+          grep -F 'use_cache=False' automation/review_dispatcher_v1/github_read_resilience_v1.py
+          grep -F 'def _legacy_public_read_mode(' automation/review_dispatcher_v1/publisher.py
+          grep -F 'github_json_fresh_read' automation/review_dispatcher_v1/publisher.py
+          grep -F 'def _legacy_public_read_mode(' automation/review_dispatcher_v1/t2.py
+          grep -F 'github_json_fresh_read' automation/review_dispatcher_v1/t2.py
+          grep -F 'cross_lane_execution_state_valid(' automation/review_dispatcher_v1/t2.py
