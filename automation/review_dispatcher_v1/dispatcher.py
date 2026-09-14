@@ -9,6 +9,9 @@ from typing import Any
 from automation.review_dispatcher_v1.github_read_resilience_v1 import (
     github_json_read,
 )
+from automation.review_dispatcher_v1.main_drift_runtime_v1 import (
+    select_request_for_live_main,
+)
 from automation.review_dispatcher_v1.model import (
     ReviewContractError,
     fetch_all_pages,
@@ -17,7 +20,6 @@ from automation.review_dispatcher_v1.model import (
     github_commit_tree_sha,
     github_full_pr_binding,
     lane_result_comment_trusted,
-    latest_exact_current_owner_request,
     require,
     required_positive_int,
     result_marker,
@@ -92,7 +94,7 @@ def discover_request(
     pr = discover_pr(repo, head, fetch=fetch)
     pr_number = pr["number"]
     tree = _discover_tree_sha(repo, head, fetch=fetch)
-    main_sha = _discover_main_sha(repo, fetch=fetch)
+    live_main_sha = _discover_main_sha(repo, fetch=fetch)
 
     comments = fetch_all_pages(
         fetch,
@@ -103,7 +105,7 @@ def discover_request(
         "COMMENTS_ITEM_OBJECT",
     )
 
-    request_comment, request, comment = latest_exact_current_owner_request(
+    request_comment, request, comment, main_binding = select_request_for_live_main(
         comments,
         repo=repo,
         pr=pr_number,
@@ -111,7 +113,8 @@ def discover_request(
         head=head,
         tree=tree,
         base=pr["base_sha"],
-        main=main_sha,
+        live_main=live_main_sha,
+        fetch=fetch,
     )
     validate_request(request)
     request_sha256 = sha256_json(request)
@@ -150,7 +153,9 @@ def discover_request(
         "head": head,
         "tree": tree,
         "base": pr["base_sha"],
-        "main": main_sha,
+        "main": request["main"],
+        "live_main_at_dispatch": live_main_sha,
+        "main_binding_mode": main_binding["mode"],
         "lane": lane,
         "request_id": request["request_id"],
         "request_comment": request_comment,
@@ -222,6 +227,8 @@ def main() -> int:
                 "head": job["head"],
                 "tree": job["tree"],
                 "main": job["main"],
+                "live_main_at_dispatch": job["live_main_at_dispatch"],
+                "main_binding_mode": job["main_binding_mode"],
                 "dispatcher_ref": job["dispatcher_ref"],
             },
             sort_keys=True,
