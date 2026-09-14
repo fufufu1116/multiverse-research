@@ -1,0 +1,115 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_1",
+  "status": "PREREGISTERED_AFTER_SCHEMA_ONLY_GUARD_CORRECTION_BEFORE_REPORT_VALUE_OR_SOURCE_VALUE_ACCESS",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_fresh_read": "74e5534ac95d13ce0418b69d527812d1cd139781",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5657234204,
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+  "supersedes_prereg_for_this_exact_source": "v3/historical_all_market/research_candidates/KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2.json",
+  "correction_reason": "The v2 lexical guard treated provenance safety-flag keys result_accessed/payout_accessed/market_odds_used as forbidden merely because their names contain forbidden terms. That would make the separately preregistered PRE-only confirmation step impossible. This correction was made after hash verification and key-name scan only; no companion report values and no PRE_STRUCTURED data-row values were parsed.",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "scientific_question": "Does the exact existing DEV2000 PRE_STRUCTURED v3 source contain any of the five frozen N2 direct inputs missing from DEV2000_PRE_TABLE_v1.csv, while remaining PRE-only?",
+  "frozen_candidate": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+  "frozen_candidate_changed": false,
+  "authorized_target_fields": [
+    "line_group_id",
+    "line_position",
+    "line_size",
+    "bank_length_m",
+    "wind_speed_mps"
+  ],
+  "preregistered_sources": [
+    {
+      "role": "PRIMARY_PRE_ONLY_STRUCTURED_SOURCE",
+      "name": "PRE_STRUCTURED.jsonl.gz",
+      "drive_file_id": "1N2Cq5IkuxcBU0MqeIW5PIF44JTkHaq1Q",
+      "parent_folder": "MULTIVERSE_DEV2000_PRE_COLLECTION_v3_TURBO_LITE",
+      "expected_size_bytes": 576571,
+      "expected_sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84"
+    },
+    {
+      "role": "PRE_COLLECTION_PROVENANCE_COMPANION",
+      "name": "DEV2000_PRE_COLLECTION_REPORT.json",
+      "drive_file_id": "1oqCX7huuTxFajsKPdrgP5Ay9qhWSlff7",
+      "parent_folder": "MULTIVERSE_DEV2000_PRE_COLLECTION_v3_TURBO_LITE",
+      "expected_size_bytes": 678,
+      "expected_sha256": "331115704c98d0a1a7194c8f5d338d31c7036df9aec834fc07acc46e962b9d03"
+    }
+  ],
+  "schema_only_observations_already_exposed_before_this_correction": {
+    "source_key_names_only": true,
+    "report_key_names_only": true,
+    "report_values_parsed": false,
+    "source_value_rows_parsed": false,
+    "source_forbidden_keys_detected": [],
+    "source_target_field_names_seen": []
+  },
+  "report_key_policy": {
+    "allowed_exact_keys": [
+      "status",
+      "universe_sha256",
+      "universe_race_count",
+      "pre_successful_unique",
+      "missing_or_quarantined_unique",
+      "parser_version",
+      "transport",
+      "raw_html_persisted",
+      "payload_sha256_recorded",
+      "market_odds_used",
+      "external_prediction_fields_used",
+      "result_accessed",
+      "payout_accessed",
+      "race_substitution_performed",
+      "training_eligibility",
+      "next_gate"
+    ],
+    "required_pre_only_false_flags": [
+      "market_odds_used",
+      "external_prediction_fields_used",
+      "result_accessed",
+      "payout_accessed"
+    ],
+    "interpretation": "These are provenance/safety flags only; they do not authorize or contain result/payout/odds payloads. Any unexpected report key fails closed before report value parsing."
+  },
+  "implementation": {
+    "path": "v3/historical_all_market/new_lineage/real_pre_only_enrichment_audit_v2_1.py",
+    "git_blob_sha": "f9fade26c731ca69dbf7e29f455baca46b0d12fc",
+    "logic_freeze": [
+      "verify exact source/report SHA256",
+      "lexically enumerate key names",
+      "fail closed on forbidden keys in primary PRE source",
+      "fail closed on any companion-report key outside the exact preregistered allowlist",
+      "parse only companion report safety-flag values and require all four PRE-only flags false",
+      "if target field names are absent from source schema, classify schema-only and do not parse source data-row values",
+      "no labels, performance, fitting, parameter selection or model promotion"
+    ]
+  },
+  "access_order": [
+    "FRESH_READ_AUTHORITY",
+    "VERIFY_SOURCE_AND_REPORT_HASH_IDENTITY",
+    "LEXICAL_PRIMARY_SOURCE_FORBIDDEN_KEY_SCAN",
+    "EXACT_COMPANION_REPORT_KEY_ALLOWLIST_CHECK",
+    "PARSE_ONLY_COMPANION_PRE_ONLY_SAFETY_FLAGS",
+    "IF_TARGET_KEYS_ABSENT_STOP_WITHOUT_SOURCE_VALUE_PARSE"
+  ],
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_bankroll_roi_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes": "NOT_ACCESSED",
+    "untouched_outcome_validation": "NOT_OPENED",
+    "real_pre_training_fit_selection": "PROHIBITED_NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "new_automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  },
+  "follow_up_rule": "If this exact source supplies none or only a subset of the five fields, any next source must be separately preregistered before its bytes are opened under the same Owner-authorized source-family boundary."
+}
