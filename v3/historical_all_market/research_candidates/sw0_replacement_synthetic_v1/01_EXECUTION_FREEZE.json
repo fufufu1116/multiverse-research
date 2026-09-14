@@ -1,0 +1,86 @@
+{
+  "record": "KEIRIN_SW0_REPLACEMENT_SYNTHETIC_EXECUTION_FREEZE_v1",
+  "status": "FROZEN_BEFORE_ANY_SYNTHETIC_SCORING",
+  "date_jst": "2026-09-15",
+  "authority": {
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "prereg_path": "v3/historical_all_market/research_candidates/sw0_replacement_synthetic_v1/00_PREREG.json",
+    "consumed_gate_487_reuse": false,
+    "owner_action_required_for_synthetic_execution": false
+  },
+  "implementation": {
+    "runner_path": "v3/historical_all_market/research_candidates/sw0_replacement_synthetic_v1/run_sw0_replacement_synthetic_v1.py",
+    "runner_commit": "8e912680a4a0877d5189eb261e72b3038fdc7897",
+    "runner_sha256": "10376fbdaaf1ec6820984b7cdcc550533a2757b8294eb2263439b1a71b9ab265",
+    "language": "Python 3 standard library only",
+    "determinism": "random.Random with per world-field-seed deterministic derived seed; no wall-clock or external input"
+  },
+  "synthetic_worlds": {
+    "common": "For each race generate observed score x_i iid N(0,1), compute frozen true logits below, then sample exact finishing positions 1-3 without replacement from a Plackett-Luce process using those true logits.",
+    "W0": "true_logit_i = 0.35*x_i",
+    "W1": "true_logit_i = 0.55*x_i",
+    "W2": "true_logit_i = 0.75*x_i",
+    "W3": "true_logit_i = 0.45*tanh(x_i) + 0.10*x_i",
+    "W4": "true_logit_i = 0.25*x_i + 0.35*r_i, where r_i is deterministic within-race rank feature from +1 highest score to -1 lowest score"
+  },
+  "evaluation_cells": {
+    "worlds": ["W0", "W1", "W2", "W3", "W4"],
+    "field_sizes": [5, 6, 7, 8, 9],
+    "seeds": [104729, 130363, 155921, 181081, 207017],
+    "races_per_world_field_seed_cell": 500,
+    "total_races": 62500
+  },
+  "references": {
+    "REF_UNIFORM": "uniform probability at each sequential finishing-position draw",
+    "REF_BASE_SCORE_PL": "Plackett-Luce with logit=x_i at each sequential draw"
+  },
+  "candidate_grid": {
+    "R0_SCORE_ONLY_TEMPERED_PL": {
+      "formula": "PL softmax(x_i / temperature)",
+      "temperature": [1.5, 2.0, 3.0]
+    },
+    "R1_SCORE_RANK_HYBRID_PL": {
+      "formula": "PL softmax(0.5*((1-alpha)*x_i + alpha*r_i))",
+      "alpha": [0.25, 0.5, 0.75]
+    },
+    "R2_SCORE_ONLY_FLATTENED_ORDER_MODEL": {
+      "formula": "At every sequential draw, q_i=(1-uniform_mix)*softmax(x)_i + uniform_mix/remaining_field_size",
+      "uniform_mix": [0.25, 0.5, 0.75]
+    }
+  },
+  "metrics": {
+    "winner_logloss": "mean -log predicted winner probability",
+    "winner_brier": "multiclass sum_i (p_i-y_i)^2 mean",
+    "ordered_top3_nll": "mean -log product of sequential probabilities assigned to actual positions 1,2,3",
+    "top1_accuracy": "argmax winner probability equals actual winner",
+    "unordered_top3_containment": "predicted top3 set equals actual first-three set",
+    "toplabel_ece10": "10 equal-width bins of maximum winner probability; weighted absolute gap between mean confidence and top1 correctness",
+    "sanity": "all winner probabilities finite/nonnegative, winner mass within 1e-12 of 1, ordered-top3 NLL finite"
+  },
+  "eligibility_and_winner_rule": {
+    "candidate_probability_sanity": "must pass in every cell",
+    "worst_cell_calibration_guard": "maximum world-field-seed top-label ECE10 <= 0.15",
+    "probability_quality_reference": "REF_UNIFORM",
+    "aggregate_required": [
+      "pooled ordered_top3_nll <= REF_UNIFORM + 1e-12",
+      "pooled winner_logloss <= REF_UNIFORM + 1e-12",
+      "pooled winner_brier <= REF_UNIFORM + 1e-12"
+    ],
+    "ranking": "among eligible candidates minimize pooled ordered_top3_nll, then pooled winner_logloss, then pooled winner_brier, then candidate_id lexical order",
+    "single_winner_max": 1,
+    "no_eligible_verdict": "NO_SYNTHETICALLY_ELIGIBLE_REPLACEMENT"
+  },
+  "protected_boundaries": {
+    "Gate487_protected_outcome_access": false,
+    "Gate487_rerun": false,
+    "DEV2000_C": "EXCLUDED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "odds_price_economics": "NOT_ACCESSED_NOT_COMPUTED",
+    "real_data_fit_calibration_selection": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "post_execution_rule": "Do not alter worlds, grids, seeds, thresholds, metrics, or winner rule after scoring. If one winner exists, freeze it and require a new preregistration plus a new exact Owner Gate before any protected real evaluation. If none exists, record NO_SYNTHETICALLY_ELIGIBLE_REPLACEMENT and do not widen the family post hoc."
+}
