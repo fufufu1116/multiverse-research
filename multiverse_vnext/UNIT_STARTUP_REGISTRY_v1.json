@@ -7,6 +7,8 @@
   "runtime": "OFF",
   "startup_contract": {
     "syntax": "<canonical_owner_facing_unit_name>起動",
+    "shortest_owner_message": "<canonical_owner_facing_unit_name>起動",
+    "extra_bootstrap_prose_required_from_owner": false,
     "emoji_in_identity": false,
     "no_startup_no_participation": true,
     "startup_grants_new_authority": false,
@@ -20,9 +22,44 @@
     "Fresh-read the unit PRIMARY/CURRENT recovery route and referenced gates/PRs/artifacts",
     "Fresh-discover current tools/plugins/connectors",
     "restore current authority boundaries and Owner-facing reporting rules",
+    "apply concurrent-unit safety contract before any shared-state mutation",
     "fail closed on ambiguity/conflict/stale authority",
     "return a compact Japanese startup-complete message"
   ],
+  "concurrent_unit_safety": {
+    "multiple_units_may_be_active_concurrently": true,
+    "owner_may_operate_multiple_units_concurrently": true,
+    "exclusive_control_assumption": false,
+    "fresh_read_before_consequential_shared_action": true,
+    "recheck_immediately_before_mutation": true,
+    "post_action_receipt_and_fresh_read": true,
+    "repository_default": "lane_or_branch_scoped",
+    "cross_unit_branch_or_pr_overwrite": "PROHIBITED_WITHOUT_EXPLICIT_AUTHORITY",
+    "force_move_other_unit_ref": "PROHIBITED",
+    "shared_scarce_resources": [
+      "Owner Gate one-shot authority",
+      "Buildkite one-shot Build",
+      "Buildkite Steps/settings mutation",
+      "main/ruleset mutation",
+      "production/live external action",
+      "credential/spend action"
+    ],
+    "shared_scarce_resource_rule": "Fresh-check exact binding, consumption state, and conflicting in-flight action immediately before acting; ambiguity or conflict => FAIL_CLOSED",
+    "owner_concurrency_widens_authority": false,
+    "owner_must_coordinate_units_manually": false
+  },
+  "reporting_contract": {
+    "full_all_unit_dashboard_every_response": false,
+    "full_dashboard_when": [
+      "meaningful checkpoint",
+      "major action or result",
+      "phase boundary",
+      "important Owner Gate transition",
+      "Owner requests it"
+    ],
+    "ordinary_updates": "focused and compact",
+    "owner_facing_language": "Japanese-first"
+  },
   "units": [
     {
       "owner_facing_name": "軍師",
@@ -37,7 +74,7 @@
       "startup_phrase": "システム改善起動",
       "internal_identity": "Research Lane B / system improvement",
       "primary_recovery_route": ["issue:394", "resolve current system-improvement front dynamically"],
-      "creation_snapshot": ["issue:509", "pr:510", "issue:521", "pr:522"],
+      "creation_snapshot": ["issue:509", "pr:510", "issue:521", "pr:522", "issue:526"],
       "scope": ["control/review infrastructure", "reliability repair", "system improvement"],
       "non_authority": ["final independent adoption", "implicit Runtime/spend/live authority"]
     },
@@ -98,6 +135,7 @@
     "authority scope",
     "explicit non-authorities",
     "Fresh-read bootstrap order",
+    "concurrent-unit shared-state safety behavior",
     "reporting requirements",
     "rename/deprecation alias rule if applicable"
   ]
