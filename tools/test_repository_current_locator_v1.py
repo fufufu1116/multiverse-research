@@ -1,0 +1,161 @@
+from __future__ import annotations
+
+import copy
+import json
+import unittest
+from pathlib import Path
+
+from tools.repository_current_locator_v1 import (
+    INDEX_SCHEMA,
+    RECEIPT_SCHEMA,
+    LocatorValidationError,
+    build_observed_index,
+    validate_control_sync_receipt,
+    validate_registry,
+)
+
+REGISTRY_PATH = Path("governance/MULTIVERSE_REPOSITORY_SCOPE_REGISTRY_v1.json")
+MAIN_SHA = "e875d491853ab9a27158b617ff185d14ac804039"
+
+
+def registry() -> dict:
+    return json.loads(REGISTRY_PATH.read_text())
+
+
+def good_receipt(scope_id: str = "SYSTEM_IMPROVEMENT") -> dict:
+    return {
+        "schema": RECEIPT_SCHEMA,
+        "scope_id": scope_id,
+        "control_issue": "394",
+        "observed_control_comment_or_revision": "issuecomment-5647687001",
+        "observed_at": "2026-09-13T03:00:00+09:00",
+        "lane_primary_verified": True,
+        "executor_surface": "SOLE_CONTROL_FOR_SYSTEM_IMPROVEMENT",
+        "runtime": "OFF",
+        "authority_granted": False,
+    }
+
+
+class RepositoryCurrentLocatorTests(unittest.TestCase):
+    def test_current_registry_passes_and_is_nonauthority(self):
+        result = validate_registry(registry())
+        self.assertEqual(result["validation"], "PASS")
+        self.assertEqual(result["scope_count"], 6)
+        self.assertEqual(result["runtime"], "OFF")
+        self.assertEqual(result["authority_role"], "LOCATOR_ONLY_NOT_AUTHORITY_REPLACEMENT")
+        self.assertTrue(result["control_first_boot"])
+        self.assertTrue(result["control_sync_receipt_required"])
+
+    def test_duplicate_scope_primary_fails_closed(self):
+        value = registry()
+        value["scopes"].append(copy.deepcopy(value["scopes"][0]))
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
+
+    def test_missing_primary_fails_closed(self):
+        value = registry()
+        del value["scopes"][0]["primary"]
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
+
+    def test_unknown_scope_fails_closed(self):
+        value = registry()
+        value["scopes"][0]["scope_id"] = "UNKNOWN_NEW_SCOPE"
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
+
+    def test_branch_scoped_keirin_pointer_is_preserved(self):
+        value = registry()
+        keirin = next(s for s in value["scopes"] if s["scope_id"] == "KEIRIN_RESEARCH")
+        self.assertEqual(keirin["primary"]["kind"], "repo_path_on_named_branch")
+        self.assertEqual(keirin["primary"]["branch"], "research/keirin-real-evidence-dual-lane-20260901-v1")
+        self.assertTrue(keirin["primary"]["path"].endswith("KEIRIN_CURRENT_STATE.json"))
+        validate_registry(value)
+
+    def test_incomplete_protected_roots_must_fail_closed(self):
+        value = registry()
+        value["protected_root_policy"]["complete_registry_available"] = False
+        value["protected_root_policy"]["state"] = "ASSUMED_COMPLETE"
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
+
+    def test_bad_observed_main_sha_rejected(self):
+        with self.assertRaises(LocatorValidationError):
+            build_observed_index(registry(), "stale-main")
+
+    def test_observed_index_is_snapshot_not_authority(self):
+        result = build_observed_index(registry(), MAIN_SHA)
+        self.assertEqual(result["schema"], INDEX_SCHEMA)
+        self.assertEqual(result["canonical_main_observed"], MAIN_SHA)
+        self.assertTrue(result["nonauthority"])
+        self.assertFalse(result["write_effects"])
+        self.assertEqual(result["freshness_rule"], "REVERIFY_ALL_PRIMARY_POINTERS_BEFORE_USE")
+        self.assertEqual(result["boot_order"], ["FRESH_CANONICAL_MAIN", "FRESH_LATEST_CONTROL_394", "FRESH_LANE_PRIMARY"])
+        self.assertTrue(result["control_sync_receipt_required"])
+        self.assertEqual(result["control_sync_receipt_schema"], RECEIPT_SCHEMA)
+        self.assertIn("executor_surface", result["control_sync_receipt_fields"])
+
+    def test_bootstrap_mapping_is_explicit(self):
+        value = registry()
+        common = next(s for s in value["scopes"] if s["scope_id"] == "COMMON_BOOTSTRAP_GOVERNANCE")
+        self.assertEqual(common["primary"]["kind"], "repo_path_on_main")
+        self.assertEqual(common["primary"]["path"], "MULTIVERSE_BOOTSTRAP.md")
+
+    def test_every_scope_requires_control_394_before_primary(self):
+        value = registry()
+        for scope in value["scopes"]:
+            self.assertEqual(scope["control_sync"]["required_issue"], "394")
+            self.assertTrue(scope["control_sync"]["must_precede_primary"])
+            self.assertEqual(scope["control_sync"]["receipt"], "REQUIRED_BEFORE_SUBSTANTIVE_EXECUTION")
+        validate_registry(value)
+
+    def test_missing_control_receipt_fails_closed(self):
+        value = registry()
+        del value["scopes"][1]["control_sync"]
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
+
+    def test_wrong_control_issue_fails_closed(self):
+        value = registry()
+        value["scopes"][2]["control_sync"]["required_issue"] = "377"
+        with self.assertRaises(LocatorValidationError):
+            validate_registry(value)
+
+    def test_valid_control_sync_receipt_passes(self):
+        result = validate_control_sync_receipt(good_receipt(), registry())
+        self.assertEqual(result["validation"], "PASS")
+        self.assertFalse(result["authority_granted"])
+        self.assertEqual(result["runtime"], "OFF")
+
+    def test_receipt_unknown_scope_fails_closed(self):
+        receipt = good_receipt("UNREGISTERED_SCOPE")
+        with self.assertRaises(LocatorValidationError):
+            validate_control_sync_receipt(receipt, registry())
+
+    def test_receipt_wrong_control_issue_fails_closed(self):
+        receipt = good_receipt()
+        receipt["control_issue"] = "413"
+        with self.assertRaises(LocatorValidationError):
+            validate_control_sync_receipt(receipt, registry())
+
+    def test_receipt_unverified_primary_fails_closed(self):
+        receipt = good_receipt()
+        receipt["lane_primary_verified"] = False
+        with self.assertRaises(LocatorValidationError):
+            validate_control_sync_receipt(receipt, registry())
+
+    def test_receipt_cannot_grant_authority(self):
+        receipt = good_receipt()
+        receipt["authority_granted"] = True
+        with self.assertRaises(LocatorValidationError):
+            validate_control_sync_receipt(receipt, registry())
+
+    def test_receipt_runtime_must_stay_off(self):
+        receipt = good_receipt()
+        receipt["runtime"] = "ON"
+        with self.assertRaises(LocatorValidationError):
+            validate_control_sync_receipt(receipt, registry())
+
+
+if __name__ == "__main__":
+    unittest.main()

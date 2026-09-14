@@ -1,0 +1,46 @@
+name: System Improvement CURRENT Locator v1 CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'governance/MULTIVERSE_REPOSITORY_SCOPE_REGISTRY_v1.json'
+      - 'tools/repository_current_locator_v1.py'
+      - 'tools/test_repository_current_locator_v1.py'
+      - 'docs/control/CONTROL_SYNC_RECEIPT_v1.md'
+      - '.github/workflows/system-improvement-current-locator-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  locator-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run focused locator tests
+        run: python -m unittest tools.test_repository_current_locator_v1
+      - name: Validate candidate registry and observed-index generation
+        run: |
+          python tools/repository_current_locator_v1.py \
+            --registry governance/MULTIVERSE_REPOSITORY_SCOPE_REGISTRY_v1.json \
+            --observed-main-sha e875d491853ab9a27158b617ff185d14ac804039 \
+            --output /tmp/MULTIVERSE_REPOSITORY_INDEX_v1.json
+          python - <<'PY'
+          import json
+          p = '/tmp/MULTIVERSE_REPOSITORY_INDEX_v1.json'
+          data = json.load(open(p))
+          assert data['authority_role'] == 'LOCATOR_ONLY_NOT_AUTHORITY_REPLACEMENT'
+          assert data['nonauthority'] is True
+          assert data['write_effects'] is False
+          assert data['runtime'] == 'OFF'
+          assert data['boot_order'] == ['FRESH_CANONICAL_MAIN','FRESH_LATEST_CONTROL_394','FRESH_LANE_PRIMARY']
+          assert data['control_sync_receipt_required'] is True
+          assert len(data['current_entrypoints']) == 6
+          assert all(x['control_sync']['required_issue'] == '394' for x in data['current_entrypoints'])
+          print('CURRENT_LOCATOR_V1_PROOF_PASS')
+          PY
