@@ -1,0 +1,43 @@
+{
+  "record": "R0_T2_SIMWORLD_FINE_SWEEP_SUCCESSOR_RESULT_v2",
+  "created_jst": "2026-09-15",
+  "interpretation_guard": "Simulation-only engineering evidence. Never promotion evidence and never a substitute for independent real predictive validation.",
+  "matrix": {
+    "worlds": 32,
+    "primary_seed": 20260916,
+    "primary_races_per_world": 2500,
+    "primary_total_synthetic_races": 80000,
+    "replication_seed": 20260917,
+    "replication_races_per_world": 1800,
+    "replication_total_synthetic_races": 57600,
+    "combined_total_synthetic_races": 137600,
+    "world_families": ["latent_temperature_sweep","partial_rank_reversal","measurement_noise","nonlinear_tanh","outlier_upset","heteroskedastic","heavy_tail","sharp_flat_mixture"]
+  },
+  "candidate_classes": {
+    "frozen_reference": "R0_T2 = Plackett-Luce softmax(score/2.0)",
+    "fixed_temperature_grid": [0.75,1.0,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0],
+    "synthetic_only_successor_hypotheses": ["MIX_1_2_3","MIX_075_15_3_6","MIX_1_2_4","MIX_1_15_2_3_4"]
+  },
+  "primary_aggregate_regret": {
+    "MIX_1_2_3": {"mean_regret": 0.1109924166634597, "max_regret": 0.5564060156921973, "p90_regret": 0.2705501622043676},
+    "MIX_075_15_3_6": {"mean_regret": 0.0991027442863659, "max_regret": 0.5856543816690509, "p90_regret": 0.2772798281316133},
+    "MIX_1_2_4": {"mean_regret": 0.09878516357474182, "max_regret": 0.6041363977842167, "p90_regret": 0.285371468198652},
+    "MIX_1_15_2_3_4": {"mean_regret": 0.09406339088730106, "max_regret": 0.6470746289016569, "p90_regret": 0.2600180625155062},
+    "R0_T2": {"mean_regret": 0.09540658023919152, "max_regret": 0.706316090717924, "p90_regret": 0.2493453332679764}
+  },
+  "replication_aggregate_regret": {
+    "MIX_1_2_3": {"mean_regret": 0.1139514613672816, "max_regret": 0.5322482296376227, "p90_regret": 0.2826691088289266},
+    "MIX_075_15_3_6": {"mean_regret": 0.10217398907025481, "max_regret": 0.5653903733798997, "p90_regret": 0.2805173698660932},
+    "MIX_1_2_4": {"mean_regret": 0.10131709390151962, "max_regret": 0.5801219863987459, "p90_regret": 0.2898717790189283},
+    "MIX_1_15_2_3_4": {"mean_regret": 0.09610408770040585, "max_regret": 0.6216435308402688, "p90_regret": 0.26405349982134907},
+    "R0_T2": {"mean_regret": 0.0967099471358372, "max_regret": 0.6777876460273071, "p90_regret": 0.2536292934799262}
+  },
+  "findings": [
+    "R0_T2 remains competitive on average across this synthetic matrix, but its worst-case regret is materially larger than the broad mixture candidates.",
+    "MIX_1_2_3 achieved the lowest worst-case regret in both independent simulation seeds, reducing primary max regret from 0.706316 for R0_T2 to 0.556406 and replication max regret from 0.677788 to 0.532248.",
+    "The broader mixtures trade slightly higher average regret for materially lower worst-case sensitivity to unknown sharpness/flatness.",
+    "No successor is authorized for real-world promotion; these are synthetic-only hypotheses for continued falsification."
+  ],
+  "next_experiment": "Stress MIX_1_2_3 and the other robust mixtures under meeting/venue latent effects, correlated entrant effects, missing PRE inputs, adversarial degradation, and field-size-specific shifts; compare minimax and average regret across new worlds without changing frozen R0_T2 prospective parameters.",
+  "protected_boundaries": {"Gate_487_rerun": false, "A_plus_B_fresh_validation_reuse": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "prospective_result_accessed": false, "payout_odds_price_economics_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
