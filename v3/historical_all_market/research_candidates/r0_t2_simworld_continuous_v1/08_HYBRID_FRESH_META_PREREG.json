@@ -1,0 +1,28 @@
+{
+  "record": "R0_T2_SIMWORLD_HYBRID_FRESH_META_PREREG_v1",
+  "frozen_jst": "2026-09-15",
+  "frozen_candidates": {
+    "reference": "R0_T2",
+    "H0.25": "0.25*T2 + 0.75*equal_mix(T1,T1.5,T2,T3,T4)",
+    "H0.5": "0.5*T2 + 0.5*equal_mix(T1,T1.5,T2,T3,T4)"
+  },
+  "fresh_world_families": [
+    "multiplicative_observed_score_scale_0.5",
+    "multiplicative_observed_score_scale_2.0",
+    "asymmetric_positive_score_inflation",
+    "asymmetric_negative_score_compression",
+    "top_score_dropout",
+    "bottom_score_dropout",
+    "extreme_score_censoring",
+    "logistic_latent_saturation",
+    "two_cluster_matchup_shift",
+    "racewise_temperature_random_walk_proxy"
+  ],
+  "primary_seed": 20260924,
+  "replication_seed": 20260925,
+  "races_per_world_primary": 1700,
+  "races_per_world_replication": 1200,
+  "retain_rule": "A hybrid may become the synthetic lead only if it beats R0_T2 on max regret in both seeds and does not exceed R0_T2 mean regret by more than 0.002 in either seed. If both pass, choose lower average max regret across seeds; this has no real promotion authority.",
+  "promotion_authority": false,
+  "protected_boundaries": {"real_result_access": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
