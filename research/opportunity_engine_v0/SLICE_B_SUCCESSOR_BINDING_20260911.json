@@ -1,0 +1,81 @@
+{
+  "schema": "OPPORTUNITY_ENGINE_SLICE_B_SUCCESSOR_BINDING_v4",
+  "status": "FRESH_MAIN_SUCCESSOR_PRE_REVIEW_FREEZE",
+  "canonical_base": {
+    "branch": "main",
+    "sha": "bb133e196efa818bc9b8dc59519c02796e70658e",
+    "tree": "27a69ce90685942dea84788ae204de79faed3647"
+  },
+  "supersedes": {
+    "pull_request": 336,
+    "branch": "candidate/opportunity-engine-slice-b-fresh-main-20260911-v3",
+    "head": "f8362267cc963571303368092ca8777a19e876fa",
+    "tree": "95b0dfe8a0bf9d3eb0f5855a847e3332876c7723",
+    "reason": "canonical main advanced by integration of PR #329 after the v3 Lab PASS and before exact-current Auditor admission; preserve the exact reviewed Slice B payload while rebinding to latest main"
+  },
+  "frozen_research_source": {
+    "sha": "d12be81d2703d8de71052cccc46ec6f19364acf6",
+    "tree": "061880e960af2fb23bdacec8c15b2d29b8bf16c5",
+    "source_manifest": "research/opportunity_engine_v0/SLICE_B_FORECAST_INTEGRITY_MANIFEST.json"
+  },
+  "slice": "B_FORECAST_INTEGRITY",
+  "source_paths": [
+    "research/opportunity_engine_v0/forecast_ledger.py",
+    "research/opportunity_engine_v0/forecast_revision.py",
+    "research/opportunity_engine_v0/trend_forecast.py",
+    "research/opportunity_engine_v0/trend_retrospective.py",
+    "research/opportunity_engine_v0/test_forecast_ledger.py",
+    "research/opportunity_engine_v0/test_forecast_revision.py",
+    "research/opportunity_engine_v0/test_trend_forecast.py"
+  ],
+  "carry_forward": "SLICE_B_V3_PAYLOAD_AND_TEST_BLOBS_EXACT; ONLY SUCCESSOR BINDING METADATA REBOUND TO CURRENT MAIN",
+  "required_properties": [
+    "forecast frozen before outcome observation",
+    "tamper-evident commitment binds the full raw snapshot even when derived scoring saturates",
+    "successor forecast never mutates predecessor",
+    "settlement distinct from creation",
+    "historical retrospective is hypothesis-only until prospective test",
+    "canonical Slice A files are not regressed or replaced",
+    "no live/provider/runtime authority"
+  ],
+  "forbidden_scope": [
+    "provider execution",
+    "credentials",
+    "publisher",
+    "T2",
+    "Runtime activation",
+    "customer recruitment",
+    "payment collection",
+    "canonical adoption authority"
+  ],
+  "prior_proof_lineage": {
+    "v3_pr": 336,
+    "v3_lab_pass_comment": 5631593316,
+    "v3_lab_build": 79,
+    "v3_test_count": 18,
+    "v3_findings": [],
+    "v3_auditor_admission_failure": "NO_EXACT_CURRENT_AUDITOR_REQUEST_AFTER_CANONICAL_MAIN_ADVANCED",
+    "proof_transfer_authorized": false
+  },
+  "proof_state": {
+    "tests_present": true,
+    "expected_unit_test_count": 18,
+    "independent_execution_on_v4": false,
+    "pass_claim": false,
+    "formal_lab_or_auditor_on_v4": false,
+    "build_77_finding": "COMMITMENT_COLLISION_ON_SATURATED_DERIVED_SCORE_REPAIRED_AND_EXACTLY_CARRIED"
+  },
+  "authority": {
+    "formal_review": false,
+    "canonical_adoption": false,
+    "merge": false,
+    "provider_call": false,
+    "credential_use": false,
+    "spend": false,
+    "publication": false,
+    "customer_recruitment": false,
+    "payment_collection": false,
+    "runtime_activation": false,
+    "live_business_effect": false
+  }
+}
