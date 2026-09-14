@@ -1,0 +1,61 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v27",
+  "status": "ACTIVE_CURRENT_STATE_V27_R0_T2_CONTAMINATION_SAFE_EVALUATION_DESIGN_CANONICAL_NO_PROTECTED_EVALUATION_AUTHORIZED",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v26.json",
+  "checkpoint_jst": "2026-09-15",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_owner_gate_487": 487,
+    "gate_487_result_commit": "7655465cad6b2370120be7b7d327c66c064d8e80",
+    "predecessor_current": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v26.json",
+    "design_draft_commit": "ddfa331e5fe259fa4a6d439ce6fe2345f3e70fca",
+    "ledger_v32_commit": "99d8220bce7a41bc3201e522fb70de31e1097367"
+  },
+  "current_research_objective": "Preserve Gate #487 as consumed/no-rerun, keep SW0 unpromoted, keep synthetic R0_T2 frozen as engineering evidence only, and convert the post-v26 owner-free continuation into a contamination-safe future real-evaluation design. No protected outcome may be accessed until exact independent evidence assignment and final preregistration are canonical and a new exact Owner Gate authorizes one-shot scoring.",
+  "frozen_model_under_test": {
+    "id": "R0_T2",
+    "family": "R0_SCORE_ONLY_TEMPERED_PL",
+    "formula": "Plackett-Luce softmax(x_i / 2.0)",
+    "temperature": 2.0,
+    "selection_evidence": "SYNTHETIC_ENGINEERING_EVIDENCE_ONLY",
+    "real_validation_status": "NOT_YET_EVALUATED",
+    "promotion_status": "NOT_AUTHORIZED"
+  },
+  "canonical_design": {
+    "status": "DESIGN_DRAFT_CANONICAL_NOT_FINAL_PREREG",
+    "path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/00_DESIGN_PREREG_DRAFT.json",
+    "evidence_class": "POST_FREEZE_PROSPECTIVE_PUBLIC_RACE_SEQUENCE_WITH_PRE_OUTCOME_LOCK",
+    "purpose": "Assign a new nonreused real evidence set before outcomes and preserve prediction/result firewall.",
+    "protected_scoring_authority": false
+  },
+  "scientific_contamination_guard": {
+    "gate_487_rerun": "PROHIBITED",
+    "A_plus_B_as_fresh_validation": "PROHIBITED",
+    "DEV2000_C_outcome_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "post_outcome_race_substitution": "PROHIBITED",
+    "same_lineage_retune": "PROHIBITED"
+  },
+  "exact_next_executable_actions": [
+    "Owner-free: freeze an exact PRE-only/public future evidence assignment using deterministic chronological selection and no outcome-aware filtering.",
+    "Owner-free: freeze evaluator/parser implementation hashes, minimum race/meeting requirements, missing-data policy, bootstrap seeds, and exact thresholds before any result access.",
+    "Owner-free: perform collision audit against every consumed/exposed Keirin validation set without deserializing protected outcomes.",
+    "After the above are canonical, stop at a new exact Owner Gate for one-shot result scoring; do not access results before that Gate."
+  ],
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_YET_READY_EXACT_PRE_ONLY_EVIDENCE_ASSIGNMENT_AND_FINAL_PREREG_REQUIRED_FIRST",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "No readiness inflation: design quality improved, but there is still no new independent real predictive validation or promotion evidence.",
+  "protected_boundaries": {
+    "result_payout_accessed_after_v26": false,
+    "odds_price_economics_accessed": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
