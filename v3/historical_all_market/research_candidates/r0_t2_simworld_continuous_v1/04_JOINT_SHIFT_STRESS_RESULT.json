@@ -1,0 +1,46 @@
+{
+  "record": "R0_T2_SIMWORLD_JOINT_SHIFT_STRESS_RESULT_v1",
+  "created_jst": "2026-09-15",
+  "interpretation_guard": "Simulation-only engineering evidence. No promotion authority.",
+  "design": {
+    "worlds": 16,
+    "primary_seed": 20260920,
+    "primary_races_per_world": 1500,
+    "primary_total_synthetic_races": 24000,
+    "replication_seed": 20260921,
+    "replication_races_per_world": 1000,
+    "replication_total_synthetic_races": 16000,
+    "combined_total_synthetic_races": 40000,
+    "families": [
+      "missingness_plus_noise_plus_rank_reversal",
+      "venue_interaction_plus_field_size_plus_sharpness_shift",
+      "nonstationary_sharp_flat_meeting_regimes",
+      "clipping_plus_noise",
+      "quantization_plus_missingness",
+      "correlated_latent_effect_plus_missingness"
+    ]
+  },
+  "primary_regret": {
+    "MIX_1_15_2_3_4": {"mean_regret": 0.009619553499742833, "max_regret": 0.0340373289368463, "p90_regret": 0.02360551908935582},
+    "MIX_075_15_3_6": {"mean_regret": 0.013725621645865299, "max_regret": 0.04563502999977498, "p90_regret": 0.0308271229932231},
+    "MIX_1_2_4": {"mean_regret": 0.02138036222893125, "max_regret": 0.056544694472071555, "p90_regret": 0.04424210616523849},
+    "R0_T2": {"mean_regret": 0.01360959599821951, "max_regret": 0.0909054485213261, "p90_regret": 0.03688741025823772},
+    "MIX_1_2_3": {"mean_regret": 0.054116868135995366, "max_regret": 0.16772412642173506, "p90_regret": 0.10947084390869088}
+  },
+  "replication_regret": {
+    "MIX_1_15_2_3_4": {"mean_regret": 0.011392549830307547, "max_regret": 0.03382965387796766, "p90_regret": 0.025325578719274766},
+    "MIX_075_15_3_6": {"mean_regret": 0.016185757641738463, "max_regret": 0.04562967893273573, "p90_regret": 0.03438376825705314},
+    "MIX_1_2_4": {"mean_regret": 0.022879580158853774, "max_regret": 0.05479880022632866, "p90_regret": 0.044414956434017494},
+    "R0_T2": {"mean_regret": 0.015133825059003403, "max_regret": 0.08969763944754128, "p90_regret": 0.043441980893041965},
+    "MIX_1_2_3": {"mean_regret": 0.05440637584458258, "max_regret": 0.1661056430886223, "p90_regret": 0.10456210453084847}
+  },
+  "finding": "Under severe joint shifts, MIX_1_15_2_3_4 becomes both the lowest-average-regret and lowest-worst-case-regret candidate in both seeds. MIX_075_15_3_6 remains second and still materially reduces worst-case regret versus frozen R0_T2. MIX_1_2_3 is rejected from the synthetic robustness frontier because its earlier isolated-sweep minimax advantage does not survive combined degradation.",
+  "synthetic_frontier": {
+    "lead": "MIX_1_15_2_3_4",
+    "challenger": "MIX_075_15_3_6",
+    "rejected_from_frontier": "MIX_1_2_3",
+    "status": "SYNTHETIC_ONLY_NO_REAL_PROMOTION"
+  },
+  "next_experiment": "Run fresh unseen simulation families and seed-held-out meta-validation, with the frontier frozen before those worlds are generated, to reduce overfitting to the simulator design itself.",
+  "protected_boundaries": {"Gate_487_rerun": false, "A_plus_B_fresh_validation_reuse": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "prospective_result_accessed": false, "payout_odds_price_economics_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
