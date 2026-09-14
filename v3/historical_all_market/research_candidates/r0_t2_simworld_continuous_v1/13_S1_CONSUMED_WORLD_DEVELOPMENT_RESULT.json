@@ -1,0 +1,22 @@
+{
+  "record": "S1_LOCAL_UNCERTAINTY_SHRINKAGE_CONSUMED_WORLD_DEVELOPMENT_v1",
+  "evidence_class": "CONSUMED_SYNTHETIC_DEVELOPMENT_ONLY",
+  "method": "Starting from R0_T2 probabilities, compute the minimum adjacent gap in sorted PRE scores. Shrink the full probability vector toward uniform by lambda = alpha * exp(-min_gap/tau).",
+  "grid": {"alpha": [0.1,0.2,0.3,0.4], "tau": [0.2,0.5,1.0]},
+  "development_worlds": "Only structural families already consumed by 11_STRUCTURAL_FALSIFICATION_RESULT.json; no new fresh worlds and no real outcomes.",
+  "development_races": 24000,
+  "baseline_R0_T2": {"max_regret": 0.3322511844095538, "mean_regret": 0.14633803327038306},
+  "selected_by_minimax": {
+    "candidate_id": "S1_A030_T100",
+    "alpha": 0.3,
+    "tau": 1.0,
+    "max_regret": 0.26932600596779566,
+    "mean_regret": 0.17553572650362992
+  },
+  "tradeoff": "The minimax-selected shrinkage reduced worst-case regret on consumed structural worlds but increased mean regret materially. Therefore it is not accepted as a successor lead; it is only a development clue that local ambiguity handling can buy tail robustness at an average-performance cost.",
+  "decision": "DO_NOT_FREEZE_FOR_FRESH_VALIDATION_YET",
+  "next_research": "Develop a more selective local-only rank-robust component that does not globally shrink all entrant probabilities when only one adjacent pair is ambiguous.",
+  "protected_real_data_access": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
