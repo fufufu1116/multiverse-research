@@ -1,0 +1,91 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v24",
+  "status": "ACTIVE_CURRENT_STATE_V24_GATE485_COMPLETE_STRICT_SINGLETON_PREDICTIVE_METHOD_FROZEN_WAITING_OWNER_GATE_487",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v23.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_owner_gate_475": 475,
+    "consumed_owner_gate_485": 485,
+    "next_owner_gate": 487,
+    "gate_485_authorization_comment": 5663481704,
+    "gate_485_result_commit": "66ff35aaffae31c875311ac4987f18bfe0e5cbe8",
+    "gate_485_receipt_commit": "2a3a0aafced88c11e5b7620b3e0d8d29f02c1826",
+    "strict_singleton_prereg_commit": "c1135509493fd56b48879d624884d4c5a9939dce",
+    "ledger_v29_commit": "de2ef9bf6bfea2c01edd0a24ac4e7afd94105a7f"
+  },
+  "current_research_objective": "Obtain exactly one preregistered predictive evaluation of frozen SW0 on only the A+B strict-singleton 1-1-1 result rows, with all non-singleton/empty tie-aware rows excluded rather than scalarized. No further protected access before exact Owner Gate #487 authorization.",
+  "prediction_lock": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "status": "FROZEN_UNCHANGED_PREDICTION_LOCKED_NOT_PROMOTED",
+    "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "race_count": 1500,
+    "dev_index_range": [1, 1500],
+    "DEV2000_C": "EXCLUDED"
+  },
+  "gate_485_result": {
+    "status": "CONSUMED_SUCCESS_STRUCTURAL_CHARACTERIZATION_ONLY",
+    "aggregate_report": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/06_SCHEMA_CHARACTERIZATION_RESULT.json",
+    "aggregate_report_sha256": "d82db4d1cfc4f9cd937b90e75adcab0c60a21a450e908256a2b787dcc6d65551",
+    "ab_rows_characterized": 1500,
+    "parser": "result-v4.1-tie-aware",
+    "first_set_length_histogram": {"1": 1497, "2": 3},
+    "second_set_length_histogram": {"0": 3, "1": 1494, "2": 3},
+    "third_set_length_histogram": {"0": 3, "1": 1496, "2": 1},
+    "rank_sets_integer_unique_pairwise_disjoint": true,
+    "non_ab_outcome_values_deserialized": false,
+    "predictive_metrics_computed": false
+  },
+  "frozen_next_method": {
+    "prereg": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/08_STRICT_SINGLETON_PREDICTIVE_EVAL_PREREG.json",
+    "evaluator": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/evaluate_sw0_singleton_set_outcomes_v2.py",
+    "evaluator_blob": "f4e0ee0d4fced410cbd79de35b49e97422144763",
+    "evaluator_sha256": "f2f419d6e6b48c51fdc9602e258855b1b7899a47a7718a6f73c9b4a3d026d00c",
+    "test": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/test_evaluate_sw0_singleton_set_outcomes_v2.py",
+    "test_blob": "d2462a393e2d87511b9ef7167322e102bec4178a",
+    "test_sha256": "41ba90defcb43bd8f81536078ac41df567d79f39a76d3b903d256029627ee7ae",
+    "synthetic_tests": 3,
+    "synthetic_result": "PASS",
+    "scored_shape_only": "1-1-1",
+    "non_singleton_or_empty_rows": "EXCLUDED_NOT_SCALARIZED",
+    "minimum_strict_singleton_rows": 1487,
+    "bootstrap_reps": 10000,
+    "bootstrap_seed": 20260914,
+    "evidence_class": "LINEAGE_LOCAL_PREOUTCOME_HISTORICAL_PREDICTIVE_EVALUATION_STRICT_SINGLETON_OUTCOME_SUBSET_NOT_GLOBAL_UNTOUCHED_HOLDOUT"
+  },
+  "protected_boundaries": {
+    "no_gate_475_reuse": true,
+    "no_gate_485_reuse": true,
+    "no_protected_result_access_before_gate_487": true,
+    "non_singleton_tie_rows_scalarization": "PROHIBITED",
+    "DEV2000_C_outcome_value_deserialization_or_use": false,
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "payout_odds_price_economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "exact_next_executable_actions": [
+    "Wait for exact Owner Gate #487 authorization token; generic proceed/100-percent instruction cannot cross it.",
+    "After exact authorization only, Fresh verify Gate #487 unused state, canonical main, branch, prereg/evaluator/test blobs and SHA256 values, and protected input hashes.",
+    "Execute exactly one strict-singleton predictive evaluation attempt and persist result/receipt/continuity; consume Gate on success or fail-closed.",
+    "Do not rerun, change metrics, scalarize tie rows, access C/ECON_HOLDOUT1000/economics, or promote SW0 based on this Gate."
+  ],
+  "owner_action_required_now": true,
+  "next_owner_gate": {
+    "issue": 487,
+    "token": "AUTHORIZE_SW0_DEV2000_AB_RESULT_ONLY_V3_STRICT_SINGLETON_ONE_PREDICTIVE_EVALUATION_ONLY",
+    "scope": "ONE_STRICT_SINGLETON_PREDICTIVE_EVALUATION_ONLY"
+  },
+  "runtime": "OFF",
+  "automatic_betting": false
+}
