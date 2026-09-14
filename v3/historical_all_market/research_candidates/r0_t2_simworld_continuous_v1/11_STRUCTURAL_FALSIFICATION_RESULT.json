@@ -1,0 +1,38 @@
+{
+  "record": "H0_25_STRUCTURAL_FALSIFICATION_RESULT_v1",
+  "prereg_commit": "61e114364520159b0295cb71c929a9bb44da9070",
+  "execution_class": "SYNTHETIC_ONLY_FRESH_STRUCTURAL_WORLD_BATTERY",
+  "seeds": [20260926, 20260927],
+  "world_count_per_seed": 12,
+  "races_per_world_per_seed": 2000,
+  "total_synthetic_races": 48000,
+  "primary_proxy_metric_implementation": "Expected winner categorical KL(q_oracle || p_model), used as a deterministic cross-entropy-regret proxy for the preregistered NLL-regret comparison; because the preregistered text named ordered-top3 NLL, this proxy result is conservatively treated as falsification evidence only and cannot count as a passing confirmation.",
+  "summary": {
+    "20260926": {
+      "R0_T2_mean_regret": 0.14521605275628244,
+      "H0_25_mean_regret": 0.14009868429957367,
+      "R0_T2_max_regret": 0.3102509143908713,
+      "H0_25_max_regret": 0.31100489209369786,
+      "retain_rule": "FAIL_MAX_REGRET"
+    },
+    "20260927": {
+      "R0_T2_mean_regret": 0.14455556487290022,
+      "H0_25_mean_regret": 0.13955972844200062,
+      "R0_T2_max_regret": 0.2966845853348724,
+      "H0_25_max_regret": 0.2973075653719611,
+      "retain_rule": "FAIL_MAX_REGRET"
+    }
+  },
+  "decision": "REJECT_H0_25_AS_BROAD_SYNTHETIC_ROBUSTNESS_LEAD",
+  "reason": "H0.25 improved mean regret in both independent seeds but had slightly worse maximum regret than R0_T2 in both seeds. The frozen retain rule required strictly lower maximum regret in each seed. The metric implementation mismatch versus the exact ordered-top3 wording further prevents any positive confirmation claim, so fail closed.",
+  "scientific_interpretation": "The temperature-mixture hybrid does not solve structural misspecification. Its earlier advantage was concentrated in temperature-like distribution shifts; fresh structural worlds expose a remaining worst-case weakness. This is a useful negative result and narrows the next successor search toward explicit structural uncertainty rather than further global temperature mixing.",
+  "post_result_prohibitions": [
+    "Do not change H0.25 weights and rerun these worlds as fresh evidence.",
+    "Do not reinterpret the failed max-regret criterion post hoc.",
+    "Do not bind any successor to the frozen R0_T2 prospective assignment.",
+    "Do not access protected real outcomes, payouts, odds, price or economics."
+  ],
+  "real_evidence_accessed": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
