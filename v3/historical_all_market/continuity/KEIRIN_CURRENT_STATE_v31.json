@@ -1,0 +1,49 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v31",
+  "status": "ACTIVE_CURRENT_STATE_V31_H0_25_STRUCTURALLY_FALSIFIED_SUCCESSOR_RESEARCH_CONTINUES",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v30.json",
+  "checkpoint_jst": "2026-09-15",
+  "branch": "research/keirin-structural-falsification-20260915-v1",
+  "main_fresh_read_sha_at_start": "f6f145cf197f5e5cb9e8ad4d3d0b98e562039bb4",
+  "research_summary": {
+    "H0_25_status": "REJECTED_AS_BROAD_SYNTHETIC_ROBUSTNESS_LEAD_AFTER_FRESH_STRUCTURAL_FALSIFICATION",
+    "fresh_structural_races": 48000,
+    "failure": "H0.25 improved mean regret but had slightly worse maximum regret than R0_T2 in both independent seeds, violating the frozen retain rule.",
+    "failure_localization": ["localized_rank_reversal", "non_monotone_score_strength_mapping"],
+    "development_followup": "S1 local-uncertainty shrinkage reduced consumed-world maximum regret but materially worsened mean regret; not frozen for fresh validation.",
+    "scientific_direction": "Move from global temperature mixtures toward selective structural uncertainty/rank-robust modeling."
+  },
+  "frozen_real_confirmation_model": {
+    "id": "R0_T2",
+    "prospective_assignment": "R0T2-PROSPECTIVE-20260918-V1",
+    "status": "UNCHANGED_INDEPENDENT_WAITING_PRE_INPUT_WINDOW",
+    "result_scoring_authority": false
+  },
+  "exact_next_executable_actions": [
+    "Develop a pair-local rank-robust component on consumed synthetic worlds only, avoiding global shrinkage.",
+    "Require a new candidate ID and preregistered unseen simulator families/seeds before any new robustness claim.",
+    "Continue independent R0_T2 prospective PRE-lock lane when its public PRE inputs become available; never substitute simulation successors into that assignment."
+  ],
+  "scientific_contamination_guard": {
+    "gate_487_rerun": "PROHIBITED",
+    "A_plus_B_as_fresh_validation": "PROHIBITED",
+    "DEV2000_C_outcome_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "prospective_result_access_before_complete_prelock_and_new_exact_owner_gate": "PROHIBITED",
+    "simulation_successor_substitution_into_R0T2_assignment": "PROHIBITED"
+  },
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_YET_READY_PROSPECTIVE_RESULT_GATE_REMAINS_SEPARATE",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "No inflation from synthetic work. A candidate was correctly falsified and research direction improved, but no new independent real predictive evidence exists.",
+  "protected_boundaries": {
+    "new_real_result_access": false,
+    "payout_access": false,
+    "odds_price_economics_access": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
