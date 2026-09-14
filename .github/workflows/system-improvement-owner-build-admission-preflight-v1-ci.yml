@@ -24,16 +24,16 @@ jobs:
         run: python -m unittest tools.test_review_build_admission_preflight_v1 -v
       - name: Package-root import smoke
         run: python -c "import automation.review_dispatcher_v1.dispatcher; import tools.review_build_admission_preflight_v1"
-      - name: Exact live PR527 Lab admission preflight
+      - name: Exact live PR527 Auditor admission preflight
         env:
           GITHUB_TOKEN: ${{ github.token }}
           MULTIVERSE_DISPATCHER_REF: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
         run: >-
           python -m tools.review_build_admission_preflight_v1
           --repo fufufu1116/multiverse-research
-          --lane LAB
+          --lane AUDITOR
           --head 4af4521dfd5daaa47d9b816874c9a65bdf526079
-          --expected-request-comment 5668535128
-          --expected-request-sha256 cefa31fe6e5e4bd1eccf1d44009354ff9da3a8e52286fa855224318ceae62717
+          --expected-request-comment 5668811178
+          --expected-request-sha256 024130391042f6fcae795fe1463b3b79d5b7822dcbdffbc1bf6ec8a1bbced629
           --expected-main e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
           --expected-tree 7bb675f8ab93a7ec123e40b14f8cb5672c38efaa
