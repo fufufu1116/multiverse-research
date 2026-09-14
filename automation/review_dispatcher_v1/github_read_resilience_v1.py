@@ -86,8 +86,6 @@ def _mechanical_rate_limit_delay(
             float(math.ceil(reset_epoch - now) + 1),
         )
     elif reset_raw is not None and remaining_raw is not None:
-        # A reset timestamp without an exhausted primary bucket is not a
-        # mechanically sufficient retry signal for this bounded helper.
         reset_delay = None
 
     if retry_after is not None:
@@ -101,9 +99,6 @@ def _mechanical_rate_limit_delay(
 
     if reset_delay is not None:
         return reset_delay
-
-    # Body-only 403s, secondary-limit prose without Retry-After, and all
-    # other ambiguous failures intentionally fail closed with no retry.
     return None
 
 
@@ -208,19 +203,13 @@ def _write_cache(url: str, payload: Any, *, now: float) -> None:
         tmp = path.with_suffix(".tmp")
         tmp.write_text(
             json.dumps(
-                {
-                    "url": url,
-                    "fetched_at": float(now),
-                    "payload": payload,
-                },
+                {"url": url, "fetched_at": float(now), "payload": payload},
                 sort_keys=True,
                 separators=(",", ":"),
             )
         )
         os.replace(tmp, path)
     except Exception:
-        # Cache is only a same-build read-budget optimization. Any cache
-        # write problem must leave the original live fail-closed behavior.
         return
 
 
@@ -243,13 +232,14 @@ def github_json_request(
     max_attempts: int = READ_MAX_ATTEMPTS,
     max_total_wait_seconds: float = READ_MAX_TOTAL_WAIT_SECONDS,
     timeout: int = READ_TIMEOUT_SECONDS,
+    use_cache: bool = True,
 ) -> Any:
     method = method.upper()
     is_read = method == "GET" and data is None
     attempts = max(1, int(max_attempts))
     total_wait = 0.0
 
-    if is_read:
+    if is_read and use_cache:
         now = clock()
         cached = _cached_read(url, now=now)
         if cached is not _CACHE_MISS:
@@ -273,11 +263,8 @@ def github_json_request(
                     _write_cache(url, payload, now=clock())
                 return payload
         except urllib.error.HTTPError as exc:
-            # This helper is deliberately mutation-hostile: POST/PUT/PATCH/
-            # DELETE or any request with a body is never retried here.
             if not is_read:
                 raise
-
             delay = _mechanical_rate_limit_delay(exc, now=clock())
             if delay is None:
                 raise
@@ -285,7 +272,6 @@ def github_json_request(
                 raise
             if delay > max_total_wait_seconds - total_wait:
                 raise
-
             sleeper(delay)
             total_wait += delay
 
@@ -296,6 +282,7 @@ def github_json_read(
     url: str,
     *,
     user_agent: str,
+    use_cache: bool = True,
     **kwargs: Any,
 ) -> Any:
     return github_json_request(
@@ -303,5 +290,26 @@ def github_json_read(
         user_agent=user_agent,
         method="GET",
         data=None,
+        use_cache=use_cache,
+        **kwargs,
+    )
+
+
+def github_json_fresh_read(
+    url: str,
+    *,
+    user_agent: str,
+    **kwargs: Any,
+) -> Any:
+    """Perform a bounded GET that bypasses same-build cache lookup.
+
+    Successful payloads still refresh the cache. This is intended only for
+    read-after-write convergence checks where a stale pre-write cache entry
+    would otherwise mask a successful mutation.
+    """
+    return github_json_read(
+        url,
+        user_agent=user_agent,
+        use_cache=False,
         **kwargs,
     )
