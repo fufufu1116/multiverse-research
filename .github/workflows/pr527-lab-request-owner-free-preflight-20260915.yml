@@ -1,0 +1,50 @@
+name: PR527 Lab Request Owner-Free Preflight 20260915
+
+on:
+  push:
+    branches:
+      - agent/pr527-lab-request-owner-free-preflight-20260915
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR527 candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: 4af4521dfd5daaa47d9b816874c9a65bdf526079
+          fetch-depth: 0
+
+      - name: Run exact owner-free Lab one-shot preflight
+        shell: bash
+        run: |
+          set +e
+          PYTHONPATH=. python automation/review_dispatcher_v1/one_shot_preflight_v1.py \
+            --dispatcher-ref e81f3d310d07d40eb6c11fe8233dade3d72a5ad2 \
+            --lane LAB \
+            --repo fufufu1116/multiverse-research \
+            --head 4af4521dfd5daaa47d9b816874c9a65bdf526079 \
+            --repo-root . > /tmp/preflight.json
+          code=$?
+          set -e
+          cat /tmp/preflight.json || true
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/preflight.json')
+          data=json.loads(p.read_text())
+          print('PREFLIGHT_TERMINAL=' + ('READY' if data.get('ready') else 'BLOCKED'))
+          print('CLASSIFICATION=' + str(data.get('classification')))
+          print('REQUEST_COMMENT=' + str(data.get('request_comment')))
+          print('REQUEST_SHA256=' + str(data.get('request_sha256')))
+          print('PUBLICATION_ATTEMPTED=' + ('YES' if data.get('publication_attempted') else 'NO'))
+          print('OWNER_BUILD_CONSUMED=' + ('YES' if data.get('owner_build_consumed') else 'NO'))
+          if not data.get('ready'):
+              raise SystemExit(1)
+          PY
+          test "$code" -eq 0
