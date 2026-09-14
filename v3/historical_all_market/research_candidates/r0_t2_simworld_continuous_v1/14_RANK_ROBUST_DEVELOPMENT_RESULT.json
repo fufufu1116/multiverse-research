@@ -1,0 +1,36 @@
+{
+  "record": "RANK_ROBUST_SUCCESSOR_DEVELOPMENT_RESULT_v1",
+  "development_only": true,
+  "real_evidence": false,
+  "development_seed": 20260929,
+  "development_world_count": 12,
+  "races_per_world": 800,
+  "total_development_races": 9600,
+  "candidate_family": "mixture of R0_T2 probability and rank-based exponential probability",
+  "rank_probability": "exp(-rank/scale), rank 0 = highest score",
+  "search_grid": {
+    "beta": [0.1,0.2,0.3,0.4],
+    "rank_scale": [1.5,2.0,3.0,4.0]
+  },
+  "selected_candidate": {
+    "id": "RR1_B20_S4",
+    "definition": "0.8 * P_T2 + 0.2 * P_rank_scale4 at each sequential choice step",
+    "selection_reason": "Improved both mean and maximum oracle regret versus R0_T2 on consumed structural development worlds while avoiding the higher mean cost of the max-regret-minimizing beta=0.3 candidate."
+  },
+  "development_summary": {
+    "R0_T2": {"mean_primary_regret": 0.05956630097991081, "max_primary_regret": 0.19323427623604594},
+    "RR1_B20_S4": {"mean_primary_regret": 0.05694778200712066, "max_primary_regret": 0.1807244863095457},
+    "max_regret_relative_reduction": 0.06473740577018507,
+    "mean_regret_relative_reduction": 0.04395825892766565
+  },
+  "interpretation": "Development evidence only. Candidate must be frozen and tested on simulator families/seeds not used in development before any robustness-lead claim.",
+  "protected_boundaries": {
+    "Gate487_rerun": false,
+    "DEV2000_C_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "prospective_real_result_access": false,
+    "odds_price_payout_economics_access": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
