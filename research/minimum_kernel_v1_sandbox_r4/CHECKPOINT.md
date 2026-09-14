@@ -62,9 +62,18 @@ Evidence strength: **高信頼 (local sandbox only)**. Independent review/adopti
 5. Trusted signer integration is not implemented/tested; no secret/private key material is handled here.
 6. Role-separated RED TEAM / Independent Lab / Auditor is still required before any adoption.
 
+## Fresh control reconciliation after timeout recovery
+
+The earlier checkpoint sentence saying PR #483 was still waiting for its authorized Auditor Build is superseded by Fresh canonical receipts:
+- Gate #486 was consumed by an Auditor infrastructure/bootstrap failure (`ModuleNotFoundError: No module named 'automation'`); no Auditor verdict was produced for PR #483 and no retry is allowed under that Gate;
+- the repair moved to #489 / PR #496;
+- Gate #497 was consumed by Build #115 and produced an authentic Independent Lab PASS on PR #496 (`5664255039`, findings `[]`, test_count `9`);
+- a later duplicate dispatcher was correctly rejected after the trusted result already existed;
+- no Auditor Build or Steps mutation for PR #496 is authorized by Gate #497.
+
 ## Formal-review routing
 
-Do not launch or self-certify a new review Build from this authoring context. Current Control has an unrelated already-authorized PR #483 Independent Auditor one-shot waiting for its Owner UI Build creation; R4 must not bypass or interfere with that role-separated review lane. Branch-only hardening/research may continue. When Control is ready, materialize the exact R4 source as a current-main repository candidate and use the existing role-separated Lab/Auditor path with any required Owner Gate.
+Do not launch or self-certify a new R4 review Build from this authoring context. R4 remains branch-only SANDBOX evidence. The system-improvement review path must first reconcile the current post-Lab state of PR #496 and any separately gated Auditor-Steps bootstrap action required to restore the independent Auditor lane. Only after that control path is Fresh-resolved should the exact R4 source be materialized as a current-main Candidate and sent through the normal role-separated Lab/Auditor governance with any required Owner Gate.
 
 `HOLD_FOR_ROLE_SEPARATED_REVIEW`
 `NO_MERGE`
