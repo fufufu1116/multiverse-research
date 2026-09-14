@@ -25,6 +25,14 @@ def _compare_url(repo: str, base: str, head: str) -> str:
     return f"https://api.github.com/repos/{repo}/compare/{base}...{head}"
 
 
+def _fetch_compare(fetch: Fetch, url: str, code: str) -> dict[str, Any]:
+    try:
+        raw = fetch(url)
+    except Exception as exc:
+        raise ReviewContractError(f"{code}_FETCH_FAILED:{type(exc).__name__}") from exc
+    return required_object(raw, f"{code}_RESPONSE_OBJECT")
+
+
 def _request_snapshot_mains(
     comments: list[dict[str, Any]],
     *,
@@ -133,13 +141,15 @@ def assess_request_main_against_live(
             "drift_files": [],
         }
 
-    candidate_compare = required_object(
-        fetch(_compare_url(repo, base, head)),
-        "CANDIDATE_COMPARE_RESPONSE_OBJECT",
+    candidate_compare = _fetch_compare(
+        fetch,
+        _compare_url(repo, base, head),
+        "CANDIDATE_COMPARE",
     )
-    drift_compare = required_object(
-        fetch(_compare_url(repo, request_main, live_main)),
-        "MAIN_DRIFT_COMPARE_RESPONSE_OBJECT",
+    drift_compare = _fetch_compare(
+        fetch,
+        _compare_url(repo, request_main, live_main),
+        "MAIN_DRIFT_COMPARE",
     )
 
     return assess_unrelated_main_drift(
