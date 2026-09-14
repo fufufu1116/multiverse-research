@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
 import time
 
 from automation.review_dispatcher_v1 import t2_legacy_v1 as _legacy
 from automation.review_dispatcher_v1.github_read_resilience_v1 import (
+    github_json_fresh_read,
     github_json_read,
 )
 from automation.review_dispatcher_v1.model import (
@@ -29,6 +31,13 @@ def _bounded_public_github(url: str):
     )
 
 
+def _fresh_public_github(url: str):
+    return github_json_fresh_read(
+        url,
+        user_agent="multiverse-fixed-t2-v1",
+    )
+
+
 # Fixed T2 legacy logic performs only public GitHub GET reads through this
 # function. Rebind that read edge to the same bounded GET-only semantics used
 # by the existing read-resilience lineage. Mutation/authenticated GitHub App
@@ -40,6 +49,18 @@ _original_fetch_all_pages = _legacy.fetch_all_pages
 
 T2_POST_WRITE_VISIBILITY_MAX_READS = 4
 T2_POST_WRITE_VISIBILITY_DELAY_SECONDS = 1.0
+
+
+@contextmanager
+def _legacy_public_read_mode(*, use_cache: bool):
+    previous = _legacy.public_github
+    _legacy.public_github = (
+        _bounded_public_github if use_cache else _fresh_public_github
+    )
+    try:
+        yield
+    finally:
+        _legacy.public_github = previous
 
 
 def _all_comments(job):
@@ -180,108 +201,100 @@ def _recover_existing_t2(job, receipt, comments, marker):
     )
 
 
-def _fresh_t2_verify(job, artifact, receipt):
+def _fresh_t2_verify(job, artifact, receipt, *, use_cache: bool = True):
     repo = job["repo"]
     pr_number = job["pr"]
 
-    pr = _legacy.github_full_pr_binding(
-        _legacy.public_github(
-            f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
-        ),
-        expected_number=pr_number,
-        expected_head=job["head"],
-    )
-    main_sha = _legacy.github_branch_commit_sha(
-        _legacy.public_github(
-            f"https://api.github.com/repos/{repo}/branches/main"
+    with _legacy_public_read_mode(use_cache=use_cache):
+        pr = _legacy.github_full_pr_binding(
+            _legacy.public_github(
+                f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+            ),
+            expected_number=pr_number,
+            expected_head=job["head"],
         )
-    )
-    tree_sha = _legacy.github_commit_tree_sha(
-        _legacy.public_github(
-            f"https://api.github.com/repos/{repo}/commits/{job['head']}"
+        main_sha = _legacy.github_branch_commit_sha(
+            _legacy.public_github(
+                f"https://api.github.com/repos/{repo}/branches/main"
+            )
         )
-    )
-
-    _legacy.require(pr["base_sha"] == job["base"], "BASE_DRIFT")
-    _legacy.require(tree_sha == job["tree"], "TREE_DRIFT")
-    _legacy.require(main_sha == job["main"], "MAIN_DRIFT")
-    _legacy.require(
-        job.get("dispatcher_ref") == main_sha,
-        "DISPATCHER_REF_DRIFT",
-    )
-
-    comments = _all_comments(job)
-    assert_job_request_still_canonical(job, comments)
-    _lab_binding(job, comments)
-
-    auditor_comment_id = _legacy.required_positive_int(
-        receipt.get("published_comment_id"),
-        "AUDITOR_RECEIPT_COMMENT_ID",
-    )
-    _legacy.require(
-        receipt.get("published_by") == _legacy.AUDITOR_LOGIN,
-        "AUDITOR_RECEIPT_PRODUCER",
-    )
-    _legacy.require(
-        receipt.get("github_app_id") == _legacy.AUDITOR_APP_ID,
-        "AUDITOR_RECEIPT_APP",
-    )
-    _legacy.require(
-        receipt.get("request_sha256") == job["request_sha256"],
-        "AUDITOR_RECEIPT_REQUEST_SHA256",
-    )
-
-    auditor_comment = _legacy.required_object(
-        _legacy.public_github(
-            (
-                f"https://api.github.com/repos/{repo}/issues/comments/"
-                f"{auditor_comment_id}"
+        tree_sha = _legacy.github_commit_tree_sha(
+            _legacy.public_github(
+                f"https://api.github.com/repos/{repo}/commits/{job['head']}"
             )
-        ),
-        "AUDITOR_COMMENT_RESPONSE_OBJECT",
-    )
-    _legacy.require(
-        (auditor_comment.get("user") or {}).get("login")
-        == _legacy.AUDITOR_LOGIN,
-        "AUDITOR_COMMENT_LOGIN",
-    )
-    _legacy.require(
-        _legacy.lane_result_outer_app_trusted(
-            auditor_comment,
-            "AUDITOR",
-        ),
-        "AUDITOR_COMMENT_APP",
-    )
-    _legacy.require(
-        _legacy.json_block(auditor_comment.get("body") or "") == artifact,
-        "PUBLISHED_AUDITOR_ARTIFACT_DRIFT",
-    )
+        )
 
-    upstream = job["request"]["upstream"]
-    t1_comment = _legacy.required_object(
-        _legacy.public_github(
-            (
-                f"https://api.github.com/repos/{repo}/issues/comments/"
-                f"{upstream['t1_comment']}"
-            )
-        ),
-        "T1_COMMENT_RESPONSE_OBJECT",
-    )
-    _legacy.require(
-        _legacy.issue_comment_owner_trusted(t1_comment, repo),
-        "T1_PRODUCER_NOT_OWNER",
-    )
-    t1_body = t1_comment.get("body") or ""
-    for token, code in (
-        (str(upstream["lab_pass_comment"]), "T1_LAB_BINDING_MISSING"),
-        (upstream["lab_request_sha256"], "T1_LAB_REQUEST_SHA256_MISSING"),
-        (job["head"], "T1_HEAD_BINDING_MISSING"),
-        (job["tree"], "T1_TREE_BINDING_MISSING"),
-        (job["base"], "T1_BASE_BINDING_MISSING"),
-        (job["main"], "T1_MAIN_BINDING_MISSING"),
-        ("PASS", "T1_PASS_MARKER_MISSING"),
-    ):
-        _legacy.require(token in t1_body, code)
+        _legacy.require(pr["base_sha"] == job["base"], "BASE_DRIFT")
+        _legacy.require(tree_sha == job["tree"], "TREE_DRIFT")
+        _legacy.require(main_sha == job["main"], "MAIN_DRIFT")
+        _legacy.require(
+            job.get("dispatcher_ref") == main_sha,
+            "DISPATCHER_REF_DRIFT",
+        )
+
+        comments = _all_comments(job)
+        assert_job_request_still_canonical(job, comments)
+        _lab_binding(job, comments)
+
+        auditor_comment_id = _legacy.required_positive_int(
+            receipt.get("published_comment_id"),
+            "AUDITOR_RECEIPT_COMMENT_ID",
+        )
+        _legacy.require(
+            receipt.get("published_by") == _legacy.AUDITOR_LOGIN,
+            "AUDITOR_RECEIPT_PRODUCER",
+        )
+        _legacy.require(
+            receipt.get("github_app_id") == _legacy.AUDITOR_APP_ID,
+            "AUDITOR_RECEIPT_APP",
+        )
+        _legacy.require(
+            receipt.get("request_sha256") == job["request_sha256"],
+            "AUDITOR_RECEIPT_REQUEST_SHA256",
+        )
+
+        auditor_comment = _legacy.required_object(
+            _legacy.public_github(
+                f"https://api.github.com/repos/{repo}/issues/comments/{auditor_comment_id}"
+            ),
+            "AUDITOR_COMMENT_RESPONSE_OBJECT",
+        )
+        _legacy.require(
+            (auditor_comment.get("user") or {}).get("login")
+            == _legacy.AUDITOR_LOGIN,
+            "AUDITOR_COMMENT_LOGIN",
+        )
+        _legacy.require(
+            _legacy.lane_result_outer_app_trusted(auditor_comment, "AUDITOR"),
+            "AUDITOR_COMMENT_APP",
+        )
+        _legacy.require(
+            _legacy.json_block(auditor_comment.get("body") or "") == artifact,
+            "PUBLISHED_AUDITOR_ARTIFACT_DRIFT",
+        )
+
+        upstream = job["request"]["upstream"]
+        t1_comment = _legacy.required_object(
+            _legacy.public_github(
+                f"https://api.github.com/repos/{repo}/issues/comments/{upstream['t1_comment']}"
+            ),
+            "T1_COMMENT_RESPONSE_OBJECT",
+        )
+        _legacy.require(
+            _legacy.issue_comment_owner_trusted(t1_comment, repo),
+            "T1_PRODUCER_NOT_OWNER",
+        )
+        t1_body = t1_comment.get("body") or ""
+        for token, code in (
+            (str(upstream["lab_pass_comment"]), "T1_LAB_BINDING_MISSING"),
+            (upstream["lab_request_sha256"], "T1_LAB_REQUEST_SHA256_MISSING"),
+            (job["head"], "T1_HEAD_BINDING_MISSING"),
+            (job["tree"], "T1_TREE_BINDING_MISSING"),
+            (job["base"], "T1_BASE_BINDING_MISSING"),
+            (job["main"], "T1_MAIN_BINDING_MISSING"),
+            ("PASS", "T1_PASS_MARKER_MISSING"),
+        ):
+            _legacy.require(token in t1_body, code)
 
     return comments
 
@@ -298,7 +311,12 @@ def _await_published_t2_canonical(
     missed_visibility = False
 
     for read_index in range(T2_POST_WRITE_VISIBILITY_MAX_READS):
-        comments = _fresh_t2_verify(job, artifact, receipt)
+        comments = _fresh_t2_verify(
+            job,
+            artifact,
+            receipt,
+            use_cache=False,
+        )
         try:
             assert_published_t2_is_canonical(
                 comments,
@@ -359,7 +377,8 @@ def publish_t2(job, artifact, receipt):
         except _legacy.ReviewContractError as exc:
             if not str(exc).startswith("CURRENT_T2_ALREADY_EXISTS:"):
                 raise
-            comments = _all_comments(job)
+            with _legacy_public_read_mode(use_cache=False):
+                comments = _all_comments(job)
             recovered = _recover_existing_t2(job, receipt, comments, marker)
             if recovered is None:
                 raise _legacy.ReviewContractError(
