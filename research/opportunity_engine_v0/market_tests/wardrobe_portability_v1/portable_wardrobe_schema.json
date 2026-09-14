@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/portable-wardrobe-passport-v1.schema.json",
+  "title": "Portable Wardrobe Passport v1 — synthetic research schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "exported_at", "source_system", "user_owned_export", "items", "wear_events", "outfits"],
+  "properties": {
+    "schema_version": {"const": "PORTABLE_WARDROBE_PASSPORT_v1"},
+    "exported_at": {"type": "string", "format": "date-time"},
+    "source_system": {"type": "string", "minLength": 1},
+    "user_owned_export": {"const": true},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item_id", "category", "resale_status", "provenance"],
+        "properties": {
+          "item_id": {"type": "string", "minLength": 1},
+          "image_refs": {"type": "array", "items": {"type": "string"}},
+          "brand": {"type": ["string", "null"]},
+          "category": {"type": "string", "minLength": 1},
+          "sub_category": {"type": ["string", "null"]},
+          "colors": {"type": "array", "items": {"type": "string"}},
+          "size": {"type": ["string", "null"]},
+          "materials": {"type": "array", "items": {"type": "string"}},
+          "purchase_date": {"type": ["string", "null"], "format": "date"},
+          "purchase_price": {"type": ["number", "null"], "minimum": 0},
+          "currency": {"type": ["string", "null"]},
+          "wear_count": {"type": "integer", "minimum": 0, "default": 0},
+          "last_worn_at": {"type": ["string", "null"], "format": "date-time"},
+          "condition": {"type": ["string", "null"]},
+          "notes": {"type": ["string", "null"]},
+          "source_links": {"type": "array", "items": {"type": "string"}},
+          "resale_status": {"enum": ["KEEP", "REVIEW", "SELL", "DONATE"]},
+          "provenance": {
+            "type": "object",
+            "description": "Field-level origin labels; synthetic prototype only.",
+            "additionalProperties": {"enum": ["USER_ENTERED", "IMPORTED", "INFERRED", "UNKNOWN"]}
+          }
+        }
+      }
+    },
+    "wear_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "item_ids", "worn_at"],
+        "properties": {
+          "event_id": {"type": "string"},
+          "item_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "worn_at": {"type": "string", "format": "date-time"},
+          "context": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "outfits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["outfit_id", "item_ids"],
+        "properties": {
+          "outfit_id": {"type": "string"},
+          "item_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "name": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": "PORTABLE_WARDROBE_PASSPORT_v1",
+  "exported_at": "2026-09-13T00:00:00+09:00",
+  "source_system": "SYNTHETIC_TEST_ONLY",
+  "user_owned_export": true,
+  "items": [
+    {
+      "item_id": "item-001",
+      "image_refs": ["synthetic://item-001-front"],
+      "brand": "SampleBrand",
+      "category": "TOP",
+      "sub_category": "SHIRT",
+      "colors": ["BLUE"],
+      "size": "M",
+      "materials": ["COTTON"],
+      "purchase_date": "2025-03-01",
+      "purchase_price": 6000,
+      "currency": "JPY",
+      "wear_count": 18,
+      "last_worn_at": "2026-08-28T08:00:00+09:00",
+      "condition": "GOOD",
+      "notes": "Synthetic record; no real person or product.",
+      "source_links": [],
+      "resale_status": "KEEP",
+      "provenance": {
+        "brand": "USER_ENTERED",
+        "category": "IMPORTED",
+        "colors": "INFERRED",
+        "wear_count": "IMPORTED"
+      }
+    },
+    {
+      "item_id": "item-002",
+      "image_refs": ["synthetic://item-002-front"],
+      "brand": "ExampleLabel",
+      "category": "OUTERWEAR",
+      "sub_category": "JACKET",
+      "colors": ["BLACK"],
+      "size": "M",
+      "materials": ["WOOL_BLEND"],
+      "purchase_date": "2024-10-10",
+      "purchase_price": 18000,
+      "currency": "JPY",
+      "wear_count": 2,
+      "last_worn_at": "2025-12-20T18:00:00+09:00",
+      "condition": "VERY_GOOD",
+      "notes": "Synthetic under-used item for recovery-flow testing.",
+      "source_links": [],
+      "resale_status": "REVIEW",
+      "provenance": {
+        "brand": "USER_ENTERED",
+        "category": "IMPORTED",
+        "purchase_price": "USER_ENTERED",
+        "wear_count": "IMPORTED"
+      }
+    }
+  ],
+  "wear_events": [
+    {
+      "event_id": "wear-001",
+      "item_ids": ["item-001"],
+      "worn_at": "2026-08-28T08:00:00+09:00",
+      "context": "SYNTHETIC_WORKDAY"
+    }
+  ],
+  "outfits": [
+    {
+      "outfit_id": "outfit-001",
+      "item_ids": ["item-001", "item-002"],
+      "name": "Synthetic autumn example"
+    }
+  ]
+}
