@@ -1,0 +1,88 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v23",
+  "status": "ACTIVE_CURRENT_STATE_V23_SCHEMA_PROVENANCE_COMPLETE_CHARACTERIZATION_METHOD_FROZEN_WAITING_OWNER_GATE_485",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v22.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_owner_gate_issue": 475,
+    "new_owner_gate_issue": 485,
+    "schema_provenance_commit": "e5f7d86779febcb6f0eb7108f7cac8b095ea3fe5",
+    "schema_characterization_prereg_blob": "e39a699abbd972ff25a65b6376fe0aa34839feef",
+    "schema_characterization_tool_blob": "555aaadf07c50f7eb36f54c08d5ace05ff658726",
+    "schema_characterization_test_blob": "c35b33eb6245fc5338d04c18c5279c24d3640634",
+    "ledger_v28_commit": "643f0bdb01c5c0466a6359bea483af255a9c9234"
+  },
+  "current_research_objective": "Preserve the frozen SW0 A+B prediction lock and Gate #475 fail-closed record. Provenance investigation is complete and did not establish an authoritative semantic mapping for first_set/second_set/third_set. The next scientifically valid action is exactly one aggregate structural characterization read under new Owner Gate #485 using the already-frozen A+B-only characterizer. Do not access additional protected result values before exact Gate authorization.",
+  "prediction_lock": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "status": "FROZEN_UNCHANGED_PREDICTION_LOCKED_NOT_PROMOTED",
+    "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "race_count": 1500,
+    "dev_index_range": [1, 1500],
+    "DEV2000_C": "EXCLUDED"
+  },
+  "gate_475_execution": {
+    "status": "CONSUMED_FAIL_CLOSED_BEFORE_EVALUATION",
+    "outcome_drive_file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+    "outcome_sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+    "outcome_jsonl_record_count": 2000,
+    "observed_fields": ["first_set", "parser", "race_date", "race_id", "second_set", "status", "third_set"],
+    "evaluation_invoked": false,
+    "predictive_metrics_computed": false,
+    "gate_reuse_allowed": false
+  },
+  "schema_provenance_investigation": {
+    "status": "COMPLETE_NO_AUTHORITATIVE_FIELD_MAPPING_FOUND",
+    "additional_result_value_access": false,
+    "authoritative_mapping_first_set_to_finish_rank": "NOT_ESTABLISHED",
+    "posthoc_rename_or_adapter_owner_free": "PROHIBITED",
+    "record_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/04_SCHEMA_PROVENANCE_INVESTIGATION.json"
+  },
+  "frozen_schema_characterization": {
+    "prereg_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/05_SCHEMA_CHARACTERIZATION_PREREG.json",
+    "prereg_blob": "e39a699abbd972ff25a65b6376fe0aa34839feef",
+    "tool_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/characterize_sw0_result_schema_v1.py",
+    "tool_blob": "555aaadf07c50f7eb36f54c08d5ace05ff658726",
+    "tool_preregistered_sha256": "72de27149e4c9a5a072652f74ed89b280e7ba2fda382ca70e23fbd55a612d4d3",
+    "test_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/test_characterize_sw0_result_schema_v1.py",
+    "test_blob": "c35b33eb6245fc5338d04c18c5279c24d3640634",
+    "test_preregistered_sha256": "12a4f160739b8ce384a7262dc17a39cc1b250217ca81a9b00ea06d117baf7a85",
+    "output_classification": "STRUCTURAL_CHARACTERIZATION_ONLY_NO_PREDICTIVE_EVALUATION",
+    "predictive_evaluation_authorized": false
+  },
+  "protected_boundaries": {
+    "no_gate_475_rerun_or_posthoc_adapter": true,
+    "no_protected_result_access_before_gate_485": true,
+    "DEV2000_C_outcome_value_deserialization_or_use": false,
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "payout_odds_price_economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "exact_next_executable_actions": [
+    "Wait for exact Owner Gate #485 authorization token; generic proceed/100-percent instruction cannot cross this protected-data Gate.",
+    "After exact authorization only: Fresh verify Gate #485 unused state, branch bindings, prereg/tool/test identities and preregistered SHA256 values before protected access.",
+    "Execute exactly one frozen A+B-only aggregate structural characterization attempt; do not deserialize C outcome values and do not emit per-race outcome values.",
+    "Persist aggregate structural report/receipt and stop. Design any deterministic transformation/evaluator only afterward without additional result access.",
+    "Require another separate Owner Gate for any later predictive evaluation."
+  ],
+  "owner_action_required_now": true,
+  "next_owner_gate": {
+    "issue": 485,
+    "token": "AUTHORIZE_SW0_DEV2000_AB_RESULT_ONLY_V3_STRUCTURAL_SCHEMA_CHARACTERIZATION_ONE_SHOT_ONLY",
+    "scope": "ONE_STRUCTURAL_CHARACTERIZATION_ATTEMPT_ONLY_NO_PREDICTIVE_EVALUATION"
+  },
+  "runtime": "OFF",
+  "automatic_betting": false
+}
