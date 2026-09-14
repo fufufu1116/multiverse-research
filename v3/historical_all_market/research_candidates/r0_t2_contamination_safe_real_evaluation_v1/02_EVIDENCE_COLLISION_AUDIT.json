@@ -1,0 +1,55 @@
+{
+  "record": "KEIRIN_R0_T2_EVIDENCE_COLLISION_AUDIT_V1",
+  "status": "PASS_PRE_OUTCOME_IDENTITY_LEVEL_NO_PROTECTED_DESERIALIZATION",
+  "audit_date_jst": "2026-09-15",
+  "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+  "assigned_calendar_range": ["2026-09-18", "2026-09-21"],
+  "audit_method": "IDENTITY_AND_CHRONOLOGY_ONLY_NO_RESULT_OR_OUTCOME_DESERIALIZATION",
+  "known_consumed_or_exposed_sets": [
+    {
+      "name": "GATE_487_DEV2000_A_PLUS_B",
+      "gate": 487,
+      "status": "CONSUMED_OUTCOMES_ALREADY_OBSERVED",
+      "identity_scope": "DEV2000 A+B prediction universe; dev_index 1..1500",
+      "reuse_for_r0_t2_fresh_validation": "PROHIBITED",
+      "collision_with_assignment": false,
+      "basis": "The new assignment is a post-freeze prospective public sequence dated 2026-09-18 onward and is not the historical DEV2000 A+B universe."
+    },
+    {
+      "name": "DEV2000_C",
+      "status": "PROTECTED_UNOPENED_FOR_THIS_LINEAGE",
+      "collision_check": "NOT_DESERIALIZED",
+      "collision_with_assignment": false,
+      "basis": "The prospective assignment is explicitly external to the DEV2000 C protected outcome set; no C outcome values were accessed."
+    },
+    {
+      "name": "ECON_HOLDOUT1000",
+      "status": "SEALED",
+      "collision_check": "NOT_DESERIALIZED",
+      "collision_with_assignment": false,
+      "basis": "The prospective assignment does not use or open ECON_HOLDOUT1000."
+    },
+    {
+      "name": "PRIOR_KEIRIN_HISTORICAL_AND_MECHANICAL_EVIDENCE",
+      "status": "EXPOSED_OR_MECHANICAL_HISTORICAL_EVIDENCE",
+      "collision_with_assignment": false,
+      "basis": "The assignment is strictly post-R0_T2-freeze and prospective, while prior consumed/exposed Keirin validation and DEV2000 mechanical evidence are historical."
+    }
+  ],
+  "runtime_collision_guard": {
+    "required_before_each_prelock": true,
+    "rule": "Reject any race identity not belonging to one of the exact three assigned meetings or whose scheduled start is outside the frozen meeting date range.",
+    "protected_outcome_lookup_for_collision": false
+  },
+  "conclusion": "NO_KNOWN_IDENTITY_OR_CHRONOLOGY_COLLISION_AT_ASSIGNMENT_FREEZE; FINAL_LOCK_ARTIFACT_MUST_BE_REAUDITED_BY_IDENTITIES_ONLY_BEFORE_OWNER_GATE",
+  "protected_boundaries": {
+    "result_payout_accessed": false,
+    "outcome_deserialized": false,
+    "odds_price_economics_accessed": false,
+    "DEV2000_C_accessed": false,
+    "ECON_HOLDOUT1000_accessed": false,
+    "model_promotion": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
