@@ -1,0 +1,73 @@
+{
+  "record": "KEIRIN_OWNER_GATE_487_EXECUTION_RECEIPT_v1",
+  "status": "CONSUMED_SUCCESS_ONE_SHOT_PREDICTIVE_EVALUATION_COMPLETE_NO_RERUN",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "owner_gate": {
+    "issue": 487,
+    "authorization_comment_id": 5663743079,
+    "execution_start_receipt_comment_id": 5663798639,
+    "token": "AUTHORIZE_SW0_DEV2000_AB_RESULT_ONLY_V3_STRICT_SINGLETON_ONE_PREDICTIVE_EVALUATION_ONLY",
+    "attempts_executed": 1,
+    "gate_consumed": true,
+    "rerun_permitted": false
+  },
+  "fresh_binding_before_execution": {
+    "canonical_main": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "branch_head": "844934097a87d2aae01dc804469dbb6aa15f558d",
+    "prereg_commit": "c1135509493fd56b48879d624884d4c5a9939dce",
+    "prereg_blob": "68ef8dcb561305eaf3da4c1342979a41dc72837b",
+    "evaluator_blob": "f4e0ee0d4fced410cbd79de35b49e97422144763",
+    "evaluator_sha256": "f2f419d6e6b48c51fdc9602e258855b1b7899a47a7718a6f73c9b4a3d026d00c",
+    "test_blob": "d2462a393e2d87511b9ef7167322e102bec4178a",
+    "test_sha256": "41ba90defcb43bd8f81536078ac41df567d79f39a76d3b903d256029627ee7ae",
+    "synthetic_tests": 3,
+    "synthetic_tests_result": "PASS"
+  },
+  "protected_inputs": {
+    "result_drive_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+    "result_sha256": "df2ba679895400d2a07d72f501fbaf52c1bd60d1128e16560a0bb66ebaa27884",
+    "prediction_drive_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "prediction_sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127"
+  },
+  "execution": {
+    "exit_code": 0,
+    "result_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/09_GATE_487_STRICT_SINGLETON_PREDICTIVE_EVALUATION_RESULT.json",
+    "result_sha256": "2c08e22b99eb912089dcc169899bc3a459f04e11406853fcbdef8ea4bdd72e7c",
+    "result_commit": "7655465cad6b2370120be7b7d327c66c064d8e80",
+    "verdict": "NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET",
+    "strict_singleton_rows_scored": 1493,
+    "non_strict_rows_excluded": 7,
+    "pooled_primary_effect_uniform_minus_sw0": -1.8529385402808158,
+    "bootstrap_95pct": [-2.180065038595912, -1.5453062075715123],
+    "segment_A_primary_effect": -1.9378973756215496,
+    "segment_B_primary_effect": -1.6831914696703136,
+    "pooled_winner_brier_improvement": -0.00913711353585854
+  },
+  "scientific_interpretation": {
+    "classification_rule_applied_without_change": true,
+    "conclusion": "The frozen SW0 model did not show predictive signal on the preregistered strict-singleton A+B subset. The pooled exact ordered-top3 log-loss effect versus uniform was negative and its preregistered bootstrap interval was entirely below zero. This result does not support model promotion.",
+    "claim_scope": "STRICT_SINGLETON_FIRST_SECOND_THIRD_SET_ROWS_ONLY_NOT_SOURCE_WIDE",
+    "evidence_class": "LINEAGE_LOCAL_PREOUTCOME_HISTORICAL_PREDICTIVE_EVALUATION_STRICT_SINGLETON_OUTCOME_SUBSET_NOT_GLOBAL_UNTOUCHED_HOLDOUT"
+  },
+  "protected_boundaries": {
+    "non_singleton_tie_rows_scalarized": false,
+    "DEV2000_C_outcome_value_deserialization_or_use": false,
+    "ECON_HOLDOUT1000_accessed": false,
+    "payout_odds_price_economics_ROI_profit_accessed_or_computed": false,
+    "fit_training_tuning_calibration_parameter_model_selection": false,
+    "model_promotion": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "operational_incident_after_evaluation": {
+    "classification": "NONAUTHORITY_CONNECTOR_TOOL_SELECTION_ERRORS_DURING_PERSISTENCE",
+    "accidental_issue_numbers": [488, 490, 492, 493, 495],
+    "resolution": "All accidental issues were immediately marked no project authority and closed not_planned. They did not change branch/file scientific state, did not trigger another evaluation, and do not alter Gate #487 evidence.",
+    "additional_predictive_evaluation_attempts": 0
+  }
+}
