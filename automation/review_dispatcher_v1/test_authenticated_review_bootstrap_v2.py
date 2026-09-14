@@ -38,6 +38,7 @@ class AuthenticatedReviewBootstrapV2Tests(unittest.TestCase):
     def tearDown(self) -> None:
         for name in LANE_PRIVATE_KEY_ENV.values():
             os.environ.pop(name, None)
+        os.environ.pop("MULTIVERSE_GITHUB_READ_TOKEN", None)
         os.environ.pop("BUILDKITE_BUILD_ID", None)
 
     def test_01_mint_requests_downscoped_read_permissions(self) -> None:
