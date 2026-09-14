@@ -1,0 +1,82 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_3",
+  "status": "PREREGISTERED_BEFORE_EXPECTED_LINE_ARCHIVE_CELL_VALUE_OR_DEV2000_UNIVERSE_ROW_ACCESS",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_expected": "74e5534ac95d13ce0418b69d527812d1cd139781",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5657234204,
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "scientific_question": "Is the existing KEIRIN Expected Line Prospective Archive a PRE-only, DEV2000-linked line-structure source that can supply line_group_id/line_position/line_size for frozen N2 compatibility without outcome, price or economics access?",
+  "frozen_candidate": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+  "frozen_candidate_changed": false,
+  "candidate_line_source": {
+    "name": "KEIRIN Expected Line Prospective Archive 2026-09-01",
+    "drive_file_id": "1P-3clLlFZizmhNQxPtj7e_Fz80vEOC0c9lQpqmOLj0I",
+    "mime_type": "application/vnd.google-apps.spreadsheet",
+    "current_revision_id_from_metadata_only_discovery": "13",
+    "modified_time": "2026-09-01T08:07:50.398Z",
+    "sheet_metadata": {
+      "Expected_Line_Captures": {"sheet_id": 144291706, "row_count": 1000, "column_count": 26},
+      "Topology_Support": {"sheet_id": 2001, "row_count": 100, "column_count": 10},
+      "README": {"sheet_id": 2002, "row_count": 100, "column_count": 10}
+    },
+    "identity_rule": "Native Google Sheet identity is fixed by Drive file ID plus revision ID 13; any revision drift fails closed and requires a new preregistration."
+  },
+  "dev2000_join_companion": {
+    "name": "DEV2000_UNIVERSE_v1.csv",
+    "drive_file_id": "1BV79TYKyNJYX7zUZai1Aa-nvgbZCiq_O",
+    "expected_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "expected_races": 2000,
+    "allowed_values": ["race_id"],
+    "recovery_receipt_name": "DEV2000_UNIVERSE_RECOVERY_RECEIPT.json",
+    "recovery_receipt_drive_file_id": "1NJb7DMhEWg-1c7dkM1OgNw4PkBms4tRS",
+    "recovery_receipt_sha256": "2752cef9fae06dd5259c5aeaffd947b01e4da1735bb00a4a5f59e07e67e680c5",
+    "receipt_safety_claims_required": {
+      "result_accessed": false,
+      "payout_accessed": false,
+      "scoring_performed": false
+    }
+  },
+  "authorized_target_fields": ["line_group_id","line_position","line_size"],
+  "not_yet_audited_in_this_source": ["bank_length_m","wind_speed_mps"],
+  "access_order": [
+    "FRESH_READ_CANONICAL_AUTHORITY_AND_THIS_PREREGISTRATION",
+    "REVERIFY_NATIVE_SHEET_REVISION_ID_EQUALS_13",
+    "READ_HEADER_ROWS_ONLY_FROM_EXPECTED_LINE_CAPTURES_TOPOLOGY_SUPPORT_AND_README_FIRST_ROW",
+    "FAIL_CLOSED_IF_HEADERS_EXPOSE_RESULT_PAYOUT_OUTCOME_SETTLEMENT_ODDS_PRICE_ECONOMICS_FIELDS",
+    "IF_HEADER_SAFE_READ_BOUNDED_README_PROVENANCE_SEMANTICS_ONLY_TO_CONFIRM_PROSPECTIVE_PRE_ONLY_STATUS",
+    "VERIFY_DEV2000_UNIVERSE_HASH_AND_RECOVERY_RECEIPT_SAFETY_FLAGS",
+    "READ_ONLY_DEV2000_UNIVERSE_RACE_ID_AND_EXPECTED_LINE_ARCHIVE_RACE_ID_JOIN_KEYS",
+    "COMPUTE_DEV2000_RACE_ID_OVERLAP",
+    "IF_OVERLAP_ZERO_STOP_SOURCE_WITHOUT_LINE_TARGET_VALUE_AUDIT",
+    "IF_OVERLAP_POSITIVE_READ_ONLY_RACE_ID_PLUS_LINE_TARGET_COLUMNS_FOR_OVERLAPPING_ROWS_AND_AUDIT_AVAILABILITY_MISSINGNESS_CARDINALITY_RANGE_SUPPORT"
+  ],
+  "forbidden_header_terms": ["result","payout","finish","winner","settlement","odds","price","roi","profit","bankroll","return"],
+  "stop_rules": [
+    "STOP_NATIVE_REVISION_DRIFT",
+    "STOP_FORBIDDEN_HEADER_FIELD",
+    "STOP_PRE_ONLY_PROVENANCE_NOT_CONFIRMED",
+    "STOP_DEV2000_UNIVERSE_HASH_OR_SAFETY_RECEIPT_MISMATCH",
+    "STOP_NO_DEV2000_RACE_ID_OVERLAP"
+  ],
+  "protected_boundaries": {
+    "RESULT_PAYOUT":"NOT_ACCESSED",
+    "outcome_or_settlement_labels":"NOT_ACCESSED",
+    "odds_price":"NOT_ACCESSED",
+    "economics_bankroll_roi_profit":"NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000":"SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes":"NOT_ACCESSED",
+    "untouched_outcome_validation":"NOT_OPENED",
+    "real_pre_training_fit_selection":"PROHIBITED_NOT_PERFORMED",
+    "model_promotion":"PROHIBITED",
+    "new_automated_bulk_collection":false,
+    "external_provider_contact":false,
+    "runtime":"OFF",
+    "automatic_betting":false,
+    "real_money":false,
+    "spend":false,
+    "credential":false
+  },
+  "follow_up_rule": "This preregistration is linkage/suitability only. If the archive is not DEV2000-linked, it is out of scope under the current canonical receipt. Race-context sources for bank_length_m/wind_speed_mps require a separate exact preregistration before cell/file value access."
+}
