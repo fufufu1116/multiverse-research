@@ -1,0 +1,21 @@
+{
+  "record":"KEIRIN_SYNTHETIC_DEV2000_AVAILABLE_SIBLING_CONFIRMATION_PREREG_v2",
+  "status":"PREREGISTERED_BEFORE_SYNTHETIC_CONFIRMATION_SCORING",
+  "created_date_jst":"2026-09-14",
+  "canonical_main_expected":"a7ad5eae115d24fd2e451bb92604def85663e4dc",
+  "owner_gate_issue":377,
+  "owner_gate_comment_id":5658034266,
+  "authority_receipt":"governance/KEIRIN_OWNER_GATE_DEV2000_AVAILABLE_FIELD_SYNTHETIC_SIBLING_20260914_v1.json",
+  "evidence_class":"SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "purpose":"Untouched-seed confirmation of the unchanged score/class/style-only S0 sibling and the same five missing-field ablations after v1 development classified S0 as broadly synthetic-viable.",
+  "anti_overfit_boundary":["S0 architecture and prediction field set are frozen exactly from v1 before confirmation scoring.","All N2 coefficients, ablation semantics, worlds, thresholds and confirmation seeds/race counts are fixed before confirmation scoring.","No tuning or threshold relaxation is allowed after confirmation results.","No real PRE row values, real outcomes, RESULT/PAYOUT, odds, prices or economics are used."],
+  "development_result_reference":"v3/historical_all_market/research_candidates/synthetic_dev2000_available_sibling_ablation_v1/01_RESULT.json",
+  "confirmation_batches":[{"races_per_world":500,"seed":20261001},{"races_per_world":500,"seed":20261002},{"races_per_world":500,"seed":20261003}],
+  "worlds":["W0","W1","W2","W3","W4"],
+  "models":["N2_FULL_FROZEN","ABLATE_LINE_GROUP_ID","ABLATE_LINE_POSITION","ABLATE_LINE_SIZE","ABLATE_BANK_LENGTH_M","ABLATE_WIND_SPEED_MPS","S0_DEV2000_AVAILABLE_SCORE_CLASS_STYLE_PL"],
+  "sibling_prediction_fields":["car_no","class","style","score"],
+  "missing_fields_under_test":["line_group_id","line_position","line_size","bank_length_m","wind_speed_mps"],
+  "fixed_coefficients":{"class":{"A1":0.05,"A2":-0.03,"A3":0.0,"S1":0.08,"S2":-0.03},"conditional_relation":{"p2_immediate_follower":0.28,"p2_same_line":0.3,"p3_ordered_line_chain":0.3,"p3_same_as_first":0.17,"p3_same_as_second":0.14},"line_position":{"0":0.04,"1":0.1,"2":0.05},"line_size_per_extra":0.025,"line_strength":0.16,"posterior_score_shrinkage":0.7677543186180422,"short_bank_self_power_bonus":0.04,"style":{"両":0.04,"逃":0.06,"追":0.0},"wind_penalty_other_style_multiplier":0.25,"wind_penalty_self_power_head_style":0.035},
+  "decision_rule":{"confirmation_pass":"S0 ratio to N2_FULL <= 1.25 for every W0-W4 world on all three confirmation seeds.","confirmation_pass_classification":"S0_BROAD_SYNTHETIC_VIABILITY_CONFIRMED","confirmation_fail_classification":"S0_BROAD_SYNTHETIC_VIABILITY_NOT_CONFIRMED_NO_TUNING","field_material_dependence":"For a missing field, a world is confirmation-material only when ablation mean KL / N2_FULL mean KL >= 1.10 on all three confirmation seeds."},
+  "protected_boundaries":{"DEV2000_C":"NOT_ACCESSED","ECON_HOLDOUT1000":"SEALED_NOT_ACCESSED","RESULT_PAYOUT":"NOT_ACCESSED","automatic_betting":false,"credential":false,"economics":"NOT_COMPUTED","model_promotion":false,"odds_price":"NOT_ACCESSED","outcome":"NOT_ACCESSED","real_PRE_row_values":false,"real_historical_input":false,"real_money":false,"real_pre_training_fit_selection":false,"runtime":"OFF","spend":false}
+}
