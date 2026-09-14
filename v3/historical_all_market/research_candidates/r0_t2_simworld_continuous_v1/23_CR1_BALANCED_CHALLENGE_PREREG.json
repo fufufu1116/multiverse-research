@@ -1,0 +1,38 @@
+{
+  "record": "CR1_E05_BALANCED_CHALLENGE_PREREG_v1",
+  "frozen_jst": "2026-09-15",
+  "purpose": "Check that contamination robustness does not buy tail protection by materially degrading clean or near-clean worlds.",
+  "candidate_id": "CR1_E05",
+  "baseline": "R0_T2",
+  "fresh_world_families": [
+    "clean_T2_exact",
+    "clean_T1_7",
+    "clean_T2_5",
+    "mild_gaussian_noise",
+    "mild_heavy_tail",
+    "rare_5pct_upset",
+    "rare_5pct_downset",
+    "mild_rank_compression",
+    "mild_regime_switch",
+    "mixed_clean_and_rare_shock"
+  ],
+  "seeds": [20261005, 20261006],
+  "races_per_world_per_seed": 1500,
+  "total_fresh_races_if_completed": 30000,
+  "primary_metric": "ordered_top3_nll_regret_vs_oracle_world_probability",
+  "retain_rule": {
+    "per_seed": "CR1 maximum primary regret <= R0_T2 maximum primary regret + 0.0010 AND CR1 mean primary regret <= R0_T2 mean primary regret + 0.0010 AND clean_T2_exact regret penalty <= 0.0030",
+    "replication": "all conditions must pass independently in both seeds",
+    "failure": "any failure removes CR1 from broad synthetic lead status; no post-hoc threshold change"
+  },
+  "firewall": {
+    "candidate_frozen": true,
+    "fresh_worlds_unused_in_CR1_development": true,
+    "real_outcomes": false,
+    "R0_T2_prospective_assignment_unchanged": true,
+    "DEV2000_C_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
