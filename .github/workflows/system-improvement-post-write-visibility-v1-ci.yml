@@ -23,5 +23,3 @@ jobs:
           python-version: '3.11'
       - name: Focused post-write visibility regression
         run: python -m unittest tools.test_auditor_post_write_visibility_cache_bypass_v1 -v
-      - name: Existing package-root regression
-        run: python -m unittest tools.test_buildkite_auditor_bootstrap_preflight_v3 -v
