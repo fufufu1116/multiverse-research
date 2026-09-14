@@ -26,6 +26,8 @@ steps:
         --output review_job.json
 
       rm -f .mv_review_pass
+      # review.py semantics are wrapped by review_main_drift_v1.py so the
+      # existing review engine remains intact while main freshness is guarded.
       if PYTHONPATH=.mv_dispatcher \
         python3 .mv_dispatcher/automation/review_dispatcher_v1/review_main_drift_v1.py \
         --job review_job.json \
@@ -74,6 +76,8 @@ steps:
       git -C .mv_dispatcher_source remote add origin \
         https://github.com/fufufu1116/multiverse-research.git
       git -C .mv_dispatcher_source fetch -q --depth=65 origin main
+      FRESH_DISPATCHER_REF="$(git -C .mv_dispatcher_source rev-parse FETCH_HEAD)"
+      test -n "$$FRESH_DISPATCHER_REF"
       git -C .mv_dispatcher_source cat-file -e "$$JOB_DISPATCHER_REF^{commit}"
 
       mkdir -p .mv_dispatcher
