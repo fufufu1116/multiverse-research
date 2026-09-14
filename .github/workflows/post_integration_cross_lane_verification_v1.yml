@@ -1,0 +1,52 @@
+name: Post-integration cross-lane verification v1
+
+on:
+  push:
+    branches:
+      - system-improvement-post-integration-cross-lane-verify-v1-20260915
+  pull_request:
+    paths:
+      - '.github/workflows/post_integration_cross_lane_verification_v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-canonical-reviewer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Assert carrier changes no review semantics
+        run: |
+          git fetch --no-tags --depth=1 origin main
+          CHANGED="$(git diff --name-only origin/main...HEAD)"
+          test "$CHANGED" = '.github/workflows/post_integration_cross_lane_verification_v1.yml'
+          echo 'REVIEW_SEMANTIC_CODE_CHANGED=FALSE'
+      - name: Assert canonical reviewer source invariants
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          model = Path('automation/review_dispatcher_v1/model.py').read_text()
+          review = Path('automation/review_dispatcher_v1/review.py').read_text()
+          t2 = Path('automation/review_dispatcher_v1/t2.py').read_text()
+          assert 'def cross_lane_execution_state_valid(' in model
+          assert '_REVIEW_REQUESTED' in model
+          assert '_AUDIT_REQUESTED' in model
+          assert 'cross_lane_execution_state_valid(' in review
+          assert '"execution_state": latest_lab_request.get("execution_state")' in review
+          assert 'cross_lane_execution_state_valid(' in t2
+          print('CANONICAL_CROSS_LANE_SOURCE_INVARIANTS=PASS')
+          PY
+      - name: Run exact regression family
+        run: |
+          python -m unittest tools.test_auditor_upstream_execution_state_v1 tools.test_review_build_admission_preflight_v2 -v
+      - name: Run current validator
+        run: python automation/review_dispatcher_v1/validator.py
+      - name: Runtime boundary
+        run: |
+          echo 'RUNTIME=OFF'
+          echo 'BUILDKITE_BUILD_AUTHORITY=NONE'
+          echo 'PUBLICATION_ATTEMPTED=FALSE'
