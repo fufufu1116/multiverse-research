@@ -1,0 +1,104 @@
+{
+  "schema_version": "unit_startup_registry_v1",
+  "status": "CANDIDATE",
+  "control_issue": 394,
+  "registry_issue": 524,
+  "created_from_main": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+  "runtime": "OFF",
+  "startup_contract": {
+    "syntax": "<canonical_owner_facing_unit_name>起動",
+    "emoji_in_identity": false,
+    "no_startup_no_participation": true,
+    "startup_grants_new_authority": false,
+    "owner_is_not_courier": true,
+    "ambiguity_behavior": "FAIL_CLOSED"
+  },
+  "bootstrap_order": [
+    "resolve exact canonical Owner-facing unit name",
+    "Fresh-read canonical main HEAD/current authority",
+    "Fresh-read Control Issue #394 through latest relevant rules",
+    "Fresh-read the unit PRIMARY/CURRENT recovery route and referenced gates/PRs/artifacts",
+    "Fresh-discover current tools/plugins/connectors",
+    "restore current authority boundaries and Owner-facing reporting rules",
+    "fail closed on ambiguity/conflict/stale authority",
+    "return a compact Japanese startup-complete message"
+  ],
+  "units": [
+    {
+      "owner_facing_name": "軍師",
+      "startup_phrase": "軍師起動",
+      "internal_identity": "Sole Control / MULTIVERSE Control",
+      "primary_recovery_route": ["issue:394"],
+      "scope": ["whole-system integration", "routing", "continuity", "Owner Gate coordination"],
+      "non_authority": ["final independent auditor", "Owner sovereignty", "implicit Runtime/spend/live authority"]
+    },
+    {
+      "owner_facing_name": "システム改善",
+      "startup_phrase": "システム改善起動",
+      "internal_identity": "Research Lane B / system improvement",
+      "primary_recovery_route": ["issue:394", "resolve current system-improvement front dynamically"],
+      "creation_snapshot": ["issue:509", "pr:510", "issue:521", "pr:522"],
+      "scope": ["control/review infrastructure", "reliability repair", "system improvement"],
+      "non_authority": ["final independent adoption", "implicit Runtime/spend/live authority"]
+    },
+    {
+      "owner_facing_name": "AI研究",
+      "startup_phrase": "AI研究起動",
+      "internal_identity": "Research Lane A",
+      "primary_recovery_route": ["issue:154"],
+      "scope": ["provider/model research", "benchmarking", "challenge design"],
+      "non_authority": ["ungated provider execution", "ungated spend/credentials", "adoption authority"]
+    },
+    {
+      "owner_facing_name": "百人将",
+      "startup_phrase": "百人将起動",
+      "internal_identity": "Opportunity Engine / business-opportunity research",
+      "primary_recovery_route": ["issue:404", "issue:430 for real-revenue readiness"],
+      "scope": ["opportunity discovery", "evidence", "validation design", "scale evidence"],
+      "non_authority": ["rank promotion without evidence", "ungated revenue/spend/contracts/live effect"]
+    },
+    {
+      "owner_facing_name": "特殊部隊",
+      "startup_phrase": "特殊部隊起動",
+      "internal_identity": "Keirin research lane",
+      "primary_recovery_route": ["issue:377"],
+      "scope": ["protected scientific Keirin research under current canonical scope"],
+      "non_authority": ["betting", "Runtime activation", "protected result/economics access beyond current authority"]
+    },
+    {
+      "owner_facing_name": "対話室",
+      "startup_phrase": "対話室起動",
+      "internal_identity": "Idea / advisory room",
+      "primary_recovery_route": ["issue:436"],
+      "scope": ["ideation", "critique", "combination", "reversible idea ledger"],
+      "non_authority": ["adoption", "merge", "spend", "publication", "Runtime", "final independent audit"]
+    },
+    {
+      "owner_facing_name": "本城",
+      "startup_phrase": "本城起動",
+      "internal_identity": "Owner app / service-independent control-plane roadmap",
+      "primary_recovery_route": ["issue:432"],
+      "scope": ["Owner-facing app/control-plane", "portability", "recovery UX"],
+      "non_authority": ["presentation layer as authority", "ungated deployment/live mutation"]
+    },
+    {
+      "owner_facing_name": "法務",
+      "startup_phrase": "法務起動",
+      "internal_identity": "legal/tax/revenue readiness lane",
+      "primary_recovery_route": ["issue:430"],
+      "scope": ["readiness questions", "gating before real revenue where applicable"],
+      "non_authority": ["legal conclusions beyond evidence", "ungated contracting/revenue/live effect"]
+    }
+  ],
+  "future_unit_admission_required_fields": [
+    "canonical Owner-facing unit name",
+    "internal role/lane identity",
+    "startup phrase",
+    "PRIMARY/CURRENT recovery route",
+    "authority scope",
+    "explicit non-authorities",
+    "Fresh-read bootstrap order",
+    "reporting requirements",
+    "rename/deprecation alias rule if applicable"
+  ]
+}
