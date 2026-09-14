@@ -1,0 +1,86 @@
+{
+  "authority": {
+    "fresh_branch_head_before_result_write": "e9d1d0895b942b2ae76fac154120456d8ebd1b8d",
+    "fresh_main_at_execution": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "owner_gate_comment_id": 5659098942,
+    "owner_gate_issue": 377,
+    "prereg_commit": "e9d1d0895b942b2ae76fac154120456d8ebd1b8d",
+    "prereg_path": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/00_PREREG.json",
+    "scope": "SW0_REAL_PRE_PREDICTION_LOCK_ON_EXPLICITLY_ALLOWED_NON_PROTECTED_DEV2000_PRE_UNIVERSE"
+  },
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "created_jst": "2026-09-14",
+  "frozen_model": {
+    "calibration": false,
+    "frozen_candidate_git_blob_sha": "ac735cf5c0ecfdfb729b7bd98dbd75826f94284a",
+    "frozen_candidate_path": "v3/historical_all_market/research_candidates/source_wide_sibling_synthetic_selection_v1/02_FROZEN_CANDIDATE.json",
+    "model_promotion": false,
+    "name": "SW0_SCORE_ONLY_PL",
+    "probability_family": "Plackett-Luce ordered top3",
+    "real_PRE_fit": false,
+    "real_PRE_parameter_selection": false,
+    "score_shrinkage": 0.7677543186180422,
+    "utility": "0.7677543186180422 * score"
+  },
+  "next_gate": "OUTCOME_REVEAL_OR_PREDICTIVE_PERFORMANCE_EVALUATION_REQUIRES_SEPARATE_OWNER_GATE",
+  "prediction_lock": {
+    "all_probabilities_finite": true,
+    "all_probabilities_nonnegative": true,
+    "artifact": {
+      "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+      "file_name": "SW0_DEV2000_AB_PREDICTION_LOCK_v1.jsonl.gz",
+      "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+      "uncompressed_sha256": "392a6518f683d94688e5d42bd12c37394aaab43bbdf315350ab923f1fda2b906"
+    },
+    "classification": "SW0_REAL_PRE_PREDICTION_LOCK_COMPLETE_OUTCOMES_UNOPENED",
+    "drive_folder_id": "1vCbYxJrg0nhnTrII8X85Kg-axAkakYw1",
+    "manifest": {
+      "drive_file_id": "1LcI_eiDBWK3qzrHEtNtaY4iDe7wM8pMl",
+      "file_name": "SW0_DEV2000_AB_PREDICTION_LOCK_MANIFEST_v1.json",
+      "sha256": "88bcd3903ab9c6e5d4d787e3eda4eb216c4c3fb32ec81b97a06adb922b05552a"
+    },
+    "max_probability_mass_abs_error": 3.650413304967515e-12,
+    "ordered_top3_probability_value_count": 350688,
+    "race_count": 1500
+  },
+  "protected_boundaries": {
+    "DEV2000_C": "EXCLUDED_NOT_SCORED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "ODDS_PRICE_ECONOMICS_ROI_PROFIT": "NOT_ACCESSED",
+    "RESULT_PAYOUT_OUTCOME_SETTLEMENT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "model_promotion": "NOT_PERFORMED",
+    "real_PRE_fit_training_selection": "NOT_PERFORMED",
+    "runtime": "OFF"
+  },
+  "record": "KEIRIN_SW0_REAL_PRE_PREDICTION_LOCK_RESULT_v1",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "scientific_interpretation": {
+    "ROI_profit_claim": false,
+    "edge_claim": false,
+    "meaning": "This freezes pre-outcome SW0 probability predictions on the explicitly allowed DEV2000 A+B PRE universe only. It is not predictive-performance or economic evidence.",
+    "real_predictive_accuracy_claim": false
+  },
+  "status": "COMPLETE_PREDICTION_LOCK_OUTCOMES_UNOPENED",
+  "universe": {
+    "C_excluded_before_car_no_score_parsing_and_probability_generation": true,
+    "allowed_dev_index": "1..1500",
+    "allowed_race_count": 1500,
+    "allowed_subset": "A_DEVELOPMENT_PLUS_B_VALIDATION",
+    "excluded_dev_index": "1501..2000",
+    "excluded_race_count": 500,
+    "excluded_subset": "C_UNTOUCHED_TEST"
+  },
+  "verified_inputs": {
+    "DEV2000_UNIVERSE_v1.csv": {
+      "drive_file_id": "1BV79TYKyNJYX7zUZai1Aa-nvgbZCiq_O",
+      "sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1"
+    },
+    "PRE_STRUCTURED.jsonl.gz": {
+      "drive_file_id": "1N2Cq5IkuxcBU0MqeIW5PIF44JTkHaq1Q",
+      "sha256": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84"
+    },
+    "allowed_A_B_race_ids_sha256": "a53e219fccc512e2d5888a7288e866995f580f59ce80e28872fba64b706a5474",
+    "excluded_C_race_ids_sha256": "194620425c14c27c171968aeb0013331b7d1873a8579352a863f6064bd5def7c"
+  }
+}
