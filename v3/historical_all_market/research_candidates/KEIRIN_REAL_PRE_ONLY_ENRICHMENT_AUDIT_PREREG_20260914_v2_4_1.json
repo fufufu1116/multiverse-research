@@ -1,0 +1,62 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_4_1",
+  "status": "PREREGISTERED_CORRECTION_BEFORE_DEV2000_UNIVERSE_RACE_DATE_VALUE_ACCESS",
+  "created_date_jst": "2026-09-14",
+  "canonical_main_expected": "74e5534ac95d13ce0418b69d527812d1cd139781",
+  "owner_gate_issue": 377,
+  "owner_gate_comment_id": 5657234204,
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+  "supersedes_prereg_for_this_source": "v3/historical_all_market/research_candidates/KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_PREREG_20260914_v2_4.json",
+  "correction_reason": "Header-only inspection found no direct race_id column in the Reality Calibration Archive, so the original exact-race_id linkage step cannot execute. Before any context target value is read, use the already-confirmed archive capture_date (2026-09-01) and only the canonical DEV2000 universe race_date join field as a stricter coarse linkage precheck. If DEV2000 has zero races on that date, stop immediately. No source bank_m values or other context values have been read before this correction.",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "candidate_context_source": {
+    "drive_file_id": "15y4xQs0aDghTNdm6VCT-cvsgqgf1ShDUjTy2CLumyyc",
+    "revision_id": "7",
+    "pre_only_confirmed_from_readme": true,
+    "capture_date_from_readme": "2026-09-01",
+    "header_safe": true,
+    "header_target_alias_seen": "bank_m",
+    "bank_m_values_read": false,
+    "wind_values_read": false
+  },
+  "dev2000_universe": {
+    "drive_file_id": "1BV79TYKyNJYX7zUZai1Aa-nvgbZCiq_O",
+    "expected_sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "hash_already_verified_under_same_gate": true,
+    "allowed_new_value_column": "race_date",
+    "prohibited_universe_value_columns_for_this_step": ["dev_index", "venue_code", "grade", "url", "data_status"],
+    "race_id_values_need_not_be_reopened_for_date_precheck": true
+  },
+  "access_order": [
+    "FRESH_READ_CANONICAL_AUTHORITY_AND_THIS_CORRECTED_PREREGISTRATION",
+    "REVERIFY_REALITY_ARCHIVE_REVISION_ID_EQUALS_7",
+    "READ_ONLY_DEV2000_UNIVERSE_RACE_DATE_VALUES_FROM_ALREADY_HASH_VERIFIED_FILE",
+    "NORMALIZE_DATE_FORMAT_ONLY_WITHOUT_OTHER_FIELDS",
+    "COUNT_EXACT_DATE_MATCHES_TO_2026_09_01",
+    "IF_DATE_MATCH_COUNT_ZERO_STOP_SOURCE_WITHOUT_BANK_OR_WIND_VALUE_AUDIT",
+    "IF_DATE_MATCH_COUNT_POSITIVE_REQUIRE_A_NEW_EXACT_COMPOSITE_LINKAGE_PREREGISTRATION_BEFORE_READING_VENUE_CODE_OR_SOURCE_VENUE_RACE_NO_VALUES"
+  ],
+  "stop_rules": [
+    "STOP_NATIVE_REVISION_DRIFT",
+    "STOP_DEV2000_UNIVERSE_HASH_DRIFT",
+    "STOP_NO_DEV2000_RACE_DATE_OVERLAP"
+  ],
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_or_settlement_labels": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_bankroll_roi_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "DEV2000_C_outcomes": "NOT_ACCESSED",
+    "untouched_outcome_validation": "NOT_OPENED",
+    "real_pre_training_fit_selection": "PROHIBITED_NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "new_automated_bulk_collection": false,
+    "external_provider_contact": false,
+    "runtime": "OFF",
+    "automatic_betting": false,
+    "real_money": false,
+    "spend": false,
+    "credential": false
+  }
+}
