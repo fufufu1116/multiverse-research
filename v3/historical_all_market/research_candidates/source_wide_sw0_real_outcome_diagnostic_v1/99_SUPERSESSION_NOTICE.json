@@ -1,0 +1,23 @@
+{
+  "record": "KEIRIN_SW0_DUPLICATE_DIAGNOSTIC_PREP_SUPERSESSION_NOTICE_v1",
+  "status": "SUPERSEDED_NON_AUTHORITY_DO_NOT_USE_FOR_OUTCOME_ACCESS_OR_EVALUATION",
+  "created_jst": "2026-09-14",
+  "reason": "A Fresh Read after these duplicate preparation files were added showed that the authoritative outcome-evaluation method had already been finalized earlier in the branch ancestry and is bound by KEIRIN_CURRENT_STATE_v21, KEIRIN_EXPERIMENT_LEDGER_v26, method Issue #476, and Owner Gate #475. This directory is therefore supplemental engineering only and must not compete with or replace the authoritative frozen method.",
+  "superseded_files": [
+    "v3/historical_all_market/research_candidates/source_wide_sw0_real_outcome_diagnostic_v1/00_EVALUATION_PREREG.json",
+    "v3/historical_all_market/research_candidates/source_wide_sw0_real_outcome_diagnostic_v1/evaluate_sw0_ab_predictions_v1.py",
+    "v3/historical_all_market/research_candidates/source_wide_sw0_real_outcome_diagnostic_v1/01_PREOUTCOME_HARNESS_AUDIT.json"
+  ],
+  "authoritative_method": {
+    "current_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v21.json",
+    "ledger": "v3/historical_all_market/continuity/KEIRIN_EXPERIMENT_LEDGER_v26.jsonl",
+    "preregistration": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/02_OUTCOME_EVAL_PREREG.json",
+    "evaluator": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/evaluate_sw0_outcomes_v1.py",
+    "method_issue": 476,
+    "owner_gate": 475
+  },
+  "owner_gate_required": "AUTHORIZE_SW0_DEV2000_AB_RESULT_ONLY_V3_HASH_SCHEMA_AND_ONE_PREDICTIVE_EVALUATION_ONLY",
+  "real_outcome_access_performed_by_duplicate_prep": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
