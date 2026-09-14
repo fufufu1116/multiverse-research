@@ -1,0 +1,40 @@
+name: System Improvement Auditor Upstream Schema Compat v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/auditor_upstream_compat_v1.py'
+      - 'automation/review_dispatcher_v1/model.py'
+      - 'automation/review_dispatcher_v1/request_arbitration_v6.py'
+      - 'automation/review_dispatcher_v1/test_auditor_upstream_compat_v1.py'
+      - '.github/workflows/system-improvement-auditor-upstream-schema-compat-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  auditor-upstream-compat-v1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile changed review modules
+        run: |
+          python -m py_compile \
+            automation/review_dispatcher_v1/auditor_upstream_compat_v1.py \
+            automation/review_dispatcher_v1/model.py \
+            automation/review_dispatcher_v1/request_arbitration_v6.py
+      - name: Focused compatibility regressions
+        run: python -m unittest automation.review_dispatcher_v1.test_auditor_upstream_compat_v1 -v
+      - name: Existing request arbitration regressions
+        run: python -m unittest automation.review_dispatcher_v1.test_request_arbitration_v6 -v
+      - name: Import smoke
+        run: |
+          python - <<'PY'
+          import automation.review_dispatcher_v1.model
+          import automation.review_dispatcher_v1.dispatcher
+          import automation.review_dispatcher_v1.review
+          print('AUDITOR_UPSTREAM_COMPAT_V1_IMPORT_PASS')
+          PY
