@@ -1,0 +1,66 @@
+{
+  "record": "KEIRIN_SW0_GATE487_POSTMORTEM_AND_NEXT_SYNTHETIC_PLAN_v1",
+  "status": "OWNER_FREE_POSTMORTEM_DESIGN_ONLY_NO_PROTECTED_ACCESS",
+  "date_jst": "2026-09-14",
+  "authority_basis": {
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_gate": 487,
+    "current_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v25.json",
+    "current_state_branch_head_before_this_write": "32a881153a8cc441ac478c4e0fc32ab4ec343ab3"
+  },
+  "frozen_observations_from_persisted_gate487_aggregate_only": {
+    "verdict": "NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET",
+    "strict_singleton_rows_scored": 1493,
+    "primary_effect_uniform_minus_sw0": -1.8529385402808158,
+    "primary_effect_bootstrap_95pct": [-2.180065038595912, -1.5453062075715123],
+    "top1_accuracy": 0.39986604152712657,
+    "winner_brier_improvement": -0.00913711353585854,
+    "segment_A_winner_brier_improvement": -0.03332231756278846,
+    "segment_B_winner_brier_improvement": 0.039184729851280554,
+    "interpretation": "SW0 retained some rank discrimination, especially visible in top1 accuracy, but its probability assignment was materially worse than uniform on exact ordered-top3 NLL and pooled winner calibration. The result therefore rejects SW0 as a promotable probability model under the frozen test."
+  },
+  "postmortem_hypotheses_not_claimed_as_facts": [
+    "H1: the synthetic selection objective was insufficiently aligned with real probability calibration; synthetic KL robustness did not guarantee calibrated real ordered-top3 probabilities.",
+    "H2: the fixed score coefficient / PL sharpness may be overconfident for the real score scale, because top1 discrimination can coexist with poor NLL/Brier.",
+    "H3: a single score-only conditional-order map may omit race-regime structure needed for second/third-place probability quality even when winner ranking contains signal.",
+    "H4: segment heterogeneity is material enough that a globally fixed probability sharpness can be unstable, but no segment-specific real-data fitting is authorized or proposed from this result."
+  ],
+  "anti_overfit_rules": [
+    "Do not tune any coefficient, temperature, feature weight, threshold, calibration map, or model selection criterion on Gate #487 protected outcomes.",
+    "Do not rerun Gate #487 or rescore its protected result with a changed model.",
+    "Use Gate #487 only as a falsification/postmortem signal to define broad failure modes, not as an optimization dataset.",
+    "Any replacement model must be selected and frozen using synthetic-only evidence or separately authorized non-outcome evidence before any new protected evaluation.",
+    "DEV2000 C and ECON_HOLDOUT1000 remain sealed/excluded."
+  ],
+  "next_owner_free_synthetic_research": {
+    "objective": "Test whether probability sharpness / conditional-order structure can be made robust in synthetic worlds without using protected real outcomes.",
+    "candidate_families": [
+      {
+        "id": "R0_SCORE_ONLY_TEMPERED_PL",
+        "description": "Score-only Plackett-Luce with a small preregistered finite set of synthetic-selected global temperatures; no real-outcome fitting."
+      },
+      {
+        "id": "R1_SCORE_RANK_HYBRID_PL",
+        "description": "Low-freedom blend of normalized score level and within-race score rank, selected only on synthetic worlds to reduce sensitivity to score-scale drift."
+      },
+      {
+        "id": "R2_SCORE_ONLY_FLATTENED_ORDER_MODEL",
+        "description": "A bounded lower-sharpness ordered-top3 probability map designed to preserve ranking while reducing catastrophic NLL from overconfidence; synthetic selection only."
+      }
+    ],
+    "required_synthetic_gates": [
+      "evaluate across W0-W4 and field sizes 5-9 on multiple untouched synthetic seeds",
+      "include probability calibration / NLL / Brier gates, not KL-to-N2 alone",
+      "require finite/nonnegative normalized probabilities",
+      "reject candidates that improve average metrics by creating severe worst-cell calibration failures",
+      "freeze exactly one candidate or conclude NO_SYNTHETICALLY_ELIGIBLE_REPLACEMENT"
+    ],
+    "protected_access": false,
+    "real_data_fit": false,
+    "model_promotion": false
+  },
+  "next_protected_boundary": "After a replacement is synthetically selected and frozen, any new real-result predictive evaluation requires a NEW exact Owner Gate and a fresh preregistration. No such Gate is created by this artifact.",
+  "runtime": "OFF",
+  "automatic_betting": false
+}
