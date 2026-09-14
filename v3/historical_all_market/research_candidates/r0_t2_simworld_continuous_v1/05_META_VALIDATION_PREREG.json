@@ -1,0 +1,31 @@
+{
+  "record": "R0_T2_SIMWORLD_SUCCESSOR_META_VALIDATION_PREREG_v1",
+  "frozen_jst": "2026-09-15",
+  "purpose": "Reduce simulator-design overfitting by freezing the current synthetic successor frontier before generating fresh unseen simulation families.",
+  "frozen_candidates": {
+    "reference": "R0_T2",
+    "lead": "MIX_1_15_2_3_4",
+    "challenger": "MIX_075_15_3_6"
+  },
+  "unseen_world_families_to_generate": [
+    "bimodal_score_population",
+    "skewed_score_population",
+    "pairwise_matchup_interactions",
+    "field_size_dependent_temperature",
+    "entrant_cluster_correlation",
+    "winner_specific_upset_shock",
+    "monotone_cubic_score_strength_mapping",
+    "piecewise_score_saturation",
+    "race_level_volatility_regimes",
+    "mixed_missingness_mechanisms_MCAR_and_extreme_score_dependent"
+  ],
+  "primary_seed": 20260922,
+  "replication_seed": 20260923,
+  "races_per_world_primary": 1600,
+  "races_per_world_replication": 1100,
+  "metrics": ["mean_regret_vs_best_frozen_candidate_per_world","max_regret","p90_regret"],
+  "retain_lead_rule": "Lead remains synthetic frontier lead only if it beats R0_T2 on both mean regret and max regret in both seeds; otherwise downgrade to unresolved frontier.",
+  "promotion_authority": false,
+  "real_world_authority": false,
+  "protected_boundaries": {"Gate_487_rerun": false, "A_plus_B_fresh_validation_reuse": false, "DEV2000_C_accessed": false, "ECON_HOLDOUT1000_accessed": false, "prospective_result_accessed": false, "runtime": "OFF", "automatic_betting": false}
+}
