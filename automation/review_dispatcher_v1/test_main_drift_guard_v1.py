@@ -38,8 +38,13 @@ def compare(
     }
 
 
-def candidate(*, files=("automation/review_dispatcher_v1/x.py",), **kwargs):
-    return compare(merge_base=BASE, files=files, **kwargs)
+def candidate(
+    *,
+    files=("automation/review_dispatcher_v1/x.py",),
+    merge_base=BASE,
+    **kwargs,
+):
+    return compare(merge_base=merge_base, files=files, **kwargs)
 
 
 class MainDriftGuardTests(unittest.TestCase):
