@@ -26,6 +26,7 @@ jobs:
         run: python -c "import automation.review_dispatcher_v1.dispatcher; import tools.review_build_admission_preflight_v1"
       - name: Exact live PR510 Auditor admission preflight
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           MULTIVERSE_DISPATCHER_REF: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
         run: >-
           python -m tools.review_build_admission_preflight_v1
