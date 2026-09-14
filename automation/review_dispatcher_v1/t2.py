@@ -19,31 +19,18 @@ from automation.review_dispatcher_v1.t2_idempotence_v1 import (
     assert_referenced_result_is_canonical,
     canonical_trusted_comment_id,
 )
-from automation.review_dispatcher_v1.t2_receipt_recovery_v1 import (
-    recover_t2_receipt,
-)
+from automation.review_dispatcher_v1.t2_receipt_recovery_v1 import recover_t2_receipt
 
 
 def _bounded_public_github(url: str):
-    return github_json_read(
-        url,
-        user_agent="multiverse-fixed-t2-v1",
-    )
+    return github_json_read(url, user_agent="multiverse-fixed-t2-v1")
 
 
 def _fresh_public_github(url: str):
-    return github_json_fresh_read(
-        url,
-        user_agent="multiverse-fixed-t2-v1",
-    )
+    return github_json_fresh_read(url, user_agent="multiverse-fixed-t2-v1")
 
 
-# Fixed T2 legacy logic performs only public GitHub GET reads through this
-# function. Rebind that read edge to the same bounded GET-only semantics used
-# by the existing read-resilience lineage. Mutation/authenticated GitHub App
-# paths remain untouched and are never retried by this helper.
 _legacy.public_github = _bounded_public_github
-
 _original_publish_t2 = _legacy.publish_t2
 _original_fetch_all_pages = _legacy.fetch_all_pages
 
@@ -54,9 +41,11 @@ T2_POST_WRITE_VISIBILITY_DELAY_SECONDS = 1.0
 @contextmanager
 def _legacy_public_read_mode(*, use_cache: bool):
     previous = _legacy.public_github
-    _legacy.public_github = (
-        _bounded_public_github if use_cache else _fresh_public_github
-    )
+    managed = previous in (_bounded_public_github, _fresh_public_github)
+    if managed:
+        _legacy.public_github = (
+            _bounded_public_github if use_cache else _fresh_public_github
+        )
     try:
         yield
     finally:
@@ -89,8 +78,7 @@ def _lab_binding(job, comments):
     )
     _legacy.require(
         cross_lane_execution_state_valid(
-            latest_request["execution_state"],
-            request["execution_state"],
+            latest_request["execution_state"], request["execution_state"]
         ),
         "LATEST_LAB_EXECUTION_STATE_MISMATCH",
     )
@@ -99,10 +87,7 @@ def _lab_binding(job, comments):
         "LATEST_LAB_REQUEST_SHA256_MISMATCH",
     )
     marker = _legacy.result_marker(
-        latest_request["request_id"],
-        job["head"],
-        latest_id,
-        latest_sha,
+        latest_request["request_id"], job["head"], latest_id, latest_sha
     )
     referenced_id = request["upstream"]["lab_pass_comment"]
     assert_referenced_result_is_canonical(
@@ -130,8 +115,7 @@ def _filter_noncanonical_lab_duplicates(job, comments):
 
 def _t2_marker_for_job(job, receipt):
     auditor_comment_id = _legacy.required_positive_int(
-        receipt.get("published_comment_id"),
-        "AUDITOR_RECEIPT_COMMENT_ID",
+        receipt.get("published_comment_id"), "AUDITOR_RECEIPT_COMMENT_ID"
     )
     return auditor_comment_id, _legacy.t2_marker(
         job["request_id"],
@@ -143,11 +127,7 @@ def _t2_marker_for_job(job, receipt):
 
 def _canonical_t2_comment_or_none(comments, marker):
     try:
-        cid = canonical_trusted_comment_id(
-            comments,
-            lane="AUDITOR",
-            marker=marker,
-        )
+        cid = canonical_trusted_comment_id(comments, lane="AUDITOR", marker=marker)
     except _legacy.ReviewContractError as exc:
         if str(exc) == "NO_CANONICAL_TRUSTED_COMMENT":
             return None
@@ -204,41 +184,29 @@ def _recover_existing_t2(job, receipt, comments, marker):
 def _fresh_t2_verify(job, artifact, receipt, *, use_cache: bool = True):
     repo = job["repo"]
     pr_number = job["pr"]
-
     with _legacy_public_read_mode(use_cache=use_cache):
         pr = _legacy.github_full_pr_binding(
-            _legacy.public_github(
-                f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
-            ),
+            _legacy.public_github(f"https://api.github.com/repos/{repo}/pulls/{pr_number}"),
             expected_number=pr_number,
             expected_head=job["head"],
         )
         main_sha = _legacy.github_branch_commit_sha(
-            _legacy.public_github(
-                f"https://api.github.com/repos/{repo}/branches/main"
-            )
+            _legacy.public_github(f"https://api.github.com/repos/{repo}/branches/main")
         )
         tree_sha = _legacy.github_commit_tree_sha(
             _legacy.public_github(
                 f"https://api.github.com/repos/{repo}/commits/{job['head']}"
             )
         )
-
         _legacy.require(pr["base_sha"] == job["base"], "BASE_DRIFT")
         _legacy.require(tree_sha == job["tree"], "TREE_DRIFT")
         _legacy.require(main_sha == job["main"], "MAIN_DRIFT")
-        _legacy.require(
-            job.get("dispatcher_ref") == main_sha,
-            "DISPATCHER_REF_DRIFT",
-        )
-
+        _legacy.require(job.get("dispatcher_ref") == main_sha, "DISPATCHER_REF_DRIFT")
         comments = _all_comments(job)
         assert_job_request_still_canonical(job, comments)
         _lab_binding(job, comments)
-
         auditor_comment_id = _legacy.required_positive_int(
-            receipt.get("published_comment_id"),
-            "AUDITOR_RECEIPT_COMMENT_ID",
+            receipt.get("published_comment_id"), "AUDITOR_RECEIPT_COMMENT_ID"
         )
         _legacy.require(
             receipt.get("published_by") == _legacy.AUDITOR_LOGIN,
@@ -252,7 +220,6 @@ def _fresh_t2_verify(job, artifact, receipt, *, use_cache: bool = True):
             receipt.get("request_sha256") == job["request_sha256"],
             "AUDITOR_RECEIPT_REQUEST_SHA256",
         )
-
         auditor_comment = _legacy.required_object(
             _legacy.public_github(
                 f"https://api.github.com/repos/{repo}/issues/comments/{auditor_comment_id}"
@@ -260,8 +227,7 @@ def _fresh_t2_verify(job, artifact, receipt, *, use_cache: bool = True):
             "AUDITOR_COMMENT_RESPONSE_OBJECT",
         )
         _legacy.require(
-            (auditor_comment.get("user") or {}).get("login")
-            == _legacy.AUDITOR_LOGIN,
+            (auditor_comment.get("user") or {}).get("login") == _legacy.AUDITOR_LOGIN,
             "AUDITOR_COMMENT_LOGIN",
         )
         _legacy.require(
@@ -272,7 +238,6 @@ def _fresh_t2_verify(job, artifact, receipt, *, use_cache: bool = True):
             _legacy.json_block(auditor_comment.get("body") or "") == artifact,
             "PUBLISHED_AUDITOR_ARTIFACT_DRIFT",
         )
-
         upstream = job["request"]["upstream"]
         t1_comment = _legacy.required_object(
             _legacy.public_github(
@@ -295,27 +260,15 @@ def _fresh_t2_verify(job, artifact, receipt, *, use_cache: bool = True):
             ("PASS", "T1_PASS_MARKER_MISSING"),
         ):
             _legacy.require(token in t1_body, code)
-
     return comments
 
 
-def _await_published_t2_canonical(
-    job,
-    artifact,
-    receipt,
-    *,
-    marker,
-    result,
-):
+def _await_published_t2_canonical(job, artifact, receipt, *, marker, result):
     published_comment_id = result["t2_comment_id"]
     missed_visibility = False
-
     for read_index in range(T2_POST_WRITE_VISIBILITY_MAX_READS):
         comments = _fresh_t2_verify(
-            job,
-            artifact,
-            receipt,
-            use_cache=False,
+            job, artifact, receipt, use_cache=False
         )
         try:
             assert_published_t2_is_canonical(
@@ -330,12 +283,7 @@ def _await_published_t2_canonical(
         else:
             if not missed_visibility:
                 return result
-            recovered = _recover_existing_t2(
-                job,
-                receipt,
-                comments,
-                marker,
-            )
+            recovered = _recover_existing_t2(job, receipt, comments, marker)
             if recovered is None:
                 raise _legacy.ReviewContractError(
                     "T2_POST_WRITE_CANONICAL_RESULT_DISAPPEARED"
@@ -345,20 +293,15 @@ def _await_published_t2_canonical(
                 "T2_POST_WRITE_RECEIPT_COMMENT_ID_DRIFT",
             )
             return recovered
-
         if read_index + 1 < T2_POST_WRITE_VISIBILITY_MAX_READS:
             time.sleep(T2_POST_WRITE_VISIBILITY_DELAY_SECONDS)
-
-    raise _legacy.ReviewContractError(
-        "T2_POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED"
-    )
+    raise _legacy.ReviewContractError("T2_POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED")
 
 
 def publish_t2(job, artifact, receipt):
     comments = _all_comments(job)
     _lab_binding(job, comments)
     auditor_comment_id, marker = _t2_marker_for_job(job, receipt)
-
     recovered = _recover_existing_t2(job, receipt, comments, marker)
     if recovered is not None:
         return recovered
@@ -389,11 +332,7 @@ def publish_t2(job, artifact, receipt):
         _legacy.fetch_all_pages = previous_fetch
 
     return _await_published_t2_canonical(
-        job,
-        artifact,
-        receipt,
-        marker=marker,
-        result=result,
+        job, artifact, receipt, marker=marker, result=result
     )
 
 
