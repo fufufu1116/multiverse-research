@@ -131,7 +131,7 @@ steps:
         | tar -x -C .mv_dispatcher
 
       PYTHONPATH=.mv_dispatcher \
-        python3 .mv_dispatcher/automation/review_dispatcher_v1/t2.py \
+        python3 .mv_dispatcher/automation/review_dispatcher_v1/t2_main_drift_v1.py \
         --job review_job.json \
         --artifact review_artifact.json \
         --receipt review_publish_receipt.json \
