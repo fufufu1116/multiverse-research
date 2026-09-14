@@ -1,0 +1,90 @@
+{
+  "record": "KEIRIN_SW0_REPLACEMENT_SYNTHETIC_PREREG_v1",
+  "status": "PREREGISTERED_SYNTHETIC_ONLY_NO_PROTECTED_ACCESS",
+  "date_jst": "2026-09-15",
+  "authority_basis": {
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "consumed_gate": 487,
+    "current_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v25.json",
+    "postmortem_commit": "486e477b42d323eab32a4edb8020a2173164ea75"
+  },
+  "scientific_objective": "After SW0 failed the frozen real predictive evaluation, test a low-freedom replacement family entirely in synthetic worlds, explicitly adding probability-calibration objectives so synthetic selection is better aligned with the observed SW0 failure mode. No protected real outcome is used for candidate fitting, scoring or selection.",
+  "frozen_failure_signal_for_design_only": {
+    "gate_487_verdict": "NO_PREDICTIVE_SIGNAL_STRICT_SINGLETON_SUBSET",
+    "allowed_use": "falsification/postmortem hypothesis framing only",
+    "prohibited_use": "coefficient/temperature/feature/threshold/calibration-map optimization against Gate487 outcomes"
+  },
+  "candidate_families": [
+    {
+      "id": "R0_SCORE_ONLY_TEMPERED_PL",
+      "input_family": "synthetic score only",
+      "degrees_of_freedom": "small finite global temperature set frozen before scoring",
+      "purpose": "preserve score ranking while reducing probability over-sharpness"
+    },
+    {
+      "id": "R1_SCORE_RANK_HYBRID_PL",
+      "input_family": "synthetic score plus within-race score rank",
+      "degrees_of_freedom": "small finite blend-weight set frozen before scoring",
+      "purpose": "reduce sensitivity to score-scale drift while preserving ordinal information"
+    },
+    {
+      "id": "R2_SCORE_ONLY_FLATTENED_ORDER_MODEL",
+      "input_family": "synthetic score only",
+      "degrees_of_freedom": "bounded finite flattening family frozen before scoring",
+      "purpose": "reduce catastrophic ordered-top3 NLL while retaining useful ranking"
+    }
+  ],
+  "synthetic_evaluation_design": {
+    "worlds": ["W0", "W1", "W2", "W3", "W4"],
+    "field_sizes": [5, 6, 7, 8, 9],
+    "seed_policy": "use multiple seeds not used for candidate construction; freeze exact seed list before execution",
+    "metrics": [
+      "winner multiclass log loss",
+      "winner Brier score",
+      "ordered-top3 negative log loss",
+      "top1 accuracy",
+      "unordered-top3 containment",
+      "finite/nonnegative probability checks",
+      "probability mass/normalization checks"
+    ],
+    "calibration_required": true,
+    "selection_unit": "world x field-size x seed cells plus pooled summary",
+    "worst_cell_guard": true
+  },
+  "eligibility_gates": {
+    "all_probability_checks_pass": true,
+    "no_severe_worst_cell_calibration_failure": true,
+    "must_not_select_on_accuracy_only": true,
+    "must_not_select_on_KL_to_N2_only": true,
+    "candidate_must_improve_or_match_reference_on_probability_quality_under_predeclared_aggregate_rule": true,
+    "exact_aggregate_rule_to_freeze_before_execution": "lexicographic: reject any numerical-sanity/worst-cell failure; then minimize pooled ordered-top3 NLL; tie-break by pooled winner log loss, then pooled winner Brier, then simplicity/candidate-id order",
+    "single_winner_max": 1,
+    "no_eligible_outcome": "NO_SYNTHETICALLY_ELIGIBLE_REPLACEMENT"
+  },
+  "anti_overfit_rules": [
+    "No Gate #487 protected outcome may be reopened, rescored or queried during synthetic selection.",
+    "No candidate coefficient or family may be changed in response to Gate #487 per-race or subgroup outcomes.",
+    "No DEV2000 C or ECON_HOLDOUT1000 access.",
+    "No real PRE fitting, calibration, model selection or promotion.",
+    "If the frozen synthetic family fails, record NO_SYNTHETICALLY_ELIGIBLE_REPLACEMENT rather than widening the search post hoc.",
+    "Any later protected real-result evaluation requires a new preregistration and a new exact Owner Gate."
+  ],
+  "protected_boundaries": {
+    "Gate487_rerun": false,
+    "Gate487_protected_outcome_access": false,
+    "DEV2000_C": "EXCLUDED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "odds_price_economics": "NOT_ACCESSED_NOT_COMPUTED",
+    "real_data_fit_or_selection": false,
+    "model_promotion": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "execution_state": "NOT_YET_EXECUTED",
+  "owner_action_required_now": false
+}
