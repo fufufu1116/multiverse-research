@@ -22,6 +22,7 @@ steps:
         | tar -x -C .mv_dispatcher
 
       rm -f .mv_review_pass
+      # review.py executes inside the authenticated bootstrap wrapper below.
       if PYTHONPATH=.mv_dispatcher \
         python3 .mv_dispatcher/automation/review_dispatcher_v1/authenticated_review_bootstrap_v2.py \
         --lane LAB \
