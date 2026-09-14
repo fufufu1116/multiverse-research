@@ -16,12 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Assert carrier changes no review semantics
         run: |
-          git fetch --no-tags --depth=1 origin main
+          git fetch --no-tags origin main
           CHANGED="$(git diff --name-only origin/main...HEAD)"
           test "$CHANGED" = '.github/workflows/post_integration_cross_lane_verification_v1.yml'
           echo 'REVIEW_SEMANTIC_CODE_CHANGED=FALSE'
