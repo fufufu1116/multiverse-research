@@ -36,6 +36,43 @@ jobs:
           assert b.TARGET_REQUEST_SHA256 == '024130391042f6fcae795fe1463b3b79d5b7822dcbdffbc1bf6ec8a1bbced629'
           print('BOOTSTRAP_TARGET_BINDING=PASS')
           PY
+      - name: Exact live PR527 semantic dry-run
+        env:
+          TARGET_HEAD: 4af4521dfd5daaa47d9b816874c9a65bdf526079
+          CANONICAL_MAIN: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$TARGET_HEAD"
+          git fetch --no-tags --depth=1 origin "$CANONICAL_MAIN"
+          git worktree add --detach .mv_target "$TARGET_HEAD"
+          git worktree add --detach .mv_dispatcher "$CANONICAL_MAIN"
+          MULTIVERSE_DISPATCHER_REF="$CANONICAL_MAIN" \
+            PYTHONPATH="$PWD/.mv_dispatcher" \
+            python .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+              --lane AUDITOR \
+              --repo fufufu1116/multiverse-research \
+              --head "$TARGET_HEAD" \
+              --output review_job.json
+          BUILDKITE_COMMIT="$TARGET_HEAD" \
+            PYTHONPATH="$PWD/.mv_dispatcher:$PWD" \
+            python automation/review_bootstrap_pr527_v1/bootstrap_review.py \
+              --job review_job.json \
+              --output review_artifact.json \
+              --repo-root .mv_target
+          python - <<'PY'
+          import json
+          job = json.load(open('review_job.json'))
+          artifact = json.load(open('review_artifact.json'))
+          assert job['request_comment'] == 5668811178
+          assert job['request_sha256'] == '024130391042f6fcae795fe1463b3b79d5b7822dcbdffbc1bf6ec8a1bbced629'
+          assert artifact['verdict'] == 'PASS', artifact['findings']
+          assert artifact['checks']['upstream_lab_request_execution_state'] == 'PASS'
+          assert artifact['checks']['upstream_lab_artifact:execution_state'] == 'PASS'
+          assert artifact['reviewed_head'] == '4af4521dfd5daaa47d9b816874c9a65bdf526079'
+          assert artifact['reviewed_tree'] == '7bb675f8ab93a7ec123e40b14f8cb5672c38efaa'
+          print('PR527_BOOTSTRAP_SEMANTIC_DRY_RUN=PASS')
+          print('PUBLICATION_ATTEMPTED=FALSE')
+          PY
       - name: Runtime boundary
         run: |
           echo 'RUNTIME=OFF'
