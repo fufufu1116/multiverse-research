@@ -1,0 +1,107 @@
+{
+  "record": "KEIRIN_SW0_REAL_PRE_PREDICTION_LOCK_PREREG_v1",
+  "status": "PREREGISTERED_BEFORE_PRE_ROW_VALUE_ACCESS_FOR_THIS_PREDICTION_LOCK",
+  "created_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "owner_gate": {
+    "issue": 377,
+    "comment_id": 5659098942,
+    "scope": "SW0_REAL_PRE_PREDICTION_LOCK_ON_EXPLICITLY_ALLOWED_NON_PROTECTED_DEV2000_PRE_UNIVERSE"
+  },
+  "fresh_authority": {
+    "canonical_main_head": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "dev2000_partition_authority_path": "v3/historical_all_market/governance/STAGE7_TIME_SPLIT_SELECTION_VALIDATION_PREREG_v1.md",
+    "partition": {
+      "A_DEVELOPMENT": "dev_index 1..1000",
+      "B_VALIDATION": "dev_index 1001..1500",
+      "C_UNTOUCHED_TEST": "dev_index 1501..2000"
+    },
+    "protected_registry_path": "v3/historical_all_market/governance/ARTIFACT_POINTER_REGISTRY_KEIRIN_v1.json",
+    "protected_objects": {
+      "ECON_HOLDOUT1000": "SEALED",
+      "CURRENT_DEV2000_C": "DO_NOT_REPURPOSE_OR_SCORE_FOR_NEW_LINEAGE_RESCUE"
+    }
+  },
+  "universe_source": {
+    "drive_file_id": "1BV79TYKyNJYX7zUZai1Aa-nvgbZCiq_O",
+    "title": "DEV2000_UNIVERSE_v1.csv",
+    "sha256": "eb561c9cad5121cf689b237d44a08d089f375a2b2b728e34e91a48338446f3b1",
+    "race_count": 2000,
+    "allowed_subset_predicate": "1 <= dev_index <= 1500",
+    "allowed_subset_label": "A_DEVELOPMENT_PLUS_B_VALIDATION",
+    "allowed_race_count": 1500,
+    "allowed_race_ids_sha256": "a53e219fccc512e2d5888a7288e866995f580f59ce80e28872fba64b706a5474",
+    "excluded_subset_predicate": "1501 <= dev_index <= 2000",
+    "excluded_subset_label": "C_UNTOUCHED_TEST",
+    "excluded_race_count": 500,
+    "excluded_race_ids_sha256": "194620425c14c27c171968aeb0013331b7d1873a8579352a863f6064bd5def7c",
+    "allowed_race_ids_derivation": "canonical DEV2000_UNIVERSE_v1.csv rows with 1 <= dev_index <= 1500, preserving dev_index ascending, serialized as UTF-8 CSV header 'dev_index,race_id\\n' + rows '<dev_index>,<race_id>\\n'"
+  },
+  "pre_source": {
+    "drive_folder_id": "1OzAo7oIGYnU5W96UztTaH32Ghk_mi8YL",
+    "drive_file_id": "1N2Cq5IkuxcBU0MqeIW5PIF44JTkHaq1Q",
+    "title": "PRE_STRUCTURED.jsonl.gz",
+    "sha256_from_audit_manifest": "4fb0a2e9ede9aa343fa7828a65099beb2e4ce8ee76522c9952331ad536b0db84",
+    "allowed_value_fields": [
+      "race_id",
+      "car_no",
+      "score"
+    ],
+    "structural_traversal_only": [
+      "entrants"
+    ],
+    "forbidden_fields": [
+      "result",
+      "finish",
+      "outcome",
+      "settlement",
+      "payout",
+      "odds",
+      "price",
+      "economics",
+      "roi",
+      "profit"
+    ]
+  },
+  "frozen_model": {
+    "name": "SW0_SCORE_ONLY_PL",
+    "frozen_candidate_path": "v3/historical_all_market/research_candidates/source_wide_sibling_synthetic_selection_v1/02_FROZEN_CANDIDATE.json",
+    "frozen_candidate_git_blob_sha": "ac735cf5c0ecfdfb729b7bd98dbd75826f94284a",
+    "score_shrinkage": 0.7677543186180422,
+    "utility": "0.7677543186180422 * score",
+    "probability_family": "Plackett-Luce ordered top3",
+    "field_size_support": "ANY_N_GE_3",
+    "real_PRE_fit": false,
+    "real_PRE_parameter_selection": false,
+    "calibration": false,
+    "model_promotion": false
+  },
+  "execution_contract": {
+    "before_prediction_generation": [
+      "verify PRE_STRUCTURED bytes sha256 exactly",
+      "parse only race_id/car_no/score plus entrants traversal",
+      "require PRE race_id universe to match canonical DEV2000 universe identity sufficiently to select by exact allowlist",
+      "exclude every C_UNTOUCHED_TEST race_id before utility/probability generation",
+      "abort if any allowed/protected overlap, unknown race_id, duplicate race_id mapping, missing allowed race, malformed race, or forbidden field access is required"
+    ],
+    "output": "deterministic per-race full ordered-top3 probability distribution for the 1500 allowed A+B races, hash-bound and immutable",
+    "validation": [
+      "finite utilities/probabilities",
+      "nonnegative probabilities",
+      "no repeated car_no inside ordered top3 tuple",
+      "per-race full ordered-top3 probability mass approximately 1",
+      "deterministic repeatability"
+    ],
+    "outcome_reveal": "PROHIBITED_REQUIRES_SEPARATE_OWNER_GATE",
+    "performance_evaluation": "PROHIBITED_REQUIRES_SEPARATE_OWNER_GATE"
+  },
+  "protected_boundaries": {
+    "DEV2000_C": "EXCLUDED_BY_EXACT_RACE_ID_ALLOWLIST",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "RESULT_PAYOUT_OUTCOME_SETTLEMENT": "NOT_ACCESSED",
+    "ODDS_PRICE_ECONOMICS": "NOT_ACCESSED",
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
