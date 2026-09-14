@@ -1,0 +1,71 @@
+{
+  "record": "KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2",
+  "status": "ACTIVE_ONLY_IN_ATOMIC_CANONICAL_COMMIT_WITH_MATCHING_KEIRIN_STATE_VNEXT_STATE_AND_KEIRIN_NOW",
+  "created_date_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "purpose": "Authorize a narrow expansion from the single DEV2000 PRE table to already-existing stored PRE-only enrichment sources sufficient to audit frozen N2 line-structure and race-context input compatibility, without opening outcome, price, economics, training, promotion, runtime or betting scope.",
+  "owner_gate_evidence": {
+    "control_issue": 377,
+    "owner_gate_comment_id": 5657234204,
+    "owner_directive_exact": "既存保存済みPRE-only補完ソースの適合性監査を追加許可。対象はDEV2000 PRE collection / line structure / race context の既存保存物に限定し、line_group_id・line_position・line_size・bank_length_m・wind_speed_mpsの取得可否・schema・missingness・support確認だけを許可。RESULT/PAYOUT・outcome・odds/price・economics・ECON_HOLDOUT1000・実データ学習/fit/選択・model promotion・新規自動大量収集・外部provider連絡・Runtime・自動投票は引き続き禁止。各追加ソースは事前登録→hash/identity確認→禁制項目scan→PRE-only確認後だけ値監査を進める。"
+  },
+  "allowed_source_families": [
+    "already-existing DEV2000 PRE collection artifacts",
+    "already-existing DEV2000-linked PRE-only line-structure artifacts",
+    "already-existing DEV2000-linked PRE-only race-context artifacts"
+  ],
+  "allowed_fields_of_interest": [
+    "line_group_id",
+    "line_position",
+    "line_size",
+    "bank_length_m",
+    "wind_speed_mps"
+  ],
+  "allowed_operations": [
+    "metadata-only enumeration to identify exact existing candidate PRE-only enrichment files before byte access",
+    "preregister each exact candidate source before reading its bytes",
+    "verify identity/hash for each preregistered candidate before scientific use",
+    "scan schema/header/key names for forbidden RESULT/PAYOUT/outcome/settlement/odds/price/economics material before value-level audit",
+    "confirm PRE-only status before value-level audit",
+    "audit availability, schema, missingness, cardinality, range and support only for the five authorized N2 compatibility fields and necessary join keys/provenance fields",
+    "perform deterministic PRE-only interface compatibility dry-run with frozen N2 without labels, fitting or model selection"
+  ],
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "source_access_sequence": [
+    "PREREGISTER_EXACT_SOURCE",
+    "VERIFY_IDENTITY_AND_HASH",
+    "FORBIDDEN_FIELD_SCAN",
+    "CONFIRM_PRE_ONLY",
+    "VALUE_LEVEL_AVAILABILITY_MISSINGNESS_SUPPORT_AUDIT"
+  ],
+  "explicitly_not_authorized": [
+    "RESULT or PAYOUT access",
+    "finish position, winner, settlement or any outcome label access",
+    "odds, price or market price catalog access",
+    "economics, bankroll, ROI, profit or wagering evaluation",
+    "ECON_HOLDOUT1000 opening, scoring or access-policy change",
+    "DEV2000 C result/payout rescue or any outcome-bearing C access",
+    "untouched outcome validation",
+    "training, fitting or selecting model parameters from real PRE data",
+    "result-aware feature selection, exclusions, thresholds or ticket decisions",
+    "model promotion, freeze acceptance or production deployment",
+    "new automated bulk collection",
+    "external provider contact, payment, credential use or contractual action",
+    "access-control, rate-limit, CAPTCHA or WAF bypass",
+    "Runtime activation, automatic betting or real-money wagering"
+  ],
+  "scientific_invariants": {
+    "scientific_segment_c_scoring_count_must_remain": 0,
+    "new_untouched_validation_opened_must_remain": false,
+    "ECON_HOLDOUT1000_must_remain": "SEALED",
+    "frozen_N2_must_remain_unchanged": true,
+    "real_pre_training_or_selection_must_remain": false,
+    "runtime_must_remain": "OFF",
+    "automatic_betting_must_remain": false,
+    "no_real_world_edge_or_roi_claim": true
+  },
+  "activation_rule": "Authority is active only when one atomic canonical main commit contains this receipt plus matching v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json, multiverse_vnext/VNEXT_CURRENT_STATE_v0.json generation 14, and KEIRIN_NOW.md. Any missing or contradictory surface fails closed.",
+  "first_additional_source_rule": "Immediately before any additional real PRE source byte access, Fresh Read canonical main, this receipt, CURRENT_STATE_KEIRIN, VNEXT_CURRENT_STATE_v0, KEIRIN_NOW.md, issue #394, issue #377 and the exact preregistration. Fail closed on drift.",
+  "scope_expansion_rule": "Any later use of outcomes, RESULT/PAYOUT, odds/prices, economics, untouched validation, real-data training/model selection, model promotion, Runtime or betting requires a separate explicit governed Owner Gate and cannot reuse this receipt.",
+  "canonical_commit_identity": "RESOLVE_FROM_ATOMIC_MAIN_COMMIT_CONTAINING_ALL_MATCHING_AUTHORITY_SURFACES"
+}

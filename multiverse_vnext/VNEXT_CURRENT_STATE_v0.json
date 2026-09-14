@@ -4,14 +4,14 @@
   "updated_date_jst": "2026-09-14",
   "mutability": "MUTABLE_CAS_POINTER_WITH_ACCEPTED_VNEXT_AND_FOUNDATION_ARTIFACTS_FROZEN",
   "canonical_repo": "fufufu1116/multiverse-research",
-  "current_phase": "VNEXT_ACCEPTED_FROZEN_FOUNDATION_V1_ACCEPTED_KEIRIN_LIMITED_REAL_PRE_ONLY_SUITABILITY_AUDIT_AUTHORIZED",
+  "current_phase": "VNEXT_ACCEPTED_FROZEN_FOUNDATION_V1_ACCEPTED_KEIRIN_LIMITED_REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_AUDIT_AUTHORIZED",
   "formal_release_state": "ACCEPTED_FROZEN",
-  "state_generation": 13,
-  "parent_valid_state_git_blob_sha": "afe746287c7e911d214202abdf2de076f63ab30c",
+  "state_generation": 14,
+  "parent_valid_state_git_blob_sha": "91505e1876ee3da9f07c3801d29732b6ac53cd8d",
   "supersedes_state_ref": {
     "path": "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
-    "git_blob_sha": "afe746287c7e911d214202abdf2de076f63ab30c",
-    "logical_generation": 12
+    "git_blob_sha": "91505e1876ee3da9f07c3801d29732b6ac53cd8d",
+    "logical_generation": 13
   },
   "canonical_precedence_rule": {
     "ordering": "GIT_ANCESTRY_PLUS_MONOTONIC_GENERATION_PLUS_EXPLICIT_SUPERSESSION",
@@ -19,20 +19,20 @@
     "stale_or_invalid_writer_action": "FAIL_CLOSED_OR_EXPLICIT_REPAIR_NO_SILENT_ACCEPTANCE"
   },
   "foundation_inheritance": {
-    "status": "UNCHANGED_FROM_GENERATION_12_ACCEPTED_FROZEN",
-    "generation_12_blob": "afe746287c7e911d214202abdf2de076f63ab30c",
+    "status": "UNCHANGED_FROM_GENERATION_13_ACCEPTED_FROZEN",
+    "generation_13_blob": "91505e1876ee3da9f07c3801d29732b6ac53cd8d",
     "foundation_artifacts_reopened": false,
     "foundation_acceptance_changed": false,
     "architecture_closure_changed": false
   },
   "keirin_scope_transition": {
-    "change_class": "MATERIAL_SOURCE_PERMISSION_BOUNDARY_CHANGE",
+    "change_class": "MATERIAL_SOURCE_PERMISSION_BOUNDARY_CHANGE_WITHIN_PRE_ONLY_CLASS",
     "owner_gate_required": true,
     "owner_gate_satisfied": true,
     "owner_gate_issue": 377,
-    "owner_gate_comment_id": 5657106213,
-    "receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_SUITABILITY_AUDIT_20260914_v1.json",
-    "scope": "EXISTING_STORED_REAL_PRE_ONLY_SUITABILITY_COMPATIBILITY_AUDIT",
+    "owner_gate_comment_id": 5657234204,
+    "receipt": "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
+    "scope": "EXISTING_STORED_DEV2000_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_AUDIT",
     "not_model_promotion": true,
     "not_outcome_validation": true,
     "not_runtime_authorization": true
@@ -40,16 +40,26 @@
   "keirin_firewall": {
     "scientific_state_change_authorized_by_foundation_acceptance": false,
     "scientific_resume_allowed": true,
-    "separate_scientific_execution_authorization_required": false,
-    "real_pre_only_suitability_audit_authorized": true,
-    "authorized_real_pre_artifact": "DEV2000_PRE_TABLE_v1.csv",
-    "authorized_real_pre_artifact_sha256": "25303ed3a7bce2bbc1c681823cbe9d009e3d3c5f07ef669a43fd6cf1ea86af73",
+    "real_pre_only_enrichment_audit_authorized": true,
+    "authorized_source_families": [
+      "DEV2000 PRE collection existing stored artifacts",
+      "DEV2000-linked PRE-only line structure existing stored artifacts",
+      "DEV2000-linked PRE-only race context existing stored artifacts"
+    ],
+    "authorized_fields_of_interest": [
+      "line_group_id",
+      "line_position",
+      "line_size",
+      "bank_length_m",
+      "wind_speed_mps"
+    ],
+    "required_sequence": "PREREGISTER_THEN_HASH_IDENTITY_THEN_FORBIDDEN_SCAN_THEN_PRE_ONLY_CONFIRM_THEN_VALUE_AUDIT",
     "result_payout_access_authorized": false,
+    "outcome_access_authorized": false,
     "odds_or_price_access_authorized": false,
     "economics_authorized": false,
     "ECON_HOLDOUT1000": "SEALED",
     "DEV2000_C_new_lineage_rescue": "PROHIBITED",
-    "same_lineage_B_C_rescue_tuning": "PROHIBITED",
     "new_untouched_validation_opened": false,
     "real_pre_training_or_parameter_selection": "PROHIBITED_UNDER_THIS_GATE",
     "model_promotion": "PROHIBITED",
@@ -64,7 +74,7 @@
   "authority_activation": {
     "atomic_commit_required": true,
     "required_surfaces": [
-      "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_SUITABILITY_AUDIT_20260914_v1.json",
+      "governance/KEIRIN_OWNER_GATE_REAL_PRE_ONLY_ENRICHMENT_AUDIT_20260914_v2.json",
       "v3/historical_all_market/governance/CURRENT_STATE_KEIRIN.json",
       "multiverse_vnext/VNEXT_CURRENT_STATE_v0.json",
       "KEIRIN_NOW.md"
@@ -72,11 +82,11 @@
     "fail_closed_on_mismatch": true
   },
   "next_actions": [
-    "Immediately before first real PRE access, Fresh Read canonical main, issue #394, issue #377, this generation-13 state, CURRENT_STATE_KEIRIN, KEIRIN_NOW and the PRE-only authorization receipt; fail closed on relevant drift.",
-    "Preregister the exact PRE-only suitability audit before accessing DEV2000_PRE_TABLE_v1.csv bytes.",
-    "Recover only the already-existing DEV2000_PRE_TABLE_v1.csv and verify its canonical SHA256 before scientific use.",
-    "Perform only schema, forbidden-field, availability, missingness, type, range, support, race-shape and interface compatibility diagnostics.",
-    "Keep RESULT/PAYOUT, odds/prices, economics, ECON_HOLDOUT1000, DEV2000 C outcomes, untouched outcome validation, real-data training/model selection, model promotion, external contact, new bulk collection, Runtime and automatic betting prohibited."
+    "Immediately before additional PRE byte access, Fresh Read canonical main, issue #394, issue #377, this generation-14 state, CURRENT_STATE_KEIRIN, KEIRIN_NOW, the enrichment authorization receipt and exact preregistration; fail closed on drift.",
+    "Metadata-enumerate candidate existing stored DEV2000 PRE-only enrichment sources without reading their file bytes.",
+    "Preregister exact source identities before byte access.",
+    "For each source verify hash/identity, scan forbidden schema/keys, confirm PRE-only status, then and only then audit value availability/missingness/support for the five authorized fields.",
+    "Keep RESULT/PAYOUT, outcomes, odds/prices, economics, ECON_HOLDOUT1000, DEV2000 C outcomes, untouched outcome validation, real-data training/model selection, model promotion, external contact, new bulk collection, Runtime and automatic betting prohibited."
   ],
-  "owner_action_now": "NONE_FOR_AUTHORIZED_PRE_ONLY_AUDIT; NEW_OWNER_GATE_REQUIRED_FOR_ANY_BROADER_EVIDENCE_STAGE"
+  "owner_action_now": "NONE_FOR_AUTHORIZED_PRE_ONLY_ENRICHMENT_AUDIT; NEW_OWNER_GATE_REQUIRED_FOR_ANY_BROADER_EVIDENCE_STAGE"
 }
