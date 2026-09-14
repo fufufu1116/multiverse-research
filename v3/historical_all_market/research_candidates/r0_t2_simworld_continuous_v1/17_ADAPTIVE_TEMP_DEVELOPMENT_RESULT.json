@@ -1,0 +1,22 @@
+{
+  "record": "ADAPTIVE_TEMPERATURE_SUCCESSOR_DEVELOPMENT_v1",
+  "development_only": true,
+  "real_evidence": false,
+  "development_data": "Consumed synthetic worlds only, including the failed RR1 fresh worlds after their preregistered result was finalized.",
+  "candidate_family": "race-level adaptive PL temperature T = clip(a + b * score_std_remaining, 1.0, 5.0)",
+  "grid": {"a": [1.4,1.6,1.8,2.0,2.2], "b": [0.0,0.2,0.4,0.6,0.8]},
+  "selected_candidate": {
+    "id": "AT1_A18_B02",
+    "definition": "At each sequential choice step use PL temperature clip(1.8 + 0.2 * std(remaining scores), 1.0, 5.0)."
+  },
+  "consumed_seed_summary": {
+    "R0_T2_average_mean_regret": 0.07709132615135392,
+    "R0_T2_average_max_regret": 0.1538735098592511,
+    "AT1_average_mean_regret": 0.07529996245618886,
+    "AT1_average_max_regret": 0.15381547560565859
+  },
+  "interpretation": "AT1 is only a development candidate. Improvement in maximum regret is small, so it requires a strict fresh preregistered battery and must be rejected on any frozen-rule failure.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "protected_real_data_access": false
+}
