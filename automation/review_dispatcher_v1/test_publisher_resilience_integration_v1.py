@@ -153,7 +153,6 @@ class PublisherResilienceIntegrationTests(unittest.TestCase):
                 publisher.publish(j, a)
         original.assert_not_called()
 
-
     def test_07_post_publish_visibility_delay_converges_without_repost(self):
         j = job()
         a = artifact(j)
@@ -179,10 +178,15 @@ class PublisherResilienceIntegrationTests(unittest.TestCase):
             publisher.POST_WRITE_VISIBILITY_DELAY_SECONDS
         )
 
-    def test_08_post_publish_visibility_deadline_fails_without_repost(self):
+    def test_08_post_publish_list_deadline_recovers_exact_comment_without_repost(self):
         j = job()
         a = artifact(j)
+        posted = trusted_result(20, j, a)
         receipt = {"published_comment_id": 20}
+        expected_url = (
+            "https://api.github.com/repos/fufufu1116/multiverse-research/"
+            "issues/comments/20"
+        )
         with mock.patch.object(
             publisher,
             "POST_WRITE_VISIBILITY_MAX_READS",
@@ -196,15 +200,18 @@ class PublisherResilienceIntegrationTests(unittest.TestCase):
             "_original_publish",
             return_value=receipt,
         ) as original, mock.patch.object(
+            publisher,
+            "_bounded_public_github",
+            return_value=posted,
+        ) as direct, mock.patch.object(
             publisher.time,
             "sleep",
         ) as sleep:
-            with self.assertRaisesRegex(
-                ReviewContractError,
-                "POST_WRITE_VISIBILITY_DEADLINE_EXHAUSTED",
-            ):
-                publisher.publish(j, a)
+            recovered = publisher.publish(j, a)
         original.assert_called_once_with(j, a)
+        direct.assert_called_once_with(expected_url)
+        self.assertTrue(recovered["recovered"])
+        self.assertEqual(recovered["published_comment_id"], 20)
         self.assertEqual(sleep.call_count, 2)
 
     def test_09_delayed_earlier_canonical_result_beats_own_later_post(self):
@@ -260,6 +267,57 @@ class PublisherResilienceIntegrationTests(unittest.TestCase):
             ):
                 publisher.publish(j, a)
         original.assert_called_once_with(j, a)
+
+    def test_11_direct_recovery_rejects_wrong_comment_id(self):
+        j = job()
+        a = artifact(j)
+        wrong = trusted_result(21, j, a)
+        marker = result_marker(
+            j["request_id"],
+            j["head"],
+            j["request_comment"],
+            j["request_sha256"],
+        )
+        with mock.patch.object(
+            publisher,
+            "_bounded_public_github",
+            return_value=wrong,
+        ):
+            with self.assertRaisesRegex(
+                ReviewContractError,
+                "NONCANONICAL_DUPLICATE_RESULT:20!=21",
+            ):
+                publisher._recover_published_comment_direct(
+                    j,
+                    a,
+                    marker=marker,
+                    published_comment_id=20,
+                )
+
+    def test_12_direct_recovery_read_failure_fails_closed(self):
+        j = job()
+        a = artifact(j)
+        marker = result_marker(
+            j["request_id"],
+            j["head"],
+            j["request_comment"],
+            j["request_sha256"],
+        )
+        with mock.patch.object(
+            publisher,
+            "_bounded_public_github",
+            side_effect=OSError("not visible"),
+        ):
+            with self.assertRaisesRegex(
+                ReviewContractError,
+                "POST_WRITE_DIRECT_COMMENT_RECOVERY_FAILED",
+            ):
+                publisher._recover_published_comment_direct(
+                    j,
+                    a,
+                    marker=marker,
+                    published_comment_id=20,
+                )
 
 
 if __name__ == "__main__":
