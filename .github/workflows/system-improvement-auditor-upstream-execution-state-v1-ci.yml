@@ -36,7 +36,7 @@ jobs:
           PYTHONPATH=. python -m unittest -v $modules
       - name: Validator
         run: PYTHONPATH=. python automation/review_dispatcher_v1/validator.py
-      - name: Exact live PR510 Auditor semantic admission preflight
+      - name: Exact live PR527 Auditor semantic admission preflight
         env:
           GITHUB_TOKEN: ${{ github.token }}
           MULTIVERSE_DISPATCHER_REF: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
@@ -44,8 +44,8 @@ jobs:
           PYTHONPATH=. python -m tools.review_build_admission_preflight_v2
           --repo fufufu1116/multiverse-research
           --lane AUDITOR
-          --head 857d1d501a36773bd8e35d2d7fa2b5dd088dd3bb
-          --expected-request-comment 5666827178
-          --expected-request-sha256 37afb5e86581db08e98492ea47b4c685255af8a91b414d2d4d5cd9a47765902c
+          --head 4af4521dfd5daaa47d9b816874c9a65bdf526079
+          --expected-request-comment 5668811178
+          --expected-request-sha256 024130391042f6fcae795fe1463b3b79d5b7822dcbdffbc1bf6ec8a1bbced629
           --expected-main e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
-          --expected-tree 8b5c6cbcb5011f25d7b2cf032e73fc1ac524ed04
+          --expected-tree 7bb675f8ab93a7ec123e40b14f8cb5672c38efaa
