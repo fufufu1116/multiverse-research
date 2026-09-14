@@ -1,0 +1,53 @@
+{
+  "anti_overfit_boundary": [
+    "All coefficients, seeds, race counts, worlds, ablation definitions and thresholds are fixed before scoring.",
+    "No threshold, coefficient, field set or seed changes after seeing results.",
+    "No real PRE row values, real outcomes, RESULT/PAYOUT, odds, prices or economics are used."
+  ],
+  "authority_receipt": "governance/KEIRIN_OWNER_GATE_DEV2000_AVAILABLE_FIELD_SYNTHETIC_SIBLING_20260914_v1.json",
+  "batches": [
+    {"races_per_world":300,"seed":20260928},
+    {"races_per_world":300,"seed":20260929}
+  ],
+  "canonical_main_expected": "a7ad5eae115d24fd2e451bb92604def85663e4dc",
+  "created_date_jst": "2026-09-14",
+  "decision_rule": {
+    "field_material_dependence": "For a missing field, classify a world as materially dependent when ablation mean KL / N2_FULL mean KL >= 1.10 on both seeds.",
+    "otherwise": "S0_SYNTHETIC_NOT_VIABLE_AS_N2_REPLACEMENT",
+    "sibling_broad_synthetic_viability": "S0 ratio to N2_FULL <= 1.25 for every W0-W4 world on both seeds.",
+    "sibling_partial_synthetic_viability": "If broad viability fails, classify partial viability only if S0 ratio <= 1.15 on W0 and <= 1.35 on W3 and W4 on both seeds."
+  },
+  "dev2000_schema_basis": {
+    "available_field_families_demonstrated_by_prior_schema_audits": ["car_no","class","style","score","B","S","nige","makuri","sashi","mark","gear","wins","seconds","thirds","outs","win_rate","quinella_rate","trio_rate","withdrawn"],
+    "reason_for_not_using_other_available_fields_in_v1": "No preregistered simulator-spec coefficient mapping exists for the remaining tactical/history fields; sibling v1 deliberately uses the lowest-freedom subset rather than tuning synthetic coefficients after scoring.",
+    "sibling_v1_prediction_fields": ["car_no","class","style","score"]
+  },
+  "evidence_class": "SYNTHETIC_ENGINEERING_FALSIFICATION_ONLY",
+  "fixed_coefficients": {
+    "class": {"A1":0.05,"A2":-0.03,"A3":0.0,"S1":0.08,"S2":-0.03},
+    "conditional_relation": {"p2_immediate_follower":0.28,"p2_same_line":0.3,"p3_ordered_line_chain":0.3,"p3_same_as_first":0.17,"p3_same_as_second":0.14},
+    "line_position": {"0":0.04,"1":0.1,"2":0.05},
+    "line_size_per_extra": 0.025,
+    "line_strength": 0.16,
+    "posterior_score_shrinkage": 0.7677543186180422,
+    "short_bank_self_power_bonus": 0.04,
+    "style": {"両":0.04,"逃":0.06,"追":0.0},
+    "wind_penalty_other_style_multiplier": 0.25,
+    "wind_penalty_self_power_head_style": 0.035
+  },
+  "frozen_baseline": {
+    "must_remain_unchanged": true,
+    "name": "N2_SPEC_ALIGNED_POSTERIOR_CONDITIONAL",
+    "source_component_prereg": "v3/historical_all_market/research_candidates/KEIRIN_SYNTHETIC_SPEC_ALIGNED_CONDITIONAL_PREREG_20260914_v6.json"
+  },
+  "metrics": ["mean_ordered_top3_KL_oracle_to_forecast_by_seed_world_model","ablation_KL_ratio_to_N2_FULL_by_seed_world","sibling_KL_ratio_to_N2_FULL_by_seed_world"],
+  "missing_fields_under_test": ["line_group_id","line_position","line_size","bank_length_m","wind_speed_mps"],
+  "models": ["N2_FULL_FROZEN","ABLATE_LINE_GROUP_ID","ABLATE_LINE_POSITION","ABLATE_LINE_SIZE","ABLATE_BANK_LENGTH_M","ABLATE_WIND_SPEED_MPS","S0_DEV2000_AVAILABLE_SCORE_CLASS_STYLE_PL"],
+  "owner_gate_comment_id": 5658034266,
+  "owner_gate_issue": 377,
+  "protected_boundaries": {"DEV2000_C":"NOT_ACCESSED","ECON_HOLDOUT1000":"SEALED_NOT_ACCESSED","RESULT_PAYOUT":"NOT_ACCESSED","automatic_betting":false,"credential":false,"economics":"NOT_COMPUTED","model_promotion":false,"odds_price":"NOT_ACCESSED","outcome":"NOT_ACCESSED","real_PRE_row_values":false,"real_historical_input":false,"real_money":false,"real_pre_training_fit_selection":false,"runtime":"OFF","spend":false},
+  "purpose": "Quantify synthetic dependence of Frozen N2 on the five DEV2000-missing direct inputs and test a separate low-freedom sibling model using only DEV2000-available PRE field families.",
+  "record": "KEIRIN_SYNTHETIC_DEV2000_AVAILABLE_SIBLING_ABLATION_PREREG_v1",
+  "status": "PREREGISTERED_BEFORE_SYNTHETIC_SCORING",
+  "worlds": ["W0","W1","W2","W3","W4"]
+}

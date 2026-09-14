@@ -1,0 +1,55 @@
+{
+  "allowed_fields_only": [
+    "race_id",
+    "payload_sha256",
+    "retrieved_at_utc",
+    "source_url",
+    "availability_proof"
+  ],
+  "classification": "DEV2000_PROVENANCE_IDENTITY_COMPLETE_BUT_HISTORICAL_PRE_AVAILABILITY_NOT_PROVEN",
+  "conclusion": "All 2,000 DEV2000 records have complete provenance identity fields, but every availability_proof is NOT_YET_PROVEN_FOR_HISTORICAL_REPLAY and retrieval occurred in August 2026 after the March-April 2026 historical races. This does not prove that stored raw HTML is a historical PRE snapshot. Raw payload bytes therefore remain unopened.",
+  "evidence_class": "REAL_PRE_ONLY_ENRICHMENT_SUITABILITY_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "metrics": {
+    "availability_proof_counts": {
+      "NOT_YET_PROVEN_FOR_HISTORICAL_REPLAY": 2000
+    },
+    "deterministic_first5_payload_sha256": [
+      "001868d3008862104e9688d2a8d4f5610ccdbf4968434ffadea5a7af6923b510",
+      "00190d6c7af672f0cb5eddd1031fa9199f58251074ff0603b0259cc7c6f1f960",
+      "005bb7235f04242d1fa51378e01a43ee704db8af111d6934e95a69d517858f1d",
+      "009f21f8e18fa3534206af66c24aa6a8c986808f93c6d7271dfbee769bfdd178",
+      "00b8cfe609aedfbfbb05aa6a7e55392053161e4970b410cc4d72ab7167ddfb54"
+    ],
+    "missingness": {
+      "availability_proof": 0,
+      "payload_sha256": 0,
+      "race_id": 0,
+      "retrieved_at_utc": 0,
+      "source_url": 0
+    },
+    "retrieved_at_utc_max": "2026-08-15T11:25:22.936145+00:00",
+    "retrieved_at_utc_min": "2026-08-15T11:02:03.977955+00:00",
+    "row_count": 2000,
+    "unique_payload_sha256_count": 2000,
+    "unique_race_id_count": 2000
+  },
+  "protected_boundaries": {
+    "ECON_HOLDOUT1000": "SEALED",
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "automatic_betting": false,
+    "economics": "NOT_COMPUTED",
+    "odds_price": "NOT_ACCESSED",
+    "outcome": "NOT_ACCESSED",
+    "real_pre_training_fit_selection": "NOT_PERFORMED",
+    "runtime": "OFF"
+  },
+  "raw_payload_bytes_read": false,
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_RESULT_v2_5",
+  "source": {
+    "drive_file_id": "15CuqYV02DiZTKTf_5fSps48ruoiS_P2R",
+    "name": "PRE_PROVENANCE.jsonl.gz",
+    "sha256": "86627fe4151074f2d20db637a7f5468e24ae3c6e878a82a33fde7b3218261b27",
+    "size_bytes": 127890
+  },
+  "status": "COMPLETE_PROVENANCE_VALUE_AUDIT_STOP_BEFORE_RAW_PAYLOAD_BYTES"
+}

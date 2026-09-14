@@ -1,0 +1,28 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_RESULT_v2_6",
+  "status": "STOP_ZERO_OF_FIVE_TARGET_KEYS_BEFORE_VALUE_INTERPRETATION",
+  "classification": "V1_DEV2000_PRE_SCHEMA_HAS_ZERO_OF_FIVE_TARGET_FIELDS",
+  "evidence_class": "REAL_PRE_ONLY_SCHEMA_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "sources": [
+    {
+      "name": "PRE_STRUCTURED.jsonl",
+      "drive_file_id": "1rxiFPUok3Mw7N1-oOa_cB0J1SR1W8Vd3",
+      "size_bytes": 1071914,
+      "sha256": "11c56745985753d27827b9e2bd43e982685e4f33bc264908ecf764b62c0e197b",
+      "keys": ["B","S","car_no","class","data_status","entrants","gear","makuri","mark","nige","outs","quinella_rate","race_date","race_id","rider","sashi","score","seconds","style","thirds","training_eligibility","trio_rate","win_rate","wins","withdrawn"]
+    },
+    {
+      "name": "PRE_PROVENANCE.jsonl",
+      "drive_file_id": "13a6MoDZaomScrx6eVCNAJYS6yHrBj7YE",
+      "size_bytes": 277822,
+      "sha256": "6b19cd3379ce6e3a19ba42624e6607a27568575c9a9e0317e7ee58cdca1bb4b3",
+      "keys": ["availability_proof","data_status","dev2000_universe_sha256","final_url","parser_version","payload_sha256","race_date","race_id","retrieved_at_utc","source_url","training_eligibility"]
+    }
+  ],
+  "target_fields": ["line_group_id","line_position","line_size","bank_length_m","wind_speed_mps"],
+  "target_keys_present": [],
+  "forbidden_schema_keys_detected": [],
+  "row_values_interpreted": false,
+  "raw_payload_bytes_read": false,
+  "protected_boundaries": {"RESULT_PAYOUT":"NOT_ACCESSED","outcome":"NOT_ACCESSED","odds_price":"NOT_ACCESSED","economics":"NOT_COMPUTED","ECON_HOLDOUT1000":"SEALED","runtime":"OFF","automatic_betting":false}
+}

@@ -1,0 +1,19 @@
+{
+  "record": "KEIRIN_REAL_PRE_ONLY_ENRICHMENT_AUDIT_RESULT_v2_7",
+  "status": "STOP_ZERO_OF_FIVE_TARGET_KEYS_BEFORE_VALUE_INTERPRETATION",
+  "classification": "V2_FAST_LITE_SCHEMA_HAS_ZERO_OF_FIVE_TARGET_FIELDS",
+  "evidence_class": "REAL_PRE_ONLY_SCHEMA_COMPATIBILITY_EVIDENCE_NOT_PREDICTIVE_PERFORMANCE",
+  "sources": [
+    {"name":"shard_0000_1786792793.jsonl.gz","drive_file_id":"1h0XjVgKWHiZh0dWTGPyc-gQsh_gXLy1c","size_bytes":42118,"sha256":"dd4a583b14a40ab67bc69d15df0cf026f108f6fe61cbb1f3958fbcfff02623fe"},
+    {"name":"shard_0001_1786792848.jsonl.gz","drive_file_id":"1kxR1X93EW5w9FR_eJ8GU5Xaw2sq4iAga","size_bytes":39872,"sha256":"58e6feccf2797ad80247861a50b0def272d025f8e17ba2f99aec02cf1b7d21ed"},
+    {"name":"shard_0002_1786792900.jsonl.gz","drive_file_id":"1rfm41rIA3YJOpb732ZZ3hYnqQWMvcpdR","size_bytes":36913,"sha256":"dad31c6081f71368518687b902c9f551cb27636f8163e5230525b5c9d0734a72"},
+    {"name":"shard_0003_1786792951.jsonl.gz","drive_file_id":"13a0aC28OF31m5rsU0pSGqlSKy3T6Bdsn","size_bytes":41420,"sha256":"00718c9f33633b2e4287909a8d42c901b0b7c9425a9c24dd680985198168fafc"}
+  ],
+  "common_lexical_json_keys": ["B","S","availability_proof","car_no","class","data_status","dev2000_universe_sha256","entrants","final_url","gear","makuri","mark","nige","outs","parser_version","payload_bytes","payload_sha256","provenance","quinella_rate","race_date","race_id","retrieved_at_utc","rider","sashi","score","seconds","source","source_url","status","structured","style","thirds","training_eligibility","trio_rate","win_rate","wins","withdrawn"],
+  "target_fields": ["line_group_id","line_position","line_size","bank_length_m","wind_speed_mps"],
+  "target_keys_present": [],
+  "forbidden_schema_keys_detected": [],
+  "row_values_interpreted": false,
+  "raw_payload_bytes_read": false,
+  "protected_boundaries": {"RESULT_PAYOUT":"NOT_ACCESSED","outcome":"NOT_ACCESSED","odds_price":"NOT_ACCESSED","economics":"NOT_COMPUTED","ECON_HOLDOUT1000":"SEALED","runtime":"OFF","automatic_betting":false}
+}
