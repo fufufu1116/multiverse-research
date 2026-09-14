@@ -1,0 +1,74 @@
+{
+  "record": "KEIRIN_SW0_OUTCOME_EVALUATION_PREREG_v1",
+  "status": "PREPARED_BEFORE_ANY_OUTCOME_RESULT_PAYOUT_ACCESS_OWNER_GATE_REQUIRED",
+  "created_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "research_branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_context": {
+    "canonical_main_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "current_state": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v19.json",
+    "prediction_lock_owner_gate_comment_id": 5659098942,
+    "prediction_lock_result_commit": "6c5cee0c5ad3a4dae5c10e7b9a968ad883ccac09",
+    "prediction_lock_current_commit": "84c8727f40fc7621d71dd55cc8236a1827b78752"
+  },
+  "frozen_prediction_lock": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "race_count": 1500,
+    "dev_index_range": [1, 1500],
+    "segments": {"A_DEVELOPMENT": [1, 1000], "B_VALIDATION": [1001, 1500]},
+    "DEV2000_C": "EXCLUDED"
+  },
+  "evidence_class": {
+    "name": "LINEAGE_LOCAL_PREOUTCOME_HISTORICAL_PREDICTIVE_EVALUATION_NOT_GLOBAL_UNTOUCHED_HOLDOUT",
+    "meaning": "Predictions were frozen before this SW0 lineage accessed outcomes, but DEV2000 A/B has historical exposure elsewhere in the wider project. Results must not be described as a globally untouched holdout."
+  },
+  "outcome_source_contract": {
+    "bound_now": false,
+    "required_before_execution": true,
+    "required_exact_fields_only": ["race_id", "first", "second", "third"],
+    "extra_columns": "FAIL_CLOSED",
+    "exact_source_file_id": null,
+    "exact_source_sha256": null,
+    "required_race_id_set": "EXACT_MATCH_TO_PREDICTION_LOCK_1500_RACES",
+    "payout_odds_price_economics_fields": "PROHIBITED",
+    "rule": "No outcome file may be opened until a separate Owner Gate binds an exact result-only source identity/hash and authorizes evaluation."
+  },
+  "primary_metric": {
+    "name": "mean_exact_ordered_top3_log_loss",
+    "definition": "-mean(log P_SW0(observed first,second,third)) over all 1500 races",
+    "uniform_baseline": "-mean(log(1/(n*(n-1)*(n-2)))) using each race field size n",
+    "effect": "uniform_log_loss - sw0_log_loss; positive means SW0 improves over uniform"
+  },
+  "secondary_metrics": [
+    "winner_marginal_log_loss",
+    "winner_multiclass_brier_score",
+    "top1_accuracy_from_highest_winner_marginal",
+    "exact_ordered_top3_hit_rate",
+    "unordered_top3_set_hit_rate",
+    "segment_A_primary_effect",
+    "segment_B_primary_effect"
+  ],
+  "uncertainty": {
+    "method": "race_level_nonparametric_bootstrap",
+    "replicates": 10000,
+    "seed": 20260914,
+    "primary_effect_ci": "percentile_2.5_97.5"
+  },
+  "predefined_classification": {
+    "STRONG_PREDICTIVE_SIGNAL": "pooled primary effect > 0; 95% bootstrap lower bound > 0; A effect > 0; B effect > 0; winner Brier improvement > 0",
+    "POSITIVE_BUT_UNCERTAIN": "pooled primary effect > 0 but STRONG conditions not all met",
+    "NO_PREDICTIVE_SIGNAL": "pooled primary effect <= 0",
+    "INVALID_FAIL_CLOSED": "hash/schema/race-set/protected-boundary violation or non-finite probability"
+  },
+  "no_posthoc_actions": [
+    "No parameter/model selection or calibration from revealed outcomes under this gate",
+    "No rerun with altered thresholds/metrics after outcomes",
+    "No model promotion regardless of verdict",
+    "No DEV2000 C use",
+    "No ECON_HOLDOUT1000 open",
+    "No odds/price/payout/economics/ROI/profit access"
+  ],
+  "next_owner_gate_scope_proposed": "Authorize one read/evaluation of an exact hash-bound result-only A+B outcome source against the already-frozen SW0 prediction lock under this preregistration; no payout/odds/economics, tuning, promotion, C, holdout, Runtime or betting."
+}
