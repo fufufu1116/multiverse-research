@@ -1,0 +1,81 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v21",
+  "status": "ACTIVE_CURRENT_STATE_V21_SW0_LOCK_COMPLETE_JSONL_OUTCOME_METHOD_FROZEN_WAITING_OWNER_GATE_475",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v20.json",
+  "checkpoint_jst": "2026-09-14",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-real-evidence-dual-lane-20260901-v1",
+  "authority_sources": {
+    "canonical_main_head_fresh_read": "e81f3d310d07d40eb6c11fe8233dade3d72a5ad2",
+    "control_issue": 394,
+    "continuity_issue": 377,
+    "prediction_lock_owner_gate_comment_id": 5659098942,
+    "owner_gate_prep_issue": 475,
+    "method_prep_issue": 476,
+    "ledger_v26_commit": "9c151e44376553b248faf628298ad6dd4fd1d2e5",
+    "branch_head_before_current_state_write": "9c151e44376553b248faf628298ad6dd4fd1d2e5"
+  },
+  "current_research_objective": "Keep the SW0 A+B prediction lock immutable and preserve the now-frozen result-only JSONL evaluation method. Do not open or download outcome bytes until exact Owner Gate #475 authorizes the hash/schema check and one evaluation.",
+  "prediction_lock": {
+    "model": "SW0_SCORE_ONLY_PL",
+    "status": "FROZEN_UNCHANGED_PREDICTION_LOCKED_NOT_PROMOTED",
+    "drive_file_id": "1qSqOyF98hJCX_noYHrtzVP0PM5bGply-",
+    "sha256": "779f9fca7eedf2c668ef22c45319543c9f3c999ebb2bdd390f7d2cd11f9d9127",
+    "race_count": 1500,
+    "dev_index_range": [1, 1500],
+    "DEV2000_C": "EXCLUDED"
+  },
+  "outcome_evaluation_method": {
+    "preregistration": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/02_OUTCOME_EVAL_PREREG.json",
+    "prereg_git_blob_sha": "aef34b838e0f3ce2c5739a10fa436555d1e2c5d6",
+    "evaluator": "v3/historical_all_market/research_candidates/source_wide_sw0_real_pre_prediction_lock_v1/evaluate_sw0_outcomes_v1.py",
+    "evaluator_git_blob_sha": "58067cb179dbc6e005debd8e13676176a1c08ddd",
+    "evaluator_sha256": "6e7b7d1f80222d340faa5797e88a36ad01c3be09705f404388b92b68ff921b60",
+    "test_git_blob_sha": "746d99b29b6452875a7f3b2a1a33c63e459fa932",
+    "test_sha256": "83fa4a47a0592b80d3a5f3d825c6387552b37dc63c1c5ae05369d75d8af48f9e",
+    "synthetic_regression": "PASS_2_TESTS_NO_REAL_OUTCOME_DATA",
+    "accepted_result_formats": ["csv", "jsonl"],
+    "required_result_fields_exactly": ["race_id", "first", "second", "third"],
+    "extra_fields": "FAIL_CLOSED",
+    "evidence_class": "LINEAGE_LOCAL_PREOUTCOME_HISTORICAL_PREDICTIVE_EVALUATION_NOT_GLOBAL_UNTOUCHED_HOLDOUT"
+  },
+  "outcome_candidate_metadata": {
+    "folder_id": "1_yez_7Qtqlq-K4-PnXPZcGs4Fwyzzgtv",
+    "file_id": "1S006KdGv6I1ub2XpQ-5EZK-ZHqx6Irhu",
+    "name": "DEV2000_RESULT_ONLY_v3.jsonl",
+    "size_bytes": 370017,
+    "content_opened": false,
+    "content_hash_verified": false
+  },
+  "protected_boundaries": {
+    "RESULT_PAYOUT": "NOT_ACCESSED",
+    "outcome_settlement": "NOT_ACCESSED",
+    "odds_price": "NOT_ACCESSED",
+    "economics_ROI_profit": "NOT_ACCESSED_NOT_COMPUTED",
+    "DEV2000_C": "EXCLUDED_NOT_SCORED_NOT_REPURPOSED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "real_PRE_fit_training_parameter_model_selection": "NOT_PERFORMED",
+    "model_promotion": "PROHIBITED",
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "exact_next_executable_actions": [
+    "Do not mutate canonical main from this lane.",
+    "Do not open or download DEV2000_RESULT_ONLY_v3.jsonl before exact Owner authorization.",
+    "Use Owner Gate #475 to bind the exact result-only Drive file identity, frozen prediction hash, prereg blob, evaluator blob/hash and one-shot execution scope.",
+    "If authorized, first download the exact result-only candidate and compute SHA256; parse only if every JSONL record contains exactly race_id/first/second/third and the race IDs exactly match the 1500 locked A+B predictions.",
+    "If any extra field, malformed row, race mismatch, protected C overlap, payout/odds/price/economics content, or hash/schema issue is detected, fail closed before evaluation.",
+    "If all checks pass, perform exactly one frozen evaluation. Do not tune, calibrate, select, promote, access C/holdout/economics, activate Runtime, or bet regardless of verdict."
+  ],
+  "owner_action_required_now": true,
+  "owner_gate_needed_next": "#475 AUTHORIZE_SW0_DEV2000_AB_RESULT_ONLY_V3_HASH_SCHEMA_AND_ONE_PREDICTIVE_EVALUATION_ONLY",
+  "cross_lane_control": {
+    "canonical_main_mutation": false,
+    "branch_only_continuity": true
+  },
+  "runtime": "OFF",
+  "automatic_betting": false
+}
