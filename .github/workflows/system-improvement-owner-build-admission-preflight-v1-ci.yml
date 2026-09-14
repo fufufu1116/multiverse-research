@@ -22,11 +22,13 @@ jobs:
           python-version: '3.11'
       - name: Unit regressions
         run: python -m unittest tools.test_review_build_admission_preflight_v1 -v
+      - name: Package-root import smoke
+        run: python -c "import automation.review_dispatcher_v1.dispatcher; import tools.review_build_admission_preflight_v1"
       - name: Exact live PR510 Auditor admission preflight
         env:
           MULTIVERSE_DISPATCHER_REF: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
         run: >-
-          python tools/review_build_admission_preflight_v1.py
+          python -m tools.review_build_admission_preflight_v1
           --repo fufufu1116/multiverse-research
           --lane AUDITOR
           --head 857d1d501a36773bd8e35d2d7fa2b5dd088dd3bb
