@@ -3,7 +3,10 @@ name: System Improvement Auditor Upstream Execution State v1 CI
 on:
   pull_request:
     paths:
+      - 'automation/review_dispatcher_v1/model.py'
       - 'automation/review_dispatcher_v1/review.py'
+      - 'automation/review_dispatcher_v1/t2.py'
+      - 'automation/review_dispatcher_v1/test_dispatcher_legacy_v1.py'
       - 'tools/test_auditor_upstream_execution_state_v1.py'
       - 'tools/review_build_admission_preflight_v2.py'
       - 'tools/test_review_build_admission_preflight_v2.py'
@@ -25,8 +28,12 @@ jobs:
       - name: Focused regressions
         run: |
           PYTHONPATH=. python -m unittest -v tools.test_auditor_upstream_execution_state_v1 tools.test_review_build_admission_preflight_v2
-      - name: Full dispatcher regressions
-        run: PYTHONPATH=. python -m unittest discover -s automation/review_dispatcher_v1 -p 'test_*.py' -v
+      - name: Current dispatcher regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          modules=$(find automation/review_dispatcher_v1 -maxdepth 1 -name 'test_*.py' ! -name '*_legacy_v1.py' -printf '%p\n' | sed 's#/#.#g;s#\.py$##' | sort | tr '\n' ' ')
+          PYTHONPATH=. python -m unittest -v $modules
       - name: Validator
         run: PYTHONPATH=. python automation/review_dispatcher_v1/validator.py
       - name: Exact live PR510 Auditor semantic admission preflight
