@@ -1,0 +1,77 @@
+{
+  "record": "KEIRIN_CURRENT_STATE_v29",
+  "status": "ACTIVE_CURRENT_STATE_V29_SIMWORLD_CONTINUOUS_PLUS_INDEPENDENT_PROSPECTIVE_CONFIRMATION",
+  "supersedes_for_fresh_recovery": "v3/historical_all_market/continuity/KEIRIN_CURRENT_STATE_v28.json",
+  "checkpoint_jst": "2026-09-15",
+  "canonical_repo": "fufufu1116/multiverse-research",
+  "branch": "research/keirin-simworld-continuous-20260915-v1",
+  "current_research_objective": "Advance immediately through continuous synthetic/virtual-world falsification and robustness research while preserving the previously frozen prospective real-world validation as an independent confirmation lane rather than a blocking primary lane.",
+  "frozen_real_confirmation_model": {
+    "id": "R0_T2",
+    "formula": "Plackett-Luce softmax(score / 2.0)",
+    "temperature": 2.0,
+    "prospective_parameter_status": "FROZEN_UNCHANGED",
+    "real_validation_status": "NOT_YET_EVALUATED",
+    "promotion_status": "NOT_AUTHORIZED"
+  },
+  "simulation_world_lane": {
+    "status": "ACTIVE_IMMEDIATE_CONTINUOUS",
+    "plan_path": "v3/historical_all_market/research_candidates/r0_t2_simworld_continuous_v1/00_RESEARCH_PLAN.json",
+    "harness_path": "v3/historical_all_market/research_candidates/r0_t2_simworld_continuous_v1/run_simworld_matrix_v1.py",
+    "first_result_path": "v3/historical_all_market/research_candidates/r0_t2_simworld_continuous_v1/01_SIMWORLD_MATRIX_RESULT.json",
+    "first_matrix_worlds": 12,
+    "first_matrix_races_per_world": 1200,
+    "first_matrix_total_synthetic_races": 14400,
+    "first_matrix_summary": {
+      "R0_T2_best_temperature_world_count": 7,
+      "R0_T2_near_best_heavy_tail_regret_nll": 0.0012658512827883328,
+      "largest_observed_R0_T2_regret_vs_best_temperature": 0.2862023193781478,
+      "largest_regret_world": "sharp_T1",
+      "weakest_positive_improvement_vs_uniform": 0.011278875574413214,
+      "weakest_positive_improvement_world": "flat_T4",
+      "important_failure_surfaces": [
+        "true sharpness materially stronger than T2",
+        "flat probability worlds",
+        "partial rank reversal",
+        "nonlinear score-strength mapping"
+      ]
+    },
+    "interpretation": "Engineering/falsification evidence only. The matrix demonstrates that T2 is robust in several synthetic perturbations but not universally optimal; successor-hypothesis work may continue in simulation without altering the frozen R0_T2 prospective test.",
+    "promotion_authority": false
+  },
+  "prospective_real_lane": {
+    "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+    "status": "INDEPENDENT_CONFIRMATION_WAITING_PRE_INPUT_WINDOW",
+    "blocking_simulation_research": false,
+    "full_prediction_lock_status": "NOT_YET_CREATED_FUTURE_PRE_INPUTS_NOT_YET_DUE",
+    "result_scoring_authority": false
+  },
+  "exact_next_executable_actions": [
+    "Continue simulation-world falsification immediately with finer sweeps around sharpness, flatness, rank-reversal, nonlinear mapping and distribution-shift failure surfaces.",
+    "Generate simulation-only successor hypotheses that adapt uncertainty/temperature without touching the frozen prospective R0_T2 parameters; label all such candidates synthetic-only.",
+    "Add meeting/venue latent effects, correlated entrant effects, missingness and adversarial PRE degradation to the simulation harness.",
+    "When prospective PRE inputs become available, process that confirmation lane independently without stopping simulation research."
+  ],
+  "scientific_contamination_guard": {
+    "gate_487_rerun": "PROHIBITED",
+    "A_plus_B_as_fresh_validation": "PROHIBITED",
+    "DEV2000_C_outcome_access": "PROHIBITED",
+    "ECON_HOLDOUT1000": "SEALED_NOT_ACCESSED",
+    "prospective_result_access_before_complete_prelock_and_new_exact_owner_gate": "PROHIBITED",
+    "simulation_only_successor_promotion": "PROHIBITED"
+  },
+  "owner_action_required_now": false,
+  "next_owner_gate": "NOT_YET_READY_PROSPECTIVE_RESULT_GATE_REMAINS_SEPARATE",
+  "owner_facing_lane_readiness_percent": 60,
+  "owner_facing_lane_readiness_basis": "Do not inflate readiness from simulation-only evidence. Immediate research throughput is restored, but no new independent real predictive validation has yet been observed.",
+  "protected_boundaries": {
+    "new_real_result_access": false,
+    "payout_access": false,
+    "odds_price_economics_access": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  }
+}
