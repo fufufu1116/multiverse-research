@@ -1,0 +1,46 @@
+name: TEMP PR536 Lab admission carrier
+
+on:
+  push:
+    branches:
+      - tmp/pr536-lab-admission-carrier-20260915
+
+permissions:
+  contents: read
+
+jobs:
+  admission:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Exact canonical dispatcher admission
+        env:
+          TARGET_HEAD: 6496c7f72b3621b615ba1b724355c980f1760aff
+          CANONICAL_MAIN: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$CANONICAL_MAIN"
+          git worktree add --detach .mv_dispatcher "$CANONICAL_MAIN"
+          MULTIVERSE_DISPATCHER_REF="$CANONICAL_MAIN" \
+            PYTHONPATH="$PWD/.mv_dispatcher" \
+            python .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+              --lane LAB \
+              --repo fufufu1116/multiverse-research \
+              --head "$TARGET_HEAD" \
+              --output review_job.json
+          python - <<'PY'
+          import json
+          job = json.load(open('review_job.json'))
+          assert job['pr'] == 536
+          assert job['head'] == '6496c7f72b3621b615ba1b724355c980f1760aff'
+          assert job['tree'] == '17d75085f71e5ce45a67f7db003b8d884a2c27c1'
+          assert job['main'] == 'e81f3d310d07d40eb6c11fe8233dade3d72a5ad2'
+          assert job['request_comment'] == 5669054689
+          assert job['request_sha256'] == 'b5ca90ff4daafe79b927a5158761c8857b88678880d7721f5ee6fe38cc4211cb'
+          print('PR536_LAB_ADMISSION=PASS')
+          print('OWNER_BUILD_CONSUMED=FALSE')
+          print('RUNTIME=OFF')
+          PY
