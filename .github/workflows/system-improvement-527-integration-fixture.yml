@@ -1,0 +1,29 @@
+name: System Improvement 527 Integration Fixture Patch v1
+
+on:
+  push:
+    branches:
+      - agent/system-improvement-527-integration-fixture-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: system-improvement-auditor-upstream-execution-state-v1-20260915
+          fetch-depth: 2
+      - name: Apply integration fixture patch
+        run: |
+          set -euo pipefail
+          git fetch origin agent/system-improvement-527-integration-fixture-20260915
+          git show origin/agent/system-improvement-527-integration-fixture-20260915:tools/_patch_527_integration_fixture.py > /tmp/patch.py
+          python /tmp/patch.py
+          git config user.name "fufufu1116"
+          git config user.email "vbd82p4kd6@privaterelay.appleid.com"
+          git add automation/review_dispatcher_v1/test_integrated_resilience_convergence_v1.py
+          git commit -m "[SYSTEM IMPROVEMENT] Align integration replay fixture with lane-specific execution states"
+          git push origin HEAD:refs/heads/system-improvement-auditor-upstream-execution-state-v1-20260915
