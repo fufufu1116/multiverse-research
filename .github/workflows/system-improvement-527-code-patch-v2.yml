@@ -1,0 +1,30 @@
+name: System Improvement 527 Code Patch Constructor v2
+
+on:
+  push:
+    branches:
+      - agent/system-improvement-527-code-patch-v2-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: system-improvement-auditor-upstream-execution-state-v1-20260915
+          fetch-depth: 2
+      - name: Apply code-only patch to candidate branch
+        run: |
+          set -euo pipefail
+          git fetch origin agent/system-improvement-527-code-patch-v2-20260915
+          git show origin/agent/system-improvement-527-code-patch-v2-20260915:tools/_patch_527.py > /tmp/patch_527.py
+          python /tmp/patch_527.py
+          git checkout -- .github/workflows/system-improvement-auditor-upstream-execution-state-v1-ci.yml
+          git config user.name "fufufu1116"
+          git config user.email "vbd82p4kd6@privaterelay.appleid.com"
+          git add automation/review_dispatcher_v1/model.py automation/review_dispatcher_v1/review.py automation/review_dispatcher_v1/t2.py automation/review_dispatcher_v1/test_dispatcher_legacy_v1.py tools/test_auditor_upstream_execution_state_v1.py
+          git commit -m "[SYSTEM IMPROVEMENT] Close cross-lane execution-state aliasing across Auditor and T2"
+          git push origin HEAD:refs/heads/system-improvement-auditor-upstream-execution-state-v1-20260915
