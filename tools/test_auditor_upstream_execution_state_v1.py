@@ -35,14 +35,25 @@ class CrossLaneExecutionStateTests(unittest.TestCase):
     def test_non_string_fails(self):
         self.assertFalse(cross_lane_execution_state_valid(None, "X_AUDIT_REQUESTED"))
 
-    def test_review_and_t2_both_use_shared_lane_validator(self):
+    def test_review_t2_and_legacy_t2_use_shared_lane_validator(self):
         root = Path(__file__).resolve().parents[1]
         review_source = (root / "automation/review_dispatcher_v1/review.py").read_text()
         t2_source = (root / "automation/review_dispatcher_v1/t2.py").read_text()
+        legacy_t2_source = (
+            root / "automation/review_dispatcher_v1/t2_legacy_v1.py"
+        ).read_text()
         token = "cross_lane_execution_state_valid("
         self.assertIn(token, review_source)
         self.assertIn(token, t2_source)
-
+        self.assertGreaterEqual(legacy_t2_source.count(token), 2)
+        self.assertNotIn(
+            'latest_lab_request["execution_state"] == request["execution_state"]',
+            legacy_t2_source,
+        )
+        self.assertNotIn(
+            'lab_artifact.get("execution_state") == request["execution_state"]',
+            legacy_t2_source,
+        )
 
 
 if __name__ == "__main__":
