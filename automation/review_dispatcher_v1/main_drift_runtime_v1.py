@@ -121,25 +121,26 @@ def assess_request_main_against_live(
     live_main: str,
     fetch: Fetch,
 ) -> dict[str, Any]:
+    # Preserve the legacy exact-main fast path: exact authority needs no
+    # compare API evidence and therefore does not add a new failure mode to
+    # already-valid exact requests.
+    if request_main == live_main:
+        return {
+            "mode": "EXACT_MAIN",
+            "request_main": request_main,
+            "live_main": live_main,
+            "candidate_files": [],
+            "drift_files": [],
+        }
+
     candidate_compare = required_object(
         fetch(_compare_url(repo, base, head)),
         "CANDIDATE_COMPARE_RESPONSE_OBJECT",
     )
-    if request_main == live_main:
-        drift_compare: dict[str, Any] = {
-            "status": "ahead",
-            "ahead_by": 0,
-            "behind_by": 0,
-            "total_commits": 0,
-            "too_large": None,
-            "merge_base_commit": {"sha": request_main},
-            "files": [],
-        }
-    else:
-        drift_compare = required_object(
-            fetch(_compare_url(repo, request_main, live_main)),
-            "MAIN_DRIFT_COMPARE_RESPONSE_OBJECT",
-        )
+    drift_compare = required_object(
+        fetch(_compare_url(repo, request_main, live_main)),
+        "MAIN_DRIFT_COMPARE_RESPONSE_OBJECT",
+    )
 
     return assess_unrelated_main_drift(
         request_main=request_main,
