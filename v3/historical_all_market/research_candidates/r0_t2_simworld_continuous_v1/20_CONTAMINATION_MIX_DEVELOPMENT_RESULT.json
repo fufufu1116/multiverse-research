@@ -1,0 +1,23 @@
+{
+  "record": "CONTAMINATION_ROBUST_SUCCESSOR_DEVELOPMENT_v1",
+  "development_only": true,
+  "real_evidence": false,
+  "development_data": "Consumed synthetic worlds only, including AT1 fresh worlds after AT1 result finalization.",
+  "candidate_family": "At each sequential step mix PL(score/2.0) with uniform choice probability: P=(1-eps)*P_T2+eps*Uniform.",
+  "epsilon_grid": [0.03,0.05,0.08,0.10,0.15,0.20],
+  "selected_candidate": {
+    "id": "CR1_E05",
+    "epsilon": 0.05,
+    "definition": "0.95 * P_T2 + 0.05 * Uniform at each sequential choice step"
+  },
+  "selection_summary_on_consumed_worlds": {
+    "R0_T2_average_mean_regret": 0.06506484212393387,
+    "R0_T2_average_max_regret": 0.22014125960405379,
+    "CR1_E05_average_mean_regret": 0.06306592160051919,
+    "CR1_E05_average_max_regret": 0.21793054111263546
+  },
+  "interpretation": "A small explicit contamination channel improved both mean and maximum regret on consumed worlds dominated by unobserved positive shocks. Candidate remains synthetic-development-only until a fresh preregistered battery passes independently.",
+  "runtime": "OFF",
+  "automatic_betting": false,
+  "protected_real_data_access": false
+}
