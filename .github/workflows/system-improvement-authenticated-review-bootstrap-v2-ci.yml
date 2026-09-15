@@ -1,0 +1,40 @@
+name: System Improvement Authenticated Review Bootstrap v2 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/review_dispatcher_v1/authenticated_review_bootstrap_v2.py'
+      - 'automation/review_dispatcher_v1/test_authenticated_review_bootstrap_v2.py'
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml'
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml'
+      - '.github/workflows/system-improvement-authenticated-review-bootstrap-v2-ci.yml'
+  push:
+    branches:
+      - 'system-improvement-authenticated-review-bootstrap-read-v2-*'
+    paths:
+      - 'automation/review_dispatcher_v1/authenticated_review_bootstrap_v2.py'
+      - 'automation/review_dispatcher_v1/test_authenticated_review_bootstrap_v2.py'
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_LAB_FIXED_v1.yml'
+      - 'buildkite/review_dispatcher_v1/MULTIVERSE_INDEPENDENT_AUDITOR_FIXED_v1.yml'
+      - '.github/workflows/system-improvement-authenticated-review-bootstrap-v2-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run authenticated bootstrap regressions
+        run: |
+          python -m unittest automation.review_dispatcher_v1.test_authenticated_review_bootstrap_v2 -v
+          python -m unittest automation.review_dispatcher_v1.test_dispatcher -v
+      - name: Compile control-plane candidate
+        run: |
+          python -m py_compile \
+            automation/review_dispatcher_v1/authenticated_review_bootstrap_v2.py \
+            automation/review_dispatcher_v1/test_authenticated_review_bootstrap_v2.py

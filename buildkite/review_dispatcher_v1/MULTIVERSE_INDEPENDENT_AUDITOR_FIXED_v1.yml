@@ -5,6 +5,9 @@ steps:
     agents:
       queue: "independent-auditor"
 
+    secrets:
+      - MULTIVERSE_INDEPENDENT_AUDITOR_PRIVATE_KEY
+
     command: |
       set -euo pipefail
 
@@ -18,18 +21,15 @@ steps:
       git archive "$$DISPATCHER_REF" automation/review_dispatcher_v1 \
         | tar -x -C .mv_dispatcher
 
-      PYTHONPATH=.mv_dispatcher \
-        python3 .mv_dispatcher/automation/review_dispatcher_v1/dispatcher.py \
+      rm -f .mv_review_pass
+      # review.py executes inside the authenticated bootstrap wrapper below.
+      if PYTHONPATH=.mv_dispatcher \
+        python3 .mv_dispatcher/automation/review_dispatcher_v1/authenticated_review_bootstrap_v2.py \
         --lane AUDITOR \
         --repo fufufu1116/multiverse-research \
         --head "$$BUILDKITE_COMMIT" \
-        --output review_job.json
-
-      rm -f .mv_review_pass
-      if PYTHONPATH=.mv_dispatcher \
-        python3 .mv_dispatcher/automation/review_dispatcher_v1/review.py \
-        --job review_job.json \
-        --output review_artifact.json \
+        --job-output review_job.json \
+        --artifact-output review_artifact.json \
         --repo-root .; then
         touch .mv_review_pass
       fi
