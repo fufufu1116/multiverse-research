@@ -12,7 +12,7 @@ BASE = "4" * 40
 
 
 def commit(sha, tree):
-    return {"sha": sha, "commit": {"tree": {"sha": tree}}
+    return {"sha": sha, "commit": {"tree": {"sha": tree}}}
 
 
 def branch(sha):
@@ -39,7 +39,7 @@ def fake_fetch(prs):
         if url.endswith("/branches/main"):
             return branch(MAIN)
         if f"/commits/{HEAD}/pulls" in url:
-            return prs
+            return prs if "page=1" in url else []
         if url.endswith("/pulls/7"):
             return full_pr(7)
         raise AssertionError(url)
