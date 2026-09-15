@@ -6,6 +6,7 @@ on:
       - agent/multiverse-owner-assurance-view-v1
   pull_request:
     paths:
+      - 'automation/review_dispatcher_v1/**'
       - 'governance/**'
       - 'tools/**'
       - '.github/workflows/multiverse-foundation-candidate-ci-v1.yml'
@@ -83,3 +84,9 @@ jobs:
           grep -q 'CLOSED' /tmp/owner-assurance.md
           grep -q 'PROHIBITED' /tmp/owner-assurance.md
           echo MULTIVERSE_FOUNDATION_CANDIDATE_CI_PASS
+
+      - name: Review-ready transport preflight regression
+        run: python tools/test_review_ready_preflight_v1.py
+
+      - name: Review-ready package validator regression
+        run: python tools/test_review_ready_package_validator_v1.py
