@@ -1,0 +1,16 @@
+{
+  "record":"KEIRIN_R0_T2_PRE_INPUT_PREFLIGHT_VALIDATOR_BOUNDARY_V1",
+  "status":"RESEARCH_HARDENING_CANDIDATE_NOT_ADOPTED_NOT_PART_OF_FROZEN_MODEL",
+  "date_jst":"2026-09-15",
+  "assignment_id":"R0T2-PROSPECTIVE-20260918-V1",
+  "validator_path":"v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/preflight_validate_pre_input_v1.py",
+  "validator_commit":"3e554353c5b91d97bc81f0fc63d40519c4d570bd",
+  "purpose":"Fail closed on operational PRE-input identity/timing/schema mistakes before invoking the already frozen r0_t2_prelock_v1.py. This layer MUST NOT alter scores, entrants, model parameters, probabilities, ranking, inclusion policy, thresholds, or outcome handling.",
+  "checks":["exact assignment id","meeting id limited to frozen assigned venues","race_id uniqueness within supplied manifest","current trusted JST strictly before scheduled start","HTTPS source identity present","source_sha256 syntactically valid","entrant count 5..9","entrant schema complete","unique car numbers","finite scores"],
+  "known_limitations":["Does not fetch source bytes and therefore cannot itself prove source_sha256 equals remote bytes.","Venue-name meeting_id assumption must be reconciled with the exact official PRE schema before adoption; if canonical meeting_id uses another identifier, fail closed and revise through governance before live use.","Caller-supplied --now-jst must come from a trusted clock surface; validator does not establish clock trust itself."],
+  "scientific_boundary":{"changes_frozen_R0_T2":false,"changes_prediction_formula":false,"changes_preregistered_assignment":false,"changes_pass_logic":false,"uses_real_outcomes":false,"uses_prospective_PRE_for_tuning":false},
+  "adoption_authority":false,
+  "owner_action_required_now":false,
+  "runtime":"OFF",
+  "automatic_betting":false
+}
