@@ -1,0 +1,21 @@
+{
+  "record":"KEIRIN_R0_T2_OFFICIAL_PRE_SOURCE_IDENTITY_RECON_20260915_V1",
+  "status":"PRE_OUTCOME_SOURCE_RECON_ONLY",
+  "observed_jst":"2026-09-15T11:13:00+09:00",
+  "assignment_id":"R0T2-PROSPECTIVE-20260918-V1",
+  "official_source":"KEIRIN.JP",
+  "findings":[
+    {"meeting":"富山","grade":"G2","dates":"2026-09-18/2026-09-21","event":"第42回共同通信社杯競輪","support":"Official KEIRIN.JP top/schedule surfaces expose the meeting before the prospective window."},
+    {"meeting":"富山","support":"Official KEIRIN.JP player-profile surfaces already expose multiple riders with scheduled participation in 富山 共同杯 09/18-09/21."},
+    {"meeting":"静岡","support":"Frozen assignment remains authoritative for prospective selection; this reconnaissance did not establish a complete race-level official PRE card yet."},
+    {"meeting":"松山","support":"Frozen assignment remains authoritative for prospective selection; this reconnaissance did not establish a complete race-level official PRE card yet."}
+  ],
+  "identity_design_decision":"Do not equate human venue labels with canonical meeting_id. Preserve venue/date/event as expected identity attributes and derive/freeze exact meeting_id only from the official race-level PRE source when available before race start.",
+  "validator_required_change":"Replace the provisional meeting_id-in-{静岡,富山,松山} assumption with an explicit frozen assignment identity map containing expected venue/date/event plus official meeting_id learned from PRE-only official source. Until that map is frozen, validator must fail closed rather than invent an identifier.",
+  "source_hash_design":"The canonical lock must hash exact bytes/content used for PRE extraction. A syntactically valid source_sha256 is insufficient; acquisition wrapper must compute SHA-256 itself and pass the computed digest with extracted PRE rows.",
+  "no_result_access":true,
+  "no_odds_payout_price_economics":true,
+  "no_model_change":true,
+  "owner_action_required_now":false,
+  "runtime":"OFF"
+}
