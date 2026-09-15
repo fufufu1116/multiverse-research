@@ -23,6 +23,7 @@ from automation.review_dispatcher_v1.model import (
     RESULT_SCHEMA,
     T2_SCHEMA,
     ReviewContractError,
+    cross_lane_execution_state_valid,
     fetch_all_pages,
     github_branch_commit_sha,
     github_comment_id,
@@ -203,7 +204,10 @@ def publish_t2(
         "LATEST_LAB_PROOF_CEILING_MISMATCH",
     )
     require(
-        latest_lab_request["execution_state"] == request["execution_state"],
+        cross_lane_execution_state_valid(
+            latest_lab_request["execution_state"],
+            request["execution_state"],
+        ),
         "LATEST_LAB_EXECUTION_STATE_MISMATCH",
     )
     latest_lab_request_sha256 = sha256_json(latest_lab_request)
@@ -290,7 +294,10 @@ def publish_t2(
         "LAB_UPSTREAM_PROOF_CEILING",
     )
     require(
-        lab_artifact.get("execution_state") == request["execution_state"],
+        cross_lane_execution_state_valid(
+            lab_artifact.get("execution_state"),
+            request["execution_state"],
+        ),
         "LAB_UPSTREAM_EXECUTION_STATE",
     )
     lab_producer = lab_artifact.get("producer") or {}
