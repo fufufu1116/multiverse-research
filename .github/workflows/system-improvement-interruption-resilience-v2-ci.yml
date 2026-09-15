@@ -1,0 +1,42 @@
+name: System Improvement Interruption Resilience v2 CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/control/INTERRUPTION_RESILIENCE_PROTOCOL_v2.md'
+      - 'automation/control/interruption_checkpoint_v1.py'
+      - 'automation/control/test_interruption_checkpoint_v1.py'
+      - '.github/workflows/system-improvement-interruption-resilience-v2-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  interruption-resilience-v2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Interruption checkpoint regressions
+        run: python -m unittest automation.control.test_interruption_checkpoint_v1 -v
+      - name: Protocol invariant smoke
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('docs/control/INTERRUPTION_RESILIENCE_PROTOCOL_v2.md').read_text()
+          required = [
+              'CHAT/STREAM LOSS != PROJECT STATE LOSS',
+              'Receipt before narration',
+              'RECEIPTED / NOT_RECEIPTED / UNCERTAIN',
+              'Cross-lane inheritance',
+              'Short Owner output',
+              'do not replay',
+          ]
+          missing = [token for token in required if token not in text]
+          if missing:
+              raise SystemExit('MISSING_PROTOCOL_INVARIANTS:' + ','.join(missing))
+          print('INTERRUPTION_RESILIENCE_PROTOCOL_V2_PASS')
+          PY
