@@ -1,3 +1,5 @@
+import unittest
+
 from automation.review_dispatcher_v1.review_ready_preflight_v1 import (
     AMBIGUOUS,
     CARRIER,
@@ -48,27 +50,23 @@ def fake_fetch(prs):
     return fetch
 
 
-def test_no_pr():
-    out = preflight(repo="o/r", head=HEAD, fetch=fake_fetch([]))
-    assert out["state"] == CARRIER
-    assert out["authority_created"] is False
+class ReviewReadyPreflightTests(unittest.TestCase):
+    def test_no_pr(self):
+        out = preflight(repo="o/r", head=HEAD, fetch=fake_fetch([]))
+        self.assertEqual(out["state"], CARRIER)
+        self.assertFalse(out["authority_created"])
 
+    def test_one_pr(self):
+        out = preflight(repo="o/r", head=HEAD, fetch=fake_fetch([pr_summary(7)]))
+        self.assertEqual(out["state"], READY)
+        self.assertEqual(out["pr"], 7)
+        self.assertFalse(out["owner_marker_created"])
 
-def test_one_pr():
-    out = preflight(repo="o/r", head=HEAD, fetch=fake_fetch([pr_summary(7)]))
-    assert out["state"] == READY
-    assert out["pr"] == 7
-    assert out["owner_marker_created"] is False
-
-
-def test_ambiguous():
-    out = preflight(repo="o/r", head=HEAD, fetch=fake_fetch([pr_summary(7), pr_summary(8)]))
-    assert out["state"] == AMBIGUOUS
-    assert out["exact_open_pr_count"] == 2
+    def test_ambiguous(self):
+        out = preflight(repo="o/r", head=HEAD, fetch=fake_fetch([pr_summary(7), pr_summary(8)]))
+        self.assertEqual(out["state"], AMBIGUOUS)
+        self.assertEqual(out["exact_open_pr_count"], 2)
 
 
 if __name__ == "__main__":
-    test_no_pr()
-    test_one_pr()
-    test_ambiguous()
-    print("REVIEW_READY_PREFLIGHT_V1_TESTS_PASS:3")
+    unittest.main()
