@@ -90,3 +90,6 @@ jobs:
 
       - name: Review-ready package validator regression
         run: PYTHONPATH=. python tools/test_review_package_validator_v1.py
+
+      - name: Review-ready combined adapter regression
+        run: PYTHONPATH=. python tools/test_review_ready_adapter_v1.py
