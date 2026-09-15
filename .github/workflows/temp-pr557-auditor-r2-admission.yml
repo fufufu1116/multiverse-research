@@ -1,4 +1,4 @@
-name: TEMP PR557 Auditor r3 Admission
+name: TEMP PR557 Auditor r4 Admission
 on:
   pull_request:
 permissions:
@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Exact PR557 Auditor r3 semantic admission
+      - name: Exact PR557 Auditor r4 semantic admission
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: >-
@@ -21,8 +21,7 @@ jobs:
           --repo fufufu1116/multiverse-research
           --lane AUDITOR
           --head 805cd54393270085b63215daa1a462b5fa245bd6
-          --expected-request-comment 5672837714
-          --expected-request-sha256 aed04251f4d99e843cfbe2866df90de6ee2e7ce4750f0da2b32f1a46ae675e45
+          --expected-request-comment 5672870367
+          --expected-request-sha256 c22756173b2c322e3adc084143878a99ef5e3cfa1250ecf17a3b5b5e046f50fd
           --expected-main f6f145cf197f5e5cb9e8ad4d3d0b98e562039bb4
           --expected-tree 8b6b3d52ebc9de7b141bb37eeb3147792b1eb7d5
-# carrier revision 3
