@@ -5,8 +5,8 @@ on:
       - '.github/workflows/pr564-auditor-admission-preflight-v1.yml'
 permissions:
   contents: read
-  pull-requests: read
-  issues: read
+  pull-requests: write
+  issues: write
 jobs:
   preflight:
     runs-on: ubuntu-latest
@@ -15,6 +15,8 @@ jobs:
         with:
           ref: ccba0a002e0be8ff28dc91acfecba8940458be85
       - name: Exact semantic admission preflight
+        id: preflight
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -25,4 +27,21 @@ jobs:
             --expected-request-comment 5673520471 \
             --expected-request-sha256 6c4d361262e559a6d91bbbb26d18d6413a67637a57c51d56cf97d618f74f249c \
             --expected-main ccba0a002e0be8ff28dc91acfecba8940458be85 \
-            --expected-tree a9767cd280ca5659f98382aa74ff8d58e84f82ed
+            --expected-tree a9767cd280ca5659f98382aa74ff8d58e84f82ed > preflight.log 2>&1
+          cat preflight.log
+      - name: Publish diagnostic receipt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo '[PR564 AUDITOR SEMANTIC ADMISSION PREFLIGHT RECEIPT]'
+            echo '```text'
+            cat preflight.log
+            echo '```'
+            echo "STEP_OUTCOME=${{ steps.preflight.outcome }}"
+            echo 'NONAUTHORITY=true; BUILDKITE_NOT_RUN=true; RUNTIME=OFF'
+          } > receipt.md
+          gh pr comment 566 --repo fufufu1116/multiverse-research --body-file receipt.md
+      - name: Enforce preflight success
+        if: steps.preflight.outcome != 'success'
+        run: exit 1
