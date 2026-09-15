@@ -1,0 +1,62 @@
+{
+  "record": "KEIRIN_R0_T2_PRELOCK_EXECUTION_READINESS_MANIFEST_V1",
+  "status": "PREPARED_PRE_OUTCOME_NO_RESULT_ACCESS",
+  "prepared_jst": "2026-09-15",
+  "assignment_id": "R0T2-PROSPECTIVE-20260918-V1",
+  "purpose": "Remove owner-free execution ambiguity before the prospective PRE input window without accessing any result, outcome, payout, odds, price, economics, protected holdout, credential, provider, or Runtime surface.",
+  "canonical_inputs": {
+    "assignment_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/01_PROSPECTIVE_EVIDENCE_ASSIGNMENT.json",
+    "assignment_blob_sha": "baac358a7f306ccde09e5fbb0666902f5e059bf8",
+    "final_prereg_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/03_FINAL_PREREG_BEFORE_PRELOCK.json",
+    "final_prereg_blob_sha": "7101dd258e0e5451d6089a980970681bc5c24b5e",
+    "prelock_implementation_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/r0_t2_prelock_v1.py",
+    "prelock_implementation_commit": "a306f00adb3e0b81852aa0cc84cf323a0dbc7bf8",
+    "prelock_implementation_sha256": "e1f996bb3004ca815862c33c0930a0b6103bf2d0467799a2378b5e48e5138ec8",
+    "evaluator_path": "v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/evaluate_r0_t2_one_shot_v1.py",
+    "evaluator_commit": "7d867bf16a873bee15bb3cd59ea4ab8ec1c425ed",
+    "evaluator_blob_sha": "35864ab9f2a0ad2eb9b32324ea19fae8dfb96727"
+  },
+  "assigned_meetings": [
+    {"venue":"静岡","grade":"F1","start_date_jst":"2026-09-18","end_date_jst":"2026-09-20","event_title":"オタクなリンカイ！と臥龍梅杯"},
+    {"venue":"富山","grade":"G2","start_date_jst":"2026-09-18","end_date_jst":"2026-09-21","event_title":"共同通信社杯競輪"},
+    {"venue":"松山","grade":"F2","start_date_jst":"2026-09-19","end_date_jst":"2026-09-21","event_title":"イー新聞杯×ウィンチケット杯"}
+  ],
+  "prelock_required_fields": ["meeting_id","race_id","scheduled_start_jst","source_url","source_sha256","entrants.car_no","entrants.score"],
+  "prediction_lock_required_fields": ["assignment_id","meeting_id","race_id","scheduled_start_jst","source_url","source_sha256","entrants.car_no","entrants.score","r0_t2_temperature","p_win","ordered_top3_car_no","lock_sha256"],
+  "execution_order": [
+    "For each assigned race, obtain only PRE-required public source bytes before scheduled start.",
+    "Hash exact PRE source bytes before prediction computation.",
+    "Validate entrant count is 5..9 and all required PRE fields are complete.",
+    "If PRE input is unavailable or invalid before start, persist a PRE-outcome exclusion reason and never substitute after outcome.",
+    "Run frozen R0_T2 temperature 2.0 implementation and persist prediction lock before scheduled start.",
+    "After all eligible assigned races are locked, freeze the complete lock artifact hash.",
+    "Perform identity-only collision and coverage reaudit without result access.",
+    "Stop and prepare a new exact Owner Gate bound to final lock hash plus minimal result parser hash."
+  ],
+  "gate_readiness_conditions": {
+    "full_prediction_lock_hash_frozen": false,
+    "final_identity_only_reaudit_passed": false,
+    "minimal_result_parser_hash_frozen": false,
+    "minimum_races_required": 24,
+    "minimum_meetings_required": 3,
+    "owner_gate_ready": false
+  },
+  "minimal_future_result_schema_after_separate_owner_gate_only": ["race_id","ordered_top3_car_no"],
+  "hard_firewall": {
+    "result_or_outcome_access_now": false,
+    "payout_access": false,
+    "odds_price_economics_access": false,
+    "DEV2000_C_outcome_access": false,
+    "ECON_HOLDOUT1000_access": false,
+    "real_pre_fit_tune_calibrate_select": false,
+    "post_outcome_substitution": false,
+    "model_promotion": false,
+    "provider_contact": false,
+    "credential": false,
+    "spend": false,
+    "runtime": "OFF",
+    "automatic_betting": false
+  },
+  "next_owner_free_action": "Wait only for the assigned public PRE input window, then execute the frozen PRE-only lock sequence race-by-race. No Owner action is required before a complete lock and identity-only reaudit exist.",
+  "owner_action_required_now": false
+}
