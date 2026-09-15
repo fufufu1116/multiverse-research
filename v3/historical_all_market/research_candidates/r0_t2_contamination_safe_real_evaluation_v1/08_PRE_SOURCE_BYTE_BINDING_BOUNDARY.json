@@ -1,0 +1,18 @@
+{
+  "record":"KEIRIN_R0_T2_PRE_SOURCE_BYTE_BINDING_BOUNDARY_V1",
+  "status":"RESEARCH_HARDENING_CANDIDATE_NOT_ADOPTED",
+  "date_jst":"2026-09-15",
+  "assignment_id":"R0T2-PROSPECTIVE-20260918-V1",
+  "verifier_path":"v3/historical_all_market/research_candidates/r0_t2_contamination_safe_real_evaluation_v1/preflight_verify_source_bytes_v1.py",
+  "verifier_commit":"486d179196a8da1edf39585c5a9858c5a9f56863",
+  "purpose":"Bind each PRE manifest row to exact locally captured source bytes by recomputing SHA-256 before frozen prediction locking.",
+  "required_additional_manifest_field":"source_capture_file",
+  "execution_order":["capture PRE-only official source bytes before scheduled start","persist exact bytes without normalization","compute source_sha256 from exact bytes","write manifest source_capture_file and source_sha256","run byte-binding verifier","only on PASS run the separate PRE input preflight and frozen R0_T2 prelock"],
+  "fail_closed_on":["missing race_id","duplicate race_id","missing capture path","path escape","missing source file","invalid expected SHA length","SHA mismatch"],
+  "prohibitions":["no network fetch inside verifier","no result/outcome/payout/odds/price/economics bytes","no source normalization before hashing","no model or score mutation","no prospective PRE tuning"],
+  "scientific_boundary":{"changes_frozen_model":false,"changes_assignment":false,"changes_prereg_pass_logic":false,"uses_outcomes":false},
+  "remaining_blockers":["Exact official race-level PRE URL/identifier schema must be observed when published; do not guess meeting_id.","Trusted clock binding remains external to these scripts."],
+  "owner_action_required_now":false,
+  "runtime":"OFF",
+  "automatic_betting":false
+}
