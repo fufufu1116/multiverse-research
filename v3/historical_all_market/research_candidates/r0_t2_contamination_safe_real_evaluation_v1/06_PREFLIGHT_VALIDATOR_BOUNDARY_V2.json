@@ -1,0 +1,33 @@
+{
+  "record": "KEIRIN_R0_T2_PRE_INPUT_PREFLIGHT_VALIDATOR_BOUNDARY_V2",
+  "status": "RESEARCH_HARDENING_CANDIDATE_NOT_ADOPTED_NOT_PART_OF_FROZEN_MODEL",
+  "date_jst": "2026-09-15",
+  "validator_commit": "3458d968b47ec9bfb2997a9c801d411cb4722c0a",
+  "branch": "research/keirin-prelock-hardening-20260915-v1",
+  "purpose": "Fail closed on PRE-input operational mistakes while preserving the frozen R0_T2 implementation and predictive fields unchanged.",
+  "hardening": [
+    "exact frozen assignment_id",
+    "timezone-aware +09:00 timestamps and strict pre-start check",
+    "recursive explicit forbidden-key rejection for result/outcome/payout/odds/price/economics families",
+    "exact local source-byte SHA-256 verification against source_sha256",
+    "HTTPS source URL",
+    "unique composite meeting_id/race_id",
+    "entrant count 5..9, required fields, finite scores, unique car numbers"
+  ],
+  "meeting_identity_boundary": "Assignment v1 specifies exact venue/title/date tuples but does not define canonical meeting_id encoding. Validator v2 deliberately does not guess venue == meeting_id. Exact meeting_id binding remains fail-closed work before adoption/live use.",
+  "clock_boundary": "--now-jst remains caller supplied; trusted clock binding remains required before adoption/live use.",
+  "source_byte_boundary": "source-map is external to predictive JSONL and maps race_id to exact local source-byte files; validator hashes bytes without mutating rows passed to frozen prelock implementation.",
+  "scientific_boundary": {
+    "changes_frozen_model": false,
+    "changes_temperature": false,
+    "changes_scores": false,
+    "changes_predictions": false,
+    "uses_outcomes": false,
+    "tunes_on_prospective_pre": false,
+    "readiness_percent_change": false
+  },
+  "adoption_authority": false,
+  "owner_action_required_now": false,
+  "runtime": "OFF",
+  "automatic_betting": false
+}
