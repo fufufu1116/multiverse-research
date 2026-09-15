@@ -13,6 +13,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Diagnostic exact selected request
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          import json
+          from tools.review_build_admission_preflight_v2 import authenticated_github_get
+          from automation.review_dispatcher_v1.dispatcher import discover_request
+          job=discover_request(repo='fufufu1116/multiverse-research',lane='AUDITOR',head='805cd54393270085b63215daa1a462b5fa245bd6',fetch=authenticated_github_get)
+          print(json.dumps({'request_comment':job['request_comment'],'request_sha256':job['request_sha256'],'request_id':job['request_id']},sort_keys=True))
+          PY
       - name: Exact PR557 Auditor r5 semantic admission
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -25,4 +36,3 @@ jobs:
           --expected-request-sha256 61d381e0047efbe75a8777e1a7966a3894c59ae96e7df49ee3ae0cc4b77df06c
           --expected-main f6f145cf197f5e5cb9e8ad4d3d0b98e562039bb4
           --expected-tree 8b6b3d52ebc9de7b141bb37eeb3147792b1eb7d5
-# fresh visibility recheck after request propagation
