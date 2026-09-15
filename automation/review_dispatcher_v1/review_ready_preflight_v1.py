@@ -17,24 +17,20 @@ from automation.review_dispatcher_v1.model import (
     required_positive_int,
 )
 
-SCHEMA = "MULTIVERSE_REVIEW_READY_PREFLIGHT_v1"
-READY = "READY_FOR_AUTHORITY_REQUEST"
-CARRIER = "CONTROL_CARRIER_REQUIRED_OR_ALTERNATE_REVIEW_PATH"
+SCHEMA = "MULTIVERSE_REVIEW_TRANSPORT_PREFLIGHT_v1"
+READY = "TRANSPORT_READY_NONAUTHORITY"
+CARRIER = "REVIEW_TRANSPORT_REQUIRED"
 AMBIGUOUS = "AMBIGUOUS_PR_FAIL_CLOSED"
-INVALID = "STALE_OR_INVALID_PACKAGE_FAIL_CLOSED"
+INVALID = "TRANSPORT_INVALID_FAIL_CLOSED"
 
 
 def preflight(*, repo: str, head: str, fetch=github_get) -> dict[str, Any]:
     require(bool(repo), "REPO_REQUIRED")
     require(len(head) == 40 and all(c in "0123456789abcdef" for c in head), "HEAD_40_HEX")
-
     try:
         tree = _discover_tree_sha(repo, head, fetch=fetch)
         main = _discover_main_sha(repo, fetch=fetch)
-        pulls = fetch_all_pages(
-            fetch,
-            f"https://api.github.com/repos/{repo}/commits/{head}/pulls",
-        )
+        pulls = fetch_all_pages(fetch, f"https://api.github.com/repos/{repo}/commits/{head}/pulls")
     except ReviewContractError:
         raise
     except Exception as exc:
@@ -44,24 +40,14 @@ def preflight(*, repo: str, head: str, fetch=github_get) -> dict[str, Any]:
     for item in pulls:
         require(isinstance(item, dict), "PR_SUMMARY_ITEM_OBJECT")
         item_head = item.get("head")
-        if (
-            item.get("state") == "open"
-            and isinstance(item_head, dict)
-            and item_head.get("sha") == head
-        ):
+        if item.get("state") == "open" and isinstance(item_head, dict) and item_head.get("sha") == head:
             exact.append(item)
 
     base = {
-        "schema": SCHEMA,
-        "repo": repo,
-        "head": head,
-        "tree": tree,
-        "main": main,
-        "authority_created": False,
-        "owner_marker_created": False,
-        "runtime_authority": False,
+        "schema": SCHEMA, "repo": repo, "head": head, "tree": tree, "main": main,
+        "package_quality_inferred": False, "authority_created": False,
+        "owner_marker_created": False, "runtime_authority": False,
     }
-
     if len(exact) == 0:
         return {**base, "state": CARRIER, "exact_open_pr_count": 0}
     if len(exact) != 1:
@@ -69,19 +55,9 @@ def preflight(*, repo: str, head: str, fetch=github_get) -> dict[str, Any]:
 
     summary = exact[0]
     pr_number = required_positive_int(summary.get("number"), "PR_SUMMARY_NUMBER")
-    full_pr = github_full_pr_binding(
-        fetch(f"https://api.github.com/repos/{repo}/pulls/{pr_number}"),
-        expected_number=pr_number,
-        expected_head=head,
-    )
-    return {
-        **base,
-        "state": READY,
-        "exact_open_pr_count": 1,
-        "pr": pr_number,
-        "branch": full_pr["head_ref"],
-        "base": full_pr["base_sha"],
-    }
+    full_pr = github_full_pr_binding(fetch(f"https://api.github.com/repos/{repo}/pulls/{pr_number}"), expected_number=pr_number, expected_head=head)
+    return {**base, "state": READY, "exact_open_pr_count": 1, "pr": pr_number,
+            "branch": full_pr["head_ref"], "base": full_pr["base_sha"]}
 
 
 def main() -> int:
@@ -97,12 +73,7 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except ReviewContractError as exc:
-        print(json.dumps({
-            "schema": SCHEMA,
-            "state": INVALID,
-            "reason": str(exc),
-            "authority_created": False,
-            "owner_marker_created": False,
-            "runtime_authority": False,
-        }, sort_keys=True))
+        print(json.dumps({"schema": SCHEMA, "state": INVALID, "reason": str(exc),
+                          "authority_created": False, "owner_marker_created": False,
+                          "runtime_authority": False}, sort_keys=True))
         raise SystemExit(1)
