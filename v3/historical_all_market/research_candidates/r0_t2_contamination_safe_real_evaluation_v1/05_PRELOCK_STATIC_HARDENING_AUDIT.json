@@ -1,0 +1,40 @@
+{
+  "record":"KEIRIN_R0_T2_PRELOCK_STATIC_HARDENING_AUDIT_V1",
+  "status":"STATIC_AUDIT_COMPLETE_NO_FROZEN_IMPLEMENTATION_CHANGE",
+  "date_jst":"2026-09-15",
+  "scope":"r0_t2_prelock_v1.py versus frozen assignment/prereg; no result or protected-data access",
+  "finding":"HARDENING_GAPS_IDENTIFIED_BUT_FROZEN_IMPLEMENTATION_MUST_NOT_BE_SILENTLY_CHANGED",
+  "confirmed_controls":[
+    "entrant count fails closed outside 5..9",
+    "duplicate car numbers fail closed",
+    "non-finite scores fail closed",
+    "temperature is frozen at 2.0",
+    "lock hash is deterministic canonical JSON SHA-256",
+    "output rows are deterministically sorted"
+  ],
+  "gaps_requiring_execution_wrapper_or_preflight_not_model_change":[
+    "script itself does not verify current time is before scheduled_start_jst",
+    "script trusts supplied source_sha256 and does not itself hash source bytes",
+    "script does not verify assignment_id equals the frozen R0T2-PROSPECTIVE-20260918-V1 constant",
+    "script does not verify meeting/race belongs to exact frozen three-meeting assignment",
+    "script does not reject duplicate race_id rows across input",
+    "script does not itself enforce minimum 24 races and 3 meetings; evaluator/prereg owns that gate",
+    "ordered_top3_car_no is deterministic score/probability ranking, while full ordered outcome probability is evaluated downstream; do not mislabel it as a complete ordered-top3 probability distribution"
+  ],
+  "decision":"DO_NOT_EDIT_FROZEN_PRELOCK_IMPLEMENTATION_IN_PLACE. Add a separate preflight/wrapper only if it can preserve the exact frozen model output and be independently hash-frozen before live PRE execution.",
+  "required_preflight_checks":[
+    "exact assignment id",
+    "exact assigned meeting identity",
+    "unique race identity",
+    "scheduled start strictly after lock timestamp",
+    "source bytes SHA-256 equals manifest source_sha256",
+    "required PRE fields complete",
+    "entrant count 5..9",
+    "no result/outcome/payout/odds/price/economics fields present"
+  ],
+  "authority_change":false,
+  "readiness_percent_change":false,
+  "result_access":false,
+  "runtime":"OFF",
+  "automatic_betting":false
+}
