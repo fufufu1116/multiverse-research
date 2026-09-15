@@ -1,0 +1,15 @@
+{
+  "record":"KEIRIN_SAME_DAY_SHADOW_PREDICTION_PROTOCOL_20260915_v1",
+  "created_jst":"2026-09-15T09:00:00+09:00",
+  "owner_directive":"Advance real-time race prediction in parallel now to accelerate real predictive evidence without waiting for 2026-09-18.",
+  "status":"ACTIVE_PRE_OUTCOME_SHADOW_LANE",
+  "purpose":"Create additional prospective same-day prediction evidence from races whose PRE inputs can be completely frozen before scheduled start. This is separate from R0T2-PROSPECTIVE-20260918-V1 and cannot alter or replace it.",
+  "eligible_scope":{"date_jst":"2026-09-15","official_source":"KEIRIN.JP only for initial lane","race_inclusion":"Any race for which all required PRE-only fields are available and can be hashed before scheduled start; races already started or with incomplete PRE identity are excluded before any result access."},
+  "models":{"R0_T2":"PL softmax(score/2.0), frozen","CR1_E05":"0.95*R0_T2 sequential probability + 0.05*sequential uniform; SHADOW ONLY, synthetic lead not promoted"},
+  "required_pre_lock":["meeting_id","race_id","scheduled_start_jst","entrant_car_numbers","entrant_score values under the existing PRE schema","source_url_or_identity","source_content_hash","model_id","ordered probabilities","predicted ordered_top3","lock_timestamp_jst","canonical_lock_hash"],
+  "hard_order":["discover PRE-only racecard","verify scheduled start is future","collect complete required PRE fields","freeze and hash model outputs before start","do not open result/outcome/payout/odds/price/economics","after race completion keep result sealed until a separate exact result-scoring gate is authorized"],
+  "evaluation_design":"Predictions may be accumulated today, but no outcome scoring occurs under this protocol. A separate exact gate must bind the frozen lock set and minimal result parser/source before one-shot scoring.",
+  "progress_semantics":"Same-day prediction locks can increase evidence readiness only after valid pre-start locks exist; 100 percent is not declared merely from activity volume or synthetic evidence.",
+  "firewalls":{"R0T2_20260918_assignment_unchanged":true,"CR1_substitution_into_R0T2_assignment":false,"Gate487_rerun":false,"A_plus_B_fresh_reuse":false,"DEV2000_C_outcome_access":false,"ECON_HOLDOUT1000_access":false,"result_access_now":false,"payout_access":false,"odds_price_economics_access":false,"betting":false,"runtime":"OFF","spend":false},
+  "owner_action_required_now":false
+}
