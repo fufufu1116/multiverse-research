@@ -27,6 +27,8 @@ def full_pr(number):
     return {
         "number": number,
         "state": "open",
+        "draft": True,
+        "merged": False,
         "head": {"sha": HEAD, "ref": "candidate"},
         "base": {"sha": BASE, "ref": "main"},
     }
