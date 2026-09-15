@@ -1,0 +1,28 @@
+name: PR564 Auditor admission preflight
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/pr564-auditor-admission-preflight-v1.yml'
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ccba0a002e0be8ff28dc91acfecba8940458be85
+      - name: Exact semantic admission preflight
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python tools/review_build_admission_preflight_v2.py \
+            --repo fufufu1116/multiverse-research \
+            --lane AUDITOR \
+            --head 24f6e307738dbdaa8a8912c6da9cc6a63bae9474 \
+            --expected-request-comment 5673520471 \
+            --expected-request-sha256 6c4d361262e559a6d91bbbb26d18d6413a67637a57c51d56cf97d618f74f249c \
+            --expected-main ccba0a002e0be8ff28dc91acfecba8940458be85 \
+            --expected-tree a9767cd280ca5659f98382aa74ff8d58e84f82ed
