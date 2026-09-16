@@ -1,0 +1,33 @@
+import unittest
+
+from automation.review_dispatcher_v1.review_ready_adapter_v1 import (
+    FAIL, READY, combine, same_identity_payload_consistent,
+)
+
+
+def package(state="PACKAGE_READY_NONAUTHORITY"):
+    return {"state": state, "idempotency_key": ["keirin", "CR1_E05"], "authority_created": False, "owner_marker_created": False, "runtime_authority": False}
+
+
+def transport(state="TRANSPORT_READY_NONAUTHORITY"):
+    return {"state": state, "repo": "fufufu1116/multiverse-research", "pr": 569, "head": "0"*40, "tree": "1"*40, "base": "2"*40, "main": "2"*40, "authority_created": False, "owner_marker_created": False, "runtime_authority": False}
+
+
+class ReviewReadyAdapterTests(unittest.TestCase):
+    def test_both_pass_required(self):
+        self.assertEqual(combine(package(), transport())["state"], READY)
+        self.assertEqual(combine(package("PACKAGE_INVALID_FAIL_CLOSED"), transport())["state"], FAIL)
+        self.assertEqual(combine(package(), transport("REVIEW_TRANSPORT_REQUIRED"))["state"], FAIL)
+
+    def test_authority_flags_fail_closed(self):
+        p=package(); p["authority_created"]=True
+        self.assertEqual(combine(p, transport())["state"], FAIL)
+
+    def test_same_identity_different_payload_rejected_by_consistency_guard(self):
+        a={"lane_id":"keirin","candidate_id":"CR1_E05","candidate_head":"a"*40,"package_blob_sha":"b"*40,"ready_sha256":"1"*64}
+        b=dict(a); b["ready_sha256"]="2"*64
+        self.assertFalse(same_identity_payload_consistent(a, b))
+
+
+if __name__ == "__main__":
+    unittest.main()
