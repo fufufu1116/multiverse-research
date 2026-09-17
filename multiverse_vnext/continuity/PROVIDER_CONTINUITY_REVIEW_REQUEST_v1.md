@@ -10,7 +10,7 @@ Candidate: PR #597
 - Base branch: `main`
 - Base SHA at this review preparation: `4af04dfbbb590daa755be2c9f0dccb9168bf7a9b`
 - Candidate branch: `system-improvement-provider-independent-continuity-v1-20260917`
-- Candidate head SHA at this review preparation: `3a60c39b3cb0dfdcd9ca4874f1a6039a48c84a1a`
+- Candidate head SHA at this review preparation: `af661e94dc9f3dd9b1781c43aae1c22a7e6e70a5`
 - Candidate PR: `#597`
 - Control: `#394`
 - Implementation issue: `#596`
@@ -58,11 +58,9 @@ Review the complete PR #597 candidate, with emphasis on:
 
 ## Evidence already available
 
-Candidate CI for head `3a60c39b3cb0dfdcd9ca4874f1a6039a48c84a1a` completed successfully for:
-- JSON contract validation;
-- continuity unit tests;
-- Python syntax compilation;
-- existing Multiverse Foundation Candidate CI checks.
+The previous candidate head `3a60c39b3cb0dfdcd9ca4874f1a6039a48c84a1a` passed the continuity candidate CI and existing Multiverse Foundation Candidate CI checks for JSON validation, unit tests, Python syntax, and the foundation regression suite.
+
+The current head adds only the review-request artifact after that successful check; candidate CI is therefore rerun for the exact review binding above before authority-separated review.
 
 These are implementation evidence only. They do not constitute independent adoption approval.
 
