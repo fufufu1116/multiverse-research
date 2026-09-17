@@ -27,6 +27,7 @@ API = f"https://api.github.com/repos/{REPO}"
 CONTROL_ISSUE = 394
 IMPLEMENTATION_ISSUE = 596
 DESIGN_PR = 595
+ACTIVE_CANDIDATE_PR = 597
 
 
 def get(path: str):
@@ -34,7 +35,7 @@ def get(path: str):
         API + path,
         headers={
             "Accept": "application/vnd.github+json",
-            "User-Agent": "multiverse-continuity-packet/1.0",
+            "User-Agent": "multiverse-continuity-packet/1.1",
         },
     )
     token = os.environ.get("GITHUB_TOKEN")
@@ -59,6 +60,7 @@ def main():
         control = get(f"/issues/{CONTROL_ISSUE}")
         implementation = get(f"/issues/{IMPLEMENTATION_ISSUE}")
         design = get(f"/pulls/{DESIGN_PR}")
+        candidate = get(f"/pulls/{ACTIVE_CANDIDATE_PR}")
         commits = get("/commits?per_page=8")
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as exc:
         print(f"Fresh Read failed: {exc}", file=sys.stderr)
@@ -75,19 +77,23 @@ def main():
         "",
         f"- Generated: `{generated}`",
         f"- Repository: `{REPO}`",
-        f"- Canonical branch: `main`",
+        "- Canonical branch: `main`",
         f"- Observed main SHA: `{sha}`",
-        f"- Runtime: `OFF`",
+        "- Runtime: `OFF`",
         "",
         "## Canonical pointers",
         f"- Control ledger: [#{CONTROL_ISSUE}]({control['html_url']}) — {short(control['title'])}",
         f"- Continuity implementation: [#{IMPLEMENTATION_ISSUE}]({implementation['html_url']}) — {short(implementation['title'])}",
         f"- Lightweight Protocol design: [PR #{DESIGN_PR}]({design['html_url']}) — {short(design['title'])}",
+        f"- Active continuity candidate: [PR #{ACTIVE_CANDIDATE_PR}]({candidate['html_url']}) — {short(candidate['title'])}",
         "",
         "## Fresh control state",
         f"- Control issue state: `{control['state']}`; updated `{control.get('updated_at')}`",
         f"- Continuity issue state: `{implementation['state']}`; updated `{implementation.get('updated_at')}`",
         f"- Lightweight Protocol candidate: `{design['state']}` / draft=`{design.get('draft')}` / merged=`{design.get('merged')}`",
+        f"- Active continuity candidate: `{candidate['state']}` / draft=`{candidate.get('draft')}` / merged=`{candidate.get('merged')}`",
+        f"- Candidate base SHA: `{candidate.get('base_sha')}`",
+        f"- Candidate head SHA: `{candidate.get('head_sha')}`",
         "",
         "## Recent canonical commits",
     ]
@@ -99,14 +105,16 @@ def main():
         "## Current task",
         "- Maintain provider-independent continuity so ChatGPT limits/interruption do not become project-state loss.",
         "- Keep the durable state external, compact, Fresh-readable, and provider-neutral.",
+        "- Current candidate work: continuity protocol, manifest, startup guide, packet generator, and provider-neutral adapter contract.",
         "",
         "## Resume procedure",
         "1. Fresh Read `main` and the canonical pointers above.",
-        "2. Compare the observed main SHA with this packet.",
-        "3. Reconstruct the first uncommitted step from canonical evidence.",
-        "4. Check Owner Gates and existing authority boundaries.",
-        "5. Continue only within existing authority.",
-        "6. Before any consequential one-shot/external effect, persist intent/checkpoint and verify downstream state after execution.",
+        "2. Compare the observed main SHA with this packet; the packet is navigation, not authority.",
+        "3. Inspect the active candidate and canonical issue state before deciding what remains uncommitted.",
+        "4. Reconstruct the first uncommitted step from canonical evidence.",
+        "5. Check Owner Gates and existing authority boundaries.",
+        "6. Continue only within existing authority.",
+        "7. Before any consequential one-shot/external effect, persist intent/checkpoint and verify downstream state after execution.",
         "",
         "## Side-effect safety",
         "- Provider statuses such as `SUCCESS`, `PUBLISHED`, `SENT`, or `DEPLOYED` are not by themselves downstream-effect proof.",
