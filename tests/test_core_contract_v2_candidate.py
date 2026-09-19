@@ -1,6 +1,8 @@
 import os
 import tempfile
 import unittest
+import base64
+import hashlib
 
 from core_state import CoreStateEngine
 from config.queue import DeterministicTaskQueue
@@ -15,7 +17,20 @@ class CoreCandidateTests(unittest.TestCase):
         os.unlink(self.path)
         self.core=CoreStateEngine(self.path)
         self.verifier_id="auditor_external"
-        self.verification_key="independent-auditor-canonical-v1"
+        self._auditor_private_exponent=int(
+            "1a9c746c9a52285fb82485c1b2e875a4e24dc9d7cf3b44e02eac66f57693a4b0"
+            "af1258d1fcfabd45d19e406b9996a0372578f38c60507d5b70c658b555c41b61"
+            "a1a2f4f8437ec61b4e0a3a450efb370f69325ed4f4bd6b2239d0d8f67ebf78ef"
+            "2a7ce620fefb9196fd43d13cf2d0a1a566761beea5677802307bb6773673c061",16)
+
+    def _sign_as_independent_auditor(self,task_id,receipt_id,evidence_ref,evidence_sha256,verdict="ACCEPT"):
+        payload=self.core._verification_payload(task_id,receipt_id,self.verifier_id,evidence_ref,evidence_sha256,verdict)
+        trust=__import__("core_state").CANONICAL_TRUSTED_VERIFIERS[self.verifier_id]
+        n=trust["modulus"]; k=(n.bit_length()+7)//8
+        digest_info=bytes.fromhex("3031300d060960864801650304020105000420")+hashlib.sha256(payload).digest()
+        encoded=b"\x00\x01"+b"\xff"*(k-len(digest_info)-3)+b"\x00"+digest_info
+        signature=pow(int.from_bytes(encoded,"big"),self._auditor_private_exponent,n).to_bytes(k,"big")
+        return base64.b64encode(signature).decode()
 
     def tearDown(self):
         if os.path.exists(self.path):
@@ -37,12 +52,10 @@ class CoreCandidateTests(unittest.TestCase):
         executor.run_next_task()
         self.assertFalse(self.core.realize_revenue_and_close(task_id,100))
         digest="a"*64
-        bad=self.core.verification_request_integrity(
-            self.verification_key,task_id,"r0","mock_gemini","evidence://x",digest,"ACCEPT")
+        bad="not-a-valid-external-signature"
         self.assertFalse(self.core.apply_verification_receipt(
             task_id,"r0","mock_gemini","evidence://x",digest,"ACCEPT",bad))
-        integrity=self.core.verification_request_integrity(
-            self.verification_key,task_id,"r1",self.verifier_id,"evidence://verified",digest,"ACCEPT")
+        integrity=self._sign_as_independent_auditor(task_id,"r1","evidence://verified",digest)
         self.assertTrue(self.core.apply_verification_receipt(
             task_id,"r1",self.verifier_id,"evidence://verified",digest,"ACCEPT",integrity))
         self.assertTrue(self.core.realize_revenue_and_close(task_id,100))
@@ -58,8 +71,7 @@ class CoreCandidateTests(unittest.TestCase):
         self.assertFalse(self.core.apply_verification_receipt(task_id,"","","",digest,"ACCEPT",""))
         self.assertFalse(self.core.apply_verification_receipt(
             task_id,"r-self","mock_gemini","evidence://x",digest,"ACCEPT","0"*64))
-        integrity=self.core.verification_request_integrity(
-            self.verification_key,task_id,"r-ok",self.verifier_id,"evidence://ok",digest,"ACCEPT")
+        integrity=self._sign_as_independent_auditor(task_id,"r-ok","evidence://ok",digest)
         self.assertTrue(self.core.apply_verification_receipt(
             task_id,"r-ok",self.verifier_id,"evidence://ok",digest,"ACCEPT",integrity))
         self.assertTrue(self.core.verify_audit_chain())
@@ -85,6 +97,20 @@ class CoreCandidateTests(unittest.TestCase):
         self.assertIsNone(self.core.add_task("same","司令塔",1,"request-bound"))
         self.assertEqual(len(self.core.get_state_snapshot()["tasks"]),1)
 
+    def test_implementation_cannot_mint_independent_auditor_receipt_from_source_trust_material(self):
+        task_id=self.core.add_task("implementation forgery","AI研究",0)
+        q=DeterministicTaskQueue(self.core)
+        TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
+        digest="8"*64
+        from core_state import CANONICAL_TRUSTED_VERIFIERS
+        trust=CANONICAL_TRUSTED_VERIFIERS[self.verifier_id]
+        self.assertNotIn("private_key",trust)
+        self.assertNotIn("secret",trust)
+        forged=base64.b64encode(hashlib.sha256((str(trust)+task_id+"r-impl").encode()).digest()).decode()
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-impl",self.verifier_id,"evidence://impl",digest,"ACCEPT",forged))
+        self.assertEqual(self.core.get_state_snapshot()["tasks"][0]["status"],"SUCCESS_CLAIMED")
+
     def test_plain_checksum_is_not_authentication(self):
         task_id=self.core.add_task("evidence boundary","AI研究",0)
         q=DeterministicTaskQueue(self.core)
@@ -99,8 +125,7 @@ class CoreCandidateTests(unittest.TestCase):
         q=DeterministicTaskQueue(self.core)
         TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
         digest="d"*64
-        integrity=self.core.verification_request_integrity(
-            self.verification_key,task_id,"r-bound",self.verifier_id,"evidence://one",digest,"ACCEPT")
+        integrity=self._sign_as_independent_auditor(task_id,"r-bound","evidence://one",digest)
         self.assertFalse(self.core.apply_verification_receipt(
             task_id,"r-bound",self.verifier_id,"evidence://two",digest,"ACCEPT",integrity))
         self.assertFalse(self.core.apply_verification_receipt(
@@ -118,8 +143,7 @@ class CoreCandidateTests(unittest.TestCase):
         attacker_id="attacker_chosen_verifier"
         attacker_key="attacker-chosen-key"
         digest="9"*64
-        forged=self.core.verification_request_integrity(
-            attacker_key,task_id,"r-forged",attacker_id,"evidence://forged",digest,"ACCEPT")
+        forged=base64.b64encode(hashlib.sha256((attacker_key+attacker_id).encode()).digest()).decode()
         self.assertFalse(self.core.apply_verification_receipt(
             task_id,"r-forged",attacker_id,"evidence://forged",digest,"ACCEPT",forged))
         self.assertEqual(self.core.get_state_snapshot()["tasks"][0]["status"],"SUCCESS_CLAIMED")
@@ -129,8 +153,7 @@ class CoreCandidateTests(unittest.TestCase):
         q=DeterministicTaskQueue(self.core)
         TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
         digest="f"*64
-        integrity=self.core.verification_request_integrity(
-            "unknown",task_id,"r-x","unknown","evidence://x",digest,"ACCEPT")
+        integrity="attacker-self-signature"
         self.assertFalse(self.core.apply_verification_receipt(
             task_id,"r-x","unknown","evidence://x",digest,"ACCEPT",integrity))
 
