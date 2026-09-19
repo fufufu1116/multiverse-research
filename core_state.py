@@ -4,15 +4,24 @@ import uuid
 import logging
 import hashlib
 import hmac
+import base64
 import re
 from datetime import datetime, timezone
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - [CORE] - %(levelname)s - %(message)s")
 
-# Canonical candidate trust root. Enrollment is configuration, not mutable runtime state.
-# Runtime/Core code can verify receipts against this root but cannot add or replace verifiers.
+# Canonical candidate trust root contains PUBLIC verifier material only.
+# Independent auditors hold the corresponding private signing key outside Core/source.
 CANONICAL_TRUSTED_VERIFIERS = {
-    "auditor_external": "independent-auditor-canonical-v1",
+    "auditor_external": {
+        "algorithm": "RSA-SHA256",
+        "public_exponent": 65537,
+        "modulus": int(
+            "b50f41e90164f8e78139e7816b2b476cd5e14a2b9f9cf679bb5c76af9811b4b1"
+            "7f4971ec3e08f2bbfddc2d1d9490ef7738dd1e6d68fbd10fc5ed645bc9213f1d"
+            "777ff23afca685c65100d7ae06b27f69c1d81448b4a78729a1521479c8f17b8b"
+            "0d8192a71f70baf91e4c727895928cb21de1f222ee4d61991f54e27d11577ad7",16),
+    },
 }
 
 class CoreStateEngine:
@@ -155,15 +164,27 @@ class CoreStateEngine:
         except Exception as exc:
             logging.error("Task claim failed: %s",exc); return False
 
-    def verification_request_integrity(self,verification_key,task_id,receipt_id,verifier_id,
-                                       evidence_ref,evidence_sha256,verdict):
-        payload={"task_id":task_id,"receipt_id":receipt_id,"verifier_id":verifier_id,
-                 "evidence_ref":evidence_ref,"evidence_sha256":evidence_sha256,"verdict":verdict}
-        return hmac.new(verification_key.encode(),self._canonical(payload).encode(),hashlib.sha256).hexdigest()
+    def _verification_payload(self,task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,verdict):
+        return self._canonical({"task_id":task_id,"receipt_id":receipt_id,"verifier_id":verifier_id,
+            "evidence_ref":evidence_ref,"evidence_sha256":evidence_sha256,"verdict":verdict}).encode()
+
+    def _verify_external_signature(self,trust,payload,signature_b64):
+        # Verification uses public material only; Core cannot mint an auditor signature.
+        try:
+            signature=base64.b64decode(signature_b64,validate=True)
+            n=trust["modulus"]; e=trust["public_exponent"]
+            k=(n.bit_length()+7)//8
+            if len(signature)!=k: return False
+            encoded=pow(int.from_bytes(signature,"big"),e,n).to_bytes(k,"big")
+            digest_info=bytes.fromhex("3031300d060960864801650304020105000420")+hashlib.sha256(payload).digest()
+            expected=b"\x00\x01"+b"\xff"*(k-len(digest_info)-3)+b"\x00"+digest_info
+            return hmac.compare_digest(encoded,expected)
+        except (ValueError,KeyError,TypeError):
+            return False
 
     def apply_verification_receipt(self,task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,
                                    verdict,request_integrity):
-        # evidence_sha256 is only evidence identity. It is deliberately NOT authentication.
+        # evidence_sha256 is evidence identity; request_integrity is an external auditor signature.
         if (not all([receipt_id,verifier_id,evidence_ref,evidence_sha256,request_integrity]) or
                 verdict!="ACCEPT" or not re.fullmatch(r"[0-9a-f]{64}",evidence_sha256)):
             return False
@@ -171,12 +192,12 @@ class CoreStateEngine:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute("BEGIN IMMEDIATE")
-                verification_key=CANONICAL_TRUSTED_VERIFIERS.get(verifier_id)
-                if not verification_key:
+                trust=CANONICAL_TRUSTED_VERIFIERS.get(verifier_id)
+                if not trust or trust.get("algorithm")!="RSA-SHA256":
                     return False
-                expected=self.verification_request_integrity(
-                    verification_key,task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,verdict)
-                if not hmac.compare_digest(expected,request_integrity):
+                payload=self._verification_payload(
+                    task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,verdict)
+                if not self._verify_external_signature(trust,payload,request_integrity):
                     return False
                 row=conn.execute("SELECT status,result_provider FROM tasks WHERE id=?",(task_id,)).fetchone()
                 if not row or row[0]!="SUCCESS_CLAIMED" or verifier_id==row[1]:
