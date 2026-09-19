@@ -40,6 +40,12 @@ class CoreCandidateTests(unittest.TestCase):
         self.assertEqual(state["realized_revenue"],100)
         self.assertEqual(state["tasks"][0]["status"],"CLOSED")
 
+    def test_duplicate_idempotency_key_returns_same_task(self):
+        first=self.core.add_task("same","司令塔",0,"request-1")
+        second=self.core.add_task("same","司令塔",0,"request-1")
+        self.assertEqual(first,second)
+        self.assertEqual(len(self.core.get_state_snapshot()["tasks"]),1)
+
     def test_old_database_is_migrated(self):
         import sqlite3
         old_path=self.path + ".old"
@@ -52,7 +58,7 @@ class CoreCandidateTests(unittest.TestCase):
         migrated=CoreStateEngine(old_path)
         with sqlite3.connect(old_path) as conn:
             cols={r[1] for r in conn.execute("PRAGMA table_info(tasks)")}
-            self.assertTrue({"claimed_revenue","result","result_provider","verification_note"}.issubset(cols))
+            self.assertTrue({"claimed_revenue","result","result_provider","verification_note","idempotency_key"}.issubset(cols))
         os.remove(old_path)
 
     def test_failed_transition_requires_running(self):
