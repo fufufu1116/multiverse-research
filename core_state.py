@@ -43,10 +43,27 @@ class CoreStateEngine:
                     payload JSON,
                     timestamp TEXT NOT NULL
                 )""")
+            self._migrate_schema()
             self.log_audit("SYSTEM_START", {"message":"CoreStateEngine booted"})
         except Exception as exc:
             logging.critical("Database initialization failed: %s", exc)
             raise SystemExit("System Halted due to Critical State Failure.")
+
+    def _migrate_schema(self):
+        """Add candidate columns safely when an older local DB already exists."""
+        with sqlite3.connect(self.db_path) as conn:
+            task_cols={row[1] for row in conn.execute("PRAGMA table_info(tasks)")}
+            additions={
+                "claimed_revenue":"INTEGER DEFAULT 0",
+                "result":"TEXT",
+                "result_provider":"TEXT",
+                "verification_note":"TEXT",
+            }
+            for name,decl in additions.items():
+                if name not in task_cols:
+                    conn.execute(f"ALTER TABLE tasks ADD COLUMN {name} {decl}")
+            if "revenue" in task_cols and "claimed_revenue" not in task_cols:
+                conn.execute("UPDATE tasks SET claimed_revenue=COALESCE(revenue,0)")
 
     def log_audit(self, event_type: str, payload: dict):
         with sqlite3.connect(self.db_path) as conn:
