@@ -9,6 +9,12 @@ from datetime import datetime, timezone
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - [CORE] - %(levelname)s - %(message)s")
 
+# Canonical candidate trust root. Enrollment is configuration, not mutable runtime state.
+# Runtime/Core code can verify receipts against this root but cannot add or replace verifiers.
+CANONICAL_TRUSTED_VERIFIERS = {
+    "auditor_external": "independent-auditor-canonical-v1",
+}
+
 class CoreStateEngine:
     """Candidate persistent state engine. Claims, verification receipts, and realized revenue are separate."""
 
@@ -33,9 +39,6 @@ class CoreStateEngine:
                     receipt_id TEXT PRIMARY KEY,task_id TEXT NOT NULL UNIQUE,verifier_id TEXT NOT NULL,
                     evidence_ref TEXT NOT NULL,evidence_sha256 TEXT NOT NULL,request_integrity TEXT NOT NULL,
                     verdict TEXT NOT NULL,timestamp TEXT NOT NULL)""")
-                conn.execute("""CREATE TABLE IF NOT EXISTS trusted_verifiers (
-                    verifier_id TEXT PRIMARY KEY,verification_key TEXT NOT NULL,independent INTEGER NOT NULL,
-                    updated_at TEXT NOT NULL)""")
                 conn.execute("""CREATE TABLE IF NOT EXISTS provider_controls (
                     provider_id TEXT PRIMARY KEY,enabled INTEGER NOT NULL,reason TEXT,updated_at TEXT NOT NULL)""")
                 conn.execute("""CREATE TABLE IF NOT EXISTS audit_logs (
@@ -152,20 +155,6 @@ class CoreStateEngine:
         except Exception as exc:
             logging.error("Task claim failed: %s",exc); return False
 
-    def register_trusted_verifier(self,verifier_id,verification_key,independent=True):
-        if (not verifier_id or not verification_key or not independent or
-                verifier_id in {"core","executor","mock_gemini"}):
-            return False
-        now=self._get_time()
-        with sqlite3.connect(self.db_path) as conn:
-            conn.execute("BEGIN IMMEDIATE")
-            conn.execute("""INSERT INTO trusted_verifiers(verifier_id,verification_key,independent,updated_at)
-                VALUES (?,?,1,?) ON CONFLICT(verifier_id) DO UPDATE SET
-                verification_key=excluded.verification_key,independent=1,updated_at=excluded.updated_at""",
-                (verifier_id,verification_key,now))
-            self._append_audit(conn,"TRUSTED_VERIFIER_REGISTERED",{"verifier_id":verifier_id,"independent":True})
-        return True
-
     def verification_request_integrity(self,verification_key,task_id,receipt_id,verifier_id,
                                        evidence_ref,evidence_sha256,verdict):
         payload={"task_id":task_id,"receipt_id":receipt_id,"verifier_id":verifier_id,
@@ -182,13 +171,11 @@ class CoreStateEngine:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute("BEGIN IMMEDIATE")
-                trusted=conn.execute(
-                    "SELECT verification_key,independent FROM trusted_verifiers WHERE verifier_id=?",
-                    (verifier_id,)).fetchone()
-                if not trusted or trusted[1]!=1:
+                verification_key=CANONICAL_TRUSTED_VERIFIERS.get(verifier_id)
+                if not verification_key:
                     return False
                 expected=self.verification_request_integrity(
-                    trusted[0],task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,verdict)
+                    verification_key,task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,verdict)
                 if not hmac.compare_digest(expected,request_integrity):
                     return False
                 row=conn.execute("SELECT status,result_provider FROM tasks WHERE id=?",(task_id,)).fetchone()
