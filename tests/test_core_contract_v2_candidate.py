@@ -6,6 +6,7 @@ from core_state import CoreStateEngine
 from config.queue import DeterministicTaskQueue
 from config.fail_closed import FailClosedEnforcer
 from config.executor import TaskExecutor
+from config.mission_packet import MissionPacket
 
 class CoreCandidateTests(unittest.TestCase):
     def setUp(self):
@@ -43,6 +44,17 @@ class CoreCandidateTests(unittest.TestCase):
         task_id=self.core.add_task("queued task","システム改善",0)
         queue=DeterministicTaskQueue(self.core)
         self.assertFalse(queue.mark_task_failed(task_id,"not running"))
+
+    def test_mission_packet_requires_evidence_and_stop_conditions(self):
+        with self.assertRaises(ValueError):
+            MissionPacket(mission_id="m1", objective="x", completion_condition="done").validate()
+        MissionPacket(
+            mission_id="m2",
+            objective="continue without progress-only stops",
+            required_evidence=["test result"],
+            completion_condition="all checks pass or genuine gate reached",
+            stop_conditions=["Owner Gate"],
+        ).validate()
 
 if __name__=="__main__":
     unittest.main()
