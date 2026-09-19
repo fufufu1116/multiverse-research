@@ -17,6 +17,7 @@ class ChatPayload(BaseModel):
     schema_version: str
     text: str
     checksum: str | None = None
+    idempotency_key: str | None = None
 
 class TaskPayload(BaseModel):
     schema_version: str
@@ -24,6 +25,7 @@ class TaskPayload(BaseModel):
     troop: str
     revenue: int = 0
     checksum: str | None = None
+    idempotency_key: str | None = None
 
 def require_schema(version: str):
     if version != "1.0":
@@ -32,7 +34,7 @@ def require_schema(version: str):
 @app.post("/api/chat")
 async def receive_chat(payload: ChatPayload):
     require_schema(payload.schema_version)
-    task_id = core.add_task(payload.text, "司令塔", 0)
+    task_id = core.add_task(payload.text, "司令塔", 0, payload.idempotency_key)
     if not task_id:
         raise HTTPException(status_code=500, detail="Task intake failed.")
     return {"status": "queued", "task_id": task_id, "message": "指示を任務として受け付けました。"}
@@ -40,7 +42,7 @@ async def receive_chat(payload: ChatPayload):
 @app.post("/api/task")
 async def receive_task(payload: TaskPayload):
     require_schema(payload.schema_version)
-    task_id = core.add_task(payload.title, payload.troop, payload.revenue)
+    task_id = core.add_task(payload.title, payload.troop, payload.revenue, payload.idempotency_key)
     if not task_id:
         raise HTTPException(status_code=500, detail="Task intake failed.")
     return {"status": "queued", "task_id": task_id}
