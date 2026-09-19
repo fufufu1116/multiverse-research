@@ -19,7 +19,7 @@ class TaskExecutor:
         task_id = task["id"]
         title = task["title"]
         try:
-            provider = self.registry.get_provider("gemini")
+            provider = self.registry.get_provider("mock_gemini")
             result = provider.generate_response(title)
             self.core.record_task_claim(task_id, result, provider.provider_id)
             logging.info("Task %s produced an unverified claim.", task_id)
