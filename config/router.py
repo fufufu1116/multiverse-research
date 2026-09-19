@@ -10,10 +10,9 @@ class RoutingRequest:
     required_tools: tuple[str, ...] = ()
     forbidden_independence_tags: tuple[str, ...] = ()
     require_independent_auditor: bool = False
-    allow_external: bool = False
 
 class MissionRouter:
-    """Deterministic, fail-closed bridge from capability evidence to an executable adapter."""
+    """Deterministic, fail-closed bridge from capability evidence to an executable adapter.\n\n    Candidate v1 has no authority to route external provider calls. That boundary stays\n    closed until a separately governed runtime/Owner-Gate authorization mechanism exists.\n    """
     def __init__(self, capabilities: CapabilityRegistry, providers: ProviderRegistry):
         self.capabilities=capabilities
         self.providers=providers
@@ -36,7 +35,9 @@ class MissionRouter:
             caps=provider.capabilities
             if request.task_type not in caps.capabilities:
                 continue
-            if caps.external_calls and not request.allow_external:
+            # A RoutingRequest is data, not authority. External execution is never
+            # unlocked by request fields in this candidate.
+            if caps.external_calls:
                 continue
             return provider, record
         raise RuntimeError("No eligible executable provider; routing fails closed")
