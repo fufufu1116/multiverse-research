@@ -12,8 +12,8 @@ class TaskExecutor:
         self.core = core
         self.queue = queue
         self.fail_closed = fail_closed
-        self.registry = registry or ProviderRegistry()
-        self.capabilities = capabilities or CapabilityRegistry([CapabilityRecord(
+        self.registry = registry if registry is not None else ProviderRegistry()
+        self.capabilities = capabilities if capabilities is not None else CapabilityRegistry([CapabilityRecord(
             provider_id="mock_gemini", task_type="simulation", quality=1.0, reliability=1.0,
             latency_ms=0, usage_cost=0.0, context_limit=0,
             evidence_refs=("builtin://mock_gemini/simulation-adapter",),
