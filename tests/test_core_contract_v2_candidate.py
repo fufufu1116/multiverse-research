@@ -40,6 +40,21 @@ class CoreCandidateTests(unittest.TestCase):
         self.assertEqual(state["realized_revenue"],100)
         self.assertEqual(state["tasks"][0]["status"],"CLOSED")
 
+    def test_old_database_is_migrated(self):
+        import sqlite3
+        old_path=self.path + ".old"
+        with sqlite3.connect(old_path) as conn:
+            conn.execute("""CREATE TABLE tasks (
+                id TEXT PRIMARY KEY,title TEXT NOT NULL,troop TEXT,revenue INTEGER DEFAULT 0,
+                status TEXT DEFAULT 'QUEUED',created_at TEXT NOT NULL,updated_at TEXT NOT NULL)""")
+            conn.execute("""CREATE TABLE revenues (id TEXT PRIMARY KEY,amount INTEGER NOT NULL,source_task TEXT,timestamp TEXT NOT NULL)""")
+            conn.execute("""CREATE TABLE audit_logs (id TEXT PRIMARY KEY,event_type TEXT NOT NULL,payload JSON,timestamp TEXT NOT NULL)""")
+        migrated=CoreStateEngine(old_path)
+        with sqlite3.connect(old_path) as conn:
+            cols={r[1] for r in conn.execute("PRAGMA table_info(tasks)")}
+            self.assertTrue({"claimed_revenue","result","result_provider","verification_note"}.issubset(cols))
+        os.remove(old_path)
+
     def test_failed_transition_requires_running(self):
         task_id=self.core.add_task("queued task","システム改善",0)
         queue=DeterministicTaskQueue(self.core)
