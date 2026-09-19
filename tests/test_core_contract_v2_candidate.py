@@ -99,7 +99,17 @@ class CoreCandidateTests(unittest.TestCase):
             required_evidence=["test result"],
             completion_condition="all checks pass or genuine gate reached",
             stop_conditions=["Owner Gate"],
+            prohibited_actions=["production","spend","credentials"],
+            canonical_refs=["github://canonical"],
+            output_schema="evidence-backed result",
         ).validate()
+
+    def test_provider_capability_routing_stays_simulation_only(self):
+        from config.provider import ProviderRegistry
+        registry=ProviderRegistry()
+        eligible=registry.eligible_providers("text_generation",allow_external=False)
+        self.assertEqual([p.provider_id for p in eligible],["mock_gemini"])
+        self.assertFalse(eligible[0].capabilities.external_calls)
 
 if __name__=="__main__":
     unittest.main()
