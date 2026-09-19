@@ -21,7 +21,9 @@ class TaskExecutor:
         try:
             provider = self.registry.get_provider("mock_gemini")
             result = provider.generate_response(title)
-            self.core.record_task_claim(task_id, result, provider.provider_id)
+            if not self.core.record_task_claim(task_id, result, provider.provider_id):
+                self.queue.mark_task_failed(task_id, "Result claim could not be recorded.")
+                return False
             logging.info("Task %s produced an unverified claim.", task_id)
             return True
         except Exception as exc:
