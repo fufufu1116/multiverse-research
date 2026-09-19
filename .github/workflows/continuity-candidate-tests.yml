@@ -1,0 +1,32 @@
+name: continuity-candidate-tests
+
+on:
+  pull_request:
+    paths:
+      - "multiverse_vnext/continuity/**"
+      - "tools/build_continuity_packet.py"
+      - "tests/test_continuity_packet.py"
+      - ".github/workflows/continuity-candidate-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  continuity-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate JSON contracts
+        run: |
+          python -m json.tool multiverse_vnext/continuity/CONTINUITY_MANIFEST_v1.json >/dev/null
+          python -m json.tool multiverse_vnext/continuity/PROVIDER_ADAPTER_CONTRACT_v1.json >/dev/null
+      - name: Run continuity unit tests
+        run: python -m unittest discover -s tests -p 'test_continuity_packet.py' -v
+      - name: Syntax-check generator
+        run: python -m py_compile tools/build_continuity_packet.py
