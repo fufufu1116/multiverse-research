@@ -34,6 +34,8 @@ class CapabilityRecord:
         if self.latency_ms < 0 or self.usage_cost < 0 or self.context_limit < 0 or self.recent_failures < 0:
             raise ValueError("negative capability metric")
         if not self.evidence_refs: raise ValueError("evidence_refs required")
+        if any(not isinstance(ref, str) or not ref.strip() for ref in self.evidence_refs):
+            raise ValueError("evidence_refs must be non-empty strings")
 
 class CapabilityRegistry:
     """Evidence-backed routing metadata. It grants no authority."""
