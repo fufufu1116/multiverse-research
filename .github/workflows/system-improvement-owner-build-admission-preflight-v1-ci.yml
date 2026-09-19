@@ -1,0 +1,39 @@
+name: System Improvement Owner Build Admission Preflight v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'tools/review_build_admission_preflight_v1.py'
+      - 'tools/test_review_build_admission_preflight_v1.py'
+      - '.github/workflows/system-improvement-owner-build-admission-preflight-v1-ci.yml'
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  admission-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit regressions
+        run: python -m unittest tools.test_review_build_admission_preflight_v1 -v
+      - name: Package-root import smoke
+        run: python -c "import automation.review_dispatcher_v1.dispatcher; import tools.review_build_admission_preflight_v1"
+      - name: Exact live PR510 Auditor admission preflight
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MULTIVERSE_DISPATCHER_REF: e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
+        run: >-
+          python -m tools.review_build_admission_preflight_v1
+          --repo fufufu1116/multiverse-research
+          --lane AUDITOR
+          --head 857d1d501a36773bd8e35d2d7fa2b5dd088dd3bb
+          --expected-request-comment 5666827178
+          --expected-request-sha256 37afb5e86581db08e98492ea47b4c685255af8a91b414d2d4d5cd9a47765902c
+          --expected-main e81f3d310d07d40eb6c11fe8233dade3d72a5ad2
+          --expected-tree 8b5c6cbcb5011f25d7b2cf032e73fc1ac524ed04
