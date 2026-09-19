@@ -21,6 +21,5 @@ class FailClosedEnforcer:
     def disable_provider(self, provider_id: str, reason: str):
         """局所停止: 特定のAI（GeminiやClaude等）が応答しない・異常な場合にそのAIだけを切り離す"""
         logging.warning(f"【FAIL CLOSED 局所遮断】Provider [{provider_id}] disabled. Reason: {reason}")
-        self.core.log_audit("FAIL_CLOSED_PROVIDER_DISABLE", {"provider_id": provider_id, "reason": reason})
-        # ※このフラグを見たルーターは、次から別のプロバイダーへ迂回（フォールバック）する
+        self.core.disable_provider(provider_id, reason)
         return True

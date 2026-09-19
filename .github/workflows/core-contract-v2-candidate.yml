@@ -1,0 +1,20 @@
+name: Core Contract v2 Candidate
+on:
+  pull_request:
+    paths:
+      - "api.py"
+      - "core_state.py"
+      - "config/**"
+      - "tests/test_core_contract_v2_candidate.py"
+  workflow_dispatch:
+jobs:
+  safety-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: pip install fastapi pydantic
+      - run: python -m unittest tests/test_core_contract_v2_candidate.py -v

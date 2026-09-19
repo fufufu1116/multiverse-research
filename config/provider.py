@@ -1,38 +1,39 @@
 import logging
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class ProviderCapabilities:
+    provider_id: str
+    capabilities: tuple[str, ...]
+    mode: str
+    external_calls: bool = False
 
 class ProviderInterface(ABC):
-    """
-    MULTIVERSE Provider Interface
-    すべてのAI（Gemini, Claude, Local等）はこの規格に従って接続される
-    """
+    @property
     @abstractmethod
-    def generate_response(self, prompt: str) -> str:
-        pass
+    def capabilities(self) -> ProviderCapabilities: raise NotImplementedError
+    @abstractmethod
+    def generate_response(self, prompt: str) -> str: raise NotImplementedError
 
 class MockGeminiAdapter(ProviderInterface):
-    """
-    Gemini通信用アダプター（モック版：APIキー設定前用の安全なダミー）
-    """
+    """Simulation only. No external provider call."""
     def __init__(self):
-        self.provider_id = "gemini_v1"
-        self.health = "HEALTHY"
-
-    def generate_response(self, prompt: str) -> str:
-        logging.info(f"[Provider: {self.provider_id}] Processing prompt...")
-        # 実際にはここにGoogle Gemini APIを叩く処理が入る
-        return f"【Gemini Provider】受領しました。指示内容『{prompt}』に対する処理結果です。"
+        self.provider_id="mock_gemini"; self.health="SIMULATION"
+    @property
+    def capabilities(self):
+        return ProviderCapabilities(self.provider_id,("text_generation","simulation"),"SIMULATION",False)
+    def generate_response(self,prompt):
+        logging.info("[Provider:%s] simulation only",self.provider_id)
+        return f"[SIMULATION] claim for: {prompt}"
 
 class ProviderRegistry:
-    """利用可能なAIプロバイダーを管理・ルーティングする"""
-    def __init__(self):
-        self.providers = {
-            "gemini": MockGeminiAdapter()
-        }
-
-    def get_provider(self, name: str) -> ProviderInterface:
-        provider = self.providers.get(name)
-        if not provider:
-            logging.error(f"Provider {name} not found. Fail Closed triggered.")
-            raise ValueError(f"Unknown provider: {name}")
+    def __init__(self): self.providers={"mock_gemini":MockGeminiAdapter()}
+    def get_provider(self,name):
+        provider=self.providers.get(name)
+        if not provider: raise ValueError(f"Unknown provider: {name}")
         return provider
+    def eligible_providers(self,required_capability,allow_external=False):
+        return [p for p in self.providers.values()
+                if required_capability in p.capabilities.capabilities
+                and (allow_external or not p.capabilities.external_calls)]
