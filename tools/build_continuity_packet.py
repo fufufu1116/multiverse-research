@@ -27,7 +27,7 @@ API = f"https://api.github.com/repos/{REPO}"
 CONTROL_ISSUE = 394
 IMPLEMENTATION_ISSUE = 596
 DESIGN_PR = 595
-ACTIVE_CANDIDATE_PR = 598
+ACTIVE_CANDIDATE_PR = 615
 
 
 def get(path: str):
