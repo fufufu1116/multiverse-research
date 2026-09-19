@@ -32,3 +32,17 @@ Every dispatched mission should carry:
 - instruction to continue autonomously until completion or genuine gate.
 
 A provider response is never proof of completion. Completion requires the evidence defined by the mission.
+
+
+## Owner Gate handoff rule
+A genuine Owner Gate is not complete merely because the agent says "Owner action required."
+Before stopping, the active agent must prepare the next actor's usable input and give Owner:
+1. 操作場所
+2. 開くリンク
+3. 貼り付ける完成済み入力 / artifact
+4. 何を押すか
+5. 完了後にここへ何を返すか
+
+If the next actor cannot Fresh Read canonical GitHub, the active agent must prepare a pinned audit packet itself (head SHA, base SHA, relevant file contents/diff, CI evidence, scope and prohibitions). Do not make Owner collect GitHub data manually.
+
+The packet must state that it is a pinned snapshot, not a live Fresh Read, and the independent reviewer must report that limitation. After review returns, Core must Fresh Read GitHub again and reject stale review if the audited head SHA no longer matches.
