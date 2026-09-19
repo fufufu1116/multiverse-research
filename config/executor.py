@@ -20,6 +20,9 @@ class TaskExecutor:
         title = task["title"]
         try:
             provider = self.registry.get_provider("mock_gemini")
+            if not self.core.is_provider_enabled(provider.provider_id):
+                self.queue.mark_task_failed(task_id, "Provider is disabled by fail-closed control.")
+                return False
             result = provider.generate_response(title)
             if not self.core.record_task_claim(task_id, result, provider.provider_id):
                 self.queue.mark_task_failed(task_id, "Result claim could not be recorded.")
