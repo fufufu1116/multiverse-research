@@ -56,7 +56,7 @@ class CoreStateEngine:
             if "source_task_id" not in rcols:
                 if "source_task" not in rcols: raise RuntimeError("unknown legacy revenues schema")
                 conn.execute("ALTER TABLE revenues ADD COLUMN source_task_id TEXT")
-                conn.execute("UPDATE revenues SET source_task_id=source_task")
+                # Legacy source_task may be a title/label rather than a canonical task id. Preserve it; do not invent provenance.\n                # New realized revenue rows will populate source_task_id with an actual task id.
             dup=conn.execute("""SELECT source_task_id FROM revenues WHERE source_task_id IS NOT NULL
                                 GROUP BY source_task_id HAVING COUNT(*)>1 LIMIT 1""").fetchone()
             if dup: raise RuntimeError("duplicate legacy revenue source; migration fails closed")
