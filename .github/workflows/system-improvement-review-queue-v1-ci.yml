@@ -1,0 +1,42 @@
+name: System Improvement Review Queue v1 CI
+
+on:
+  pull_request:
+    paths:
+      - 'automation/control/review_queue_v1.py'
+      - 'automation/control/test_review_queue_v1.py'
+      - 'docs/control/REVIEW_QUEUE_ARBITRATION_v1.md'
+      - '.github/workflows/system-improvement-review-queue-v1-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  review-queue-v1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Queue regressions
+        run: python -m unittest automation.control.test_review_queue_v1 -v
+      - name: Governance invariant smoke
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('docs/control/REVIEW_QUEUE_ARBITRATION_v1.md').read_text()
+          required = [
+              'Sole Control is the only Owner-facing Build arbitration surface',
+              'execution is exclusive by default',
+              'Retry/Rebuild/rerun',
+              'Independent Lab and Independent Auditor remain independent reviewers',
+              'Chat text is never queue authority',
+              'one_shot_consumed=true',
+              'RUNTIME: OFF',
+          ]
+          missing = [x for x in required if x not in text]
+          if missing:
+              raise SystemExit('MISSING_REVIEW_QUEUE_INVARIANTS:' + ','.join(missing))
+          print('REVIEW_QUEUE_V1_PROTOCOL_PASS')
+          PY
