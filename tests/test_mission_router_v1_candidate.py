@@ -22,7 +22,7 @@ class MissionRouterTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             router.select(RoutingRequest("research"))
 
-    def test_external_calls_remain_disallowed_by_default(self):
+    def test_external_calls_cannot_be_unlocked_by_routing_request(self):
         class External(type(ProviderRegistry().get_provider("mock_gemini"))):
             @property
             def capabilities(self):
@@ -32,6 +32,7 @@ class MissionRouterTests(unittest.TestCase):
         router=MissionRouter(CapabilityRegistry([rec("external")]),providers)
         with self.assertRaises(RuntimeError):
             router.select(RoutingRequest("simulation"))
+        self.assertNotIn("allow_external", RoutingRequest.__dataclass_fields__)
 
 if __name__=="__main__":
     unittest.main()
