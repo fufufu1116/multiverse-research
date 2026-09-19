@@ -2,7 +2,7 @@ import logging
 from core_state import CoreStateEngine
 from config.queue import DeterministicTaskQueue
 from config.fail_closed import FailClosedEnforcer
-from config.provider import CapabilityRegistry, ProviderRegistry
+from config.provider import CapabilityRecord, CapabilityRegistry, ProviderRegistry
 from config.router import MissionRouter, RoutingRequest
 
 class TaskExecutor:
@@ -13,10 +13,16 @@ class TaskExecutor:
         self.queue = queue
         self.fail_closed = fail_closed
         self.registry = registry or ProviderRegistry()
-        self.capabilities = capabilities or CapabilityRegistry()
+        self.capabilities = capabilities or CapabilityRegistry([CapabilityRecord(
+            provider_id="mock_gemini", task_type="simulation", quality=1.0, reliability=1.0,
+            latency_ms=0, usage_cost=0.0, context_limit=0,
+            evidence_refs=("builtin://mock_gemini/simulation-adapter",),
+        )])
         self.router = MissionRouter(self.capabilities, self.registry)
 
-    def run_next_task(self, request: RoutingRequest):
+    def run_next_task(self, request: RoutingRequest | None = None):
+        # Backward-compatible safe default: simulation only. It cannot authorize external calls.
+        request = request or RoutingRequest("simulation")
         task = self.queue.fetch_next_task()
         if not task:
             return False
