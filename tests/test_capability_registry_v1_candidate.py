@@ -24,6 +24,18 @@ class CapabilityRegistryTests(unittest.TestCase):
         eligible=reg.eligible("research",required_tools=("github",),forbidden_independence_tags=("mission_implementer",))
         self.assertEqual([r.provider_id for r in eligible],["auditor"])
 
+    def test_independent_auditor_requires_canonical_trust_root(self):
+        reg=CapabilityRegistry([
+            self.record("fake_auditor",0,tags=("independent_auditor",)),
+            self.record("auditor_external",1,tags=()),
+        ])
+        eligible=reg.eligible("research",require_independent_auditor=True)
+        self.assertEqual([r.provider_id for r in eligible],["auditor_external"])
+
+    def test_self_declared_independent_tag_grants_no_authority(self):
+        reg=CapabilityRegistry([self.record("implementer",0,tags=("independent_auditor",))])
+        self.assertEqual(reg.eligible("research",require_independent_auditor=True),[])
+
     def test_disabled_record_is_not_routable(self):
         r=self.record("disabled",0)
         r=CapabilityRecord(**{**r.__dict__,"enabled":False})
