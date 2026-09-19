@@ -34,11 +34,29 @@ class CoreCandidateTests(unittest.TestCase):
         executor=TaskExecutor(self.core,queue,FailClosedEnforcer(self.core))
         executor.run_next_task()
         self.assertFalse(self.core.realize_revenue_and_close(task_id,100))
-        self.assertTrue(self.core.verify_task(task_id,"independent evidence placeholder"))
+        self.assertFalse(self.core.apply_verification_receipt(task_id,"r0","mock_gemini","evidence://x","ACCEPT"))
+        self.assertTrue(self.core.apply_verification_receipt(task_id,"r1","auditor_external","evidence://verified","ACCEPT"))
         self.assertTrue(self.core.realize_revenue_and_close(task_id,100))
         state=self.core.get_state_snapshot()
         self.assertEqual(state["realized_revenue"],100)
         self.assertEqual(state["tasks"][0]["status"],"CLOSED")
+
+    def test_verification_requires_receipt_and_audit_chain_is_valid(self):
+        task_id=self.core.add_task("evidence task","AI研究",0)
+        q=DeterministicTaskQueue(self.core)
+        TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
+        self.assertFalse(self.core.apply_verification_receipt(task_id,"","","","ACCEPT"))
+        self.assertFalse(self.core.apply_verification_receipt(task_id,"r-self","mock_gemini","evidence://x","ACCEPT"))
+        self.assertTrue(self.core.apply_verification_receipt(task_id,"r-ok","auditor_external","evidence://ok","ACCEPT"))
+        self.assertTrue(self.core.verify_audit_chain())
+
+    def test_provider_disable_is_persistent_and_enforced(self):
+        fc=FailClosedEnforcer(self.core)
+        fc.disable_provider("mock_gemini","test")
+        self.assertFalse(self.core.is_provider_enabled("mock_gemini"))
+        task_id=self.core.add_task("blocked","AI研究",0)
+        q=DeterministicTaskQueue(self.core)
+        self.assertFalse(TaskExecutor(self.core,q,fc).run_next_task())
 
     def test_duplicate_idempotency_key_returns_same_task(self):
         first=self.core.add_task("same","司令塔",0,"request-1")
@@ -59,6 +77,8 @@ class CoreCandidateTests(unittest.TestCase):
         with sqlite3.connect(old_path) as conn:
             cols={r[1] for r in conn.execute("PRAGMA table_info(tasks)")}
             self.assertTrue({"claimed_revenue","result","result_provider","verification_note","idempotency_key"}.issubset(cols))
+            indexes=list(conn.execute("PRAGMA index_list(tasks)"))
+            self.assertTrue(any(r[2] for r in indexes))
         os.remove(old_path)
 
     def test_failed_transition_requires_running(self):
