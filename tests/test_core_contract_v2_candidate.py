@@ -18,20 +18,6 @@ class CoreCandidateTests(unittest.TestCase):
         os.unlink(self.path)
         self.core=CoreStateEngine(self.path)
         self.verifier_id="auditor_external"
-        self._auditor_private_exponent=int(
-            "7579634e3e5c8076100601690f8d86f8a283ebfd881e14e7d27f83f7324e21ce"
-            "4fd414d913431ec42c4052410e68534cdc5ce0227c33e3ca14e60791ab84f03f3"
-            "a69ab7c4c3c1acfde480db2aacd40cc462604d58159afbbf3b9707224b4a8d5e"
-            "12ec60b1d9fb9fc16711161d61028be3ec1d80df9df19619afad89e73ccdc71",16)
-
-    def _sign_as_independent_auditor(self,task_id,receipt_id,evidence_ref,evidence_sha256,verdict="ACCEPT"):
-        payload=self.core._verification_payload(task_id,receipt_id,self.verifier_id,evidence_ref,evidence_sha256,verdict)
-        trust=__import__("core_state").CANONICAL_TRUSTED_VERIFIERS[self.verifier_id]
-        n=trust["modulus"]; k=(n.bit_length()+7)//8
-        digest_info=bytes.fromhex("3031300d060960864801650304020105000420")+hashlib.sha256(payload).digest()
-        encoded=b"\x00\x01"+b"\xff"*(k-len(digest_info)-3)+b"\x00"+digest_info
-        signature=pow(int.from_bytes(encoded,"big"),self._auditor_private_exponent,n).to_bytes(k,"big")
-        return base64.b64encode(signature).decode()
 
     def tearDown(self):
         if os.path.exists(self.path):
