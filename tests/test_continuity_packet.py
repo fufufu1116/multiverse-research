@@ -27,7 +27,7 @@ class ContinuityPacketTests(unittest.TestCase):
             return {"html_url": "https://github.com/example/596", "title": "continuity", "state": "open", "updated_at": "2026-09-17T00:00:00Z"}
         if path == "/pulls/595":
             return {"html_url": "https://github.com/example/595", "title": "design", "state": "open", "draft": True, "merged": False}
-        if path == "/pulls/598":
+        if path == "/pulls/615":
             return {
                 "html_url": "https://github.com/example/597",
                 "title": "candidate",
@@ -53,7 +53,7 @@ class ContinuityPacketTests(unittest.TestCase):
             self.assertEqual(rc, 0)
             text = out.read_text(encoding="utf-8")
             self.assertIn("main-sha-123", text)
-            self.assertIn("PR #598", text)
+            self.assertIn("PR #615", text)
             self.assertIn("base-sha-456", text)
             self.assertIn("head-sha-789", text)
             self.assertIn("Runtime: `OFF`", text)
