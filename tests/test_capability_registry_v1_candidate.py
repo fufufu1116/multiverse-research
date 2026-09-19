@@ -41,5 +41,9 @@ class CapabilityRegistryTests(unittest.TestCase):
         r=CapabilityRecord(**{**r.__dict__,"enabled":False})
         self.assertEqual(CapabilityRegistry([r]).eligible("research"),[])
 
+    def test_blank_evidence_reference_is_rejected(self):
+        with self.assertRaises(ValueError):
+            CapabilityRegistry([CapabilityRecord("mock_gemini","simulation",.9,.9,1,0,1000,evidence_refs=("",))])
+
 if __name__=="__main__":
     unittest.main()
