@@ -33,6 +33,12 @@ class RouterExecutorIntegrationTests(unittest.TestCase):
         self.assertFalse(ex.run_next_task(RoutingRequest("research")))
         self.assertEqual(self._status(task)[0],"FAILED")
 
+    def test_explicit_empty_capability_registry_fails_closed(self):
+        task=self.core.add_task("explicit empty registry","test")
+        ex=TaskExecutor(self.core,self.queue,self.fail,capabilities=CapabilityRegistry())
+        self.assertFalse(ex.run_next_task(RoutingRequest("simulation")))
+        self.assertEqual(self._status(task)[0],"FAILED")
+
     def test_legacy_no_argument_call_stays_simulation_only(self):
         task=self.core.add_task("legacy safe simulation","test")
         ex=TaskExecutor(self.core,self.queue,self.fail)
