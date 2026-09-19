@@ -27,11 +27,17 @@ class RouterExecutorIntegrationTests(unittest.TestCase):
         self.assertTrue(ex.run_next_task(RoutingRequest("simulation",min_quality=.8)))
         self.assertEqual(self._status(task),("SUCCESS_CLAIMED","mock_gemini"))
 
-    def test_no_capability_evidence_fails_closed(self):
+    def test_no_matching_capability_evidence_fails_closed(self):
         task=self.core.add_task("no evidence route","test")
-        ex=TaskExecutor(self.core,self.queue,self.fail)
-        self.assertFalse(ex.run_next_task(RoutingRequest("simulation")))
+        ex=TaskExecutor(self.core,self.queue,self.fail,capabilities=CapabilityRegistry())
+        self.assertFalse(ex.run_next_task(RoutingRequest("research")))
         self.assertEqual(self._status(task)[0],"FAILED")
+
+    def test_legacy_no_argument_call_stays_simulation_only(self):
+        task=self.core.add_task("legacy safe simulation","test")
+        ex=TaskExecutor(self.core,self.queue,self.fail)
+        self.assertTrue(ex.run_next_task())
+        self.assertEqual(self._status(task),("SUCCESS_CLAIMED","mock_gemini"))
 
     def test_request_cannot_bypass_external_boundary(self):
         self.assertNotIn("allow_external", RoutingRequest.__dataclass_fields__)
