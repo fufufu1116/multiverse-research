@@ -1,0 +1,31 @@
+{
+  "protocol": "MULTIVERSE_PROVIDER_INDEPENDENT_CONTINUITY_V1",
+  "status": "CANDIDATE_ONLY",
+  "runtime": "OFF",
+  "repository": "fufufu1116/multiverse-research",
+  "default_branch": "main",
+  "canonical_surfaces": [
+    {
+      "kind": "control",
+      "ref": "#394",
+      "role": "Sole Control / durable control ledger"
+    },
+    {
+      "kind": "implementation_issue",
+      "ref": "#596",
+      "role": "provider-independent continuity implementation"
+    },
+    {
+      "kind": "design_candidate",
+      "ref": "#595",
+      "role": "Lightweight Protocol structured design"
+    }
+  ],
+  "freshness_rule": "Treat volatile state as stale until Fresh Read against canonical GitHub surfaces.",
+  "authority_rule": "This manifest and generated packets are pointers only; they do not grant authority.",
+  "resume_rule": "Resume from the first uncommitted step; never replay a durably receipted one-shot effect.",
+  "side_effect_rule": "Provider receipt is not downstream-effect proof. Uncertain effects are UNVERIFIED and fail closed.",
+  "secret_rule": "No credentials, tokens, private keys, cookies, or secrets in continuity artifacts.",
+  "provider_rule": "ChatGPT, Gemini, and other AI providers are replaceable executors; no single provider is canonical.",
+  "automation_boundary": "Automatic provider switching requires separately authorized runtime/credential infrastructure and is not enabled by this candidate."
+}
