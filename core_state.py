@@ -29,7 +29,8 @@ class CoreStateEngine:
                     updated_at TEXT NOT NULL,
                     result TEXT,
                     result_provider TEXT,
-                    verification_note TEXT
+                    verification_note TEXT,
+                    idempotency_key TEXT UNIQUE
                 )""")
                 conn.execute("""CREATE TABLE IF NOT EXISTS revenues (
                     id TEXT PRIMARY KEY,
@@ -58,6 +59,7 @@ class CoreStateEngine:
                 "result":"TEXT",
                 "result_provider":"TEXT",
                 "verification_note":"TEXT",
+                "idempotency_key":"TEXT",
             }
             for name,decl in additions.items():
                 if name not in task_cols:
@@ -70,15 +72,19 @@ class CoreStateEngine:
             conn.execute("INSERT INTO audit_logs (id,event_type,payload,timestamp) VALUES (?,?,?,?)",
                          (str(uuid.uuid4()), event_type, json.dumps(payload), self._get_time()))
 
-    def add_task(self, title: str, troop: str, revenue: int = 0) -> str | None:
+    def add_task(self, title: str, troop: str, revenue: int = 0, idempotency_key: str | None = None) -> str | None:
         task_id=f"task_{uuid.uuid4().hex[:12]}"
         now=self._get_time()
         try:
             with sqlite3.connect(self.db_path) as conn:
+                if idempotency_key:
+                    existing=conn.execute("SELECT id FROM tasks WHERE idempotency_key=?",(idempotency_key,)).fetchone()
+                    if existing:
+                        return existing[0]
                 conn.execute("""INSERT INTO tasks
-                    (id,title,troop,claimed_revenue,status,created_at,updated_at)
-                    VALUES (?,?,?,?,?,?,?)""",
-                    (task_id,title,troop,revenue,"QUEUED",now,now))
+                    (id,title,troop,claimed_revenue,status,created_at,updated_at,idempotency_key)
+                    VALUES (?,?,?,?,?,?,?,?)""",
+                    (task_id,title,troop,revenue,"QUEUED",now,now,idempotency_key))
             self.log_audit("TASK_ADDED",{"task_id":task_id,"title":title,"troop":troop})
             return task_id
         except Exception as exc:
