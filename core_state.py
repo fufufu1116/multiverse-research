@@ -3,6 +3,8 @@ import json
 import uuid
 import logging
 import hashlib
+import hmac
+import re
 from datetime import datetime, timezone
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - [CORE] - %(levelname)s - %(message)s")
@@ -23,12 +25,17 @@ class CoreStateEngine:
                 conn.execute("""CREATE TABLE IF NOT EXISTS tasks (
                     id TEXT PRIMARY KEY,title TEXT NOT NULL,troop TEXT,claimed_revenue INTEGER DEFAULT 0,
                     status TEXT DEFAULT 'QUEUED',created_at TEXT NOT NULL,updated_at TEXT NOT NULL,
-                    result TEXT,result_provider TEXT,verification_note TEXT,idempotency_key TEXT UNIQUE)""")
+                    result TEXT,result_provider TEXT,verification_note TEXT,idempotency_key TEXT UNIQUE,
+                    request_fingerprint TEXT)""")
                 conn.execute("""CREATE TABLE IF NOT EXISTS revenues (
                     id TEXT PRIMARY KEY,amount INTEGER NOT NULL,source_task_id TEXT NOT NULL UNIQUE,timestamp TEXT NOT NULL)""")
                 conn.execute("""CREATE TABLE IF NOT EXISTS verification_receipts (
                     receipt_id TEXT PRIMARY KEY,task_id TEXT NOT NULL UNIQUE,verifier_id TEXT NOT NULL,
-                    evidence_ref TEXT NOT NULL,verdict TEXT NOT NULL,timestamp TEXT NOT NULL)""")
+                    evidence_ref TEXT NOT NULL,evidence_sha256 TEXT NOT NULL,request_integrity TEXT NOT NULL,
+                    verdict TEXT NOT NULL,timestamp TEXT NOT NULL)""")
+                conn.execute("""CREATE TABLE IF NOT EXISTS trusted_verifiers (
+                    verifier_id TEXT PRIMARY KEY,verification_key TEXT NOT NULL,independent INTEGER NOT NULL,
+                    updated_at TEXT NOT NULL)""")
                 conn.execute("""CREATE TABLE IF NOT EXISTS provider_controls (
                     provider_id TEXT PRIMARY KEY,enabled INTEGER NOT NULL,reason TEXT,updated_at TEXT NOT NULL)""")
                 conn.execute("""CREATE TABLE IF NOT EXISTS audit_logs (
@@ -44,14 +51,17 @@ class CoreStateEngine:
         with sqlite3.connect(self.db_path) as conn:
             cols={r[1] for r in conn.execute("PRAGMA table_info(tasks)")}
             for name,decl in {"claimed_revenue":"INTEGER DEFAULT 0","result":"TEXT","result_provider":"TEXT",
-                              "verification_note":"TEXT","idempotency_key":"TEXT"}.items():
+                              "verification_note":"TEXT","idempotency_key":"TEXT","request_fingerprint":"TEXT"}.items():
                 if name not in cols: conn.execute(f"ALTER TABLE tasks ADD COLUMN {name} {decl}")
-            if "revenue" in cols and "claimed_revenue" not in cols:
-                conn.execute("UPDATE tasks SET claimed_revenue=COALESCE(revenue,0)")
+            if "revenue" in cols:
+                conn.execute("UPDATE tasks SET claimed_revenue=COALESCE(claimed_revenue,revenue,0)")
             dup=conn.execute("""SELECT idempotency_key FROM tasks WHERE idempotency_key IS NOT NULL
                                 GROUP BY idempotency_key HAVING COUNT(*)>1 LIMIT 1""").fetchone()
             if dup: raise RuntimeError("duplicate legacy idempotency_key; migration fails closed")
             conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_tasks_idempotency_key ON tasks(idempotency_key) WHERE idempotency_key IS NOT NULL")
+            vcols={r[1] for r in conn.execute("PRAGMA table_info(verification_receipts)")}
+            for name,decl in {"evidence_sha256":"TEXT","request_integrity":"TEXT"}.items():
+                if name not in vcols: conn.execute(f"ALTER TABLE verification_receipts ADD COLUMN {name} {decl}")
             rcols={r[1] for r in conn.execute("PRAGMA table_info(revenues)")}
             if "source_task_id" not in rcols:
                 if "source_task" not in rcols: raise RuntimeError("unknown legacy revenues schema")
@@ -99,18 +109,32 @@ class CoreStateEngine:
                 prev=stored_hash
         return True
 
+    def _request_fingerprint(self,title,troop,revenue):
+        payload={"title":title,"troop":troop,"revenue":revenue}
+        return hashlib.sha256(self._canonical(payload).encode()).hexdigest()
+
     def add_task(self,title,troop,revenue=0,idempotency_key=None):
         task_id=f"task_{uuid.uuid4().hex[:12]}"; now=self._get_time()
+        request_fingerprint=self._request_fingerprint(title,troop,revenue)
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute("BEGIN IMMEDIATE")
                 if idempotency_key:
-                    existing=conn.execute("SELECT id FROM tasks WHERE idempotency_key=?",(idempotency_key,)).fetchone()
-                    if existing:return existing[0]
+                    existing=conn.execute(
+                        "SELECT id,request_fingerprint FROM tasks WHERE idempotency_key=?",(idempotency_key,)
+                    ).fetchone()
+                    if existing:
+                        if not existing[1] or not hmac.compare_digest(existing[1],request_fingerprint):
+                            self._append_audit(conn,"IDEMPOTENCY_CONTENT_MISMATCH",
+                                {"idempotency_key":idempotency_key,"existing_task_id":existing[0]})
+                            return None
+                        return existing[0]
                 conn.execute("""INSERT INTO tasks
-                    (id,title,troop,claimed_revenue,status,created_at,updated_at,idempotency_key)
-                    VALUES (?,?,?,?,?,?,?,?)""",(task_id,title,troop,revenue,"QUEUED",now,now,idempotency_key))
-                self._append_audit(conn,"TASK_ADDED",{"task_id":task_id,"title":title,"troop":troop})
+                    (id,title,troop,claimed_revenue,status,created_at,updated_at,idempotency_key,request_fingerprint)
+                    VALUES (?,?,?,?,?,?,?,?,?)""",
+                    (task_id,title,troop,revenue,"QUEUED",now,now,idempotency_key,request_fingerprint))
+                self._append_audit(conn,"TASK_ADDED",
+                    {"task_id":task_id,"title":title,"troop":troop,"request_fingerprint":request_fingerprint})
             return task_id
         except Exception as exc:
             logging.error("Task addition failed: %s",exc); return None
@@ -128,25 +152,60 @@ class CoreStateEngine:
         except Exception as exc:
             logging.error("Task claim failed: %s",exc); return False
 
-    def apply_verification_receipt(self,task_id,receipt_id,verifier_id,evidence_ref,verdict):
-        if not all([receipt_id,verifier_id,evidence_ref]) or verdict!="ACCEPT":
+    def register_trusted_verifier(self,verifier_id,verification_key,independent=True):
+        if (not verifier_id or not verification_key or not independent or
+                verifier_id in {"core","executor","mock_gemini"}):
             return False
-        if verifier_id in {"core","executor","mock_gemini"}:
+        now=self._get_time()
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("BEGIN IMMEDIATE")
+            conn.execute("""INSERT INTO trusted_verifiers(verifier_id,verification_key,independent,updated_at)
+                VALUES (?,?,1,?) ON CONFLICT(verifier_id) DO UPDATE SET
+                verification_key=excluded.verification_key,independent=1,updated_at=excluded.updated_at""",
+                (verifier_id,verification_key,now))
+            self._append_audit(conn,"TRUSTED_VERIFIER_REGISTERED",{"verifier_id":verifier_id,"independent":True})
+        return True
+
+    def verification_request_integrity(self,verification_key,task_id,receipt_id,verifier_id,
+                                       evidence_ref,evidence_sha256,verdict):
+        payload={"task_id":task_id,"receipt_id":receipt_id,"verifier_id":verifier_id,
+                 "evidence_ref":evidence_ref,"evidence_sha256":evidence_sha256,"verdict":verdict}
+        return hmac.new(verification_key.encode(),self._canonical(payload).encode(),hashlib.sha256).hexdigest()
+
+    def apply_verification_receipt(self,task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,
+                                   verdict,request_integrity):
+        # evidence_sha256 is only evidence identity. It is deliberately NOT authentication.
+        if (not all([receipt_id,verifier_id,evidence_ref,evidence_sha256,request_integrity]) or
+                verdict!="ACCEPT" or not re.fullmatch(r"[0-9a-f]{64}",evidence_sha256)):
             return False
         now=self._get_time()
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute("BEGIN IMMEDIATE")
+                trusted=conn.execute(
+                    "SELECT verification_key,independent FROM trusted_verifiers WHERE verifier_id=?",
+                    (verifier_id,)).fetchone()
+                if not trusted or trusted[1]!=1:
+                    return False
+                expected=self.verification_request_integrity(
+                    trusted[0],task_id,receipt_id,verifier_id,evidence_ref,evidence_sha256,verdict)
+                if not hmac.compare_digest(expected,request_integrity):
+                    return False
                 row=conn.execute("SELECT status,result_provider FROM tasks WHERE id=?",(task_id,)).fetchone()
-                if not row or row[0]!="SUCCESS_CLAIMED" or verifier_id==row[1]: return False
+                if not row or row[0]!="SUCCESS_CLAIMED" or verifier_id==row[1]:
+                    return False
                 conn.execute("""INSERT INTO verification_receipts
-                    (receipt_id,task_id,verifier_id,evidence_ref,verdict,timestamp) VALUES (?,?,?,?,?,?)""",
-                    (receipt_id,task_id,verifier_id,evidence_ref,verdict,now))
+                    (receipt_id,task_id,verifier_id,evidence_ref,evidence_sha256,request_integrity,verdict,timestamp)
+                    VALUES (?,?,?,?,?,?,?,?)""",
+                    (receipt_id,task_id,verifier_id,evidence_ref,evidence_sha256,request_integrity,verdict,now))
                 cur=conn.execute("""UPDATE tasks SET status='VERIFIED',verification_note=?,updated_at=?
-                                    WHERE id=? AND status='SUCCESS_CLAIMED'""",(f"{verifier_id}:{evidence_ref}",now,task_id))
+                                    WHERE id=? AND status='SUCCESS_CLAIMED'""",
+                    (f"{verifier_id}:{evidence_ref}:{evidence_sha256}",now,task_id))
                 if cur.rowcount!=1: raise RuntimeError("verification transition failed")
                 self._append_audit(conn,"TASK_VERIFICATION_RECEIPT_ACCEPTED",
-                    {"task_id":task_id,"receipt_id":receipt_id,"verifier_id":verifier_id,"evidence_ref":evidence_ref})
+                    {"task_id":task_id,"receipt_id":receipt_id,"verifier_id":verifier_id,
+                     "evidence_ref":evidence_ref,"evidence_sha256":evidence_sha256,
+                     "request_integrity":request_integrity})
             return True
         except Exception as exc:
             logging.error("Verification receipt rejected: %s",exc); return False
