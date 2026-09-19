@@ -17,10 +17,10 @@ CANONICAL_TRUSTED_VERIFIERS = {
         "algorithm": "RSA-SHA256",
         "public_exponent": 65537,
         "modulus": int(
-            "b50f41e90164f8e78139e7816b2b476cd5e14a2b9f9cf679bb5c76af9811b4b1"
-            "7f4971ec3e08f2bbfddc2d1d9490ef7738dd1e6d68fbd10fc5ed645bc9213f1d"
-            "777ff23afca685c65100d7ae06b27f69c1d81448b4a78729a1521479c8f17b8b"
-            "0d8192a71f70baf91e4c727895928cb21de1f222ee4d61991f54e27d11577ad7",16),
+            "c2f555a8ce5fa6810f4ffe05f1c143a76e3f6402c6786dac4424306e17163c79"
+            "1b48141a8dbcee3ef402a29eac7935f4d25c43acbd2de25920c399006c049696"
+            "4468dc3dba12a7cd6fed26eb7ea3baf01b5a6c0c75308fdc58639c363fc6a36a"
+            "cfc6562385df8f870a9c61bbc5de239e1083c15c155f2a1cfcd97cc7f64e9fb7",16),
     },
 }
 
