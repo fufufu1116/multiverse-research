@@ -1,0 +1,58 @@
+{
+  "protocol": "MULTIVERSE_PROVIDER_ADAPTER_CONTRACT_V1",
+  "status": "CANDIDATE_ONLY",
+  "runtime": "OFF",
+  "authority": {
+    "canonical": "github_canonical_state",
+    "packet": "bootstrap_only",
+    "provider": "executor_only",
+    "owner_gates": "unchanged",
+    "independent_review": "unchanged"
+  },
+  "capabilities": [
+    "accept_bootstrap",
+    "fresh_read",
+    "reconstruct_state",
+    "execute_owner_free_step",
+    "emit_checkpoint",
+    "emit_receipt",
+    "report_blocker"
+  ],
+  "required_handoff_fields": [
+    "protocol_version",
+    "repository",
+    "canonical_branch",
+    "canonical_sha",
+    "canonical_control_pointers",
+    "active_candidate_pointers",
+    "mission",
+    "completed_steps",
+    "first_uncommitted_step",
+    "side_effect_states",
+    "receipts",
+    "blockers",
+    "owner_gates",
+    "next_action",
+    "generated_at"
+  ],
+  "side_effect_states": ["NONE", "ATTEMPTED", "VERIFIED", "UNVERIFIED"],
+  "executor_states": [
+    "AVAILABLE",
+    "BOOTSTRAP",
+    "FRESH_READ",
+    "STATE_RECONSTRUCTED",
+    "AUTHORITY_CHECK",
+    "EXECUTABLE_STEP",
+    "CHECKPOINT",
+    "EXECUTE",
+    "VERIFY",
+    "RESUME",
+    "FAIL_CLOSED",
+    "UNAVAILABLE",
+    "HANDOFF_READY"
+  ],
+  "provider_unavailable_transition": "EXECUTOR_ACTIVE -> PROVIDER_UNAVAILABLE -> HANDOFF_READY",
+  "resume_transition": "HANDOFF_READY -> REPLACEMENT_PROVIDER -> BOOTSTRAP",
+  "secret_policy": "never_store_credentials_tokens_private_keys_cookies_or_secrets",
+  "boundary": "No provider bypass, automatic credential creation, spend, production action, or Runtime activation is authorized by this contract."
+}
