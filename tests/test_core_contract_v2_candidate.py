@@ -14,6 +14,9 @@ class CoreCandidateTests(unittest.TestCase):
         os.close(fd)
         os.unlink(self.path)
         self.core=CoreStateEngine(self.path)
+        self.verifier_id="auditor_external"
+        self.verification_key="independent-auditor-test-key"
+        self.assertTrue(self.core.register_trusted_verifier(self.verifier_id,self.verification_key))
 
     def tearDown(self):
         if os.path.exists(self.path):
@@ -34,8 +37,15 @@ class CoreCandidateTests(unittest.TestCase):
         executor=TaskExecutor(self.core,queue,FailClosedEnforcer(self.core))
         executor.run_next_task()
         self.assertFalse(self.core.realize_revenue_and_close(task_id,100))
-        self.assertFalse(self.core.apply_verification_receipt(task_id,"r0","mock_gemini","evidence://x","ACCEPT"))
-        self.assertTrue(self.core.apply_verification_receipt(task_id,"r1","auditor_external","evidence://verified","ACCEPT"))
+        digest="a"*64
+        bad=self.core.verification_request_integrity(
+            self.verification_key,task_id,"r0","mock_gemini","evidence://x",digest,"ACCEPT")
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r0","mock_gemini","evidence://x",digest,"ACCEPT",bad))
+        integrity=self.core.verification_request_integrity(
+            self.verification_key,task_id,"r1",self.verifier_id,"evidence://verified",digest,"ACCEPT")
+        self.assertTrue(self.core.apply_verification_receipt(
+            task_id,"r1",self.verifier_id,"evidence://verified",digest,"ACCEPT",integrity))
         self.assertTrue(self.core.realize_revenue_and_close(task_id,100))
         state=self.core.get_state_snapshot()
         self.assertEqual(state["realized_revenue"],100)
@@ -45,9 +55,14 @@ class CoreCandidateTests(unittest.TestCase):
         task_id=self.core.add_task("evidence task","AI研究",0)
         q=DeterministicTaskQueue(self.core)
         TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
-        self.assertFalse(self.core.apply_verification_receipt(task_id,"","","","ACCEPT"))
-        self.assertFalse(self.core.apply_verification_receipt(task_id,"r-self","mock_gemini","evidence://x","ACCEPT"))
-        self.assertTrue(self.core.apply_verification_receipt(task_id,"r-ok","auditor_external","evidence://ok","ACCEPT"))
+        digest="b"*64
+        self.assertFalse(self.core.apply_verification_receipt(task_id,"","","",digest,"ACCEPT",""))
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-self","mock_gemini","evidence://x",digest,"ACCEPT","0"*64))
+        integrity=self.core.verification_request_integrity(
+            self.verification_key,task_id,"r-ok",self.verifier_id,"evidence://ok",digest,"ACCEPT")
+        self.assertTrue(self.core.apply_verification_receipt(
+            task_id,"r-ok",self.verifier_id,"evidence://ok",digest,"ACCEPT",integrity))
         self.assertTrue(self.core.verify_audit_chain())
 
     def test_provider_disable_is_persistent_and_enforced(self):
@@ -64,6 +79,50 @@ class CoreCandidateTests(unittest.TestCase):
         self.assertEqual(first,second)
         self.assertEqual(len(self.core.get_state_snapshot()["tasks"]),1)
 
+    def test_idempotency_key_reuse_with_different_content_fails_closed(self):
+        first=self.core.add_task("same","司令塔",0,"request-bound")
+        self.assertIsNotNone(first)
+        self.assertIsNone(self.core.add_task("different","司令塔",0,"request-bound"))
+        self.assertIsNone(self.core.add_task("same","司令塔",1,"request-bound"))
+        self.assertEqual(len(self.core.get_state_snapshot()["tasks"]),1)
+
+    def test_plain_checksum_is_not_authentication(self):
+        task_id=self.core.add_task("evidence boundary","AI研究",0)
+        q=DeterministicTaskQueue(self.core)
+        TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
+        digest="c"*64
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-plain",self.verifier_id,"evidence://plain",digest,"ACCEPT",digest))
+        self.assertEqual(self.core.get_state_snapshot()["tasks"][0]["status"],"SUCCESS_CLAIMED")
+
+    def test_verification_receipt_binds_verifier_and_evidence_identity(self):
+        task_id=self.core.add_task("bound receipt","AI研究",0)
+        q=DeterministicTaskQueue(self.core)
+        TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
+        digest="d"*64
+        integrity=self.core.verification_request_integrity(
+            self.verification_key,task_id,"r-bound",self.verifier_id,"evidence://one",digest,"ACCEPT")
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-bound",self.verifier_id,"evidence://two",digest,"ACCEPT",integrity))
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-bound",self.verifier_id,"evidence://one","e"*64,"ACCEPT",integrity))
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-bound","other_auditor","evidence://one",digest,"ACCEPT",integrity))
+        self.assertTrue(self.core.apply_verification_receipt(
+            task_id,"r-bound",self.verifier_id,"evidence://one",digest,"ACCEPT",integrity))
+
+    def test_untrusted_or_non_independent_verifier_is_rejected(self):
+        self.assertFalse(self.core.register_trusted_verifier("core","x"))
+        self.assertFalse(self.core.register_trusted_verifier("not-independent","x",independent=False))
+        task_id=self.core.add_task("untrusted","AI研究",0)
+        q=DeterministicTaskQueue(self.core)
+        TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
+        digest="f"*64
+        integrity=self.core.verification_request_integrity(
+            "unknown",task_id,"r-x","unknown","evidence://x",digest,"ACCEPT")
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-x","unknown","evidence://x",digest,"ACCEPT",integrity))
+
     def test_old_database_is_migrated(self):
         import sqlite3
         old_path=self.path + ".old"
@@ -76,7 +135,7 @@ class CoreCandidateTests(unittest.TestCase):
         migrated=CoreStateEngine(old_path)
         with sqlite3.connect(old_path) as conn:
             cols={r[1] for r in conn.execute("PRAGMA table_info(tasks)")}
-            self.assertTrue({"claimed_revenue","result","result_provider","verification_note","idempotency_key"}.issubset(cols))
+            self.assertTrue({"claimed_revenue","result","result_provider","verification_note","idempotency_key","request_fingerprint"}.issubset(cols))
             indexes=list(conn.execute("PRAGMA index_list(tasks)"))
             self.assertTrue(any(r[2] for r in indexes))
             rcols={r[1] for r in conn.execute("PRAGMA table_info(revenues)")}
