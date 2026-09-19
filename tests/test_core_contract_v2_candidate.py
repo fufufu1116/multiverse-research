@@ -15,8 +15,7 @@ class CoreCandidateTests(unittest.TestCase):
         os.unlink(self.path)
         self.core=CoreStateEngine(self.path)
         self.verifier_id="auditor_external"
-        self.verification_key="independent-auditor-test-key"
-        self.assertTrue(self.core.register_trusted_verifier(self.verifier_id,self.verification_key))
+        self.verification_key="independent-auditor-canonical-v1"
 
     def tearDown(self):
         if os.path.exists(self.path):
@@ -111,9 +110,21 @@ class CoreCandidateTests(unittest.TestCase):
         self.assertTrue(self.core.apply_verification_receipt(
             task_id,"r-bound",self.verifier_id,"evidence://one",digest,"ACCEPT",integrity))
 
-    def test_untrusted_or_non_independent_verifier_is_rejected(self):
-        self.assertFalse(self.core.register_trusted_verifier("core","x"))
-        self.assertFalse(self.core.register_trusted_verifier("not-independent","x",independent=False))
+    def test_arbitrary_verifier_self_enrollment_and_self_signature_fail_closed(self):
+        self.assertFalse(hasattr(self.core,"register_trusted_verifier"))
+        task_id=self.core.add_task("self enrollment attack","AI研究",0)
+        q=DeterministicTaskQueue(self.core)
+        TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
+        attacker_id="attacker_chosen_verifier"
+        attacker_key="attacker-chosen-key"
+        digest="9"*64
+        forged=self.core.verification_request_integrity(
+            attacker_key,task_id,"r-forged",attacker_id,"evidence://forged",digest,"ACCEPT")
+        self.assertFalse(self.core.apply_verification_receipt(
+            task_id,"r-forged",attacker_id,"evidence://forged",digest,"ACCEPT",forged))
+        self.assertEqual(self.core.get_state_snapshot()["tasks"][0]["status"],"SUCCESS_CLAIMED")
+
+    def test_untrusted_verifier_is_rejected(self):
         task_id=self.core.add_task("untrusted","AI研究",0)
         q=DeterministicTaskQueue(self.core)
         TaskExecutor(self.core,q,FailClosedEnforcer(self.core)).run_next_task()
