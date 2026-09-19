@@ -18,10 +18,10 @@ class CoreCandidateTests(unittest.TestCase):
         self.core=CoreStateEngine(self.path)
         self.verifier_id="auditor_external"
         self._auditor_private_exponent=int(
-            "1a9c746c9a52285fb82485c1b2e875a4e24dc9d7cf3b44e02eac66f57693a4b0"
-            "af1258d1fcfabd45d19e406b9996a0372578f38c60507d5b70c658b555c41b61"
-            "a1a2f4f8437ec61b4e0a3a450efb370f69325ed4f4bd6b2239d0d8f67ebf78ef"
-            "2a7ce620fefb9196fd43d13cf2d0a1a566761beea5677802307bb6773673c061",16)
+            "7579634e3e5c8076100601690f8d86f8a283ebfd881e14e7d27f83f7324e21ce"
+            "4fd414d913431ec42c4052410e68534cdc5ce0227c33e3ca14e60791ab84f03f3"
+            "a69ab7c4c3c1acfde480db2aacd40cc462604d58159afbbf3b9707224b4a8d5e"
+            "12ec60b1d9fb9fc16711161d61028be3ec1d80df9df19619afad89e73ccdc71",16)
 
     def _sign_as_independent_auditor(self,task_id,receipt_id,evidence_ref,evidence_sha256,verdict="ACCEPT"):
         payload=self.core._verification_payload(task_id,receipt_id,self.verifier_id,evidence_ref,evidence_sha256,verdict)
