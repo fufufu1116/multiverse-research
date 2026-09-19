@@ -79,6 +79,10 @@ class CoreCandidateTests(unittest.TestCase):
             self.assertTrue({"claimed_revenue","result","result_provider","verification_note","idempotency_key"}.issubset(cols))
             indexes=list(conn.execute("PRAGMA index_list(tasks)"))
             self.assertTrue(any(r[2] for r in indexes))
+            rcols={r[1] for r in conn.execute("PRAGMA table_info(revenues)")}
+            self.assertIn("source_task_id",rcols)
+            legacy=conn.execute("SELECT source_task_id FROM revenues").fetchall()
+            self.assertEqual(legacy,[])
         os.remove(old_path)
 
     def test_failed_transition_requires_running(self):
