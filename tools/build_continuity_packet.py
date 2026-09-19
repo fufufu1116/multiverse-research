@@ -27,7 +27,7 @@ API = f"https://api.github.com/repos/{REPO}"
 CONTROL_ISSUE = 394
 IMPLEMENTATION_ISSUE = 596
 DESIGN_PR = 595
-ACTIVE_CANDIDATE_PR = 597
+ACTIVE_CANDIDATE_PR = 598
 
 
 def get(path: str):
@@ -35,7 +35,7 @@ def get(path: str):
         API + path,
         headers={
             "Accept": "application/vnd.github+json",
-            "User-Agent": "multiverse-continuity-packet/1.1",
+            "User-Agent": "multiverse-continuity-packet/1.2",
         },
     )
     token = os.environ.get("GITHUB_TOKEN")
