@@ -26,8 +26,8 @@ class DeterministicTaskQueue:
                 if cur.rowcount != 1:
                     conn.execute("ROLLBACK")
                     return None
+                self.core._append_audit(conn,"TASK_STARTED",{"task_id":task_id})
                 conn.execute("COMMIT")
-            self.core.log_audit("TASK_STARTED",{"task_id":task_id})
             return {"id":task_id,"title":title,"troop":troop}
         except Exception as exc:
             logging.error("Task fetch failed: %s", exc)
@@ -41,7 +41,7 @@ class DeterministicTaskQueue:
                                     WHERE id=? AND status='RUNNING'""",(now,task_id))
                 if cur.rowcount != 1:
                     return False
-            self.core.log_audit("TASK_FAILED",{"task_id":task_id,"reason":reason})
+                self.core._append_audit(conn,"TASK_FAILED",{"task_id":task_id,"reason":reason})
             return True
         except Exception as exc:
             logging.error("Failed to update task status: %s", exc)
