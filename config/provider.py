@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Iterable
 
+from core_state import CANONICAL_TRUSTED_VERIFIERS
+
 @dataclass(frozen=True)
 class ProviderCapabilities:
     provider_id: str
@@ -20,7 +22,7 @@ class CapabilityRecord:
     usage_cost: float
     context_limit: int
     tool_access: tuple[str, ...] = ()
-    independence_tags: tuple[str, ...] = ()
+    independence_tags: tuple[str, ...] = ()  # descriptive only; never grants audit authority
     recent_failures: int = 0
     evidence_refs: tuple[str, ...] = ()
     enabled: bool = True
@@ -45,7 +47,8 @@ class CapabilityRegistry:
 
     def eligible(self, task_type: str, *, min_quality: float = 0.0, min_reliability: float = 0.0,
                  max_usage_cost: float | None = None, required_tools: tuple[str, ...] = (),
-                 forbidden_independence_tags: tuple[str, ...] = ()) -> list[CapabilityRecord]:
+                 forbidden_independence_tags: tuple[str, ...] = (),
+                 require_independent_auditor: bool = False) -> list[CapabilityRecord]:
         out=[]
         for record in self._records.values():
             if not record.enabled or record.task_type != task_type: continue
@@ -53,6 +56,8 @@ class CapabilityRegistry:
             if max_usage_cost is not None and record.usage_cost > max_usage_cost: continue
             if any(tool not in record.tool_access for tool in required_tools): continue
             if any(tag in record.independence_tags for tag in forbidden_independence_tags): continue
+            # Independent-auditor eligibility is authority-bound, never self-declared metadata.
+            if require_independent_auditor and record.provider_id not in CANONICAL_TRUSTED_VERIFIERS: continue
             out.append(record)
         return sorted(out, key=lambda r:(r.usage_cost, r.recent_failures, -r.reliability, -r.quality, r.latency_ms, r.provider_id))
 
