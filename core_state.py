@@ -32,9 +32,11 @@ class CoreStateEngine:
                         title TEXT NOT NULL,
                         troop TEXT,
                         revenue INTEGER DEFAULT 0,
-                        status TEXT DEFAULT 'QUEUED', -- QUEUED, RUNNING, SUCCESS, FAILED
+                        status TEXT DEFAULT 'QUEUED', -- QUEUED, RUNNING, SUCCESS_CLAIMED, VERIFIED, CLOSED, FAILED
                         created_at TEXT NOT NULL,
-                        updated_at TEXT NOT NULL
+                        updated_at TEXT NOT NULL,
+                        result TEXT,
+                        result_provider TEXT
                     )
                 ''')
                 
@@ -94,6 +96,35 @@ class CoreStateEngine:
         except Exception as e:
             logging.error(f"Task addition failed: {e}")
             return None
+
+    def record_task_claim(self, task_id: str, result: str, provider_id: str) -> bool:
+        """Store provider output as an unverified claim. Never realizes revenue."""
+        now = self._get_time()
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.execute(
+                    "UPDATE tasks SET status = 'SUCCESS_CLAIMED', result = ?, result_provider = ?, updated_at = ? WHERE id = ? AND status = 'RUNNING'",
+                    (result, provider_id, now, task_id)
+                )
+                if cursor.rowcount != 1:
+                    return False
+                conn.commit()
+            self.log_audit("TASK_RESULT_CLAIMED", {"task_id": task_id, "provider_id": provider_id})
+            return True
+        except Exception as e:
+            logging.error(f"Task claim recording failed: {e}")
+            return False
+
+    def get_state_snapshot(self) -> dict:
+        """Return observed state instead of a fixed 'healthy' sentence."""
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.row_factory = sqlite3.Row
+                tasks = [dict(r) for r in conn.execute("SELECT * FROM tasks ORDER BY created_at DESC LIMIT 100")]
+                realized = conn.execute("SELECT COALESCE(SUM(amount), 0) FROM revenues").fetchone()[0]
+            return {"status": "observed", "runtime": "OFF", "tasks": tasks, "realized_revenue": realized}
+        except Exception as e:
+            return {"status": "degraded", "runtime": "OFF", "error": str(e)}
 
     def complete_task_and_reflect_revenue(self, task_id: str):
         """タスク完了と収益の自動連動（アトミックなトランザクション処理）"""
