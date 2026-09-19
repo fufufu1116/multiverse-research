@@ -104,6 +104,11 @@ class CoreCandidateTests(unittest.TestCase):
             output_schema="evidence-backed result",
         ).validate()
 
+    def test_provider_disable_survives_engine_reopen(self):
+        FailClosedEnforcer(self.core).disable_provider("mock_gemini","persistent")
+        reopened=CoreStateEngine(self.path)
+        self.assertFalse(reopened.is_provider_enabled("mock_gemini"))
+
     def test_provider_capability_routing_stays_simulation_only(self):
         from config.provider import ProviderRegistry
         registry=ProviderRegistry()
